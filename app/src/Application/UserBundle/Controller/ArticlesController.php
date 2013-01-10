@@ -50,6 +50,18 @@ use Application\UserBundle\Controller\Helper\FacebookLike;
 
 class ArticlesController extends AbstractController
 {
+	public function preAction($action, $arguments = null)
+	{
+		if ($action != 'articleAgentIframeAction') {
+			return parent::preAction($action, $arguments);
+		}
+
+		// The articleAgentIframeAction hadnles its own special auth
+		$this->person = $this->session->getPerson();
+
+		return null;
+	}
+
 	public function sectionPermissionCheck()
 	{
 		return $this->person->hasPerm('articles.use');
