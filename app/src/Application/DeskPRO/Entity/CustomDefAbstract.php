@@ -272,6 +272,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	}
 
 
+	/**
+	 * @param int $def_id
+	 * @return CustomDefAbstract
+	 */
+	public function getChildById($def_id)
+	{
+		foreach ($this->children as $v) {
+			if ($v->getId() == $def_id) {
+				return $v;
+			}
+		}
+
+		return null;
+	}
+
+
 
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.

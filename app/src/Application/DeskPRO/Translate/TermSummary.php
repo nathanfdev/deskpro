@@ -441,6 +441,17 @@ class TermSummary
 						break;
 
 					case 'id':
+						if (is_array($text)) {
+							$real = array();
+							foreach ($text as $c_id) {
+								$c = $field->getChildById($c_id);
+								if ($c) {
+									$real[] = $c->getTitle();
+								}
+							}
+							$text = implode(', ', $real);
+						}
+
 						if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
 							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
 						} else {
