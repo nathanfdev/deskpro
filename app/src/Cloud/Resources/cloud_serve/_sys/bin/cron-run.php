@@ -304,7 +304,7 @@ if ($account_type) {
 	$st = $db->prepare("
 		SELECT
 			cloud_sites.*,
-			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, cloud_accounts.cron_off
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 		WHERE $where
@@ -339,7 +339,7 @@ if ($account_type) {
 	$st = $db->prepare("
 		SELECT
 			cloud_sites.*,
-			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, cloud_accounts.cron_off
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 		WHERE cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
@@ -358,6 +358,11 @@ dp_logf("Batch %d of %d running %d of %d sites", $range_start, $range_end, count
 #------------------------------
 
 foreach ($sites as $siteinfo) {
+	if ($siteinfo['cron_off']) {
+		dp_logf("--- SITE %d %s cron_off=1, skipping ---", $siteinfo['id'], $siteinfo['master_domain']);
+		continue;
+	}
+
 	$site_time_begin = microtime(true);
 	dp_logf("--- BEGIN SITE %d %s ---", $siteinfo['id'], $siteinfo['master_domain']);
 
