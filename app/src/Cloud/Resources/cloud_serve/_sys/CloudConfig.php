@@ -163,6 +163,11 @@ class CloudConfig
 		define('DPC_BILL_DATE',          $siteinfo['next_bill_at']);
 		define('DPC_BILL_OVERDUE',       $siteinfo['next_bill_at'] && $siteinfo['next_bill_at'] < time());
 		define('DPC_COPYFREE',           $siteinfo['is_copyfree'] ? true : false);
+		define('DPC_BILL_FAILED',        $siteinfo['bill_failed_step']);
+		define('DPC_ADMIN_OFF',          $siteinfo['admin_off'] ? true : false);
+		define('DPC_AGENT_OFF',          $siteinfo['agent_off'] ? true : false);
+		define('DPC_USER_OFF',           $siteinfo['user_off'] ? true : false);
+		define('DPC_OFF_REASON',         $siteinfo['off_reason'] ?: null);
 
 		if (!is_dir(DPC_SITE_DATADIR)) {
 			mkdir(DPC_SITE_DATADIR, 0777, true);
@@ -330,7 +335,8 @@ class CloudConfig
 		$stmt = self::getDb()->prepare("
 			SELECT
 				cloud_sites.*,
-				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, UNIX_TIMESTAMP(cloud_accounts.date_next_bill) AS next_bill_at, cloud_accounts.is_copyfree
+				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, UNIX_TIMESTAMP(cloud_accounts.date_next_bill) AS next_bill_at, cloud_accounts.is_copyfree,
+				cloud_accounts.bill_failed_step, cloud_accounts.admin_off, cloud_accounts.agent_off, cloud_accounts.user_off, cloud_accounts.cron_off, cloud_accounts.off_reason
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 			WHERE cloud_sites.id = ? AND cloud_sites.build_number > 0 AND cloud_accounts.is_offline = 0
@@ -359,7 +365,8 @@ class CloudConfig
 		$stmt = self::getDb()->prepare("
 			SELECT
 				cloud_sites.*,
-				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, UNIX_TIMESTAMP(cloud_accounts.date_next_bill) AS next_bill_at, cloud_accounts.is_copyfree
+				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, UNIX_TIMESTAMP(cloud_accounts.date_next_bill) AS next_bill_at, cloud_accounts.is_copyfree,
+				cloud_accounts.bill_failed_step, cloud_accounts.admin_off, cloud_accounts.agent_off, cloud_accounts.user_off, cloud_accounts.cron_off, cloud_accounts.off_reason
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 			LEFT JOIN cloud_site_domains ON (cloud_site_domains.cloud_site_id = cloud_sites.id)

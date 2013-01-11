@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="robots" content="noindex,nofollow" />
-        <title>{{ TITLE }}</title>
+        <title><?php echo $title ?></title>
         <style>
          /*!
 		 * Bootstrap v2.1.0
@@ -185,7 +185,7 @@
 					emailform.find('.send-btn').hide();
 					emailform.find('.send-loading').show();
 					$.ajax({
-						url: '{{ BILLING_URL }}billing-send-question',
+						url: '<?php echo $billing_url ?>billing-send-question',
 						data: { message: message },
 						type: 'POST',
 						dataType: 'json',
@@ -216,59 +216,10 @@
 					<a class="btn btn-danger btn-small" href="https://support.deskpro.com/">Help &amp; Support</a>
 				</div>
 				<a href="https://www.deskpro.com/">
-					<img src="{{ ASSET_URL }}/web/images/dp-logo-color.png" alt="" border="" />
+					<img src="<?php echo $asset_url ?>/images/dp-logo-color.png" alt="" border="" />
 				</a>
 			</div>
 
 			<div class="content">
-				<h2>{{ TITLE }}</h2>
+				<h2><?php echo $title ?></h2>
 				<div class="block">
-					Log in now to add your billing information.
-					<form action="{{ BILLING_URL }}login/authenticate-password" method="POST">
-
-						<div style="margin-top: 45px;  background-color: #FFF; border: 1px solid #E8E8E8; padding: 8px; border-radius: 6px; -webkit-border-radius: 6px;">
-							<table cellspacing="0" cellpadding="5" border="0">
-								<tr>
-									<td style="vertical-align:middle; text-align: right;">Email Address:</td>
-									<td style="vertical-align:middle;">
-										<input type="text" name="email" style="font-family: sans-serif; line-height: 100%; padding: 5px; border-radius: 3px; border: 1px solid #aaa; width: 350px" placeholder="Enter your admin email address" />
-									</td>
-								</tr>
-								<tr>
-									<td style="vertical-align:middle; text-align: right;">Password:</td>
-									<td style="vertical-align:middle;">
-										<input type="password" name="password" style="font-family: sans-serif; line-height: 100%; padding: 5px; border-radius: 3px; border: 1px solid #aaa; width: 350px" placeholder="Enter your admin password" />
-									</td>
-								</tr>
-								<tr>
-									<td>&nbsp;</td>
-									<td style="vertical-align:middle;">
-										<button class="btn">Go to billing &rarr;</button>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</form>
-
-
-					<div style="margin-top: 45px;  background-color: #D0E8F4; padding: 8px; border-radius: 6px; -webkit-border-radius: 6px;">
-						<strong>Contact Us</strong><br />
-						If you have any questions, just submit this form and we'll get back to you at the email address you signed up under.
-						You can also email us directly at <a href="mailto:sales@deskpro.com">sales@deskpro.com</a>.
-
-						<div class="email-form">
-							<textarea style="width: 98%; height: 120px; font-family: sans-serif; padding: 5px; margin: 5px 0 5px 0; border-radius: 3px; border: 1px solid #aaa;" placeholder="Enter your question here" name="message"></textarea><br />
-							<div style="padding-top: 5px;">
-								<button	class="send-btn btn btn-primary">Send Message</button>
-								<img class="send-loading" src="https://www.deskpro.com/wp-content/themes/dpstyle/assets/images/loading-small-flat.gif" width="16" height="11" style="margin-top: 4px; display: none;" />
-							</div>
-						</div>
-						<div class="email-form-sent" style="display:none; margin: 20px;">
-							Thank you for your message. Our agents will respond to you as soon as they can.
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-    </body>
-</html>

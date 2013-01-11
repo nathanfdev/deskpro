@@ -257,12 +257,56 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				# Expiry checks
 				#------------------------------
 
-				if (License::getLicense()->isPastExpireDate()) {
-					if (DP_INTERFACE != 'billing') {
-						if (defined('DPC_IS_CLOUD')) {
-							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_expired', $request->getBaseUrl()));
+				if (DP_INTERFACE != 'billing') {
+					if (defined('DPC_IS_CLOUD')) {
+						// Demos have a set expiry date
+						if (License::getLicense()->isPastExpireDate()) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_demo_expired', $request->getBaseUrl()));
 							return $response;
+						}
+
+						// Bill failures are handled a bit differently...
+						if (DPC_BILL_FAILED) {
+							// Admin always shows notice
+							if (DP_INTERFACE == 'admin') {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_admin', $request->getBaseUrl()));
+								return $response;
+							}
+
+							// Agent might be disbaled
+							if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_agent', $request->getBaseUrl()));
+								return $response;
+							}
+
+							// User might be off too
+							if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_user', $request->getBaseUrl()));
+								return $response;
+							}
 						} else {
+							// Standard offline messages ...
+
+							// Admin always shows notice
+							if (DP_INTERFACE == 'admin' && DPC_ADMIN_OFF) {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_admin', $request->getBaseUrl()));
+								return $response;
+							}
+
+							// Agent might be disbaled
+							if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_agent', $request->getBaseUrl()));
+								return $response;
+							}
+
+							// User might be off too
+							if (DP_INTERFACE == 'user' && DPC_USER_OFF) {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_off_user', $request->getBaseUrl()));
+								return $response;
+							}
+						}
+					} else {
+						if (License::getLicense()->isPastExpireDate()) {
 							// Show lic error if not user, or if its been 14 days then show it for users too
 							if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
 								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
