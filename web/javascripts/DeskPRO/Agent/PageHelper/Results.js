@@ -330,6 +330,10 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * @param html
 	 */
 	setNewResults: function(html) {
+		if (!this.options) {
+			return;
+		}
+
 		var results = $(html);
 
 		if (this.options.infiniteScroll) {

@@ -22,7 +22,15 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			/*onCountChange: function(count) {
+				var isOpen = self.massActionsMenu.isOpen();
 
+				if (count > 0 && !isOpen) {
+					self.massActionsMenu.open();
+				} else if (count <= 0 && isOpen) {
+					self.massActionsMenu.close();
+				}
+			}*/
 		});
 		this.ownObject(this.selectionBar);
 

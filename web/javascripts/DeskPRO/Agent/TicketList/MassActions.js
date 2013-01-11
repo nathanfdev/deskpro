@@ -112,6 +112,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		}
 
 		this.wrapper = this.wrapperEl.clone().detach().html(this.wrapperEl.html());
+		this.countEl = $('.selected-tickets-count', this.wrapper);
 
 		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
 		var scrollEl = $('.with-scrollbar', this.wrapper).first();

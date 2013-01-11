@@ -17,6 +17,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			menuElement: $('ul.actions-menu:first', this.wrapper),
+			triggerElement: $('.perform-actions-trigger:first', this.wrapper),
 			onItemClicked: function(info) {
 				var data = [];
 				var lines = [];
@@ -76,7 +77,16 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 			onButtonClick: function(ev) {
 				self.actionsMenu.open(ev);
-			}
+			}/*,
+			onCountChange: function(count) {
+				var isOpen = self.actionsMenu.isOpen();
+
+				if (count > 0 && !isOpen) {
+					self.actionsMenu.open();
+				} else if (count <= 0 && isOpen) {
+					self.actionsMenu.close();
+				}
+			}*/
 		});
 		this.ownObject(this.selectionBar);
 

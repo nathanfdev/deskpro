@@ -130,9 +130,11 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 		var wasopen = this.isOpen();
 		this.close();
 
+		this.backdropEls.remove();
 		this.wrapper.remove();
 		this.wrapper = this.wrapperEl.clone();
         this.wrapper.tinyscrollbar();
+		this.countEl = $('.selected-tickets-count', this.wrapper);
         this.updatePositions();
         $('.dp-radio-expander-form', this.wrapper).on('click', this.updatePositions.bind(this));
 		this._hasInit = false;
@@ -201,18 +203,14 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 			this.apply();
 		}).bind(this));
 
-		this.selectionBar.addEvent('checkChange', function(el, is_checked, count) {
-			if (!this.isOpen()) return;
-			this.updateCount(count);
-		}, this);
-		this.selectionBar.addEvent('checkAll', function(count) {
-			if (!this.isOpen()) return;
-			this.updateCount(count);
-		}, this);
-		this.selectionBar.addEvent('checkNone', function() {
-			if (!this.isOpen()) return;
-			this.updateCount(0);
-		}, this);
+		if (!this._hasSelectionEvents) {
+			this._hasSelectionEvents = true;
+
+			this.selectionBar.addEvent('countChange', function(count) {
+				if (!this.isOpen()) return;
+				this.updateCount(count);
+			}, this);
+		}
 	},
 
 	updateAssignmentsDisplay: function() {

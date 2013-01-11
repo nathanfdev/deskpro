@@ -62,7 +62,17 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		});
 		this.ownObject(this.sortingMenu);
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			/*onCountChange: function(count) {
+				var isOpen = self.massActionsMenu.isOpen();
+
+				if (count > 0 && !isOpen) {
+					self.massActionsMenu.open();
+				} else if (count <= 0 && isOpen) {
+					self.massActionsMenu.close();
+				}
+			}*/
+		});
 		this.ownObject(this.selectionBar);
 
 		$('.detail-view-trigger', this.wrapper).on('click', (function() {

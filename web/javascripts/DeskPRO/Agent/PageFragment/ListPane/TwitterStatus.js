@@ -339,6 +339,15 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			onButtonClick: function() {
 				self.massActions.open();
 			},
+			onCountChange: function(count) {
+				var isOpen = self.massActions.isOpen();
+
+				if (count > 0 && !isOpen) {
+					self.massActions.open();
+				} else if (count <= 0 && isOpen) {
+					self.massActions.close();
+				}
+			},
 			checkSelector: '.twitter-status:not(.archived) input.item-select'
 		});
 		this.ownObject(this.selectionBar);

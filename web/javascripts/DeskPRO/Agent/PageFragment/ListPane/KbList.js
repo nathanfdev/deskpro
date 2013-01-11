@@ -15,7 +15,17 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		});
 		this.ownObject(this.displayOptions);
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			onCountChange: function(count) {
+				var isOpen = self.massActions.isOpen();
+
+				if (count > 0 && !isOpen) {
+					self.massActions.open();
+				} else if (count <= 0 && isOpen) {
+					self.massActions.close();
+				}
+			}
+		});
 		this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.kb-simple-list', this.wrapper);

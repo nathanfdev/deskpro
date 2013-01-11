@@ -102,15 +102,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	checkAll: function() {
 		$(this.options.checkSelector, this.page.wrapper).attr('checked', true);
 
-		var count = this.getCount();
-		this.selectedCount.text(count);
-
-		if (count > 0) {
-			this.button.removeClass('disabled');
-			this.controlCheck.attr('checked', true);
-		} else {
-			this.controlCheck.attr('checked', false);
-		}
+		var count = this.updateCount();
 
 		this.fireEvent('checkAll', [count]);
 	},
@@ -131,15 +123,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		checks = checks.slice(indexStart, indexEnd+1);
 		checks.prop('checked', is_checked);
 
-		var count = this.getCount();
-		this.selectedCount.text(count);
-
-		if (count > 0) {
-			this.button.removeClass('disabled');
-			this.controlCheck.attr('checked', true);
-		} else {
-			this.controlCheck.attr('checked', false);
-		}
+		var count = this.updateCount();
 
 		this.fireEvent('checkRange', [count]);
 	},
@@ -147,42 +131,43 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	checkNone: function() {
 		$(this.options.checkSelector + ':checked', this.page.wrapper).attr('checked', false);
 
-		var count = this.getCount();
-		this.selectedCount.text(count);
-
-		this.button.addClass('disabled');
-		this.controlCheck.attr('checked', false);
+		var count = this.updateCount();
 
 		this.fireEvent('checkNone');
 	},
 
 	handleCheckChange: function(el, is_checked) {
-		var count = this.getCount();
+		var count = this.updateCount();
 
+		this.fireEvent('checkChange', [el, is_checked, count]);
+	},
+
+	updateCount: function() {
+		var oldCount = parseInt(this.selectedCount.text(), 10) || 0;
+
+		var count = this.getCount();
 		this.selectedCount.text(count);
+
 		if (count > 0) {
 			this.button.removeClass('disabled');
 		} else {
 			this.button.addClass('disabled');
 		}
 
-
-		if (this.page.wrapper.find(this.options.checkSelector).not(':checked').length) {
+		if (this.page.wrapper.find(this.options.checkSelector).not(':checked').length || count == 0) {
 			this.controlCheck.attr('checked', false);
 		} else {
 			this.controlCheck.attr('checked', true);
 		}
 
-		this.fireEvent('checkChange', [el, is_checked, count]);
-	},
+		if (oldCount != count) {
+			this.fireEvent('countChange', [count, oldCount]);
+		}
 
-	updateCount: function() {
-		var count = this.getCount();
-		this.selectedCount.text(count);
+		return count;
 	},
 
 	resetCountLabel: function() {
-		var count = this.getCount();
-		this.selectedCount.text(count);
+		return this.updateCount();
 	}
 });

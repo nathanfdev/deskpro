@@ -12,7 +12,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 		}, this);
 
 		this.actionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
+			triggerElement: $('.perform-actions-trigger:first', this.wrapper),
 			menuElement: $('ul.actions-menu:first', this.wrapper),
 			onItemClicked: function(info) {
 				var data = [];
@@ -56,7 +56,16 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 			onButtonClick: function(ev) {
 				self.actionsMenu.open(ev);
-			}
+			}/*,
+			onCountChange: function(count) {
+				var isOpen = self.actionsMenu.isOpen();
+
+				if (count > 0 && !isOpen) {
+					self.actionsMenu.open();
+				} else if (count <= 0 && isOpen) {
+					self.actionsMenu.close();
+				}
+			}*/
 		});
 		this.ownObject(this.selectionBar);
 	}

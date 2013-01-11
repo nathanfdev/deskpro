@@ -78,6 +78,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var opt = {
 			onButtonClick: function() {
 				self.massActions.open();
+			},
+			onCountChange: function(count) {
+				var isOpen = self.massActions.isOpen();
+
+				if (count > 0 && !isOpen) {
+					self.massActions.open();
+				} else if (count <= 0 && isOpen) {
+					self.massActions.close();
+				}
 			}
 		};
 		if (this.meta.viewType == 'list') {

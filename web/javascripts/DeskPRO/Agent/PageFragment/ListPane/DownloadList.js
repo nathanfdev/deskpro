@@ -15,9 +15,7 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 		});
 		this.ownObject(this.displayOptions);
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
-
-		});
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
 		this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.downloads-simple-list', this.wrapper)
