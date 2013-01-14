@@ -62,4 +62,33 @@ class MainController extends AbstractController
 
 		return $this->redirect(DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode());
     }
+
+	public function cancelAction($authcode)
+	{
+		// We just insert this marker token here and then redirect the user off to the deskpro members area site
+		$tmpdata = new \Application\DeskPRO\Entity\TmpData();
+		$tmpdata->setType('dpc_billing_access');
+		$tmpdata->setData('person_info', array(
+			'helpdesk_url'     => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
+			'asset_url'        => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
+			'person_id'        => $this->person->getId(),
+			'first_name'       => $this->person->first_name,
+			'last_name'        => $this->person->last_name,
+			'name'             => $this->person->getDisplayName(),
+			'email'            => $this->person->getPrimaryEmailAddress(),
+			'picture_url_24'   => $this->person->getPictureUrl(24),
+			'can_admin'        => $this->person->can_admin,
+			'can_agent'        => $this->person->can_agent,
+			'can_billing'      => $this->person->can_billing,
+			'can_reports'      => $this->person->can_reports,
+			'can_portal'       => $this->container->getSetting('user.portal_enabled'),
+			'to_cancel'        => $authcode,
+		));
+		$tmpdata->date_expire = new \DateTime('+1 hour');
+
+		$this->em->persist($tmpdata);
+		$this->em->flush();
+
+		return $this->redirect(DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode());
+	}
 }

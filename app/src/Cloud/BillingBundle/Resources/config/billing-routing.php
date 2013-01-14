@@ -19,6 +19,13 @@ $collection->add('billing_sendq', new Route(
 	array()
 ));
 
+$collection->add('billing_cancel', new Route(
+	'/cancel-account/{authcode}',
+	array('_controller' => 'CloudBillingBundle:Main:cancel'),
+	array(),
+	array()
+));
+
 $collection->add('billing_login', new Route(
 	'/login',
 	array('_controller' => 'CloudBillingBundle:Login:index'),
