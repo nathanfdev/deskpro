@@ -511,7 +511,7 @@
 	</div>
 {% endif %}
 
-{% if 'time.' not in event_trigger %}
+{% if 'time.' not in event_trigger and event_trigger_master != 'sla' %}
 	<div class="builder-type" title="{{ phrase('agent.general.disable_user_notifications') }}" data-rule-type="disable_user_notifications" data-rule-group="Email Notification Options">
 		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_user_notifications" value="1" />
