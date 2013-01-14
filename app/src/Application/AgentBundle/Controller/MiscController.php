@@ -139,10 +139,11 @@ class MiscController extends AbstractController
 		$ticket_display->addPagesFromDb();
 		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
 
+		$js[] = "window.DESKPRO_TICKET_PRI_MAP = " . json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()) . ';';
+
 		$fragment_router = new FragmentRouter($this->get('router')->getGenerator());
 		$js[] = $fragment_router->compile();
 
-		$count = $this->em->getRepository('DeskPRO:LabelDef')->countLabels();
 		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 
 		$tr = $this->container->getTranslator();

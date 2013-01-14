@@ -87,6 +87,7 @@ class NewTicketController extends AbstractController
 		$ticket_display->setPersonContext($this->person);
 		$ticket_display->addPagesFromDb();
 		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
+		$ticket_display_js .= "\nwindow.DESKPRO_TICKET_PRI_MAP = " . json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()) . ';';
 
 		$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
 

@@ -199,6 +199,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var catId = self.getEl('cat').val();
 				return parseInt(catId) || 0;
 			},
+			getPriorityVal: function() {
+				var id = this.getPriorityId();
+				if (!id) {
+					return -999999999;
+				}
+
+				if (!window.DESKPRO_TICKET_PRI_MAP || !window.DESKPRO_TICKET_PRI_MAP[id]) {
+					return 0;
+				}
+
+				return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
+			},
 			getPriorityId: function() {
 				var catId = self.getEl('pri').val();
 				return parseInt(catId) || 0;

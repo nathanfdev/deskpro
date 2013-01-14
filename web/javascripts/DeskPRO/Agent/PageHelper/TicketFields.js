@@ -30,6 +30,18 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 				return parseInt(catId) || 0;
 			},
+			getPriorityVal: function() {
+				var id = this.getPriorityId();
+				if (!id) {
+					return -999999999;
+				}
+
+				if (!window.DESKPRO_TICKET_PRI_MAP || !window.DESKPRO_TICKET_PRI_MAP[id]) {
+					return 0;
+				}
+
+				return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
+			},
 			getPriorityId: function() {
 				if (self.mode == 'edit') {
 					var catId = self.page.getEl('ticket_priority_id').val();

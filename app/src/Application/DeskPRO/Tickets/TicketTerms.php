@@ -1446,7 +1446,7 @@ class TicketTerms
 					$js[] = $this->_compileJsChoiceTermCondition("ticket.getProductId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_PRIORITY:
-					$js[] = $this->_compileJsChoiceTermCondition("ticket.getPriorityId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getPriorityVal()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_ORGANIZATION:
 					$js[] = $this->_compileJsChoiceTermCondition("ticket.getOrganizationId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
@@ -1490,6 +1490,8 @@ class TicketTerms
 				return "if ($choice.indexOf($value) !== -1) ";
 			} elseif ($op == self::OP_NOT) {
 				return "if ($choice.indexOf($value) === -1) ";
+			} else {
+				return "if (0 /*invalid*/) ";
 			}
 		} else {
 			if (Numbers::isInteger($choice)) {
@@ -1500,6 +1502,14 @@ class TicketTerms
 				return "if ($value == $choice) ";
 			} elseif ($op == self::OP_NOT) {
 				return "if ($value != $choice) ";
+			} elseif ($op == self::OP_GT) {
+				return "if ($value > $choice) ";
+			} elseif ($op == self::OP_GTE) {
+				return "if ($value >= $choice) ";
+			} elseif ($op == self::OP_LT) {
+				return "if ($value < $choice) ";
+			} elseif ($op == self::OP_LTE) {
+				return "if ($value <= $choice) ";
 			}
 		}
 

@@ -48,7 +48,7 @@ class TicketPriority extends TicketItemAbstract
 		$js_ids = Arrays::castToType($this->data['priority'], 'int');
 		$js_ids = "[" . implode(',', $js_ids) . "]";
 
-		$js = "if ($js_ids.indexOf(reader.getPriorityId() !== -1) return true; else return false;";
+		$js = "if ($js_ids.indexOf(reader.getPriorityVal() !== -1) return true; else return false;";
 
 		return $js;
 	}
