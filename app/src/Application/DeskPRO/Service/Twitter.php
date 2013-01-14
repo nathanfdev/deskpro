@@ -751,17 +751,17 @@ class Twitter
 			}  catch (\EpiOAuthException $e) {
 				$error = $this->getTwitterError($e);
 			}
+		}
 
-			if (empty($error)) {
-				$account_status['is_favorited'] = $is_favorite;
+		if (empty($error)) {
+			$account_status['is_favorited'] = $is_favorite;
 
-				$this->em->persist($account_status);
-				$this->em->flush();
+			$this->em->persist($account_status);
+			$this->em->flush();
 
-				$this->insertUpdatedTweetClientMessage($account_status,
-					$is_favorite ? array('favorited' => true) : array('unfavorited' => true)
-				);
-			}
+			$this->insertUpdatedTweetClientMessage($account_status,
+				$is_favorite ? array('favorited' => true) : array('unfavorited' => true)
+			);
 		}
 
 		return array(
@@ -927,9 +927,11 @@ class Twitter
 			'status_type' => $account_status->status_type,
 			'status_id' => $account_status->status->id,
 			'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
-			'is_archived' => $account_status->is_archived,
-			'is_favorited' => $account_status->is_favorited,
+			'is_archived' => $account_status->is_archived ? 1 : 0,
+			'is_favorited' => $account_status->is_favorited ? 1 : 0,
 			'assignment' => $assignment,
+			'agent_id' => $account_status->agent ? $account_status->agent->id : 0,
+			'agent_team_id' => $account_status->agent_team ? $account_status->agent_team->id : 0,
 			'tweet_html' => $tweet_html
 		);
 	}

@@ -358,6 +358,37 @@ class TwitterUserController extends AbstractController
 		return $this->render('AgentBundle:TwitterUser:list-followers.html.twig', $params);
 	}
 
+	/**
+	 * List the followers for an account
+	 */
+	public function listFollowingAction($account_id)
+	{
+		$account = $this->getAccountOr404($account_id);
+
+		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+		$per_page = 100;
+
+		$total_count = $account->countFollowing();
+
+		$params = array(
+			'account'	=> $account,
+			'followers' => $account->getFollowing($page, $per_page),
+			'page' => $page,
+			'per_page' => $per_page,
+			'total_count' => $total_count,
+			'showing_to' => min($total_count, $page * $per_page)
+		);
+
+		if ($this->in->getBool('partial')) {
+			return $this->render('AgentBundle:TwitterUser:part-followers.html.twig', $params);
+		}
+
+		return $this->render('AgentBundle:TwitterUser:list-following.html.twig', $params);
+	}
+
 	public function listNewFollowersAction($account_id)
 	{
 		$account = $this->getAccountOr404($account_id);

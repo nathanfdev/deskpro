@@ -46,178 +46,63 @@ use Application\DeskPRO\Entity\TwitterAccountStatusNote;
  */
 class TwitterStatusController extends AbstractController
 {
-	/**
-	 * Display inbox for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listInboxAction($account_id)
+	public function listAllAction($account_id, $group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		$page = $this->in->getUint('page');
-		if (!$page) $page = 1;
-
-		// fetch inbox
-		$statuses = $account->getInbox($includeArchived, $includeAccount, $this->getSortByDate(), $page);
-		$count = $account->countInbox($includeArchived, $includeAccount);
-
-		return $this->renderList($account, $statuses, $count, $page, 'agent_twitter_inbox_list');
+		$account = $this->_getAccountOr404($account_id);
+		return $this->_renderList('agent_twitter_all_list', $account, 'inbox', $group, $group_value);
 	}
 
-	/**
-	 * Display messages for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listMessagesAction($account_id)
+	public function listUnassignedAction($account_id, $group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		$count = $account->countMessages($includeArchived, $includeAccount);
-		$page = $this->adjustPage($count);
-
-		$messages = $account->getMessages($includeArchived, $includeAccount, $this->getSortByDate(), $page);
-
-		return $this->renderList($account, $messages, $count, $page, 'agent_twitter_messages_list');
+		$account = $this->_getAccountOr404($account_id);
+		$conditions = array('assigned' => false);
+		return $this->_renderList('agent_twitter_unassigned_list', $account, 'inbox', $group, $group_value, $conditions);
 	}
 
-	/**
-	 * Display replies for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listRepliesAction($account_id)
+	public function listTeamAction($account_id, $group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
+		$this->person->loadHelper('AgentTeam');
 
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		$count = $account->countReplies($includeArchived, $includeAccount);
-		$page = $this->adjustPage($count);
-
-		$replies = $account->getReplies($includeArchived, $includeAccount, $this->getSortByDate(), $page);
-
-		return $this->renderList($account, $replies, $count, $page, 'agent_twitter_replies_list');
+		$account = $this->_getAccountOr404($account_id);
+		$conditions = array('agent_team' => $this->person->getAgentTeamIds());
+		return $this->_renderList('agent_twitter_team_list', $account, 'all', $group, $group_value, $conditions);
 	}
 
-	/**
-	 * Display mentions for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listMentionsAction($account_id)
+	public function listMineAction($account_id, $group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		$count = $account->countMentions($includeArchived, $includeAccount);
-		$page = $this->adjustPage($count);
-
-		$mentions = $account->getMentions($includeArchived, $includeAccount, $this->getSortByDate(), $page);
-
-		return $this->renderList($account, $mentions, $count, $page, 'agent_twitter_mentions_list');
+		$account = $this->_getAccountOr404($account_id);
+		$conditions = array('agent' => $this->person->id);
+		return $this->_renderList('agent_twitter_mine_list', $account, 'all', $group, $group_value, $conditions);
 	}
 
-	/**
-	 * Display retweets for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listRetweetsAction($account_id)
+	public function listSentAction($account_id, $group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		$count = $account->countRetweets($includeArchived, $includeAccount);
-		$page = $this->adjustPage($count);
-
-		$retweets = $account->getRetweets($includeArchived, $includeAccount, $this->getSortByDate(), $page);
-
-		return $this->renderList($account, $retweets, $count, $page, 'agent_twitter_retweets_list');
+		$account = $this->_getAccountOr404($account_id);
+		return $this->_renderList('agent_twitter_sent_list', $account, 'sent', $group, $group_value);
 	}
 
-	/**
-	 * Display timeline for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listTimelineAction($account_id)
+	public function listTimelineAction($account_id, $group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		$count = $account->countTimeline($includeArchived, $includeAccount);
-		$page = $this->adjustPage($count);
-
-		// fetch user timeline
-		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate(), $page);
-
-		return $this->renderList($account, $statuses, $count, $page, 'agent_twitter_timeline_list');
+		$account = $this->_getAccountOr404($account_id);
+		return $this->_renderList('agent_twitter_timeline_list', $account, 'timeline', $group, $group_value);
 	}
 
-	/**
-	 * Display sent statuses for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function listOutgoingAction($account_id)
+	protected function _getGroupConditions($group, $group_value)
 	{
-		$account = $this->getAccountOr404($account_id);
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$sortByDate = $this->getSortByDate('desc');
-
-		$count = $account->countOutgoing($includeArchived);
-		$page = $this->adjustPage($count);
-
-		$statuses = $account->getOutgoing($includeArchived, $sortByDate, $page);
-
-		return $this->renderList($account, $statuses, $count, $page, 'agent_twitter_outgoing_list', $sortByDate);
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function getSortByDate($default = 'desc')
-	{
-		// sort by date, ascending or descending
-		$sortByDate = $this->in->getValue('sortbydate');
-		if (!$sortByDate) {
-			$sortByDate = $default;
+		if ($group === null || $group_value === null || $group === '' || $group_value === '') {
+			return array();
 		}
 
-		return $sortByDate;
+		switch ($group) {
+			case 'agent': return array('agent' => $group_value);
+			case 'team': return array('agent_team' => $group_value);
+			case 'type': return array('type' => $group_value);
+			default: return array();
+		}
+
 	}
 
-	protected function adjustPage($count, $page = null, $per_page = null)
+	protected function _adjustPage($count, $page = null, $per_page = null)
 	{
 		if (!$per_page) {
 			$per_page = TwitterAccount::DEFAULT_LIMIT;
@@ -238,27 +123,42 @@ class TwitterStatusController extends AbstractController
 	}
 
 	/**
-	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
-	 * @param array $statuses
-	 * @param integer $total_count
-	 * @param integer $page
 	 * @param string $route
-	 * @param string|null $sort_by_date
+	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
+	 * @param string $type
+	 * @param mixed $group
+	 * @param mixed $group_value
+	 * @param array $conditions
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(TwitterAccount $account, array $statuses, $total_count, $page, $route, $sort_by_date = null)
+	protected function _renderList($route, TwitterAccount $account, $type, $group = null, $group_value = null, array $conditions = array())
 	{
-		if ($sort_by_date === null) {
-			$sort_by_date = $this->getSortByDate();
-		}
+		$sort_by_date = 'desc';
+		$conditions = array_merge(array(
+			'include_archived' => $this->in->getBool('include.archived'),
+			'include_self' => $this->in->getBool('include.account'),
+			'type' => $type
+		), $this->_getGroupConditions($group, $group_value), $conditions);
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+		$per_page = TwitterAccount::DEFAULT_LIMIT;
+
+		/** @var $statusRepository \Application\DeskPRO\EntityRepository\TwitterAccountStatus */
+		$statusRepository = $this->em->getRepository('DeskPRO:TwitterAccountStatus');
+
+		$total_count = $statusRepository->countTimelineForAccount($account, $conditions);
+		$page = $this->_adjustPage($total_count, $page, $per_page);
+
+		$statuses = $statusRepository->getTimelineForAccount($account, $conditions, $sort_by_date, $page);
 
 		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
-		$per_page = TwitterAccount::DEFAULT_LIMIT;
-
 		$parameters = array(
 			'twitter_list_route' => $route,
+			'group' => $group,
+			'group_value' => $group_value,
 			'account' => $account,
 			'statuses' => $statuses,
 			'person' => $this->getPerson(),
@@ -288,7 +188,7 @@ class TwitterStatusController extends AbstractController
 	 * @return \Application\DeskPRO\Entity\TwitterAccountStatus
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function getAccountStatusOr404($id, $check_perm = '')
+	protected function _getAccountStatusOr404($id, $check_perm = '')
 	{
 		if (preg_match('/^status:(\d+)$/', $id, $match)) {
 			$twitter_status = $this->em->getRepository('DeskPRO:TwitterStatus')->find($match[1]);
@@ -342,7 +242,7 @@ class TwitterStatusController extends AbstractController
 	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function getAccountOr404($id)
+	protected function _getAccountOr404($id)
 	{
 		// check if account exists
 		$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
@@ -355,7 +255,7 @@ class TwitterStatusController extends AbstractController
 
 	public function tweetOverlayAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'));
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'));
 
 		return $this->render('AgentBundle:TwitterStatus:status-overlay.html.twig', array(
 			'account_status' => $account_status
@@ -468,7 +368,7 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 		$html = null;
 
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'note');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'note');
 
 		$text = $this->in->getValue('text');
 		$text = \Orb\Util\Strings::prepareWysiwygHtml($text);
@@ -531,7 +431,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveRetweetAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
 		$account = $account_status->account;
 
 		$success = true;
@@ -581,7 +481,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveUnretweetAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
 		$account = $account_status->account;
 
 		$twitter_service = new \Application\DeskPRO\Service\Twitter();
@@ -602,7 +502,7 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 		$html = array();
 
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'));
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'));
 		$account = $account_status->account;
 
 		$text = $this->in->getString('text');
@@ -644,7 +544,7 @@ class TwitterStatusController extends AbstractController
 
 	public function ajaxSaveArchiveAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'archive');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'archive');
 
 		$old_archived = $account_status->is_archived;
 
@@ -664,7 +564,7 @@ class TwitterStatusController extends AbstractController
 
 	public function ajaxSaveDeleteAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'delete');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'delete');
 
 		$twitter_service = new \Application\DeskPRO\Service\Twitter();
 		$output = $twitter_service->deleteStatus($account_status->account, $account_status);
@@ -677,7 +577,7 @@ class TwitterStatusController extends AbstractController
 
 	public function ajaxSaveEditAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'edit');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'edit');
 
 		if (!$account_status->status->long) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -710,7 +610,7 @@ class TwitterStatusController extends AbstractController
 
 	public function ajaxSaveFavoriteAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'favorite');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'favorite');
 		$account = $account_status->account;
 
 		$twitter_service = new \Application\DeskPRO\Service\Twitter();
@@ -724,7 +624,7 @@ class TwitterStatusController extends AbstractController
 
 	public function ajaxSaveAssignAction()
 	{
-		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'assign');
+		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'assign');
 
 		if ($account_status->agent) {
 			$old_assign = 'agent:' . $account_status->agent->id;

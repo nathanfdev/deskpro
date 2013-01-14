@@ -48,33 +48,40 @@ class TwitterController extends AbstractController
 	{
 		$data = array();
 
-		$agentId = $this->person->getId();
+		$group_updates = $this->in->getCleanValueArray('group_updates');
+		foreach ($group_updates AS $account_id => $groups) {
+			if (!is_array($groups)) {
+				continue;
+			}
 
-		#------------------------------
-		# Statuses
-		#------------------------------
+			foreach ($groups AS $type => $group) {
+				$this->person->setPreference("agent.ui.twitter-group.$account_id.$type", $group);
+			}
 
-		// fetch persons' accounts
-		$accounts = $this->person->getTwitterAccounts();
-
-		// statuses counters
-		$statuses = array(
-			'starred' => 0,
-			'account' => 0,
-			'team'	=> 0
-		);
-
-		// iterate accounts, count statuses
-		foreach ($accounts as $account) {
-			$statuses['starred'] += $account->countStarredStatuses();
+			App::getOrm()->persist($this->person);
+			App::getOrm()->flush();
 		}
 
-		$statuses['account'] = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countTweetsForAgentId($agentId);
-		$statuses['team'] = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countTweetsForAgentTeamByAgentId($agentId);
+		$accounts = $this->person->getTwitterAccounts();
+		$counts = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getSectionCounts($accounts);
+
+		$grouping_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.twitter-group.', $this->person->getId());
+		$groupings = array();
+		foreach ($accounts AS $account) {
+			$groupings[$account->id] = array();
+			foreach (array('mine', 'team', 'unassigned', 'all') AS $group) {
+				$value = isset($grouping_prefs[$account->id . '.' . $group]) ? $grouping_prefs[$account->id . '.' . $group] : '';
+				$data = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getGroupedSectionCount($account, $group, $value);
+				$groupings[$account->id][$group] = array('group' => $value, 'data' => $data);
+			}
+		}
 
 		$data['section_html'] = $this->renderView('AgentBundle:Twitter:window-section.html.twig', array(
-			'statuses' => $statuses,
-			'accounts' => $accounts
+			'counts' => $counts,
+			'groupings' => $groupings,
+			'accounts' => $accounts,
+			'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
+			'teams' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams()
 		));
 
 		return $this->createJsonResponse($data);
@@ -116,77 +123,6 @@ class TwitterController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
-	public function starredTweetsAction()
-	{
-		$agentId = $this->person->getId();
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-
-		$count = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countStarredTweetsForAgentId($agentId, $includeArchived);
-		$page = $this->adjustPage($count);
-
-		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->findStarredTweetsForAgentId(
-			$agentId,
-			$includeArchived,
-			$this->getSortByDate(),
-			$page
-		);
-
-		return $this->renderList($statuses, 'AgentBundle:Twitter:starred-tweets.html.twig', $count, $page);
-	}
-
-	public function myTweetsAction()
-	{
-		$agentId = $this->person->getId();
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-
-		$count = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countTweetsForAgentId($agentId, $includeArchived);
-		$page = $this->adjustPage($count);
-
-		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->findTweetsForAgentId(
-			$agentId,
-			$includeArchived,
-			$this->getSortByDate(),
-			$page
-		);
-
-		return $this->renderList($statuses, 'AgentBundle:Twitter:my-tweets.html.twig', $count, $page);
-	}
-
-	public function teamTweetsAction()
-	{
-		$agentId = $this->person->getId();
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-
-		$count = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countTweetsForAgentTeamByAgentId($agentId, $includeArchived);
-		$page = $this->adjustPage($count);
-
-		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->findTweetsForAgentTeamByAgentId(
-			$agentId,
-			$includeArchived,
-			$this->getSortByDate(),
-			$page
-		);
-
-		return $this->renderList($statuses, 'AgentBundle:Twitter:team-tweets.html.twig', $count, $page);
-	}
-
-	public function listSearchesAction($account_id)
-	{
-		$account = $this->getAccount($account_id);
-
-		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
-
-		return $this->render('AgentBundle:Twitter:list-searches.html.twig', array(
-			'account' => $account,
-		));
-	}
-
 	public function runSearchAction($account_id, $search_id)
 	{
 		$account = $this->getAccount($account_id);
@@ -213,10 +149,17 @@ class TwitterController extends AbstractController
 		));
 	}
 
-	public function deleteSearchAction($account_id, $search_id, $security_token)
+	public function deleteSearchAction($account_id, $security_token)
 	{
 		$account = $this->getAccount($account_id);
-		$search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
+
+		$search_id = $this->in->getUint('search_id');
+		if ($search_id) {
+			$search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
+		} else {
+			$search_term = $this->in->getString('search_term');
+			$search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->getExistingSearch($search_term, $account);
+		}
 
 		if (!$search) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
@@ -246,11 +189,7 @@ class TwitterController extends AbstractController
 			$this->em->flush();
 		}
 
-		return $this->createJsonResponse(array(
-			'search_id' => $search->id,
-			'search_url' => $this->generateUrl('agent_twitter_run_search', array('account_id' => $account->id, 'search_id' => $search->id)),
-			'search_term' => $search->term
-		));
+		return $this->runSearchAction($account_id, $search->id);
 	}
 
 	/**

@@ -396,7 +396,7 @@ class TemplatingExtension extends \Twig_Extension
 			'n' => array('News', 'agent/#app.publish,n.o:'),
 			'd' => array('Download', 'agent/#app.publish,d.o:'),
 			'i' => array('Feedback', 'agent/#app.feedback,i.o:'),
-			'tw' => array('Tweet', 'agent/#app.twitter,tweet.o:'),
+			'tw' => array('Tweet', 'agent/#app.twitter,tw.o:'),
 		);
 
 		$url = App::getSetting('core.deskpro_url');

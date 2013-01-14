@@ -359,6 +359,12 @@ ul.source-list li .list-counter {
 	}
 }
 
+ul.source-list li .delete-icon {
+	position: relative;
+	margin: 3px 8px 0 0;
+	z-index: 1;
+}
+
 /* list counters are the bubbles with numbers */
 ul.source-list li:not(.nav-selected) .title:hover .list-counter,
 ul.source-list li.nav-selected > .title .list-counter,
@@ -398,6 +404,14 @@ ul.source-list li.nav-selected > .item-wrap > .title .list-counter {
 	}
 }
 
+ul.source-list li.form-row {
+	margin: 3px 8px;
+
+	input {
+		padding: 2px 5px;
+	}
+}
+
 ul.source-list li .list-counter.loading {
 	background-image: url("../../images/spinners/loading-arrows-xsmall-white-darkbg.gif") !important;
 	background-position: 50% 50% !important;
@@ -423,6 +437,7 @@ ul.source-list ul.sub-group li:hover:first-child .title {
 ul.source-list ul.sub-group .list-counter {
 	background-color: #ADBDCC;
 }
+
 
 ul.source-list ul.sub-group li:not(.nav-selected) .title:hover .list-counter {
 	background-color: #ADBDCC;
@@ -852,7 +867,8 @@ section.source-labels-cloud ul li.nav-selected span {
 #chat_filter_group_editor,
 #ticket_filter_group_editor,
 #ticket_customfilter_group_editor,
-#ticket_sla_group_editor {
+#ticket_sla_group_editor,
+#twitter_group_editor{
 	position: absolute;
 	overflow: hidden;
 	z-index: 30001;

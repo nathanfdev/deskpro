@@ -4,12 +4,12 @@
 
 {{ performer.getDisplayContact() }} has assigned a tweet to you.
 <br /><br />
-<a href="{{ url_full('agent') }}#app.twitter,tw-own">View your tweets</a>
+<a href="{{ url_full('agent') }}#app.twitter,tw-own:{{ account_status.account.id }}::">View your tweets</a>
 
 {% elseif account_status.agent_team %}
 
 {{ performer.getDisplayContact() }} has assigned a tweet to your team.
 <br /><br />
-<a href="{{ url_full('agent') }}#app.twitter,tw-team">View your team's tweets</a>
+<a href="{{ url_full('agent') }}#app.twitter,tw-team:{{ account_status.account.id }}::">View your team's tweets</a>
 
 {% endif %}

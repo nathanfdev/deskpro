@@ -78,7 +78,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		return $output;
 	}
 
-	public function getTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
+	public function getTimelineForAccount(TwitterAccountEntity $account, array $conditions = array(), $sortByDate = 'DESC', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$query = "
 			SELECT s,
@@ -96,62 +96,11 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			LEFT JOIN t.recipient recip
 			LEFT JOIN t.long long
 			LEFT JOIN t.in_reply_to_status in_reply
-			WHERE s.account = ?0
 		";
-		$params = array($account);
-		$i = 1;
 
-		if ($type == 'sent') {
-			$includeSelf = true;
-		}
+		list($where, $params) = $this->_getTimelineWhereClause($account, $conditions);
 
-		if (!$includeSelf) {
-			$query .= " AND s.status_type <> 'sent'";
-		}
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		$query .= " AND s.status_type IS NOT NULL";
-
-		if (!$includeSelf) {
-			$query .= " AND (s.status_type <> 'direct' OR t.user <> ?$i)";
-			$params[] = $account->user->getId();
-			$i++;
-		}
-
-		// note that sent should always be included - it will be filtered out above if needed
-		switch ($type) {
-			case 'timeline':
-			case 'reply':
-			case 'mention':
-			case 'retweet':
-				$query .= " AND s.status_type IN ('$type', 'sent')";
-				break;
-
-			case 'sent':
-				// need to get sent DMs too
-				$query .= " AND (s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
-				$params[] = $account->user->getId();
-				$i++;
-				break;
-
-			case 'direct':
-				// direct messages are separate from sent messages - both sides are tagged as direct
-				$query .= " AND s.status_type = 'direct'";
-				break;
-
-			case 'inbox':
-				$query .= " AND s.status_type IN ('reply', 'mention', 'retweet', 'direct', 'sent')";
-				break;
-
-			case 'all':
-			default:
-				// do nothing
-		}
-
-		$query .= sprintf(" ORDER BY s.date_created %s", $this->normalizeSortByDate($sortByDate));
+		$query .= sprintf(" %s ORDER BY s.date_created %s", $where, $this->normalizeSortByDate($sortByDate));
 
 		$statuses = $this->getEntityManager()
 			->createQuery($query)
@@ -163,36 +112,35 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		return $statuses;
 	}
 
-	public function countTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false)
+	public function countTimelineForAccount(TwitterAccountEntity $account, array $conditions = array())
 	{
 		$query = "
 			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterAccountStatus s
 			INNER JOIN s.status t
-			WHERE s.account = ?0
 		";
+
+		list($where, $params) = $this->_getTimelineWhereClause($account, $conditions);
+
+		$query .= ' ' . $where;
+
+		return $this->getEntityManager()->createQuery($query)->setParameters($params)->getSingleScalarResult();
+	}
+
+	protected function _getTimelineWhereClause(TwitterAccountEntity $account, array $conditions = array())
+	{
+		$query = 'WHERE s.account = ?0';
 		$params = array($account);
 		$i = 1;
 
+		$type = isset($conditions['type']) ? $conditions['type'] : 'all';
+
 		if ($type == 'sent') {
-			$includeSelf = true;
+			$conditions['include_self'] = true;
+			$conditions['include_archived'] = true; // can't actually archive sent statuses
 		}
 
-		if (!$includeSelf) {
-			$query .= " AND s.status_type <> 'sent'";
-		}
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		$query .= " AND s.status_type IS NOT NULL";
-
-		if (!$includeSelf) {
-			$query .= " AND (s.status_type <> 'direct' OR t.user <> ?$i)";
-			$params[] = $account->user->getId();
-			$i++;
-		}
+		$where = array();
 
 		// note that sent should always be included - it will be filtered out above if needed
 		switch ($type) {
@@ -200,226 +148,213 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			case 'reply':
 			case 'mention':
 			case 'retweet':
-				$query .= " AND s.status_type IN ('$type', 'sent')";
-				break;
-
-			case 'sent':
-				// need to get sent DMs too
-				$query .= " AND (s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
-				$params[] = $account->user->getId();
-				$i++;
-				break;
-
 			case 'direct':
-				// direct messages are separate from sent messages - both sides are tagged as direct
-				$query .= " AND s.status_type = 'direct'";
+			case 'sent':
+				$where[] = "s.status_type = '$type'";
 				break;
 
 			case 'inbox':
-				$query .= " AND s.status_type IN ('reply', 'mention', 'retweet', 'direct', 'sent')";
+				$where[] = "(s.status_type IN ('reply', 'mention', 'retweet', 'direct') OR s.is_favorited = 1)";
+				break;
+
+			case 'other':
+				$where[] = "s.status_type NOT IN ('reply', 'mention', 'retweet', 'direct')";
+				break;
+
+			case 'favorite':
+				$where[] = "s.is_favorited = true";
 				break;
 
 			case 'all':
 			default:
-				// do nothing
+				// nothing
 		}
 
-		return $this->getEntityManager()->createQuery($query)->setParameters($params)->getSingleScalarResult();
+		if (empty($conditions['include_archived'])) {
+			$where[] = "s.is_archived = 0";
+		}
+
+		if (isset($conditions['agent'])) {
+			if ($conditions['agent'] === true) {
+				$where[] = "s.agent IS NOT NULL";
+			} else if ($conditions['agent'] === false || $conditions['agent'] == '0') {
+				$where[] = "s.agent IS NULL";
+			} else if ($conditions['agent']) {
+				$conditions['agent'] = array_map('intval', (array)$conditions['agent']);
+				$where[] = "s.agent IN (" . implode(',', $conditions['agent']) . ")";
+			}
+		}
+		if (isset($conditions['agent_team'])) {
+			if ($conditions['agent_team'] === true) {
+				$where[] = "s.agent_team IS NOT NULL";
+			} else if ($conditions['agent_team'] === false || $conditions['agent_team'] == '0') {
+				$where[] = "s.agent_team IS NULL";
+			} else if ($conditions['agent_team']) {
+				$conditions['agent_team'] = array_map('intval', (array)$conditions['agent_team']);
+				$where[] = "s.agent_team IN (" . implode(',', $conditions['agent_team']) . ")";
+			}
+		}
+		if (isset($conditions['assigned'])) {
+			if ($conditions['assigned']) {
+				$where[] = "(s.agent IS NOT NULL OR s.agent_team IS NOT NULL)";
+			} else {
+				$where[] = "(s.agent IS NULL AND s.agent_team IS NULL)";
+			}
+		}
+		if (isset($conditions['favorited'])) {
+			if ($conditions['favorited']) {
+				$where[] = "s.is_favorited = true";
+			} else {
+				$where[] = "s.is_favorited = false";
+			}
+		}
+
+		if (empty($conditions['include_self'])) {
+			$where[] = "(s.status_type <> 'direct' OR t.user <> ?$i)";
+			$params[] = $account->user->getId();
+			$i++;
+
+			if ($where) {
+				$query .= " AND " . implode(' AND ', $where);
+			}
+		} else {
+			$sent_condition = "(s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
+			$params[] = $account->user->getId();
+			$i++;
+
+			if ($where) {
+				$query .= " AND ((" . implode(' AND ', $where) . ") OR $sent_condition)";
+			} else {
+				$query .= " AND $sent_condition";
+			}
+		}
+
+		return array($query, $params);
 	}
 
-	/**
-	 * Get starred tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function findStarredTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
+	public function getSectionCounts($accounts)
 	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterAccountStatus s
-			INNER JOIN s.account a
-			INNER JOIN a.persons p
-			WHERE s.is_favorited = true
-				AND p.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
+		$single = false;
+		if ($accounts instanceof \Doctrine\Common\Collections\Collection) {
+			$accounts = $accounts->toArray();
+		} else if (!is_array($accounts)) {
+			$single = $accounts->id;
+			$accounts = array($accounts);
+		}
+		if (!$accounts) {
+			return array();
 		}
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+		if (count($accounts) == 1) {
+			$account = reset($accounts);
+			$ids = array($account->id);
+			$dm_sent_case = $account->user->id;
+		} else {
+			$ids = array();
+			$dm_sent_case = 'CASE a.account_id';
+			foreach ($accounts AS $account) {
+				$ids[] = $account->id;
+				$dm_sent_case .= " WHEN $account->id THEN " . $account->user->id;
+			}
+			$dm_sent_case .= " END";
+		}
 
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'agent_id' => $id
-			));
+		$person = App::getCurrentPerson();
+		$person->loadHelper('AgentTeam');
+		$team_ids = $person->getAgentTeamIds();
+		$team_ids = ($team_ids ? implode(',', $team_ids) : '0');
+
+		$person_id = $person->id;
+
+		$results = App::getDb()->fetchAllKeyed("
+			SELECT a.account_id,
+				SUM(IF(a.agent_id = $person_id, 1, 0)) AS mine,
+				SUM(IF(a.agent_team_id IN ($team_ids), 1, 0)) AS team,
+				SUM(IF(a.agent_team_id IS NULL AND a.agent_id IS NULL AND (a.status_type IN ('mention', 'reply', 'retweet') OR (a.status_type = 'direct' AND s.user_id <> $dm_sent_case) OR a.is_favorited = 1), 1, 0)) AS unassigned,
+				SUM(IF(a.status_type IN ('mention', 'reply', 'retweet') OR (a.status_type = 'direct' AND s.user_id <> $dm_sent_case) OR a.is_favorited = 1, 1, 0)) AS `all`
+			FROM twitter_accounts_statuses AS a
+			INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
+			WHERE a.account_id IN (" . implode(',', $ids) . ")
+				AND a.is_archived = 0
+			GROUP BY a.account_id
+		", array(), 'account_id');
+
+		if ($single) {
+			return isset($results[$single]) ? $results[$single] : false;
+		} else {
+			return $results;
+		}
 	}
 
-	/**
-	 * Count starred tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @return array
-	 */
-	public function countStarredTweetsForAgentId($id, $includeArchived = false)
+	public function getGroupedSectionCount(TwitterAccountEntity $account, $limit_type, $grouping)
 	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterAccountStatus s
-			INNER JOIN s.account a
-			INNER JOIN a.persons p
-			WHERE s.is_favorited = true
-				AND p.id = :agent_id
-		";
+		$person = App::getCurrentPerson();
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameter('agent_id', $id)
-			->getSingleScalarResult();
-	}
+		$type_limit = " AND (a.status_type IN ('mention', 'reply', 'retweet') OR (a.status_type = 'direct' AND s.user_id <> " . $account->user->id . ") OR a.is_favorited = 1)";
 
-	/**
-	 * Get tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function findTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterAccountStatus s
-			WHERE s.agent = :agent_id
-		";
+		switch ($limit_type) {
+			case 'mine':
+				$sql_condition = ' AND a.agent_id = ' . $person->getId();
+				break;
 
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
+			case 'team':
+				$person->loadHelper('AgentTeam');
+				$teams = $person->getAgentTeamIds();
+				if ($teams) {
+					$sql_condition = ' AND a.agent_team_id IN (' . implode(',', $teams) . ')';
+				} else {
+					$sql_condition = ' AND 1=0';
+				}
+				break;
+
+			case 'unassigned':
+				$sql_condition = ' AND a.agent_id IS NULL AND a.agent_team_id IS NULL' . $type_limit;
+				break;
+
+			case 'all':
+			default:
+				$sql_condition = $type_limit;
 		}
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+		if ($grouping == 'type') {
+			$data = App::getDb()->fetchAllKeyValue("
+				SELECT IF(a.status_type IN('direct', 'reply', 'mention', 'retweet'), a.status_type, 'other') AS id, COUNT(*) AS total
+				FROM twitter_accounts_statuses AS a
+				INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
+				WHERE a.account_id = ? AND a.is_archived = 0 AND a.is_favorited = 0 $sql_condition
+				GROUP BY IF(a.status_type IS NOT NULL, a.status_type, 'other')
+			", array($account->id));
 
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'agent_id' => $id
-			));
-	}
+			$favorites = App::getDb()->fetchColumn("
+				SELECT COUNT(*) AS total
+				FROM twitter_accounts_statuses AS a
+				INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
+				WHERE a.account_id = ? AND a.is_archived = 0 AND a.is_favorited = 1 $sql_condition
+			", array($account->id));
+			if ($favorites) {
+				$data['favorite'] = $favorites;
+			}
 
-	/**
-	 * Counts tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countTweetsForAgentId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterAccountStatus s
-			WHERE s.agent = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
+			return $data;
+		} else if ($grouping == 'agent') {
+			return App::getDb()->fetchAllKeyValue("
+				SELECT a.agent_id AS id, COUNT(*) AS total
+				FROM twitter_accounts_statuses AS a
+				INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
+				WHERE a.account_id = ? AND a.is_archived = 0 $sql_condition
+				GROUP BY a.agent_id
+			", array($account->id));
+		} else if ($grouping == 'team') {
+			return App::getDb()->fetchAllKeyValue("
+				SELECT a.agent_team_id AS id, COUNT(*) AS total
+				FROM twitter_accounts_statuses AS a
+				INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
+				WHERE a.account_id = ? AND a.is_archived = 0 $sql_condition
+				GROUP BY a.agent_team_id
+			", array($account->id));
+		} else {
+			return array();
 		}
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameter('agent_id', $id)
-			->getSingleScalarResult();
-	}
-
-	/**
-	 * Get tweets for an agent team
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterAccountStatus s
-			INNER JOIN s.agent_team at
-			INNER JOIN at.members m
-			WHERE m.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'agent_id' => $id
-			));
-	}
-
-	/**
-	 * Count tweets for an agent team
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countTweetsForAgentTeamByAgentId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterAccountStatus s
-			INNER JOIN s.agent_team at
-			INNER JOIN at.members m
-			WHERE m.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameter('agent_id', $id)
-			->getSingleScalarResult();
 	}
 
 	/**

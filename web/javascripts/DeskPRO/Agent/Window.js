@@ -2940,7 +2940,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	},
 
-	getSectionData: function(section_id, callback) {
+	getSectionData: function(section_id, callback, extra_data) {
 		var self = this;
 		var url;
 
@@ -3014,6 +3014,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$.ajax({
 			url: url,
+			data: extra_data || {},
 			timeout: 15000,
 			dataType: 'json',
 			success: function(data) {

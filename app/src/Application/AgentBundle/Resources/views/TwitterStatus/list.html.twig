@@ -2,13 +2,15 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
 pageMeta.accountId = '{{ account.id|escape }}';
-pageMeta.url_fragment = '{{ url_fragment(twitter_list_route, {'account_id': account.id}) }}';
+pageMeta.url_fragment = '{{ url_fragment(twitter_list_route, {'account_id': account.id, 'group': group, 'group_value': group_value}) }}';
 pageMeta.currentPage = {{ page }};
 pageMeta.perPage = {{ per_page }};
 pageMeta.totalCount = {{ total_count }};
 
-pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id}) }}?partial=1';
+pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id, 'group': group, 'group_value': group_value}) }}?partial=1';
 pageMeta.listRoute = '{{ twitter_list_route }}';
+pageMeta.group = {{ group|json_encode|raw }};
+pageMeta.groupValue = {{ group_value|json_encode|raw }};
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 
 {% set baseId = el_uid() %}

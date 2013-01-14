@@ -21,8 +21,8 @@
 					<i class="status-delete status-action tipped" title="Delete"></i>
 				{% endif %}
 			{% elseif not hideArchiveTools or account_status.status_type %}
-				<i class="status-archived status-action tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
-				<i class="status-archive status-action tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
+				<i class="status-archived status-action tipped" title="Read" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
+				<i class="status-archive status-action tipped" title="Unread" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
 			{% endif %}
 			{% if status.long %}
 				<i class="status-edit status-action tipped" title="Edit"></i>

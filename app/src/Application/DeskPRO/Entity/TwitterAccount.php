@@ -299,7 +299,6 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 			SELECT COUNT(f.id)
 			FROM DeskPRO:TwitterAccountFollower f
 			WHERE f.account = :account_id
-			ORDER BY f.follow_order DESC
 		");
 
 		$this->_cache['count_followers'] = $query
@@ -309,222 +308,44 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_cache['count_followers'];
 	}
 
-	/**
-	 * Retrieve a timeline for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return integer
-	 */
-	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
+	public function countFollowing($cache = true)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
+		if ($cache && isset($this->_cache['count_following'])) {
+			return $this->_cache['count_following'];
+		}
+
+		$query = App::getOrm()->createQuery("
+			SELECT COUNT(f.id)
+			FROM DeskPRO:TwitterAccountFriend f
+			WHERE f.account = :account_id
+		");
+
+		$this->_cache['count_following'] = $query
+			->setParameters(array('account_id' => $this->getId()))
+			->getSingleScalarResult();
+
+		return $this->_cache['count_following'];
 	}
 
-	/**
-	 * Retrieve a count of the timeline for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 *
-	 * @return integer
-	 */
-	public function countTimeline($includeArchived = false, $includeAccount = false)
+	public function getFollowing($page = 1, $limit = self::DEFAULT_LIMIT)
 	{
-		$count = App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived);
+		$page = max(1, intval($page));
+		$offset = ($page - 1) * $limit;
 
-		// can never go over 1000
-		return min($count, 1000);
-	}
+		$query = App::getOrm()->createQuery("
+			SELECT f, u
+			FROM DeskPRO:TwitterAccountFriend f
+			INNER JOIN f.user u
+			WHERE f.account = :account_id
+		");
 
-	/**
-	 * Retrieve a timeline for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function getInbox($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'inbox', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
-	}
+		$followers = $query
+			->setMaxResults($limit)
+			->setFirstResult($offset)
+			->setParameters(array('account_id' => $this->getId()))
+			->execute();
 
-	/**
-	 * Retrieve a count of the timeline for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @return integer
-	 */
-	public function countInbox($includeArchived = false, $includeAccount = false)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'inbox', $includeAccount, $includeArchived);
-	}
-
-	/**
-	 * Retrieve a list of messages for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function getMessages($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'direct', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
-	}
-
-	/**
-	 * Count the messages for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @return integer
-	 */
-	public function countMessages($includeArchived = false, $includeAccount = false)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'direct', $includeAccount, $includeArchived);
-	}
-
-	/**
-	 * Retrieve a list of replies for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function getReplies($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'reply', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
-	}
-
-	/**
-	 * Retrieve a list of replies for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @return integer
-	 */
-	public function countReplies($includeArchived = false, $includeAccount = false)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'reply', $includeAccount, $includeArchived);
-	}
-
-	/**
-	 * Retrieve a list of mentions for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function getMentions($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'mention', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
-	}
-
-	/**
-	 * Count the mentions for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @return integer
-	 */
-	public function countMentions($includeArchived = false, $includeAccount = false)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'mention', $includeAccount, $includeArchived);
-	}
-
-	/**
-	 * Retrieve a list of retweets for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function getRetweets($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'retweet', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
-	}
-
-	/**
-	 * Count the retweets for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @return integer
-	 */
-	public function countRetweets($includeArchived = false, $includeAccount = false)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'retweet', $includeAccount, $includeArchived);
-	}
-
-	/**
-	 * Retrieve a list of sent statuses for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $page (optional)
-	 * @param integer $limit (optional)
-	 * @return array
-	 */
-	public function getOutgoing($includeArchived = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'sent', true, $includeArchived, $sortByDate, $page, $limit);
-	}
-
-	/**
-	 * Count the outgoings for this account.
-	 *
-	 * @param Boolean $includeArchived (optional)
-	 * @return integer
-	 */
-	public function countOutgoing($includeArchived = false)
-	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'sent', true, $includeArchived);
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function countStarredStatuses($includeArchived = false)
-	{
-		return intval(App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM twitter_accounts_statuses
-			WHERE is_favorited = 1
-				" . ($includeArchived ? '' : ' AND is_archived = 0') . "
-		"));
+		return $followers;
 	}
 
 	public function getTwitterApi()
