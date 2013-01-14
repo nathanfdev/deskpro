@@ -113,6 +113,7 @@ class KbController extends AbstractController
 		$rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('article', $article['id'], 'counted');
 
 		$article_categories  = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
+		$article_products    = $this->em->getRepository('DeskPRO:Product')->getInHierarchy();
 
 		$perms = array(
 			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($article),
@@ -130,6 +131,7 @@ class KbController extends AbstractController
             'related_content'      => $related_content,
             'state'                => $state,
             'article_categories'   => $article_categories,
+            'article_products'     => $article_products,
             'glossary_words'       => $glossary_words,
 			'perms'                => $perms,
         );
@@ -387,9 +389,12 @@ class KbController extends AbstractController
 				break;
 
 			case 'products':
-				$cat_ids = $this->in->getCleanValueArray('product_ids', 'uint', 'discard');
-				$article->setProducts($cat_ids);
-				$data['product_ids'] = $article->products->getKeys();
+				$prod_ids = $this->in->getCleanValueArray('product_ids', 'uint', 'discard');
+				$prods    = $this->em->getRepository('DeskPRO:Product')->getByIds($prod_ids);
+
+				$article->setProducts($prods);
+
+				$data['product_ids'] = $prod_ids;
 				break;
 
 			case 'remove-auto-unpub':

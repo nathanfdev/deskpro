@@ -108,17 +108,38 @@ pageMeta.baseId = '{{ baseId }}';
 			{% if app.getSetting('core.use_product') %}
 				<dt class="">{{ phrase('agent.general.products') }}</dt>
 				<dd>
-					<ul id="{{baseId}}_products" class="add-remove-list">
+					<ul id="{{baseId}}_products" class="add-remove-list with-select2">
 						{% for prod in article.products %}
 							<li>
-								<span class="remove">{{ phrase('agent.general.remove') }}</span>
-								{{ prod.full_title }}
-								<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+								<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
+								{% include 'AgentBundle:Common:select-standard.html.twig' with {
+									'name': 'product_ids[]',
+									'add_classname': 'product_id',
+									'add_attr': '',
+									'with_blank': 0,
+									'blank_title': '',
+									'categories': article_products,
+									'selected': prod.id
+								} %}
 							</li>
 						{% endfor %}
-						<li class="add noedit-hide">
-							<span class="add"></span>
+						<li class="add noedit-hide" id="{{baseId}}_addprod_li">
+							<span class="add" id="{{baseId}}_addprod_trigger"></span>
 							{{ phrase('agent.general.add_product') }}
+							<script type="text/x-deskpro-plain" id="{{baseId}}_addprod_select_tpl">
+								<li>
+									<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
+									{% include 'AgentBundle:Common:select-standard.html.twig' with {
+										'name': 'product_ids[]',
+										'add_classname': 'product_id',
+										'add_attr': '',
+										'with_blank': 0,
+										'blank_title': '',
+										'categories': article_products,
+										'selected': 0
+									} %}
+								</li>
+							</script>
 						</li>
 					</ul>
 				</dd>

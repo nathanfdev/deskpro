@@ -306,6 +306,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			$('.remove', lis).hide();
 		}
 
+		//-----
+		// Category manage
+		//-----
+
 		this.getEl('categories').on('click', '.remove', function(ev) {
 			var li = $(this).parent();
 			li.remove();
@@ -317,38 +321,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 
 			self.sendUpdateCats();
-		});
-
-		this.prodOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: $('li.add', this.getEl('products')),
-			element: $(DeskPRO_Window.util.getPlainTpl($('#products_ob_tpl'))),
-			onInit: function(ob) {
-				$('.save-trigger-label', ob.getElement()).text('Add Product');
-			},
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('product');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
-
-				var li = $('<li />');
-				li.append('<span class="remove">remove</span>');
-
-				var t = $('<span />');
-				t.text(title);
-				li.append(t);
-
-				li.append('<input type="hidden" name="product_ids[]" value="' + catId + '" />');
-
-				li.insertBefore($('li.add', self.getEl('products')));
-
-				self.sendUpdateProds();
-			}
-		});
-
-		this.getEl('products').on('click', '.remove', function(ev) {
-			var li = $(this).parent();
-			li.remove();
-			self.sendUpdateProds();
 		});
 
 		this.getEl('addcat_trigger').on('click', function(ev) {
@@ -371,6 +343,44 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		DP.select(this.getEl('categories').find('select'));
+
+		//-----
+		// Product manage
+		//-----
+
+		this.getEl('products').on('click', '.remove', function(ev) {
+			var li = $(this).parent();
+			li.remove();
+
+			var lis = $('li:not(.add)', self.getEl('products'));
+			if (lis.length == 1) {
+				// Hide the remove from the last cat
+				$('.remove', lis).hide();
+			}
+
+			self.sendUpdateProds();
+		});
+
+		this.getEl('addprod_trigger').on('click', function(ev) {
+			if (!self.newProdTpl) {
+				self.newProdTpl = DeskPRO_Window.util.getPlainTpl(self.getEl('addprod_select_tpl'));
+			}
+
+			var newLi = $(self.newProdTpl);
+			newLi.find('select').on('change', function() {
+				self.sendUpdateProds();
+			}).prepend('<option></option>');
+			newLi.find('select').find('option').first().prop('selected', true);
+			self.getEl('addprod_li').before(newLi);
+
+			DP.select(newLi.find('select'));
+		});
+
+		this.getEl('products').on('change', function(ev) {
+			self.sendUpdateProds();
+		});
+
+		DP.select(this.getEl('products').find('select'));
 	},
 
 	sendUpdateCats: function() {
@@ -424,7 +434,26 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	sendUpdateProds: function() {
-		var formData = $('input', this.getEl('products')).serializeArray();
+		if (this.sendingProdUpdate) {
+			this.resetProdUpdate = true;
+			return;
+		}
+		this.sendingProdUpdate = true;
+		this.resetProdUpdate = false;
+
+		var ids = [];
+		this.getEl('products').find('select').each(function() {
+			var id = parseInt($(this).val());
+			if (id) {
+				if (ids.indexOf(id) !== -1) {
+					$(this).closest('li').remove()
+				} else {
+					ids.push(id);
+				}
+			}
+		});
+
+		var formData = $('select', this.getEl('products')).serializeArray();
 
 		formData.push({
 			name: 'action',
@@ -436,7 +465,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			type: 'POST',
 			data: formData,
 			context: this,
-			dataType: 'json'
+			dataType: 'json',
+			success: function(data) {
+				this.sendingProdUpdate = false;
+
+				if (this.resetProdUpdate) {
+					this.sendUpdateProds();
+				}
+			}
 		});
 	},
 
