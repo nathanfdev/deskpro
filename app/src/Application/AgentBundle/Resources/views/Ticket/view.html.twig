@@ -50,7 +50,7 @@ pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% e
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 
 pageMeta.agentMap = {{ agent_map|json_encode|raw }};
-pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply', true) ? 'true' : 'false' }};
+pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
 
 </script>
 <div class="macro-controls">
