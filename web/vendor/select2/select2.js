@@ -889,7 +889,7 @@
             // fix positioning when body has an offset and is not position: static
 
             if (this.body().css('position') !== 'static') {
-                bodyOffset = this.body().offset();
+                bodyOffset = this.body().offset() || {top: 0, left: 0};
                 dropTop -= bodyOffset.top;
                 dropLeft -= bodyOffset.left;
             }
