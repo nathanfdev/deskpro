@@ -598,6 +598,11 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		// Windows PHP <5.3.6 https://bugs.php.net/bug.php?id=51894
+		if (strpos($errstr, 'range(): step exceeds the specified range') !== false) {
+			$no_send_error = true;
+		}
+
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
 		return array(
