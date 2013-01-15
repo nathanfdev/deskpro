@@ -243,7 +243,9 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 	 * Closes the results box and stops any updating stuff
 	 */
 	close: function() {
-		this.resultsBox.hide();
+		if (this.resultsBox) {
+			this.resultsBox.hide();
+		}
 
 		if (!this.wasSet) {
 			if (!this.termInput.val().trim().length) {

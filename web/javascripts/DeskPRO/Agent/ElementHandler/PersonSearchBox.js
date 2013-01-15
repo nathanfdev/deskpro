@@ -286,7 +286,9 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 * Closes the results box and stops any updating stuff
 	 */
 	close: function() {
-		this.resultsBox.hide();
+		if (this.resultsBox) {
+			this.resultsBox.hide();
+		}
 	},
 
 
