@@ -927,7 +927,9 @@ class Structure implements PersonContextInterface
 		$this->context_category_data[$ent] = array();
 		$this->context_category_data[$ent]['all'] = array();
 		foreach ($perm_manager->getAllowedCategories() as $id) {
-			$this->context_category_data[$ent]['all'][$id] = $this->category_data[$ent]['all'][$id];
+			if (isset($this->category_data[$ent]['all'][$id])) {
+				$this->context_category_data[$ent]['all'][$id] = $this->category_data[$ent]['all'][$id];
+			}
 		}
 		$this->context_category_data[$ent]['ids'] = array_keys($this->context_category_data[$ent]['all']);
 
