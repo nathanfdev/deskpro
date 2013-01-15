@@ -707,6 +707,10 @@ abstract class SearcherAbstract implements PersonContextInterface
 				$v = $db->quote($v);
 			});
 
+			if (empty($choices_in)) {
+				$choices_in = array(0);
+			}
+
 			$choices_in = "(" . implode(',', $choices_in) . ")";
 
 			if ($op == self::OP_CONTAINS) {
