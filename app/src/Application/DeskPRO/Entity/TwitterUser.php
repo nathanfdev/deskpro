@@ -325,6 +325,24 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return $output;
 	}
 
+	public function getPossibleOrganizations()
+	{
+		$output = array();
+		$results = App::getOrm()->createQuery("
+			SELECT tu, o
+			FROM DeskPRO:OrganizationTwitterUser tu
+			INNER JOIN tu.organization o
+			WHERE tu.screen_name = ?0
+				AND tu.is_verified = false
+			ORDER BY o.name
+		")->execute(array($this->screen_name));
+		foreach ($results AS $result) {
+			$output[] = $result->organization;
+		}
+
+		return $output;
+	}
+
 	protected static $_stub_read = array(
 		'id' => true,
 		'is_stub' => true,

@@ -56,7 +56,9 @@ class Twitter extends AbstractContactData
 		$contact_record->field_1 = $input['username'];
 		$contact_record->field_2 = isset($input['display_feed']) && $input['display_feed'] ? 1 : 0;
 
-		if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData) {
+		if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData
+			|| $contact_record instanceof \Application\DeskPRO\Entity\OrganizationContactData
+		) {
 			if ($old_name != $contact_record->field_1) {
 				// changing the name - not verified
 				$contact_record->field_3 = '';
@@ -64,19 +66,29 @@ class Twitter extends AbstractContactData
 			}
 
 			if ($old_name !== $contact_record->field_1) {
-				$contact_record->addSaveCallback(function(\Application\DeskPRO\Entity\PersonContactData $contact_data) use($old_name) {
+				$contact_record->addSaveCallback(function($contact_data) use($old_name) {
+					if ($contact_data instanceof \Application\DeskPRO\Entity\PersonContactData) {
+						$table = 'people_twitter_users';
+						$column = 'person_id';
+						$id = $contact_data->person->id;
+					} else {
+						$table = 'organizations_twitter_users';
+						$column = 'organization_id';
+						$id = $contact_data->organization->id;
+					}
+
 					if ($contact_data->id) {
-						App::getDb()->delete('people_twitter_users', array(
-							'person_id' => $contact_data->person->id,
+						App::getDb()->delete($table, array(
+							$column => $id,
 							'screen_name' => $old_name
 						));
 					}
 
 					App::getDb()->executeUpdate("
-						INSERT IGNORE INTO people_twitter_users
-							(person_id, screen_name, is_verified)
+						INSERT IGNORE INTO $table
+							($column, screen_name, is_verified)
 						VALUES (?, ?, 0)
-					", array($contact_data->person->id, $contact_data->field_1));
+					", array($id, $contact_data->field_1));
 					$last_id = App::getDb()->lastInsertId();
 
 					if ($contact_data->field_3 === '') {
@@ -100,6 +112,11 @@ class Twitter extends AbstractContactData
 		if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData) {
 			App::getDb()->delete('people_twitter_users', array(
 				'person_id' => $contact_record->person->id,
+				'screen_name' => $contact_record->field_1
+			));
+		} else if ($contact_record instanceof \Application\DeskPRO\Entity\OrganizationContactData) {
+			App::getDb()->delete('organizations_twitter_users', array(
+				'organization_id' => $contact_record->organization->id,
 				'screen_name' => $contact_record->field_1
 			));
 		}

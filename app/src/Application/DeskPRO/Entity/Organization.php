@@ -133,6 +133,11 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $slas;
 
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $twitter_users;
+
 	protected $_label_manager = null;
 
 	public function __construct()
@@ -142,6 +147,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('usergroups'          , new \Doctrine\Common\Collections\ArrayCollection());
+		$this->setModelField('twitter_users'       , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('date_created'        , new \DateTime());
 		$this->slas = new \Doctrine\Common\Collections\ArrayCollection();
 	}
@@ -479,5 +485,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'organizations', 'dpApi' => true));
+		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization',  ));
 	}
 }

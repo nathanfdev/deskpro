@@ -327,6 +327,95 @@ class TwitterUserController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function ajaxSavePersonAction()
+	{
+		$user = $this->getUserOr404($this->in->getInt('user_id'));
+
+		$person = $this->em->getRepository('DeskPRO:Person')->find($this->in->getUint('person_id'));
+		if ($person) {
+			$details = $this->_addTwitterAssociation($person, $user->id, $user->screen_name);
+			if ($details) {
+				return $this->createJsonResponse(array(
+					'success' => true,
+					'html' => $this->renderView('AgentBundle:TwitterUser:part-possible-person.html.twig', array(
+						'person' => $person
+					))
+				));
+			}
+		}
+
+		return $this->createJsonResponse(array('success' => false));
+	}
+
+	public function ajaxSaveOrganizationAction()
+	{
+		$user = $this->getUserOr404($this->in->getInt('user_id'));
+
+		$org = $this->em->getRepository('DeskPRO:Organization')->find($this->in->getUint('organization_id'));
+		if ($org) {
+			$details = $this->_addTwitterAssociation($org, $user->id, $user->screen_name);
+			if ($details) {
+				return $this->createJsonResponse(array(
+					'success' => true,
+					'html' => $this->renderView('AgentBundle:TwitterUser:part-possible-organization.html.twig', array(
+						'org' => $org
+					))
+				));
+			}
+		}
+
+		return $this->createJsonResponse(array('success' => false));
+	}
+
+	protected function _addTwitterAssociation($entity, $user_id, $screen_name)
+	{
+		if ($entity instanceof \Application\DeskPRO\Entity\Person) {
+			$table = 'people_twitter_users';
+			$column = 'person_id';
+		} else {
+			$table = 'organizations_twitter_users';
+			$column = 'organization_id';
+		}
+
+		App::getDb()->executeUpdate("
+			INSERT IGNORE INTO $table
+				($column, twitter_user_id, screen_name, is_verified)
+			VALUES (?, ?, ?, 0)
+		", array($entity->id, $user_id, $screen_name));
+
+		$has_account = false;
+		foreach ($entity->getContactData('twitter') AS $twitter_details) {
+			if ($twitter_details->field_1 == $screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $user_id)) {
+				$has_account = true;
+			}
+		}
+
+		$twitter_details = null;
+
+		if (!$has_account) {
+			if ($table == 'organizations_twitter_users') {
+				$twitter_details = new \Application\DeskPRO\Entity\OrganizationContactData();
+			} else {
+				$twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+			}
+			$twitter_details->contact_type = 'twitter';
+			if ($table == 'organizations_twitter_users') {
+				$twitter_details->organization = $entity;
+			} else {
+				$twitter_details->person = $entity;
+			}
+			$twitter_details->field_1 = $screen_name;
+			$twitter_details->field_2 = '0';
+			$twitter_details->field_3 = $user_id;
+			$twitter_details->field_10 = '';
+			$this->em->persist($twitter_details);
+		}
+
+		$this->em->flush();
+
+		return $twitter_details;
+	}
+
 	public function ajaxSaveMessageAction()
 	{
 		$account = $this->getAccountOr404($this->in->getInt('account_id'));

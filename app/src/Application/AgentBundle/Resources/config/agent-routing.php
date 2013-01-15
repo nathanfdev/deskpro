@@ -1578,6 +1578,20 @@ $collection->add('agent_twitter_user_ajaxsave_archive', new Route(
 	array()
 ));
 
+$collection->add('agent_twitter_user_ajaxsave_person', new Route(
+	'/twitter/user/ajax-person.json',
+	array('_controller' => 'AgentBundle:TwitterUser:ajaxSavePerson'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('agent_twitter_user_ajaxsave_organization', new Route(
+	'/twitter/user/ajax-organization.json',
+	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveOrganization'),
+	array('_method' => 'POST'),
+	array()
+));
+
 
 $collection->add('agent_twitter_getsectiondata', new Route(
 	'/twitter/get-section-data.json',

@@ -37,16 +37,24 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-/**
- * A persons contact data
- *
- */
-class PersonContactData extends ContactDataAbstract
+class OrganizationTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Organization
 	 */
-	protected $person;
+	protected $organization;
+
+	/**
+	 * @var TwitterUser
+	 */
+	protected $twitter_user;
+
+	protected $screen_name;
+
+	protected $is_verified = false;
+
+	protected $oauth_token = null;
+	protected $oauth_token_secret = null;
 
 
 
@@ -58,25 +66,23 @@ class PersonContactData extends ContactDataAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-		$metadata->setPrimaryTable(array( 'name' => 'people_contact_data', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'organizations_twitter_users',
+			'uniqueConstraints' => array(
+				'unique_key_idx' => array('columns' => array('organization_id', 'screen_name'))
+			),
+			'indexes' => array(
+				'screen_name_idx' => array('columns' => array('screen_name'))
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('_preSave', 'prePersist');
-		$metadata->addLifecycleCallback('_preSave', 'preUpdate');
-		$metadata->addLifecycleCallback('_preDelete', 'preRemove');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'contact_type', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'contact_type', ));
-		$metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment', ));
-		$metadata->mapField(array( 'fieldName' => 'field_1', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_1', ));
-		$metadata->mapField(array( 'fieldName' => 'field_2', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_2', ));
-		$metadata->mapField(array( 'fieldName' => 'field_3', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_3', ));
-		$metadata->mapField(array( 'fieldName' => 'field_4', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_4', ));
-		$metadata->mapField(array( 'fieldName' => 'field_5', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_5', ));
-		$metadata->mapField(array( 'fieldName' => 'field_6', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_6', ));
-		$metadata->mapField(array( 'fieldName' => 'field_7', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_7', ));
-		$metadata->mapField(array( 'fieldName' => 'field_8', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_8', ));
-		$metadata->mapField(array( 'fieldName' => 'field_9', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_9', ));
-		$metadata->mapField(array( 'fieldName' => 'field_10', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_10', ));
+		$metadata->mapField(array( 'fieldName' => 'screen_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'screen_name', ));
+		$metadata->mapField(array( 'fieldName' => 'is_verified', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_verified', ));
+		$metadata->mapField(array( 'fieldName' => 'oauth_token', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'oauth_token', ));
+		$metadata->mapField(array( 'fieldName' => 'oauth_token_secret', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'oauth_token_secret', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'twitter_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'twitter_user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

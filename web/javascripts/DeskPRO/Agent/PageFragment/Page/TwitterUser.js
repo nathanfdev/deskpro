@@ -96,6 +96,40 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 			overlay.open();
 		});
 
+		this.getEl('user_searchbox').on('personsearchboxclick', function(e, personId, name, email, obj) {
+			obj.close();
+			self.getEl('userselect').val('');
+
+			$.ajax({
+				url: self.getMetaData('saveUserPersonUrl'),
+				data: {user_id: self.getMetaData('userId'), person_id: personId},
+				type: 'POST',
+				dataType: 'json',
+				success: function(json) {
+					if (json.success) {
+						self.getEl('choose_user').before(json.html);
+					}
+				}
+			});
+		});
+
+		this.getEl('org_searchbox').on('orgsearchboxclick', function(e, orgId, name, obj) {
+			obj.close();
+			self.getEl('orgselect').val('');
+
+			$.ajax({
+				url: self.getMetaData('saveUserOrganizationUrl'),
+				data: {user_id: self.getMetaData('userId'), organization_id: orgId},
+				type: 'POST',
+				dataType: 'json',
+				success: function(json) {
+					if (json.success) {
+						self.getEl('org_edit_wrap').before(json.html);
+					}
+				}
+			});
+		});
+
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({
 				triggerElements: '> header li',

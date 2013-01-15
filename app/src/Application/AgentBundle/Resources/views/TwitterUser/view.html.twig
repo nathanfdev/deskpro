@@ -40,19 +40,83 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	</td></tr></table>
 
-	{% set verified_people = user.getVerifiedPeople() %}
-	{% set possible_people = user.getPossiblePeople() %}
-	{% if verified_people|length or possible_people|length %}
-		<div style="margin-top: 10px;" style="clear: both">
-			Associated people:
-			{% for person in verified_people %}
-				<a class="as-popover tipped person-name-picture person-verified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Verified">{{ person.display_name }}<em></em></a>
-			{% endfor %}
-			{% for person in possible_people %}
-				<a class="as-popover tipped person-name-picture person-unverified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Unverified">{{ person.display_name }}</a>
-			{% endfor %}
+	<div style="margin-top: 10px;" style="clear: both">
+		Associated people:
+		{% for person in user.getVerifiedPeople() %}
+			<a class="as-popover tipped person-name-picture person-verified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Verified">{{ person.display_name }}<em></em></a>
+		{% endfor %}
+		{% for person in user.getPossiblePeople() %}
+			{% include 'AgentBundle:TwitterUser:part-possible-person.html.twig' %}
+			<!--<a class="as-popover tipped person-name-picture person-unverified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Unverified">{{ person.display_name }}</a>-->
+		{% endfor %}
+
+		<div id="{{baseId}}_choose_user" style="display:inline;" class="choose-user" >
+			<div
+				id="{{baseId}}_user_searchbox"
+				data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+				data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+				data-position-bound="#{{baseId}}_userselect"
+				style="display: inline"
+			>
+				<input type="text" id="{{baseId}}_userselect" class="select-user term add-person-org-input" placeholder="Add Person..." style="width: 150px" />
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li>
+						<a>
+							<span class="user-name"></span>
+							<address>&lt;<span class="user-email"></span>&gt;</address>
+							<div class="bound-fade"></div>
+						</a>
+					</li>
+				</script>
+				<div class="person-search-box" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+					</section>
+				</div>
+			</div>
 		</div>
-	{% endif %}
+	</div>
+
+	<div style="margin-top: 10px;" style="clear: both">
+		Associated organizations:
+		{% for org in user.getPossibleOrganizations() %}
+			{% include 'AgentBundle:TwitterUser:part-possible-organization.html.twig' %}
+		{% endfor %}
+		 <div class="choose-org" style="display: inline" id="{{baseId}}_org_edit_wrap">
+			<div
+				class="org-input"
+				id="{{baseId}}_org_searchbox"
+				data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+				data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+				data-position-bound="@parent(.org-input)"
+				style="display: inline"
+			>
+				<input type="text" class="org-name add-person-org-input" id="{{baseId}}_orgselect" placeholder="Add Organization..." style="width: 150px" />
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li>
+							<a>
+							<span class="org-name"></span>
+							<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="person-search-box org" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+					</section>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div class="meta-line" style="clear: both">
 		<nav class="actions" id="{{baseId}}_action_buttons">
