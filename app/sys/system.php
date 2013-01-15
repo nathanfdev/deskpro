@@ -770,12 +770,12 @@ final class License
 		$powered_by_deskpro = null;
 		if (class_exists('Application\\DeskPRO\\App')) {
 			try {
-				$powered_by_deskpro = \Application\DeskPRO\App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => App::getTranslator()->phrase('user.general.deskpro')));
-			} catch (\Exception $e) {}
+				$powered_by_deskpro = \Application\DeskPRO\App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => 'DeskPRO'));
+			} catch (\Exception $e) { }
 		}
 
 		if (!$powered_by_deskpro || strpos($powered_by_deskpro, 'DeskPRO') === false) {
-			$powered_by_deskpro = 'Helpdesk software by <strong>{{deskpro}}</strong>';
+			$powered_by_deskpro = 'Helpdesk software by <strong>DeskPRO</strong>';
 		}
 
 		$html = <<<STR
