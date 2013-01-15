@@ -41,13 +41,13 @@ use Application\DeskPRO\App;
 /**
  * The abstract controller sets up some default objects.
  *
- * @property $em \Doctrine\ORM\EntityManager
- * @property $db \Application\DeskPRO\DBAL\Connection
- * @property $in \Orb\Input\Reader\Reader
- * @property $cleaner \Orb\Input\Cleaner\Cleaner
- * @property $tpl \Application\DeskPRO\Templating\Engine
- * @property $settings \Application\DeskPRO\Settings\Settings
- * @property $session \Application\DeskPRO\HttpFoundation\Session
+ * @property \Doctrine\ORM\EntityManager $em
+ * @property \Application\DeskPRO\DBAL\Connection $db
+ * @property \Orb\Input\Reader\Reader $in
+ * @property \Orb\Input\Cleaner\Cleaner $cleaner
+ * @property \Application\DeskPRO\Templating\Engine $tpl
+ * @property \Application\DeskPRO\Settings\Settings $settings
+ * @property \Application\DeskPRO\HttpFoundation\Session $session
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
