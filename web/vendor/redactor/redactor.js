@@ -1579,7 +1579,7 @@ var RLANG = {
 			if (isParentRoot || isParentP)
 			{
 				var element = this.getCurrentNode();
-				var html = element.innerHtml || '';
+				var html = element.innerHTML || '';
 				var isEmpty = (html === '' || html == '<br>');
 
 				if (element.tagName === 'DIV')
