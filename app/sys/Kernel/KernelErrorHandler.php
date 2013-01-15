@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -478,6 +479,10 @@ class KernelErrorHandler
 			if ($exception instanceof $cls) {
 				return true;
 			}
+		}
+
+		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+			return true;
 		}
 
 		if ($exception instanceof \Doctrine\DBAL\Types\ConversionException && strpos($exception->getMessage(), 'Doctrine Type array') !== false) {
