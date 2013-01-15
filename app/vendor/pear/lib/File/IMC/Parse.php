@@ -1,5 +1,5 @@
 <?php
-/* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4: */ 
+/* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4: */
 /**+----------------------------------------------------------------------+
  * | PHP version 5                                                        |
  * +----------------------------------------------------------------------+
@@ -163,7 +163,7 @@ abstract class File_IMC_Parse
     }
 
     /**
-    * Splits a string into an array.  Honors backslash-escaped 
+    * Splits a string into an array.  Honors backslash-escaped
     * delimiters, (i.e., splits at ';' not '\;') and double-quotes
     * (will not break inside double-quotes ("")).
     *
@@ -192,7 +192,7 @@ abstract class File_IMC_Parse
         // the length of the text to be parsed
         $len = strlen($text);
 
-        // go through the text character by character, find the 
+        // go through the text character by character, find the
         // first occurrence of the delimiter, save it, and
         // recursively parse the rest of the text
         for ($i = 0; $i < $len; $i++) {
@@ -395,7 +395,12 @@ abstract class File_IMC_Parse
             // get the left and right portions. The part
             // to the left of the colon is the type and parameters;
             // the part to the right of the colon is the value data.
-            if (!(list($left, $right) = $this->_splitByColon($line))) {
+			$x = $this->_splitByColon($line);
+			if (!$x || count($x) < 2) {
+				continue;
+			}
+
+            if (!(list($left, $right) = $x)) {
                 // colon not found, skip whole line
                 continue;
             }
@@ -524,7 +529,7 @@ abstract class File_IMC_Parse
     /**
     * Finds the Type-Definition parameters for a line.
     *
-    * @param array Array containing left side (before colon) split by 
+    * @param array Array containing left side (before colon) split by
     *              semi-colon from a line.
     *
     * @return array An array of parameters.
