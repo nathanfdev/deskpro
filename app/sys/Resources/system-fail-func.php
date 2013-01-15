@@ -159,6 +159,13 @@ $stats['error_info'] = array(
 	'summary' => $__fail_message
 );
 
+if (isset($__license_code)) {
+	$stats['error_info']['license_code'] = $__license_code;
+}
+if (isset($__install_key)) {
+	$stats['error_info']['license_code'] = $__install_key;
+}
+
 $stats['error_type'] = 'php';
 $stats['local_hash'] = sha1($__fail_message . __FILE__ . php_uname());
 

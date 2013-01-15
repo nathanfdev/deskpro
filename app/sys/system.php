@@ -506,7 +506,9 @@ final class License
 			$this->error_code = 'invalid_license_code_1';
 			$this->data = array('no_license' => true);
 
-			$fn = function() {
+			$fn = function() use ($license_code, $install_key) {
+				$__license_code = $license_code;
+				$__install_key  = $install_key;
 				$__fail_message = 'invalid_license_code_1';
 				include dirname(__FILE__) . '/Resources/system-fail-func.php';
 			};
@@ -580,7 +582,9 @@ final class License
 			$this->error_code = 'invalid_license_code_2';
 			$this->data = array('no_license' => true);
 
-			$fn = function() {
+			$fn = function() use ($license_code, $install_key) {
+				$__license_code = $license_code;
+				$__install_key  = $install_key;
 				$__fail_message = 'invalid_license_code_2';
 				include dirname(__FILE__) . '/Resources/system-fail-func.php';
 			};
