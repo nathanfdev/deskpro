@@ -396,6 +396,15 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->redirectRoute('user_profile');
 		}
 
+		$validating_exists = $this->db->fetchColumn("
+			SELECT id
+			FROM people_emails_validating
+			WHERE email = ?
+		", array($email_address));
+		if ($validating_exists) {
+			return $this->redirectRoute('user_profile');
+		}
+
 		$validating_email = new PersonEmailValidating($email_address);
 		$validating_email['email'] = $email_address;
 		$validating_email->person = $this->person;
