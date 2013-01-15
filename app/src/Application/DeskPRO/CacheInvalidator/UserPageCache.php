@@ -72,7 +72,7 @@ class UserPageCache
 	public function invalidateRegex($regex)
 	{
 		$cache_dir = $this->_cache_dir;
-		if (is_dir($cache_dir)) {
+		if (is_dir($cache_dir) && is_readable($cache_dir)) {
 			$dir = opendir($cache_dir);
 			while (($file = readdir($dir)) !== false) {
 				if ($file == 'index.html') {
