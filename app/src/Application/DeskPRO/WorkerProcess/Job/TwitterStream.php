@@ -181,7 +181,7 @@ class TwitterStream extends AbstractJob
 	 * @param integer $twitter_status_id
 	 * @param TwitterAccount $account
 	 *
-	 * @return \Application\DeskPRO\Entity\TwitterStatus
+	 * @return \Application\DeskPRO\Entity\TwitterAccountStatus
 	 */
 	protected function findAccountStatus($twitter_status_id, TwitterAccount $account)
 	{
@@ -261,6 +261,9 @@ class TwitterStream extends AbstractJob
 			$notify = new \Application\DeskPRO\Notifications\TweetReplyNotification($account_status, $reply_account_status);
 			$notify->send();
 		}
+
+		$notify = new \Application\DeskPRO\Notifications\TweetNewNotification($account_status);
+		$notify->send();
 
 		return true;
 	}

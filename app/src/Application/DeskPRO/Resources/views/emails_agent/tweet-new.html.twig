@@ -1,0 +1,21 @@
+{% set agent_notification_footer = 'notify' %}
+<dp:subject>
+	{% if account_status.status_type == 'direct' %}
+		@{{ account_status.account.user.screen_name }} received a new direct message
+	{% elseif account_status.status_type == 'retweet' %}
+		@{{ account_status.account.user.screen_name }} was retweeted
+	{% else %}
+		@{{ account_status.account.user.screen_name }} received a new tweet
+	{% endif %}
+</dp:subject>
+
+{% if account_status.status_type == 'direct' %}
+	@{{ account_status.account.user.screen_name }} received a new direct message from @{{ account_status.status.user.screen_name }}.
+{% elseif account_status.status_type == 'retweet' %}
+	@{{ account_status.account.user.screen_name }} was retweeted by @{{ account_status.status.user.screen_name }}.
+{% else %}
+	@{{ account_status.account.user.screen_name }} received a new tweet from @{{ account_status.status.user.screen_name }}.
+{% endif %}
+
+<br /><br />
+<a href="{{ url_full('agent') }}#app.twitter,tw-all:{{ account_status.account.id }}::">View @{{ account_status.account.user.screen_name }}'s tweets</a>

@@ -13,6 +13,14 @@ DeskPRO.Agent.PageFragment.SettingsPage.OtherNotifications = new Orb.Class({
 		var self = this;
 		this.el = el;
 
+		this.typeTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('.pageheader li', el)
+		});
+
+		this.addEvent('activate', function() {
+			$('.pageheader li', el).first().trigger('click');
+		}, this);
+
 		var form = $('form', this.el);
 
 		form.on('submit', function(ev) {

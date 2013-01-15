@@ -174,7 +174,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 				}
 			}
 
-			if (subGroup.find('li:visible').length) {
+			if (subGroup.find('li').filter(function() { return $(this).css('display') !== 'none'; }).length) {
 				subGroup.show();
 			} else {
 				subGroup.hide();
@@ -208,7 +208,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 
 		contentEl.find('.source-list .sub-group').each(function() {
 			var $this = $(this);
-			if (!$this.find('li:visible').length) {
+			if (!$this.find('li').filter(function() { return $(this).css('display') !== 'none'; }).length) {
 				$this.css('display', 'none');
 			}
 		});
@@ -257,20 +257,6 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 						select.select2('val', [accountId]);
 					}
 				});
-			}
-		});
-
-		contentEl.on('click', '.sub-toggle', function(ev) {
-			var row = $(this).closest('li');
-			var sub = $('> ul.sub-group', row);
-			if (sub.length) {
-				if (sub.is(':visible')) {
-					row.removeClass('sub-expanded');
-					sub.slideUp('fast');
-				} else {
-					row.addClass('sub-expanded');
-					sub.slideDown('fast');
-				}
 			}
 		});
 

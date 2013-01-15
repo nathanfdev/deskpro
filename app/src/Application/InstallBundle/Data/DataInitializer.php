@@ -185,6 +185,14 @@ class DataInitializer
 		$prefs['tweet_assign_team.alert'] = 1;
 		$prefs['tweet_reply.email'] = 1;
 		$prefs['tweet_reply.alert'] = 1;
+		$prefs['tweet_new_dm.email'] = 1;
+		$prefs['tweet_new_dm.alert'] = 1;
+		$prefs['tweet_new_reply.email'] = 1;
+		$prefs['tweet_new_reply.alert'] = 1;
+		$prefs['tweet_new_mention.email'] = 1;
+		$prefs['tweet_new_mention.alert'] = 1;
+		$prefs['tweet_new_retweet.email'] = 1;
+		$prefs['tweet_new_retweet.alert'] = 1;
 		$prefs['new_feedback.email'] = 1;
 		$prefs['new_feedback.alert'] = 1;
 		$prefs['new_feedback_validate.email'] = 1;
