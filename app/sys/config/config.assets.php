@@ -76,7 +76,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.tinyscrollbar.js',
 		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/jquery.textarea-expander.js',
-		'vendor/jquery/jquery.ajax-retry.js',
 
 		'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
 		'vendor/jquery/token-field/jquery.token-field.js',
@@ -610,7 +609,6 @@ $CONFIG['user_vendors'] = array(
 		'vendor/jquery/tmpl.min.js',
 
 		'vendor/jquery/jquery.sizes.min.js',
-		'vendor/jquery/jquery.ajax-retry.js',
 
 		'vendor/jquery/jquery.uniform.min.js',
 
