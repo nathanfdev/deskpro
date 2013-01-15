@@ -59,7 +59,7 @@ var DpErrorLog = {
 			}
 		}
 
-		if (!message || message == 'false') {
+		if (!message || message == 'false' || message.indexOf('Error connecting to extension') !== -1) {
 			return;
 		}
 
