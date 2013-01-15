@@ -1903,11 +1903,15 @@ section.dp-overlay > article.no-footer {
 			.extra-container {
 				margin-top: 5px;
 
-				.extra-row {
+				.extra-row, &.extra-row {
 					color: #999999;
 					font-size: 80%;
 					line-height: 105%;
 					margin-top: 3px;
+
+					span {
+						margin-right: 5px;
+					}
 				}
 
 				.retweet em {
@@ -2139,7 +2143,8 @@ section.dp-overlay > article.no-footer {
 .list-listing article.twitter-status,
 .list-listing article.twitter-user,
 .twitter-message-send,
-.twitter-status-inline {
+.twitter-status-inline,
+.twitter-user-inline {
 	.new-message, .new-retweet {
 		border-top: 1px solid #ACB6BF;
 		padding: 4px;
@@ -2211,7 +2216,8 @@ article.twitter-status.archived .title .expand-collapse-icon {
 	display: block;
 }
 
-.list-listing article.twitter-user {
+.list-listing article.twitter-user,
+.twitter-user-inline{
 	margin: 8px;
 	width: auto;
 	background-color: #fff;
@@ -2280,6 +2286,10 @@ article.twitter-status.archived .title .expand-collapse-icon {
 			color: #999999;
 			font-size: 80%;
 			line-height: 100%;
+
+			span {
+				margin-right: 5px;
+			}
 		}
 	}
 

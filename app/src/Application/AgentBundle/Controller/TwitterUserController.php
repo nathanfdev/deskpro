@@ -167,9 +167,17 @@ class TwitterUserController extends AbstractController
 			$this->em->flush();
 		}
 
+		if (!$user->last_follow_update || $user->last_follow_update->getTimeStamp() < time() - TwitterUser::PROFILE_UPDATE_FREQUENCY) {
+			$user->updateFollows();
+			$this->em->persist($user);
+			$this->em->flush();
+		}
+
 		$statuses = $user->getStatuses();
 		$messages = $user->getMessages();
 		$mentions = $user->getMentions();
+		$friends = $user->getFriends();
+		$followers = $user->getFollowers();
 
 		if ($account) {
 			$status_ids = array_merge(array_keys($statuses), array_keys($messages), array_keys($mentions));
@@ -187,7 +195,9 @@ class TwitterUserController extends AbstractController
 			'statuses' => $statuses,
 			'messages' => $messages,
 			'mentions' => $mentions,
-			'account_statuses' => $account_statuses
+			'account_statuses' => $account_statuses,
+			'friends' => $friends,
+			'followers' => $followers
 		));
 	}
 	

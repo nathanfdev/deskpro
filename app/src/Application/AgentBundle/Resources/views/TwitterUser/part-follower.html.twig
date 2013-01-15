@@ -12,15 +12,17 @@
 			<img src="{{ user.profile_image_url }}" width="48" height="48" border="0" />
 		</div>
 		<div class="info">
-			<h4 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">
-				<span class="name">{{ user.name }}</span>
-				<span class="screen-name">@{{ user.screen_name }}</span>
+			<h4>
+				<span class="name user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">{{ user.name }}</span>
+				<span class="screen-name user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">@{{ user.screen_name }}</span>
 			</h4>
 			<div class="description">{{ user.description }}</div>
 		</div>
 
-		<div class="extra-container">
-			<div class="account-interactions extra-row user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Interactions: {{ user.countAccountInteractions(account) }}</div>
+		<div class="extra-container extra-row">
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Following: {{ user.friends_count }}</span>
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Followers: {{ user.followers_count }}</span>
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Interactions: {{ user.countAccountInteractions(account) }}</span>
 		</div>
 	</div>
 	<div class="message-sent-confirmation" style="display: none">

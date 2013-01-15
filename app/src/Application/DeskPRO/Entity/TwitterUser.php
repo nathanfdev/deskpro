@@ -121,6 +121,21 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $last_profile_update;
 
 	/**
+	 * @var \DateTime|null
+	 */
+	protected $last_follow_update;
+
+	/**
+	 * @var int
+	 */
+	protected $followers_count = 0;
+
+	/**
+	 * @var int
+	 */
+	protected $friends_count = 0;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $statuses;
@@ -129,8 +144,6 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $replies;
-
-	// protected $retweets;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -258,6 +271,16 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, $from_user_ids, true, 'desc');
 	}
 
+	public function getFollowers()
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterUserFollower')->getFollowersForUser($this);
+	}
+
+	public function getFriends()
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterUserFriend')->getFriendsForUser($this);
+	}
+
 	public function countAccountInteractions(TwitterAccount $account)
 	{
 		$repo = App::getOrm()->getRepository('DeskPRO:TwitterStatus');
@@ -305,7 +328,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected static $_stub_read = array(
 		'id' => true,
 		'is_stub' => true,
-		'last_profile_update' => true
+		'last_timeline_update' => true,
+		'last_profile_update' => true,
+		'last_follow_update' => true,
 	);
 
 	public function offsetGet($offset)
@@ -391,6 +416,94 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function updateFollows()
+	{
+		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getFirst();
+		if (!$account) {
+			return;
+		}
+
+		$existing_users = array();
+
+		try {
+			$response = $account->getTwitterApi()->get_friendsIds(array(
+				'user_id' => $this->id,
+				'stringify_ids' => true
+			));
+			if (isset($response->ids)) {
+				$ids = array_slice($response->ids, 0, 100);
+				$existing_users += App::getOrm()->getRepository('DeskPRO:TwitterUser')->getByIds($ids);
+				$existing_for_type = App::getOrm()->getRepository('DeskPRO:TwitterUserFriend')->getByUserAndFriends(
+					$this->id, $ids
+				);
+				$count = $this->friends_count;
+
+				foreach ($ids AS $id) {
+					if (!isset($existing_users[$id])) {
+						$new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
+						App::getOrm()->persist($new_user);
+						$existing_users[$id] = $new_user;
+					} else {
+						$new_user = $existing_users[$id];
+					}
+
+					if (!isset($existing_for_type[$id])) {
+						$new_for_type = new TwitterUserFriend();
+						$new_for_type->user = $this;
+						$new_for_type->friend_user = $new_user;
+						$new_for_type->display_order = $count;
+
+						App::getOrm()->persist($new_for_type);
+					}
+
+					$count--;
+				}
+			}
+		} catch (\EpiTwitterException $e) {
+		} catch (\EpiOAuthException $e) {
+		}
+
+		try {
+			$response = $account->getTwitterApi()->get_followersIds(array(
+				'user_id' => $this->id,
+				'stringify_ids' => true
+			));
+			if (isset($response->ids)) {
+				$ids = array_slice($response->ids, 0, 100);
+				$existing_users += App::getOrm()->getRepository('DeskPRO:TwitterUser')->getByIds($ids);
+				$existing_for_type = App::getOrm()->getRepository('DeskPRO:TwitterUserFollower')->getByUserAndFollowers(
+					$this->id, $ids
+				);
+				$count = $this->friends_count;
+
+				foreach ($ids AS $id) {
+					if (!isset($existing_users[$id])) {
+						$new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
+						App::getOrm()->persist($new_user);
+						$existing_users[$id] = $new_user;
+					} else {
+						$new_user = $existing_users[$id];
+					}
+
+					if (!isset($existing_for_type[$id])) {
+						$new_for_type = new TwitterUserFollower();
+						$new_for_type->user = $this;
+						$new_for_type->follower_user = $new_user;
+						$new_for_type->display_order = $count;
+
+						App::getOrm()->persist($new_for_type);
+					}
+
+					$count--;
+				}
+			}
+		} catch (\EpiTwitterException $e) {
+		} catch (\EpiOAuthException $e) {
+		}
+
+		$this['last_follow_update'] = new \DateTime();
+	}
+
 	public function updateFromJson($user)
 	{
 		$processing = self::$_processing_stubs;
@@ -405,6 +518,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$this['is_verified']       = $user->verified;
 		$this['location']          = $user->location;
 		$this['is_geo_enabled']    = $user->geo_enabled;
+		$this['followers_count']   = $user->followers_count;
+		$this['friends_count']     = $user->friends_count;
 		$this['is_stub']           = false;
 		$this['last_profile_update'] = new \DateTime();
 
@@ -436,6 +551,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$entity['is_verified']       = $user->verified;
 		$entity['location']          = $user->location;
 		$entity['is_geo_enabled']    = $user->geo_enabled;
+		$entity['followers_count']   = $user->followers_count;
+		$entity['friends_count']     = $user->friends_count;
 		$entity['is_stub']           = false;
 		$entity['last_profile_update'] = new \DateTime();
 
@@ -453,7 +570,10 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$entity['language'] = '';
 		$entity['description'] = '';
 		$entity['location'] = '';
+		$entity['followers_count'] = 0;
+		$entity['friends_count'] = 0;
 		$entity['is_stub'] = true;
+		self::$_stubs[$id] = $entity;
 
 		return $entity;
 	}
@@ -486,12 +606,15 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_stub', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_stub', ));
 		$metadata->mapField(array( 'fieldName' => 'last_timeline_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_timeline_update', ));
 		$metadata->mapField(array( 'fieldName' => 'last_profile_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_profile_update', ));
+		$metadata->mapField(array( 'fieldName' => 'last_follow_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_follow_update', ));
+		$metadata->mapField(array( 'fieldName' => 'followers_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'followers_count', ));
+		$metadata->mapField(array( 'fieldName' => 'friends_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'friends_count', ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'recipient',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFriend', 'mappedBy' => 'user',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFollower', 'mappedBy' => 'user',  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFriend', 'mappedBy' => 'user',  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFollower', 'mappedBy' => 'user',  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'user', 'inversedBy' => NULL, 'joinColumns' => array( ),  ));
 	}
 }

@@ -96,6 +96,8 @@ pageMeta.baseId = '{{ baseId }}';
 				<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.general.statuses') }}</li>
 				<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.general.messages') }}</li>
 				<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.general.mentions') }}</li>
+				<li data-tab-for="#{{baseId}}_following_tab">Following ({{ user.friends_count }})</li>
+				<li data-tab-for="#{{baseId}}_followers_tab">Followers ({{ user.followers_count }})</li>
 			</ul>
 		</nav>
 	</header>
@@ -119,6 +121,20 @@ pageMeta.baseId = '{{ baseId }}';
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
 				<div style="padding: 10px">No mentions for user.</div>
+			{% endfor %}
+		</article>
+		<article id="{{baseId}}_following_tab">
+			{% for friend in friends %}
+				{% include 'AgentBundle:TwitterUser:part-user.html.twig' with {'user': friend.friend_user} %}
+			{% else %}
+				<div style="padding: 10px">No followed users.</div>
+			{% endfor %}
+		</article>
+		<article id="{{baseId}}_followers_tab">
+			{% for follower in followers %}
+				{% include 'AgentBundle:TwitterUser:part-user.html.twig' with {'user': follower.follower_user} %}
+			{% else %}
+				<div style="padding: 10px">No followers.</div>
 			{% endfor %}
 		</article>
 	</section>
