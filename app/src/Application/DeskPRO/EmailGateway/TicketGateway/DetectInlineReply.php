@@ -207,7 +207,7 @@ class DetectInlineReply implements Loggable
 		}
 
 		$matches = 0;
-		if (!preg_match_all('#dp_message_([0-9]+)_begin.*?</a>(.*?)<a.*?dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
+		if (!preg_match_all('#<a[^>]*dp_message_([0-9]+)_begin[^>]*>(.*?)<a[^>]*dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
 			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No message texts');
 			return $this->message_texts;
 		}
@@ -218,11 +218,9 @@ class DetectInlineReply implements Loggable
 
 			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found message: ' . $message_id);
 
+			// Trim off the </a> which is part of the marker
 			if (($pos = stripos($message, '</a>')) !== false) {
 				$message = substr($message, $pos + 4);
-			}
-			if (($pos = strripos($message, '<a')) !== false) {
-				$message = substr($message, 0, $pos);
 			}
 
 			$message = $this->normalizeMessage($message);
@@ -253,9 +251,10 @@ class DetectInlineReply implements Loggable
 	 */
 	public function normalizeMessage($message_text)
 	{
+		$message_text = str_replace(array('<br/>', '<br />', '<br>'), ' ', $message_text);
 		$message_text = strip_tags($message_text);
 		$message_text = html_entity_decode($message_text, \ENT_QUOTES, 'UTF-8');
-		$message_text = preg_replace('#\s#', ' ', $message_text);
+		$message_text = preg_replace('#[\pZ\pC\s]+#u', ' ', $message_text);
 		$message_text = preg_replace('# {2,}#', ' ', $message_text);
 		$message_text = trim($message_text);
 
