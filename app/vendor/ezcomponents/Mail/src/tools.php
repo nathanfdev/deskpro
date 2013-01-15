@@ -128,9 +128,17 @@ class ezcMailTools
                         'scheme' => 'Q',
                         'line-break-chars' => ezcMailTools::lineBreak()
                     );
-                    $name = iconv_mime_encode( 'dummy', $name, $preferences );
-                    $name = substr( $name, 7 ); // "dummy: " + 1
-                    $text = $name . ' <' . $item->email . '>';
+
+					// DeskPRO Patch:
+					// suppress warn on iconv_mime_encode and check for valid result,
+					// as call can fail on certain strings (see https://bugs.php.net/bug.php?id=53891)
+                    $name = @iconv_mime_encode( 'dummy', $name, $preferences );
+					if (!$name) {
+						$text = $item->email;
+					} else {
+						$name = substr( $name, 7 ); // "dummy: " + 1
+                    	$text = $name . ' <' . $item->email . '>';
+					}
                     break;
             }
         }
