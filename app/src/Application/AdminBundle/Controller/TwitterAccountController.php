@@ -96,6 +96,16 @@ class TwitterAccountController extends AbstractController
 		));
 	}
 
+	public function setCleanupAction()
+	{
+		$this->ensureRequestToken();
+
+		$time = $this->in->getUint('time');
+		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_auto_remove_time', $time);
+
+		return $this->redirectRoute('admin_twitter_accounts');
+	}
+
 	/**
 	 * Request permission from Twitter for DeskPRO application.
 	 *

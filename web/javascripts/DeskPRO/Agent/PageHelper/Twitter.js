@@ -36,7 +36,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			$(this).addClass('unfollow').removeClass('follow');
 			$(this).find('label').text('Unfollow');
 
-			var id = self.closestRow(this).attr('data-user-id');
+			var row = self.closestRow(this);
+			var id = row.attr('data-user-id');
 
 			$.ajax({
 				url: self.page.getMetaData('saveFollowUrl'),
@@ -46,6 +47,16 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					account_id: self.page.getMetaData('accountId')
 				}
 			});
+
+			row.addClass('archived');
+			row.find('.status-archived').show();
+
+			if (self.page.getMetaData('hideArchived')) {
+				if (self.options.userArchiveHideCallback) {
+					self.options.userArchiveHideCallback(row);
+				}
+				row.remove();
+			}
 		});
 		this.content.on('click', '.unfollow', function(e) {
 			e.preventDefault();
@@ -278,6 +289,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				retweetContainer.hide();
 			} else {
 				retweetContainer.show();
+				row.find('.new-message').hide();
 
 				var textarea = retweetContainer.find('textarea');
 				self.updateTweetLength(textarea);
@@ -348,6 +360,18 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 						}
 
 						retweetContainer.hide();
+
+						if (json.archived) {
+							row.addClass('archived');
+							row.find('.status-archived').show();
+
+							if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
+								if (self.options.statusArchiveHideCallback) {
+									self.options.statusArchiveHideCallback(row);
+								}
+								row.remove();
+							}
+						}
 					} else {
 						alert(json.error);
 					}
@@ -395,12 +419,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				newMessage.hide();
 			} else {
 				newMessage.show();
-
-				var link = row.find('.photo, .user').first();
-				if (link.length) {
-					link.data('route-notabreload', true);
-					DeskPRO_Window.runPageRouteFromElement(link);
-				}
+				row.find('.new-retweet').hide();
 
 				var textarea = newMessage.find('textarea');
 				if (!$.trim(textarea.val()).length && !row.hasClass('dm')) {
@@ -477,6 +496,18 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 							messageContainer.hide();
 							messageContainer.find('textarea').val('');
+
+							if (json.archived) {
+								row.addClass('archived');
+								row.find('.status-archived').show();
+
+								if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
+									if (self.options.statusArchiveHideCallback) {
+										self.options.statusArchiveHideCallback(row);
+									}
+									row.remove();
+								}
+							}
 						} else {
 							alert(json.error);
 						}

@@ -110,7 +110,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.numPages = Math.ceil(this.resultCount / this.options.perPage);
 		this.currentPage = this.options.currentPage;
 
-		if (this.currentPage < this.numPages) {
+		if (this.currentPage <= 1) {
 			this.pageNav.addClass('no-prev');
 		} else {
 			this.pageNav.removeClass('no-prev');

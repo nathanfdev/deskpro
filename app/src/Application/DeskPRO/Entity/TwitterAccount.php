@@ -50,7 +50,7 @@ use Application\DeskPRO\Entity;
  */
 class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
-	const DEFAULT_LIMIT = 100;
+	const DEFAULT_LIMIT = 50;
 
 	/**
 	 * @var integer

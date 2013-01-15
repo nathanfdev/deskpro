@@ -46,7 +46,7 @@ use Application\DeskPRO\Entity;
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
-	const CACHE_LENGTH = 900;
+	const CACHE_LENGTH = 60;
 	const SEARCH_RESULTS = 100;
 
 	/**
@@ -122,7 +122,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			'q' => $this->term,
 			'result_type' => 'recent',
 			'count' => self::SEARCH_RESULTS,
-			'since_id' => $this->max_id ? $this->max_id : 0,
+			//'since_id' => $this->max_id ? $this->max_id : 0,
 			'include_entities' => true
 		));
 
@@ -155,15 +155,17 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 					}
 				}
 
-				$search_status = new TwitterAccountSearchStatus();
-				$search_status->search = $this;
-				$search_status->account_status = $account_status;
+				if (!App::getOrm()->getRepository('DeskPRO:TwitterAccountSearch')->getExistingSearchStatus($this, $account_status)) {
+					$search_status = new TwitterAccountSearchStatus();
+					$search_status->search = $this;
+					$search_status->account_status = $account_status;
 
-				if ($do_write) {
-					$em->persist($search_status);
+					if ($do_write) {
+						$em->persist($search_status);
+					}
+
+					$this->search_statuses->add($search_status);
 				}
-
-				$this->search_statuses->add($search_status);
 			}
 		}
 
@@ -181,7 +183,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function getAccountStatuses($includeArchived = false, $page = 1, $per_page = 100, $auto_update = true)
+	public function getAccountStatuses($includeArchived = false, $page = 1, $per_page = 50, $auto_update = true)
 	{
 		if ($auto_update) {
 			if (!$this->date_updated || $this->date_updated->getTimestamp() < time() - self::CACHE_LENGTH) {
@@ -222,39 +224,21 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $output;
+	}
 
-		$ids = App::getDb()->fetchAllCol("
-			SELECT s.account_status_id
-			FROM twitter_accounts_searches_statuses AS s
-			INNER JOIN twitter_accounts_statuses AS accs ON (accs.id = s.account_status_id)
-			WHERE s.search_id = ?
-				" . ($includeArchived ? '' : "AND accs.is_archived = 0") . "
-			ORDER BY s.date_created DESC
-			LIMIT $offset, $per_page
-		", array($this->id));
-		if ($ids) {
-			return App::getOrm()->createQuery("
-				SELECT a,
-				account, action_agent, agent, agent_team, retweeted,
-					t, u, ret, recip, long, in_reply
-				FROM DeskPRO:TwitterAccountStatus a
-				INNER JOIN a.account account
-				LEFT JOIN a.action_agent action_agent
-				LEFT JOIN a.agent agent
-				LEFT JOIN a.agent_team agent_team
-				LEFT JOIN a.retweeted retweeted
-				INNER JOIN a.status t
-				INNER JOIN t.user u
-				LEFT JOIN t.retweet ret
-				LEFT JOIN t.recipient recip
-				LEFT JOIN t.long long
-				LEFT JOIN t.in_reply_to_status in_reply
-				WHERE a.id IN (?0)
-				ORDER BY a.date_created DESC
-			")->execute(array($ids));
-		} else {
-			return artay();
+	public function countAccountStatuses($includeArchived = false, $auto_update = true)
+	{
+		if ($auto_update) {
+			if (!$this->date_updated || $this->date_updated->getTimestamp() < time() - self::CACHE_LENGTH) {
+				$this->updateSearch();
+			}
 		}
+
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM twitter_accounts_searches_statuses
+			WHERE search_id = ?
+		", array($this->id));
 	}
 
 

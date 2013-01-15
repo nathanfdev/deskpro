@@ -299,7 +299,23 @@ class TwitterStatusController extends AbstractController
 						}
 
 						$twitter_service = new \Application\DeskPRO\Service\Twitter();
-						$twitter_service->sendAccountMessage($type, $text, $split, $account_status->account, $account_status);
+						$response = $twitter_service->sendAccountMessage($type, $text, $split, $account_status->account, $account_status);
+
+						if ($response['new_account_statuses']) {
+							foreach ($response['new_account_statuses'] AS $new_account_status) {
+								$reply_html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+									'account_status' => $account_status,
+									'reply' => $new_account_status
+								));
+								$html[] = $reply_html;
+
+								$this->_insertUpdatedTweetClientMessage($account_status,
+									array('reply_added_html' => $reply_html, 'reply_added_id' => $new_account_status->id)
+								);
+							}
+
+							$this->_updateArchiveStatus($account_status, true, false);
+						}
 					}
 					break;
 
@@ -316,36 +332,15 @@ class TwitterStatusController extends AbstractController
 					break;
 
 				case 'archive':
-					$account_status->is_archived = true;
+					$this->_updateArchiveStatus($account_status, true, false);
 					break;
 
 				case 'unarchive':
-					$account_status->is_archived = false;
+					$this->_updateArchiveStatus($account_status, false, false);
 					break;
 
 				case 'assign':
-					$old_agent = $account_status->agent;
-					$old_team = $account_status->team;
-
-					if ($this->in->getValue('assign')) {
-						list($type, $id) = explode(':', $this->in->getValue('assign'));
-						if ($type == 'agent') {
-							$agent = $this->em->find('DeskPRO:Person', $id);
-							if ($agent && $agent->is_agent && $account_status->account->hasPerson($agent)) {
-								$account_status->agent = $agent;
-							}
-						} else {
-							$account_status->setAgentTeamId($id);
-						}
-					} else {
-						$account_status->agent = null;
-						$account_status->agent_team = null;
-					}
-
-					if ($account_status->agent !== $old_agent || $account_status->agent_team !== $old_team) {
-						$notify = new \Application\DeskPRO\Notifications\TweetAssignNotification($account_status);
-						$notify->send();
-					}
+					$this->_updateStatusAssignment($account_status, $this->in->getValue('assign'), false);
 					break;
 			}
 
@@ -438,6 +433,7 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 		$retweet = false;
 		$html = array();
+		$archived = false;
 
 		if ($this->in->getBool('retweet')) {
 			if (!$account_status->retweeted) {
@@ -449,6 +445,7 @@ class TwitterStatusController extends AbstractController
 					$retweet = true;
 				}
 			}
+			$archived = true;
 		} else {
 			$text = $this->in->getString('text');
 			if (strlen($text)) {
@@ -459,11 +456,19 @@ class TwitterStatusController extends AbstractController
 
 				if ($output['new_account_statuses']) {
 					foreach ($output['new_account_statuses'] AS $new_account_status) {
-						$html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+						$reply_html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
 							'account_status' => $account_status,
 							'reply' => $new_account_status
 						));
+						$html[] = $reply_html;
+
+						$this->_insertUpdatedTweetClientMessage($account_status,
+							array('reply_added_html' => $reply_html, 'reply_added_id' => $new_account_status->id)
+						);
 					}
+
+					$archived = true;
+					$this->_updateArchiveStatus($account_status);
 				}
 			}
 		}
@@ -472,7 +477,8 @@ class TwitterStatusController extends AbstractController
 			'success' => $success,
 			'error' => $error,
 			'retweet' => $retweet,
-			'html' => $html
+			'html' => $html,
+			'archived' => $archived
 		));
 	}
 
@@ -508,6 +514,7 @@ class TwitterStatusController extends AbstractController
 		$text = $this->in->getString('text');
 		$type = $this->in->getValue('type');
 		$split = $this->in->getBool('split');
+		$archived = false;
 		if (strlen($text)) {
 			if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
 				$text = '@' . $account_status->status->user->screen_name . ' ' . $text;
@@ -530,6 +537,9 @@ class TwitterStatusController extends AbstractController
 						array('reply_added_html' => $reply_html, 'reply_added_id' => $new_account_status->id)
 					);
 				}
+
+				$archived = true;
+				$this->_updateArchiveStatus($account_status);
 			}
 		} else {
 			$error = 'No text specified.';
@@ -538,7 +548,8 @@ class TwitterStatusController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => $success,
 			'html' => $html,
-			'error' => $error
+			'error' => $error,
+			'archived' => $archived
 		));
 	}
 
@@ -626,6 +637,37 @@ class TwitterStatusController extends AbstractController
 	{
 		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'assign');
 
+		$this->_updateStatusAssignment($account_status, $this->in->getValue('assign'));
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	protected function _insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
+	{
+		$twitter = new \Application\DeskPRO\Service\Twitter();
+		return $twitter->insertUpdatedTweetClientMessage($account_status, $changes);
+	}
+
+	protected function _updateArchiveStatus(TwitterAccountStatus $account_status, $value = true, $flush = true)
+	{
+		$old_archived = $account_status->is_archived;
+
+		$account_status->is_archived = $value;
+
+		if ($flush) {
+			$this->em->persist($account_status);
+			$this->em->flush();
+		}
+
+		if ($old_archived != $account_status->is_archived) {
+			$this->_insertUpdatedTweetClientMessage($account_status,
+				array('change_archived' => $account_status->is_archived)
+			);
+		}
+	}
+
+	protected function _updateStatusAssignment(TwitterAccountStatus $account_status, $assign, $flush = true)
+	{
 		if ($account_status->agent) {
 			$old_assign = 'agent:' . $account_status->agent->id;
 		} else if ($account_status->agent_team) {
@@ -634,7 +676,6 @@ class TwitterStatusController extends AbstractController
 			$old_assign = '';
 		}
 
-		$assign = $this->in->getValue('assign');
 		if ($assign) {
 			list($type, $id) = explode(':', $this->in->getValue('assign'));
 			if ($type == 'agent') {
@@ -647,8 +688,10 @@ class TwitterStatusController extends AbstractController
 			$account_status->agent_team = null;
 		}
 
-		$this->em->persist($account_status);
-		$this->em->flush();
+		if ($flush) {
+			$this->em->persist($account_status);
+			$this->em->flush();
+		}
 
 		if ($account_status->agent) {
 			$new_assignment = 'agent:' . $account_status->agent->getId();
@@ -675,13 +718,5 @@ class TwitterStatusController extends AbstractController
 				$notify->send();
 			}
 		}
-
-		return $this->createJsonResponse(array('success' => true));
-	}
-
-	protected function _insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
-	{
-		$twitter = new \Application\DeskPRO\Service\Twitter();
-		return $twitter->insertUpdatedTweetClientMessage($account_status, $changes);
 	}
 }

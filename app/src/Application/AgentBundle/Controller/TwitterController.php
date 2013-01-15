@@ -134,6 +134,10 @@ class TwitterController extends AbstractController
 
 		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+		$per_page = TwitterAccount::DEFAULT_LIMIT;
+
 		if ($this->in->getBool('partial')) {
 			$tpl = 'AgentBundle:TwitterStatus:part-status.html.twig';
 		} else {
@@ -142,10 +146,16 @@ class TwitterController extends AbstractController
 
 		$includeArchived = $this->in->getBool('include.archived');
 
+		$total_count = $search->countAccountStatuses($includeArchived);
+
 		return $this->render($tpl, array(
 			'account'  => $account,
 			'search'   => $search,
-			'statuses' => $search->getAccountStatuses($includeArchived),
+			'statuses' => $search->getAccountStatuses($includeArchived, $page, $per_page),
+			'total_count' => $total_count,
+			'per_page' => $per_page,
+			'page' => $page,
+			'showing_to' => min($total_count, $page * $per_page)
 		));
 	}
 

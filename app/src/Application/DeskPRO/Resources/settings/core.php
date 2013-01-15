@@ -350,4 +350,5 @@
 	'core.twitter_agent_consumer_secret' => '',
 	'core.twitter_user_consumer_key' => '',
 	'core.twitter_user_consumer_secret' => '',
+	'core.twitter_auto_remove_time' => 1209600
 );

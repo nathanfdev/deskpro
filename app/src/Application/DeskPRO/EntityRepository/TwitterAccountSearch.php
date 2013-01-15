@@ -48,4 +48,13 @@ class TwitterAccountSearch extends AbstractEntityRepository
 			WHERE s.term = ?0 AND s.account = ?1
 		")->setParameters(array($term, $account))->getOneOrNullResult();
 	}
+
+	public function getExistingSearchStatus(\Application\DeskPRO\Entity\TwitterAccountSearch $search, \Application\DeskPRO\Entity\TwitterAccountStatus $account_status)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:TwitterAccountSearchStatus s
+			WHERE s.search = ?0 AND s.account_status = ?1
+		")->setParameters(array($search, $account_status))->getOneOrNullResult();
+	}
 }

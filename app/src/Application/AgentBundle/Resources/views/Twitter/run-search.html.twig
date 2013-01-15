@@ -3,9 +3,13 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
 pageMeta.url_fragment = '{{ url_fragment('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}';
 pageMeta.accountId = '{{ account.id|escape }}';
+pageMeta.currentPage = {{ page }};
+pageMeta.perPage = {{ per_page }};
+pageMeta.totalCount = {{ total_count }};
 
 pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';
 pageMeta.statusListUrl = '{{ path('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}?partial=1';
+pageMeta.listRoute = 'agent_twitter_run_search';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
 
@@ -34,6 +38,8 @@ pageMeta.statusListUrl = '{{ path('agent_twitter_run_search', {'account_id': acc
     <div class="content">
 		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
 	</div>
+
+	{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
 </div>
 
 {# scroll containers #}

@@ -1710,6 +1710,13 @@ $collection->add('admin_twitter_apps', new Route(
 	array()
 ));
 
+$collection->add('admin_twitter_set_cleanup', new Route(
+	'/twitter/set-cleanup',
+	array('_controller' => 'AdminBundle:TwitterAccount:setCleanup'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_twitter_accounts_new', new Route(
 	'/twitter/accounts/new',
 	array('_controller' => 'AdminBundle:TwitterAccount:new'),

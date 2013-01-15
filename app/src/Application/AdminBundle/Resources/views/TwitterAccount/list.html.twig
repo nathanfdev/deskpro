@@ -22,4 +22,31 @@
 	{% endfor %}
 </ul>
 
+<form action="{{ path('admin_twitter_set_cleanup') }}" method="post" style="padding: 10px">
+	How long until Tweets that have not been interacted with are removed?
+	{% set options = {
+		86400: "1 day",
+		259200: "3 days",
+		432000: "5 days",
+		604800: "1 week",
+		1209600: "2 weeks",
+		1814400: "3 weeks",
+		2419000: "1 month",
+		4838000: "2 months",
+		7257000: "3 months",
+		14514000: "6 months",
+		21771000: "9 months",
+		29028000: "1 year",
+		58056000: "2 years",
+	} %}
+	<select name="time">
+		{% for k,v in options %}
+			<option value="{{ k }}" {% if app.getSetting('core.twitter_auto_remove_time') == k %}selected="selected"{% endif %}>{{ v }}</option>
+		{% endfor %}
+	</select>
+	<button class="clean-white">Update</button>
+
+	{{ form_token() }}
+</form>
+
 {% endblock %}

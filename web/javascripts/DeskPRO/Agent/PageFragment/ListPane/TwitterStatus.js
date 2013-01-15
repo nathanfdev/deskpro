@@ -6,14 +6,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	initializeProperties: function() {
 		this.parent();
 		this.TYPENAME = 'twitter-status-list';
-		this.typeMap = {
-			direct: 'agent_twitter_messages_list',
-			reply: 'agent_twitter_replies_list',
-			mention: 'agent_twitter_mentions_list',
-			retweet: 'agent_twitter_retweets_list',
-			timeline: 'agent_twitter_timeline_list',
-			sent: 'agent_twitter_outgoing_list'
-		};
 		this.countReflected = {};
 	},
 
@@ -61,12 +53,12 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			},
 			onPostSetNewResults: function(x, y, results) {
 				self._afterLoading(results);
-			},
+			}/*,
 			infiniteScroll: true,
 			infiniteScrollTarget: this.content.find('.twitter-status-list'),
 			infiniteScrollLoadFilter: function(results) {
 				return results.find('.row-item.twitter-status');
-			}
+			}*/
 		};
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
@@ -107,10 +99,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		if (this._tweetAppliesToPage(data) && this.resultsHelper && this.resultsHelper.options) {
 			this.countReflected[data.account_status_id] = true;
 			this.resultsHelper.adjustResultCount(adjustAmount);
-
-			if (this.meta.listRoute == this.typeMap.timeline && this.resultsHelper.resultCount > 1000) {
-				this.resultsHelper.setResultCount(1000);
-			}
 		}
 	},
 
@@ -126,33 +114,98 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_tweetAppliesToPage: function(data) {
-		if (this.meta.accountId && this.meta.accountId != data.account_id) {
+		if (!this.meta.accountId || this.meta.accountId != data.account_id) {
 			return false;
 		}
 
-		if (this.typeMap[data.status_type] && this.meta.listRoute == this.typeMap[data.status_type]) {
+		if (data.is_from_self && this.menuOptions.filter('[name=account]').is(':checked')) {
 			return true;
 		}
 
-		switch (data.status_type) {
-			case 'reply':
-			case 'mention':
-			case 'retweet':
-			case 'direct':
-				if (this.meta.listRoute == 'agent_twitter_inbox_list') {
-					return true;
+		var isInInbox = (
+			$.inArray(data.status_type, ['direct', 'reply', 'mention', 'retweet']) !== -1
+			|| data.is_favorited
+		);
+
+		switch (this.meta.listRoute) {
+			case 'agent_twitter_mine_list':
+				if (data.assignment !== 'agent:' + DESKPRO_PERSON_ID) {
+					return false;
 				}
+				break;
+
+			case 'agent_twitter_team_list':
+				var hasOwnTeam = false;
+				for (var i = 0; i < DESKPRO_TEAM_IDS.length; i++) {
+					var teamId = DESKPRO_TEAM_IDS[i];
+					if (data.assignment === 'agent_team:' + teamId) {
+						// my teams' tweets
+						hasOwnTeam = true;
+						break;
+					}
+				}
+				if (!hasOwnTeam) {
+					return false;
+				}
+				break;
+
+			case 'agent_twitter_unassigned_list':
+				if (data.assignment !== '') {
+					return false;
+				}
+				if (!isInInbox) {
+					return false;
+				}
+				break;
+
+			case 'agent_twitter_all_list':
+				if (!isInInbox) {
+					return false;
+				}
+				break;
+
+			case 'agent_twitter_timeline_list':
+				if (data.status_type !== 'timeline') {
+					return false;
+				}
+				break;
+
+			case 'agent_twitter_sent_list':
+				if (!data.is_from_self) {
+					return false;
+				}
+				break;
 		}
 
-		if (data.is_from_self) {
-			if (this.meta.listRoute == this.typeMap.sent) {
-				return true;
-			} else if (this.menuOptions.filter('[name=account]').is(':checked')) {
-				return true;
+		if (this.meta.group) {
+			switch (this.meta.group) {
+				case 'type':
+					if (this.meta.groupValue == 'favorite') {
+						if (!data.is_favorited) {
+							return false;
+						}
+					} else {
+						if (data.status_type !== this.meta.groupValue) {
+							return false;
+						}
+					}
+					break;
+
+				case 'agent':
+					if (data.agent_id != this.meta.groupValue) {
+						return false;
+					}
+					break;
+
+				case 'team':
+					if (data.agent_team_id != this.meta.groupValue) {
+						return false;
+					}
+					break;
 			}
 		}
 
-		return false;
+		return true;
 	},
 
 	adjustShownTweetsForTweetUpdated: function(data) {

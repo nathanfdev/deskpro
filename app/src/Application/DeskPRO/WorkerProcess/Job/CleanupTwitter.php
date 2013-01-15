@@ -47,74 +47,28 @@ class CleanupTwitter extends AbstractJob
 	public function run()
 	{
 		$db = App::getDb();
-		$accounts = $db->fetchAll("
-			SELECT *
-			FROM twitter_accounts
-		");
+		$cutoff = gmdate('Y-m-d H:i:s', time() - App::getSetting('core.twitter_auto_remove_time'));
 
-		$status_ids = array();
+		$db->executeUpdate("
+			DELETE IGNORE FROM twitter_accounts_statuses
+			WHERE (status_type = 'timeline' OR status_type IS NULL)
+				AND is_favorited = 0
+				AND agent_id IS NULL
+				AND agent_team_id IS NULL
+				AND retweeted_id IS NULL
+				AND action_agent_id IS NULL
+				AND date_created < ?
+		", array($cutoff));
 
-		foreach ($accounts AS $account) {
-			$results = $db->fetchAllKeyValue("
-				SELECT id, status_id
-				FROM twitter_accounts_statuses
-				WHERE account_id = ?
-					AND status_type = 'timeline'
-					AND is_favorited = 0
-					AND (is_archived = 1 OR (agent_id IS NULL AND agent_team_id IS NULL))
-				ORDER BY date_created DESC
-				LIMIT 1000, 10000
-			", array($account['id']));
+		$deleted = $db->executeUpdate("
+			DELETE IGNORE s FROM twitter_statuses AS s
+			LEFT JOIN twitter_accounts_statuses AS accs ON (s.id = accs.status_id)
+			WHERE s.date_created < ?
+				AND accs.id IS NULL
+		", array($cutoff));
 
-			$db->deleteIn('twitter_accounts_statuses', array_keys($results));
-			$status_ids = array_merge($status_ids, array_values($results));
-
-			$searches = $db->fetchAll("
-				SELECT *
-				FROM twitter_accounts_searches
-				WHERE account_id = ?
-			", array($account['id']));
-
-			foreach ($searches AS $search) {
-				$results = $db->fetchAllCol("
-					SELECT ss.account_status_id, accs.status_id
-					FROM twitter_accounts_searches_statuses AS ss
-					INNER JOIN twitter_accounts_statuses AS accs
-					WHERE ss.search_id = ?
-						AND accs.status_type = 'timeline'
-						AND accs.is_favorited = 0
-						AND (accs.is_archived = 1 OR (accs.agent_id IS NULL AND accs.agent_team_id IS NULL))
-					ORDER BY ss.date_created DESC
-					LIMIT 100, 10000
-				", array($search['id']));
-				if ($results) {
-					$db->executeUpdate("
-						DELETE FROM twitter_accounts_statuses
-						WHERE status_type IS NULL AND id IN (" . implode(',', array_keys($results)) . ")
-					");
-					$status_ids = array_merge($status_ids, array_values($results));
-				}
-			}
-		}
-
-		if ($status_ids) {
-			$i = 0;
-			$total_deleted = 0;
-			$status_ids_in = implode(',', $status_ids);
-			do {
-				$affected = $db->executeUpdate("
-					DELETE FROM twitter_statuses
-					WHERE id IN ($status_ids_in) AND in_reply_to_status_id IS NULL
-				");
-				if (!$affected) {
-					break;
-				}
-				$total_deleted += $affected;
-
-				$i++;
-			} while($i < 5);
-
-			$this->logStatus("Cleaned up $total_deleted statuses");
+		if ($deleted) {
+			$this->logStatus("Cleaned up $deleted statuses");
 		}
 	}
 }
