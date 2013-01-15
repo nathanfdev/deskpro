@@ -391,6 +391,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 				$e = new \RuntimeException("No default transport found");
 				\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+
+				$tr = $tr->getTransport();
 			}
 		}
 
