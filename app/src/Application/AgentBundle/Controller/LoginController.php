@@ -53,7 +53,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	{
 		// Already logged in
 		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
-			return $this->redirectRoute('agent');
+			return $this->redirectRoute($this->route_prefix);
 		}
 
 		$has_done_reset = false;
@@ -82,7 +82,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 						throw $e;
 					}
 				} else {
-					return $this->render('AgentBundle:Login:reset-password.html.twig', array('reset_code' => $this->in->getString('reset_code')));
+					return $this->render('AgentBundle:Login:reset-password.html.twig', array(
+						'reset_code'    => $this->in->getString('reset_code'),
+						'route_prefix'  => $this->route_prefix,
+					));
 				}
 			}
 		}
@@ -102,6 +105,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $url,
+			'route_prefix'       => $this->route_prefix,
 			'has_logged_out'     => $has_logged_out,
 			'has_done_reset'     => $has_done_reset,
 			'failed_login_name'  => $failed_login_name,

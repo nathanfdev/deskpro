@@ -26,6 +26,17 @@ $collection->add('billing_cancel', new Route(
 	array()
 ));
 
+################################################################################
+# Login
+################################################################################
+
+$collection->add('billing_login_preload_sources', new Route(
+	'/login/preload-sources',
+	array('_controller' => 'CloudBillingBundle:Login:preloadSources'),
+	array(),
+	array()
+));
+
 $collection->add('billing_login', new Route(
 	'/login',
 	array('_controller' => 'CloudBillingBundle:Login:index'),
@@ -33,16 +44,16 @@ $collection->add('billing_login', new Route(
 	array()
 ));
 
-$collection->add('billing_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'CloudBillingBundle:Login:logout'),
+$collection->add('billing_login_authenticate_local', new Route(
+	'/login/authenticate-password',
+	array('_controller' => 'CloudBillingBundle:Login:authenticateLocal', 'usersource_id' => 0),
 	array(),
 	array()
 ));
 
-$collection->add('billing_login_authenticate_local', new Route(
-	'/login/authenticate-password',
-	array('_controller' => 'CloudBillingBundle:Login:authenticateLocal', 'usersource_id' => 0),
+$collection->add('billing_send_lost', new Route(
+	'/login/send-lost.json',
+	array('_controller' => 'CloudBillingBundle:Login:sendResetPassword', '_format' => 'json'),
 	array(),
 	array()
 ));

@@ -12,6 +12,8 @@
 				<td style="vertical-align:middle; text-align: right;">Password:</td>
 				<td style="vertical-align:middle;">
 					<input type="password" name="password" style="font-family: sans-serif; line-height: 100%; padding: 5px; border-radius: 3px; border: 1px solid #aaa; width: 350px" placeholder="Enter your admin password" />
+					&nbsp;&nbsp;
+					<a href="<?php echo $billing_url ?>login?lost">Lost password?</a>
 				</td>
 			</tr>
 			<tr>

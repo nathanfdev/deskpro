@@ -2,7 +2,7 @@
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//$('<iframe id="preload_iframe" src="{{ path('agent_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
+			//$('<iframe id="preload_iframe" src="{{ path(route_prefix ~ '_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
 
 			$('#lost_link').on('click', function(ev) {
 				ev.preventDefault();
@@ -52,7 +52,7 @@
 				}
 
 				$.ajax({
-					url: '{{ path('agent_send_lost') }}',
+					url: '{{ path(route_prefix~'_send_lost') }}',
 					data: postData,
 					complete: function() {
 						$('#loading_view').hide();
@@ -68,7 +68,7 @@
 	</script>
 {% endblock %}
 {% block content %}
-<form action="{{ path('agent_login_authenticate_local') }}" method="post">
+<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
 	<input type="hidden" name="agent_login" value="1" />
 	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
@@ -92,7 +92,7 @@
 			<dl>
 				<dt>{{ phrase('agent.general.password') }}</dt>
 				<dd class="password">
-					<a href="{{ path('user_login_resetpass') }}" id="lost_link">{{ phrase('agent.general.lost_qm') }}</a>
+					<a href="#" id="lost_link">{{ phrase('agent.general.lost_qm') }}</a>
 					<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" />
 					<div style="text-align: left">
 						<label style="margin: 0; padding: 0; font-weight: normal; font-size: 12px;">
@@ -121,7 +121,7 @@
 				<dt></dt>
 				<dd class="btn lost">
 					<button id="do_send_lost">{{ phrase('agent.login.email_instructions') }}</button>
-					<a href="{{ path('agent_login') }}" id="login_link">{{ phrase('agent.login.back_to_login') }}</a>
+					<a href="{{ path(route_prefix~'_login') }}" id="login_link">{{ phrase('agent.login.back_to_login') }}</a>
 				</dd>
 			</dl>
 		</div>

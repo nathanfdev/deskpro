@@ -104,6 +104,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		return $this->render($this->tpl_prefix . ':index.html.twig', array(
 			'return' => $return,
+			'route_prefix' => $this->route_prefix,
 			'form' => $form->createView(),
 			'failed_login_name' => $failed_login_name,
 			'account_disabled' => $account_disabled
@@ -354,7 +355,7 @@ HTML;
 		}
 
 		return $this->render('UserBundle:Login:jstell.html.twig', array(
-
+			'route_prefix' => $this->route_prefix,
 		));
 	}
 
@@ -573,6 +574,7 @@ HTML;
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
 
 		return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
+			'route_prefix' => $this->route_prefix,
 			'invalid_email' => $invalid_email,
 			'invalid_code' => $invalid_code,
 			'form' => $form->createView(),
@@ -651,7 +653,9 @@ HTML;
 			}
 
 			// Default is to just show standard message to not reveal if account exists
-			return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
+			return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+				'route_prefix' => $this->route_prefix,
+			));
 		}
 
 		// If they dont have a password, this either means they're not a user yet,
@@ -684,20 +688,23 @@ HTML;
 					return $this->createJsonResponse(array('success' =>1 ));
 				}
 
-				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
+				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+					'route_prefix' => $this->route_prefix,
+				));
 			}
 		}
 
 		// If they're still here, then we just send them through the normal DeskPRO reset procedure
 
-		$code_data = TmpData::create('reset-password', array('person_id' => $person['id']), '+3 days');
+		$code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+3 days');
 		$this->em->persist($code_data);
 		$this->em->flush();
 
 		$vars = array(
-			'code' => $code_data->getCode(),
-			'person' => $person,
-			'email' => $email
+			'code'      => $code_data->getCode(),
+			'person'    => $person,
+			'email'     => $email,
+			'interface' => DP_INTERFACE
 		);
 
 		$message = $this->container->getMailer()->createMessage();
@@ -713,7 +720,9 @@ HTML;
 		$this->session->remove('auth_person_id');
 		$this->session->save();
 
-		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
+		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+			'route_prefix' => $this->route_prefix,
+		));
 	}
 
 	public function resetPasswordNewPassAction($code)
@@ -725,7 +734,9 @@ HTML;
 		}
 
 		if (!$code_data OR !$person OR $code_data->getData('is_used')) {
-			return $this->render('UserBundle:Login:reset-password-badcode.html.twig');
+			return $this->render('UserBundle:Login:reset-password-badcode.html.twig', array(
+				'route_prefix' => $this->route_prefix,
+			));
 		}
 
 		$errors = array();
@@ -776,6 +787,7 @@ HTML;
 
 		return $this->render($this->tpl_prefix . ':reset-password-newpass.html.twig', array(
 			'code' => $code_data->getCode(),
+			'route_prefix' => $this->route_prefix,
 			'errors' => $errors
 		));
 	}
