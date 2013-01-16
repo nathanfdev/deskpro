@@ -118,6 +118,111 @@ class TwitterUserController extends AbstractController
 
 	public function viewAction($user_id)
 	{
+		$user = $this->_getUser($user_id);
+		list($account, $accounts) = $this->_getCurrentAccounts();
+
+		if (!$user->last_profile_update || $user->last_profile_update->getTimeStamp() < time() - TwitterUser::PROFILE_UPDATE_FREQUENCY) {
+			$user->updateProfile();
+			$this->em->persist($user);
+			$this->em->flush();
+		}
+
+		$statuses = $user->getStatuses();
+		$messages = $user->getMessages();
+		$mentions = $user->getMentions();
+
+		if ($account) {
+			$status_ids = array_merge(array_keys($statuses), array_keys($messages), array_keys($mentions));
+			$status_ids = array_unique($status_ids);
+			$status_ids = array_values($status_ids);
+			$account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount($status_ids, $account);
+		} else {
+			$account_statuses = array();
+		}
+
+		return $this->render('AgentBundle:TwitterUser:view.html.twig', array(
+			'user' => $user,
+			'accounts' => $accounts,
+			'account' => $account,
+			'statuses' => $statuses,
+			'messages' => $messages,
+			'mentions' => $mentions,
+			'account_statuses' => $account_statuses
+		));
+	}
+
+	public function viewUserFollowingAction($user_id)
+	{
+		$user = $this->_getUser($user_id);
+		list($account, $accounts) = $this->_getCurrentAccounts();
+
+		if (!$user->last_follow_update || $user->last_follow_update->getTimeStamp() < time() - TwitterUser::FOLLOW_UPDATE_FREQUENCY) {
+			$user->updateFollows();
+			$this->em->persist($user);
+			$this->em->flush();
+		}
+
+		$page = $this->in->getUint('page');
+		$page = max(1, $page);
+		$per_page = 25;
+
+		$friends = $user->getFriends($page, $per_page + 1);
+		$more = count($friends) == $per_page + 1;
+		if ($more) {
+			$friends = array_slice($friends, 0, $per_page, true);
+		}
+
+		foreach ($friends AS $friend) {
+			$friend->friend_user->registerStub();
+		}
+
+		return $this->render('AgentBundle:TwitterUser:view-user-following.html.twig', array(
+			'user' => $user,
+			'accounts' => $accounts,
+			'account' => $account,
+			'friends' => $friends,
+			'more' => $more,
+			'more_page' => $page + 1
+		));
+	}
+
+	public function viewUserFollowersAction($user_id)
+	{
+		$user = $this->_getUser($user_id);
+		list($account, $accounts) = $this->_getCurrentAccounts();
+
+		if (!$user->last_follow_update || $user->last_follow_update->getTimeStamp() < time() - TwitterUser::FOLLOW_UPDATE_FREQUENCY) {
+			$user->updateFollows();
+			$this->em->persist($user);
+			$this->em->flush();
+		}
+
+		$page = $this->in->getUint('page');
+		$page = max(1, $page);
+		$per_page = 25;
+
+		$followers = $user->getFollowers($page, $per_page + 1);
+		$more = count($followers) == $per_page + 1;
+		if ($more) {
+			$followers = array_slice($followers, 0, $per_page, true);
+		}
+
+		foreach ($followers AS $follower) {
+			$follower->follower_user->registerStub();
+		}
+
+		return $this->render('AgentBundle:TwitterUser:view-user-followers.html.twig', array(
+			'user' => $user,
+			'accounts' => $accounts,
+			'account' => $account,
+			'followers' => $followers,
+			'more' => $more,
+			'more_page' => $page + 1
+		));
+	}
+
+	protected function _getUser($user_id)
+	{
 		if (!$user_id) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
@@ -142,6 +247,11 @@ class TwitterUserController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		return $user;
+	}
+
+	protected function _getCurrentAccounts()
+	{
 		$account_id = $this->in->getUint('account_id');
 		if ($account_id) {
 			$this->person->setPreference('agent.ui.last_twitter_account', $account_id);
@@ -161,44 +271,7 @@ class TwitterUserController extends AbstractController
 			$account = null;
 		}
 
-		if (!$user->last_profile_update || $user->last_profile_update->getTimeStamp() < time() - TwitterUser::PROFILE_UPDATE_FREQUENCY) {
-			$user->updateProfile();
-			$this->em->persist($user);
-			$this->em->flush();
-		}
-
-		if (!$user->last_follow_update || $user->last_follow_update->getTimeStamp() < time() - TwitterUser::PROFILE_UPDATE_FREQUENCY) {
-			$user->updateFollows();
-			$this->em->persist($user);
-			$this->em->flush();
-		}
-
-		$statuses = $user->getStatuses();
-		$messages = $user->getMessages();
-		$mentions = $user->getMentions();
-		$friends = $user->getFriends();
-		$followers = $user->getFollowers();
-
-		if ($account) {
-			$status_ids = array_merge(array_keys($statuses), array_keys($messages), array_keys($mentions));
-			$status_ids = array_unique($status_ids);
-			$status_ids = array_values($status_ids);
-			$account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount($status_ids, $account);
-		} else {
-			$account_statuses = array();
-		}
-
-		return $this->render('AgentBundle:TwitterUser:view.html.twig', array(
-			'user' => $user,
-			'accounts' => $accounts,
-			'account' => $account,
-			'statuses' => $statuses,
-			'messages' => $messages,
-			'mentions' => $mentions,
-			'account_statuses' => $account_statuses,
-			'friends' => $friends,
-			'followers' => $followers
-		));
+		return array($account, $accounts);
 	}
 	
 	public function messageOverlayAction($user_id)

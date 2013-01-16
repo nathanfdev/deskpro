@@ -176,6 +176,41 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		}
 
 		this.fireEvent('tabSwitch', eventData);
+
+		if (this.lastActiveTabContent.data('load-url') && !this.lastActiveTabContent.data('tab-loaded')) {
+			this._triggerTabAjaxLoad(this.lastActiveTab, this.lastActiveTabContent, eventData);
+		}
+	},
+
+	_triggerTabAjaxLoad: function(tabEl, contentEl, eventData) {
+		var self = this;
+
+		contentEl.data('tab-loaded', true);
+
+		delete eventData['cancel'];
+
+		this.fireEvent('beforeTabLoad', eventData);
+		if (eventData.cancel) {
+			return;
+		}
+
+		$.ajax({
+			url: contentEl.data('load-url'),
+			method: 'get',
+			dataType: 'html',
+			success: function(html) {
+				delete eventData['cancel'];
+				self.fireEvent('beforeTabLoaded', eventData);
+				if (eventData.cancel) {
+					return;
+				}
+
+				contentEl.html(html);
+				eventData.tabContent = self.getContentElFromTab(tabEl);
+
+				self.fireEvent('tabLoaded', eventData);
+			}
+		})
 	},
 
 	getActiveTab: function() {

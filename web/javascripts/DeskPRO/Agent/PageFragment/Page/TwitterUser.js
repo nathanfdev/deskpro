@@ -137,6 +137,52 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 			});
 		});
 
+		var followingLoadPending = false;
+		var followingTab = self.getEl('following_tab');
+		followingTab.on('click', '.more-box .more-button', function() {
+			if (followingLoadPending) {
+				return;
+			}
+			followingLoadPending = true;
+
+			followingTab.find('.more-box .flat-spinner').show();
+
+			$.ajax({
+				url: $(this).data('load-url'),
+				success: function(html) {
+					followingTab.find('.more-box').remove();
+					followingTab.append(html);
+				},
+				complete: function() {
+					followingTab.find('.more-box .flat-spinner').hide();
+					followingLoadPending = false;
+				}
+			});
+		});
+
+		var followersLoadPending = false;
+		var followersTab = self.getEl('followers_tab');
+		followersTab.on('click', '.more-box .more-button', function() {
+			if (followersLoadPending) {
+				return;
+			}
+			followersLoadPending = true;
+
+			followersTab.find('.more-box .flat-spinner').show();
+
+			$.ajax({
+				url: $(this).data('load-url'),
+				success: function(html) {
+					followersTab.find('.more-box').remove();
+					followersTab.append(html);
+				},
+				complete: function() {
+					followersTab.find('.more-box .flat-spinner').show();
+					followersLoadPending = false;
+				}
+			});
+		});
+
 		$('.timeago', this.el).timeago();
 
 		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.el, this);

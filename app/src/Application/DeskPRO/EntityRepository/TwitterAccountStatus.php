@@ -248,13 +248,13 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		if (count($accounts) == 1) {
 			$account = reset($accounts);
 			$ids = array($account->id);
-			$dm_sent_case = $account->user->id;
+			$dm_sent_case = ($account->user->id+0);
 		} else {
 			$ids = array();
 			$dm_sent_case = 'CASE a.account_id';
 			foreach ($accounts AS $account) {
 				$ids[] = $account->id;
-				$dm_sent_case .= " WHEN $account->id THEN " . $account->user->id;
+				$dm_sent_case .= " WHEN $account->id THEN " . ($account->user->id+0);
 			}
 			$dm_sent_case .= " END";
 		}

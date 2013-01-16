@@ -1536,6 +1536,20 @@ $collection->add('agent_twitter_user', new Route(
 	array('fragment_name' => 'twitter')
 ));
 
+$collection->add('agent_twitter_user_following', new Route(
+	'/twitter/user/{user_id}/following',
+	array('_controller' => 'AgentBundle:TwitterUser:viewUserFollowing'),
+	array('user_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_twitter_user_followers', new Route(
+	'/twitter/user/{user_id}/followers',
+	array('_controller' => 'AgentBundle:TwitterUser:viewUserFollowers'),
+	array('user_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_twitter_user_find', new Route(
 	'/twitter/user/find',
 	array('_controller' => 'AgentBundle:TwitterUser:find'),
@@ -1600,7 +1614,7 @@ $collection->add('agent_twitter_getsectiondata', new Route(
 	array()
 ));
 
-$collection->add('agent_twitter_getsectiondata', new Route(
+$collection->add('agent_twitter_updategrouping', new Route(
 	'/twitter/update-grouping.json',
 	array('_controller' => 'AgentBundle:Twitter:updateGrouping'),
 	array(),

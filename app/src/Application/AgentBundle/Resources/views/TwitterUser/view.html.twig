@@ -173,6 +173,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div style="padding: 10px">No statuses for user.</div>
 			{% endfor %}
 		</article>
+
 		<article id="{{baseId}}_messages_tab">
 			{% for status in messages %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
@@ -180,6 +181,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div style="padding: 10px">No messages for user.</div>
 			{% endfor %}
 		</article>
+
 		<article id="{{baseId}}_mentions_tab">
 			{% for status in mentions %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
@@ -187,20 +189,26 @@ pageMeta.baseId = '{{ baseId }}';
 				<div style="padding: 10px">No mentions for user.</div>
 			{% endfor %}
 		</article>
-		<article id="{{baseId}}_following_tab">
-			{% for friend in friends %}
-				{% include 'AgentBundle:TwitterUser:part-user.html.twig' with {'user': friend.friend_user} %}
-			{% else %}
+
+		{% if user.friends_count %}
+			<article id="{{baseId}}_following_tab" data-load-url="{{ path('agent_twitter_user_following', {'user_id': user.id}) }}">
+				<div style="padding: 10px; text-align: center">Loading... <span class="flat-spinner"></span></div>
+			</article>
+		{% else %}
+			<article id="{{baseId}}_following_tab">
 				<div style="padding: 10px">No followed users.</div>
-			{% endfor %}
-		</article>
-		<article id="{{baseId}}_followers_tab">
-			{% for follower in followers %}
-				{% include 'AgentBundle:TwitterUser:part-user.html.twig' with {'user': follower.follower_user} %}
-			{% else %}
+			</article>
+		{% endif %}
+
+		{% if user.followers_count %}
+			<article id="{{baseId}}_followers_tab" data-load-url="{{ path('agent_twitter_user_followers', {'user_id': user.id}) }}">
+				<div style="padding: 10px; text-align: center">Loading... <span class="flat-spinner"></span></div>
+			</article>
+		{% else %}
+			<article id="{{baseId}}_followers_tab">
 				<div style="padding: 10px">No followers.</div>
-			{% endfor %}
-		</article>
+			</article>
+		{% endif %}
 	</section>
 </div>
 

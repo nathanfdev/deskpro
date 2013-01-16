@@ -48,6 +48,7 @@ use Application\DeskPRO\Entity;
 class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
 	const TIMELINE_UPDATE_FREQUENCY = 900;
+	const FOLLOW_UPDATE_FREQUENCY = 3600;
 	const PROFILE_UPDATE_FREQUENCY = 86400;
 
 	/**
@@ -274,14 +275,14 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, $from_user_ids, true, 'desc');
 	}
 
-	public function getFollowers()
+	public function getFollowers($page = 1, $per_page = 25)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterUserFollower')->getFollowersForUser($this);
+		return App::getOrm()->getRepository('DeskPRO:TwitterUserFollower')->getFollowersForUser($this, $page, $per_page);
 	}
 
-	public function getFriends()
+	public function getFriends($page = 1, $per_page = 25)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterUserFriend')->getFriendsForUser($this);
+		return App::getOrm()->getRepository('DeskPRO:TwitterUserFriend')->getFriendsForUser($this, $page, $per_page);
 	}
 
 	public function countAccountInteractions(TwitterAccount $account)
@@ -437,7 +438,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function updateFollows()
+	public function updateFollows($register_stubs = false)
 	{
 		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getFirst();
 		if (!$account) {
@@ -462,6 +463,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 				foreach ($ids AS $id) {
 					if (!isset($existing_users[$id])) {
 						$new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
+						if (!$register_stubs) {
+							$new_user->unregisterStub();
+						}
 						App::getOrm()->persist($new_user);
 						$existing_users[$id] = $new_user;
 					} else {
@@ -475,6 +479,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 						$new_for_type->display_order = $count;
 
 						App::getOrm()->persist($new_for_type);
+
+						$existing_for_type[$id] = $new_for_type;
 					}
 
 					$count--;
@@ -500,6 +506,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 				foreach ($ids AS $id) {
 					if (!isset($existing_users[$id])) {
 						$new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
+						if (!$register_stubs) {
+							$new_user->unregisterStub();
+						}
 						App::getOrm()->persist($new_user);
 						$existing_users[$id] = $new_user;
 					} else {
@@ -513,6 +522,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 						$new_for_type->display_order = $count;
 
 						App::getOrm()->persist($new_for_type);
+
+						$existing_for_type[$id] = $new_for_type;
 					}
 
 					$count--;
@@ -597,6 +608,18 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		self::$_stubs[$id] = $entity;
 
 		return $entity;
+	}
+
+	public function unregisterStub()
+	{
+		unset(self::$_stubs[$this->id]);
+	}
+
+	public function registerStub()
+	{
+		if ($this->is_stub) {
+			self::$_stubs[$this->id] = $this;
+		}
 	}
 
 

@@ -63,7 +63,7 @@ class TwitterUserFollower extends AbstractEntityRepository
 		return $output;
 	}
 
-	public function getFollowersForUser($user, $page = 1, $per_page = 20)
+	public function getFollowersForUser($user, $page = 1, $per_page = 25)
 	{
 		return $this->getEntityManager()->createQuery("
 			SELECT f, u

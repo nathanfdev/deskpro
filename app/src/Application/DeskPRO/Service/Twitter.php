@@ -933,7 +933,7 @@ class Twitter
 			'agent_id' => $account_status->agent ? $account_status->agent->id : 0,
 			'agent_team_id' => $account_status->agent_team ? $account_status->agent_team->id : 0,
 			'tweet_html' => $tweet_html,
-			'trigger_user_id' => App::getCurrentPerson()->getId()
+			'trigger_user_id' => App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0
 		);
 	}
 
