@@ -537,7 +537,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$this->event_dispatcher->dispatch(self::EVENT_NEWREPLY, $ev);
 
 		// prevent a memory leak with a large message
-		App::getOrm()->detach($message);
 		$message->email_source = null;
 		$message = null;
 
@@ -1187,7 +1186,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			App::getDb()->commit();
 
-			App::getOrm()->detach($message);
 			$message->email_source = null;
 			$message = null;
 		} catch (\Exception $e) {
@@ -1343,7 +1341,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				App::getOrm()->persist($attach);
 			}
 
-			App::getOrm()->detach($message);
 			$message->email_source = null;
 			$message = null;
 		}
