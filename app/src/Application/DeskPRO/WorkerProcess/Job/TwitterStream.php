@@ -330,6 +330,7 @@ class TwitterStream extends AbstractJob
 		}
 
 		$follower = null;
+		$friend = null;
 
 		if (isset($data->target_object) && isset($data->target_object->text)) {
 			$targetObject = $data->target_object;
@@ -378,6 +379,26 @@ class TwitterStream extends AbstractJob
 							$this->em->persist($follower);
 						}
 					}
+					break;
+
+				case 'unfollow':
+					if ($sourceUser->id == $account->getUserId()) {
+						// unfollowing someone
+						$friend = $this->em->getRepository('DeskPRO:TwitterAccountFriend')->findOneByAccountIdAndUserId($account->id, $targetUser->id);
+						if ($friend) {
+							$this->em->remove($friend);
+							$friend = null;
+
+							App::getDb()->insert('client_messages', array(
+								'channel' => 'agent.twitter-friend',
+								'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+								'date_created' => date('Y-m-d H:i:s'),
+								'data' => serialize(array('action' => 'removed', 'account_id' => $account->id)),
+								'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+							));
+						}
+					}
+					break;
 			}
 		}
 
@@ -386,6 +407,16 @@ class TwitterStream extends AbstractJob
 		if ($follower) {
 			App::getDb()->insert('client_messages', array(
 				'channel' => 'agent.twitter-follower',
+				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
+				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			));
+		}
+
+		if ($friend) {
+			App::getDb()->insert('client_messages', array(
+				'channel' => 'agent.twitter-friend',
 				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 				'date_created' => date('Y-m-d H:i:s'),
 				'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),

@@ -46,11 +46,13 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.twitter-follower', function (data) {
 			var newCount = $('#twitter_' + data.account_id + '_new_followers_count');
 			var totalCount = $('#twitter_' + data.account_id + '_followers_count');
+			var totalCountHeader = $('#twitter_' + data.account_id + '_followers_count_header');
 
 			switch (data.action) {
 				case 'new':
 					newCount.text(parseInt(newCount.text().trim(), 10) + 1);
 					totalCount.text(parseInt(totalCount.text().trim(), 10) + 1);
+					totalCountHeader.text(totalCount.text());
 					break;
 
 				case 'archived':
@@ -59,6 +61,23 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 
 				case 'unarchived':
 					newCount.text(parseInt(newCount.text().trim(), 10) + 1);
+					break;
+			}
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.twitter-friend', function (data) {
+			var totalCount = $('#twitter_' + data.account_id + '_following_count');
+			var totalCountHeader = $('#twitter_' + data.account_id + '_following_count_header');
+
+			switch (data.action) {
+				case 'new':
+					totalCount.text(parseInt(totalCount.text().trim(), 10) + 1);
+					totalCountHeader.text(totalCount.text());
+					break;
+
+				case 'removed':
+					totalCount.text(Math.max(0, parseInt(totalCount.text().trim(), 10) - 1));
+					totalCountHeader.text(totalCount.text());
 					break;
 			}
 		});

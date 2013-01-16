@@ -240,9 +240,16 @@ class TwitterUserController extends AbstractController
 			$friend['account'] = $account;
 			$friend['user'] = $user;
 
-			$em = App::getOrm();
 			$this->em->persist($friend);
 			$this->em->flush();
+
+			App::getDb()->insert('client_messages', array(
+				'channel' => 'agent.twitter-friend',
+				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
+				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			));
 
 			$follower = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
 				->findOneByAccountIdAndUserId($account['id'], $user['id']);
@@ -290,6 +297,14 @@ class TwitterUserController extends AbstractController
 		if ($friend) {
 			$this->em->remove($friend);
 			$this->em->flush();
+
+			App::getDb()->insert('client_messages', array(
+				'channel' => 'agent.twitter-friend',
+				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array('action' => 'removed', 'account_id' => $account->id)),
+				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			));
 		}
 
 		$success = true;

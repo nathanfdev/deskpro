@@ -279,6 +279,7 @@ class ClientMessage extends AbstractEntityRepository
 			$channels[] = 'agent.tweet-added';
 			$channels[] = 'agent.tweet-updated';
 			$channels[] = 'agent.twitter-follower';
+			$channels[] = 'agent.twitter-friend';
 			$channels[] = 'agent.ui.new-feedback';
 			$channels[] = 'agent.ui.new-pending';
 

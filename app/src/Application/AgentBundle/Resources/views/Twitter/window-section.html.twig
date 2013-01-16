@@ -52,7 +52,7 @@
 	<header>
 		<span data-account-id="{{ account.id }}" class="settings launch-twitter-grouping-editor"></span>
 		<span data-account-id="{{ account.id }}" class="twitter-account-add-status add"></span>
-		<h1>@{{ account.user.screen_name }} ({{ account.countFollowing() }} / {{ account.countFollowers() }})</h1>
+		<h1>@{{ account.user.screen_name }} (<span id="twitter_{{ account.id }}_following_count_header">{{ account.countFollowing() }}</span> / <span id="twitter_{{ account.id }}_followers_count_header">{{ account.countFollowers() }}</span>)</h1>
 	</header>
 	<article>
 	<ul class="source-list" id="twitter-section-counts-{{ account.id }}">
