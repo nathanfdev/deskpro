@@ -1723,6 +1723,32 @@ class TicketController extends AbstractController
 		} else {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
+			// Validate based on department...
+			$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+			$newticket->department_id = $ticket->department_id;
+			$newticket->category_id   = $ticket->category_id;
+			$newticket->product_id    = $ticket->product_id;
+			$newticket->priority_id   = $ticket->priority_id;
+			$newticket->ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'raw');
+
+			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
+			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+			$ticket_display->setPersonContext($this->person);
+			$ticket_display->addPagesFromDb();
+			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
+			$validator->setPageData($default_page->getPageDisplay('default')->data);
+
+			if (!$validator->isValid($newticket)) {
+				$free = array();
+				foreach ($validator->getErrorsInfo() as $info) {
+					$free[] = htmlspecialchars($info['message']);
+				}
+
+				$free = '- '. implode("<br/>- ", $free);
+
+				return $this->createJsonResponse(array('error' => true, 'error_message' => $free));
+			}
+
 			$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
 
 			// If department is changed,
