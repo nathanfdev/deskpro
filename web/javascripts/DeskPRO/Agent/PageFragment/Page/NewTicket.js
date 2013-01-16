@@ -340,6 +340,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						Array.each(data.error_codes, function(code) {
 							this.showErrorCode(code);
 						}, this);
+
+						if (data.error_messages) {
+							this.showErrorCode('free');
+							var free = $('<div/>');
+							Array.each(data.error_messages, function(msg) {
+								var x = $('<div/>');
+								x.text('- ' + msg);
+								free.append(x);
+							});
+							this.getEl('freemessage').html(free.html());
+						}
+
 						this.updateUi();
 					}
 				}

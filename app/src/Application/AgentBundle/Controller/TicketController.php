@@ -2694,10 +2694,29 @@ class TicketController extends AbstractController
 			if (!$this->in->getString('newticket.message')) {
 				$errors['message'] = true;
 			}
+			if (!$this->in->getString('newticket.department_id')) {
+				$errors['department_id'] = true;
+			}
 
 			if ($errors) {
 				$errors = array_keys($errors);
 				return $this->createJsonResponse(array('error' => true, 'error_codes' => $errors));
+			}
+
+			// Validate based on department...
+			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
+			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+			$ticket_display->setPersonContext($this->person);
+			$ticket_display->addPagesFromDb();
+			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
+			$validator->setPageData($default_page->getPageDisplay('default')->data);
+
+			if (!$validator->isValid($newticket)) {
+				$free = array();
+				foreach ($validator->getErrorsInfo() as $info) {
+					$free[] = $info['message'];
+				}
+				return $this->createJsonResponse(array('error' => true, 'error_codes' => array('free' => true), 'error_messages' => $free));
 			}
 
 			#------------------------------

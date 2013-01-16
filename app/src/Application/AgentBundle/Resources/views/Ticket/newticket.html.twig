@@ -41,6 +41,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="display:none;" class="error-message subject">&bull; {{ phrase('agent.tickets.please_enter_subject') }}</div>
 	<div style="display:none;" class="error-message person_id person_no_user">&bull; {{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
 	<div style="display:none;" class="error-message person_email_address">&bull; {{ phrase('agent.general.please_enter_valid_email') }}</div>
+	<div style="display:none;" class="error-message department_id">&bull; Please choose a department</div>
+	<div style="display:none;" class="error-message message">&bull; Please enter a message</div>
+	<div style="display:none;" class="error-message free" id="{{ baseId }}_freemessage"></div>
 </div>
 
 <div class="pending-info chat" style="display: none; padding: 7px; background: #FFFEFE; border-bottom: 1px solid #9CA7B1; font-size: 11px;">
@@ -145,7 +148,8 @@ pageMeta.baseId = '{{ baseId }}';
 						{% include 'AgentBundle:Common:select-department.html.twig' with {
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
-							'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [], 'assign')
+							'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [], 'assign'),
+							with_blank: true
 						} %}
 					</td>
 				</tbody>
