@@ -13,14 +13,15 @@
 
 		function update(element) {
 			var $elem  = $(element);
+			var offset = $elem.css('box-sizing') == 'border-box' ? $elem.outerHeight() - $elem.height() : 0;
 			var height = $elem.height(), current = height;
 			var max    = $elem.data('expander-max-height') || 1000;
 			var min    = $elem.data('expander-min-height') || 50;
 
-			while (element.clientHeight < element.scrollHeight  || element.clientHeight < min) {
+			while (element.clientHeight < element.scrollHeight || element.clientHeight + offset < min) {
 				height += 5;
 				$elem.height(height);
-				if (height > max) {
+				if (height + offset > max) {
 					break;
 				}
 			}
@@ -29,16 +30,16 @@
 			while (element.clientHeight >= element.scrollHeight) {
 				last = height;
 				height -= 5;
-				$elem.height(height);
-				if (height < min) {
+				$elem.height(height + offset);
+				if (height + offset < min) {
 					break;
 				}
 			}
 
-			$elem.height(last);
-			if (height > max && current < max) {
+			$elem.height(last + offset);
+			if (height + offset > max && current + offset < max) {
 				$elem.css('overflow', 'auto');
-			} else if (height < max && current > max) {
+			} else if (height + offset < max && current + offset > max) {
 				$elem.css('overflow', 'hidden');
 			}
 		}
