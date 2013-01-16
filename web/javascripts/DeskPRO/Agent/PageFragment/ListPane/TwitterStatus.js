@@ -446,12 +446,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		var self = this;
 
 		$('.timeago', content).timeago();
-		content.find('textarea:not(.note-textarea)').TextAreaExpander();
-
-		content.find('.note-textarea').each(function() {
-			self.twitterHelper.initializeNoteEditor($(this), self.getMetaData('agentMap'));
-		});
-
 		var list = content.find('.twitter-status-list');
 		if (list.length && list.data('page') && this.resultsHelper) {
 			this.resultsHelper.setPage(parseInt(list.data('page'), 10), true);
@@ -460,7 +454,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initControls: function(content) {
-		this.twitterHelper.initAgentSelect(content, this.getMetaData('saveAssignUrl'));
 	},
 
 	_initSortByFields: function() {

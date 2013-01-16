@@ -247,7 +247,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 						var wrapper = overlay.getWrapper();
 						var textarea = wrapper.find('textarea[name=text]');
 
-						textarea.focus();
+						textarea.TextAreaExpander().focus();
 
 						wrapper.find('.save-trigger').click(function() {
 							wrapper.addClass('loading');
@@ -292,6 +292,9 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				row.find('.new-message').hide();
 
 				var textarea = retweetContainer.find('textarea');
+				if (!textarea.hasClass('tae')) {
+					textarea.TextAreaExpander();
+				}
 				self.updateTweetLength(textarea);
 				textarea.focus();
 			}
@@ -422,6 +425,11 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				row.find('.new-retweet').hide();
 
 				var textarea = newMessage.find('textarea');
+
+				if (!textarea.hasClass('tae')) {
+					textarea.TextAreaExpander();
+				}
+
 				if (!$.trim(textarea.val()).length && !row.hasClass('dm')) {
 					var name = row.find('.main-status-body .screen-name, h4 .screen-name').first().text();
 
@@ -526,9 +534,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			if (newNote.is(':visible')) {
 				newNote.hide();
 			} else {
-				newNote.show();
-
 				var textarea = newNote.find('textarea');
+				if (!textarea.data('redactor')) {
+					self.initializeNoteEditor(textarea, page.getMetaData('agentMap'));
+				}
+
+				newNote.show();
 
 				if (textarea.data('redactor')) {
 					textarea.setFocus();
@@ -591,6 +602,50 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			}).always(function() {
 				noteContainer.removeClass('loading');
 			});
+		});
+
+		// assignment
+		this.content.on('click', '.opt-trigger.agent > label, .opt-trigger.agent span', function() {
+			var li = $(this).closest('li');
+			var row = $(this).closest('article.twitter-status');
+
+			var select = li.find('select');
+			if (!select.hasClass('with-select2')) {
+				DP.select(select);
+
+				select.on('change', function() {
+					var val = $(this).val();
+					var sel = $(this).find(':selected');
+					var label = sel.text().trim();
+
+					if (val == 'agent:' + DESKPRO_PERSON_ID) {
+						label = 'Me';
+					}
+
+					var labelEl = row.find('li.opt-trigger.agent label');
+					if (sel.data('icon')) {
+						labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
+					} else {
+						labelEl.text(label);
+					}
+
+					var id = $(this).closest('.twitter-status').attr('data-status-id');
+
+					$.ajax({
+						url: page.getMetaData('saveAssignUrl'),
+						type: 'POST',
+						dataType: 'json',
+						data: { account_status_id: id, assign: val },
+						success: function(json) {
+							if (json.error) {
+								alert(json.error);
+							}
+						}
+					});
+				});
+			}
+
+			select.select2("open");
 		});
 	},
 
@@ -666,7 +721,50 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 	},
 
 	initAgentSelect: function(content, assignUrl) {
-		content.find('li.opt-trigger.agent select').not('.has-init').each(function() {
+		/*content.find('li.opt-trigger.agent, li.opt-trigger.agent > span').click(function() {
+			var li = $(this).closest('li');
+			var row = $(this).closest('article.twitter-status');
+
+			var select = li.find('select');
+			if (!select.hasClass('with-select2')) {
+				DP.select(select);
+
+				select.on('change', function() {
+					var val = $(this).val();
+					var sel = $(this).find(':selected');
+					var label = sel.text().trim();
+
+					if (val == 'agent:' + DESKPRO_PERSON_ID) {
+						label = 'Me';
+					}
+
+					var labelEl = row.find('li.opt-trigger.agent label');
+					if (sel.data('icon')) {
+						labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
+					} else {
+						labelEl.text(label);
+					}
+
+					var id = $(this).closest('.twitter-status').attr('data-status-id');
+
+					$.ajax({
+						url: assignUrl,
+						type: 'POST',
+						dataType: 'json',
+						data: { account_status_id: id, assign: val },
+						success: function(json) {
+							if (json.error) {
+								alert(json.error);
+							}
+						}
+					});
+				});
+			}
+
+			select.select2("open");
+		});*/
+
+		/*content.find('li.opt-trigger.agent select').not('.with-select2').each(function() {
 			var row = $(this).closest('article.twitter-status');
 			DP.select($(this));
 
@@ -700,7 +798,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					}
 				});
 			});
-		});
+		});*/
 	},
 
 	initializeNoteEditor: function(textarea, agentMap) {

@@ -14,6 +14,5 @@ DeskPRO.Agent.PageFragment.Page.TwitterStatusOverlay = new Orb.Class({
 		DeskPRO_Window.initInterfaceLayerEvents(this.el);
 
 		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.el, this);
-		this.twitterHelper.initAgentSelect(this.el, this.getMetaData('saveAssignUrl'));
 	}
 });
