@@ -45,14 +45,30 @@ class TweetNewNotification extends AbstractAgentNotification
 	 */
 	protected $account_status;
 
-	public function __construct(TwitterAccountStatus $account_status)
+	/**
+	 * @var \Application\DeskPRO\Entity\TwitterAccountStatus
+	 */
+	protected $reply_account_status;
+
+	public function __construct(TwitterAccountStatus $account_status, TwitterAccountStatus $reply_account_status = null)
 	{
 		parent::__construct();
 		$this->account_status = $account_status;
+		$this->reply_account_status = $reply_account_status;
 	}
 
 	public function shouldSendBrowserNotification(Person $agent)
 	{
+		if ($this->reply_account_status) {
+			if ($agent->getPref('agent_notif.tweet_reply.alert')
+				&& $this->reply_account_status->action_agent
+				&& $this->reply_account_status->action_agent->id == $agent->id
+			) {
+				// already got an alert for this
+				return false;
+			}
+		}
+
 		switch ($this->account_status->status_type) {
 			case 'direct': return $agent->getPref('agent_notif.tweet_new_dm.alert');
 			case 'reply': return $agent->getPref('agent_notif.tweet_new_reply.alert');
@@ -64,6 +80,16 @@ class TweetNewNotification extends AbstractAgentNotification
 
 	public function shouldSendEmailNotification(Person $agent)
 	{
+		if ($this->reply_account_status) {
+			if ($agent->getPref('agent_notif.tweet_reply.email')
+				&& $this->reply_account_status->action_agent
+				&& $this->reply_account_status->action_agent->id == $agent->id
+			) {
+				// already got an email for this
+				return false;
+			}
+		}
+
 		switch ($this->account_status->status_type) {
 			case 'direct': return $agent->getPref('agent_notif.tweet_new_dm.email');
 			case 'reply': return $agent->getPref('agent_notif.tweet_new_reply.email');

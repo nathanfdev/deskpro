@@ -75,11 +75,13 @@
 			{% endif %}
 		</div>
 	</div>
-	<div class="reply-list" {% if not account_status.replies|length %}style="display:none"{% endif %}>
+	<div class="reply-list" {% if not account_status.replies|length or account_status.isFromSelf() %}style="display:none"{% endif %}>
 		<ul class="twitter-replies">
-		{% for reply in account_status.replies %}
-			{% include 'AgentBundle:TwitterStatus:reply-li.html.twig' %}
-		{% endfor %}
+		{% if not account_status.isFromSelf() %}
+			{% for reply in account_status.replies %}
+				{% include 'AgentBundle:TwitterStatus:reply-li.html.twig' %}
+			{% endfor %}
+		{% endif %}
 		</ul>
 	</div>
 	<div class="new-message" style="display: none">

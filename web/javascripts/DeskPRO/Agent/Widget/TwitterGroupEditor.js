@@ -123,7 +123,7 @@ DeskPRO.Agent.Widget.TwitterGroupEditor = new Orb.Class({
 			var self = this;
 			field.on('change', function() {
 				self.fireEvent('groupingChanged',
-					[type, field.val(), field, self]);
+					[type, field.val(), field, self, el]);
 			});
 
 			row.addClass('filter-' + type).data('type', type);

@@ -410,6 +410,8 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		}
 
 		this.showingCountEl.empty().text(start + '-' + end);
+
+		return showingCount;
 	},
 
 

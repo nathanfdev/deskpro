@@ -650,6 +650,10 @@ class TwitterStatusController extends AbstractController
 
 	protected function _updateArchiveStatus(TwitterAccountStatus $account_status, $value = true, $flush = true)
 	{
+		if ($account_status->status_type === 'sent') {
+			return;
+		}
+
 		$old_archived = $account_status->is_archived;
 
 		$account_status->is_archived = $value;

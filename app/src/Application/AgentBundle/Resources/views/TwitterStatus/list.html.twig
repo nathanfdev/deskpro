@@ -27,6 +27,8 @@ pageMeta.baseId = '{{ baseId }}';
 	{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' with { 'twitter_list_route': twitter_list_route } %}
 	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
 
+	<div class="new-tweet-list-indicator"></div>
+
 	<div class="content">
 		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
 	</div>

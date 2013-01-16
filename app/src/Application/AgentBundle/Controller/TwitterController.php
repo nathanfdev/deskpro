@@ -87,6 +87,43 @@ class TwitterController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function updateGroupingAction()
+	{
+		$account = $this->getAccount($this->in->getUint('account_id'));
+		$type = $this->in->getString('type');
+		$group = $this->in->getString('group');
+
+		$this->person->setPreference("agent.ui.twitter-group.$account->id.$type", $group);
+
+		App::getOrm()->persist($this->person);
+		App::getOrm()->flush();
+
+		switch ($type) {
+			case 'mine': $route = 'agent_twitter_mine_list'; break;
+			case 'team': $route = 'agent_twitter_team_list'; break;
+			case 'unassigned': $route = 'agent_twitter_unassigned_list'; break;
+			case 'all': $route = 'agent_twitter_all_list'; break;
+			default: $route = '';
+		}
+
+		$data = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getGroupedSectionCount($account, $type, $group);
+
+		return $this->createJsonResponse(array(
+			'account_id' => $account->id,
+			'type' => $type,
+			'group' => $group,
+			'html' => $this->renderView('AgentBundle:Twitter:window-sub-grouping.html.twig', array(
+				'account' => $account,
+				'section_type' => $type,
+				'group_by' => $group,
+				'data' => $data,
+				'route' => $route,
+				'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
+				'teams' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams()
+			))
+		));
+	}
+
 	public function newTweetAction()
 	{
 		$accounts = $this->person->getTwitterAccounts();

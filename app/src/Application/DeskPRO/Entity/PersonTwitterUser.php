@@ -69,14 +69,15 @@ class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonTwitterUser';
 		$metadata->setPrimaryTable(array(
 			'name' => 'people_twitter_users',
 			'uniqueConstraints' => array(
 				'unique_key_idx' => array('columns' => array('person_id', 'screen_name'))
 			),
 			'indexes' => array(
-				'screen_name_idx' => array('columns' => array('screen_name'))
+				'screen_name_idx' => array('columns' => array('screen_name')),
+				'twitter_user_id_idx' => array('columns' => array('twitter_user_id')),
 			),
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

@@ -1,0 +1,44 @@
+<ul class="sub-group" style="display: block">
+	{% if group_by == 'type' %}
+		{% for group_type,name in {'favorite': 'Starred', 'direct': 'Direct Messages', 'reply': 'Replies', 'mention': 'Mentions', 'retweet': 'Retweets', 'other': 'Other'} %}
+			<li {% if not data[group_type] %}style="display:none"{% endif %}>
+				<span class="title is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-type-{{ group_type }}" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'type', 'group_value': group_type}) }}">
+					<span class="list-counter">{{ data[group_type]|default(0) }}</span>
+					{{ name }}
+				</span>
+			</li>
+		{% endfor %}
+	{% elseif group_by == 'agent' %}
+		<li {% if not data[0] %}style="display:none"{% endif %}>
+			<span class="title is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-agent-0" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'agent', 'group_value': 0}) }}">
+				<span class="list-counter">{{ data[0]|default(0) }}</span>
+				None
+			</span>
+		</li>
+		{% for agent in agents %}
+			<li {% if not data[agent.id] %}style="display:none"{% endif %}>
+				<span class="title is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-agent-{{ agent.id }}" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'agent', 'group_value': agent.id}) }}">
+					<span class="list-counter">{{ data[agent.id]|default(0) }}</span>
+					<span
+						style="background: url('{{ agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
+					>{{ agent.display_name }}</span>
+				</span>
+			</li>
+		{% endfor %}
+	{% elseif group_by == 'team' %}
+		<li {% if not data[0] %}style="display:none"{% endif %}>
+			<span class="title is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-team-0" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'team', 'group_value': 0}) }}">
+				<span class="list-counter">{{ data[0]|default(0) }}</span>
+				None
+			</span>
+		</li>
+		{% for team in teams %}
+			<li {% if not data[team.id] %}style="display:none"{% endif %}>
+				<span class="title is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-team-{{ team.id }}" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'team', 'group_value': team.id}) }}">
+					<span class="list-counter">{{ data[team.id]|default(0) }}</span>
+					{{ team.name }}
+				</span>
+			</li>
+		{% endfor %}
+	{% endif %}
+</ul>

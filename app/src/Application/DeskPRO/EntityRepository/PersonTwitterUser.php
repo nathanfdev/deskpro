@@ -29,16 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @category Entities
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\DeskPRO\EntityRepository;
 
-class Build1358331599 extends AbstractBuild
+use Application\DeskPRO\App;
+
+class PersonTwitterUser extends AbstractEntityRepository
 {
-	public function run()
+	public function getVerifiedPersonForTwitterUser($twitter_user_id)
 	{
-		$this->out("Improved twitter indexes");
-		$this->execMutateSql("CREATE INDEX last_follow_update_idx ON twitter_users (last_follow_update)");
+		$result = $this->getEntityManager()->createQuery("
+			SELECT t, p
+			FROM DeskPRO:PersonTwitterUser t
+			INNER JOIN t.person p
+			WHERE t.twitter_user_id = ?0
+				AND t.is_verified = true
+		")->setParameters(array($twitter_user_id))->getOneOrNullResult();
+
+		return $result ? $result->person : null;
 	}
 }

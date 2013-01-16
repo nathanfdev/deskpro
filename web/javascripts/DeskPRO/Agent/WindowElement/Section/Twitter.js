@@ -55,6 +55,11 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 					totalCountHeader.text(totalCount.text());
 					break;
 
+				case 'new-archived':
+					totalCount.text(parseInt(totalCount.text().trim(), 10) + 1);
+					totalCountHeader.text(totalCount.text());
+					break;
+
 				case 'archived':
 					newCount.text(Math.max(0, parseInt(newCount.text().trim(), 10) - 1));
 					break;
@@ -236,8 +241,6 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 		contentEl.find('.twitter-account-section').each(function() {
 			var $this = $(this), accountId = parseInt($this.data('account-id'), 10);
 
-			var updated = false;
-
 			self.groupEditors[accountId] = new DeskPRO.Agent.Widget.TwitterGroupEditor({
 				containerElement: '#twitter_outline .scroll-content',
 				listElement: $this.find('.source-list'),
@@ -246,23 +249,24 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 				controlElement: '#twitter_group_editor',
 				elements: $this.find('.source-list > li'),
 				accountId: accountId,
-				onPreOpen: function() {
-					updated = false;
-				},
-				onGroupingChanged: function(type) {
-					updated = true;
-				},
-				onClose: function(values) {
-					if (updated) {
-						var newValues = [];
-						$.each(values, function(type, value) {
-							newValues.push({
-								name: 'group_updates[' + accountId + '][' + type + ']',
-								value: value
-							});
-						});
-						self.refresh(newValues);
-					}
+				onGroupingChanged: function(section_type, group_by, field, obj, el) {
+					el.data('initial-grouping', group_by);
+
+					$.ajax({
+						url: BASE_URL + 'agent/twitter/update-grouping.json',
+						data: {account_id: accountId, type: el.data('type'), group: group_by },
+						dataType: 'json',
+						success: function(json) {
+							if (json.group == el.data('initial-grouping')) {
+								var html = $(json.html);
+								if (!html.find('li').filter(function() { return $(this).css('display') !== 'none'; }).length) {
+									html.css('display', 'none');
+								}
+								el.find('.sub-group').replaceWith(html);
+								self.groupEditors[accountId].updatePositions();
+							}
+						}
+					});
 				}
 			});
 		});

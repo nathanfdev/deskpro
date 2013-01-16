@@ -25,13 +25,17 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 					self.countReflected[id] = true;
 					self.resultsHelper.adjustResultCount(-1);
 				}
-				self._afterTweetRemoved(200);
+				self._afterTweetRemoved(0);
 			}
 		});
 
 		this._initHeader();
 		this._initContent(this.content);
 		this._initControls(this.content);
+
+		this.wrapper.on('click', '.new-tweet-list-indicator', function() {
+			self.reload();
+		});
 
 		var opt = {
 			perPage: this.meta.perPage || 25,
@@ -71,6 +75,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-updated', function (data) {
+			if (data.trigger_user_id && data.trigger_user_id == DESKPRO_PERSON_ID) {
+				return;
+			}
+
 			if (typeof data.change_archived !== 'undefined') {
 				if (data.change_archived) {
 					// moved to archived, reduce counts
@@ -108,8 +116,20 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			return;
 		}
 
+		if (!this.resultsHelper || !this.resultsHelper.options) {
+			// page destroyed
+			return;
+		}
+
 		if (this._tweetAppliesToPage(data)) {
-			this.addTweetToPage(data.account_status_id, data.tweet_html);
+			if (this.resultsHelper.getCurrentPage() > 1) {
+				var newIndicator = this.wrapper.find('.new-tweet-list-indicator');
+				var newCount = (newIndicator.data('new-count') || 0) + 1;
+				newIndicator.data('new-count', newCount);
+				newIndicator.text(newCount == 1 ? '1 new tweet' : newCount + ' new tweets').show();
+			} else {
+				this.addTweetToPage(data.account_status_id, data.tweet_html);
+			}
 		}
 	},
 
@@ -293,8 +313,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	addTweetToPage: function(account_status_id, html) {
-		// todo: remove last one from page if showing too many
-
 		if (!this.resultsHelper || !this.resultsHelper.options) {
 			// page destroyed
 			return;
@@ -308,10 +326,14 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		var $html = $(html);
 		this.content.find('.twitter-status-list').prepend($html);
 		this._afterLoading($html);
+
+		while (this.resultsHelper.updateShowingCount() > this.resultsHelper.options.perPage) {
+			$(this.resultsHelper.options.resultRowSelector, this.resultsHelper.resultsContainer).last().remove();
+		}
 	},
 
 	removeTweetFromPage: function(account_status_id) {
-		var el = this.content.find('.twitter-status-' + account_status_id);
+		var el = this.content.find('.twitter-status-' + account_status_id).filter(':not(:animated)');
 		if (el.length) {
 			el.remove();
 			if (!this.countReflected[account_status_id]) {
@@ -353,7 +375,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 			setTimeout(function() {
 				$.ajax({
-					url: this.getMetaData('statusListUrl'),
+					url: self.getMetaData('statusListUrl'),
 					dataType: 'html',
 					data: data,
 					success: function(html) {
@@ -373,6 +395,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		if (!content) { content = this.content; }
 		this._initContent(content);
 		this._initControls(content);
+
+		this.wrapper.find('.new-tweet-list-indicator').data('new-count', 0).hide();
 
 		if (this.selectionBar) {
 			this.selectionBar.updateCount();

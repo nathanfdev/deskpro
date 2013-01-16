@@ -1600,6 +1600,13 @@ $collection->add('agent_twitter_getsectiondata', new Route(
 	array()
 ));
 
+$collection->add('agent_twitter_getsectiondata', new Route(
+	'/twitter/update-grouping.json',
+	array('_controller' => 'AgentBundle:Twitter:updateGrouping'),
+	array(),
+	array()
+));
+
 $collection->add('agent_twitter_run_search', new Route(
 	'/twitter/{account_id}/search/{search_id}',
 	array('_controller' => 'AgentBundle:Twitter:runSearch'),

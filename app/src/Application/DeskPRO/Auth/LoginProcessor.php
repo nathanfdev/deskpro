@@ -116,6 +116,12 @@ class LoginProcessor
 				}
 			}
 
+			// if someone has already associated this twitter account with them, then connect with them
+			if ($mapped_fields->has('twitter')) {
+				$twitter = $mapped_fields->get('twitter');
+				$this->person = App::getEntityRepository('DeskPRO:PersonTwitterUser')->getVerifiedPersonForTwitterUser($twitter['user_id']);
+			}
+
 			if (!$this->person) {
 				$this->person = new Person();
 				$this->person->is_user = true;

@@ -55,7 +55,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				if (self.options.userArchiveHideCallback) {
 					self.options.userArchiveHideCallback(row);
 				}
-				row.remove();
+				row.fadeOut('fast', function() {
+					if (self.options.userArchiveHideCallback) {
+						self.options.userArchiveHideCallback(row);
+					}
+					row.remove();
+				});
 			}
 		});
 		this.content.on('click', '.unfollow', function(e) {
@@ -91,10 +96,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				self.doArchiveUser(id, 1);
 
 				if (self.page.getMetaData('hideArchived')) {
-					if (self.options.userArchiveHideCallback) {
-						self.options.userArchiveHideCallback(row);
-					}
-					row.remove();
+					row.fadeOut('fast', function() {
+						if (self.options.userArchiveHideCallback) {
+							self.options.userArchiveHideCallback(row);
+						}
+						row.remove();
+					});
 				}
 			}
 		});
@@ -148,10 +155,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				self.doArchiveStatus(id, 1);
 
 				if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
-					if (self.options.statusArchiveHideCallback) {
-						self.options.statusArchiveHideCallback(row);
-					}
-					row.remove();
+					row.fadeOut('fast', function() {
+						if (self.options.statusArchiveHideCallback) {
+							self.options.statusArchiveHideCallback(row);
+						}
+						row.remove();
+					});
 				}
 			}
 		});
@@ -366,13 +375,16 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 						if (json.archived) {
 							row.addClass('archived');
+							row.find('.status-archive').hide();
 							row.find('.status-archived').show();
 
 							if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
-								if (self.options.statusArchiveHideCallback) {
-									self.options.statusArchiveHideCallback(row);
-								}
-								row.remove();
+								row.fadeOut('fast', function() {
+									if (self.options.statusArchiveHideCallback) {
+										self.options.statusArchiveHideCallback(row);
+									}
+									row.remove();
+								});
 							}
 						}
 					} else {
@@ -507,13 +519,16 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 							if (json.archived) {
 								row.addClass('archived');
+								row.find('.status-archive').hide();
 								row.find('.status-archived').show();
 
 								if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
-									if (self.options.statusArchiveHideCallback) {
-										self.options.statusArchiveHideCallback(row);
-									}
-									row.remove();
+									row.fadeOut('fast', function() {
+										if (self.options.statusArchiveHideCallback) {
+											self.options.statusArchiveHideCallback(row);
+										}
+										row.remove();
+									});
 								}
 							}
 						} else {

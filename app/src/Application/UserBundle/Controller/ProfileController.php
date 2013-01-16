@@ -206,39 +206,42 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$api->setToken($this->in->getString('oauth_token'));
 				$access = $api->getAccessToken();
 
-				App::getDb()->executeUpdate("
-					INSERT INTO people_twitter_users
-						(person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
-					VALUES (?, ?, ?, 1, ?, ?)
-					ON DUPLICATE KEY UPDATE
-						twitter_user_id = VALUES(twitter_user_id),
-						screen_name = VALUES(screen_name),
-						is_verified = 1,
-						oauth_token = VALUES(oauth_token),
-						oauth_token_secret = VALUES(oauth_token_secret)
-				", array($this->person->id, $access->user_id, $access->screen_name, $access->oauth_token, $access->oauth_token_secret));
+				$verified = App::getEntityRepository('DeskPRO:PersonTwitterUser')->getVerifiedPersonForTwitterUser($access->user_id);
+				if (!$verified || $verified->id == $this->person->id) {
+					App::getDb()->executeUpdate("
+						INSERT INTO people_twitter_users
+							(person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
+						VALUES (?, ?, ?, 1, ?, ?)
+						ON DUPLICATE KEY UPDATE
+							twitter_user_id = VALUES(twitter_user_id),
+							screen_name = VALUES(screen_name),
+							is_verified = 1,
+							oauth_token = VALUES(oauth_token),
+							oauth_token_secret = VALUES(oauth_token_secret)
+					", array($this->person->id, $access->user_id, $access->screen_name, $access->oauth_token, $access->oauth_token_secret));
 
-				$has_account = false;
-				foreach ($this->person->getContactData('twitter') AS $twitter_details) {
-					if ($twitter_details->field_1 == $access->screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $access->user_id)) {
+					$has_account = false;
+					foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+						if ($twitter_details->field_1 == $access->screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $access->user_id)) {
+							$twitter_details->field_10 = '1';
+							$this->em->persist($twitter_details);
+							$has_account = true;
+						}
+					}
+
+					if (!$has_account) {
+						$twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+						$twitter_details->contact_type = 'twitter';
+						$twitter_details->person = $this->person;
+						$twitter_details->field_1 = $access->screen_name;
+						$twitter_details->field_2 = '0';
+						$twitter_details->field_3 = $access->user_id;
 						$twitter_details->field_10 = '1';
 						$this->em->persist($twitter_details);
-						$has_account = true;
 					}
-				}
 
-				if (!$has_account) {
-					$twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
-					$twitter_details->contact_type = 'twitter';
-					$twitter_details->person = $this->person;
-					$twitter_details->field_1 = $access->screen_name;
-					$twitter_details->field_2 = '0';
-					$twitter_details->field_3 = $access->user_id;
-					$twitter_details->field_10 = '1';
-					$this->em->persist($twitter_details);
+					$this->em->flush();
 				}
-
-				$this->em->flush();
 			}
 		}
 

@@ -173,6 +173,13 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 		);
 	}
 
+	public function isFromSelf()
+	{
+		return (
+			$this->status->getUserId() == $this->account->getUserId()
+		);
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

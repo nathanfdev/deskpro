@@ -1,6 +1,10 @@
 {% macro twitter_sub_grouping(type, route, account, grouping, agents, teams) %}
-	{% if grouping.group %}
-		<ul class="sub-group" style="display: block">
+	{% include 'AgentBundle:Twitter:window-sub-grouping.html.twig' with {
+		'group_by': grouping.group,
+		'data': grouping.data,
+		'section_type': type
+	} %}
+	{# <ul class="sub-group" style="display: block">
 		{% if grouping.group == 'type' %}
 			{% for group_type,name in {'favorite': 'Starred', 'direct': 'Direct Messages', 'reply': 'Replies', 'mention': 'Mentions', 'retweet': 'Retweets', 'other': 'Other'} %}
 				<li {% if not grouping.data[group_type] %}style="display:none"{% endif %}>
@@ -43,8 +47,7 @@
 				</li>
 			{% endfor %}
 		{% endif %}
-		</ul>
-	{% endif %}
+	</ul>#}
 {% endmacro %}
 
 {% for account in accounts %}
