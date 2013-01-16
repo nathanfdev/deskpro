@@ -67,7 +67,7 @@ class ApiKernel extends AbstractKernel
 		if (defined('DPC_IS_CLOUD')) {
 			$loader->load(DP_ROOT.'/sys/config-cloud/api/config_'.$this->getEnvironment().'.php');
 		} else {
-			$loader->load(DP_ROOT.'/sys/config/admin/api'.$this->getEnvironment().'.php');
+			$loader->load(DP_ROOT.'/sys/config/api/config_'.$this->getEnvironment().'.php');
 		}
 	}
 }
