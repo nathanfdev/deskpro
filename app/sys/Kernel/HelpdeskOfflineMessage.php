@@ -101,7 +101,7 @@ class HelpdeskOfflineMessage
 				break;
 
 			case 'cloud_demo_expired':
-				$tpl_file = 'cloud-demo-expire';
+				$tpl_file = 'cloud-demo-expired';
 				$now  = new \DateTime('now');
 				$date = new \DateTime('@' . DPC_DEMO_EXPIRE);
 
