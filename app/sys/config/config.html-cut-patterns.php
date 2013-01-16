@@ -18,10 +18,10 @@ return array(
 	'blackberry_1'                       => 'hr /hr div b #from:#i /b /div div b #date:#i /b /div div b #to:#i /b /div',
 
 	// mail from gmail.com
-	'gmail_1'                            => 'div #on\s.*\sat\s.*#i span /span #wrote:#i br /br blockquote /blockquote /div',
+	'gmail_1'                            => 'div #^on\s.*\sat\s.*#i span /span #wrote:#i br /br blockquote /blockquote /div',
 	'gmail_2'                            => 'div #^on\s.*$#i a /a #^.*wrote:$#i br /br blockquote /blockquote /div',
 	'gmail_3'                            => 'br /br #^on\s.*\swrote:$#i br /br blockquote /blockquote',
-	'gmail_4'                            => 'div #on [a-z]+, [a-z]+ [0-9]+, [0-9]{4} at.*?wrote:#i br /br blockquote /blockquote /div',
+	'gmail_4'                            => 'div #^on [a-z]+, [a-z]+ [0-9]+, [0-9]{4} at [a-zA-Z0-9: ]+, .*? wrote:#i br /br blockquote /blockquote /div',
 
 	// mail from hotmail.com
 	'hotmail_1'                          => 'hr /hr #^date:\s#i br /br #^subject:\s#i br /br #^from:\s#i br /br #^to:\s#i br /br',
@@ -65,7 +65,7 @@ return array(
 	// X-Mailer: iPhone Mail (8C148)
 	'iphone_2'                           => 'div br /br br /br #on\s.*\sat\s.*#i a /a #.*wrote:#i /div div /div blockquote /blockquote',
 
-	'iphone_3'                           => 'div #on .*?, at .*? wrote:#i /div',
+	'iphone_3'                           => 'div #^on .*?, at .*? wrote:#i /div',
 
 	// X-Mailer: Verizon Webmail
 	'verizon_webmail_1'                  => 'span #^\s?on\s.*$#i span /span #^\s?wrote:$#i /span div /div',
@@ -89,5 +89,5 @@ return array(
 	'zimbra'                             => 'b #From: # /b br /br b #To: # /b br /br b #Sent: # /b br /br b #Subject: # /b',
 
 	// Sparrow mac client
-	'sparrow_1'                          => 'p #On .*?,.*?wrote:#i /p blockquote /blockquote',
+	'sparrow_1'                          => 'p #^On .*?,.*?wrote:#i /p blockquote /blockquote',
 );

@@ -112,7 +112,7 @@ class HtmlMatcher
 			// (Doesnt matter with HTML emails anyway)
 			$this->body = str_replace(array("\r\n", "\n"), " ", $this->body);
 
-			if (preg_match($first_token[1], $this->body, $m)) {
+			if (preg_match($first_token[1], $this->body, $m) && !preg_match('#(<br|<div|<p)#i', $this->body)) {
 				$this->marked_body = str_replace($m[0], self::CUT_MARK, $this->body);
 
 				$this->pattern_match = 'SIMPLE_MATCH';
