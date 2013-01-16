@@ -3,7 +3,7 @@
 	'user.feedback.category'                                               => 'Категория',
 	'user.feedback.count_votes'                                            => 'Количество голосов: {{count}}',
 	'user.feedback.description'                                            => 'Следующие предложения были добавлены другими пользователями. Рекомендуем Вам прочитать их и проголосовать за те, которые Вы поддерживаете, а также  высказать свои предложения, если Вы не нашли их в списке.',
-	'user.feedback.feedback'                                               => 'Отзыв',
+	'user.feedback.feedback'                                               => 'Предложения',
 	'user.feedback.feedback_not_found'                                     => 'Отзыв не найден',
 	'user.feedback.form_new_button-submit'                                 => 'Оставить отзыв',
 	'user.feedback.form_new_error_category'                                => 'Пожалуйста, выберите категорию',

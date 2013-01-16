@@ -1,6 +1,7 @@
 <?php return array(
 	'user.chat.email'                                                      => 'بريدك الالكتروني',
 	'user.chat.ended-no-agent'                                             => 'نرجو قبول اعتذارنا ، لايتواجد ايا من عملائنا الآن لخدمتكم، من فضلك راسلنا عبر البريد الالكتروني او تفضل باعادة الاتصال بنا لاحقا .',
+	'user.chat.error'                                                      => 'خطأ في المحادثة',
 	'user.chat.form_chat_button-submit'                                    => 'ارسل',
 	'user.chat.form_chat_send-file'                                        => 'حمل ملف',
 	'user.chat.form_create_button-submit'                                  => 'ابدا المحادثة',
@@ -26,12 +27,14 @@ or
 or 
 يجري الآن توصيلك باحد موظفينا',
 	'user.chat.message_long-wait'                                          => 'مازلنا نحاول البحث عن اي من موظفينا المتواجدين للرد عليك ، عادة يستغرق هذا الامر اقل من دقيقة . هل انت على عجلة من امرك؟ تفضل بترك رسالتك الآن.',
+	'user.chat.message_set-department'                                     => '{{name}} أضف إلي قسم {{department}}',
 	'user.chat.message_started'                                            => 'بدأت المحادثة',
 	'user.chat.message_unassigned'                                         => 'المحادثة غير مسندة لاحد',
 	'user.chat.message_uploading'                                          => 'جاري التحميل',
 	'user.chat.message_user-joined'                                        => '{{الاسم}} التحق بالمحادثة',
 	'user.chat.message_user-left'                                          => '{{الاسم}} غادر المحادثة',
 	'user.chat.message_user-returned'                                      => 'المستخدم قد عاد للمحادثة',
+	'user.chat.message_user-timeout'                                       => 'انتهت المهله المتاحه للتفاعل',
 	'user.chat.message_wait'                                               => 'مازلنا نبحث لك عن موظف',
 	'user.chat.name'                                                       => 'اسمك',
 	'user.chat.submit-ticket-button'                                       => 'راسلنا عبر البريد الالكتروني',
@@ -39,8 +42,10 @@ or
 	'user.chat.window_cancel'                                              => 'الغاء',
 	'user.chat.window_cancel-confirm'                                      => 'هل انت متاكد من الغاء هذه المحادثة؟',
 	'user.chat.window_close'                                               => 'لا شكرا، فقط اغلق نافذة البرنامج',
+	'user.chat.window_close_only'                                          => 'أغلق النافذة',
 	'user.chat.window_end-chat'                                            => 'انهاء المحادثة',
 	'user.chat.window_open-new'                                            => 'ابدء هذه المحادثة في نافذة جديدة',
+	'user.chat.window_resume-button'                                       => 'أفتح نافذة محادثة',
 	'user.chat.window_start-button'                                        => 'اضغط هنا للتحدث معنا',
 	'user.chat.window_upload-drag'                                         => 'ضع ملفك هنا لتحميله الى نافذة المحادثة',
 );
