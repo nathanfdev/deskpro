@@ -29,61 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-
-/**
- * This cleans up various temporary data
- */
-class CleanupTwitter extends AbstractJob
+class Build1358331599 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 3600; // hourly
-
 	public function run()
 	{
-		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
-
-		$db = App::getDb();
-		$cutoff = gmdate('Y-m-d H:i:s', time() - App::getSetting('core.twitter_auto_remove_time'));
-
-		$db->executeUpdate("
-			DELETE IGNORE FROM twitter_accounts_statuses
-			WHERE (status_type = 'timeline' OR status_type IS NULL)
-				AND is_favorited = 0
-				AND agent_id IS NULL
-				AND agent_team_id IS NULL
-				AND retweeted_id IS NULL
-				AND action_agent_id IS NULL
-				AND date_created < ?
-		", array($cutoff));
-
-		$deleted = $db->executeUpdate("
-			DELETE IGNORE s FROM twitter_statuses AS s
-			LEFT JOIN twitter_accounts_statuses AS accs ON (s.id = accs.status_id)
-			WHERE s.date_created < ?
-				AND accs.id IS NULL
-		", array($cutoff));
-
-		$ids = $db->fetchAllCol("
-			SELECT id
-			FROM twitter_users
-			WHERE last_follow_update < ? AND last_follow_update IS NOT NULL
-		", array($cutoff));
-		if ($ids) {
-			$db->executeUpdate("DELETE FROM twitter_users_followers WHERE user_id IN (" . implode(',', $ids) . ')');
-			$db->executeUpdate("DELETE FROM twitter_users_friends WHERE user_id IN (" . implode(',', $ids) . ')');
-			$db->executeUpdate("UPDATE twitter_users SET last_follow_update = NULL WHERE id IN (" . implode(',', $ids) . ')');
-		}
-
-		if ($deleted) {
-			$this->logStatus("Cleaned up $deleted statuses");
-		}
-
-		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
+		$this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE chat_conversations DROP FOREIGN KEY FK_5813432EFB3FBA04");
+		$this->execMutateSql("ALTER TABLE chat_conversations ADD CONSTRAINT FK_5813432EFB3FBA04 FOREIGN KEY (agent_team_id) REFERENCES agent_teams (id) ON DELETE SET NULL");
+		$this->execMutateSql("ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL");
+		$this->execMutateSql("CREATE INDEX last_follow_update_idx ON twitter_users (last_follow_update)");
 	}
 }

@@ -222,7 +222,10 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getStatuses()
 	{
-		if (!$this->last_timeline_update || $this->last_timeline_update->getTimestamp() < time() - self::TIMELINE_UPDATE_FREQUENCY) {
+		if (!$this->last_timeline_update
+			|| $this->last_timeline_update->getTimestamp() < time() - self::TIMELINE_UPDATE_FREQUENCY
+			|| (App::getSetting('core.twitter_last_cleanup') && $this->last_timeline_update->getTimestamp() < App::getSetting('core.twitter_last_cleanup'))
+		) {
 			$em = App::getOrm();
 
 			$account = $em->getRepository('DeskPRO:TwitterAccount')->getFirst();
@@ -296,10 +299,10 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 			SELECT tu, p
 			FROM DeskPRO:PersonTwitterUser tu
 			INNER JOIN tu.person p
-			WHERE tu.twitter_user = ?0
+			WHERE tu.screen_name = ?0
 				AND tu.is_verified = true
 			ORDER BY p.name
-		")->execute(array($this));
+		")->execute(array($this->screen_name));
 		foreach ($results AS $result) {
 			$output[] = $result->person;
 		}
@@ -607,7 +610,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterUser';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_users', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'twitter_users',
+			'indexes' => array(
+				'last_follow_update_idx' => array('columns' => array('last_follow_update'))
+			),
+		));
 		$metadata->addLifecycleCallback('_checkStub', 'postLoad');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
