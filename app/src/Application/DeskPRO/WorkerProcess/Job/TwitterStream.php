@@ -270,16 +270,33 @@ class TwitterStream extends AbstractJob
 
 	protected function processMessage(TwitterAccount $account, $data)
 	{
+		$dm = !empty($data->direct_message) ? $data->direct_message : $data;
+
+		$account_status = $this->findAccountStatus($dm->id_str, $account);
+		if ($account_status && $account_status->status_type) {
+			// won't have a status type if it didn't come through here,
+			// but if it's now coming through here we need to change the type
+			return true;
+		}
+
 		$status = $this->twitter_service->processDm($this->getTwitter($account['id']), $data);
 		$this->em->persist($status);
 
-		$account_status = new TwitterAccountStatus();
-		$account_status->status = $status;
-		$account_status->account = $account;
+		if (!$account_status) {
+			$account_status = new TwitterAccountStatus();
+			$account_status->status = $status;
+			$account_status->account = $account;
+		}
+		
 		$account_status->status_type = 'direct';
 
 		$this->em->persist($account_status);
 		$this->em->flush();
+
+		$this->twitter_service->insertNewTweetClientMessage($account_status);
+
+		$notify = new \Application\DeskPRO\Notifications\TweetNewNotification($account_status);
+		$notify->send();
 
 		return true;
 	}
