@@ -164,6 +164,44 @@ class LoginProcessor
 				$em->flush();
 			}
 
+			if ($mapped_fields->has('twitter')) {
+				$twitter = $mapped_fields->get('twitter');
+
+				App::getDb()->executeUpdate("
+					INSERT INTO people_twitter_users
+						(person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
+					VALUES (?, ?, ?, 1, ?, ?)
+					ON DUPLICATE KEY UPDATE
+						twitter_user_id = VALUES(twitter_user_id),
+						screen_name = VALUES(screen_name),
+						is_verified = 1,
+						oauth_token = VALUES(oauth_token),
+						oauth_token_secret = VALUES(oauth_token_secret)
+				", array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
+
+				$has_account = false;
+				foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+					if ($twitter_details->field_1 == $twitter['screen_name'] || ($twitter_details->field_3 && $twitter_details->field_3 == $twitter['user_id'])) {
+						$twitter_details->field_10 = '1';
+						$em->persist($twitter_details);
+						$has_account = true;
+					}
+				}
+
+				if (!$has_account) {
+					$twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+					$twitter_details->contact_type = 'twitter';
+					$twitter_details->person = $this->person;
+					$twitter_details->field_1 = $twitter['screen_name'];
+					$twitter_details->field_2 = '0';
+					$twitter_details->field_3 = $twitter['user_id'];
+					$twitter_details->field_10 = '1';
+					$em->persist($twitter_details);
+				}
+
+				$em->flush();
+			}
+
 			// New assoc
 			$this->assoc = new PersonUsersourceAssoc();
 			$this->assoc['person']            = $this->person;

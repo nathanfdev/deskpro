@@ -198,6 +198,11 @@ class UserRegController extends AbstractController
 			$twitter->title = 'Twitter';
 			$twitter->lost_password_url = 'https://twitter.com/account/resend_password';
 
+			$twitter->setOptions(array(
+				'consumer_key'    => App::getSetting('core.twitter_user_consumer_key'),
+				'consumer_secret' => App::getSetting('core.twitter_user_consumer_secret'),
+			));
+
 			$this->em->getConnection()->beginTransaction();
 			try {
 				$this->em->persist($twitter);
@@ -218,6 +223,13 @@ class UserRegController extends AbstractController
 			));
 
 			$twitter->is_enabled = true;
+
+			if ($this->in->getString('twitter.consumer_key') && $this->in->getString('twitter.consumer_secret')
+				&& !App::getSetting('core.twitter_user_consumer_key') && !App::getSetting('core.twitter_user_consumer_secret')
+			) {
+				App::getContainer()->getSettingsHandler()->setSetting('core.twitter_user_consumer_key', $this->in->getString('twitter.consumer_key'));
+				App::getContainer()->getSettingsHandler()->setSetting('core.twitter_user_consumer_secret', $this->in->getString('twitter.consumer_secret'));
+			}
 
 			$this->em->getConnection()->beginTransaction();
 			try {

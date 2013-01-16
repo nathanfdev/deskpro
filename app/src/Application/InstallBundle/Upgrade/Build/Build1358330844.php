@@ -29,77 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Usersource
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Usersource;
-use Symfony\Component\Templating\EngineInterface;
-
-use Orb\Util\CapabilityInformerInterface;
-use Orb\Auth\Identity;
-
-class Twitter extends AbstractAdapter
+class Build1358330844 extends AbstractBuild
 {
-	public function getFieldsFromIdentity(Identity $identity)
+	public function run()
 	{
-		$info = $identity->getRawData();
-		return array(
-			'name' => $info['fullname'] ?: $info['identity_friendly'],
-			'twitter' => array(
-				'screen_name' => $info['identity_friendly'],
-				'user_id' => $info['identity'],
-				'oauth_token' => $info['access_token'],
-				'oauth_token_secret' => $info['access_token_secret']
-			)
-		);
-	}
-
-
-	public function getDisplayName(array $info)
-	{
-		return '@' . $info['identity_friendly'];
-	}
-
-
-	public function getDisplayLink(array $info)
-	{
-		return 'htpt://twitter.com/' . $info['identity_friendly'];
-	}
-
-
-	/**
-	 * @return \Orb\Auth\Adapter\Twitter
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		return new \Orb\Auth\Adapter\Twitter(
-			$this->usersource->getOption('consumer_key'),
-			$this->usersource->getOption('consumer_secret')
-		);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		return array(
-			'tpl_login_pull_btn',
-			'tpl_widget_overlay_btn',
-			'tpl_newcomment_tab',
-		);
-	}
-
-
-	/**
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability)
-	{
-		return in_array($capability, $this->getCapabilities());
+		$this->out("Adjust Twitter user storage for people/organizations");
+		$this->execMutateSql("ALTER TABLE organizations_twitter_users DROP FOREIGN KEY FK_26894816B1F2707");
+		$this->execMutateSql("DROP INDEX IDX_26894816B1F2707 ON organizations_twitter_users");
+		$this->execMutateSql("ALTER TABLE organizations_twitter_users CHANGE twitter_user_id twitter_user_id BIGINT NOT NULL");
+		$this->execMutateSql("ALTER TABLE people_twitter_users DROP FOREIGN KEY FK_E13A49D06B1F2707");
+		$this->execMutateSql("DROP INDEX IDX_E13A49D06B1F2707 ON people_twitter_users");
+		$this->execMutateSql("ALTER TABLE people_twitter_users CHANGE twitter_user_id twitter_user_id BIGINT NOT NULL");
 	}
 }
