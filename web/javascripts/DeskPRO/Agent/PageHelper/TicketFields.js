@@ -93,6 +93,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			self.page.getEl('field_edit_save').hide();
 			self.page.getEl('field_edit_start').hide();
 			self.page.getEl('field_edit_controls').addClass('loading');
+
+			self.page.getEl('field_errors').hide().removeClass('on');
+
 			self.saveChanges();
 		});
 

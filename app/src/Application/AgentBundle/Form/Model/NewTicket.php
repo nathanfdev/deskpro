@@ -101,6 +101,20 @@ class NewTicket
 		$this->person = new NewTicketPerson();
 	}
 
+	public function setValuesFromTicket(Ticket $ticket)
+	{
+		$this->department_id = $ticket->getDepartmentId();
+		$this->workflow_id   = $ticket->getWorkflowId();
+		$this->product_id    = $ticket->getProductId();
+		$this->priority_id   = $ticket->getPriorityId();
+		$this->category_id   = $ticket->getCategoryId();
+
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->createFormArrayForObject($ticket);
+
+		$this->ticket_fields = $custom_fields;
+	}
+
 	/**
 	 * @param callable $callback
 	 */

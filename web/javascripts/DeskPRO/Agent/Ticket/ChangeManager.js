@@ -292,17 +292,24 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				context: this,
 				success: function(data) {
 
-					if (data.error_message) {
-						var el = $('<div/>');
-						el.html(data.error_message);
-						el.prepend('<div><strong>Please correct these errors:</strong><br/></div>');
-						DeskPRO_Window.showAlert(el);
+					if (data.error_messages) {
+
+						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
+						Array.each(data.error_messages, function(msg) {
+							var li = $('<li/>');
+							li.text(msg);
+							li.appendTo(list);
+						});
+
+						self.ticketPage.getEl('field_errors').show().addClass('on');
 
 						self.ticketPage.getEl('field_edit_cancel').show();
 						self.ticketPage.getEl('field_edit_save').show();
 						self.ticketPage.getEl('field_edit_controls').removeClass('loading');
 						return;
 					}
+
+					self.ticketPage.wrapper.removeClass('field-error');
 
 					this.changes = {};
 					this.oldValues = {};

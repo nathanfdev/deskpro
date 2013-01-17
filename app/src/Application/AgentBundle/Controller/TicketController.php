@@ -34,6 +34,9 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Form\Model\NewTicket;
+use Application\AgentBundle\Validator\NewTicketValidator;
+use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 use Application\DeskPRO\Entity;
@@ -237,52 +240,76 @@ class TicketController extends AbstractController
 		}
 		unset($agent_map[$this->person->getId()]);
 
-        $vars = array(
-            'agents' => $agents,
-            'agent_teams' => $agent_teams,
-			'agent_map' => $agent_map,
-			'tasks' => $tasks,
+		#------------------------------
+		# Validate a ticket to see if we need to lock the reply form
+		#------------------------------
 
-            'ticket_perms' => $this->_getTicketPerms($ticket),
-            'ticket' => $ticket,
-	        'ticket_api' => $ticket_api,
-            'ticket_attachments' => $ticket_attachments,
+		$newticket = new NewTicket($this->em, $this->person);
+		$newticket->setValuesFromTicket($ticket);
+
+		$validator = new NewTicketValidator();
+		$ticket_display = new TicketPageZoneCollection('create');
+		$ticket_display->setPersonContext($this->person);
+		$ticket_display->addPagesFromDb();
+		$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
+		$validator->setPageData($default_page->getPageDisplay('default')->data);
+
+		$validator_errors = array();
+		if (!$validator->isValid($newticket)) {
+			foreach ($validator->getErrorsInfo() as $info) {
+				$validator_errors[] = htmlspecialchars($info['message']);
+			}
+		}
+
+
+		$vars = array(
+			'agents'                     => $agents,
+			'agent_teams'                => $agent_teams,
+			'agent_map'                  => $agent_map,
+			'tasks'                      => $tasks,
+
+			'ticket_perms'               => $this->_getTicketPerms($ticket),
+			'ticket'                     => $ticket,
+			'ticket_api'                 => $ticket_api,
+			'ticket_attachments'         => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
 
-            'draft' => $draft,
-			'draft_attachments' => $draft_attachments,
-			'active_drafts' => $active_drafts,
+			'validator_errors'           => $validator_errors,
 
-			'edit_person' => $edit_person,
+			'draft'                      => $draft,
+			'draft_attachments'          => $draft_attachments,
+			'active_drafts'              => $active_drafts,
 
-            'last_message_id' => $ticket_messages_blockcache['last_message_id'],
-            'last_log_id' => $ticket_messages_blockcache['last_log_id'],
+			'edit_person'                => $edit_person,
 
-            'participants' => $participants,
-            'participant_ids' => $participant_ids,
-            'agent_parts' => $agent_parts,
-            'user_parts' => $user_parts,
+			'last_message_id'            => $ticket_messages_blockcache['last_message_id'],
+			'last_log_id'                => $ticket_messages_blockcache['last_log_id'],
 
-            'custom_fields' => $custom_fields,
+			'participants'               => $participants,
+			'participant_ids'            => $participant_ids,
+			'agent_parts'                => $agent_parts,
+			'user_parts'                 => $user_parts,
 
-            'show_related_content' => $show_related_content,
+			'custom_fields'              => $custom_fields,
 
-            'ticket_messages_block' => $ticket_messages_block,
+			'show_related_content'       => $show_related_content,
 
-            'ticket_deleted' => $hidden_data['ticket_deleted'],
-            'hard_delete_time' => $hidden_data['hard_delete_time'],
-            'ticket_options' => $ticket_options,
-            'ticket_flagged' => $ticket_flagged,
-            'macros' => $macros,
+			'ticket_messages_block'      => $ticket_messages_block,
 
-	        'tickets_by_user' => $tickets_by_user,
+			'ticket_deleted'             => $hidden_data['ticket_deleted'],
+			'hard_delete_time'           => $hidden_data['hard_delete_time'],
+			'ticket_options'             => $ticket_options,
+			'ticket_flagged'             => $ticket_flagged,
+			'macros'                     => $macros,
 
-            'agent_signature' => $this->person->getSignature(),
-	        'agent_signature_html' => $this->person->getSignatureHtml(),
+			'tickets_by_user'            => $tickets_by_user,
 
-			'addable_slas' => $addable_slas,
-			'person_object_counts' => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person)
-        );
+			'agent_signature'            => $this->person->getSignature(),
+			'agent_signature_html'       => $this->person->getSignatureHtml(),
+
+			'addable_slas'               => $addable_slas,
+			'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person)
+		);
 
         if($is_pdf)
         {
@@ -1731,8 +1758,8 @@ class TicketController extends AbstractController
 			$newticket->priority_id   = $ticket->priority_id;
 			$newticket->ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'raw');
 
-			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+			$validator = new NewTicketValidator();
+			$ticket_display = new TicketPageZoneCollection('create');
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
 			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
@@ -1744,9 +1771,7 @@ class TicketController extends AbstractController
 					$free[] = htmlspecialchars($info['message']);
 				}
 
-				$free = '- '. implode("<br/>- ", $free);
-
-				return $this->createJsonResponse(array('error' => true, 'error_message' => $free));
+				return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
 			}
 
 			$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));

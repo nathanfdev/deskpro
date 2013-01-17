@@ -436,7 +436,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
 					<button class="save" id="{{baseId}}_field_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
 				</div>
-				<button class="is-loading">{{ phrase('agent.general.saving') }}</button>
+				<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
 			</div>
 		{% endif %}
 		{% set sla_pips %}
@@ -450,6 +450,14 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		}) }}
 	</header>
 	<section class="description-area" style="padding:0">
+		<div class="error-list {% if validator_errors %}on{% endif %}" id="{{baseId}}_field_errors" {% if not validator_errors %}style="display:none"{% endif %}>
+			<span class="title">Please correct the following errors:</span>
+			<ul>
+				{% for i in validator_errors %}
+					<li>{{ i }}</li>
+				{% endfor %}
+			</ul>
+		</div>
 		<article id="{{baseId}}_fields_display_main_wrap">
 			<div id="{{baseId}}_field_holders">
 				{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}

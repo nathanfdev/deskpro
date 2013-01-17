@@ -2132,6 +2132,28 @@ header.page-header .edit-name-gear {
 	box-shadow: 0 1px 0 #FFFFFF, 0 1px 0 #FFFFFF inset, 0 0 1px rgba(255, 255, 255, 0.3) inset;
 }
 
+.profile-box-container > section .error-list {
+	padding: 6px;
+	border-bottom: 1px solid #ADBBCA;
+}
+
+.profile-box-container > section .error-list .title {
+	font-weight: bold;
+	margin-bottom: 6px;
+	font-size: 11px;
+}
+
+.profile-box-container > section .error-list ul {
+	list-style: disc;
+	background-color: #F4DDCD;
+	padding: 6px;
+	font-size: 11px;
+}
+
+.profile-box-container > section .error-list ul li {
+	margin-left: 15px;
+}
+
 .profile-box-container .widget-content {
 	padding: 8px;
 }
@@ -6271,6 +6293,35 @@ div.cc-autocomplete.loading .is-not-loading { display: none !important; }
 			margin-bottom: 4px;
 		}
 	}
+}
+
+.ticket-errors-overlay {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	.rounded(4px);
+
+	border: 1px solid darken(#AFB5B9, 10%);
+
+	background: rgb(203, 203, 203);
+	background: rgba(203, 203, 203, 0.8);
+	z-index: 100;
+
+	text-align: center;
+
+	strong {
+		display: block;
+		margin-top: 45px;
+		font-size: 13pt;
+		padding-top: 40px;
+	}
+}
+
+.field-error .ticket-errors-overlay {
+	display: block;
 }
 
 .dp-note-on .ticket-sending-overlay {

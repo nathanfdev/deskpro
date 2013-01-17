@@ -228,6 +228,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.getEl('people_box_agent').find('.select2-container-multi').css('width', '90%').find('input.select2-input').css('width', '90%');
+
+		if (this.getEl('field_errors').hasClass('on')) {
+			this.wrapper.addClass('field-error');
+			this.ticketFields.openEditMode();
+		}
 	},
 
 	showLockAlert: function() {

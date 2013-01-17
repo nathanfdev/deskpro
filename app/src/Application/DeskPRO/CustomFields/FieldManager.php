@@ -226,6 +226,44 @@ class FieldManager
 
 
 	/**
+	 * Recreates an array we'd get from a posted form based on the values already on an object.
+	 * Useful when re-creating objects to pass through a validator.
+	 *
+	 * @param $object
+	 * @return array
+	 */
+	public function createFormArrayForObject($object)
+	{
+		$field_data = $this->getFieldDataForObject($object);
+
+		$form_data = array();
+
+		foreach ($field_data as $field_id => $data) {
+			$f = $this->getFieldFromId($field_id);
+
+			switch ($f->getTypeName()) {
+				case 'Choice':
+					if (!empty($data['children'])) {
+						$form_data['field_' . $field_id] = array();
+						foreach ($data['children'] as $id) {
+							$form_data['field_' . $field_id][] = $id;
+						}
+					}
+					break;
+
+				default:
+					if (!empty($data['value'])) {
+						$form_data['field_' . $field_id] = $data['value'];
+					}
+					break;
+			}
+		}
+
+		return $form_data;
+	}
+
+
+	/**
 	 * Render field data to their 'text values.
 	 *
 	 * @param array $field_data

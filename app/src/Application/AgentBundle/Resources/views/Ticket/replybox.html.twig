@@ -23,6 +23,11 @@
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
+	<div class="ticket-errors-overlay">
+		<strong>
+			There are errors with the ticket fields that you must correct before replying.
+		</strong>
+	</div>
 	<div class="ticket-sending-overlay" style="display: none;">
 		<strong><span class="hide-note">Sending your message</span><span class="hide-reply" style="display: none">Adding your note</span></strong>
 	</div>
