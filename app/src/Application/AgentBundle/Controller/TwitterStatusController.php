@@ -257,8 +257,18 @@ class TwitterStatusController extends AbstractController
 	{
 		$account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'));
 
+		$parents = array();
+		$status = $account_status->status->in_reply_to_status;
+		$i = 0;
+		while ($status && $i < 10) {
+			$parents[] = $status;
+			$status = $status->in_reply_to_status;
+			$i++;
+		}
+
 		return $this->render('AgentBundle:TwitterStatus:status-overlay.html.twig', array(
-			'account_status' => $account_status
+			'account_status' => $account_status,
+			'parents' => array_reverse($parents)
 		));
 	}
 
