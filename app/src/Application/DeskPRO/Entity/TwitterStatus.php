@@ -371,7 +371,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 
 			switch (get_class($replacement)) {
 				case 'Application\\DeskPRO\\Entity\\TwitterStatusMention':
-					$this->_parsed_text .= sprintf('<a class="mention" data-user-id="%s">@%s</a>', $replacement['user']['id'], htmlspecialchars($replacement['user']['screen_name']));
+					$this->_parsed_text .= sprintf('<a class="mention" href="https://twitter.com/%2$s" data-user-id="%1$s">@%2$s</a>', $replacement['user']['id'], htmlspecialchars($replacement['user']['screen_name']));
 					break;
 				case 'Application\\DeskPRO\\Entity\\TwitterStatusTag':
 					$this->_parsed_text .= sprintf('<a class="hash" href="https://twitter.com/search?q=%2$s" target="twitter-hash" data-hash="%1$s">#%1$s</a>', htmlspecialchars($replacement['hash']), urlencode('#' . $replacement['hash']));

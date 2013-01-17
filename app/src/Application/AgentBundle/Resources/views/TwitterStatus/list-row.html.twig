@@ -32,6 +32,13 @@
 					<span class="name">{{ status.user.name }}</span>
 					<span class="screen-name">@{{ status.user.screen_name }}</span>
 				</span>
+				{% if not account_status.isFromSelf() %}
+					{% if status.user.id in account_status.account.friend_ids %}
+						<span class="follow-unfollow-button unfollow">Unfollow</span>
+					{% else %}
+						<span class="follow-unfollow-button follow">Follow</span>
+					{% endif %}
+				{% endif %}
 				{% if status.isMessage() %}
 					<span class="dm-notice">DM</span>
 				{% endif %}

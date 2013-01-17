@@ -235,8 +235,7 @@ class TwitterStatus extends AbstractEntityRepository
 		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s INDEX BY s.id
-			LEFT JOIN s.mentions m
-			WHERE m.user = :user_id
+			INNER JOIN s.mentions m
 		";
 
 		$params = array(
@@ -244,8 +243,10 @@ class TwitterStatus extends AbstractEntityRepository
 		);
 
 		if ($from_user_ids) {
-			$query .= " AND s.user IN (:from_user_ids) ";
+			$query .= "WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ";
 			$params['from_user_ids'] = $from_user_ids;
+		} else {
+			$query .= "WHERE m.user = :user_id";
 		}
 
 		if (!$includeArchived) {
@@ -280,7 +281,6 @@ class TwitterStatus extends AbstractEntityRepository
 			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterStatus s
 			LEFT JOIN s.mentions m
-			WHERE m.user = :user_id
 		";
 
 		$params = array(
@@ -288,8 +288,10 @@ class TwitterStatus extends AbstractEntityRepository
 		);
 
 		if ($from_user_ids) {
-			$query .= " AND s.user IN (:from_user_ids) ";
+			$query .= "WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ";
 			$params['from_user_ids'] = $from_user_ids;
+		} else {
+			$query .= "WHERE m.user = :user_id";
 		}
 
 		if (!$includeArchived) {

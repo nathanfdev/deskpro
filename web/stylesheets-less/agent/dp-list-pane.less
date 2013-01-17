@@ -1938,7 +1938,7 @@ section.dp-overlay > article.no-footer {
 		}
 	}
 
-	.dm-notice, .long-notice {
+	.dm-notice, .long-notice, {
 		.gradient(#8bbe72, #71b058);
 		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 		.border-radius(3px, 3px, 3px, 3px);
@@ -1950,6 +1950,23 @@ section.dp-overlay > article.no-footer {
 		color: #fff;
 		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
 		white-space:nowrap;
+	}
+
+	.follow-unfollow-button {
+		.gradient(#e6e6e6, #f8f8f8);
+		.border-radius(3px, 3px, 3px, 3px);
+		border: 1px solid #c8c8c8;
+
+		font-size: 11px;
+		padding: 0 2px;
+		line-height: 105%;
+		color: #777;
+		white-space:nowrap;
+		cursor: pointer;
+
+		&.unfollow, &:hover {
+			.gradient(#dadada, #f2f2f2);
+		}
 	}
 
 	.reply-list {
@@ -2290,7 +2307,7 @@ article.twitter-status.archived .title .expand-collapse-icon {
 			margin-top: 5px;
 			color: #999999;
 			font-size: 80%;
-			line-height: 100%;
+			line-height: 105%;
 
 			span {
 				margin-right: 5px;

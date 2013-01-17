@@ -53,9 +53,6 @@ class TwitterStream extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 10;
 
-	/**
-	 * @todo make benchmarks and adjust
-	 */
 	const EVENT_LIMIT = 50;
 
 	/**
@@ -262,8 +259,10 @@ class TwitterStream extends AbstractJob
 			$notify->send();
 		}
 
-		$notify = new \Application\DeskPRO\Notifications\TweetNewNotification($account_status, $reply_account_status);
-		$notify->send();
+		if ($account_status->status_type != 'sent') {
+			$notify = new \Application\DeskPRO\Notifications\TweetNewNotification($account_status, $reply_account_status);
+			$notify->send();
+		}
 
 		return true;
 	}
@@ -295,8 +294,10 @@ class TwitterStream extends AbstractJob
 
 		$this->twitter_service->insertNewTweetClientMessage($account_status);
 
-		$notify = new \Application\DeskPRO\Notifications\TweetNewNotification($account_status);
-		$notify->send();
+		if (!$account_status->isFromSelf()) {
+			$notify = new \Application\DeskPRO\Notifications\TweetNewNotification($account_status);
+			$notify->send();
+		}
 
 		return true;
 	}
@@ -347,17 +348,19 @@ class TwitterStream extends AbstractJob
 				return true;
 			}
 
-			switch ($eventType) {
-				// Process a favorite
-				case 'favorite':
-					$status->setIsFavorited(true);
-					$this->em->persist($status);
-					break;
+			if ($sourceUser->id == $account->getUserId()) {
+				switch ($eventType) {
+					// Process a favorite
+					case 'favorite':
+						$status->setIsFavorited(true);
+						$this->em->persist($status);
+						break;
 
-				case 'unfavorite':
-					$status->setIsFavorited(false);
-					$this->em->persist($status);
-					break;
+					case 'unfavorite':
+						$status->setIsFavorited(false);
+						$this->em->persist($status);
+						break;
+				}
 			}
 		} else {
 			switch ($eventType) {

@@ -2,5 +2,7 @@
 <dp:subject>@{{ account_status.status.user.screen_name }} replied to your tweet</dp:subject>
 
 @{{ account_status.status.user.screen_name }} replied to a tweet you wrote for @{{ account_status.account.user.screen_name }}.
-<br /><br />
+
+<blockquote>{{ account_status.status.parsed_text|raw }}</blockquote>
+
 <a href="{{ url_full('agent') }}#app.twitter,tw-all:{{ account_status.account.id }}::">View @{{ account_status.account.user.screen_name }}'s tweets</a>

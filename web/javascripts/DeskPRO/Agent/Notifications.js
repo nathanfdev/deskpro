@@ -103,7 +103,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var type = row.data('type');
 		var ev = { row: row, type: type };
-		this.fireEvent('addRow');
+		this.fireEvent('removeRow');
 
 		if (row.data('notification')) {
 			row.data('notification').close();
@@ -126,6 +126,17 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		this._isRemoving = false;
+	},
+
+	removeRelated: function(related) {
+		var self = this;
+
+		$('#dp_notify_list').find('li').each(function() {
+			var row = $(this);
+			if (row.data('related') === related) {
+				self.removeRow(row);
+			}
+		});
 	},
 
 	removeRowById: function(id) {

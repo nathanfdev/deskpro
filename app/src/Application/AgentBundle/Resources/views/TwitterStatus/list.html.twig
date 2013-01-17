@@ -24,8 +24,10 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="layout-content twitter">
-	{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' with { 'twitter_list_route': twitter_list_route } %}
-	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
+	{% if twitter_list_route != 'agent_twitter_sent_list' %}
+		{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' with { 'twitter_list_route': twitter_list_route } %}
+		{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
+	{% endif %}
 
 	<div class="new-tweet-list-indicator"></div>
 

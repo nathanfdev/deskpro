@@ -138,8 +138,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			return false;
 		}
 
-		if (data.is_from_self && this.menuOptions.filter('[name=account]').is(':checked')) {
-			return true;
+		if (data.is_from_self) {
+			return (
+				this.menuOptions.filter('[name=account]').is(':checked')
+				|| this.meta.listRoute == 'agent_twitter_sent_list'
+			);
 		}
 
 		var isInInbox = (
@@ -191,10 +194,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				break;
 
 			case 'agent_twitter_sent_list':
-				if (!data.is_from_self) {
-					return false;
-				}
-				break;
+				// the true case is handled above
+				return false;
 		}
 
 		if (this.meta.group) {
@@ -326,6 +327,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		var $html = $(html);
 		this.content.find('.twitter-status-list').prepend($html);
 		this._afterLoading($html);
+
+		this.wrapper.find('.list-listing.no-results').hide();
 
 		while (this.resultsHelper.updateShowingCount() > this.resultsHelper.options.perPage) {
 			$(this.resultsHelper.options.resultRowSelector, this.resultsHelper.resultsContainer).last().remove();

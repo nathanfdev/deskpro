@@ -53,10 +53,6 @@ DeskPRO.Agent.Widget.TwitterGroupEditor = new Orb.Class({
 			 */
 			scrollWatchTimeout: 100,
 
-			/**
-			 * Margin for positioning control element.
-			 */
-			marginTop: 26,
 
 			accountId: null
 		};
@@ -244,9 +240,7 @@ DeskPRO.Agent.Widget.TwitterGroupEditor = new Orb.Class({
 			left: 0
 		});
 
-		// Update where the position of the container is relative to the outer wrapper
-		// hard-coded value: offset of list from top of pane. aka height of header that says "INBOX"
-		var top = this.options.marginTop;
+		var top = $(this.options.elements, listEl).first().position().top;
 
 		var evData = {marginTop: top};
 		this.fireEvent('setMarginTop', evData);

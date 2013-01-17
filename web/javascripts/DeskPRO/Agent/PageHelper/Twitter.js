@@ -19,11 +19,13 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		this.setOptions(options);
 
 		// user links
-		this.content.on('click', '.photo, .user', function() {
+		this.content.on('click', '.photo, .user', function(e) {
+			e.preventDefault();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			return false;
 		});
-		this.content.on('click', '.mention', function() {
+		this.content.on('click', '.mention', function(e) {
+			e.preventDefault();
 			var route = 'page:' + BASE_URL + 'agent/twitter/user/' + $(this).data('user-id');
 			DeskPRO_Window.runPageRoute(route);
 			return false;
@@ -32,12 +34,21 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		// user follow/unfollow
 		this.content.on('click', '.follow', function(e) {
 			e.preventDefault();
-
-			$(this).addClass('unfollow').removeClass('follow');
-			$(this).find('label').text('Unfollow');
+			e.stopPropagation();
 
 			var row = self.closestRow(this);
 			var id = row.attr('data-user-id');
+
+			self.content.find('[data-user-id="' + id + '"] .follow').each(function() {
+				$(this).addClass('unfollow').removeClass('follow');
+
+				var label = $(this).find('label');
+				if (label.length) {
+					label.text('Unfollow');
+				} else {
+					$(this).text('Unfollow');
+				}
+			});
 
 			$.ajax({
 				url: self.page.getMetaData('saveFollowUrl'),
@@ -48,28 +59,39 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				}
 			});
 
-			row.addClass('archived');
-			row.find('.status-archived').show();
+			if (page.getMetaData('listRoute') == 'agent_twitter_followers_list_new') {
+				row.addClass('archived');
+				row.find('.status-archived').show();
 
-			if (self.page.getMetaData('hideArchived')) {
-				if (self.options.userArchiveHideCallback) {
-					self.options.userArchiveHideCallback(row);
-				}
-				row.fadeOut('fast', function() {
+				if (self.page.getMetaData('hideArchived')) {
 					if (self.options.userArchiveHideCallback) {
 						self.options.userArchiveHideCallback(row);
 					}
-					row.remove();
-				});
+					row.fadeOut('fast', function() {
+						if (self.options.userArchiveHideCallback) {
+							self.options.userArchiveHideCallback(row);
+						}
+						row.remove();
+					});
+				}
 			}
 		});
 		this.content.on('click', '.unfollow', function(e) {
 			e.preventDefault();
-
-			$(this).addClass('follow').removeClass('unfollow');
-			$(this).find('label').text('Follow');
+			e.stopPropagation();
 
 			var id = self.closestRow(this).attr('data-user-id');
+
+			self.content.find('[data-user-id="' + id + '"] .unfollow').each(function() {
+				$(this).addClass('follow').removeClass('unfollow');
+
+				var label = $(this).find('label');
+				if (label.length) {
+					label.text('Follow');
+				} else {
+					$(this).text('Follow');
+				}
+			});
 
 			$.ajax({
 				url: self.page.getMetaData('saveUnfollowUrl'),
@@ -126,6 +148,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 			var id = self.closestRow(this).attr('data-status-id');
 			if (id) {
+				self.removeTweetNotification(id);
+
 				$(this).addClass('favorited').removeClass('add-favorite');
 				self.doFavorite(id, 1);
 			}
@@ -135,6 +159,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 			var id = self.closestRow(this).attr('data-status-id');
 			if (id) {
+				self.removeTweetNotification(id);
+
 				$(this).addClass('add-favorite').removeClass('favorited');
 				self.doFavorite(id, 0);
 			}
@@ -153,6 +179,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				row.find('.status-archived').show();
 
 				self.doArchiveStatus(id, 1);
+
+				self.removeTweetNotification(id);
 
 				if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
 					row.fadeOut('fast', function() {
@@ -175,6 +203,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				row.removeClass('archived');
 				row.find('.status-archive').show();
 
+				self.removeTweetNotification(id);
+
 				self.doArchiveStatus(id, 0);
 			}
 		});
@@ -188,6 +218,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 			if (id && confirm('Are you sure you want to delete this tweet?')) {
 				row.hide();
+
+				self.removeTweetNotification(id);
 
 				$.ajax({
 					url: self.page.getMetaData('saveDeleteUrl'),
@@ -292,6 +324,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			e.preventDefault();
 
 			var row = self.closestRow(this);
+			var id = row.attr('data-status-id');
 
 			var retweetContainer = row.find('.new-retweet');
 			if (retweetContainer.is(':visible')) {
@@ -299,6 +332,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			} else {
 				retweetContainer.show();
 				row.find('.new-message').hide();
+
+				self.removeTweetNotification(id);
 
 				var textarea = retweetContainer.find('textarea');
 				if (!textarea.hasClass('tae')) {
@@ -347,6 +382,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			});
 
 			retweetContainer.addClass('loading');
+
+			self.removeTweetNotification(id);
 
 			$.ajax({
 				url: page.getMetaData('saveRetweetUrl'),
@@ -404,6 +441,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			var id = self.closestRow(this).attr('data-status-id');
 
 			if (id && confirm('Are you sure you want to un-retweet this?')) {
+				self.removeTweetNotification(id);
+
 				$.ajax({
 					url: page.getMetaData('saveUnretweetUrl'),
 					type: 'POST',
@@ -428,6 +467,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			e.preventDefault();
 
 			var row = self.closestRow(this);
+			var id = row.attr('data-status-id');
 
 			var newMessage = row.find('.new-message');
 			if (newMessage.is(':visible')) {
@@ -435,6 +475,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			} else {
 				newMessage.show();
 				row.find('.new-retweet').hide();
+
+				self.removeTweetNotification(id);
 
 				var textarea = newMessage.find('textarea');
 
@@ -490,6 +532,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			}
 
 			var data = messageContainer.find('form').serializeArray();
+
+			self.removeTweetNotification(id);
 
 			if (self.options.saveMessageCallback === 'default') {
 				messageContainer.addClass('loading');
@@ -556,6 +600,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 				newNote.show();
 
+				self.removeTweetNotification(id);
+
 				if (textarea.data('redactor')) {
 					textarea.setFocus();
 				} else {
@@ -586,6 +632,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			}
 
 			noteContainer.addClass('loading');
+
+			self.removeTweetNotification(id);
 
 			$.ajax({
 				url: page.getMetaData('saveNoteUrl'),
@@ -632,6 +680,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					var val = $(this).val();
 					var sel = $(this).find(':selected');
 					var label = sel.text().trim();
+
+					self.removeTweetNotification(id);
 
 					if (val == 'agent:' + DESKPRO_PERSON_ID) {
 						label = 'Me';
@@ -735,85 +785,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		});
 	},
 
-	initAgentSelect: function(content, assignUrl) {
-		/*content.find('li.opt-trigger.agent, li.opt-trigger.agent > span').click(function() {
-			var li = $(this).closest('li');
-			var row = $(this).closest('article.twitter-status');
-
-			var select = li.find('select');
-			if (!select.hasClass('with-select2')) {
-				DP.select(select);
-
-				select.on('change', function() {
-					var val = $(this).val();
-					var sel = $(this).find(':selected');
-					var label = sel.text().trim();
-
-					if (val == 'agent:' + DESKPRO_PERSON_ID) {
-						label = 'Me';
-					}
-
-					var labelEl = row.find('li.opt-trigger.agent label');
-					if (sel.data('icon')) {
-						labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
-					} else {
-						labelEl.text(label);
-					}
-
-					var id = $(this).closest('.twitter-status').attr('data-status-id');
-
-					$.ajax({
-						url: assignUrl,
-						type: 'POST',
-						dataType: 'json',
-						data: { account_status_id: id, assign: val },
-						success: function(json) {
-							if (json.error) {
-								alert(json.error);
-							}
-						}
-					});
-				});
-			}
-
-			select.select2("open");
-		});*/
-
-		/*content.find('li.opt-trigger.agent select').not('.with-select2').each(function() {
-			var row = $(this).closest('article.twitter-status');
-			DP.select($(this));
-
-			$(this).on('change', function() {
-				var val = $(this).val();
-				var sel = $(this).find(':selected');
-				var label = sel.text().trim();
-
-				if (val == 'agent:' + DESKPRO_PERSON_ID) {
-					label = 'Me';
-				}
-
-				var labelEl = row.find('li.opt-trigger.agent label');
-				if (sel.data('icon')) {
-					labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
-				} else {
-					labelEl.text(label);
-				}
-
-				var id = $(this).closest('.twitter-status').attr('data-status-id');
-
-				$.ajax({
-					url: assignUrl,
-					type: 'POST',
-					dataType: 'json',
-					data: { account_status_id: id, assign: val },
-					success: function(json) {
-						if (json.error) {
-							alert(json.error);
-						}
-					}
-				});
-			});
-		});*/
+	removeTweetNotification: function(id) {
+		DeskPRO_Window.notifications.removeRelated('tweet:' + id);
 	},
 
 	initializeNoteEditor: function(textarea, agentMap) {

@@ -18,11 +18,13 @@ pageMeta.baseId = '{{ baseId }}';
 			@{{ account.user.screen_name }}
 			<input type="hidden" name="account_ids[]" value="{{ account.id }}" />
 		{% else %}
-			<select id="{{ baseId }}_from_account" name="account_ids[]" multiple="multiple" style="width: 285px">
-			{% for possible_account in accounts %}
-				<option value="{{ possible_account.id }}">@{{ possible_account.user.screen_name }}</option>
-			{% endfor %}
-			</select>
+			<span style="display: inline-block; width: 285px">
+				<select id="{{ baseId }}_from_account" name="account_ids[]" multiple="multiple" data-select-width="auto">
+				{% for possible_account in accounts %}
+					<option value="{{ possible_account.id }}">@{{ possible_account.user.screen_name }}</option>
+				{% endfor %}
+				</select>
+			</span>
 		{% endif %}
 	</div>
 	<div class="new-message" style="border-top: 0;">

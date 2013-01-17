@@ -9,6 +9,7 @@ pageMeta.currentPage = {{ page }};
 pageMeta.perPage = {{ per_page }};
 pageMeta.totalCount = {{ total_count }};
 pageMeta.listUrl = '{{ path('agent_twitter_followers_list_new', {'account_id': account.id}) }}?partial=1';
+pageMeta.listRoute = 'agent_twitter_followers_list_new';
 
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>

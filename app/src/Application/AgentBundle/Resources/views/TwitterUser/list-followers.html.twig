@@ -21,7 +21,7 @@ pageMeta.listUrl = '{{ path('agent_twitter_followers_list', {'account_id': accou
 <div class="layout-content twitter">
     <div class="content">
         {% if followers|length %}
-			{% include 'AgentBundle:TwitterUser:part-followers.html.twig' %}
+			{% include 'AgentBundle:TwitterUser:part-followers.html.twig' with {'no_archive': true} %}
 		{% endif %}
     </div>
 

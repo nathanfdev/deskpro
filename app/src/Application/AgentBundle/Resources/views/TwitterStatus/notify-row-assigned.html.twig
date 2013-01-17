@@ -1,5 +1,6 @@
 <li class="ticket"
 	data-type="tickets"
+	data-related="tweet:{{ account_status.id }}"
 	{% if account_status.agent %}
 		data-route="listpane:{{ path('agent_twitter_mine_list', {'account_id': account_status.account.id}) }}"
 	{% elseif account_status.agent_team %}
@@ -13,9 +14,10 @@
 	<a><i class="row-icon"></i> Tweet</a>
 	<div class="info">
 		{% if account_status.agent %}
-			Assigned to this tweet by {{ performer.display_name }}
+			Assigned to this tweet by {{ performer.display_name }}.
 		{% elseif account_status.agent_team %}
-			Your team was assigned to this tweet by {{ performer.display_name }}
+			Your team was assigned to this tweet by {{ performer.display_name }}.
 		{% endif %}
+		<div>{{ account_status.status.text|raw }}</div>
 	</div>
 </li>

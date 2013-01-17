@@ -13,7 +13,7 @@
 
 		function update(element) {
 			var $elem  = $(element);
-			var offset = $elem.css('box-sizing') == 'border-box' ? $elem.outerHeight() - $elem.height() : 0;
+			var offset = ($elem.css('box-sizing') == 'border-box' || $elem.css('-moz-box-sizing') == 'border-box') ? $elem.outerHeight() - $elem.height() : 0;
 			var height = $elem.height(), current = height;
 			var max    = $elem.data('expander-max-height') || 1000;
 			var min    = $elem.data('expander-min-height') || 50;

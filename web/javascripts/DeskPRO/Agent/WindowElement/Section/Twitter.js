@@ -93,6 +93,10 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 	},
 
 	adjustTweetCountsFromClientMessage: function(data, adjustAmount) {
+		if (data.is_from_self) {
+			return;
+		}
+
 		var accountId = data.account_id;
 
 		var types = {};
@@ -379,7 +383,9 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			return;
 		}
 
-		DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/twitter/user/find?tab=1&name=' + encodeURIComponent(name));
+		DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/twitter/user/find?tab=1&name='
+			+ encodeURIComponent(name) + '&account_id=' + accountId
+		);
 	},
 
 	recountBadge: function() {

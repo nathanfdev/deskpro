@@ -261,6 +261,8 @@ var DP = {
 					}
 				} // otherwise we didn't find something that wasn't hidden
 			}
+		} else if (el.data('select-width')) {
+			options.width = el.data('select-width');
 		} else {
 			options.width = function() {
 				var select_el = el;
