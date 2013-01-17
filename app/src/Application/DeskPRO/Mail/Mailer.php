@@ -232,6 +232,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
+		if ($message instanceof \Application\DeskPRO\Mail\Message) {
+			// Need to prepare right away so any context-sensitive changes affect
+			// the template. E.g., language context might be temporarily changed.
+			$message->prepare();
+		}
 		$this->queued[] = $message;
 	}
 

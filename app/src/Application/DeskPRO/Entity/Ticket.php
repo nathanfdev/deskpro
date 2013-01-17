@@ -1451,9 +1451,31 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('department', $old_dep, $dep);
 	}
 
+	public function isLangSet()
+	{
+		return $this->language ? true : false;
+	}
+
+	public function getRealLanguage()
+	{
+		return $this->language;
+	}
+
+	public function getLanguage()
+	{
+		if ($this->language) {
+			return $this->language;
+		} elseif ($this->person->getRealLanguage()) {
+			return $this->person->getRealLanguage();
+		}
+
+		return null;
+	}
+
 	public function getLanguageId()
 	{
-		return $this->language ? $this->language->getId() : 0;
+		$l = $this->getLanguage();
+		return $l ? $l->getId() : 0;
 	}
 
 	public function setLanguageId($id)

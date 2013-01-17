@@ -85,7 +85,7 @@ class SendAutocloseWarnEmailAction extends AbstractAction
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person, $tpl) {
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person, $tpl) {
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate($tpl, $vars);
 			$message->setToPerson($person);

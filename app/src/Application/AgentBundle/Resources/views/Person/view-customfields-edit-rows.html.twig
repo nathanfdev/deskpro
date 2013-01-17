@@ -16,4 +16,17 @@
 			</select>
 		</td>
 	</tr>
+	{% if app.getDataRepository('Language').isMultiLang() %}
+		<tr>
+			<th>Language</th>
+			<td>
+				<select name="language">
+					<option value=""></option>
+					{% for l in app.getDataRepository('Language').getAll() %}
+						<option value="{{ l.id }}">{{ l.title }}</option>
+					{% endfor %}
+				</select>
+			</td>
+		</tr>
+	{% endif %}
 </table>

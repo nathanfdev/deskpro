@@ -19,4 +19,12 @@
 			{{ person.date_time|date('fulltime', person) }}
 		</td>
 	</tr>
+	{% if person.getRealLanguage() and app.getDataRepository('Language').isMultiLang() %}
+		<tr>
+			<th>Language</th>
+			<td>
+				{{ person.language.getTitle() }}
+			</td>
+		</tr>
+	{% endif %}
 </table>

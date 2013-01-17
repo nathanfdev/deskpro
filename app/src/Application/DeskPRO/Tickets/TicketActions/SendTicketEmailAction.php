@@ -111,7 +111,7 @@ class SendTicketEmailAction extends AbstractAction
 		$vars['ticketdisplay'] = $ticketdisplay;
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $from_address, $ticket, $person, $parts) {
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $from_address, $ticket, $person, $parts) {
 
 			$email = $person->getPrimaryEmailAddress();
 			if(!$email && $ticket->person_email_validating) {

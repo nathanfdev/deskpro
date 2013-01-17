@@ -169,7 +169,7 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			}
 		}
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids, $attach_attachments) {
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids, $attach_attachments) {
 
 			$message = App::getMailer()->createMessage();
 			$message->setContextId('ticket_gateway');

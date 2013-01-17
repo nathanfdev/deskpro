@@ -59,7 +59,7 @@ class WarnNewreplyFloodAction extends AbstractUserNotificationAction
 
 		$from_address = App::getSetting('core.default_from_email');
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($vars, $from_address, $ticket, $person) {
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr) use ($vars, $from_address, $ticket, $person) {
 			$message = App::getMailer()->createMessage();
 			$message->setContextId('ticket_gateway');
 			$message->setTemplate('DeskPRO:emails_user:gateway-autoresponse-warn.html.twig', $vars);

@@ -662,6 +662,13 @@ class PersonController extends AbstractController
 			$timezone = null;
 		}
 
+		$language = $this->in->getUint('language');
+		if ($language) {
+			$language = $this->container->getDataService('Language')->get($language);
+		} else {
+			$language = null;
+		}
+
 		$this->em->beginTransaction();
 
 		try {
@@ -675,6 +682,8 @@ class PersonController extends AbstractController
 				$person->timezone = $timezone;
 				$this->em->persist($person);
 			}
+
+			$person->language = $language;
 
 			$this->em->flush();
 			$this->em->commit();

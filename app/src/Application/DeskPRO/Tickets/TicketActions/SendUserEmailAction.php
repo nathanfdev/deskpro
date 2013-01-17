@@ -120,7 +120,7 @@ class SendUserEmailAction extends AbstractAction
 
 		$template_name = $this->template;
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($template_name, $vars, $from_address, $ticket, $person, $parts) {
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($template_name, $vars, $from_address, $ticket, $person, $parts) {
 
 			$email = $person->getPrimaryEmailAddress();
 			if(!$email && $ticket->person_email_validating) {
