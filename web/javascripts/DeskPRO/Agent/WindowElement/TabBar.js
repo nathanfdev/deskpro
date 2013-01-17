@@ -317,6 +317,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	activateTab: function(tab) {
 
+		if (!tab) {
+			return;
+		}
+
 		var id = tab.id;
 
 		// Already the current tab
