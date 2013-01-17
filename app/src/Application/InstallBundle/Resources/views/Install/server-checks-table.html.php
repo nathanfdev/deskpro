@@ -236,7 +236,7 @@
 		<div class="alert-message block-message error">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_disabled_functions') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 			We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disable_functions</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?>.
-			These disabled functions are required for DeskPRO to function. You must edit your php.ini and remove the disable_functions directive.
+			Some functions are required for DeskPRO to function (escapeshellarg, exec, passthru, chdir and proc_open). You must edit your php.ini and remove the disable_functions directive.
 		</div>
 		<?php endif ?>
 	</td>
