@@ -130,6 +130,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				</div>
 			</div>
 		{% endif %}
+
+		{% if app.user.getApiToken() %}
+			<div class="dp-form-row">
+				<div class="dp-form-label"><label>API Token</label></div>
+				<div class="dp-form-input">
+					<label><input type="checkbox" name="settings_profile[reset_api_token]" value="1" /> Reset your API token. You will need to relogin with any external apps.</label>
+				</div>
+			</div>
+		{% endif %}
 	</div>
 
 	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>

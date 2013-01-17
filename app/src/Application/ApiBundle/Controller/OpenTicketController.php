@@ -77,8 +77,8 @@ class OpenTicketController extends AbstractController
 
 		} else {
 			// Not allowed to create new tickets using this service
-			if (!$this->apikey && !dp_get_config('allow_open_ticket_create')) {
-				$response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key', 401);
+			if (!$this->apikey && !$this->api_token && !dp_get_config('allow_open_ticket_create')) {
+				$response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
 				$response->headers->add(array(
 					'WWW-Authenticate' => 'Basic realm="API"'
 				));

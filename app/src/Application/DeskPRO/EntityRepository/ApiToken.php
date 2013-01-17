@@ -29,47 +29,80 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @category Entities
  */
 
-namespace Application\AgentBundle\Form\Type;
+namespace Application\DeskPRO\EntityRepository;
+use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\App;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class SettingsProfile extends AbstractType
+class ApiToken extends AbstractEntityRepository
 {
-	public function buildForm(FormBuilder $builder, array $options)
-    {
-		$builder->add('name', 'text', array('required' => false));
-	    $builder->add('override_display_name', 'text', array('required' => false));
-		$builder->add('email', 'text', array('required' => false));
-		$builder->add('timezone', 'choice', array(
-			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
-		));
-		$builder->add('password', 'password', array('required' => false));
-		$builder->add('password2', 'password', array('required' => false));
-
-	    $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
-	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
-		$builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
-
-		$builder->add('reset_api_token', 'hidden', array('required' => false));
-
-		$builder->add('default_team_id', 'hidden', array('required' => false));
-
-		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
-    }
-
-	public function getDefaultOptions(array $options)
+	/**
+	 * Find an API key based off of a key string. A key string is: "id:code"
+	 * 
+	 * @param string $api_string
+	 *
+	 * @return \Application\DeskPRO\Entity\ApiToken
+	 */
+	public function findByTokenString($token_string)
 	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
-		);
+		if (strpos($token_string, ':') === false) return null;
+		
+		list ($id, $token) = explode(':', $token_string, 2);
+
+		$token_obj = $this->find($id);
+		if (!$token_obj) return null;
+		if ($token_obj->token != $token) return null;
+
+		return $token_obj;
 	}
 
-    public function getName()
-    {
-        return 'settings_profile';
-    }
+	public function getTokenForPerson(\Application\DeskPRO\Entity\Person $person)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:ApiToken t
+			WHERE t.person = ?0
+		")->setParameters(array($person))->getOneOrNullResult();
+	}
+
+	public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiToken $api_token)
+	{
+		$rate_limit = App::getDb()->fetchAssoc("
+			SELECT *
+			FROM api_token_rate_limit
+			WHERE person_id = ?
+		", array($api_token->person->id));
+
+		if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
+			App::getDb()->delete('api_token_rate_limit', array(
+				'person_id' => $api_token->person->id
+			));
+		}
+
+		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
+			$rate_limit = array(
+				'person_id' => $api_token->person->id,
+				'hits' => 0,
+				'created_stamp' => time(),
+				'reset_stamp' => time() + 3600
+			);
+		}
+
+		return $rate_limit;
+	}
+
+	public function updateRateLimit(\Application\DeskPRO\Entity\ApiToken $api_token)
+	{
+		$time = time();
+
+		App::getDb()->executeUpdate("
+			INSERT INTO api_token_rate_limit
+				(person_id, hits, created_stamp, reset_stamp)
+			VALUES
+				(?, 1, ?, ?)
+			ON DUPLICATE KEY UPDATE hits = hits + 1
+		", array($api_token->person->id, $time, $time + 3600));
+	}
 }

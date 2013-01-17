@@ -41,13 +41,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-/**
- * An API key is a simple way to use the api without going through OAuth.
- * Admins can define an API key, and use the key to authorize requests. Useful
- * for things like system services. User services (things users want to do)
- * will want to use OAuth.
- *
- */
 class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**

@@ -51,6 +51,7 @@ class SettingsProfile
 	public $ticket_close_note = false;
 	public $ticket_go_next_reply = false;
 	public $default_team_id = 0;
+	public $reset_api_token = false;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -151,6 +152,14 @@ class SettingsProfile
 			);
 			if (count($person->getAgent()->getTeams()) && $assign_team_setting) {
 				$person->setPreference('agent.ticket_default_team_id', intval($this->default_team_id));
+			}
+
+			if ($this->reset_api_token) {
+				$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+				if ($token) {
+					$token->regenerateToken();
+					$this->em->persist($token);
+				}
 			}
 
 			$this->em->persist($person);

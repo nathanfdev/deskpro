@@ -44,9 +44,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * The API key making this request
 	 * 
-	 * @var \Application\DeskPRO\Entity\ApiKey
+	 * @var \Application\DeskPRO\Entity\ApiKey|null
 	 */
 	public $apikey;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\ApiToken|null
+	 */
+	public $api_token;
 
 	/**
 	 * The user context (user making the request, or the one the API key says to use)
@@ -108,6 +113,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->settings = $this->get('deskpro.core.settings');
 		
 		$this->apikey = $this->get('deskpro.api.request_key');
+		$person = null;
 
 		if ($this->apikey) {
 			$person = false;
@@ -126,19 +132,26 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				$person = $this->apikey->person;
 			}
+		}
 
-			if ($person && $person->is_agent) {
-				App::setCurrentPerson($person);
-
-				$this->person = $person;
-
-				$this->person->loadHelper('Agent');
-				$this->person->loadHelper('AgentTeam');
-				$this->person->loadHelper('AgentPermissions');
-				$this->person->loadHelper('PermissionsManager');
-				$this->person->loadHelper('HelpMessages');
-				$this->person->loadHelper('AgentPrefs');
+		if (!$this->apikey) {
+			$this->api_token = $this->get('deskpro.api.request_token');
+			if ($this->api_token) {
+				$person = $this->api_token->person;
 			}
+		}
+
+		if ($person && $person->is_agent) {
+			App::setCurrentPerson($person);
+
+			$this->person = $person;
+
+			$this->person->loadHelper('Agent');
+			$this->person->loadHelper('AgentTeam');
+			$this->person->loadHelper('AgentPermissions');
+			$this->person->loadHelper('PermissionsManager');
+			$this->person->loadHelper('HelpMessages');
+			$this->person->loadHelper('AgentPrefs');
 		}
 	}
 
@@ -149,13 +162,17 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->apikey) {
-			$response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key', 401);
+		if (!$this->apikey && !$this->api_token) {
+			$response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
 			$response->headers->add(array(
 				'WWW-Authenticate' => 'Basic realm="API"'
 			));
 
 			return $response;
+		}
+
+		if ($this->api_token && $this->api_token->date_expires && $this->api_token->date_expires->getTimestamp() < time()) {
+			return $this->createApiErrorResponse('token_expired', 'Your API token has expired. Please login again.', 403);
 		}
 
 		if (!$this->person) {
@@ -173,7 +190,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	protected function _checkRateLimit($action, $arguments = null)
 	{
-		$this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+		if ($this->apikey) {
+			$this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+		} else {
+			$this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
+		}
+
 		if ($this->rate_info['hits'] >= App::getSetting('core.api_rate_limit')) {
 			return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 429);
 		}
@@ -183,7 +205,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	protected function _updateRateLimit($action, $arguments = null)
 	{
-		$this->em->getRepository('DeskPRO:ApiKey')->updateRateLimit($this->apikey);
+		if ($this->apikey) {
+			$this->em->getRepository('DeskPRO:ApiKey')->updateRateLimit($this->apikey);
+		} else {
+			$this->em->getRepository('DeskPRO:ApiToken')->updateRateLimit($this->api_token);
+		}
+
 		if ($this->rate_info) {
 			$this->rate_info['hits']++;
 		}

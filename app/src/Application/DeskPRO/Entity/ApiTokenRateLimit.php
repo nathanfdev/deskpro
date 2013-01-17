@@ -29,7 +29,6 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
  * @category Entities
  */
 
@@ -38,49 +37,22 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-/**
- */
-class ApiAuthToken extends \Application\DeskPRO\Domain\DomainObject
+class ApiTokenRateLimit extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * The unique ID.
-	 *
-	 * @var int
+	 * @var \Application\DeskPRO\Entity\ApiToken
 	 */
-	protected $id = null;
+	protected $api_token = null;
 
-	/**
-	 * @var string
-	 */
-	protected $token;
-
-	/**
-	 * @var Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-
-	/**
-	 * @var string
-	 */
-	protected $scope = null;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_expires;
-
+	protected $hits = 0;
+	protected $created_stamp;
+	protected $reset_stamp;
 
 	public function __construct()
 	{
-		$this['apikey'] = Strings::random(50, Strings::CHARS_KEY);
+		$this->setModelField('created_stamp', time());
+		$this->setModelField('reset_stamp', $this->created_stamp + 3600);
 	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -89,14 +61,14 @@ class ApiAuthToken extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'api_auth_tokens', ));
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+		$metadata->setPrimaryTable(array(
+			'name' => 'api_token_rate_limit',
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'token', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'token', ));
-		$metadata->mapField(array( 'fieldName' => 'scope', 'type' => 'string', 'length' => 250, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'scope', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_expires', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_expires', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapField(array( 'fieldName' => 'hits', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hits', ));
+		$metadata->mapField(array( 'fieldName' => 'created_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'created_stamp', ));
+		$metadata->mapField(array( 'fieldName' => 'reset_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reset_stamp', ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'api_token', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiToken', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'person_id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true,  ));
 	}
 }

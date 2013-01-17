@@ -38,52 +38,48 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-/**
- */
-class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+class ApiToken extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
-
-	/**
 	 * @var string
 	 */
-	protected $code;
+	protected $token;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \DateTime|null
+	 */
+	protected $date_expires = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
-
-	/**
-	 * @var string
-	 */
-	protected $scope = null;
-
-	/**
-	 * @var string
-	 */
-	protected $redirect_url = null;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_expires;
 
 
 	public function __construct()
 	{
-		$this['apikey'] = Strings::random(50, Strings::CHARS_KEY);
+		$this['token'] = Strings::random(25, Strings::CHARS_KEY);
+	}
+
+	public function regenerateToken()
+	{
+		$this['token'] = Strings::random(25, Strings::CHARS_KEY);
+	}
+
+
+
+	/**
+	 * Get a "key string". This is a combined ID and code like id:code
+	 * that is used in auth lookups.
+	 *
+	 * @return string
+	 */
+	public function getKeyString()
+	{
+		return $this->person->id . ':' . $this->token;
 	}
 
 
@@ -95,15 +91,11 @@ class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'api_auth_codes', ));
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiToken';
+		$metadata->setPrimaryTable(array( 'name' => 'api_token', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'code', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'code', ));
-		$metadata->mapField(array( 'fieldName' => 'scope', 'type' => 'string', 'length' => 250, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'scope', ));
-		$metadata->mapField(array( 'fieldName' => 'redirect_url', 'type' => 'string', 'length' => 250, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'redirect_url', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_expires', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_expires', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapField(array( 'fieldName' => 'token', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'token', ));
+		$metadata->mapField(array( 'fieldName' => 'date_expires', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expires', ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'id' => true, 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

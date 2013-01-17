@@ -824,6 +824,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('importance', $old, $this->importance);
 	}
 
+	public function getApiToken()
+	{
+		return App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
+	}
+
 
 	/**
 	 * Check to see if a password is the same one we have on record. Used with local auth.
@@ -877,6 +882,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_set_plain_password = $plain_password;
 
 		$this->setModelField('password', $pass);
+
+		$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
+		if ($token) {
+			$token->regenerateToken();
+			App::getOrm()->persist($token);
+		}
 
 		return $this->password;
 	}

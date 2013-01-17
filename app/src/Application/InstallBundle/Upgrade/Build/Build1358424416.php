@@ -29,47 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage
  */
 
-namespace Application\AgentBundle\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class SettingsProfile extends AbstractType
+class Build1358424416 extends AbstractBuild
 {
-	public function buildForm(FormBuilder $builder, array $options)
-    {
-		$builder->add('name', 'text', array('required' => false));
-	    $builder->add('override_display_name', 'text', array('required' => false));
-		$builder->add('email', 'text', array('required' => false));
-		$builder->add('timezone', 'choice', array(
-			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
-		));
-		$builder->add('password', 'password', array('required' => false));
-		$builder->add('password2', 'password', array('required' => false));
-
-	    $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
-	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
-		$builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
-
-		$builder->add('reset_api_token', 'hidden', array('required' => false));
-
-		$builder->add('default_team_id', 'hidden', array('required' => false));
-
-		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
-    }
-
-	public function getDefaultOptions(array $options)
+	public function run()
 	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
-		);
+		$this->out("Support using API tokens to access the API");
+		$this->execMutateSql("DROP TABLE api_auth_codes");
+		$this->execMutateSql("DROP TABLE api_auth_tokens");
+		$this->execMutateSql("CREATE TABLE api_token (person_id INT NOT NULL, token VARCHAR(25) NOT NULL, date_expires DATETIME DEFAULT NULL, PRIMARY KEY(person_id)) ENGINE = InnoDB");
+		$this->execMutateSql("CREATE TABLE api_token_rate_limit (person_id INT NOT NULL, hits INT DEFAULT NULL, created_stamp INT DEFAULT NULL, reset_stamp INT DEFAULT NULL, PRIMARY KEY(person_id)) ENGINE = InnoDB");
+		$this->execMutateSql("ALTER TABLE api_token ADD CONSTRAINT FK_7BA2F5EB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE api_token_rate_limit ADD CONSTRAINT FK_458445A9217BBB47 FOREIGN KEY (person_id) REFERENCES api_token (person_id) ON DELETE CASCADE");
 	}
-
-    public function getName()
-    {
-        return 'settings_profile';
-    }
 }

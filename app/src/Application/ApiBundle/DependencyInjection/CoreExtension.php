@@ -51,6 +51,11 @@ class CoreExtension extends Extension
 	    $definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
 		$definition->setFactoryMethod('getApiKeyFromRequest');
 		$container->setDefinition('deskpro.api.request_key', $definition);
+
+		$definition = new Definition('Application\\ApiBundle\\StaticLoader\\RequestKey');
+	    $definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
+		$definition->setFactoryMethod('getApiTokenFromRequest');
+		$container->setDefinition('deskpro.api.request_token', $definition);
     }
 
 	public function getXsdValidationBasePath()

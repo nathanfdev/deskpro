@@ -38,6 +38,15 @@ use Application\DeskPRO\App;
 
 class MiscController extends AbstractController
 {
+	public function preAction($action, $arguments = null)
+	{
+		if ($action == 'tokenExchangeAction') {
+			return null;
+		}
+
+		return parent::preAction($action, $arguments);
+	}
+
 	protected function _checkRateLimit($action, $arguments = null)
 	{
 		if ($action == 'getRateLimitAction') {
@@ -54,6 +63,85 @@ class MiscController extends AbstractController
 		}
 
 		parent::_updateRateLimit($action, $arguments);
+	}
+
+	public function tokenExchangeAction()
+	{
+		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
+		$result = $adapter->authenticate();
+
+		if (!$result->isValid()) {
+
+			// Send alert
+			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
+				$message = $this->container->getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
+				$message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
+				$this->container->getMailer()->send($message);
+			}
+
+			// Save login log
+			if ($attempt_person) {
+				$this->db->insert('login_log', array(
+					'person_id'    => $attempt_person->getId(),
+					'area'         => 'api',
+					'is_success'   => 0,
+					'ip_address'   => App::getRequest()->getClientIp(),
+					'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+					'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+					'date_created' => date('Y-m-d H:i:s')
+				));
+			}
+
+			return $this->createApiErrorResponse('invalid_login', 'Invalid login details', 403);
+		}
+
+		$identity = $result->getIdentity();
+
+		$person = $identity['person'];
+
+		if ($person->is_disabled || !$person->is_agent) {
+			return $this->createApiErrorResponse('invalid_login', 'Cannot use the API with that person', 403);
+		}
+
+		App::setCurrentPerson($person);
+
+		if ($person->getPref('agent_notif.login_attempt.email')) {
+			$message = $this->container->getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => $this->session->getEntity()));
+			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+			$this->container->getMailer()->send($message);
+		}
+
+		// Login log
+		$this->db->insert('login_log', array(
+			'person_id'    => $person->getId(),
+			'area'         => 'api',
+			'is_success'   => 1,
+			'ip_address'   => App::getRequest()->getClientIp(),
+			'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+			'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+			'date_created' => date('Y-m-d H:i:s')
+		));
+
+		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+		if (!$token) {
+			$token = new \Application\DeskPRO\Entity\ApiToken();
+			$token->person = $person;
+		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time) {
+			$token->regenerateToken();
+		}
+		$token->date_expires = null;
+
+		$this->em->persist($token);
+		$this->em->flush();
+
+		return $this->createApiResponse(array(
+			'success' => true,
+			'api_token' => $token->getKeyString()
+		));
 	}
 
 	public function uploadAction()
@@ -100,7 +188,11 @@ class MiscController extends AbstractController
 			));
 		}
 
-		$this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+		if ($this->apikey) {
+			$this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+		} else {
+			$this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
+		}
 
 		return $this->createApiResponse(array(
 			'limit' => App::getSetting('core.api_rate_limit'),

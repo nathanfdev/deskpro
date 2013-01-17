@@ -73,4 +73,36 @@ class RequestKey
 		$api_key = false;
 		return false;
 	}
+
+	public static function getApiTokenFromRequest()
+	{
+		$em = App::getOrm();
+		$request = App::getRequest();
+
+		static $api_token = null;
+
+		if ($api_token !== null) {
+			return $api_token;
+		}
+
+		$token_str = false;
+		if ($request->headers->get('X-DeskPRO-API-Token', null, true)) {
+			$token_str = $request->headers->get('X-DeskPRO-API-Token', null, true);
+		} else if (!empty($_REQUEST['API-TOKEN'])) {
+			$token_str = $_REQUEST['API-TOKEN'];
+		}
+
+		if (!$token_str) {
+			$api_token = false;
+			return false;
+		}
+
+		$api_token = $em->getRepository('DeskPRO:ApiToken')->findByTokenString($token_str);
+		if ($api_token) {
+			return $api_token;
+		}
+
+		$api_token = false;
+		return false;
+	}
 }
