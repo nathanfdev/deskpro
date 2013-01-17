@@ -450,6 +450,17 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		// For choice options, need to insert choices
 		$x = 0;
 		foreach ($choice_data as $choice_info) {
+
+			// These checks are to work around a bug in DP3
+			// where a specific option in a select field might
+			// be missing an ID.
+			if (!isset($choice_info[0])) {
+				$choice_info[0] = 'noid_'.$x;
+			}
+			if (!isset($choice_info[1])) {
+				$choice_info[1] = '0';
+			}
+
 			$x++;
 			$child = $new_field->createChild();
 			$child->title = $choice_info[2];
