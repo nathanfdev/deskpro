@@ -178,7 +178,7 @@
 						<nav class="check-grid-tabs" style="height: 24px;">
 							<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
 								<li class="on" data-tab-for="#depperm_tickets"><span>{{ phrase('agent.general.tickets') }}</span></li>
-								<li data-tab-for="#depperm_chat"><span>{{ phrase('agent.general.chat') }}</span></li>
+								{% if app.getSetting('core.apps_chat') %}<li data-tab-for="#depperm_chat"><span>{{ phrase('agent.general.chat') }}</span></li>{% endif %}
 							</ul>
 						</nav>
 
@@ -230,43 +230,45 @@
 							</table>
 						</div>
 
-						<div class="check-grid" style="max-height: 200px; overflow: auto; display: none;" id="depperm_chat">
-							<table width="100%">
-								<thead>
-									<tr>
-										<th style="text-align: left;">{{ phrase('agent.general.department') }}</th>
-										<th width="60">
-											<a href="#" id="chatdep_toggle_all" style="font-size:9px">Toggle All</a>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
+						{% if app.getSetting('core.apps_chat') %}
+							<div class="check-grid" style="max-height: 200px; overflow: auto; display: none;" id="depperm_chat">
+								<table width="100%">
+									<thead>
 										<tr>
-											{% if dep.children|length %}
-												<td class="title title-group">{{ dep.title }}</td>
-												<td class="prop">&nbsp;</td>
-											{% else %}
-												<td class="title">{{ dep.title }}</td>
-												<td class="prop chat-choice">
-													<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" />
-												</td>
-											{% endif %}
+											<th style="text-align: left;">{{ phrase('agent.general.department') }}</th>
+											<th width="60">
+												<a href="#" id="chatdep_toggle_all" style="font-size:9px">Toggle All</a>
+											</th>
 										</tr>
-										{% if dep.children %}
-											{% for subdep in dep.children %}
-												<tr>
-													<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+									</thead>
+									<tbody>
+										{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
+											<tr>
+												{% if dep.children|length %}
+													<td class="title title-group">{{ dep.title }}</td>
+													<td class="prop">&nbsp;</td>
+												{% else %}
+													<td class="title">{{ dep.title }}</td>
 													<td class="prop chat-choice">
-														<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" />
+														<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" />
 													</td>
-												</tr>
-											{% endfor %}
-										{% endif %}
-									{% endfor %}
-								</tbody>
-							</table>
-						</div>
+												{% endif %}
+											</tr>
+											{% if dep.children %}
+												{% for subdep in dep.children %}
+													<tr>
+														<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+														<td class="prop chat-choice">
+															<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" />
+														</td>
+													</tr>
+												{% endfor %}
+											{% endif %}
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						{% endif %}
 
 					</div>
 				</div>

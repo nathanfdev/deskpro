@@ -1,7 +1,7 @@
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
 		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.general.tickets') }}</span></li>
-		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.general.chat') }}</span></li>
+		{% if app.getSetting('core.apps_chat') %}<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.general.chat') }}</span></li>{% endif %}
 		<li data-tab-for="#permgroup_feedback"><span>{{ phrase('agent.general.feedback') }}</span></li>
 		<li data-tab-for="#permgroup_articles"><span>{{ phrase('agent.general.articles') }}</span></li>
 		<li data-tab-for="#permgroup_downloads"><span>{{ phrase('agent.general.downloads') }}</span></li>
@@ -60,46 +60,48 @@
 	</div>
 </div>
 
-<div id="permgroup_chat" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:chat.use --><input class="onoff-slider master-check {% if permissions_everyone['chat.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['chat.use'] or permissions_everyone['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> {{ phrase('admin.user_groups.can_use_chat') }}
-	<div class="check-grid">
-		<table width="100%">
-			<thead>
-				<tr>
-					<th style="text-align: left;">{{ phrase('admin.general.departments') }}</th>
-					<th width="60">&nbsp;</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% set with_chat = false %}
-				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
-					{% set with_chat = true %}
+{% if app.getSetting('core.apps_chat') %}
+	<div id="permgroup_chat" style="display: none" class="dp-form-box">
+		<!-- PERMISSION:chat.use --><input class="onoff-slider master-check {% if permissions_everyone['chat.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['chat.use'] or permissions_everyone['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> {{ phrase('admin.user_groups.can_use_chat') }}
+		<div class="check-grid">
+			<table width="100%">
+				<thead>
 					<tr>
-						{% if dep.children|length %}
-							<td class="title title-group">{{ dep.title }}</td>
-							<td class="prop">&nbsp;</td>
-						{% else %}
-							<td class="title">{{ dep.title }}</td>
-							<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[dep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[dep.id].chat or ug_deps_everyone[dep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][chat]" value="1" /></td>
-						{% endif %}
+						<th style="text-align: left;">{{ phrase('admin.general.departments') }}</th>
+						<th width="60">&nbsp;</th>
 					</tr>
-					{% if dep.children %}
-						{% for subdep in dep.children %}
-							<tr>
-								<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
-								<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[subdep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[subdep.id].chat or ug_deps_everyone[subdep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][chat]" value="1" /></td>
-							</tr>
-						{% endfor %}
+				</thead>
+				<tbody>
+					{% set with_chat = false %}
+					{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
+						{% set with_chat = true %}
+						<tr>
+							{% if dep.children|length %}
+								<td class="title title-group">{{ dep.title }}</td>
+								<td class="prop">&nbsp;</td>
+							{% else %}
+								<td class="title">{{ dep.title }}</td>
+								<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[dep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[dep.id].chat or ug_deps_everyone[dep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][chat]" value="1" /></td>
+							{% endif %}
+						</tr>
+						{% if dep.children %}
+							{% for subdep in dep.children %}
+								<tr>
+									<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+									<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[subdep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[subdep.id].chat or ug_deps_everyone[subdep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][chat]" value="1" /></td>
+								</tr>
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+					{% if not with_chat %}
+						You have no chat departments. Users will not be able to create chats until you
+						create at least one. <a href="{{ path('admin_departments') }}">Click here to manage departments</a>.
 					{% endif %}
-				{% endfor %}
-				{% if not with_chat %}
-					You have no chat departments. Users will not be able to create chats until you
-					create at least one. <a href="{{ path('admin_departments') }}">Click here to manage departments</a>.
-				{% endif %}
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
+{% endif %}
 
 <div id="permgroup_feedback" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:feedback.use --><input class="onoff-slider {% if permissions_everyone['feedback.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['feedback.use'] or permissions_everyone['feedback.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.use]" value="1" /> {{ phrase('admin.user_groups.can_use_feedback') }}

@@ -8,7 +8,7 @@
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
 		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.general.tickets') }}</span></li>
 		<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
-		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.general.chat') }}</span></li>
+		{% if app.getSetting('core.apps_chat') %}<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.general.chat') }}</span></li>{% endif %}
 		<li data-tab-for="#permgroup_publish"><span>{{ phrase('agent.general.publish') }}</span></li>
 		<li data-tab-for="#permgroup_general"><span>General</span></li>
 	</ul>
@@ -153,24 +153,26 @@
 {# /PEOPLE PERMISSIONS #}
 
 {# CHAT PERMISSIONS #}
-<div id="permgroup_chat" style="display: none">
-	<div class="check-grid">
-		<table width="100%">
-			<thead>
-				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('agent.general.description') }}</th>
-					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- PERMISSION:agent_chat.use -->{{ col.perm_col(phrase('admin.agents.use_chat'), usergroup_values, 'agent_chat', 'use') }}
-				<!-- PERMISSION:agent_chat.view_unassigned -->{{ col.perm_col(phrase('admin.agents.view_new_unassigned_chats'), usergroup_values, 'agent_chat', 'view_unassigned') }}
-				<!-- PERMISSION:agent_chat.view_others -->{{ col.perm_col(phrase('admin.agents.view_others_chats'), usergroup_values, 'agent_chat', 'view_others') }}
-				<!-- PERMISSION:agent_chat.delete -->{{ col.perm_col(phrase('admin.agents.delete_chat_transcripts'), usergroup_values, 'agent_chat', 'delete') }}
-			</tbody>
-		</table>
+{% if app.getSetting('core.apps_chat') %}
+	<div id="permgroup_chat" style="display: none">
+		<div class="check-grid">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th colspan="2" style="text-align: left">{{ phrase('agent.general.description') }}</th>
+						<th width="60">{{ phrase('admin.agents.overrides') }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- PERMISSION:agent_chat.use -->{{ col.perm_col(phrase('admin.agents.use_chat'), usergroup_values, 'agent_chat', 'use') }}
+					<!-- PERMISSION:agent_chat.view_unassigned -->{{ col.perm_col(phrase('admin.agents.view_new_unassigned_chats'), usergroup_values, 'agent_chat', 'view_unassigned') }}
+					<!-- PERMISSION:agent_chat.view_others -->{{ col.perm_col(phrase('admin.agents.view_others_chats'), usergroup_values, 'agent_chat', 'view_others') }}
+					<!-- PERMISSION:agent_chat.delete -->{{ col.perm_col(phrase('admin.agents.delete_chat_transcripts'), usergroup_values, 'agent_chat', 'delete') }}
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
+{% endif %}
 {# /CHAT PERMISSIONS #}
 
 {# PUBLISH PERMISSIONS #}

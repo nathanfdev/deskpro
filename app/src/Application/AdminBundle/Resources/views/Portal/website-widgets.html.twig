@@ -149,27 +149,29 @@ $(document).ready(function() {
 	{# Chat Widget #}
 	{##################################################################################################################}
 
-	<div class="dp_admin_pagebar">
-		<ul>
-			<li>"Chat with us" Tab</li>
-		</ul>
-	</div>
-	<div class="dp_admin_page">
-		<div class="dp_admin_page_inner">
-			<div class="dp-page-box">
-				<div class="page-content">
+	{% if app.getSetting('core.apps_chat') %}
+		<div class="dp_admin_pagebar">
+			<ul>
+				<li>"Chat with us" Tab</li>
+			</ul>
+		</div>
+		<div class="dp_admin_page">
+			<div class="dp_admin_page_inner">
+				<div class="dp-page-box">
+					<div class="page-content">
 
-					<p>{{ phrase('admin.portal.website_widgets_chat_explain') }}</p>
+						<p>{{ phrase('admin.portal.website_widgets_chat_explain') }}</p>
 
-					{% set code %}{% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}{% endset %}
-					<textarea class="code" wrap="off">{{ code|e }}</textarea>
-					<p>{{ phrase('admin.portal.website_widget_install') }}</p>
+						{% set code %}{% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}{% endset %}
+						<textarea class="code" wrap="off">{{ code|e }}</textarea>
+						<p>{{ phrase('admin.portal.website_widget_install') }}</p>
 
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<br />
+		<br />
+	{% endif %}
 
 	{##################################################################################################################}
 	{# Contact Form #}

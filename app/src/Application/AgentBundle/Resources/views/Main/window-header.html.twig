@@ -34,7 +34,7 @@
 
 	<!-- BEGIN NOTIFICATION SECTION -->
 	<div id="DP-NotificationSection">
-		<div id="chatStatusWrap">
+		<div id="chatStatusWrap" {% if not app.getSetting('core.apps_chat') %}style="display: none;"{% endif %}>
 			<div class="well">
 				<em>
 					<span id="chatOnlineCount">1</span>
