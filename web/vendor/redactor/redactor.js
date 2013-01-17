@@ -865,7 +865,7 @@ var RLANG = {
 				var pre = false;
 				var ctrl = e.ctrlKey || e.metaKey;
 
-				if ((parent || current) && ($(parent).get(0).tagName === 'PRE' || $(current).get(0).tagName === 'PRE'))
+				if ((parent && $(parent).get(0).tagName === 'PRE') || (current && $(current).get(0).tagName === 'PRE'))
 				{
 					pre = true;
 				}
