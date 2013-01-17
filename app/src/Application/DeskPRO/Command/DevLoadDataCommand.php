@@ -85,8 +85,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			'news_category','news',
 			'download_category', 'download',
 			'glossary',
-			'task'
+			'task',
+			'twitter_user', 'twitter_status'
 		);
+		$types_manual = array('agent', 'twitter_user', 'twitter_status');
 
 		$amount = intval($input->getOption('count'));
 		if ($amount <= 0) {
@@ -107,10 +109,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		if ($type_input === '*') {
 			$types = $available_types;
 
-			// can't add agents globally
-			$agent_type_key = array_search('agent', $types);
-			if ($agent_type_key !== false) {
-				unset($types[$agent_type_key]);
+			foreach ($types_manual AS $type_manual) {
+				$manual_type_key = array_search($type_manual, $types);
+				if ($manual_type_key !== false) {
+					unset($types[$manual_type_key]);
+				}
 			}
 
 			if ($types_not) {
@@ -1196,6 +1199,77 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($task);
 	}
 
+	protected function _loadTwitterUser()
+	{
+		$this->_addBatchInsert('twitter_users', array(
+			'id' => mt_rand(1, mt_getrandmax()),
+			'name' => $this->_getRandomText(2),
+			'screen_name' => $this->_getRandomText(1) . microtime(true),
+			'profile_image_url' => '',
+			'language' => 'en',
+			'is_protected' => 0,
+			'is_verified' => 0,
+			'location' => '',
+			'description' => $this->_getRandomText(mt_rand(3, 10)),
+			'is_geo_enabled' => 0,
+			'is_stub' => 0,
+			'url' => '',
+			'last_timeline_update' => null,
+			'last_profile_update' => null,
+			'followers_count' => 0,
+			'friends_count' => 0,
+			'last_follow_update' => null
+		), true);
+	}
+
+	protected function _loadTwitterStatus()
+	{
+		$db = App::getDb();
+
+		$data = array(
+			'id' => mt_rand(1, mt_getrandmax()),
+			'user_id' => $this->_getRandomTwitterUserId(),
+			'text' => $this->_getRandomText(mt_rand(1, 20)),
+			'date_created' => $this->_getRandomDate('string')
+		);
+
+		$modified = $db->executeUpdate("
+			INSERT IGNORE INTO twitter_statuses
+				(id, user_id, text, is_truncated, date_created)
+			VALUES (?, ?, ?, 0, ?)
+		", array($data['id'], $data['user_id'], $data['text'], $data['date_created']));
+
+		if ($modified == 2) {
+			return;
+		}
+
+		$status_types = array(
+			0 => 'direct',
+			1 => 'reply',
+			2 => 'mention',
+			3 => 'retweet',
+			4 => 'timeline',
+			5 => 'timeline',
+			6 => 'timeline',
+			7 => 'timeline',
+			8 => null
+		);
+
+		$this->_addBatchInsert('twitter_accounts_statuses', array(
+			'account_id' => 1,
+			'status_id' => $data['id'],
+			'agent_id' => mt_rand(0, 1) ? $this->_getRandomAgent(true) : null,
+			'agent_team_id' => null,
+			'retweeted_id' => null,
+			'in_reply_to_id' => null,
+			'date_created' => $data['date_created'],
+			'status_type' => $status_types[mt_rand(0, 8)],
+			'is_archived' => mt_rand(1, 1000) == 1 ? 0 : 1,
+			'is_favorited' => mt_rand(1, 10000) == 1 ? 1 : 0,
+			'action_agent_id' => null
+		));
+	}
+
 	protected function _getRandomDate($format = null, $start = null, $end = null)
 	{
 		if ($start === null) {
@@ -1282,6 +1356,24 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		return $this->_getRandomFromCache('random_org_ids');
+	}
+
+	protected $_twitter_hits = 0;
+	protected function _getRandomTwitterUserId()
+	{
+		if ($this->_twitter_hits <= 0 || !isset($this->_data_cache['random_twitter_user_ids'])) {
+			$this->_data_cache['random_twitter_user_ids'] = App::getDb()->fetchAllCol('
+				SELECT id
+				FROM twitter_users
+				ORDER BY RAND()
+				LIMIT 1000
+			');
+
+			$this->_twitter_hits = count($this->_data_cache['random_twitter_user_ids']);
+		}
+		$this->_twitter_hits--;
+
+		return $this->_getRandomFromCache('random_twitter_user_ids');
 	}
 
 	protected function _getRandomFromCache($key, $obj_field = null)

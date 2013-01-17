@@ -193,7 +193,8 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'twitter_accounts_statuses',
 			'indexes' => array(
-				'account_type_archived_idx' => array('columns' => array('account_id', 'status_type', 'is_archived'))
+				'account_type_archived_idx' => array('columns' => array('account_id', 'status_type', 'is_archived')),
+				'account_archived_idx' => array('columns' => array('account_id', 'is_archived'))
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
