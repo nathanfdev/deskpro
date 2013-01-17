@@ -228,6 +228,10 @@ class KernelBooter
 		} elseif (preg_match('#^/admincp(/|\?|$)#i', $path)) {
 			header('Location: ' . $base_path . '/admin');
 			exit;
+		} elseif (preg_match('#^/file.php/?(.*?)$#i', $path, $m)) {
+			$url = $base_path . '/file.php/' . $m[1] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+			header('Location: ' . $url);
+			exit;
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
@@ -968,11 +972,11 @@ HTML;
 			exit;
 		}
 	}
-	
+
 	####################################################################################################################
 	# Request Helpers
 	####################################################################################################################
-	
+
 	/**
 	 * @var string
 	 */
@@ -992,12 +996,12 @@ HTML;
 	 * @var string
 	 */
 	protected static $request_uri;
-	
+
 	/**
 	 * @var string
 	 */
 	protected static $method;
-	
+
 	/**
 	 * @var string
 	 */
@@ -1113,7 +1117,7 @@ HTML;
 		self::$base_url = rtrim($baseUrl, '/');
 		return self::$base_url;
 	}
-	
+
 	/**
 	 * @see \Symfony\Component\HttpFoundation\Request
 	 */
@@ -1238,7 +1242,7 @@ HTML;
 
 		return trim($host);
 	}
-	
+
 	/**
 	 * @see \Symfony\Component\HttpFoundation\Request
 	 */
@@ -1257,7 +1261,7 @@ HTML;
 
 		return self::$method;
 	}
-	
+
 	/**
 	 * @see \Symfony\Component\HttpFoundation\Request
 	 */
@@ -1295,7 +1299,7 @@ HTML;
 
 		return self::$languages;
 	}
-	
+
 	/**
 	 * @see \Symfony\Component\HttpFoundation\Request
 	 */
@@ -1325,7 +1329,7 @@ HTML;
 
 		return $values;
 	}
-	
+
 	/**
 	 * Modified to take 2 args
 	 *
