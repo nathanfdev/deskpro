@@ -183,6 +183,14 @@ class AsseticManager
 
 		$content = $asset->dump();
 
+		if (strpos($info['out'], '.css') !== false) {
+			// Sprite refs are per file
+			$sprite_id = preg_replace('#[^a-zA-Z0-9_\-]#', '', str_replace('.css', '', $info['out']));
+			$content = preg_replace('#sprite-ref: ([A-Za-z0-9_\-]+)#', 'sprite-ref: '. $sprite_id .'_$1', $content);
+			$content = preg_replace('#sprite: ([A-Za-z0-9_\-]+)#', 'sprite: '. $sprite_id .'_$1', $content);
+			$content = preg_replace('#sprite-image: url\(\'?(.*)/(.*?)\.png\'?\)#', 'sprite-image: url($1/'. $sprite_id .'_$2.png)', $content);
+		}
+
 		if (isset($info['post_filters'])) {
 			$bundle_asset = $this->getAssetBundle($name);
 			$first = Arrays::getFirstItem($bundle_asset->all());

@@ -18,6 +18,8 @@ $kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
 
 if (in_array('--js', $_SERVER['argv'])) {
 	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--not', '--verbose', '-p', '_css');
+} elseif (in_array('--css', $_SERVER['argv'])) {
+	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--verbose', '-p', 'css');
 } else {
 	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', 'ALL', '--verbose');
 }

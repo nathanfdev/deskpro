@@ -628,11 +628,19 @@ $CONFIG['user_vendors'] = array(
 # CSS
 ###############################################################################
 
-$CONFIG['agent_css'] = array(
-	'out' => 'css/agent-all.css',
+$CONFIG['agent_css1'] = array(
+	'out' => 'css/agent-pack1.css',
 	'post_filters' => array('image_gradients', 'smartsprites', 'css'),
 	'references' => array(
-		'agent_interface_css',
+		'agent_interface_css1',
+	)
+);
+
+$CONFIG['agent_css2'] = array(
+	'out' => 'css/agent-pack2.css',
+	'post_filters' => array('image_gradients', 'smartsprites', 'css'),
+	'references' => array(
+		'agent_interface_css2',
 	)
 );
 
@@ -652,18 +660,25 @@ $CONFIG['admin_interface_css'] = array(
 	)
 );
 
-$CONFIG['agent_interface_css'] = array(
-	'out' => 'css/agent-interface.css',
+$CONFIG['agent_interface_css1'] = array(
+	'out' => 'css/agent-interface1.css',
 	'filters' => array('less'),
 	'files' => array(
 		'stylesheets-less/agent/dp-interface.less',
-		'stylesheets-less/agent/dp-source-pane.less',
-		'stylesheets-less/agent/dp-list-pane.less',
-		'stylesheets-less/agent/dp-content-pane.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/navigation.less',
 		'stylesheets-less/agent/header.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
+	)
+);
+
+$CONFIG['agent_interface_css2'] = array(
+	'out' => 'css/agent-interface2.css',
+	'filters' => array('less'),
+	'files' => array(
+		'stylesheets-less/agent/dp-source-pane.less',
+		'stylesheets-less/agent/dp-list-pane.less',
+		'stylesheets-less/agent/dp-content-pane.less',
 	)
 );
 

@@ -3,7 +3,8 @@
 {% endif %}
 {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
 	{{ dp_asset_html('agent_vendors_css') }}
-	{{ dp_asset_html('agent_interface_css') }}
+	{{ dp_asset_html('agent_interface_css1') }}
+	{{ dp_asset_html('agent_interface_css2') }}
 	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
 
 	{{ dp_asset_html('agent_vendors') }}
@@ -23,7 +24,8 @@
 {% else %}
 	{{ dp_asset_html('agent') }}
 	{{ dp_asset_html('agent_vendor_out_css') }}
-	{{ dp_asset_html('agent_css') }}
+	{{ dp_asset_html('agent_css1') }}
+	{{ dp_asset_html('agent_css2') }}
 	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
 
 	<!--[if IE]>{{ dp_asset_html('agent_interface_ie_css') }}<![endif]-->
