@@ -74,7 +74,7 @@ class SettingsProfile
 		$this->timezone = $person->timezone;
 
 		$this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
-		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', true);
+		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', false);
 		$this->ticket_go_next_reply = (bool)$person->getPref('agent.ticket_go_next_reply', false);
 		$this->default_team_id = $person->getPref('agent.ticket_default_team_id');
 		if ($this->default_team_id === null) {

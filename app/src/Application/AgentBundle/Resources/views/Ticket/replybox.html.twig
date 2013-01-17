@@ -11,7 +11,7 @@
 	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
 	data-base-id="{{replyBaseId}}"
     data-close-reply="{{ app.user.getPref('agent.ticket_close_reply', true) ? 1 : '' }}"
-    data-close-note="{{ app.user.getPref('agent.ticket_close_note', true) ? 1 : '' }}"
+    data-close-note="{{ app.user.getPref('agent.ticket_close_note', false) ? 1 : '' }}"
 	{% if draft and draft.extras.is_note %}
 		data-default-is-note="1"
 	{% endif %}
