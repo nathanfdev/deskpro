@@ -357,9 +357,36 @@ class Runner
 				continue;
 			}
 
-			$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-			$reader->setRawSource($source['raw_source']);
-			$reader->setProperty('email_source', $source);
+			try {
+				$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+				$reader->setRawSource($source['raw_source']);
+				$reader->setProperty('email_source', $source);
+			} catch (\Exception $e) {
+				$this->logger->log(sprintf("Could not set source: %s", $e->getMessage()), 'info');
+
+				$e->_dp_sn = KernelErrorHandler::genSessionName();
+				$errinfo = KernelErrorHandler::getExceptionInfo($e);
+				KernelErrorHandler::logErrorInfo($errinfo);
+
+				$source['status'] = 'error';
+				$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+				$source['source_info'] = $errinfo;
+
+				$this->_updateSource($source);
+				$this->log_messages->clear();
+				App::getOrm()->detach($source);
+				$source = null;
+
+				if ($reader) {
+					$reader->_kill();
+					$reader = null;
+				}
+
+				gc_collect_cycles();
+
+				// Continue to next
+				continue;
+			}
 
 			$to = array();
 			foreach ($reader->getToAddresses() as $x) {

@@ -86,6 +86,11 @@ class EzcReader extends AbstractReader
 	{
 		$set = new \ezcMailVariableSet($source);
 		$this->mail = $this->parser->parseMail($set);
+
+		if (!$this->mail || !isset($this->mail[0])) {
+			throw new \InvalidArgumentException("Bad mail source, could not decode");
+		}
+
 		$this->mail = $this->mail[0];
 	}
 
