@@ -99,6 +99,21 @@ class TicketViewController extends AbstractController
 					if ($ticket) {
 						// If they arent a user they can register now
 						if ($ticket && $this->person->isGuest()) {
+
+							if ($this->container->getDataService('Language')->isMultiLang()) {
+								if (
+									$ticket->person->getRealLanguage()
+									&& $ticket->person->getRealLanguage()->getId() != $this->session->get('language_id')
+									&& $ticket->person->getRealLanguage()->getId() != $this->container->getDataService('Language')->getDefault()->getId()
+								) {
+									$this->session->set('language_id', $ticket->person->getRealLanguage()->getId());
+									$this->session->save();
+
+									// Reload self
+									return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+								}
+							}
+
 							$this->session->set('ticket_from_ptac_register', $ticket->getPublicId());
 							$this->session->save();
 

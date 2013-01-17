@@ -244,6 +244,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $this->renderStandardError('@user.error.permission-denied');
 		}
 
+
 		$act = 'UserBundle:Login:index';
 		if ($type == 'reset') {
 			$act = 'UserBundle:Login:resetPassword';
