@@ -419,7 +419,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choice = Arrays::getFirstItem($choice);
 		}
 
-		$db = App::getDb();
+		$db = App::getDbRead();
 		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
 			array_walk($choices_in, function(&$v, $k) use ($db) {
@@ -684,7 +684,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _choiceMatch($field, $op, $choice, $is_id = false)
 	{
-		$db = App::getDb();
+		$db = App::getDbRead();
 		$where = '';
 
 		if (is_array($choice) AND count($choice) == 1) {

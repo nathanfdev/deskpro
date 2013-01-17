@@ -247,7 +247,8 @@ $container->loadFromExtension('doctrine', array(
 	'dbal' => array(
 		'default_connection' => 'default',
 		'connections' => array(
-			'default' => array('host' => 'from_user_config.db', 'logging' => true)
+			'default' => array('host' => 'from_user_config.db', 'logging' => true),
+			'read' => array('host' => 'from_user_config.db_read', 'logging' => true)
 		)
 	)
 ));

@@ -80,6 +80,7 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			if (!$conf && defined('DP_BUILDING')) {
 				$conf = array('bogus'); // Dont need dbinfo
 			}
+
 			if (!$conf) {
 				throw new \Exception("Invalid database key $key");
 			}
@@ -91,7 +92,7 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 
 		// Sometimes in a pre-boot handler like serve_file.php we might
 		// already have a connection, so use that PDO object
-		if (isset($GLOBALS['DP_DEFAULT_CONNECTION_PDO'])) {
+		if (isset($GLOBALS['DP_DEFAULT_CONNECTION_PDO']) && $host === 'from_user_config.db') {
 			$params['pdo'] = $GLOBALS['DP_DEFAULT_CONNECTION_PDO'];
 		}
 

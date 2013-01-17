@@ -73,7 +73,7 @@ class NewsSearch extends SearcherAbstract
 	 */
 	public function getMatches(array $limit = null)
 	{
-		$db = App::getDb();
+		$db = App::getDbRead();
 
 		$news_ids = $db->fetchAllCol($this->getSql($limit));
 
@@ -165,7 +165,7 @@ class NewsSearch extends SearcherAbstract
 			$sql .= '1';
 		}
 
-		$count = App::getDb()->fetchColumn($sql);
+		$count = App::getDbRead()->fetchColumn($sql);
 
 		return $count;
 	}
@@ -286,7 +286,7 @@ class NewsSearch extends SearcherAbstract
 	{
 		if ($this->sql_parts !== null) return $this->sql_parts;
 
-		$db = App::getDb();
+		$db = App::getDbRead();
 		$tr = App::getTranslator();
 
 		$wheres = array();

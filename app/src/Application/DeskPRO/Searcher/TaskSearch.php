@@ -62,7 +62,7 @@ class TaskSearch extends SearcherAbstract
 	 */
 	public function getMatches()
 	{
-		$db = App::getDb();
+		$db = App::getDbRead();
 
 		$tasks_ids = $db->fetchAllCol($this->getSql());
 
@@ -106,7 +106,7 @@ class TaskSearch extends SearcherAbstract
 		#------------------------------
 
 		if ($this->person && $this->person->is_agent) {
-			$person_id = App::getDb()->quote($this->person->id);
+			$person_id = App::getDbRead()->quote($this->person->id);
 
 			$this->person->loadHelper('Agent');
 			if ($this->person->Agent->getTeamIds()) {
@@ -210,7 +210,7 @@ class TaskSearch extends SearcherAbstract
 	{
 		$org_table = 'tasks';
 
-		$db = App::getDb();
+		$db = App::getDbRead();
 		$tr = App::getTranslator();
 
 		$wheres = array();

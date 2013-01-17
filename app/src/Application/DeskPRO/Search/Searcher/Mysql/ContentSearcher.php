@@ -152,10 +152,10 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		if ($top) {
 			$total = null;
 		} else {
-			$total = App::getDb()->fetchColumn($count_query, array($query_text));
+			$total = App::getDbRead()->fetchColumn($count_query, array($query_text));
 		}
 
-		$results_raw  = App::getDb()->fetchAll($select_query, array($query_text, $query_text));
+		$results_raw  = App::getDbRead()->fetchAll($select_query, array($query_text, $query_text));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {

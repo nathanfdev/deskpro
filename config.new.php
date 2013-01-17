@@ -254,3 +254,16 @@ $DP_CONFIG['cache']['page_cache']['ttl'] = 900;
 $DP_CONFIG['cache']['page_cache']['max_size'] = 10000000;
 $DP_CONFIG['cache']['page_cache']['enable_hit_log'] = false;
 $DP_CONFIG['cache']['page_cache']['hit_log_file'] = '';
+
+######################################################
+# OPTIONAL : Read Only Database                      #
+#                                                    #
+# Configure whether a special database is used for   #
+# particularly exprensive read queries.              #
+######################################################
+
+$DP_CONFIG['db_read'] = array();
+$DP_CONFIG['db_read']['host'] = '';
+$DP_CONFIG['db_read']['user'] = '';
+$DP_CONFIG['db_read']['password'] = '';
+$DP_CONFIG['db_read']['dbname'] = '';

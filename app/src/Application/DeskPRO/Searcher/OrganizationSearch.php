@@ -66,7 +66,7 @@ class OrganizationSearch extends SearcherAbstract
 	 */
 	public function getMatches()
 	{
-		$db = App::getDb();
+		$db = App::getDbRead();
 
 		$org_ids = $db->fetchAllCol($this->getSql());
 
@@ -210,7 +210,7 @@ class OrganizationSearch extends SearcherAbstract
 	{
 		$org_table = 'organizations';
 
-		$db = App::getDb();
+		$db = App::getDbRead();
 		$tr = App::getTranslator();
 
 		$wheres = array();

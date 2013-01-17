@@ -67,7 +67,7 @@ class ChatConversationSearch extends SearcherAbstract
 	 */
 	public function getMatches()
 	{
-		$db = App::getDb();
+		$db = App::getDbRead();
 
 		$ids = $db->fetchAllCol($this->getSql());
 
@@ -217,7 +217,7 @@ class ChatConversationSearch extends SearcherAbstract
 	{
 		$org_table = 'chat_conversations';
 
-		$db = App::getDb();
+		$db = App::getDbRead();
 		$tr = App::getTranslator();
 
 		$wheres = array();
@@ -291,7 +291,7 @@ class ChatConversationSearch extends SearcherAbstract
 
 					$person_ids = array();
 					$emails = array();
-					$db = App::getDb();
+					$db = App::getDbRead();
 					foreach ($people AS $person) {
 						if ($person instanceof \Application\DeskPRO\Entity\Person) {
 							$person_ids[] = $db->quote($person->id);

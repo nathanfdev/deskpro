@@ -88,9 +88,9 @@ class ChatConversationSearcher implements PersonContextInterface
 		if ($top) {
 			$total = null;
 		} else {
-			$total = App::getDb()->fetchColumn($count_query, array($query));
+			$total = App::getDbRead()->fetchColumn($count_query, array($query));
 		}
-		$results_raw  = App::getDb()->fetchAll($select_query, array($query, $query));
+		$results_raw  = App::getDbRead()->fetchAll($select_query, array($query, $query));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {
