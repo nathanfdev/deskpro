@@ -101,7 +101,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.page.changeManager.addEvent('updateResult', function(data) {
 			if (data.holders) {
-				self.replaceHolders(data.holders);
+				if (self.mode == 'view') {
+					self.replaceHolders(data.holders);
+				}
 			}
 		});
 
@@ -184,8 +186,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		if (fields.length == this.currentDisplayModify.length) {
 			var change = false;
 			for (var i = 0; i < fields.length; i++) {
-				if (fields[i].field_type == this.currentDisplay[i].field_type) {
-					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplay[i].field_id) {
+				if (this.currentDisplayModify && this.currentDisplayModify[i] && fields[i].field_type == this.currentDisplayModify[i].field_type) {
+					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplayModify[i].field_id) {
 						change = true;
 						break;
 					}
