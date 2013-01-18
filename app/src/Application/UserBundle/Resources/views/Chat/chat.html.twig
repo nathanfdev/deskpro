@@ -213,8 +213,13 @@
 			</div>
 		</div>
 		<div id="dp_chat_input_pane">
-			<textarea id="dp_chat_message_input"></textarea>
-			<button id="dp_chat_message_send" class="dp-btn">{{ phrase('user.chat.form_chat_button-submit') }}</button>
+			<table cellspacing="0" cellpadding="0" width="100%"><tr>
+				<td width="100%" style="padding: 8px"><textarea id="dp_chat_message_input"></textarea></td>
+				<td width="10">&nbsp;</td>
+				<td nowrap="nowrap" style="padding: 8px;">
+					<button id="dp_chat_message_send" class="dp-btn">{{ phrase('user.chat.form_chat_button-submit') }}</button>
+				</td>
+			</tr></table>
 			<div id="dp_chat_message_upload">
 				<a id="dp_chat_upload_link"><i class="dp-icon-file"></i><span class="dp-link">{{ phrase('user.chat.form_chat_send-file') }}</span></a>
 				<input type="file" name="attach" id="dp_chat_message_upload_file" />
