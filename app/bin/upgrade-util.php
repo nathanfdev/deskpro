@@ -907,10 +907,11 @@ class Upgrade
 		# Extract the zip into the dir
 		#------------------------------
 
-		$tmp_dir = $this->zip->decompressZip($zip_path);
+		$e = false;
+		$tmp_dir = $this->zip->decompressZip($zip_path, null, $e);
 
 		if (!$tmp_dir) {
-			throw new UpgradeFilesException("Failed to extract zip", UpgradeFilesException::EXTRACT_ERROR);
+			throw new UpgradeFilesException("Failed to extract zip: $e", UpgradeFilesException::EXTRACT_ERROR);
 		}
 
 		$this->log("installFilesFromZip: Extracted to $tmp_dir");
@@ -1153,10 +1154,11 @@ class Upgrade
 		# Extract the zip into the dir
 		#------------------------------
 
-		$tmp_dir = $this->zip->decompressZip($zip_path);
+		$e = false;
+		$tmp_dir = $this->zip->decompressZip($zip_path, null, $e);
 
 		if (!$tmp_dir) {
-			throw new UpgradeFilesException("Failed to extract zip", MysqlRestoreException::EXTRACT_ERROR);
+			throw new UpgradeFilesException("Failed to extract zip: $e", MysqlRestoreException::EXTRACT_ERROR);
 		}
 
 		// Find the SQL file
@@ -2987,9 +2989,9 @@ class ZipStrategy implements DpZip
 		return $this->zip->compressFile($path);
 	}
 
-	public function decompressZip($path, $to = null)
+	public function decompressZip($path, $to = null, &$error = null)
 	{
-		return $this->zip->decompressZip($path, $to);
+		return $this->zip->decompressZip($path, $to, $error);
 	}
 }
 
@@ -3056,17 +3058,27 @@ class Zip_PHP implements DpZip
 		return $out_filepath;
 	}
 
-	public function decompressZip($path, $to = null)
+	public function decompressZip($path, $to = null, &$error = null)
 	{
 		$zip = new \ZipArchive();
-		if (!is_file($path) || $zip->open($path) !== true) {
+		if (!is_file($path)) {
+			$error = 'No file: ' . $path;
+			return false;
+		}
+
+		if (($code = $zip->open($path)) !== true) {
+			$error = sprintf("[%s/%s] %s %s", $zip->status, $zip->statusSys, $code, $zip->getStatusString());
 			return false;
 		}
 
 		$tmpdir = dp_get_tmp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
-		mkdir($tmpdir);
+		if (!mkdir($tmpdir)) {
+			$error = 'Unable to make tmpdir: ' . $tmpdir;
+			return false;
+		}
 
 		if (!$zip->extractTo($tmpdir)) {
+			$error = sprintf("[%s/%s] %s", $zip->status, $zip->statusSys, $zip->getStatusString());
 			return false;
 		}
 
@@ -3109,16 +3121,25 @@ class Zip_PclZip implements DpZip
 		);
 
 		return $out_filepath;
+
 	}
 
-	public function decompressZip($path, $to = null)
+	public function decompressZip($path, $to = null, &$error = null)
 	{
 		$zip = new \PclZip($path);
 
 		$tmpdir = dp_get_tmp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
-		mkdir($tmpdir);
+		if (!mkdir($tmpdir)) {
+			$error = 'Unable to make tmpdir: ' . $tmpdir;
+			return false;
+		}
 
-		if (!is_array($zip->extract(\PCLZIP_OPT_PATH, $tmpdir))) {
+		if (!is_array($zip->extract(
+			\PCLZIP_OPT_PATH, $tmpdir,
+			\PCLZIP_OPT_ADD_TEMP_FILE_ON,
+			\PCLZIP_OPT_STOP_ON_ERROR
+		))) {
+			$error = $zip->errorInfo(true);
 			return false;
 		}
 
