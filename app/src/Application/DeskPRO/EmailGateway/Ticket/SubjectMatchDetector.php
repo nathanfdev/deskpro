@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
@@ -127,7 +128,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		// Strip off Re: prefix (and alternatives in some other langs)
 		// The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
 		$last_subject = $subject_orig;
-		$ticket_ids = null;
+		$ticket_ids = array();
 		while (true) {
 			$subject_re   = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($last_subject));
 			$subject_re   = trim($subject_re);
@@ -141,14 +142,16 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
 
 			// Now lets try to find it...
-			$ticket_ids = App::getDb()->fetchAllCol("
+			$ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE (subject = ?) AND date_created > ? AND status != 'closed'
 				ORDER BY id DESC
 				LIMIT 20
-			", array($subject_re, $this->_time_cutoff));
+			", array($subject_re, $this->_time_cutoff)));
 		}
+
+		$ticket_ids = Arrays::removeFalsey($ticket_ids);
 
 		if (!$ticket_ids) {
 			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
