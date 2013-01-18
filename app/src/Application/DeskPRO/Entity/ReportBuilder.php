@@ -103,6 +103,8 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($type == 'raw') {
 			return $this->title;
+		} else if ($type == 'no_groupable') {
+			return preg_replace('/\[(.+?)\]/', '$1',  $this->title);
 		}
 
 		$repository = $this->getRepository();
