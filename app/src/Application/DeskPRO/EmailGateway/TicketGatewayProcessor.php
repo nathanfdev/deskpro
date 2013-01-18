@@ -546,10 +546,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		));
 		$this->event_dispatcher->dispatch(self::EVENT_NEWREPLY, $ev);
 
-		// prevent a memory leak with a large message
-		$message->email_source = null;
-		$message = null;
-
 		return $message;
 	}
 
@@ -1205,9 +1201,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
 
 			App::getDb()->commit();
-
-			$message->email_source = null;
-			$message = null;
 		} catch (\Exception $e) {
 			App::getDb()->rollback();
 			throw $e;
