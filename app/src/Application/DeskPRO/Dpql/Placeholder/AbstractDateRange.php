@@ -77,6 +77,28 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 	}
 
 	/**
+	 * Prepares the placeholder for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\BinaryInterval[] $intervals List of intervals that affect this calculation
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
+	public function prepareWithIntervals(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
+	)
+	{
+		$range = $this->_getDateRange();
+		return new Prepared($select->quoteForSql($this->_adjustForIntervals($range[0], $intervals)));
+	}
+
+	/**
 	 * Prepares the placeholder when it's called in a binary comparison context.
 	 * The placeholder is always the right hand side of the comparison.
 	 *
@@ -87,6 +109,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
 	 * @param \Application\DeskPRO\Dpql\SqlSelect $select
 	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\BinaryInterval[] $intervals List of intervals that affect this calculation
 	 *
 	 * @throws \Application\DeskPRO\Dpql\Exception
 	 *
@@ -94,7 +117,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 	 */
 	public function prepareComparison(
 		AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
-		Dpql\SqlSelect $select, Dpql\ResultHandler $result
+		Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
 	)
 	{
 		$lhsRes = $lhs->prepare($statement, $section, $stack, $select, $result);
@@ -109,9 +132,8 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 			return new Prepared('1', $outputName);
 		}
 
-		$rangeStart = $range[1];
-		$rangeEnd = $range[2];
-
+		$rangeStart = $this->_adjustForIntervals($range[1], $intervals);
+		$rangeEnd = $this->_adjustForIntervals($range[2], $intervals);
 
 		switch ($comparison) {
 			case '=':
@@ -140,5 +162,23 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 		}
 
 		return new Prepared("($sql)", $outputName);
+	}
+
+	protected function _adjustForIntervals($date, array $intervals)
+	{
+		if (preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', $date)) {
+			$format = 'Y-m-d';
+		} else if (preg_match('/^\d{1,2}:\d{1,2}:\d{1,2}$/', $date)) {
+			$format = 'H:i:s';
+		} else {
+			$format = 'Y-m-d H:i:s';
+		}
+		$dt = new \DateTime($date);
+		foreach ($intervals AS $interval) {
+			$operator = $interval->operator == \Application\DeskPRO\Dpql\Parser::T_OP_PLUS ? '+' : '-';
+			$dt->modify("$operator $interval->amount $interval->unit");
+		}
+
+		return $dt->format($format);
 	}
 }

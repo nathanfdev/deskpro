@@ -88,6 +88,7 @@ class Lexer
 		'LIMIT', 'OFFSET', 'AS', 'NULL',
 		'AND', 'OR', 'NOT', 'IN', 'LIKE', 'REGEXP',
 		'ASC', 'DESC',
+		'INTERVAL'
 	);
 
 	/**

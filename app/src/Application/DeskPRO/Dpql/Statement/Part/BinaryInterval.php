@@ -40,9 +40,9 @@ use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql\Exception;
 
 /**
- * Represents a binary comparison (=, >, <=, etc).
+ * Represents a mathematical operation with 2 elements
  */
-class BinaryComparison extends AbstractPart
+class BinaryInterval extends AbstractPart
 {
 	/**
 	 * Token ID of the operator
@@ -58,12 +58,9 @@ class BinaryComparison extends AbstractPart
 	 */
 	public $lhs;
 
-	/**
-	 * Right hand side of comparison
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $rhs;
+	public $amount;
+
+	public $unit;
 
 	/**
 	 * Maps from token IDs to printable/usable operators
@@ -71,28 +68,25 @@ class BinaryComparison extends AbstractPart
 	 * @var array
 	 */
 	protected static $_operatorMap = array(
-		Parser::T_OP_EQ => '=',
-		Parser::T_OP_NE => '<>',
-		Parser::T_OP_GT => '>',
-		Parser::T_OP_GTEQ => '>=',
-		Parser::T_OP_LT => '<',
-		Parser::T_OP_LTEQ => '<='
+		Parser::T_OP_PLUS => '+',
+		Parser::T_OP_MINUS => '-',
 	);
 
-	/**
-	 * This is used when a comparison needs to be flipped (for placeholders, for example).
-	 * Maps from the original operator string to the equivalent when the
-	 * comparison's LHS and RHS are swapped.
-	 *
-	 * @var array
-	 */
-	protected static $_operatorOrderFlipped = array(
-		'=' => '=',
-		'<>' => '<>',
-		'>' => '<',
-		'>=' => '<=',
-		'<' => '>',
-		'<=' => '>='
+	protected static $_typeMap = array(
+		'seconds' => 'SECOND',
+		'second' => 'SECOND',
+		'minutes' => 'MINUTE',
+		'minute' => 'MINUTE',
+		'hours' => 'HOUR',
+		'hour' => 'HOUR',
+		'days' => 'DAY',
+		'day' => 'DAY',
+		'weeks' => 'WEEK',
+		'week' => 'WEEK',
+		'months' => 'MONTH',
+		'month' => 'MONTH',
+		'years' => 'YEAR',
+		'year' => 'YEAR'
 	);
 
 	/**
@@ -102,15 +96,21 @@ class BinaryComparison extends AbstractPart
 	 *
 	 * @throws \Application\DeskPRO\Dpql\Exception
 	 */
-	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
+	public function __construct($operator, AbstractPart $lhs, $amount, $unit)
 	{
 		if (!isset(self::$_operatorMap[$operator])) {
-			throw new Exception("Invalid comparison operator (token ID: $operator)");
+			throw new Exception("Invalid math operator (token ID: $operator)");
 		}
 
 		$this->operator = $operator;
 		$this->lhs = $lhs;
-		$this->rhs = $rhs;
+		$this->amount = $amount;
+		$this->unit = $unit;
+
+		$lowerUnit = strtolower($this->unit);
+		if (!isset(self::$_typeMap[$lowerUnit])) {
+			throw new Exception("Unknown interval unit $this->unit");
+		}
 	}
 
 	/**
@@ -130,44 +130,20 @@ class BinaryComparison extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		$childStack = $this->getChildStack($stack);
-
-		$lhs = $this->lhs;
-		$rhs = $this->rhs;
-		$operator = self::$_operatorMap[$this->operator];
-
-		if ($lhs instanceof Placeholder || $lhs instanceof BinaryInterval) {
-			// flip as placeholder/interval comparison expects placeholder/interval on RHS
-			$temp = $lhs;
-			$lhs = $rhs;
-			$rhs = $temp;
-			$operator = self::$_operatorOrderFlipped[$operator];
-		}
-
-		if ($rhs instanceof Placeholder || $rhs instanceof BinaryInterval) {
-			$prepared = $rhs->prepareComparison(
-				$lhs, $operator, $statement, $section, $childStack, $select, $result
+		$placeholder = $this->_findPlaceholder();
+		if ($placeholder) {
+			return $placeholder[0]->prepareWithIntervals(
+				$statement, $section, $this->getChildStack($stack), $select, $result, $placeholder[1]
 			);
-			if ($prepared) {
-				return $prepared;
-			}
+		} else {
+			$lhs = $this->lhs->prepare($statement, $section, $this->getChildStack($stack), $select, $result);
+			$operator = self::$_operatorMap[$this->operator];
+			$sqlUnit = self::$_typeMap[strtolower($this->unit)];
+
+			$sql = "({$lhs->sql()} $operator INTERVAL $this->amount $sqlUnit)";
+			return new Prepared($sql, "{$lhs->name()} $operator INTERVAL $this->amount $this->unit", false, 'datetime');
 		}
-
-		$lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $result);
-		$rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $result);
-
-		$title = "{$lhsRes->name()} $operator {$rhsRes->name()}";
-
-		if ($rhs instanceof NullValue) {
-			if ($this->operator == Parser::T_OP_EQ) {
-				return new Prepared("({$lhsRes->sql()} IS NULL)", $title);
-			} else if ($this->operator == Parser::T_OP_NE) {
-				return new Prepared("({$lhsRes->sql()} IS NOT NULL)", $title);
-			}
-		}
-
-		return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title, false, 'boolean');
-	 }
+	}
 
 	/**
 	 * Renders a part back to DPQL.
@@ -181,7 +157,54 @@ class BinaryComparison extends AbstractPart
 	public function toDpql(Display $statement, $section, array $stack)
 	{
 		return $this->lhs->toDpql($statement, $section, $stack)
-			. ' ' . self::$_operatorMap[$this->operator] . ' '
-			. $this->rhs->toDpql($statement, $section, $stack);
+			. ' ' . self::$_operatorMap[$this->operator] . " INTERVAL $this->amount $this->unit";
+	}
+
+	/**
+	 * Prepares the interval when it's called in a binary comparison context.
+	 * The interval is always the right hand side of the comparison.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs The left hand side of the comparison
+	 * @param string $comparison The comparison operator
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false the default behavior should be called
+	 */
+	public function prepareComparison(
+		AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
+		Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	)
+	{
+		$placeholder = $this->_findPlaceholder();
+		if (!$placeholder) {
+			return false;
+		}
+
+		return $placeholder[0]->prepareComparison(
+			$lhs, $comparison, $statement, $section, $stack, $select, $result, $placeholder[1]
+		);
+	}
+
+	protected function _findPlaceholder()
+	{
+		$stack = $this->lhs;
+		$intervals = array($this);
+
+		do {
+			if ($stack instanceof Placeholder) {
+				return array($stack, $intervals);
+			} else if ($stack instanceof BinaryInterval) {
+				$intervals[] = $stack;
+				$stack = $stack->lhs;
+			} else {
+				return false;
+			}
+		} while (true);
 	}
 }

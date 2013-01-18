@@ -371,7 +371,30 @@ expression(res) ::= expression(A) OP_OR|OP_AND(B) expression(C) .
 	res = new Statement\Part\BinaryLogical($token, A, C);
 }
 
-expression(res) ::= expression(A) OP_MINUS|OP_PLUS|OP_MULTIPLY|OP_DIVIDE(B) expression(C) .
+expression(res) ::= expression(A) OP_MINUS|OP_PLUS(B) interval_expression(C) .
+{
+	// this line should be = @B, but due to a parser generator bug, doesn't work.
+	$token = $this->yystack[$this->yyidx + -1]->major;
+	$expression = C;
+
+	if ($expression[0] == 'interval') {
+		res = new Statement\Part\BinaryInterval($token, A, $expression[1], $expression[2]);
+	} else {
+		res = new Statement\Part\BinaryMath($token, A, $expression[1]);
+	}
+}
+
+interval_expression(res) ::= INTERVAL NUMBER(A) LITERAL(B) .
+{
+	res = array('interval', A, B);
+}
+
+interval_expression(res) ::= expression(A) .
+{
+	res = array('expression', A);
+}
+
+expression(res) ::= expression(A) OP_MULTIPLY|OP_DIVIDE(B) expression(C) .
 {
 	// this line should be = @B, but due to a parser generator bug, doesn't work.
 	$token = $this->yystack[$this->yyidx + -1]->major;
