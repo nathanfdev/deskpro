@@ -816,11 +816,10 @@ class Html extends AbstractRenderer
 
 			$height = 430 + count($graphs) * 25;
 
-			if ($maxCategoryLength > 25) {
+			if ($maxCategoryLength > 10) {
 				$labelHeight = $maxCategoryLength * 4;
 				$verticalLabels = '
 					chart.categoryAxis.labelRotation = 45;
-					chart.categoryAxis.autoGridCount = false;
 					chart.categoryAxis.gridCount = ' . min(15, count($rows)) . ';
 					chart.marginBottom = ' . $labelHeight . ';
 				';
@@ -881,7 +880,7 @@ class Html extends AbstractRenderer
 	protected function _filterGraphValue($value)
 	{
 		if (preg_match('/^((\d+,)*\d+)(\.\d+)?%?$/', $value)) {
-			return str_replace(array(',', '%'), '', $value) + 0;
+			return round(str_replace(array(',', '%'), '', $value) + 0, 1);
 		} else {
 			return $value;
 		}

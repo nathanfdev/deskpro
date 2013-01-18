@@ -36,7 +36,8 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 				url: url,
 				type: 'POST',
 				dataType: 'html',
-				data: { favorite: newValue, params: params }
+				data: { favorite: newValue, params: params },
+				timeout: 0
 			}).done(function(data) {
 					var favoriteContainer = $('#report-favorites');
 					favoriteContainer.find('ul:first').replaceWith(data);

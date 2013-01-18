@@ -196,12 +196,16 @@ class ReportBuilder extends AbstractEntityRepository
 					'workflow' => array('workflow', '%s.workflow'),
 					'sla' => array('SLA', '%s.ticket_slas'),
 					'sla_status' => array('SLA status', '%s.ticket_slas.sla_status'),
+					'agent_replies' => array('number of agent replies', 'ALIAS(%s.count_agent_replies, \'Agent Replies\')'),
+					'user_replies' => array('number of user replies', 'ALIAS(%s.count_user_replies, \'User Replies\')'),
+					'replies' => array('number of replies', 'ALIAS(%1$s.count_user_replies + %1$s.count_agent_replies, \'Total Replies\')'),
 					// todo: ticket rating
 					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
 					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
 					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
 					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
 					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')')
 				)
 			),
 			'dates' => array(

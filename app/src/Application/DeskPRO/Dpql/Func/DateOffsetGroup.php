@@ -131,9 +131,13 @@ class DateOffsetGroup extends AbstractFunc
 
 		$return->setGroupFill(function($min, $max) use ($groups, $maxSentinel) {
 			$fills = array();
-			$fills[] = array($maxSentinel, $maxSentinel, $maxSentinel);
-			foreach ($groups AS $max => $null) {
-				$fills[] = array($max, $max, $max);
+			if ($max >= $maxSentinel) {
+				$fills[] = array($maxSentinel, $maxSentinel, $maxSentinel);
+			}
+			foreach ($groups AS $groupMax => $null) {
+				if ($groupMax <= $max) {
+					$fills[] = array($groupMax, $groupMax, $groupMax);
+				}
 			}
 
 			return array_reverse($fills);
