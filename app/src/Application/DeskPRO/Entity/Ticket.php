@@ -1475,7 +1475,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->language) {
 			return $this->language;
-		} elseif ($this->person->getRealLanguage()) {
+		} elseif ($this->person && $this->person->getRealLanguage()) {
 			return $this->person->getRealLanguage();
 		}
 
