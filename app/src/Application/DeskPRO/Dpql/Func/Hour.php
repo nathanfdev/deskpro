@@ -74,8 +74,12 @@ class Hour extends AbstractFunc
 		$res = new Prepared($sql, 'HOUR(' . $prepped->name() . ')', false, 'numberraw');
 
 		$res->setGroupFill(function($min, $max) {
+			if ($min == $max) {
+				return array();
+			}
+
 			$fills = array();
-			for ($i = 0; $i <= 23; $i++) {
+			for ($i = $min; $i <= $max; $i++) {
 				$fills[] = array($i, $i, $i);
 			}
 

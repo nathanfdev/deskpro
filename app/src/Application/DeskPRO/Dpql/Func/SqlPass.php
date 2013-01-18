@@ -82,7 +82,6 @@ class SqlPass extends AbstractFunc
 		'COS' => array('number', 1),
 		'COT' => array('number', 1),
 		'CRC32' => array('number', 1),
-		'DATE' => array('date', 1),
 		'DATE_FORMAT' => array('string', 2),
 		'DATEDIFF' => array('number', 2),
 		'DAYOFYEAR' => array('number', 1),

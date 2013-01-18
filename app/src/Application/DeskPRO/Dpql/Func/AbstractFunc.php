@@ -56,6 +56,7 @@ abstract class AbstractFunc
 		'CURDATE' => 'CurDate',
 		'CURTIME' => 'CurTime',
 		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
+		'DATE' => 'Date',
 		'DAYNAME' => 'DayName',
 		'DAYOFMONTH' => 'DayOfMonth',
 		'DAYOFWEEK' => 'DayOfWeek',

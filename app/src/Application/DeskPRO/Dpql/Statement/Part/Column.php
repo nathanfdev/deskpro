@@ -67,6 +67,8 @@ class Column extends AbstractPart
 	protected static $_tableResolver = array(
 		'agent_teams' => array('id', 'name'),
 		'departments' => array('id', 'title'),
+		'feedback_categories' => array('id', 'title'),
+		'feedback_status_categories' => array('id', 'title'),
 		'labels_tickets' => array('label', 'label'),
 		'languages' => array('id', 'title'),
 		'organizations' => array('id', 'name', 'organization'),

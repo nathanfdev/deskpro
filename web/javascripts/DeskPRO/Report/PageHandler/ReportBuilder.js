@@ -36,8 +36,7 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 				url: url,
 				type: 'POST',
 				dataType: 'html',
-				data: { favorite: newValue, params: params },
-				timeout: 0
+				data: { favorite: newValue, params: params }
 			}).done(function(data) {
 					var favoriteContainer = $('#report-favorites');
 					favoriteContainer.find('ul:first').replaceWith(data);
@@ -93,7 +92,8 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 			$.ajax({
 				url: hash || window.location.pathname + window.location.search,
 				type: 'GET',
-				dataType: 'html'
+				dataType: 'html',
+				timeout: 0
 			}).done(function(data) {
 				if (data.match(/<!--dp:report-page-body-->([\s\S]*)<!--\/dp:report-page-body-->/)) {
 					pageBody.html(RegExp.$1);

@@ -190,6 +190,7 @@ class Display
 		'news' => 'DeskPRO:News',
 		'news_comments' => 'DeskPRO:NewsComment',
 		'organizations' => 'DeskPRO:Organization',
+		'page_view_log' => 'DeskPRO:PageViewLog',
 		'people' => 'DeskPRO:Person',
 		'people_emails' => 'DeskPRO:PersonEmail',
 		'tasks' => 'DeskPRO:Task',
@@ -201,6 +202,15 @@ class Display
 		'ticket_charges' => 'DeskPRO:TicketCharge',
 		'ticket_feedback' => 'DeskPRO:TicketFeedback',
 		'ticket_slas' => 'DeskPRO:TicketSla',
+		'twitter_accounts' => 'DeskPRO:TwitterAccount',
+		'twitter_accounts_followers' => 'DeskPRO:TwitterAccountFollower',
+		'twitter_accounts_friends' => 'DeskPRO:TwitterAccountFriend',
+		'twitter_accounts_statuses' => 'DeskPRO:TwitterAccountStatus',
+		'twitter_accounts_statuses_notes' => 'DeskPRO:TwitterAccountStatusNote',
+		'twitter_statuses' => 'DeskPRO:TwitterStatus',
+		'twitter_users' => 'DeskPRO:TwitterUser',
+		'twitter_users_followers' => 'DeskPRO:TwitterUserFollower',
+		'twitter_users_friend' => 'DeskPRO:TwitterUserFriend',
 	);
 
 	/**
@@ -314,8 +324,8 @@ class Display
 
 			foreach ($results AS $rowKey => $row) {
 				if ($previousValue !== null) {
-					if (($ascending && $row[$order] < $previousValue) ||
-						(!$ascending && $row[$order] > $previousValue)
+					if (($ascending && ($row[$order] + 0) < $previousValue) ||
+						(!$ascending && ($row[$order] + 0) > $previousValue)
 					) {
 						if ($rowKey - 1 > $startRow) {
 							$rowSets[] = array(
@@ -327,18 +337,18 @@ class Display
 						}
 						$previousValue = null;
 					} else {
-						$previousValue = $row[$order];
+						$previousValue = $row[$order] + 0;
 					}
 				}
 
 				if ($previousValue === null) {
-					$previousValue = $row[$order];
-					$startRowValue = $row[$order];
+					$previousValue = $row[$order] + 0;
+					$startRowValue = $row[$order] + 0;
 					$startRow = $rowKey;
 				}
 			}
 
-			if ($startRow < $rowKey) {
+			if ($startRow < $rowKey || !$rowSets) {
 				$rowSets[] = array(
 					'start' => $startRow,
 					'end' => $rowKey,
@@ -354,7 +364,7 @@ class Display
 					$newResults = array_merge($newResults, array_slice($results, $seenRow, $set['start'] - $seenRow));
 				}
 
-				$rows = array_slice($results, $set['start'], $set['end'] - $set['start']);
+				$rows = array_slice($results, $set['start'], $set['end'] - $set['start'] + 1);
 				$setFirst = reset($rows);
 				$setLast = end($rows);
 

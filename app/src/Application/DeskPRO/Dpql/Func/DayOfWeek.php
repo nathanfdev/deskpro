@@ -74,8 +74,12 @@ class DayOfWeek extends AbstractFunc
 		$res = new Prepared($sql, 'DAYOFWEEK(' . $prepped->name() . ')', false, 'numberraw');
 
 		$res->setGroupFill(function($min, $max) {
+			if ($min == $max) {
+				return array();
+			}
+
 			$fills = array();
-			for ($i = 1; $i <= 7; $i++) {
+			for ($i = $min; $i <= $max; $i++) {
 				$fills[] = array($i, $i, $i);
 			}
 

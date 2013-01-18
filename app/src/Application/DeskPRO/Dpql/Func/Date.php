@@ -42,9 +42,9 @@ use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
- * Handler that wraps around DAYOFMONTH() to add ordinal suffixes.
+ * Handler that wraps around DATE() to provide a group fill
  */
-class DayOfMonth extends AbstractFunc
+class Date extends AbstractFunc
 {
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
@@ -64,38 +64,30 @@ class DayOfMonth extends AbstractFunc
 	)
 	{
 		if (count($this->_arguments) != 1) {
-			throw new Exception('DAYOFMONTH() can only accept 1 argument.');
+			throw new Exception('DATE() can only accept 1 argument.');
 		}
 
 		$expression = reset($this->_arguments);
 		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-		$sql = 'DAYOFMONTH(' . $prepped->sql() . ')';
-		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
-		{
-			$mod = $value % 100;
-			switch ($mod) {
-				case 11:
-				case 12:
-				case 13:
-					return $value . 'th';
-
-				default:
-					$ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
-					return $value . $ends[$value % 10];
-			}
-		};
-
-		$res = new Prepared($sql, 'DAYOFMONTH(' . $prepped->name() . ')', false, $renderer);
+		$sql = 'DATE(' . $prepped->sql() . ')';
+		$res = new Prepared($sql, 'DATE(' . $prepped->name() . ')', false, 'date');
 
 		$res->setGroupFill(function($min, $max) {
-			if ($min == $max) {
+			if (!$min && !$max) {
 				return array();
 			}
 
-			$fills = array();
-			for ($i = $min; $i <= $max; $i++) {
-				$fills[] = array($i, $i, $i);
+			$d = new \DateTime($min);
+			$interval = $d->diff(new \DateTime($max));
+
+			if ($interval->days) {
+				$fills = array();
+				for ($i = 0; $i < $interval->days; $i++) {
+					$d->modify('+1 day');
+					$f = $d->format('Y-m-d');
+					$fills[] = array($f, $f, $f);
+				}
 			}
 
 			return $fills;

@@ -205,6 +205,8 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 			return "<order>";
 		}, $title);
 
+		$title = preg_replace('/<chart:[a-zA-Z0-9_-]+>/', '', $title);
+
 		if ($placeholderTitle != $title) {
 			$title = preg_replace_callback('/(, )?(split by|grouped by) ([a-zA-Z0-9 ]+) & ([a-zA-Z0-9]+)/', function($match) {
 				$firstMatch = rtrim($match[3]);

@@ -166,7 +166,10 @@ class ReportBuilder extends AbstractEntityRepository
 			'person' => 'People & Organizations',
 			'kb' => 'Knowledgebase',
 			'news' => 'News',
-			'files' => 'Files',
+			'downloads' => 'Downloads',
+			'feedback' => 'Feedback',
+			'tasks' => 'Tasks',
+			'twitter' => 'Twitter'
 		);
 	}
 
@@ -206,6 +209,60 @@ class ReportBuilder extends AbstractEntityRepository
 					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
 					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
 					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')')
+				),
+				'chats' => array(
+					'department' => array('department', '%s.department'),
+					'agent' => array('agent', '%s.agent'),
+					'agent_team' => array('agent team', '%s.agent_team'),
+					'person' => array('person', '%s.person'),
+					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+					'none' => array('nothing', 'NULL')
+				),
+				'articles' => array(
+					'person' => array('person', '%s.person'),
+					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+					'none' => array('nothing', 'NULL')
+				),
+				'article_comments' => array(
+					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+					'none' => array('nothing', 'NULL')
+				),
+				'feedback' => array(
+					'type' => array('type', 'ALIAS(%s.category, \'Type\')'),
+					'status' => array('status', 'ALIAS(%s.status_category, \'Status\')'),
+					'category' => array('category', 'ALIAS(%s.custom_data[1], \'category\')'),
+					'person' => array('person', '%s.person'),
+					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+					'none' => array('nothing', 'NULL')
+				),
+				'feedback_comments' => array(
+					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
+					'none' => array('nothing', 'NULL')
 				)
 			),
 			'dates' => array(

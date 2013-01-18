@@ -202,9 +202,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 					matched++;
 				}
 
-				if (matched == 0) {
-					return;
-				}
+				newTitle = newTitle.replace(/&lt;chart:([a-z0-9_-]+)&gt;/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>');
 
 				textEl.html(newTitle);
 			});

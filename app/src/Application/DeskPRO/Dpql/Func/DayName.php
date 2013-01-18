@@ -87,8 +87,12 @@ class DayName extends AbstractFunc
 		$res = new Prepared($sql, 'DAYNAME(' . $prepped->name() . ')', false, $renderer);
 
 		$res->setGroupFill(function($min, $max) {
+			if ($min == $max) {
+				return array();
+			}
+
 			$fills = array();
-			for ($i = 1; $i <= 7; $i++) {
+			for ($i = $min; $i <= $max; $i++) {
 				$fills[] = array($i, $i, $i);
 			}
 
