@@ -550,16 +550,20 @@ class Display
 			}
 
 			$select = $field->prepare($this, 'select', array(), $sql, $this->_resultHandler);
+			$this->addPreparedSelectField($select, $alias);
+		}
+	}
 
-			if ($select->hasValue()) {
-				$id = $this->addSqlSelectField($select->printed(), $alias);
+	public function addPreparedSelectField(\Application\DeskPRO\Dpql\Statement\Part\Prepared $select, $alias = false)
+	{
+		if ($select->hasValue()) {
+			$id = $this->addSqlSelectField($select->printed(), $alias);
 
-				$resultTitle = ($alias !== false ? $alias : $select->name());
-				$this->_resultHandler->addSelectColumn($resultTitle, $id, $select->renderer());
+			$resultTitle = ($alias !== false ? $alias : $select->name());
+			$this->_resultHandler->addSelectColumn($resultTitle, $id, $select->renderer());
 
-				if ($select->total()) {
-					$this->_resultHandler->addTotalColumn($id);
-				}
+			if ($select->total()) {
+				$this->_resultHandler->addTotalColumn($id);
 			}
 		}
 	}

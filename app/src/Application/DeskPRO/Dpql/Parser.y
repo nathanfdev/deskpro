@@ -181,6 +181,11 @@ select_field(res) ::= expression(A) alias_optional(B) .
 	}
 }
 
+select_field(res) ::= COLUMN_STAR(A) .
+{
+	res = new Statement\Part\ColumnStar(explode('.', A));
+}
+
 
 
 alias_optional(res) ::= AS LITERAL(A) .
