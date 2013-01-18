@@ -305,7 +305,7 @@ class Translate implements PersonContextInterface
 	 * @param LanguageEntity $language
 	 * @param callback     $func
 	 */
-	public function setTemporaryLanguage(LanguageEntity $language, $func)
+	public function setTemporaryLanguage(LanguageEntity $language = null, $func)
 	{
 		$this->setLanguage($language);
 
