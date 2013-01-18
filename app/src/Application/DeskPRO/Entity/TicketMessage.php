@@ -435,6 +435,19 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->ticket->addAccessCodeForPerson($this->person);
 	}
 
+	public function incTicketCount()
+	{
+		if (!$this->ticket) {
+			return;
+		}
+
+		if (!$this->is_agent_note && $this->person->is_agent) {
+			$this->ticket->count_agent_replies++;
+		} else {
+			$this->ticket->count_user_replies++;
+		}
+	}
+
 
 
 	############################################################################
@@ -448,6 +461,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_messages', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
+		$metadata->addLifecycleCallback('incTicketCount', 'prePersist');
 		$metadata->addLifecycleCallback('initPersonAccessCode', 'postPersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

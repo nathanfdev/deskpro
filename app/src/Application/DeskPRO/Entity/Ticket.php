@@ -373,6 +373,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $properties = null;
 
 	/**
+	 * @var int
+	 */
+	protected $count_agent_replies = 0;
+
+	/**
+	 * @var int
+	 */
+	protected $count_user_replies = 0;
+
+	/**
 	 * @var string|null
 	 */
 	protected $worst_sla_status = null;
@@ -2814,6 +2824,21 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('properties', $old, $this->properties);
 	}
 
+	public function recountStats()
+	{
+		$agent_ids_in = implode(',', App::getDataService('Agent')->getIds());
+
+		$this['count_agent_replies'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*) FROM tickets_messages
+			WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
+		", array($this->id));
+
+		$this['count_user_replies'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*) FROM tickets_messages
+			WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
+		", array($this->id));
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -2858,6 +2883,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
 		$metadata->mapField(array( 'fieldName' => 'is_hold', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_hold', ));
 		$metadata->mapField(array( 'fieldName' => 'urgency', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'urgency', ));
+		$metadata->mapField(array( 'fieldName' => 'count_agent_replies', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_agent_replies', ));
+		$metadata->mapField(array( 'fieldName' => 'count_user_replies', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'count_user_replies', ));
 		$metadata->mapField(array( 'fieldName' => 'feedback_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'feedback_rating', ));
 		$metadata->mapField(array( 'fieldName' => 'date_feedback_rating', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_feedback_rating', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
@@ -2903,5 +2930,5 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'charges', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCharge', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'ticket_slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSla', 'cascade' => array( 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
-	}
+		}
 }

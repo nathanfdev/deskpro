@@ -32,106 +32,46 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Person;
-use Orb\Util\Arrays;
-
-class AgentDataService
+class Build1358499996 extends AbstractBuild
 {
-	protected $has_init = false;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person[]
-	 */
-	public $agents = array();
-
-	/**
-	 * @var int[]
-	 */
-	public $ids = array();
-
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
-
-	public static function create(DeskproContainer $container, array $options = null)
+	public function run()
 	{
-		$em = $container->getEm();
-		$o = new static($em);
-		return $o;
-	}
+		$this->out("Populate tickets.count data");
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+		$agent_ids = $this->container->getDb()->fetchAllCol("
+			SELECT id FROM people
+			WHERE is_agent = 1
+		");
+		$agent_ids_in = implode(',', $agent_ids);
 
-	protected function preload()
-	{
-		if ($this->has_init) {
-			return;
-		}
-		$this->has_init = true;
+		$this->out('Populating tickets.count_agent_replies');
+		$t = microtime(true);
+		$x = $this->container->getDb()->executeUpdate("
+			UPDATE tickets
+			LEFT JOIN (
+				SELECT COUNT(*) AS count, ticket_id
+				FROM tickets_messages
+				WHERE person_id IN ($agent_ids_in) AND is_agent_note = 0
+				GROUP BY ticket_id
+			) AS t ON tickets.id = t.ticket_id
+			SET tickets.count_agent_replies = COALESCE(t.count, 0);
+		");
+		$this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
 
-		$this->agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-		foreach ($this->agents as $a) {
-			$this->ids[] = $a->getId();
-		}
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Person[]
-	 */
-	public function getAgents()
-	{
-		$this->preload();
-		return $this->agents;
-	}
-
-
-	/**
-	 * @param array $for_ids
-	 */
-	public function getNames(array $for_ids = null)
-	{
-		$ret = array();
-
-		foreach ($this->getAgents() as $agent) {
-			if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
-				$ret[$agent->getId()] = $agent->getDisplayName();
-			}
-		}
-
-		return $ret;
-	}
-
-
-	/**
-	 * @return int[]
-	 */
-	public function getIds()
-	{
-		$this->preload();
-		return $this->ids;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function get($id)
-	{
-		$this->preload();
-
-		if (isset($this->agents[$id])) {
-			return $this->agents[$id];
-		}
-
-		return null;
+		$this->out('Populating tickets.count_user_replies');
+		$t = microtime(true);
+		$x = $this->container->getDb()->executeUpdate("
+			UPDATE tickets
+			LEFT JOIN (
+				SELECT COUNT(*) AS count, ticket_id
+				FROM tickets_messages
+				WHERE person_id NOT IN ($agent_ids_in)
+				GROUP BY ticket_id
+			) AS t ON tickets.id = t.ticket_id
+			SET tickets.count_user_replies = COALESCE(t.count, 0);
+		");
+		$this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
 	}
 }

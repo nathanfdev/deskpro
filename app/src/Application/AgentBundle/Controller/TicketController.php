@@ -2575,6 +2575,10 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
+		$ticket->recountStats();
+		$this->em->persist($ticket);
+		$this->em->flush();
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'id' => $ticket['id'],
@@ -2622,6 +2626,13 @@ class TicketController extends AbstractController
 
 			throw $e;
 		}
+
+		$ticket->recountStats();
+		$new_ticket->recountStats();
+
+		$this->em->persist($ticket);
+		$this->em->persist($new_ticket);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true,

@@ -32,106 +32,13 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Person;
-use Orb\Util\Arrays;
-
-class AgentDataService
+class Build1358499559 extends AbstractBuild
 {
-	protected $has_init = false;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person[]
-	 */
-	public $agents = array();
-
-	/**
-	 * @var int[]
-	 */
-	public $ids = array();
-
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
-
-	public static function create(DeskproContainer $container, array $options = null)
+	public function run()
 	{
-		$em = $container->getEm();
-		$o = new static($em);
-		return $o;
-	}
-
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
-
-	protected function preload()
-	{
-		if ($this->has_init) {
-			return;
-		}
-		$this->has_init = true;
-
-		$this->agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-		foreach ($this->agents as $a) {
-			$this->ids[] = $a->getId();
-		}
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Person[]
-	 */
-	public function getAgents()
-	{
-		$this->preload();
-		return $this->agents;
-	}
-
-
-	/**
-	 * @param array $for_ids
-	 */
-	public function getNames(array $for_ids = null)
-	{
-		$ret = array();
-
-		foreach ($this->getAgents() as $agent) {
-			if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
-				$ret[$agent->getId()] = $agent->getDisplayName();
-			}
-		}
-
-		return $ret;
-	}
-
-
-	/**
-	 * @return int[]
-	 */
-	public function getIds()
-	{
-		$this->preload();
-		return $this->ids;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function get($id)
-	{
-		$this->preload();
-
-		if (isset($this->agents[$id])) {
-			return $this->agents[$id];
-		}
-
-		return null;
+		$this->out("Add tickets.count* fields");
+		$this->execMutateSql("ALTER TABLE tickets ADD count_agent_replies INT NOT NULL, ADD count_user_replies INT NOT NULL");
 	}
 }
