@@ -19,7 +19,7 @@
 		   title="Toggle favorite status"
 		>Toggle favorite status</a>
 
-		{{report.getTitle(false, params)}}
+		<a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}" rel="report-page-body" class="report-title-with-params" data-params="{{ params|json_encode }}">{{report.getTitle('no_groupable', params)}}</a>
 	</h1>
 	{% if report.description %}<p>{{ report.description|nl2br }}</p>{% endif %}
 	{% if report.parent %}
