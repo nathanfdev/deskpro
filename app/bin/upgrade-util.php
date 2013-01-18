@@ -670,6 +670,14 @@ class Upgrade
 			if (!$is_quiet) $this->out("Downloading latest source ...");
 			$new_source_zip = $this->downloadLatest();
 			if (!$is_quiet) $this->out("-> Done");
+			if (!$is_quiet) $this->out('-> Filesize: ' . filesize($new_source_zip));
+
+			$this->log('Downloaded ZIP filesize: ' . filesize($new_source_zip));
+
+			if (filesize($new_source_zip) < 36700160) {
+				throw new \InvalidArgumentException("Downloaded zip is smaller than expected, it probably failed to fully download");
+			}
+
 			$write_status("downloading_update_done");
 		} catch (\Exception $e) {
 			$write_status("error_downloading_update", $e->getMessage());
