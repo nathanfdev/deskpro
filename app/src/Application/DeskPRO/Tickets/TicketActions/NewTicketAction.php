@@ -404,6 +404,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+			$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
 
 			App::getMailer()->send($message);
 		});

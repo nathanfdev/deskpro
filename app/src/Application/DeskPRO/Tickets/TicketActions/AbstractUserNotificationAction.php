@@ -206,6 +206,10 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 			$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
 
+			if (isset($vars['is_auto']) && $vars['is_auto']) {
+				$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
+			}
+
 			if ($attach_attachments) {
 				foreach ($attach_attachments as $src => $attach) {
 					if ($attach instanceof \Application\DeskPRO\Entity\Blob) {

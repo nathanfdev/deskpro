@@ -60,6 +60,7 @@ class UserNotificationParticipantAction extends AbstractUserNotificationAction
 
 		// Person has notifications disabled
 		if ($ticket->person->disable_autoresponses) {
+			$this->tracker->logMessage("[UserNotificationNewReplyUser] disable_autoresponses is on");
 			return;
 		}
 
@@ -68,6 +69,7 @@ class UserNotificationParticipantAction extends AbstractUserNotificationAction
 
 			$vars = array(
 				'email_subject' => new DelegatePhrase('user.emails.subject', array('ticket_subject' => $ticket['subject'])),
+				'is_auto' => true,
 			);
 
 			$this->doSend('DeskPRO:emails_user:ticket-participant', $vars, $ticket, $person);

@@ -283,6 +283,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 
+			if ($this->reader->getHeader('X-DeskPRO-Build')) {
+				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
+				$person->disable_autoresponses = true;
+			}
+
 			App::setCurrentPerson($person);
 
 			if ($person['is_agent'] && strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false) {
@@ -317,6 +322,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				}
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
 				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
+			}
+
+			if ($this->reader->getHeader('X-DeskPRO-Build')) {
+				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
+				$person->disable_autoresponses = true;
 			}
 
 			App::setCurrentPerson($person);
@@ -566,7 +576,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_is_html'] = true;
 
 			// Sent from a DeskPRO instance, we should get the specific message by looking for our delims
-			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
+			// But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
+			// are silenced in those cases anyway so the auto-replies are handled like other robot replies
+			if (
+				$this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()
+				&& !($this->getHeader('X-DeskPRO-Auto') && $this->getHeader('X-DeskPRO-Auto')->getHeader())
+			) {
 				$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
 				if ($body) {
 					$email_info['body'] = $body;
@@ -997,8 +1012,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 				}
 
-				// Send from a DeskPRO instance, we should get the specific message by looking for our delims
-				if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
+				// Sent from a DeskPRO instance, we should get the specific message by looking for our delims
+			// But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
+			// are silenced in those cases anyway so the auto-replies are handled like other robot replies
+			if (
+				$this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()
+				&& !($this->reader->getHeader('X-DeskPRO-Auto') && $this->reader->getHeader('X-DeskPRO-Auto')->getHeader())
+			) {
 					$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
 					if ($body) {
 						$email_info['body'] = $body;

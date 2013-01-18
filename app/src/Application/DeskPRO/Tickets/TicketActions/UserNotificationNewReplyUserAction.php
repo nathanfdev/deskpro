@@ -97,6 +97,7 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 
 		// Person has confirmation notifications disabled
 		if ($ticket->person->disable_autoresponses) {
+			$this->tracker->logMessage("[UserNotificationNewReplyUser] disable_autoresponses is on");
 			return;
 		}
 
@@ -108,7 +109,8 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 		);
 
 		$vars = array(
-			'action' => 'new_user_reply',
+			'action'  => 'new_user_reply',
+			'is_auto' => true, // yes, this is an automatic reply confirmation type
 		);
 
 		$this->doSend($tpl, $vars, $ticket, $change_info);
