@@ -573,6 +573,16 @@ JS;
 
 		\Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
+		// Also send our status
+		//agent.ui.user-chat-status
+		$cm = new Entity\ClientMessage();
+		$cm->channel = 'agent.ui.user-chat-status';
+		$cm->for_person = $this->person;
+		$cm->data = array('is_online' => $this->in->getBool('is_chat_available'));
+		$this->em->persist($cm);
+		$this->em->flush();
+
+
 		return $this->createJsonResponse(array('success' =>true, 'status' => $status));
 	}
 

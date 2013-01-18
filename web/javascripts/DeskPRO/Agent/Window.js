@@ -2482,6 +2482,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
+		// We broadcast this when setting the status manually
+		// It means any other locations we're signed in under get the same
+		// message and we all sync our status properly
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.user-chat-status', function(info) {
+			if (info.is_online) {
+				$('#chatStatusWrap').removeClass('offline');
+				$('#agent_status_menu_onlinerow').show();
+				$('#agent_status_menu_offlinerow').hide();
+			} else {
+				$('#chatStatusWrap').addClass('offline');
+				$('#agent_status_menu_onlinerow').hide();
+				$('#agent_status_menu_offlinerow').show();
+			}
+		});
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', function(info) {
 			var list = $('#agent_status_menu_onlinelist');
 			var count = 0;
@@ -2490,7 +2505,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (info.online_agents && info.online_agents.length) {
 				list.find('li').hide();
 				Array.each(info.online_agents, function(agent_id) {
-					if (agent_id == DESKPRO_PERSON_ID) {
+					if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
 						hasme = true;
 					} else {
 						count++;
@@ -2505,8 +2520,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				list.hide();
 			}
 
-			// Not in online list and locally we think we're online,
-			// probably were signed out by admin
 			if (!hasme) {
 				if (!$('#chatStatusWrap').hasClass('offline')) {
 					$('#chatStatusWrap').addClass('offline');

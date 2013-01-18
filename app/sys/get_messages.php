@@ -347,6 +347,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$channels[] = 'agent.ui.new-feedback';
 		$channels[] = 'agent.ui.new-pending';
 		$channels[] = 'agent.ui.reload';
+		$channels[] = 'agent.ui.user-chat-status';
 
 		$channels[] = 'agent.filter-update';
 
