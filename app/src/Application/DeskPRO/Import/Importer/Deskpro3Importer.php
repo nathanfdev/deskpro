@@ -135,11 +135,12 @@ class Deskpro3Importer extends AbstractImporter
 		if (!$this->olddb) {
 			try {
 				$this->olddb = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
-					'driver'   => 'pdo_mysql',
-					'host'     => $this->config->db_host,
-					'user'     => $this->config->db_user,
-					'password' => $this->config->db_password,
-					'dbname'   => $this->config->db_name
+					'driver'        => 'pdo_mysql',
+					'host'          => $this->config->db_host,
+					'user'          => $this->config->db_user,
+					'password'      => $this->config->db_password,
+					'dbname'        => $this->config->db_name,
+					'names_charset' => 'latin1'
 				));
 			} catch (\Exception $e) {
 				$this->logMessage("-- FAILED");
