@@ -189,7 +189,7 @@ var DpChatWidget = new (function() {
 			var css = [];
 			css.push('position: fixed');
 			css.push('bottom: 0');
-			css.push((tabLocation ? 'left' : 'right') + ': 20px');
+			css.push(tabLocation + ': 20px');
 			css.push('width: 340px');
 			css.push('height: 350px');
 			css.push('background: #ffffff');
@@ -232,7 +232,7 @@ var DpChatWidget = new (function() {
 			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
 			css.push('top: -18px');
-			css.push((tabLocation ? 'left' : 'right') + ': 28px');
+			css.push(tabLocation + ': 28px');
 			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
 			css.push('cursor: pointer');
 			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
