@@ -883,10 +883,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->setModelField('password', $pass);
 
-		$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
-		if ($token) {
-			$token->regenerateToken();
-			App::getOrm()->persist($token);
+		if ($this->id) {
+			$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
+			if ($token) {
+				$token->regenerateToken();
+				App::getOrm()->persist($token);
+			}
 		}
 
 		return $this->password;
