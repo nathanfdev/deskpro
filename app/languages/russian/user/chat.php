@@ -39,7 +39,7 @@
 	'user.chat.window_cancel-confirm'                                      => 'Вы уверены, что хотите закончить разговор?',
 	'user.chat.window_close'                                               => 'Нет, спасибо, просто закрыть данное окно',
 	'user.chat.window_close_only'                                          => 'Закрыть окно',
-	'user.chat.window_end-chat'                                            => 'Завершить разговор',
+	'user.chat.window_end-chat'                                            => 'Завершить диалог',
 	'user.chat.window_open-new'                                            => 'Открыть диалог в новом окне',
 	'user.chat.window_resume-button'                                       => 'Открыть Ваш диалог',
 	'user.chat.window_start-button'                                        => 'Чтобы начать с нами диалог, нажмите здесь',
