@@ -562,6 +562,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$has_text_cut = false;
 		$has_cut = false;
 
+		$precut_do_plaintext = false;
+
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
@@ -608,6 +610,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					}
 					$email_info['body_is_html'] = false;
 
+					$precut_do_plaintext = true;
+
 				// The trimmed document is short enough to use
 				} else {
 					$this->logMessage('[TicketGatewayProcessor] Using cut-trimmed document');
@@ -617,8 +621,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_info['body_is_html'] = true;
 				}
 			}
+		}
 
-		} else {
+		if ($precut_do_plaintext || !$this->reader->getBodyHtml()->getBody()) {
 			$is_text = true;
 
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
