@@ -74,6 +74,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		if ($this->request->getMethod() == 'POST') {
 			return true;
 		}
+
+		return false;
 	}
 
 	/**
