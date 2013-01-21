@@ -501,6 +501,10 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'Incorrect key file for table') !== false) {
+			return true;
+		}
+
 		// For commands run with bad options
 		if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'option does not exist') !== false && strpos($exception->getFile(), 'ArgvInput.php') !== false) {
 			return true;
