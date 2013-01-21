@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -2427,7 +2428,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Get the new ref
 		if (!$this->ref) {
-			$this['ref'] = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
+			try {
+				$this['ref'] = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+
+				// Log and fallback to a random ref
+				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+				$this['ref'] = $ref;
+			}
 		}
 
 		if (!$this->_no_log && $this->_ticket_logger) {

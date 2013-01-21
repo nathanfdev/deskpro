@@ -63,6 +63,11 @@ class CustomRef implements RefGeneratorInterface
 	protected $db;
 
 	/**
+	 * @var string
+	 */
+	protected $format_string = array();
+
+	/**
 	 * @var array
 	 */
 	protected $format = array();
@@ -83,7 +88,7 @@ class CustomRef implements RefGeneratorInterface
 	 * $format_string shold encase keywords in brakcets. For example:
 	 *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>
 	 *
-	 * @param EntityManager $em
+	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param $format_string
 	 */
 	public function __construct(\Doctrine\ORM\EntityManager $em, $format_string, $append_count = 0)
@@ -91,11 +96,13 @@ class CustomRef implements RefGeneratorInterface
 		$this->em = $em;
 		$this->db = $em->getConnection();
 		$this->append_count = $append_count;
+		$this->format_string = $format_string;
 
 		#------------------------------
 		# Parses format string into array(token, repeated)
 		#------------------------------
 
+		$format = array();
 		$tok = strtok($format_string, '<>');
 		$parts = array();
 		while ($tok !== false) {
@@ -182,7 +189,7 @@ class CustomRef implements RefGeneratorInterface
 			$append_count++;
 
 			if ($attempt > $this->max_tries) {
-				throw new \Exception("Cannot find unique ref after $attempt attempts. Aborting.");
+				throw new \Exception("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
 			}
 
 			if ($attempt > $this->max_tries-5) {
