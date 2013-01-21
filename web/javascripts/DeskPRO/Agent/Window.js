@@ -344,7 +344,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 						data.context.each(function (index) {
 							var file = ($.isArray(data.result) &&
 									data.result[index]) || {error: 'emptyResult'};
-							if (file.error) {
+							if (file.error && that._adjustMaxNumberOfFiles) {
 								that._adjustMaxNumberOfFiles(1);
 							}
 							that._transition($(this)).done(
