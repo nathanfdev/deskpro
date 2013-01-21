@@ -89,7 +89,7 @@ class AddAgentNotifyModifier implements CollectionModifierInterface
 
 			} elseif (strpos($send_to, 'agent_team.') === 0) {
 				list (, $agent_team_id) = explode('.', $send_to, 2);
-				$agent_team_ids = array_merge($agent_ids, App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($agent_team_id));
+				$agent_team_ids[] = $agent_team_id;
 			}
 		}
 
