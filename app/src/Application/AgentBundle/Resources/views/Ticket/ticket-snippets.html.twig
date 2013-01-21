@@ -68,7 +68,39 @@ pageMeta.baseId = '{{ baseId }}';
 			<div style="width: 100%">
 				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
 			</div>
-			<div style="padding-left: 13px; background: url({{ asset('images/agent/icons/small-light-off.png') }}) no-repeat 1px 4px;">You can include variables in snippets. <a href="http://support.deskpro.com/kb/articles/133-using-variables-in-snippets" target="_blank">Learn more.</a></a> </div>
+			<div style="float:right; text-align: right; font-size:  11px;">
+				<select class="variables-select">
+					<optgroup label="Ticket">
+						<option value="ticket.subject">Subject</option>
+						<option value="ticket.department">Department</option>
+						<option value="ticket.product">Product</option>
+						<option value="ticket.category">Category</option>
+						<option value="ticket.workflow">Workflow</option>
+						<option value="ticket.priority">Priority</option>
+						<option value="ticket.agent">Agent Name</option>
+						<option value="ticket.agent_email">Agent Email Address</option>
+						<option value="ticket.agent">Agent Team</option>
+						<option value="ticket.date_created">Date Created</option>
+						<option value="ticket.time_created">Time Created</option>
+						{% for field in app.getCustomFieldManager('tickets').getFields() %}
+							<option value="ticket.field{{ field.id }}">{{ field.title }}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="User">
+						<option value="user.name">Name</option>
+						<option value="user.email">Email Address</option>
+						<option value="user.organization_position">Position in Organisation</option>
+						{% for field in app.getCustomFieldManager('people').getFields() %}
+							<option value="user.field{{ field.id }}">{{ field.title }}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="Organisation">
+						<option value="org.name">Name</option>
+					</optgroup>
+				</select> <button class="variables-insert-btn clean-white" style="vertical-align: top; position:relative; top: 3px;">Insert Variable</button>
+				<br />
+				 <a href="http://support.deskpro.com/kb/articles/133-using-variables-in-snippets" target="_blank">Learn more about variables</a>
+			</div>
 			<input type="hidden" name="is_html" value="0" />
 		</div>
 		<div class="overlay-footer">

@@ -170,9 +170,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 
 		this.snippetEditorOverlay = this.getEl('new_snippet');
+		var textarea = this.snippetEditorOverlay.find('textarea[name=snippet]');
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
-			var textarea = this.snippetEditorOverlay.find('textarea[name=snippet]');
-
 			if (!textarea.data('redactor')) {
 				DeskPRO_Window.initRteAgentReply(textarea, {
 					defaultIsHtml: true,
@@ -181,6 +180,22 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				this.snippetEditorOverlay.find('input[name=is_html]').val(1);
 			}
 		}
+
+		var varSel = this.snippetEditorOverlay.find('.variables-select');
+		this.snippetEditorOverlay.find('.variables-insert-btn').on('click', function() {
+			var text = '{{ ' + varSel.val() + ' }}';
+
+			if (textarea.data('redactor')) {
+				textarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text, false));
+			} else {
+				var pos = textarea.getCaretPosition();
+				if (!pos) {
+					textarea.setCaretPosition(0);
+				}
+
+				textarea.insertAtCaret(text);
+			}
+		});
 
 		this.snippetEditorOverlayObj = new DeskPRO.UI.Overlay({
 			contentElement: this.snippetEditorOverlay,
