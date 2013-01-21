@@ -439,7 +439,7 @@ class KernelBooter
 				foreach ($accept_languages AS $accept_language) {
 					$accept_language = substr($accept_language, 0, 2);
 					foreach ($languages AS $language) {
-						if (substr($language['locale'], 0, 2) == $accept_language) {
+						if (!empty($language['locale']) && substr($language['locale'], 0, 2) == $accept_language) {
 							$language_id = $language['id'];
 							break 2;
 						}
