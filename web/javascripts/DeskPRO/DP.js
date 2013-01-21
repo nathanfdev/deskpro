@@ -301,7 +301,7 @@ var DP = {
 
 					largest += 35;
 
-					return largest;
+					return largest + 'px';
 				}
 			};
 		}
