@@ -383,6 +383,10 @@ abstract class File_IMC_Parse
     {
         $max = count($source);
 
+		// DESKPRO PATCH:
+		// Initialise variable that may be unset
+		$block = array();
+
         for ($this->count++; $this->count < $max; $this->count++) {
 
             $line = $source[$this->count];
