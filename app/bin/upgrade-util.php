@@ -1261,21 +1261,18 @@ class Upgrade
 		$status_callback('copy_start');
 
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->in(DP_WEB_ROOT)->files();
-		$file_list = iterator_to_array($finder, false);
+		$finder->in(DP_WEB_ROOT)->exclude(dp_get_data_dir())->files();
 
 		$count_file = 0;
 		$count_dir = 0;
-		foreach ($file_list as $file) {
-			/** @var $file \Symfony\Component\Finder\SplFileInfo */
-
-			// Ignore data dir
-			if (strpos($file->getRealPath(), DP_WEB_ROOT.DIRECTORY_SEPARATOR.'data') === 0) {
-				continue;
-			}
-
+		foreach ($finder as $file) {
 			$file_rel_dir = str_replace(DP_WEB_ROOT, '', dirname($file->getRealPath()));
 			$file_backup_dir = $backup_dir . '/' . $file_rel_dir;
+
+			// Ignore data dir
+			if (strpos($file->getRealPath(), dp_get_data_dir()) === 0) {
+				continue;
+			}
 
 			if (!is_dir($file_backup_dir)) {
 				$count_dir++;
