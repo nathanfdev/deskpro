@@ -134,6 +134,11 @@ class TicketChangeTracker extends ChangeTracker
 	protected $arr_writer;
 
 	/**
+	 * @var array
+	 */
+	protected $trigger_changed_fields = array();
+
+	/**
 	 * Fields that shouldnt trigger the full logger and filter inspections
 	 * THey are still recoreded and may still be used as criteria, but they are always
 	 * accompanied by a real trigger such as a status change etc. So by themselves
@@ -627,13 +632,32 @@ class TicketChangeTracker extends ChangeTracker
 	{
 		$this->has_non_ignored = true;
 		parent::recordPropertyChanged($prop, $old_val, $new_val);
+
+		if ($this->applying_trigger) {
+			$this->trigger_changed_fields[$prop] = $prop;
+		}
 	}
 
 	public function recordMultiPropertyChanged($prop, $old_val, $new_val)
 	{
 		$this->has_non_ignored = true;
 		parent::recordMultiPropertyChanged($prop, $old_val, $new_val);
+
+		if ($this->applying_trigger) {
+			$this->trigger_changed_fields[$prop] = $prop;
+		}
 	}
+
+
+	/**
+	 * @param string $prop
+	 * @return bool
+	 */
+	public function isTriggerChangeField($prop)
+	{
+		return isset($this->trigger_changed_fields[$prop]);
+	}
+
 
 	/**
 	 * Service to fetch information about how this change affected various filters.

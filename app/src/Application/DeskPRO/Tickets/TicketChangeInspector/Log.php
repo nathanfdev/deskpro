@@ -142,25 +142,25 @@ class Log
 
 				switch ($prop) {
 					case 'agent':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Agent($old_val, $new_val);
 						}
 						break;
 
 					case 'agent_team':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\AgentTeam($old_val, $new_val);
 						}
 						break;
 
 					case 'category':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Category($old_val, $new_val);
 						}
 						break;
 
 					case 'department':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Department($old_val, $new_val);
 						}
 						break;
@@ -174,55 +174,55 @@ class Log
 						break;
 
 					case 'priority':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Priority($old_val, $new_val);
 						}
 						break;
 
 					case 'workflow':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Workflow($old_val, $new_val);
 						}
 						break;
 
 					case 'product':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Product($old_val, $new_val);
 						}
 						break;
 
 					case 'status':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Status($old_val, $new_val);
 						}
 						break;
 
 					case 'urgency':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Urgency($old_val, $new_val);
 						}
 						break;
 
 					case 'person':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Person($old_val, $new_val);
 						}
 						break;
 
 					case 'organization':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Organization($old_val, $new_val);
 						}
 						break;
 
 					case 'subject':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Subject($old_val, $new_val);
 						}
 						break;
 
 					case 'is_hold':
-						if (!$this->tracker->isNewTicket()) {
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
 							$action = new LogActions\Hold($old_val, $new_val);
 						}
 						break;
