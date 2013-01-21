@@ -107,6 +107,17 @@ class SearchIndexUpdate extends AbstractJob
 				$this->queue->deleteMessage($info);
 			}
 
+			// Sometimes an object might have been detached/deleted
+			// before it got here, so we should just ignore reindex
+			// commands on them
+			if ($update && $update instanceof \Doctrine\ORM\Proxy\Proxy) {
+				try {
+					$update->__load();
+				} catch (\Doctrine\ORM\EntityNotFoundException $e) {
+					continue;
+				}
+			}
+
 			if ($update) {
 				App::getContainer()->getSearchAdapter()->updateObjectsInIndex($update);
 			}
