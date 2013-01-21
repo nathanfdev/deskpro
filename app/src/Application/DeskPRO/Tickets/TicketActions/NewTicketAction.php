@@ -251,11 +251,13 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				$tpl = $this->newticket_email_tpl;
 			}
 
+			$parts = $ticket->getUserParticipants();
+
 			$change_info = array(
-				'type' => 'user_notify',
+				'type'        => 'user_notify',
 				'notify_type' => $ticket->isAgentCreated() ? 'newticket_agent' : 'newticket',
-				'emailed' => array($ticket->person),
-				'cced' => array()
+				'emailed'     => array($ticket->person),
+				'cced'        => $parts ?: array()
 			);
 			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 
@@ -327,8 +329,6 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			}
 
 			if ($person->getPrimaryEmailAddress()) {
-				$parts = $ticket->getUserParticipants();
-
 				App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $attach_attachments) {
 					$message = App::getMailer()->createMessage();
 					$message->setContextId('ticket_gateway');

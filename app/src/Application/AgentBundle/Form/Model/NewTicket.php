@@ -67,6 +67,7 @@ class NewTicket
 	public $billing_comment = '';
 
 	public $add_cc_person = array();
+	public $add_cc_newpeople = array();
 	public $add_cc_newperson = array();
 	public $attach = array();
 	public $ticket_fields = array();
@@ -186,6 +187,46 @@ class NewTicket
 		$this->_em->flush();
 
 		#------------------------------
+		# Participants
+		#------------------------------
+
+		$add_cc_peopleids = $this->add_cc_person;
+		$add_cc_people = $this->add_cc_newpeople;
+
+		foreach ($this->add_cc_newperson as $info) {
+			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email'])) {
+				continue;
+			}
+
+			$check_exist = $this->_em->getRepository('DeskPRO:Person')->findOneByEmail($info['email']);
+			if ($check_exist) {
+				$add_cc_people[] = $check_exist;
+			} else {
+				// New person, coming right up
+				$added_new = true;
+
+				$new_cc_person = Person::newContactPerson(array(
+					'email' => $info['email'],
+					'name' => !empty($info['name']) ? $info['name'] : ''
+				));
+				$this->_em->persist($new_cc_person);
+
+				$add_cc_people[] = $new_cc_person;
+			}
+		}
+
+		foreach ($add_cc_people as $p) {
+			$this->_em->persist($p);
+		}
+
+		$add_cc_people = array_merge(
+			$add_cc_people,
+			$this->_em->getRepository('DeskPRO:Person')->getByIds($add_cc_peopleids)
+		);
+
+		$this->_em->flush();
+
+		#------------------------------
 		# Ticket
 		#------------------------------
 
@@ -298,48 +339,6 @@ class NewTicket
 			$field_manager->saveFormToObject($post_custom_fields, $ticket);
 		}
 
-		$this->_em->flush();
-		$this->_em->persist($message);
-		$this->_em->flush();
-
-		#------------------------------
-		# Participants
-		#------------------------------
-
-		$add_cc_peopleids = $this->add_cc_person;
-		$add_cc_people = array();
-
-		$added_new = false;
-		foreach ($this->add_cc_newperson as $info) {
-			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email'])) {
-				continue;
-			}
-
-			$check_exist = $this->_em->getRepository('DeskPRO:Person')->findOneByEmail($info['email']);
-			if ($check_exist) {
-				$add_cc_people[] = $check_exist;
-			} else {
-				// New person, coming right up
-				$added_new = true;
-
-				$new_cc_person = Person::newContactPerson(array(
-					'email' => $info['email'],
-					'name' => !empty($info['name']) ? $info['name'] : ''
-				));
-				$this->_em->persist($new_cc_person);
-
-				$add_cc_people[] = $new_cc_person;
-			}
-		}
-
-		if ($added_new) {
-			$this->_em->flush();
-		}
-
-		$add_cc_people = array_merge(
-			$add_cc_people,
-			$this->_em->getRepository('DeskPRO:Person')->getByIds($add_cc_peopleids)
-		);
 		foreach ($add_cc_people as $add_cc_person) {
 			if ($add_cc_person->getId() != $ticket->person->getId()) {
 				$part = $ticket->addParticipantPerson($add_cc_person);
@@ -349,9 +348,9 @@ class NewTicket
 			}
 		}
 
-		if ($add_cc_people) {
-			$this->_em->flush();
-		}
+		$this->_em->flush();
+		$this->_em->persist($message);
+		$this->_em->flush();
 
 		$this->_ticket = $ticket;
 

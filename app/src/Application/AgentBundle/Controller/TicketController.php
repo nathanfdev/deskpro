@@ -2812,6 +2812,10 @@ class TicketController extends AbstractController
 				}
 
 				$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+
+				$newticket->add_cc_person = $this->in->getCleanValueArray('newticket.add_cc_person', 'uint');
+				$newticket->add_cc_newperson = $this->in->getCleanValueArray('newticket.add_cc_newperson', 'raw', 'discard');
+
 				$newticket->save();
 				$ticket = $newticket->getTicket();
 
@@ -2830,38 +2834,6 @@ class TicketController extends AbstractController
 				#------------------------------
 				# Add CC's
 				#------------------------------
-
-				$add_cc_people = $this->container->getIn()->getCleanValueArray('add_cc_person', 'uint');
-				if ($add_cc_people) {
-					foreach ($add_cc_people as $pid) {
-						$p = $this->em->find('DeskPRO:Person', $pid);
-						if ($p) {
-							$part = $ticket->addParticipantPerson($p);
-							if ($part) {
-								$this->em->persist($part);
-							}
-							$this->em->persist($ticket);
-						}
-					}
-
-					$this->em->flush();
-				}
-
-				$add_cc_people = $this->container->getIn()->getCleanValueArray('add_cc_person', 'uint');
-				if ($add_cc_people) {
-					foreach ($add_cc_people as $pid) {
-						$p = $this->em->find('DeskPRO:Person', $pid);
-						if ($p) {
-							$part = $ticket->addParticipantPerson($p);
-							if ($part) {
-								$this->em->persist($part);
-							}
-						}
-					}
-
-					$this->em->persist($ticket);
-					$this->em->flush();
-				}
 
 				$new_cc_people_ids = array_merge(
 					array_keys($this->container->getIn()->getCleanValueArray('new_cc_person_name', 'raw', 'string')),
