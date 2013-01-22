@@ -109,7 +109,7 @@ class Text extends HandlerAbstract
 
 		if ($options['regex']) {
 			$regex = Strings::getInputRegexPattern($options['regex']);
-			if ($regex && !preg_match($options['regex'], $data)) {
+			if ($regex && !preg_match($regex, $data)) {
 				return $this->makeErrorArray(array('regex_fail'));
 			}
 		}
