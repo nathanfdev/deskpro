@@ -578,7 +578,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			// are silenced in those cases anyway so the auto-replies are handled like other robot replies
 			if (
 				$this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()
-				&& !($this->getHeader('X-DeskPRO-Auto') && $this->getHeader('X-DeskPRO-Auto')->getHeader())
+				&& !($this->reader->getHeader('X-DeskPRO-Auto') && $this->reader->getHeader('X-DeskPRO-Auto')->getHeader())
 			) {
 				$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
 				if ($body) {
