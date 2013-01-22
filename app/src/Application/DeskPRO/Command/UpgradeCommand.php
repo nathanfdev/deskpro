@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -127,6 +128,25 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			}
 
 			$manager->reset();
+		}
+
+		#------------------------------
+		# attempt to auto-correct bad indexes and keys
+		#------------------------------
+
+		if (!defined('DP_UPGRADE_NO_CORRECT_KEYS')) {
+			$schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
+			if ($schemadiff) {
+				$output->writeln("<info>Correcting schema...</info>");
+				foreach ($schemadiff as $line) {
+					$output->writeln("-> " . $line);
+					try {
+						App::getDb()->exec($line);
+					} catch (\Exception $e) {
+						KernelErrorHandler::handleException($e);
+					}
+				}
+			}
 		}
 
 	    $manager->postUpgrade();
