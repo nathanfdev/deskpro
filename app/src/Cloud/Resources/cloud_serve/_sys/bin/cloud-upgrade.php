@@ -50,6 +50,8 @@ if (php_sapi_name() != 'cli') {
  * Usage: cloud-upgrade.php <to_version> [options]
  * Options:
  *     --dry-run             Dont actually do upgrades, just see what would happen
+ *     --site-id             Run a specific site ID
+ *     --limit               How many to run at a time (default 999999)
  *
  * @package DeskPRO_Cloud
  */
@@ -68,6 +70,7 @@ require __DIR__.'/../lib/Process.php';
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
+set_time_limit(0);
 
 ########################################################################
 # Sort out args
@@ -106,6 +109,31 @@ if (!is_dir($build_dir)) {
 $dry_run = false;
 if (($k = array_search('--dry-run', $args)) !== false) {
 	$dry_run = true;
+}
+
+#------------------------------
+# site-id
+#------------------------------
+
+$run_site_id = false;
+if (($k = array_search('--site-id', $args)) !== false && !empty($args[$k+1])) {
+	$run_site_id = (int)$args[$run_site_id+1];
+	if (!$run_site_id) {
+		$run_site_id = -1;
+	}
+}
+
+#------------------------------
+# limit
+#------------------------------
+
+$limit = false;
+if (($k = array_search('--limit', $args)) !== false && !empty($args[$k+1])) {
+	$limit = (int)$args[$k+1];
+}
+
+if (!$limit) {
+	$limit = 99999;
 }
 
 ########################################################################
@@ -150,8 +178,14 @@ $st = $db->prepare("
 		cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 	FROM cloud_sites
 	LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-	WHERE cloud_sites.build_number > 0 AND cloud_sites.build_number < :build_num AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
+	WHERE
+		cloud_sites.build_number > 0
+		AND cloud_sites.build_number < :build_num
+		AND cloud_sites.sys_disabled IS NULL
+		AND cloud_sites.in_use = 1
+		" . ($run_site_id ? " AND cloud_sites.id = $run_site_id " : '') . "
 	ORDER BY cloud_sites.id ASC
+	LIMIT $limit
 ");
 $st->execute(array(':build_num' => $build_num));
 
@@ -165,6 +199,11 @@ foreach ($sites as $siteinfo) {
 	$site_time_begin = microtime(true);
 	dp_logf("--- BEGIN SITE %d %s FROM BUILD %d ---", $siteinfo['id'], $siteinfo['master_domain'], $siteinfo['build_number']);
 
+	if ($dry_run) {
+		dp_log(" -> Dry run");
+		continue;
+	}
+
 	$pass_args_set = "--dpc-site-id {$siteinfo['id']} --run-db-upgrade";
 
 	$db->exec("UPDATE cloud_sites SET sys_disabled = 'upgrading' WHERE id = {$siteinfo['id']}");
@@ -172,6 +211,7 @@ foreach ($sites as $siteinfo) {
 	$cmd = "/usr/bin/nice -n 9 /usr/bin/php upgrade.php $pass_args_set";
 	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $build_num);
+	$proc->setTimeout(600);
 	$proc->run(function($type, $data) {
 		dp_log(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))), false);
 	});
