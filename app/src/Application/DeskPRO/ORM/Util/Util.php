@@ -78,6 +78,15 @@ class Util
 		$metadata = $em->getMetadataFactory()->getAllMetadata();
 		$tool = new SchemaTool($em);
 
-		return $tool->getUpdateSchemaSql($metadata, true);
+		$arr = $tool->getUpdateSchemaSql($metadata, true);
+		$lines = array();
+		foreach ($arr as $a) {
+			// Doctrine doesnt seem to detect this properly and always thinks this is needed
+			if ($a != 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
+				$lines[] = $a;
+			}
+		}
+
+		return $lines;
 	}
 }
