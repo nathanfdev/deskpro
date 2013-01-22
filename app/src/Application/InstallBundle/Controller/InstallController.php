@@ -406,7 +406,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		if (!empty($results['changed']) || !empty($results['removed'])) {
-			$type = $this->getIn()->getString('type');
+			$type = 'file_checksum';
 			$e = new \Exception("Install error: $type");
 			$this->sendInstallReport($e);
 		}

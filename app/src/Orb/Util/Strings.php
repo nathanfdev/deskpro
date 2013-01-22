@@ -1840,6 +1840,28 @@ class Strings
 
 
 	/**
+	 * Remove the byte order mark from the beginning of a file string
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public function removeBom($string)
+	{
+		static $bom = null;
+
+		if ($bom === null) {
+			$bom = pack('CCC', 0xEF, 0xBB, 0xBF);
+		}
+
+		if (substr($string, 0, 3) === $bom) {
+			$string = substr($string, 3);
+		}
+
+		return $string;
+	}
+
+
+	/**
 	 * Decodes unicode html entities into their actual characters.
 	 *
 	 * @param string $html

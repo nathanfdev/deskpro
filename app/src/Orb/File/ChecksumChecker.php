@@ -118,8 +118,7 @@ class ChecksumChecker
 			$count++;
 			$path = str_replace($this->base_dir, '', $file->getRealPath());
 
-			$file_contents = file_get_contents($file->getRealPath());
-			$file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+			$file_contents = $this->normalizeFileString(file_get_contents($file->getRealPath()));
 
 			$hash = md5($file_contents);
 			$this->checksums[$path] = $hash;
@@ -128,6 +127,28 @@ class ChecksumChecker
 				$progress_callback($count, $file, $hash);
 			}
 		}
+	}
+
+
+	/**
+	 * @param string $file_contents
+	 * @return string
+	 */
+	protected function normalizeFileString($file_contents)
+	{
+		static $bom = null;
+
+		if ($bom === null) {
+			$bom = pack('CCC', 0xEF, 0xBB, 0xBF);
+		}
+
+		if (substr($file_contents, 0, 3) === $bom) {
+			$file_contents = substr($file_contents, 3);
+		}
+
+		$file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+
+		return $file_contents;
 	}
 
 
