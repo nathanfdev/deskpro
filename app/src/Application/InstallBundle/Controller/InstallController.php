@@ -405,6 +405,12 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			}
 		}
 
+		if (!empty($results['changed']) || !empty($results['removed'])) {
+			$type = $this->getIn()->getString('type');
+			$e = new \Exception("Install error: $type");
+			$this->sendInstallReport($e);
+		}
+
 		return $this->render('InstallBundle:Install:verify-files-do.html.php', array(
 			'results' => $results,
 			'batch' => $batch
