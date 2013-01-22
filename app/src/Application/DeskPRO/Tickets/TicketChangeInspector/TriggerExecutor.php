@@ -243,6 +243,10 @@ class TriggerExecutor
 			}
 		}
 
+		if ($this->tracker->isExtraSet('is_fwd_reply')) {
+			$this->event_types[] = 'new.email.agent';
+		}
+
 		$this->tracker->logMessage('[TriggerExecutor] Events: ' . implode(', ', $this->event_types));
 
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);

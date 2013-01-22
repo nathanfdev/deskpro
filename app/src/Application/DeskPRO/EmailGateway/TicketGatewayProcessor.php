@@ -1373,6 +1373,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		// Add agent reply if there was one
 		if ($agent_reply) {
 
+
+			$ticket->getTicketLogger()->recordExtra('is_fwd_reply', true);
+
 			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
