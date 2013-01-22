@@ -8,7 +8,7 @@ return array(
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	// Thunderbird
-	'thunderbird_1'                      => '#On ([0-9]+)/([0-9]+)/([0-9]+) (.*?), (.*?) wrote:#',
+	'thunderbird_1'                      => 'div #On ([0-9]+)/([0-9]+)/([0-9]+) (.*?), ([\w\s]*?) wrote:# br /br /div',
 	'thunderbird_2'                      => '#On (.*?) at (.*?), (.*?) wrote:#',
 
 	'unknown_1'                          => 'p blockquote #^on\s#i a /a #\swrote:$#i br /br /blockquote /p',
