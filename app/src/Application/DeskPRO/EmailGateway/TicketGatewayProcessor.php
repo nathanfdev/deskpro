@@ -1076,14 +1076,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($person->isNewPerson() || !$person->getRealLanguage()) {
 
-			/** @var $lang_detect \Application\DeskPRO\Languages\Detect */
-			$lang_detect = App::getSystemService('language_detect');
-			$this->logMessage("Detectable languages: " . implode(', ', $lang_detect->getDetectableLanguages()));
+			$detect_body = strip_tags($email_info['body']);
+			if (strlen($detect_body) < 300) {
+				$this->logMessage('Message too short to attempt lang detection');
+			} else {
+				/** @var $lang_detect \Application\DeskPRO\Languages\Detect */
+				$lang_detect = App::getSystemService('language_detect');
+				$this->logMessage("Detectable languages: " . implode(', ', $lang_detect->getDetectableLanguages()));
 
-			$lang = $lang_detect->detectLanguage($email_info['body']);
-			if ($lang) {
-				$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
-				$person->language = $lang;
+				$lang = $lang_detect->detectLanguage($detect_body);
+				if ($lang) {
+					$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
+					$person->language = $lang;
+				}
 			}
 		}
 
