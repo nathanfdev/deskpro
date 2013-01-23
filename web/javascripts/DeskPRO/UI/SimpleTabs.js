@@ -42,7 +42,12 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			 */
 			context: document,
 
-			autoSelectFirst: true
+			autoSelectFirst: true,
+
+			/**
+			 * The effect to for showing/hiding the tab: slide, fade
+			 */
+			effect: null
 		};
 
 		this.lastActiveTab = null;
@@ -119,6 +124,10 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		tabEl = $(tabEl);
 
+		if (this.lastActiveTab && this.lastActiveTab.get(0) == tabEl.get(0)) {
+			return;
+		}
+
 		var eventData = {
 			event: event || null,
 			tabEl: tabEl,
@@ -134,51 +143,73 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			return;
 		}
 
-		if (this.lastActiveTab && this.lastActiveTab.data('tab-on-hide')) {
-			this.lastActiveTab.data('tab-on-hide')(eventData);
-		}
-		if (this.lastActiveTabContent && this.lastActiveTabContent.data('tab-on-hide')) {
-			this.lastActiveTabContent.data('tab-on-hide')(eventData);
-		}
-
 		delete eventData['cancel'];
+
+		var showFn = (function() {
+			this.lastActiveTab = tabEl;
+			this.lastActiveTab.addClass(this.options.activeClassname);
+			var x = eventData.tabContent.addClass(this.options.activeClassname);
+
+			this.lastActiveTabContent = eventData.tabContent;
+
+			var parentContainer = eventData.tabContent.closest('.tabViewDetailContent, .with-page-fragment').first();
+			if (parentContainer) {
+				if (parentContainer.data('page-fragment')) {
+					parentContainer.data('page-fragment').updateUi();
+				} else {
+					parentContainer.find('.with-scroll-handler').each(function() {
+						if ($(this).data('scroll_handler')) {
+							$(this).data('scroll_handler').updateSize();
+						}
+					});
+				}
+			}
+
+			if (this.lastActiveTab && this.lastActiveTab.data('tab-on-show')) {
+				this.lastActiveTab.data('tab-on-show')(eventData);
+			}
+			if (this.lastActiveTabContent && this.lastActiveTabContent.data('tab-on-show')) {
+				this.lastActiveTabContent.data('tab-on-show')(eventData);
+			}
+
+			this.fireEvent('tabSwitch', eventData);
+
+			if (this.lastActiveTabContent.data('load-url') && !this.lastActiveTabContent.data('tab-loaded')) {
+				this._triggerTabAjaxLoad(this.lastActiveTab, this.lastActiveTabContent, eventData);
+			}
+
+			if (this.options.effect == 'slide') {
+				x.slideDown('fast');
+			} else if (this.options.effect == 'fade') {
+				x.fadeIn('fast');
+			} else {
+				x.show();
+			}
+		}).bind(this);
 
 		if (this.lastActiveTab) {
 			this.lastActiveTab.removeClass(this.options.activeClassname);
-			this.getContentElFromTab(this.lastActiveTab).removeClass(this.options.activeClassname).hide();
+			var x = this.getContentElFromTab(this.lastActiveTab).removeClass(this.options.activeClassname);
+
 			this.lastActiveTab = null;
-		}
 
-		this.lastActiveTab = tabEl;
-		this.lastActiveTab.addClass(this.options.activeClassname);
-		eventData.tabContent.addClass(this.options.activeClassname).show();
-
-		this.lastActiveTabContent = eventData.tabContent;
-
-		var parentContainer = eventData.tabContent.closest('.tabViewDetailContent, .with-page-fragment').first();
-		if (parentContainer) {
-			if (parentContainer.data('page-fragment')) {
-				parentContainer.data('page-fragment').updateUi();
-			} else {
-				parentContainer.find('.with-scroll-handler').each(function() {
-					if ($(this).data('scroll_handler')) {
-						$(this).data('scroll_handler').updateSize();
-					}
-				});
+			if (this.lastActiveTab && this.lastActiveTab.data('tab-on-hide')) {
+				this.lastActiveTab.data('tab-on-hide')(eventData);
 			}
-		}
+			if (this.lastActiveTabContent && this.lastActiveTabContent.data('tab-on-hide')) {
+				this.lastActiveTabContent.data('tab-on-hide')(eventData);
+			}
 
-		if (this.lastActiveTab && this.lastActiveTab.data('tab-on-show')) {
-			this.lastActiveTab.data('tab-on-show')(eventData);
-		}
-		if (this.lastActiveTabContent && this.lastActiveTabContent.data('tab-on-show')) {
-			this.lastActiveTabContent.data('tab-on-show')(eventData);
-		}
-
-		this.fireEvent('tabSwitch', eventData);
-
-		if (this.lastActiveTabContent.data('load-url') && !this.lastActiveTabContent.data('tab-loaded')) {
-			this._triggerTabAjaxLoad(this.lastActiveTab, this.lastActiveTabContent, eventData);
+			if (this.options.effect == 'slide') {
+				x.slideUp('fast', showFn);
+			} else if (this.options.effect == 'fade') {
+				x.fadeOut('fast', showFn);
+			} else {
+				x.hide();
+				showFn();
+			}
+		} else {
+			showFn();
 		}
 	},
 

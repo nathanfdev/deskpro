@@ -14,7 +14,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 		this.el = el;
 
 		this.typeTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('.pageheader li', el)
+			triggerElements: $('.pageheader li', el),
+			effect: 'fade'
 		});
 
 		this.addEvent('activate', function() {
