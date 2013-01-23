@@ -21,7 +21,8 @@ USING LINUX?
   | - 7. Schedule a cron task to run /cron.php every minute
 
 USING WINDOWS?
-  | - 7. Run /schedule.bat to create a scheduled task that runs cron.php every minute
+  | - 7. If you are using IIS, check you have URL Rewrite installed: http://www.iis.net/downloads/microsoft/url-rewrite or delete web.config
+  | - 8. Run /schedule.bat to create a scheduled task that runs cron.php every minute
 
 Done!
 
