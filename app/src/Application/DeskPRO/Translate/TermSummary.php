@@ -512,6 +512,15 @@ class TermSummary
 
 				break;
 
+			case 'current_time':
+				$summary = "Time $op {$choice['hour1']}:{$choice['minute1']}";
+
+				if (!empty($choice['timezone'])) {
+					$summary .= " (" . \Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']) . ")";;
+				}
+
+				break;
+
 			case 'time_last_user_reply':
 				$summary = $tr->phrase('agent.general.time_user_reply_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' =>$choice['minute1']));
 				break;
@@ -529,6 +538,21 @@ class TermSummary
 					}
 				}
 				$summary = $tr->phrase('agent.general.day_created_summary', array('op' => $op, 'days' => implode(', ', $choice['days'])));
+				break;
+
+			case 'current_day':
+				foreach ($choice['days'] as &$d) {
+					switch ($d) {
+						case 0: $d = 'Sunday'; break;
+						case 1: $d = 'Monday'; break;
+						case 2: $d = 'Tuesday'; break;
+						case 3: $d = 'Wednesday'; break;
+						case 4: $d = 'Thursday'; break;
+						case 5: $d = 'Friday'; break;
+						case 6: $d = 'Saturday'; break;
+					}
+				}
+				$summary = "Day $op " . implode(', ', $choice['days']);
 				break;
 
 			case 'day_last_user_reply':

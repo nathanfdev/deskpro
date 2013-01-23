@@ -282,7 +282,7 @@
 	{% if event_trigger_sub == 'agent' %}
 	<div class="builder-type" title="Has new agent reply" data-rule-type="new_reply_agent" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
-			<input type="hidden" name="op" value="id" />
+			<input type="hidden" name="op" value="is" />
 		</div>
 		<div class="builder-options">
 			<input type="hidden" name="do" value="1" />
@@ -291,7 +291,7 @@
 
 	<div class="builder-type" title="Has new agent note" data-rule-type="new_reply_note" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
-			<input type="hidden" name="op" value="id" />
+			<input type="hidden" name="op" value="is" />
 		</div>
 		<div class="builder-options">
 			<input type="hidden" name="do" value="1" />
@@ -309,6 +309,55 @@
 			<select name="agent_ids[]" multiple="multiple">
 				{% for agent in app.getDataRepository('Agent').getAgents() %}
 					<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="builder-type" title="Performed on day of week" data-rule-type="current_day">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			{% set days = {
+				1: 'Monday',
+				2: 'Tuesday',
+				3: 'Wednesday',
+				4: 'Thursday',
+				5: 'Friday',
+				6: 'Saturday',
+				0: 'Sunday'
+			} %}
+			<select name="days[]" multiple="multiple">
+				{% for day,name in days %}
+				<option value="{{ day }}">{{ name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="builder-type" title="Performed during time of day" data-rule-type="current_time">
+		<div class="builder-op">
+			<select name="op" class="builder-op">
+				<option value="before">{{ phrase('agent.general.before') }}</option>
+				<option value="after">{{ phrase('agent.general.after') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="hidden" name="timezone" value="{{ app.user.timezone }}" />
+			<label>{{ phrase('agent.general.hour') }}</label>
+			<select name="hour1">
+				{% for hour in range(0,23) %}
+				<option>{{ '%02s'|format(hour) }}</option>
+				{% endfor %}
+			</select>
+			<label>{{ phrase('agent.general.minute') }}</label>
+			<select name="minute1">
+				{% for minute in range(0,59) %}
+				<option>{{ '%02s'|format(minute) }}</option>
 				{% endfor %}
 			</select>
 		</div>

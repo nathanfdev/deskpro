@@ -41,6 +41,7 @@ use Application\DeskPRO\Searcher\OrganizationSearch;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
+use Orb\Util\Dates;
 use Orb\Util\Numbers;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -735,6 +736,48 @@ class TicketTerms
 
 				$hour = (int)$date_created->format('H');
 				$min  = (int)$date_created->format('i');
+
+				$compare_hour = isset($choice['hour1']) ? $choice['hour1'] : -1;
+				$compare_min  = isset($choice['minute1']) ? $choice['minute1'] : -1;
+
+				if ($compare_hour == -1 || $compare_min == -1) {
+					return false;
+				}
+
+				if ($op == 'after') {
+					if (!($compare_hour < $hour || ($compare_hour == $hour && $min < $compare_min))) {
+						return false;
+					}
+				} else {
+					if ($compare_hour < $hour || ($compare_hour == $hour && $min < $compare_min)) {
+						return false;
+					}
+				}
+
+				break;
+
+			case 'current_day':
+
+				$days = isset($choice['days']) ? (array)$choice['days'] : array();
+				$day = $ticket->person->getDateForTime('@' . time())->format('w');
+
+				if (!in_array($day, $days)) {
+					return false;
+				}
+
+				break;
+
+			case 'current_time':
+
+				$date = new \DateTime('now', new \DateTimeZone('UTC'));
+
+				if (!empty($choice['timezone'])) {
+					$date->setTimezone(new \DateTimeZone($choice['timezone']));
+					$date = \Orb\Util\Dates::convertToUtcDateTime($date);
+				}
+
+				$hour = (int)$date->format('H');
+				$min  = (int)$date->format('i');
 
 				$compare_hour = isset($choice['hour1']) ? $choice['hour1'] : -1;
 				$compare_min  = isset($choice['minute1']) ? $choice['minute1'] : -1;
