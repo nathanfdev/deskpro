@@ -17,6 +17,7 @@
 {% macro trigger_row(index, trigger, type) %}
 	{% set type = type|replace({'.': '_'}) %}
 	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
+		<span class="field-id">ID: {{ trigger.id }}</span>
 		<div class="dp-block-controls">
 			<ul>
 				{% if not trigger.isUneditable() %}
@@ -30,15 +31,15 @@
 		</div>
 		<div class="contents" style="margin-left:0">
 			<div class="trigger-desc">
-				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="400">
+				<table cellspacing="0" cellpadding="0"><tr><td valign="middle" width="400" style="vertical-align: middle;">
 					<div class="terms">
-						<span class="field-id" style="float: none; top: -2px; margin-right: 2px">ID: {{ trigger.id }}</span>
 						{% if trigger.sys_name and trigger.sys_name == trigger.title and has_phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) %}
 							{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
+							<br />
 						{% elseif trigger.title %}
 							{{ trigger.title }}
+							<br />
 						{% endif %}
-						<br />
 
 						<em class="trigger-type-phrase">{{ types_phrases[trigger.event_trigger] }}</em>
 						{% if trigger.getEventTriggerOption('time') %}
@@ -73,7 +74,7 @@
 							{% endif %}
 						{% endif %}
 					</div>
-				</td><td valign="top" width="400" style="padding-left: 15px;">
+				</td><td valign="middle" width="400" style="padding-left: 15px; vertical-align: middle;">
 					<div class="actions">
 						<em class="op ctrl">{{ phrase('admin.tickets.then') }}</em>
 						{% for desc in trigger.getActionDescriptions() %}
