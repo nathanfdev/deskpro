@@ -43,7 +43,7 @@ class Vbulletin extends DbTable
 		parent::initOptions();
 
 		$this->options[self::OPT_TABLE]           = $this->options->get(self::OPT_TABLE_PREFIX, '') . 'user';
-		$this->options[self::OPT_FIELD_ID]        = 'id';
+		$this->options[self::OPT_FIELD_ID]        = 'userid';
 		$this->options[self::OPT_FIELD_USERNAME]  = 'username';
 		$this->options[self::OPT_FIELD_PASSWORD]  = 'password';
 		$this->options[self::OPT_FIELD_EMAIL]     = 'email';
