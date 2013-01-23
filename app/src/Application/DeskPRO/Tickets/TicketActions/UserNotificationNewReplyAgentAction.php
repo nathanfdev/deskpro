@@ -82,7 +82,7 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 
 		$vars = array(
 			'action' => 'new_user_reply',
-			'show_rating_link' => true
+			'show_rating_link' => App::getSetting('core.tickets.enable_feedback')
 		);
 
 		// Dont rate own, dont rate notes, dont rate replies by non agents
