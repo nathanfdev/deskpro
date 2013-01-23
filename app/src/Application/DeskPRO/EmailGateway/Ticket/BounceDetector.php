@@ -108,7 +108,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 				LEFT JOIN people_emails ON (people_emails.person_id = tickets.person_id)
 				WHERE tickets.status IN ('awaiting_user', 'awaiting_agent', 'resolved') AND people_emails.email = ?
 				ORDER BY tickets.id DESC
-				LIMIT 10
+				LIMIT 50
 			", array($email));
 
 			if ($this->original_subject) {
