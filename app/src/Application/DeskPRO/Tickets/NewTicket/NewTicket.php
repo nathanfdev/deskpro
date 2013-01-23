@@ -281,7 +281,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket['status'] = 'awaiting_agent';
 			}
 
-			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
+			foreach (array('department_id', 'category_id', 'product_id', 'priority_id', 'workflow_id') as $prop) {
 				$ticket[$prop] = $this->ticket->$prop;
 			}
 
