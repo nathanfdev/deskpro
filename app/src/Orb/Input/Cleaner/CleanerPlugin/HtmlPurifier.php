@@ -66,13 +66,7 @@ class HtmlPurifier implements CleanerPlugin
 		$value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array(), $cleaner);
 
 		if ($type == 'html_email_postclean') {
-			// Undo unicode encode
-			$value = preg_replace_callback('#__DPUNI_([0-9]+)_DPUNI__#', function ($m) {
-				return Strings::chrUtf8($m[1]);
-			}, $value);
-
-			$value = str_replace(array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), array('&lt;', '&gt;', '&amp;', '&nbsp;'), $value);
-
+			$value = Strings::postDomDocument($value);
 			return $value;
 		}
 
@@ -146,8 +140,7 @@ class HtmlPurifier implements CleanerPlugin
 			// There are bugs with different versions of libxml where entites are not properly
 			// decoded, or the DOMDocument->substituteEntities not being honoured etc.
 			// Easiest solution is to hack around entiites altogether so DOMDocument doesnt mess them up
-			$value = str_replace(array('&lt;', '&gt;', '&amp;', '&nbsp;'), array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), $value);
-			$value = Strings::htmlEntityEncodeUtf8($value, '__DPUNI_%s_DPUNI__');
+			$value = Strings::preDomDocument($value);
 
 			return $value;
 		}

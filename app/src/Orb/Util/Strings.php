@@ -1286,6 +1286,9 @@ class Strings
 
 		$orig_html = $html;
 
+		$html = self::extractBodyTag($html);
+		$html = self::preDomDocument($html);
+
 		$dom = new DOMDocument('1.0', 'UTF-8');
 		if (strpos($html, '<body') === false) {
 			$html = "<body>$html</body>";
@@ -1325,7 +1328,8 @@ class Strings
 		}
 
 		$html = $dom->saveHTML();
-		$html = Strings::extractBodyTag($html);
+		$html = self::extractBodyTag($html);
+		$html = self::postDomDocument($html);
 
 		if ($new_window) {
 			$html = str_replace('<a', '<a target="_blank"', $html);
@@ -1337,6 +1341,40 @@ class Strings
 		$html = preg_replace('#<a([^>]*)href=("|\')(?![a-zA-Z0-9]+:)#', '<a$1href=$2http://', $html);
 
 		return $html;
+	}
+
+
+	/**
+	 * In older versions of libxml (<2.7), DOMDocument can screw around with entities. So the easiest solution
+	 * is to just encode non-ascii characters as our own ascii sequences, and then reverse them again after.
+	 *
+	 * @param string $string  A UTF-8 string
+	 * @return string
+	 */
+	public static function preDomDocument($string)
+	{
+		$string = str_replace(array('&lt;', '&gt;', '&amp;', '&nbsp;'), array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), $string);
+		$string = self::htmlEntityEncodeUtf8($string, '__DPUNI_%s_DPUNI__');
+
+		return $string;
+	}
+
+
+	/**
+	 * @see preDomDocument
+	 * @param string $string
+	 * @return string
+	 */
+	public static function postDomDocument($string)
+	{
+		// Undo unicode encode
+		$string = preg_replace_callback('#__DPUNI_([0-9]+)_DPUNI__#', function ($m) {
+			return Strings::chrUtf8($m[1]);
+		}, $string);
+
+		$string = str_replace(array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), array('&lt;', '&gt;', '&amp;', '&nbsp;'), $string);
+
+		return $string;
 	}
 
 
