@@ -106,13 +106,9 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
+						{% include 'AdminBundle:TicketTriggers:agent-notify-row.html.twig' %}
 						{% for trigger in triggers['new.email.user'] %}
 							{{ _self.trigger_row(loop.index, trigger, 'new.email.user') }}
-						{% else %}
-							<li>
-								You have not defined any triggers for new ticket emails sent by a user.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.user'}) }}">Create one now</a>.
-							</li>
 						{% endfor %}
 					</ul>
 				</td>
@@ -141,13 +137,9 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
+						{% include 'AdminBundle:TicketTriggers:agent-notify-row.html.twig' %}
 						{% for trigger in triggers['new.web.user_any'] %}
 							{{ _self.trigger_row(loop.index, trigger, 'new.web.user_any') }}
-						{% else %}
-							<li>
-								You have not defined any triggers for new tickets made by an agent via the agent interface.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.user'}) }}">Create one now</a>.
-							</li>
 						{% endfor %}
 					</ul>
 				</td>
@@ -177,13 +169,9 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
+						{% include 'AdminBundle:TicketTriggers:agent-notify-row.html.twig' %}
 						{% for trigger in triggers['new.email.agent'] %}
 							{{ _self.trigger_row(loop.index, trigger, 'new.email.agent') }}
-						{% else %}
-							<li>
-								You have not defined any triggers for new ticket emails sent by an agent.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.agent'}) }}">Create one now</a>.
-							</li>
 						{% endfor %}
 					</ul>
 				</td>
@@ -213,13 +201,9 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
+						{% include 'AdminBundle:TicketTriggers:agent-notify-row.html.twig' %}
 						{% for trigger in triggers['new.web.agent.portal'] %}
 							{{ _self.trigger_row(loop.index, trigger, 'new.web.agent.portal') }}
-						{% else %}
-							<li>
-								You have not defined any triggers for new tickets made by an agent via the agent interface.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.agent.portal'}) }}">Create one now</a>.
-							</li>
 						{% endfor %}
 					</ul>
 				</td>

@@ -101,13 +101,9 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
+						{% include 'AdminBundle:TicketTriggers:agent-notify-row.html.twig' %}
 						{% for trigger in triggers['update.agent'] %}
 							{{ _self.trigger_row(loop.index, trigger, type) }}
-						{% else %}
-							<li>
-								You have not defined any triggers for ticket updates by agents.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'update.agent'}) }}">Create one now</a>.
-							</li>
 						{% endfor %}
 					</ul>
 				</td>
@@ -134,13 +130,9 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
+						{% include 'AdminBundle:TicketTriggers:agent-notify-row.html.twig' %}
 						{% for trigger in triggers['update.user'] %}
 							{{ _self.trigger_row(loop.index, trigger, type) }}
-						{% else %}
-							<li>
-								You have not defined any triggers for ticket updates by users.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'update.user'}) }}">Create one now</a>.
-							</li>
 						{% endfor %}
 					</ul>
 				</td>
