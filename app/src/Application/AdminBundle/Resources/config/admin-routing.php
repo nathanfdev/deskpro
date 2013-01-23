@@ -1588,6 +1588,13 @@ $collection->add('admin_products_savenew', new Route(
 	array()
 ));
 
+$collection->add('admin_products_setdefault', new Route(
+	'/products/set-default',
+	array('_controller' => 'AdminBundle:Products:setDefault'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_products_savetitle', new Route(
 	'/products/save-title',
 	array('_controller' => 'AdminBundle:Products:saveTitle'),

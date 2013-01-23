@@ -213,6 +213,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'id': baseId ~ '_prod',
 								'add_classname': 'ticket_product',
 								'products': ticket_options.products_hierarchy,
+								'selected': app.getSetting('core.default_prod_id'),
 								'with_blank': true
 							} %}
 						</td>

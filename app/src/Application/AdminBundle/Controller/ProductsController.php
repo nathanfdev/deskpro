@@ -223,4 +223,24 @@ class ProductsController extends AbstractController
 
 		return $this->redirect($url);
 	}
+
+	############################################################################
+	# set-default
+	############################################################################
+
+	public function setDefaultAction()
+	{
+		$default_id = $this->in->getUint('default_value');
+
+		if ($default_id) {
+			// Verify
+			$obj = $this->em->getRepository('DeskPRO:Product')->find($default_id);
+			if (!$obj) {
+				$default_id = 0;
+			}
+		}
+
+		$this->container->getSettingsHandler()->setSetting('core.default_prod_id', $default_id);
+		return $this->redirectRoute('admin_products');
+	}
 }

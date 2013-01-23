@@ -116,7 +116,31 @@
 			<button class="clean-white" id="newcat_savebtn">{{ phrase('agent.general.add') }}</button>
 		</div>
 	</div>
-
 </div>
+
+
+{% if all_products %}
+	<div style="padding: 0 10px 10px 15px;">
+		<form action="{{ path('admin_products_setdefault') }}" method="POST">
+			<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default on new ticket forms."></span> Default product:
+			<select name="default_value">
+				<option></option>
+				{% for itm in all_products %}
+					{% if itm.children|length %}
+						<optgroup label="{{ itm.title }}">
+							{% for sub_itm in itm.children_ordered %}
+								<option value="{{ sub_itm.id }}" {% if app.getSetting('core.default_prod_id') == sub_itm.id %}selected="selected"{% endif %}>{{ sub_itm.title }}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{ itm.id }}" {% if app.getSetting('core.default_prod_id') == itm.id %}selected="selected"{% endif %}>{{ itm.title }}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+			<button class="clean-white">Update</button>
+		</form>
+	</div>
+{% endif %}
+
 </div>
 {% endblock %}
