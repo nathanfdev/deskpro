@@ -180,6 +180,31 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 			}
 		});
 
+		$('#depperm_tickets :checkbox').on('change', function() {
+			var el = $(this);
+			var row = el.closest('tr');
+
+			if (el.hasClass('departments_assign')) {
+				var other = row.find(':checkbox.departments');
+				if (!el.is(':checked')) {
+					other.prop('checked', false).change();
+				}
+			} else {
+				var other = row.find(':checkbox.departments_assign');
+				if (el.is(':checked')) {
+					other.prop('checked', true).change();
+				}
+			}
+		});
+
+		$('#depperm_tickets :checkbox.departments').each(function() {
+			if ($(this).get(0).checked) {
+				var row = $(this).closest('tr');
+				var other = row.find(':checkbox.departments_assign');
+				other.prop('checked', true).change();
+			}
+		});
+
 		this._pageLoaded = true;
 	},
 
