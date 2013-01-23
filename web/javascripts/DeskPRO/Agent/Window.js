@@ -2426,11 +2426,25 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		});
 
+		var getkbbackdrop = function() {
+			if (this.el) {
+				return this.el;
+			}
+
+			this.el = $('<div />').addClass('backdrop').appendTo('body').on('click', function() {
+				$('#dp_keyboard_shortcuts').hide();
+				getkbbackdrop().hide();
+			});
+			return this.el;
+		};
+
 		$('#dp_keyboard_shortcuts').find('.close').on('click', function() {
 			$('#dp_keyboard_shortcuts').hide();
+			getkbbackdrop().hide();
 		});
 		$('#keyboard_shortcuts_trigger').on('click', function() {
 			$('#dp_keyboard_shortcuts').show();
+			getkbbackdrop().show();
 		});
 
 		// Status
