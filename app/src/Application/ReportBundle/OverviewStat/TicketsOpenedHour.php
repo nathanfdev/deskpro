@@ -35,8 +35,10 @@
 namespace Application\ReportBundle\OverviewStat;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Person;
 
-class TicketsOpenedHour extends AbstractTableOverviewStat
+class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonContextInterface
 {
 	/**
 	 * @var \DateTime
@@ -63,11 +65,25 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 	 */
 	protected $date_group;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
 	public function __construct($date_group, \DateTime $date_start, \DateTime $date_end)
 	{
 		$this->date_group = $date_group;
 		$this->date_start = $date_start;
 		$this->date_end   = $date_end;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
 	}
 
 
@@ -158,23 +174,26 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 		$d2 = $date2->format('Y-m-d H:i:s');
 
 		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
+		$offset = 0;
+		if ($this->person_context) {
+			$offset = $this->person_context->getTimezoneOffsetSeconds();
+		}
 
 		switch ($this->date_group) {
 			case 'hour':
-				$date_group = "HOUR(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				$date_group = "HOUR(DATE_ADD(tickets.date_created, INTERVAL $offset SECOND))";
 				break;
 
 			case 'weekday':
-				$date_group = "WEEKDAY(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				$date_group = "WEEKDAY(DATE_ADD(tickets.date_created, INTERVAL $offset SECOND))";
 				break;
 
 			case 'day':
-				$date_group = "DAYOFMONTH(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				$date_group = "DAYOFMONTH(DATE_ADD(tickets.date_created, INTERVAL $offset SECOND))";
 				break;
 
 			case 'month':
-				$date_group = "MONTH(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				$date_group = "MONTH(DATE_ADD(tickets.date_created, INTERVAL $offset SECOND))";
 				break;
 
 			default:

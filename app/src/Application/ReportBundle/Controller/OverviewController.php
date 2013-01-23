@@ -234,6 +234,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsOpenedHour($date_group, $date, $date2);
+				$stat->setPersonContext($this->person);
 				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 

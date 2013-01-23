@@ -2073,6 +2073,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getTimezoneOffsetSeconds()
+	{
+		return $this->getTimezoneOffset() * 3600;
+	}
+
+	/**
 	 * @param string $organization_position
 	 */
 	public function setOrganizationPosition($organization_position)
