@@ -15,7 +15,7 @@ Please select one of the following options:
 3. Create a new MySQL database.
 4. Copy /config.new.php to /config.php
 5. Edit /config.php with a text editor and insert your database details near the top.
-6. Open DeskPRO in your web browser and the install wizard will start.
+6. Open the URL to DeskPRO (e.g. http://localhost/deskpro/ or http://yourdomain.com/deskpro/) in your web browser and the install wizard will automatically start.
 
 USING LINUX?
   | - 7. Schedule a cron task to run /cron.php every minute
