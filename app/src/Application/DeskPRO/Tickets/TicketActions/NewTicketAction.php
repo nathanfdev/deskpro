@@ -342,6 +342,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 					$message->setFrom($from_address);
 					$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 					$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+					$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
 
 					if ($attach_attachments) {
 						foreach ($attach_attachments as $src => $attach) {
