@@ -149,6 +149,7 @@ pageMeta.baseId = '{{ baseId }}';
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
 							'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [], 'assign'),
+							'selected': app.getSetting('core.default_ticket_dep'),
 							with_blank: true
 						} %}
 					</td>

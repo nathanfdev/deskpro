@@ -321,16 +321,19 @@ class DepartmentsController extends AbstractController
 	public function setDefaultAction($type)
 	{
 		$department_id = $this->in->getUint('default_value');
-		$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
 
-		if (!$department) {
-			throw $this->createNotFoundException();
+		if ($department_id) {
+			$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
+
+			if (!$department || ($type == 'tickets' && !$department->is_tickets_enabled) || ($type == 'chat' && !$department->is_chat_enabled)) {
+				throw $this->createNotFoundException();
+			}
 		}
 
-		if ($type == 'tickets' && $department->is_tickets_enabled) {
-			$this->container->getSettingsHandler()->setSetting('core.default_ticket_dep', $department->getId());
-		} elseif ($type == 'chat' && $department->is_chat_enabled) {
-			$this->container->getSettingsHandler()->setSetting('core.default_chat_dep', $department->getId());
+		if ($type == 'tickets') {
+			$this->container->getSettingsHandler()->setSetting('core.default_ticket_dep', $department_id);
+		} elseif ($type == 'chat') {
+			$this->container->getSettingsHandler()->setSetting('core.default_chat_dep', $department_id);
 		}
 
 		return $this->redirectRoute('admin_departments', array('type' => $type));

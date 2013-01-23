@@ -215,8 +215,9 @@ $(document).ready(function() {
 {% if type == 'tickets' %}
 <div style="padding: 0 10px 10px 15px;">
 	<form action="{{ path('admin_departments_setdefault', {type: 'tickets'}) }}" method="POST">
-		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default"></span> Default department:
+		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default on new tickets. Note that a department is always required. If you leave this selection blank, then in cases whre a default department is required (such as a new ticket via email), the default is simply the first defined department."></span> Default department:
 		<select name="default_value">
+			<option value=""></option>
 			{% for dep in all_departments %}
 				{% if dep.children|length %}
 					<optgroup label="{{ dep.title }}">
