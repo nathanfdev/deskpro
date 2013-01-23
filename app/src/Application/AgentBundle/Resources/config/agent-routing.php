@@ -525,6 +525,13 @@ $collection->add('agent_people_savecontactdata', new Route(
 	array()
 ));
 
+$collection->add('agent_people_unban_email', new Route(
+	'/people/{person_id}/unban-email/{email_id}.json',
+	array('_controller' => 'AgentBundle:Person:unbanEmail'),
+	array(),
+	array()
+));
+
 $collection->add('agent_people_merge_overlay', new Route(
 	'/people/{person_id}/merge-overlay/{other_person_id}',
 	array('_controller' => 'AgentBundle:Person:mergeOverlay'),

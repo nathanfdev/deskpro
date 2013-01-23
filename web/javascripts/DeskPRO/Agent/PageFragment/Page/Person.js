@@ -264,6 +264,19 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			});
 
+			$('.contact-list-wrapper', this.wrapper).first().on('click', '.banned', function() {
+				var el = $(this);
+				var url = $(this).data('unban-url');
+				//msg, callback_yes, callback_no, phrase_yes, phrase_no
+				DeskPRO_Window.showConfirm("Do you want to unban this email address?", function() {
+					el.remove();
+					$.ajax({
+						url: url,
+						dataType: 'json'
+					});
+				}, function() {}, "Unban", "Cancel");
+			});
+
 			this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'

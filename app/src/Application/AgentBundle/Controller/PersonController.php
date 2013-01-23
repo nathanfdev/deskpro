@@ -278,35 +278,44 @@ class PersonController extends AbstractController
 			}
 		}
 
+		$banned_emails = array();
+		foreach ($person->getEmailAddresses() as $eml) {
+			$match = null;
+			if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($eml, $match)) {
+				$banned_emails[$eml] = $eml;
+			}
+		}
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
-			'with_warn_for_email' => $with_warn_for_email,
-			'person' => $person,
-			'validating_emails' => $validating_emails,
-			'has_email_validating' => $has_email_validating,
-			'person_api' => $person_api,
-			'person_usergroups_ids' => $person_usergroups_ids,
+			'with_warn_for_email'       => $with_warn_for_email,
+			'person'                    => $person,
+			'banned_emails'             => $banned_emails,
+			'validating_emails'         => $validating_emails,
+			'has_email_validating'      => $has_email_validating,
+			'person_api'                => $person_api,
+			'person_usergroups_ids'     => $person_usergroups_ids,
 			'person_org_usergroups_ids' => $person_org_usergroups_ids,
-			'session' => $session,
-			'visitor' => $visitor,
-			'timezone_options' => $timezone_options,
-			'usergroup_names' => $usergroup_names,
-			'contact_data' => $contact_data,
-			'activity_stream' => $activity_stream,
-			'custom_fields' => $custom_fields,
-			'notes' => $notes,
-			'person_tickets' => $person_tickets,
-			'person_chats' => $person_chats,
-			'person_chats_count' => $person_chats_count,
-			'person_tickets_initial' => $person_tickets_initial,
-			'person_tickets_count' => $person_tickets_count,
-			'person_charges' => $person_charges,
-			'person_charge_totals' => $person_charge_totals,
-			'org_members_count' => $org_members_count,
-			'org_contact_data' => $org_contact_data,
-			'perms' => $perms,
-			'is_person_editable' => $is_editable,
-			'reg_group' => $reg_group,
-			'person_object_counts' => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person)
+			'session'                   => $session,
+			'visitor'                   => $visitor,
+			'timezone_options'          => $timezone_options,
+			'usergroup_names'           => $usergroup_names,
+			'contact_data'              => $contact_data,
+			'activity_stream'           => $activity_stream,
+			'custom_fields'             => $custom_fields,
+			'notes'                     => $notes,
+			'person_tickets'            => $person_tickets,
+			'person_chats'              => $person_chats,
+			'person_chats_count'        => $person_chats_count,
+			'person_tickets_initial'    => $person_tickets_initial,
+			'person_tickets_count'      => $person_tickets_count,
+			'person_charges'            => $person_charges,
+			'person_charge_totals'      => $person_charge_totals,
+			'org_members_count'         => $org_members_count,
+			'org_contact_data'          => $org_contact_data,
+			'perms'                     => $perms,
+			'is_person_editable'        => $is_editable,
+			'reg_group'                 => $reg_group,
+			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person)
 		));
 	}
 
@@ -707,6 +716,34 @@ class PersonController extends AbstractController
 
 		return $this->render('AgentBundle:Person:change-person-picture.html.twig', array(
 			'person' => $person
+		));
+	}
+
+	############################################################################
+	# unban-email
+	############################################################################
+
+	public function unbanEmailAction($person_id, $email_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$email = $person->getEmailId($email_id);
+
+		if (!$email) {
+			throw $this->createNotFoundException();
+		}
+
+		$banned_pattern = null;
+		if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($email->email, $banned_pattern)) {
+			App::getDb()->delete('ban_emails', array('banned_email' => $banned_pattern));
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true
 		));
 	}
 
