@@ -461,11 +461,18 @@ class PersonController extends AbstractController
 				break;
 
 			case 'delete-picture':
+				$person->setDisablePicture(false);
 				$person->setPictureBlob(null);
+
+				if ($this->in->getBool('disable_picture')) {
+					$person->setDisablePicture(true);
+				}
+
 				$this->em->persist($person);
 				break;
 
 			case 'set-picture':
+				$person->setDisablePicture(false);
 				$blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
 				if ($blob) {
 					$person->setPictureBlob($blob);

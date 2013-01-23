@@ -94,6 +94,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 
 			case 'remove':
 				formData.push({ name: 'action', value: 'delete-picture' });
+				formData.push({ name: 'disable_picture', value: '1' });
 				newImgSrc = $('img.pic-default', this.wrapperEl).attr('src');
 				break;
 

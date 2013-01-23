@@ -75,6 +75,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $picture_blob = null;
 
 	/**
+	 * @var bool
+	 */
+	protected $disable_picture = null;
+
+	/**
 	 * The URL to the users gravatar if any
 	 *
 	 * @var string
@@ -1814,6 +1819,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hasPicture($auto_check = false)
 	{
+		if ($this->disable_picture) {
+			return false;
+		}
+
 		if ($this->picture_blob || $this->gravatar_url) {
 			return true;
 		}
@@ -1932,6 +1941,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if (!$time) $time = new \DateTime();
 
 		$this->setModelField('date_last_login', $time);
+	}
+
+	public function setDisablePicture($yn = false)
+	{
+		$this->setModelField('disable_picture', $yn);
+
+		if ($yn) {
+			$this['picture_blob'] = null;
+		}
 	}
 
 
@@ -2217,6 +2235,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url', ));
+		$metadata->mapField(array( 'fieldName' => 'disable_picture', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_picture', ));
 		$metadata->mapField(array( 'fieldName' => 'is_contact', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_contact', ));
 		$metadata->mapField(array( 'fieldName' => 'is_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user', ));
 		$metadata->mapField(array( 'fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent', ));
