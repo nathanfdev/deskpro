@@ -76,6 +76,11 @@ require_once DP_ROOT.'/sys/serve_abstract.php';
  */
 class FilestorageLoader extends LoaderAbstract
 {
+	/**
+	 * @var string
+	 */
+	protected $error_mode = 'exit';
+
 	public function runAction()
 	{
 		try {
@@ -167,6 +172,7 @@ class FilestorageLoader extends LoaderAbstract
 		");
 		$sth->execute();
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+		$did_reload = false;
 
 		if (
 			!$blob ||
@@ -178,6 +184,7 @@ class FilestorageLoader extends LoaderAbstract
 				)
 			)
 		) {
+			$did_reload = true;
 			$container = $this->bootFullSystem();
 			$css = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
 
@@ -342,7 +349,16 @@ class FilestorageLoader extends LoaderAbstract
 			return;
 		}
 
-		$this->showBlob($blob);
+		if (!$did_reload) {
+			$this->error_mode = 'exception';
+		}
+
+		try {
+			$this->showBlob($blob);
+		} catch (\Exception $e) {
+			$_GET['reload'] = true;
+			$this->showBlob($blob);
+		}
 	}
 
 
@@ -615,6 +631,9 @@ class FilestorageLoader extends LoaderAbstract
 
 		// Invalid hash, or the file doesnt exist on disk
 		if (!file_exists($filepath)) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("File not found. (2)", 400);
+			}
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found. (2)";
 			return;
@@ -802,6 +821,9 @@ class FilestorageLoader extends LoaderAbstract
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $blob['save_path'];
 
 		if (!file_exists($filepath)) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("File not found. (4)", 400);
+			}
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found. (4)";
 			return;
@@ -860,6 +882,9 @@ class FilestorageLoader extends LoaderAbstract
 		$file = $desc->get();
 
 		if (!$file) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("File not found. (no_exist)", 400);
+			}
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found. (no_exist)";
 			exit;
