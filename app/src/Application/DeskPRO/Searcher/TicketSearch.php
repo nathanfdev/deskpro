@@ -1989,6 +1989,37 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 
+				case self::TERM_LABEL:
+
+					$choice_labels = array();
+					if (!empty($choice['labels'])) {
+						foreach ($choice['labels'] as $l) {
+							$l = Strings::utf8_strtolower($l);
+							$choice_labels[$l] = $l;
+						}
+					}
+
+					$has = false;
+					foreach ($ticket->labels as $l) {
+						$l = Strings::utf8_strtolower($l->label);
+						if (isset($choice_labels[$l])) {
+							$has = true;
+							break;
+						}
+					}
+
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						if (!$has) {
+							return false;
+						}
+					} else {
+						if ($has) {
+							return false;
+						}
+					}
+
+					break;
+
 				case self::TERM_SUBJECT:
 					$choice = (array)$choice;
 					$choice = array_pop($choice);

@@ -189,6 +189,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
+	 * @var string[]
+	 */
+	protected $original_labels = null;
+
+	/**
 	 * The email address the ticket was sent to if it came in via a gateway
 	 *
 	 * @var string

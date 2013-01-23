@@ -144,6 +144,12 @@ class DetectFilterMatches
 				case 'participants':
 					$changed_fields[] = 'ticket.participants';
 					break;
+
+				case 'labels':
+				case 'label_added':
+				case 'label_removed':
+					$changed_fields[] = 'ticket.labels';
+					break;
 			}
 		}
 

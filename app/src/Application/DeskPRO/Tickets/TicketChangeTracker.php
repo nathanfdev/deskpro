@@ -35,10 +35,12 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Domain\ChangeTracker;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Arrays;
 
 /**
@@ -547,6 +549,33 @@ class TicketChangeTracker extends ChangeTracker
 					$this->original_ticket['is_hold'] = $old_val;
 					break;
 			}
+		}
+
+		if ($this->isPropertyChanged('label_added') || $this->isPropertyChanged('label_removed')) {
+			$labels = new ArrayCollection();
+
+			if ($this->isPropertyChanged('label_removed')) {
+				foreach ($this->getChangedProperty('label_removed') as $info) {
+					$l = new LabelTicket();
+					$l->label = $info['old'];
+					$labels->add($l);
+				}
+			}
+
+			$added = array();
+			if ($this->isPropertyChanged('label_added')) {
+				foreach ($this->getChangedProperty('label_added') as $info) {
+					$added[$info['new']] = true;
+				}
+			}
+
+			foreach ($this->ticket->labels as $l) {
+				if (!isset($added[$l->label])) {
+					$labels[] = $l;
+				}
+			}
+
+			$this->original_ticket->setUntrackedModelField('labels', $labels);
 		}
 
 		if ($this->ticket->part_del_ids) {

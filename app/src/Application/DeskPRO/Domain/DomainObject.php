@@ -129,6 +129,19 @@ abstract class DomainObject extends BasicDomainObject
 		$this->_onPropertyChanged($field, $old, $value);
 	}
 
+
+	/**
+	 * Sets a model field value but does not mark it as changed so it wont be persisted.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 */
+	public function setUntrackedModelField($field, $value)
+	{
+		$this->$field = $value;
+	}
+
+
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$repository = static::getRepository();
