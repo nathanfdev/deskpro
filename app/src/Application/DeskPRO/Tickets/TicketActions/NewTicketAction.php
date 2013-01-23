@@ -75,7 +75,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	/**
 	 * @var bool
 	 */
-	protected $enable_notify = true;
+	protected $enable_notify = false;
 
 	/**
 	 * @var bool

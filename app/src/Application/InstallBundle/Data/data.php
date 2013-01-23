@@ -555,7 +555,92 @@ $em->flush();
 
 ##BEGIN:create_trigger.email_validation_email##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'email_validation.email';
+$q->title = '';
+$q->sys_name = 'email_validation.email';
+$q->event_trigger = 'new.email.user';
+$q->is_enabled = 0;
+$q->terms = array();
+$q->actions = array(
+	array (
+		'type' => 'force_email_validation',
+		'options' => array('force_email_validation' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.newticket_confirm_email_user##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->sys_name = 'newticket_confirm.email_user';
+$q->event_trigger = 'new.email.user';
+$q->is_enabled = 1;
+$q->terms = array();
+$q->actions = array(
+	array (
+		'type' => 'enable_new_ticket_confirmation',
+		'options' => array('enabled' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.newticket_confirm_web_user##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->sys_name = 'newticket_confirm.web_user';
+$q->event_trigger = 'new.web.user';
+$q->is_enabled = 1;
+$q->terms = array();
+$q->actions = array(
+	array (
+		'type' => 'enable_new_ticket_confirmation',
+		'options' => array('enabled' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.newticket_confirm_email_agent##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->sys_name = 'newticket_confirm.web_user';
+$q->event_trigger = 'new.email.agent';
+$q->is_enabled = 0;
+$q->terms = array();
+$q->actions = array(
+	array (
+		'type' => 'enable_new_ticket_confirmation',
+		'options' => array('enabled' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.newticket_confirm_web_agent##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->sys_name = 'newticket_confirm.web_agent';
+$q->event_trigger = 'new.web.agent.portal';
+$q->is_enabled = 1;
+$q->terms = array();
+$q->actions = array(
+	array (
+		'type' => 'enable_new_ticket_confirmation',
+		'options' => array('enabled' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.email_validation_email##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
 $q->sys_name = 'email_validation.email';
 $q->event_trigger = 'new.email.user';
 $q->is_enabled = 0;
