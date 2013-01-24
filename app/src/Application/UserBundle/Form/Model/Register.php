@@ -126,6 +126,15 @@ class Register
 					'vemail' => $email_validating
 				));
 				App::getMailer()->send($message);
+			} else {
+				$tr = App::getTranslator();
+
+				$message = App::getMailer()->createMessage();
+				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+				$message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
+					'person' => $person
+				));
+				App::getMailer()->send($message);
 			}
 
 			$send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($person);
