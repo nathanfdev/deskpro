@@ -2853,10 +2853,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, 100);
 
 		window.setTimeout(function() {
-			$(context).find('.tipped').on('mouseover', function(ev) {
-				if ($(this).is('.tipped-inited')) {
+			$(context).find('.tipped').one('mouseover', function(ev) {
+
+				if ($(this).hasClass('tipped-inited')) {
 					return;
 				}
+				$(this).addClass('tipped-inited');
 
 				var options = {};
 				if ($(this).data('tipped-options')) {
@@ -2949,6 +2951,63 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('input.dp-checkbox', context).each(function() {
 			DeskPRO_Window.util.dpCheckbox($(this));
 		});
+
+		window.setTimeout(function() {
+			$(context).find('.tipped').one('mouseover', function(ev) {
+
+				if ($(this).hasClass('tipped-inited')) {
+					return;
+				}
+				$(this).addClass('tipped-inited');
+
+				var options = {};
+				if ($(this).data('tipped-options')) {
+					eval('options = {' + $(this).data('tipped-options') + '}');
+				}
+
+				qtipOptions = {};
+
+				if (options.ajax) {
+					qtipOptions.content = {
+						text: 'Loading...',
+						ajax: {
+							url: $(this).data('tipped'),
+							type: 'GET'
+						}
+					};
+				} else if ($(this).data('tipped')) {
+					qtipOptions.content = {
+						attr: 'data-tipped'
+					};
+				} else {
+					qtipOptions.content = {
+						attr: 'title'
+					};
+				}
+
+				if (options.inline) {
+					qtipOptions.content.attr = null;
+					var el = $('#' + $(this).data('tipped'));
+					qtipOptions.content.text = function() {
+						return el.html();
+					};
+				}
+
+				qtipOptions.style = {
+					classes: 'ui-tooltip-shadow ui-tooltip-rounded'
+				};
+
+				qtipOptions.position = {
+					my: 'top center',
+					at: 'bottom center',
+					viewport: $(window)
+				};
+
+				qtipOptions = $.extend(true, qtipOptions, options);
+
+				$(this).qtip(qtipOptions).qtip('show', ev);
+			});
+		}, 200);
 	},
 
 	getSectionData: function(section_id, callback, extra_data) {
