@@ -1,14 +1,14 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
-	{% if agent.id and agent.id != app.user.id %}
+	{% if agent.id %}
 	<nav>
 		<ul>
-			<li class="tools" id="tools_menu_trigger"><a></a><em></em></li>
+			<li><a href="{{ path('admin_agents_edit_prefs', {person_id: agent.id}) }}">Profile Settings</a></li>
+			{% if agent.id != app.user.id %}<li class="tools" id="tools_menu_trigger"><a></a><em></em></li>{% endif %}
 		</ul>
 	</nav>
 	<ul id="tools_menu" style="display: none">
-		{#{% if not agent.is_vacation_mode %}<li id="vacation_overlay_trigger">{{ phrase('admin.agents.vacation_mode') }}</li>{% endif %}#}
 		<li><a href="{{ path('admin_agents_remove', {agent_id: agent.id}) }}">{{ phrase('admin.agents.delete_agent') }}</a></li>
 	</ul>
 	{% endif %}

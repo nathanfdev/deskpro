@@ -247,6 +247,84 @@ class AgentsController extends AbstractController
 	}
 
 	############################################################################
+	# agent-preferences
+	############################################################################
+
+	public function agentPrefsAction($person_id)
+	{
+		$agent = $this->getAgentOr404($person_id);
+
+		$did_save = false;
+
+		if ($this->isPostRequest()) {
+			$did_save = true;
+
+			$tz = $this->in->getString('agent.timezone');
+			if (!in_array($tz, \DateTimeZone::listIdentifiers())) {
+				$tz = null;
+			}
+
+			$agent->timezone = $tz;
+
+			if ($blob_id = $this->in->getString('new_blob_id')) {
+				$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($blob_id);
+				if ($blob) {
+					$agent->picture_blob = $blob;
+				}
+			}
+
+			if ($this->in->getBool('is_html_signature')) {
+				$signature_html = $this->in->getHtmlCore('ticket_signature');
+				$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
+
+				foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') AS $blob_id) {
+					$blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
+					if ($blob) {
+						$regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
+						$replace = $blob->getEmbedCode(true, 'signature_image');
+						$signature_html = preg_replace($regex, $replace, $signature_html);
+					}
+				}
+
+				$regex = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
+				$signature_html = preg_replace($regex, '$1', $signature_html);
+
+				$signature_html = str_replace(array('<div', '</div>'), array('<p', '</p>'), $signature_html);
+				$signature_html = preg_replace('/^<p>/', '<p class="dp-signature-start">', trim($signature_html));
+
+				$signature = strip_tags($signature_html);
+			} else {
+				$signature = $this->in->getString('ticket_signature');
+				$signature_html = nl2br(htmlspecialchars($signature));
+				if ($signature_html) {
+					$signature_html = '<p class="dp-signature-start">' . $signature . '</p>';
+				}
+			}
+
+			$agent->setPreference('agent.ticket_signature', $signature);
+			$agent->setPreference('agent.ticket_signature_html', $signature_html);
+
+			$this->db->executeUpdate("
+				DELETE FROM permissions
+				WHERE person_id = ? AND name IN ('agent_general.signature', 'agent_general.picture')
+			", array($agent->getId()));
+
+			$this->em->persist($agent);
+			$this->em->flush();
+		}
+
+		$timezone_options = \DateTimeZone::listIdentifiers();
+
+		return $this->render('AdminBundle:Agents:edit-agent-prefs.html.twig', array(
+			'did_save'         => $did_save,
+			'agent'            => $agent,
+			'timezone_options' => $timezone_options,
+			'signature'        => $agent->getSignature(),
+	        'signature_html'   => $agent->getSignatureHtml(),
+		));
+	}
+
+	############################################################################
 	# add-from
 	############################################################################
 

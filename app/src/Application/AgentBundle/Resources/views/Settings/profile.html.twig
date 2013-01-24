@@ -44,6 +44,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
+		{% if app.user.getPermissionsManager().get('GeneralChecker').canSetPicture() %}
 		<div class="dp-form-row new-picture">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.label_picture') }}</label></div>
 			<div class="dp-form-input">
@@ -76,6 +77,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				{{ '{% } %}' }}
 			</script>
 		</div>
+		{% endif %}
 
 		<div class="dp-form-row dp-desktop-notifications" style="display:none">
 			<div class="dp-form-label"><label>Desktop Notifications</label></div>

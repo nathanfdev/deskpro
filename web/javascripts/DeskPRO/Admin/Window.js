@@ -91,7 +91,170 @@ DeskPRO.Admin.Window = new Orb.Class({
 				html = html.replace(/%endScript%/g, '</script>');
 
 				return html;
-			}
+			},
+
+			fileupload: function(el, options) {
+
+				var setel;
+				if (!options) options = {};
+
+				if (options.page) {
+					options.namespace = options.page.OBJ_ID + '_fileupload';
+				}
+
+				if (!options.namespace) {
+					options.namespace = Orb.uuid();
+				}
+
+				if (!options.dropZone) {
+					options.dropZone = $(el);
+				}
+
+				if (typeof options.autoUpload == 'undefined') {
+					options.autoUpload = true;
+				}
+
+				if (!options.url) {
+					if (options.saveMedia) {
+						options.url = BASE_URL + 'agent/misc/accept-upload?save_media=1';
+					} else {
+						options.url = BASE_URL + 'agent/misc/accept-upload';
+					}
+				}
+
+				if (options.uploadTemplate) {
+					var setel = options.uploadTemplate;
+				} else {
+					var setel = $('.template-upload', el);
+				}
+
+				if (!setel || !setel[0]) {
+					console.error("Invalid uploadTemplate");
+					return $(el);
+				}
+
+				if (!setel.attr('id')) {
+					var id = Orb.getUniqueId('up');
+					setel.attr('id', id);
+				} else {
+					var id = setel.attr('id');
+				}
+				delete(options.uploadTemplate);
+				options.uploadTemplateId = id;
+
+				if (options.downloadTemplate) {
+					var setel = options.downloadTemplate;
+				} else {
+					var setel = $('.template-download', el);
+				}
+
+				if (!setel || !setel[0]) {
+					console.error("Invalid downloadTemplate");
+					return $(el);
+				}
+
+				if (!setel.attr('id')) {
+					var id = Orb.getUniqueId('up');
+					setel.attr('id', id);
+				} else {
+					var id = setel.attr('id');
+				}
+				delete(options.downloadTemplate);
+				options.downloadTemplateId = id;
+
+				if (!options.filesContainer) {
+					options.filesContainer = $(el).find('.files');
+				}
+
+				options.start = function() {
+					// Dont stack error messes. Once you upload again, the old one disappears
+					$(el).find('.error').remove();
+					options.filesContainer.show();
+				};
+
+				// Same as default except added check for 'that' still exists
+				options.done = function (e, data) {
+					var that = $(this).data('fileupload'),
+						template,
+						preview;
+
+					// Means the widget is no longer visible (eg tab closed before upload finished)
+					if (!that) {
+						return;
+					}
+
+					if (data.context) {
+						data.context.each(function (index) {
+							var file = ($.isArray(data.result) &&
+									data.result[index]) || {error: 'emptyResult'};
+							if (file.error && that._adjustMaxNumberOfFiles) {
+								that._adjustMaxNumberOfFiles(1);
+							}
+							that._transition($(this)).done(
+								function () {
+									var node = $(this);
+									template = that._renderDownload([file])
+										.css('height', node.height())
+										.replaceAll(node);
+									that._forceReflow(template);
+									that._transition(template).done(
+										function () {
+											data.context = $(this);
+											that._trigger('completed', e, data);
+										}
+									);
+								}
+							);
+						});
+					} else {
+						template = that._renderDownload(data.result)
+							.appendTo(that.options.filesContainer);
+						that._forceReflow(template);
+						that._transition(template).done(
+							function () {
+								data.context = $(this);
+								that._trigger('completed', e, data);
+							}
+						);
+					}
+				};
+
+				// Same as default except added check for 'that' still exists
+				options.stop = function (e) {
+					var that = $(this).data('fileupload');
+					if (!that) {
+						return;
+					}
+					that._transition($(this).find('.fileupload-buttonbar .progress')).done(
+						function () {
+							$(this).find('.bar').css('width', '0%');
+							that._trigger('stopped', e);
+						}
+					);
+				},
+
+				$(el).on('click', '.remove-attach-trigger', function(ev) {
+					// Ignore .delete as they may be items rendered with the page,
+					// eg. the list handles delete of existing attachments on its own
+					if ($(this).hasClass('delete')) {
+						return;
+					}
+					ev.preventDefault();
+
+					var clicked = $(this), li = clicked.closest('li');
+					li.slideUp('fast', function() {
+						clicked.remove();
+
+						if (options.filesContainer.hasClass('dp-hide-empty')) {
+							options.filesContainer.hide();
+						}
+					});
+
+					el.trigger('fileremoved', [li]);
+				});
+
+				return $(el).fileupload(options);
+			},
 		};
 
 		$(window).on('resize', function() {
@@ -106,6 +269,10 @@ DeskPRO.Admin.Window = new Orb.Class({
 		if (xhr && xhr.status && xhr.status == '403') {
 			window.location = BASE_URL + 'admin/';
 		}
+	},
+
+	initRteAgentReply: function(textarea, options) {
+		return DeskPRO.Agent.RteEditor.initRteAgentReply(textarea, options);
 	},
 
 	initPage: function() {

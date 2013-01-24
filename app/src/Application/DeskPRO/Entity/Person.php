@@ -2059,6 +2059,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->timezone;
 	}
 
+	public function getRealTimezone()
+	{
+		return $this->timezone;
+	}
+
 	public function getDateTimezone()
 	{
 		return new \DateTimeZone($this->getTimezone());

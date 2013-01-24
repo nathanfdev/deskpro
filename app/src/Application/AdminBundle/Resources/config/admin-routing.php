@@ -890,6 +890,13 @@ $collection->add('admin_agents_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_edit_prefs', new Route(
+	'/agents/{person_id}/edit-prefs',
+	array('_controller' => 'AdminBundle:Agents:agentPrefs'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_agents_edit_formvalidate', new Route(
 	'/agents/{person_id}/edit/validate-form.json',
 	array('_controller' => 'AdminBundle:Agents:quickEditFormValidate'),

@@ -292,6 +292,7 @@ $CONFIG['agent_common'] = array(
 		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',
 		'javascripts/DeskPRO/MessageChanneler/AjaxChanneler.js',
 		'javascripts/DeskPRO/Translate.js',
+		'javascripts/DeskPRO/Agent/RteEditor.js',
 	)
 );
 
