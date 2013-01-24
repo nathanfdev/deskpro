@@ -145,7 +145,18 @@ class WidgetController extends AbstractController
 
 		$latest_content->setMaxCount(10);
 
-		$chat_active = $this->em->getRepository('DeskPRO:Session')->hasAvailableAgents();
+		$chat_active = false;
+		if (App::getSetting('core.apps_chat')) {
+			$online_time = 0;
+			if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
+				$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+			}
+
+			if ($online_time && $online_time > time() - 900) {
+				$chat_active = true;
+			}
+		}
+
 		$website_url = $this->in->getString('website_url');
 
 		$vars = array(
