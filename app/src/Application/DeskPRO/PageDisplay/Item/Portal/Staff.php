@@ -61,10 +61,13 @@ class Staff extends PortalItemAbstract
 
 	public function getSidebarHtml()
 	{
-		if ($this->getOption('online')) {
-			$staff = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
-		} else {
+		if ($this->getOption('show_all')) {
 			$staff = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		} else {
+			$staff = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
+			if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
+				$staff[App::getCurrentPerson()->getId()] = App::getCurrentPerson();
+			}
 		}
 
 		$html = $this->renderView('UserBundle:Portal:staff-sidebar.html.twig', array(
