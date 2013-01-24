@@ -591,6 +591,14 @@ class Html extends AbstractRenderer
 				graph.type = "line";
 				graph.lineThickness = 2;
 				graph.bullet = "round";
+				graph.bulletSize = 6;
+			',
+			'area' => '
+				graph.type = "line";
+				graph.lineThickness = 1;
+				graph.bullet = "round";
+				graph.bulletSize = 4;
+				graph.fillAlphas = 0.6;
 			',
 			'pie' => ''
 		);
@@ -660,7 +668,7 @@ class Html extends AbstractRenderer
 			}
 
 			$hasCategory = true;
-			$isStacked = ($type == 'bar');
+			$isStacked = ($type == 'bar' || $type == 'area');
 
 			$parts = array();
 			foreach ($groupXColumns AS $column) {
@@ -718,7 +726,7 @@ class Html extends AbstractRenderer
 					);
 				}
 
-				$isStacked = ($type == 'bar');
+				$isStacked = ($type == 'bar' || $type == 'area');
 
 				$firstY = reset($groupYColumns);
 				$categoryAxisTitle = $firstY['title'];
@@ -826,6 +834,25 @@ class Html extends AbstractRenderer
 				$height += $labelHeight;
 			} else {
 				$verticalLabels = '';
+			}
+
+			if ($isStacked) {
+				// need to fill out all values
+				$uniqueValues = array();
+				foreach ($chartData AS $values) {
+					foreach ($values AS $value => $null) {
+						if (!isset($uniqueValues[$value])) {
+							$uniqueValues[$value] = true;
+						}
+					}
+				}
+				foreach ($chartData AS &$values) {
+					foreach ($uniqueValues AS $value => $null) {
+						if (!isset($values[$value])) {
+							$values[$value] = 0;
+						}
+					}
+				}
 			}
 
 			$id = 'report_chart_' . md5(uniqid());

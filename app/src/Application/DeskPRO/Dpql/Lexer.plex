@@ -82,7 +82,7 @@ class Lexer
 	 * @var array
 	 */
 	protected $_reserved = array(
-		'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE',
+		'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE', 'AREA',
 		'SELECT', 'FROM', 'WHERE',
 		'GROUP', 'ORDER', 'SPLIT', 'BY',
 		'LIMIT', 'OFFSET', 'AS', 'NULL',

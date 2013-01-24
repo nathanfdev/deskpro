@@ -17,6 +17,7 @@
 		<select name="parts[display][0]" class="{{readOnly ? 'readonly' : ''}}">
 			<option value="BAR"{{ parts.display.0 == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
 			<option value="LINE"{{ parts.display.0 == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
+			<option value="AREA"{{ parts.display.0 == 'AREA' ? ' selected="selected"' : ''}}>AREA</option>
 			<option value="PIE"{{ parts.display.0 == 'PIE' ? ' selected="selected"' : ''}}>PIE</option>
 			<option value="TABLE"{{ parts.display.0 == 'TABLE' or parts.display is empty ? ' selected="selected"' : ''}}>TABLE</option>
 		</select>
@@ -24,6 +25,7 @@
 			<option value="">&nbsp;</option>
 			<option value="BAR"{{ parts.display.1 == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
 			<option value="LINE"{{ parts.display.1 == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
+			<option value="AREA"{{ parts.display.1 == 'AREA' ? ' selected="selected"' : ''}}>AREA</option>
 			<option value="PIE"{{ parts.display.1 == 'PIE' ? ' selected="selected"' : ''}}>PIE</option>
 			<option value="TABLE"{{ parts.display.1 == 'TABLE' ? ' selected="selected"' : ''}}>TABLE</option>
 		</select>

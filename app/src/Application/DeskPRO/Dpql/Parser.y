@@ -142,6 +142,10 @@ display_type(res) ::= PIE .
 {
 	res = 'pie';
 }
+display_type(res) ::= AREA .
+{
+	res = 'area';
+}
 
 display_type_option(res) ::= COMMA display_type(A) .
 {

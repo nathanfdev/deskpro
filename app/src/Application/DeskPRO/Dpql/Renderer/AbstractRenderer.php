@@ -236,6 +236,7 @@ abstract class AbstractRenderer
 			case 'bar':
 			case 'line':
 			case 'pie':
+			case 'area':
 				if (count($rows) <= 1) {
 					return false;
 				}
