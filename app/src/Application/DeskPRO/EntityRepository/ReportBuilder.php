@@ -186,7 +186,7 @@ class ReportBuilder extends AbstractEntityRepository
 		$return = array(
 			'fields' => array(
 				'tickets' => array(
-					'department' => array('department', '%s.department'),
+					'department' => array('department', 'ALIAS(STACK_GROUP(%1$s.department, COALESCE(%1$s.department.parent.title, %1$s.department.title)), \'Department\')'),
 					'agent' => array('agent', '%s.agent'),
 					'agent_team' => array('agent team', '%s.agent_team'),
 					'person' => array('person', '%s.person'),

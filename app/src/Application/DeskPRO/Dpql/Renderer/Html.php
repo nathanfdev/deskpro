@@ -730,6 +730,56 @@ class Html extends AbstractRenderer
 
 				$firstY = reset($groupYColumns);
 				$categoryAxisTitle = $firstY['title'];
+			} else if ($this->_handler->getGroupStackColumns() && $type == 'bar') {
+				$stackColumns = $this->_handler->getGroupStackColumns();
+
+				$rowGroups = array();
+				foreach ($rows AS $row) {
+					$categories = array();
+					$grouper = $this->_valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
+					$i = 0;
+					foreach ($groupYColumns AS $column) {
+						$categories[] = $this->_renderCellValue($row, $column);
+					}
+					$category = implode(' / ', $categories);
+
+					$rowData = array();
+
+					foreach ($selectColumns AS $i => $column) {
+						$rowData['value' . $i] = $this->_filterGraphValue($this->getColumnValue($row, $column));
+					}
+
+					$rowGroups[$grouper][$category] = $rowData;
+				}
+
+				$uniqueGraphs = array();
+
+				foreach ($rowGroups AS $grouper => $values)
+				{
+					$maxCategoryLength = max($maxCategoryLength, strlen($grouper));
+
+					$data = array('category' => $grouper);
+					foreach ($values AS $categoryName => $groupValues) {
+						$uniqueGraphs[$categoryName] = true;
+						foreach ($groupValues AS $valueId => $value) {
+							$data["$categoryName-$valueId"] = $value;
+						}
+					}
+
+					$chartData[] = $data;
+				}
+
+				foreach ($uniqueGraphs AS $categoryName => $null) {
+					$graphs[] = array(
+						'title' => "$categoryName",
+						'value' => "$categoryName-value0"
+					);
+				}
+
+				$isStacked = ($type == 'bar' || $type == 'area');
+
+				$firstY = reset($groupYColumns);
+				$categoryAxisTitle = $firstY['title'];
 			} else {
 				$sel = reset($selectColumns);
 

@@ -77,6 +77,11 @@ class ResultHandler
 	protected $_groupYColumns = array();
 
 	/**
+	 * @var array
+	 */
+	protected $_groupStackColumns = array();
+
+	/**
 	 * List of columns that will be used to split the results into
 	 * separate tables.
 	 *
@@ -176,6 +181,19 @@ class ResultHandler
 	public function getGroupXColumns()
 	{
 		return $this->_groupXColumns;
+	}
+
+	public function addGroupStackColumn($groupId, $printId)
+	{
+		$this->_groupStackColumns[] = array(
+			'groupId' => $groupId,
+			'printId' => $printId
+		);
+	}
+
+	public function getGroupStackColumns()
+	{
+		return $this->_groupStackColumns;
 	}
 
 	/**

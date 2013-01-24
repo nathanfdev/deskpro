@@ -36,64 +36,16 @@ namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
- * Abstract base for all DPQL function calls.
+ * Handler for STACK_GROUP function
  */
-abstract class AbstractFunc
+class StackGroup extends AbstractFunc
 {
-	/**
-	 * Maps DPQL function names (in all upper case) to class names
-	 * (in the \Application\DeskPRO\Dqpl\Func namespace).
-	 *
-	 * @var array
-	 */
-	protected static $_functionMap = array(
-		'ALIAS' => 'Alias',
-		'COUNT' => 'Count',
-		'COUNT_DISTINCT' => 'CountDistinct',
-		'CURDATE' => 'CurDate',
-		'CURTIME' => 'CurTime',
-		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-		'DATE' => 'Date',
-		'DAYNAME' => 'DayName',
-		'DAYOFMONTH' => 'DayOfMonth',
-		'DAYOFWEEK' => 'DayOfWeek',
-		'FORMAT' => 'Format',
-		'HOUR' => 'Hour',
-		'LINK' => 'Link',
-		'MATRIX' => 'Matrix',
-		'MINUTE' => 'Minute',
-		'MONTH' => 'Month',
-		'MONTHNAME' => 'MonthName',
-		'NOW' => 'Now',
-		'PERCENT' => 'Percent',
-		'PRINT' => 'Printable',
-		'TIME_LENGTH' => 'TimeLength',
-		'STACK_GROUP' => 'StackGroup',
-		'TO_UTC' => 'ToUtc',
-		'TOTAL' => 'Total',
-		'UTC' => 'Utc',
-		'X' => 'X',
-		'Y' => 'Y',
-		'YEAR' => 'Year'
-	);
-
-	/**
-	 * Name of the function (in user-provided case).
-	 *
-	 * @var string
-	 */
-	protected $_name;
-
-	/**
-	 * List of arguments for function
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
-	 */
-	protected $_arguments;
-
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
 	 *
@@ -105,60 +57,42 @@ abstract class AbstractFunc
 	 *
 	 * @throws \Application\DeskPRO\Dpql\Exception
 	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|boolean Prepared results or false if there's no output
 	 */
-	abstract public function prepare(
+	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	);
-
-	/**
-	 * Constructor. Use the create() factory method.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 */
-	protected function __construct($name, array $arguments = array())
+	)
 	{
-		$this->_name = $name;
-		$this->_arguments = $arguments;
-	}
-
-	/**
-	 * Creates the correct function handler object.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 *
-	 * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
-	 */
-	public static function create($name, array $arguments = array())
-	{
-		$name = strtoupper($name);
-		if (isset(self::$_functionMap[$name])) {
-			$map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
-			return new $map($name, $arguments);
-		} else {
-			return new SqlPass($name, $arguments);
+		if (count($this->_arguments) != 2) {
+			throw new Exception('STACK_GROUP() can only accept 2 arguments.');
 		}
-	}
 
-	/**
-	 * Gets a literal value for the specified part.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
-	 *
-	 * @return mixed
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 */
-	protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
-	{
-		if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
-			return $part->string;
-		} else if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
-			return $part->number;
+		$childStack = $stack;
+		array_shift($childStack); // pop this off the stack - it doesn't exist to the children
+
+		$expression = reset($this->_arguments);
+		$prepped = $expression->prepare($statement, $section, $childStack, $select, $result);
+
+		if ($section == 'group' && !$childStack) {
+			$grouper = next($this->_arguments);
+			$preppedGroup = $grouper->prepare($statement, $section, $childStack, $select, $result);
+
+			if ($preppedGroup->hasValue()) {
+				$printId = $statement->addSqlSelectField($preppedGroup->printed());
+
+				if ($preppedGroup->printed() === $preppedGroup->sql()) {
+					$groupId = $printId;
+				} else {
+					$groupId = $statement->addSelectField($preppedGroup->sql());
+				}
+
+				$result->addGroupStackColumn($groupId, $printId);
+			}
+
+			$sql = $prepped->sql();
+			return new Prepared($sql, 'STACK_GROUP(' . $prepped->name() . ', ' . $preppedGroup->name() . ')', $prepped->printed());
 		} else {
-			throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
+			return $prepped;
 		}
 	}
 }
