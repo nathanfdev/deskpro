@@ -2826,9 +2826,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				self.runPageRouteFromElement($(this));
 			});
-		}, 120);
 
-		window.setTimeout(function() {
 			$(context).on('click', '.agent-link', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
@@ -2846,20 +2844,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
 			});
-		}, 300);
 
-		// Accept clicks on popovers
-		// Keeps track of which tabs have them open so they can be reused
-		window.setTimeout(function() {
 			$(context).on('click', '.as-popover', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				self._initInterfacePopover($(this)).toggle();
 			});
-		}, 60);
+		}, 100);
 
 		window.setTimeout(function() {
-			$(context).on('mouseover', '.tipped', function(ev) {
+			$(context).find('.tipped').on('mouseover', function(ev) {
 				if ($(this).is('.tipped-inited')) {
 					return;
 				}
@@ -2912,15 +2906,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$(this).qtip(qtipOptions).qtip('show', ev);
 				$(this).addClass('tipped-inited');
 			});
-		}, 80);
+		}, 200);
 
-		window.setTimeout(function() {
-			DeskPRO.ElementHandler_Exec(context);
-		}, 5);
-
-		window.setTimeout(function() {
-			$('.timeago', context).timeago();
-		}, 10);
+		$('.timeago', context).timeago();
+		DeskPRO.ElementHandler_Exec(context);
 	},
 
 	initInterfaceServices: function(context) {
@@ -2954,13 +2943,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		window.setTimeout(function() {
-			DeskPRO.ElementHandler_Exec(context);
-		}, 5);
-
-		window.setTimeout(function() {
-			$('.timeago', context).timeago();
-		}, 10);
+		$('.timeago', context).timeago();
+		DeskPRO.ElementHandler_Exec(context);
 
 		$('input.dp-checkbox', context).each(function() {
 			DeskPRO_Window.util.dpCheckbox($(this));
