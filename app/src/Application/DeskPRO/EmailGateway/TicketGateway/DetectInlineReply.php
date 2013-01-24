@@ -251,6 +251,13 @@ class DetectInlineReply implements Loggable
 	 */
 	public function normalizeMessage($message_text)
 	{
+		// Remove embedded image attachment tokens that can be
+		// in database-messages. They render to <img> in emails,
+		// and then in replies the <img> would be removed, so we
+		// can just remove them here too.
+		// Eg: [attach:image:14ACHKTRCNWD1382226544B:test.png]
+		$message_text = preg_replace('#\[attach:(.*?):(.*?):(.*?)\]#', '', $message_text);
+
 		$message_text = str_replace(array('<br/>', '<br />', '<br>'), ' ', $message_text);
 		$message_text = strip_tags($message_text);
 		$message_text = html_entity_decode($message_text, \ENT_QUOTES, 'UTF-8');
