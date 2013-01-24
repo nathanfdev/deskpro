@@ -8,6 +8,7 @@
 <article
 	class="twitter-status-inline {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
 	data-status-id="{{ status.id }}"
+	data-twitter-status-id="{{ status.id }}"
 	data-user-id="{{ status.user.id }}"
 >
 	<div class="status-body">

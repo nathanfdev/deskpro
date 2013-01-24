@@ -127,14 +127,18 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 		if (this._tweetAppliesToPage(data)) {
 			if (this.resultsHelper.getCurrentPage() > 1) {
-				var newIndicator = this.wrapper.find('.new-tweet-list-indicator');
-				var newCount = (newIndicator.data('new-count') || 0) + 1;
-				newIndicator.data('new-count', newCount);
-				newIndicator.text(newCount == 1 ? '1 new tweet' : newCount + ' new tweets').show();
+				this.adjustNewTweetIndicator(1);
 			} else {
 				this.addTweetToPage(data.account_status_id, data.tweet_html);
 			}
 		}
+	},
+
+	adjustNewTweetIndicator: function(adjust) {
+		var newIndicator = this.wrapper.find('.new-tweet-list-indicator');
+		var newCount = (newIndicator.data('new-count') || 0) + adjust;
+		newIndicator.data('new-count', newCount);
+		newIndicator.text(newCount == 1 ? '1 new tweet' : newCount + ' new tweets').show();
 	},
 
 	_tweetAppliesToPage: function(data) {
@@ -199,6 +203,12 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 			case 'agent_twitter_sent_list':
 				// the true case is handled above
+				return false;
+
+			case 'agent_twitter_run_search':
+				return false;
+
+			default:
 				return false;
 		}
 
@@ -302,7 +312,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			}
 		} else {
 			if (typeof data.change_archived !== 'undefined' && !data.change_archived) {
-				this.addTweetToPage(data.account_status_id, data.tweet_html);
+				if (this.resultsHelper.getCurrentPage() == 1) {
+					this.addTweetToPage(data.account_status_id, data.tweet_html);
+				}
 			}
 		}
 
@@ -332,10 +344,28 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.content.find('.twitter-status-list').prepend($html);
 		this._afterLoading($html);
 
-		this.wrapper.find('.list-listing.no-results').hide();
+		this.adjustShownTweets();
+	},
 
-		while (this.resultsHelper.updateShowingCount() > this.resultsHelper.options.perPage) {
-			$(this.resultsHelper.options.resultRowSelector, this.resultsHelper.resultsContainer).last().remove();
+	adjustShownTweets: function() {
+		var count = this.resultsHelper.updateShowingCount();
+
+		if (count === false) {
+			return;
+		}
+
+		if (count == 0) {
+			this.wrapper.find('.list-listing.no-results').show();
+		} else {
+			this.wrapper.find('.list-listing.no-results').hide();
+		}
+
+		if (count > this.resultsHelper.options.perPage) {
+			$(this.resultsHelper.options.resultRowSelector, this.resultsHelper.resultsContainer)
+				.slice(this.resultsHelper.options.perPage - count)
+				.remove();
+
+			this.resultsHelper.updateShowingCount()
 		}
 	},
 

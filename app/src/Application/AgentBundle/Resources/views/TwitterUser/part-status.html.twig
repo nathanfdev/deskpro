@@ -6,7 +6,10 @@
 {% else %}
 	{% set retweet = null %}
 {% endif %}
-<article class="twitter-status twitter-status-inline {% if account_status %}twitter-status-{{ account_status.id }}{% endif %}}" data-status-id="{% if account_status %}{{ account_status.id }}{% elseif retweet %}status:{{ retweet.id }}{% else %}status:{{ status.id }}{% endif %}">
+<article class="twitter-status twitter-status-inline {% if account_status %}twitter-status-{{ account_status.id }}{% endif %}}"
+	data-status-id="{% if account_status %}{{ account_status.id }}{% elseif retweet %}status:{{ retweet.id }}{% else %}status:{{ status.id }}{% endif %}"
+	data-twitter-status-id="{{ status.id }}"
+>
 	<div class="status-body">
 		<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 			<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />

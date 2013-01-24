@@ -1,5 +1,5 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterSearch';
 
 pageMeta.url_fragment = '{{ url_fragment('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}';
 pageMeta.accountId = '{{ account.id|escape }}';
@@ -35,8 +35,10 @@ pageMeta.listRoute = 'agent_twitter_run_search';
 	</header>
 	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
 
+	<div class="new-tweet-list-indicator"></div>
+
     <div class="content">
-		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
+		{% include 'AgentBundle:Twitter:part-search.html.twig' %}
 	</div>
 
 	{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}

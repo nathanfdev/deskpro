@@ -392,6 +392,9 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * Update the showing xxx of xxx line by counting the rows currently displayed
 	 */
 	updateShowingCount: function() {
+		if (!this.options) {
+			return false;
+		}
 
 		var showingCount = $(this.options.resultRowSelector, this.resultsContainer).length || 0;
 

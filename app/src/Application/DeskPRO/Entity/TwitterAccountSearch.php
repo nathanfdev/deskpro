@@ -113,7 +113,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function updateSearch($do_write = true)
+	public function updateSearch($do_write = true, $since_id = 0)
 	{
 		$em = App::getOrm();
 
@@ -122,9 +122,11 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			'q' => $this->term,
 			'result_type' => 'recent',
 			'count' => self::SEARCH_RESULTS,
-			//'since_id' => $this->max_id ? $this->max_id : 0,
+			'since_id' => $since_id,
 			'include_entities' => true
 		));
+
+		$new_statuses = array();
 
 		if (!empty($results->statuses)) {
 			$twitter = new \Application\DeskPRO\Service\Twitter();
@@ -155,6 +157,8 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 					}
 				}
 
+				$new_statuses[] = $account_status;
+
 				if (!App::getOrm()->getRepository('DeskPRO:TwitterAccountSearch')->getExistingSearchStatus($this, $account_status)) {
 					$search_status = new TwitterAccountSearchStatus();
 					$search_status->search = $this;
@@ -181,6 +185,8 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			$em->persist($this);
 			$em->flush();
 		}
+
+		return $new_statuses;
 	}
 
 	public function getAccountStatuses($includeArchived = false, $page = 1, $per_page = 50, $auto_update = true)
@@ -236,8 +242,10 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
-			FROM twitter_accounts_searches_statuses
-			WHERE search_id = ?
+			FROM twitter_accounts_searches_statuses AS ss
+			INNER JOIN twitter_accounts_statuses AS a ON (ss.account_status_id = a.id)
+			WHERE ss.search_id = ?
+				" . ($includeArchived ? '' : "AND a.is_archived = 0") . "
 		", array($this->id));
 	}
 

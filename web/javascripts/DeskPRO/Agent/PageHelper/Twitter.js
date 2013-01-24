@@ -589,7 +589,10 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 		// note triggers
 		this.content.on('click', '.note-btn', function() {
-			var newNote = self.closestRow(this).find('.new-note');
+			var row = self.closestRow(this);
+			var id = row.attr('data-status-id');
+
+			var newNote = row.find('.new-note');
 			if (newNote.is(':visible')) {
 				newNote.hide();
 			} else {

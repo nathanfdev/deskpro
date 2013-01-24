@@ -176,23 +176,40 @@ class TwitterController extends AbstractController
 		$per_page = TwitterAccount::DEFAULT_LIMIT;
 
 		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TwitterStatus:part-status.html.twig';
+			$tpl = 'AgentBundle:Twitter:part-search.html.twig';
 		} else {
 			$tpl = 'AgentBundle:Twitter:run-search.html.twig';
 		}
 
 		$includeArchived = $this->in->getBool('include.archived');
 
+		if ($this->in->getBool('since_id')) {
+			$statuses = $search->updateSearch(true, $this->in->getString('since_id'));
+			$added = count($statuses);
+			$statuses = array_slice($statuses, 0, $per_page);
+		} else {
+			$statuses = $search->getAccountStatuses($includeArchived, $page, $per_page);
+			$added = count($statuses);
+		}
 		$total_count = $search->countAccountStatuses($includeArchived);
+
+		$max_id = 0;
+		foreach ($statuses AS $status) {
+			if ($status->status->id > $max_id) {
+				$max_id = $status->status->id;
+			}
+		}
 
 		return $this->render($tpl, array(
 			'account'  => $account,
 			'search'   => $search,
-			'statuses' => $search->getAccountStatuses($includeArchived, $page, $per_page),
+			'statuses' => $statuses,
 			'total_count' => $total_count,
 			'per_page' => $per_page,
 			'page' => $page,
-			'showing_to' => min($total_count, $page * $per_page)
+			'showing_to' => min($total_count, $page * $per_page),
+			'max_id' => $max_id,
+			'added' => $added
 		));
 	}
 

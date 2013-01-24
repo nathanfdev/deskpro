@@ -9,6 +9,7 @@
 <article
 	class="row-item twitter-status twitter-status-{{ account_status.id }} {% if account_status.is_archived and (not hide_archive_tools or account_status.status_type) %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
 	data-status-id="{{ account_status.id }}"
+	data-twitter-status-id="{{ status.id }}"
 	data-user-id="{{ status.user.id }}"
 >
 	<div class="status-body">
