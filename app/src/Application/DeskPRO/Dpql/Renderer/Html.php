@@ -777,7 +777,77 @@ class Html extends AbstractRenderer
 			}
 			$height = 400 + ceil($sliceCount / $divisor) * 30;
 
-			foreach ($graphs AS $graph) {
+			$pieData = array();
+
+			if (count($graphs) > 1) {
+				foreach ($chartData AS $key => $info) {
+					$data = array();
+					foreach ($graphs AS $graph) {
+						if (isset($info[$graph['value']])) {
+							$data[] = array(
+								'category' => $graph['title'],
+								'value' => $info[$graph['value']]
+							);
+						}
+					}
+
+					$pieData[] = array(
+						'title' => $info['category'],
+						'data' => $data
+					);
+				}
+
+				// let's add a graph for the first level of grouping
+				$data = array();
+				foreach ($pieData AS $pie) {
+					$sum = 0;
+					foreach ($pie['data'] AS $info) {
+						$sum += $info['value'];
+					}
+					$data[] = array(
+						'category' => $pie['title'],
+						'value' => $sum
+					);
+				}
+
+				array_unshift($pieData, array(
+					'title' => 'Overall',
+					'data' => $data
+				));
+			} else {
+				$graph = reset($graphs);
+
+				$pieData = array(array(
+					'title' => $graph['title'],
+					'data' => $chartData
+				));
+			}
+
+			$showTitle = count($pieData) > 1;
+
+			foreach ($pieData AS $pie) {
+				$id = 'report_chart_' . md5(uniqid());
+
+				$output .= '
+					<div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
+					<script type="text/javascript">
+					$(function() {
+						var chart = new AmCharts.AmPieChart();
+						chart.dataProvider = ' . json_encode($pie['data']) . ';
+						chart.titleField = "category";
+						chart.valueField = "value";
+						chart.startDuration = 0;
+						' . (count($pie['data']) >= 25 ? 'chart.labelsEnabled = false;' : '') . '
+						chart.addLegend(new AmCharts.AmLegend());
+						' . ($showTitle ? 'chart.addTitle(' . json_encode($pie['title']) . ');' : '') . '
+
+						chart.write("' . $id . '");
+					});
+					</script>
+				';
+			}
+
+			/*foreach ($graphs AS $graph) {
 				$id = 'report_chart_' . md5(uniqid());
 
 				$output .= '
@@ -791,12 +861,13 @@ class Html extends AbstractRenderer
 						chart.startDuration = 0;
 						' . ($sliceCount >= 25 ? 'chart.labelsEnabled = false;' : '') . '
 						chart.addLegend(new AmCharts.AmLegend());
+						' . ($showTitle ? 'chart.addTitle(' . json_encode($graph['title']) . ');' : '') . '
 
 						chart.write("' . $id . '");
 					});
 					</script>
 				';
-			}
+			}*/
 		} else {
 			if ($hasCategory) {
 				$balloonText = '[[category]], [[title]]: [[value]]';
@@ -837,22 +908,7 @@ class Html extends AbstractRenderer
 			}
 
 			if ($isStacked) {
-				// need to fill out all values
-				$uniqueValues = array();
-				foreach ($chartData AS $values) {
-					foreach ($values AS $value => $null) {
-						if (!isset($uniqueValues[$value])) {
-							$uniqueValues[$value] = true;
-						}
-					}
-				}
-				foreach ($chartData AS &$values) {
-					foreach ($uniqueValues AS $value => $null) {
-						if (!isset($values[$value])) {
-							$values[$value] = 0;
-						}
-					}
-				}
+				$chartData = $this->_fillInGraphValues($chartData);
 			}
 
 			$id = 'report_chart_' . md5(uniqid());
@@ -885,6 +941,27 @@ class Html extends AbstractRenderer
 
 		$this->_valueRenderer = $originalValueRenderer;
 		return $output;
+	}
+
+	protected function _fillInGraphValues($chartData)
+	{
+		$uniqueValues = array();
+		foreach ($chartData AS $values) {
+			foreach ($values AS $value => $null) {
+				if (!isset($uniqueValues[$value])) {
+					$uniqueValues[$value] = true;
+				}
+			}
+		}
+		foreach ($chartData AS &$values) {
+			foreach ($uniqueValues AS $value => $null) {
+				if (!isset($values[$value])) {
+					$values[$value] = 0;
+				}
+			}
+		}
+
+		return $chartData;
 	}
 
 	protected function _jsEscapeValue($value)
