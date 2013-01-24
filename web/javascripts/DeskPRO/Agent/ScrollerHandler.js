@@ -52,7 +52,7 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 
 		function destroy() {
 			if (!element) return;
-			if (hasInit) {
+			if (hasInit && element.tinyscrollbar_destroy) {
 				element.tinyscrollbar_destroy();
 			}
 			element = null;

@@ -75,15 +75,32 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		this.performActionsBtn = $('.perform-actions-trigger', this.wrapper);
 
+		var openMassActions = function() {
+			if (!self.massActions) {
+				self.massActions = new DeskPRO.Agent.TicketList.MassActions(self, {
+					isListView: (self.meta.viewType == 'list' ? true : false),
+					onPostApply: function() {
+						self.selectionBar.checkNone();
+					},
+					onClosed: function() {
+						self.massActions.destroy();
+						self.massActions = null;
+					}
+				});
+			}
+
+			self.massActions.open();
+		};
+
 		var opt = {
 			onButtonClick: function() {
 				self.massActions.open();
 			},
 			onCountChange: function(count) {
-				var isOpen = self.massActions.isOpen();
+				var isOpen = self.massActions && self.massActions.isOpen();
 
 				if (count > 0 && !isOpen) {
-					self.massActions.open();
+					openMassActions();
 				} else if (count <= 0 && isOpen) {
 					self.massActions.close();
 				}
@@ -130,14 +147,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		// has its own strucutred array anyway,
 		// since it could be large we can delete it from memory
 		delete this.meta.ticketResultIds;
-
-		this.massActions = new DeskPRO.Agent.TicketList.MassActions(this, {
-			isListView: (this.meta.viewType == 'list' ? true : false),
-			onPostApply: function() {
-				self.selectionBar.checkNone();
-			}
-		});
-		this.ownObject(this.massActions);
 
 		if (this.meta.viewType == 'list') {
 			$('.list-grouping-bar', this.wrapper).on('click', 'a[data-route]', function(ev) {

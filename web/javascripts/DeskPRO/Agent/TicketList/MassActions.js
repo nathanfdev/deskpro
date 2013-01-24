@@ -76,8 +76,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			return;
 		}
 
-		this.wrapperEl.detach();
-
 		this._resetWrapper();
 
 		this.backdropEls = null;
@@ -111,7 +109,10 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			this.wrapper.remove();
 		}
 
-		this.wrapper = this.wrapperEl.clone().detach().html(this.wrapperEl.html());
+		this.wrapper = $('<div/>').addClass('mass-actions-overlay-container mass-actions').data('base-id', this.wrapperEl.data('base-id')).data('upload-url', this.wrapperEl.data('upload-url'));
+		this.wrapper.html(this.wrapperEl.html());
+		this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
+
 		this.countEl = $('.selected-tickets-count', this.wrapper);
 
 		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
