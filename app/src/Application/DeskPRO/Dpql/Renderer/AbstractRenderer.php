@@ -307,7 +307,9 @@ abstract class AbstractRenderer
 		$selectColumns = $this->_handler->getSelectColumns();
 
 		$distinctXValues = array();
+		$distinctXSort = array();
 		$distinctYValues = array();
+		$distinctYSort = array();
 		$lookup = array();
 
 		foreach ($rows AS $row) {
@@ -315,8 +317,10 @@ abstract class AbstractRenderer
 			foreach ($groupXColumns AS $column) {
 				$pathString = $this->_getGroupPathKey($xPath);
 				$groupValue = $this->getColumnValue($row, $column['groupResultId']);
+				$rendered = $this->_renderCellValue($row, $column);
 
-				$distinctXValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
+				$distinctXValues[$pathString][$groupValue] = $rendered;
+				$distinctXSort[$pathString][$groupValue] = $groupValue === null ? null : strip_tags($rendered);
 
 				$xPath[] = $groupValue;
 			}
@@ -325,14 +329,35 @@ abstract class AbstractRenderer
 			foreach ($groupYColumns AS $column) {
 				$pathString = $this->_getGroupPathKey($yPath);
 				$groupValue = $this->getColumnValue($row, $column['groupResultId']);
+				$rendered = $this->_renderCellValue($row, $column);
 
-				$distinctYValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
+				$distinctYValues[$pathString][$groupValue] = $rendered;
+				$distinctYSort[$pathString][$groupValue] = $groupValue === null ? null : strip_tags($rendered);
 
 				$yPath[] = $groupValue;
 			}
 
 			$lookup[$this->_getGroupPathKey($yPath)][$this->_getGroupPathKey($xPath)] =
 				$this->_renderMatrixCell($row, $selectColumns);
+		}
+
+		foreach ($distinctXSort AS $path => $sortValues) {
+			uasort($sortValues, 'strnatcasecmp');
+
+			$values = $distinctXValues[$path];
+			$distinctXValues[$path] = array();
+			foreach ($sortValues AS $key => $null) {
+				$distinctXValues[$path][$key] = $values[$key];
+			}
+		}
+		foreach ($distinctYSort AS $path => $sortValues) {
+			uasort($sortValues, 'strnatcasecmp');
+
+			$values = $distinctYValues[$path];
+			$distinctYValues[$path] = array();
+			foreach ($sortValues AS $key => $null) {
+				$distinctYValues[$path][$key] = $values[$key];
+			}
 		}
 
 		return array(
