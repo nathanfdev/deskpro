@@ -87,6 +87,31 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			}
 		});
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('twitter-section.list-activated', function (info) {
+			var url = 'listpane:' + info.listUrl.replace('?partial=1', '');
+
+			var interval;
+
+			var f = function() {
+				if (self.contentEl && self.contentEl.find('.is-nav-item').length) {
+					clearInterval(interval);
+					interval = false;
+					self.contentEl.find('.is-nav-item').each(function() {
+						var $this = $(this);
+						if ($this.data('route') === url) {
+							self.highlightNavItem($this);
+							return false;
+						}
+					});
+				}
+			};
+			if (self.contentEl && self.contentEl.find('.is-nav-item').length) {
+				f();
+			} else {
+				interval = setInterval(f, 1000);
+			}
+		});
+
 		window.setInterval(function() {
 			self.refresh();
 		}, 420000); // update every 7 mins

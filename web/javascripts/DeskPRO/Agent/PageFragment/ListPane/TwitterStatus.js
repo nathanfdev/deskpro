@@ -13,6 +13,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.wrapper = $(el);
 		var self = this;
 
+		DeskPRO_Window.getMessageBroker().sendMessage('twitter-section.list-activated', {
+			listUrl: this.meta.statusListUrl
+		});
+
 		this.meta.fetchResultsUrl = this.meta.statusListUrl;
 
 		this.header = $('.header', this.wrapper);

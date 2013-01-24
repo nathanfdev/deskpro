@@ -10,6 +10,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers = new Orb.Class({
 
 		this.meta.fetchResultsUrl = this.meta.listUrl;
 
+		DeskPRO_Window.getMessageBroker().sendMessage('twitter-section.list-activated', {
+			listUrl: this.meta.listUrl
+		});
+
 		var helper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
 			messageUrl: this.getMetaData('saveUserMessageUrl'),
 			userArchiveHideCallback: function(row) {
