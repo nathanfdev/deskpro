@@ -27,14 +27,16 @@
 						{{ phrase('user.widget.name') }}
 					</th>
 					<td>
-						<div class="txt dp-form-row-person_name">
-							{{ form_widget(ticketform.person.name, {
-								'attr': {
-									'data-field-validators': 'DeskPRO.Form.LengthValidator',
-									'data-min-len': 2,
-									'class': 'name-field'
-								}
-							}) }}
+						<div class="dp-form-row-person_name">
+							<div class="txt">
+								{{ form_widget(ticketform.person.name, {
+									'attr': {
+										'data-field-validators': 'DeskPRO.Form.LengthValidator',
+										'data-min-len': 2,
+										'class': 'name-field'
+									}
+								}) }}
+							</div>
 							<span class="tooltip-error">
 								<span>{{ phrase('user.widget.form_error_name') }}</span>
 							</span>
@@ -47,8 +49,10 @@
 						{{ phrase('user.widget.email') }}
 					</th>
 					<td>
-						<div class="txt dp-form-row-person_email">
-							<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						<div class="dp-form-row-person_email">
+							<div class="txt">
+								<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+							</div>
 							<span class="tooltip-error">
 								<span>{{ phrase('user.widget.form_error_email') }}</span>
 							</span>
@@ -61,14 +65,16 @@
 						{{ phrase('user.widget.ticket_form_subject') }}
 					</th>
 					<td>
-						<div class="txt txt-wide dp-form-row-ticket_subject">
-							{{ form_widget(ticketform.ticket.subject, {
-								'attr': {
-									'data-field-validators': 'DeskPRO.Form.LengthValidator',
-									'data-min-len': 5,
-									'class': 'search-collect'
-								}
-							}) }}
+						<div class="dp-form-row-ticket_subject">
+							<div class="txt txt-wide">
+								{{ form_widget(ticketform.ticket.subject, {
+									'attr': {
+										'data-field-validators': 'DeskPRO.Form.LengthValidator',
+										'data-min-len': 5,
+										'class': 'search-collect'
+									}
+								}) }}
+							</div>
 							<span class="tooltip-error">
 								<span>{{ phrase('user.widget.ticket_form_error_subject') }}</span>
 							</span>
@@ -81,13 +87,15 @@
 						{{ phrase('user.widget.ticket_form_department') }}
 					</th>
 					<td>
-						<div class="fields-row dp-form-row-ticket_department_id">
-							<select name="newticket[ticket][department_id]">
-								<option value=""></option>
-								{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
-									{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
-								{% endfor %}
-							</select>
+						<div class="dp-form-row-ticket_department_id">
+							<div class="fields-row">
+								<select name="newticket[ticket][department_id]">
+									<option value=""></option>
+									{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+										{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
+									{% endfor %}
+								</select>
+							</div>
 							<span class="tooltip-error">
 								<span>{{ phrase('user.widget.ticket_form_error_department') }}</span>
 							</span>

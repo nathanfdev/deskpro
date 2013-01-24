@@ -159,22 +159,33 @@ class WidgetController extends AbstractController
 
 		$website_url = $this->in->getString('website_url');
 
+		$cf_man = $this->container->getSystemService('FeedbackFieldsManager');
+		$newfeedback_cat_field = $cf_man->getSystemField('cat');
+
+		if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
+			$newfeedback_cat_field = null;
+		} else {
+			$custom_fields = $cf_man->getDisplayArray();
+			$newfeedback_cat_field = $custom_fields[$newfeedback_cat_field->getId()];
+		}
+
 		$vars = array(
-			'parent_url' => $this->in->getString('parent_url'),
-			'departments' => $departments,
+			'parent_url'            => $this->in->getString('parent_url'),
+			'departments'           => $departments,
 
-			'newticket' => $newticket,
-			'newticket_formtype' => $newticket_formtype,
-			'ticket_options' => $newticket_formtype->getTicketOptions(),
-			'ticketform' => $ticketform->createView(),
+			'newticket'             => $newticket,
+			'newticket_formtype'    => $newticket_formtype,
+			'ticket_options'        => $newticket_formtype->getTicketOptions(),
+			'ticketform'            => $ticketform->createView(),
 
-			'newfeedback' => $newfeedback,
-			'feedbackform' => $feedbackform->createView(),
-			'feedback_categories' => $feedback_categories,
-			'chat_active' => $chat_active,
+			'newfeedback'           => $newfeedback,
+			'feedbackform'          => $feedbackform->createView(),
+			'feedback_categories'   => $feedback_categories,
+			'newfeedback_cat_field' => $newfeedback_cat_field,
+			'chat_active'           => $chat_active,
 
-			'newest_content' => $latest_content->getResults(),
-			'website_url' => $website_url,
+			'newest_content'        => $latest_content->getResults(),
+			'website_url'           => $website_url,
 		);
 
 		return $this->render('UserBundle:Widget:overlay.html.twig', $vars);
@@ -242,6 +253,7 @@ class WidgetController extends AbstractController
 	{
 		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback($this->session->getVisitor());
 		$newfeedback->setPersonContext($this->person);
+		$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
 		$form->bindRequest($this->get('request'));
