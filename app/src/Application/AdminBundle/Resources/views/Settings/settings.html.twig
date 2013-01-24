@@ -118,8 +118,8 @@
 			{% endblock %}
 
 			<div class="field_row">
-				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
-				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.restrict_file_types') }}</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_must_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.restrict_file_types') }}</label>
 				<input style="width: 90%;" type="text" id="user_attach_limit_list_whitelist" name="settings[core.attach_user_must_exts]" value="{{ app.getSetting('core.attach_user_must_exts') }}" />
 				<input style="width: 90%;" type="text" id="user_attach_limit_list_blacklist" name="settings[core.attach_user_not_exts]" value="{{ app.getSetting('core.attach_user_not_exts') }}" />
 			</div>
@@ -138,8 +138,8 @@
 			{% endblock %}
 
 			<div class="field_row">
-				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
-				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.restrict_file_types') }}</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_must_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.restrict_file_types') }}</label>
 				<input style="width: 90%;" type="text" id="agent_attach_limit_list_whitelist" name="settings[core.attach_agent_must_exts]" value="{{ app.getSetting('core.attach_agent_must_exts') }}" />
 				<input style="width: 90%;" type="text" id="agent_attach_limit_list_blacklist" name="settings[core.attach_agent_not_exts]" value="{{ app.getSetting('core.attach_agent_not_exts') }}" />
 			</div>

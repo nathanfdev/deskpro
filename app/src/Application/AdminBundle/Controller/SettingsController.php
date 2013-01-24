@@ -106,6 +106,18 @@ class SettingsController extends AbstractController
 			));
 			array_walk($update_settings, 'trim');
 
+			if ($update_settings['core.attach_user_not_exts']) {
+				$update_settings['core.attach_user_must_exts'] = '';
+			} else {
+				$update_settings['core.attach_user_not_exts'] = '';
+			}
+
+			if ($update_settings['core.attach_agent_not_exts']) {
+				$update_settings['core.attach_agent_must_exts'] = '';
+			} else {
+				$update_settings['core.attach_agent_not_exts'] = '';
+			}
+
 			$set_settings_keys = $this->in->getCleanValueArray('set_settings', 'str_simple', 'discard');
 
 			// set_settings contains an array of names that should be set
