@@ -287,11 +287,13 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getFirst($var)
 	{
+		if (!$var) return null;
 		return \Orb\Util\Arrays::getFirstItem($var);
 	}
 
 	public function getLast($var)
 	{
+		if (!$var) return null;
 		return \Orb\Util\Arrays::getLastItem($var);
 	}
 
