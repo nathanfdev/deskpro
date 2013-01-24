@@ -56,6 +56,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->addOption('types', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types (* for all)', '');
 		$this->addOption('types-not', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types to skip (implies --types=*)', '');
 		$this->addOption('range', null, InputOption::VALUE_REQUIRED, 'Range of dates to cover data for (eg, "3 years")', '');
+		$this->addOption('wordlist', null, InputOption::VALUE_REQUIRED, 'Optional path to a wordlist file with one word per line', '');
 	}
 
 	protected $_data_cache = array();
@@ -64,9 +65,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected $_batch_insert_label_def = array();
 	protected $_start_ts = null;
 	protected $_date_offset = null;
+	protected $_wordlist_file;
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		ini_set('memory_limit', -1);
 		set_time_limit(0);
 		App::getDb()->getConfiguration()->setSQLLogger(null);
 
@@ -93,6 +96,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$amount = intval($input->getOption('count'));
 		if ($amount <= 0) {
 			$amount = 100;
+		}
+
+		$this->_wordlist_file = $input->getOption('wordlist');
+		if (!is_file($this->_wordlist_file)) {
+			echo "--wordlist is not a valid file\n";
+			return 1;
 		}
 
 		$type_input = $input->getOption('types');
@@ -592,7 +601,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		if (!empty($this->_data_cache['ticket_department_parent'])) {
 			$department->parent = $this->_data_cache['ticket_department_parent'];
 		}
-		
+
 		App::getOrm()->persist($department);
 		App::getOrm()->flush($department);
 
@@ -1476,7 +1485,19 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _getRandomText($word_length = 1)
 	{
 		if (!is_array($this->_words)) {
-			$this->_words = explode(' ', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ac semper lorem Mauris ut suscipit leo Suspendisse orci sem consequat venenatis quis volutpat sit amet lorem Nulla sed sodales leo Duis erat magna commodo nec consectetur quis rhoncus ac arcu Suspendisse egestas metus id nunc interdum nec volutpat orci laoreet Ut porttitor nisi vel urna congue eleifend Fusce semper justo sit amet elit tempor ut ultrices neque pharetra In at tellus at dolor consectetur dapibus in eleifend est Aenean sed neque id sapien aliquet semper id at velit Nullam laoreet est vitae dui pulvinar consectetur Aenean ipsum ipsum convallis ac pellentesque nec ullamcorper sit amet ipsum Fusce accumsan orci in bibendum ornare dolor nunc condimentum massa eget aliquam lectus tortor sed est Proin tempor quam congue mi tempus vitae cursus orci interdum Aliquam aliquet vulputate cursus Etiam hendrerit lorem vitae ipsum lacinia feugiat Fusce ornare purus et felis placerat ut venenatis nisl dignissim Mauris sed lacus nunc Curabitur et metus quis orci molestie sodales Suspendisse interdum cursus ullamcorper Donec pretium consequat lacus ac condimentum Fusce lacinia faucibus urna eu varius Etiam volutpat porta nisi in euismod sapien consequat vitae Ut feugiat porttitor dui nec vehicula Suspendisse sed nibh id leo euismod scelerisque Praesent malesuada sagittis dui et iaculis ante vulputate id Quisque risus nec orci eleifend volutpat sit amet sit amet lectus Aliquam ut felis felis mattis turpis Nulla eget orci lorem id rutrum orci Donec neque nisl tristique ac fringilla vel ullamcorper vitae erat Praesent erat metus tristique in gravida id tempus fringilla diam Integer vitae aliquet nulla Sed dictum lectus ac sem rhoncus et laoreet augue volutpat Ut venenatis laoreet mauris non pulvinar Etiam lacinia augue vel elit facilisis quis molestie sapien congue Praesent eu lacus justo vitae iaculis libero Curabitur nibh massa Aenean sed dui orci Suspendisse vehicula nibh eu dictum bibendum lorem nisl congue felis ac dictum mauris nisl vitae orci Phasellus et turpis massa tempor sodales eget eget quam Cras ut purus nisl sit amet ultricies lacus Nunc congue molestie accumsan Sed ut volutpat dui Donec sit amet nunc rhoncus risus convallis adipiscing Aenean tincidunt tempor consequat Vivamus blandit lacus quam ornare tortor Vestibulum tellus in orci ultrices semper Aenean sit amet libero ipsum aliquet condimentum Quisque volutpat congue felis vel hendrerit Proin congue enim et mi mattis tempor Praesent nec ante nec mauris suscipit pulvinar condimentum eu massa Aliquam iaculis ipsum sed ligula condimentum sed ultrices odio iaculis Nulla viverra ipsum et auctor viverra dolor est condimentum nisl in tincidunt erat massa vitae lacus Donec convallis tincidunt nisl vitae laoreet Mauris ligula mauris lacinia quis dictum volutpat tincidunt ac neque Phasellus dapibus suscipit pulvinar Fusce lacus est ultrices adipiscing sed condimentum sit amet leo Proin mauris ante tempor non tempor at commodo id mi Quisque ac massa justo Quisque lacinia malesuada ipsum hendrerit facilisis Nulla metus augue viverra placerat dapibus ac lacus Integer lectus metus laoreet semper eget dictum at purus Sed');
+			if ($this->_wordlist_file) {
+				$fp = fopen($this->_wordlist_file, 'r');
+				$this->_words = array();
+				while (!feof($fp)) {
+					$line = fgets($fp);
+					$line = trim($line);
+					$line = str_replace(array("'", '"'), '', $line);
+
+					$this->_words[] = $line;
+				}
+			} else {
+				$this->_words = explode(' ', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ac semper lorem Mauris ut suscipit leo Suspendisse orci sem consequat venenatis quis volutpat sit amet lorem Nulla sed sodales leo Duis erat magna commodo nec consectetur quis rhoncus ac arcu Suspendisse egestas metus id nunc interdum nec volutpat orci laoreet Ut porttitor nisi vel urna congue eleifend Fusce semper justo sit amet elit tempor ut ultrices neque pharetra In at tellus at dolor consectetur dapibus in eleifend est Aenean sed neque id sapien aliquet semper id at velit Nullam laoreet est vitae dui pulvinar consectetur Aenean ipsum ipsum convallis ac pellentesque nec ullamcorper sit amet ipsum Fusce accumsan orci in bibendum ornare dolor nunc condimentum massa eget aliquam lectus tortor sed est Proin tempor quam congue mi tempus vitae cursus orci interdum Aliquam aliquet vulputate cursus Etiam hendrerit lorem vitae ipsum lacinia feugiat Fusce ornare purus et felis placerat ut venenatis nisl dignissim Mauris sed lacus nunc Curabitur et metus quis orci molestie sodales Suspendisse interdum cursus ullamcorper Donec pretium consequat lacus ac condimentum Fusce lacinia faucibus urna eu varius Etiam volutpat porta nisi in euismod sapien consequat vitae Ut feugiat porttitor dui nec vehicula Suspendisse sed nibh id leo euismod scelerisque Praesent malesuada sagittis dui et iaculis ante vulputate id Quisque risus nec orci eleifend volutpat sit amet sit amet lectus Aliquam ut felis felis mattis turpis Nulla eget orci lorem id rutrum orci Donec neque nisl tristique ac fringilla vel ullamcorper vitae erat Praesent erat metus tristique in gravida id tempus fringilla diam Integer vitae aliquet nulla Sed dictum lectus ac sem rhoncus et laoreet augue volutpat Ut venenatis laoreet mauris non pulvinar Etiam lacinia augue vel elit facilisis quis molestie sapien congue Praesent eu lacus justo vitae iaculis libero Curabitur nibh massa Aenean sed dui orci Suspendisse vehicula nibh eu dictum bibendum lorem nisl congue felis ac dictum mauris nisl vitae orci Phasellus et turpis massa tempor sodales eget eget quam Cras ut purus nisl sit amet ultricies lacus Nunc congue molestie accumsan Sed ut volutpat dui Donec sit amet nunc rhoncus risus convallis adipiscing Aenean tincidunt tempor consequat Vivamus blandit lacus quam ornare tortor Vestibulum tellus in orci ultrices semper Aenean sit amet libero ipsum aliquet condimentum Quisque volutpat congue felis vel hendrerit Proin congue enim et mi mattis tempor Praesent nec ante nec mauris suscipit pulvinar condimentum eu massa Aliquam iaculis ipsum sed ligula condimentum sed ultrices odio iaculis Nulla viverra ipsum et auctor viverra dolor est condimentum nisl in tincidunt erat massa vitae lacus Donec convallis tincidunt nisl vitae laoreet Mauris ligula mauris lacinia quis dictum volutpat tincidunt ac neque Phasellus dapibus suscipit pulvinar Fusce lacus est ultrices adipiscing sed condimentum sit amet leo Proin mauris ante tempor non tempor at commodo id mi Quisque ac massa justo Quisque lacinia malesuada ipsum hendrerit facilisis Nulla metus augue viverra placerat dapibus ac lacus Integer lectus metus laoreet semper eget dictum at purus Sed');
+			}
 			$this->_max_word_index = count($this->_words) - 1;
 		}
 
