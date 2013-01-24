@@ -106,13 +106,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 			}
 		});
-
-		this.page.getEl('fields_display_main_wrap').data('tab-on-hide', function() {
-			self.page.getEl('field_edit_controls').hide();
-		});
-		this.page.getEl('fields_display_main_wrap').data('tab-on-show', function() {
-			self.page.getEl('field_edit_controls').show();
-		});
 	},
 
 	openEditMode: function() {
@@ -153,6 +146,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				},1);
 			}
 		});
+
+		// Make sure field tab is selected
+		this.page.getEl('fields_display_main_wrap_tab').click();
 	},
 
 	closeEditMode: function() {
@@ -202,6 +198,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		// No Changes, dont need to do any expensive dom work
 		if (!change) {
+			var ons = this.display.find('tbody.item-on');
+			ons.removeClass('last');
+			ons.last().addClass('last');
+
 			console.log("[TicketFields] No change");
 			return;
 		}
@@ -262,6 +262,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		// No Changes, dont need to do any expensive dom work
 		if (!change) {
 			console.log("[TicketFields] No change");
+
+			var ons = this.display.find('tbody.item-on').not('.no-value');
+			ons.removeClass('last');
+			ons.last().addClass('last');
+
 			return;
 		}
 
@@ -279,7 +284,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
-		var ons = this.display.find('tbody.item-on');
+		var ons = this.display.find('tbody.item-on').not('.no-value');
 		if (ons[0]) {
 			ons.removeClass('last');
 			ons.last().addClass('last');
