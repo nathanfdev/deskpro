@@ -33,7 +33,7 @@
 
 namespace Application\DeskPRO\Twig\PostRenderFilter;
 
-use \DOMDocument, \DOMXPath;
+use Orb\Util\Strings;
 
 class EmailPostRenderFilter extends AbstractPostRenderFilter
 {
@@ -59,8 +59,10 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 			$code = str_replace($find, '', $code);
 		}
 
+		$code = Strings::preDomDocument($code);
 		$emog = new \Emogrifier($code, $css);
 		$code = $emog->emogrify();
+		$code = Strings::postDomDocument($code);
 
 		if (!$code) {
 			return $orig_code;
