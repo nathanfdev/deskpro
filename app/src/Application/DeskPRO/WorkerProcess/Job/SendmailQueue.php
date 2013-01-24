@@ -71,7 +71,7 @@ class SendmailQueue extends AbstractJob
 			$mailer->getTransport()->disableQueue();
 		}
 
-		$success = $mailer->send($message);
+		$success = $mailer->sendNow($message);
 
 		if ($mailer->getTransport() instanceof DelegatingTransport) {
 			$mailer->getTransport()->enableQueue();
