@@ -23,7 +23,8 @@
 </ul>
 
 <form action="{{ path('admin_twitter_set_cleanup') }}" method="post" style="padding: 10px">
-	How long until Tweets that have not been interacted with are removed?
+	How long until Tweets that aren't directed specifically do your accounts are removed?
+	<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="General timeline, search, and user profile tweets will be removed with this. Any tweets that appear under &quot;All Tweets&quot; will not be automatically removed."></span>
 	{% set options = {
 		86400: "1 day",
 		259200: "3 days",
