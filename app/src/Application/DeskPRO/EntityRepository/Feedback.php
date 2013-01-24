@@ -340,4 +340,18 @@ class Feedback extends AbstractEntityRepository
 
 		return $feedback;
 	}
+
+	public function getReportAssociations()
+	{
+		return array(
+			'views' => array(
+				'conditions' => '%1$s.object_type = 4 AND %1$s.object_id = %2$s.id',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
+			),
+			'ratings' => array(
+				'conditions' => '%1$s.object_type = \'feedback\' AND %1$s.object_id = %2$s.id',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating'
+			)
+		);
+	}
 }

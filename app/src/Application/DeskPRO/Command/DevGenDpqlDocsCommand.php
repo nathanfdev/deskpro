@@ -195,6 +195,23 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 				}
 			}
 
+			foreach ($repository->getReportAssociations() AS $name => $association) {
+				$target = $association['targetEntity'];
+				$childRepository = $target::getRepository();
+
+				if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
+					continue;
+				}
+
+				$associations[$name] = $target;
+
+				$childTable = $childRepository->getTableName();
+				if (isset($conditionResolvers[$childTable])) {
+					$condition = $conditionResolvers[$childTable];
+					$associations[$name . "[$condition[0]]"] = array($target, $condition[1]);
+				}
+			}
+
 			uksort($fields, 'strnatcasecmp');
 			uksort($associations, 'strnatcasecmp');
 

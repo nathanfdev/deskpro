@@ -126,6 +126,20 @@ class ColumnStar extends AbstractPart
 				}
 			}
 
+			foreach ($repository->getReportAssociations() AS $name => $association) {
+				if (strtolower($name) == $part) {
+					$target = $association['targetEntity'];
+					$childRepository = $target::getRepository();
+
+					if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
+						throw new Exception("$partsString cannot be accessed via DPQL.");
+					}
+
+					$repository = $childRepository;
+					continue 2; // continue $parts loop
+				}
+			}
+
 			foreach ($repository->getAssociationMappings() AS $association) {
 				// are we referencing an association?
 				if (strtolower($association['fieldName']) == $part) {
@@ -138,7 +152,6 @@ class ColumnStar extends AbstractPart
 					) {
 						throw new Exception("$partsString cannot be accessed via DPQL.");
 					}
-
 
 					if (!empty($association['joinColumns'])) {
 						// join can be resolved directly

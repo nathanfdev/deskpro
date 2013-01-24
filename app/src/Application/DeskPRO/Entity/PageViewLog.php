@@ -146,7 +146,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PageViewLog';
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
 		$metadata->setPrimaryTable(array(
 			'name' => 'page_view_log',
 			'indexes' => array(

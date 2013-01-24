@@ -328,4 +328,18 @@ class Article extends AbstractEntityRepository
 
 		return $counts;
 	}
+
+	public function getReportAssociations()
+	{
+		return array(
+			'views' => array(
+				'conditions' => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
+			),
+			'ratings' => array(
+				'conditions' => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating'
+			)
+		);
+	}
 }

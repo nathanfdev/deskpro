@@ -149,4 +149,14 @@ class News extends AbstractEntityRepository
 
 		return $articles;
 	}
+
+	public function getReportAssociations()
+	{
+		return array(
+			'views' => array(
+				'conditions' => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
+			)
+		);
+	}
 }

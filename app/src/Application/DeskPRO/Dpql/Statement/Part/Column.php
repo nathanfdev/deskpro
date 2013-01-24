@@ -256,6 +256,31 @@ class Column extends AbstractPart
 				}
 			}
 
+			foreach ($repository->getReportAssociations() AS $name => $association) {
+				if (strtolower($name) == $part) {
+					$target = $association['targetEntity'];
+					$childRepository = $target::getRepository();
+
+					if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
+						throw new Exception("$partsString cannot be accessed via DPQL.");
+					}
+
+					$childSqlTable = $childRepository->getTableName();
+					$joinAlias = "{$sqlTable}_{$name}";
+					$joinConditions = sprintf($association['conditions'], $joinAlias, $sqlTable);
+
+					$select->addJoin(
+						"$joinAlias",
+						"LEFT JOIN `$childSqlTable` AS `$joinAlias` ON ($joinConditions)"
+					);
+
+					$repository = $childRepository; // now references come from this table
+					$sqlTable = $joinAlias;
+
+					continue 2; // continue $parts loop
+				}
+			}
+
 			foreach ($repository->getAssociationMappings() AS $association) {
 				// are we referencing an association?
 				if (strtolower($association['fieldName']) == $part) {

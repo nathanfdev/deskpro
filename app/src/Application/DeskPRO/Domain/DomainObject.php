@@ -58,7 +58,6 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	private $_no_persist = false;
 
-
 	/**
 	 * @return \Doctrine\ORM\EntityRepository
 	 */

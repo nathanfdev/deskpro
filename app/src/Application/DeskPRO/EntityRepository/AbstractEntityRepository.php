@@ -129,6 +129,11 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 		return $this->getClassMetadata()->getAssociationMappings();
 	}
 
+	public function getReportAssociations()
+	{
+		return array();
+	}
+
 	/**
 	 * @return string
 	 */
