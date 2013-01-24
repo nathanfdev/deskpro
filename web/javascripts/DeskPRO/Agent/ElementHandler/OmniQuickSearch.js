@@ -320,6 +320,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 	},
 
 	setResults: function(results, clear) {
+		var self = this;
 		if (clear) {
 			this.clear();
 		}
@@ -383,6 +384,17 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				}
 			}
 			if (hasMore) {
+				if (typeResults.length >= 20) {
+					var li = $('<li/>').addClass('result-item').html('View more ticket results &rarr;').css('text-align', 'center').hide();
+					var url = BASE_URL + 'agent/ticket-search/custom-filter/run?query=' + encodeURI($('#dp_omniinput').val());
+					var route = 'listpane:' + url;
+					li.data('route', route).attr('data-route', route);
+
+					li.on('click', function() { self.close() });
+
+					li.appendTo(listEl);
+				}
+
 				var title = 'Show ' + (typeResults.length - 5) + ' more';
 				sectionEl.find('.expand-btn').text(title).data('more-text', title).show();
 			}
