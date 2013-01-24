@@ -45,13 +45,11 @@ use Orb\Util\Arrays;
  */
 class SetSlaCompleteAction extends AbstractAction
 {
-	protected $sla_complete;
-	protected $sla_id;
+	protected $actions = array();
 
 	public function __construct($sla_complete, $sla_id)
 	{
-		$this->sla_complete = $sla_complete;
-		$this->sla_id = $sla_id;
+		$this->actions = array($sla_complete => array($sla_id));
 	}
 
 
@@ -62,24 +60,32 @@ class SetSlaCompleteAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if ($this->sla_id) {
-			$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
-			if (!$sla) {
-				return;
+		foreach ($this->actions AS $complete => $sla_ids) {
+			if (in_array('0', $sla_ids)) {
+				// take action for all
+				$sla_ids = array('0');
 			}
+			foreach ($sla_ids AS $sla_id) {
+				if ($sla_id) {
+					$sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
+					if (!$sla) {
+						return;
+					}
 
-			$ticket_sla = $ticket->hasSla($sla);
-			if (!$ticket_sla) {
-				return;
+					$ticket_sla = $ticket->hasSla($sla);
+					if (!$ticket_sla) {
+						return;
+					}
+
+					$ticket_slas = array($ticket_sla);
+				} else {
+					$ticket_slas = $ticket->ticket_slas;
+				}
+
+				foreach ($ticket_slas AS $ticket_sla) {
+					$ticket_sla->setIsCompleted($complete);
+				}
 			}
-
-			$ticket_slas = array($ticket_sla);
-		} else {
-			$ticket_slas = $ticket->ticket_slas;
-		}
-
-		foreach ($ticket_slas AS $ticket_sla) {
-			$ticket_sla->setIsCompleted($this->sla_complete);
 		}
 	}
 
@@ -92,26 +98,17 @@ class SetSlaCompleteAction extends AbstractAction
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'set_sla_complete', 'sla_complete' => $this->sla_complete, 'sla_id' => $this->sla_id)
+			array('action' => 'set_sla_complete', 'actions' => $this->actions)
 		);
 	}
 
 
 	/**
-	 * @return integer
+	 * @return array
 	 */
-	public function getSlaComplete()
+	public function getSlaActions()
 	{
-		return $this->sla_complete;
-	}
-
-
-	/**
-	 * @return integer
-	 */
-	public function getSlaId()
-	{
-		return $this->sla_id;
+		return $this->actions;
 	}
 
 
@@ -121,7 +118,17 @@ class SetSlaCompleteAction extends AbstractAction
 	 */
 	public function merge(ActionInterface $other_action)
 	{
-		return $other_action;
+		$actions = $other_action->getSlaActions();
+		foreach ($actions AS $complete => $sla_ids) {
+			if (isset($this->actions[$complete])) {
+				$this->actions[$complete] = array_merge($this->actions[$complete], $sla_ids);
+				$this->actions[$complete] = array_unique($this->actions[$complete]);
+			} else {
+				$this->actions[$complete] = $sla_ids;
+			}
+		}
+
+		return $this;
 	}
 
 
@@ -130,24 +137,31 @@ class SetSlaCompleteAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		if ($this->sla_id) {
-			$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
-		} else {
-			$sla = null;
+		$parts = array();
+		foreach ($this->actions AS $complete => $sla_ids) {
+			if (in_array('0', $sla_ids)) {
+				// take action for all
+				$titles = null;
+			} else {
+				$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
+				$titles = implode(', ', array_map(function($s) { return $s->title; }, $slas));
+			}
+
+			if ($complete) {
+				if ($titles !== null) {
+					$parts[] = 'Set SLA requirements to complete for SLA ' . ($titles ? $titles : '[unknown]');
+				} else {
+					$parts[] = 'Set SLA requirements to complete';
+				}
+			} else {
+				if ($titles !== null) {
+					$parts[] = 'Set SLA requirements to incomplete for SLA ' . ($titles ? $titles : '[unknown]');
+				} else {
+					$parts[] = 'Set SLA requirements to incomplete';
+				}
+			}
 		}
 
-		if ($this->sla_complete) {
-			if ($this->sla_id) {
-				return 'Set SLA requirements to complete for SLA ' . ($sla ? $sla->title : '[unknown]');
-			} else {
-				return 'Set SLA requirements to complete';
-			}
-		} else {
-			if ($this->sla_id) {
-				return 'Set SLA requirements to incomplete for SLA ' . ($sla ? $sla->title : '[unknown]');
-			} else {
-				return 'Set SLA requirements to incomplete';
-			}
-		}
+		return implode('; ', $parts);
 	}
 }
