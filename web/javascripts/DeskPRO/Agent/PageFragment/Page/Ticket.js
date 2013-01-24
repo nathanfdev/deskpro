@@ -430,6 +430,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			if (any) {
+				this.wrapper.find('.agent-draft-message').remove();
 				new_messages.appendTo($(this.getEl('messages_wrap')));
 				this._initMessage(new_messages);
 			}
