@@ -64,7 +64,15 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 */
 	protected $queued = array();
 
-	protected $messagesLog = 0;
+	/**
+	 * @var \Orb\Log\Writer\ArrayWriter
+	 */
+	protected $messagesLog;
+
+	/**
+	 * @var bool
+	 */
+	protected $is_sending_queue = false;
 
 	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
 	{
@@ -230,35 +238,150 @@ class Mailer extends \Swift_Mailer implements Loggable
 		return parent::createMessage($service);
 	}
 
+
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function hasQueuedMessage($id)
+	{
+		return isset($this->queued[$id]);
+	}
+
+
+	/**
+	 * @param string $id
+	 * @return \Application\DeskPRO\Mail\Message
+	 */
+	public function getQueuedMessage($id)
+	{
+		return isset($this->queued[$id]) ? $this->queued[$id] : null;
+	}
+
+
+	/**
+	 * @param string $id
+	 */
+	public function removeQueuedMessage($id)
+	{
+		unset($this->queued[$id]);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllQueuedMessages()
+	{
+		return $this->queued;
+	}
+
+
+	/**
+	 * Queues a message to send. Usually they are sent during shutdown, or any time
+	 * sendQueued or sendQueuedSilent is called.
+	 *
+	 * If you want to send now, use sendNow.
+	 *
+	 * Returns a truthy ID of the queued message.
+	 * $failedRecipients will always stay null becaue messages arent attempted to send yet.
+	 *
+	 * @param \Swift_Mime_Message $message
+	 * @param null $failedRecipients
+	 * @return string
+	 */
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
+		$id = str_replace('.', '_', uniqid('eml', true));
+
 		if ($message instanceof \Application\DeskPRO\Mail\Message) {
 			// Need to prepare right away so any context-sensitive changes affect
 			// the template. E.g., language context might be temporarily changed.
 			$message->prepare();
 		}
-		$this->queued[] = $message;
+		$this->queued[$id] = $message;
+
+		return $id;
 	}
 
+
+	/**
+	 * Send all of the queued messages and return the status of each.
+	 * Exceptions are not caught, so if an error happens then possible
+	 * only part of the queue is sent.
+	 *
+	 * @return array
+	 */
 	public function sendQueued()
 	{
-		while ($message = array_shift($this->queued)) {
-			$this->sendNow($message);
+		if ($this->is_sending_queue) return array();
+		$this->is_sending_queue = true;
+
+		$status = array();
+
+		$keys = array_keys($this->queued);
+		foreach ($keys as $k) {
+			if (!isset($this->queued[$k])) continue;
+
+			$message = $this->queued[$k];
+			unset($this->queued[$k]);
+
+			try {
+				$status[$k] = $this->sendNow($message);
+			} catch (\Exception $e) {
+				$this->is_sending_queue = false;
+				throw $e;
+			}
 		}
+
+		$this->is_sending_queue = false;
+
+		return $status;
 	}
 
+
+	/**
+	 * Send all of the queued messages and dont die on errors (theyre still logged though).
+	 * This is usually called from shutdown.
+	 *
+	 * @return array
+	 */
 	public function sendQueuedSilent()
 	{
-		while ($message = array_shift($this->queued)) {
+		if ($this->is_sending_queue) return array();
+		$this->is_sending_queue = true;
+
+		$status = array();
+
+		$keys = array_keys($this->queued);
+
+		foreach ($keys as $k) {
+			if (!isset($this->queued[$k])) continue;
+
+			$message = $this->queued[$k];
+			unset($this->queued[$k]);
+
 			try {
-				$this->sendNow($message);
+				$status[$k] = $this->sendNow($message);
 			} catch (\Exception $e) {
+				$status[$k] = false;
+
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			}
 		}
+
+		$this->is_sending_queue = false;
+
+		return $status;
 	}
 
+
+	/**
+	 * Count the number of queued messages
+	 *
+	 * @return int
+	 */
 	public function countQueued()
 	{
 		if (!$this->queued) {
@@ -268,6 +391,14 @@ class Mailer extends \Swift_Mailer implements Loggable
 		return count($this->queued);
 	}
 
+
+	/**
+	 * Send a message now (dont queue for shutdown func)
+	 *
+	 * @param \Swift_Mime_Message $message
+	 * @param null $failedRecipients
+	 * @return int
+	 */
 	public function sendNow(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		return parent::send($message, $failedRecipients);

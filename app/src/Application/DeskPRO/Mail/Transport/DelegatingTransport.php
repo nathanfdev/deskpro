@@ -66,7 +66,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	protected $transports = array();
 
 	/**
-	 * @var Orb\Mail\Transport\QueueTransport
+	 * @var \Orb\Mail\Transport\QueueTransport
 	 */
 	protected $queue_transport = null;
 
