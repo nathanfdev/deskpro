@@ -19,6 +19,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var self = this;
 		this.autoAddAjax = {};
 
+		if (this.meta.filter_id) {
+			DeskPRO_Window.sections.tickets_section.highlightFilterNav(this.meta.filter_id, this.meta.topGroupingTerm || null);
+		}
+
         $('.extra-fields .agent .agent_link', this.el).on('click', function(ev) {
             var agent_id = $(this).parent().data('prop-value');
 

@@ -19,22 +19,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.queueRefreshFilterGrouping = [];
 
 		this.lastArchiveUpdate = new Date();
+		this.loadHighlightNavEl = null;
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
 		DeskPRO_Window.getSectionData('tickets_section', this._initSection.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('ticket-section.list-activated', function (info) {
-			var allId = $('#tickets_awaiting_agent_navitem').data('filter-id');
-			if (info.listType != 'filter') {
-				return;
-			}
-			if (info.id == allId && $('#tickets_awaiting_agent_navitem').hasClass('nav-selected')) {
-				// Dont switch away from 'awaiting agent' under archive which is same as 'all'
-				return;
-			}
-			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()), info.topGroupingOption || null);
-		}, this);
 
 		DeskPRO_Window.getMessageChanneler().addEvent('postMessageSend', function() {
 
@@ -340,6 +330,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		DeskPRO.ElementHandler_Exec(this.wrapper);
 
+
+		if (this.loadHighlightNavEl) {
+			this.highlightFilterNav(this.loadHighlightNavEl[0], this.loadHighlightNavEl[1]);
+		}
+
 		this.fireEvent('sectionInit');
 	},
 
@@ -359,6 +354,19 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (!childSel.length) {
 				$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
 				el.addClass('nav-selected');
+			}
+		}
+	},
+
+	highlightFilterNav: function(filterId, groupingOption) {
+		this.loadHighlightNavEl = [filterId, groupingOption];
+		var navLi = $('#system_filters_wrap').find('li.filter-'+filterId);
+		if (navLi[0]) {
+			$('#system_filters_wrap').find('.nav-selected').removeClass('nav-selected');
+			if (groupingOption !== null) {
+				navLi.find('li.grouping-' + groupingOption).addClass('nav-selected');
+			} else {
+				navLi.find('h3.is-nav-item').addClass('nav-selected');
 			}
 		}
 	},
