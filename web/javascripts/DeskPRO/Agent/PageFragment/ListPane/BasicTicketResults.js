@@ -236,7 +236,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				},
 				success: function(html) {
 					var el = $(html);
-					el.hide();
 
 					var ticketRow = el.find('article.row-item');
 					var ticketId = ticketRow.data('ticket-id');
@@ -263,8 +262,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 					if (exist[0] && replace_existing) {
 
-						if (el.is('.row-item')) {
+						if (!el.is('.row-item')) {
 							el = el.find('.row-item');
+							el.hide();
+							el.detach();
 						}
 
 						exist.after(el);
