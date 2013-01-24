@@ -77,7 +77,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var bool
 	 */
-	protected $disable_picture = null;
+	protected $disable_picture = false;
 
 	/**
 	 * The URL to the users gravatar if any
