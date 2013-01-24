@@ -1,4 +1,4 @@
-if (window.Dp_EnableDebug) {
+if (window.Dp_EnableDebug || 1) {
 	var DpConsole = window.console;
 } else {
 	var DpConsole = {};
@@ -288,6 +288,34 @@ var DpOverlayWidget = new (function() {
 						['auto_start', 1]
 					]);
 					self.close();
+				} else {
+					// Load it dynamically
+
+					window.DpChatWidget_Options = window.DpChatWidget_Options || {};
+					window.DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+					window.DpChatWidget_Options.deskproUrl = options.deskproUrl;
+					window.DpChatWidget_Options.staticUrl = options.deskproUrl;
+					window.DpChatWidget_Options.startPhrase = 'Chat with us';
+					window.DpChatWidget_Options.resumePhrase = 'Open your chat';
+					window.DpChatWidget_Options.tabLocation = 'right';
+
+					window.DpChatWidget_Options.currentPageUrl = window.location;
+					window.DpChatWidget_Options.referrerPageUrl = document.referrer;
+					window.DpChatWidget_Options.onInitCallback = function() {
+						DpChatWidget.open([
+							['name', data.name],
+							['email', data.email],
+							['department_id', data.department_id],
+							['auto_start', 1]
+						]);
+						self.close();
+					};
+
+					var scr   = document.createElement('script');
+					scr.type  = 'text/javascript';
+					scr.async = true;
+					scr.src   = options.staticUrl + 'javascripts/DeskPRO/User/ChatWidget/ChatWidget.js';
+					(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 				}
 
 				return;

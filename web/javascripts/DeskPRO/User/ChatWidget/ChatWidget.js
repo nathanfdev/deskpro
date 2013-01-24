@@ -107,7 +107,8 @@ var DpChatWidget = new (function() {
 	var options = {
 		protocol: null,
 		deskproUrl: null,
-		btnClass: 'dp-chat-btn'
+		btnClass: 'dp-chat-btn',
+		onInitCallback: null
 	};
 
 	var self = this;
@@ -394,6 +395,11 @@ var DpChatWidget = new (function() {
 	};
 
 	function initSession() {
+
+		if (DpChatWidget_Options.onInitCallback) {
+			options.onInitCallback = DpChatWidget_Options.onInitCallback;
+		}
+
 		// Now load our session script
 		// DeskPRO script that sets/gets session and initial messages
 		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
@@ -675,6 +681,10 @@ var DpChatWidget = new (function() {
 					DpChatWidget.open();
 				});
 			}
+		}
+
+		if (options.onInitCallback) {
+			options.onInitCallback(this);
 		}
 	};
 
