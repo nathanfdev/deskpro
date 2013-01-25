@@ -160,6 +160,7 @@ class DataInitializer
 				'email_new' => 1,
 				'email_user_activity' => 1,
 				'email_agent_activity' => 1,
+				'email_agent_note' => 1,
 				'email_property_change' => 1,
 				'alert_created' => 1,
 				'alert_new' => 1,

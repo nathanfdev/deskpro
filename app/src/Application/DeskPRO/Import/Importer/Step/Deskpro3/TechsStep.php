@@ -380,11 +380,18 @@ class TechsStep extends AbstractDeskpro3Step
 					$subs[$f_noone][] = 'email_user_activity';
 					$subs[$f_noone][] = 'alert_user_activity';
 
-					if ($tech['email_tech_reply'] || $tech['email_note']) {
+					if ($tech['email_tech_reply']) {
 						$subs[$f_all][] = 'email_agent_activity';
 						$subs[$f_all][] = 'alert_agent_activity';
 						$subs[$f_noone][] = 'email_agent_activity';
 						$subs[$f_noone][] = 'alert_agent_activity';
+					}
+
+					if ($tech['email_note']) {
+						$subs[$f_all][] = 'email_agent_note';
+						$subs[$f_all][] = 'alert_agent_note';
+						$subs[$f_noone][] = 'email_agent_note';
+						$subs[$f_noone][] = 'alert_agent_note';
 					}
 				}
 
@@ -392,9 +399,13 @@ class TechsStep extends AbstractDeskpro3Step
 					$subs[$f_my][] = 'email_user_activity';
 					$subs[$f_my][] = 'alert_user_activity';
 
-					if ($tech['email_tech_reply'] or $tech['email_note']) {
+					if ($tech['email_tech_reply']) {
 						$subs[$f_my][] = 'email_agent_activity';
 						$subs[$f_my][] = 'alert_agent_activity';
+					}
+					if ($tech['email_note']) {
+						$subs[$f_my][] = 'email_agent_note';
+						$subs[$f_my][] = 'alert_agent_note';
 					}
 				}
 
@@ -402,9 +413,13 @@ class TechsStep extends AbstractDeskpro3Step
 					$subs[$f_follow][] = 'email_user_activity';
 					$subs[$f_follow][] = 'alert_user_activity';
 
-					if ($tech['email_tech_reply'] or $tech['email_note']) {
+					if ($tech['email_tech_reply']) {
 						$subs[$f_follow][] = 'email_agent_activity';
 						$subs[$f_follow][] = 'alert_agent_activity';
+					}
+					if ($tech['email_note']) {
+						$subs[$f_follow][] = 'email_agent_note';
+						$subs[$f_follow][] = 'alert_agent_note';
 					}
 				}
 
@@ -414,6 +429,8 @@ class TechsStep extends AbstractDeskpro3Step
 				$subs[$f_team][] = 'alert_created';
 				$subs[$f_team][] = 'email_user_activity';
 				$subs[$f_team][] = 'email_agent_activity';
+				$subs[$f_team][] = 'email_user_note';
+				$subs[$f_team][] = 'email_agent_note';
 
 				$subs = \Orb\Util\Arrays::removeFalsey($subs);
 

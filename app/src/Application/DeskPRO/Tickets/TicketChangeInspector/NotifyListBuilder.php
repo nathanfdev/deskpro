@@ -122,6 +122,7 @@ class NotifyListBuilder
 
 		$notify_new         = false;
 		$notify_agent_reply = false;
+		$notify_agent_note  = false;
 		$notify_user_reply  = false;
 
 		if ($this->tracker->isExtraSet('ticket_created') || ($ticket->status_code == 'awaiting_agent' && $status_change['old'] == 'hidden.validating')) {
@@ -132,7 +133,10 @@ class NotifyListBuilder
 		if ($messages) {
 			$message = array_shift($messages);
 			$message = $message['new'];
-			if ($message->person->is_agent) {
+			if ($message->is_agent_note) {
+				$this->tracker->logMessage("[NotifyListBuilder] notify_agent_note");
+				$notify_agent_note = true;
+			} elseif ($message->person->is_agent) {
 				$this->tracker->logMessage("[NotifyListBuilder] notify_agent_reply");
 				$notify_agent_reply = true;
 			} else {
@@ -239,6 +243,9 @@ class NotifyListBuilder
 				if ($sub->email_property_change) {
 					$types[] = 'email';
 				} else {
+					if ($notify_agent_note && $sub->email_agent_note) {
+						$types[] = 'email';
+					}
 					if ($notify_agent_reply && $sub->email_agent_activity) {
 						$types[] = 'email';
 					}
@@ -249,6 +256,9 @@ class NotifyListBuilder
 				if ($sub->alert_property_change) {
 					$types[] = 'alert';
 				} else {
+					if ($notify_agent_note && $sub->alert_agent_note) {
+						$types[] = 'alert';
+					}
 					if ($notify_agent_reply && $sub->alert_agent_activity) {
 						$types[] = 'alert';
 					}

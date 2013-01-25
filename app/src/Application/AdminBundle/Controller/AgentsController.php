@@ -573,15 +573,15 @@ class AgentsController extends AbstractController
 				// Default notifications
 				$agent_id = $agent->getId();
 
-				if ($this->container->getSetting('core_tickets.disable_agent_notifications')) {
+				if (!$this->container->getSetting('core_tickets.disable_agent_notifications')) {
 					$this->db->executeUpdate("
-						INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
+						INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_agent_note`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_agent_note`, `alert_property_change`)
 						VALUES
-							(NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+							(NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 					");
 				}
 
@@ -1046,15 +1046,15 @@ class AgentsController extends AbstractController
 			if ($is_new) {
 				$agent_id = $agent->getId();
 
-				if ($this->container->getSetting('core_tickets.disable_agent_notifications')) {
+				if (!$this->container->getSetting('core_tickets.disable_agent_notifications')) {
 					$this->db->executeUpdate("
-						INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
+						INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_agent_note`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_agent_note`, `alert_property_change`)
 						VALUES
-							(NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-							(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+							(NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+							(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 					");
 				}
 
