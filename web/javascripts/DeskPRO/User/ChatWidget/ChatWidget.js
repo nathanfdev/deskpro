@@ -108,7 +108,8 @@ var DpChatWidget = new (function() {
 		protocol: null,
 		deskproUrl: null,
 		btnClass: 'dp-chat-btn',
-		onInitCallback: null
+		onInitCallback: null,
+		languageId: 0
 	};
 
 	var self = this;
@@ -307,6 +308,9 @@ var DpChatWidget = new (function() {
 			}
 
 			qs += '&parent_url=' + encodeURIComponent(window.location.href);
+			if (options.languageId) {
+				qs += '&language_id=' + options.languageId;
+			}
 
 			frameSrc = options.deskproUrl + 'widget/chat.html' + qs;
 			chatIframe = document.createElement('iframe');
@@ -398,6 +402,10 @@ var DpChatWidget = new (function() {
 
 		if (DpChatWidget_Options.onInitCallback) {
 			options.onInitCallback = DpChatWidget_Options.onInitCallback;
+		}
+
+		if (DpChatWidget_Options.languageId) {
+			options.languageId = parseInt(DpChatWidget_Options.languageId);
 		}
 
 		// Now load our session script

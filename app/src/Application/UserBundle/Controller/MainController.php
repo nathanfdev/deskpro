@@ -309,42 +309,6 @@ HTML;
 
 	public function quickSetLanguageAction()
 	{
-		if ($this->person->getId()) {
-			$this->ensureRequestToken('lang_chooser');
-		}
-
-		$lang_id = $this->in->getUint('language_id');
-		$lang = $this->container->getDataService('Language')->get($lang_id);
-
-		// Ignore invalid langs
-		if (!$lang) {
-			return $this->redirectRoute('user');
-		}
-
-		$this->person->language = $lang;
-		App::getTranslator()->setLanguage($lang);
-
-		$this->db->beginTransaction();
-		try {
-
-			if (!$this->person->isGuest()) {
-				$this->em->persist($this->person);
-			}
-
-			$this->session->set('language_id', $lang->getId());
-			$this->session->save();
-
-			$this->em->flush();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
-
-		// Set cookie too so it lasts after session expires
-		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $lang->getId(), 'never', true);
-		$cookie->send();
-
 		if ($return = $this->in->getString('return')) {
 			return $this->redirect($return);
 		}
