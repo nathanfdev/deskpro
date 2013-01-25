@@ -309,6 +309,10 @@ class KernelErrorHandler
 			$str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
 			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
 			$str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+			if (!empty($errinfo['url'])) {
+				$str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+				$str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
+			}
 			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
 		} else {
 			$line = sprintf("DeskPRO Error: %s (%s line %s): %s", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
@@ -316,6 +320,10 @@ class KernelErrorHandler
 			$str[] = sprintf("\tType: %s\n", $errinfo['errname']);
 			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
 			$str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+			if (!empty($errinfo['url'])) {
+				$str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+				$str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
+			}
 			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
 		}
 
@@ -360,6 +368,10 @@ class KernelErrorHandler
 			@fclose($fh);
 		}
 
+		$throttle_id = 'email_error';
+		if (isset($errinfo['email_throttle_id'])) {
+			$throttle_id = $errinfo['email_throttle_id'];
+		}
 		if (
 			isset($errinfo['email'])
 			&& $errinfo['email']
@@ -367,7 +379,7 @@ class KernelErrorHandler
 			&& DP_TECHNICAL_EMAIL
 			&& !isset($GLOBALS['DP_CONFIG']['debug']['no_report_errors'])
 			&& function_exists('dp_should_throttle_action')
-			&& !dp_should_throttle_action('email_error', 300)
+			&& !dp_should_throttle_action($throttle_id, 300)
 		) {
 
 			if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
@@ -376,14 +388,26 @@ class KernelErrorHandler
 
 			$fallback_send = true;
 
+			if (isset($errinfo['email_body'])) {
+				$email_str = $errinfo['email_body'] . "\n\n\n-------------------------\n\n\n" . $str;
+			} else {
+				$email_str = $str;
+			}
+
+			$email_subject = $line;
+			if (isset($errinfo['email_subject'])) {
+				$email_subject = $errinfo['email_subject'];
+			}
+
 			if (class_exists('Application\DeskPRO\App')) {
 				try {
 					$message = App::getMailer()->createMessage();
 					$message->setTo(DP_TECHNICAL_EMAIL);
 					$message->setSubject($line);
-					$message->setBody($str, 'text/plain');
-					App::getMailer()->send($message);
-					$fallback_send = false;
+					$message->setBody($email_str, 'text/plain');
+					if (App::getMailer()->sendNow($message)) {
+						$fallback_send = false;
+					}
 				} catch (\Exception $e) {}
 			}
 
@@ -434,26 +458,43 @@ class KernelErrorHandler
 		}
 
 		$errinfo = array(
-			'type'           => 'exception',
-			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
-			'exception'      => $exception,
-			'exception_type' => get_class($exception),
-			'die'            => true,
-			'pri'            => 'ERR',
-			'trace'          => $trace,
-			'summary'        => $summary,
-			'errstr'         => $errstr,
-			'errname'        => 'EXCEPTION',
-			'errno'          => $errno,
-			'errfile'        => $errfile,
-			'errline'        => $errline,
-			'display'        => $display,
-			'build'          => DP_BUILD_TIME,
-			'process_log'    => implode("\n", self::$process_log),
-			'context_data'   => $context_data,
-			'error_time'     => microtime(true),
-			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0
+			'type'              => 'exception',
+			'session_name'      => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
+			'exception'         => $exception,
+			'exception_type'    => get_class($exception),
+			'die'               => true,
+			'pri'               => 'ERR',
+			'trace'             => $trace,
+			'summary'           => $summary,
+			'errstr'            => $errstr,
+			'errname'           => 'EXCEPTION',
+			'errno'             => $errno,
+			'errfile'           => $errfile,
+			'errline'           => $errline,
+			'display'           => $display,
+			'build'             => DP_BUILD_TIME,
+			'process_log'       => implode("\n", self::$process_log),
+			'context_data'      => $context_data,
+			'error_time'        => microtime(true),
+			'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+			'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
 		);
+
+		$url = '';
+		if (defined('DP_REQUEST_URL')) {
+			$url = DP_REQUEST_URL;
+		} elseif (defined('DP_INTERFACE')) {
+			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+			if (class_exists('Application\\DeskPRO\\App')) {
+				try {
+					$url = App::getRequest()->getUri();
+				} catch (\Exception $e) {}
+			}
+		}
+		if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+			$url = 'Command: ' . implode(' ', $_SERVER['argv']);
+		}
+		$errinfo['url'] = $url;
 
 		if (self::isNoReportException($exception)) {
 			$errinfo['no_send_error'] = true;
@@ -614,26 +655,43 @@ class KernelErrorHandler
 
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
+		$url = '';
+		if (defined('DP_REQUEST_URL')) {
+			$url = DP_REQUEST_URL;
+		} elseif (defined('DP_INTERFACE')) {
+			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+			if (class_exists('Application\\DeskPRO\\App')) {
+				try {
+					$url = App::getRequest()->getUri();
+				} catch (\Exception $e) {}
+			}
+		}
+		if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+			$url = 'Command: ' . implode(' ', $_SERVER['argv']);
+		}
+
 		return array(
-			'type'            => 'error',
-			'session_name'    => self::genSessionName(),
-			'die'             => $die,
-			'pri'             => $pri,
-			'trace'           => $trace,
-			'summary'         => $summary,
-			'errstr'          => $errstr,
-			'errname'         => $errname,
-			'errno'           => $errno,
-			'errfile'         => $errfile,
-			'errline'         => $errline,
-			'display'         => $display,
-			'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-			'process_log'     => implode("\n", self::$process_log),
-			'context_data'    => $context_data,
-			'error_time'     => microtime(true),
-			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
-			'no_send_error'  => $no_send_error,
-			'set_setting'    => $set_setting
+			'type'               => 'error',
+			'session_name'       => self::genSessionName(),
+			'die'                => $die,
+			'pri'                => $pri,
+			'trace'              => $trace,
+			'summary'            => $summary,
+			'errstr'             => $errstr,
+			'errname'            => $errname,
+			'errno'              => $errno,
+			'errfile'            => $errfile,
+			'errline'            => $errline,
+			'display'            => $display,
+			'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+			'process_log'        => implode("\n", self::$process_log),
+			'context_data'       => $context_data,
+			'error_time'        => microtime(true),
+			'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+			'no_send_error'     => $no_send_error,
+			'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+			'set_setting'       => $set_setting,
+			'url'               => $url,
 		);
 	}
 
