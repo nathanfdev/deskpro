@@ -118,7 +118,7 @@ class SetGatewayAddressAction extends AbstractAction
 		}
 
 		if (!$this->gateway_address) {
-			return '';
+			return "<error>Unknown #{$this->gateway_address}</error>";
 		}
 		return 'Set gateway address to ' . $this->gateway_address->match_pattern;
 	}

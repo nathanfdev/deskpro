@@ -7,6 +7,11 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 		var self = this;
 		var uls = $('ul.trigger-set');
 
+		$('span.term-error').each(function() {
+			var row = $(this).closest('li');
+			row.addClass('has-term-error')
+		});
+
 		var updateRunOrderDisplay = function() {
 			uls.each(function() {
 				var x = 0;

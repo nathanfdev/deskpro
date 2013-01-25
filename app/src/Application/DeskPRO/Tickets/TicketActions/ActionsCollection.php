@@ -386,18 +386,28 @@ class ActionsCollection
 	}
 
 
-	public function getDescriptions()
+	public function getDescriptions($as_html)
 	{
 		$desc = array();
 		foreach ($this->actions as $action) {
-			$desc[] = $action->getDescription();
+			$desc[] = $action->getDescription($as_html);
 		}
 
 		foreach ($this->applied_modifiers as $mod) {
-			$desc[] = $mod->getDescription();
+			$desc[] = $mod->getDescription($as_html);
 		}
 
 		$desc = \Orb\Util\Arrays::removeFalsey($desc);
+
+		if ($as_html) {
+			foreach ($desc as &$d) {
+				$d = str_replace(
+					array('<error>', '</error>'),
+					array('<span class="term-error">', '</span>'),
+					$d
+				);
+			}
+		}
 
 		return $desc;
 	}

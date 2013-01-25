@@ -110,9 +110,13 @@ class ProductAction extends AbstractAction
 			return $tr->phrase('agent.tickets.remove_product_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:Product')->getFullNames();
-			if (!isset($names[$this->product_id])) return '';
+			if (!isset($names[$this->product_id])) {
+				$name = "<error>Unknown #{$this->product_id}</error>";
+			} else {
+				$name = $names[$this->product_id];
+			}
 
-			return $tr->phrase('agent.tickets.set_product_action', array('product' => $names[$this->product_id]));
+			return $tr->phrase('agent.tickets.set_product_action', array('product' => $name));
 		}
 	}
 }

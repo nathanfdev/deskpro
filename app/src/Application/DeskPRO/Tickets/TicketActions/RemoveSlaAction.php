@@ -136,7 +136,13 @@ class RemoveSlaAction extends AbstractAction
 			$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 			$titles = array();
 			foreach ($slas AS $sla) {
-				$titles[] = $sla->title;
+				$titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
+			}
+
+			foreach ($this->sla_ids as $id) {
+				if (!isset($titles[$id])) {
+					$titles[$id] = "<error>Unknown #$id</error>";
+				}
 			}
 
 			return $tr->phrase('agent.tickets.remove_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));

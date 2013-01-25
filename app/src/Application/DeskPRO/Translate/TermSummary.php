@@ -953,6 +953,16 @@ class TermSummary
 
 		if ($title_callback) {
 			$title = call_user_func($title_callback, $choice, $field);
+
+			if (is_array($title)) {
+				foreach ((array)$choice as $id) {
+					if (!isset($title[$id])) {
+						$title[$id] = '<error>Unknow #' . $id . '</error>';
+					}
+				}
+			} else if (!$title) {
+				$title = '<error>Unknow #' . $choice . '</error>';
+			}
 		} else {
 			$title = $choice;
 		}

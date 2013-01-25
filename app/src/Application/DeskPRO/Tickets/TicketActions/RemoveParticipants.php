@@ -117,12 +117,19 @@ class RemoveParticipants extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
 		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
 		if (!$people) return '';
 
 		$names = array();
 		foreach ($people as $p) {
-			$names[] = $p->getDisplayName();
+			$names[$p->id] = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
+		}
+
+		foreach ($this->remove_people_ids as $id) {
+			if (!isset($names[$id])) {
+				$names[$id] = "<error>Unknown #$id</error>";
+			}
 		}
 
 		return $tr->phrase('agent.tickets.remove_participants_action', array('parts' => implode(', ', $names)));

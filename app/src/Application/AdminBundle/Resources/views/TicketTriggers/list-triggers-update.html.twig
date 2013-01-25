@@ -41,8 +41,8 @@
 							<br />
 						{% endif %}
 
-						{% set all_terms = trigger.getAllTermDescriptions() %}
-						{% set any_terms = trigger.getAnyTermDescriptions() %}
+						{% set all_terms = trigger.getAllTermDescriptions(true) %}
+						{% set any_terms = trigger.getAnyTermDescriptions(true) %}
 						{% if all_terms or any_terms %}
 							{% if all_terms %}
 								<em class="op ctrl">IF ALL:</em>
@@ -50,7 +50,7 @@
 									{% if loop.index > 1 %}
 										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
 									{% endif %}
-									<span class="term">{{ desc }}</span>
+									<span class="term">{{ desc|raw }}</span>
 								{% endfor %}
 							{% endif %}
 
@@ -61,7 +61,7 @@
 									{% if loop.index > 1 %}
 										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
 									{% endif %}
-									<span class="term">{{ desc }}</span>
+									<span class="term">{{ desc|raw }}</span>
 								{% endfor %}
 							{% endif %}
 						{% elseif not trigger.title %}

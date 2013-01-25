@@ -119,11 +119,17 @@ class AddParticipantsAction extends AbstractAction
 	{
         $tr = App::getTranslator();
 		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
-		if (!$people) return '';
 
 		$names = array();
 		foreach ($people as $p) {
-			$names[] = $p->getDisplayName();
+			$n = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
+			$names[$p->id] = $n;
+		}
+
+		foreach ($this->add_people_ids as $id) {
+			if (!isset($names[$id])) {
+				$names[$id] = "<error>Unknown #$id</error>";
+			}
 		}
 
 		return $tr->phrase('agent.tickets.add_parts_action', array('parts' => implode(', ', $names)));

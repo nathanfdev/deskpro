@@ -110,9 +110,13 @@ class PriorityAction extends AbstractAction
 			return $tr->phrase('agent.tickets.remove_priority_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketPriority')->getNames();
-			if (!isset($names[$this->priority_id])) return '';
+			if (!isset($names[$this->priority_id])) {
+				$name = "<error>Unknown #{$this->priority_id}</error>";
+			} else {
+				$name = $as_html ? htmlspecialchars($names[$this->priority_id]) : $names[$this->priority_id];
+			}
 
-			return $tr->phrase('agent.tickets.set_priority_action', array('priority' => $names[$this->priority_id]));
+			return $tr->phrase('agent.tickets.set_priority_action', array('priority' => $name));
 		}
 	}
 }

@@ -110,9 +110,13 @@ class CategoryAction extends AbstractAction
 			return $tr->phrase('agent.tickets.remove_category_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketCategory')->getFullNames();
-			if (!isset($names[$this->category_id])) return '';
+			if (!isset($names[$this->category_id])) {
+				$name = "<error>Unknown #{$this->category_id}</error>";
+			} else {
+				$name = $names[$this->category_id];
+			}
 
-			return $tr->phrase('agent.tickets.set_category_action', array('category' => $names[$this->category_id]));
+			return $tr->phrase('agent.tickets.set_category_action', array('category' => $name));
 		}
 	}
 }

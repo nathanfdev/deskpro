@@ -335,9 +335,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return array
 	 */
-	public function getAllTermDescriptions()
+	public function getAllTermDescriptions($as_html = false)
 	{
-		$descs = $this->getAllTicketTerms()->getDescriptions();
+		$descs = $this->getAllTicketTerms()->getDescriptions($as_html);
 		return $descs;
 	}
 
@@ -345,9 +345,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return array
 	 */
-	public function getAnyTermDescriptions()
+	public function getAnyTermDescriptions($as_html = false)
 	{
-		$descs = $this->getAnyTicketTerms()->getDescriptions();
+		$descs = $this->getAnyTicketTerms()->getDescriptions($as_html);
 		return $descs;
 	}
 
@@ -380,9 +380,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return array
 	 */
-	public function getActionDescriptions()
+	public function getActionDescriptions($as_html = true)
 	{
-		return $this->getTicketActionsCollection()->getDescriptions();
+		return $this->getTicketActionsCollection()->getDescriptions($as_html);
 	}
 
 

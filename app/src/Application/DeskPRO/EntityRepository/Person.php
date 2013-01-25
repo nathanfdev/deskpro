@@ -95,6 +95,17 @@ class Person extends AbstractEntityRepository
 		return $priority;
 	}
 
+	public function getAgentName($id)
+	{
+		$all = $this->getAgentNames(array($id));
+
+		if (isset($all[$id])) {
+			return $all[$id];
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * Get agent names

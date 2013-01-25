@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 class AddAgentNotifyModifier implements CollectionModifierInterface
 {
@@ -94,10 +95,24 @@ class AddAgentNotifyModifier implements CollectionModifierInterface
 		}
 
 		if ($agent_ids) {
-			$desc_agents = array_merge($desc_agents, App::getEntityRepository('DeskPRO:Person')->getAgentNames($agent_ids));
+			$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames($agent_ids);
+			$titles = Arrays::func($titles, 'htmlspecialchars');
+			foreach ($agent_ids as $id) {
+				if (!isset($titles[$id])) {
+					$titles[$id] = "<error>Unknown #$id</error>";
+				}
+			}
+			$desc_agents = array_merge($desc_agents, $titles);
 		}
 		if ($agent_team_ids) {
-			$desc_teams  = array_merge($desc_agents, App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($agent_team_ids));
+			$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($agent_team_ids);
+			$titles = Arrays::func($titles, 'htmlspecialchars');
+			foreach ($agent_ids as $id) {
+				if (!isset($titles[$id])) {
+					$titles[$id] = "<error>Unknown #$id</error>";
+				}
+			}
+			$desc_teams  = array_merge($desc_agents, $titles);
 		}
 
 		$parts = array();

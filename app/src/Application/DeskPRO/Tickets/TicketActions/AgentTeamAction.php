@@ -176,10 +176,11 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
 		} elseif ($this->agent_team_id == 0) {
 			return $tr->phrase('agent.tickets.unassign_team');
 		} else {
-			$name = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($this->agent_team_id);
-			if (!$name) return '';
-
-			$name = array_pop($name);
+			$name = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamName($this->agent_team_id);
+			if ($name !== null && $as_html) {
+				$name = htmlspecialchars($name);
+			}
+			if ($name === null) $name = "<error>Unknown #{$this->agent_team_id}</error>";
 
 			return $tr->phrase('agent.tickets.assign_team_action', array('name' => $name));
 		}

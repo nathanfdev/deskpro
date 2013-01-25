@@ -144,7 +144,16 @@ class SetSlaCompleteAction extends AbstractAction
 				$titles = null;
 			} else {
 				$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
-				$titles = implode(', ', array_map(function($s) { return $s->title; }, $slas));
+				$titles = array();
+				foreach ($slas as $s) {
+					$titles[$s->id] = $as_html ? htmlspecialchars($s->title) : $s->title;
+				}
+
+				foreach ($sla_ids as $id) {
+					if (!isset($titles[$id])) {
+						$titles[$id] = "<error>Unknown #$id</error>";
+					}
+				}
 			}
 
 			if ($complete) {

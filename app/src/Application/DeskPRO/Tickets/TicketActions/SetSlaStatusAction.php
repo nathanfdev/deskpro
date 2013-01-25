@@ -144,7 +144,7 @@ class SetSlaStatusAction extends AbstractAction
 			$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
 			return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
 				'sla_status' => $value,
-				'sla' => $sla ? $sla->title : '[unknown]'
+				'sla' => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>')
 			));
 		} else {
 			return $tr->phrase('agent.tickets.set_sla_status_action', array(

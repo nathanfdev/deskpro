@@ -109,9 +109,13 @@ class WorkflowAction extends AbstractAction
 			return $tr->phrase('agent.tickets.remove_workflow_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames();
-			if (!isset($names[$this->workflow_id])) return '';
+			if (!isset($names[$this->workflow_id])) {
+				$name = "<error>Unknown #{$this->workflow_id}</error>";
+			} else {
+				$name = $as_html ? htmlspecialchars($names[$this->workflow_id]) : $names[$this->workflow_id];
+			}
 
-			return $tr->phrase('agent.tickets.set_workflow_action', array('workflow' => $names[$this->workflow_id]));
+			return $tr->phrase('agent.tickets.set_workflow_action', array('workflow' => $name));
 		}
 	}
 }

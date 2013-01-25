@@ -183,8 +183,11 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 			}
 			return $tr->phrase('agent.tickets.unassign_action');
 		} else {
-			$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames(array($this->agent_id));
-			if (!isset($name[$this->agent_id])) return '';
+			$name = App::getEntityRepository('DeskPRO:Person')->getAgentName($this->agent_id);
+			if ($name !== null && $as_html) {
+				$name = htmlspecialchars($name);
+			}
+			if ($name === null) $name = "<error>Unknown #{$this->agent_id}</error>";
 
 			return $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name[$this->agent_id]));
 		}

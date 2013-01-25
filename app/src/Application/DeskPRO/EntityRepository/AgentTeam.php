@@ -99,6 +99,16 @@ class AgentTeam extends AbstractEntityRepository
 		return $team;
 	}
 
+	public function getTeamName($id)
+	{
+		$all = $this->getTeamNames(array($id));
+		if (!isset($all[$id])) {
+			return null;
+		}
+
+		return $all[$id];
+	}
+
 	public function getTeamNames($for_ids = null)
 	{
 		$ret = array();

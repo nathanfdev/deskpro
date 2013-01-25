@@ -107,8 +107,12 @@ class LanguageAction extends AbstractAction
 		$tr = App::getTranslator();
 
 		$names = App::getDataService('Language')->getTitles();
-		if (!isset($names[$this->language_id])) return '';
+		if (!isset($names[$this->language_id])) {
+			$name = "<error>Unknown #{$this->language_id}</error>";
+		} else {
+			$name = $as_html ? htmlspecialchars($names[$this->language_id]) : $names[$this->language_id];
+		}
 
-		return $tr->phrase('agent.tickets.set_language_action', array('language' => $names[$this->language_id]));
+		return $tr->phrase('agent.tickets.set_language_action', array('language' => $name));
 	}
 }

@@ -121,9 +121,14 @@ class CallWebHookAction extends AbstractAction
 			return '';
 		} else {
 			$titles = App::getEntityRepository('DeskPRO:WebHook')->getHookTitles();
-			if (!isset($titles[$this->webhook_id])) return '';
 
-			return $tr->phrase('agent.tickets.call_webhook_action', array('hook' => $titles[$this->webhook_id]));
+			$name = isset($titles[$this->webhook_id]) ? $titles[$this->webhook_id] : null;
+			if ($name !== null && $as_html) {
+				$name = htmlspecialchars($name);
+			}
+			if ($name === null) $name = "<error>Unknown #{$this->agent_id}</error>";
+
+			return $tr->phrase('agent.tickets.call_webhook_action', array('hook' => $name));
 		}
 	}
 }

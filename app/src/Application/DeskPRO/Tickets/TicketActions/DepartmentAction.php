@@ -132,8 +132,12 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
 		$tr = App::getTranslator();
 
 		$names = App::getDataService('Department')->getFullNames();
-		if (!isset($names[$this->department_id])) return '';
+		if (!isset($names[$this->department_id])) {
+			$name = "<error>Unknown #{$this->department_id}</error>";
+		} else {
+			$name = $names[$this->department_id];
+		}
 
-		return $tr->phrase('agent.tickets.set_department_action', array('department' => $names[$this->department_id]));
+		return $tr->phrase('agent.tickets.set_department_action', array('department' => $name));
 	}
 }

@@ -1562,7 +1562,7 @@ class TicketTerms
 	/**
 	 * @return array
 	 */
-	public function getDescriptions()
+	public function getDescriptions($as_html = false)
 	{
 		$descs = array();
         $tr = App::getTranslator();
@@ -1580,12 +1580,12 @@ class TicketTerms
 			$choice = $info['options'];
 
 			if (strpos($op, 'changed') !== false) {
-				$term = $this->getTermDescription($term, $op, $choice);
+				$term = $this->getTermDescription($term, $op, $choice, $as_html);
 				if ($term) {
 					$descs[] = $term;
 				}
 			} else {
-				$term = $this->getTermDescription($term, $op, $choice);
+				$term = $this->getTermDescription($term, $op, $choice, $as_html);
 				if ($term) {
 					$descs[] = $term;
 				} else {
@@ -1606,7 +1606,7 @@ class TicketTerms
 	 * @param mixed $choice
 	 * @return string
 	 */
-	public function getTermDescription($term, $op, $choice)
+	public function getTermDescription($term, $op, $choice, $as_html = false)
 	{
 		$term_summary = new \Application\DeskPRO\Translate\TermSummary();
 		if (strpos($term, 'person_') === 0) {
@@ -1620,6 +1620,15 @@ class TicketTerms
 
 		if (!$summary) {
 			$summary = $term_summary->getSummary($term, $op, $choice);
+		}
+
+		if ($as_html) {
+			$summary = htmlspecialchars($summary);
+			$summary = str_replace(
+				array('&lt;error&gt;', '&lt;/error&gt;'),
+				array('<span class="term-error">', '</span>'),
+				$summary
+			);
 		}
 
 		return $summary;
