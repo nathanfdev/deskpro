@@ -1261,12 +1261,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($ev->cancel OR !$fwd_cutter->isValid()) {
 			$this->logMessage('[TicketGatewayProcessor] Invalid forward');
-			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD;
+
+			if ($fwd_cutter->getErrorCode() == 'unknown_email') {
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD_EMAIL;
+			} else {
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD;
+			}
 
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
 				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				'error'   => $this->error
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
 			$message->attach(\Swift_Attachment::newInstance(

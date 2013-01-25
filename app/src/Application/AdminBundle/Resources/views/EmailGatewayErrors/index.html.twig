@@ -99,6 +99,9 @@
 						{% elseif source.error_code == 'invalid_fwd' %}
 							Invalid Agent Forward
 							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email was detected as a forwarded message, but the format could not be parsed."></span>
+						{% elseif source.error_code == 'invalid_fwd_email' %}
+							Invalid Agent Forward (Bad user email address)
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email was detected as a forwarded message, but the message did not contain a valid email address for the user"></span>
 						{% else %}
 							{{ source.error_code_title }}
 						{% endif %}

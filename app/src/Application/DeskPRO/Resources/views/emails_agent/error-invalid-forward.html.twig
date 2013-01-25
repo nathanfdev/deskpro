@@ -1,7 +1,20 @@
 <dp:subject>Error with your forwarded email: {{ subject }}</dp:subject>
 We have detected the email you just sent as a forwarded message.
-However, we were unable to determine the original email or original author so no new
-ticket was created.
+
+{% if error == 'invalid_fwd_email' %}
+	However, we were <b>unable to verify the email address</b> of the user in the original
+	message. You should check that your email client added the email address to the message.
+	Some clients may only show the name, in which case you can correct this error by manually
+	adding the email address.
+{% else %}
+	However, we were <b>unable to parse the original message</b> so were unable to process
+	the forward into a new ticket.
+{% endif %}
+
+<br /><br /
+
+Because of this error, your email has been discarded. No new ticket was created and no notifications or any
+other action has been peformed.
 
 <br /><br />
 

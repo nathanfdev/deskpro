@@ -41,11 +41,12 @@ class ForwardCutter
 {
 	protected $body;
 	protected $is_html;
-	protected $is_valid = false;
 
 	protected $forwarded_message;
 	protected $forward_info;
 	protected $reply;
+
+	protected $error_code = null;
 
 	/**
 	 * @var \Application\DeskPRO\EmailGateway\Cutter\Def\ForwardDef
@@ -93,12 +94,10 @@ class ForwardCutter
 	{
 		$this->forward_info = $this->cutter->getForwardInfo($this->body, $this->is_html);
 
-		if (
-			$this->forward_info['fwd_message_body']
-			&& $this->forward_info['fwd_from_email']
-			&& \Orb\Validator\StringEmail::isValueValid($this->forward_info['fwd_from_email'])
-		) {
-			$this->is_valid = true;
+		if (!$this->forward_info['fwd_message_body']) {
+			$this->error_code = 'unknown_body';
+		} elseif (!$this->forward_info['fwd_from_email'] || !\Orb\Validator\StringEmail::isValueValid($this->forward_info['fwd_from_email'])) {
+			$this->error_code = 'unknown_email';
 		}
 	}
 
@@ -119,9 +118,17 @@ class ForwardCutter
 	 */
 	public function isValid()
 	{
-		return $this->is_valid;
+		return $this->error_code === null;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getErrorCode()
+	{
+		return $this->error_code;
+	}
 
 
 	/**

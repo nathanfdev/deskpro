@@ -69,6 +69,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	const ERR_DESKPRO_EMAIL     = 'deskpro_email';
 	const ERR_PERM_INSUFFICIENT = 'perm_insufficient';
 	const ERR_INVALID_FWD       = 'invalid_fwd';
+	const ERR_INVALID_FWD_EMAIL = 'invalid_fwd_email';
 	const ERR_MISSING_MARKER    = 'missing_marker';
 
 	/**
@@ -237,7 +238,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 			case self::ERR_AUTH_MISSING:        return 'Missing Auth Code';
 			case self::ERR_DESKPRO_EMAIL:       return 'DeskPRO Address';
 			case self::ERR_PERM_INSUFFICIENT:   return 'Insufficient Permissions';
-			case self::ERR_INVALID_FWD:         return 'Invalid Forward';
+			case self::ERR_INVALID_FWD:         return 'Invalid Forward: Could not parse';
+			case self::ERR_INVALID_FWD_EMAIL:   return 'Invalid Forward: Invalid user email address';
 			case self::ERR_MISSING_MARKER:      return 'Missing Marker';
 		}
 
