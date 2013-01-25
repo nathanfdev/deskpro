@@ -15,10 +15,12 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 		var form = $('form', this.el);
 
-		DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'));
-		this.el.find('.dp-form-row.new-picture').bind('fileuploadadd', function() {
-			$('.files', form).empty();
-		});
+		if (this.el.find('.dp-form-row.new-picture')[0]) {
+			DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'));
+			this.el.find('.dp-form-row.new-picture').bind('fileuploadadd', function() {
+				$('.files', form).empty();
+			});
+		}
 
 		var startEmail = $('#settings_profile_email').val();
 
