@@ -26,31 +26,27 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
-namespace Application\ReportBundle\Chart\DeskPRO;
-
-/**
- * Display a simple drill down change chart
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
  */
-class SimpleDrillDownChart extends AbstractDrillDownChart
+
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1359106576 extends AbstractBuild
 {
-	const CHART_IDENTIFIER = 'simpleDrillDown';
-
-	public function __construct()
+	public function run()
 	{
-		$this->view_chart_vendor 	= 'DeskPRO';
-		$this->view_chart_class 	= 'SimpleDrillDown';
-	}
+		$this->out("Remove old trends tables and tasks");
+		$this->execMutateSql("DELETE FROM `worker_jobs` WHERE `id` IN ('cleanup_stats','generate_stats')");
 
-	/**
-	 * Get the Human Friendly label for the chart
-	 */
-	public static function getChartLabel()
-	{
-		return 'Simple Drilldown Chart';
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+		$this->execMutateSql("DROP TABLE stat_value_group");
+		$this->execMutateSql("DROP TABLE stat_value");
+		$this->execMutateSql("DROP TABLE report_dashboard_stat");
+		$this->execMutateSql("DROP TABLE stat");
+		$this->execMutateSql("DROP TABLE report_dashboard");
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
 	}
 }

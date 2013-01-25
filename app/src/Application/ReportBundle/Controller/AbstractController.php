@@ -43,12 +43,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public $person;
 
-	/**
-	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Entity\ReportDashboard[]
-	 */
-	public $dashboards;
-
 	protected function init()
 	{
 		parent::init();
@@ -67,9 +61,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				$cas->process();
 			}
 		}
-
-		$this->dashboards = $this->em->getRepository('DeskPRO:ReportDashboard')->getDashboards();
-		$this->get('templating.globals')->setVariable('dashboards', $this->dashboards);
 	}
 
 

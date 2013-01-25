@@ -485,39 +485,6 @@ $CONFIG['report_builder'] = array(
 	),
 );
 
-/**
- * Report Dashboard specific, maily files for AM Chart vendor
- */
-$CONFIG['report_dashboard'] = array(
-	'out'	=> 'js/reports_dashboard.js',
-	'files' => array(
-		'vendor/jquery/sparkline/jquery.sparkline.min.js',
-		// swf object (version 2.2) is used to detect if flash is installed and include swf in the page
-		'vendor/amcharts/flash/swfobject.js',
-		// following scripts required for JavaScript version. The order is important!
-		'vendor/amcharts/javascript/amcharts.js',
-		'vendor/amcharts/javascript/amfallback.js',
-		'vendor/amcharts/javascript/raphael.js',
-		// Base Charts
-		'javascripts/DeskPRO/Report/Chart/Base/Basic.js',
-		// AM Chart Charts
-		'javascripts/DeskPRO/Report/Chart/AmChart/Base.js',
-		'javascripts/DeskPRO/Report/Chart/AmChart/Column.js',
-		'javascripts/DeskPRO/Report/Chart/AmChart/Line.js',
-		'javascripts/DeskPRO/Report/Chart/AmChart/Pie.js',
-		// DeskPRO Charts
-		'javascripts/DeskPRO/Report/Chart/DeskPRO/Base.js',
-		'javascripts/DeskPRO/Report/Chart/DeskPRO/SimpleVariation.js',
-		'javascripts/DeskPRO/Report/Chart/DeskPRO/SimpleDrillDown.js',
-		'javascripts/DeskPRO/Report/Chart/DeskPRO/DetailedDrillDown.js',
-		// App related files
-		'javascripts/DeskPRO/Report/PageHandler/Dashboard.js',
-		'javascripts/DeskPRO/Report/Dashboard/Widget.js',
-		'javascripts/DeskPRO/Report/Dashboard/NewWidget.js',
-		'javascripts/DeskPRO/Report/Dashboard/EditWidget.js',
-		'javascripts/DeskPRO/Report/PageHandler/Trend.js',
-	),
-);
 
 $CONFIG['report_report_ui'] = array(
 	'out' => 'js/report-ui.js',

@@ -950,18 +950,6 @@ $em->persist($j);
 $em->flush();
 
 
-##BEGIN:create_jobs.cleanup_stats##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_stats';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Stats';
-$j['description'] = 'Cleanup stat records that are outside of the reporting scope';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupStats';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupStats::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
 ##BEGIN:create_jobs.cleanup_sendmail##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_sendmail';
@@ -1031,18 +1019,6 @@ $j['title'] = 'Ensure Search Tables';
 $j['description'] = 'Checks to make sure volatile search tables are fileld (i.e., in event of a reboot they are re-filled)';
 $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\EnsureSearchTables';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\EnsureSearchTables::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
-##BEGIN:create_jobs.generate_stats##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'generate_stats';
-$j['worker_group'] = 'stats';
-$j['title'] = 'Generates Stats';
-$j['description'] = 'Generates statistical data for reports';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\GenerateStats';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\GenerateStats::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
 
@@ -1453,89 +1429,4 @@ $em->getConnection()->executeUpdate("
 		($ugid, NULL, '1', 'agent_publish.validate'),
 		($ugid, NULL, '1', 'agent_general.signature'),
 		($ugid, NULL, '1', 'agent_general.signature_rte')
-");
-
-################################################################################
-# Default base stats
-################################################################################
-
-$em->getConnection()->executeUpdate("
-	INSERT INTO `report_dashboard` (`id`, `author_id`, `title`, `number_columns`, `disabled`, `date_created`, `display_order`)
-	VALUES
-		(1, NULL, '{$translate->phrase('agent.defaults.stat_dash_today')}', 4, 0, '2012-05-01 08:56:20', 20),
-		(2, NULL, '{$translate->phrase('agent.defaults.stat_dash_monthly')}', 4, 0, '2012-05-01 09:09:42', 30),
-		(3, NULL, '{$translate->phrase('agent.defaults.stat_dash_yearly')}', 4, 0, '2012-05-01 09:12:09', 40),
-		(4, NULL, '{$translate->phrase('agent.defaults.stat_dash_backlog')}', 4, 0, '2012-05-01 09:15:22', 50),
-		(5, NULL, '{$translate->phrase('agent.defaults.stat_dash_agent_performance')}', 4, 0, '2012-05-01 09:24:23', 60)
-");
-
-$em->getConnection()->executeUpdate("
-	INSERT INTO `stat` (`id`, `author_id`, `parent_stat_id`, `title`, `criteria`, `grouping_ref`, `stat_concept_class`, `variation`, `generate_stats`, `disabled`, `run_frequency`, `last_run`, `date_created`)
-	VALUES
-		(1,  NULL, NULL, 'Tickets awaiting agent', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:07:46'),
-		(2,  NULL, NULL, 'Rate of tickets processed', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 1, 0, 'hourly', NULL, '2012-07-27 07:08:22'),
-		(3,  NULL, NULL, 'First response time', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:09:29'),
-		(4,  NULL, NULL, 'Open tickets', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:10:06'),
-		(5,  NULL, NULL, 'Open tickets by department', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:11:07'),
-		(6,  NULL, NULL, 'Open tickets by team', X'613A303A7B7D', 'tickets.agent_team_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:11:46'),
-		(7,  NULL, NULL, 'Total user waiting time by agent', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:12:32'),
-		(8,  NULL, NULL, 'Open Tickets', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:18:31'),
-		(9,  NULL, NULL, 'Tickets awaiting agent', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:07:46'),
-		(10, NULL, NULL, 'Rate of tickets processed', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 1, 0, 'daily', NULL, '2012-07-27 07:08:22'),
-		(11, NULL, NULL, 'First response time', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:09:29'),
-		(12, NULL, NULL, 'Open tickets', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:10:06'),
-		(13, NULL, NULL, 'Open tickets by department', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:11:07'),
-		(14, NULL, NULL, 'Open tickets by team', X'613A303A7B7D', 'tickets.agent_team_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:11:46'),
-		(15, NULL, NULL, 'Total user waiting time by agent', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:12:32'),
-		(16, NULL, NULL, 'Open Tickets', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:18:31'),
-		(17, NULL, NULL, 'Tickets awaiting agent', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:07:46'),
-		(18, NULL, NULL, 'Rate of tickets processed', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 1, 0, 'monthly', NULL, '2012-07-27 07:08:22'),
-		(19, NULL, NULL, 'First response time', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:09:29'),
-		(20, NULL, NULL, 'Open tickets', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:10:06'),
-		(21, NULL, NULL, 'Open tickets by department', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:11:07'),
-		(22, NULL, NULL, 'Open tickets by team', X'613A303A7B7D', 'tickets.agent_team_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:11:46'),
-		(23, NULL, NULL, 'Total user waiting time by agent', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:12:32'),
-		(24, NULL, NULL, 'Open Tickets', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:18:31'),
-		(25, NULL, NULL, 'Open Tickets', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpen', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:31:03'),
-		(26, NULL, NULL, 'Count of tickets awaiting agent this month', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 1, 0, 'daily', NULL, '2012-07-27 07:31:35'),
-		(27, NULL, NULL, 'Count of tickets awaiting agent today', X'613A303A7B7D', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:32:30'),
-		(28, NULL, NULL, 'New tickets created today', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsNew', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:33:53'),
-		(29, NULL, NULL, 'New tickets created this month', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsNew', 'bad', 1, 0, 'monthly', NULL, '2012-07-27 07:34:29'),
-		(30, NULL, NULL, 'New Tickets', X'613A303A7B7D', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsNew', 'bad', 1, 0, 'hourly', NULL, '2012-07-27 07:36:17')
-
-");
-
-$em->getConnection()->executeUpdate("
-	INSERT INTO `report_dashboard_stat` (`id`, `report_dashboard_id`, `stat_id`, `title`, `view_class`, `grid_slots`, `grid_columns`, `grid_rows`, `slot_number`, `number_data_points`, `show_legend`, `display_grouping`, `date_created`)
-	VALUES
-		(1,  1, 1, 'Tickets awaiting agent by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 2, 24, 0, 0, '2012-07-27 07:07:46'),
-		(2,  1, 2, 'Rate of tickets processed', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 7, 24, 0, 0, '2012-07-27 07:08:22'),
-		(3,  1, 3, 'First response time', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 9, 24, 0, 0, '2012-07-27 07:09:29'),
-		(4,  1, 4, 'Open tickets by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 3, 24, 0, 1, '2012-07-27 07:10:06'),
-		(5,  1, 5, 'Open tickets by department', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 6, 24, 0, 1, '2012-07-27 07:11:07'),
-		(6,  1, 6, 'Open tickets by team', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 10, 24, 0, 0, '2012-07-27 07:11:46'),
-		(7,  1, 7, 'Total user waiting time by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 8, 24, 0, 1, '2012-07-27 07:12:32'),
-		(8,  1, 8, 'Open Tickets', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\ColumnChart', 2, 2, 2, 0, 24, 0, 1, '2012-07-27 07:18:31'),
-		(9,  2, 9, 'Tickets awaiting agent by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 2, 7, 0, 0, '2012-07-27 07:07:46'),
-		(10, 2, 10, 'Rate of tickets processed', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 7, 7, 0, 0, '2012-07-27 07:08:22'),
-		(11, 2, 11, 'First response time', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 9, 7, 0, 0, '2012-07-27 07:09:29'),
-		(12, 2, 12, 'Open tickets by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 3, 7, 0, 1, '2012-07-27 07:10:06'),
-		(13, 2, 13, 'Open tickets by department', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 6, 7, 0, 1, '2012-07-27 07:11:07'),
-		(14, 2, 14, 'Open tickets by team', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 10, 7, 0, 0, '2012-07-27 07:11:46'),
-		(15, 2, 15, 'Total user waiting time by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 8, 7, 0, 1, '2012-07-27 07:12:32'),
-		(16, 2, 16, 'Open Tickets', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\ColumnChart', 2, 2, 2, 0, 7, 0, 1, '2012-07-27 07:18:31'),
-		(17, 3, 17, 'Tickets awaiting agent by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 2, 12, 0, 0, '2012-07-27 07:07:46'),
-		(18, 3, 18, 'Rate of tickets processed', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 7, 12, 0, 0, '2012-07-27 07:08:22'),
-		(19, 3, 19, 'First response time', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 9, 12, 0, 0, '2012-07-27 07:09:29'),
-		(20, 3, 20, 'Open tickets by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 3, 12, 0, 1, '2012-07-27 07:10:06'),
-		(21, 3, 21, 'Open tickets by department', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 6, 12, 0, 1, '2012-07-27 07:11:07'),
-		(22, 3, 22, 'Open tickets by team', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 10, 12, 0, 0, '2012-07-27 07:11:46'),
-		(23, 3, 23, 'Total user waiting time by agent', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\DetailedDrillDownChart', 1, 1, 1, 8, 12, 0, 1, '2012-07-27 07:12:32'),
-		(24, 3, 24, 'Open Tickets', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\ColumnChart', 2, 2, 2, 0, 12, 0, 1, '2012-07-27 07:18:31'),
-		(26, 4, 26, 'Count of tickets awaiting agent this month', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\StackedLineChart', 2, 2, 2, 2, 30, 0, 0, '2012-07-27 07:31:35'),
-		(27, 4, 27, 'Count of tickets awaiting agent today', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\StackedLineChart', 2, 2, 2, 0, 24, 0, 0, '2012-07-27 07:32:30'),
-		(28, 4, 28, 'New tickets created today', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\StackedLineChart', 1, 1, 1, 8, 24, 0, 0, '2012-07-27 07:33:53'),
-		(29, 4, 29, 'New tickets created this month', 'Application\\\\ReportBundle\\\\Chart\\\\AmChart\\\\StackedLineChart', 1, 1, 1, 9, 30, 0, 0, '2012-07-27 07:34:29'),
-		(30, 1, 30, 'New Tickets', 'Application\\\\ReportBundle\\\\Chart\\\\DeskPRO\\\\SimpleVariationChart', 1, 1, 1, 11, 24, 0, 0, '2012-07-27 07:36:17')
-
 ");

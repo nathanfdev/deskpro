@@ -99,15 +99,6 @@
 			title="Overview gives you a clear, simple, interactive dashboard into the key metrics from your helpdesk. You can modify most statistics to sub-group the data by a particular property you are interested in or change the date range a statistic is generated for."
 		><a href="{{ path('report') }}">{{ phrase('agent.report.overview') }}</a></h1></nav>
 	</section>
-	{#
-	<section class="trends {% if 'dashboard_' in this_page %}on{% endif %}">
-		<nav><h1
-			class="tipped"
-			data-tipped-options="hook: 'topleft', maxWidth: 500, skin: 'cloud', border: 1, shadow: {opacity:  0.5}"
-			title="Trends show data that has been generated over time. Trend data is generated every hour, day, month or year capturing the situation at that time; for example you might want to see the trend for the number of tickets with a particular label over time. Most statistics tools will only show you the current status of tickets (i.e. the number of tickets that have a label right now) trends allows you to go back in time to see important helpdesk trends.<br /><br />Due to the nature of this data, trends have to be setup first and allowed to run before they can show you data."
-		><a href="{{ path('report_trend_dashboard_index') }}">{{ phrase('agent.report.trends') }}</a></h1></nav>
-	</section>
-	#}
 	<section class="builder {% if this_page == 'report_builder' %}on{% endif %}">
 		<nav><h1
 			class="tipped"
@@ -195,20 +186,6 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
-{% block nav_block %}
-<!-- BEGIN NAV BAR -->
-<div id="dp_admin_nav" class="dp_admin_nav">
-	<nav>
-		<ul data-update-orders-url="{{ path('report_trend_dashboard_updateorders') }}">
-			{% for dashboard in app.dashboards %}
-				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
-			{% endfor %}
-			<li class="new" id="new_dashboard_trigger"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.new_dashboard') }}</a></li>
-		</ul>
-	</nav>
-</div>
-{% endblock %}
-
 {% block all_page %}
 <div id="dp_page_wrap" class="dp_page_wrap">
 
@@ -228,32 +205,6 @@
 	</div>
 </div>
 {% endblock %}
-
-<div id="new_dashboard_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
-	<div class="overlay-title">
-		<span class="close-overlay close-trigger"></span>
-		<h4>{{ phrase('agent.report.new_dashboard') }}</h4>
-	</div>
-	<div class="overlay-content">
-		<form action="{{ path('report_trend_dashboard_new') }}" method="post" id="new_dashboard_form">
-			<input type="hidden" name="process" value="1" />
-
-			<div class="dp-form">
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>{{ phrase('agent.general.title') }}</label>
-					</div>
-					<div class="dp-form-input">
-						<input type="text" id="report_dashboard_title" name="report_dashboard[title]" />
-					</div>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="overlay-footer">
-		<button class="clean-white" onclick="$('#new_dashboard_form').submit();">{{ phrase('agent.general.save') }}</button>
-	</div>
-</div>
 
 </body>
 </html>
