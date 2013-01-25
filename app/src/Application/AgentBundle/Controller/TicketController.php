@@ -2784,6 +2784,7 @@ class TicketController extends AbstractController
 			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
+			$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
 			$validator->setPageData($default_page->getPageDisplay('default')->data);
 
@@ -2824,8 +2825,6 @@ class TicketController extends AbstractController
 						));
 					});
 				}
-
-				$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 
 				$newticket->add_cc_person = $this->in->getCleanValueArray('newticket.add_cc_person', 'uint');
 				$newticket->add_cc_newperson = $this->in->getCleanValueArray('newticket.add_cc_newperson', 'raw', 'discard');
