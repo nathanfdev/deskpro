@@ -140,6 +140,7 @@
 				{% set phrase_part %} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Deleting people is a very powerful operation. When a person is deleted, all of their associated objects such as tickets and messages are deleted too. If you grant this permission, you are essentially giving the agent the ability to delete many other things as well. It is usually desired to leave this permission disabled."></span>{% endset %}
 				<!-- PERMISSION:agent_people.delete -->{{ col.perm_col(phrase('admin.agents.delete_people') ~ phrase_part, usergroup_values, 'agent_people', 'delete') }}
 				<!-- PERMISSION:agent_people.disable -->{{ col.perm_col('Disable people', usergroup_values, 'agent_people', 'disable') }}
+				<!-- PERMISSION:agent_people.merge -->{{ col.perm_col('Merge people', usergroup_values, 'agent_people', 'merge') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_org.create -->{{ col.perm_col(phrase('admin.agents.create_organizations'), usergroup_values, 'agent_org', 'create') }}

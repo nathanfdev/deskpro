@@ -57,7 +57,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<input type="text" name="title_prefix" id="{{baseId}}_edittitle" value="{{ person.title_prefix }}" data-choices="Mr., Miss, Mrs., Ms., Dr., Hon., Prof., Rev." style="width: 90px" />
 					<input type="text" placeholder="{{ phrase('agent.people.enter_name_here') }}" name="name" value="{{ person.getDisplayName() }}" />
 				</span>
-				{% if perms.edit and perms.delete %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
+				{% if perms.edit %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
 				<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 			</h1>
 			<div class="labels-line">
@@ -82,7 +82,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if app.user.hasPerm('agent_tickets.create') %}
 					<li class="create-ticket"><a class="clean-white large">{{ phrase('agent.general.create_ticket') }}</a></li>
 				{% endif %}
-				{% if perms.delete %}
+				{% if perms.merge %}
 					<li class="merge menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.merge') }} <em></em></a></li>
 				{% endif %}
 				{% if not person.is_agent and (perms.reset_password or perms.delete or perms.edit) %}
