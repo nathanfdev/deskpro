@@ -394,6 +394,26 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			DP.select(statusSel);
 		}, 150);
 
+		var hasSwitched = false;
+
+		if (agentSel.data('auto-switch-status')) {
+			agentSel.one('change', function() {
+				if (hasSwitched) return;
+				hasSwitched = true;
+				statusSel.select2('val', 'awaiting_agent');
+			});
+		}
+		if (teamSel.data('auto-switch-status')) {
+			teamSel.one('change', function() {
+				if (hasSwitched) return;
+				hasSwitched = true;
+				statusSel.select2('val', 'awaiting_agent');
+			});
+		}
+		statusSel.one('change', function() {
+			hasSwitched = true;
+		});
+
 		//------------------------------
 		// Submit
 		//------------------------------

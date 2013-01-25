@@ -47,6 +47,7 @@
 	'core_tickets.reply_assign_assigned' => false,
 	'core_tickets.reply_assignteam_unassigned' => false,
 	'core_tickets.reply_assignteam_assigned' => false,
+	'core_tickets.reassign_auto_change_status' => true,
 	'core_tickets.new_status' => 'awaiting_user',
 	'core_tickets.new_assign' => 'assign',
 	'core_tickets.new_assignteam' => false,
