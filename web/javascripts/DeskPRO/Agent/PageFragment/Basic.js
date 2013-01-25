@@ -106,6 +106,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 		this.init();
 
+		this.addEvent('activate', function() {
+			this.clearAlerts();
+		}, this);
+
 		this.addEvent('destroy', function() {
 			this.scrollHandlers = [];
 			if (self.resizerInterval) {
@@ -388,6 +392,21 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}
 	},
 
+	getAlertId: function() {
+		if (this.meta && this.meta.alert_id) {
+			return this.meta.alert_id;
+		}
+		return null;
+	},
+
+	clearAlerts: function() {
+		var id = this.getAlertId();
+		if (!id) {
+			return;
+		}
+
+		DeskPRO_Window.notifications.removeRowById(id);
+	},
 
 	destroy: function() {
 

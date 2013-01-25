@@ -39,6 +39,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
 		this.changeManager.addEvent('updateResult', function(data) {
+			self.clearAlerts();
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: self.meta.ticket_id });
 
 			if (data.data && !data.data.can_view) {
@@ -338,6 +339,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			}
 		};
+
+		this.clearAlerts();
 
 		$.ajax({
 			url: reply_form.attr('action'),
