@@ -224,6 +224,8 @@ class TicketSlasController extends AbstractController
 
 			$this->em->commit();
 
+			$this->sendAgentReloadSignal();
+
 			return $this->redirectRoute('admin_tickets_slas');
 		}
 
@@ -291,6 +293,8 @@ class TicketSlasController extends AbstractController
 
 		$this->em->remove($sla);
 		$this->em->flush();
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_tickets_slas');
 	}

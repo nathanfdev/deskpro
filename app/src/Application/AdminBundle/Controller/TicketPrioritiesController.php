@@ -97,6 +97,8 @@ class TicketPrioritiesController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
+
 		return $this->redirectRoute('admin_ticketpris');
 	}
 
@@ -130,6 +132,8 @@ class TicketPrioritiesController extends AbstractController
 		}
 
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketpriority', time());
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_ticketpris');
 	}
@@ -166,6 +170,8 @@ class TicketPrioritiesController extends AbstractController
 
 		$this->em->commit();
 
+		$this->sendAgentReloadSignal();
+
 		$this->session->setFlash('deleted', $priority->title);
 		return $this->redirectRoute('admin_ticketpris');
 	}
@@ -192,6 +198,8 @@ class TicketPrioritiesController extends AbstractController
 		if ($this->in->getString('return')) {
 			$url = $this->in->getString('return');
 		}
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirect($url);
 	}

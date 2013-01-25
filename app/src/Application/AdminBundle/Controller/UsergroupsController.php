@@ -175,6 +175,7 @@ class UsergroupsController extends AbstractController
 					$cache->invalidateAll();
 				}
 
+				$this->sendAgentReloadSignal();
 				return $this->redirectRoute('admin_usergroups');
 			} catch (\Exception $e) {
 				$this->em->getConnection()->rollback();
@@ -269,6 +270,8 @@ class UsergroupsController extends AbstractController
 			$em->flush();
 		});
 
+		$this->sendAgentReloadSignal();
+
 		return $this->redirectRoute('admin_usergroups');
 	}
 
@@ -291,6 +294,8 @@ class UsergroupsController extends AbstractController
 		if ($this->in->getBool('userreg')) {
 			return $this->redirectRoute('admin_userreg_options');
 		}
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_usergroups');
 	}

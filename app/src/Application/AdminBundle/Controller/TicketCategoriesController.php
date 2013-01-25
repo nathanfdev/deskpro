@@ -108,6 +108,8 @@ class TicketCategoriesController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
+
 		return $this->redirectRoute('admin_ticketcats');
 	}
 
@@ -148,6 +150,8 @@ class TicketCategoriesController extends AbstractController
 		}
 
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketcategory', time());
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_ticketcats');
 	}
@@ -191,6 +195,8 @@ class TicketCategoriesController extends AbstractController
 
 		$this->em->commit();
 
+		$this->sendAgentReloadSignal();
+
 		$this->session->setFlash('deleted', $category->title);
 		return $this->redirectRoute('admin_ticketcats');
 	}
@@ -227,6 +233,8 @@ class TicketCategoriesController extends AbstractController
 		if ($this->in->getString('return')) {
 			$url = $this->in->getString('return');
 		}
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirect($url);
 	}

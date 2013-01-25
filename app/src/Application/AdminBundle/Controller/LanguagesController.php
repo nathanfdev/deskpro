@@ -99,6 +99,8 @@ class LanguagesController extends AbstractController
 			$this->db->rollback();
 		}
 
+		$this->sendAgentReloadSignal();
+
 		return $this->redirectRoute('admin_langs', array('language_id' => $lang->getId()));
 	}
 

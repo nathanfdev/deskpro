@@ -80,6 +80,7 @@ class TicketMessageTemplatesController extends AbstractController
 				throw $e;
 			}
 
+			$this->sendAgentReloadSignal();
 			return $this->redirectRoute('admin_features');
 		}
 
@@ -103,6 +104,8 @@ class TicketMessageTemplatesController extends AbstractController
 
 		$this->em->remove($message_template);
 		$this->em->flush();
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_features');
 	}

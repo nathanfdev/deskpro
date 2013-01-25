@@ -108,6 +108,8 @@ class ProductsController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
+
 		return $this->redirectRoute('admin_products');
 	}
 
@@ -146,6 +148,8 @@ class ProductsController extends AbstractController
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_products');
 	}
@@ -195,6 +199,8 @@ class ProductsController extends AbstractController
 
 		$this->em->commit();
 
+		$this->sendAgentReloadSignal();
+
 		$this->session->setFlash('deleted', $product->title);
 		return $this->redirectRoute('admin_products');
 	}
@@ -220,6 +226,8 @@ class ProductsController extends AbstractController
 		if ($this->in->getString('return')) {
 			$url = $this->in->getString('return');
 		}
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirect($url);
 	}

@@ -153,6 +153,8 @@ abstract class CustomDefAbstractController extends AbstractController
 
 				$this->_postEditSave($field, $is_new);
 
+				$this->sendAgentReloadSignal();
+
 				$this->getTemplateVars(); // to get routebasename
 				return $this->redirectRoute($this->getListingRoute());
 			}
@@ -221,6 +223,8 @@ abstract class CustomDefAbstractController extends AbstractController
 			$em->flush();
 		});
 
+		$this->sendAgentReloadSignal();
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 
@@ -238,6 +242,8 @@ abstract class CustomDefAbstractController extends AbstractController
 			$em->remove($field);
 			$em->flush();
 		});
+
+		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute($this->getListingRoute());
 	}

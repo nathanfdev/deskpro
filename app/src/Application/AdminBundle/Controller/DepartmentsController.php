@@ -205,6 +205,8 @@ class DepartmentsController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
+
 		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
 		return $this->redirectRoute('admin_departments', array('type' => $type));
 	}
@@ -313,6 +315,8 @@ class DepartmentsController extends AbstractController
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+
+		$this->sendAgentReloadSignal();
 
 		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
 		return $this->redirectRoute('admin_departments', array('type' => $type));
@@ -556,6 +560,8 @@ class DepartmentsController extends AbstractController
 		$this->em->commit();
 
 		$this->session->setFlash('deleted', $department->title);
+
+		$this->sendAgentReloadSignal();
 
 		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
 		return $this->redirectRoute('admin_departments', array('type' => $type));

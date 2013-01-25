@@ -200,4 +200,25 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		return $this->renderStandardError('The page you are trying to access has expired. Go back, refresh, and try again.');
 	}
+
+
+	/**
+	 * After changes that affect the agent UI, send a signal to
+	 * any online agents to relaod.
+	 */
+	public function sendAgentReloadSignal()
+	{
+		$cm = new \Application\DeskPRO\Entity\ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'agent.ui.reload',
+			'data' => array(
+				'type'        => 'admin',
+				'person_id'   => $this->person->getId(),
+				'person_name' => $this->person->getDisplayName()
+			)
+		));
+
+		$this->em->persist($cm);
+		$this->em->flush();
+	}
 }

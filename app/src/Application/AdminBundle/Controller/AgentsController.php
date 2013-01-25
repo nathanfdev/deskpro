@@ -1469,26 +1469,6 @@ class AgentsController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
-	public function reloadAgentInterfaceAction()
-	{
-		$cm = new \Application\DeskPRO\Entity\ClientMessage();
-		$cm->fromArray(array(
-			'channel' => 'agent.ui.reload',
-			'data' => array(
-				'type'        => 'admin',
-				'person_id'   => $this->person->getId(),
-				'person_name' => $this->person->getDisplayName()
-			)
-		));
-
-		$this->em->persist($cm);
-		$this->em->flush();
-
-		$this->session->setFlash('success_message', 'Online agents have been alerted to refresh their browsers');
-
-		return $this->redirectRoute('admin_agents');
-	}
-
 	############################################################################
 
 	/**
