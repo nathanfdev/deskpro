@@ -29,41 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-
-/**
- * This cleans up various temporary data
- */
-class CleanupTmpAttach extends AbstractJob
+class Build1359109263 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 900; // 15 mins
-
 	public function run()
 	{
-		$now = date('Y-m-d H:i:s');
-		$datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
+		$this->out("Update worker jobs");
+		$this->execMutateSql("DELETE FROM `worker_jobs` WHERE `id` IN ('cleanup_client_messages','cleanup_sendmail', 'cleanup_sessions', 'cleanup_ticket_locks', 'cleanup_tmp_attach', 'cleanup_tmp_data', 'cleanup_twitter', 'cleanup_drafts')");
 
-		$blob_ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM blobs
-			WHERE (is_temp = 1 AND date_created < ?) OR date_cleanup < ?
-		", array($datetime, $now));
+		$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
+		$em = $this->container->getEm();
 
-		$num = 0;
-		foreach ($blob_ids as $blob_id) {
-			$desc = App::getApi('filestorage')->getFileDescriptor($blob_id);
-			$desc->delete();
-			$num++;
-		}
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num temporary attachments");
-		}
+		eval($install_data->get('create_jobs.cleanup_always'));
+		eval($install_data->get('create_jobs.cleanup_quarter_hourly'));
+		eval($install_data->get('create_jobs.cleanup_hourly'));
+		eval($install_data->get('create_jobs.cleanup_daily'));
+		eval($install_data->get('create_jobs.cleanup_weekly'));
 	}
 }

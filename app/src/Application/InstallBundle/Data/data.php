@@ -902,6 +902,61 @@ $em->flush();
 # Cron Jobs
 ################################################################################
 
+##BEGIN:create_jobs.cleanup_always##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_always';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup: Always';
+$j['description'] = 'Cleanup that runs every minute';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupAlways';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupAlways::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+##BEGIN:create_jobs.cleanup_quarter_hourly##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_quarter_hourly';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup: Quarter Hourly';
+$j['description'] = 'Cleanup that runs every 15 minutes';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupQuarterHourly';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupQuarterHourly::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+##BEGIN:create_jobs.cleanup_hourly##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_hourly';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup: Hourly';
+$j['description'] = 'Cleanup that runs every hour';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupHourly';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupHourly::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+##BEGIN:create_jobs.cleanup_daily##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_daily';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup: Daily';
+$j['description'] = 'Cleanup that runs every day';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupDaily';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupDaily::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+##BEGIN:create_jobs.cleanup_weekly##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_weekly';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup: Weekly';
+$j['description'] = 'Cleanup that runs every week';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupWeekly';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupWeekly::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ##BEGIN:create_jobs.archive_tickets##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'archive_tickets';
@@ -938,30 +993,6 @@ $em->persist($j);
 $em->flush();
 
 
-##BEGIN:create_jobs.cleanup_client_messages##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_client_messages';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Client Messages';
-$j['description'] = 'Cleanup expired client polling messages';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupClientMessages';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupClientMessages::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
-##BEGIN:create_jobs.cleanup_sendmail##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_sendmail';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Chat Ping Timeout';
-$j['description'] = 'Cleans up old logged copies of sent mail';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupSendmail';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupSendmail::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
 ##BEGIN:create_jobs.sitemap_file##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'sitemap_file';
@@ -972,44 +1003,6 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SitemapFile';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SitemapFile::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
-
-
-##BEGIN:create_jobs.cleanup_sessions##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_sessions';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Client Messages';
-$j['description'] = 'Cleanup expired sessions';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupSessions';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupSessions::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
-##BEGIN:create_jobs.cleanup_tmp_data##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_tmp_data';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Temporary Data';
-$j['description'] = 'Cleanup temporary data';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTmpData';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTmpData::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
-##BEGIN:create_jobs.cleanup_tmp_attach##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_tmp_attach';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Temporary Attachments';
-$j['description'] = 'Cleanup temporary attachments';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTmpAttach';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTmpAttach::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-
 
 ##BEGIN:create_jobs.ensure_search_tables##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
@@ -1161,28 +1154,6 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\RunQueuedTasks::DEFAULT_
 $em->persist($j);
 $em->flush();
 
-##BEGIN:create_jobs.cleanup_drafts##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_drafts';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Drafts';
-$j['description'] = 'Cleans up old drafts';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupDrafts';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupDrafts::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-##BEGIN:create_jobs.cleanup_ticket_locks##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_ticket_locks';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Ticket Locks';
-$j['description'] = 'Cleans up ticket locks';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTicketLocks';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTicketLocks::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
 ##BEGIN:create_jobs.task_reminders##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'task_reminders';
@@ -1202,17 +1173,6 @@ $j['title'] = 'Twitter Stream';
 $j['description'] = 'Imports tweets from the Twitter stream';
 $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TwitterStream';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TwitterStream::DEFAULT_INTERVAL;
-$em->persist($j);
-$em->flush();
-
-##BEGIN:create_jobs.cleanup_twitter##
-$j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'cleanup_twitter';
-$j['worker_group'] = 'cleanup';
-$j['title'] = 'Cleanup Twitter';
-$j['description'] = 'Cleans up old data from Twitter';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTwitter';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTwitter::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
 

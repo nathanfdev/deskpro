@@ -185,7 +185,7 @@
 	/**
 	 * How long, in seconds, are email sources kept for before being cleaned up
 	 */
-	'core.email_source_storetime' => 7776000,
+	'core.email_source_storetime' => 0,
 
 	/**
 	 * When to use the mail queue: never, hint, always

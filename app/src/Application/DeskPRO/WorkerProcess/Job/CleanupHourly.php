@@ -35,17 +35,123 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
-/**
- * This cleans up various temporary data
- */
-class CleanupTwitter extends AbstractJob
+class CleanupHourly extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600; // hourly
+	const DEFAULT_INTERVAL = 3600;
 
 	public function run()
 	{
+		#------------------------------
+		# drafts
+		#------------------------------
+
+		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.drafts_lifetime'));
+		$num = App::getDb()->executeUpdate("DELETE FROM drafts WHERE date_created < ?", array($datetime));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num drafts");
+		}
+
+		$datetime = date('Y-m-d H:i:s', time() - 28800);
+		$num = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp article comments");
+		}
+
+		$num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp download comments");
+		}
+
+		$num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp feedback comments");
+		}
+
+		$num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp news comments");
+		}
+
+		#------------------------------
+		# sessions
+		#------------------------------
+
+		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
+		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num stale sessions");
+		}
+
+		#------------------------------
+		# chat blocks
+		#------------------------------
+
+		// Clean up chat blocks
+		$num = App::getOrm()->getRepository('DeskPRO:ChatBlock')->cleanupBlocks();
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num stale chat blocks");
+		}
+
+		#------------------------------
+		# temp attachments
+		#------------------------------
+
+		$now = date('Y-m-d H:i:s');
+		$datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
+
+		$blob_ids = App::getDb()->fetchAllCol("
+			SELECT id
+			FROM blobs
+			WHERE (is_temp = 1 AND date_created < ?) OR date_cleanup < ?
+		", array($datetime, $now));
+
+		$num = 0;
+		foreach ($blob_ids as $blob_id) {
+			$desc = App::getApi('filestorage')->getFileDescriptor($blob_id);
+			$desc->delete();
+			$num++;
+		}
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num temporary attachments");
+		}
+
+		$datetime = date('Y-m-d H:i:s', time());
+
+		#------------------------------
+		# Temp data
+		#------------------------------
+
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM tmp_data
+			WHERE date_expire > ?
+		", array($datetime));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num stale user temp data entries");
+		}
+
+		#------------------------------
+		# Prefs
+		#------------------------------
+
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM people_prefs
+			WHERE date_expire > ?
+		", array($datetime));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num stale user preference entries");
+		}
+
+		#------------------------------
+		# Twitter
+		#------------------------------
+
 		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
 
 		$db = App::getDb();

@@ -35,43 +35,40 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
-/**
- * This just cleans up drafts
- */
-class CleanupDrafts extends AbstractJob
+class CleanupQuarterHourly extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+	const DEFAULT_INTERVAL = 900;
 
 	public function run()
 	{
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.drafts_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM drafts WHERE date_created < ?", array($datetime));
+		#------------------------------
+		# Page cache
+		#------------------------------
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->cleanup();
+
+		#------------------------------
+		# sessions
+		#------------------------------
+
+		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
+		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
 
 		if ($num) {
-			$this->logStatus("Cleaned up $num drafts");
+			$this->logStatus("Cleaned up $num stale sessions");
 		}
 
-		$datetime = date('Y-m-d H:i:s', time() - 28800);
-		$num = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp article comments");
-		}
+		#------------------------------
+		# ticket locks
+		#------------------------------
 
-		$num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp download comments");
-		}
+		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
+		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
 
-		$num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
 		if ($num) {
-			$this->logStatus("Cleaned up $num temp feedback comments");
-		}
-
-		$num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp news comments");
+			$this->logStatus("Cleaned up $num ticket locks");
 		}
 	}
 }

@@ -35,22 +35,13 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
-/**
- * This just cleans up ticket locs
- */
-class CleanupTicketLocks extends AbstractJob
+class CleanupWeekly extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 900;
+	const DEFAULT_INTERVAL = 604800;
 
 	public function run()
 	{
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
-		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num ticket locks");
-		}
 	}
 }

@@ -35,39 +35,81 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
 
-/**
- * Cleans up stale email sources
- */
-class CleanupEmailSources extends AbstractJob
+class CleanupAlways extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 7200; // 2 hours
+	const DEFAULT_INTERVAL = 1;
 
 	public function run()
 	{
-		$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
-		$email_sources = App::getDb()->fetchAllCol("
-			SELECT email_sources.id
-			FROM email_sources
-			WHERE email_sources.date_created < ? AND email_sources.status = 'complete'
-			ORDER BY email_sources.id ASC
-			LIMIT 1000
-		", array($snip));
+		#------------------------------
+		# cleanup chat pings
+		#------------------------------
 
-		$num = 0;
-		foreach ($email_sources as $source) {
-			$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->id);
-			$desc->delete();
+		$cutoff = time() - 180;
 
-			App::getOrm()->detach($source);
-			App::getOrm()->flush();
+		App::getDb()->executeUpdate("
+			DELETE FROM chat_conversation_pings
+			WHERE ping_time < $cutoff
+		");
 
-			$num++;
+		#------------------------------
+		# client_messages
+		#------------------------------
+
+		// client messages are nearly instant, so this timesnip is very low
+		$datetime = date('Y-m-d H:i:s', time() - 120);
+
+		$long_lived_channels = array(
+			'agent_chat.new-message'
+		);
+
+		$long_lived_channels = "'" . implode("','", $long_lived_channels) . "'";
+
+		App::getDb()->beginTransaction();
+
+		try {
+			$num = App::getDb()->executeUpdate("
+				DELETE FROM client_messages
+				WHERE
+					date_created < ? AND channel NOT IN ($long_lived_channels)
+			", array($datetime));
+
+				// Long-lived channels are still only deleted after 3 days
+				$datetime = date('Y-m-d H:i:s', time() - 259200);
+				$num += App::getDb()->executeUpdate("
+				DELETE FROM client_messages
+				WHERE
+					date_created < ? AND channel IN ($long_lived_channels)
+			", array($datetime));
+
+				App::getDb()->commit();
+		} catch (\Exception $e) {
+			App::getDb()->rollback();
+			throw $e;
 		}
 
 		if ($num) {
-			$this->logStatus("Cleaned up $num stale email sources");
+			$this->logStatus("Cleaned up $num old client messages");
+		}
+
+		#------------------------------
+		# client_channel_subscriptions
+		#------------------------------
+
+		$datetime = date('Y-m-d H:i:s', time() - 600); // 10 minutes
+		$num = App::getDb()->executeUpdate("DELETE FROM client_channel_subscriptions WHERE date_ping < ?", array($datetime));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num stale client channel subscriptions");
+		}
+
+		#------------------------------
+		# Try to delete old update status file
+		#------------------------------
+
+		if (file_exists(DP_WEB_ROOT.'/auto-update-status.php') && App::getSetting('core.last_auto_upgrade_time') < time()-180) {
+			@unlink(DP_WEB_ROOT.'/auto-update-status.php');
 		}
 	}
 }
