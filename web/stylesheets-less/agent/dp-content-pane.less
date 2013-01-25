@@ -1959,10 +1959,39 @@ header.page-header .edit-name-gear {
 	overflow: hidden;
 }
 
-.profile-box-container > header > nav ul {
-	margin-bottom: -1px;
+nav.section-subnav {
+	.gradient(#ffffff, #e5e5e5);
+	height: 22px;
+	border:  1px solid #ACB6BF;
+	border-top: none;
 	overflow: hidden;
-	background: url(../../images/agent/profile-box-tabs-bg.png)
+	position: relative;
+}
+
+nav.section-subnav ul li {
+	float: left;
+	margin-left: 8px;
+	margin-top: 3px;
+
+	em {
+		color: #4F5051;
+		display: block;
+		border: 1px solid #B3B6B8;
+		border-radius: 8px;
+		padding: 0 5px;
+		font-style: normal;
+		font-size: 10px;
+		text-shadow: none;
+		line-height: 15px;
+		cursor: pointer;
+		background-color: #E7E7E7;
+	}
+}
+
+nav.section-subnav ul li.on em {
+	background-color: #fff;
+	border:  1px solid #4F5051;
+	color: #000;
 }
 
 .profile-box-container > header > nav ul li {

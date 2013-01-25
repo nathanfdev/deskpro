@@ -209,6 +209,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			messageboxTabs.addEvent('tabSwitch', function(evData) {
 				var type = evData.tabEl.data('list-type');
 
+				if (type == 'log') {
+					self.refreshLogTypes();
+					self.getEl('full_typenav').show();
+				} else {
+					self.getEl('full_typenav').hide();
+					self.getEl('messages_wrap').find('.content-message').show();
+				}
+
 				if (type == 'messages') {
 					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
 					self.getEl('messages_wrap').find('article.content-message').show();
@@ -221,7 +229,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.getEl('messages_wrap').find('article.content-message').show();
 				}
 			});
+		}
 
+		var logTypeNav = this.getEl('full_typenav').data('simpletabs');
+		if (logTypeNav) {
+			logTypeNav.addEvent('tabSwitch', function(evData) {
+				self.refreshLogTypes();
+			});
 		}
 
 		self.getEl('messages_wrap').on('click', 'article.message', function(ev) {
@@ -234,6 +248,76 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.wrapper.addClass('field-error');
 			this.ticketFields.openEditMode();
 		}
+	},
+
+	refreshLogTypes: function() {
+		var sel;
+		var logs = this.getEl('messages_wrap').find('.log-row');
+		var showType = this.getEl('full_typenav').find('.on').data('typename');
+
+		var types = {
+			'message':  '.type-message_removed, .type-message_edit, .type-message_created',
+			'notif':    '.type-agent_notify, .type-user_notify',
+			'assign':   '.type-changed_agent, .type-changed_agent_team, .type-changed_person, .type-participant_added, .type-participant_removed',
+			'slas':     '.with-sla, .type-ticket_sla_added, .type-ticket_sla_removed, .type-ticket_sla_updated',
+			'triggers': '.with-trigger, .type-executed_triggers',
+			'status':   '.type-changed_status'
+		};
+
+		if (!this.logTypeCounts || this.logTypeCounts.all != logs.length) {
+			this.logTypeCounts = {};
+			this.logTypeCounts.all = logs.length;
+
+			var tmp = 0;
+			Object.each(types, function(v,k) {
+				this.logTypeCounts[k] = logs.filter(v).length;
+				tmp+=this.logTypeCounts[k];
+			}, this);
+
+			this.logTypeCounts.other = this.logTypeCounts.all - tmp;
+
+			var nav = this.getEl('full_typenav');
+			Object.each(this.logTypeCounts, function(v,k) {
+				if (v < 1) {
+					v = '0';
+				}
+				nav.find('.' + k + '-count').text(v);
+			}, this);
+		}
+
+		if (showType == 'all' || showType == 'message') {
+			this.getEl('messages_wrap').find('.content-message').show();
+		} else {
+			this.getEl('messages_wrap').find('.content-message').hide();
+		}
+
+		if (showType == 'all') {
+			this.getEl('messages_wrap').find('.content-message').show();
+			logs.show().addClass('is-vis');
+		} else if (showType == 'other') {
+			sel = [];
+			Object.each(types, function(v,k) {
+				sel.push(v);
+			});
+			sel = sel.join(', ');
+
+			logs.hide().removeClass('is-vis');
+			logs.not(sel).show().addClass('is-vis');
+		} else {
+			sel = types[showType];
+
+			logs.hide().removeClass('is-vis');
+			logs.filter(sel).show().addClass('is-vis');
+		}
+
+		this.getEl('messages_wrap').find('.log-batch').each(function() {
+			var el = $(this);
+			if (el.find('> .is-vis')[0]) {
+				el.show();
+			} else {
+				el.hide();
+			}
+		});
 	},
 
 	showLockAlert: function() {
@@ -508,6 +592,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 			return;
 		}
+
+		this.refreshLogTypes();
 	},
 
 	updateUi: function() {

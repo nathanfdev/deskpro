@@ -1,5 +1,8 @@
 {% if log.action_type != 'executed_triggers' %}
-	<div class="log-row log-{{log.id}}" data-log-id="{{ log.id }}">
+	<div
+		class="log-row log-{{log.id}} {% if log.sla %}with-sla{% endif %} {% if log.trigger_id %}with-trigger{% endif %} type-{{ log.action_type }}"
+		data-log-id="{{ log.id }}"
+	>
 		<div class="info">
 			{% if log.sla %}
 				<span class="sla">SLA {{ log.sla.title }}{% if log.sla_status == 'warning' %} (Warning){% elseif log.sla_status == 'fail' %} (Failed){% endif %}</span>,

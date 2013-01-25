@@ -259,6 +259,10 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			return $();
 		}
 
+		if (tabEl.data('tab-for') == 'NOOP') {
+			return $();
+		}
+
 		var el = $(tabEl.data('tab-for'), this.options.context);
 
 		if (el.length < 1) {

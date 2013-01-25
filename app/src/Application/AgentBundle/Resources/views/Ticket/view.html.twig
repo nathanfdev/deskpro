@@ -503,6 +503,18 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</ul>
 		</nav>
 	</header>
+	<nav class="section-subnav" id="{{ baseId }}_full_typenav" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" style="display: none;">
+		<ul>
+			<li data-tab-for="NOOP" class="on" data-typename="all"><em>All (<span class="all-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="message"><em>Messages (<span class="message-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="notif"><em>Notifications (<span class="notif-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="assign"><em>Assignments (<span class="assign-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="slas"><em>SLAs (<span class="slas-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="triggers"><em>Triggers (<span class="triggers-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="status"><em>Status Changes (<span class="status-count"></span>)</em></li>
+			<li data-tab-for="NOOP" data-typename="other"><em>Other (<span class="other-count"></span>)</em></li>
+		</ul>
+	</nav>
 	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 		{% if active_drafts %}
