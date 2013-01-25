@@ -76,7 +76,7 @@ class ChoiceField extends CustomFieldAbstract
 			$this->max_length = $this->_field->getOption('max_length');
 		}
 
-		if ($this->_field->getOption('admin_min_length')) {
+		if ($this->_field->getOption('agent_min_length')) {
 			$this->agent_validation_type = 'required';
 			$this->agent_required = true;
 			$this->agent_min_length = $this->_field->getOption('agent_min_length');
