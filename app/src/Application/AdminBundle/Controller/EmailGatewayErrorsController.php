@@ -67,14 +67,14 @@ class EmailGatewayErrorsController extends AbstractController
 			$sources = $this->em->createQuery("
 				SELECT source
 				FROM DeskPRO:EmailSource source
-				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code = 'server_error'
+				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code IN ('server_error', 'timeout')
 				ORDER BY source.id DESC
 			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute(array($objects));
 		} else {
 			$sources = $this->em->createQuery("
 				SELECT source
 				FROM DeskPRO:EmailSource source
-				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code != 'server_error'
+				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code NOT IN ('server_error', 'timeout')
 				ORDER BY source.id DESC
 			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute(array($objects));
 		}
@@ -105,7 +105,7 @@ class EmailGatewayErrorsController extends AbstractController
 			$data_structure = $source->getSourceInfoAsString();
 		}
 
-		$type = $source->error_code == 'server_error' ? 'errors' : 'rejections';
+		$type = ($source->error_code == 'server_error' || $source->error_code == 'timeout') ? 'errors' : 'rejections';
 
 		return $this->render('AdminBundle:EmailGatewayErrors:view.html.twig', array(
 			'source' => $source,
@@ -129,9 +129,9 @@ class EmailGatewayErrorsController extends AbstractController
 		}
 
 		if ($type == 'errors') {
-			$where = "object_type IN (" . implode(',', $objects_quoted) . ") AND status = 'error' AND error_code = 'server_error'";
+			$where = "object_type IN (" . implode(',', $objects_quoted) . ") AND status = 'error' AND error_code IN ('server_error', 'timeout')";
 		} else {
-			$where = "object_type IN (" . implode(',', $objects_quoted) . ") AND status = 'error' AND error_code != 'server_error'";
+			$where = "object_type IN (" . implode(',', $objects_quoted) . ") AND status = 'error' AND error_code NOT IN ('server_error', 'timeout')";
 		}
 		$blob_ids = App::getDb()->fetchAllCol("SELECT blob_id FROM email_sources WHERE $where AND blob_id IS NOT NULL");
 
@@ -171,7 +171,7 @@ class EmailGatewayErrorsController extends AbstractController
 			$desc->delete();
 		}
 
-		if ($source->error_code == 'server_error') {
+		if ($source->error_code == 'server_error' || $source->error_code == 'timeout') {
 			return $this->redirectRoute('admin_emailgateway_errors');
 		} else {
 			return $this->redirectRoute('admin_emailgateway_rejections');
@@ -192,7 +192,7 @@ class EmailGatewayErrorsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$type = $source->error_code == 'server_error' ? 'errors' : 'rejections';
+		$type = ($source->error_code == 'server_error' || $source->error_code == 'timeout') ? 'errors' : 'rejections';
 
 		$source['status'] = 'inserted';
 		$source['error_code'] = null;

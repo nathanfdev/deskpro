@@ -46,6 +46,27 @@ class ProcessEmailGateways extends AbstractJob
 
 	public function run()
 	{
+		#------------------------------
+		# Mark error sources
+		#------------------------------
+
+		// If a source has been in the 'inserted' state for more than 15 mintues,
+		// then it means it's probably a fatal error and we should mark it as error
+		$d = date('Y-m-d H:i:s', time() - 900);
+		$num = App::getDb()->executeUpdate("
+			UPDATE email_sources
+			SET status = 'error', error_code = 'timeout'
+			WHERE status = 'inserted' AND date_created < ?
+		", array($d));
+
+		if ($num) {
+			$this->getLogger()->log("$num sources marked as timeout", 'ERR');
+		}
+
+		#------------------------------
+		# Run the gateways
+		#------------------------------
+
 		$logger = $this->getLogger();
 
 		$runner = new \Application\DeskPRO\EmailGateway\Runner();

@@ -42,62 +42,18 @@ class EmailSource extends AbstractEntityRepository
 {
 	/**
 	 * @param array $types
-	 * @param $status
-	 * @return \Doctrine\ORM\AbstractQuery
-	 */
-	public function createQueryForTypeAndStatus(array $types, $status)
-	{
-		$q = $this->_em->createQuery("
-			SELECT source
-			FROM DeskPRO:EmailSource source
-			WHERE source.object_type IN (:source_types) AND source.status = :source_status
-			ORDER BY source.id DESC
-		")->setParameter('source_types', $types)->setParameter('source_status', $status);
-
-		return $q;
-	}
-
-
-	/**
-	 * Count the number of email sources with a particular type and status
-	 *
-	 * @param array $types
-	 * @param $status
-	 * @return mixed
-	 */
-	public function countForStatus(array $types, $status)
-	{
-		$params = array_values($types);
-		$params[] = $status;
-
-		$types_place = implode(',', array_fill(0, count($types), '?'));
-
-		$count = $this->_em->getConnection()->fetchColumn("
-			SELECT COUNT(*)
-			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = ?
-		", $params);
-
-		return $count;
-	}
-
-
-	/**
-	 * @param array $types
 	 * @return int
 	 */
 	public function countErrorStatus(array $types)
 	{
 		$params = array_values($types);
-		$params[] = 'error';
-		$params[] = 'server_error';
 
 		$types_place = implode(',', array_fill(0, count($types), '?'));
 
 		$count = $this->_em->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = ? AND error_code = ?
+			WHERE object_type IN ($types_place) AND status = 'error' AND error_code IN ('server_error', 'timeout')
 		", $params);
 
 		return $count;
@@ -111,45 +67,15 @@ class EmailSource extends AbstractEntityRepository
 	public function countRejectionStatus(array $types)
 	{
 		$params = array_values($types);
-		$params[] = 'error';
-		$params[] = 'server_error';
 
 		$types_place = implode(',', array_fill(0, count($types), '?'));
 
 		$count = $this->_em->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = ? AND error_code != ?
+			WHERE object_type IN ($types_place) AND status = 'error' AND error_code NOT IN ('server_error', 'timeout')
 		", $params);
 
 		return $count;
-	}
-
-
-	/**
-	 * Count the number of email sources with a particular type and status, grouped
-	 * by the error code.
-	 *
-	 * @param array $types
-	 * @param $status
-	 * @return mixed
-	 */
-	public function countErrorStatusGrouped(array $types)
-	{
-		$params = array_values($types);
-		$params[] = $status;
-
-		$types_place = implode(',', array_fill(0, count($types), '?'));
-
-		$counts = $this->_em->getConnection()->fetchColumn("
-			SELECT COALESCE(error_code, 'unknown') AS error_code, COUNT(*)
-			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = 'error'
-			GROUP BY error_code
-		", $params);
-
-		$count['TOTAL'] = array_sum($counts);
-
-		return $counts;
 	}
 }
