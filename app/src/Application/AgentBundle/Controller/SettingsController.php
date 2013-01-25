@@ -268,6 +268,11 @@ class SettingsController extends AbstractController
 
 		$this->em->getRepository('DeskPRO:PersonPref')->savePref(
 			$this->person,
+			'agent_notif.ticket_mention',
+			$this->in->getString('ticket_mention') == 'smart_send' ? 'smart_send' : 'always_send'
+		);
+		$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+			$this->person,
 			'agent_notify_override.all.email',
 			$this->in->getBool('agent_notify_override_all_email') ? 1 : 0
 		);

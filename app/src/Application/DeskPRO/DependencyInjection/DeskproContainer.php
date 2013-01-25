@@ -477,6 +477,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+	 */
+	public function getAgentData()
+	{
+		return $this->getDataService('Agent');
+	}
+
+
+	/**
 	 * Get the path to PHP executable used on the CLI.
 	 *
 	 * Returns false if the path could not be found and if 'php_path' in config is not set.

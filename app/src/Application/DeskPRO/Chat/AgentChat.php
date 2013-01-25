@@ -50,11 +50,17 @@ class AgentChat
 {
 	protected $person;
 	protected $session;
+	protected $suppress_offline_email = false;
 
 	public function __construct(Person $person, Session $session)
 	{
 		$this->person = $person;
 		$this->session = $session;
+	}
+
+	public function disableOfflineEmailAlert()
+	{
+		$this->suppress_offline_email = true;
 	}
 
 	public function sendMessage($message, $conversation)
@@ -122,7 +128,7 @@ class AgentChat
 		});
 
 		// If any of the targets are not online, we might need to nofigy them of the message via email
-		if (!$chat_message->is_sys) {
+		if (!$this->suppress_offline_email && !$chat_message->is_sys) {
 			foreach ($conversation->participants as $part) {
 				if ($part['id'] == $this->person['id']) {
 					continue;

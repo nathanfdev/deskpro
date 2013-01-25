@@ -1116,6 +1116,37 @@ class TicketController extends AbstractController
 			$message['is_agent_note'] = true;
 		}
 
+		if ($notify_agent_ids && $message['is_agent_note']) {
+			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+			$agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
+
+			$notify_chat   = array();
+			$notify_email  = array();
+
+			$notify_agent_ids = array_unique($notify_agent_ids);
+			foreach ($notify_agent_ids as $agent_id) {
+				if (!($agent = $this->container->getAgentData()->get($agent_id))) {
+					continue;
+				}
+
+				$notify_chat[$agent->id] = $agent;
+
+				$pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
+				if ($pref == 'always_send' || ($pref == 'smart_send' && !$this->container->getAgentData()->isAgentOnline($agent))) {
+					$notify_email[$agent->id] = $agent;
+				}
+			}
+
+			if ($notify_chat) {
+				$notify_text = $this->person->getDisplayName() . " alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
+				$agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+			}
+
+			if ($notify_email) {
+				$ticket->getTicketLogger()->recordExtra('mention_agents', $notify_email);
+			}
+		}
+
 		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
 			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 			if ($blob) {
@@ -1275,23 +1306,6 @@ class TicketController extends AbstractController
 			$this->em->flush();
 
 			$this->em->getRepository('DeskPRO:Draft')->deleteDraft('ticket', $ticket->id);
-
-			if ($notify_agent_ids && $message['is_agent_note']) {
-				$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-				$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-
-				$notify_agent_ids = array_unique($notify_agent_ids);
-				foreach ($notify_agent_ids AS $k => $agent_id) {
-					if ($agent_id == $this->person->id || !isset($agents[$agent_id])) {
-						unset($notify_agent_ids[$k]);
-					}
-				}
-				if ($notify_agent_ids) {
-					$notify_text = $this->person->getDisplayName() . " alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
-					$agent_chat->sendAgentMessage($notify_text, $notify_agent_ids);
-				}
-			}
-
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();

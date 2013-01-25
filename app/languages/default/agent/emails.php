@@ -24,4 +24,5 @@
     'agent.emails.new_user_reply_ticket_subject'  => '[#{{ticket.id}} USER REPLY] Re: {{ticket.subject}}',
     'agent.emails.new_agent_reply_ticket_subject' => '[#{{ticket.id}} AGENT REPLY] Re: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'        => '[#{{ticket.id}} NOTE] Re: {{ticket.subject}}',
+    'agent.emails.new_mention_ticket_subject'     => '[#{{ticket.id}} MENTIONED] Re: {{ticket.subject}}',
 );

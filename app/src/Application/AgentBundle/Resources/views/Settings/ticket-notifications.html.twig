@@ -206,6 +206,24 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 			</table>
 		</div>
 
+		<br />
+		<div class="check-grid">
+			<header>Notes with @mentions</header>
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td class="title" style="text-align: left;">
+							How do you want to be notified when an agent mentions you in a ticket note?<br/>
+							<select name="ticket_mention">
+								<option {% if app.user.getPref('agent_notif.ticket_mention', 'always_send') == 'always_send' %}selected="selected"{% endif %}value="always_send">Always email &amp; send a chat message</option>
+								<option {% if app.user.getPref('agent_notif.ticket_mention', 'always_send') == 'smart_send'  %}selected="selected"{% endif %}value="smart_send">Send a chat message if online or email if offline</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
 		{% if custom_filters|length %}
 		<br />
 		<div class="check-grid">

@@ -66,6 +66,11 @@ class AgentNotificationAction extends AbstractAction
 	/**
 	 * @var array
 	 */
+	protected $mention_agents = array();
+
+	/**
+	 * @var array
+	 */
 	protected $notify_info = array();
 
 	/**
@@ -109,6 +114,15 @@ class AgentNotificationAction extends AbstractAction
 			if ($filters) {
 				$this->notify_agents[] = $agent_id;
 				$this->notify_info[$agent_id] = array('filters' => $filters);
+			}
+		}
+
+		if ($tracker->isExtraSet('mention_agents')) {
+			$this->mention_agents = $tracker->getExtra('mention_agents');
+			$this->mention_agents = Arrays::keyFromData($this->mention_agents, 'id');
+
+			foreach ($this->mention_agents as $agent) {
+				$this->notify_agents[] = $agent->id;
 			}
 		}
 	}
@@ -394,6 +408,8 @@ class AgentNotificationAction extends AbstractAction
 				'agent'              => $agent,
 				'custom_fields'      => $custom_fields,
 				'page_display'       => $page_display,
+				'mention_agents'     => $this->mention_agents,
+				'is_my_mention'      => isset($this->mention_agents[$agent->getId()]),
 			);
 
 			if (isset($this->notify_info[$agent->id]) && $this->notify_info[$agent->id]) {

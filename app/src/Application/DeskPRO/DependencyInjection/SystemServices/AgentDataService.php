@@ -49,6 +49,11 @@ class AgentDataService
 	public $agents = array();
 
 	/**
+	 * @var array
+	 */
+	public $online_agent_ids;
+
+	/**
 	 * @var int[]
 	 */
 	public $ids = array();
@@ -57,6 +62,16 @@ class AgentDataService
 	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	protected $db;
+
+	/**
+	 * @var int
+	 */
+	protected $agent_timeout = 20;
 
 	public static function create(DeskproContainer $container, array $options = null)
 	{
@@ -68,6 +83,7 @@ class AgentDataService
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
+		$this->db = $em->getConnection();
 	}
 
 	protected function preload()
@@ -133,5 +149,70 @@ class AgentDataService
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Get an array of agents who are online now (have active sessions).
+	 *
+	 * @return int[]
+	 */
+	public function getOnlineAgentIds()
+	{
+		if ($this->online_agent_ids !== null) {
+			return $this->online_agent_ids;
+		}
+		$cutoff = date('Y-m-d H:i:s', time() - $this->agent_timeout);
+
+		$this->online_agent_ids = $this->db->fetchAllKeyValue("
+			SELECT DISTINCT s.person_id
+			FROM sessions s
+			INNER JOIN people p ON (s.person_id = p.id)
+			WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
+		", array($cutoff), 0, 0);
+
+		return $this->online_agent_ids;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getOnlineAgents()
+	{
+		$this->getOnlineAgentIds();
+
+		$agents = array();
+		foreach ($this->online_agent_ids as $id) {
+			$agents[$id] = $this->get($id);
+		}
+
+		return $agents;
+	}
+
+
+	/**
+	 * Check if an agent is online
+	 *
+	 * @param int|Person $id_or_agent
+	 * @return bool
+	 */
+	public function isAgentOnline($id_or_agent)
+	{
+		$this->getOnlineAgentIds();
+		$id = is_object($id_or_agent) ? $id_or_agent->getId() : $id_or_agent;
+
+		return isset($this->online_agent_ids[$id]);
+	}
+
+
+	/**
+	 * Count how many agents are currently online
+	 *
+	 * @return int
+	 */
+	public function countOnlineAgents()
+	{
+		return count($this->online_agent_ids);
 	}
 }
