@@ -1750,6 +1750,10 @@ class Upgrade
 			foreach ($out as $l) {
 				$l = trim($l);
 				if ($l !== '') {
+					// Remove pass
+					global $DP_CONFIG;
+					$l = str_replace($DP_CONFIG['db']['password'], '***', $l);
+
 					$this->log(sprintf("execCommand: -> %s", $l));
 				}
 			}
