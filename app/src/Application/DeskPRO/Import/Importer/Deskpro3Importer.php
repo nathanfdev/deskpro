@@ -54,6 +54,7 @@ class Deskpro3Importer extends AbstractImporter
 	 */
 	protected $time_begin = 0;
 
+
 	/**
 	 * @var array
 	 */
@@ -391,7 +392,14 @@ class Deskpro3Importer extends AbstractImporter
 			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
 			$drop_parts[] = $p;
 
-			$p = $sm->getDatabasePlatform()->getCreateForeignKeySQL($x, $table);
+			$name = $x->getQuotedName($sm->getDatabasePlatform());
+
+			if (isset($this->schema_file['fk'][$table][$name])) {
+				$p = $this->schema_file['fk'][$table][$name];
+			} else {
+				$p = $sm->getDatabasePlatform()->getCreateForeignKeySQL($x, $table);
+			}
+
 			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
 			$restore_parts[] = $p;
 		}
@@ -426,7 +434,15 @@ class Deskpro3Importer extends AbstractImporter
 			return;
 		}
 
-		$this->getDb()->exec($data['sql']);
+		try {
+			$this->getDb()->exec($data['sql']);
+		} catch (\Exception $e) {
+			$this->logger->log(sprintf("FK constraint failed so reexecuting with checks off: %s", $data['sql']), 'ERR');
+
+			$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
+			$this->getDb()->exec($data['sql']);
+			$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
+		}
 	}
 
 

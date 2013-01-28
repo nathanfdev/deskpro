@@ -75,6 +75,11 @@ abstract class AbstractImporter
 	 */
 	public $db;
 
+	/**
+	 * @var array
+	 */
+	protected $schema_file;
+
 	protected $buffered_save_mapped_ids = array();
 
 	/**
@@ -95,9 +100,7 @@ abstract class AbstractImporter
 		'usergroup_sys'      => true,
 		'chat_dep'           => true,
 		'people_def'         => true,
-		'people_def_choice'  => true,
 		'ticket_def'         => true,
-		'ticket_def_choice'  => true,
 	);
 
 	public function __construct(DeskproContainer $container, $config, Logger $logger = null)
@@ -117,6 +120,10 @@ abstract class AbstractImporter
 		$this->logger = $logger;
 
 		$this->db = $this->db;
+
+		if (file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
+			$this->schema_file = include(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php');
+		}
 	}
 
 
