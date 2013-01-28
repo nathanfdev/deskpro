@@ -248,4 +248,29 @@ $(document).ready(function() {
 	</div>
 	<br />
 
+	{##################################################################################################################}
+	{# Helpdesk #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Embed the entire helpdesk</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp_admin_page_inner">
+			<div class="dp-page-box">
+				<div class="page-content">
+
+					<p>This embeds the entire helpdesk portal directly into any page on your site.</p>
+
+					{% set code %}{% include 'AdminBundle:Portal:widget-code-helpdesk.txt.twig' %}{% endset %}
+					<textarea class="code" wrap="off">{{ code|e }}</textarea>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+
 {% endblock %}

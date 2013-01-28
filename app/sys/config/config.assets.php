@@ -494,6 +494,14 @@ $CONFIG['report_report_ui'] = array(
 	)
 );
 
+$CONFIG['user_helpdeskwin'] = array(
+	'out' => 'js/HelpdeskWin.min.js',
+	'post_filters' => array('yui_simple'),
+	'files' => array(
+		'javascripts/DeskPRO/User/HelpdeskWidget/HelpdeskWin.js',
+	)
+);
+
 $CONFIG['user'] = array(
 	'out' => 'js/user-all.js',
 	'post_filters' => array('yui_simple'),

@@ -8,6 +8,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 	{% if page_noindex %}<meta name="robots" content="noindex,nofollow" />{% endif %}
+
+	{{ dp_asset_html('user_helpdeskwin') }}
+
 	{% if app.getSetting('core.favicon_blob_url') %}
 		<link rel="shortcut icon" id="favicon" href="{{ app.request.getBaseUrl()|replace({'/index.php': ''}) }}/{{ app.getSetting('core.favicon_blob_url') }}" />
 	{% endif %}
