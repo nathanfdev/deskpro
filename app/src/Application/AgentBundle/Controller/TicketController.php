@@ -2749,6 +2749,35 @@ class TicketController extends AbstractController
 		$from_name = $this->person->getDisplayName();
 		$email->setFrom($from_email, $from_name);
 
+		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $this->person);
+
+		$attach_attachments = array();
+		$max = App::getSetting('core.sendemail_attach_maxsize');
+		$max_embed = App::getSetting('core.sendemail_embed_maxsize');
+		$size = 0;
+		$attachments = $ticketdisplay->getMessageAttachments($message, true);
+		if ($attachments) {
+			foreach ($ticketdisplay->getMessageAttachments($message, true) as $attach) {
+				if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
+					continue;
+				}
+
+				if ($size + $attach->blob->filesize > $max) {
+					break;
+				}
+
+				$attach_attachments[$attach->blob->getDownloadUrl(true)] = $attach;
+			}
+
+			foreach ($attach_attachments as $src => $attach) {
+				if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
+					$email->attachBlob($attach, $src, true);
+				} else {
+					$email->attachBlob($attach->blob, $src, $attach->is_inline);
+				}
+			}
+		}
+
 		$this->container->getMailer()->send($email);
 
 		return $this->createJsonResponse(array('success' => true));
