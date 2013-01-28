@@ -52,8 +52,8 @@ $collection->add('report_agent_hours_index', new Route(
 ));
 
 $collection->add('report_agent_hours_list_date', new Route(
-    '/agent-hours/{date}',
-    array('_controller' => 'ReportBundle:AgentHours:list'),
+    '/agent-hours/{date}/{date2}',
+    array('_controller' => 'ReportBundle:AgentHours:list', 'date2' => ''),
     array(),
     array()
 ));

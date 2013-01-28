@@ -48,7 +48,7 @@ class AgentHoursController extends AbstractController
         return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);
     }
 
-    public function listAction($date)
+    public function listAction($date, $date2)
     {
         list($year, $month, $day) = explode('-', $date);
 
@@ -57,20 +57,72 @@ class AgentHoursController extends AbstractController
 		$dt->setDate($year, $month, $day);
 		$dt->setTime(0,0,0);
 
-        $vars = $this->getVarsForDate($dt);
+		$dt2 = null;
+		if ($date2) {
+			list($year, $month, $day) = explode('-', $date2);
+			$dt2 = new \DateTime();
+			$dt2->setTimezone($this->person->getDateTimezone());
+			$dt2->setDate($year, $month, $day);
+			$dt2->setTime(0,0,0);
+
+			if ($dt->format('Y-m-d H:i:s') == $dt2->format('Y-m-d H:i:s')) {
+				return $this->redirectRoute('report_agent_hours_list_date', array('date' => $date));
+			} elseif ($dt2 < $dt) {
+				return $this->redirectRoute('report_agent_hours_list_date', array('date' => $date2, 'date2' => $date));
+			}
+		}
+
+        $vars = $this->getVarsForDate($dt, $dt2);
+		$vars['year_start']  = $dt->format('Y');
+		$vars['month_start'] = $dt->format('m');
+		$vars['view_date1'] =  $dt;
+		$vars['day_start']   = $dt->format('j');
+
+		$num = 1;
+		if ($dt2) {
+			$vars['view_date2'] = $dt2;
+
+			$days = array();
+			$date_run = clone $dt;
+			while ($date_run <= $dt2) {
+				$y = $date_run->format('Y');
+				$m = $date_run->format('n');
+				$d = $date_run->format('j');
+
+				if (!isset($days[$y])) {
+					$days[$y] = array();
+				}
+				if (!isset($days[$y][$m])) {
+					$days[$y][$m] = array();
+				}
+
+				$days[$y][$m][$d] = $d;
+
+				$date_run->add(new \DateInterval('P1D'));
+				$num++;
+			}
+
+			$vars['use_days'] = $days;
+			$vars['num_days'] = $num;
+		}
+
         return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);
     }
 
-    private function getVarsForDate($date)
+    private function getVarsForDate($date, $end_date = null)
     {
         $db = $this->db;
 
         $start_date = clone $date;
 		$start_date->setTimezone(new \DateTimeZone('UTC'));
 
-        $end_date = clone $start_date;
-        $end_date->add(new \DateInterval('P1D'));
-        $end_date->sub(new \DateInterval('PT1S')); // Remove a single second to stop overlap.
+		if ($end_date) {
+			$end_date = clone $end_date;
+		} else {
+			$end_date = clone $start_date;
+			$end_date->add(new \DateInterval('P1D'));
+			$end_date->sub(new \DateInterval('PT1S')); // Remove a single second to stop overlap.
+		}
 
         $date_range = array($start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s'));
 
@@ -81,6 +133,7 @@ class AgentHoursController extends AbstractController
 
         $agents = array();
         $times = array();
+		$times_hour = array();
         $totals = array();
 
         foreach($agent_ids as $agent_id) {
@@ -92,14 +145,39 @@ class AgentHoursController extends AbstractController
             );
 
             $times[$agent_id] = array();
+            $times_hour[$agent_id] = array();
 
             foreach($active_times as $time) {
                 $dt = $this->mysqlDateToPhpDate($time['date_active']);
 
-                $hour = $dt->format('G');
+				$year   = $dt->format('Y');
+				$month  = $dt->format('n');
+				$day    = $dt->format('j');
+                $hour   = $dt->format('G');
                 $minute = $dt->format('i');
 
-                $times[$agent_id][intval(($hour * 60) / $block_size + $minute / $block_size)] = $time;
+				if (!isset($times[$agent_id][$year])) {
+					$times[$agent_id][$year] = array();
+				}
+				if (!isset($times[$agent_id][$year][$month])) {
+					$times[$agent_id][$year][$month] = array();
+				}
+				if (!isset($times[$agent_id][$year][$month][$day])) {
+					$times[$agent_id][$year][$month][$day] = array();
+				}
+
+				if (!isset($times_hour[$agent_id][$year])) {
+					$times_hour[$agent_id][$year] = array();
+				}
+				if (!isset($times_hour[$agent_id][$year][$month])) {
+					$times_hour[$agent_id][$year][$month] = array();
+				}
+				if (!isset($times_hour[$agent_id][$year][$month][$day])) {
+					$times_hour[$agent_id][$year][$month][$day] = array();
+				}
+
+                $times[$agent_id][$year][$month][$day][intval(($hour * 60) / $block_size + $minute / $block_size)] = $time;
+                $times_hour[$agent_id][$year][$month][$day][$hour] = true;
             }
 
             $total_minutes = count($active_times) * $block_size;
@@ -126,6 +204,7 @@ class AgentHoursController extends AbstractController
             'agents' => $agents,
             'view_date' => $date,
             'times' => $times,
+			'times_hour' => $times_hour,
             'block_size' => $block_size,
             'totals' => $totals,
             'dates' => $dates,
