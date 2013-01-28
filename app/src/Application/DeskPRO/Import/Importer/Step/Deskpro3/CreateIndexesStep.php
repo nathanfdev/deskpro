@@ -122,7 +122,7 @@ class CreateIndexesStep extends AbstractDeskpro3Step
 
 	public function custom_data_ticket_indexes()
 	{
-		$this->importer->restoreTableIndexes('tickets_participant');
+		$this->importer->restoreTableIndexes('custom_data_ticket');
 	}
 
 	public function tickets_search_active_indexes()
