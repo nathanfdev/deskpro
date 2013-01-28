@@ -469,30 +469,32 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				# Verify attachment paths
 				#----------------------------------------
 
-				try {
-					$has_filepath = $importer->getOldDb()->fetchColumn("
-						SELECT filepath
-						FROM blobs
-						WHERE filepath IS NOT NULL
-						ORDER BY id DESC
-						LIMIT 1
-					");
-				} catch (\Exception $e) {
-					$has_filepath = false;
-					// it could fail if using an old version of deskpro,
-					// so just catch it and it means not using file system (obviously)
-				}
-
-				if ($has_filepath) {
-					if (!isset($DP_CONFIG['import']['existing_attachment_files']) || !$DP_CONFIG['import']['existing_attachment_files']) {
-						$output->writeln("Your DeskPRO v3 installation is set to store attachments as files on the filesystem. You need to specify the path to these files in import options in config.php. Look for the `existing_attachment_files` option.");
-						return 1;
+				if (!dp_get_config('import.dev_ignore_attachments')) {
+					try {
+						$has_filepath = $importer->getOldDb()->fetchColumn("
+							SELECT filepath
+							FROM blobs
+							WHERE filepath IS NOT NULL
+							ORDER BY id DESC
+							LIMIT 1
+						");
+					} catch (\Exception $e) {
+						$has_filepath = false;
+						// it could fail if using an old version of deskpro,
+						// so just catch it and it means not using file system (obviously)
 					}
 
-					$check_path = $DP_CONFIG['import']['existing_attachment_files'] . '/' . $has_filepath;
-					if (!file_exists($check_path)) {
-						$output->writeln("The path you entered for `existing_attachment_files` appears to be invalid. We checked for a file attachment but it does not exist: " . $check_path);
-						return 1;
+					if ($has_filepath) {
+						if (!isset($DP_CONFIG['import']['existing_attachment_files']) || !$DP_CONFIG['import']['existing_attachment_files']) {
+							$output->writeln("Your DeskPRO v3 installation is set to store attachments as files on the filesystem. You need to specify the path to these files in import options in config.php. Look for the `existing_attachment_files` option.");
+							return 1;
+						}
+
+						$check_path = $DP_CONFIG['import']['existing_attachment_files'] . '/' . $has_filepath;
+						if (!file_exists($check_path)) {
+							$output->writeln("The path you entered for `existing_attachment_files` appears to be invalid. We checked for a file attachment but it does not exist: " . $check_path);
+							return 1;
+						}
 					}
 				}
 

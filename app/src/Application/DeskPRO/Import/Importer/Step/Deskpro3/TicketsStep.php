@@ -1534,15 +1534,17 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Fetch ticket_attachments
 		#------------------------------
 
-		$q = $this->olddb->query("SELECT * FROM ticket_attachments WHERE ticketid $between_where");
-		$q->execute();
+		if (!dp_get_config('import.dev_ignore_attachments')) {
+			$q = $this->olddb->query("SELECT * FROM ticket_attachments WHERE ticketid $between_where");
+			$q->execute();
 
-		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
-			if (!isset($batch[$r['ticketid']])) continue;
-			$batch[$r['ticketid']]['ticket_attachments'][] = $r;
+			while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+				if (!isset($batch[$r['ticketid']])) continue;
+				$batch[$r['ticketid']]['ticket_attachments'][] = $r;
+			}
+			$q->closeCursor();
+			unset($q);
 		}
-		$q->closeCursor();
-		unset($q);
 
 		#------------------------------
 		# Fetch ticket_participant
