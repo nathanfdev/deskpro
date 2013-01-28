@@ -213,6 +213,7 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('AutoFormat.RemoveEmpty', false);
 				$config->set('Attr.EnableID', true);
 				$config->set('Attr.IDPrefix', 'dp-user-');
+				$config->set('Attr.AllowedFrameTargets', array('_blank'));
 				break;
 
 			case 'html_core':
