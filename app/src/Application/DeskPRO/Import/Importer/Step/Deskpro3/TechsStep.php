@@ -429,7 +429,6 @@ class TechsStep extends AbstractDeskpro3Step
 				$subs[$f_team][] = 'alert_created';
 				$subs[$f_team][] = 'email_user_activity';
 				$subs[$f_team][] = 'email_agent_activity';
-				$subs[$f_team][] = 'email_user_note';
 				$subs[$f_team][] = 'email_agent_note';
 
 				$subs = \Orb\Util\Arrays::removeFalsey($subs);
