@@ -54,6 +54,16 @@ class GenerateSchema
 	protected $triggers;
 
 	/**
+	 * @var array
+	 */
+	protected $indexes;
+
+	/**
+	 * @var array
+	 */
+	protected $fks;
+
+	/**
 	 * @var string
 	 */
 	protected $php_file;
@@ -126,8 +136,10 @@ class GenerateSchema
 		#------------------------------
 
 		$em = $this->em;
+		/** @var $metadata \Doctrine\ORM\Mapping\ClassMetadata[] */
 		$metadata = $em->getMetadataFactory()->getAllMetadata();
 		$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+		$sm = $this->em->getConnection()->getSchemaManager();
 		$all_sql = $tool->getCreateSchemaSql($metadata);
 
 		#------------------------------
@@ -263,6 +275,7 @@ SQL;
 		$xc = 0;
 		$xt = 0;
 
+		$tables = array();
 		$php_creates  = array();
 		$php_alters   = array();
 		$php_triggers = array();
@@ -310,12 +323,70 @@ SQL;
 			$xa++;
 		}
 
-		$php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array(), 'trigger' => array());\n\n";
+		#------------------------------
+		# Indexes and keys
+		#------------------------------
+
+		$this->indexes = array();
+		$this->fks = array();
+		$php_indexes = array();
+		$php_fks = array();
+
+		$schema = $tool->getSchemaFromMetadata($metadata);
+		/** @var $tables \Doctrine\DBAL\Schema\Table[] */
+		$tables = $schema->getTables();
+		foreach ($tables as $table) {
+			$t = $table->getName();
+
+			$this->indexes[$t] = array();
+			$this->fks[$t] = array();
+
+			$indexes = $table->getIndexes();
+			$fkeys = $table->getForeignKeys();
+
+			if (count($indexes) > 0) {
+				$php_indexes[] = "\$queries['index']['$t'] = array(";
+			}
+			if (count($fkeys) > 0) {
+				$php_fks[] = "\$queries['fk']['$t'] = array(";
+			}
+
+			foreach ($indexes as $idx) {
+				$sql = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
+				$this->indexes[$t][$idx->getName()] = $sql;
+
+				$php_indexes[] = "\t'{$idx->getName()}' => '" . addslashes($sql) . "',";
+			}
+			foreach ($fkeys as $fk) {
+				$sql = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
+				$this->fks[$t][$fk->getName()] = $sql;
+
+				$php_fks[] = "\t'{$fk->getName()}' => '" . addslashes($sql) . "',";
+			}
+
+			if (count($indexes) > 0) {
+				$php_indexes[] = ");";
+			}
+			if (count($fkeys) > 0) {
+				$php_fks[] = ");";
+			}
+		}
+
+
+		#------------------------------
+		# Create the PHP file
+		#------------------------------
+
+		$php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array(), 'index' => array(), 'fk' => array(), 'trigger' => array());\n\n";
 		$php .= implode("\n", $php_creates);
 		$php .= "\n\n\n\n\n";
 		$php .= implode("\n", $php_alters);
 		$php .= "\n\n\n\n\n";
 		$php .= implode("\n", $php_triggers);
+		$php .= "\n\n\n\n\n";
+		$php .= implode("\n", $php_indexes);
+		$php .= "\n\n\n\n\n";
+		$php .= implode("\n", $php_fks);
 		$php .= "\n\n\n\n\nreturn \$queries;\n";
 
 		$pos = strpos($php, 'CREATE TABLE client_messages');
