@@ -350,5 +350,11 @@
 	'core.twitter_agent_consumer_secret' => '',
 	'core.twitter_user_consumer_key' => '',
 	'core.twitter_user_consumer_secret' => '',
-	'core.twitter_auto_remove_time' => 1209600
+	'core.twitter_auto_remove_time' => 1209600,
+
+	/**
+	 * Time in H:i format for when to send task notifs.
+	 * The time is considered to be of the default timezone.
+	 */
+	'core.task_reminder_time' => '09:00',
 );

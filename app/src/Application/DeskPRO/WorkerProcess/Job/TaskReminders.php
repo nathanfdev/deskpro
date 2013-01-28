@@ -48,7 +48,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
  */
 class TaskReminders extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+	const DEFAULT_INTERVAL = 900;
 
 	public function run()
 	{
@@ -56,6 +56,26 @@ class TaskReminders extends AbstractJob
 		$last_run = App::getSetting('core.last_task_reminder_date');
 		if ($date === $last_run) {
 			$this->getLogger()->logInfo("Already run for today ($date). No action taken.");
+			return;
+		}
+
+		$send_time = App::getSetting('core.task_reminder_time');
+		if (!$send_time || strpos($send_time, ':') === false) {
+			$send_time = '09:00';
+		}
+
+		list ($hour, $min) = explode(':', $send_time);
+		$hour = (int)$hour;
+		$min  = (int)$min;
+
+		$now = new \DateTime('now');
+		$now->setTimezone(App::getSetting('default_timezone'));
+
+		$hour_now = (int)$now->format('G');
+		$min_now  = (int)$now->format('i');
+
+		if (!($hour_now > $hour || ($hour_now == $hour && $min_now >= $min))) {
+			$this->getLogger()->logInfo(sprintf("Not yet time to run (%s %s). No action taken.", $send_time, App::getSetting('core.default_timezone')));
 			return;
 		}
 

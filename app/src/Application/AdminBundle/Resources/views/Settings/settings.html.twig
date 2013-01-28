@@ -216,6 +216,22 @@
 				</td>
 			</tr></table>
 		</div>
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>When to send agent task reminders:</label>
+					<select name="settings[core.task_reminder_time]">
+						{% for i in range(1,23) %}
+							{% if i < 10 %}{% set i = '0' ~ i %}{% endif %}
+							{% set time1 = i ~ ':00' %}
+							{% set time2 = i ~ ':30' %}
+							<option {% if app.getSetting('core.task_reminder_time') == time1 %}selected="selected"{% endif %} value="{{ time1 }}">{{ time1 }}</option>
+							<option {% if app.getSetting('core.task_reminder_time') == time2 %}selected="selected"{% endif %} value="{{ time2 }}">{{ time2 }}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr></table>
+		</div>
 	</div>
 </div>
 <div class="setting_field_row">

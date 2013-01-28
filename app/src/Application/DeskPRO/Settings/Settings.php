@@ -69,6 +69,11 @@ class Settings implements \ArrayAccess
 	 */
 	protected $settings = array();
 
+	/**
+	 * @var \DateTimeZone
+	 */
+	protected $default_timezone;
+
 
 	/**
 	 * An array of groups that we need to load in the next batch
@@ -108,6 +113,10 @@ class Settings implements \ArrayAccess
 
 		$this->virtual_settings['core.interact_require_login'] = function($settings) {
 			return in_array($settings->get('core.user_mode'), array('require_reg', 'require_reg_agent_validation', 'closed'));
+		};
+
+		$this->virtual_settings['default_timezone'] = function($settings) {
+			return $settings->getDefaultTimezone();
 		};
 	}
 
@@ -384,6 +393,24 @@ class Settings implements \ArrayAccess
 		return substr($name, 0, $pos);
 	}
 
+
+	/**
+	 * @return \DateTimeZone
+	 */
+	public function getDefaultTimezone()
+	{
+		if ($this->default_timezone !== null) {
+			return $this->default_timezone;
+		}
+
+		try {
+			$this->default_timezone = new \DateTimeZone($this->get('core.default_timezone'));
+		} catch (\Exception $e) {
+			$this->default_timezone = new \DateTimeZone('UTC');
+		}
+
+		return $this->default_timezone;
+	}
 
 
 	public function offsetExists($offset)
