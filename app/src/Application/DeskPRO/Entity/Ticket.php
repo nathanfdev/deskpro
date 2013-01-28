@@ -2853,6 +2853,39 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		", array($this->id));
 	}
 
+	public function getFromAddress()
+	{
+		if ($this->notify_email) {
+			$from_email = $this->notify_email;
+		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress()) {
+			$from_email = $this->email_gateway->getPrimaryEmailAddress();
+		} else {
+			$from_email = App::getSetting('core.default_from_email');
+			$default_address = App::getDb()->fetchColumn("
+				SELECT match_pattern
+				FROM email_gateway_addresses
+				WHERE match_type = 'exact'
+				ORDER BY run_order ASC, id ASC
+				LIMIT 1
+			");
+
+			if ($default_address) {
+				$from_email = $default_address;
+			}
+		}
+
+		if ($this->notify_email_name) {
+			$from_name = $this->notify_email_name;
+		} else {
+			$from_name = App::getSetting('core.deskpro_name');
+		}
+
+		return array(
+			'email' => $from_email,
+			'name'  => $from_name
+		);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

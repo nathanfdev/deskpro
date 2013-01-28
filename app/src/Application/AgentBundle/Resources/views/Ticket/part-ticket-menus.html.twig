@@ -1,6 +1,7 @@
 <ul class="ticket-message-edit-menu" style="display:none">
 	<li data-option-id="view-details">{{ phrase('agent.general.detail') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
+	<li data-option-id="fwd">Forward Message</li>
 	{% if ticket_perms.delete %}<li class="delete-link" data-option-id="delete">Delete</li>{% endif %}
 	{% if ticket_perms.delete %}<li class="delete-attachments-link" data-option-id="delete-attachments">Delete attachments</li>{% endif %}
 	<li class="set-as-note" data-option-id="setnote.note">Set as agent note</li>

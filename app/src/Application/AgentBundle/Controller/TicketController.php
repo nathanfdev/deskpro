@@ -37,6 +37,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
+use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
 use Application\DeskPRO\Entity;
@@ -2655,6 +2656,104 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function forwardOverlayAction($ticket_id, $message_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		if (!$message || $message->ticket->getId() != $ticket->getId()) {
+			throw $this->createNotFoundException();
+		}
+
+		$date_created = clone $ticket->date_created;
+		$date_created->setTimezone($this->person->getDateTimezone());
+
+		return $this->render('AgentBundle:Ticket:forward-overlay.html.twig', array(
+			'ticket'  => $ticket,
+			'message' => $message,
+			'date_created' => $date_created,
+		));
+	}
+
+	public function forwardSendAction($ticket_id, $message_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		if (!$message || $message->ticket->getId() != $ticket->getId()) {
+			throw $this->createNotFoundException();
+		}
+
+		$custom_message = $this->in->getString('custom_message');
+
+		$raw_to = \ezcMailTools::parseEmailAddresses($this->in->getString('to'));
+		$to = array();
+		foreach ($raw_to as $addr) {
+			if ($addr->email && StringEmail::isValueValid($addr->email)) {
+				$to[$addr->email] = $addr->name;
+			}
+		}
+
+		if (!$to) {
+			return $this->createJsonResponse(array('error' => 'invalid_to'));
+		}
+
+		$subject = $this->in->getString('subject');
+
+		$message_raw = $message->message_raw ?: '';
+		if (!$message_raw) {
+			$message_raw = $message->message_full;
+			if (!$message_raw) {
+				$message_raw = $message->message;
+			}
+		}
+
+		$date_created = clone $ticket->date_created;
+		$date_created->setTimezone($this->person->getDateTimezone());
+		$date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
+
+		$top = '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 11px; color: #888888; padding: 0; margin: 0;">';
+		$top .= 'This message has been forwarded to you from <a href="'. $this->container->getSetting('core.deskpro_url') .'">'. $this->container->getSetting('core.deskpro_name') .'</a> ';
+		$top .= 'by '. $this->person->getDisplayName() .' &lt;<a href="mailto:'. $this->person->getPrimaryEmailAddress() .'">'. $this->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
+		$top .= 'Please do NOT reply to this message. If you need to reply, consider replying directly to '. $ticket->person->getDisplayName() .' &lt;<a href="mailto:'. $ticket->person->getPrimaryEmailAddress() .'">'. $ticket->person->getPrimaryEmailAddress() .'</a>&gt;';
+		$top .= '</div>';
+
+		if ($custom_message) {
+			$top .= '<br/><br/><div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
+			$top .= nl2br(htmlspecialchars($custom_message));
+			$top .= '</div>';
+		}
+
+		$top .= '<br/><br/><div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
+		$top .= '--- Forwarded Message ---<br/>';
+		$top .= 'From: '. $ticket->person->getDisplayName() .' &lt;<a href="mailto:'. $ticket->person->getPrimaryEmailAddress() .'">'. $ticket->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
+
+		$from = $ticket->getFromAddress();
+		$top .= 'To: '. $from['name'] .' &lt;<a href="mailto:'. $from['email'] .'">'. $from['email'] .'</a>&gt;<br/>';
+		$top .= 'Subject: '. htmlspecialchars($ticket->subject) . '<br/>';
+		$top .= 'Date: '. $date_created .'<br/>';
+		$top .= '</div>';
+
+		$message_raw = $top . '<br/><br/>' . $message_raw;
+
+		if (strpos($message_raw, '<body') === false) {
+			$message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>' . $message_raw . '</body></html>';
+		}
+
+		$email = $this->container->getMailer()->createMessage();
+		$email->setTo($to);
+		$email->setBody($message_raw, 'text/html');
+		$email->setSubject($subject);
+
+		$from_email = $this->container->getSetting('core.default_from_email');
+		$from_name = $this->person->getDisplayName();
+		$email->setFrom($from_email, $from_name);
+
+		$this->container->getMailer()->send($email);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	############################################################################
 	# view-raw-message
 	############################################################################
@@ -2664,6 +2763,12 @@ class TicketController extends AbstractController
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 
 		$message_raw = $message->message_raw ?: '';
+		if (!$message_raw) {
+			$message_raw = $message->message_full;
+			if (!$message_raw) {
+				$message_raw = $message->message;
+			}
+		}
 
 		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
 
@@ -2683,6 +2788,10 @@ class TicketController extends AbstractController
 			$config->set('URI.DisableExternalResources', true);
 
 			$message_raw = $note . $purifier->purify($message_raw, $config);
+		}
+
+		if (strpos($message_raw, '<body') === false) {
+			$message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>' . $message_raw . '</body></html>';
 		}
 
 		$res = new Response($message_raw);

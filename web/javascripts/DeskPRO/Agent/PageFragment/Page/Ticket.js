@@ -1248,6 +1248,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.showSplitOverlay(messageId);
 				break;
 
+			case 'fwd':
+				this.showFwdOverlay(messageId);
+				break;
+
 			case 'edit':
 				this.showMessageEditor(messageId);
 				break;
@@ -1378,6 +1382,52 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 						}
 					});
+				});
+			}
+		});
+		overlay.open();
+	},
+
+	showFwdOverlay: function(messageId) {
+		var self = this;
+		var overlay = new DeskPRO.UI.Overlay({
+			contentMethod: 'ajax',
+			contentAjax: { url: BASE_URL + 'agent/tickets/' + this.meta.ticket_id + '/forward/' + messageId },
+			zIndex: 40000, // Above floating people windows
+			destroyOnClose: true,
+			onAjaxDone: function() {
+				var wrapper = overlay.getWrapper(),
+					form = wrapper.find('form'),
+					sendBtn = wrapper.find('.save-trigger'),
+					footer = wrapper.find('.overlay-footer');
+
+				form.on('submit', function(ev) {
+					ev.preventDefault();
+					ev.stopPropagation();
+				});
+
+				sendBtn.on('click', function(ev) {
+					ev.preventDefault();
+					ev.stopPropagation();
+
+					var formData = form.serializeArray();
+					footer.addClass('loading');
+
+					$.ajax({
+						url: form.attr('action'),
+						type: 'POST',
+						data: formData,
+						dataType: 'json',
+						success: function(data) {
+							if (data.error && data.error == 'invalid_to') {
+								DeskPRO_Window.showAlert('Please enter a valid To address');
+								footer.removeClass('loading');
+							} else {
+								DeskPRO_Window.showAlert('Your message has been sent.');
+								overlay.close();
+							}
+						}
+					})
 				});
 			}
 		});

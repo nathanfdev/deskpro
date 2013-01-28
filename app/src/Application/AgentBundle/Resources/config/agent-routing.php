@@ -1089,6 +1089,20 @@ $collection->add('agent_ticket_merge_overlay', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_fwd_overlay', new Route(
+	'/tickets/{ticket_id}/forward/{message_id}',
+	array('_controller' => 'AgentBundle:Ticket:forwardOverlay'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_fwd_send', new Route(
+	'/tickets/{ticket_id}/forward/{message_id}/send',
+	array('_controller' => 'AgentBundle:Ticket:forwardSend'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+', '_method' => 'POST'),
+	array()
+));
+
 $collection->add('agent_ticket_merge', new Route(
 	'/tickets/{ticket_id}/merge/{other_ticket_id}',
 	array('_controller' => 'AgentBundle:Ticket:merge'),

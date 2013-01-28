@@ -1,0 +1,51 @@
+<div class="overlay forward-overlay" style="width: 780px; height: 600px;">
+	<div class="overlay-title">
+		<h4>Forward Message</h4>
+	</div>
+
+	<div class="overlay-content">
+		<form action="{{ path('agent_ticket_fwd_send', {ticket_id: ticket.id, message_id: message.id}) }}" method="post">
+			<div class="forward-wrapper">
+				<div class="header-line">
+					<div class="label">To:</div>
+					<div class="input"><input type="text" name="to" value="" placeholder="Enter an email address" /></div>
+				</div>
+				<div class="header-line last">
+					<div class="label">Subject:</div>
+					<div class="input"><input type="text" name="subject" placeholder="Enter a subject" value="FWD: {{ ticket.subject }}" /></div>
+				</div>
+				<div class="message-area">
+					<div class="uneditable-message">
+						<p>
+							This message has been forwarded to you from <a href="{{ app.getSetting('core.deskpro_url') }}">{{ app.getSetting('core.deskpro_name') }}</a>
+							by {{ app.user.getDisplayName() }} &lt;<a href="mailto:{{ app.user.getPrimaryEmailAddress() }}">{{ app.user.getPrimaryEmailAddress() }}</a>&gt;
+						</p>
+						<p>
+							Please do NOT reply to this message. If you need to reply, consider replying directly to {{ ticket.person.getDisplayName }} &lt;<a href="mailto:{{ ticket.person.getPrimaryEmailAddress() }}">{{ ticket.person.getPrimaryEmailAddress }}</a>&gt;
+						</p>
+					</div>
+					<div class="real-textarea"><textarea placeholder="Optionally enter a message" name="custom_message" class="note"></textarea></div>
+					<div class="fwd-headers">
+						--- Forwarded Message ---<br/>
+						From: {{ ticket.person.getDisplayName() }} &lt;<a href="mailto:{{ ticket.person.getPrimaryEmailAddress() }}">{{ ticket.person.getPrimaryEmailAddress() }}</a>&gt;<br/>
+						To: {{ ticket.getFromAddress().name }} &lt;<a href="mailto:{{ ticket.getFromAddress().email }}">{{ ticket.getFromAddress().email }}</a>&gt;<br/>
+						Subject: {{ ticket.subject }}<br/>
+						Date: {{ date_created|date('fulltime') }}
+					</div>
+					<div class="orig-message">
+						<iframe src="{{ path('agent_ticket_message_raw', {ticket_id: ticket.id, message_id: message.id, raw: security_token('view_raw', 10800), _rt: security_token('request_token', 10800)}) }}" frameborder="0" marginheight="0" marginwidth="0" width="100%" style="margin:0;border:0;"></iframe>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="overlay-footer">
+		<div class="is-not-loading">
+			<button class="save-trigger clean-white">Send</button>
+		</div>
+		<div class="is-loading">
+			<div class="loading-icon"></div>
+		</div>
+	</div>
+</div>
