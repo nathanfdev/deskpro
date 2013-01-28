@@ -143,7 +143,14 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 					try {
 						App::getDb()->exec($line);
 					} catch (\Exception $e) {
-						KernelErrorHandler::handleException($e);
+						KernelErrorHandler::handleException($e, false);
+
+						// If it failed, log the error and force it with FK checks off
+						try {
+							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
+							App::getDb()->exec($line);
+							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
+						} catch (\Exception $e) {}
 					}
 				}
 			}
