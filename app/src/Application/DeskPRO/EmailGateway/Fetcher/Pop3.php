@@ -129,6 +129,18 @@ class Pop3 extends AbstractFetcher
 
 			$this->logger->log("Server has " . count($id_to_num) . " messages", 'debug');
 
+			if (count($id_to_num) > 2500) {
+				$this->logger->log("Server has >= 2500 messages, breaking", 'ERR');
+				$this->message_list = array();
+
+				$e = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				$einfo['no_send_error'] = true;
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+
+				return;
+			}
+
 			$read_ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM email_uids
