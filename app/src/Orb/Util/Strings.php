@@ -348,7 +348,7 @@ class Strings
 	 * @param    int      $num      The number of characters to get
 	 * @return   string
 	 */
-	public function getFromStart($string, $num = 1)
+	public static function getFromStart($string, $num = 1)
 	{
 		return substr($string, 0, $num);
 	}
@@ -362,7 +362,7 @@ class Strings
 	 * @param    int      $num      The number of characters to get
 	 * @return   string
 	 */
-	public function getFromEnd($string, $num = 1)
+	public static function getFromEnd($string, $num = 1)
 	{
 		return substr($string, strlen($string) - $num);
 	}
