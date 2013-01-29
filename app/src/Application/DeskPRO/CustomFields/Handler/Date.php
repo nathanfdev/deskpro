@@ -117,8 +117,13 @@ class Date extends HandlerAbstract
 	{
 		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
-		if (!is_scalar($data)) {
+		if ($data && !is_scalar($data)) {
 			return $this->makeErrorArray(array('invalid_input'));
+		}
+
+		// Timestamp value
+		if (strlen($data) == 10 && ctype_digit($data)) {
+			$data = date('Y-m-d', $data);
 		}
 
 		#------------------------------
