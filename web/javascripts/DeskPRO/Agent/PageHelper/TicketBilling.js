@@ -101,6 +101,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		if (this.options.auto_start_bill) {
 			this.getEl('billing_start').hide();
 			this.getEl('billing_stop').show();
+			this.getEl('billing_start').click();
 		} else {
 			this.getEl('billing_stop').hide();
 			this.getEl('billing_start').show();
