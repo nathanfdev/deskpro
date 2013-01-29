@@ -33,6 +33,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
+use Orb\Util\Strings;
+
 class HtmlMatcher
 {
 	const CUT_MARK = '<!-- DP_EMAIL_CUT_MARK -->';
@@ -108,11 +110,17 @@ class HtmlMatcher
 		// then this pattern is a simple string pattern with no dom traversal
 		if ($first_token[0] == 'match' && !$tokens) {
 			$m = null;
-			// Get rid of new lines that may affect the cutter.
-			// (Doesnt matter with HTML emails anyway)
-			$this->body = str_replace(array("\r\n", "\n"), " ", $this->body);
 
-			if (preg_match($first_token[1], $this->body, $m) && !preg_match('#(<br|<div|<p)#i', $this->body)) {
+			$try = $this->body;
+			if (!preg_match('/^#\^/', $first_token[1]) && !preg_match('/\$#[a-zA-Z]*$/', $first_token[1])) {
+				// Get rid of new lines that may affect the cutter.
+				// (Doesnt matter with HTML emails anyway)
+				// But only if we arent anchoring the pattern, where newlines matter
+				$try = str_replace(array("\r\n", "\n"), " ", $this->body);
+			}
+
+			if (preg_match($first_token[1], $this->body, $m)) {
+				$this->body = $try;
 				$this->marked_body = str_replace($m[0], self::CUT_MARK, $this->body);
 
 				$this->pattern_match = 'SIMPLE_MATCH';
