@@ -117,7 +117,7 @@ if (($k = array_search('--dry-run', $args)) !== false) {
 
 $run_site_id = false;
 if (($k = array_search('--site-id', $args)) !== false && !empty($args[$k+1])) {
-	$run_site_id = (int)$args[$run_site_id+1];
+	$run_site_id = (int)$args[$k+1];
 	if (!$run_site_id) {
 		$run_site_id = -1;
 	}
