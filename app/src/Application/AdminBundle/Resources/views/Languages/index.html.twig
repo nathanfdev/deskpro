@@ -63,6 +63,7 @@
 						<td>
 							<div style="float:right">
 								{% if installed_packs[id] %}
+									<span class="field-id" style="position:relative;top: 4px;margin-right: 10px;">ID: {{ installed_packs[id].id }}</span>
 									<a class="clean-white" href="{{ path('admin_langs_editlang', {language_id: installed_packs[id].id}) }}">Edit</a>
 								{% else %}
 									<a class="clean-white" href="{{ path('admin_langs_install_pack', {id: id}) }}">Install Language</a>
