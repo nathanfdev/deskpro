@@ -66,6 +66,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		DP.select(this.input, {
 			tags: tagSource,
+			multiple: true,
 			id: function (e) { if (!e) return null; return e.id; },
 			formatResult: function(result, container, query) {
 				if (!result || !result.text) {
