@@ -272,7 +272,7 @@ abstract class AbstractReader
 	 */
 	public function isFromRobot()
 	{
-		$deskpro_auto = $this->getHeader('X-DeskPRO-Auto')->getHeader();
+		$deskpro_auto = $this->getHeader('X-DeskPRO-Auto')->getAllParts();
 		if ($deskpro_auto) {
 			foreach ($deskpro_auto as $v) {
 				if (stripos($v, 'Yes') !== false) {
