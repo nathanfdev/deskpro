@@ -269,9 +269,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//------------------------------
 
 		DeskPRO_Window.util.fileupload(this.el, {
-			dropZone: $('.option-rows', this.replyBox),
-			uploadTemplate: $('.template-upload', this.replyBox),
-			downloadTemplate: $('.template-download', this.replyBox)
+			dropZone: $('.option-rows', this.el),
+			uploadTemplate: $('.template-upload', this.el),
+			downloadTemplate: $('.template-download', this.el)
 		});
 		this.el.bind('fileuploaddone', function() {
 			self.getElById('attach_row').slideDown().removeClass('is-hidden');
