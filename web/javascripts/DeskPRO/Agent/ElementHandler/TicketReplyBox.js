@@ -10,7 +10,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
-		this.page = this.el.closest('div.replybox-wrap').data('page');
+		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
 		var sigTrimmed = false;
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
@@ -329,6 +329,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 			},
 			onSnippetClick: function(info) {
+
 				if (!self.page) {
 					return;
 				}
