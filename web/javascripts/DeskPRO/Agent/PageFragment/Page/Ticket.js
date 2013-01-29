@@ -593,7 +593,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-		this.refreshLogTypes();
+		var tab = this.getEl('messagebox_tabs').find('li.on');
+		if (tab.data('list-type') == 'log') {
+			this.refreshLogTypes();
+		}
 	},
 
 	updateUi: function() {
