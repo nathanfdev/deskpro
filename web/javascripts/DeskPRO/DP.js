@@ -392,7 +392,6 @@ var DP = {
 		}
 
 		if (el.is('[multiple]') || options.multiple) {
-			options.multiple = true;
 			options.addWidth = null;
 			if (!options.width || options.width) {
 				options.width = '95%';
