@@ -12,6 +12,13 @@
 {% endblock %}
 {% block page %}
 
+	{{ design.helpbox() }}
+		<p>
+			<strong style="color: #FF5500;">BETA</strong>: Twitter is currently in beta. Please report bug reports and feedback to <a href="mailto:support@deskpro.com">support@deskpro.com</a> or
+			submit a ticket on our helpdesk at <a href="https://support.deskpro.com/">https://support.deskpro.com</a>.
+		</p>
+	{{ design.helpbox_end() }}
+
 <ul class="item-list">
 	{% for account in accounts %}
 		{% include 'AdminBundle:TwitterAccount:list-row.html.twig' %}

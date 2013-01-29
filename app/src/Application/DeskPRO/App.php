@@ -889,6 +889,10 @@ class App
 	 */
 	public static function getConfig($config_name, $default = null, $file_name = self::DEFAULT_NAME)
 	{
+		if ($config_name == 'enable_twitter' && !(isset($GLOBALS['DP_CONFIG']['enable_twitter']) && !$GLOBALS['DP_CONFIG']['enable_twitter']) && !defined('DPC_IS_CLOUD')) {
+			return true;
+		}
+
 		if (!isset(self::$_fileconfig[$file_name])) {
 			self::_loadConfig($file_name);
 		}
