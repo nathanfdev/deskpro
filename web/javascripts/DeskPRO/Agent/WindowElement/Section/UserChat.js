@@ -191,8 +191,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	updateGroupingVars: function() {
+		var filterId;
+
+		if (!this.groups) {
+			return;
+		}
+
 		for(filterId in this.groups) {
-			$('#chat_filter_group_editor .filter-' + filterId + ' .field-option').val(this.groups[filterId]);
+			$('#chat_filter_group_editor').find('.filter-' + filterId + ' .field-option').val(this.groups[filterId] || '');
 		}
 	},
 
