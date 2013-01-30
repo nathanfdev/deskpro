@@ -653,6 +653,11 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		// Socket/network errors
+		if (strpos($errstr, 'stream_socket_enable_crypto():') !== false || strpos($errstr, 'SSL: Broken pipe') !== false) {
+			$no_send_error = true;
+		}
+
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
 		$url = '';
