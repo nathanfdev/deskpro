@@ -189,7 +189,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 			}
 			if ($name === null) $name = "<error>Unknown #{$this->agent_id}</error>";
 
-			return $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name[$this->agent_id]));
+			return $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name));
 		}
 	}
 }
