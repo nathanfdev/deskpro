@@ -61,4 +61,16 @@ class UserKernel extends AbstractKernel
 	{
 		$loader->load(DP_ROOT.'/sys/config/user/config_'.$this->getEnvironment().'.php');
 	}
+
+	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		try {
+			if (!App::getSetting('user.portal_enabled')) {
+				$response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
+				return $response;
+			}
+		} catch (\Exception $e) {}
+
+		return parent::preResponseHandled($request, $type, $catch);
+	}
 }

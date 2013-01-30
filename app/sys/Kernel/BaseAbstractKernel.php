@@ -363,7 +363,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	 * Returns a Response if the kernel shouldnt route and pass control off to a controller.
 	 * Returns null if things should progress normally.
 	 *
-	 * @return \Symfony\Component\HttpFoundation\Request|null
+	 * @return \Symfony\Component\HttpFoundation\Response|null
 	 */
 	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{

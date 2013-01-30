@@ -10,15 +10,6 @@ $loader->import(DP_ROOT.'/sys/config/config.php');
 
 $container->setParameter('router.options.matcher.cache_class', '%kernel.name%%kernel.environment%UrlMatcher');
 
-// deskpro.user.portal_off_event
-$definition = new Definition();
-$definition->setClass('Application\\UserBundle\\HttpKernel\\PortalOffEvent');
-$definition->setArguments(array(
-	new Reference('service_container')
-));
-$definition->addTag('kernel.event_listener', array('event' => 'kernel.request', 'method' => 'onKernelRequest'));
-$container->setDefinition('deskpro.user.portal_off_event', $definition);
-
 $container->loadFromExtension('framework', array(
 	'router' => array(
 		'resource' => DP_ROOT.'/sys/config/user/routing.php'
