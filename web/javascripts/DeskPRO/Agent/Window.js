@@ -1587,7 +1587,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 20000
+				timeout: 180000
 			});
 
 			routeData.xhr = xhr;
@@ -1600,7 +1600,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 20000
+				timeout: 180000
 			});
 
 			routeData.xhr = xhr;
