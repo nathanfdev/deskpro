@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Domain\ChangeTracker;
 
@@ -502,15 +503,6 @@ class TicketChangeTracker extends ChangeTracker
 					$this->original_ticket['agent'] = $old_val;
 					break;
 
-				case 'participants':
-					foreach ($this->ticket->getOriginalParticipantIds() as $pid) {
-						$p = App::getOrm()->getRepository('DeskPRO:Person')->find($pid);
-						if ($p) {
-							$this->original_ticket->addParticipantPerson($p);
-						}
-					}
-					break;
-
 				case 'agent_team':
 					$this->original_ticket['agent_team'] = $old_val;
 					break;
@@ -578,13 +570,30 @@ class TicketChangeTracker extends ChangeTracker
 			$this->original_ticket->setUntrackedModelField('labels', $labels);
 		}
 
+		$parts = new ArrayCollection();
+
 		if ($this->ticket->part_del_ids) {
-			$this->original_ticket->part_add_ids = $this->ticket->part_del_ids;
-			$this->original_ticket->part_del_ids = array();
-		} elseif ($this->ticket->part_add_ids) {
-			$this->original_ticket->part_del_ids = $this->ticket->part_add_ids;
-			$this->original_ticket->part_add_ids = array();
+			foreach ($this->ticket->part_del_ids as $pid) {
+				$p = new TicketParticipant();
+				$p->setPerson(App::getOrm()->find('DeskPRO:Person', $pid));
+				$parts->add($p);
+			}
 		}
+
+		$added_ids = array();
+		if ($this->ticket->part_add_ids) {
+			$added_ids = $this->ticket->part_add_ids;
+		}
+
+		foreach ($this->ticket->participants as $p1) {
+			if (!in_array($p1->getPerson()->getId(), $added_ids)) {
+				$p = new TicketParticipant();
+				$p->setPerson($p1->getPerson());
+				$parts->add($p);
+			}
+		}
+
+		$this->original_ticket->setUntrackedModelField('participants', $parts);
 
 		if (!$this->isNewTicket()) {
 			if ($this->isPropertyChanged('hidden_status')) {

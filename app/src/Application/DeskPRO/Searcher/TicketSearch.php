@@ -1952,18 +1952,6 @@ class TicketSearch extends SearcherAbstract
 
 					$participant_ids = $ticket->getParticipantPeopleIds();
 
-					if ($ticket->part_add_ids) {
-						$participant_ids = array_merge($participant_ids, $ticket->part_add_ids);
-					}
-					if ($del_ids = $ticket->part_del_ids) {
-						$participant_ids = array_filter($participant_ids, function($id) use ($del_ids) {
-							if (in_array($id, $del_ids)) {
-								return false;
-							}
-							return true;
-						});
-					}
-
 					if (is_array($choice)) {
 						$any = false;
 						foreach ($choice as $person_id) {
