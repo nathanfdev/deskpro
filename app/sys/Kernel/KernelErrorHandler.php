@@ -654,7 +654,7 @@ class KernelErrorHandler
 		}
 
 		// Socket/network errors
-		if (strpos($errstr, 'stream_socket_enable_crypto():') !== false || strpos($errstr, 'SSL: Broken pipe') !== false) {
+		if (strpos($errstr, 'stream_socket_enable_crypto():') !== false || strpos($errstr, 'SSL: Broken pipe') !== false || strpos($errstr, 'errno=32 Broken pipe')) {
 			$no_send_error = true;
 		}
 
