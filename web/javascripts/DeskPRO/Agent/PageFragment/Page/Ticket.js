@@ -1577,26 +1577,61 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			onItemClicked: function(info) {
 				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
 				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
+				sendUpdate(openForEl, 'visibility', $(info.itemEl).data('vis'));
 			}
 		});
+
+		var sendUpdate = function(rowEl, prop, val, callback) {
+			var taskId = rowEl.data('task-id');
+			var url = BASE_URL + 'agent/tasks/'+taskId+'/ajax-save';
+
+			var postData = [];
+			postData.push({
+				name: 'action',
+				value: prop
+			});
+			postData.push({
+				name: 'value',
+				value: val
+			});
+
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				success: callback || function() {}
+			});
+		};
 
 		var rowContainer = this.getEl('tasks_wrap');
 
 		var openForEl = null;
 		rowContainer.on('click', '.remove-row-trigger', function(ev) {
-			var row = $(this).closest('.task-row');
-			row.slideUp('fast', function() {
-				row.remove();
-				self.updateUi();
-			});
+			var row = $(this).closest('.row-item');
+			if (confirm($(this).data('confirm'))) {
+				row.slideUp();
+				$.ajax({
+					url: BASE_URL + 'agent/tasks/' + row.data('task-id') + '/delete',
+					error: function() {
+						row.show();
+					},
+					success: function() {
+						row.remove();
+						if (DeskPRO_Window.sections.tasks_section) {
+							DeskPRO_Window.sections.tasks_section.refresh();
+						}
+					}
+				});
+			}
 		});
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
-			openForEl = $(this).closest('.task-row');
+			openForEl = $(this).closest('.row-item');
 			statusMenu.open(ev);
 		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');
-			var row = $(this).closest('.task-row');
+			var row = $(this).closest('.row-item');
 			DP.select($(this));
 
 			$(this).on('change', function() {
@@ -1610,11 +1645,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				row.find('.assigned_agent').find('label').text(label);
 				$('input.input-agent', row).val(val);
+
+				sendUpdate(row, 'assigned', val, function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+				});
 			});
 		});
 		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
 			var label = $('label', this);
-			var row = $(this).closest('.task-row');
+			var row = $(this).closest('.row-item');
 			var field = $('input.input-date-due', row);
 			var date = $('input.input-date-due', row).val();
 			if (!date) {
@@ -1622,6 +1661,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			field.datepicker('dialog', date, function(date, inst) {
+				sendUpdate(row, 'date_due', date);
 				$('input.input-date-due', row).val(date);
 				label.text(date);
 			}, {
@@ -1647,6 +1687,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			ev.preventDefault();
 
 			if ($(this).hasClass('saving')) {
+				return;
+			}
+
+			var title = $.trim(self.getEl('newtask_title').val());
+			if (!title) {
+				alert('Please enter a description');
 				return;
 			}
 
@@ -1679,7 +1725,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					row.find('li.assigned_agent select.agents_sel').each(function() {
 						$(this).addClass('has-init');
-						var row = $(this).closest('.task-row');
+						var row = $(this).closest('.row-item');
 						DP.select($(this));
 
 						$(this).on('change', function() {
