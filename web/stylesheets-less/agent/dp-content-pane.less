@@ -4436,8 +4436,8 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 
 .extended-merge {
 	&.overlay {
-		width: 750px;
-		height: 550px;
+		width: 790px;
+		height: 570px;
 	}
 
 	.person-finder {
@@ -4446,7 +4446,43 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	}
 
 	.merge-data {
-		margin: 20px 0;
+		margin: 0;
+	}
+
+	.merge-data td {
+		background-color: #fff;
+	}
+
+	.merge-data td, .merge-data th {
+		white-space: nowrap;
+	}
+
+	.merge-data th div {
+		color: #738699;
+		font-size: 11px;
+		font-weight: bold;
+		color: #738699;
+		font-family: @heading-font;
+		text-shadow: 0 1px 0 #FFFFFF;
+		text-transform:uppercase;
+		white-space: nowrap;
+		max-width: 160px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.merge-data tr.header-row td.first {
+		border-bottom: none;
+		border-left: none;
+	}
+
+	.merge-data tr.header-row td {
+		height: 24px;
+		overflow: hidden;
+		line-height: 26px;
+		.gradient(#edeff2, #e6eaed);
+		border-bottom: 1px solid #CCCCCC;
+		border-left: 1px solid #CCCCCC;
 	}
 
 	.merge-data td, .merge-data th {
@@ -4465,6 +4501,37 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 		color: #aaaaaa;
 		text-decoration: line-through;
 	}
+
+	.switcher-wrap {
+		position: relative;
+		text-align: center;
+		line-height: 100%;
+		font-size: 11px;
+		font-weight: bold;
+		color: #738699;
+		font-family: @heading-font;
+		text-shadow: 0 1px 0 #FFFFFF;
+	}
+
+	.switcher-wrap .left-text {
+		position: absolute;
+		left: 10px;
+		top: 7px;
+	}
+
+	.switcher-wrap .right-text {
+		position: absolute;
+		right: 10px;
+		top: 7px;
+	}
+}
+
+.merge-data-wrap {
+	background-color: #E7E9EC;
+	border: 1px solid #9CA7B1;
+	overflow: hidden;
+	border-radius: 4px;
+	margin-top: 20px;
 }
 
 .other-properties-wrapper .dp-form-input .search-form {

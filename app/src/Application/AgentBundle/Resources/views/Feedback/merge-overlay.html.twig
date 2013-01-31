@@ -4,78 +4,80 @@
 	</div>
 
 	<div class="overlay-content">
-		<table class="merge-data" width="{% if other_feedback %}100%{% else %}63%{% endif %}">
-			<col width="25%" />
-			<col width="38%" />
-			<col width="37%" />
 		{% if other_feedback %}
-		<thead>
-		<tr>
-			<th>&nbsp;</th>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ feedback.id }}" data-keep="1">Keep this</a></td>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ other_feedback.id }}">Merge this</a></td>
-		</tr>
-		</thead>
+			<div class="merge-data-wrap">
+				<table class="merge-data">
+					<tbody>
+						<tr class="header-row">
+							<td class="first">&nbsp;</td>
+							<td colspan="2"><div class="switcher-wrap">
+								<div class="left-text merge-target-button" data-merge-id="{{ feedback.id }}" data-keep="1">KEEP THIS</div>
+								<button class="switch-trigger clean-white" style="margin-top: 1px;">&lsaquo; Switch &rsaquo;</button>
+								<div class="right-text merge-target-button" data-merge-id="{{ other_feedback.id }}">MERGE THIS</div>
+							</div></td>
+						</tr>
+					</tbody>
+					<tbody class="merge-data-rows">
+						<tr class="always-keep">
+							<th><div>ID</div></th>
+							<td width="50%">{{ feedback.id }}</td>
+							{% if other_feedback %}<td width="50%">{{ other_feedback.id }}</td>{% endif %}
+						</tr>
+						<tr class="always-keep">
+							<th><div>Title</div></th>
+							<td width="50%">{{ feedback.title }}</td>
+							{% if other_feedback %}<td width="50%">{{ other_feedback.title }}</td>{% endif %}
+						</tr>
+						<tr>
+							<th><div>Category</div></th>
+							<td width="50%">{{ feedback.category ? feedback.category.title : '' }}</td>
+							{% if other_feedback %}
+								<td width="50%">{{ other_feedback.category ? other_feedback.category.title : '' }}</td>
+							{% endif %}
+						</tr>
+						<tr class="always-keep">
+							<th><div>Status</div></th>
+							<td width="50%">{{ feedback.status_category ? feedback.status_category.title : '' }}</td>
+							{% if other_feedback %}
+								<td width="50%">{{ other_feedback.status_category ? other_feedback.status_category.title : '' }}</td>
+							{% endif %}
+						</tr>
+						<tr class="always-keep">
+							<th><div>Date Created</div></th>
+							<td width="50%">{{ feedback.date_created|date('fulltime') }}</td>
+							{% if other_feedback %}<td width="50%">{{ other_feedback.date_created|date('fulltime') }}</td>{% endif %}
+						</tr>
+						<tr class="mergeable">
+							<th><div>Ratings</div></th>
+							<td width="50%">{{ feedback.num_ratings }}</td>
+							{% if other_feedback %}
+								<td width="50%">{{ other_feedback.num_ratings }}</td>
+							{% endif %}
+						</tr>
+						<tr class="mergeable">
+							<th><div>Comments</div></th>
+							<td width="50%">{{ feedback.num_comments }}</td>
+							{% if other_feedback %}
+								<td width="50%">{{ other_feedback.num_comments }}</td>
+							{% endif %}
+						</tr>
+						<tr class="mergeable">
+							<th><div>View Count</div></th>
+							<td width="50%">{{ feedback.view_count }}</td>
+							{% if other_feedback %}
+								<td width="50%">{{ other_feedback.view_count }}</td>
+							{% endif %}
+						</tr>
+						{% if other_feedback %}
+						<tr class="mergeable">
+							<th><div>Description</div></th>
+							<td colspan="2"><em>The description from the merged feedback will be added as a comment to the kept feedback.</em></td>
+						</tr>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
 		{% endif %}
-		<tbody class="merge-data-rows">
-		<tr class="always-keep">
-			<th>ID</th>
-			<td>{{ feedback.id }}</td>
-			{% if other_feedback %}<td>{{ other_feedback.id }}</td>{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Title</th>
-			<td>{{ feedback.title }}</td>
-			{% if other_feedback %}<td>{{ other_feedback.title }}</td>{% endif %}
-		</tr>
-		<tr>
-			<th>Category</th>
-			<td>{{ feedback.category ? feedback.category.title : '' }}</td>
-			{% if other_feedback %}
-				<td>{{ other_feedback.category ? other_feedback.category.title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Status</th>
-			<td>{{ feedback.status_category ? feedback.status_category.title : '' }}</td>
-			{% if other_feedback %}
-				<td>{{ other_feedback.status_category ? other_feedback.status_category.title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Date Created</th>
-			<td>{{ feedback.date_created|date('fulltime') }}</td>
-			{% if other_feedback %}<td>{{ other_feedback.date_created|date('fulltime') }}</td>{% endif %}
-		</tr>
-		<tr class="mergeable">
-			<th>Ratings</th>
-			<td>{{ feedback.num_ratings }}</td>
-			{% if other_feedback %}
-				<td>{{ other_feedback.num_ratings }}</td>
-			{% endif %}
-		</tr>
-		<tr class="mergeable">
-			<th>Comments</th>
-			<td>{{ feedback.num_comments }}</td>
-			{% if other_feedback %}
-				<td>{{ other_feedback.num_comments }}</td>
-			{% endif %}
-		</tr>
-		<tr class="mergeable">
-			<th>View Count</th>
-			<td>{{ feedback.view_count }}</td>
-			{% if other_feedback %}
-				<td>{{ other_feedback.view_count }}</td>
-			{% endif %}
-		</tr>
-		{% if other_feedback %}
-		<tr class="mergeable">
-			<th>Description</th>
-			<td colspan="2"><em>The description from the merged feedback will be added as a comment to the kept feedback.</em></td>
-		</tr>
-		{% endif %}
-		</tbody>
-		</table>
 
 		{% if other_feedback %}
 			<div style="text-align: center">
@@ -83,4 +85,14 @@
 			</div>
 		{% endif %}
 	</div>
+	{% if other_feedback %}
+		<div class="overlay-footer">
+			<div class="is-not-loading">
+				<button class="clean-white merge-trigger">Merge these two feedback submissions</button>
+			</div>
+			<div class="is-loading">
+				<div class="loading-icon"></div>
+			</div>
+		</div>
+	{% endif %}
 </div>

@@ -41,122 +41,128 @@
 			</div>
 		</form>
 
-		<table class="merge-data" width="{% if other_person %}100%{% else %}63%{% endif %}">
-			<col width="25%" />
-			<col width="38%" />
-			<col width="37%" />
 		{% if other_person %}
-		<thead>
-		<tr>
-			<th>&nbsp;</th>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ person.id }}" data-keep="1">Master User (User will remain)</a></td>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ other_person.id }}">Merged User (User will be deleted)</a></td>
-		</tr>
-		</thead>
-		{% endif %}
-		<tbody class="merge-data-rows">
-		<tr>
-			<th>ID</th>
-			<td>{{ person.id }}</td>
-			{% if other_person %}<td>{{ other_person.id }}</td>{% endif %}
-		</tr>
-		<tr>
-			<th>Name</th>
-			<td>{{ person.name }}</td>
-			{% if other_person %}<td>{{ other_person.name }}</td>{% endif %}
-		</tr>
-		<tr class="mergeable">
-			<th>Emails</th>
-			<td>
-				{% if person.emails is not empty %}
-				<ul>
-				{% for email in person.emails %}
-					<li>{{ email.email }}</li>
-				{% endfor %}
-				</ul>
-				{% endif %}
-			</td>
-			{% if other_person %}
-				<td>
-					{% if other_person.emails is not empty %}
-						<ul>
-							{% for email in other_person.emails %}
-								<li>{{ email.email }}</li>
-							{% endfor %}
-						</ul>
-					{% endif %}
-				</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Organization</th>
-			<td>{{ person.organization ? person.organization.name : '' }}</td>
-			{% if other_person %}
-				<td>{{ other_person.organization ? other_person.organization.name : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Organization Position</th>
-			<td>{{ person.organization_position }}</td>
-			{% if other_person %}
-				<td>{{ other_person.organization_position }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Timezone</th>
-			<td>{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }})</td>
-			{% if other_person %}
-				<td>{{ other_person.timezone }} (GMT {{ other_person.getTimezoneOffset(true) }})</td>
-			{% endif %}
-		</tr>
+			<div class="merge-data-wrap">
+				<table class="merge-data" width="100%">
+					<tbody>
+						<tr class="header-row">
+							<td class="first">&nbsp;</td>
+							<td colspan="2"><div class="switcher-wrap">
+								<div class="left-text merge-target-button" data-merge-id="{{ person.id }}" data-keep="1">KEEP THIS</div>
+								<button class="switch-trigger clean-white" style="margin-top: 1px;">&lsaquo; Switch &rsaquo;</button>
+								<div class="right-text merge-target-button" data-merge-id="{{ other_person.id }}">MERGE THIS</div>
+							</div></td>
+						</tr>
+					</tbody>
+					<tbody class="merge-data-rows">
+						<tr>
+							<th nowrap="nowrap"><div>ID</div></th>
+							<td width="50%">{{ person.id }}</td>
+							{% if other_person %}<td width="50%">{{ other_person.id }}</td>{% endif %}
+						</tr>
+						<tr>
+							<th nowrap="nowrap"><div>Name</div></th>
+							<td width="50%">{{ person.name }}</td>
+							{% if other_person %}<td width="50%">{{ other_person.name }}</td>{% endif %}
+						</tr>
+						<tr class="mergeable">
+							<th nowrap="nowrap"><div>Emails</div></th>
+							<td width="50%">
+								{% if person.emails is not empty %}
+								<ul>
+								{% for email in person.emails %}
+									<li>{{ email.email }}</li>
+								{% endfor %}
+								</ul>
+								{% endif %}
+							</td>
+							{% if other_person %}
+								<td width="50%">
+									{% if other_person.emails is not empty %}
+										<ul>
+											{% for email in other_person.emails %}
+												<li>{{ email.email }}</li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+								</td>
+							{% endif %}
+						</tr>
+						<tr>
+							<th nowrap="nowrap"><div>Organization</div></th>
+							<td width="50%">{{ person.organization ? person.organization.name : '' }}</td>
+							{% if other_person %}
+								<td width="50%">{{ other_person.organization ? other_person.organization.name : '' }}</td>
+							{% endif %}
+						</tr>
+						<tr>
+							<th nowrap="nowrap"><div>Organization Position</div></th>
+							<td width="50%">{{ person.organization_position }}</td>
+							{% if other_person %}
+								<td width="50%">{{ other_person.organization_position }}</td>
+							{% endif %}
+						</tr>
+						<tr>
+							<th nowrap="nowrap"><div>Timezone</div></th>
+							<td width="50%">{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }})</td>
+							{% if other_person %}
+								<td width="50%">{{ other_person.timezone }} (GMT {{ other_person.getTimezoneOffset(true) }})</td>
+							{% endif %}
+						</tr>
 
-		{% for k,f in person_custom_fields %}
-			<tr>
-				<th>{{ f.title }}</th>
-				<td>{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
-				{% if other_person %}
-					<td>{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
-				{% endif %}
-			</tr>
-		{% endfor %}
-
-		<tr class="mergeable">
-			<th>Labels</th>
-			<td>
-				{% if person.labels is not empty %}
-					<ul>
-						{% for label in person.labels %}
-							<li>{{ label.label }}</li>
+						{% for k,f in person_custom_fields %}
+							<tr>
+								<th nowrap="nowrap"><div>{{ f.title }}</div></th>
+								<td width="50%">{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+								{% if other_person %}
+									<td width="50%">{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+								{% endif %}
+							</tr>
 						{% endfor %}
-					</ul>
-				{% endif %}
-			</td>
-			{% if other_person %}
-				<td>
-					{% if other_person.labels is not empty %}
-						<ul>
-							{% for label in other_person.labels %}
-								<li>{{ label.label }}</li>
-							{% endfor %}
-						</ul>
-					{% endif %}
-				</td>
-			{% endif %}
-		</tr>
-		{% if other_person and (other_person.is_agent or person.is_agent) %}
-		<tr class="always-keep">
-			<th>Agent Status</th>
-			<td>{% if person.is_agent %}Is an agent{% endif %}</td>
-			<td>{% if other_person.is_agent %}Is an agent{% endif %}</td>
-		</tr>
-		{% endif %}
-		</tbody>
-		</table>
 
-		{% if other_person %}
-			<div style="text-align: center">
-				<button class="clean-white merge-trigger">{{ phrase('agent.general.merge') }}</button>
+						<tr class="mergeable">
+							<th nowrap="nowrap"><div>Labels</div></th>
+							<td width="50%">
+								{% if person.labels is not empty %}
+									<ul>
+										{% for label in person.labels %}
+											<li>{{ label.label }}</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</td>
+							{% if other_person %}
+								<td width="50%">
+									{% if other_person.labels is not empty %}
+										<ul>
+											{% for label in other_person.labels %}
+												<li>{{ label.label }}</li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+								</td>
+							{% endif %}
+						</tr>
+						{% if other_person and (other_person.is_agent or person.is_agent) %}
+						<tr class="always-keep">
+							<th nowrap="nowrap"><div>Agent Status</div></th>
+							<td width="50%">{% if person.is_agent %}Is an agent{% endif %}</td>
+							<td width="50%">{% if other_person.is_agent %}Is an agent{% endif %}</td>
+						</tr>
+						{% endif %}
+					</tbody>
+				</table>
 			</div>
 		{% endif %}
 	</div>
+	{% if other_person %}
+		<div class="overlay-footer">
+			<div class="is-not-loading">
+				<button class="clean-white merge-trigger">Merge these two profiles</button>
+			</div>
+			<div class="is-loading">
+				<div class="loading-icon"></div>
+			</div>
+		</div>
+	{% endif %}
 </div>

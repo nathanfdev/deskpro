@@ -128,14 +128,13 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		var setMergeDataLostClasses = function() {
 			var keepCol = 0, mergeCol = 0;
 
-			buttons.each(function() {
-				var $this = $(this), cell = $this.closest('td');
-				if ($this.data('keep')) {
-					keepCol = cell.prevAll('td').length;
-				} else {
-					mergeCol = cell.prevAll('td').length;
-				}
-			});
+			if (wrapper.find('.left-text').data('keep')) {
+				keepCol = 0;
+				mergeCol = 1;
+			} else {
+				mergeCol = 0;
+				keepCol = 1;
+			}
 
 			rows.each(function() {
 				var $row = $(this);
@@ -157,6 +156,16 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		};
 
 		setMergeDataLostClasses();
+
+		wrapper.find('.switch-trigger').on('click', function(ev) {
+			ev.preventDefault();
+			buttons.each(function() {
+				if (!$(this).data('keep')) {
+					$(this).click();
+					return false;
+				}
+			});
+		});
 
 		buttons.click(function() {
 			buttons.data('keep', false).html(mergeHtml);
@@ -183,12 +192,15 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			return;
 		}
 
-		$(this).text('...').attr('disabled', true);
+		var footerEl = this.overlay.getWrapper().find('.overlay-footer').addClass('loading');
 
 		$.ajax({
 			url: this._getMergeUrl(mergeId, otherMergeId),
 			type: 'POST',
 			dataType: 'json',
+			complete: function() {
+				footerEl.removeClass('loading');
+			},
 			success: function(data) {
 				if (data.success) {
 					// remove old tabs, theyre outdated
