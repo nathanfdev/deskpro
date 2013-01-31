@@ -1677,6 +1677,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					data = data.tasks[0];
 					var row = $(data.row_html);
 
+					row.find('li.assigned_agent select.agents_sel').each(function() {
+						$(this).addClass('has-init');
+						var row = $(this).closest('.task-row');
+						DP.select($(this));
+
+						$(this).on('change', function() {
+							var val = $(this).val();
+							var label = $(this).find(':selected').text().trim();
+
+							if (!val) {
+								val = '';
+								label = 'Me';
+							}
+
+							row.find('.assigned_agent').find('label').text(label);
+							$('input.input-agent', row).val(val);
+						});
+					});
+
 					self.getEl('task_list').show().prepend(row);
 
 					DeskPRO_Window.util.modCountEl(self.getEl('task_count'), '+', 1);
