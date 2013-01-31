@@ -320,7 +320,7 @@ abstract class AbstractRenderer
 				$rendered = $this->_renderCellValue($row, $column);
 
 				$distinctXValues[$pathString][$groupValue] = $rendered;
-				$distinctXSort[$pathString][$groupValue] = $groupValue === null ? null : strip_tags($rendered);
+				$distinctXSort[$pathString][$groupValue] = $groupValue === null ? null : $this->getColumnValue($row, $column);
 
 				$xPath[] = $groupValue;
 			}
@@ -332,7 +332,7 @@ abstract class AbstractRenderer
 				$rendered = $this->_renderCellValue($row, $column);
 
 				$distinctYValues[$pathString][$groupValue] = $rendered;
-				$distinctYSort[$pathString][$groupValue] = $groupValue === null ? null : strip_tags($rendered);
+				$distinctYSort[$pathString][$groupValue] = $groupValue === null ? null : $this->getColumnValue($row, $column);
 
 				$yPath[] = $groupValue;
 			}
