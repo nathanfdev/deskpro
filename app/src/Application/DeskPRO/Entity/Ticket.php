@@ -1177,8 +1177,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			if (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
 				$this['date_last_user_reply'] = $now;
 			}
-
-			$this->setDateUserWaiting($now);
 		}
 
 		if (count($message->attachments) && $this->getTicketLogger()) {
