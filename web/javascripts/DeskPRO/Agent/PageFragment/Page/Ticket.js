@@ -218,6 +218,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 
 				if (type == 'messages') {
+					self.getEl('messages_wrap').find('.log-batch').hide();
 					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
 					self.getEl('messages_wrap').find('article.content-message').show();
 				} else if (type == 'feedback') {
