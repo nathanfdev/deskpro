@@ -33,7 +33,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 			context: this.el,
 			onTabSwitch: function(ev) {
 				var wrapper = $(ev.tabContent);
-				$('#settingswin_pages .on').removeClass('on');
+				$('#settingswin_pages').find('> section.on').removeClass('on');
 
 				wrapper.addClass('on');
 

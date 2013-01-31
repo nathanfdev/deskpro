@@ -17,10 +17,6 @@ DeskPRO.Agent.PageFragment.SettingsPage.OtherNotifications = new Orb.Class({
 			triggerElements: $('.pageheader li', el)
 		});
 
-		this.addEvent('activate', function() {
-			$('.pageheader li', el).first().trigger('click');
-		}, this);
-
 		var form = $('form', this.el);
 
 		form.on('submit', function(ev) {
