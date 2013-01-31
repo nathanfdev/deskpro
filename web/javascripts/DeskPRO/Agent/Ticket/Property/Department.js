@@ -18,6 +18,13 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 	},
 
 	setValue: function(value) {
+
+		// They are the same value,
+		// dont try and trigger changes
+		if (parseInt(value) == parseInt(this.ticketPage.getEl('value_form').find('.department_id').val())) {
+			return;
+		}
+
 		this.getFormEl().select2('val', value);
 
 		if (value == "0") value = 0;

@@ -42,6 +42,12 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 
 		if (value == "0") value = 0;
 
+		// They are the same value,
+		// dont try and trigger changes
+		if (parseInt(value) == parseInt(this.ticketPage.getEl('value_form').find('.' + this.optionName).val())) {
+			return;
+		}
+
 		// some elements (agent) have pictures associated with them
 		var el = this.getInterfaceElement();
 		var pictureEl = null;

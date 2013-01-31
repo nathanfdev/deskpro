@@ -18,6 +18,13 @@ DeskPRO.Agent.Ticket.Property.AgentTeam = new Class({
 	},
 
 	setValue: function(value) {
+
+		// They are the same value,
+		// dont try and trigger changes
+		if (parseInt(value) == parseInt(this.ticketPage.getEl('value_form').find('.agent_team_id').val())) {
+			return;
+		}
+
 		this.getFormEl().select2('val', value);
 		this.ticketPage.getEl('value_form').find('.agent_team_id').val(value);
 		this.getInterfaceElement().addClass('eat-change').val(value).change();
