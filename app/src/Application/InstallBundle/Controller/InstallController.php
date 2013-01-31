@@ -328,7 +328,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		return $this->render('InstallBundle:Install:config-editor.html.php', array(
-			'exist' => $exist
+			'exist'    => $exist,
+			'is_win'   => $this->container->getSystemService('instance_ability')->isWindows()
 		));
 	}
 

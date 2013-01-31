@@ -15,7 +15,7 @@
 		<div class="clearfix">
 			<label>Database Server</label>
 			<div class="input">
-				<input type="text" name="DP_DATABASE_HOST" value="<?php if ($exist['DP_DATABASE_HOST']) echo $exist['DP_DATABASE_HOST']; else echo 'localhost'; ?>" size="30" />
+				<input type="text" name="DP_DATABASE_HOST" value="<?php if ($exist['DP_DATABASE_HOST']) echo $exist['DP_DATABASE_HOST']; else { if ($is_win) echo '127.0.0.1'; else echo 'localhost'; } ?>" size="30" />
 			</div>
 		</div>
 		<div class="clearfix">
