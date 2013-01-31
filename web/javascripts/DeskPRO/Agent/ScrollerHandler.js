@@ -69,5 +69,6 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		this.updateSize = updateSize;
 		this.restorePosition = restorePosition;
 		this.destroy = destroy;
+		this.isInitialized = function() { return hasInit };
 	}
 });

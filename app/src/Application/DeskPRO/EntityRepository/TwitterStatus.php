@@ -169,6 +169,7 @@ class TwitterStatus extends AbstractEntityRepository
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
+
 		return $this
 			->getEntityManager()
 			->createQuery($query)
@@ -327,10 +328,8 @@ class TwitterStatus extends AbstractEntityRepository
 	 */
 	protected function calculateOffset($limit, $page)
 	{
-		if (1 <= $page) {
-			$page = 0;
-		}
+		$page = max(1, intval($page));
 
-		return $page * $limit;
+		return ($page - 1) * $limit;
 	}
 }

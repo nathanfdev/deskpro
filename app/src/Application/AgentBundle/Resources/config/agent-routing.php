@@ -1564,6 +1564,13 @@ $collection->add('agent_twitter_user', new Route(
 	array('fragment_name' => 'twitter')
 ));
 
+$collection->add('agent_twitter_user_statuses', new Route(
+	'/twitter/user/{user_id}/statuses',
+	array('_controller' => 'AgentBundle:TwitterUser:viewUserStatuses'),
+	array('user_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_twitter_user_following', new Route(
 	'/twitter/user/{user_id}/following',
 	array('_controller' => 'AgentBundle:TwitterUser:viewUserFollowing'),

@@ -59,6 +59,8 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 			 */
 			closeOnApply: true,
 
+			noScroll: false,
+
 			/**
 			 * Function to call when apply button is clicked.
 			 */
@@ -91,10 +93,11 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
+		this.wrapper.find('.with-handler').removeClass('with-handler');
 
 		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
 		var scrollEl = $('.with-scrollbar', this.wrapper).first();
-		if (scrollEl.length) {
+		if (scrollEl.length && !this.options.noScroll) {
 			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
 				showEvent: 'show',
 				hideEvent: 'hide'
@@ -132,8 +135,20 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 
 		this.backdropEls.remove();
 		this.wrapper.remove();
+
 		this.wrapper = this.wrapperEl.clone();
-        this.wrapper.tinyscrollbar();
+		this.wrapper.find('.with-handler').removeClass('with-handler');
+
+		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
+		var scrollEl = $('.with-scrollbar', this.wrapper).first();
+		scrollEl.removeClass('scroll-draw');
+		if (scrollEl.length && !this.options.noScroll) {
+			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+				showEvent: 'show',
+				hideEvent: 'hide'
+			});
+		}
+
 		this.countEl = $('.selected-tickets-count', this.wrapper);
         this.updatePositions();
         $('.dp-radio-expander-form', this.wrapper).on('click', this.updatePositions.bind(this));

@@ -20,6 +20,7 @@
 		</div>
 
 		<div class="extra-container extra-row">
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Tweets: {{ user.statuses_count }}</span>
 			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Following: {{ user.friends_count }}</span>
 			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Followers: {{ user.followers_count }}</span>
 			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Interactions: {{ user.countAccountInteractions(account) }}</span>

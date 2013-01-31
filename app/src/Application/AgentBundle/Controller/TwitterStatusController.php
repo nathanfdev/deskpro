@@ -682,10 +682,15 @@ class TwitterStatusController extends AbstractController
 
 	protected function _updateStatusAssignment(TwitterAccountStatus $account_status, $assign, $flush = true)
 	{
+		$old_agent_id = 0;
+		$old_agent_team_id = 0;
+
 		if ($account_status->agent) {
 			$old_assign = 'agent:' . $account_status->agent->id;
+			$old_agent_id = $account_status->agent->id;;
 		} else if ($account_status->agent_team) {
 			$old_assign = 'agent_team:' . $account_status->agent_team->id;
+			$old_agent_team_id = $account_status->agent_team->id;;
 		} else {
 			$old_assign = '';
 		}
@@ -723,7 +728,9 @@ class TwitterStatusController extends AbstractController
 						? $account_status->agent->getPictureUrl(16)
 						: $this->generateUrl('serve_default_picture', array('s' => 16, 'size-fit' => 1), true)
 					),
-					'old_assignment' => $old_assign
+					'old_assignment' => $old_assign,
+					'old_agent_id' => $old_agent_id,
+					'old_agent_team_id' => $old_agent_team_id
 				)
 			);
 

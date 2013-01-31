@@ -33,7 +33,7 @@
 					<span class="name">{{ status.user.name }}</span>
 					<span class="screen-name">@{{ status.user.screen_name }}</span>
 				</span>
-				{% if not account_status.isFromSelf() %}
+				{% if status.user.id != account_status.account.user.id %}
 					{% if status.user.id in account_status.account.friend_ids %}
 						<span class="follow-unfollow-button unfollow">Unfollow</span>
 					{% else %}
@@ -96,14 +96,16 @@
 		{% endif %}
 		</ul>
 	</div>
-	<div class="new-message" style="display: none">
-		{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
-			'account': account_status.account,
-			'default_type': status.recipient ? 'private' : 'public',
-			'send_text': 'Reply',
-			'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ account_status.id ~ '" />'
-		} %}
-	</div>
+	{% if not account_status.isFromSelf() %}
+		<div class="new-message" style="display: none">
+			{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
+				'account': account_status.account,
+				'default_type': status.recipient ? 'private' : 'public',
+				'send_text': 'Reply',
+				'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ account_status.id ~ '" />'
+			} %}
+		</div>
+	{% endif %}
 	<div class="new-retweet" style="display: none">
 		<form class="message-block">
 			<ul class="retweet-type">
@@ -135,9 +137,11 @@
 				<input class="item-select" type="checkbox" value="{{account_status.id}}" />
 			</li>
 			<li class="noval opt-trigger {% if account_status.is_favorited %}favorited{% else %}add-favorite{% endif %}"></li>
-			<li class="noval opt-trigger message">
-				<label>Reply</label><span class="drop-icon"></span>
-			</li>
+			{% if not account_status.isFromSelf() %}
+				<li class="noval opt-trigger message">
+					<label>Reply</label><span class="drop-icon"></span>
+				</li>
+			{% endif %}
 			{% if account_status.canRetweet() %}
 				{% if account_status.retweeted %}
 					<li class="noval opt-trigger retweeted">

@@ -202,7 +202,7 @@ class Twitter
 		}
 
 		// reply
-		if (!empty($data->in_reply_to_status_id_str) && $depth == 0) {
+		if (!empty($data->in_reply_to_status_id_str) && $depth < 1) {
 			// todo: if we're not fetching, create a stub for it for use later
 			$reply = $this->findStatus($data->in_reply_to_status_id_str);
 			if (!$reply) {

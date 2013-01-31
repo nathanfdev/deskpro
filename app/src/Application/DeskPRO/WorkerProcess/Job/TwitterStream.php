@@ -244,7 +244,7 @@ class TwitterStream extends AbstractJob
 
 		if (!empty($data->in_reply_to_status_id_str)) {
 			$reply_account_status = $this->findAccountStatus($data->in_reply_to_status_id_str, $account);
-			if ($reply_account_status && $account_status->status_type) {
+			if ($reply_account_status && $account_status->status_type == 'sent') {
 				$account_status->in_reply_to = $reply_account_status;
 			}
 		}

@@ -137,6 +137,29 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 			});
 		});
 
+		var statusesLoadPending = false;
+		var statusesTab = self.getEl('statuses_tab');
+		statusesTab.on('click', '.more-box .more-button', function() {
+			if (statusesLoadPending) {
+				return;
+			}
+			statusesLoadPending = true;
+
+			statusesTab.find('.more-box .flat-spinner').show();
+
+			$.ajax({
+				url: $(this).data('load-url'),
+				success: function(html) {
+					statusesTab.find('.more-box').remove();
+					statusesTab.append(html);
+				},
+				complete: function() {
+					statusesTab.find('.more-box .flat-spinner').hide();
+					statusesLoadPending = false;
+				}
+			});
+		});
+
 		var followingLoadPending = false;
 		var followingTab = self.getEl('following_tab');
 		followingTab.on('click', '.more-box .more-button', function() {
@@ -177,7 +200,7 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 					followersTab.append(html);
 				},
 				complete: function() {
-					followersTab.find('.more-box .flat-spinner').show();
+					followersTab.find('.more-box .flat-spinner').hide();
 					followersLoadPending = false;
 				}
 			});

@@ -39,7 +39,9 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			}
 			if (typeof data.change_assignment !== 'undefined') {
 				self.adjustTweetCountsFromClientMessage(data, 1);
-				self.adjustTweetCountsFromClientMessage($.extend(data, {assignment: data.old_assignment}), -1);
+				self.adjustTweetCountsFromClientMessage($.extend(
+					{}, data, {assignment: data.old_assignment, agent_id: data.old_agent_id, agent_team_id: data.old_agent_team_id}), -1
+				);
 			}
 		});
 

@@ -151,6 +151,39 @@ class TwitterUserController extends AbstractController
 		));
 	}
 
+	public function viewUserStatusesAction($user_id)
+	{
+		$user = $this->_getUser($user_id);
+		list($account, $accounts) = $this->_getCurrentAccounts();
+
+		$page = $this->in->getUint('page');
+		$page = max(1, $page);
+		$per_page = 25;
+
+		$statuses = $user->getStatuses($page, $per_page);
+		$more = count($user->getStatuses(($page + 1) * $per_page, 1)) > 0;
+		if ($more) {
+			$statuses = array_slice($statuses, 0, $per_page, true);
+		}
+
+		if ($account) {
+			$status_ids = array_keys($statuses);
+			$account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount($status_ids, $account);
+		} else {
+			$account_statuses = array();
+		}
+
+		return $this->render('AgentBundle:TwitterUser:view-user-statuses.html.twig', array(
+			'user' => $user,
+			'accounts' => $accounts,
+			'account' => $account,
+			'statuses' => $statuses,
+			'account_statuses' => $account_statuses,
+			'more' => $more,
+			'more_page' => $page + 1
+		));
+	}
+
 	public function viewUserFollowingAction($user_id)
 	{
 		$user = $this->_getUser($user_id);
@@ -166,8 +199,8 @@ class TwitterUserController extends AbstractController
 		$page = max(1, $page);
 		$per_page = 25;
 
-		$friends = $user->getFriends($page, $per_page + 1);
-		$more = count($friends) == $per_page + 1;
+		$friends = $user->getFriends($page, $per_page );
+		$more = count($user->getFriends(($page + 1) * $per_page, 1)) > 0;
 		if ($more) {
 			$friends = array_slice($friends, 0, $per_page, true);
 		}
@@ -202,7 +235,7 @@ class TwitterUserController extends AbstractController
 		$per_page = 25;
 
 		$followers = $user->getFollowers($page, $per_page + 1);
-		$more = count($followers) == $per_page + 1;
+		$more = count($user->getFollowers(($page + 1) * $per_page, 1)) > 0;
 		if ($more) {
 			$followers = array_slice($followers, 0, $per_page, true);
 		}

@@ -9,6 +9,7 @@
 <article class="twitter-status twitter-status-inline {% if account_status %}twitter-status-{{ account_status.id }}{% endif %}}"
 	data-status-id="{% if account_status %}{{ account_status.id }}{% elseif retweet %}status:{{ retweet.id }}{% else %}status:{{ status.id }}{% endif %}"
 	data-twitter-status-id="{{ status.id }}"
+	data-user-id="{{ status.user.id }}"
 >
 	<div class="status-body">
 		<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
@@ -20,6 +21,13 @@
 				<span class="name">{{ status.user.name }}</span>
 				<span class="screen-name">@{{ status.user.screen_name }}</span>
 			</span>
+			{% if account and status.user.id != account.user.id and status.user.id != user.id %}
+					{% if status.user.id in account.friend_ids %}
+						<span class="follow-unfollow-button unfollow">Unfollow</span>
+					{% else %}
+						<span class="follow-unfollow-button follow">Follow</span>
+					{% endif %}
+				{% endif %}
 			{% if status.isMessage() %}
 				<span class="dm-notice">DM</span>
 			{% endif %}
@@ -54,23 +62,25 @@
 		{% endif %}
 	</div>
 	{% if account %}
-		<div class="reply-list" {% if not account_status or not account_status.replies|length %}style="display:none"{% endif %}>
+		<div class="reply-list" {% if not account_status or not account_status.replies|length or account_status.isFromSelf() or hide_replies %}style="display:none"{% endif %}>
 			<ul class="twitter-replies">
-			{% if account_status %}
+			{% if account_status and not account_status.isFromSelf() and not hide_replies %}
 				{% for reply in account_status.replies %}
 					{% include 'AgentBundle:TwitterStatus:reply-li.html.twig' %}
 				{% endfor %}
 			{% endif %}
 			</ul>
 		</div>
-		<div class="new-message" style="display: none">
-			{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
-				'account': account,
-				'default_type': status.recipient ? 'private' : 'public',
-				'send_text': 'Reply',
-				'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ (account_status ? account_status.id : 'status' ~ status.id) ~ '" />'
-			} %}
-		</div>
+		{% if not account_status or not account_status.isFromSelf()  %}
+			<div class="new-message" style="display: none">
+				{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
+					'account': account,
+					'default_type': status.recipient ? 'private' : 'public',
+					'send_text': 'Reply',
+					'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ (account_status ? account_status.id : 'status' ~ status.id) ~ '" />'
+				} %}
+			</div>
+		{% endif %}
 		<div class="new-retweet" style="display: none">
 			<form class="message-block">
 				<ul class="retweet-type">
@@ -99,9 +109,11 @@
 		<div class="status-info">
 			<ul>
 				<li class="noval opt-trigger {% if account_status and account_status.is_favorited %}favorited{% else %}add-favorite{% endif %}"></li>
-				<li class="noval opt-trigger message">
-					<label>Reply</label><span class="drop-icon"></span>
-				</li>
+				{% if not account_status or not account_status.isFromSelf()  %}
+					<li class="noval opt-trigger message">
+						<label>Reply</label><span class="drop-icon"></span>
+					</li>
+				{% endif %}
 				{% if not account_status or account_status.canRetweet() %}
 					{% if account_status and account_status.retweeted %}
 						<li class="noval opt-trigger retweeted">

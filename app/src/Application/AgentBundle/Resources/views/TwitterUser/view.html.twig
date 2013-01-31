@@ -157,7 +157,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<header id="{{baseId}}_twitter_header">
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
-				<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.general.statuses') }}</li>
+				<li data-tab-for="#{{baseId}}_statuses_tab" class="on">Tweets ({{ user.statuses_count }})</li>
 				<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.general.messages') }}</li>
 				<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.general.mentions') }}</li>
 				<li data-tab-for="#{{baseId}}_following_tab">Following ({{ user.friends_count }})</li>
@@ -172,11 +172,14 @@ pageMeta.baseId = '{{ baseId }}';
 			{% else %}
 				<div style="padding: 10px">No statuses for user.</div>
 			{% endfor %}
+			{% if user.statuses_count > 25 %}
+				<div class="more-box"><button class="clean-white more-button" data-load-url="{{ path('agent_twitter_user_statuses', {'user_id': user.id, 'page': 2}) }}">View More... <span class="flat-spinner" style="display: none"></span></button></div>
+			{% endif %}
 		</article>
 
 		<article id="{{baseId}}_messages_tab">
 			{% for status in messages %}
-				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+				{% include 'AgentBundle:TwitterUser:part-status.html.twig' with {'hide_replies': true} %}
 			{% else %}
 				<div style="padding: 10px">No messages for user.</div>
 			{% endfor %}
@@ -184,7 +187,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<article id="{{baseId}}_mentions_tab">
 			{% for status in mentions %}
-				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+				{% include 'AgentBundle:TwitterUser:part-status.html.twig' with {'hide_replies': true} %}
 			{% else %}
 				<div style="padding: 10px">No mentions for user.</div>
 			{% endfor %}

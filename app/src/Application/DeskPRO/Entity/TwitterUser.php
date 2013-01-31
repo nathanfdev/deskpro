@@ -137,6 +137,11 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $friends_count = 0;
 
 	/**
+	 * @var int
+	 */
+	protected $statuses_count = 0;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $statuses;
@@ -221,38 +226,40 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function getStatuses()
+	public function getStatuses($page = 1, $per_page = 25)
 	{
-		if (!$this->last_timeline_update
-			|| $this->last_timeline_update->getTimestamp() < time() - self::TIMELINE_UPDATE_FREQUENCY
-			|| (App::getSetting('core.twitter_last_cleanup') && $this->last_timeline_update->getTimestamp() < App::getSetting('core.twitter_last_cleanup'))
-		) {
-			$em = App::getOrm();
+		if ($page == 1) {
+			if (!$this->last_timeline_update
+				|| $this->last_timeline_update->getTimestamp() < time() - self::TIMELINE_UPDATE_FREQUENCY
+				|| (App::getSetting('core.twitter_last_cleanup') && $this->last_timeline_update->getTimestamp() < App::getSetting('core.twitter_last_cleanup'))
+			) {
+				$em = App::getOrm();
 
-			$account = $em->getRepository('DeskPRO:TwitterAccount')->getFirst();
-			if ($account) {
-				// need to grab the first api we can get
-				$api = $account->getTwitterApi();
-				try {
-					$response = $api->get_statusesUser_timeline(array(
-						'user_id' => $this->id,
-						'count' => 25
-					));
-					$twitter_service = new \Application\DeskPRO\Service\Twitter();
-					foreach ($response AS $status) {
-						$twitter_service->processStatus($api, $status);
+				$account = $em->getRepository('DeskPRO:TwitterAccount')->getFirst();
+				if ($account) {
+					// need to grab the first api we can get
+					$api = $account->getTwitterApi();
+					try {
+						$response = $api->get_statusesUser_timeline(array(
+							'user_id' => $this->id,
+							'count' => 100
+						));
+						$twitter_service = new \Application\DeskPRO\Service\Twitter();
+						foreach ($response AS $status) {
+							$twitter_service->processStatus($api, $status, true, 1);
+						}
+					} catch (\EpiTwitterException $e) {
+					} catch (\EpiOAuthException $e) {
 					}
-				} catch (\EpiTwitterException $e) {
-				} catch (\EpiOAuthException $e) {
-				}
 
-				$this['last_timeline_update'] = new \DateTime();
-				$em->persist($this);
-				$em->flush();
+					$this['last_timeline_update'] = new \DateTime();
+					$em->persist($this);
+					$em->flush();
+				}
 			}
 		}
 
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findOutgoingForUserId($this->id, true, 'desc');
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findOutgoingForUserId($this->id, true, 'desc', $per_page, $page);
 	}
 
 	public function getMessages()
@@ -501,7 +508,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 				$existing_for_type = App::getOrm()->getRepository('DeskPRO:TwitterUserFollower')->getByUserAndFollowers(
 					$this->id, $ids
 				);
-				$count = $this->friends_count;
+				$count = $this->followers_count;
 
 				foreach ($ids AS $id) {
 					if (!isset($existing_users[$id])) {
@@ -552,6 +559,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$this['is_geo_enabled']    = $user->geo_enabled;
 		$this['followers_count']   = $user->followers_count;
 		$this['friends_count']     = $user->friends_count;
+		$this['statuses_count']    = $user->statuses_count;
 		$this['is_stub']           = false;
 		$this['last_profile_update'] = new \DateTime();
 
@@ -585,6 +593,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$entity['is_geo_enabled']    = $user->geo_enabled;
 		$entity['followers_count']   = $user->followers_count;
 		$entity['friends_count']     = $user->friends_count;
+		$entity['statuses_count']    = $user->statuses_count;
 		$entity['is_stub']           = false;
 		$entity['last_profile_update'] = new \DateTime();
 
@@ -604,6 +613,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$entity['location'] = '';
 		$entity['followers_count'] = 0;
 		$entity['friends_count'] = 0;
+		$entity['statuses_count'] = 0;
 		$entity['is_stub'] = true;
 		self::$_stubs[$id] = $entity;
 
@@ -658,6 +668,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'last_follow_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_follow_update', ));
 		$metadata->mapField(array( 'fieldName' => 'followers_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'followers_count', ));
 		$metadata->mapField(array( 'fieldName' => 'friends_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'friends_count', ));
+		$metadata->mapField(array( 'fieldName' => 'statuses_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'statuses_count', ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'user',  ));

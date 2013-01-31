@@ -649,32 +649,33 @@ class KernelBooter
 		if ($check_twitter && !defined('DPC_IS_CLOUD') && \Application\DeskPRO\App::getConfig('enable_twitter')) {
 			$twitter_ping = \Application\DeskPRO\App::getSetting('core.twitter_ping');
 			if (!$twitter_ping || $twitter_ping < time() - 60) {
-				if (file_exists(dp_get_data_dir() . '/twitter.pid')) {
-					$twitter_pid = intval(file_get_contents(dp_get_data_dir() . '/twitter.pid'));
-				} else {
-					$twitter_pid = null;
-				}
-
-				if ($twitter_pid !== 0) {
-					// don't restart
-					// need to restart the twitter runner in the background
-
-					$file = escapeshellarg(DP_ROOT . '/bin/twitter.php');
-					$php_path = dp_get_php_path(false);
-
-					if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-						// this is needed as we need a fake window to hide the process
-						$php_path = str_replace('php-win.exe', 'php.exe', $php_path);
-						$file = str_replace('/', '\\', $file);
-
-						if (class_exists('\COM', false)) {
-							$shell = new \COM("WScript.Shell");
-							$shell->Run("$php_path $file", 0, false);
-						} else {
-							pclose(popen("start \"dptwitter\" /MIN $php_path $file", "r"));
-						}
+				if (\Application\DeskPRO\App::getDb()->fetchColumn("SELECT COUNT(*) FROM twitter_accounts")) {
+					if (file_exists(dp_get_data_dir() . '/twitter.pid')) {
+						$twitter_pid = intval(file_get_contents(dp_get_data_dir() . '/twitter.pid'));
 					} else {
-						exec("nohup $php_path $file > /dev/null 2> /dev/null &");
+						$twitter_pid = null;
+					}
+
+					if ($twitter_pid !== 0) {
+						// need to restart the twitter runner in the background
+
+						$file = escapeshellarg(DP_ROOT . '/bin/twitter.php');
+						$php_path = dp_get_php_path(false);
+
+						if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+							// this is needed as we need a fake window to hide the process
+							$php_path = str_replace('php-win.exe', 'php.exe', $php_path);
+							$file = str_replace('/', '\\', $file);
+
+							if (class_exists('\COM', false)) {
+								$shell = new \COM("WScript.Shell");
+								$shell->Run("$php_path $file", 0, false);
+							} else {
+								pclose(popen("start \"dptwitter\" /MIN $php_path $file", "r"));
+							}
+						} else {
+							exec("nohup $php_path $file > /dev/null 2> /dev/null &");
+						}
 					}
 				}
 			}
