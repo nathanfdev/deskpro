@@ -135,6 +135,10 @@ class SettingsController extends AbstractController
 			}
 		}
 
+		if (($tz = $this->in->getString('timezone')) && in_array($tz, \DateTimeZone::listIdentifiers())) {
+			$this->person->timezone = $tz;
+		}
+
 		$this->em->persist($this->person);
 		$this->em->flush();
 

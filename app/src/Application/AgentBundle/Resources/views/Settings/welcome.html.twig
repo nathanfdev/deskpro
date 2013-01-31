@@ -24,6 +24,18 @@
 						</td>
 					</tr>
 					<tr>
+						<td>
+							Timezone:
+						</td>
+						<td>
+							<select class="timezone">
+								{% for tz in timezones %}
+									<option value="{{ tz }}" {% if app.user.getTimezone() == tz %}selected="selected"{% endif %}>{{ tz }}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
+					<tr>
 						<td style="vertical-align: top">Profile Picture:</td>
 						<td>
 							<div class="profile-picture" style="height: 130px;">

@@ -34,7 +34,8 @@ DeskPRO.Agent.ElementHandler.FirstLogin = new Orb.Class({
 				type: 'POST',
 				data: {
 					new_blob_id: el.find('input.new_blob_id').val(),
-					name: el.find('input.name').val()
+					name: el.find('input.name').val(),
+					timezone: el.find('select.timezone').val()
 				},
 				dataType: 'json',
 				complete: function() {
@@ -42,6 +43,8 @@ DeskPRO.Agent.ElementHandler.FirstLogin = new Orb.Class({
 				}
 			});
 		});
+
+		DP.select(this.el.find('select'));
 
 		this.updatePositions();
 		this.el.show();

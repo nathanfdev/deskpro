@@ -147,6 +147,7 @@ class MainController extends AbstractController
 			'org_options'         => $org_options,
 			'is_first_login'      => $is_first_login,
 			'is_first_login_name' => $is_first_login_name,
+			'timezones'           => \DateTimeZone::listIdentifiers(),
 		));
 	}
 
