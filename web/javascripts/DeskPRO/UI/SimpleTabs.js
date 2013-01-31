@@ -71,6 +71,8 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			if (!ev.cancel) {
 				self._handleTabClick(this, ev);
 			}
+
+			self.fireEvent('postTabClick', [ev]);
 		});
 
 		if (this.options.autoSelectFirst) {

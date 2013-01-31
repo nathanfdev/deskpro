@@ -59,7 +59,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.tabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
 			triggerElements: $('#tickets_outline_tabstrip li'),
-			onTabSwitch: function(info) {
+			onPostTabClick: function(info) {
 				self.updateUi();
 			}
 		});
@@ -856,6 +856,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		} else {
 			subgroupEl.hide();
 		}
+
+		this.updateUi();
 	},
 
 	toggleHoldDisplay: function() {
