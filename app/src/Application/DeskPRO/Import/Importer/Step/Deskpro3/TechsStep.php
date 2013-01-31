@@ -49,6 +49,7 @@ class TechsStep extends AbstractDeskpro3Step
 	public function run($page = 1)
 	{
 		$techs = $this->getOldDb()->fetchAllKeyed("SELECT * FROM tech");
+		$tech_ids = array_keys($techs);
 		$this->logMessage(sprintf("Importing %d techs", count($techs)));
 
 		$start_time = microtime(true);
@@ -486,6 +487,54 @@ class TechsStep extends AbstractDeskpro3Step
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
 			throw $e;
+		}
+
+		#------------------------------
+		# See if we should create dummy accounts for
+		# orphaned posts that were on deleted agents
+		#------------------------------
+
+		$deleted_tech_ids = $this->getOldDb()->fetchAllCol("
+			SELECT DISTINCT(techid)
+			FROM ticket_message
+			WHERE techid != 0 AND techid NOT IN (" . implode(',', $tech_ids) . ")
+		");
+
+		$deleted_tech_ids = array_unique($deleted_tech_ids, \SORT_NUMERIC);
+
+		$email_domain = php_uname('n');
+		if (!$email_domain) {
+			$email_domain = 'deskpro-dummy.example.com';
+		}
+
+		$site_url = @parse_url($this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_url'"));
+		if ($site_url && !empty($site_url['host'])) {
+			$email_domain = $site_url['host'];
+		}
+
+		$this->logMessage(sprintf("%d orphan agents, will create dummy accounts @%s", count($deleted_tech_ids), $email_domain));
+
+		foreach ($deleted_tech_ids as $tech_id) {
+			$check_exist = $this->getMappedNewId('tech', $tech_id);
+			if ($check_exist) {
+				return;
+			}
+
+			$agent = new \Application\DeskPRO\Entity\Person();
+			$agent->setEmail("deleted-agent-$tech_id@$email_domain", true);
+			$agent->setPassword(uniqid('', true) . mt_rand(1000,9999));
+			$agent->salt        = 'xxx';
+			$agent->can_agent   = true;
+			$agent->can_admin   = false;
+			$agent->can_billing = false;
+			$agent->can_reports = false;
+			$agent->is_deleted  = true;
+			$agent->first_name  = "Deleted";
+			$agent->last_name   = "Deleted";
+
+			$this->getEm()->persist($agent);
+			$this->getEm()->flush();
+			$this->saveMappedId('tech', $tech_id, $agent->id);
 		}
 
 		$end_time = microtime(true);
