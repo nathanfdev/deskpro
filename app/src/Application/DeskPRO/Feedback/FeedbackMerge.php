@@ -81,7 +81,7 @@ class FeedbackMerge implements PersonContextInterface
 		$this->other_feedback = $other_feedback;
 		$this->setPersonContext($person_performer);
 
-		if ($feedback == $other_feedback) {
+		if ($feedback->getId() == $other_feedback->getId()) {
 			throw new \InvalidArgumentException("You cannot merge an feedback with itself");
 		}
 	}
