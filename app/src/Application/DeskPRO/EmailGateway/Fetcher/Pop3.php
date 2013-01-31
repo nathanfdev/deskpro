@@ -97,7 +97,9 @@ class Pop3 extends AbstractFetcher
 		static $can = null;
 
 		if ($can === null) {
-			$can = $this->getStorage()->canUniqueId();
+			try {
+				$can = $this->getStorage()->canUniqueId();
+			} catch(\Exception $e) {}
 		}
 
 		return $can;
@@ -114,7 +116,13 @@ class Pop3 extends AbstractFetcher
 
 		if ($this->gateway->keep_read) {
 			if (!$this->canUniqueId()) {
-				$this->logger->log("Gateway does not support unique but keep_read is enabled. Capabilities: " . implode(', ', $this->getStorage()->getProtocolCapabilities()), 'debug');
+				try {
+					$capas = $this->getStorage()->getProtocolCapabilities();
+					$capas = implode(', ', $capas);
+				} catch (\Exception $e) {
+					$capas = '<unknown>';
+				}
+				$this->logger->log("Gateway does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
 				$e = new \InvalidArgumentException("Gateway does not support uniqueid");
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
