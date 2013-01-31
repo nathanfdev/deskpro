@@ -2,6 +2,10 @@
 
 	$(document).ready(function() {
 
+		if (DP_IS_DOMDUMP_VIEW) {
+			return;
+		}
+
 		if (!window.DESKPRO_DATA_REGISTRY) {
 			window.setTimeout(function() {
 				window.location.reload(false);

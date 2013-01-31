@@ -814,4 +814,11 @@ JS;
 			'time_minute' => (int)$d->format('i'),
 		));
 	}
+
+	public function saveDomAction()
+	{
+		$dom = $this->in->getRaw('html');
+		file_put_contents(dp_get_data_dir() . '/dom.html', $dom);
+		return $this->createJsonResponse(array('okay' => true));
+	}
 }

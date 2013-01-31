@@ -16,6 +16,13 @@ $collection->add('agent', new Route(
 	array()
 ));
 
+$collection->add('agent_savedom', new Route(
+	'/save-dom.json',
+	array('_controller' => 'AgentBundle:Misc:saveDom'),
+	array(),
+	array()
+));
+
 $collection->add('agent_combined_sectiondata', new Route(
 	'/get-combined-section-data.json',
 	array('_controller' => 'AgentBundle:Main:getCombinedSectionData'),

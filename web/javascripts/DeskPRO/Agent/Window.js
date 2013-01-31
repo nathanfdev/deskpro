@@ -3511,5 +3511,45 @@ DeskPRO.Agent.Window = new Orb.Class({
 			obj.agentNotifyList.empty().hide();
 			obj.agentNotifyListShown = false;
 		}
+	},
+
+
+	dumpDom: function() {
+		var zindexRules = [];
+		var zindexGot = {};
+		$('*').each(function() {
+			var zindex = $(this).css('z-index');
+			if (zindex != 'auto') {
+				if (!zindexGot[zindex]) {
+					zindexRules.push('.zindex'+ zindex + ' { z-index: ' + zindex + ' !important; }');
+					zindexGot[zindex] = true;
+				}
+				$(this).addClass('zindex'+zindex);
+			}
+		});
+
+		zindexRules = zindexRules.join("\n");
+
+		var css = ["<!-- DP_DUMP_CSS_BEGIN -->", "<style type=\"text/css\">"];
+		$.each(document.styleSheets, function(sheetIndex, sheet) {
+			$.each(sheet.cssRules || sheet.rules, function(ruleIndex, rule) {
+				css.push(rule.cssText);
+			});
+		});
+
+		css.push(zindexRules);
+		css.push("</style>")
+		css.push("<!-- DP_DUMP_CSS_END -->")
+		css = css.join("\n");
+
+		var html = $('html').html();
+		html = html.replace('</head>', css + '</head>');
+		html = html.replace('DP_IS_DOMDUMP_VIEW = false', 'DP_IS_DOMDUMP_VIEW = true');
+
+		$.ajax({
+			type: 'POST',
+			url: BASE_URL + 'agent/save-dom.json',
+			data: {html: html}
+		});
 	}
 });
