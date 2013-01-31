@@ -457,6 +457,8 @@ class ReportBuilderController extends AbstractController
 
 	protected function _getReportResponseForType($type, $query, $title, array $params = array())
 	{
+		@set_time_limit(0);
+
 		$compiler = new Compiler();
 		$statement = $compiler->compile($query, $params);
 		$statement->setImplicitLimit(0);
@@ -472,6 +474,8 @@ class ReportBuilderController extends AbstractController
 
 	public function renderQuery($query, $renderer, &$error = false, array $params = array())
 	{
+		@set_time_limit(0);
+
 		$error = false;
 		try {
 			$compiler = new Compiler();
