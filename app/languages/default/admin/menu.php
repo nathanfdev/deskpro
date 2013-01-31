@@ -11,6 +11,7 @@
 	'admin.menu.check_server_requirements_explain' => 'Check server requirements and view recommended changes',
 	'admin.menu.click_to_configure'                => 'The DeskPRO setup guide and admin dashboard is under final development. For now, please access DeskPRO options using the menu above.',
 	'admin.menu.create_custom_fields'              => 'Create custom fields that can be added to organizations.',
+	'admin.menu.create_custom_fields_people'       => 'Create custom fields that can be added to user profiles.',
 	'admin.menu.create_filters'                    => 'Create filters that will appear in agent interface to help your team find tickets faster.',
 	'admin.menu.create_groups'                     => 'Create groups of actions that can be performed on tickets with a single click.',
 	'admin.menu.create_user_groups'                => 'Create user groups to easily manage similar users, and to manage permissions on them.',
