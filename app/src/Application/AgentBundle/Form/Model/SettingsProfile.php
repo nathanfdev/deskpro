@@ -53,6 +53,8 @@ class SettingsProfile
 	public $default_team_id = 0;
 	public $reset_api_token = false;
 
+	public $auto_dismiss_notifications = 60;
+
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
@@ -83,6 +85,7 @@ class SettingsProfile
 			$last_team = end($teams);
 			$this->default_team_id = $last_team ? $last_team->id : 0;
 		}
+		$this->auto_dismiss_notifications = $person->getPref('agent.ui.auto_dismiss_notification', 60);
 	}
 
 	public function getPerson()
@@ -153,6 +156,8 @@ class SettingsProfile
 			if (count($person->getAgent()->getTeams()) && $assign_team_setting) {
 				$person->setPreference('agent.ticket_default_team_id', intval($this->default_team_id));
 			}
+
+			$person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
 
 			if ($this->reset_api_token) {
 				$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);

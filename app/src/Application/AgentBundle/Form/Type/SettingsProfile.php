@@ -59,6 +59,24 @@ class SettingsProfile extends AbstractType
 		$builder->add('default_team_id', 'hidden', array('required' => false));
 
 		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
+
+		$builder->add('auto_dismiss_notifications', 'choice', array(
+			'choices' => array(
+				5 => '5 seconds',
+				10 => '10 seconds',
+				15 => '15 seconds',
+				30 => '30 seconds',
+				60 => '1 minute',
+				120 => '2 minutes',
+				300 => '5 minutes',
+				900 => '15 minutes',
+				1800 => '30 minutes',
+				3600 => '1 hour',
+				0 => 'Never'
+			),
+			'expanded' => false,
+			'multiple' => false
+		));
     }
 
 	public function getDefaultOptions(array $options)
