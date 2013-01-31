@@ -276,6 +276,11 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$subject = $this->in->getString('subject');
+		if ($subject) {
+			$ticket->subject = $subject;
+		}
+
 		if ($this->in->checkIsset('is_locked')) {
 			if ($this->in->getBool('is_locked')) {
 				$ticket->setLockedByAgent($this->person);
