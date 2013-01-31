@@ -546,6 +546,14 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
+			return true;
+		}
+
+		if ($exception instanceof \InvalidArgumentException && preg_match('#The command ".*?" does not exist#', $exception->getMessage())) {
+			return true;
+		}
+
 		// For commands run with bad options
 		if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'option does not exist') !== false && strpos($exception->getFile(), 'ArgvInput.php') !== false) {
 			return true;
