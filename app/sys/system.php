@@ -328,8 +328,11 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		if ($this instanceof UserKernel && $response->headers->get('Content-Type') == 'text/html' && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
 			if (!License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
-				$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('copyright', $request->getBaseUrl()));
-				return $response;
+				// Dont show lic error when serving exception page in debug mode
+				if (!(strpos($response->getContent(), 'sf-exceptionreset') && $this->isDebug())) {
+					$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('copyright', $request->getBaseUrl()));
+					return $response;
+				}
 			}
 		}
 
