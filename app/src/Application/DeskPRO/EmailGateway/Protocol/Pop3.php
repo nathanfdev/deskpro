@@ -74,9 +74,8 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 
         $errno  =  0;
         $errstr = '';
-        $this->_socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
+        $this->_socket = fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
         if (!$this->_socket) {
-			error_log('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
             throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
         }
 		stream_set_timeout($this->_socket, $this->stream_timeout);
