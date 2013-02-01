@@ -164,7 +164,7 @@ class Runner
 		// Attempt to detect if we should break due to memory
 		$mem = memory_get_usage();
 		$avail = deskpro_install_check_parseinisize(@ini_get('memory_limit'));
-		if ($mem && $mem > 0 && $avail) {
+		if ($mem && $mem > 0 && $avail && $avail > 0) {
 			$remain = $avail - $mem;
 			$min = max(10485760, $source->blob->filesize * 4);
 			$room = $remain - $min;
