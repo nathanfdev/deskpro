@@ -804,7 +804,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var isActive = $(this).hasClass('activeTabList');
 
 				var tab = $(this).data('tab');
-				if (tab && tab.page && tabPage.getMetaData('url_fragment')) {
+				if (tab && tab.page && tab.page.getMetaData('url_fragment')) {
 					var tabPage = tab.page;
 					var hash = tabPage.getMetaData('url_fragment');
 
