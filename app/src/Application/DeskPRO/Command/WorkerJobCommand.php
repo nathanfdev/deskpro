@@ -267,6 +267,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 					$e_info['email_subject']     = $title;
 					$e_info['email_body']        = $text;
 					$e_info['email_throttle_id'] = 'email_error_cron_timeout';
+					$e_info['attach_logs']       = true;
 					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
 				}
 			}

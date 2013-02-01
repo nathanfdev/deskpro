@@ -239,6 +239,21 @@ class ErrorReporter
 		$info['error_type'] = 'php';
 		$info['error_info'] = $send_info;
 
+		// Attempt to attach trailing errors from server log files
+		foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
+			$logpath = dp_get_log_dir() . '/' . $logfile;
+			if (!file_exists($logpath)) {
+				continue;
+			}
+
+			$log = file_get_contents($logpath);
+			if (filesize($logpath) > 40960) {
+				$log = substr($log, -40960);
+			}
+
+			$info[$logfile] = $log;
+		}
+
 		if (!self::shouldThrottleReport($info['local_hash'])) {
 			self::sendReport('report-error', $info, 10);
 		}

@@ -407,6 +407,51 @@ class KernelErrorHandler
 					$message->setTo(DP_TECHNICAL_EMAIL);
 					$message->setSubject($line);
 					$message->setBody($email_str, 'text/plain');
+
+					if (isset($errinfo['attach_logs']) && $errinfo['attach_logs']) {
+						if (is_file(dp_get_log_dir() . '/error.log')) {
+							$file = @file_get_contents(dp_get_log_dir() . '/error.log');
+							if (isset($file[3670016])) {
+								$file = substr($file, -3670016);
+							}
+							$filename = 'error.log';
+							$filetype = 'text/plain';
+
+							if (function_exists('gzencode')) {
+								$file = gzencode($file);
+								$filename = 'error.log.gz';
+								$filetype = 'application/gzip';
+							}
+
+							$message->attach(\Swift_Attachment::newInstance(
+								$file,
+								$filename,
+								$filetype
+							));
+						}
+
+						if (is_file('cli-phperr.log')) {
+							$file = @file_get_contents(dp_get_log_dir() . '/cli-phperr.log');
+							if (isset($file[3670016])) {
+								$file = substr($file, -3670016);
+							}
+							$filename = 'cli-phperr.log';
+							$filetype = 'text/plain';
+
+							if (function_exists('gzencode')) {
+								$file = gzencode($file);
+								$filename = 'cli-phperr.log.gz';
+								$filetype = 'application/gzip';
+							}
+
+							$message->attach(\Swift_Attachment::newInstance(
+								$file,
+								$filename,
+								$filetype
+							));
+						}
+					}
+
 					if (App::getMailer()->sendNow($message)) {
 						$fallback_send = false;
 					}
