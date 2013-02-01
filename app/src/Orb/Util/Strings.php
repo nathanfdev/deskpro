@@ -1759,6 +1759,105 @@ class Strings
 
 
 	/**
+	 * Create an ASCII table around a key=>value array
+	 *
+	 * @param string $array
+	 * @param string $key_title
+	 * @param string $val_title
+	 * @return string
+	 */
+	public static function asciiTable($array, array $titles = null, $line_sep = false)
+	{
+		$lines = array();
+		$lens = array();
+
+		if ($titles) {
+			foreach ($titles as $idx => $t) {
+				$tmp = strlen($t);
+				if (!isset($lens[$idx]) || $tmp > $lens[$idx]) {
+					$lens[$idx] = $tmp;
+				}
+			}
+		}
+
+		foreach ($array as $row) {
+			foreach ($row as $idx => $t) {
+				$tmp = strlen($t);
+				if (!isset($lens[$idx]) || $tmp > $lens[$idx]) {
+					$lens[$idx] = $tmp;
+				}
+			}
+		}
+
+		$fn_line_sep = function() use ($lens) {
+			$l = array();
+			foreach ($lens as $len) {
+				$l[] = str_repeat('-', $len);
+			}
+
+			return '+-' . implode('-+-', $l) . '-+';
+		};
+
+		$fn_line = function($cells) use ($lens) {
+			$l = array();
+			foreach ($cells as $idx => $t) {
+				$l[] = str_pad($t, $lens[$idx], ' ');
+			}
+
+			return '| ' . implode(' | ', $l) . ' |';
+		};
+
+		if ($titles) {
+			$lines[] = $fn_line_sep();
+			$lines[] = $fn_line($titles);
+		}
+
+		$lines[] = $fn_line_sep();
+
+		foreach ($array as $row) {
+			$lines[] = $fn_line($row);
+
+			if ($line_sep) {
+				$lines[] = $fn_line_sep();
+			}
+		}
+
+		if (!$line_sep) {
+			$lines[] = $fn_line_sep();
+		}
+
+		$lines = implode("\n", $lines);
+
+		return $lines;
+	}
+
+
+	/**
+	 * Make an ascii table from a keyvalue pair
+	 *
+	 * @param array $array
+	 * @param string $key_title
+	 * @param string $val_title
+	 * @param bool $line_sep
+	 */
+	public static function keyValueAsciiTable(array $array, $key_title = '', $val_title = '', $line_sep = false)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			$new_array[] = array($k, $v);
+		}
+
+		$titles = array();
+		if ($key_title || $val_title) {
+			$titles = array($key_title, $val_title);
+		}
+
+		return self::asciiTable($new_array, $titles, $line_sep);
+	}
+
+
+	/**
 	 * Prepares WYSIWYG HTML where <p> tags only take up one line
 	 * by translating into <divs> or replacing with a simple <br>
 	 *
