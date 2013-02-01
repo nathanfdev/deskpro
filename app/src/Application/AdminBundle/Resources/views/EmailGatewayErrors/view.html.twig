@@ -3,6 +3,7 @@
 	<ul>
 		<li><a href="{{ path('admin_emailgateways') }}">Email Accounts</a></li>
 		{% if type == 'errors' %}<li><a href="{{ path('admin_emailgateway_errors') }}">Errors</a></li>
+		{% elseif type == 'all' %}<li><a href="{{ path('admin_emailgateway_all') }}">Email Sources</a></li>
 		{% else %}<li><a href="{{ path('admin_emailgateway_rejections') }}">Rejections</a></li>{% endif %}
 		<li>{{ phrase('admin.general.gateway_source_id', {id: source.id}) }}</li>
 	</ul>

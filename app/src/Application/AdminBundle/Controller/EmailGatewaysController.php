@@ -71,6 +71,7 @@ class EmailGatewaysController extends AbstractController
 		$helpdesk_emails = explode(',', $this->container->getSetting('core.helpdesk_emails'));
 		$helpdesk_emails = Arrays::removeFalsey($helpdesk_emails);
 
+		$all_count = $this->em->getRepository('DeskPRO:EmailSource')->countAllSources(array('ticket', 'ticketmessage'));
 		$rejection_count = $this->em->getRepository('DeskPRO:EmailSource')->countRejectionStatus(array('ticket', 'ticketmessage'));
 		$error_count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
 
@@ -78,6 +79,7 @@ class EmailGatewaysController extends AbstractController
 			'all_gateways'            => $all_gateways,
 			'all_transports'          => $all_transports,
 			'helpdesk_emails'         => $helpdesk_emails,
+			'all_count'               => $all_count,
 			'rejection_count'         => $rejection_count,
 			'error_count'             => $error_count,
 		));

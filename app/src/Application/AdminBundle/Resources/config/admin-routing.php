@@ -2251,6 +2251,13 @@ $collection->add('admin_emailgateway_errors', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateway_all', new Route(
+	'/email/list-sources/{object_type}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'all', 'object_type' => 'ticket'),
+	array(),
+	array()
+));
+
 $collection->add('admin_emailgateway_rejections', new Route(
 	'/email/gateway-rejections/{object_type}',
 	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'rejections', 'object_type' => 'ticket'),

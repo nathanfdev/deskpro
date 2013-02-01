@@ -53,6 +53,8 @@ class EmailGatewayErrorsController extends AbstractController
 
 		if ($type == 'errors') {
 			$count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus($objects);
+		} elseif ($type == 'all') {
+			$count = $this->em->getRepository('DeskPRO:EmailSource')->countAllSources($objects);
 		} else {
 			$count = $this->em->getRepository('DeskPRO:EmailSource')->countRejectionStatus($objects);
 		}
@@ -68,6 +70,13 @@ class EmailGatewayErrorsController extends AbstractController
 				SELECT source
 				FROM DeskPRO:EmailSource source
 				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code IN ('server_error', 'timeout')
+				ORDER BY source.id DESC
+			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute(array($objects));
+		} elseif ($type == 'all') {
+			$sources = $this->em->createQuery("
+				SELECT source
+				FROM DeskPRO:EmailSource source
+				WHERE source.object_type IN (?0)
 				ORDER BY source.id DESC
 			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute(array($objects));
 		} else {
@@ -106,6 +115,9 @@ class EmailGatewayErrorsController extends AbstractController
 		}
 
 		$type = ($source->error_code == 'server_error' || $source->error_code == 'timeout') ? 'errors' : 'rejections';
+		if ($source->status != 'error') {
+			$type = 'all';
+		}
 
 		return $this->render('AdminBundle:EmailGatewayErrors:view.html.twig', array(
 			'source' => $source,
@@ -173,6 +185,8 @@ class EmailGatewayErrorsController extends AbstractController
 
 		if ($source->error_code == 'server_error' || $source->error_code == 'timeout') {
 			return $this->redirectRoute('admin_emailgateway_errors');
+		} elseif ($source->status != 'error') {
+			return $this->redirectRoute('admin_emailgateway_all');
 		} else {
 			return $this->redirectRoute('admin_emailgateway_rejections');
 		}
@@ -193,6 +207,9 @@ class EmailGatewayErrorsController extends AbstractController
 		}
 
 		$type = ($source->error_code == 'server_error' || $source->error_code == 'timeout') ? 'errors' : 'rejections';
+		if ($source->status != 'error') {
+			$type = 'all';
+		}
 
 		$source['status'] = 'inserted';
 		$source['error_code'] = null;

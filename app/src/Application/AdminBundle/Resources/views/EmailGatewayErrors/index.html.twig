@@ -4,7 +4,7 @@
 	<ul>
 		{% if type == 'errors' %}
 			<li><a href="{{ path('admin_emailgateway_errors_clear', {security_token: security_token('clear_gateway_errors'), 'object_type': object_type }) }}">Clear Errors</a></li>
-		{% else %}
+		{% elseif type == 'rejections' %}
 			<li><a href="{{ path('admin_emailgateway_rejections_clear', {security_token: security_token('clear_gateway_errors'), 'object_type': object_type }) }}">Clear Rejections</a></li>
 		{% endif %}
 	</ul>
@@ -13,6 +13,8 @@
 	<li><a href="{{ path('admin_emailgateways') }}">Email Accounts</a></li>
 	{% if type == 'errors' %}
 		<li>Errors</li>
+	{% elseif type == 'all' %}
+		<li>Email Sources</li>
 	{% else %}
 		<li>Rejections</li>
 	{% endif %}
