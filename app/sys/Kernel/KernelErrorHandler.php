@@ -195,10 +195,12 @@ class KernelErrorHandler
 	/**
 	 * @param \Exception $exception
 	 */
-	public static function logException(\Exception $exception)
+	public static function logException(\Exception $exception, $send = false)
 	{
 		$einfo = self::getExceptionInfo($exception);
-		$einfo['no_send_error'] = true;
+		if (!$send) {
+			$einfo['no_send_error'] = true;
+		}
 		self::logErrorInfo($einfo);
 	}
 

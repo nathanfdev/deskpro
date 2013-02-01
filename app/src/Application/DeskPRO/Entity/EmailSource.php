@@ -138,12 +138,18 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The current status of the message:
 	 * - inserted: Only inserted
+	 * - processing: Currently processing
 	 * - complete: Fully processed
 	 * - error: Tried to process but there was some kind of error (see error_code)
 	 *
 	 * @var string
 	 */
-	protected $status = 'inserted';
+	protected $status = 'processing';
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_status = null;
 
 	/**
 	 * When status is error, this is the code that describes the error.
@@ -180,6 +186,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->setModelField('date_created', new \DateTime());
+		$this->setModelField('date_status', new \DateTime());
 	}
 
 	/**
@@ -204,6 +211,15 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$this->_raw = $desc->get();
 
 		return $this->_raw;
+	}
+
+
+	/**
+	 * Clears local cache of raw source
+	 */
+	public function clearRawSource()
+	{
+		$this->_raw = null;
 	}
 
 
@@ -264,6 +280,16 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param string $status
+	 */
+	public function setStatus($status)
+	{
+		$this->setModelField('status', $status);
+		$this->setModelField('date_status', new \DateTime());
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -291,6 +317,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
 		$metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
 		$metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
+		$metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));

@@ -157,21 +157,67 @@ class Runner
 	 */
 	public function executeSource(EmailSource $source)
 	{
+		$this->logger->logDebug('Executing Source ' . $source->getId());
+
 		$gateway = $source->gateway;
 
-		$this->logger->log("Start processing source {$source['id']}", 'info');
-		$start_time = microtime(true);
+		// Attempt to detect if we should break due to memory
+		$mem = memory_get_usage();
+		$avail = deskpro_install_check_parseinisize(@ini_get('memory_limit'));
+		if ($mem && $mem > 0 && $avail) {
+			$remain = $avail - $mem;
+			$min = max(10485760, $source->blob->filesize * 4);
+			$room = $remain - $min;
 
-		// If its an error we cant process (eg message too big we dont have the whole email),
-		// quit out now
-		if ($source->status == 'error' && $source->error_code == 'message_too_big') {
-			$this->logger->log(sprintf("Source marked as error :: %s", $source->error_code), 'debug');
-			return;
+			$str = sprintf("Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d", $mem, $avail, $min, $room);
+			$this->logger->log($str, 'debug');
+
+			if ($remain < $min) {
+				$this->logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
+
+				$e = new \Exception("Detected at memory limit: $str");
+				KernelErrorHandler::logException($e, true);
+
+				return 'memory_limit';
+			}
 		}
 
-		$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-		$reader->setRawSource($source['raw_source']);
-		$reader->setProperty('email_source', $source);
+		// Mark as processing now
+		$this->logger->logDebug('Marking source as processing');
+		$source->status = 'processing';
+		App::getOrm()->persist($source);
+		App::getOrm()->flush();
+
+		try {
+			$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+			$reader->setRawSource($source['raw_source']);
+			$reader->setProperty('email_source', $source);
+		} catch (\Exception $e) {
+			$this->logger->log(sprintf("Could not set source: %s", $e->getMessage()), 'info');
+
+			$e->_dp_sn = KernelErrorHandler::genSessionName();
+			$errinfo = KernelErrorHandler::getExceptionInfo($e);
+			KernelErrorHandler::logErrorInfo($errinfo);
+
+			$source['status'] = 'error';
+			$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+			$source['source_info'] = $errinfo;
+
+			$this->_updateSource($source);
+			$this->log_messages->clear();
+			$source->clearRawSource();
+			App::getOrm()->detach($source);
+			$source = null;
+
+			if ($reader) {
+				$reader->_kill();
+				$reader = null;
+			}
+
+			gc_collect_cycles();
+
+			return 'decode_error';
+		}
 
 		$to = array();
 		foreach ($reader->getToAddresses() as $x) {
@@ -188,18 +234,12 @@ class Runner
 
 		try {
 
-			if (!$this->log_messages) {
-				$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
-				$this->logger->addWriter($this->log_messages);
-			}
-
-			$this->log_messages->clear();
-
 			$pre_processor = new PreProcessor($gateway, $reader, array('logger' => $this->logger));
 			$pre_processor->run();
 
 			$created_obj = null;
 			if ($pre_processor->isValid()) {
+				$pre_processor = null;
 
 				$this->logger->log("Preprocessor complete", 'info');
 
@@ -217,6 +257,7 @@ class Runner
 					}
 
 					$source['source_info'] = $proc->getSourceInfo();
+					$proc = null;
 
 					App::getOrm()->commit();
 
@@ -235,6 +276,7 @@ class Runner
 
 					$source['status'] = 'error';
 					$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+
 					foreach ($errinfo as &$_v) {
 						if (is_object($_v)) {
 							$_v = get_class($_v);
@@ -248,8 +290,11 @@ class Runner
 				$source['status'] = 'error';
 				$source['error_code'] = $pre_processor->getErrorCode();
 				$source['source_info'] = $pre_processor->getSourceInfo();
+				$pre_processor = null;
 
 				$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
+
+				App::getOrm()->commit();
 			}
 
 			if ($created_obj) {
@@ -272,9 +317,22 @@ class Runner
 		}
 
 		$this->_updateSource($source);
+		$this->log_messages->clear();
+		$source->clearRawSource();
 
-		$end_time = microtime(true);
-		$this->logger->log(sprintf("Finished processing source. Took %.2f seconds.", $end_time - $start_time), 'info');
+		$created_obj = null;
+
+		App::getOrm()->detach($source);
+		$source = null;
+
+		if ($reader) {
+			$reader->_kill();
+			$reader = null;
+		}
+
+		gc_collect_cycles();
+
+		return 'okay';
 	}
 
 	/**
@@ -306,6 +364,15 @@ class Runner
 		$created_obj = null;
 		$reader = null;
 
+		$inserted_source_ids = App::getDb()->fetchAllCol("
+			SELECT id FROM
+			email_sources
+			WHERE status = 'inserted' AND gateway_id = ?
+			ORDER BY id ASC
+		", array($gateway->getId()));
+
+		$this->logger->logDebug(sprintf("%d inserted messages being processed first", count($inserted_source_ids)));
+
 		while (true) {
 			// Make sure any records are flusehd
 			App::getOrm()->flush();
@@ -325,16 +392,21 @@ class Runner
 
 			$m = memory_get_usage();
 
-			try {
-				$source = $fetcher->readNext($gateway->getSourceObjectType());
-				if (!$source) {
+			if ($next_inserted_id = array_shift($inserted_source_ids)) {
+				$this->logger->logDebug(sprintf("Processing next inserted message: %d", $next_inserted_id));
+				$source = App::getOrm()->find('DeskPRO:EmailSource', $next_inserted_id);
+			} else {
+				try {
+					$source = $fetcher->readNext($gateway->getSourceObjectType());
+					if (!$source) {
+						break;
+					}
+				} catch (\Exception $e) {
+					$this->logger->log(sprintf("readNext exception: %s", $e->getMessage()), 'info');
+					$einfo = KernelErrorHandler::getExceptionInfo($e);
+					KernelErrorHandler::logErrorInfo($einfo);
 					break;
 				}
-			} catch (\Exception $e) {
-				$this->logger->log(sprintf("readNext exception: %s", $e->getMessage()), 'info');
-				$einfo = KernelErrorHandler::getExceptionInfo($e);
-				KernelErrorHandler::logErrorInfo($einfo);
-				break;
 			}
 
 			if (!$this->log_messages) {
@@ -357,148 +429,10 @@ class Runner
 				continue;
 			}
 
-			try {
-				$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-				$reader->setRawSource($source['raw_source']);
-				$reader->setProperty('email_source', $source);
-			} catch (\Exception $e) {
-				$this->logger->log(sprintf("Could not set source: %s", $e->getMessage()), 'info');
-
-				$e->_dp_sn = KernelErrorHandler::genSessionName();
-				$errinfo = KernelErrorHandler::getExceptionInfo($e);
-				KernelErrorHandler::logErrorInfo($errinfo);
-
-				$source['status'] = 'error';
-				$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
-				$source['source_info'] = $errinfo;
-
-				$this->_updateSource($source);
-				$this->log_messages->clear();
-				App::getOrm()->detach($source);
-				$source = null;
-
-				if ($reader) {
-					$reader->_kill();
-					$reader = null;
-				}
-
-				gc_collect_cycles();
-
-				// Continue to next
-				continue;
-			}
-
-			$to = array();
-			foreach ($reader->getToAddresses() as $x) {
-				$to[] = $x->getEmail();
-			}
-			$to = implode(', ', $to);
-
-			$from = $reader->getFromAddress()->getEmail();
-
-			$subj = substr($reader->getSubject()->getSubject(), 0, 40);
-			$this->logger->log("[Message] To: $to :: From: $from :: Subject: $subj", 'debug');
-
-			App::getOrm()->beginTransaction();
-
-			try {
-
-				$pre_processor = new PreProcessor($gateway, $reader, array('logger' => $this->logger));
-				$pre_processor->run();
-
-				$created_obj = null;
-				if ($pre_processor->isValid()) {
-					$pre_processor = null;
-
-					$this->logger->log("Preprocessor complete", 'info');
-
-					try {
-						$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
-						$created_obj = $proc->run();
-
-						if ($proc->isValid()) {
-							$this->logger->log("Processor complete", 'info');
-							$source['status'] = 'complete';
-						} else {
-							$source['status'] = 'error';
-							$source['error_code'] = $proc->getErrorCode();
-							$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
-						}
-
-						$source['source_info'] = $proc->getSourceInfo();
-						$proc = null;
-
-						App::getOrm()->commit();
-
-					} catch (\Exception $e) {
-
-						$this->logger->log(sprintf("Processor exception: %s", $e->getMessage()), 'info');
-
-						if (App::getDb()->isTransactionActive()) {
-							App::getDb()->rollback();
-						}
-
-						$e->_dp_sn = KernelErrorHandler::genSessionName();
-
-						$errinfo = KernelErrorHandler::getExceptionInfo($e);
-						KernelErrorHandler::logErrorInfo($errinfo);
-
-						$source['status'] = 'error';
-						$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
-
-						foreach ($errinfo as &$_v) {
-							if (is_object($_v)) {
-								$_v = get_class($_v);
-							} elseif (is_array($_v)) {
-								$_v = KernelErrorHandler::varToString($_v);
-							}
-						}
-						$source['source_info'] = $errinfo;
-					}
-				} else {
-					$source['status'] = 'error';
-					$source['error_code'] = $pre_processor->getErrorCode();
-					$source['source_info'] = $pre_processor->getSourceInfo();
-					$pre_processor = null;
-
-					$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
-
-					App::getOrm()->commit();
-				}
-
-				if ($created_obj) {
-					$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
-					$source['object_id'] = $created_obj->id;
-
-					$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
-				}
-			} catch (\Exception $e) {
-
-				$this->logger->log(sprintf("Preprocessor exception: %s", $e->getMessage()), 'info');
-
-				if (App::getDb()->isTransactionActive()) {
-					App::getDb()->rollback();
-				}
-
-				$this->_updateSource($source);
-
-				throw $e;
-			}
-
-			$this->_updateSource($source);
-			$this->log_messages->clear();
-
-			$created_obj = null;
-
-			App::getOrm()->detach($source);
-			$source = null;
-
-			if ($reader) {
-				$reader->_kill();
-				$reader = null;
-			}
-
-			gc_collect_cycles();
+			$this->logger->logDebug('START: executeSource('.$source->getId().')');
+			$t = microtime(true);
+			$ret_code = $this->executeSource($source);
+			$this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true)-$t));
 
 			$m_end = memory_get_usage();
 			$m_diff = $m_end - $m;
@@ -507,6 +441,10 @@ class Runner
 
 			$time_so_far = time() - $exec_start;
 			if ($time_limit && $time_so_far >= $time_limit) {
+				break;
+			}
+
+			if ($ret_code == 'memory_limit') {
 				break;
 			}
 		}

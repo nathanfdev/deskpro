@@ -50,7 +50,7 @@ class ProcessEmailGateways extends AbstractJob
 		# Mark error sources
 		#------------------------------
 
-		// If a source has been in the 'inserted' state for more than 15 mintues,
+		// If a source has been in the 'processing' state for more than 15 mintues,
 		// then it means it's probably a fatal error and we should mark it as error
 		$d = date('Y-m-d H:i:s', time() - 900);
 		$num = App::getDb()->executeUpdate("
