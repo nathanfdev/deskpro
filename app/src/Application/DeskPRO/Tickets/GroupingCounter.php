@@ -317,6 +317,7 @@ class GroupingCounter
 		$times = array_keys($this->getTimeTitles());
 		$fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
 		$times = array_reverse($times);
+		$last_t = 9000000000;
 
 		$now = time();
 
@@ -324,8 +325,6 @@ class GroupingCounter
 
 		$parts = array();
 		foreach ($times as $t) {
-
-
 			if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
 				// total time is stored in seconds, so we're not doing a date compare
 				$date = $t;
@@ -340,8 +339,10 @@ class GroupingCounter
 					$parts[] = " WHEN tickets.$fieldname BETWEEN '$date' AND '$now' THEN $t ";
 				}
 
-				$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $t ";
+				$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $last_t ";
 			}
+
+			$last_t = $t;
 		}
 
 		$sql .= implode('', $parts) . " ELSE 9000000000 END AS $select_name";
@@ -679,7 +680,7 @@ class GroupingCounter
 					return array('type' => $groupvar, 'op' => 'gte', 'options' => array('date1' => $date));
 				} else {
 					$date1 = new \DateTime('-' . $times[$key] . ' seconds');
-					$date2 = new \DateTime('-' . $times[$key+1] . ' seconds');
+					$date2 = new \DateTime('-' . $times[$key-1] . ' seconds');
 
 					return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
 				}
