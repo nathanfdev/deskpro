@@ -35,7 +35,9 @@
 namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\ErrorReporter;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 /**
  * Server info
@@ -47,6 +49,70 @@ class ServerController extends AbstractController
 	############################################################################
 
 	public function phpinfoAction()
+	{
+		$vars = $this->_getPhpinfoVars();
+		return $this->render('AdminBundle:Server:phpinfo.html.twig', $vars);
+	}
+
+	public function phpinfoDownloadAction()
+	{
+		$vars = $this->_getPhpinfoVars(true);
+		$sections = array();
+
+		$items = array_merge($vars['binary_paths'], $vars['web_php']['php_config']);
+		$items['ini_path'] = $vars['web_php']['ini_path'];
+		$items['effective_max_upload'] = $vars['web_php']['effective_max_upload'];
+		$items['cli_ini_path'] = isset($vars['cli_php']['ini_path']) ? $vars['cli_php']['ini_path'] : '';
+		if (isset($vars['cli_php']['php_config'])) {
+			foreach ($vars['cli_php']['php_config'] as $k => $v) {
+				if (is_array($v)) {
+					foreach ($v as $subk => $subv) {
+						$items['cli_' . $k . '.' . $subk] = $subv;
+					}
+				} else {
+					$items['cli_' . $k] = $v;
+				}
+			}
+		}
+		$items['has_apc'] = $vars['has_apc'] ? 'Yes' : 'No';
+		$items['has_wincache'] = $vars['has_wincache'] ? 'Yes' : 'No';
+		$items = array_merge($items, $vars['debug_settings']);
+
+		$sections['Info'] = Strings::keyValueAsciiTable($items);
+		$sections['Reporter Info'] = Strings::keyValueAsciiTable(ErrorReporter::getBasicData(true));
+
+		$sections['Web PHP Info'] = $vars['web_php']['phpinfo'];
+		$sections['CLI PHP Info'] = isset($vars['cli_php']['phpinfo']) ? $vars['cli_php']['phpinfo'] : '(unset)';
+
+		$out = '';
+		foreach ($sections as $title => $content) {
+			$out .= "\n\n\n\n\n";
+			$out .= str_repeat('#', 80) . "\n";
+			$out .= '# ' . str_pad($title, 76) . ' #' . "\n";
+			$out .= str_repeat('#', 80) . "\n";
+			$out .= "\n\n";
+			$out .= $content;
+		}
+
+		$out = trim($out);
+
+		$filename = 'phpinfo.txt';
+		$filetype = 'text/plain';
+
+		if (function_exists('gzencode') && !isset($_GET['nogzip'])) {
+			$out = gzencode($out);
+			$filename = 'phpinfo.txt.gz';
+			$filetype = 'application/gzip';
+		}
+
+		header('Content-Disposition: attachment; filename='.$filename);
+		header('Content-type: '.$filetype.'; filename='.$filename);
+		$res = new \Symfony\Component\HttpFoundation\Response($out, 200);
+
+		return $res;
+	}
+
+	protected function _getPhpinfoVars($noencode = false)
 	{
 		$config_hash = md5_file(DP_CONFIG_FILE);
 
@@ -97,7 +163,9 @@ class ServerController extends AbstractController
 			$cli_php['ini_path'] = \Orb\Util\Env::getPhpIniPathFromInfo($phpinfo);
 
 			if (strpos($phpinfo, '<body') === false) {
-				$phpinfo = '<code>' . nl2br(htmlspecialchars($phpinfo)) . '</code>';
+				if (!$noencode) {
+					$phpinfo = '<code>' . nl2br(htmlspecialchars($phpinfo)) . '</code>';
+				}
 			} else {
 				preg_match('#<body.*?>(.*?)</body>#ms', $phpinfo, $m);
 
@@ -173,7 +241,7 @@ class ServerController extends AbstractController
 
 		$debug_settings['rewrite_urls'] = print_r(dp_get_config('rewrite_urls', false), true);
 
-		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
+		return array(
 			'binary_paths'   => $binary_paths,
 			'web_php'        => $web_php,
 			'cli_php'        => $cli_php,
@@ -181,7 +249,7 @@ class ServerController extends AbstractController
 			'has_apc'        => $has_apc,
 			'has_wincache'   => $has_wincache,
 			'debug_settings' => $debug_settings,
-		));
+		);
 	}
 
 	############################################################################

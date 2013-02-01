@@ -37,7 +37,7 @@ use Application\DeskPRO\App;
 
 class ErrorReporter
 {
-	public static function getBasicData()
+	public static function getBasicData($send_all_stats = false)
 	{
 		$reduced_lic_reports = false;
 		if (class_exists('Application\\DeskPRO\\App')) {
@@ -46,6 +46,10 @@ class ErrorReporter
 					$reduced_lic_reports = true;
 				}
 			} catch (\Exception $e) {}
+		}
+
+		if ($send_all_stats) {
+			$reduced_lic_reports = false;
 		}
 
 		if ($reduced_lic_reports) {
@@ -82,6 +86,10 @@ class ErrorReporter
 				'build'             => DP_BUILD_TIME,
 				'build_num'         => DP_BUILD_NUM,
 			);
+
+			if ($send_all_stats && $all_stats) {
+				$info = array_merge($info, $all_stats);
+			}
 
 			$info['hostname'] = @gethostname();
 		}

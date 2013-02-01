@@ -2141,6 +2141,13 @@ $collection->add('admin_server_phpinfo', new Route(
 	array()
 ));
 
+$collection->add('admin_server_phpinfo_download', new Route(
+	'/server/phpinfo/download',
+	array('_controller' => 'AdminBundle:Server:phpinfoDownload'),
+	array(),
+	array()
+));
+
 $collection->add('admin_server_mysqlinfo', new Route(
 	'/server/mysqlinfo',
 	array('_controller' => 'AdminBundle:Server:mysqlinfo'),

@@ -1,6 +1,11 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-<ul xmlns="http://www.w3.org/1999/html">
+	<nav>
+		<ul>
+			<li><a href="{{ path('admin_server_phpinfo_download') }}">Download Report File</a></li>
+		</ul>
+	</nav>
+	<ul>
 		<li>{{ phrase('admin.general.php_info') }}</li>
 	</ul>
 {% endblock %}
