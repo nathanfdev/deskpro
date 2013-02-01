@@ -87,7 +87,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 						self.selectionBar.checkNone();
 					},
 					onClosed: function() {
-						self.massActions.destroy();
+						if (self.massActions) {
+							self.massActions.destroy();
+						}
+
 						self.massActions = null;
 					}
 				});
