@@ -583,6 +583,7 @@ class ServerController extends AbstractController
 		}
 
 		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
+		$log_reader->setDateTimezone($this->person->getDateTimezone());
 
 		return $this->render('AdminBundle:Server:error-logs.html.twig', array(
 			'config_hash' => $config_hash,
@@ -593,6 +594,7 @@ class ServerController extends AbstractController
 	public function viewErrorLogAction($log_id)
 	{
 		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
+		$log_reader->setDateTimezone($this->person->getDateTimezone());
 		$log_reader->enableRawLog();
 		$log_reader->setIdFilter($log_id);
 

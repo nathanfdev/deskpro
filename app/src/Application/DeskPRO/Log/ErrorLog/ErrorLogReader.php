@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Log\ErrorLog;
 
+use Orb\Util\Dates;
+
 class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 {
 	/**
@@ -62,6 +64,11 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	protected $count = 0;
 
 	/**
+	 * @var \DateTimeZone
+	 */
+	protected $timezone;
+
+	/**
 	 * @var bool
 	 */
 	protected $count_mode = false;
@@ -69,6 +76,15 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	public function __construct($path)
 	{
 		$this->path = $path;
+	}
+
+
+	/**
+	 * @param \DateTimeZone $tz
+	 */
+	public function setDateTimezone(\DateTimeZone $tz)
+	{
+		$this->timezone = $tz;
 	}
 
 
@@ -201,6 +217,14 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 			'build'   => \Orb\Util\Strings::extractRegexMatch('#^Build: (.*?)$#m', $log_lines, 1),
 			'log'     => $this->store_raw ? $log_lines : null,
 		);
+
+		if ($this->timezone) {
+			$date = \DateTime::createFromFormat('Y-m-d H:i:s', $item['date'], new \DateTimeZone('UTC'));
+			if ($date) {
+				$date->setTimezone($this->timezone);
+				$item['date'] = $date->format('Y-m-d H:i:s');
+			}
+		}
 
 		if ($this->filter && !call_user_func($this->filter, 'parsed', $id, $item)) {
 			return;
