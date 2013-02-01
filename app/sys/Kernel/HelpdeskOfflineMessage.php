@@ -64,6 +64,11 @@ class HelpdeskOfflineMessage
 
 		$title = $message = null;
 
+		$subtype = null;
+		if (strpos($type, '.') !== false) {
+			list ($type, $subtype) = explode('.', $type, 2);
+		}
+
 		switch ($type) {
 			case 'agents':
 				$tpl_file = 'license-error';
@@ -118,7 +123,13 @@ class HelpdeskOfflineMessage
 				$title = "Demo Expired";
 				break;
 
-			default: trigger_error('getLicenseErrorPage called with bad $type', E_USER_ERROR); return '';
+			case 'sys_disabled':
+				$title = 'Account Offline';
+				$message = $subtype;
+				$tpl_file = 'cloud-sys-disabled';
+				break;
+
+			default: trigger_error('getLicenseErrorPage called with bad $type: ' . $type, E_USER_ERROR); return '';
 		}
 
 		if ($title) {

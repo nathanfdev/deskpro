@@ -314,6 +314,11 @@ abstract class AbstractKernel extends BaseAbstractKernel
 							}
 						}
 					}
+
+					if (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED) {
+						$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('sys_disabled.'.DPC_SYS_DISABLED, $request->getBaseUrl()));
+						return $response;
+					}
 				}
 			}
 		}

@@ -192,7 +192,7 @@ class CloudConfig
 
 		define('DPC_SYS_DISABLED', $siteinfo['sys_disabled']);
 
-		if (DPC_SYS_DISABLED && DPC_SYS_DISABLED != 'upgrading' && defined('DPC_LOAD_FROM_WEB')) {
+		if (DPC_SYS_DISABLED && (DPC_SYS_DISABLED != 'upgrading' && DPC_SYS_DISABLED != 'paused') && defined('DPC_LOAD_FROM_WEB')) {
 			header("Location: " . self::getVendorUrl());
 			exit();
 		}
@@ -339,7 +339,7 @@ class CloudConfig
 				cloud_accounts.bill_failed_step, cloud_accounts.admin_off, cloud_accounts.agent_off, cloud_accounts.user_off, cloud_accounts.cron_off, cloud_accounts.off_reason
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-			WHERE cloud_sites.id = ? AND cloud_sites.build_number > 0 AND cloud_accounts.is_offline = 0
+			WHERE cloud_sites.id = ? AND cloud_sites.build_number > 0
 			LIMIT 1
 		");
 		$stmt->execute(array($id));
@@ -370,7 +370,7 @@ class CloudConfig
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 			LEFT JOIN cloud_site_domains ON (cloud_site_domains.cloud_site_id = cloud_sites.id)
-			WHERE (cloud_sites.master_domain = ? OR cloud_sites.custom_domain = ? OR cloud_site_domains.custom_domain = ?) AND cloud_sites.build_number > 0 AND cloud_accounts.is_offline = 0
+			WHERE (cloud_sites.master_domain = ? OR cloud_sites.custom_domain = ? OR cloud_site_domains.custom_domain = ?) AND cloud_sites.build_number > 0
 			LIMIT 1
 		");
 		$stmt->execute(array($domain, $domain, $domain));
