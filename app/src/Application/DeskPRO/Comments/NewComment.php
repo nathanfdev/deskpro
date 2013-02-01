@@ -169,7 +169,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 			if ($this->require_login) {
 				$obj->setStatus('temp');
-			} elseif ($validating) {
+			} elseif ($validating && !$no_validation_required) {
 				$obj->setStatus('user_validating');
 			} elseif (!$no_validation_required) {
 				$obj->setStatus('validating');
