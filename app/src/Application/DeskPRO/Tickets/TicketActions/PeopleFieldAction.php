@@ -125,7 +125,7 @@ class PeopleFieldAction extends AbstractAction
 	{
 		$tr = App::getTranslator();
 		$title = $this->field_def->title;
-		$value = $this->value;
+		$value = $this->set_value;
 
 		return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
 	}
