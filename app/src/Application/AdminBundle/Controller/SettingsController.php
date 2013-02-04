@@ -419,6 +419,7 @@ class SettingsController extends AbstractController
 	public function quickSetupAction()
 	{
 		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
+		$skip_cron_check = $this->container->getSysConfig('instance_data.install_flags.skip_cron_check');
 
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
 		$server_check->checkServer();
@@ -467,7 +468,7 @@ class SettingsController extends AbstractController
 			if (!$default_transport) {
 				$pass = false;
 			}
-			if (!$this->container->getSetting('core.last_cron_run')) {
+			if (!$this->container->getSetting('core.last_cron_run') && !$skip_cron_check) {
 				$pass = false;
 			}
 			if (!$this->container->getSetting('core.license')) {
@@ -516,6 +517,7 @@ class SettingsController extends AbstractController
 			'is_import' => $is_import,
 			'php_path' => $php_path,
 			'php_path_set' => $php_path_set,
+			'skip_cron_check' => $skip_cron_check,
 
 			// Existing values
 			'license_code' => $this->container->getSetting('core.license'),
