@@ -163,7 +163,7 @@ if (isset($__license_code)) {
 	$stats['error_info']['license_code'] = $__license_code;
 }
 if (isset($__install_key)) {
-	$stats['error_info']['license_code'] = $__install_key;
+	$stats['error_info']['install_key'] = $__install_key;
 }
 
 $stats['error_type'] = 'php';
@@ -178,4 +178,4 @@ try {
 		'POST',
 		15
 	);
-} catch (\Exception $e) {}
+} catch (\Exception $e) {}license_code
