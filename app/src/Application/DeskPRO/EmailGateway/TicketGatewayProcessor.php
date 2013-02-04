@@ -1348,6 +1348,21 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage("[TicketGatewayProcessor] Found as duplicate of ticket: $ticket->id");
 		}
 
+		// Handle CC's
+		$fwd_data = $fwd_cutter->getData();
+		if ($fwd_data['fwd_cc_addresses']) {
+			$cc_emails = array();
+			foreach ($fwd_data['fwd_cc_addresses'] as $e) {
+				$e_a = new Reader\Item\EmailAddress();
+				$e_a->email = $e['email'];
+				$e_a->name = $e['name'];
+
+				$cc_emails[] = $e_a;
+			}
+
+			$this->handleCc($ticket, $cc_emails);
+		}
+
 		if ($this->reader->hasProperty('email_source') && $newticket->new_message) {
 			$message = $newticket->new_message;
 			$message['email'] = $fwd_cutter->getUserEmailItem()->getEmail();

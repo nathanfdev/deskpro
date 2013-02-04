@@ -144,6 +144,7 @@ class Generic implements ForwardDef, QuoteDef
 			'fwd_message_headers'  => null,
 			'fwd_from_email'       => null,
 			'fwd_from_name'        => null,
+			'fwd_cc_addresses'     => null,
 		);
 
 		$parts = null;
@@ -231,6 +232,24 @@ class Generic implements ForwardDef, QuoteDef
 			}
 			$name = trim($name);
 			$forward_data['fwd_from_name'] = $name;
+		}
+
+		#------------------------------
+		# Try to read CC addresses
+		#------------------------------
+
+		$cc_line = Strings::extractRegexMatch('#^(CC|Cc): (.*?)$#m', $forward_data['fwd_message_headers'], 2);
+		if ($cc_line) {
+			$emails = \ezcMailTools::parseEmailAddresses($cc_line, 'UTF-8');
+			if ($emails) {
+				$forward_data['fwd_cc_addresses'] = array();
+				foreach ($emails as $e) {
+					$forward_data['fwd_cc_addresses'][] = array(
+						'name' => $e->name,
+						'email' => $e->email,
+					);
+				}
+			}
 		}
 
 		return $forward_data;
