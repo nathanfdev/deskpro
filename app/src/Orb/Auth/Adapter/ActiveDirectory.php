@@ -210,6 +210,10 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 				} else if ($rec->getAttribute('thumbnailPhoto')) {
 					$raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
 				}
+
+				if ($rec->getAttribute('telephoneNumber')) {
+					$raw_info['phone'] = $rec->getAttribute('telephoneNumber', 0);
+				}
 			}
 		} catch (\Exception $e) {}
 

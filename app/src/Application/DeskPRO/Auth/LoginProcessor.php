@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Entity\PersonContactData;
 use Orb\Util\Arrays;
 use Orb\Auth\Identity;
 
@@ -162,6 +163,19 @@ class LoginProcessor
 			}
 
 			$em->persist($this->person);
+
+			if ($mapped_fields->has('phone')) {
+				$contact_data = new PersonContactData();
+				$contact_data->contact_type = 'phone';
+				$contact_data->applyFormData(array(
+					'number' => $mapped_fields->get('phone')
+				));
+
+				$contact_data->person = $this->person;
+
+				$em->persist($contact_data);
+			}
+
 			$em->flush();
 
 			if ($set_email && !$this->person->findEmailAddress($set_email)) {
