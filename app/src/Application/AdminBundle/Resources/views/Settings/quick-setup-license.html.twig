@@ -57,8 +57,8 @@
 					<td>
 						<table width="561">
 							<tr>
-								<td width="200" valign="top" style="vertical-align: top">
-									<select name="phone_country" id="lic_phone_country" style="width: 200px">
+								<td width="200" valign="top" style="vertical-align: top; padding-left: 0;">
+									<select name="phone_country" id="lic_phone_country" style="width: 200px" data-select-width="180">
 										{% for title in calling_countries %}
 											<option value="{{ title }}" {% if "United States" in title and loop.index < 10 %}selected="selected"{% endif %}>{{ title }}</option>
 										{% endfor %}
@@ -66,10 +66,10 @@
 								</td>
 								<td valign="top" style="vertical-align: top">
 									<input type="text" id="lic_phone" name="phone" value="" style="width: 100%; display: inline;" placeholder="Phone Number" />
-									<br />
-									<div style="text-align: right;font-size: 11px; margin-top: 4px; margin-right: -10px;">
-										Extension: <input type="text" id="lic_phone" name="phone_ext" value="" style="width: 80px; font-size: 11px; padding: 1px; margin: 0; display: inline;" />
-									</div>
+								</td>
+								<td valign="middle" nowrap="nowrap">
+									&nbsp;&nbsp;
+									Extension: <input type="text" id="lic_phone" name="phone_ext" value="" style="width: 60px; font-size: 11px; padding: 1px; margin: 0; display: inline;" />
 								</td>
 							</tr>
 						</table>
