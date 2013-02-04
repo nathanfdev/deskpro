@@ -216,7 +216,7 @@ $DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 # these options to help debug a problem              #
 ######################################################
 
-$DP_CONFIG['debug']['enable_slow_page_log'] = true;
+$DP_CONFIG['debug']['enable_slow_page_log'] = false;
 $DP_CONFIG['debug']['enable_slow_page_log_minquerytime'] = 0.01;
 
 ######################################################
