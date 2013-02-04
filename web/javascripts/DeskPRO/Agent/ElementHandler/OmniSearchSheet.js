@@ -24,6 +24,8 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 			if (!self._isOpen) return;
 			self.updatePositions();
 		});
+
+		this.optionBoxes = {};
 	},
 
 	_initSheet: function() {
@@ -123,6 +125,16 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
+
+				if (this.optionBoxes[type]) {
+					Array.each(this.optionBoxes[type], function(ob) {
+						ob.destroy();
+					});
+					this.optionBoxes[type] = [];
+				}
+
+				this.optionBoxes = [];
+
 				section.empty().html(html);
 				this[method](section, true);
 			}
@@ -214,6 +226,9 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	//##########################################################################
 
 	_initFormElements: function(tab) {
+		var type = tab.data('type');
+		var self = this;
+
 		$('ul.property-list > li.ob', tab).each(function() {
 			var values = $('> .values', this);
 			var select = $('select', values);
@@ -255,6 +270,11 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 			});
 
 			$(this).on('click', function(ev) { ob.open(ev); });
+
+			if (!self.optionBoxes[type]) {
+				self.optionBoxes[type] = [];
+			}
+			self.optionBoxes[type].push(ob);
 		});
 
 		var fieldInput = {

@@ -180,16 +180,24 @@ class MainController extends AbstractController
 		}
 
 		// Used in some header menus for search options
-        $titles = array();
-        $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
-        $titles['usergroups'] = $this->container->getDataService('Usergroup')->getUsergroupNames();
+		$titles = array();
+		$titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
+		$titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
 
 		if ($this->container->getDataService('Language')->isMultiLang()) {
 			$titles['languages'] = $this->container->getDataService('Language')->getTitles();
 		}
 
+		// Person menu needs these
 		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
 		$org_fields = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
+
+		// Ticket options for search pane of tickets menu
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		// Agent info
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
@@ -208,10 +216,14 @@ class MainController extends AbstractController
 		);
 
 		return $this->render($tpl, array(
-			'people_fields' => $people_fields,
-			'org_fields' => $org_fields,
+			'titles'         => $titles,
+			'agents'         => $agents,
+			'agent_teams'    => $agent_teams,
+			'people_fields'  => $people_fields,
+			'org_fields'     => $org_fields,
 			'ticket_options' => $ticket_options,
-			'org_options' => $org_options,
+			'people_options' => $people_options,
+			'org_options'    => $org_options,
 		));
 	}
 

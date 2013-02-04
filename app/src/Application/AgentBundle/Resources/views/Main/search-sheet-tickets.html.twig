@@ -31,7 +31,7 @@
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[agent][]',
 					'blank_title': phrase('agent.general.agent'),
-					'departments': ticket_options.agents,
+					'agents': app.getDataRepository('Agent').getAgents(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -43,7 +43,7 @@
 					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
 						'name': 'set_term[agent_team][]',
 						'blank_title': phrase('agent.general.agent_team'),
-						'departments': ticket_options.agent_teams,
+						'agent_teams': app.getDataRepository('AgentTeam').getTeams(),
 						'add_attr': 'multiple="multiple"'
 					} %}
 				</div>
@@ -55,7 +55,7 @@
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[participant][]',
 					'blank_title': phrase('agent.general.agent'),
-					'departments': ticket_options.agents,
+					'agents': app.getDataRepository('Agent').getAgents(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -93,7 +93,7 @@
 				{% include 'AgentBundle:Common:select-priority.html.twig' with {
 					'name': 'set_term[priority][]',
 					'blank_title': phrase('agent.general.priority'),
-					'priorities': ticket_options.ticket_priorities,
+					'priorities': app.getDataRepository('TicketPriority').getNames(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -106,7 +106,7 @@
 				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 					'name': 'set_term[workflow][]',
 					'blank_title': phrase('agent.general.workflow'),
-					'workflows': ticket_options.ticket_workflows,
+					'workflows': app.getDataRepository('TicketWorkflow').getNames(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -126,12 +126,12 @@
 		</li>
 		{% endif %}
 
-		{% if ticket_options.people_organizations %}
+		{% if app.getDataRepository('Organization').getOrganizationNames()|length %}
 		<li class="ob">
 			<label>{{ phrase('agent.general.organization') }}</label>
 			<div class="values">
 				<select name="set_term[organization][]" multiple="multiple">
-					{% for id,title in ticket_options.people_organizations %}
+					{% for id,title in app.getDataRepository('Organization').getOrganizationNames() %}
 						<option value="{{ id }}">{{ title }}</option>
 					{% endfor %}
 				</select>
@@ -139,12 +139,12 @@
 		</li>
 		{% endif %}
 
-		{% if ticket_options.languages %}
+		{% if app.getDataRepository('Language').isMultiLang() %}
 			<li class="ob">
 				<label>{{ phrase('agent.general.language') }}</label>
 				<div class="values">
 					<select name="language">
-						{% for id,title in term_options.languages %}
+						{% for id,title in app.getDataRepository('Language').getTitles() %}
 						<option value="{{id}}">{{title}}</option>
 						{% endfor %}
 					</select>
