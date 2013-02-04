@@ -480,6 +480,7 @@ class TicketsController extends AbstractController
 
 	public function feedbackCloseTicketAction($ticket_ref, $message_id)
 	{
+		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
 		$ticket = $this->em->getRepository('DeskPRO:Ticket')->getTicketByPublicId($ticket_ref);
 		if (!$ticket) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -497,6 +498,10 @@ class TicketsController extends AbstractController
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$ticket->getTicketLogger()->getPersonPerformer()) {
+			$ticket->getTicketLogger()->recordExtra('person_performer', $ticket->person);
 		}
 
 		$ticket->setStatus(Entity\Ticket::STATUS_RESOLVED);

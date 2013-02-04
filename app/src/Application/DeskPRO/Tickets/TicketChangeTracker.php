@@ -201,6 +201,10 @@ class TicketChangeTracker extends ChangeTracker
 			$reply = $this->getNewUserReply();
 		}
 
+		if ($this->isExtraSet('person_performer')) {
+			return $this->getExtra('person_performer');
+		}
+
 		if (!$reply) {
 			return null;
 		}
