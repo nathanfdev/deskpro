@@ -78,7 +78,7 @@ class NewsController extends AbstractController
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@user.error.not-found_title', '@user.error.not-found', 404);
+				return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
 			}
 
 			// Auto-correct URL
