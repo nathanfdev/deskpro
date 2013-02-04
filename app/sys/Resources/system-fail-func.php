@@ -161,6 +161,8 @@ $stats['error_info'] = array(
 
 if (isset($__license_code)) {
 	$stats['error_info']['license_code'] = $__license_code;
+	$stats['license_id'] = 'nolic';
+	$stats['local_hash'] = md5($__license_code);
 }
 if (isset($__install_key)) {
 	$stats['error_info']['install_key'] = $__install_key;
@@ -173,9 +175,9 @@ error_log($__fail_message);
 
 try {
 	DeskPRO_LowUtil_RemoteRequester::create()->request(
-		'https://www.deskpro.com/members/api/data-submit/report-error-manual.json',
+		'https://www.deskpro.com/members/api/data-submit/report-error.json',
 		$stats,
 		'POST',
 		15
 	);
-} catch (\Exception $e) {}license_code
+} catch (\Exception $e) {}
