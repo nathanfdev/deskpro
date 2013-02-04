@@ -36,6 +36,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * Handles the choice field
@@ -200,6 +201,8 @@ class Choice extends HandlerAbstract
 		if (!is_array($data)) {
 			$data = array($data);
 		}
+
+		$data = Arrays::removeFalsey($data);
 
 		#------------------------------
 		# Validate selections
