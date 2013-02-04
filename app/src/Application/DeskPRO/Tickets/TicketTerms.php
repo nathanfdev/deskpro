@@ -731,7 +731,6 @@ class TicketTerms
 				$date_created = clone $ticket->date_created;
 				if (!empty($choice['timezone'])) {
 					$date_created->setTimezone(new \DateTimeZone($choice['timezone']));
-					$date_created = \Orb\Util\Dates::convertToUtcDateTime($date_created);
 				}
 
 				$hour = (int)$date_created->format('H');
