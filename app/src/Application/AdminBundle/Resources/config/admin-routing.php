@@ -1362,6 +1362,27 @@ $collection->add('admin_ticketwidgets_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_tickettriggers_export', new Route(
+	'/tickets/triggers/export',
+	array('_controller' => 'AdminBundle:TicketTriggers:exportTriggers'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickettriggers_export_download', new Route(
+	'/tickets/triggers/export/{type}',
+	array('_controller' => 'AdminBundle:TicketTriggers:exportTriggersDownload'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickettriggers_import', new Route(
+	'/tickets/triggers/process-import',
+	array('_controller' => 'AdminBundle:TicketTriggers:importTriggers'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_tickettriggers_new', new Route(
 	'/tickets/triggers/new-trigger/{trigger_type}',
 	array('_controller' => 'AdminBundle:TicketTriggers:editTrigger', 'id' => '0'),

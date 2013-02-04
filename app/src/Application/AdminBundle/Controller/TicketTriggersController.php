@@ -114,6 +114,103 @@ class TicketTriggersController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# export triggers
+	############################################################################
+
+	public function exportTriggersAction()
+	{
+		return $this->render('AdminBundle:TicketTriggers:import-export.html.twig');
+	}
+
+	public function exportTriggersDownloadAction()
+	{
+		$data = $this->db->fetchAll("
+			SELECT * FROM ticket_triggers
+			ORDER BY id ASC
+		");
+
+		if (defined('JSON_PRETTY_PRINT')) {
+			$data = json_encode($data, \JSON_PRETTY_PRINT);
+		} else {
+			$data = json_encode($data);
+		}
+
+		header('Content-Disposition: attachment; filename=triggers.json');
+		header('Content-type: application/json; filename=triggers.json');
+		$res = new \Symfony\Component\HttpFoundation\Response($data, 200);
+
+		return $res;
+	}
+
+	public function importTriggersAction()
+	{
+		$clear = $this->in->getBool('clear');
+		$keep_ids = $this->in->getBool('keep_ids');
+
+		$exist_ids = null;
+		if ($keep_ids && !$clear) {
+			$exist_ids = $this->db->fetchAllCol("SELECT id FROM ticket_triggers");
+			if ($exist_ids) {
+				$exist_ids = array_combine($exist_ids, $exist_ids);
+			}
+		}
+
+		$exist_sys = $this->db->fetchAllCol("SELECT sys_name FROM ticket_triggers WHERE sys_name IS NOT NULL");
+		if ($exist_sys) {
+			$exist_sys = array_combine($exist_sys, $exist_sys);
+		}
+
+		$file = $this->request->files->get('file-upload');
+
+		if (!$file->isValid()) {
+			return $this->redirectRoute('admin_tickettriggers');
+		}
+
+		$file_content = @file_get_contents($file->getRealPath());
+		if (!$file_content) {
+			return $this->redirectRoute('admin_tickettriggers');
+		}
+
+		$data = @json_decode($file_content, true);
+		if (!$data) {
+			throw $this->createNotFoundException("Invalid file");
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			$this->db->commit();
+
+			if ($clear) {
+				$this->db->executeUpdate("DELETE FROM ticket_triggers");
+			}
+
+			foreach ($data as $tr) {
+				if (!empty($tr['sys_name'])) {
+					if (!$clear && isset($exist_sys[$tr['sys_name']])) {
+						continue;
+					}
+				}
+
+				if ($keep_ids) {
+					if ($keep_ids && isset($keep_ids[$tr['id']])) {
+						continue;
+					}
+				} else {
+					unset($tr['id']);
+				}
+
+				$this->db->insert('ticket_triggers', $tr);
+			}
+
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_tickettriggers');
+	}
 
 	############################################################################
 	# edit trigger
