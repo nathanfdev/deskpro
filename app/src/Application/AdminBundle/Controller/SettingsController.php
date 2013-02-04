@@ -499,6 +499,10 @@ class SettingsController extends AbstractController
 
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
 
+				if ($this->container->getSysConfig('instance_data.install_flags.attach_store_files')) {
+					$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'fs');
+				}
+
 				\Application\InstallBundle\Data\DataInitializer::newDefaultTicket($this->person);
 
 				return $this->redirectRoute('admin');
