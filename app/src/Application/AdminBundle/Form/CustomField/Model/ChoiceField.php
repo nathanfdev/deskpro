@@ -141,7 +141,7 @@ class ChoiceField extends CustomFieldAbstract
 		}
 
 		if ($this->agent_validation_type == 'required') {
-			$field->setOption('agent_required',   $this->agent_required);
+			$field->setOption('agent_required',   true);
 			$field->setOption('agent_min_length', $this->agent_min_length);
 			$field->setOption('agent_max_length', $this->agent_max_length);
 		} else {
