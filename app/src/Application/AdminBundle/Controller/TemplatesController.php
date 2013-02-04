@@ -321,20 +321,25 @@ class TemplatesController extends AbstractController
 				$compile_code = $proc->process($compile_code, $name);
 			}
 
-			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($compile_code), $name);
+			$compile_code = $this->_preProcessCustomTemplate($compile_code);
+			$code = $compile_code;
+
+			$compiled = $twig->compileSource($compile_code, $name);
 		} catch (\Twig_Error_Syntax $e) {
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'error_syntax' => true,
 				'error_code' => $e->getCode(),
 				'error_message' => $e->getMessage(),
-				'error_line' => $e->getTemplateLine()
+				'error_line' => $e->getTemplateLine(),
+				'source' => $code
 			));
 		} catch (\Twig_Error $e) {
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'error_code' => $e->getCode(),
-				'error_message' => $e->getMessage()
+				'error_message' => $e->getMessage(),
+				'source' => $code
 			));
 		}
 
@@ -849,7 +854,7 @@ class TemplatesController extends AbstractController
 
 	protected function _preProcessCustomTemplate($code)
 	{
-		$code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $code);
+		$code = preg_replace('#\{%\s*include\s+(\'|")(.*?)(\'|")\s+#', '{% include \'$2\' ignore missing ', $code);
 		return $code;
 	}
 }
