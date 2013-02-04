@@ -327,6 +327,10 @@
       //close the CURL session
       curl_close($c);
 
+	if (!$request_contents) {
+		throw new \RuntimeException("Empty result");
+	}
+
       //create a DOM document so we can extract the URI element
       $domdoc = new DOMDocument();
       $domdoc->loadXML($request_contents);
