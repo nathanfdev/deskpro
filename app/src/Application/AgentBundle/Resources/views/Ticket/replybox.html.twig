@@ -174,7 +174,7 @@
 						<li class="hide-note with-select2">
 							<label>{{ phrase('agent.general.status') }}:</label>
 							<div>
-								<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]" style="min-width: 170px;">
+								<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]" style="min-width: 170px;" {% if app.getSetting('core_tickets.resolve_auto_close_tab') %}data-resolve-auto-close="1"{% endif %}>
 									<option {% if not app.getSetting('core_tickets.reply_status') %}selected="selected"{% endif %} value="">Do not change status</option>
 									<option {% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' %}selected="selected"{% endif %} value="awaiting_user">Awaiting User</option>
 									<option {% if app.getSetting('core_tickets.reply_status') == 'awaiting_agent' %}selected="selected"{% endif %} value="awaiting_agent">Awaiting Agent</option>

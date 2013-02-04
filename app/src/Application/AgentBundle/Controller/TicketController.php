@@ -1965,6 +1965,7 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse(array(
 			'ticket_id' => $ticket->getId(),
 			'macro_id' => $macro->getId(),
+			'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']),
 			'success' => true,
 		));
 	}

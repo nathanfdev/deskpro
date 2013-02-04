@@ -106,6 +106,10 @@
 				<input type="checkbox" name="settings[core_tickets.reassign_auto_change_status]" value="1" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}checked="checked"{% endif %} />
 				When changing the assigned agent from the reply box, automatically set the status to Awaiting Agent
 			</label>
+			<label>
+				<input type="checkbox" name="settings[core_tickets.resolve_auto_close_tab]" value="1" {% if app.getSetting('core_tickets.resolve_auto_close_tab') %}checked="checked"{% endif %} />
+				When changing the status to Resolved from the reply box, automatically check the "close tab after reply" option
+			</label>
 		</div>
 		<div class="field_row" style="margin-top: 10px;">
 			<strong>New Ticket</strong>

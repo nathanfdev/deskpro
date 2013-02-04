@@ -415,6 +415,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			hasSwitched = true;
 		});
 
+		if (statusSel.data('resolve-auto-close')) {
+			statusSel.on('change', function() {
+				var val = $(this).val();
+
+				if (val == 'resolved' && !self.getElById('keep_open_toggle').hasClass('on')) {
+					self.getElById('keep_open_toggle').click();
+				}
+			});
+		}
+
 		//------------------------------
 		// Submit
 		//------------------------------
