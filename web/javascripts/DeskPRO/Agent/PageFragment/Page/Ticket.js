@@ -1583,6 +1583,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var sendUpdate = function(rowEl, prop, val, callback) {
 			var taskId = rowEl.data('task-id');
+
+			if (!taskId) {
+				return;
+			}
+
 			var url = BASE_URL + 'agent/tasks/'+taskId+'/ajax-save';
 
 			var postData = [];
