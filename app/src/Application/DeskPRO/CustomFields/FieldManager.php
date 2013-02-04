@@ -242,11 +242,11 @@ class FieldManager
 			$f = $this->getFieldFromId($field_id);
 
 			switch ($f->getTypeName()) {
-				case 'Choice':
+				case 'choice':
 					if (!empty($data['children'])) {
 						$form_data['field_' . $field_id] = array();
-						foreach ($data['children'] as $id) {
-							$form_data['field_' . $field_id][] = $id;
+						foreach ($data['children'] as $k => $child) {
+							$form_data['field_' . $field_id][] = $k;
 						}
 					}
 					break;
