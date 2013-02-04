@@ -709,7 +709,15 @@ class KernelErrorHandler
 		}
 
 		// Socket/network errors
-		if (strpos($errstr, 'stream_socket_enable_crypto():') !== false || strpos($errstr, 'SSL: Broken pipe') !== false || strpos($errstr, 'errno=32 Broken pipe') || strpos($errstr, 'SSL: An established connection was aborted') !== false) {
+		if (
+			strpos($errstr, 'stream_socket_enable_crypto():') !== false
+			|| strpos($errstr, 'SSL: Broken pipe') !== false
+			|| strpos($errstr, 'errno=32 Broken pipe')
+			|| strpos($errstr, 'SSL: An established connection was aborted') !== false
+			|| strpos($errstr, 'fsockopen(): unable to connect to') !== false
+			|| strpos($errstr, 'fsockopen(): unable to connect to') !== false
+			|| strpos($errstr, 'fsockopen(): SSL: crypto enabling timeout') !== false
+		) {
 			$no_send_error = true;
 		}
 
