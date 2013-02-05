@@ -91,4 +91,9 @@ interface ActionInterface
 	 * @return bool
 	 */
 	public function doPrepend();
+
+	/**
+	 * @return string
+	 */
+	public function getActionName();
 }

@@ -142,4 +142,13 @@ class TicketFieldAction extends AbstractAction
 
 		return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getActionName()
+	{
+		return get_class($this) . '[' . $this->field_def->getId() . ']';
+	}
 }

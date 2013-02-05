@@ -105,7 +105,7 @@ class ActionsCollection
 	 */
 	public function addAction(ActionInterface $action, array $metadata = array(), $prepend = false)
 	{
-		$name = get_class($action);
+		$name = $action->getActionName();
 
 		if (isset($this->actions[$name])) {
 			$old_action = $this->actions[$name];

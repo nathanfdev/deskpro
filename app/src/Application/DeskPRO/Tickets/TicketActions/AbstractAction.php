@@ -100,4 +100,13 @@ abstract class AbstractAction implements ActionInterface
 	{
 		return false;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getActionName()
+	{
+		return get_class($this);
+	}
 }

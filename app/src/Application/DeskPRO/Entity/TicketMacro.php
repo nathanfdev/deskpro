@@ -133,7 +133,6 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($this->actions as $action_info) {
 			$action = $factory->createFromInfo($action_info);
-			$collection->add($action);
 			if ($action) {
 				$collection->add($action);
 			}
