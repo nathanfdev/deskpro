@@ -340,6 +340,11 @@ function deskpro_build_cleanvendors_monolog($dir)
 	deskpro_build_exec_exit_error("rm -rf doc tests CHANGELOG.mdown .gitignore composer.json phpunit.xml.dist README.mdown", $dir);
 }
 
+function deskpro_build_cleanvendors_php5_akismet($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf .gitignore README.markdown pom.xml src/test src/site", $dir);
+}
+
 function deskpro_build_cleanvendors_pheanstalk($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf doc tests .gitmodules README.md", $dir);

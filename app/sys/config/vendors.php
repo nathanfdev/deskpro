@@ -59,6 +59,11 @@
 		'repos' => 'git://github.com/Elao/WebProfilerExtraBundle.git',
 		'version' => 'e82171449b6f8a1c3b09c7840640c7fd7365284a',
 	),
+	'php5_akismet' => array(
+		'into' => DP_ROOT.'/vendor/php5-akismet',
+		'repos' => 'https://github.com/achingbrain/php5-akismet.git',
+		'version' => 'HEAD',
+	),
 	'profilerlive' => array(
 		'into' => DP_ROOT.'/vendor/profiler/Profiler/LiveBundle',
 		'repos' => 'git://github.com/dsyph3r/ProfilerLiveBundle.git',
