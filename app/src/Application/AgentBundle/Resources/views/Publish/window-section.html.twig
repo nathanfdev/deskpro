@@ -83,6 +83,40 @@
 	</section>
 {% endif %}
 
+<section class="group-section" id="publish_section_comments" {% if not counts.comments.all %}style="display: none;"{% endif %}>
+	<header><h1>Comments</h1></header>
+	<article style="display: none">
+		<ul class="source-list">
+			<li>
+				<h3 class="title" class="is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'all'}) }}">
+					<span class="list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</span>
+					All Comments
+				</h3>
+				<ul class="sub-group" style="display: block">
+					<li {% if not counts.comments.articles  %}style="display: none;"{% endif %}>
+						<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'articles'}) }}">
+							<span class="list-counter" id="publish_articles_comments_count">{{ counts.comments.articles|default(0) }}</span>
+							Article Comments
+						</span>
+					</li>
+					<li {% if not counts.comments.news %}style="display: none;"{% endif %}>
+						<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'news'}) }}">
+							<span class="list-counter" id="publish_news_comments_count">{{ counts.comments.news|default(0) }}</span>
+							News Comments
+						</span>
+					</li>
+					<li {% if not counts.comments.downloads %}style="display: none;"{% endif %}>
+						<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'downloads'}) }}">
+							<span class="list-counter" id="publish_downloads_comments_count">{{ counts.comments.downloads|default(0) }}</span>
+							Download Comments
+						</span>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</article>
+</section>
+
 <section class="group-section" id="publish_section_glossary">
 	<header><h1>{{ phrase('agent.publish.glossary') }}</h1></header>
 	<article style="display: none">

@@ -530,6 +530,10 @@ class KbController extends AbstractController
 		$comment['status'] = 'visible';
 		$comment['date_created']  = new \DateTime();
 
+		if ($this->person->hasPerm('agent_publish.validate')) {
+			$comment->is_reviewed = true;
+		}
+
 		$this->em->persist($comment);
 		$this->em->flush();
 

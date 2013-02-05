@@ -1,0 +1,36 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script>
+pageMeta.url_fragment = '{{ url_fragment('agent_publish_listcomments') }}';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishListComments';
+pageMeta.viewType = '{{ type }}';
+</script>
+{{ agentui.scroll_containers('', '') }}
+
+	{% include 'AgentBundle:Publish:list-comments-massactions-bar.html.twig' %}
+
+	{% if comments|length %}
+		<section class="comments-list list-listing">
+			{% include 'AgentBundle:Publish:list-comments-page.html.twig' %}
+		</section>
+	{% endif %}
+
+	{% if not comments|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.general.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
+	<footer class="results-nav">
+		<div class="pagecontrols results-nav">
+			<div class="cursor">
+				Page {{ pageinfo.cursor }} of {{ pageinfo.last }}
+			</div>
+			{% if pageinfo.last > 1 %}
+				<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
+					<li class="prev" data-route="{{ path('agent_publish_listcomments', {type: type, page: pageinfo.prev}) }}"></li>
+					<li class="next" data-route="{{ path('agent_publish_listcomments', {type: type, page: pageinfo.next}) }}"></li>
+				</ul>
+			{% endif %}
+		</div>
+	</footer>
+{{ agentui.scroll_containers_end() }}

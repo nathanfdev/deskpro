@@ -37,6 +37,35 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 	},
 
+	modCommentCount: function(type, op, num) {
+		if (!this.commentCountEls) {
+			this.commentCountEls = {
+				'all':       $('#publish_all_comments_count'),
+				'articles':  $('#publish_articles_comments_count'),
+				'news':      $('#publish_news_comments_count'),
+				'downloads': $('#publish_downloads_comments_count')
+			};
+		}
+
+		var el = this.commentCountEls[type];
+		DeskPRO_Window.util.modCountEl(el, op, num);
+		DeskPRO_Window.util.modCountEl(this.commentCountEls.all, op, num);
+
+		var elNum = parseInt(el.text());
+		if (elNum != 0) {
+			el.closest('li').show();
+		} else {
+			el.closest('li').hide();
+		}
+
+		var allNum = parseInt(this.commentCountEls.all.text());
+		if (allNum) {
+			$('#publish_section_comments').show();
+		} else {
+			$('#publish_section_comments').hide();
+		}
+	},
+
 	reloadIfStale: function() {
 		var now = new Date();
 		if (!this.lastLoad || (now.getTime() - this.lastLoad.getTime() > 120000)) {

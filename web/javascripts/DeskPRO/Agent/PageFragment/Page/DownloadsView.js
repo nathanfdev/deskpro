@@ -413,6 +413,10 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				this.newCommentWrapper.before(el);
 
 				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
+
+				if (DeskPRO_Window.sections.publish_section) {
+					DeskPRO_Window.sections.publish_section.modCommentCount('downloads', '+');
+				}
 			}
 		});
 	},

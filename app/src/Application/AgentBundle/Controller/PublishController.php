@@ -100,6 +100,8 @@ class PublishController extends AbstractController
 
 		$usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
 
+		$counts['comments']  = $this->publish_helper->getCommentsCountInfo();
+
 		$data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
 			'usergroups'            => $usergroups,
 			'counts'                => $counts,
@@ -334,6 +336,56 @@ class PublishController extends AbstractController
 	}
 
 	############################################################################
+	# list comments
+	############################################################################
+
+	public function listCommentsAction($type)
+	{
+		if ($type !== 'all') {
+			try {
+				$type_info = $this->publish_helper->getCommentTypeInfo($type);
+			} catch (\Exception $e) {
+				throw $this->createNotFoundException();
+			}
+
+			$this->publish_helper->setEnabledTypes(array($type));
+		}
+
+		$per_page = 25;
+
+		$curpage = $this->in->getUint('page');
+		if (!$curpage) $curpage = 1;
+
+		$limit = array(
+			'max' => $per_page,
+			'offset' => ($curpage - 1) * $per_page
+		);
+
+		$pageinfo = null;
+		$total = null;
+		if (!$this->request->isPartialRequest()) {
+			$counts = $this->publish_helper->getCommentsCountInfo();
+			$total = $counts[$type];
+
+			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+		}
+
+		$comments = $this->publish_helper->getComments($limit);
+
+		$tpl = 'AgentBundle:Publish:list-comments.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AgentBundle:Publish:list-comments-page.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'type'     => $type,
+			'comments' => $comments,
+			'total'    => $total,
+			'pageinfo' => $pageinfo
+		));
+	}
+
+	############################################################################
 	# content validating
 	############################################################################
 
@@ -533,7 +585,7 @@ class PublishController extends AbstractController
 					$r->status = 'approve';
 				} else {
 					if ($reason) {
-						$this_reason .= $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
+						$this_reason = $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
 						$agent_chat->sendAgentMessage($this_reason, array($r->person['id']));
 					}
 					$r->status_code = 'hidden.draft';

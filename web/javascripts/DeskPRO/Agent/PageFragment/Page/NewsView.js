@@ -341,8 +341,11 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				var el = $(html);
 				this.newCommentWrapper.before(el);
 
-				// Inc note count
 				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
+
+				if (DeskPRO_Window.sections.publish_section) {
+					DeskPRO_Window.sections.publish_section.modCommentCount('news', '+');
+				}
 			}
 		});
 	},

@@ -182,6 +182,10 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 			},
 			success: function(data) {
 				commentEl.remove();
+
+				if (DeskPRO_Window.sections.publish_section) {
+					DeskPRO_Window.sections.publish_section.modCommentCount(commentEl.data('content-type'), '-');
+				}
 			}
 		});
 	},

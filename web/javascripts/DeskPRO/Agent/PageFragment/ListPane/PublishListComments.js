@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initPage: function(el) {
@@ -46,9 +46,12 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 						btn.show();
 					},
 					success: function() {
-						self.selectionBar.checkNone();
-						self.updateCount('sub', lines.length);
-						$(lines).fadeOut();
+						// Reload self
+						DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/publish/comments/list/' + self.meta.viewType)
+
+						if (DeskPRO_Window.sections.publish_section) {
+							DeskPRO_Window.sections.publish_section.reload();
+						}
 					}
 				});
 			}

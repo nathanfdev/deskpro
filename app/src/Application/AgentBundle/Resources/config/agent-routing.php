@@ -1930,6 +1930,13 @@ $collection->add('agent_publish_validatingcontent_next', new Route(
 	array('fragment_name' => 'pending', 'fragment_type' => 'list')
 ));
 
+$collection->add('agent_publish_listcomments', new Route(
+	'/publish/comments/list/{type}',
+	array('_controller' => 'AgentBundle:Publish:listComments'),
+	array(),
+	array('fragment_type' => 'list', 'fragment_name' => 'list_comments')
+));
+
 $collection->add('agent_publish_validatingcomments', new Route(
 	'/publish/comments/validating',
 	array('_controller' => 'AgentBundle:Publish:listValidatingComments'),

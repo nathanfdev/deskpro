@@ -250,12 +250,7 @@ class AgentHelper implements PersonContextInterface
 			);
 		}
 
-		$types = array(
-			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
-			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
-			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
-			'feedback'     => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:FeedbackComment',      'id_field' => 'feedback_id'),
-		);
+		$types = $this->getCommentTypeInfo();
 
 		#------------------------------
 		# Fetch from each comment table with a union
@@ -320,12 +315,9 @@ class AgentHelper implements PersonContextInterface
 
 	public function getValidatingCommentsCount()
 	{
-		$types = array(
-			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
-			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
-			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
-			'feedback'     => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:FeedbackComment',      'id_field' => 'feedback_id'),
-		);
+		$sql_parts = array();
+
+		$types = $this->getCommentTypeInfo();
 
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
@@ -344,7 +336,139 @@ class AgentHelper implements PersonContextInterface
 		return array_sum($results);
 	}
 
+	############################################################################
+	# All Comments
+	############################################################################
 
+	public function getComments($limit, $order_dir = 'DESC')
+	{
+		$sql_parts = array();
+
+		if (!is_array($limit)) {
+			$limit = array(
+				'max' => $limit,
+				'offset' => 0
+			);
+		}
+
+		$types = $this->getCommentTypeInfo();
+
+		#------------------------------
+		# Fetch from each comment table with a union
+		#------------------------------
+
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
+			$sql_parts[] = "(
+				SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
+				FROM {$t_info['table']}
+				WHERE status != 'deleted'
+			)";
+		}
+
+		$sql = implode(' UNION ', $sql_parts);
+		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+
+		$db = App::getDb();
+		$results = $db->fetchAll($sql);
+
+		if (!$results) return array();
+
+		#------------------------------
+		# Fetch each comment in the result
+		#------------------------------
+
+		$result_ids_typed = array();
+
+		foreach ($results as $r) {
+			if (!isset($result_ids_typed[$r['content_type']])) {
+				$result_ids_typed[$r['content_type']] = array();
+			}
+
+			$result_ids_typed[$r['content_type']][] = $r['comment_id'];
+		}
+
+		$results_typed = array();
+
+		foreach ($result_ids_typed as $t => $ids) {
+			$t_info = $types[$t];
+			$results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
+		}
+
+		#------------------------------
+		# Put back into original sort order
+		# as a combined array
+		#------------------------------
+
+		$results_ordered = array();
+
+		foreach ($results as $r) {
+			if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
+				$results_ordered[] = array(
+					'info' => $r,
+					'obj'  => $results_typed[$r['content_type']][$r['comment_id']]
+				);
+			}
+		}
+
+		return $results_ordered;
+	}
+
+	public function getCommentsCountInfo()
+	{
+		$sql_parts = array();
+
+		$types = $this->getCommentTypeInfo();
+
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
+			$sql_parts[] = "(
+				SELECT COUNT(*)
+				FROM {$t_info['table']}
+				WHERE status != 'deleted'
+			) AS `$t`";
+		}
+
+		$sql =  "SELECT " . implode(', ', $sql_parts);
+
+		$db = App::getDb();
+		$results = $db->fetchAssoc($sql);
+
+		$count_all = array_sum($results);
+
+		$counts = $results;
+		$counts['all'] = $count_all;
+
+		return $counts;
+	}
+
+	public function getCommentTypeInfo($for_type = null, $prop = null)
+	{
+		static $types = array(
+			'articles'     => array('content_type' => 'articles',     'table' => 'article_comments',        'entity' => 'DeskPRO:ArticleComment',       'id_field' => 'article_id'),
+			'downloads'    => array('content_type' => 'downloads',    'table' => 'download_comments',       'entity' => 'DeskPRO:DownloadComment',      'id_field' => 'download_id'),
+			'news'         => array('content_type' => 'news',         'table' => 'news_comments',           'entity' => 'DeskPRO:NewsComment',          'id_field' => 'news_id'),
+			'feedback'     => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:FeedbackComment',      'id_field' => 'feedback_id'),
+		);
+
+		if ($for_type !== null) {
+			if (!isset($types[$for_type])) {
+				throw new \InvalidArgumentException("$for_type is an invalid comment type");
+			}
+
+			if ($prop !== null) {
+				if (!isset($types[$for_type][$prop])) {
+					throw new \InvalidArgumentException("$for_type.$prop is an invalid comment type property");
+				}
+
+				return $types[$for_type][$prop];
+			}
+
+			return $types[$for_type];
+		}
+
+		return $types;
+	}
 
 	############################################################################
 	# Drafts
