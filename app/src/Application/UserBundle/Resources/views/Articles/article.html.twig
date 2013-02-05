@@ -70,11 +70,13 @@
 
 		{% if app.user.hasPerm('articles.rate') %}
 			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': article} %}
+			{# VIEW_COUNTER
 			{% if article.view_count %}
 				<div class="dp-view-wrap">
 					{{ phrase('user.knowledgebase.article-viewed', {count: article.view_count}) }}
 				</div>
 			{% endif %}
+			#}
 		{% endif %}
 
 		{% if app.getSetting('core.show_share_widget') %}

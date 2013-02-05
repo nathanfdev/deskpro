@@ -59,10 +59,12 @@
 									<span class="prop-val">{{ article.date_created|date('day')}}</span>
 								</li>
 							{% elseif field == 'view_count' %}
+								{# VIEW_COUNTER
 								<li>
 									<span class="prop-title">{{ phrase('agent.general.num_views') }}</span>
 									<span class="prop-val">{{ article.view_count|default(0) }}</span>
 								</li>
+								#}
 							{% endif %}
 						{% endfor %}
 					</ul>

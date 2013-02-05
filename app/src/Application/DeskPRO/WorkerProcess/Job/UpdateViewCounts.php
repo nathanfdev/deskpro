@@ -50,6 +50,8 @@ class UpdateViewCounts extends AbstractJob
 
 	public function run()
 	{
+		// VIEW_COUNTER
+		return;
 		$time = time();
 		$last_time = App::getSetting('core.last_viewcount_update');
 		if (!$last_time) {

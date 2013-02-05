@@ -4,7 +4,7 @@
 		<select name="order_by" class="sel-order-by">
 			<option class="date" value="article.date_created:desc">{{ phrase('agent.general.date_created_newestoldest') }}</option>
 			<option value="article.date_created:asc">{{ phrase('agent.general.date_created_oldestnewest') }}</option>
-			<option class="views" value="article.view_count:desc">{{ phrase('agent.publish.view_count_highest_lowest') }}</option>
+			{# VIEW_COUNTER <option class="views" value="article.view_count:desc">{{ phrase('agent.publish.view_count_highest_lowest') }}</option> #}
 			<option value="article.view_count:asc">{{ phrase('agent.publish.view_count_lowest_highest') }}</option>
 		</select>
 	</div>
@@ -13,5 +13,5 @@
 	<li data-field="author"><label><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.author') }}</label></li>
 	<li data-field="category"><label><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.categories') }}</label></li>
 	<li data-field="date_created"><label><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.date_created') }}</label></li>
-	<li data-field="view_count"><label><input type="checkbox" name="view_count" {% if 'view_count' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.num_views') }}</label></li>
+	{# VIEW_COUNTER <li data-field="view_count"><label><input type="checkbox" name="view_count" {% if 'view_count' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.num_views') }}</label></li> #}
 {% endblock %}

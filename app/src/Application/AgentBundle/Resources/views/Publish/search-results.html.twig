@@ -52,10 +52,12 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishSearch';
 							<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
 							<span class="prop-val">{{ article.date_created|date('day')}}</span>
 						</li>
+						{# VIEW_COUNTER
 						<li>
 							<span class="prop-title">{{ phrase('agent.general.num_views') }}</span>
 							<span class="prop-val">{{ article.view_count|default(0) }}</span>
 						</li>
+						#}
 					</ul>
 					<br class="clear" />
 				</div>
