@@ -1389,6 +1389,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$message = null;
 		}
 
+		App::getOrm()->flush();
 		App::getOrm()->commit();
 
 		// Add agent reply if there was one
@@ -1405,6 +1406,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$agent_message->email_reader = $this->reader;
 			$agent_message->person = $agent;
 			$agent_message['message'] = $agent_reply;
+			$ticket->addMessage($agent_message);
 
 			if ($this->processBlobs()) {
 				$this->logMessage('[TicketGatewayProcessor] Adding attachments to agent message');
@@ -1419,7 +1421,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 
 			$ticket->setStatus('awaiting_user');
-			$ticket->addMessage($agent_message);
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush($ticket);
