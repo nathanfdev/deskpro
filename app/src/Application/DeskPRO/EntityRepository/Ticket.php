@@ -299,6 +299,69 @@ class Ticket extends AbstractEntityRepository
 
 
 	/**
+	 * Returns array of:
+	 * - person: Number of their tickets
+	 * - org: Number of their org tickets, if they area a manger
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param null $status
+	 * @return array
+	 */
+	public function getCountInfoForPerson(Entity\Person $person, $status = null)
+	{
+		if ($status) {
+			$status = (array)$status;
+			foreach ($status as &$s) {
+				$s = "'$s'";
+			}
+			$status = implode(',', $status);
+		}
+
+		$counts = array(
+			'person' => 0,
+			'org'    => 0,
+		);
+
+		if ($person->is_agent) {
+			$count = App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets
+				WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+			", array($person->id));
+		} else {
+			if ($person->organization && $person->organization_manager) {
+				$count = App::getDb()->fetchColumn("
+					SELECT COUNT(DISTINCT tickets.id)
+					FROM tickets
+					LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+					WHERE (tickets.person_id = ? OR (tickets_participants.person_id = ? AND tickets.organization_id != ?)) " . ($status ? " AND tickets.status IN ($status) " : '') . "
+				", array($person->id, $person->id, $person->getOrganizationId()));
+			} else {
+				$count = App::getDb()->fetchColumn("
+					SELECT COUNT(DISTINCT tickets.id)
+					FROM tickets
+					LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+					WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
+				", array($person->id, $person->id));
+			}
+		}
+
+		$counts['person'] = $count;
+
+		if ($person->organization && $person->organization_manager) {
+			$counts['org'] = App::getDb()->fetchColumn("
+				SELECT COUNT(DISTINCT tickets.id)
+				FROM tickets
+				LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+				WHERE tickets.organization_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+			", array($person->getOrganizationId()));
+		}
+
+		return $counts;
+	}
+
+
+	/**
 	 * Get all tickets that belong ot an org
 	 *
 	 * @return array

@@ -102,14 +102,27 @@ class TicketsController extends AbstractController
 				ORDER BY $sort_dql
 			")->execute(array('person' => $this->person));
 		} else {
-			$tickets = $this->em->createQuery("
-				SELECT ticket
-				FROM DeskPRO:Ticket ticket
-				LEFT JOIN ticket.participants part
-				$dql_join
-				WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
-				ORDER BY $sort_dql
-			")->execute(array('person' => $this->person));
+			if ($this->person->organization && $this->person->organization_manager) {
+				// Managers can always see their org tickets, so dont show them
+				// tickets if they are of their own org because those will be on the org page
+				$tickets = $this->em->createQuery("
+					SELECT ticket
+					FROM DeskPRO:Ticket ticket
+					LEFT JOIN ticket.participants part
+					$dql_join
+					WHERE (ticket.person = :person OR (part.person = :person AND ticket.organization != :org)) AND ticket.status != 'hidden'
+					ORDER BY $sort_dql
+				")->execute(array('person' => $this->person, 'org' => $this->person->organization));
+			} else {
+				$tickets = $this->em->createQuery("
+					SELECT ticket
+					FROM DeskPRO:Ticket ticket
+					LEFT JOIN ticket.participants part
+					$dql_join
+					WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
+					ORDER BY $sort_dql
+				")->execute(array('person' => $this->person));
+			}
 		}
 
 		$active_tickets   = array();
