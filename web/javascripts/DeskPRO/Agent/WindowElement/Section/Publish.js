@@ -8,6 +8,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		this.expanded_ids = [];
 		this.expanded_cats = [];
 		this.buttonEl = $('#publish_section');
+		this.lastLoad = null;
 
 		this.urlFragmentName = 'publish';
 
@@ -16,8 +17,16 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		DeskPRO_Window.getSectionData('publish_section', this._initSection.bind(this));
 
 		window.setInterval(function() {
+			self.reloadIfStale();
+		}, 420000); // update every 7 mins auto-reload
+
+		this.addEvent('show', function() {
+			self.reloadIfStale();
+		});
+
+		this.buttonEl.on('dblclick', function() {
 			self.reload();
-		}, 420000); // update every 7 mins
+		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.content_deleted.*', function() {
 			self.reload();
@@ -28,7 +37,18 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 	},
 
+	reloadIfStale: function() {
+		var now = new Date();
+		if (!this.lastLoad || (now.getTime() - this.lastLoad.getTime() > 120000)) {
+			this.reload();
+			return true;
+		}
+
+		return false;
+	},
+
 	reload: function() {
+		this.lastLoad = new Date();
 		var expanded_ids = [], expanded_cats = [];
 
 		if (this.contentEl && this.contentEl.length) {
