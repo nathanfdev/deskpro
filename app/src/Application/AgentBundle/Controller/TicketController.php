@@ -1767,11 +1767,7 @@ class TicketController extends AbstractController
 
 			// Validate based on department...
 			$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
-			$newticket->department_id = $ticket->department_id;
-			$newticket->category_id   = $ticket->category_id;
-			$newticket->product_id    = $ticket->product_id;
-			$newticket->priority_id   = $ticket->priority_id;
-			$newticket->ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'raw');
+			$newticket->setValuesFromTicket($ticket);
 
 			$validator = new NewTicketValidator();
 			$ticket_display = new TicketPageZoneCollection('create');
