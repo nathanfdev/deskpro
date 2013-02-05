@@ -129,7 +129,7 @@ class TicketFieldAction extends AbstractAction
 
 		$value = isset($value['custom_fields']['field_' . $this->field_def->getId()]) ? $value['custom_fields']['field_' . $this->field_def->getId()] : '';
 		if ($this->field_def->getTypeName() == 'choice') {
-			$value_ids = (array)$this->set_value;
+			$value_ids = (array)$value;
 			$value = array();
 			$titles = $this->field_def->getAllChildTitles();
 			foreach ($value_ids as $id) {

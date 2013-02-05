@@ -64,6 +64,13 @@ class PeopleFieldAction extends AbstractAction
 		$this->field_manager = $field_manager;
 		$this->field_def     = $field_def;
 		$this->set_value     = $set_value;
+
+		// Backwards compat:
+		// Old versions set array directly while newer versions have standard
+		// custom_fields array holder
+		if (!isset($this->set_value['custom_fields'])) {
+			$this->set_value = array('custom_fields' => $this->set_value);
+		}
 	}
 
 
@@ -93,7 +100,7 @@ class PeopleFieldAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$person = $ticket->getPerson();
-		$this->field_manager->saveFormToObject($this->set_value, $person);
+		$this->field_manager->saveFormToObject($this->set_value['custom_fields'], $person);
 	}
 
 
@@ -129,7 +136,7 @@ class PeopleFieldAction extends AbstractAction
 
 		$value = isset($value['custom_fields']['field_' . $this->field_def->getId()]) ? $value['custom_fields']['field_' . $this->field_def->getId()] : '';
 		if ($this->field_def->getTypeName() == 'choice') {
-			$value_ids = (array)$this->set_value;
+			$value_ids = (array)$value;
 			$value = array();
 			$titles = $this->field_def->getAllChildTitles();
 			foreach ($value_ids as $id) {
