@@ -52,7 +52,11 @@ class NewCommentNotification extends AbstractAgentNotification
 
 	public function shouldSendBrowserNotification(Person $person)
 	{
-		if ($this->comment->status == 'user_validating' && $person->getPref('agent_notif.new_comment_validate.alert')) {
+		if ($this->comment->status == 'user_validating') {
+			return false;
+		}
+
+		if ($this->comment->status == 'validating' && $person->getPref('agent_notif.new_comment_validate.alert')) {
 			return true;
 		} elseif ($this->comment->status != 'hidden' && $person->getPref('agent_notif.new_comment_validate.alert')) {
 			return true;
@@ -63,7 +67,11 @@ class NewCommentNotification extends AbstractAgentNotification
 
 	public function shouldSendEmailNotification(Person $person)
 	{
-		if ($this->comment->status == 'user_validating' && $person->getPref('agent_notif.new_comment.alert')) {
+		if ($this->comment->status == 'user_validating') {
+			return false;
+		}
+
+		if ($this->comment->status == 'validating' && $person->getPref('agent_notif.new_comment.alert')) {
 			return true;
 		} elseif ($this->comment->status != 'hidden' && $person->getPref('agent_notif.new_comment.alert')) {
 			return true;
