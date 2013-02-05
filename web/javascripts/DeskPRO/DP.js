@@ -209,10 +209,13 @@ var DP = {
 					$(this).text($(this).data('full-title'));
 				});
 
+				options.formatSelection = function(data) {
+					return $('<span/>').text(data.text);
+				}
 				options.formatResult = function(result) {
 					var opt = el.find('option[value="' + result.id + '"]');
 					if (!opt || !opt[0]) {
-						return result.text || '';
+						return $('<span/>').text(result.text || '');
 					}
 					var name = opt.data('single-title') || result.text;
 					name = $('<span/>').text(name);
