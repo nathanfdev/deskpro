@@ -794,7 +794,7 @@ class TemplatesController extends AbstractController
 					'DeskPRO:emails_agent:new-ticket.html.twig',
 					'DeskPRO:emails_agent:ticket-update.html.twig',
 					'DeskPRO:emails_agent:new-reply-user.html.twig',
-					'DeskPRO:emails_agent:new-agent-user.html.twig',
+					'DeskPRO:emails_agent:new-reply-agent.html.twig',
 					'DeskPRO:emails_agent:new-agent-chat-message.html.twig',
 					'DeskPRO:emails_agent:new-comment.html.twig',
 					'DeskPRO:emails_agent:new-feedback.html.twig',
