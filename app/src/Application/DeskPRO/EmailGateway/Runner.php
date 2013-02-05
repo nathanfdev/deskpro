@@ -204,7 +204,9 @@ class Runner
 			$source['source_info'] = $errinfo;
 
 			$this->_updateSource($source);
-			$this->log_messages->clear();
+			if ($this->log_messages) {
+				$this->log_messages->clear();
+			}
 			$source->clearRawSource();
 			App::getOrm()->detach($source);
 			$source = null;
@@ -317,7 +319,9 @@ class Runner
 		}
 
 		$this->_updateSource($source);
-		$this->log_messages->clear();
+		if ($this->log_messages) {
+			$this->log_messages->clear();
+		}
 		$source->clearRawSource();
 
 		$created_obj = null;
