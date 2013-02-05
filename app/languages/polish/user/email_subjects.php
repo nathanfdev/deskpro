@@ -15,5 +15,6 @@
 	'user.email_subjects.re'                                               => 'ODP: {{subject}}',
 	'user.email_subjects.ticket-rate'                                      => 'Oceń naszą pomoc, dotyczącą petycji "{{subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Nowa osoba została dodana do Twojej petycji',
+	'user.email_subjects.tickets_re'                                       => 'Odp: {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'Potwierdź swój adres email',
 );
