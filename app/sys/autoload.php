@@ -41,6 +41,7 @@ $loader->registerPrefixes(array(
 ));
 
 $loader->registerClassNames(array(
+	'Akismet'                         => DP_ROOT.'/vendor/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
 	'Browser'                         => DP_ROOT.'/vendor/Browser/Browser.php',
 	'CssMin'                          => DP_ROOT.'/vendor/cssmin/cssmin.php',
 	'LightOpenID'                     => DP_ROOT.'/vendor/lightopenid/openid.php',
