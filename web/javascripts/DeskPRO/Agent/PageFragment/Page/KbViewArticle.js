@@ -261,43 +261,37 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	_initMenus: function() {
 		var self = this;
 
-		var trigger = $('.the-status:first', this.wrapper);
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: trigger,
-			menuElement: $('.status-menu:first', this.wrapper),
-			onItemClicked: function(info) {
-				var status = $(info.itemEl).data('option-value');
-				var statusName = $(info.itemEl).text().trim();
+		var statusSel = this.getEl('status');
+		DP.select(statusSel);
 
-				trigger.attr('title', status);
-				$('span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_')).text(statusName);
+		statusSel.on('change', function() {
+			DeskPRO_Window.sections.publish_section.reload();
+			var status = $(this).val();
 
-				self.getEl('auto_unpub').hide();
-				self.getEl('auto_pub').hide();
+			self.getEl('auto_unpub').hide();
+			self.getEl('auto_pub').hide();
 
-				if (status == 'published') {
-					self.getEl('auto_unpub').show();
-				} else if (status == 'hidden.unpublished') {
-					self.getEl('auto_pub').show();
-				}
-
-				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
-					type: 'POST',
-					data: {action: 'status', status: status},
-					context: self,
-					dataType: 'json',
-					success: function() {
-						DeskPRO_Window.sections.publish_section.reload();
-					}
-				});
+			if (status == 'published') {
+				self.getEl('auto_unpub').show();
+			} else if (status == 'hidden.unpublished') {
+				self.getEl('auto_pub').show();
 			}
+
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+				type: 'POST',
+				data: {action: 'status', status: status},
+				context: self,
+				dataType: 'json',
+				success: function() {
+					DeskPRO_Window.sections.publish_section.reload();
+				}
+			});
+
 		});
-		this.ownObject(this.statusMenu);
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
-			statusMenu: this.statusMenu
+			ajaxSaveUrl: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save'
 		});
 		this.ownObject(this.deleteHelper);
 

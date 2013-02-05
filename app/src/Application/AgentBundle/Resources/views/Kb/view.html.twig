@@ -37,39 +37,27 @@ pageMeta.baseId = '{{ baseId }}';
 
 <header class="page-header">
 	<h4 class="id-number">#{{ article.id }}</h4>
+	<div style="float:left; padding-left: 8px;">
+		<select id="{{ baseId }}_status">
+			<option {% if article.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
+			<option {% if article.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
+			<option {% if article.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
+			{% if article.person.id == app.user.id %}
+				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
+			{% endif %}
+		</select>
+	</div>
 	<h1>
 		<span id="{{baseId}}_showname">{{ article.title }}</span>
 		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ article.title }}" /></span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>
-	<div class="labels-line">
-		<input
-			type="hidden"
-			id="{{baseId}}_labels_input"
-			class="dpe_select dpe_select_noborder"
-			data-select-width="auto"
-			data-placeholder="Add a label"
-			value="{% for label in article.labels %}{{ label.label }},{% endfor %}"
-		/>
-	</div>
 	<br class="clear" />
-	<div class="meta-line flat">
-		<div class="status the-status article-status"><span>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</span></div>
-	</div>
-	<br class="clear" />
-</header>
-
-<div class="profile-box-container-outer">
-<div class="profile-box-container">
-	<header>
-		<h4>{{ phrase('agent.general.properties') }}</h4>
-	</header>
-	<section class="description-area">
-		<dl class="info-list">
-			<dt class="">{{ phrase('agent.general.categories') }}</dt>
-			<dd>
-				<ul id="{{baseId}}_categories" class="add-remove-list with-select2">
+	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 2px;">
+		<tr>
+			<td width="100%" valign="middle" style="vertical-align: middle;">
+				<ul id="{{baseId}}_categories" class="add-remove-list flat with-select2">
 					{% for cat in article.categories %}
 						<li>
 							<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
@@ -103,159 +91,21 @@ pageMeta.baseId = '{{ baseId }}';
 						</script>
 					</li>
 				</ul>
-			</dd>
-
-			{% if app.getSetting('core.use_product') %}
-				<dt class="">{{ phrase('agent.general.products') }}</dt>
-				<dd>
-					<ul id="{{baseId}}_products" class="add-remove-list with-select2">
-						{% for prod in article.products %}
-							<li>
-								<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
-								{% include 'AgentBundle:Common:select-standard.html.twig' with {
-									'name': 'product_ids[]',
-									'add_classname': 'product_id',
-									'add_attr': '',
-									'with_blank': 0,
-									'blank_title': '',
-									'categories': article_products,
-									'selected': prod.id
-								} %}
-							</li>
-						{% endfor %}
-						<li class="add noedit-hide" id="{{baseId}}_addprod_li">
-							<span class="add" id="{{baseId}}_addprod_trigger"></span>
-							{{ phrase('agent.general.add_product') }}
-							<script type="text/x-deskpro-plain" id="{{baseId}}_addprod_select_tpl">
-								<li>
-									<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
-									{% include 'AgentBundle:Common:select-standard.html.twig' with {
-										'name': 'product_ids[]',
-										'add_classname': 'product_id',
-										'add_attr': '',
-										'with_blank': 0,
-										'blank_title': '',
-										'categories': article_products,
-										'selected': 0
-									} %}
-								</li>
-							</script>
-						</li>
-					</ul>
-				</dd>
-			{% endif %}
-
-			{# VIEW_COUNTER
-			<dt>Views</dt>
-			<dd>
-                {{ article.view_count }}
-			</dd>
-			#}
-
-			<dt>{{ phrase('agent.general.rating') }}</dt>
-			<dd>
-                {% set phrase_part %}
-                <span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count':article.num_ratings}) }}</span>
-                {% endset %}
-                {{ phrase('agent.general.percent_helpful_subphrase', {'percent':article.rating_percent,'subphrase':phrase_part}, true) }}<br />
-				<small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
-			</dd>
-
-			{% if article.date_created == article.date_published %}
-				<dt>{{ phrase('agent.general.created_and_published') }}:</dt>
-				<dd>
-                    {% set phrase_part1 %}
-                        <time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
-                    {% endset %}
-                    {% set phrase_part2 %}
-                        <time>{{article.date_created|date('fulltime')}}</time>
-                    {% endset %}
-                    {{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
-				</dd>
-			{% else %}
-				<dt>{{ phrase('agent.general.date_created') }}:</dt>
-				<dd>
-                    {% set phrase_part1 %}
-                    <time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
-                    {% endset %}
-                    {% set phrase_part2 %}
-                    <time>{{article.date_created|date('fulltime')}}</time>
-                    {% endset %}
-                    {{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
-				</dd>
-
-				{# Makes sure its not a future date, which means auto-publish sometime in the future #}
-				{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
-					<dt>{{ phrase('agent.general.date_published') }}:</dt>
-					<dd>
-                        {% set phrase_part1 %}
-                        <time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
-                        {% endset %}
-                        {% set phrase_part2 %}
-                        <time>{{article.date_created|date('fulltime')}}</time>
-                        {% endset %}
-                        {{ phrase('agent.publish.event_time_ago_at_when', {'ago':phrase_part1,'date':phrase_part2}, true) }}
-					</dd>
-				{% endif %}
-			{% endif %}
-
-			<dd id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
-				<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
-					Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
-					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
-						{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
-					<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-					(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
-				</span>
-				<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
-					{{ phrase('agent.publish.set_auto_unpublish_date') }}
-				</span>
-				<br />
-
-				<ul class="end-action-menu" style="display: none">
-					<li data-action="unpublish">{{ phrase('agent.general.unpublish') }}</li>
-					<li data-action="archive">{{ phrase('agent.general.archive') }}</li>
-				</ul>
-			</dd>
-
-			<dd id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
-				<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
-					Automatically publish
-					on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
-						{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
-					<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-					(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
-				</span>
-				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
-					{{ phrase('agent.publish.set_auto_publish_date') }}
-				</span>
-			</dd>
-		</dl>
-
-		{% if custom_fields|length %}
-			<dl class="info-list" id="{{baseId}}_custom_fields_rendered">
-				{% include 'AgentBundle:Kb:view-customfields-rendered-rows.html.twig' %}
-			</dl>
-			<dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
-				{% include 'AgentBundle:Kb:view-customfields-edit-rows.html.twig' %}
-			</dl>
-		{% endif %}
-
-		<div class="controls" id="{{baseId}}_action_buttons">
-			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button>
-			</div>
-			<div class="showing-rendered-fields">
-				{% if custom_fields|length %}<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>{% endif %}
-				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.ucfirst_delete') }}</button>
-				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
-				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
-                <a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}"><button class="clean-white">{{ phrase('agent.general.download_pdf') }}</button></a>
-			</div>
-		</div>
-	</section>
-</div>
-</div>
+			</td>
+		</tr>
+	</table>
+	<div class="labels-line">
+		<input
+			type="hidden"
+			id="{{baseId}}_labels_input"
+			class="dpe_select dpe_select_noborder"
+			data-select-width="auto"
+			data-placeholder="Add a label"
+			value="{% for label in article.labels %}{{ label.label }},{% endfor %}"
+		/>
+	</div>
+	<br class="clear" />
+</header>
 
 <div class="profile-box-container reply-box-wrap">
 	<header>
@@ -266,6 +116,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<ul>
 				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.general.article') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .kb-props"><span>Properties</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{article.revisions|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
@@ -291,6 +142,153 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			{# /Tab: Content #}
+
+			{# Tab: Properties #}
+			<div class="deskpro-tab-item kb-props" style="display: none;">
+				<section class="description-area">
+					<dl class="info-list">
+						{% if app.getSetting('core.use_product') %}
+							<dt class="">{{ phrase('agent.general.products') }}</dt>
+							<dd>
+								<ul id="{{baseId}}_products" class="add-remove-list with-select2">
+									{% for prod in article.products %}
+										<li>
+											<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
+											{% include 'AgentBundle:Common:select-standard.html.twig' with {
+												'name': 'product_ids[]',
+												'add_classname': 'product_id',
+												'add_attr': '',
+												'with_blank': 0,
+												'blank_title': '',
+												'categories': article_products,
+												'selected': prod.id
+											} %}
+										</li>
+									{% endfor %}
+									<li class="add noedit-hide" id="{{baseId}}_addprod_li">
+										<span class="add" id="{{baseId}}_addprod_trigger"></span>
+										{{ phrase('agent.general.add_product') }}
+										<script type="text/x-deskpro-plain" id="{{baseId}}_addprod_select_tpl">
+											<li>
+												<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
+												{% include 'AgentBundle:Common:select-standard.html.twig' with {
+													'name': 'product_ids[]',
+													'add_classname': 'product_id',
+													'add_attr': '',
+													'with_blank': 0,
+													'blank_title': '',
+													'categories': article_products,
+													'selected': 0
+												} %}
+											</li>
+										</script>
+									</li>
+								</ul>
+							</dd>
+						{% endif %}
+
+						{# VIEW_COUNTER
+						<dt>Views</dt>
+						<dd>
+							{{ article.view_count }}
+						</dd>
+						#}
+
+						<dt>{{ phrase('agent.general.rating') }}</dt>
+						<dd>
+							{% set phrase_part %}
+							<span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count':article.num_ratings}) }}</span>
+							{% endset %}
+							{{ phrase('agent.general.percent_helpful_subphrase', {'percent':article.rating_percent,'subphrase':phrase_part}, true) }}<br />
+							<small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
+						</dd>
+
+						{% if article.date_created == article.date_published %}
+							<dt>{{ phrase('agent.general.created_and_published') }}:</dt>
+							<dd>
+								{% set phrase_part1 %}
+									<time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
+								{% endset %}
+								{% set phrase_part2 %}
+									<time>{{article.date_created|date('fulltime')}}</time>
+								{% endset %}
+								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
+							</dd>
+						{% else %}
+							<dt>{{ phrase('agent.general.date_created') }}:</dt>
+							<dd>
+								{% set phrase_part1 %}
+								<time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
+								{% endset %}
+								{% set phrase_part2 %}
+								<time>{{article.date_created|date('fulltime')}}</time>
+								{% endset %}
+								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
+							</dd>
+
+							{# Makes sure its not a future date, which means auto-publish sometime in the future #}
+							{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
+								<dt>{{ phrase('agent.general.date_published') }}:</dt>
+								<dd>
+									{% set phrase_part1 %}
+									<time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
+									{% endset %}
+									{% set phrase_part2 %}
+									<time>{{article.date_created|date('fulltime')}}</time>
+									{% endset %}
+									{{ phrase('agent.publish.event_time_ago_at_when', {'ago':phrase_part1,'date':phrase_part2}, true) }}
+								</dd>
+							{% endif %}
+						{% endif %}
+
+						<dd id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
+							<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
+								Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
+								on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
+									{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+								<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+								(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
+							</span>
+							<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
+								{{ phrase('agent.publish.set_auto_unpublish_date') }}
+							</span>
+							<br />
+
+							<ul class="end-action-menu" style="display: none">
+								<li data-action="unpublish">{{ phrase('agent.general.unpublish') }}</li>
+								<li data-action="archive">{{ phrase('agent.general.archive') }}</li>
+							</ul>
+						</dd>
+
+						<dd id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
+							<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
+								Automatically publish
+								on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
+									{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+								<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+								(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
+							</span>
+							<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
+								{{ phrase('agent.publish.set_auto_publish_date') }}
+							</span>
+						</dd>
+					</dl>
+
+					<div class="controls" id="{{baseId}}_action_buttons">
+						<div class="showing-editing-fields" style="display: none">
+							<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button>
+						</div>
+						<div class="showing-rendered-fields">
+							{% if custom_fields|length %}<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>{% endif %}
+							<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.ucfirst_delete') }}</button>
+							<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
+							<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
+							<a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}"><button class="clean-white">{{ phrase('agent.general.download_pdf') }}</button></a>
+						</div>
+					</div>
+				</section>
+			</div>
+			{# /Tab: Properties #}
 
 			{# Tab: Comments #}
 			<div class="deskpro-tab-item content-tab-item comments-tab">
@@ -376,15 +374,6 @@ pageMeta.baseId = '{{ baseId }}';
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
-
-<ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('agent.publish.status_published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('agent.publish.status_archived') }}</li>
-	{% if article.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</li>
-	{% endif %}
-</ul>
 
 {% macro category_row(cat, depth) %}
 	<li

@@ -542,12 +542,25 @@ header.page-header .id-number {
 	border: 1px solid #C3CED9;
     .border-radius(3px, 3px, 3px, 3px);
     float: left;
-    padding: 2px 8px 2px 8px;
+    padding: 2px 8px;
 	font-size: 13px;
 	font-weight: bold;
 	color: #636b73;
 	position: relative;
 	white-space: nowrap;
+}
+
+.page-kb-view header.page-header .id-number {
+	padding: 4px 9px;
+}
+
+.page-kb-view .select2-container-multi {
+	border: 1px solid #eee;
+}
+
+.page-kb-view .select2-container-multi.select2-container-active {
+	border: none;
+	padding: 1px;
 }
 
 header.page-header .id-number:hover {
@@ -790,7 +803,7 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 }
 
 
-header.page-header .meta-line .status span {
+header.page-header .status span {
 	position: relative;
 	.gradient(#8bbe72, #71b058);
 	.border-radius(3px, 3px, 3px, 3px);
@@ -803,6 +816,12 @@ header.page-header .meta-line .status span {
 	color: #FFF !important;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6) !important;
 	padding: 5px;
+}
+
+header.page-header .status.article-status span {
+	padding: 2px 5px;
+	margin-left: 10px;
+	margin-right: 3px;
 }
 
 
@@ -1005,6 +1024,17 @@ dl.table-list dd {
 
 dl.table-list dt.type-labels {
 
+}
+
+.add-remove-list.flat {
+	margin: 0;
+	padding: 0;
+
+	li {
+		display: inline-block;
+		margin: 3px 15px 0 0;
+		position: relative;
+	}
 }
 
 .add-remove-list li span.add {
