@@ -391,6 +391,10 @@ class TriggerExecutor
 			}
 		}
 
+		if ($this->ticket->creation_system == 'web.agent.portal') {
+			$actions_collection->getActionType('NewTicket')->enableNotifications();
+		}
+
 		#------------------------------
 		# Flood checks / autoreply checks
 		#------------------------------
