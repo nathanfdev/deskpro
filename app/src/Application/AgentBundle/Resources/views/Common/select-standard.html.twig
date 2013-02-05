@@ -12,8 +12,11 @@
 		{% if not title and cat.name is defined %}
 			{% set title = cat.name %}
 		{% endif %}
-		{% if not title %}
+		{% if not title and get_type(cat) == 'string' %}
 			{% set title = cat %}
+		{% endif %}
+		{% if not title %}
+			{% set title = '(Untitled)' %}
 		{% endif %}
 	{% endif %}
 	{% if parent_title %}
