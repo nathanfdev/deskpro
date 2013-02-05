@@ -12,26 +12,31 @@
 			{% if pending_article.ticket %}
 				<div class="top-row">
 					<div class="top-row-left">
-						<h3>
+						<h3 style="font-weight: normal">
 							{{ phrase('agent.general.ticket') }} <a class="with-route" data-route="page:{{ object_path_agent(pending_article.ticket) }}">{{ pending_article.ticket.subject }}</a>
 						</h3>
 					</div>
 					<div class="top-row-right buttons">
 						<div class="bound-faded"></div>
-						<button class="clean-white small pending-create">{{ phrase('agent.general.create') }}</button>
+						<button class="clean-white small pending-create">Create Article</button>
 						<button class="clean-white small pending-delete">{{ phrase('agent.general.ucfirst_delete') }}</button>
+					</div>
+				</div>
+				<div class="comment-text">
+					<div class="rendered" style="padding-bottom: 3px; padding-top: 3px; font-size: 11px; max-height: 100px; overflow: hidden; position:relative; text-overflow: ellipsis">
+						{{ first_messages[pending_article.ticket.id].getMessageText() }}
 					</div>
 				</div>
 			{% else %}
 				<div class="top-row">
 					<div class="top-row-left">
-						<h3>
+						<h3 style="font-weight: normal">
 							{{ pending_article.comment }}
 						</h3>
 					</div>
 					<div class="top-row-right buttons">
 						<div class="bound-faded"></div>
-						<button class="clean-white small pending-create">{{ phrase('agent.general.create') }}</button>
+						<button class="clean-white small pending-create">Create Article</button>
 						<button class="clean-white small pending-delete">{{ phrase('agent.general.ucfirst_delete') }}</button>
 					</div>
 				</div>

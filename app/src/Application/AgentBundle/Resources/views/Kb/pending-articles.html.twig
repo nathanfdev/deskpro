@@ -39,5 +39,15 @@ pageMeta.baseId = '{{ baseId }}';
 			<p>{{ phrase('agent.general.there_are_no_results') }}</p>
 		</section>
 	{% endif %}
+
+	{% if pending_articles|length %}
+		<footer class="results-nav">
+			<div class="pagecontrols results-nav">
+				<div class="cursor">
+					<span id="{{ baseId }}_count">{{ pending_articles|length }}</span> Pending Articles
+				</div>
+			</div>
+		</footer>
+	{% endif %}
 </div>
 </div>

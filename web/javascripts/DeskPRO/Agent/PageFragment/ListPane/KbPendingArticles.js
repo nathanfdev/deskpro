@@ -182,5 +182,6 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 	removeFromList: function(id) {
 		$('article.pending-article-' + id, this.wrapper).slideUp('fast');
 		DeskPRO_Window.util.modCountEl('#kb_pending_count', '-');
+		DeskPRO_Window.util.modCountEl(this.getEl('count'), '-');
 	}
 });

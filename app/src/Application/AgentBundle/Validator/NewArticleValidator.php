@@ -53,7 +53,10 @@ class NewArticleValidator extends AbstractValidator
 			$this->addError('category_id.invalid');
 		}
 
-		$cat = App::getOrm()->find('DeskPRO:ArticleCategory', $article->category_id);
+		$cat = null;
+		if ($article->category_id) {
+			$cat = App::getOrm()->find('DeskPRO:ArticleCategory', $article->category_id);
+		}
 		if (!$cat) {
 			$this->addError('category_id.invalid');
 		}

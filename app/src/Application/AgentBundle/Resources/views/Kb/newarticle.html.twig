@@ -22,13 +22,16 @@ pageMeta.baseId = '{{ baseId }}';
 <form id="{{baseId}}_newarticle" class="keybound-submit">
 <input type="hidden" name="pending_article_id" id="{{baseId}}_pending_article_id" value="0" />
 
-<div class="pending-info" style="display: none;">
+<div class="pending-info" style="display: none;" style="display: none;">
 	<h3>Creating pending article (added by <span class="person-name"></span>)</h3>
-	<div class="pending-ticket" style="display: none">
-		 {{ phrase('agent.publish.for_ticket') }}:
-		<a data-route="" class="with-route ticket-link"></a>
+	<div class="pending-item pending-ticket">
+		<div class="about">
+			<div class="pending-ticket" style="display: none">
+				{{ phrase('agent.publish.for_ticket') }}: <a data-route="" class="with-route ticket-link"></a>
+			</div>
+			<div class="pending-reason" style="display: none"></div>
+		</div>
 	</div>
-	<div class="pending-reason" style="display: none"></div>
 </div>
 
 <div class="first section cat-section" id="{{baseId}}_cat_section">

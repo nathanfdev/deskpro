@@ -90,6 +90,15 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return int
+	 */
+	public function getTicketId()
+	{
+		return $this->ticket ? $this->ticket->getId() : 0;
+	}
+
+
 	public function _sendUpdates()
 	{
 		$cm = new ClientMessage();

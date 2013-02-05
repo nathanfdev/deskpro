@@ -553,8 +553,33 @@ class KbController extends AbstractController
 	{
 		$pending_articles = $this->em->getRepository('DeskPRO:ArticlePendingCreate')->getPendingArticles();
 
+		$ticket_ids = array();
+		foreach ($pending_articles as $pa) {
+			if ($pa->getTicketId()) {
+				$ticket_ids[] = $pa->getTicketId();
+			}
+		}
+
+		$first_messages = array();
+		if ($ticket_ids) {
+			$first_messages_raw = $this->em->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessage m
+				LEFT JOIN m.ticket t
+				WHERE t.id IN (?0)
+				GROUP BY t
+				ORDER BY m.id ASC
+			")->setParameters(array($ticket_ids))->execute();
+
+			$first_messages = array();
+			foreach ($first_messages_raw as $m) {
+				$first_messages[$m->ticket->getId()] = $m;
+			}
+		}
+
 		return $this->render('AgentBundle:Kb:pending-articles.html.twig', array(
 			'pending_articles' => $pending_articles,
+			'first_messages'   => $first_messages,
 		));
 	}
 
