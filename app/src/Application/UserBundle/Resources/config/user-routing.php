@@ -456,16 +456,16 @@ $collection->add('user_downloads_newcomment', new Route(
 ));
 
 $collection->add('user_news_home', new Route(
-	'/news',
-	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1),
-	array(),
+	'/news.{_format}',
+	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1, '_format' => 'html'),
+	array('_format' => '(html|rss)'),
 	array()
 ));
 
 $collection->add('user_news', new Route(
-	'/news/{slug}',
-	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1),
-	array('slug' => '(\\d+(\\-.*?)?)?', 'page' => '\\d+'),
+	'/news/{slug}.{_format}',
+	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1, '_format' => 'html'),
+	array('slug' => '(\\d+(\\-.*?)?)?', 'page' => '\\d+', '_format' => '(html|rss)'),
 	array()
 ));
 

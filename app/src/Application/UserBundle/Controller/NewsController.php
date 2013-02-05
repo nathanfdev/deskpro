@@ -55,7 +55,7 @@ class NewsController extends AbstractController
 		return $this->person->hasPerm('news.use');
 	}
 
-	public function browseAction($slug = '')
+	public function browseAction($slug = '', $_format = 'html')
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
@@ -117,11 +117,6 @@ class NewsController extends AbstractController
 			$per_page = 2;
 		}
 
-		$tpl = 'UserBundle:News:filter.html.twig';
-		if ($this->request->isPartialRequest() == 'portal') {
-			$tpl = 'UserBundle:News:portal-display.html.twig';
-		}
-
 		$total = $searcher->getCount();
 		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 		$limit = array(
@@ -142,6 +137,15 @@ class NewsController extends AbstractController
 			$comment_counts = $this->em->getRepository('DeskPRO:NewsCategory')
 				->getCommentHelper()
 				->countsOnCollection($news);
+		}
+
+		$tpl = 'UserBundle:News:filter.html.twig';
+		if ($this->request->isPartialRequest() == 'portal') {
+			$tpl = 'UserBundle:News:portal-display.html.twig';
+		}
+
+		if ($_format == 'rss') {
+			$tpl = 'UserBundle:News:filter.rss.twig';
 		}
 
 		return $this->render($tpl, array(
