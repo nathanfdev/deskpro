@@ -59,6 +59,37 @@
 									<span class="prop-title">{{ phrase('agent.general.num_downloads') }}</span>
 									<span class="prop-val">{{ download.num_downloads|default(0) }}</span>
 								</li>
+							{% elseif field == 'num_comments' %}
+								<li>
+									<span class="prop-title">Comments</span>
+									<span class="prop-val">{{ comment_counts[download.id]|default(0) }}</span>
+								</li>
+							{% elseif field == 'labels' %}
+								{% if download.labels|length %}
+									<li>
+										<span class="prop-title">Labels</span>
+										<span class="prop-val labels">
+											{% for label in download.labels %}
+												<span class="listing-tag">{{ label }}</span>
+											{% endfor %}
+										</span>
+									</li>
+								{% endif %}
+							{% elseif field == 'rating' %}
+								<li>
+									<span class="prop-title">Rating</span>
+									<span class="prop-val">
+										{{ download.up_votes }} up, {{ download.down_votes }} down
+									</span>
+								</li>
+							{% elseif field == 'rating_votes' %}
+								<li>
+									<span class="prop-title">Number of votes</span>
+									<span class="prop-val">
+										{{ download.num_ratings }}
+									</span>
+								</li>
+							{% endif %}
 							{% endif %}
 						{% endfor %}
 					</ul>

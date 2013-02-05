@@ -58,6 +58,36 @@
 									<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
 									<span class="prop-val">{{ article.date_created|date('day')}}</span>
 								</li>
+							{% elseif field == 'num_comments' %}
+								<li>
+									<span class="prop-title">Comments</span>
+									<span class="prop-val">{{ comment_counts[article.id]|default(0) }}</span>
+								</li>
+							{% elseif field == 'labels' %}
+								{% if article.labels|length %}
+									<li>
+										<span class="prop-title">Labels</span>
+										<span class="prop-val labels">
+											{% for label in article.labels %}
+												<span class="listing-tag">{{ label }}</span>
+											{% endfor %}
+										</span>
+									</li>
+								{% endif %}
+							{% elseif field == 'rating' %}
+								<li>
+									<span class="prop-title">Rating</span>
+									<span class="prop-val">
+										{{ article.up_votes }} up, {{ article.down_votes }} down
+									</span>
+								</li>
+							{% elseif field == 'rating_votes' %}
+								<li>
+									<span class="prop-title">Number of votes</span>
+									<span class="prop-val">
+										{{ article.num_ratings }}
+									</span>
+								</li>
 							{% elseif field == 'view_count' %}
 								{# VIEW_COUNTER
 								<li>

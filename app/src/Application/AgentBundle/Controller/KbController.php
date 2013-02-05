@@ -737,10 +737,21 @@ class KbController extends AbstractController
 
 		$article_categories = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
 
+		$comment_counts = array();
+		if ($results) {
+			$comment_counts = $this->db->fetchAllKeyValue("
+				SELECT article_id, COUNT(*)
+				FROM article_comments
+				WHERE article_id IN (" . implode(',', array_keys($results)) . ")
+				GROUP BY article_id
+			");
+		}
+
 		return $this->render($tpl, array(
 			'results'            => $results,
 			'result_id'          => $result_cache['id'],
 			'display_fields'     => $display_fields,
+			'comment_counts'     => $comment_counts,
 
 			'total_results' => $total_results,
 			'num_pages' => $num_pages,

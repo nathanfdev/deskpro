@@ -302,15 +302,26 @@ class NewsController extends AbstractController
 			$tpl = 'AgentBundle:News:filter-page.html.twig';
 		}
 
+		$comment_counts = array();
+		if ($results) {
+			$comment_counts = $this->db->fetchAllKeyValue("
+				SELECT article_id, COUNT(*)
+				FROM article_comments
+				WHERE article_id IN (" . implode(',', array_keys($results)) . ")
+				GROUP BY article_id
+			");
+		}
+
 		return $this->render($tpl, array(
-			'results'        => $results,
-			'result_id'      => $result_cache['id'],
+			'results'         => $results,
+			'result_id'       => $result_cache['id'],
+			'comment_counts'  => $comment_counts,
 			'display_fields'  => $display_fields,
-			'category'       => $category,
-			'total_results' => $total_results,
-			'num_pages' => $num_pages,
-			'cur_page' => $page,
-			'showing_to' => $showing_to,
+			'category'        => $category,
+			'total_results'   => $total_results,
+			'num_pages'       => $num_pages,
+			'cur_page'        => $page,
+			'showing_to'      => $showing_to,
 		));
 	}
 
