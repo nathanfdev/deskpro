@@ -214,7 +214,8 @@ var DP = {
 					if (!opt || !opt[0]) {
 						return result.text || '';
 					}
-					var name = Orb.escapeHtml(opt.data('single-title') || result.text);
+					var name = opt.data('single-title') || result.text;
+					name = $('<span/>').text(name);
 					return name;
 				};
 			}
