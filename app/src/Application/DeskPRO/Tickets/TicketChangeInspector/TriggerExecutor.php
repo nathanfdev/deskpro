@@ -391,7 +391,7 @@ class TriggerExecutor
 			}
 		}
 
-		if ($this->ticket->creation_system == 'web.agent.portal') {
+		if ($actions_collection->hasActionType('NewTicket') && $this->ticket->creation_system == 'web.agent.portal') {
 			$actions_collection->getActionType('NewTicket')->enableNotifications();
 		}
 
