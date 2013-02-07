@@ -1904,7 +1904,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getTimeUntilResolution()
 	{
 		if (!$this->date_resolved && !$this->date_closed) {
-			return 0;
+			return null;
 		}
 
 		$date = $this->date_resolved;
@@ -1920,7 +1920,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getWorkTimeUntilResolution()
 	{
 		if (!$this->date_resolved && !$this->date_closed) {
-			return 0;
+			return null;
 		}
 
 		$date = $this->date_resolved;
@@ -2646,6 +2646,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$data['labels'][] = $label['label'];
 			}
 		}
+
+		$data['total_user_waiting_real'] = $this->getRealTotalUserWaiting();
+		$data['total_user_waiting_work'] = $this->getTotalUserWaitingWorkTime();
+		$data['current_user_waiting'] = $this->getCurrentUserWaitingTime();
+		$data['current_user_waiting_work'] = $this->getCurrentUserWaitingWorkTime();
+		$data['total_to_first_reply_work'] = $this->getWorkTimeToFirstReply();
+		$data['total_to_resolution'] = $this->getTimeUntilResolution();
+		$data['total_to_resolution_work'] = $this->getWorkTimeUntilResolution();
 
 		return $data;
 	}

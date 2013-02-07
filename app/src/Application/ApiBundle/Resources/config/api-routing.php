@@ -90,6 +90,13 @@ $collection->add('api_tickets_ticket_delete', new Route(
 	array()
 ));
 
+$collection->add('api_tickets_ticket_logs', new Route(
+	'/tickets/{ticket_id}/logs',
+	array('_controller' => 'ApiBundle:Ticket:getTicketLogs'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_tickets_ticket_messages', new Route(
 	'/tickets/{ticket_id}/messages',
 	array('_controller' => 'ApiBundle:Ticket:getTicketMessages'),
@@ -111,9 +118,23 @@ $collection->add('api_tickets_ticket_message', new Route(
 	array()
 ));
 
+$collection->add('api_tickets_ticket_message_details', new Route(
+	'/tickets/{ticket_id}/messages/{message_id}/details',
+	array('_controller' => 'ApiBundle:Ticket:getTicketMessageDetails'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_tickets_ticket_undelete', new Route(
 	'/tickets/{ticket_id}/undelete',
 	array('_controller' => 'ApiBundle:Ticket:undeleteTicket'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_split', new Route(
+	'/tickets/{ticket_id}/split',
+	array('_controller' => 'ApiBundle:Ticket:splitTicket'),
 	array('_method' => 'POST', 'ticket_id' => '\\d+'),
 	array()
 ));

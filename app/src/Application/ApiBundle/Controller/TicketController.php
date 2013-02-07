@@ -56,8 +56,8 @@ class TicketController extends AbstractController
 			$errors['subject'] = array('required_field', 'subject missing or empty');
 		}
 
-		$messageText = $this->in->getString('message');
-		if ($messageText === '') {
+		$message_text = $this->in->getString('message');
+		if ($message_text === '') {
 			$errors['message'] = array('required_field', 'message missing or empty');
 		}
 
@@ -172,10 +172,17 @@ class TicketController extends AbstractController
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
 		$snip = new \Application\DeskPRO\Entity\TicketSnippet();
-		$snip->snippet = $messageText;
-		$messageText = $snip->snippetFormatted($ticket, $ticket->person);
+		$snip->snippet = $message_text;
+		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
 
-		$message->setMessageText($messageText);
+		if ($this->in->getBool('message_is_html')) {
+			$message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+			$message_text = \Orb\Util\Strings::trimHtml($message_text);
+			$message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+			$message->message = $message_text;
+		} else {
+			$message->setMessageText($message_text);
+		}
 
 		$this->_insertTicketMessageAttachments($ticket, $message);
 
@@ -281,6 +288,12 @@ class TicketController extends AbstractController
 			$ticket->subject = $subject;
 		}
 
+		$person_id = $this->in->getUint('person_id');
+		if ($person_id)
+		{
+			$ticket->setPersonId($person_id);
+		}
+
 		if ($this->in->checkIsset('is_locked')) {
 			if ($this->in->getBool('is_locked')) {
 				$ticket->setLockedByAgent($this->person);
@@ -372,6 +385,31 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getTicketLogsAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
+		foreach ($ticket_logs AS $key => $log)
+		{
+			if ($log->action_type == 'executed_triggers') {
+				unset($ticket_logs[$key]);
+			}
+		}
+
+		$trackers = App::getDb()->fetchAllCol("
+			SELECT log
+			FROM ticket_changetracker_logs
+			WHERE ticket_id = ?
+			ORDER BY id ASC
+		", array($ticket->getId()));
+
+		return $this->createApiResponse(array(
+			'logs' => $this->getApiData($ticket_logs),
+			'tracker_logs' => $trackers
+		));
+	}
+
 	public function getTicketMessagesAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -396,6 +434,27 @@ class TicketController extends AbstractController
 		return $this->createApiResponse(array('message' => $message->toApiData()));
 	}
 
+	public function getTicketMessageDetailsAction($ticket_id, $message_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$message = $this->em->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			WHERE m.ticket = ?0 AND m.id = ?1
+		")->setParameters(array($ticket, $message_id))->setMaxResults(1)->getOneOrNullResult();
+
+		if (!$message) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Message $message_id not found in $ticket_id");
+		}
+
+		return $this->createApiResponse(array(
+			'unformatted' => $message->message_text,
+			'email_source' => $message->email_source ? $message->email_source->raw_source : null,
+			'email_log' => $message->email_source ? implode("\n", $message->email_source->source_info) : null
+		));
+	}
+
 	public function replyTicketAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'reply');
@@ -409,7 +468,21 @@ class TicketController extends AbstractController
 		$message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
 		$message['ip_address'] = $this->request->getClientIp();
 		$message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
-		$message->setMessageText($this->in->getString('message'));
+
+		$notify_agent_ids = array();
+
+		if ($this->in->getBool('message_is_html')) {
+			$message_text = \Orb\Util\Strings::trimHtml($this->in->getHtmlCore('message'));
+			$message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+			$message->message = $message_text;
+
+			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
+			foreach ($matches AS $match) {
+				$notify_agent_ids[] = $match[1];
+			}
+		} else {
+			$message->setMessageText($this->in->getString('message'));
+		}
 
 		if ($this->in->getBool('is_note')) {
 			$message['is_agent_note'] = true;
@@ -445,6 +518,37 @@ class TicketController extends AbstractController
 		}
 
 		App::setCurrentPerson($this->person);
+
+		if ($this->in->getBool('message_as_agent') && $this->in->getBool('is_note') && $notify_agent_ids) {
+			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+			$agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
+
+			$notify_chat   = array();
+			$notify_email  = array();
+
+			$notify_agent_ids = array_unique($notify_agent_ids);
+			foreach ($notify_agent_ids as $agent_id) {
+				if (!($agent = $this->container->getAgentData()->get($agent_id))) {
+					continue;
+				}
+
+				$notify_chat[$agent->id] = $agent;
+
+				$pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
+				if ($pref == 'always_send' || ($pref == 'smart_send' && !$this->container->getAgentData()->isAgentOnline($agent))) {
+					$notify_email[$agent->id] = $agent;
+				}
+			}
+
+			if ($notify_chat) {
+				$notify_text = $this->person->getDisplayName() . " alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
+				$agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+			}
+
+			if ($notify_email) {
+				$ticket->getTicketLogger()->recordExtra('mention_agents', $notify_email);
+			}
+		}
 
 		return $this->createApiCreateResponse(
 			array('message_id' => $message->id),
@@ -500,6 +604,43 @@ class TicketController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
+	}
+
+	public function splitTicketAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id, 'modify_merge');
+		$message_ids = $this->in->getCleanValueArray('message_ids', 'uint', 'discard');
+		$subject = $this->in->getString('subject');
+
+		$split = new \Application\DeskPRO\Tickets\TicketSplit($ticket);
+
+		try {
+			$this->em->beginTransaction();
+			$new_ticket = $split->split($subject, $message_ids);
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		if (!$split->wasOldTicketDeleted()) {
+			$ticket->recountStats();
+			$this->em->persist($ticket);
+		}
+
+		if ($new_ticket) {
+			$new_ticket->recountStats();
+			$this->em->persist($new_ticket);
+		}
+
+		$this->em->flush();
+
+		return $this->createApiResponse(array(
+			'success' => true,
+			'ticket_id' => $new_ticket ? $new_ticket['id'] : null,
+			'old_ticket_deleted' => $split->wasOldTicketDeleted()
+		));
 	}
 
 	public function mergeTicketAction($ticket_id, $merge_ticket_id)

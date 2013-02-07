@@ -2642,11 +2642,16 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		$ticket->recountStats();
-		$new_ticket->recountStats();
+		if (!$split->wasOldTicketDeleted()) {
+			$ticket->recountStats();
+			$this->em->persist($ticket);
+		}
 
-		$this->em->persist($ticket);
-		$this->em->persist($new_ticket);
+		if ($new_ticket) {
+			$new_ticket->recountStats();
+			$this->em->persist($new_ticket);
+		}
+
 		$this->em->flush();
 
 		return $this->createJsonResponse(array(
