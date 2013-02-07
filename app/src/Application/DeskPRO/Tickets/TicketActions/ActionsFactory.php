@@ -248,7 +248,7 @@ class ActionsFactory
 				break;
 
 			case 'send_agent_email':
-				$options = array('template' => $value['template_name'], 'agents' => !empty($value['agents']) ?: array());
+				$options = array('template' => $value['template_name'], 'agents' => !empty($value['agents']) ? $value['agents'] : array());
 				break;
 
 			case 'set_user_email_template_newticket':
