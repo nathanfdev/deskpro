@@ -149,7 +149,8 @@ class PersonMerge implements PersonContextInterface
 		$simple_tables = array(
 			'people_contact_data',
 			'people_emails',
-			'people_emails_validating'
+			'people_emails_validating',
+			'people_twitter_users'
 		);
 
 		foreach ($simple_tables AS $table) {

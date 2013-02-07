@@ -379,6 +379,31 @@ class PersonController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function mergePersonAction($person_id, $other_person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+		$other_person = $this->_getPersonOr404($other_person_id);
+
+		if (!$person || !$other_person) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($other_person)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$old_person_id = $other_person['id'];
+
+		$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
+		$merge->merge();
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getPersonPictureAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);

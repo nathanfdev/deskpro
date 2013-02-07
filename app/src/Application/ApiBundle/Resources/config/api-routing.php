@@ -452,6 +452,13 @@ $collection->add('api_people_person_delete', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_merge', new Route(
+	'/people/{person_id}/merge/{other_person_id}',
+	array('_controller' => 'ApiBundle:Person:mergePerson'),
+	array('_method' => 'POST', 'person_id' => '\\d+', 'other_person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_picture', new Route(
 	'/people/{person_id}/picture',
 	array('_controller' => 'ApiBundle:Person:getPersonPicture'),
