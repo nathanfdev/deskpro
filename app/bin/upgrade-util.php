@@ -989,7 +989,7 @@ class Upgrade
 		}
 
 		$f = date('Y-m-d') . '-database.sql';
-		$f_full = $this->getBackupDir() . '/' . $f;
+		$f_full = $this->getBackupDir() . DIRECTORY_SEPARATOR . $f;
 
 		if (file_exists($f_full)) {
 			if ($overwrite) {
@@ -1061,7 +1061,7 @@ class Upgrade
 			return false;
 		}
 
-		$backup_path = $this->getBackupDir() . '/' . str_replace('.sql', '', $f) . '.zip';
+		$backup_path = $this->getBackupDir() . DIRECTORY_SEPARATOR . str_replace('.sql', '', $f) . '.zip';
 		rename($f_full, $backup_path);
 
 		return $backup_path;
@@ -1104,7 +1104,7 @@ class Upgrade
 		}
 
 		foreach (array('error.log', 'cli-phperr.log', 'server-phperr-cli.log', 'server-phperr-web.log') as $f) {
-			$path = dp_get_log_dir() . '/' . $f;
+			$path = dp_get_log_dir() . DIRECTORY_SEPARATOR . $f;
 			if (file_exists($path)) {
 				@file_put_contents('', $path);
 			}
@@ -1126,7 +1126,7 @@ class Upgrade
 			if ($fileutil->isAbsolutePath($this->argv[$key+1])) {
 				$zip_path = @realpath($this->argv[$key+1]);
 			} else {
-				$zip_path = $this->getBackupDir() . '/' . $this->argv[$key+1];
+				$zip_path = $this->getBackupDir() . DIRECTORY_SEPARATOR . $this->argv[$key+1];
 			}
 		}
 
@@ -1248,7 +1248,7 @@ class Upgrade
 
 		$time_start = microtime(true);
 
-		$f = '/' . date('Y-m-d') . '-files';
+		$f = DIRECTORY_SEPARATOR . date('Y-m-d') . '-files';
 		$backup_dir = $this->getTmpDir() . $f;
 		if (is_dir($backup_dir)) {
 			throw new FileBackupException("Backup directory already exists: $backup_dir", FileBackupException::FILE_EXISTS);
@@ -1267,7 +1267,7 @@ class Upgrade
 		$count_dir = 0;
 		foreach ($finder as $file) {
 			$file_rel_dir = str_replace(DP_WEB_ROOT, '', dirname($file->getRealPath()));
-			$file_backup_dir = $backup_dir . '/' . $file_rel_dir;
+			$file_backup_dir = $backup_dir . $file_rel_dir;
 
 			// Ignore data dir
 			if (strpos($file->getRealPath(), dp_get_data_dir()) === 0) {
@@ -1281,7 +1281,7 @@ class Upgrade
 				}
 			}
 
-			if (!copy($file->getRealPath(), $file_backup_dir . '/' . $file->getFilename())) {
+			if (!copy($file->getRealPath(), $file_backup_dir . DIRECTORY_SEPARATOR . $file->getFilename())) {
 				throw new FileBackupException("Could not copy file to backup directory: {$file->getRealPath()} to {$file_backup_dir}{$file->getFilename()}", FileBackupException::PERM_ERROR);
 			}
 
@@ -1304,7 +1304,7 @@ class Upgrade
 
 		$status_callback('cleanup_start');
 
-		$backup_file = $this->getBackupDir() . '/' . $f . '.zip';
+		$backup_file = $this->getBackupDir() . DIRECTORY_SEPARATOR . $f . '.zip';
 		if (is_file($backup_file)) {
 			unlink($backup_file);
 		}
@@ -1329,7 +1329,7 @@ class Upgrade
 			if ($fileutil->isAbsolutePath($this->argv[$key+1])) {
 				$zip_path = @realpath($this->argv[$key+1]);
 			} else {
-				$zip_path = $this->getBackupDir() . '/' . $this->argv[$key+1];
+				$zip_path = $this->getBackupDir() . DIRECTORY_SEPARATOR . $this->argv[$key+1];
 			}
 		}
 
@@ -1388,7 +1388,7 @@ class Upgrade
 		}
 
 		if (is_dir($save_path)) {
-			$save_path .= '/' . basename(dirname($version_info['download'])) . '-' . basename($version_info['download']);
+			$save_path .= DIRECTORY_SEPARATOR . basename(dirname($version_info['download'])) . '-' . basename($version_info['download']);
 		}
 
 		$save_dir = dirname($save_path);
@@ -1989,12 +1989,12 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 
 		foreach ($iterator as $file) {
 
-			$file_rel_path = '/' . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			$file_rel_path = DIRECTORY_SEPARATOR . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
 			if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
 				continue;
 			}
 
-			$target = $targetDir.'/'.str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			$target = $targetDir.DIRECTORY_SEPARATOR.str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
 
 			if (is_link($file)) {
 				$this->symlink($file, $target);
@@ -2499,8 +2499,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->out("<prompt>Before we install the updates, you should generate a back up first. You can back up both your files and your database.\n</prompt>");
 
-		$db_backup_path   = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-database.zip';
-		$file_backup_path = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-files.zip';
+		$db_backup_path   = $this->upgrade->getBackupDir() . DIRECTORY_SEPARATOR . date('Y-m-d') . '-database.zip';
+		$file_backup_path = $this->upgrade->getBackupDir() . DIRECTORY_SEPARATOR . date('Y-m-d') . '-files.zip';
 
 		$this->upgrade->log("(Gathering input)");
 		while(true) {
@@ -3034,7 +3034,7 @@ class Zip_PHP implements DpZip
 
 		$filename     = basename($path);
 		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
-		$out_filepath = dp_get_tmp_dir() . '/' . $out_filename;
+		$out_filepath = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $out_filename;
 
 		$zip = new \ZipArchive();
 		if ($zip->open($out_filepath, \ZipArchive::CREATE) !== true) {
@@ -3080,7 +3080,7 @@ class Zip_PHP implements DpZip
 			return false;
 		}
 
-		$tmpdir = dp_get_tmp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
 		if (!mkdir($tmpdir)) {
 			$error = 'Unable to make tmpdir: ' . $tmpdir;
 			return false;
@@ -3120,7 +3120,7 @@ class Zip_PclZip implements DpZip
 
 		$filename     = basename($path);
 		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
-		$out_filepath = dp_get_tmp_dir() . '/' . $out_filename;
+		$out_filepath = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $out_filename;
 
 		$zip = new \PclZip($out_filepath);
 		$zip->add(
@@ -3137,7 +3137,7 @@ class Zip_PclZip implements DpZip
 	{
 		$zip = new \PclZip($path);
 
-		$tmpdir = dp_get_tmp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
 		if (!mkdir($tmpdir)) {
 			$error = 'Unable to make tmpdir: ' . $tmpdir;
 			return false;

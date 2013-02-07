@@ -193,7 +193,7 @@ function dp_get_data_dir()
 	if (isset($DP_CONFIG['dir_data']) && $DP_CONFIG['dir_data']) {
 		$dir_data = $DP_CONFIG['dir_data'];
 	} else {
-		$dir_data = DP_WEB_ROOT . '/data';
+		$dir_data = DP_WEB_ROOT . DIRECTORY_SEPARATOR . 'data';
 	}
 
 	return $dir_data;
@@ -205,7 +205,7 @@ function dp_get_data_dir()
  */
 function dp_get_debug_dir()
 {
-	return dp_get_data_dir() . '/debug';
+	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'debug';
 }
 
 
@@ -214,7 +214,7 @@ function dp_get_debug_dir()
  */
 function dp_get_log_dir()
 {
-	return dp_get_data_dir() . '/logs';
+	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'logs';
 }
 
 
@@ -223,7 +223,7 @@ function dp_get_log_dir()
  */
 function dp_get_backup_dir()
 {
-	return dp_get_data_dir() . '/backups';
+	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'backups';
 }
 
 
@@ -232,7 +232,7 @@ function dp_get_backup_dir()
  */
 function dp_get_blob_dir()
 {
-	return dp_get_data_dir() . '/files';
+	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'files';
 }
 
 
@@ -241,7 +241,7 @@ function dp_get_blob_dir()
  */
 function dp_get_tmp_dir()
 {
-	return dp_get_data_dir() . '/tmp';
+	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'tmp';
 }
 
 
