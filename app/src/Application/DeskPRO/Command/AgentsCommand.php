@@ -57,11 +57,28 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	{
 		$this->setName('dp:agents');
 		$this->addOption('reset-password', null, InputOption::VALUE_NONE, 'Reset the password of an admin');
+		$this->addOption('make-admin', null, InputOption::VALUE_NONE, 'Turn an agent into an admin');
+		$this->addOption('make-billing', null, InputOption::VALUE_NONE, 'Turn an agent into a user with billing permission');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		if (!$input->getOption('reset-password')) {
+		$helper = $this->getHelper('dialog');
+		$em     = $this->getContainer()->getEm();
+
+		$find_agent = function($caption) use ($helper, $em, $output) {
+			$email = $helper->ask($output, "$caption> ", '');
+			$agent = $em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+
+			if (!$agent || !$agent->can_agent) {
+				$output->writeln("<error>There is no agent with that email address.</error>");
+				return null;
+			}
+
+			return $agent;
+		};
+
+		if (!$input->getOption('reset-password') && !$input->getOption('make-admin') && !$input->getOption('make-billing')) {
 			$agents = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->getAgents();
 
 			$output->writeln("ADMINS");
@@ -86,11 +103,9 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 0;
 
 		} elseif ($input->getOption('reset-password')) {
-			$email = $this->getHelper('dialog')->ask($output, "Enter the email address of the agent to reset the password for> ", '');
-			$agent = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
-			if (!$agent || !$agent->can_agent) {
-				$output->writeln("<error>There is no agent with that email address.</error>");
+			$agent = $find_agent("Enter the email address of the agent to reset the password for");
+			if (!$agent) {
 				return 1;
 			}
 
@@ -103,6 +118,43 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$output->writeln("The password for {$agent->display_name} <$agent->email_address> has been reset.");
 
 			return 0;
+
+		} elseif ($input->getOption('make-admin')) {
+			$agent = $find_agent("Enter the email address of the agent to promote to admin");
+			if (!$agent) {
+				return 1;
+			}
+
+			if ($agent->can_admin) {
+				$output->writeln("Agent is already an admin");
+				return 0;
+			}
+
+			$agent->can_admin = true;
+			$this->getContainer()->getEm()->persist($agent);
+			$this->getContainer()->getEm()->flush();
+
+			$output->writeln("{$agent->display_name} <$agent->email_address> has been promoted to admin");
+			return 0;
+
+		} elseif ($input->getOption('make-billing')) {
+			$agent = $find_agent("Enter the email address of the agent to give billing permission to");
+			if (!$agent) {
+				return 1;
+			}
+
+			if ($agent->can_billing) {
+				$output->writeln("Agent already has billing permission");
+				return 0;
+			}
+
+			$agent->can_admin = true;
+			$this->getContainer()->getEm()->persist($agent);
+			$this->getContainer()->getEm()->flush();
+
+			$output->writeln("{$agent->display_name} <$agent->email_address> has been given billing permissions");
+			return 0;
+
 		} else {
 			$output->writeln("Use --help to see available commands");
 			return 0;

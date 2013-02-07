@@ -568,6 +568,31 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @return bool|int
+	 */
+	public function getCanBilling()
+	{
+		// If they are an admin, they can use billing
+		// (because they could just log in to admin and set themselves as billing!)
+		if ($this->can_admin) {
+			return true;
+		}
+
+		return $this->can_billing;
+	}
+
+
+
+	/**
+	 * @return bool|int
+	 */
+	public function getRealCanBilling()
+	{
+		return $this->can_billing;
+	}
+
+
+	/**
 	 * Add a new helper
 	 *
 	 * @param string $name Name of the helper class
