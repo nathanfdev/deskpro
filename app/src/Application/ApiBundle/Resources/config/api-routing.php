@@ -1129,6 +1129,41 @@ $collection->add('api_downloads_download_delete', new Route(
 	array()
 ));
 
+$collection->add('api_downloads_download_comments', new Route(
+	'/downloads/{download_id}/comments',
+	array('_controller' => 'ApiBundle:Download:getDownloadComments'),
+	array('_method' => 'GET', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_comments_new', new Route(
+	'/downloads/{download_id}/comments',
+	array('_controller' => 'ApiBundle:Download:newDownloadComment'),
+	array('_method' => 'POST', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_comments_comment', new Route(
+	'/downloads/{download_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Download:getDownloadComment'),
+	array('_method' => 'GET', 'download_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_comments_comment_post', new Route(
+	'/downloads/{download_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Download:postDownloadComment'),
+	array('_method' => 'POST', 'download_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_comments_comment_delete', new Route(
+	'/downloads/{download_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Download:deleteDownloadComment'),
+	array('_method' => 'DELETE', 'download_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_downloads_download_labels', new Route(
 	'/downloads/{download_id}/labels',
 	array('_controller' => 'ApiBundle:Download:getDownloadLabels'),
@@ -1154,6 +1189,13 @@ $collection->add('api_downloads_download_label_delete', new Route(
 	'/downloads/{download_id}/labels/{label}',
 	array('_controller' => 'ApiBundle:Download:deleteDownloadLabel'),
 	array('_method' => 'DELETE', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_validating_comments', new Route(
+	'/downloads/validating-comments',
+	array('_controller' => 'ApiBundle:Download:getValidatingComments'),
+	array('_method' => 'GET'),
 	array()
 ));
 
@@ -1266,6 +1308,41 @@ $collection->add('api_news_news_delete', new Route(
 	array()
 ));
 
+$collection->add('api_news_news_comments', new Route(
+	'/news/{news_id}/comments',
+	array('_controller' => 'ApiBundle:News:getNewsComments'),
+	array('_method' => 'GET', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_comments_new', new Route(
+	'/news/{news_id}/comments',
+	array('_controller' => 'ApiBundle:News:newNewsComment'),
+	array('_method' => 'POST', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_comments_comment', new Route(
+	'/news/{news_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:News:getNewsComment'),
+	array('_method' => 'GET', 'news_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_comments_comment_post', new Route(
+	'/news/{news_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:News:postNewsComment'),
+	array('_method' => 'POST', 'news_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_comments_comment_delete', new Route(
+	'/news/{news_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:News:deleteNewsComment'),
+	array('_method' => 'DELETE', 'news_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_news_news_labels', new Route(
 	'/news/{news_id}/labels',
 	array('_controller' => 'ApiBundle:News:getNewsLabels'),
@@ -1291,6 +1368,13 @@ $collection->add('api_news_news_label_delete', new Route(
 	'/news/{news_id}/labels/{label}',
 	array('_controller' => 'ApiBundle:News:deleteNewsLabel'),
 	array('_method' => 'DELETE', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_validating_comments', new Route(
+	'/news/validating-comments',
+	array('_controller' => 'ApiBundle:News:getValidatingComments'),
+	array('_method' => 'GET'),
 	array()
 ));
 
@@ -1403,6 +1487,41 @@ $collection->add('api_kb_article_delete', new Route(
 	array()
 ));
 
+$collection->add('api_kb_article_comments', new Route(
+	'/kb/{article_id}/comments',
+	array('_controller' => 'ApiBundle:Kb:getArticleComments'),
+	array('_method' => 'GET', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_comments_new', new Route(
+	'/kb/{article_id}/comments',
+	array('_controller' => 'ApiBundle:Kb:newArticleComment'),
+	array('_method' => 'POST', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_comments_comment', new Route(
+	'/kb/{article_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Kb:getArticleComment'),
+	array('_method' => 'GET', 'article_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_comments_comment_post', new Route(
+	'/kb/{article_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Kb:postArticleComment'),
+	array('_method' => 'POST', 'article_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_comments_comment_delete', new Route(
+	'/kb/{article_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Kb:deleteArticleComment'),
+	array('_method' => 'DELETE', 'article_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_kb_article_attachments', new Route(
 	'/kb/{article_id}/attachments',
 	array('_controller' => 'ApiBundle:Kb:getArticleAttachments'),
@@ -1456,6 +1575,13 @@ $collection->add('api_kb_article_label_delete', new Route(
 	'/kb/{article_id}/labels/{label}',
 	array('_controller' => 'ApiBundle:Kb:deleteArticleLabel'),
 	array('_method' => 'DELETE', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_validating_comments', new Route(
+	'/kb/validating-comments',
+	array('_controller' => 'ApiBundle:Kb:getValidatingComments'),
+	array('_method' => 'GET'),
 	array()
 ));
 
@@ -1582,6 +1708,41 @@ $collection->add('api_feedback_feedback_delete', new Route(
 	array()
 ));
 
+$collection->add('api_feedback_feedback_comments', new Route(
+	'/feedback/{feedback_id}/comments',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackComments'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_comments_new', new Route(
+	'/feedback/{feedback_id}/comments',
+	array('_controller' => 'ApiBundle:Feedback:newFeedbackComment'),
+	array('_method' => 'POST', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_comments_comment', new Route(
+	'/feedback/{feedback_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackComment'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_comments_comment_post', new Route(
+	'/feedback/{feedback_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Feedback:postFeedbackComment'),
+	array('_method' => 'POST', 'feedback_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_comments_comment_delete', new Route(
+	'/feedback/{feedback_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Feedback:deleteFeedbackComment'),
+	array('_method' => 'DELETE', 'feedback_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_feedback_feedback_merge', new Route(
 	'/feedback/{feedback_id}/merge/{other_feedback_id}',
 	array('_controller' => 'ApiBundle:Feedback:mergeFeedback'),
@@ -1642,6 +1803,13 @@ $collection->add('api_feedback_feedback_label_delete', new Route(
 	'/feedback/{feedback_id}/labels/{label}',
 	array('_controller' => 'ApiBundle:Feedback:deleteFeedbackLabel'),
 	array('_method' => 'DELETE', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_validating_comments', new Route(
+	'/feedback/validating-comments',
+	array('_controller' => 'ApiBundle:Feedback:getValidatingComments'),
+	array('_method' => 'GET'),
 	array()
 ));
 

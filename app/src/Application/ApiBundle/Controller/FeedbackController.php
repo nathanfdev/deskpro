@@ -256,6 +256,105 @@ class FeedbackController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getFeedbackCommentsAction($feedback_id)
+	{
+		$feedback = $this->_getFeedbackOr404($feedback_id);
+		$comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getComments($feedback);
+
+		return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+	}
+
+	public function newFeedbackCommentAction($feedback_id)
+	{
+		$feedback = $this->_getFeedbackOr404($feedback_id);
+
+		$content = $this->in->getString('content');
+		if (!$content) {
+			return $this->createApiErrorResponse('required_field.content', 'Missing content');
+		}
+
+		$person_id = $this->in->getUint('person_id');
+		$person = null;
+		if ($person_id) {
+			$person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
+		}
+
+		$status = $this->in->getString('status');
+
+		$comment = new \Application\DeskPRO\Entity\FeedbackComment();
+		$comment->feedback = $feedback;
+		$comment->person = $person ?: $this->person;
+		$comment['content'] = $content;
+		$comment['status'] = $status ?: 'visible';
+		$comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
+		$comment['date_created']  = new \DateTime();
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $comment->id),
+			$this->generateUrl('api_feedback_feedback_comments_comment', array('feedback_id' => $feedback->id, 'comment_id' => $comment->id), true)
+		);
+	}
+
+	public function getFeedbackCommentAction($feedback_id, $comment_id)
+	{
+		$feedback = $this->_getFeedbackOr404($feedback_id);
+		$comment = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
+		if (!$comment || $comment->feedback->id != $feedback->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->createApiResponse(array('comment' => $comment->toApiData()));
+	}
+
+	public function postFeedbackCommentAction($feedback_id, $comment_id)
+	{
+		$feedback = $this->_getFeedbackOr404($feedback_id);
+		$comment = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
+		if (!$comment || $comment->feedback->id != $feedback->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$approved = false;
+		$status = $this->in->getString('status');
+		if ($status) {
+			$approved = ($status == 'visible' && $comment->status != 'visible');
+			$comment->status = $status;
+		}
+
+		$content = $this->in->getString('content');
+		if ($content) {
+			$comment->content = $content;
+		}
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		if ($approved) {
+			$this->_sendCommentApprovedNotification($comment);
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteFeedbackCommentAction($feedback_id, $comment_id)
+	{
+		$feedback = $this->_getFeedbackOr404($feedback_id);
+		$comment = $this->em->getRepository('DeskPRO:FeedbackComment')->find($comment_id);
+		if (!$comment || $comment->feedback->id != $feedback->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->remove($comment);
+		$this->em->flush();
+
+		$this->_sendCommentDeletedNotification($comment);
+
+		return $this->createSuccessResponse();
+	}
+
 	public function mergeFeedbackAction($feedback_id, $other_feedback_id)
 	{
 		$feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
@@ -406,6 +505,21 @@ class FeedbackController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getValidatingCommentsAction()
+	{
+		$comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getValidatingComments();
+		$entity_key = 'feedback';
+		$output = array();
+		foreach ($comments AS $key => $value) {
+			$output[$key] = $value->toApiData(false, true);
+			if ($value->$entity_key) {
+				$output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
+			}
+		}
+
+		return $this->createApiResponse(array('comments' => $output));
 	}
 
 	public function getCategoriesAction()

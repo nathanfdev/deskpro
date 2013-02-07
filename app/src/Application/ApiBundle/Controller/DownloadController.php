@@ -288,6 +288,105 @@ class DownloadController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getDownloadCommentsAction($download_id)
+	{
+		$download = $this->_getDownloadOr404($download_id);
+		$comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
+
+		return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+	}
+
+	public function newDownloadCommentAction($download_id)
+	{
+		$download = $this->_getDownloadOr404($download_id);
+
+		$content = $this->in->getString('content');
+		if (!$content) {
+			return $this->createApiErrorResponse('required_field.content', 'Missing content');
+		}
+
+		$person_id = $this->in->getUint('person_id');
+		$person = null;
+		if ($person_id) {
+			$person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
+		}
+
+		$status = $this->in->getString('status');
+
+		$comment = new DownloadComment();
+		$comment->download = $download;
+		$comment->person = $person ?: $this->person;
+		$comment['content'] = $content;
+		$comment['status'] = $status ?: 'visible';
+		$comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
+		$comment['date_created']  = new \DateTime();
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $comment->id),
+			$this->generateUrl('api_downloads_download_comments_comment', array('download_id' => $download->id, 'comment_id' => $comment->id), true)
+		);
+	}
+
+	public function getDownloadCommentAction($download_id, $comment_id)
+	{
+		$download = $this->_getDownloadOr404($download_id);
+		$comment = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
+		if (!$comment || $comment->download->id != $download->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->createApiResponse(array('comment' => $comment->toApiData()));
+	}
+
+	public function postDownloadCommentAction($download_id, $comment_id)
+	{
+		$download = $this->_getDownloadOr404($download_id);
+		$comment = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
+		if (!$comment || $comment->download->id != $download->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$approved = false;
+		$status = $this->in->getString('status');
+		if ($status) {
+			$approved = ($status == 'visible' && $comment->status != 'visible');
+			$comment->status = $status;
+		}
+
+		$content = $this->in->getString('content');
+		if ($content) {
+			$comment->content = $content;
+		}
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		if ($approved) {
+			$this->_sendCommentApprovedNotification($comment);
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteDownloadCommentAction($download_id, $comment_id)
+	{
+		$download = $this->_getDownloadOr404($download_id);
+		$comment = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
+		if (!$comment || $comment->download->id != $download->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->remove($comment);
+		$this->em->flush();
+
+		$this->_sendCommentDeletedNotification($comment);
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getDownloadLabelsAction($download_id)
 	{
 		$download = $this->_getDownloadOr404($download_id);
@@ -334,6 +433,21 @@ class DownloadController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getValidatingCommentsAction()
+	{
+		$comments = $this->em->getRepository('DeskPRO:DownloadComment')->getValidatingComments();
+		$entity_key = 'download';
+		$output = array();
+		foreach ($comments AS $key => $value) {
+			$output[$key] = $value->toApiData(false, true);
+			if ($value->$entity_key) {
+				$output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
+			}
+		}
+
+		return $this->createApiResponse(array('comments' => $output));
 	}
 
 	public function getCategoriesAction()

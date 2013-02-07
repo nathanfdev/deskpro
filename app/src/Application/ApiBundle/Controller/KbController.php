@@ -347,6 +347,105 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getArticleCommentsAction($article_id)
+	{
+		$article = $this->_getArticleOr404($article_id);
+		$comments = $this->em->getRepository('DeskPRO:ArticleComment')->getComments($article);
+
+		return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+	}
+
+	public function newArticleCommentAction($article_id)
+	{
+		$article = $this->_getArticleOr404($article_id);
+
+		$content = $this->in->getString('content');
+		if (!$content) {
+			return $this->createApiErrorResponse('required_field.content', 'Missing content');
+		}
+
+		$person_id = $this->in->getUint('person_id');
+		$person = null;
+		if ($person_id) {
+			$person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
+		}
+
+		$status = $this->in->getString('status');
+
+		$comment = new ArticleComment();
+		$comment->article = $article;
+		$comment->person = $person ?: $this->person;
+		$comment['content'] = $content;
+		$comment['status'] = $status ?: 'visible';
+		$comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
+		$comment['date_created']  = new \DateTime();
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $comment->id),
+			$this->generateUrl('api_kb_article_comments_comment', array('article_id' => $article->id, 'comment_id' => $comment->id), true)
+		);
+	}
+
+	public function getArticleCommentAction($article_id, $comment_id)
+	{
+		$article = $this->_getArticleOr404($article_id);
+		$comment = $this->em->getRepository('DeskPRO:ArticleComment')->find($comment_id);
+		if (!$comment || $comment->article->id != $article->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->createApiResponse(array('comment' => $comment->toApiData()));
+	}
+
+	public function postArticleCommentAction($article_id, $comment_id)
+	{
+		$article = $this->_getArticleOr404($article_id);
+		$comment = $this->em->getRepository('DeskPRO:ArticleComment')->find($comment_id);
+		if (!$comment || $comment->article->id != $article->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$approved = false;
+		$status = $this->in->getString('status');
+		if ($status) {
+			$approved = ($status == 'visible' && $comment->status != 'visible');
+			$comment->status = $status;
+		}
+
+		$content = $this->in->getString('content');
+		if ($content) {
+			$comment->content = $content;
+		}
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		if ($approved) {
+			$this->_sendCommentApprovedNotification($comment);
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteArticleCommentAction($article_id, $comment_id)
+	{
+		$article = $this->_getArticleOr404($article_id);
+		$comment = $this->em->getRepository('DeskPRO:ArticleComment')->find($comment_id);
+		if (!$comment || $comment->article->id != $article->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->remove($comment);
+		$this->em->flush();
+
+		$this->_sendCommentDeletedNotification($comment);
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getArticleAttachmentsAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);
@@ -471,6 +570,21 @@ class KbController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getValidatingCommentsAction()
+	{
+		$comments = $this->em->getRepository('DeskPRO:ArticleComment')->getValidatingComments();
+		$entity_key = 'article';
+		$output = array();
+		foreach ($comments AS $key => $value) {
+			$output[$key] = $value->toApiData(false, true);
+			if ($value->$entity_key) {
+				$output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
+			}
+		}
+
+		return $this->createApiResponse(array('comments' => $output));
 	}
 
 	public function getCategoriesAction()

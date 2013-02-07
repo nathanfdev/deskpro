@@ -242,6 +242,105 @@ class NewsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getNewsCommentsAction($news_id)
+	{
+		$news = $this->_getNewsOr404($news_id);
+		$comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
+
+		return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+	}
+
+	public function newNewsCommentAction($news_id)
+	{
+		$news = $this->_getNewsOr404($news_id);
+
+		$content = $this->in->getString('content');
+		if (!$content) {
+			return $this->createApiErrorResponse('required_field.content', 'Missing content');
+		}
+
+		$person_id = $this->in->getUint('person_id');
+		$person = null;
+		if ($person_id) {
+			$person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
+		}
+
+		$status = $this->in->getString('status');
+
+		$comment = new NewsComment();
+		$comment->news = $news;
+		$comment->person = $person ?: $this->person;
+		$comment['content'] = $content;
+		$comment['status'] = $status ?: 'visible';
+		$comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
+		$comment['date_created']  = new \DateTime();
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $comment->id),
+			$this->generateUrl('api_news_news_comments_comment', array('news_id' => $news->id, 'comment_id' => $comment->id), true)
+		);
+	}
+
+	public function getNewsCommentAction($news_id, $comment_id)
+	{
+		$news = $this->_getNewsOr404($news_id);
+		$comment = $this->em->getRepository('DeskPRO:NewsComment')->find($comment_id);
+		if (!$comment || $comment->news->id != $news->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->createApiResponse(array('comment' => $comment->toApiData()));
+	}
+
+	public function postNewsCommentAction($news_id, $comment_id)
+	{
+		$news = $this->_getNewsOr404($news_id);
+		$comment = $this->em->getRepository('DeskPRO:NewsComment')->find($comment_id);
+		if (!$comment || $comment->news->id != $news->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$approved = false;
+		$status = $this->in->getString('status');
+		if ($status) {
+			$approved = ($status == 'visible' && $comment->status != 'visible');
+			$comment->status = $status;
+		}
+
+		$content = $this->in->getString('content');
+		if ($content) {
+			$comment->content = $content;
+		}
+
+		$this->em->persist($comment);
+		$this->em->flush();
+
+		if ($approved) {
+			$this->_sendCommentApprovedNotification($comment);
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteNewsCommentAction($news_id, $comment_id)
+	{
+		$news = $this->_getNewsOr404($news_id);
+		$comment = $this->em->getRepository('DeskPRO:NewsComment')->find($comment_id);
+		if (!$comment || $comment->news->id != $news->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->remove($comment);
+		$this->em->flush();
+
+		$this->_sendCommentDeletedNotification($comment);
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getNewsLabelsAction($news_id)
 	{
 		$news = $this->_getNewsOr404($news_id);
@@ -288,6 +387,21 @@ class NewsController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getValidatingCommentsAction()
+	{
+		$comments = $this->em->getRepository('DeskPRO:NewsComment')->getValidatingComments();
+		$entity_key = 'news';
+		$output = array();
+		foreach ($comments AS $key => $value) {
+			$output[$key] = $value->toApiData(false, true);
+			if ($value->$entity_key) {
+				$output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
+			}
+		}
+
+		return $this->createApiResponse(array('comments' => $output));
 	}
 
 	public function getCategoriesAction()

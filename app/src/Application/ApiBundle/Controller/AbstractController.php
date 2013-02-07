@@ -380,4 +380,44 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		return $output;
 	}
+
+	protected function _sendCommentApprovedNotification($comment)
+	{
+		if ($comment->getUserEmail()) {
+			$message = $this->container->getMailer()->createMessage();
+			if ($comment->person) {
+				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
+			} else {
+				$message->setTo($comment->getUserEmail());
+			}
+			$message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
+				'comment' => $comment
+			));
+			$message->enableQueueHint();
+			$this->container->getMailer()->send($message);
+		}
+
+		// For feedback we also notify everyone involved
+		if ($comment instanceof \Application\DeskPRO\Entity\FeedbackComment) {
+			$commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
+			$commenting->newCommentNotify($comment);
+		}
+	}
+
+	protected function _sendCommentDeletedNotification($comment)
+	{
+		if ($comment->getUserEmail()) {
+			$message = $this->container->getMailer()->createMessage();
+			if ($comment->person) {
+				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
+			} else {
+				$message->setTo($comment->getUserEmail());
+			}
+			$message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
+				'comment' => $comment
+			));
+			$message->enableQueueHint();
+			$this->container->getMailer()->send($message);
+		}
+	}
 }
