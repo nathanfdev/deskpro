@@ -235,12 +235,12 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_email':
-				$config->set('HTML.AllowedElements', 'em,strong,a,ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote');
+				$config->set('HTML.AllowedElements', 'em,strong,a,ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote,sup,sub');
 				$config->set('HTML.AllowedAttributes', 'a.href,*.style,*.class');
 				$config->set('Attr.AllowedClasses', 'MsoNormal');
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', false);
-				$config->set('CSS.AllowedProperties', array('font-weight', 'font-style'));
+				$config->set('CSS.AllowedProperties', array('font', 'font-weight', 'font-style', 'font-size', 'color', 'background-color', 'background'));
 				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
 				$config->set('HTML.TidyLevel', 'medium');
 				break;
