@@ -347,6 +347,14 @@ class KbController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getArticleVotesAction($article_id)
+	{
+		$article = $this->_getArticleOr404($article_id);
+		$votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('article', $article->id);
+
+		return $this->createApiResponse(array('votes' => $this->getApiData($votes)));
+	}
+
 	public function getArticleCommentsAction($article_id)
 	{
 		$article = $this->_getArticleOr404($article_id);

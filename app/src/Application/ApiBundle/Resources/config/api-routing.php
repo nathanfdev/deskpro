@@ -1487,6 +1487,13 @@ $collection->add('api_kb_article_delete', new Route(
 	array()
 ));
 
+$collection->add('api_kb_article_votes', new Route(
+	'/kb/{article_id}/votes',
+	array('_controller' => 'ApiBundle:Kb:getArticleVotes'),
+	array('_method' => 'GET', 'article_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_kb_article_comments', new Route(
 	'/kb/{article_id}/comments',
 	array('_controller' => 'ApiBundle:Kb:getArticleComments'),
@@ -1705,6 +1712,13 @@ $collection->add('api_feedback_feedback_delete', new Route(
 	'/feedback/{feedback_id}',
 	array('_controller' => 'ApiBundle:Feedback:deleteFeedback'),
 	array('_method' => 'DELETE', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_votes', new Route(
+	'/feedback/{feedback_id}/votes',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackVotes'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+'),
 	array()
 ));
 

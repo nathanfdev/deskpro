@@ -256,6 +256,14 @@ class FeedbackController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getFeedbackVotesAction($feedback_id)
+	{
+		$feedback = $this->_getFeedbackOr404($feedback_id);
+		$votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $feedback->id);
+
+		return $this->createApiResponse(array('votes' => $this->getApiData($votes)));
+	}
+
 	public function getFeedbackCommentsAction($feedback_id)
 	{
 		$feedback = $this->_getFeedbackOr404($feedback_id);
