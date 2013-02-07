@@ -163,16 +163,21 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getSearcher()
 	{
-		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+		$searcher      = new \Application\DeskPRO\Searcher\TicketSearch();
 		$user_searcher = new \Application\DeskPRO\Searcher\PersonSearch();
-		$has_user_terms = false;
+		$org_searcher  = new \Application\DeskPRO\Searcher\OrganizationSearch();
 
-		$force_term_types = array();
+		$has_user_terms = false;
+		$has_org_terms  = false;
+
 		foreach ($this->terms as $term) {
 			if ($term['op'] != 'ignore') {
 				if (strpos($term['type'], 'person_') === 0) {
 					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
 					$has_user_terms = true;
+				} elseif (strpos($term['type'], 'org_') === 0) {
+					$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
+					$has_org_terms = true;
 				} else {
 					$searcher->addTerm($term['type'], $term['op'], $term['options']);
 				}
@@ -183,6 +188,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				if (strpos($term['type'], 'person_') === 0) {
 					$user_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
 					$has_user_terms = true;
+				} elseif (strpos($term['type'], 'org_') === 0) {
+					$org_searcher->addTerm($term['type'], $term['op'], $term['options']);
+					$has_org_terms = true;
 				} else {
 					$searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
 				}
@@ -191,6 +199,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($has_user_terms) {
 			$searcher->setPersonSearch($user_searcher);
+		}
+		if ($has_org_terms) {
+			$searcher->setOrganizationSearch($org_searcher);
 		}
 
 		$time_secs = $this->getOptionSeconds();
