@@ -105,4 +105,8 @@ switch ($_GET['_sys']) {
 	case 'ping':
 		require DP_ROOT . '/sys/scripts/ping.php';
 		break;
+
+	case 'licinfo':
+		require DP_ROOT . '/sys/scripts/licinfo.php';
+		break;
 }
