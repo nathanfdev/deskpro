@@ -492,7 +492,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		var statusUpdate = this.wrapper.find('input[name="actions[status]"]:checked').val();
 
-		$.ajax({
+		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
 			type: 'POST',
 			data: formData,

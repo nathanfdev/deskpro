@@ -1508,10 +1508,20 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
+		$client_messages = false;
+		if ($this->in->getUint('client_messages_since') > 0) {
+			$client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+				$this->person,
+				$this->session,
+				$this->in->getUint('client_messages_since')
+			);
+		}
+
 		return $this->createJsonResponse(array(
-			'success' => true,
+			'success'          => true,
 			'success_tickets' => $success,
 			'failed_tickets'  => $permission_errors,
+			'client_messages' => $client_messages,
 		));
 	}
 }
