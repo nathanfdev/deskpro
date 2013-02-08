@@ -1350,8 +1350,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// Handle CC's
 		$fwd_data = $fwd_cutter->getData();
+		$cc_emails = $this->reader->getDeliveredAddresses();
+
 		if ($fwd_data['fwd_cc_addresses']) {
-			$cc_emails = array();
 			foreach ($fwd_data['fwd_cc_addresses'] as $e) {
 				$e_a = new Reader\Item\EmailAddress();
 				$e_a->email = $e['email'];
@@ -1359,7 +1360,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 				$cc_emails[] = $e_a;
 			}
+		}
 
+		if ($cc_emails) {
 			$this->handleCc($ticket, $cc_emails);
 		}
 
