@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -168,6 +169,39 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 				$log = file_get_contents($logpath);
 				if (filesize($logpath) > 307200) {
 					$log = substr($log, -307200);
+				}
+
+				// With this reporting we are trying to get notified of fatal errors that couldnt be
+				// handled. If we handled the erorr properly, then the path would have been truncated.
+				// So an easy way to check is by checking for the full file path and then getting the timestamp
+				// of that log line.
+				$last_pos = strrpos($log, 'C:\\inetpub\\wwwroot\\deskprov4');
+				if ($last_pos === false) {
+					continue;
+				}
+
+				// Now try to find the line timestamp
+				$last_timestamp = null;
+				$x = 0;
+				while ($x++ < 100) {
+					$line_start = strrpos($log, "\n[", $last_pos-1000);
+					$last_timestamp = Strings::extractRegexMatch('#\[((.*?)-(.*?)-(.*?) (.*?))\]#', substr($log, $line_start, 100));
+
+					if ($last_timestamp) {
+						$last_timestamp = @strtotime($last_timestamp);
+						if ($last_timestamp) {
+							break;
+						}
+					}
+				}
+
+				if (!$last_timestamp) {
+					continue;
+				}
+
+				// And make sure the timestamp is after our last submission
+				if ($last_timestamp > $date_cut_min) {
+					continue;
 				}
 
 				$errinfo = array(
