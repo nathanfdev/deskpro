@@ -224,6 +224,12 @@ class TicketSearchController extends AbstractController
 
 		$results = $searcher->getMatches();
 		$results = Arrays::castToType($results, 'integer');
+
+		if (ctype_digit($q) || preg_match('/#^([0-9]+)$/', $q)) {
+			if ($q[0] == '#') $q = substr($q, 1);
+			array_unshift($results, $q);
+		}
+
 		$results = array_slice($results, 0, $limit);
 
 		$output = array();
