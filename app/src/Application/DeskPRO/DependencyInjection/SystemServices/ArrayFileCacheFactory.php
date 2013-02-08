@@ -40,7 +40,7 @@ class ArrayFileCacheFactory
 {
 	public static function create($cache_name)
 	{
-		if (!function_exists('dp_get_data_dir')) {
+		if (!function_exists('dp_get_tmp_dir') || !is_writable(dp_get_tmp_dir())) {
 			return self::createNull();
 		}
 
