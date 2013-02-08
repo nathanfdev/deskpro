@@ -208,6 +208,23 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 
 		$orm->flush();
 
-		return parent::processConfig($controller, $plugin, $errors);
+		if (parent::processConfig($controller, $plugin, $errors)) {
+			if ($controller->in->getBool('configure_usersource')) {
+				$us = App::getEntityRepository('DeskPRO:Usersource')->getByType('magento');
+				if ($us) {
+					return $controller->generateUrl('admin_userreg_usersource_edit',
+						array('id' => $us->id)
+					);
+				} else {
+					return $controller->generateUrl('admin_userreg_usersource_edit',
+						array('usersource' => array('source_type' => 'magento'))
+					);
+				}
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
 	}
 }

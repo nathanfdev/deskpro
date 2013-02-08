@@ -86,7 +86,11 @@ class PluginsController extends AbstractController
 
 			$redirect = $plugin_info->processConfig($this, $plugin, $errors);
 			if ($redirect) {
-				return $this->redirectRoute('admin_plugins');
+				if (is_string($redirect)) {
+					return $this->redirect($redirect);
+				} else {
+					return $this->redirectRoute('admin_plugins');
+				}
 			}
 		}
 

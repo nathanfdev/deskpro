@@ -65,9 +65,9 @@ class MagentoModel
 		$this->_usersource->title = $this->title;
 		$this->_usersource->lost_password_url = $this->lost_password_url ?: '';
 
-		$this->_usersource->setOption('sso_cookie', $this->sso_cookie);
+		$this->_usersource->setOption('sso_cookie', intval($this->sso_cookie));
 		$this->_usersource->setOption('magento_path', $this->magento_path);
-		$this->_usersource->setOption('sso_js', $this->sso_js);
+		$this->_usersource->setOption('sso_js', intval($this->sso_js));
 
 		$em->persist($this->_usersource);
 		$em->flush();

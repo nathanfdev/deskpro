@@ -1,3 +1,7 @@
+<div class="alert-message block-message info">
+	Magento single sign on can only be used if the <a href="{{ path('admin_plugins_plugin', {'plugin_id': 'Magento'}) }}">Magento API information</a> has been entered.
+</div>
+
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
@@ -26,7 +30,7 @@
 	</div>
 </div>
 
-<!--<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>Cross Domain Single Sign On</label>
@@ -45,10 +49,10 @@
 					Enable
 				</label>
 				<div class="dp-group-options" style="display: none">
-					You must have the DeskPRO Integration extension installed in Magento.
+					You must have the <a href="http://www.magentocommerce.com/magento-connect/deskpro-integration-3130.html" target="_blank">DeskPRO Integration</a> extension installed in Magento.
 				</div>
 			</div>
 		</div>
 		<div>Cross domain single sign on allows logins to be shared between DeskPRO and Magento across multiple servers and even multiple domains. Any time a guest visits DeskPRO while logged into Magento, they will automatically be logged into DeskPRO.</div>
 	</div>
-</div>-->
+</div>

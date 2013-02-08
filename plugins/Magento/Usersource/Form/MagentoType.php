@@ -43,9 +43,9 @@ class MagentoType extends AbstractType
 	{
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('lost_password_url', 'text', array('required' => false));
-		$builder->add('sso_cookie', 'integer', array('required' => false));
+		$builder->add('sso_cookie', 'text', array('required' => false));
 		$builder->add('magento_path', 'text', array('required' => false));
-		$builder->add('sso_js', 'integer', array('required' => false));
+		$builder->add('sso_js', 'text', array('required' => false));
 	}
 
 	public function getDefaultOptions(array $options)
