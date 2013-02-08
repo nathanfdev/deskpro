@@ -85,7 +85,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			die('no permission');
+			return $this->renderStandardPermissionError('You do not have permission to use the billing interface.');
 		}
 
 		$this->person->loadHelper('Agent');
@@ -102,5 +102,28 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		return false;
+	}
+
+	/**
+	 * Render a standard permission error message.
+	 *
+	 * @param string $error_message
+	 * @param string $error_title
+	 * @return Response
+	 */
+	public function renderStandardPermissionError($error_message = '', $error_title = '', $code = 200, array $vars = array())
+	{
+		$tpl = 'BillingBundle:Main:error-permission.html.twig';
+
+		$vars = array_merge($vars, array(
+			'error_message' => $error_message,
+			'error_title'   => $error_title
+		));
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
 	}
 }

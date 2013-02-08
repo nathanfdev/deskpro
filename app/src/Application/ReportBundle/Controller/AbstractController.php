@@ -103,7 +103,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	public function renderStandardPermissionError($error_message = '', $error_title = '', $code = 200, array $vars = array())
 	{
-		$tpl = 'ReportBundle:Common:error-permission.html.twig';
+		$tpl = 'ReportBundle:Main:error-permission.html.twig';
 
 		$vars = array_merge($vars, array(
 			'error_message' => $error_message,
