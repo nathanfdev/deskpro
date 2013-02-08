@@ -744,11 +744,13 @@ class TicketTerms
 				}
 
 				if ($op == 'after') {
-					if (!($compare_hour < $hour || ($compare_hour == $hour && $min < $compare_min))) {
+					// No match if before
+					if ($hour < $compare_hour || ($compare_hour == $hour && $min < $compare_min)) {
 						return false;
 					}
 				} else {
-					if ($compare_hour < $hour || ($compare_hour == $hour && $min < $compare_min)) {
+					// No match if after
+					if ($hour > $compare_hour || ($compare_hour == $hour && $min > $compare_min)) {
 						return false;
 					}
 				}
