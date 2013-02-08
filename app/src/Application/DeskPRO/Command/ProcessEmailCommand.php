@@ -53,6 +53,7 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 		$this->addOption('gateway', null, InputOption::VALUE_REQUIRED, 'ID of the gateway to process the source under. If not provided, then the first ticket gateway will be used.');
 		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
 		$this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
+		$this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
 	}
 
 	/**
