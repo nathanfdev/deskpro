@@ -100,8 +100,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		}).bind(this), this.pageUid);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
-
 		this.addEvent('shortcutFocusReply', function(ev) {
 
 			ev.preventDefault();
@@ -852,31 +850,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json',
-			success: function(data) {
-				this._handleSaveLabelsSuccess(data);
-			}
-		});
-	},
-
-	_handleSaveLabelsSuccess: function(data) {
-
-	},
-
-	getNewTicketMessages: function() {
-		var last_id = $('li.message-item:last', this.wrapper).data('message-id');
-
-		$.ajax({
-			url: this.getMetaData('getMessagesUrl'),
-			type: 'POST',
-			context: this,
-			data: { since: last_id },
-			dataType: 'json',
-			success: function(data) {
-				Array.each(data.messages, function (html) {
-					this.displayNewMessage(html);
-				}, this);
-			}
+			dataType: 'json'
 		});
 	},
 
@@ -1539,6 +1513,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 
 	doTicketUpdate: function() {
+		if (this.doTicketUpdateRunning) {
+			this.doTicketUpdateRunning.abort();
+			this.doTicketUpdateRunning = null;
+		}
+
 		var formData = [];
 		formData.push({
 			name: 'last_message_id',
@@ -1549,7 +1528,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
 		});
 
-		$.ajax({
+		this.doTicketUpdateRunning = $.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/update-views.json',
 			type: 'POST',
 			dataType: 'json',
