@@ -374,6 +374,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $subject;
 
 	/**
+	 * @var string
+	 */
+	protected $original_subject;
+
+	/**
 	 * @var array
 	 */
 	protected $properties = null;
@@ -583,6 +588,32 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->setModelField('sent_to_address', $addresses);
 		$this->_sent_to_addresses = null;
+	}
+
+
+	public function setSubject($subject)
+	{
+		$this->setModelField('subject', $subject);
+
+		if (!$this->original_subject) {
+			$this->setProcessedOriginalSubject($subject);
+		}
+	}
+
+
+	/**
+	 * Parse off common prefixes on subjects and then set the original subject
+	 *
+	 * @param $subject
+	 */
+	public function setProcessedOriginalSubject($subject)
+	{
+		do {
+			$orig = $subject;
+			$subject = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', $subject);
+		} while ($orig != $subject);
+
+		$this->setModelField('original_subject', $subject);
 	}
 
 
@@ -2955,6 +2986,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_locked', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_locked', ));
 		$metadata->mapField(array( 'fieldName' => 'has_attachments', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_attachments', ));
 		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
+		$metadata->mapField(array( 'fieldName' => 'original_subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_subject', ));
 		$metadata->mapField(array( 'fieldName' => 'properties', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'properties', ));
 		$metadata->mapField(array( 'fieldName' => 'worst_sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'worst_sla_status', ));
 		$metadata->mapField(array( 'fieldName' => 'waiting_times', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'waiting_times', ));

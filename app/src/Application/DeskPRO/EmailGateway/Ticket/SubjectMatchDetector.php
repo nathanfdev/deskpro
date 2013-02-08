@@ -145,10 +145,10 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 			$ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE (subject = ?) AND date_created > ? AND status != 'closed'
+				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status != 'closed'
 				ORDER BY id DESC
 				LIMIT 20
-			", array($subject_re, $this->_time_cutoff)));
+			", array($subject_re, $subject_re, $this->_time_cutoff)));
 		}
 
 		$ticket_ids = Arrays::removeFalsey($ticket_ids);
