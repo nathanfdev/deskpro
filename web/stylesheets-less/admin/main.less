@@ -2463,11 +2463,38 @@ section#portal_colors .style-row.color.dual .desc {
 
 
 ul.labels-list > li {
+	position: relative;
 	display: block;
 	float: left;
 
 	line-height: 100%;
-	width: 150px;
+	width: 425px;
+	margin-right: 25px;
+	margin-bottom: 9px;
+}
+
+ul.labels-list > li input[type="text"] {
+	width: 90%;
+	padding: 3px;
+	padding-right: 20px;
+	width: 400px;
+}
+
+ul.labels-list > li .delete-trigger {
+	position: absolute;
+	display: none;
+	top: 1px;
+	right: 1px;
+	background: url(../../images/agent/icons/big-minus.png) no-repeat;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+	overflow: hidden;
+	line-height: 150px;
+}
+
+ul.labels-list > li:hover .delete-trigger {
+	display: block;
 }
 
 ul.labels-list > li > div {
@@ -2487,11 +2514,12 @@ ul.labels-list > li > div:hover {
 }
 
 ul.labels-list > li .count {
-	float: right;
-	display: block;
+	position: absolute;
+	top: 6px;
+	right: 7px;
 	line-height: 100%;
 	background-color: #C6CAD0;
-	padding: 1px 4px 1px 4px;
+	padding: 2px 4px 2px 4px;
 
 	.rounded(15px);
 

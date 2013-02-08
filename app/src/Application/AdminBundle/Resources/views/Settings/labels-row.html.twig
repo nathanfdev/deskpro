@@ -1,12 +1,5 @@
 <li class="label-row" data-label="{{label}}">
-	<div>
-		<div class="dp-block-controls" style="width: 53px">
-			<ul>
-				<li class="dp-rename rename-trigger"><span></span></li>
-				<li class="dp-remove delete-trigger"><span></span></li>
-			</ul>
-		</div>
-		<span class="count">{{ count }}</span>
-		<label>{{label}}</label>
-	</div>
+	<input type="text" class="label-text" value="{{ label }}" />
+	<span class="count">{{ count }}</span>
+	<span class="delete-trigger">x</span>
 </li>
