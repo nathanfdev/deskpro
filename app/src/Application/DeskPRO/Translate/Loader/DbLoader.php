@@ -85,6 +85,12 @@ class DbLoader implements LoaderInterface
 		// null contains non-language language like cat names and such
 		$langs[] = '0';
 
+		$specific_lang_ids = array(0);
+		if ($language) {
+			$specific_lang_ids[] = $language->getId();
+		}
+		$specific_lang_ids = implode(',', $specific_lang_ids);
+
 		$langs = array_unique($langs, \SORT_STRING);
 
 		$lang_in = implode(',', $langs);
@@ -95,20 +101,36 @@ class DbLoader implements LoaderInterface
 
 		// Depending on the interface, we load user, user+agent or user+agent+admin
 		if (DP_INTERFACE == 'admin') {
-			$group_like = '1';
+			$sql = "
+				SELECT name, phrase, original_phrase
+				FROM phrases
+				WHERE language_id IN ($lang_in)
+				GROUP BY name
+				ORDER BY language_id DESC
+			";
 		} elseif (DP_INTERFACE == 'agent') {
-			$group_like = 'groupname LIKE "agent.%" OR groupname LIKE "user.%" OR groupname LIKE "obj_%" OR groupname = "custom"';
+			$sql = "
+				SELECT name, phrase, original_phrase
+				FROM phrases
+				WHERE
+					(language_id IN ($lang_in) AND groupname LIKE 'agent.%' OR groupname LIKE 'user.%')
+					OR (language_id IN ($specific_lang_ids) AND groupname LIKE \"obj_%\" OR groupname = \"custom\")
+				GROUP BY name
+				ORDER BY language_id DESC
+			";
 		} else {
-			$group_like = 'groupname LIKE "user.%" OR groupname LIKE "obj_%" OR groupname = "custom"';
+			$sql = "
+				SELECT name, phrase, original_phrase
+				FROM phrases
+				WHERE
+					(language_id IN ($lang_in) AND groupname LIKE 'user.%')
+					OR (language_id IN ($specific_lang_ids) AND groupname LIKE \"obj_%\" OR groupname = \"custom\")
+				GROUP BY name
+				ORDER BY language_id DESC
+			";
 		}
 
-		$q = $this->dbconn->query("
-			SELECT name, phrase, original_phrase
-			FROM phrases
-			WHERE language_id IN ($lang_in) AND ($group_like)
-			GROUP BY name
-			ORDER BY language_id DESC
-		");
+		$q = $this->dbconn->query($sql);
 
 		$phrases = array();
 		while ($r = $q->fetch()) {
