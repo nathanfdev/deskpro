@@ -1,0 +1,174 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace Application\DeskPRO\Command;
+
+use Application\DeskPRO\EmailGateway\Runner;
+use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Log\Logger;
+use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Output;
+
+use Application\DeskPRO\App;
+
+class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+{
+	protected function configure()
+	{
+		$this->setName('dp:process-email');
+		$this->addOption('gateway', null, InputOption::VALUE_REQUIRED, 'ID of the gateway to process the source under. If not provided, then the first ticket gateway will be used.');
+		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
+		$this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
+	}
+
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return parent::getContainer();
+	}
+
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		#----------------------------------------
+		# Get gateway account
+		#----------------------------------------
+
+		if ($input->getOption('gateway')) {
+			$gateway = $this->getContainer()->getEm()->find('DeskPRO:EmailGateway', $input->getOption('gateway'));
+
+			if (!$gateway) {
+				$output->writeln("<error>Could not find gateway</error>");
+				return 1;
+			}
+		} else {
+			$gateway = $this->getContainer()->getEm()->createQuery("
+				SELECT g
+				FROM DeskPRO:EmailGateway g
+				WHERE g.gateway_type = 'tickets'
+				ORDER BY g.id ASC
+			")->setMaxResults(1)->getOneOrNullResult();
+
+			if (!$gateway) {
+				$output->writeln("<error>No ticket gateways exist</error>");
+				return 1;
+			}
+		}
+
+		#----------------------------------------
+		# Read/save source object
+		#----------------------------------------
+
+		if ($input->getOption('source')) {
+			$source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
+
+			if (!$source) {
+				$output->writeln("<error>Could not find source</error>");
+				return 1;
+			}
+		} else {
+
+			if ($input->getOption('file')) {
+				$raw_source = file_get_contents($input->getOption('file'));
+			} else {
+				$raw_source = '';
+				while (!feof(STDIN)) {
+					$raw_source .= fread(STDIN, 1024);
+				}
+			}
+
+			$raw_source = trim($raw_source);
+			if (!$raw_source) {
+				$output->writeln("<error>No email source file provided</error>");
+				return 1;
+			}
+
+			$raw_source = Strings::standardEol($raw_source);
+
+			$header_end = strpos($raw_source, "\n\n");
+			if ($header_end === false) {
+				$output->writeln("<error>Invalid email source -- could not split headers</error>");
+				return 1;
+			}
+
+			$raw_headers = trim(substr($raw_source,0, $header_end));
+
+			$source = new EmailSource();
+			$source->fromArray(array(
+				'gateway' => $gateway,
+				'headers' => $raw_headers,
+				'status' => 'inserted'
+			));
+
+			// Rough matching, just for info purposes when browsing a list
+			$source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
+			$source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
+			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
+			$source->object_type    = ($gateway->gateway_type == 'tickets' ? 'ticket' : $gateway->gateway_type);
+
+			$desc = App::getSystemService('filestorage')->createRandomPath();
+			$desc->write($raw_source, array(
+				'filename' => 'email.dat',
+			));
+
+			$blob_id = $desc->getPath();
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$source->blob = $blob;
+
+			App::getOrm()->persist($source);
+			App::getOrm()->flush();
+
+			$output->writeln("<info>Saved email source #" . $source->getId() . "</info>");
+		}
+
+		#----------------------------------------
+		# Run the gateway
+		#----------------------------------------
+
+		$logger = new Logger();
+		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
+
+		$runner = new Runner();
+		$runner->setLogger($logger);
+		$runner->setPhpTimeLimit(900);
+		$runner->executeSource($source);
+
+		return 0;
+	}
+}
