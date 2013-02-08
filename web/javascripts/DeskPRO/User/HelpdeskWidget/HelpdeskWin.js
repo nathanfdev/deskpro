@@ -57,11 +57,14 @@ if (top === self) {
 		var getDocHeight = function() {
 			if (!document.body || !document.documentElement) return 0;
 
-			return Math.max(
-				document.body.scrollHeight,
+			var h = Math.max(
 				document.body.offsetHeight,
 				document.body.clientHeight
 			);
+
+			h += 10;
+
+			return h;
 		};
 
 		var createCookie = function(name,value,days) {
@@ -184,10 +187,15 @@ if (top === self) {
 		//##############################################################################################################
 
 		var to = window.setInterval(function() {
+			var element;
 			if (document.body) {
 				window.clearTimeout(to);
 				document.documentElement.className += ' dp-in-frame';
 				document.body.className += ' ' + ' dp-in-frame';
+
+				if (element = document.getElementById('dpchat_wrap')) {
+					element.parentNode.removeChild(element);
+				}
 			}
 		}, 10);
 

@@ -400,6 +400,10 @@ var DpChatWidget = new (function() {
 
 	function initSession() {
 
+		if (document.body && document.body.className && document.body.className.indexOf('dp-in-frame') !== -1) {
+			return;
+		}
+
 		if (DpChatWidget_Options.onInitCallback) {
 			options.onInitCallback = DpChatWidget_Options.onInitCallback;
 		}
@@ -466,6 +470,10 @@ var DpChatWidget = new (function() {
 	},
 
 	this.initWidget = function(sessionId) {
+
+		if (document.body && document.body.className && document.body.className.indexOf('dp-in-frame') !== -1) {
+			return;
+		}
 
 		if (sessionId) {
 			setCookie('dpchat_sid', sessionId, 7);
