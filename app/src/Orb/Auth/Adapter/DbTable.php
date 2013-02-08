@@ -168,8 +168,8 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 		} catch (\Exception $e) {
 			if ($this->logger) {
 				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
-				return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
 			}
+			return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
 		}
 
 		$identity = $this->getIdentityFromUserInfo($userinfo);
