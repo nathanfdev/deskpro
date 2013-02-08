@@ -364,29 +364,30 @@ class LanguagesController extends AbstractController
 				$master_phrases = $groups_reader->getGroupPhrases($g);
 				$vars['master_phrases'] = array_merge($vars['master_phrases'], $master_phrases);
 			}
+			$vars['lang_phrases']['original'] = $vars['master_phrases'];
+
 			foreach ($groups as $g) {
 				$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases(str_replace('%DP_ROOT%', DP_ROOT, $vars['language']->base_filepath));
 				$master_phrases = $groups_reader->getGroupPhrases($g);
-				$vars['lang_phrases']['original'] = array_merge($vars['master_phrases'], $master_phrases);
+				$vars['lang_phrases']['original'] = array_merge($vars['lang_phrases']['original'], $master_phrases);
 			}
 		}
 
 		if ($group == 'CUSTOM') {
-			$custom_phrases = App::getDb()->fetchAllKeyValue("
-				SELECT name, phrase
+			$custom_ids = App::getDb()->fetchAllKeyValue("
+				SELECT name
 				FROM phrases
-				WHERE groupname = 'custom' AND language_id = 1
-			");
-			$vars['lang_phrases']['original'] = array_merge($vars['lang_phrases']['original'], $custom_phrases);
+				WHERE groupname = 'custom' OR language_id = $language_id
+			", array(), 0, 0);
 
-			$vars['lang_phrases']['custom'] = array_merge($vars['lang_phrases']['custom'], App::getDb()->fetchAllKeyed("
-				SELECT name, phrase
-				FROM phrases
-				WHERE groupname = 'custom' AND language_id = $language_id
-			", array(), 'name'));
+			//$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
+			//$vars['master_phrases'] = array_merge($vars['master_phrases'], $vars['lang_phrases']['custom']);
 
-			$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
-			$vars['master_phrases'] = array_merge($vars['master_phrases'], $vars['lang_phrases']['custom']);
+			foreach ($vars['master_phrases'] as $k => $v) {
+				if (!isset($custom_ids[$k])) {
+					unset($vars['master_phrases'][$k]);
+				}
+			}
 		}
 
 		if (App::getRequest()->isPartialRequest() == 'overlay') {
