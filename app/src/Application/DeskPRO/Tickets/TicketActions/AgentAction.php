@@ -101,11 +101,15 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 			}
 		}
 
-		$agent = App::getDataService('Agent')->get($agent_id);
+		if ($agent_id == 0) {
+			$agent = null;
+		} else {
+			$agent = App::getDataService('Agent')->get($agent_id);
 
-		if (!$agent) {
-			// Agent is invalid, skip
-			return;
+			if (!$agent) {
+				// Agent is invalid, skip
+				return;
+			}
 		}
 
 		$ticket['agent'] = $agent;
