@@ -175,7 +175,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 				// handled. If we handled the erorr properly, then the path would have been truncated.
 				// So an easy way to check is by checking for the full file path and then getting the timestamp
 				// of that log line.
-				$last_pos = strrpos($log, 'C:\\inetpub\\wwwroot\\deskprov4');
+				$last_pos = strrpos($log, DP_ROOT);
 				if ($last_pos === false) {
 					continue;
 				}
