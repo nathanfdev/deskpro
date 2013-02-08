@@ -521,8 +521,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		App::getDb()->beginTransaction();
 
 		try {
-			App::getOrm()->persist($ticket);
 			App::getOrm()->persist($person);
+			App::getOrm()->persist($ticket);
 			App::getOrm()->persist($message);
 			App::getOrm()->flush();
 
