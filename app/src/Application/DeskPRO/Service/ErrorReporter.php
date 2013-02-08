@@ -117,7 +117,7 @@ class ErrorReporter
 			$info['DEV_MODE'] = 1;
 		}
 
-		if (class_exists('Application\\DeskPRO\\App')) {
+		if (class_exists('Application\\DeskPRO\\App', false)) {
 			try {
 				$kernel = App::getKernel();
 				$info['Kernel::getEnvironment'] = $kernel->getEnvironment();
