@@ -390,6 +390,24 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
 
 	/**
+	 * @return string
+	 */
+	public function getHtmlOption()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'html');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealHtmlOption()
+	{
+		return $this->getOption('html', '');
+	}
+
+
+	/**
 	 * Set a value of an option
 	 *
 	 * @param string $name
@@ -528,7 +546,10 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	{
 		if ($property == 'description') {
 			return $this->description;
+		} elseif ($property == 'html') {
+			return $this->getRealHtmlOption();
 		}
+
 		return $this->title;
 	}
 }

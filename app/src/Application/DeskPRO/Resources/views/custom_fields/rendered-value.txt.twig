@@ -14,5 +14,5 @@
 	{% endblock %}
 {% endset %}
 {% block content %}
-	{{ field_rendered }}{{ field_def.getOption('html', '')|raw }}
+	{{ field_rendered }}{{ field_def.getHtmlOption()|raw }}
 {% endblock %}

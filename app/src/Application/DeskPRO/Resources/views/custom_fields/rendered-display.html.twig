@@ -14,5 +14,5 @@
 	{% endblock %}
 {% endset %}
 {% block content %}
-	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} customfield rendered" id="{{elId}}_rendered_wrap">{{ field_rendered }}{{ field_def.getOption('html', '')|raw }}</div>
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} customfield rendered" id="{{elId}}_rendered_wrap">{{ field_rendered }}{{ field_def.getHtmlOption()|raw }}</div>
 {% endblock %}
