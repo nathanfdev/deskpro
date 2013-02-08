@@ -269,7 +269,7 @@ $collection->add('admin_tickets_filters_delete', new Route(
 
 $collection->add('admin_tickets_filters_new', new Route(
 	'/tickets/filters/new',
-	array('_controller' => 'AdminBundle:TicketFilters:newChooseType'),
+	array('_controller' => 'AdminBundle:TicketFilters:edit', 'filter_id' => '0'),
 	array(),
 	array()
 ));

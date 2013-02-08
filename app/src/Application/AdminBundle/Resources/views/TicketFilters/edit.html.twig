@@ -42,20 +42,50 @@ $(document).ready(function() {
 <form action="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id|default(0)}) }}" method="post" class="dp-form with-form-validator">
 <input type="hidden" name="process" value="1" />
 
-<div class="dp-form-row">
-	<div class="dp-form-label">
-		<label>{{ phrase('agent.general.type') }}</label>
-	</div>
-	<div class="dp-form-input">
-		{% if filter.is_global %}
-			Global filter
-		{% elseif filter.agent_team %}
-			Team filter for {{ filter.agent_team.name }}
-		{% else %}
-			Custom filter for {{ filter.person.display_name }}
-		{% endif %}
+<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>{{ phrase('admin.tickets.agent_access') }}</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="filter_visibility" value="filter_global" {% if filter.is_global %}checked="checked"{% endif %} />
+					{{ phrase('admin.tickets.explain_global_gilter') }}
+				</label>
+			</div>
+
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="filter_visibility" value="filter_agent_team" {% if filter.agent_team %}checked="checked"{% endif %} />
+					{{ phrase('admin.tickets.choice_specific_team_access') }}
+				</label>
+				<div id="agent_required_group" class="dp-group-options" style="display: none">
+					{{ phrase('admin.tickets.select_team_filter_access') }}: <select name="filter[agent_team_id]">
+						{% for k,v in app.getDataRepository('AgentTeam').getTeamNames() %}
+							<option {% if filter.agent_team.id == k %}selected="selected"{% endif %} value="{{k}}">{{v}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="filter_visibility" value="filter_agent" {% if not filter.is_global and not filter.agent_team %}checked="checked"{% endif %} />
+					{{ phrase('admin.tickets.choice_specific_agent_access') }}
+				</label>
+				<div id="agent_required_group" class="dp-group-options" style="display: none">
+					{{ phrase('admin.tickets.select_agent_filter_access') }}: <select name="filter[person_id]">
+						{% for k,v in app.getDataRepository('Person').getAgentNames() %}
+							<option {% if filter.person.id == k %}selected="selected"{% endif %} value="{{k}}">{{v}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
+
 <div class="dp-form-row">
 	<div class="dp-form-label">
 		<label>{{ phrase('agent.general.title') }}</label>
@@ -69,12 +99,6 @@ $(document).ready(function() {
 			data-min-len="1"
 		/>
 		<div class="dp-error-explain dp-error-pattern_no_match">Please enter a title</div>
-
-		{% if not filter.id %}
-			<input type="hidden" name="filter[person_id]" value="{{filter.person.id|default(0)}}" />
-			<input type="hidden" name="filter[agent_team_id]" value="{{filter.agent_team.id|default(0)}}" />
-			<input type="hidden" name="filter[is_global]" value="{{ filter.is_global + 0 }}" />
-		{% endif %}
 	</div>
 </div>
 <div class="dp-form-row">
