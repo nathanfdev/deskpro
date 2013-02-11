@@ -314,11 +314,6 @@ class SettingsController extends AbstractController
 	{
 		$label_str = strtolower($this->in->getString('label'));
 
-		// Invalid
-		if (!preg_match('#^[a-z0-9\- ]+$#', $label_str)) {
-			return $this->createJsonResponse(array('errorMessage' => 'Please only enter letters, numbers and dashes'));
-		}
-
 		/** @var $ldm \Application\DeskPRO\Labels\LabelDefManager */
 		$ldm = $this->container->getSystemService('label_def_manager');
 
