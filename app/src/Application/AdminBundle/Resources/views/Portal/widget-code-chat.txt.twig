@@ -1,15 +1,23 @@
 <!-- DeskPRO Chat -->
 <script type="text/javascript">
 	var DpChatWidget_Options = DpChatWidget_Options || {};
-	DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	DpChatWidget_Options.deskproUrl = DpChatWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
-	DpChatWidget_Options.startPhrase = 'Chat with us';
+	DpChatWidget_Options.protocol     = ('https:' == document.location.protocol ? 'https' : 'http');
+	DpChatWidget_Options.deskproUrl   = DpChatWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
+	DpChatWidget_Options.languageId   = 0;
+	DpChatWidget_Options.startPhrase  = 'Chat with us';
 	DpChatWidget_Options.resumePhrase = 'Open your chat';
-	DpChatWidget_Options.tabLocation = 'right';
-
-	// Optionally uncomment this line and set the value to a langauge ID
-	// to have the chat widget open in that language.
-	//DpChatWidget_Options.languageId = 1;
+	DpChatWidget_Options.tabLocation  = 'right';
+	DpChatWidget_Options.btnStyle     = {
+		bgColor: '#3F3F3F',
+		border: '2px solid #727272',
+		textColor: '#FFFFFF',
+		textShadow: '0px 1px 2px #000000',
+		font: 'bold 12px Arial, sans-serif'
+	},
+	DpChatWidget_Options.frameStyle   = {
+		bgColor: '#2A69A9',
+		textColor: '#FFFFFF'
+	};
 
 	DpChatWidget_Options.currentPageUrl = window.location;
 	DpChatWidget_Options.referrerPageUrl = document.referrer;
