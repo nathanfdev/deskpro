@@ -716,6 +716,11 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		// Log but dont report erorrs about writing chat available trigger
+		if (strpos($errstr, 'chat_is_available.trigger') !== false) {
+			$no_send_error = true;
+		}
+
 		// Socket/network errors
 		if (
 			strpos($errstr, 'stream_socket_enable_crypto():') !== false

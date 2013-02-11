@@ -55,9 +55,9 @@ class AvailableTrigger
 
 		$trigger_File = dp_get_data_dir() . '/chat_is_available.trigger';
 		if ($is_chat_available) {
-			@file_put_contents($trigger_File, time());
+			file_put_contents($trigger_File, time());
 		} elseif (is_file($trigger_File)) {
-			@unlink($trigger_File);
+			unlink($trigger_File);
 		}
 	}
 }
