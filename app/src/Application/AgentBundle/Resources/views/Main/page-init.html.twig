@@ -41,6 +41,34 @@
 		}
 		DpErrorLog.init();
 
+		if (TraceKit) {
+			TraceKit.report.subscribe(function(errorReport) {
+				var message = errorReport.message || '';
+				var line    = null;
+				var script  = null;
+
+				var traceData = "";
+				if (errorReport.stack) {
+					for (var i = 0; i < errorReport.stack.length; i++) {
+						var item = errorReport.stack[i];
+
+						if (line === null) {
+							line   = item.line || 0;
+							script = item.url || '';
+						}
+
+						traceData += (item.func || '[anonymous]') + "() in " + item.url + ":" + (item.line || '0') + "\n";
+					}
+				}
+
+				if (window.console && window.console.debug) {
+					window.console.debug("[JS ERROR] %s: %s", message, traceData);
+				}
+
+				DpErrorLog.logError(message, traceData, script, line);
+			});
+		}
+
 		$('pane_list_content').css('display', '');
 		$('pane_content').css('display', '');
 

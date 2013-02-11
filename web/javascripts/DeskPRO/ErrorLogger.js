@@ -7,36 +7,6 @@ var DpErrorLog = {
 			return;
 		}
 
-		var self = this;
-
-		var gOldOnError = window.onerror;
-
-		window.onerror = function(message, script, line) {
-
-			if (line == "0") {
-				if ($.browser.mozilla) { return false; }
-				else { return true; }
-			}
-
-			self.handleError(message, script, line);
-
-			if (gOldOnError) {
-				gOldOnError(message, script, line);
-			}
-
-			if (!DP_DEBUG) {
-				if ($.browser.mozilla) {
-					// https://developer.mozilla.org/en-US/docs/DOM/window.onerror
-					// true to say error was handled
-					return true;
-				} else {
-					// (standard) http://code.google.com/p/chromium/issues/detail?id=92062
-					// false to say error was handled
-					return false;
-				}
-			}
-		};
-
 		if (window.jQuery && window.jQuery.cookie) {
 			if ($.cookie('dp_jse_report')) {
 				this.hasSentReport = true;
@@ -50,13 +20,6 @@ var DpErrorLog = {
 			var timeUsing = ((new Date()).getTime() / 1000) - window.DP_LOADED_TIME;
 		} else {
 			var timeUsing = 0;
-		}
-
-		if (window.console.log) {
-			window.console.log('[JS Error] %s (%s %d): %s', message, script, line, trace);
-			if (!trace && window.console.trace) {
-				window.console.trace();
-			}
 		}
 
 		if (!message || message == 'false' || message.indexOf('Error connecting to extension') !== -1) {
@@ -120,29 +83,4 @@ var DpErrorLog = {
 			);
 		}
 	},
-
-	handleError: function(message, script, line) {
-		if (!message || !message.length || !script.length) {
-			return false;
-		}
-
-		DpErrorLog.logError(message + ' (' + script + ' on line ' + line + ')', '', script, line);
-
-		return true;
-	}
 };
-
-if (typeof DP_DEBUG != 'undefined' && typeof DP_DEBUG_EVENT_TIMER != 'undefined' && DP_DEBUG && DP_DEBUG_EVENT_TIMER) {
-	var oldTrigger = jQuery.event.trigger;
-	jQuery.event.trigger = function() {
-		var begin = new Date();
-
-		var args = Array.prototype.slice.call(arguments);
-		oldTrigger.apply(jQuery.event, args);
-
-		var time = (new Date()).getTime() - begin.getTime();
-		if (time > 150) {
-			DpErrorLog.logError("Event took "+time+"ms");
-		}
-	}
-}

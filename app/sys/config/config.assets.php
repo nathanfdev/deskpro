@@ -58,6 +58,7 @@ $CONFIG['agent'] = array(
 $CONFIG['agent_vendors'] = array(
 	'out' => 'js/agent-vendors.js',
 	'files' => array(
+		'vendor/tracekit.js',
 		'vendor/modernizr.min.js',
 		'javascripts/Orb/modernizr-ext.js',
 
