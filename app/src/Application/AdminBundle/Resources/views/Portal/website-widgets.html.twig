@@ -83,7 +83,7 @@ $(document).ready(function() {
 				<p>{{ phrase('admin.portal.website_widgets_overlay_explain') }}</p>
 
 				{% set code %}{% include 'AdminBundle:Portal:widget-code-overlay.txt.twig' %}{% endset %}
-				<textarea class="code" wrap="off">{{ code|e }}</textarea>
+				<textarea class="code" wrap="off">{{ code|replace({"\t":"    "})|e }}</textarea>
 				<p>{{ phrase('admin.portal.website_widget_install') }}</p>
 
 				<div id="widget_content_select_wrap">
@@ -163,7 +163,7 @@ $(document).ready(function() {
 						<p>{{ phrase('admin.portal.website_widgets_chat_explain') }}</p>
 
 						{% set code %}{% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}{% endset %}
-						<textarea class="code" wrap="off">{{ code|e }}</textarea>
+						<textarea class="code" wrap="off">{{ code|replace({"\t":"    "})|e }}</textarea>
 						<p>{{ phrase('admin.portal.website_widget_install') }}</p>
 
 						<p>Related articles:</p>
@@ -236,7 +236,7 @@ $(document).ready(function() {
 	class="dp-newticket-link"
 >{{ phrase('admin.tickets.contact_us') }}</a>
 {% endset %}
-					<textarea class="code" wrap="off">{{ code|e }}</textarea>
+					<textarea class="code" wrap="off">{{ code|replace({"\t":"    "})|e }}</textarea>
 
 					<br />
 					<br />
@@ -245,7 +245,7 @@ $(document).ready(function() {
 					{{ phrase('admin.tickets.embed_ticket_form_websites') }}:
 					<br />
 					{% set code %}{% include 'AdminBundle:Portal:widget-code-form.txt.twig' %}{% endset %}
-					<textarea class="code" wrap="off">{{ code|e }}</textarea>
+					<textarea class="code" wrap="off">{{ code|replace({"\t":"    "})|e }}</textarea>
 				</div>
 			</div>
 		</div>
@@ -269,7 +269,7 @@ $(document).ready(function() {
 					<p>This embeds the entire helpdesk portal directly into any page on your site.</p>
 
 					{% set code %}{% include 'AdminBundle:Portal:widget-code-helpdesk.txt.twig' %}{% endset %}
-					<textarea class="code" wrap="off">{{ code|e }}</textarea>
+					<textarea class="code" wrap="off">{{ code|replace({"\t":"    "})|e }}</textarea>
 
 				</div>
 			</div>
