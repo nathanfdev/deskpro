@@ -272,38 +272,22 @@ class AgentNotificationAction extends AbstractAction
 			if (!$new_message) {
 				$new_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
 			}
-
-			if ($this->tracker->getNewAgentReply()) {
-				$new_message = $this->tracker->getNewAgentReply();
-				$from_name = $new_message->person->getDisplayName();
-			} else {
-				$from_name = $ticket->person->getDisplayName();
-			}
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewAgentReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_agent_email_tpl;
 			$is_new_agent_reply = true;
 			$new_message = $this->tracker->getNewAgentReply();
-			$from_name = $new_message->person->getDisplayName();
 		} elseif ($this->tracker->hasNewUserReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewUserReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_user_email_tpl;
 			$is_new_user_reply = true;
 			$new_message = $this->tracker->getNewUserReply();
-			$from_name = $new_message->person->getDisplayName();
 		} else {
 			$this->tracker->logMessage("[AgentNotificationAction] Generic update");
 			$tpl = $this->ticket_update_email_tpl;
-			$from_name = null;
-
-			if (App::getCurrentPerson() && App::getCurrentPerson()->getId()) {
-				$from_name = App::getCurrentPerson()->getDisplayName();
-			}
 		}
-
-		$from_name = $this->getFromName($ticket);
 
 		$agent_change = $this->tracker->getChangedProperty('agent');
 		$team_change  = $this->tracker->getChangedProperty('agent_team');
@@ -443,9 +427,12 @@ class AgentNotificationAction extends AbstractAction
 				}
 			}
 
-			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $this->getFromAddress($ticket));
-
+			$from_name    = $this->getFromName($ticket);
 			$from_address = $this->getFromAddress($ticket);
+
+			$this->tracker->logMessage("[AgentNotificationAction] From name: " . $from_name);
+			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $from_address);
+
 			$from_address = array($from_address => $from_address ? $from_name : $from_address);
 			$message->setFrom($from_address);
 
