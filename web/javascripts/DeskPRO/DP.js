@@ -406,8 +406,6 @@ var DP = {
 			options.dropdownCssClass = (options.dropdownCssClass || '') + ' invisible-trigger right';
 		}
 
-		console.log(el.attr('name') + ': %o', options);
-
 		el.addClass('with-select2');
 		el.select2(options);
 	}
