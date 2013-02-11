@@ -114,7 +114,7 @@ class ImportRestoreUnknownAgentsCommand extends \Symfony\Bundle\FrameworkBundle\
 
 		$output->writeln(sprintf("Found %d missing tech IDs that wrote a total of %d messages", count($missing_tech_ids), $count_messages));
 
-		if ($input->getOption('run')) {
+		if (!$input->getOption('run')) {
 			$output->writeln("Use the --run switch with this command to restore these missing agents as unknown deleted agents and then restore their messages.");
 			return 0;
 		}
@@ -139,13 +139,14 @@ class ImportRestoreUnknownAgentsCommand extends \Symfony\Bundle\FrameworkBundle\
 			$agent = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
 
 			if ($agent) {
-				$output->writeln("<error>Tech #$tech_id already processed into agent $set_email -- Skipping");
+				$output->writeln("<error>Tech #$tech_id already processed into agent $set_email -- Skipping</error>");
 				continue;
 			}
 
 			$agent = new \Application\DeskPRO\Entity\Person();
 			$agent->setEmail($set_email, true);
 			$agent->setPassword(uniqid('', true) . mt_rand(1000,9999));
+			$agent->is_agent    = true;
 			$agent->salt        = 'xxx';
 			$agent->can_agent   = true;
 			$agent->can_admin   = false;
@@ -158,8 +159,8 @@ class ImportRestoreUnknownAgentsCommand extends \Symfony\Bundle\FrameworkBundle\
 			$this->getContainer()->getDb()->beginTransaction();
 
 			try {
-				$this->getEm()->persist($agent);
-				$this->getEm()->flush();
+				$this->getContainer()->getEm()->persist($agent);
+				$this->getContainer()->getEm()->flush();
 
 				$ids = $old_db->fetchAllCol("SELECT id FROM ticket_message WHERE techid = ?", array($tech_id));
 				$output->writeln(sprintf("<info>Tech #%d processed into agent #%d %s :: %d messages to insert</info>", $tech_id, $agent->getId(), $set_email, count($ids)));
@@ -222,6 +223,8 @@ class ImportRestoreUnknownAgentsCommand extends \Symfony\Bundle\FrameworkBundle\
 
 		$time_end = microtime(true);
 
-		$output->writeln(sprintf("<info>All done in %.2f seconds", $time_end-$time_start));
+		$output->writeln(sprintf("<info>All done in %.2f seconds</info>", $time_end-$time_start));
+
+		return 0;
 	}
 }
