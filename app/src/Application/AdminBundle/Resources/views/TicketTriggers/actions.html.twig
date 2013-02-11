@@ -62,6 +62,15 @@
 	</div>
 </div>
 
+<div class="builder-type" title="Ticket hold status" data-rule-type="hold" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="is_hold">
+			<option value="1">Put ticket on hold</option>
+			<option value="0">Remove ticket from hold</option>
+		</select>
+	</div>
+</div>
+
 <div class="builder-type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete" data-rule-group="Ticket">
 	<div class="builder-options">
 		<input type="hidden" name="delete_ticket" value="1" />

@@ -121,6 +121,9 @@ class ActionsFactory
 			case 'status':
 				$options['status'] = $value['status'];
 				break;
+			case 'hold':
+				$options['is_hold'] = $value['is_hold'];
+				break;
 			case 'add_labels':
 				$options['add_labels'] = array();
 				if (is_array($value['labels'])) $options['add_labels'] = $value['labels'];
