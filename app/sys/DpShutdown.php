@@ -137,6 +137,10 @@ class DpShutdown
 		unset(self::$stack[$tag]);
 
 		foreach ($proc_stack as $id) {
+			if (!isset(self::$callbacks[$id])) {
+				continue;
+			}
+
 			$info = self::$callbacks[$id];
 			unset(self::$callbacks[$id]);
 			$callback = $info[0];
