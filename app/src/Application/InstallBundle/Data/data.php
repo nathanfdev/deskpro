@@ -9,6 +9,7 @@ $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = $translate->phrase('user.defaults.language_english');
 $l['locale'] = 'en_US';
 $l['sys_name'] = 'default';
+$l['flag_image'] = 'us.png';
 $l['lang_code'] = 'eng';
 $l['language_package'] = 'DeskproLanguages\\LangPackage';
 $em->persist($l);
