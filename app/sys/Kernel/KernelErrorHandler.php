@@ -504,6 +504,13 @@ class KernelErrorHandler
 			$trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n" . $previnfo['trace'];
 		}
 
+		$last_e = null;
+		if (isset($GLOBALS['DP_LAST_ERROR'])) {
+			$last_e = sprintf("[%d] %s (%s line %d)", $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
+		} elseif ($last_e_info = @error_get_last()) {
+			$last_e = sprintf("[%d] %s (%s line %d)", $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
+		}
+
 		$errinfo = array(
 			'type'              => 'exception',
 			'session_name'      => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
@@ -518,6 +525,7 @@ class KernelErrorHandler
 			'errno'             => $errno,
 			'errfile'           => $errfile,
 			'errline'           => $errline,
+			'last_error'        => $last_e,
 			'display'           => $display,
 			'build'             => DP_BUILD_TIME,
 			'process_log'       => implode("\n", self::$process_log),
@@ -738,6 +746,13 @@ class KernelErrorHandler
 			$url = 'Command: ' . implode(' ', $_SERVER['argv']);
 		}
 
+		$last_e = null;
+		if (isset($GLOBALS['DP_LAST_ERROR'])) {
+			$last_e = sprintf("[%d] %s (%s line %d)", $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
+		} elseif ($last_e_info = @error_get_last()) {
+			$last_e = sprintf("[%d] %s (%s line %d)", $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
+		}
+
 		return array(
 			'type'               => 'error',
 			'session_name'       => self::genSessionName(),
@@ -750,6 +765,7 @@ class KernelErrorHandler
 			'errno'              => $errno,
 			'errfile'            => $errfile,
 			'errline'            => $errline,
+			'last_error'         => $last_e,
 			'display'            => $display,
 			'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
 			'process_log'        => implode("\n", self::$process_log),
