@@ -376,7 +376,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $original_subject;
+	protected $original_subject = '';
 
 	/**
 	 * @var array
