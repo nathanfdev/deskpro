@@ -77,6 +77,19 @@
 		'is_managed' => true
 	),
 
+	'hungarian' => array(
+		'id'         => 'hungarian',
+		'lang_code'  => 'hun',
+		'title'      => 'Hungarian',
+		'locale'     => 'hu',
+		'flag_image' => 'hu.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'italian' => array(
 		'id'         => 'italian',
 		'lang_code'  => 'ita',
@@ -255,18 +268,6 @@
 		'title'      => 'Hindi',
 		'locale'     => 'hi',
 		'is_rtl'     => true,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'hungarian' => array(
-		'id'         => 'hungarian',
-		'lang_code'  => 'hun',
-		'title'      => 'Hungarian',
-		'locale'     => 'hu',
-		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
 		'has_admin'  => false,
