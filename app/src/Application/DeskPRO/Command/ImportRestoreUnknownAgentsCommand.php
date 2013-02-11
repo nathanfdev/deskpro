@@ -48,7 +48,7 @@ use Orb\Util\Util;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
-class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class ImportRestoreUnknownAgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	/**
 	 * @var \Application\DeskPRO\Log\Logger
@@ -65,7 +65,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	protected function configure()
 	{
 		$this->setName('dp:import-restore-unknown-agents');
-		$this->addOption('run', null, 'Run the tool. Without this switch, just info is displayed');
+		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the tool. Without this switch, just info is displayed');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
