@@ -457,7 +457,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				textarea.setCaretPosition(0);
 			}
 
-			textarea.insertAtCaret(text);
+			textarea.insertAtCaret(content);
 			textarea.trigger('textareaexpander_fire');
 		}
 	},
