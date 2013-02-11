@@ -64,12 +64,14 @@ class UserKernel extends AbstractKernel
 
 	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		try {
-			if (!App::getSetting('user.portal_enabled')) {
-				$response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
-				return $response;
-			}
-		} catch (\Exception $e) {}
+		if (!preg_match('#^/widget/#', $request->getPathInfo()) && !preg_match('#^/chat/#', $request->getPathInfo())) {
+			try {
+				if (!App::getSetting('user.portal_enabled')) {
+					$response = new \Symfony\Component\HttpFoundation\Response('<!-- Portal Offline -->');
+					return $response;
+				}
+			} catch (\Exception $e) {}
+		}
 
 		return parent::preResponseHandled($request, $type, $catch);
 	}
