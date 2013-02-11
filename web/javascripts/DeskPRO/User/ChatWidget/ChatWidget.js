@@ -489,9 +489,9 @@ var DpChatWidget = new (function() {
 			util.extend(options, window.DpChatWidget_Options);
 		}
 
-		var bgColor  = 'rgb(63,63,63)';
+		var bgColor  = '#3F3F3F';
 		var border   = '2px solid #727272';
-		var textColor = '#fff';
+		var textColor = '#FFFFFF';
 		var textShadow = '0px 1px 2px #000000';
 		var font = 'bold 12px Arial, sans-serif';
 
