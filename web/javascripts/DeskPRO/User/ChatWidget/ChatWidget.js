@@ -1,4 +1,4 @@
-if (window.Dp_EnableDebug) {
+if (window.console) {
 	var DpConsole = window.console;
 } else {
 	var DpConsole = {};
