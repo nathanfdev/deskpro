@@ -633,9 +633,9 @@ var DpOverlayWidget = new (function() {
 			options.staticUrl = options.deskproUrl.replace(/index\.php\//, '') + 'web/';
 		}
 
-		var bgColor  = 'rgb(63,63,63)';
+		var bgColor  = '#3F3F3F';
 		var border   = '2px solid #727272';
-		var textColor = 'white';
+		var textColor = '#FFFFFF';
 		var textShadow = '0px 0px 2px #000000';
 		var font = 'bold 13px Arial, sans-serif';
 
@@ -665,7 +665,6 @@ var DpOverlayWidget = new (function() {
 		css.push('background: ' + bgColor);
 		css.push('border: ' + border);
 		css.push('overflow: hidden');
-		css.push('top: 200px');
 		css.push('cursor: pointer');
 		css.push('text-shadow: ' + textShadow);
 		css.push('color: ' + textColor);
@@ -685,6 +684,16 @@ var DpOverlayWidget = new (function() {
 		} else {
 			css.push('right: 0');
 			degrees = 270;
+		}
+
+		if (options.bottomPosition) {
+			css.push('bottom: ' + options.bottomPosition);
+		} else {
+			if (options.topPosition) {
+				css.push('top: ' + options.topPosition);
+			} else {
+				css.push('top: 200px');
+			}
 		}
 
 		css.push('-webkit-transform: rotate(' + degrees + 'deg)');
