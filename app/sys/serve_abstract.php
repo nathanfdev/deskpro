@@ -77,8 +77,9 @@ abstract class LoaderAbstract
 		// on the classfile wont prevent a possible dupe
 		if (!class_exists('Orb\\Util\\Strings', false)) {
 			require DP_ROOT.'/src/Orb/Util/Strings.php';
-			\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 		}
+
+		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 
 		#------------------------------
 		# Undo magic quotes
