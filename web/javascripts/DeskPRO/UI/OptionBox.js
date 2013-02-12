@@ -118,7 +118,22 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			}
 
 			if (radio.length) {
-				radio.click();
+				radio.prop('checked', !radio.prop('checked'));
+				self.clickCheckbox(radio);
+
+				if (radio.is(':radio')) {
+					if (allSame) {
+						self.el.find('li.on').removeClass('on');
+					} else {
+						radio.closest('section').find('li.on').removeClass('on');
+					}
+				}
+
+				if (radio.prop('checked')) {
+					radio.closest('li').addClass('on');
+				} else {
+					radio.closest('li').removeClass('on');
+				}
 
 				if (!self.options.liNoClickClose && (radio.is(':radio') && self.isSingleMode)) {
 					self.close();
