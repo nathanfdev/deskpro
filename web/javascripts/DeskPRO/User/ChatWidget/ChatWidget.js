@@ -264,6 +264,7 @@ var DpChatWidget = new (function() {
 			css.push('line-height: 100%');
 			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
+			css.push('text-align: left');
 			css.push('top: -18px');
 			css.push((isRtl ? 'left' : 'right') + ': 2px');
 			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
@@ -324,6 +325,7 @@ var DpChatWidget = new (function() {
 			chatIframe.style.position = 'absolute';
 			chatIframe.style.bottom = '0';
 			chatIframe.style.top = '0';
+			chatIframe.style.left = '0';
 			chatIframe.style.width = '340px';
 			chatIframe.style.height = '350px';
 			chatIframe.style.margin = '0';
