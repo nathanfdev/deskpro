@@ -612,6 +612,7 @@ var DpOverlayWidget = new (function() {
 
 		if (contentWrap) {
 			util.removeEl(contentWrap);
+			contentWrap = null;
 		}
 
 		isOpen = false;
