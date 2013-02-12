@@ -283,7 +283,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 
-			if ($this->reader->getHeader('X-DeskPRO-Build')) {
+			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
 				$person->disable_autoresponses = true;
 			}
@@ -324,7 +324,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 			}
 
-			if ($this->reader->getHeader('X-DeskPRO-Build')) {
+			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
 				$person->disable_autoresponses = true;
 			}
