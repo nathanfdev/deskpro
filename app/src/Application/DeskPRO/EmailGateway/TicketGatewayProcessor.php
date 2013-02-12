@@ -682,6 +682,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_full'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body_full'], \ENT_QUOTES, 'UTF-8')));
+			$email_info['generic_cut'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['generic_cut'], \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_is_html'] = false;
 		}
 
