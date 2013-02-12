@@ -45,6 +45,7 @@ use Orb\Util\Arrays;
 use Application\AgentBundle\Controller\Helper\PeopleResults;
 
 use Application\DeskPRO\UI\RuleBuilder;
+use Orb\Validator\StringEmail;
 
 /**
  * Handles searching for people
@@ -705,7 +706,7 @@ class PeopleSearchController extends AbstractController
 		$not_in_org = $this->in->getUint('exclude_org');
 
 		if (!$q && $this->in->getBool('start_with')) {
-			$people_list = $this->db->fetchAll("
+			$people_list = $this->db->fetchAllKeyed("
 				SELECT p.id, p.first_name, p.last_name, e.email
 				FROM people p
 				LEFT JOIN people_emails e ON (e.person_id = p.id)
@@ -716,7 +717,7 @@ class PeopleSearchController extends AbstractController
 			");
 		} else {
 
-			$people_list = $this->db->fetchAll("
+			$people_list = $this->db->fetchAllKeyed("
 				SELECT p.id, p.first_name, p.last_name, e.email
 				FROM people p
 				LEFT JOIN people_emails e ON (e.person_id = p.id)
@@ -741,6 +742,19 @@ class PeopleSearchController extends AbstractController
 			$tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
 			if ($format == 'simplelist') {
 				$tpl = "AgentBundle:PeopleSearch:search-results-simplelist.html.twig";
+			}
+		}
+
+		// If the string is an exact email, we can try and find the user in usersources as well
+		if (StringEmail::isValueValid($q)) {
+			$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+			if ($person && !isset($people_list[$person->getId()])) {
+				$people_list[$person->getId()] = array(
+					'id'         => $person->getId(),
+					'first_name' => $person->first_name,
+					'last_name'  => $person->last_name,
+					'email'      => $person->getPrimaryEmailAddress()
+				);
 			}
 		}
 

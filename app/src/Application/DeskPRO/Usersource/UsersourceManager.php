@@ -63,6 +63,37 @@ class UsersourceManager
 
 
 	/**
+	 * Find a person in a usersource based on an email address.
+	 *
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function findPersonByEmail($email)
+	{
+		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+		if ($person) {
+			return $person;
+		}
+
+		foreach ($this->getWithCapability('find_identity') as $us) {
+			/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
+			$adapter = $us->getAdapter();
+
+			$identity = $adapter->findIdentityByInput($email);
+			if (!$identity) {
+				continue;
+			}
+
+			$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($us, $identity);
+			$person = $login_processor->getPerson();
+
+			return $person;
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * Get all installed usersources
 	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]

@@ -356,7 +356,7 @@ class MainController extends AbstractController
 
 					// Complete email address
 					if (\Orb\Validator\StringEmail::isValueValid($q)) {
-						$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
+						$p = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
 						$people = array();
 						if ($p) {
 							$people[] = $p;
