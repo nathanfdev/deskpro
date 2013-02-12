@@ -722,6 +722,7 @@ var DpOverlayWidget = new (function() {
 		css.push('padding: 0 13px 0 13px');
 		css.push('margin: 0');
 		css.push('opacity: 0.85');
+		css.push('z-index: 10000');
 
 		var degrees;
 
