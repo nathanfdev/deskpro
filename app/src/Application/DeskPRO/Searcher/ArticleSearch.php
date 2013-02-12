@@ -302,11 +302,11 @@ class ArticleSearch extends SearcherAbstract
 			array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)")
 		);
 
-		foreach ($this->terms as $term => $info) {
+		foreach ($this->terms as $info) {
 			$join_id = Util::requestUniqueId();
 			$join_name = "j_$join_id";
 
-			list($op, $choice) = $info;
+			list($term, $op, $choice) = $info;
 			$term_id = null;
 
 			switch ($term) {

@@ -192,6 +192,60 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 
 	/**
+	 * @param $term
+	 * @param bool $all Find all or just the first?
+	 * @return mixed
+	 */
+	public function findTerm($term, $all = false)
+	{
+		$ret = array();
+
+		foreach ($this->terms as $info) {
+			if ($info[0] == $term) {
+				if ($all) {
+					$ret[] = $info;
+				} else {
+					return $info;
+				}
+			}
+		}
+
+		if (!$all) {
+			return null;
+		}
+
+		return $ret;
+	}
+
+
+	/**
+	 * @param $term
+	 * @param bool $all Find all or just the first?
+	 * @return mixed
+	 */
+	public function findAnyTerm($term, $all = false)
+	{
+		$ret = array();
+
+		foreach ($this->terms_any as $info) {
+			if ($info[0] == $term) {
+				if ($all) {
+					$ret[] = $info;
+				} else {
+					return $info;
+				}
+			}
+		}
+
+		if (!$all) {
+			return null;
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Get the current terms
 	 *
 	 * @return array
@@ -280,7 +334,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	public function addTerm($term, $op, $data)
 	{
-		$this->terms[$term] = array($op, $data);
+		$this->terms[] = array($term, $op, $data);
 	}
 
 
@@ -294,7 +348,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	public function addAnyTerm($term, $op, $data)
 	{
-		$this->terms_any[$term] = array($op, $data);
+		$this->terms_any[] = array($term, $op, $data);
 	}
 
 

@@ -223,8 +223,8 @@ class ChatConversationSearch extends SearcherAbstract
 		$wheres = array();
 		$joins = $this->joins;
 
-		foreach ($this->terms as $term => $info) {
-			list($op, $choice) = $info;
+		foreach ($this->terms as $info) {
+			list($term, $op, $choice) = $info;
 
 			$term_id = null;
 

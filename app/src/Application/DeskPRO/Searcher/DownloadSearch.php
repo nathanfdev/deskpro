@@ -299,11 +299,11 @@ class DownloadSearch extends SearcherAbstract
 		$wheres = array();
 		$joins = array();
 
-		foreach ($this->terms as $term => $info) {
+		foreach ($this->terms as $info) {
 			$join_id = Util::requestUniqueId();
 			$join_name = "j_$join_id";
 
-			list($op, $choice) = $info;
+			list($term, $op, $choice) = $info;
 			$term_id = null;
 
 			switch ($term) {

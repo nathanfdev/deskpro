@@ -280,11 +280,11 @@ class PersonSearch extends SearcherAbstract
 		$wheres = array();
 		$joins = array();
 
-		foreach ($this->terms as $term => $info) {
+		foreach ($this->terms as $info) {
 			$join_id = Util::requestUniqueId();
 			$join_name = "j_$join_id";
 
-			list($op, $choice) = $info;
+			list($term, $op, $choice) = $info;
 
 			$term_id = null;
 
@@ -669,8 +669,8 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function doesPersontMatch(Entity\Person $person)
 	{
-		foreach ($this->terms as $term => $info) {
-			list($op, $choice) = $info;
+		foreach ($this->terms as $info) {
+			list($term, $op, $choice) = $info;
 
 			switch ($term) {
 

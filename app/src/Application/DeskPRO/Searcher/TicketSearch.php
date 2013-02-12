@@ -857,14 +857,14 @@ class TicketSearch extends SearcherAbstract
 				$wheres = &$wheres_any;
 			}
 
-			foreach ($term_set[1] as $term => $info) {
+			foreach ($term_set[1] as $info) {
 
 				if (!$info || !is_array($info)) continue;
 
 				$join_id = Util::requestUniqueId();
 				$join_name = "j_$join_id";
 
-				list($op, $choice) = $info;
+				list($term, $op, $choice) = $info;
 
 				$term_id = null;
 
@@ -1298,14 +1298,18 @@ class TicketSearch extends SearcherAbstract
 					case self::TERM_AGENT:
 						$this->affected_fields[] = 'ticket.agent_id';
 
-						$info = $this->_normalizeAgentChoice($choice);
+						$info       = $this->_normalizeAgentChoice($choice);
 						$unassigned = $info['unassigned'];
-						$agent_ids = $info['agent_ids'];
-						$not_id = $info['not_id'];
+						$agent_ids  = $info['agent_ids'];
+						$not_id     = $info['not_id'];
 
 						if ($unassigned) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.agent'));
-							$wheres[] = "$tickets_table.agent_id IS NULL";
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.unassigned'));
+							if ($op == self::OP_IS) {
+								$wheres[] = "$tickets_table.agent_id IS NULL";
+							} else {
+								$wheres[] = "$tickets_table.agent_id IS NOT NULL";
+							}
 						} else {
 							if ($agent_ids) {
 								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {
@@ -1335,8 +1339,13 @@ class TicketSearch extends SearcherAbstract
 						$no_team = $info['no_team'];
 
 						if ($no_team) {
-							$wheres[] = "$tickets_table.agent_team_id IS NULL";
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.agent_team'));
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.unassigned'));
+
+							if ($op == self::OP_IS) {
+								$wheres[] = "$tickets_table.agent_team_id IS NULL";
+							} else {
+								$wheres[] = "$tickets_table.agent_team_id IS NOT NULL";
+							}
 
 						} else {
 							if ($team_ids) {
@@ -1838,8 +1847,8 @@ class TicketSearch extends SearcherAbstract
 			return false;
 		}
 
-		foreach ($this->terms as $term => $info) {
-			list($op, $choice) = $info;
+		foreach ($this->terms as $info) {
+			list($term, $op, $choice) = $info;
 
 			if ($op == 'ignore' || isset($ignore_terms[$term])) {
 				$ignore_terms[$term] = 1;
@@ -1889,7 +1898,8 @@ class TicketSearch extends SearcherAbstract
 					$not_id = $info['not_id'];
 
 					if ($unassigned) {
-						if ($ticket['agent_id']) return false;
+						if ($ticket['agent_id'] && $op == self::OP_IS) return false;
+						if (!$ticket['agent_id'] && $op != self::OP_IS) return false;
 					} else {
 						if ($agent_ids) {
 
@@ -1912,7 +1922,8 @@ class TicketSearch extends SearcherAbstract
 					$not_ids = $info['not_ids'];
 
 					if ($no_team) {
-						if ($ticket['agent_team_id']) return false;
+						if ($ticket['agent_team_id'] && $op == self::OP_IS) return false;
+						if (!$ticket['agent_team_id'] && $op != self::OP_IS) return false;
 					} else {
 						if ($team_ids) {
 							if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $team_ids)) return false;
@@ -2189,13 +2200,8 @@ class TicketSearch extends SearcherAbstract
 	 */
 	public function needsUrgency()
 	{
-		$terms = $this->getTerms();
-
-		if(!isset($terms['status'])) {
-			return true;
-		}
-
-		list($op, $data) = $terms['status'];
+		$info = $this->findTerm('status');
+		list($term, $op, $data) = $info;
 
 		if(isset($data['status'])) {
 			$status = $data['status'];
