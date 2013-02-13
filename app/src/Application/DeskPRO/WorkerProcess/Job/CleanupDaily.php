@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 class CleanupDaily extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+	const DEFAULT_INTERVAL = 86400;
 
 	public function run()
 	{
