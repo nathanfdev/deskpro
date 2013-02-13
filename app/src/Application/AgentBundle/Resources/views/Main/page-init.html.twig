@@ -1,7 +1,5 @@
 <script type="text/javascript">
-
-	$(document).ready(function() {
-
+	window.onload = function() {
 		if (DP_IS_DOMDUMP_VIEW) {
 			return;
 		}
@@ -110,5 +108,5 @@
 		{% for convo in open_chats %}
 			window.DeskPRO_Window.runPageRoute('page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}', {noToggle:true});
 		{% endfor %}
-	});
+	};
 </script>
