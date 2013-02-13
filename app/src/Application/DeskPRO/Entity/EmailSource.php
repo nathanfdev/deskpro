@@ -301,8 +301,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'email_sources',
 			'indexes' => array(
-				'object_idx' => array( 'columns' => array( 0 => 'object_type', 1 => 'object_id', ), ),
-				'status_idx' => array('columns' => array('status')),
+				'date_created' => array('columns' => array('date_created')),
+				'object_idx'   => array('columns' => array('object_type', 'object_id')),
+				'status_idx'   => array('columns' => array('status')),
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

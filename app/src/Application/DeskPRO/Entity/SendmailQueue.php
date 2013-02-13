@@ -100,7 +100,7 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'sendmail_queue',
 			'indexes' => array(
-				'date_next_attempt_idx' => array('columns' => array('date_next_attempt'))
+				'has_sent_idx' => array('columns' => array('has_sent', 'date_next_attempt'))
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
