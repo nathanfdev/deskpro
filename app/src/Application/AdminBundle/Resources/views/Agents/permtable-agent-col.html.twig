@@ -27,7 +27,6 @@
 						type="hidden"
 						class="ug-perm-val"
 						data-ug-id="{{ id }}"
-						name="permissions[{{ permgroup }}][{{ id }}][{{ name }}]"
 						id="perm_val_{{ id }}_{{ perm_fname_flat }}"
 						data-name="{{permgroup ~ '.' ~ name}}"
 						value="{% if ug[permgroup ~ '.' ~ name] %}1{% else %}0{% endif %}"

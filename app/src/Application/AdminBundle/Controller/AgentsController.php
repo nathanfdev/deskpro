@@ -987,8 +987,6 @@ class AgentsController extends AbstractController
 
 			$ug_perm_matrix = $this->in->getCleanValueArray('permissions', 'raw', 'raw');
 
-			$ug_perms_set = array();
-
 			$overrides = array();
 			foreach ($ug_perm_matrix as $group => $ug_perms) {
 				foreach ($ug_perms as $ug_id => $perms) {
@@ -1008,22 +1006,7 @@ class AgentsController extends AbstractController
 
 						if ($ug_id == 'override') {
 							$overrides[$perm_name] = 1;
-						} else {
-							if (!isset($ug_perms[$ug_id])) {
-								$ug_perms_set[$ug_id] = array();
-							}
-							$ug_perms_set[$ug_id][$perm_name] = 1;
 						}
-					}
-				}
-			}
-
-			// Figure out if we have any superfluous overrides
-			foreach ($overrides as $perm_name => $v) {
-				foreach ($ug_perms as $perms) {
-					if (isset($perms[$perm_name])) {
-						unset($overrides[$perm_name]);
-						break;
 					}
 				}
 			}
@@ -1032,14 +1015,6 @@ class AgentsController extends AbstractController
 			$this->db->delete('permissions', array('person_id' => $agent->id));
 			foreach ($overrides as $perm_name => $v) {
 				$this->db->insert('permissions', array('person_id' => $agent->id, 'name' => $perm_name, 'value' => 1));
-			}
-
-			// For each of the usergroups we might also have to update those perms now
-			foreach ($ug_perms_set as $ug_id => $perms) {
-				$this->db->delete('permissions', array('usergroup_id' => $ug_id));
-				foreach ($perms as $perm_name => $v) {
-					$this->db->insert('permissions', array('usergroup_id' => $ug_id, 'name' => $perm_name, 'value' => 1));
-				}
 			}
 
 			// If they're new, enable notifications for them by default
