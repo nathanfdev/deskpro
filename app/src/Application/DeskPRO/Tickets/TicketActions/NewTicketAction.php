@@ -329,34 +329,38 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			}
 
 			if ($person->getPrimaryEmailAddress()) {
-				App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $attach_attachments) {
-					$message = App::getMailer()->createMessage();
-					$message->setContextId('ticket_gateway');
-					$message->setTemplate($tpl, $vars);
-					$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-					foreach ($parts as $part) {
-						if ($part['email_address']) {
-							$message->addCc($part['email_address'], $part->person->getDisplayName());
-						}
-					}
-					$message->setFrom($from_address);
-					$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
-					$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
-					$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
-
-					if ($attach_attachments) {
-						foreach ($attach_attachments as $src => $attach) {
-							if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
-								// signature image being attached
-								$message->attachBlob($attach, $src, true);
-							} else {
-								$message->attachBlob($attach->blob, $src, $attach->is_inline);
+				if ($person->disable_autoresponses) {
+					$this->tracker->logMessage("[NewTicketAction] Not sending confirmation because person.disable_autoresponses=1");
+				} else {
+					App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $attach_attachments) {
+						$message = App::getMailer()->createMessage();
+						$message->setContextId('ticket_gateway');
+						$message->setTemplate($tpl, $vars);
+						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+						foreach ($parts as $part) {
+							if ($part['email_address']) {
+								$message->addCc($part['email_address'], $part->person->getDisplayName());
 							}
 						}
-					}
+						$message->setFrom($from_address);
+						$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+						$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+						$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
 
-					App::getMailer()->send($message);
-				});
+						if ($attach_attachments) {
+							foreach ($attach_attachments as $src => $attach) {
+								if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
+									// signature image being attached
+									$message->attachBlob($attach, $src, true);
+								} else {
+									$message->attachBlob($attach->blob, $src, $attach->is_inline);
+								}
+							}
+						}
+
+						App::getMailer()->send($message);
+					});
+				}
 			} else {
 				$this->tracker->logMessage("[NewTicketAction] No validated email address on user account");
 			}
