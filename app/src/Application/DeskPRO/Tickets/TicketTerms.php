@@ -646,6 +646,9 @@ class TicketTerms
 					return false;
 				}
 				$body = $ticket->email_reader->getBodyText()->getBodyUtf8();
+				if (!$body) {
+					$body = strip_tags($ticket->email_reader->getBodyHtml()->getBodyUtf8());
+				}
 				if (!$this->_testStringMatch($body, $op, $choice['message'])) {
 					return false;
 				}
@@ -1387,7 +1390,7 @@ class TicketTerms
 
 			$found = false;
 			foreach ($choices_in as $c) {
-				if (strpos($value, $c) === 0) {
+				if (strtolower($value) == strtolower($c)) {
 					$found = true;
 					break;
 				}
@@ -1411,7 +1414,7 @@ class TicketTerms
 						break;
 					}
 				} else {
-					if (strpos($value, $c) !== false) {
+					if (stripos($value, $c) !== false) {
 						$found = true;
 						break;
 					}
