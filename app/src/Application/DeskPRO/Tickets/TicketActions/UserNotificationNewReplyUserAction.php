@@ -92,6 +92,7 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 		}
 
 		if (!$this->isEnabled()) {
+			$this->tracker->logMessage("[UserNotificationNewReplyUser] Not enabled, not sending confirmation");
 			return;
 		}
 
