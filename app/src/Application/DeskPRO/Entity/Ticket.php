@@ -593,6 +593,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setSubject($subject)
 	{
+		$subject = Strings::standardEol($subject);
+		$subject = Strings::trimLines($subject);
+		$subject = preg_replace("#\n+#", ' ', $subject);
+
 		$this->setModelField('subject', $subject);
 
 		if (!$this->original_subject) {
