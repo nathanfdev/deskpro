@@ -320,4 +320,64 @@ class Env
 
 		return $classes;
 	}
+
+
+	/**
+	 * Get the max input vars for a request.
+	 *
+	 * This is the min between max_input_vars, suhosin.post.max_vars and suhosin.request.max_vars
+	 *
+	 * @return int
+	 */
+	public static function getMaxPostVars()
+	{
+		$vals = array(
+			(int)ini_get('max_input_vars'),
+			(int)ini_get('suhosin.post.max_vars'),
+			(int)ini_get('suhosin.request.max_vars')
+		);
+
+		$min = null;
+		foreach ($vals as $v) {
+			if (!$v) continue;
+
+			if ($min === null) {
+				$min = $v;
+			} elseif ($v < $min) {
+				$min = $v;
+			}
+		}
+
+		return $min;
+	}
+
+
+	/**
+	 * Get the max input vars for a GET request.
+	 *
+	 * This is the min between max_input_vars, suhosin.get.max_vars and suhosin.request.max_vars
+	 *
+	 * @return int
+	 */
+	public static function getMaxGetVars()
+	{
+		$vals = array(
+			(int)ini_get('max_input_vars'),
+			(int)ini_get('suhosin.get.max_vars'),
+			(int)ini_get('suhosin.request.max_vars')
+		);
+
+		$min = null;
+		foreach ($vals as $v) {
+			if (!$v) continue;
+
+			if ($min === null) {
+				$min = $v;
+			} elseif ($v < $min) {
+				$min = $v;
+			}
+		}
+
+		return $min;
+	}
 }

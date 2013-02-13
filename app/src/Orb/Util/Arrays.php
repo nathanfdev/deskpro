@@ -1731,6 +1731,7 @@ class Arrays
 
 	/**
 	 * Counts an array of arrays, returning the grand total.
+	 * This does not descend past 1 level. Try valueCount to count all values in an array.
 	 *
 	 * @param array $array
 	 * @return int
@@ -1741,6 +1742,29 @@ class Arrays
 
 		foreach ($array as $sub) {
 			$count += count($sub);
+		}
+
+		return $count;
+	}
+
+
+	/**
+	 * Go down an array and count each leaf to get a grand total of the number of values
+	 * in the array.
+	 *
+	 * @param array $array
+	 * @return int
+	 */
+	public static function valueCount(array $array)
+	{
+		$count = 0;
+
+		foreach ($array as $sub) {
+			if (is_array($sub)) {
+				$count += self::valueCount($sub);
+			} else {
+				++$count;
+			}
 		}
 
 		return $count;

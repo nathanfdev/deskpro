@@ -34,15 +34,14 @@
 namespace DeskPRO\Kernel;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
+use Orb\Util\Arrays;
+use Orb\Util\Env;
 
 use Application\DeskPRO\App;
 
@@ -186,6 +185,17 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				$res->headers->set('Location', $loc);
 			}
 			return $res;
+		}
+
+		// Verify that we arent at the max vars limit which could be a problem
+		if ($request->getMethod() == 'POST' && $_POST) {
+			$max = Env::getMaxPostVars();
+			if ($max) {
+				$count = Arrays::valueCount($_POST);
+				if ($count >= $max) {
+					throw new \RuntimeException("Server max post vars set to {$max} and this form posted {$count} variables");
+				}
+			}
 		}
 
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
