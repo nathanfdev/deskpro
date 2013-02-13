@@ -120,6 +120,26 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 					}
 				}
 			} else {
+				// Try matching the tail of this subject after a ':' if its not too short
+				$try_subject = $this->reader->getSubject()->getSubjectUtf8();
+				if (($pos = strrpos($try_subject, ':')) !== false) {
+					$try_subject = substr($try_subject, $pos);
+					if ($this->logger) $this->logger->logDebug(sprintf("Tail subject match: %s", $try_subject));
+					if (strlen($try_subject) < 10) {
+						if ($this->logger) $this->logger->logDebug("Tail subject match too short");
+					} else {
+						foreach ($ticket_subjects as $tid => $subj) {
+							if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against trail subject '%s'", $tid, $subj, $try_subject));
+							if (Strings::endsWith($try_subject, $subj)) {
+								$found_ticket_id = $tid;
+								break 2;
+							}
+						}
+					}
+				}
+
+				// Fall back on trying to find the subject in the body message
+				// Which can be common in "Undelivered" type messages
 				foreach ($ticket_subjects as $tid => $subj) {
 					if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against body", $tid, $subj));
 					if (strpos($body, $subj) !== false) {
