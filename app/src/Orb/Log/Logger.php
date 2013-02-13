@@ -271,6 +271,60 @@ class Logger
 
 
 	/**
+	 * Shortcut for logging a dump of a value
+	 *
+	 * @param string $name    The name/message that precedes the dump
+	 * @param mixed $var      The variable to be dumped
+	 * @param int $priority   The log priority
+	 */
+	public function logVarDump($name, $var, $priority = self::DEBUG)
+	{
+		if (ini_get('xdebug.overload_var_dump')) {
+			ob_start();
+			var_dump($var);
+			$dump = ob_get_clean();
+		} else {
+			$dump = self::varToString($var);
+		}
+
+		$this->log($name . ": " . $dump, $priority);
+	}
+
+
+	/**
+	 * @param mixed $var
+	 * @param int $_depth
+	 * @return string
+	 */
+	public static function varToString($var, $_depth = 0)
+    {
+        if (is_object($var)) {
+            return sprintf('[object](%s)', get_class($var));
+        }
+        if (is_array($var)) {
+            $a = array();
+            foreach ($var as $k => $v) {
+				if ($_depth > 8) {
+					$a[] = sprintf('%s => %s', $k, '(string)');
+				} else {
+					$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+				}
+            }
+            return sprintf("[array](%s)", implode(', ', $a));
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+		$str = (string)$var;
+		if (strlen($str) > 1000) {
+			$str = substr($str, 0, 1000) . "...(clipped)";
+		}
+
+		return $str;
+    }
+
+
+	/**
 	 * Shortcut to log an INFO message.
 	 *
 	 * @param $message
