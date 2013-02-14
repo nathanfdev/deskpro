@@ -322,7 +322,6 @@ class TemplatesController extends AbstractController
 			}
 
 			$compile_code = $this->_preProcessCustomTemplate($compile_code);
-			$code = $compile_code;
 
 			$compiled = $twig->compileSource($compile_code, $name);
 		} catch (\Twig_Error_Syntax $e) {
