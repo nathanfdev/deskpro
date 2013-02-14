@@ -35,6 +35,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Orb\Util\Dates;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 use Application\DeskPRO\App;
@@ -45,60 +46,6 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class Task extends AbstractEntityRepository
 {
-	/**
-	 * Find pending tasks assigned to the person.
-	 *
-	 * @param Person $person The person
-	 * @return array
-	 */
-	public function findPendingTasksForPerson(Entity\Person $person)
-	{
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('t')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->where('p.id= :person_id')
-		   ->setParameters(array('person_id' => $person['id']));
-
-		$query = $qb->getQuery();
-		$tasks = $query->getResult();
-		return $tasks;
-	}
-
-        /**
-	 * All completed tasks.
-	 *
-	 * @return array of task object
-	 */
-	public function allCompleteTasks()
-	{
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('t')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->where('t.is_completed = :is_completed')
-		   ->setParameter('is_completed', true);
-
-		$query = $qb->getQuery();
-		return $query->getResult();
-	}
-
-        /**
-	 * Count completed tasks.
-	 *
-	 * @return int
-	 */
-	public function countCompleteTasks()
-	{
-            $qb = $this->getEntityManager()->createQueryBuilder();
-			$qb->select('COUNT(t.id)')
-			   ->from('DeskPRO:Task', 't')
-			   ->where('t.is_completed = :is_completed')
-			   ->setParameter('is_completed', true);
-            $query = $qb->getQuery();
-            return $query->getSingleScalarResult();
-	}
-
 	/**
 	 * Count pending tasks.
 	 *
@@ -134,7 +81,9 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueTasks(Entity\Person $person)
 	{
-		$date = new \DateTime('now', $person->getDateTimezone());
+		$date = $person->getDateTime();
+		$date->setTime(23, 59, 59);
+		$date = Dates::convertToUtcDateTime($date);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
@@ -166,15 +115,19 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasks(Entity\Person $person)
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
+		$d1 = $person->getDateTime();
+		$d1->setTime(0,0,0);
+		$d1 = Dates::convertToUtcDateTime($d1);
+
+		$d2 = $person->getDateTime();
+		$d2->setTime(23, 59, 59);
+		$d2 = Dates::convertToUtcDateTime($d2);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
-		   ->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL')
-		   ->andWhere('t.is_completed = :is_completed');
+		   ->andWhere('(t.date_due >= :d1 AND t.date_due <= :d2) OR t.date_due IS NULL')
+		   ->andWhere('t.is_completed = false');
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
@@ -187,9 +140,8 @@ class Task extends AbstractEntityRepository
 		}
 
 		$qb->setParameters(array(
-			'is_completed' => false,
-			'today' => $today,
-			'tomorrow' => $tomorrow
+			'd1' => $d1,
+			'd2' => $d2
 		));
 
 		$query = $qb->getQuery();
@@ -204,14 +156,15 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasks(Entity\Person $person)
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(23, 59, 59);
+		$today = Dates::convertToUtcDateTime($today);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
 		   ->andWhere('t.date_due > :today')
-		   ->andWhere('t.is_completed = :is_completed');
+		   ->andWhere('t.is_completed = false');
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
@@ -224,7 +177,6 @@ class Task extends AbstractEntityRepository
 		}
 
 		$qb->setParameters(array(
-			'is_completed' => false,
 			'today' => $today,
 		));
 
@@ -248,11 +200,10 @@ class Task extends AbstractEntityRepository
 		   ->leftJoin('t.assigned_agent_team', 'at')
 		   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
 		   ->orWhere('aa.id = :person_id')
-		   ->andWhere('t.is_completed = :is_completed');
+		   ->andWhere('t.is_completed = false');
 
 		$qb->setParameters(array(
 			'person_id'=> $person['id'],
-			'is_completed'=> false
 		));
 
 		$query = $qb->getQuery();
@@ -267,7 +218,9 @@ class Task extends AbstractEntityRepository
 	 */
         public function countOverdueTasksForPerson(Entity\Person $person)
         {
-            $date = new \DateTime('now', $person->getDateTimezone());
+			$date = $person->getDateTime();
+			$date->setTime(23, 59, 59);
+			$date = Dates::convertToUtcDateTime($date);
 
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('COUNT(t.id)')
@@ -295,9 +248,13 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasksForPerson(Entity\Person $person)
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
+		$d1 = $person->getDateTime();
+		$d1->setTime(0, 0, 0);
+		$d1 = Dates::convertToUtcDateTime($d1);
+
+		$d2 = $person->getDateTime();
+		$d2->setTime(23, 59, 59);
+		$d2 = Dates::convertToUtcDateTime($d2);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 
@@ -308,14 +265,13 @@ class Task extends AbstractEntityRepository
 		   ->leftJoin('t.assigned_agent_team', 'at')
 		   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
 		   ->orWhere('aa.id = :person_id')
-		   ->andWhere('t.is_completed = :is_completed')
-		   ->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL');
+		   ->andWhere('t.is_completed = false')
+		   ->andWhere('(t.date_due >= :d1 AND t.date_due <= :d2) OR t.date_due IS NULL');
 
 		$qb->setParameters(array(
 			'person_id' => $person['id'],
-			'is_completed' => false,
-			'today' => $today,
-			'tomorrow'=> $tomorrow
+			'd1' => $d1,
+			'd2' => $d2
 		));
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -330,8 +286,9 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasksForPerson(Entity\Person $person)
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
+		$date = $person->getDateTime();
+		$date->setTime(23, 59, 59);
+		$date = Dates::convertToUtcDateTime($date);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 
@@ -343,12 +300,12 @@ class Task extends AbstractEntityRepository
 		   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
 		   ->orWhere('aa.id = :person_id')
 		   ->andWhere('t.is_completed = :is_completed')
-		   ->andWhere('t.date_due > :today ');
+		   ->andWhere('t.date_due > :date');
 
 		$qb->setParameters(array(
 			'person_id' => $person['id'],
 			'is_completed' => false,
-			'today' => $today,
+			'date' => $date,
 		));
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -392,7 +349,9 @@ class Task extends AbstractEntityRepository
 			AND t.date_due < ?2
 		");
 
-		$date = new \DateTime('now', $person->getDateTimezone());
+		$date = $person->getDateTime();
+		$date->setTime(0, 0, 0);
+		$date = Dates::convertToUtcDateTime($date);
 
 		return $query->setParameter(1, $person['id'])
 			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
@@ -415,18 +374,22 @@ class Task extends AbstractEntityRepository
 			WHERE m.id = :person_id
 			AND t.is_completed = false
 			AND (
-				(t.date_due >= :today AND t.date_due < :tomorrow)
+				(t.date_due >= :d1 AND t.date_due <= :d2)
 				OR t.date_due IS NULL
 			)
 		");
 
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
+		$d1 = $person->getDateTime();
+		$d1->setTime(0, 0 ,0);
+		$d1 = Dates::convertToUtcDateTime($d1);
+
+		$d2 = $person->getDateTime();
+		$d2->setTime(23, 59, 59);
+		$d2 = Dates::convertToUtcDateTime($d2);
 
 		return $query->setParameter('person_id', $person['id'])
-			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
-			->setParameter('tomorrow', $tomorrow, \Doctrine\DBAL\Types\Type::DATETIME)
+			->setParameter('d1', $d1)
+			->setParameter('d2', $d2)
 			->getSingleScalarResult();
 	}
 
@@ -445,11 +408,12 @@ class Task extends AbstractEntityRepository
 			JOIN at.members m
 			WHERE m.id = :person_id
 			AND t.is_completed = false
-			AND t.date_due >= :today
+			AND t.date_due > :today
 		");
 
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(23,59,59);
+		$today = Dates::convertToUtcDateTime($today);
 
 		return $query->setParameter('person_id', $person['id'])
 			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
@@ -486,8 +450,9 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueDelegatedTasksForPerson(Entity\Person $person)
 	{
-
-		$date = new \DateTime('now', $person->getDateTimezone());
+		$date = $person->getDateTime();
+		$date->setTime(0,0,0);
+		$date = Dates::convertToUtcDateTime($date);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
@@ -514,9 +479,14 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayDelegatedTasksForPerson(Entity\Person $person)
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
+		$d1 = $person->getDateTime();
+		$d1->setTime(0, 0, 0);
+		$d1 = Dates::convertToUtcDateTime($d1);
+
+		$d2 = $person->getDateTime();
+		$d2->setTime(23, 59, 59);
+		$d2 = Dates::convertToUtcDateTime($d2);
+
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
@@ -526,12 +496,12 @@ class Task extends AbstractEntityRepository
 		   ->andWhere('aa.id IS NOT NULL')
 		   ->andWhere('aa.id != :person_id')
 		   ->andWhere('t.is_completed = :is_completed ')
-		   ->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL')
+		   ->andWhere('(t.date_due >= :d1 AND t.date_due <= :d2) OR t.date_due IS NULL')
 		   //->orWhere('t.date_due IS NULL')
 		   ->setParameter('person_id', $person['id'])
 		   ->setParameter('is_completed', false)
-		   ->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
-		   ->setParameter('tomorrow', $tomorrow, \Doctrine\DBAL\Types\Type::DATETIME);
+		   ->setParameter('d1', $d1, \Doctrine\DBAL\Types\Type::DATETIME)
+		   ->setParameter('d2', $d2, \Doctrine\DBAL\Types\Type::DATETIME);
 
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -545,8 +515,9 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureDelegatedTasksForPerson(Entity\Person $person)
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(0,0,0);
+		$today = Dates::convertToUtcDateTime($today);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
@@ -560,7 +531,7 @@ class Task extends AbstractEntityRepository
 		   ->andWhere('t.date_due > :today')
 		   ->setParameter('person_id', $person['id'])
 		   ->setParameter('is_completed', false)
-		   ->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME);
+		   ->setParameter('today', $today);
 
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -575,10 +546,13 @@ class Task extends AbstractEntityRepository
 	 */
 	public function filterTasksForPerson(Entity\Person $person, $filter_type = 'total')
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		$date = new \DateTime('now', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(0,0,0);
+		$today = Dates::convertToUtcDateTime($today);
+
+		$tomorrow = $person->getDateTime();
+		$tomorrow->setTime(23, 59, 59);
+		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('t');
@@ -591,17 +565,17 @@ class Task extends AbstractEntityRepository
 		$qb->orderBy('t.id', 'DESC');
 
 		if ($filter_type == 'today') {
-			$qb->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL');
+			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
 			$qb->setParameter('today', $today);
 			$qb->setParameter('tomorrow', $tomorrow);
 
 		} elseif ($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :today ');
-			$qb->setParameter('today', $today);
+			$qb->andWhere('t.date_due > :tomorrow');
+			$qb->setParameter('tomorrow', $tomorrow);
 
 		} elseif ($filter_type == 'overdue') {
 			$qb->andWhere('t.date_due < :date_due');
-			$qb->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
+			$qb->setParameter('date_due', $today);
 		}
 
 		$qb->setParameters(array(
@@ -620,10 +594,13 @@ class Task extends AbstractEntityRepository
 	 */
 	public function filterTaksForPersonTeams(Entity\Person $person, $filter_type = 'total')
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		$date = new \DateTime('now', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(0,0,0);
+		$today = Dates::convertToUtcDateTime($today);
+
+		$tomorrow = $person->getDateTime();
+		$tomorrow->setTime(23, 59, 59);
+		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('t');
@@ -633,19 +610,16 @@ class Task extends AbstractEntityRepository
 		$qb->where('m.id = :person_id');
 		$qb->orderBy('t.id', 'DESC');
 
-		if($filter_type == 'today')
-		{
-			$qb->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL');
+		if($filter_type == 'today')	{
+			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
 			$qb->setParameter('today', $today);
 			$qb->setParameter('tomorrow', $tomorrow);
-		}else if($filter_type == 'future')
-		{
-			$qb->andWhere('t.date_due > :today ');
-			$qb->setParameter('today', $today);
-		}else if($filter_type == 'overdue')
-		{
+		} else if($filter_type == 'future') {
+			$qb->andWhere('t.date_due > :tomorrow');
+			$qb->setParameter('tomorrow', $tomorrow);
+		} else if($filter_type == 'overdue') {
 			$qb->andWhere('t.date_due < :date_due');
-			$qb->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
+			$qb->setParameter('date_due', $today);
 		}
 
 		$qb->setParameters(array('person_id'=> $person['id']));
@@ -662,10 +636,13 @@ class Task extends AbstractEntityRepository
 	 */
 	public function filterDelegatedTasksForPerson(Entity\Person $person, $filter_type = 'total')
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		$date = new \DateTime('now', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(0,0,0);
+		$today = Dates::convertToUtcDateTime($today);
+
+		$tomorrow = $person->getDateTime();
+		$tomorrow->setTime(23, 59, 59);
+		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('t');
@@ -678,15 +655,15 @@ class Task extends AbstractEntityRepository
 		$qb->orderBy('t.id', 'DESC');
 
 		if($filter_type == 'today') {
-			$qb->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL');
+			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
 			$qb->setParameter('today', $today);
 			$qb->setParameter('tomorrow', $tomorrow);
 		} elseif ($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :today ');
-			$qb->setParameter('today', $today);
+			$qb->andWhere('t.date_due > :tomorrow ');
+			$qb->setParameter('tomorrow', $tomorrow);
 		} elseif ($filter_type == 'overdue') {
-			$qb->andWhere('t.date_due < :date_due');
-			$qb->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
+			$qb->andWhere('t.date_due < :today');
+			$qb->setParameter('date_due', $today);
 		}
 
 		$qb->setParameters(array('person_id'=> $person['id']));
@@ -700,12 +677,15 @@ class Task extends AbstractEntityRepository
          * @param string $filter_type
 	 * @return int
 	 */
-	public function filterAllPendingTasks($person, $filter_type = 'total')
+	public function filterAllPendingTasks(Entity\Person $person, $filter_type = 'total')
 	{
-		$time_zone = $person->getDateTimezone();
-		$today = new \DateTime('today', $time_zone);
-		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		$date = new \DateTime('now', $time_zone);
+		$today = $person->getDateTime();
+		$today->setTime(0,0,0);
+		$today = Dates::convertToUtcDateTime($today);
+
+		$tomorrow = $person->getDateTime();
+		$tomorrow->setTime(23, 59, 59);
+		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('t');
@@ -714,15 +694,15 @@ class Task extends AbstractEntityRepository
 		$qb->orderBy('t.id', 'DESC');
 
 		if($filter_type == 'today') {
-			$qb->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL');
+			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
 			$qb->setParameter('today', $today);
 			$qb->setParameter('tomorrow', $tomorrow);
 		} elseif($filter_type == 'future') {
 			$qb->andWhere('t.date_due > :today ');
 			$qb->setParameter('today', $today);
 		} elseif($filter_type == 'overdue') {
-			$qb->andWhere('t.date_due < :date_due');
-			$qb->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
+			$qb->andWhere('t.date_due < :today');
+			$qb->setParameter('today', $today);
 		}
 
 		$person->loadHelper('Agent');

@@ -174,13 +174,18 @@ class TaskController extends AbstractController
 			if (!empty($task_data['date_due'])) {
 				try {
 					$date_due = new \DateTime($task_data['date_due'], $this->person->getDateTimezone());
+					$date_due->setTime(23, 59, 59);
 				} catch (\Exception $e) {
 					$date_due = null;
 				}
 
 				if ($date_due) {
 					$task->date_due = Dates::convertToUtcDateTime($date_due);
+				} else {
+					$task->date_due = null;
 				}
+			} else {
+				$task->date_due = null;
 			}
 
 			$tasks[] = $task;
@@ -459,8 +464,15 @@ class TaskController extends AbstractController
 			case 'date_due':
 				if ($this->in->getString('value')) {
 					try {
-						$task->date_due = \DateTime::createFromFormat('Y-m-d', $this->in->getString('value'));
+						$date_due = new \DateTime($this->in->getString('value'), $this->person->getDateTimezone());
+						$date_due->setTime(23, 59, 59);
 					} catch (\Exception $e) {
+						$date_due = null;
+					}
+
+					if ($date_due) {
+						$task->date_due = Dates::convertToUtcDateTime($date_due);
+					} else {
 						$task->date_due = null;
 					}
 				} else {
