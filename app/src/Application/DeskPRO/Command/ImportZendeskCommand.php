@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Orb\Service\Zendesk\Zendesk;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,7 +48,7 @@ use Orb\Util\Util;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
-class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class ImportZendeskCommand extends ImportCommand
 {
 	/**
 	 * @var \Application\DeskPRO\Log\Logger
@@ -63,7 +64,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 	protected function configure()
 	{
-		$this->setName('dp:import');
+		$this->setName('dp:import-zendesk');
 		$this->addOption('info', null, InputOption::VALUE_NONE, 'Show information about the importer and config');
 		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the importer from start to finish');
 		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'With --run, Start from this step');
@@ -174,7 +175,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$DP_CONFIG = $this->getContainer()->getSysConfig('*');
 
-		if (!isset($DP_CONFIG['import']['db_host'])) {
+		if (!isset($DP_CONFIG['import']['zendesk_domain'])) {
 			$logger->log('You need to fill in the "import" section of config.php before running this tool.', Logger::ERR);
 			return 1;
 		}
@@ -225,29 +226,24 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 		}
 
-		// Check thei mport db too
+		// Check the Zendesk import info
 		try {
-			$e = error_reporting(E_ALL ^ E_WARNING);
-			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
-				'driver'        => 'pdo_mysql',
-				'host'          => $DP_CONFIG['import']['db_host'],
-				'user'          => $DP_CONFIG['import']['db_user'],
-				'password'      => $DP_CONFIG['import']['db_password'],
-				'dbname'        => $DP_CONFIG['import']['db_name'],
-				'names_charset' => 'latin1'
-			));
-			$old_db->connect();
-			error_reporting($e);
+			$zd = new Zendesk(
+				$DP_CONFIG['import']['zendesk_domain'],
+				$DP_CONFIG['import']['zendesk_user_id'],
+				$DP_CONFIG['import']['zendesk_api_token']
+			);
 
-			try {
-				$techs = $old_db->fetchColumn("SELECT COUNT(*) FROM tech");
-			} catch (\Exception $e) {
-				$logger->log("The database details you entered for your DeskPRO v3 database appear to be incorrect. Check config.php to make sure you entered the correct details.\n", Logger::ERR);
+			$res = $zd->sendGet('tickets/recent');
+
+			if ($res->isError()) {
+				$logger->logDebug($res->getRaw());
+				$logger->log('We detected a problem while testing the Zendesk API: ('.$res->getHttpStatusCode().') ' . $res->getErrorCode() . ': ' . $res->getErrorDescription(), Logger::ERR);
 				return 1;
 			}
+
 		} catch (\Exception $e) {
-			error_reporting($e);
-			$logger->log('There was a problem while trying to connect to your DeskPRO v3 database. Check config.php to make sure you entered the correct details. ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
+			$logger->log('There was a problem detected while testing a connection to the Zendesk API: ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 			return 1;
 		}
 
@@ -346,23 +342,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 1;
 		}
 
-		if (!isset($config['importer'])) {
-			$config['importer'] = 'Deskpro3';
-		}
-
-		$importer_class = 'Application\\DeskPRO\\Import\\Importer\\' . $config['importer'] . 'Importer';
-		if (!class_exists($importer_class)) {
-			$logger->log("The `import.importer` class of {$config['importer']} does not exist.\n", Logger::ERR);
-			return 3;
-		}
-
+		$importer_class = 'Application\\DeskPRO\\Import\\Importer\\ZendeskImporter';
 		if (isset($config['store_attachment_files']) && $config['store_attachment_files']) {
 			global $DP_CONFIG;
 			$DP_CONFIG['core.filestorage_method'] = 'fs';
-		}
-
-		if (isset($DP_CONFIG['import']['existing_attachment_files'])) {
-			$DP_CONFIG['import']['existing_attachment_files'] = rtrim($DP_CONFIG['import']['existing_attachment_files'], '/');
 		}
 
 		#----------------------------------------
@@ -439,154 +422,16 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		#----------------------------------------
-		# Execute DP3 upgrade
+		# Execute upgrade
 		#----------------------------------------
 
-		/** @var $importer \Application\DeskPRO\Import\Importer\Deskpro3Importer */
+		/** @var $importer \Application\DeskPRO\Import\Importer\ZendeskImporter */
 		$config['log_dir'] = App::getKernel()->getLogDir();
 		$config['enable_query_log'] = false;
 		$importer = new $importer_class($this->getContainer(), $config, $logger);
 		$importer->validateOptions();
 
-		if ($mode == 'run') {
-			if ($importer instanceof \Application\DeskPRO\Import\Importer\Deskpro3Importer) {
-
-				if ($importer->isLargeDatabase()) {
-					$output->writeln("\n<info>Your database is quite large. Before you continue, we recommend reading our knowledgebase article on importing large databases:\nhttps://support.deskpro.com/kb/articles/115\n</info>");
-					try {
-						$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to continue with the import now? [Y/n]> ');
-					} catch (\Exception $e) {
-						$yes = false;
-					}
-					if (!$yes) {
-						echo "\n";
-						return 0;
-					}
-					echo "\n";
-				}
-
-				#----------------------------------------
-				# Verify attachment paths
-				#----------------------------------------
-
-				if (!dp_get_config('import.dev_ignore_attachments')) {
-					try {
-						$has_filepath = $importer->getOldDb()->fetchColumn("
-							SELECT filepath
-							FROM blobs
-							WHERE filepath IS NOT NULL
-							ORDER BY id DESC
-							LIMIT 1
-						");
-					} catch (\Exception $e) {
-						$has_filepath = false;
-						// it could fail if using an old version of deskpro,
-						// so just catch it and it means not using file system (obviously)
-					}
-
-					if ($has_filepath) {
-						if (!isset($DP_CONFIG['import']['existing_attachment_files']) || !$DP_CONFIG['import']['existing_attachment_files']) {
-							$output->writeln("Your DeskPRO v3 installation is set to store attachments as files on the filesystem. You need to specify the path to these files in import options in config.php. Look for the `existing_attachment_files` option.");
-							return 1;
-						}
-
-						$check_path = $DP_CONFIG['import']['existing_attachment_files'] . '/' . $has_filepath;
-						if (!file_exists($check_path)) {
-							$output->writeln("The path you entered for `existing_attachment_files` appears to be invalid. We checked for a file attachment but it does not exist: " . $check_path);
-							return 1;
-						}
-					}
-				}
-
-				#----------------------------------------
-				# Check version
-				#----------------------------------------
-
-				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
-				if ($other_version < 3030001) {
-					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
-					$output->writeln("<warn>\nWARNING: We will perform the upgrade directly on the database you specified ({$DP_CONFIG['import']['db_user']}@{$DP_CONFIG['import']['db_host']}/{$DP_CONFIG['import']['db_name']}). The database will be changed permanantly! You should not perform this upgrade on your live database. We recommend upgrading on a clone or backup.\n</warn>");
-					$output->writeln('Do you want to upgrade your helpdesk database now?');
-
-					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
-					if (!$yes) {
-						$output->writeln('Aborting. You can re-run this command when you are ready to proceed.');
-						return 24;
-					}
-
-					#------------------------------
-					# Backup
-					#------------------------------
-
-					$output->writeln('Do you want to backup your database to '.$this->getContainer()->getBackupDir().' first? This is HIGHLY recommended.');
-					$yes = $this->getHelper('dialog')->askConfirmation($output, '[Y/n]> ', true);
-
-					if ($yes) {
-						$mysqldump_path = $this->getContainer()->getMysqldumpBinaryPath();
-						if (!$mysqldump_path) {
-							$output->writeln('We could not locate the path to the MySQL backup utility "mysqldump". You can edit /config.php to specify this path in the "mysqldump_path" setting.');
-							return 25;
-						}
-
-						$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
-						$pass = '';
-						if ($config['db_password']) {
-							$pass = "--password=".escapeshellarg($config['db_password']);
-						}
-						$cmd = sprintf(
-							"%s --opt -Q -h%s -u%s %s %s > %s",
-							$mysqldump_path,
-							escapeshellarg($config['db_host']),
-							escapeshellarg($config['db_user']),
-							$pass,
-							escapeshellarg($config['db_name']),
-							escapeshellarg($f)
-						);
-
-						@set_time_limit(0);
-						chdir($this->getContainer()->getBackupDir());
-						$ret = 0;
-						passthru($cmd, $ret);
-
-						if ($ret) {
-							$output->writeln('<warn>We detected an error while trying to back up your DeskPRO v3 database. Do you want to continue anyway?</warn>');
-							try {
-								$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
-							} catch (\Exception $e) {
-								$yes = false;
-							}
-							if (!$yes) {
-								$output->writeln("Aborting. You can re-run this tool once you are ready to proceed.");
-								return 25;
-							}
-						}
-					}
-
-					#------------------------------
-					# Run the upgrader command
-					#------------------------------
-
-					$output->writeln("We are now running through the DeskPRO v3 upgrader. This may take some time.");
-
-					$cmd = $this->getContainer()->getPhpBinaryPath() . ' index.php';
-					$dir = DP_ROOT . '/sys/legacy/upgrader';
-
-					chdir($dir);
-
-					$cmd .= ' 2>&1';
-					$ret = 0;
-					passthru($cmd, $ret);
-
-					if ($ret) {
-						$output->writeln(PHP_EOL . 'We detected an error while executing the DeskPRO v3 upgrade. You should contact support@deskpro.com.');
-						return 26;
-					}
-				}
-
-				$old_helpdesk_url = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('helpdesk_url'));
-				$logger->log('dp_old_url(' . $old_helpdesk_url.')', \Orb\Log\Logger::DEBUG);
-			}
-
+		if ($mode == 'run' && !$input->getOption('step')) {
 			$output->writeln(
 				"\n" .
 				"The import process is about to begin.\n" .
@@ -829,272 +674,5 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		#----------------------------------------
 
 		return $this->executeImport($importer, $mode, $page, $input, $output);
-	}
-
-
-	protected function executeImport($importer, $mode, $page, InputInterface $input, OutputInterface $output)
-	{
-		$logger = $this->logger;
-		$php_path = dp_get_php_path(false);
-
-		App::getDb()->replace('settings', array(
-			'name' => 'core.imported_timestamp_start',
-			'value' => time(),
-		));
-
-		$start_time = microtime(true);
-
-		#----------------------------------------
-		# Run the --info command
-		#----------------------------------------
-
-		if ($input->getOption('info')) {
-			$importer_class = get_class($importer);
-			$output->writeln("Importer: {$importer_class}");
-			$output->writeln("Importer ID: {$importer->getId()}");
-			$output->writeln("Number of steps: {$importer->countSteps()}");
-
-			for ($i = 1; $i <= $importer->countSteps(); $i++) {
-				$output->writeln(sprintf("\t%2s. %s", $i, $importer->getStepTitle($i)));
-			}
-
-			$output->writeln('');
-
-			if ($errors = $importer->validateOptions()) {
-				$output->writeln("Config errors:");
-				foreach ($errors as $e) {
-					$output->writeln("\t{$e}");
-				}
-			}
-
-			return 0;
-		}
-
-		#----------------------------------------
-		# Execute a single step and page
-		#----------------------------------------
-
-		if ($mode == 'exec-step') {
-			$importer->validateOptions();
-			$importer->setupImport();
-
-			$step_num = $input->getOption('exec-step');
-			$importer->preRunStep($step_num);
-			$step = $importer->getStep($step_num);
-			$step->run($page);
-			$importer->postRunStep($step_num);
-
-			$importer->cleanupImport();
-
-			return 0;
-		}
-
-		#----------------------------------------
-		# Run full importer
-		#----------------------------------------
-
-		if ($mode == 'run') {
-
-			$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
-
-			if ($errors = $importer->validateOptions()) {
-				$logger->log(sprintf("There were %i errors detected before importing could begin", count($errors)), 'INFO');
-				foreach ($errors as $e) {
-					$logger->log($e, 'ERROR');
-				}
-				return 4;
-			}
-
-			$importer->setupImport();
-			$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
-			echo "\n";
-
-			$i = 1;
-			$num = $importer->countSteps();
-
-			if ($input->getOption('step')) {
-				$i = $input->getOption('step');
-			}
-
-			if ($i < 1 || $i > $importer->countSteps()) {
-				$output->writeln("`step` must be between 1 and {$importer->countSteps()}");
-				return 1;
-			}
-
-			for (; $i <= $num; $i++) {
-
-				$start_step_time = microtime(true);
-
-				$step = $importer->getStep($i);
-				$logger->log(sprintf("### Step %d: %s ###", $i, $step::getTitle(), $start_step_time), 'INFO');
-
-				$num_pages = $step->countPages();
-				for ($p = 1; $p <= $num_pages; $p++) {
-
-					$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), $p-1, $num_pages);
-
-					if ($num_pages > 1) {
-						$logger->log(sprintf("Part %d of %d", $p, $num_pages), 'INFO');
-					}
-
-					$cmd = $php_path . ' cmd.php '.$this->getName().' --exec-step=' . $i . ' --exec-step-page=' . $p;
-					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT . '/../');
-					$proc->setTimeout(360000);
-					$proc->run(function ($type, $buffer) {
-						if ('err' === $type) {
-							echo '[ERR] '.$buffer;
-						} else {
-							echo $buffer;
-						}
-					});
-
-					if (!$proc->isSuccessful()) {
-						$logger->log("Error detected, stopping.", 'ERROR');
-						return 1;
-					}
-
-					if ($p == 1 && $num_pages == 1) {
-						$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), 1, 2);
-						usleep(500000);
-					}
-					$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), $p, $num_pages);
-				}
-
-				$end_step_time = microtime(true);
-				$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.\n", $i, $end_step_time-$start_step_time), 'INFO');
-			}
-
-			$importer->cleanupImport();
-
-			// Clear caches like kb/news/ideas/files category caches
-			App::getDb()->executeUpdate('TRUNCATE TABLE cache');
-
-			App::getDb()->replace('settings', array(
-				'name' => 'core.imported_timestamp',
-				'value' => time(),
-			));
-
-			App::getDb()->replace('settings', array(
-				'name' => 'core.install_timestamp',
-				'value' => time(),
-			));
-			App::getDb()->replace('settings', array(
-				'name' => 'core.install_build',
-				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-			));
-			App::getDb()->replace('settings', array(
-				'name' => 'core.tickets.use_ref',
-				'value' => 1,
-			));
-
-			// Mark that we've done this import
-			App::getDb()->replace('settings', array(
-				'name' => 'core.' . strtolower(\Orb\Util\Util::getBaseClassname($importer)),
-				'value' => '1',
-			));
-
-			$DP_CONFIG = $this->getContainer()->getSysConfig('*');
-			foreach (array('db_host', 'db_user', 'db_name') as $k) {
-				App::getDb()->replace('settings', array(
-					'name' => 'core.imported_' . $k,
-					'value' => $DP_CONFIG['import'][$k],
-				));
-			}
-
-			$end_time = microtime(true);
-			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
-
-			$total_time = sprintf("%.03f", microtime(true) - $this->cmd_start_time);
-			$GLOBALS['import_total_time'] = $total_time;
-
-			$logger->log("All Done ($total_time seconds)", 'INFO');
-
-			// Cleanup install token
-			@unlink($this->getContainer()->getLogDir() . '/install_token.dat');
-
-			if (!dp_get_config('debug.no_install_dat_file')) {
-				@file_put_contents(dp_get_data_dir() . '/is_installed.dat', "Do not remove this file. It tells DeskPRO that the software has been installed and turns off access to /install/.");
-			}
-
-			\Application\DeskPRO\Command\ImportCommand::sendLogFile(false);
-
-			return 0;
-		}
-
-		return 0;
-	}
-
-	public function updateStatus($output, $title, $cur, $max)
-	{
-		if ($output->getVerbosity() > 1) {
-			return;
-		}
-
-		// Erase previous line
-		echo "\r";
-		echo str_repeat(' ', 40+25+2+6);
-		echo "\r";
-
-		$perc  = ceil(($cur / $max) * 100);
-		$width = 25;
-		$pips  = floor($perc / 4);
-
-		printf("%-40s", $title);
-
-		if ($cur >= $max) {
-			$pips = $width;
-			$perc = 100;
-		}
-
-		echo "[";
-		echo str_repeat('=',$pips);
-		if ($width-$pips > 0) {
-			echo ">";
-		} else {
-			echo "=";
-		}
-		echo str_repeat(' ',$width-$pips);
-		echo "] ";
-		echo sprintf("%3d", $perc) . "%";
-
-		if ($cur >= $max) {
-			usleep(750000);
-
-			// Erase previous line
-			echo "\r";
-			echo str_repeat(' ', 40+25+2+6);
-			echo "\r";
-			printf("%-40s", $title);
-			echo "DONE\n";
-		}
-	}
-
-	public static function sendLogFile($errinfo = null)
-	{
-		global $DP_CONFIG;
-		if (isset($DP_CONFIG['debug']['no_report_errors']) AND $DP_CONFIG['debug']['no_report_errors']) {
-			return;
-		}
-
-		$import_log_path = App::getKernel()->getUserLogDir() . '/import.log';
-		if (!file_exists($import_log_path)) {
-			return;
-		}
-
-		$data = array(
-			'source_type' => 'import.dp3',
-			'total_time' => isset($GLOBALS['import_total_time']) ? $GLOBALS['import_total_time'] : 'na',
-			'log' => @file_get_contents($import_log_path),
-			'errinfo' => $errinfo ? $errinfo : 0,
-			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-			'nonfatal_error' => isset($GLOBALS['DP_HAS_NONFATAL_ERROR']) ? $GLOBALS['DP_HAS_NONFATAL_ERROR'] : 0
-		);
-
-		try {
-			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats(App::getDb());
-			$data = array_merge($data, $stats_fetcher->getStats());
-		} catch (\Exception $e) {}
-
-		\Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
 	}
 }

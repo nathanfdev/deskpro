@@ -168,12 +168,26 @@ $DP_CONFIG['dir_data'] = '';
 ######################################################
 
 $DP_CONFIG['import'] = array(
-  'db_host' => 'localhost',
-  'db_user' => 'root',
-  'db_password' => '',
-  'db_name' => 'deskpro',
-  'store_attachment_files' => true,
-  'existing_attachment_files' => ''
+	/**
+	 * Settings for import from DeskPRO v3
+	 */
+	'db_host'     => 'localhost',
+	'db_user'     => 'root',
+	'db_password' => '',
+	'db_name'     => 'deskpro',
+	'existing_attachment_files' => '',
+
+	/**
+	 * Settings for import from Zendesk
+	 */
+	'zendesk_domain'    => 'example.zendesk.com',
+	'zendesk_user_id'   => 'your@email.com',
+	'zendesk_api_token' => 'your_api_token',
+
+	/**
+	 * General options for all importers
+	 */
+	'store_attachment_files' => true,
 );
 
 ######################################################

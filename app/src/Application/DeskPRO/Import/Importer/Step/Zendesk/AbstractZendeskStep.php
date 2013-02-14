@@ -26,139 +26,83 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @subpackage Service
- * @category Highrise
+ * @package DeskPRO
+ * @subpackage Import
  */
 
-namespace Orb\Service\Zendesk;
+namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Orb\Util\Arrays;
-use Orb\Util\NullValue;
+use Application\DeskPRO\Import\Importer\Step\AbstractStep;
 
-class ApiResponse
+abstract class AbstractZendeskStep extends AbstractStep
 {
 	/**
-	 * @var int
+	 * @var \Application\DeskPRO\Import\Importer\ZendeskImporter
 	 */
-	protected $http_code;
+	protected $importer;
 
 	/**
-	 * @var string
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	protected $raw;
+	public $db;
+
+	/**
+	 * @var \Orb\Service\Zendesk\Zendesk
+	 */
+	public $zd;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	public $em;
 
 	/**
 	 * @var array
 	 */
-	protected $data;
+	protected $checked_ids = array();
 
-	public function __construct($http_code, $raw)
+	protected function init()
 	{
-		$this->http_code = $http_code;
-		$this->raw       = $raw;
-		$this->data      = json_decode($this->raw, true);
-
-		if (!$this->data) {
-			throw new ApiException("Could not decode response", ApiException::INVALID_RESPONSE, $http_code ?: null, $this->raw);
-		}
+		$this->db = $this->importer->getDb();
+		$this->zd = $this->importer->getZd();
 	}
 
-
 	/**
-	 * @return string
-	 */
-	public function getRaw()
-	{
-		return $this->raw;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getHttpStatusCode()
-	{
-		return $this->http_code;
-	}
-
-
-	/**
+	 * @param int $id
 	 * @return bool
 	 */
-	public function isSuccess()
+	public function verifyUserId($id)
 	{
-		return !$this->isError();
+		return $this->verifyTableId('people', $id);
 	}
 
-
 	/**
+	 * @param int $id
 	 * @return bool
 	 */
-	public function isError()
+	public function verifyOrgId($id)
 	{
-		$str = (string)$this->http_code;
-		if ($str[0] != '2' && $str[0] != '3') {
-			return true;
-		}
-
-		return false;
+		return $this->verifyTableId('organizations', $id);
 	}
 
 
 	/**
-	 * @return string
-	 */
-	public function getErrorCode()
-	{
-		return $this->get('error', null);
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getErrorDescription()
-	{
-		return $this->get('description', null);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function all()
-	{
-		return $this->data;
-	}
-
-
-	/**
-	 * @param string $id
-	 * @return mixed
-	 */
-	public function get($id, $default = null)
-	{
-		return Arrays::keyAsPath($this->data, $id, '.', $default);
-	}
-
-
-	/**
-	 * Check if a value is set
-	 *
-	 * @param string $id
+	 * @param int $id
 	 * @return bool
 	 */
-	public function has($id)
+	public function verifyTableId($table, $id)
 	{
-		$v = $this->get($id, NullValue::get());
-
-		if (NullValue::is($v)) {
-			return false;
+		if (isset($this->checked_ids[$table][$id])) {
+			return $this->checked_ids[$table][$id];
 		}
 
-		return true;
+		if (!isset($this->checked_ids[$table])) {
+			$this->checked_ids[$table] = array();
+		}
+
+		$this->checked_ids[$table][$id] = (bool)$this->db->fetchColumn("SELECT id FROM `$table` WHERE id = ?", array($id));
+		return $this->checked_ids[$table][$id];
 	}
 }

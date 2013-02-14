@@ -26,139 +26,54 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @subpackage Service
- * @category Highrise
+ * @package DeskPRO
+ * @subpackage Import
  */
 
-namespace Orb\Service\Zendesk;
+namespace Application\DeskPRO\Import\Importer;
 
-use Orb\Util\Arrays;
-use Orb\Util\NullValue;
+use Orb\Log\Logger;
+use Orb\Service\Zendesk\Zendesk;
 
-class ApiResponse
+class ZendeskApiLogger
 {
-	/**
-	 * @var int
-	 */
-	protected $http_code;
+	public $count = 0;
+	public $time = 0.0;
 
-	/**
-	 * @var string
-	 */
-	protected $raw;
+	protected $last_start = 0;
+	protected $last_info = null;
 
-	/**
-	 * @var array
-	 */
-	protected $data;
-
-	public function __construct($http_code, $raw)
+	public function callback($event_name, array $ev_data)
 	{
-		$this->http_code = $http_code;
-		$this->raw       = $raw;
-		$this->data      = json_decode($this->raw, true);
-
-		if (!$this->data) {
-			throw new ApiException("Could not decode response", ApiException::INVALID_RESPONSE, $http_code ?: null, $this->raw);
-		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getRaw()
-	{
-		return $this->raw;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getHttpStatusCode()
-	{
-		return $this->http_code;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isSuccess()
-	{
-		return !$this->isError();
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isError()
-	{
-		$str = (string)$this->http_code;
-		if ($str[0] != '2' && $str[0] != '3') {
-			return true;
+		switch ($event_name) {
+			case 'preCall':
+				$this->startCall($ev_data);
+				break;
+			case 'postCall':
+				$this->endCall($ev_data);
+				break;
 		}
 
-		return false;
+		return $ev_data;
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getErrorCode()
+	public function startCall(array $ev_data)
 	{
-		return $this->get('error', null);
+		$this->last_info = $ev_data;
+		$this->last_start = microtime(true);
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getErrorDescription()
+	public function endCall(array $ev_data)
 	{
-		return $this->get('description', null);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function all()
-	{
-		return $this->data;
-	}
-
-
-	/**
-	 * @param string $id
-	 * @return mixed
-	 */
-	public function get($id, $default = null)
-	{
-		return Arrays::keyAsPath($this->data, $id, '.', $default);
-	}
-
-
-	/**
-	 * Check if a value is set
-	 *
-	 * @param string $id
-	 * @return bool
-	 */
-	public function has($id)
-	{
-		$v = $this->get($id, NullValue::get());
-
-		if (NullValue::is($v)) {
-			return false;
+		if (!$this->last_info) {
+			return;
 		}
 
-		return true;
+		$this->time += microtime(true) - $this->last_start;
+		$this->count++;
+
+		$this->last_info = null;
 	}
 }

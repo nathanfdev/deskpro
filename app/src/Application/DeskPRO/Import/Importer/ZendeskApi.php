@@ -26,139 +26,87 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @subpackage Service
- * @category Highrise
+ * @package DeskPRO
+ * @subpackage Import
  */
 
-namespace Orb\Service\Zendesk;
+namespace Application\DeskPRO\Import\Importer;
 
-use Orb\Util\Arrays;
-use Orb\Util\NullValue;
+use Orb\Log\Logger;
+use Orb\Service\Zendesk\Zendesk;
 
-class ApiResponse
+class ZendeskApi extends Zendesk
 {
 	/**
+	 * How many times to try an API call before re-throwing an error?
 	 * @var int
 	 */
-	protected $http_code;
+	protected $try_count = 3;
 
 	/**
-	 * @var string
-	 */
-	protected $raw;
-
-	/**
-	 * @var array
-	 */
-	protected $data;
-
-	public function __construct($http_code, $raw)
-	{
-		$this->http_code = $http_code;
-		$this->raw       = $raw;
-		$this->data      = json_decode($this->raw, true);
-
-		if (!$this->data) {
-			throw new ApiException("Could not decode response", ApiException::INVALID_RESPONSE, $http_code ?: null, $this->raw);
-		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getRaw()
-	{
-		return $this->raw;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getHttpStatusCode()
-	{
-		return $this->http_code;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isSuccess()
-	{
-		return !$this->isError();
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isError()
-	{
-		$str = (string)$this->http_code;
-		if ($str[0] != '2' && $str[0] != '3') {
-			return true;
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getErrorCode()
-	{
-		return $this->get('error', null);
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getErrorDescription()
-	{
-		return $this->get('description', null);
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function all()
-	{
-		return $this->data;
-	}
-
-
-	/**
-	 * @param string $id
-	 * @return mixed
-	 */
-	public function get($id, $default = null)
-	{
-		return Arrays::keyAsPath($this->data, $id, '.', $default);
-	}
-
-
-	/**
-	 * Check if a value is set
+	 * The number of seconds between try attempts
+	 * when the attempts are errors;
 	 *
-	 * @param string $id
-	 * @return bool
+	 * @var int
 	 */
-	public function has($id)
-	{
-		$v = $this->get($id, NullValue::get());
+	protected $try_time_error  = 2;
 
-		if (NullValue::is($v)) {
-			return false;
+	/**
+	 * The number of seconds between try attempts
+	 * when the attempts are rate limit errors.
+	 *
+	 * @var int
+	 */
+	protected $try_time_ratelimit  = 11;
+
+	public function sendRequest($id, $action, array $call_data = null, array $query_data = null)
+	{
+		$try = $this->try_count;
+		while ($try-- > 0) {
+			$ex  = null;
+			$err = null;
+			$res = null;
+
+			try {
+				$res = parent::sendRequest($id, $action, $call_data, $query_data);
+			} catch (\Exception $e) {
+				$ex = $e;
+				$err = 'exception';
+			}
+
+			if (!$err && $res && $res->isError()) {
+				$err = 'exception';
+				if ($res->getHttpStatusCode() == '429') {
+					$err = 'rate';
+				}
+			}
+
+			// Success, return
+			if (!$err) {
+				return $res;
+			} else {
+				// No more tries, rethrow any errors
+				// or return the error result from ZD
+				if (!$try) {
+					if ($ex) {
+						throw $ex;
+					} else {
+						return $res;
+					}
+
+				// Try again after a sleep
+				} else {
+					if ($ex == 'exception') {
+						sleep($this->try_time_error);
+					} else {
+						sleep($this->try_time_ratelimit);
+					}
+				}
+			}
 		}
 
-		return true;
+		return null;
 	}
 }

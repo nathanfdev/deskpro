@@ -68,7 +68,7 @@ class Zendesk
 	/**
 	 * @var array
 	 */
-	protected $listeners;
+	protected $listeners = array();
 
 
 	/**
@@ -149,9 +149,50 @@ class Zendesk
 	 * @throws \RuntimeException
 	 * @throws \Orb\Service\Zendesk\ApiException
 	 */
-	public function sendGet($id)
+	public function sendGet($id, array $query_data = null)
 	{
-		return $this->sendRequest($id, self::GET, null);
+		return $this->sendRequest($id, self::GET, null, $query_data);
+	}
+
+
+	/**
+	 * Just like sendGet except this will attempt to build a complete collection
+	 * by re-calling the 'next_page' and appending results.
+	 *
+	 * This returns an ARRAY of all results.
+	 *
+	 * @return array
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 * @throws \Orb\Service\Zendesk\ApiException
+	 */
+	public function sendGetAll($id, $key, array $query_data = null)
+	{
+		$result = array();
+
+		$next_id = $id;
+		$next_params = $query_data;
+		while ($next_id) {
+			$res = $this->sendRequest($next_id, self::GET, null, $next_params);
+			$next_params = null;
+
+			if ($res->isError()) {
+				throw new ApiException(
+					"Could not complete: " . $res->getErrorDescription(),
+					ApiException::API_ERROR,
+					$res->getErrorCode(),
+					$res->getRaw()
+				);
+			}
+
+			if ($collection = $res->get($key)) {
+				$result = array_merge($result, $collection);
+			}
+
+			$next_id = $res->get('next_page');
+		}
+
+		return $result;
 	}
 
 
@@ -212,12 +253,13 @@ class Zendesk
 	 * @throws \RuntimeException
 	 * @throws \Orb\Service\Zendesk\ApiException
 	 */
-	public function sendRequest($id, $action, array $call_data = null)
+	public function sendRequest($id, $action, array $call_data = null, array $query_data = null)
 	{
 		$ev_data = array(
-			'id'        => $id,
-			'action'    => $action,
-			'call_data' => $call_data
+			'id'         => $id,
+			'action'     => $action,
+			'call_data'  => $call_data,
+			'query_data' => $query_data
 		);
 
 		$ev_data = $this->_callListeners('preInit', $ev_data);
@@ -236,7 +278,20 @@ class Zendesk
 			$call_json = '[]';
 		}
 
-		$url = $this->getUrlForEndpoint($id);
+		$query_string = '';
+		if ($query_data) {
+			$query_string = http_build_query($query_data, null, '&');
+		}
+
+		if (preg_match('#^https?://#', $id)) {
+			$url = $id;
+		} else {
+			$url = $this->getUrlForEndpoint($id);
+		}
+
+		if ($query_string) {
+			$url .= '?' . $query_string;
+		}
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
