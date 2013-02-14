@@ -68,6 +68,15 @@ class ApiResponse
 
 
 	/**
+	 * @return string
+	 */
+	public function getRaw()
+	{
+		return $this->raw;
+	}
+
+
+	/**
 	 * @return int
 	 */
 	public function getHttpStatusCode()

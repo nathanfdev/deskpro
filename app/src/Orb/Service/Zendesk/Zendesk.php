@@ -65,6 +65,11 @@ class Zendesk
 	 */
 	protected $timeout = 10;
 
+	/**
+	 * @var array
+	 */
+	protected $listeners;
+
 
 	/**
 	 * Get your $api_key from Settings > Channels > API.
@@ -100,6 +105,20 @@ class Zendesk
 		}
 
 		$this->zendesk_url = $zendesk_url;
+	}
+
+
+	/**
+	 * Add a callback function to listen to events. Mainly useful for logging.
+	 *
+	 * The callbacks are passed an array and must return the same array
+	 * (with any changes).
+	 *
+	 * @param callable $callback
+	 */
+	public function addListener($callback)
+	{
+		$this->listeners[] = $callback;
 	}
 
 
@@ -195,6 +214,15 @@ class Zendesk
 	 */
 	public function sendRequest($id, $action, array $call_data = null)
 	{
+		$ev_data = array(
+			'id'        => $id,
+			'action'    => $action,
+			'call_data' => $call_data
+		);
+
+		$ev_data = $this->_callListeners('preInit', $ev_data);
+		extract($ev_data, \EXTR_OVERWRITE);
+
 		#------------------------------
 		# Set up cURL
 		#------------------------------
@@ -244,13 +272,24 @@ class Zendesk
 		# Make the call
 		#------------------------------
 
-		$output = curl_exec($ch);
+		$ev_data['url']       = $url;
+		$ev_data['call_json'] = $call_json;
+		$ev_data['ch']        = $ch;
+
+		$ev_data = $this->_callListeners('preCall', $ev_data);
+		extract($ev_data, \EXTR_OVERWRITE);
+
+		$output    = curl_exec($ch);
+		$http_code = @curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		$ev_data['output']    = $output;
+		$ev_data['http_code'] = $http_code;
+		$ev_data = $this->_callListeners('postCall', $ev_data);
+		extract($ev_data, \EXTR_OVERWRITE);
 
 		if (curl_errno($ch)) {
 			throw new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ch), curl_error($ch)));
 		}
-
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 		if ($output === false || !$http_code) {
 			throw new ApiException("Request failed", ApiException::REQUEST_FAILED, null, $output);
@@ -260,6 +299,24 @@ class Zendesk
 
 		$response = new ApiResponse($http_code, $output);
 
+		$ev_data['response'] = $response;
+		$ev_data = $this->_callListeners('postResponse', $ev_data);
+		extract($ev_data, \EXTR_OVERWRITE);
+
 		return $response;
+	}
+
+
+	/**
+	 * @param array $ev_data
+	 * @return array
+	 */
+	protected function _callListeners($event_name, array $ev_data)
+	{
+		foreach ($this->listeners as $l) {
+			$ev_data = call_user_func($l, $event_name, $ev_data);
+		}
+
+		return $ev_data;
 	}
 }
