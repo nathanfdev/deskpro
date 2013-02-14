@@ -252,7 +252,10 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
      * Closes the results box and stops any updating stuff
      */
     close: function() {
-        this.resultsBox.hide();
+		// Could be destroyed so need to check that el still exists
+		if (this.resultsBox) {
+			this.resultsBox.hide();
+		}
     },
 
 
