@@ -26,6 +26,11 @@ var DpErrorLog = {
 			return;
 		}
 
+		// Scripts of resource:// are extensions, so we dont want to log those
+		if (script && script.indexOf('resource://') === 0) {
+			return;
+		}
+
 		if (parseInt(line) == 1 && script.indexOf('/agent/') != -1) {
 			return;
 		}
