@@ -751,15 +751,4 @@ class Task extends AbstractEntityRepository
 
 		return $this->getByIds($task_ids, true);
 	}
-
-	public function getTasksDueOnDate($date)
-	{
-		return $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:Task t
-			WHERE t.date_due = ?0
-				AND t.is_completed = 0
-			ORDER BY t.id
-		")->execute(array($date));
-	}
 }

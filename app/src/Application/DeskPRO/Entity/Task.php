@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\App;
+use Orb\Util\Dates;
 
 /**
  * Task entity definition
@@ -171,44 +172,51 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 			return false;
 		}
 
-		$now = new \DateTime();
-		$today = clone $now;
-		//$today->setTime(23, 59, 59);
-
-		$yesterday = clone $today;
-		$yesterday->modify('-1 day');
-
-		return ($this->date_due < $today);
+		return ($this->date_due->getTimestamp() < time());
 	}
 
-	public function isDueToday()
+	public function isDueToday(Person $person_context)
 	{
 		if (!$this->date_due) {
 			return true;
 		}
 
-		$now = new \DateTime();
-		$today = clone $now;
-		//$today->setTime(23, 59, 59);
+		if ($person_context) {
+			$tz = $person_context->getDateTimezone();
+		} else {
+			$tz = Dates::tzUtc();
+		}
 
-		return ($this->date_due == $today);
+		$tomorrow = new \DateTime('now', $tz);
+		$tomorrow->setTime(0,0,0);
+
+		$cmp_tomorrow = clone $this->date_due;
+		$cmp_tomorrow->setTimezone($tz);
+
+		return ($cmp_tomorrow->format('Y-m-d') == $tomorrow->format('Y-m-d'));
 	}
 
-	public function isDueTomorrow()
+	public function isDueTomorrow(Person $person_context = null)
 	{
-
 		if (!$this->date_due) {
 			return true;
 		}
 
-		$now = new \DateTime();
-		$today = clone $now;
-		$today->setTime(23, 59, 59);
+		if ($person_context) {
+			$tz = $person_context->getDateTimezone();
+		} else {
+			$tz = Dates::tzUtc();
+		}
 
-				$tomorrow = clone $today;
+		$tomorrow = new \DateTime('now', $tz);
+		$tomorrow->setTime(0,0,0);
 		$tomorrow->modify('+1 day');
 
-		return ($this->date_due->modify('+1 day') == $tomorrow);
+		$cmp_tomorrow = clone $this->date_due;
+		$cmp_tomorrow->modify('+1 day');
+		$cmp_tomorrow->setTimezone($tz);
+
+		return ($cmp_tomorrow->format('Y-m-d') == $tomorrow->format('Y-m-d'));
 	}
 
 	/**
