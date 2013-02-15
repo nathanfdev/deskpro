@@ -139,11 +139,8 @@ class TicketsStep extends AbstractZendeskStep
 				break;
 
 			case 'solved':
-				$insert_ticket['status'] = 'resolved';
-				break;
-
 			case 'closed':
-				$insert_ticket['status'] = 'closed';
+				$insert_ticket['status'] = 'resolved';
 				break;
 		}
 
