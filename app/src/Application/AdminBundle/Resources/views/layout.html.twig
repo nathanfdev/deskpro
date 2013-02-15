@@ -127,8 +127,10 @@
 {% if app.getSetting('core.setup_initial') %}
 	{% if not is_post_install and app.helpdesk_is_offline %}
 		<div class="helpdesk-disabled-notice alt">
-			{{ phrase('admin.general.helpdesk_currently_disabled') }}
-			<a class="btn primary" href="{{ path('admin_settings_set', {'setting_name':'core.helpdesk_disabled', 'security_token': security_token('set_setting')}) }}">{{ phrase('admin.general.click_to_reenable_helpdesk') }}</a>
+			<form action="{{ path('admin_settings_set', {'setting_name':'core.helpdesk_disabled', 'security_token': security_token('set_setting')}) }}" method="POST">
+				{{ phrase('admin.general.helpdesk_currently_disabled') }}
+				<button class="btn primary">{{ phrase('admin.general.click_to_reenable_helpdesk') }}</button>
+			</form>
 		</div>
 	{% elseif app.getVariable('cron_is_problem') %}
 		<div class="helpdesk-disabled-notice">
