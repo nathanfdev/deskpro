@@ -186,7 +186,7 @@ class UsersStep extends AbstractZendeskStep
 				'typename' => 'attach.person_picture.' . $user_info['photo']['id'],
 				'data'     => serialize(array(
 					'type'         => 'person_picture',
-					'person_id'    => $user_info,
+					'person_id'    => $user_id,
 					'url'          => $user_info['photo']['content_url'],
 					'filename'     => $user_info['photo']['file_name'],
 					'filesize'     => $user_info['photo']['size'],
