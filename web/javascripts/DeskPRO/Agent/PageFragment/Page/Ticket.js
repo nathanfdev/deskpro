@@ -247,6 +247,61 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.wrapper.addClass('field-error');
 			this.ticketFields.openEditMode();
 		}
+
+		var messagePageWrap = this.getEl('message_page_wrap');
+		var messagesWrap = this.getEl('messages_wrap');
+		this.getEl('message_prev_page').on('click', function(ev) {
+			ev.preventDefault();
+			var p = parseInt(messagesWrap.data('page')) + 1;
+			self.loadMessagePage(p);
+		});
+
+		this.getEl('message_next_page').on('click', function(ev) {
+			ev.preventDefault();
+			var p = parseInt(messagesWrap.data('page')) - 1;
+			self.loadMessagePage(p);
+		});
+	},
+
+	loadMessagePage: function(page) {
+		var messagePageWrap = this.getEl('message_page_wrap');
+		var messagesWrap = this.getEl('messages_wrap');
+
+		messagePageWrap.empty();
+		messagePageWrap.html('<div style="padding: 25px;"><div class="loading-icon-big">&nbsp;</div></div>');
+		this.updateUi();
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/'+ this.meta.ticket_id +'/message-page/' + page,
+			type: 'GET',
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				messagePageWrap.empty();
+				messagePageWrap.html(html);
+				this.updateUi();
+
+				var d = messagePageWrap.find('> div').first();
+				if (d[0]) {
+					messagesWrap.data('page-count', d.data('page-count'));
+					messagesWrap.data('page', d.data('page'));
+				}
+
+				messagesWrap.data('page', page);
+				var numPages = parseInt(messagesWrap.data('page-count'));
+
+				if (page == numPages) {
+					this.getEl('message_prev_page').hide();
+				} else {
+					this.getEl('message_prev_page').show();
+				}
+				if (page == 1) {
+					this.getEl('message_next_page').hide();
+				} else {
+					this.getEl('message_next_page').show();
+				}
+			}
+		});
 	},
 
 	refreshLogTypes: function() {

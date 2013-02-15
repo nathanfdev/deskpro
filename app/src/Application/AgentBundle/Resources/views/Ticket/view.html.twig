@@ -524,8 +524,13 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<li data-tab-for="NOOP" data-typename="other"><em>Other (<span class="other-count"></span>)</em></li>
 		</ul>
 	</nav>
-	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap">
-		{{ ticket_messages_block|raw }}
+	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap" data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
+		<div class="message-page-prev" {% if message_page == message_page_count %}style="display: none"{% endif %} id="{{ baseId }}_message_prev_page">
+			<strong>View earlier messages</strong>
+		</div>
+		<div id="{{ baseId }}_message_page_wrap">
+			{{ ticket_messages_block|raw }}
+		</div>
 		{% if active_drafts %}
 			{% for active_draft in active_drafts %}
 				{% if active_draft.message_html %}
@@ -533,6 +538,9 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endif %}
 			{% endfor %}
 		{% endif %}
+		<div class="message-page-next" {% if message_page == 1 %}style="display: none"{% endif %} id="{{ baseId }}_message_next_page">
+			<strong>View later messages</strong>
+		</div>
 	</section>
 	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
 		<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">

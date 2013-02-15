@@ -1,19 +1,21 @@
-{% for message in ticket_messages %}
-	{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {message: message, message_num: ticket_messages_num[message.id] } %}
-	{% if ticket_message_logs[message.id] %}
+<div data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
+	{% for message in ticket_messages %}
+		{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {message: message, message_num: ticket_messages_num[message.id] } %}
+		{% if ticket_message_logs[message.id] %}
+			<div class="log-batch">
+				{% for log_id in ticket_message_logs[message.id] %}
+					{% set log = ticket_logs[log_id] %}
+					{% include 'AgentBundle:Ticket:ticket-log-row.html.twig' %}
+				{% endfor %}
+			</div>
+		{% endif %}
+	{% endfor %}
+	{% if ticket_message_logs['after'] %}
 		<div class="log-batch">
-			{% for log_id in ticket_message_logs[message.id] %}
+			{% for log_id in ticket_message_logs['after'] %}
 				{% set log = ticket_logs[log_id] %}
 				{% include 'AgentBundle:Ticket:ticket-log-row.html.twig' %}
 			{% endfor %}
 		</div>
 	{% endif %}
-{% endfor %}
-{% if ticket_message_logs['after'] %}
-	<div class="log-batch">
-		{% for log_id in ticket_message_logs['after'] %}
-			{% set log = ticket_logs[log_id] %}
-			{% include 'AgentBundle:Ticket:ticket-log-row.html.twig' %}
-		{% endfor %}
-	</div>
-{% endif %}
+</div>

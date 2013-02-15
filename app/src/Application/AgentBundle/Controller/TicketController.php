@@ -114,7 +114,7 @@ class TicketController extends AbstractController
 		# Messages
 		#------------------------------
 
-		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments, $is_pdf);
+		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 1, $ticket_attachments, $is_pdf);
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$ticket_attachments = $ticket_messages_blockcache['ticket_attachments'];
 		$ticket_message_attachments = isset($ticket_messages_blockcache['ticket_message_attachments']) ? $ticket_messages_blockcache['ticket_message_attachments'] : array();
@@ -285,6 +285,9 @@ class TicketController extends AbstractController
 
 			'last_message_id'            => $ticket_messages_blockcache['last_message_id'],
 			'last_log_id'                => $ticket_messages_blockcache['last_log_id'],
+			'message_count'              => $ticket_messages_blockcache['message_count'],
+			'message_page_count'         => $ticket_messages_blockcache['message_page_count'],
+			'message_page'               => $ticket_messages_blockcache['message_page'],
 
 			'participants'               => $participants,
 			'participant_ids'            => $participant_ids,
@@ -355,6 +358,14 @@ class TicketController extends AbstractController
 		return $this->render($tpl, $vars);
 	}
 
+	public function getMessagePageAction($ticket_id, $page)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, $page);
+
+		return $this->createResponse($ticket_messages_blockcache['ticket_messages_block'], 200);
+	}
+
 	protected function _getTicketPerms(Entity\Ticket $ticket)
 	{
 		$ticket_perms = array();
@@ -369,15 +380,25 @@ class TicketController extends AbstractController
 		return $ticket_perms;
 	}
 
-	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null, $is_pdf = false)
+	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page, array $ticket_attachments = null, $is_pdf = false)
 	{
-		$message_count = 0;
-		$note_count = 0;
+		$per_page = 10;
 
-		$ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages(
-			$ticket,
-			array('since_id' => $since_message_id, 'with_notes' => true)
-		);
+		$all_message_ids = $this->db->fetchAllCol("
+			SELECT id
+			FROM tickets_messages
+			WHERE ticket_id = ?
+			ORDER BY id DESC
+		", array($ticket->getId()));
+
+		$message_numbers = array_combine(array_values($all_message_ids), array_reverse(array_keys($all_message_ids)));
+
+		$message_count = count($all_message_ids);
+		$num_pages = ceil($message_count / $per_page);
+
+		$message_ids = array_slice($all_message_ids, ($page-1)*$per_page, $per_page);
+
+		$ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getByIds($message_ids);
 
 		if ($ticket_attachments === null) {
 			$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
@@ -395,8 +416,7 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket(
-			$ticket,
-			array('since_id' => $since_log_id)
+			$ticket
 		);
 		$ticket_message_logs = array();
 
@@ -404,19 +424,12 @@ class TicketController extends AbstractController
 		$last_log_id = 0;
 
 		$ticket_messages_num = array();
-		$x = 1;
 		foreach ($ticket_messages as $m) {
 
-			$ticket_messages_num[$m['id']] = $x++;
+			$ticket_messages_num[$m['id']] = $message_numbers[$m['id']] + 1;
 
 			if ($m['id'] > $last_message_id) {
 				$last_message_id = $m['id'];
-			}
-
-			if ($m['is_agent_note']) {
-				$note_count++;
-			} else {
-				$message_count++;
 			}
 		}
 		foreach ($ticket_logs as $l) {
@@ -478,6 +491,9 @@ class TicketController extends AbstractController
 				'ticket_message_logs'        => $ticket_message_logs,
 				'ticket_logs'                => $ticket_logs,
 				'all_feedback'               => $all_feedback,
+				'message_page'               => $page,
+				'message_count'              => $message_count,
+				'message_page_count'         => $num_pages
 			));
 		}
 
@@ -501,7 +517,8 @@ class TicketController extends AbstractController
 			'ticket_attachments'         => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
 			'message_count'              => $message_count,
-			'note_count'                 => $note_count,
+			'message_page'               => $page,
+			'message_page_count'         => $num_pages,
 			'last_message_id'            => $last_message_id,
 			'last_log_id'                => $last_log_id,
 		);
@@ -1343,8 +1360,7 @@ class TicketController extends AbstractController
 
 		$data = $this->_getMessageBlockInfo(
 			$ticket,
-			$message->id - 1,
-			$this->in->getUint('last_log_id')
+			$this->in->getUint('message_page')
 		);
 
 		// New reply box
@@ -1424,8 +1440,7 @@ class TicketController extends AbstractController
 
 		$data = $this->_getMessageBlockInfo(
 			$ticket,
-			$this->in->getUint('last_message_id'),
-			$this->in->getUint('last_log_id')
+			$this->in->getUint('message_page')
 		);
 
 		// New reply box
