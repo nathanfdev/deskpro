@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -81,24 +82,19 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if (!$input->getOption('reset-password') && !$input->getOption('make-admin') && !$input->getOption('make-billing')) {
 			$agents = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->getAgents();
 
-			$output->writeln("ADMINS");
-			$output->writeln("===========");
+			$table = array();
 
 			foreach ($agents as $a) {
-				if ($a->can_admin) {
-					echo "{$a->display_name} <$a->email_address>\n";
-				}
+				$table[] = array(
+					$a->id,
+					$a->display_name,
+					$a->email_address,
+					$a->can_admin ? '*' : ''
+				);
 			}
+
+			echo Strings::asciiTable($table, array('ID', 'Name', 'Email Address', 'Admin'));
 			echo "\n";
-
-			$output->writeln("AGENTS");
-			$output->writeln("===========");
-
-			foreach ($agents as $a) {
-				if (!$a->can_admin) {
-					echo "{$a->display_name} <$a->email_address>\n";
-				}
-			}
 
 			return 0;
 

@@ -1773,7 +1773,7 @@ class Strings
 
 		if ($titles) {
 			foreach ($titles as $idx => $t) {
-				$tmp = strlen($t);
+				$tmp = Strings::utf8_strlen($t);
 				if (!isset($lens[$idx]) || $tmp > $lens[$idx]) {
 					$lens[$idx] = $tmp;
 				}
@@ -1782,7 +1782,7 @@ class Strings
 
 		foreach ($array as $row) {
 			foreach ($row as $idx => $t) {
-				$tmp = strlen($t);
+				$tmp = Strings::utf8_strlen($t);
 				if (!isset($lens[$idx]) || $tmp > $lens[$idx]) {
 					$lens[$idx] = $tmp;
 				}
@@ -1801,7 +1801,7 @@ class Strings
 		$fn_line = function($cells) use ($lens) {
 			$l = array();
 			foreach ($cells as $idx => $t) {
-				$l[] = str_pad($t, $lens[$idx], ' ');
+				$l[] = Strings::utf8_str_pad($t, $lens[$idx], ' ');
 			}
 
 			return '| ' . implode(' | ', $l) . ' |';
