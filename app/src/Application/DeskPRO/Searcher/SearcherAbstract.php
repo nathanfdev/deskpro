@@ -802,7 +802,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	{
 		$summary = '';
 
-		if (!$choice) {
+		if ($choice === null || $choice === '') {
 			return '';
 		}
 
@@ -826,6 +826,9 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		if ($title_callback) {
 			$title = call_user_func($title_callback, $choice, $field);
+			if ($choice == '0' || (is_array($choice) && in_array('0', $choice))) {
+				Arrays::unshiftAssoc($title, '0', 'None');
+			}
 		} else {
 			$title = $choice;
 		}

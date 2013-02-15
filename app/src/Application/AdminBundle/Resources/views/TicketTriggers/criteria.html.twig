@@ -45,7 +45,7 @@
 {# New Via Web (or any) #}
 {##################################################################################################################}
 
-{% if event_trigger_sub == 'web' or event_trigger_sub == '' %}
+{% if event_trigger_sub == 'web' or event_trigger_sub == '' or event_trigger_master == 'update' %}
 	<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
 			<select name="op" class="op">
@@ -128,6 +128,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="category">
+					<option value="0">None</option>
 					{% for id,title in app.getDataRepository('Product').getNames() %}
 						<option value="{{ id }}">{{ title }}</option>
 					{% endfor %}
@@ -147,6 +148,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="category">
+					<option value="0">None</option>
 					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
 						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
@@ -173,6 +175,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="priority">
+					<option value="0">None</option>
 					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
 						<option value="{{ id }}">{{ name }}</option>
 					{% endfor %}
@@ -191,6 +194,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
+					<option value="0">None</option>
 					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
 						<option value="{{ work.id }}">{{ work.title }}</option>
 					{% endfor %}

@@ -365,6 +365,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="product">
+					<option value="0">None</option>
 					{% for id,label in term_options.products %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
@@ -390,6 +391,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="category">
+					<option value="0">None</option>
 					{% for id,label in term_options.ticket_categories %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
@@ -450,6 +452,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="priority">
+					<option value="0">None</option>
 					{% for id,label in term_options.priorities %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
@@ -475,6 +478,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="workflow[]" multiple="multiple">
+					<option value="0">None</option>
 					{% for id,label in term_options.ticket_workflows %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
@@ -493,6 +497,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="language">
+				<option value="0">None</option>
 				{% for id,title in term_options.languages %}
 				<option value="{{id}}">{{title}}</option>
 				{% endfor %}

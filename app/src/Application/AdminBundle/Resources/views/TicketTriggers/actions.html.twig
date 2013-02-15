@@ -100,6 +100,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="category">
+				<option value="0">None</option>
 				{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
 					{% if cat.children|length %}
 						<optgroup label="{{ cat.title }}">
@@ -120,6 +121,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_product') }}" data-rule-type="product" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="product">
+				<option value="0">None</option>
 				{% for id,title in app.getDataRepository('Product').getNames() %}
 					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
@@ -132,6 +134,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_priority') }}" data-rule-type="priority" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="priority">
+				<option value="0">None</option>
 				{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
 					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
@@ -144,6 +147,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_workflow') }}" data-rule-type="workflow" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="workflow">
+				<option value="0">None</option>
 				{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
 					<option value="{{ work.id }}">{{ work.title }}</option>
 				{% endfor %}
