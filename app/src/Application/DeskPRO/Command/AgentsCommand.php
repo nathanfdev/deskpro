@@ -57,7 +57,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	protected function configure()
 	{
 		$this->setName('dp:agents');
-		$this->addOption('reset-password', null, InputOption::VALUE_NONE, 'Reset the password of an admin');
+		$this->addOption('reset-password', null, InputOption::VALUE_OPTIONAL, 'Reset the password of an admin');
 		$this->addOption('make-admin', null, InputOption::VALUE_NONE, 'Turn an agent into an admin');
 		$this->addOption('make-billing', null, InputOption::VALUE_NONE, 'Turn an agent into a user with billing permission');
 	}
@@ -98,9 +98,20 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			return 0;
 
-		} elseif ($input->getOption('reset-password')) {
+		} elseif ($input->getOption('reset-password') !== false) {
 
-			$agent = $find_agent("Enter the email address of the agent to reset the password for");
+			$agent = null;
+			if ($input->getOption('reset-password') !== null) {
+				$agent = $em->getRepository('DeskPRO:Person')->find($input->getOption('reset-password'));
+				if (!$agent || !$agent->can_agent) {
+					$agent = null;
+				}
+			}
+
+			if (!$agent) {
+				$agent = $find_agent("Enter the email address of the agent to reset the password for");
+			}
+
 			if (!$agent) {
 				return 1;
 			}
