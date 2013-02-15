@@ -63,22 +63,25 @@ class UserPicturesStep extends AbstractZendeskStep
 	{
 		$perpage = self::PERPAGE;
 		$start = ($page - 1) * $perpage;
-		$batch = $this->db->fetchAll("
-			SELECT * FROM import_datastore
+		$batch = $this->db->fetchAllCol("
+			SELECT data FROM import_datastore
 			WHERE typename LIKE 'attach.person_picture.%'
 			ORDER BY typename ASC
 			LIMIT $start, $perpage
 		");
 
-		$this->getDb()->beginTransaction();
-		try {
-			foreach ($batch as $n) {
-				$this->processBlob($n);
+		foreach ($batch as $n) {
+			$n = unserialize($n);
+			if ($n) {
+				$this->getDb()->beginTransaction();
+				try {
+					$this->processBlob($n);
+					$this->getDb()->commit();
+				} catch (\Exception $e) {
+					$this->getDb()->rollback();
+					throw $e;
+				}
 			}
-			$this->getDb()->commit();
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
 		}
 	}
 

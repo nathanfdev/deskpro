@@ -49,7 +49,7 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 	{
 		$count = $this->db->fetchColumn("
 			SELECT COUNT(*) FROM import_datastore
-			WHERE typename LIKE 'attach.person_picture.%'
+			WHERE typename LIKE 'attach.ticket.%'
 		");
 
 		if (!$count) {
@@ -63,22 +63,25 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 	{
 		$perpage = self::PERPAGE;
 		$start = ($page - 1) * $perpage;
-		$batch = $this->db->fetchAll("
-			SELECT * FROM import_datastore
-			WHERE typename LIKE 'attach.person_picture.%'
+		$batch = $this->db->fetchAllCol("
+			SELECT data FROM import_datastore
+			WHERE typename LIKE 'attach.ticket.%'
 			ORDER BY typename ASC
 			LIMIT $start, $perpage
 		");
 
-		$this->getDb()->beginTransaction();
-		try {
-			foreach ($batch as $n) {
-				$this->processBlob($n);
+		foreach ($batch as $n) {
+			$n = unserialize($n);
+			if ($n) {
+				$this->getDb()->beginTransaction();
+				try {
+					$this->processBlob($n);
+					$this->getDb()->commit();
+				} catch (\Exception $e) {
+					$this->getDb()->rollback();
+					throw $e;
+				}
 			}
-			$this->getDb()->commit();
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
 		}
 	}
 
@@ -123,7 +126,7 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 			'person_id'     => $blob_info['person_id'],
 			'message_id'    => $blob_info['message_id'],
 			'blob_id'       => $new_blob_id,
-			'is_agent_note' => $blob_info['is_agent_note']
+			'is_agent_note' => $blob_info['is_agent_note'] ? 1 : 0
 		));
 
 		@unlink($tmpfile);
