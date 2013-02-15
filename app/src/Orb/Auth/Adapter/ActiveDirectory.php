@@ -40,6 +40,8 @@ use Orb\Util\Arrays;
 
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Zend\Config\Processor\Filter;
+use Zend\Ldap\Ldap;
 
 class ActiveDirectory implements FormLoginInterface, Loggable
 {
@@ -127,9 +129,42 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	/**
 	 * Authenticate a user.
 	 *
-	 * @return
+	 * @return Result
 	 */
-	public function authenticate()
+	public function Authenticate()
+	{
+		$res = $this->doAuthenticate();
+
+		if (!$res->isValid() && strpos($this->set_username, '@')) {
+			$record = $this->findRecordViaEmail();
+			if ($record) {
+				$old = $this->set_username;
+				if (!empty($record['samaccountname'][0])) {
+					$this->set_username = $record['samaccountname'][0];
+				} elseif (!empty($record['userprincipalname'][0])) {
+					$this->set_username = $record['userprincipalname'][0];
+				} else {
+					$this->set_username = $record['distinguishedname'][0];
+				}
+
+				$res2 = $this->doAuthenticate();
+				$this->set_username = $old;
+				if ($res2->isValid()) {
+					return $res2;
+				}
+			}
+		}
+
+		return $res;
+	}
+
+
+	/**
+	 * Authenticate a user.
+	 *
+	 * @return Result
+	 */
+	public function doAuthenticate()
 	{
 		if (!$this->set_username) {
 			return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
@@ -221,6 +256,50 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 		return new Result(Result::SUCCESS, $identity);
 	}
+
+
+	/**
+	 * Search the AD for the user based on email address
+	 */
+	public function findRecordViaEmail()
+	{
+		if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
+			return null;
+		}
+
+		if ($this->logger) {
+			$this->logger->log("START Filter for email", Logger::DEBUG);
+		}
+
+		$zend_auth = $this->getZendAuthAdapter();
+		// Bogus because zend only creates ldap obj when its needed,
+		// so this is a hack to get it to set all the correct options
+		// for us
+		try {
+			$zend_auth->setUsername('__bogus__');
+			$zend_auth->setPassword('__bogus__');
+			$zend_auth->authenticate();
+		} catch (\Exception $e) {}
+
+		/** @var $ldap \Zend\Ldap\Ldap */
+		$ldap = $zend_auth->getLdap();
+
+		$filter = sprintf('(&(objectClass=user)(mail=%s))', \Zend\Ldap\Filter::escapeValue($this->set_username));
+		if ($this->logger) {
+			$this->logger->log("Sending filter: $filter", Logger::DEBUG);
+		}
+
+		$r = $ldap->search($filter, $this->options['baseDn']);
+		if ($this->logger) {
+			$this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+		}
+
+		if ($r->count() == 1) {
+			return $r->getFirst();
+		}
+		return null;
+	}
+
 
 	/**
 	 * @param \Orb\Log\Logger $logger
