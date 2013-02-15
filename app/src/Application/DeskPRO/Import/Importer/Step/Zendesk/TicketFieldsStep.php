@@ -49,6 +49,24 @@ class TicketFieldsStep extends AbstractZendeskStep
 	{
 		$sub_start_time = microtime(true);
 
+		#------------------------------
+		# Priority
+		#------------------------------
+
+		$this->db->exec("DELETE FROM ticket_priorities");
+
+		$pris = array();
+		$pris[] = array('id' => 1, 'title' => 'Low',    'priority' => 0);
+		$pris[] = array('id' => 2, 'title' => 'Normal', 'priority' => 10);
+		$pris[] = array('id' => 3, 'title' => 'High',   'priority' => 20);
+		$pris[] = array('id' => 4, 'title' => 'Urgent', 'priority' => 30);
+
+		$this->db->batchInsert('ticket_priorities', $pris);
+
+		#------------------------------
+		# Custom Fields
+		#------------------------------
+
 		$fields = $this->zd->sendGetAll('ticket_fields', 'ticket_fields', array('per_page' => 100));
 
 		// There are built-in types that we need to skip importing
@@ -86,7 +104,6 @@ class TicketFieldsStep extends AbstractZendeskStep
 		$field_id = $field_info['id'];
 
 		$new_field = new CustomDefTicket();
-		$new_field->id            = $field_id;
 		$new_field->display_order = $field_info['position'];
 		$new_field->title         = $field_info['title'];
 		$new_field->description   = $field_info['description'];
@@ -133,10 +150,11 @@ class TicketFieldsStep extends AbstractZendeskStep
 				break;
 
 			case 'checkbox':
-				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\ToggleField';
+				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
 				break;
 
 			case 'tagger':
+				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
 				if ($field_info['required']) {
 					$new_field->setOption('agent_required', true);
 					$new_field->setOption('agent_min_length', 1);
@@ -148,8 +166,11 @@ class TicketFieldsStep extends AbstractZendeskStep
 				break;
 		}
 
-		$this->em->persist($new_field);
-		$this->em->flush();
+		$this->getEm()->persist($new_field);
+		$this->getEm()->flush();
+
+		$field_id = $new_field->getId();
+		$this->saveMappedId('zd_ticket_field_id', $field_info['id'], $field_id);
 
 		#------------------------------
 		# May need to process sub-options now
@@ -222,7 +243,7 @@ class TicketFieldsStep extends AbstractZendeskStep
 
 				$sub_child = $new_field->createChild();
 				$sub_child->title = $opt['name'];
-				$sub_child->display_order = $opt['display_name'];
+				$sub_child->display_order = $opt['display_order'];
 				$sub_child->setOption('parent_id', $id_map[$opt['parent_id']]);
 
 				$this->getEm()->persist($sub_child);
@@ -231,5 +252,7 @@ class TicketFieldsStep extends AbstractZendeskStep
 				$this->saveMappedId('zd_tagger_id', $field_id . '_' . $opt['value'], $sub_child->getId());
 			}
 		}
+
+		$this->logMessage(sprintf("-- Saved %d as %s", $field_id, $new_field->getTypeName()));
 	}
 }

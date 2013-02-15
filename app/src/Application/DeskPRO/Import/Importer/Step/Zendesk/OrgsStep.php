@@ -90,14 +90,11 @@ class OrgsStep extends AbstractZendeskStep
 	 */
 	protected function processOrg($org_info)
 	{
-		$org_id = $org_info['id'];
-
 		#------------------------------
 		# Insert the org
 		#------------------------------
 
 		$insert_org = array();
-		$insert_org['id']           = $org_id;
 		$insert_org['name']         = $org_info['name'];
 		$insert_org['date_created'] = date('Y-m-d H:i:s', strtotime($org_info['created_at']));
 
@@ -109,9 +106,12 @@ class OrgsStep extends AbstractZendeskStep
 			$notes .= $org_info['notes'];
 		}
 
-		$insert_org['notes'] = trim($notes);
+		$insert_org['summary'] = trim($notes);
 
 		$this->db->insert('organizations', $insert_org);
+		$org_id = $this->db->lastInsertId();
+
+		$this->saveMappedId('zd_org_id', $org_info['id'], $org_id);
 
 		#------------------------------
 		# Insert domains

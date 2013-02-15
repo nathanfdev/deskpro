@@ -61,8 +61,21 @@ class ZendeskImporter extends AbstractImporter
 	 */
 	protected $table_exists = array();
 
+	protected $cache_map_types = array(
+		'zd_org_id' => true,
+		'zd_group_id' => true,
+		'zd_ticket_field_id' => true,
+	);
+
 	protected $steps = array(
-		'Users'
+		'Orgs',
+		'Users',
+		'Groups',
+		'TicketFields',
+		'Tickets',
+		'UserPictures',
+		'TicketAttachments',
+		'RecountLabels',
 	);
 
 	public function validateOptions()

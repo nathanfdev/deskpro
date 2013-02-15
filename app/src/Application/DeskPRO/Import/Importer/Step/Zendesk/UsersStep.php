@@ -100,22 +100,20 @@ class UsersStep extends AbstractZendeskStep
 	 */
 	protected function processUser($user_info)
 	{
-		$user_id = $user_info['id'];
-
 		#----------------------------------------
 		# Insert user record
 		#----------------------------------------
 
 		$insert_person = array();
-		$insert_person['id']               = $user_id;
-		$insert_person['date_created']     = date('Y-m-d H:i:s', strtotime($user_info['created_at']));
-		$insert_person['secret_string']    = \Orb\Util\Strings::random(40);
-		$insert_person['timezone']         = 'UTC';
-		$insert_person['salt']             = \Orb\Util\Strings::random(40);
-		$insert_person['is_contact']       = 1;
-		$insert_person['is_user']          = 1;
-		$insert_person['is_confirmed']     = 1;
-		$insert_person['name']             = $user_info['name'];
+		$insert_person['date_created']       = date('Y-m-d H:i:s', strtotime($user_info['created_at']));
+		$insert_person['secret_string']      = \Orb\Util\Strings::random(40);
+		$insert_person['timezone']           = 'UTC';
+		$insert_person['salt']               = \Orb\Util\Strings::random(40);
+		$insert_person['is_contact']         = 1;
+		$insert_person['is_user']            = 1;
+		$insert_person['is_confirmed']       = 1;
+		$insert_person['is_agent_confirmed'] = 1;
+		$insert_person['name']               = $user_info['name'];
 
 		if ($user_info['last_login_at']) {
 			$insert_person['date_last_login'] = date('Y-m-d H:i:s', strtotime($user_info['last_login_at']));
@@ -129,9 +127,9 @@ class UsersStep extends AbstractZendeskStep
 			$notes .= $user_info['notes'];
 		}
 
-		$insert_person['notes'] = trim($notes);
-		if ($this->verifyOrgId($user_info['organization_id'])) {
-			$insert_person['organization_id'] = $user_info['organization_id'];
+		$insert_person['summary'] = trim($notes);
+		if ($this->getMappedNewId('zd_org_id', $user_info['organization_id'])) {
+			$insert_person['organization_id'] = $this->getMappedNewId('zd_org_id', $user_info['organization_id']);
 		}
 
 		if (!$user_info['active']) {
@@ -157,6 +155,56 @@ class UsersStep extends AbstractZendeskStep
 		}
 
 		$this->db->insert('people', $insert_person);
+		$user_id = $this->db->lastInsertId();
+		$this->saveMappedId('zd_user_id', $user_info['id'], $user_id);
+
+		#------------------------------
+		# Preferences
+		#------------------------------
+
+		// If they are an admin/agent, set signature pref
+		if (!empty($user_info['signature']) && ($user_info['role'] == 'agent' || $user_info['role'] == 'admin')) {
+			$this->db->batchInsert('people_prefs', array(
+				array(
+					'person_id'   => $user_id,
+					'name'        => 'agent.ticket_signature',
+					'value_str'   => $user_info['signature'],
+					'value_array' => 'N;',
+				),
+				array(
+					'person_id'   => $user_id,
+					'name'        => 'agent.ticket_signature_html',
+					'value_str'   => nl2br(htmlspecialchars($user_info['signature'], \ENT_QUOTES, 'UTF-8')),
+					'value_array' => 'N;',
+				),
+			));
+		}
+
+		// Photo
+		if (!empty($user_info['photo'])) {
+			$this->db->insert('import_datastore', array(
+				'typename' => 'attach.person_picture.' . $user_info['photo']['id'],
+				'data'     => serialize(array(
+					'type'         => 'person_picture',
+					'person_id'    => $user_info,
+					'url'          => $user_info['photo']['content_url'],
+					'filename'     => $user_info['photo']['file_name'],
+					'filesize'     => $user_info['photo']['size'],
+					'content_type' => $user_info['photo']['content_type'],
+				))
+			));
+		}
+
+		#------------------------------
+		# Notify settings / permission
+		#------------------------------
+
+		if ($user_info['role'] == 'agent' || $user_info['role'] == 'admin') {
+			$this->db->insert('person2usergroups', array(
+				'person_id'    => $user_id,
+				'usergroup_id' => 3 // the default 'all' permission
+			));
+		}
 
 		#------------------------------
 		# Insert labels
@@ -166,7 +214,7 @@ class UsersStep extends AbstractZendeskStep
 			$insert_bulk = array();
 			foreach ($user_info['tags'] as $tag) {
 				$row = array();
-				$row['person_id'] = $user_info;
+				$row['person_id'] = $user_id;
 				$row['label'] = strtolower($tag);
 
 				$insert_bulk[] = $row;
@@ -179,75 +227,97 @@ class UsersStep extends AbstractZendeskStep
 		# Insert email and other contact info
 		#----------------------------------------
 
-		$primary_email_id = null;
+		$primary_email = strtolower($user_info['email']);
+		list (, $primary_email_domain) = explode('@', $primary_email);
+
 		$insert_bulk_emails   = array();
 		$insert_contact_data  = array();
 
-		foreach ($user_info['identities'] as $ident) {
-			switch ($ident['type']) {
-				case 'email':
-					$email = strtolower($ident['value']);
-					list (, $domain) = explode('@', $email);
+		if ($user_info['phone']) {
+			$insert_contact_data[] = array(
+				'person_id'    => $user_id,
+				'contact_type' => 'phone',
+				'field_1'      => null,
+				'field_2'      => $user_info['phone'],
+				'field_3'      => 'phone'
+			);
+		}
 
-					if ($primary_email_id === null) {
-						$primary_email_id = $ident['id'];
-					}
+		if (!empty($user_info['identities'])) {
+			foreach ($user_info['identities'] as $ident) {
+				switch ($ident['type']) {
+					case 'email':
+						$email = strtolower($ident['value']);
+						list (, $domain) = explode('@', $email);
 
-					if ($user_info['email'] == $ident['email']) {
-						$primary_email_id = $ident['id'];
-					}
+						if ($email == $primary_email) {
+							continue;
+						}
 
-					$insert_bulk_emails[] = array(
-						'id'             => $ident['id'],
-						'person_id'      => $user_id,
-						'email'          => $email,
-						'email_domain'   => $domain,
-						'is_validated'   => $ident['verified'] ? 1 : 0,
-						'date_created'   => date('Y-m-d H:i:s', strtotime($ident['created_at'])),
-						'date_validated' => $ident['verified'] ? date('Y-m-d H:i:s', strtotime($ident['updated_at'])) : null
-					);
-					break;
+						$insert_bulk_emails[] = array(
+							'person_id'      => $user_id,
+							'email'          => $email,
+							'email_domain'   => $domain,
+							'is_validated'   => $ident['verified'] ? 1 : 0,
+							'date_created'   => date('Y-m-d H:i:s', strtotime($ident['created_at'])),
+							'date_validated' => $ident['verified'] ? date('Y-m-d H:i:s', strtotime($ident['updated_at'])) : null
+						);
+						break;
 
-				case 'twitter':
-					$insert_contact_data[] = array(
-						'person_id'    => $user_id,
-						'contact_type' => 'twitter',
-						'field_1'      => $ident['value'],
-						'field_2'      => null
-					);
-					break;
+					case 'twitter':
+						$insert_contact_data[] = array(
+							'person_id'    => $user_id,
+							'contact_type' => 'twitter',
+							'field_1'      => $ident['value'],
+							'field_2'      => null
+						);
+						break;
 
-				case 'facebook':
-					$insert_contact_data[] = array(
-						'person_id'    => $user_id,
-						'contact_type' => 'facebook',
-						'field_1'      => 'http://facebook.com/people/' . $ident['value'],
-						'field_2'      => $ident['value']
-					);
-					break;
+					case 'facebook':
+						$insert_contact_data[] = array(
+							'person_id'    => $user_id,
+							'contact_type' => 'facebook',
+							'field_1'      => 'http://facebook.com/people/' . $ident['value'],
+							'field_2'      => $ident['value']
+						);
+						break;
 
-				case 'phone':
-					$insert_contact_data[] = array(
-						'person_id'    => $user_id,
-						'contact_type' => 'phone',
-						'field_1'      => null,
-						'field_2'      => $ident['value'],
-						'field_3'      => 'phone'
-					);
-					break;
+					case 'phone':
+
+						if ($ident['value'] == $user_info['phone']) {
+							continue;
+						}
+
+						$insert_contact_data[] = array(
+							'person_id'    => $user_id,
+							'contact_type' => 'phone',
+							'field_1'      => null,
+							'field_2'      => $ident['value'],
+							'field_3'      => 'phone'
+						);
+						break;
+				}
 			}
 		}
 
+		$this->db->insert('people_emails', array(
+			'person_id'      => $user_id,
+			'email'          => $primary_email,
+			'email_domain'   => $primary_email_domain,
+			'is_validated'   => 1,
+			'date_created'   => $insert_person['date_created'],
+			'date_validated' => $user_info['verified'] ? $insert_person['date_created'] : null
+		));
+
+		$primary_email_id = $this->db->lastInsertId();
+		$this->db->update(
+			'people',
+			array('primary_email_id' => $primary_email_id),
+			array('id' => $user_id)
+		);
+
 		if ($insert_bulk_emails) {
 			$this->db->batchInsert('people_emails', $insert_bulk_emails, true);
-
-			if ($primary_email_id) {
-				$this->db->update(
-					'people',
-					array('primary_email_id' => $primary_email_id),
-					array('id' => $user_id)
-				);
-			}
 		}
 
 		if ($insert_contact_data) {

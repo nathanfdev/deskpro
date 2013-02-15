@@ -34,50 +34,98 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Entity\Person;
+use Orb\Data\ContentTypes;
 
-class RecountLabelsStep extends AbstractZendeskStep
+class TicketAttachmentsStep extends AbstractZendeskStep
 {
+	const PERPAGE = 250;
+
 	public static function getTitle()
 	{
-		return 'Recount Labels';
+		return 'Download Blobs';
+	}
+
+	public function countPages()
+	{
+		$count = $this->db->fetchColumn("
+			SELECT COUNT(*) FROM import_datastore
+			WHERE typename LIKE 'attach.person_picture.%'
+		");
+
+		if (!$count) {
+			return 1;
+		}
+
+		return ceil($count / self::PERPAGE);
 	}
 
 	public function run($page = 1)
 	{
-		$sub_start_time = microtime(true);
+		$perpage = self::PERPAGE;
+		$start = ($page - 1) * $perpage;
+		$batch = $this->db->fetchAll("
+			SELECT * FROM import_datastore
+			WHERE typename LIKE 'attach.person_picture.%'
+			ORDER BY typename ASC
+			LIMIT $start, $perpage
+		");
 
-		$this->db->exec("TRUNCATE TABLE label_defs");
+		$this->getDb()->beginTransaction();
+		try {
+			foreach ($batch as $n) {
+				$this->processBlob($n);
+			}
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
+		}
+	}
 
-		$types = array(
-			'articles', 'blobs', 'chat_conversations',
-			'downloads', 'feedback', 'news', 'organizations',
-			'people', 'tasks', 'tickets'
-		);
+	/**
+	 * @param array $blob_info
+	 */
+	protected function processBlob($blob_info)
+	{
+		$tmpfile = tempnam(sys_get_temp_dir(), 'dp');
 
-		$insert_defs = array();
+		if (!copy($blob_info['url'], $tmpfile)) {
+			$this->logMessage("Failed copy blob: " . print_r($blob_info,1));
+			return;
+		}
 
-		foreach ($types as $t) {
-			$counts = $this->db->fetchAllKeyValue("
-				SELECT label, COUNT(*)
-				FROM `labels_$t`
-				GROUP BY label
-			");
-
-			foreach ($counts as $l => $c) {
-				$insert_defs[] = array(
-					'label_type' => $t,
-					'label'      => $l,
-					'total'      => $c
-				);
+		$dim_w = $dim_h = 0;
+		if (in_array($blob_info['content_type'], ContentTypes::getImageContentTypes())) {
+			$imageinfo = @getimagesize($tmpfile);
+			if ($imageinfo) {
+				$dim_w = $imageinfo[0];
+				$dim_h = $imageinfo[1];
 			}
 		}
 
-		if ($insert_defs) {
-			$this->db->batchInsert('label_defs', $insert_defs, true);
-		}
+		$desc = $this->getContainer()->getSystemService('filestorage')->createRandomPath();
+		$desc->write($tmpfile, array(
+			'content_type' => $blob_info['content_type'],
+			'filename'     => $blob_info['filename'],
+		));
+		$new_blob_id = $desc->getPath();
 
-		$sub_end_time = microtime(true);
-		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
+		$this->db->update('blobs', array(
+			'filename' => $blob_info['filename'],
+			'filesize' => filesize($tmpfile),
+			'dim_w' => $dim_w,
+			'dim_h' => $dim_h,
+			'date_created' => date('Y-m-d H:i:s'),
+		), array('id' => $new_blob_id));
+
+		$this->db->insert('tickets_attachments', array(
+			'ticket_id'     => $blob_info['ticket_id'],
+			'person_id'     => $blob_info['person_id'],
+			'message_id'    => $blob_info['message_id'],
+			'blob_id'       => $new_blob_id,
+			'is_agent_note' => $blob_info['is_agent_note']
+		));
+
+		@unlink($tmpfile);
 	}
 }

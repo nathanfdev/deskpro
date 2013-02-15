@@ -414,6 +414,7 @@ class SettingsController extends AbstractController
 	public function quickSetupAction()
 	{
 		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
+		$zd_is_import = $this->container->getSetting('core.zendeskimporter') ?: false;
 		$skip_cron_check = $this->container->getSysConfig('instance_data.install_flags.skip_cron_check');
 
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
@@ -427,7 +428,7 @@ class SettingsController extends AbstractController
 
 		if (!$this->container->getSetting('core.done_data_initializer')) {
 			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
-			if ($is_import) {
+			if ($is_import || $zd_is_import) {
 				$data_init->setImportMode();
 			}
 
@@ -514,6 +515,7 @@ class SettingsController extends AbstractController
 			'outgoing_email_form' => $outgoing_email_form,
 			'incoming_email_form' => $incoming_email_form,
 			'is_import' => $is_import,
+			'zd_is_import' => $zd_is_import,
 			'php_path' => $php_path,
 			'php_path_set' => $php_path_set,
 			'skip_cron_check' => $skip_cron_check,
@@ -534,6 +536,7 @@ class SettingsController extends AbstractController
 	public function setSilentSettingsAction()
 	{
 		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
+
 		$timezone = $this->in->getString('timezone');
 		$url = $this->in->getString('url');
 

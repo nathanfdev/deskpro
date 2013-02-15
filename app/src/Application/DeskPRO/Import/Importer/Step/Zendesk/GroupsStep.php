@@ -84,9 +84,10 @@ class GroupsStep extends AbstractZendeskStep
 		# Import the actual data
 		#----------------------------------------
 
-		$groups = $this->zd->sendGetAll('groups', array('per_page' => 100));
+		$groups = $this->zd->sendGetAll('groups', 'groups', array('per_page' => 100));
 
 		$this->db->exec("DELETE FROM agent_teams");
+		$this->db->exec("DELETE FROM departments");
 
 		$this->db->beginTransaction();
 		try {
@@ -108,32 +109,51 @@ class GroupsStep extends AbstractZendeskStep
 
 	protected function processGroup($group_info, $group_members)
 	{
-		$group_id = $group_info['id'];
-
 		#------------------------------
 		# Insert the group
 		#------------------------------
 
 		$insert_team = array();
-		$insert_team['id'] = $group_id;
 		$insert_team['name'] = $group_info['name'];
+
 		$this->db->insert('agent_teams', $insert_team);
+		$group_id = $this->db->lastInsertId();
+		$this->saveMappedId('zd_group_id', $group_info['id'], $group_id);
+
 
 		#------------------------------
-		# Insert members
+		# Insert the group as a dep as well
+		#------------------------------
+
+		$this->db->insert('departments', array('title' => $group_info['name'], 'is_tickets_enabled' => 1));
+		$dep_id = $this->db->lastInsertId();
+		$this->saveMappedId('zd_groupdep_id', $group_info['id'], $dep_id);
+
+		#------------------------------
+		# Insert members/perms
 		#------------------------------
 
 		$insert_bulk = array();
+		$insert_bulk_perms = array();
 
 		foreach ($group_members as $uid) {
 			$insert_bulk[] = array(
 				'team_id'   => $group_id,
 				'person_id' => $uid
 			);
+
+			$insert_bulk_perms[] = array(
+				'department_id' => $dep_id,
+				'person_id'     => $uid,
+				'app'           => 'tickets'
+			);
 		}
 
 		if ($insert_bulk) {
-			$this->db->insert('agent_team_members', $insert_bulk, true);
+			$this->db->batchInsert('agent_team_members', $insert_bulk, true);
+		}
+		if ($insert_bulk_perms) {
+			$this->db->batchInsert('department_permissions', $insert_bulk_perms, true);
 		}
 	}
 }

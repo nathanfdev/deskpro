@@ -38,7 +38,7 @@ namespace Orb\Service\Zendesk;
 use Orb\Util\Arrays;
 use Orb\Util\NullValue;
 
-class ApiResponse
+class ApiResponse implements \ArrayAccess
 {
 	/**
 	 * @var int
@@ -161,4 +161,27 @@ class ApiResponse
 
 		return true;
 	}
+
+
+	public function offsetExists($offset)
+	{
+		return isset($this->data[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->data[$offset];
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		throw new \BadMethodCallException();
+	}
+
+	public function offsetUnset($offset)
+	{
+		throw new \BadMethodCallException();
+	}
+
+
 }
