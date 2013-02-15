@@ -1,6 +1,6 @@
 {% if log.action_type != 'executed_triggers' %}
 	<div
-		class="log-row log-{{log.id}} {% if log.sla %}with-sla{% endif %} {% if log.trigger_id %}with-trigger{% endif %} type-{{ log.action_type }}"
+		class="log-row log-{{log.id}} {% if log.sla %}with-sla{% endif %} {% if log.trigger_id %}with-trigger{% endif %} {% if log.action_type == 'message_created' and log.details.is_agent_note %}type-message_note_created{% else %}type-{{ log.action_type }}"{% endif %}
 		data-log-id="{{ log.id }}"
 	>
 		<div class="info">

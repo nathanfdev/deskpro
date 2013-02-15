@@ -256,6 +256,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var types = {
 			'message':  '.type-message_removed, .type-message_edit, .type-message_created',
+			'note':     '.type-message_note_created',
 			'notif':    '.type-agent_notify, .type-user_notify',
 			'assign':   '.type-changed_agent, .type-changed_agent_team, .type-changed_person, .type-participant_added, .type-participant_removed',
 			'slas':     '.with-sla, .type-ticket_sla_added, .type-ticket_sla_removed, .type-ticket_sla_updated',
@@ -284,10 +285,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}, this);
 		}
 
-		if (showType == 'all' || showType == 'message') {
-			this.getEl('messages_wrap').find('.content-message').show();
-		} else {
+		if (showType != 'all') {
 			this.getEl('messages_wrap').find('.content-message').hide();
+
+			if (showType == 'message') {
+				this.getEl('messages_wrap').find('.public-message').show();
+			} else if (showType == 'note') {
+				this.getEl('messages_wrap').find('.note-message').show();
+			}
 		}
 
 		if (showType == 'all') {
