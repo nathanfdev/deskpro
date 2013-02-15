@@ -52,8 +52,11 @@ class SettingsController extends BaseSettingsController
 	{
 		$this->old_domain = $this->container->getSetting('core.cloud_custom_domain');
 
+		$custom_domain = strtolower($this->in->getString('custom_domain'));
+		$custom_domain = preg_replace('#^www\.#', '', $custom_domain);
+
 		$update_settings = array(
-			'core.cloud_custom_domain' => $this->in->getString('custom_domain') ?: null,
+			'core.cloud_custom_domain' => $custom_domain ?: null,
 		);
 
 		foreach ($update_settings as $k => $v) {
