@@ -314,18 +314,13 @@ class LanguagesController extends AbstractController
 
 		$language = $this->getLanguageOr404($language_id);
 
-		if ($language->id == 1) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		if ($this->container->getDataService('Language')->getDefault()->getId() == $language->getId()) {
+			$url = $this->generateUrl('admin_langs');
+			return $this->renderStandardError("You cannot delete the default lanugage. You may change the default language from <a href='$url'>Admin &rarr; Settings &rarr; Languages</a>.");
 		}
 
 		$this->em->beginTransaction();
 		try {
-
-			// It was default, so set it back to English
-			if ($this->container->getDataService('Language')->getDefault()->getId() == $language->getId()) {
-				$this->container->getSettingsHandler()->setSetting('core.default_language_id', 1);
-			}
-
 			$this->em->remove($language);
 			$this->em->flush();
 			$this->em->commit();
