@@ -47,7 +47,7 @@ class ZendeskImporter extends AbstractImporter
 	public $db;
 
 	/**
-	 * @var \Orb\Service\Zendesk\Zendesk
+	 * @var \Application\DeskPRO\Import\Importer\ZendeskApi
 	 */
 	public $zd;
 
@@ -151,6 +151,8 @@ class ZendeskImporter extends AbstractImporter
 		$zdlog = new ZendeskApiLogger();
 		$this->zdlog = $zdlog;
 		$this->zd->addListener(array($zdlog, 'callback'));
+
+		$this->zd->setLogger($this->logger);
 
 		$this->time_begin = microtime(true);
 	}

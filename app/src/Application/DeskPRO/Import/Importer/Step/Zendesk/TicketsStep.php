@@ -34,7 +34,9 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
+use Orb\Service\Zendesk\ApiException;
 use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 
 class TicketsStep extends AbstractZendeskStep
 {
@@ -67,10 +69,6 @@ class TicketsStep extends AbstractZendeskStep
 
 		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
 
-		if ($page == 1) {
-			$this->db->exec('DELETE FROM tickets');
-		}
-
 		$tickets = $this->getBatch($page);
 
 		$this->db->beginTransaction();
@@ -94,6 +92,11 @@ class TicketsStep extends AbstractZendeskStep
 	{
 		$ticket_id = $ticket_info['id'];
 
+		if ($this->getMappedNewId('zd_ticket_id', $ticket_id)) {
+			// Already imported (skip)
+			return;
+		}
+
 		if (!$this->getMappedNewId('zd_user_id', $ticket_info['requester_id'])) {
 			return;
 		}
@@ -101,7 +104,12 @@ class TicketsStep extends AbstractZendeskStep
 		$search_content = array();
 		$search_content[] = $ticket_info['subject'];
 
-		$ticket_metrics = $this->zd->sendGet("tickets/{$ticket_info['id']}/metrics");
+		try {
+			$ticket_metrics = $this->zd->sendGet("tickets/{$ticket_info['id']}/metrics");
+		} catch (ApiException $e) {
+			$ticket_metrics = new OptionsArray();
+			$this->logMessage(sprintf("Ticket %d has no metrics data", $ticket_id));
+		}
 
 		#------------------------------
 		# Create the ticket
@@ -204,7 +212,7 @@ class TicketsStep extends AbstractZendeskStep
 		}
 
 		$this->db->insert('tickets', $insert_ticket);
-
+		$this->saveMappedId('zd_ticekt_id', $insert_ticket['id'], $ticket_id);
 
 		#------------------------------
 		# Insert labels
@@ -429,7 +437,11 @@ class TicketsStep extends AbstractZendeskStep
 	 */
 	protected function getBatch($page)
 	{
+		$this->logMessage(sprintf("Getting batch of %d (page %d)", self::PERPAGE, $page));
+		$t = microtime(true);
+
 		$res = $this->zd->sendGet('tickets', array('per_page' => self::PERPAGE, 'page' => $page));
+		$this->logMessage(sprintf("-- Call took %.4f seconds", microtime(true) - $t));
 
 		$batch = $res->get('tickets');
 

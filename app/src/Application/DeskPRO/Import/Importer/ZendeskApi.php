@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Import\Importer;
 
 use Orb\Log\Logger;
+use Orb\Service\Zendesk\ApiException;
 use Orb\Service\Zendesk\Zendesk;
 
 class ZendeskApi extends Zendesk
@@ -60,6 +61,21 @@ class ZendeskApi extends Zendesk
 	 * @var int
 	 */
 	protected $try_time_ratelimit  = 11;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
+
+	/**
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(\Orb\Log\Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
 
 	public function sendRequest($id, $action, array $call_data = null, array $query_data = null)
 	{
@@ -99,9 +115,29 @@ class ZendeskApi extends Zendesk
 				// Try again after a sleep
 				} else {
 					if ($ex == 'exception') {
+						if ($this->logger) {
+							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed due to an exception: %s %s", $ex->getCode(), $ex->getMessage()));
+						}
 						sleep($this->try_time_error);
-					} else {
+					} elseif ($err == 'rate') {
+						if ($this->logger) {
+							$body = '';
+							if ($res) {
+								$body = $res->getRaw();
+							}
+							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed due to rate limiting: %s", $body));
+						}
 						sleep($this->try_time_ratelimit);
+					} else {
+						if ($this->logger) {
+							$body = '';
+							if ($res) {
+								$body = $res->getRaw();
+							}
+							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed with an error status: %s", $body));
+						}
+
+						throw new ApiException("API call failed with error status", $res->getHttpStatusCode(), $res->getErrorCode(), $res->getRaw());
 					}
 				}
 			}
