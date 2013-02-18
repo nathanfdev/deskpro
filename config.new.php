@@ -178,13 +178,6 @@ $DP_CONFIG['import'] = array(
 	'existing_attachment_files' => '',
 
 	/**
-	 * Settings for import from Zendesk
-	 */
-	'zendesk_domain'    => 'example.zendesk.com',
-	'zendesk_user_id'   => 'your@email.com',
-	'zendesk_api_token' => 'your_api_token',
-
-	/**
 	 * General options for all importers
 	 */
 	'store_attachment_files' => true,
