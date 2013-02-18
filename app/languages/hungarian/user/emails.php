@@ -6,7 +6,7 @@
 	'user.emails.comment_thank-you'                                        => 'Köszönjük hozzászólását. ({{link}})',
 	'user.emails.comment_validate-email'                                   => 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:',
 	'user.emails.do-not-reply'                                             => 'Ez egy automata üzenet. kérjük ne válaszoljon rá, mert a válaszként küldött üzeneteket rendszerünk olvasás és ellenőrzés nélkül törli!',
-	'user.emails.feedback_agent-validation'                                => 'Visszajelzése tartalmát munkatársaink ellenőrzik, csak ezután kerül publikálásra weboldalunkon.',
+	'user.emails.feedback_agent-validation'                                => 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.',
 	'user.emails.feedback_approved'                                        => 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.',
 	'user.emails.feedback_closed'                                          => '"{{title}}" tárgyú visszajelzése lezárásra került: {{status}}',
 	'user.emails.feedback_disapproved'                                     => 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.',

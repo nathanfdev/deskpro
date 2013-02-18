@@ -15,6 +15,6 @@
 	'user.email_subjects.re'                                               => 'Válasz: {{subject}}',
 	'user.email_subjects.ticket-rate'                                      => 'Értékelje munkánkat: "{{ticket.subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Ügyéhez új személy került hozzárendelésre',
-	'user.email_subjects.tickets_re'                                       => 'Válasz: {{ticket subject}}',
+	'user.email_subjects.tickets_re'                                       => 'Válasz: {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'Erősítse meg e-mail címét',
 );
