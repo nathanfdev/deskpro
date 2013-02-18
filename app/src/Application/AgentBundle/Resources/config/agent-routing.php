@@ -1348,13 +1348,6 @@ $collection->add('agent_ticket_message_ajax_getquote', new Route(
 	array()
 ));
 
-$collection->add('agent_ticket_ajax_getmessages', new Route(
-	'/tickets/{ticket_id}/ajax-get-messages',
-	array('_controller' => 'AgentBundle:Ticket:ajaxGetMessages'),
-	array('ticket_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticket_saveagentparts', new Route(
 	'/ticket/{ticket_id}/save-agent-parts',
 	array('_controller' => 'AgentBundle:Ticket:saveAgentParts'),

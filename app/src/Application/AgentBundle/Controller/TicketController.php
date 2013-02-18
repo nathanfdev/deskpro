@@ -382,7 +382,7 @@ class TicketController extends AbstractController
 
 	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page, array $ticket_attachments = null, $is_pdf = false)
 	{
-		$per_page = 10;
+		$per_page = 25;
 
 		$all_message_ids = $this->db->fetchAllCol("
 			SELECT id
@@ -514,6 +514,7 @@ class TicketController extends AbstractController
 
 			'ticket_messages_block'      => $ticket_messages_block,
 			'ticket_messages'            => $ticket_messages,
+			'ticket_messages_num'        => $ticket_messages_num,
 			'ticket_attachments'         => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
 			'message_count'              => $message_count,
@@ -2104,37 +2105,6 @@ class TicketController extends AbstractController
 			'message_id'   => $message->getId(),
 			'message_full' => $message->getMessageFull()
 		);
-
-		return $this->createJsonResponse($data);
-	}
-
-	############################################################################
-	# get-ticket-messages
-	############################################################################
-
-	public function ajaxGetMessagesAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$data = array('messages' => array());
-
-		$since = $this->in->getUint('since');
-
-		$messages = $this->em->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMessage m
-			WHERE m.ticket = ?1 AND m.id > ?2
-		")->execute(array(1=>$ticket, 2=> $since));
-
-		foreach ($messages as $message) {
-			$data['messages'][] = $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
-				'message' => $message
-			));
-
-			if ($message['is_agent_note']) {
-				$data['has_notes'] = true;
-			}
-		}
 
 		return $this->createJsonResponse($data);
 	}

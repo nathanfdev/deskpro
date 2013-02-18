@@ -14,7 +14,6 @@ pageMeta.deleteTicketUrl              = '{{ path('agent_ticketsearch_ajax_delete
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 pageMeta.viewMessageUnformattedUrl    = '{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
 pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
-pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.lastMessageId = {{ last_message_id|default(0) }};
 pageMeta.lastLogId = {{ last_log_id|default(0) }};

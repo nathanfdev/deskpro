@@ -263,13 +263,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 	},
 
-	loadMessagePage: function(page) {
+	loadMessagePage: function(page, noShowLoading) {
 		var messagePageWrap = this.getEl('message_page_wrap');
 		var messagesWrap = this.getEl('messages_wrap');
 
-		messagePageWrap.empty();
-		messagePageWrap.html('<div style="padding: 25px;"><div class="loading-icon-big">&nbsp;</div></div>');
-		this.updateUi();
+		// No page means reload current page
+		if (!page) {
+			page = parseInt(messagesWrap.data('page'));
+		}
+
+		if (!noShowLoading) {
+			messagePageWrap.empty();
+			messagePageWrap.html('<div style="padding: 25px;"><div class="loading-icon-big">&nbsp;</div></div>');
+			this.updateUi();
+		}
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/'+ this.meta.ticket_id +'/message-page/' + page,
@@ -279,6 +286,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			success: function(html) {
 				messagePageWrap.empty();
 				messagePageWrap.html(html);
+				this._initMessage(messagePageWrap);
 				this.updateUi();
 
 				var d = messagePageWrap.find('> div').first();
@@ -470,6 +478,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (result.dupe_message) {
 				DeskPRO_Window.showAlert("You have already sent that message.");
+				self.loadMessagePage(0, true);
 				return;
 			}
 
@@ -577,8 +586,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (any) {
 				this.wrapper.find('.agent-draft-message').remove();
-				new_messages.appendTo($(this.getEl('messages_wrap')));
-				this._initMessage(new_messages);
+				self.loadMessagePage(0, true);
 			}
 		}
 
@@ -681,45 +689,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 	},
 
-	displayNewMessage: function(html, slideCallback) {
-		var self = this;
-		var new_message = $(html).hide();
-
-		if (new_message.data('message-id')) {
-			if (this.getEl('messages_wrap').find('.message-' + new_message.data('message-id'))[0]) {
-				return;
-			}
-		} else {
-			var any = false;
-			new_message.find('.message').each(function() {
-				if (self.getEl('messages_wrap').find('.message-' + $(this).data('message-id'))[0]) {
-					$(this).hide();
-				} else {
-					any = true;
-				}
-			});
-
-			if (!any) {
-				slideCallback();
-				return;
-			}
-		}
-
-		slideCallback = slideCallback || function(){};
-
-		var old_slideCallback = slideCallback;
-		var self = this;
-		slideCallback = function() {
-			self.updateUi();
-			old_slideCallback();
-		};
-
-		new_message.appendTo($(this.getEl('messages_wrap'))).slideDown('fast', slideCallback);
-
-		this._initMessage(new_message);
-		this.incCount('ticket-messages');
-	},
-
 	_initMessage: function(messageEl) {
 		var self = this;
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
@@ -787,9 +756,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (article.is('.agent-draft-message')) {
 				return;
 			}
-
-			lastCount++;
-			article.find('.message-counter').text('#' + lastCount);
 
 			var fullEl = article.find('.body-text-full-message');
 			if (fullEl[0]) {
