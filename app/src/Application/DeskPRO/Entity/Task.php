@@ -175,7 +175,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		return ($this->date_due->getTimestamp() < time());
 	}
 
-	public function isDueToday(Person $person_context)
+	public function isDueToday(Person $person_context = null)
 	{
 		if (!$this->date_due) {
 			return true;

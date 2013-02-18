@@ -4,7 +4,7 @@
 	data-task-id="{{ task.id }}"
 
 	{% if task.isOverdue() %}data-in-sublist-overdue="1"
-	{% elseif task.isDueToday() %}data-in-sublist-today="1"
+	{% elseif task.isDueToday(app.user) %}data-in-sublist-today="1"
 	{% else %}data-in-sublist-future="1"
 	{% endif %}
 
