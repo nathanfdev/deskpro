@@ -1,4 +1,4 @@
-<IfModule mod_rewrite.c>
+<IfModule rewrite_module>
 	RewriteEngine On
 
 	# If instructed to do so, uncomment this line and set the value to the web path of DeskPRO.
