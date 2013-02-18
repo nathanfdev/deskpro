@@ -93,10 +93,15 @@ class HtmlPurifier implements CleanerPlugin
 				$value = "<html>$value</html>";
 			}
 
+			// Set a HTML 4.01 transitional doctype
+			$value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n" . $value;
+
 			$m = null;
 			if (preg_match('#<head[^>]*>(.*?)</head>#is', $value, $m)) {
 				$value = str_replace($m[0], '', $value);
 				$value = str_replace('<html>', '<html>' . $m[0], $value);
+			} else {
+				$value = str_replace('<html>', '<html><head></head>', $value);
 			}
 
 			if (strpos($value, '<body') !== false) {
@@ -112,6 +117,13 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 			$value = Strings::extractBodyTag($value);
 			$value = Strings::decodeWhitespaceHtmlEntities($value);
+
+			// Recreate a full, basic document
+			// Just the body will used by the time we insert the message into the db,
+			// but we need a full document like this so that DOMDocument "cleans" bad HTML properly.
+			// E.g., a malformed meta tag could result in a whole paragraph erroneously being moved
+			// under a <head> tag if we dont explicitly put them all under body
+			$value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n<html><head></head><body>" . $value . '</body></html>';
 
 			// Replace Wingdings characters with UTF-8 characters
 			$map = array(
