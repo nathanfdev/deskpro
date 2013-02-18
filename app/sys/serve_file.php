@@ -79,10 +79,14 @@ class FilestorageLoader extends LoaderAbstract
 	/**
 	 * @var string
 	 */
-	protected $error_mode = 'exit';
+	protected $error_mode = 'error';
 
 	public function runAction()
 	{
+		if (isset($_GET['debug'])) {
+			$this->error_mode = 'exception';
+		}
+
 		try {
 			$pathinfo = $this->getPathInfo();
 
@@ -140,10 +144,10 @@ class FilestorageLoader extends LoaderAbstract
 				$this->handleGradientRequest();
 			} else {
 				header("HTTP/1.0 404 Not Found");
-				echo "File not found. (1)";
+				echo "File not found. (bad_route)";
 			}
 		} catch (\Exception $exception) {
-			if (isset($DP_CONFIG['debug']['dev'])) {
+			if (isset($GLOBALS['DP_CONFIG']['debug']['dev'])) {
 				echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
 				$backtrace = $exception->getTrace();
@@ -344,8 +348,11 @@ class FilestorageLoader extends LoaderAbstract
 		}
 
 		if (!$blob) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("File not found. (no_css_blob_id)", 400);
+			}
 			header("HTTP/1.0 404 Not Found");
-			echo "File not found (no css_blob_id)";
+			echo "File not found (no_css_blob_id)";
 			return;
 		}
 
@@ -368,6 +375,9 @@ class FilestorageLoader extends LoaderAbstract
 	public function handleGradientRequest()
 	{
 		if (!function_exists('imagepng') || (!function_exists('imagecreatetruecolor') && !function_exists('imagecreate'))) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("File not found. (no_image_manip)", 400);
+			}
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found (no_image_manip)";
 			return;
@@ -447,8 +457,11 @@ class FilestorageLoader extends LoaderAbstract
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$blob) {
+			if ($this->error_mode == 'exception') {
+				throw new \Exception("File not found. (no_sitemap_blob)", 400);
+			}
 			header("HTTP/1.0 404 Not Found");
-			echo "File not found.";
+			echo "File not found. (no_sitemap_blob)";
 			return;
 		}
 
@@ -648,6 +661,9 @@ class FilestorageLoader extends LoaderAbstract
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 			if (!$blob || $blob['filename'] != $filename) {
+				if ($this->error_mode == 'exception') {
+					throw new \Exception("File not found. (2.1)", 400);
+				}
 				header("HTTP/1.0 404 Not Found");
 				echo "File not found. (2.1)";
 				return;
@@ -712,6 +728,9 @@ class FilestorageLoader extends LoaderAbstract
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 			if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
+				if ($this->error_mode == 'exception') {
+					throw new \Exception("File not found. (3)", 400);
+				}
 				header("HTTP/1.0 404 Not Found");
 				echo "File not found. (3)";
 				return;
