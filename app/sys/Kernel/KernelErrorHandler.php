@@ -477,6 +477,9 @@ class KernelErrorHandler
 		$errfile = self::stripPathPrefix($exception->getFile());
 		$errline = $exception->getLine();
 
+		$errfile_hash     = self::getFilehash($errfile);
+		$errfile_modified = self::isFileModified($errfile, $errfile_hash);
+
 		$backtrace = $exception->getTrace();
 		$trace = self::formatBacktrace($backtrace);
 		$context_data = '';
@@ -524,6 +527,8 @@ class KernelErrorHandler
 			'errname'           => 'EXCEPTION',
 			'errno'             => $errno,
 			'errfile'           => $errfile,
+			'errfile_hash'      => $errfile_hash,
+			'errfile_modified'  => $errfile_modified,
 			'errline'           => $errline,
 			'last_error'        => $last_e,
 			'display'           => $display,
@@ -689,6 +694,9 @@ class KernelErrorHandler
 		$errstr  = self::stripPathPrefix($errstr);
 		$errfile = self::stripPathPrefix($errfile);
 
+		$errfile_hash     = self::getFilehash($errfile);
+		$errfile_modified = self::isFileModified($errfile, $errfile_hash);
+
 		$backtrace = debug_backtrace();
 		$trace = self::formatBacktrace($backtrace);
 
@@ -730,6 +738,8 @@ class KernelErrorHandler
 			|| strpos($errstr, 'fsockopen(): unable to connect to') !== false
 			|| strpos($errstr, 'fsockopen(): unable to connect to') !== false
 			|| strpos($errstr, 'fsockopen(): SSL: crypto enabling timeout') !== false
+			|| strpos($errstr, 'fsockopen(): Failed to enable crypto') !== false
+			|| strpos($errstr, 'fsockopen(): php_network_getaddresses: getaddrinfo failed') !== false
 		) {
 			$no_send_error = true;
 		}
@@ -769,6 +779,8 @@ class KernelErrorHandler
 			'errname'            => $errname,
 			'errno'              => $errno,
 			'errfile'            => $errfile,
+			'errfile_hash'       => $errfile_hash,
+			'errfile_modified'   => $errfile_modified,
 			'errline'            => $errline,
 			'last_error'         => $last_e,
 			'display'            => $display,
@@ -886,4 +898,51 @@ class KernelErrorHandler
 		}
         return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
     }
+
+
+	/**
+	 * Gets a filehash
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public static function getFilehash($path)
+	{
+		$file_contents = @file_get_contents($path);
+
+		$bom = pack('CCC', 0xEF, 0xBB, 0xBF);
+		if (substr($file_contents, 0, 3) === $bom) {
+			$file_contents = substr($file_contents, 3);
+		}
+
+		$file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+
+		return $file_contents;
+	}
+
+
+	/**
+	 * Compare a file hash versus the original stored in the distro checksums file.
+	 *
+	 * @param string $path
+	 */
+	public static function isFileModified($path, $hash = null)
+	{
+		if ($hash === null) {
+			$hash = self::getFilehash($path);
+		}
+
+		if (!is_file(DP_ROOT . 'app/sys/Resources/distro-checksums.php')) {
+			return true;
+		}
+
+		$checksums = require(DP_ROOT . 'app/sys/Resources/distro-checksums.php');
+		$key = str_replace(DP_ROOT, '', $path);
+
+		if (!isset($checksums[$key]) || $hash != $checksums[$key]) {
+			return false;
+		}
+
+		return true;
+	}
 }
