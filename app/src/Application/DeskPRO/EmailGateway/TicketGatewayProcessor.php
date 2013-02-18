@@ -285,7 +285,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
-				$person->disable_autoresponses = true;
+				$person->setDisableAutoresponses(
+					true,
+					'User detected as a DeskPRO helpdesk'
+				);
 			}
 
 			App::setCurrentPerson($person);
@@ -326,7 +329,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
-				$person->disable_autoresponses = true;
+				$person->setDisableAutoresponses(
+					true,
+					'User detected as a DeskPRO helpdesk'
+				);
 			}
 
 			App::setCurrentPerson($person);

@@ -407,12 +407,17 @@
 					</tr>
 				{% endif %}
 				<tr>
-					<td class="label">{{ phrase('agent.people.auto_responder') }}</td>
+					<td class="label">Auto-responder?</td>
 					<td class="value">
 						<select id="{{baseId}}_disable_autoresponses">
-							<option value="0" {% if person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.general.no') }}</option>
-							<option value="1" {% if person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.people.auto_responder_yes') }}</option>
+							<option value="0" {% if not person.disable_autoresponses %}selected="selected"{% endif %}>User is not an auto-repsonder</option>
+							<option value="1" {% if person.disable_autoresponses %}selected="selected"{% endif %}>User is an auto-responder. Auto-replies will not be sent.</option>
 						</select>
+						{% if person.disable_autoresponses and person.disable_autoresponses_log %}
+							<div style="font-size:10px;" id="{{ baseId }}_disable_autoresponses_reason">
+								{{ person.disable_autoresponses_log }}
+							</div>
+						{% endif %}
 					</td>
 				</tr>
 			</table>

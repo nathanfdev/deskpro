@@ -243,6 +243,24 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 		# send the auto-reply
 		#------------------------------
 
+		$person = $ticket->person;
+
+		if ($this->enable_notify && !$this->tracker->isExtraSet('suppress_user_notify')) {
+			if (!$person->getPrimaryEmailAddress()) {
+				$this->tracker->logMessage("[NewTicketAction] User has no primary email address, setting enable_notify=0");
+				$this->enable_notify = false;
+			} elseif ($person->disable_autoresponses) {
+				$this->tracker->logMessage("[NewTicketAction] User has disable_autoresponses enabled, setting enable_notify=0");
+				$this->enable_notify = false;
+
+				$change_info = array(
+					'type'    => 'free',
+					'message' => 'User notification disbaled because user is set as an auto-responder',
+				);
+				$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+			}
+		}
+
 		if ($this->enable_notify && !$this->tracker->isExtraSet('suppress_user_notify')) {
 
 			if ($ticket->isAgentCreated()) {
@@ -263,7 +281,6 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 			$this->tracker->logMessage("[NewTicketAction] Sending email " . $tpl);
 
-			$person       = $ticket->person;
 			$from_address = $this->getFromAddress($ticket);
 
 			$vars = array(
@@ -328,42 +345,34 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				}
 			}
 
-			if ($person->getPrimaryEmailAddress()) {
-				if ($person->disable_autoresponses) {
-					$this->tracker->logMessage("[NewTicketAction] Not sending confirmation because person.disable_autoresponses=1");
-				} else {
-					App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $attach_attachments) {
-						$message = App::getMailer()->createMessage();
-						$message->setContextId('ticket_gateway');
-						$message->setTemplate($tpl, $vars);
-						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-						foreach ($parts as $part) {
-							if ($part['email_address']) {
-								$message->addCc($part['email_address'], $part->person->getDisplayName());
-							}
-						}
-						$message->setFrom($from_address);
-						$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
-						$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
-						$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
-
-						if ($attach_attachments) {
-							foreach ($attach_attachments as $src => $attach) {
-								if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
-									// signature image being attached
-									$message->attachBlob($attach, $src, true);
-								} else {
-									$message->attachBlob($attach->blob, $src, $attach->is_inline);
-								}
-							}
-						}
-
-						App::getMailer()->send($message);
-					});
+			App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $attach_attachments) {
+				$message = App::getMailer()->createMessage();
+				$message->setContextId('ticket_gateway');
+				$message->setTemplate($tpl, $vars);
+				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+				foreach ($parts as $part) {
+					if ($part['email_address']) {
+						$message->addCc($part['email_address'], $part->person->getDisplayName());
+					}
 				}
-			} else {
-				$this->tracker->logMessage("[NewTicketAction] No validated email address on user account");
-			}
+				$message->setFrom($from_address);
+				$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+				$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+				$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
+
+				if ($attach_attachments) {
+					foreach ($attach_attachments as $src => $attach) {
+						if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
+							// signature image being attached
+							$message->attachBlob($attach, $src, true);
+						} else {
+							$message->attachBlob($attach->blob, $src, $attach->is_inline);
+						}
+					}
+				}
+
+				App::getMailer()->send($message);
+			});
 		} else {
 			$this->tracker->logMessage("[NewTicketAction] No notification");
 		}

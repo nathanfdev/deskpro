@@ -442,7 +442,11 @@ class PersonController extends AbstractController
 				break;
 
 			case 'disable_autoresponses':
-				$person->disable_autoresponses = $this->in->getBool('disable_autoresponses');
+				$person->setDisableAutoresponses(
+					$this->in->getBool('disable_autoresponses'),
+					'Disabled by ' . $this->person->getDisplayContact()
+				);
+
 				$this->em->persist($person);
 				break;
 

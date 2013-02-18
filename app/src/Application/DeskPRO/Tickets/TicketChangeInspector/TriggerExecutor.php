@@ -472,6 +472,12 @@ class TriggerExecutor
 			if ($is_autoreply) {
 				$this->tracker->logMessage('Is Auto-Reply, adding trigger: disable_user_notifications');
 				$actions_collection->add($factory->create('disable_user_notifications', array()));
+
+				$change_info = array(
+					'type'    => 'free',
+					'message' => 'User breached flood limit, notifications for this ticket were suppressed',
+				);
+				$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 			}
 		}
 

@@ -106,6 +106,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						disable_autoresponses: val
 					}
 				});
+
+				self.getEl('disable_autoresponses_reason').remove();
 			});
 
 			var namef       = this.getEl('showname');

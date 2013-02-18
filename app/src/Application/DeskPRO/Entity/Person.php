@@ -143,6 +143,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $disable_autoresponses = 0;
 
 	/**
+	 * @var string
+	 */
+	protected $disable_autoresponses_log = '';
+
+	/**
 	 * Has this user ever confirmed themselves via email?
 	 * Individual email addresses must be confirmed as well, but this
 	 * is an account-wide flag that says the user is at least real.
@@ -2128,6 +2133,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->getTimezoneOffset() * 3600;
 	}
 
+
+	/**
+	 * @param bool $val
+	 * @param string $reason
+	 */
+	public function setDisableAutoresponses($val, $reason = null)
+	{
+		$val = (bool)$val;
+
+		$this->setModelField('disable_autoresponses', $val);
+		if (!$val) {
+			$this->setModelField('disable_autoresponses_log', null);
+		} else {
+			if (!$reason) {
+				$reason = 'Unknown';
+			}
+			$reason .= ' (' . date('M j Y @ H:i') . ')';
+			$this->setModelField('disable_autoresponses_log', $reason);
+		}
+	}
+
 	/**
 	 * @param string $organization_position
 	 */
@@ -2276,6 +2302,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'can_reports', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_reports', ));
 		$metadata->mapField(array( 'fieldName' => 'is_vacation_mode', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_vacation_mode', ));
 		$metadata->mapField(array( 'fieldName' => 'disable_autoresponses', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_autoresponses', ));
+		$metadata->mapField(array( 'fieldName' => 'disable_autoresponses_log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'disable_autoresponses_log', ));
 		$metadata->mapField(array( 'fieldName' => 'is_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_confirmed', ));
 		$metadata->mapField(array( 'fieldName' => 'is_agent_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_confirmed', ));
 		$metadata->mapField(array( 'fieldName' => 'is_deleted', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_deleted', ));
