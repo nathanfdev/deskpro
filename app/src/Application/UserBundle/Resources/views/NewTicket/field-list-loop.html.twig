@@ -15,20 +15,20 @@
 </div>
 {% endif %}
 
-{% if item.field_type == 'ticket_subject' and ((mode == 'default' and (item.rules or item.id in page_data_field_ids)) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
+{% if item.field_type == 'ticket_subject' %}
 <div data-field-id="ticket_subject" class="ticket-display-field ticket_subject" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-subject.html.twig' %}
 </div>
 {% endif %}
 
-{% if item.field_type == 'ticket_cc_emails' and ((mode == 'default' and (item.rules or item.id in page_data_field_ids)) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
+{% if item.field_type == 'ticket_cc_emails' %}
 <div data-field-id="ticket_cc_emails" class="ticket-display-field ticket_cc_emails" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-cc.html.twig' %}
 </div>
 {% endif %}
 
 {% if type == 'modify' and user_participants|length %}
-{% if item.field_type == 'ticket_remove_ccs' and ((mode == 'default' and (item.rules or item.id in page_data_field_ids)) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
+{% if item.field_type == 'ticket_remove_ccs' %}
 <div data-field-id="ticket_remove_ccs" class="ticket-display-field ticket_remove_ccs" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-cc-remove.html.twig' %}
 </div>
@@ -36,7 +36,7 @@
 {% endif %}
 
 {% if type != 'modify' %}
-{% if item.field_type == 'person_name' and ((mode == 'default' and (item.rules or item.id in page_data_field_ids)) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
+{% if item.field_type == 'person_name' %}
 <div data-field-id="person_name" class="ticket-display-field person_name" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-person-name.html.twig' %}
 </div>
