@@ -113,11 +113,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function renderStandardPermissionError($error_message = '', $error_title = '', $code = 200, array $vars = array())
 	{
+		$billing_agents = array_filter($this->container->getAgentData()->getAgents(), function($a) {
+			if ($a->can_admin || $a->can_billing) {
+				return true;
+			}
+			return false;
+		});
+
 		$tpl = 'BillingBundle:Main:error-permission.html.twig';
 
 		$vars = array_merge($vars, array(
-			'error_message' => $error_message,
-			'error_title'   => $error_title
+			'error_message'  => $error_message,
+			'error_title'    => $error_title,
+			'billing_agents' => $billing_agents,
 		));
 
 		$res = $this->render($tpl, $vars);

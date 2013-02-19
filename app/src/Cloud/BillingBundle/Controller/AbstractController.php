@@ -36,5 +36,34 @@ namespace Cloud\BillingBundle\Controller;
 
 abstract class AbstractController extends \Application\BillingBundle\Controller\AbstractController
 {
+	/**
+	 * Render a standard permission error message.
+	 *
+	 * @param string $error_message
+	 * @param string $error_title
+	 * @return Response
+	 */
+	public function renderStandardPermissionError($error_message = '', $error_title = '', $code = 200, array $vars = array())
+	{
+		$billing_agents = array_filter($this->container->getAgentData()->getAgents(), function($a) {
+			if ($a->can_admin || $a->can_billing) {
+				return true;
+			}
+			return false;
+		});
 
+		$tpl = 'CloudBillingBundle:Main:error-permission.html.twig';
+
+		$vars = array_merge($vars, array(
+			'error_message'  => $error_message,
+			'error_title'    => $error_title,
+			'billing_agents' => $billing_agents,
+		));
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
+	}
 }

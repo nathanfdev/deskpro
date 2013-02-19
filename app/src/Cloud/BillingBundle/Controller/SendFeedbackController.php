@@ -44,12 +44,16 @@ class SendFeedbackController extends AbstractController
 
     public function sendAction()
     {
-		$admin = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			WHERE p.is_agent = 1 AND p.is_deleted = 0 AND p.can_admin = 1
-			ORDER BY p.can_billing DESC
-		")->setMaxResults(1)->getOneOrNullResult();
+		if ($this->person->getId()) {
+			$admin = $this->person->getId();
+		} else {
+			$admin = $this->em->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				WHERE p.is_agent = 1 AND p.is_deleted = 0 AND p.can_admin = 1
+				ORDER BY p.can_billing DESC
+			")->setMaxResults(1)->getOneOrNullResult();
+		}
 
 		if ($admin) {
 			$from = $admin->getPrimaryEmailAddress();

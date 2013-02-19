@@ -165,6 +165,14 @@
 <!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">
 
+	{% if app.isCloud() and constant('DPC_BILL_OVERDUE') %}
+		<section class="demo-notice failed-bill">
+			<article>
+				We failed to renew your DeskPRO Cloud subscription for another month of service.
+			</article>
+		</section>
+	{% endif %}
+
 <div id="dp_admin_page" class="dp_admin_page with-pagetabs">
 	<div id="dp_admin_page_inner" class="dp_admin_page_inner">
 		<div class="dp-page-box">
@@ -191,12 +199,53 @@
 					</ul>
 					<br class="clear" />
 				</div>
+
+				<div style="margin-top: 35px;  background-color: #D0E8F4; padding: 8px; border-radius: 6px; -webkit-border-radius: 6px;">
+					<strong>Still need help?</strong><br />
+					If you have any questions, just submit this form and we'll get back to you at {{ app.user.email_address }}.
+					You can also email us directly at <a href="mailto:sales@deskpro.com">sales@deskpro.com</a>.
+
+					<div class="email-form">
+						<textarea style="width: 98%; height: 120px; font-family: sans-serif; padding: 5px; margin: 5px 0 5px 0; border-radius: 3px; border: 1px solid #aaa;" placeholder="Enter your question here" name="message"></textarea><br />
+						<div style="padding-top: 5px;">
+							<button	class="send-btn btn btn-primary">Send Message</button>
+							<img class="send-loading" src="https://www.deskpro.com/wp-content/themes/dpstyle/assets/images/loading-small-flat.gif" width="16" height="11" style="margin-top: 4px; display: none;" />
+						</div>
+					</div>
+					<div class="email-form-sent" style="display:none; margin: 20px;">
+						Thank you for your message. Our agents will respond to you as soon as they can.
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	var emailform = $('.email-form');
+	var emailsent = $('.email-form-sent');
+
+	emailform.find('button.send-btn').on('click', function() {
+		var message = emailform.find('textarea').val();
+
+		emailform.find('.send-btn').hide();
+		emailform.find('.send-loading').show();
+		$.ajax({
+			url: '{{ path('billing_sendq') }}',
+			data: { message: message },
+			type: 'POST',
+			dataType: 'json',
+			success: function() {
+				emailform.hide();
+				emailsent.show();
+			}
+		});
+	});
+});
+</script>
 
 </body>
 </html>
