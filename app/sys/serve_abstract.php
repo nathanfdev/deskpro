@@ -110,6 +110,16 @@ abstract class LoaderAbstract
 		dp_load_config();
 
 		#------------------------------
+		# Serve 503 if helpdesk is offline
+		#------------------------------
+
+		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
+			header('HTTP/1.1 503 Service Unavailable');
+			echo "Helpdesk is offline.";
+			exit(1);
+		}
+
+		#------------------------------
 		# Run appropriate action
 		#------------------------------
 
