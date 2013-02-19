@@ -262,7 +262,9 @@
 		<input type="text" class="new_option" name="new_option" value="" style="display: none; margin-top: 3px; margin-bottom: 3px;" placeholder="Enter a unique name for your new template" />
 		<br />
 		Send to:<br /><select name="agents[]" class="agents" multiple="multiple" style="width: 80%;">
-			<option value="-1">Performer</option>
+			{% if event_trigger_master != 'time' %}
+				<option value="-1">The agent that initiated the action</option>
+			{% endif %}
 			{% for id,title in term_options.agents %}
 				<option value="{{id}}">{{title}}</option>
 			{% endfor %}
