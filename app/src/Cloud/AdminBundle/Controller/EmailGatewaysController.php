@@ -56,6 +56,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		$all_gateways = $this->em->createQuery("
 			SELECT g
 			FROM DeskPRO:EmailGateway g
+			WHERE g.gateway_type = 'tickets'
 			ORDER BY g.title ASC
 		")->getResult();
 
