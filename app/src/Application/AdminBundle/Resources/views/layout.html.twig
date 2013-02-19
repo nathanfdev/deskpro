@@ -344,11 +344,17 @@
 					{% endif %}
 				</em>.
 
-				To dismiss this notice and ensure uninterrupted access, please enter your billing information.
+				{% if app.getLicense().getExpireDays() >= 13 %}
+					<div style="font-size: 11px; padding-top: 10px;">
+						Ready to sign up? Go to the <a href="{{ app.request.getBaseUrl() }}/billing/">Billing Interface</a> to enter your billing information.
+					</div>
+				{% else %}
+					To dismiss this notice and ensure uninterrupted access, please enter your billing information.
 
-				<div class="enter-wrap">
-					<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
-				</div>
+					<div class="enter-wrap">
+						<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
+					</div>
+				{% endif %}
 			{% else %}
 				Your DeskPRO demo expires
 				<em class="days">
