@@ -327,6 +327,10 @@ $(document).ready(function() {
 					</div>
 				</header>
 				<article>
+					<span
+						style="background: url({{ asset('images/agent/close.png') }}) no-repeat; width: 18px; height: 18px; display: block; float:right; cursor:pointer; position:relative;top:-5px;right: -5px;"
+						onclick="$(this).closest('article').slideUp();"
+					></span>
 					<p>
 						Sorry, we couldn't find anything about that.
 					</p>
