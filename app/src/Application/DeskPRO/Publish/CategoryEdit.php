@@ -177,7 +177,7 @@ class CategoryEdit
 			App::getOrm()->commit();
 
 			App::getContainer()->getSystemService('publish_structure_cache')->flush();
-			App::getDb()->query("TRUNCATE TABLE permissions_cache");
+			App::getDb()->query("DELETE FROM permissions_cache");
 
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();

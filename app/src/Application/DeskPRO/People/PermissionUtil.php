@@ -110,7 +110,7 @@ class PermissionUtil
 				", array($usergroup_id));
 			}
 
-			App::getDb()->exec("TRUNCATE TABLE permissions_cache");
+			App::getDb()->exec("DELETE FROM permissions_cache");
 		}
 	}
 }

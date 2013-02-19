@@ -75,7 +75,7 @@ class QueryListener
 		}
 
 		if (isset($updates['permissions'])) {
-			App::getDb()->exec("TRUNCATE TABLE permissions_cache");
+			App::getDb()->exec("DELETE FROM permissions_cache");
 		}
 
 		$this->is_executing = false;
