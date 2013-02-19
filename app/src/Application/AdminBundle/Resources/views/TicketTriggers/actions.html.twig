@@ -265,6 +265,8 @@
 			{% if event_trigger_master != 'time' %}
 				<option value="-1">The agent that initiated the action</option>
 			{% endif %}
+			<option value="assigned_agent">Assigned agent</option>
+			<option value="assigned_agent_team">All agents of the assigned team</option>
 			{% for id,title in term_options.agents %}
 				<option value="{{id}}">{{title}}</option>
 			{% endfor %}

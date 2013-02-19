@@ -118,12 +118,29 @@ class SendAgentEmailAction extends AbstractAction
 			return;
 		}
 
-		if (!$this->notify_agents) {
+		$agent_ids = array();
+		foreach ($this->notify_agents as $a) {
+			if ($a == 'assigned_agent') {
+				if ($ticket->agent) {
+					$agent_id[] = $ticket->agent->getId();
+				}
+			} elseif ($a == 'assigned_agent_team') {
+				if ($ticket->agent_team) {
+					$agent_ids = array_merge($agent_ids, App::getOrm()->getRepository('DeskPRO:AgentTeam')->getMemberIds($ticket->agent_team->getId()));
+				}
+			} else {
+				if (App::getContainer()->getAgentData()->get($a)) {
+					$agent_ids[] = $a;
+				}
+			}
+		}
+
+		if (!$agent_ids) {
 			$this->tracker->logMessage("[SendAgentEmail] No agents");
 			return;
 		}
 
-		$this->tracker->logMessage("[SendAgentEmail] Agents: " . implode(', ', $this->notify_agents));
+		$this->tracker->logMessage("[SendAgentEmail] Agents: " . implode(', ', $agent_ids));
 
 		$change_info = array(
 			'type' => 'agent_notify',
@@ -149,7 +166,7 @@ class SendAgentEmailAction extends AbstractAction
 		$page = $ticket_display->getDepartmentPage($ticket->getDepartmentId());
 		$page_display = $page->getPageDisplay('default')->data;
 
-		foreach ($this->notify_agents as $agent_id) {
+		foreach ($agent_ids as $agent_id) {
 
 			/** @var $agent \Application\DeskPRO\Entity\Person */
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
