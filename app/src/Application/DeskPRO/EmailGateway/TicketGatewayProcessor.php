@@ -767,13 +767,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] = $inline_images2->processTokens($email_info['body_full']);
 
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_postclean');
 		}
 
 		if ($email_info['body_is_html']) {
 			$email_info['body'] = $this->trimHtmlWhitespace($email_info['body']);
-			$email_info['body_full'] = $this->trimHtmlWhitespace($email_info['body_full']);
 		}
 
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
