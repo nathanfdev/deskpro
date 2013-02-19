@@ -70,6 +70,13 @@ var DpErrorLog = {
 			});
 		}
 
+		// AJAX/network errors shouldnt popup the report notice
+		// They're bubbled through the handlers for Cloud so we get reports,
+		// but we dont want the feedback window coming up as well
+		if (message.indexOf('AJAX Error') !== -1) {
+			return;
+		}
+
 		if (window.SEND_FEEDBACK_WINDOW && !this.hasSentReport) {
 			this.hasSentReport = true;
 
