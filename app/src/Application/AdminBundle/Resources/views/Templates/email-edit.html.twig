@@ -19,7 +19,7 @@
 		{% if ':emails_user:' in name %}
 			<a href="{{ path('admin_templates_email', {list_type: 'user'}) }}">User Emails</a>
 		{% elseif ':emails_agent:' in name %}
-			<a href="{{ path('admin_templates_email', {list_type: 'user'}) }}">Agent Emails</a>
+			<a href="{{ path('admin_templates_email', {list_type: 'agent'}) }}">Agent Emails</a>
 		{% else %}
 			<a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a>
 		{% endif %}
