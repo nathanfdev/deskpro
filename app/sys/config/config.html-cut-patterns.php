@@ -25,6 +25,7 @@ return array(
 
 	// mail from hotmail.com
 	'hotmail_1'                          => 'hr /hr #^date:\s#i br /br #^subject:\s#i br /br #^from:\s#i br /br #^to:\s#i br /br',
+	'hotmail_2'                          => '#<hr[^>]+>Date:\s+(.*?)<br( /)?>Subject:\s+(.*?)<br( /)?>From:\s+(.*?)<br( /)?>To:\s+(.*?)<br( /)?>#i',
 
 	// blackberry wireless
 	'blackberry_2'                       => 'br /br div font b #^from$#i /b #^:\s.*$# br /br b #^sent$#i /b #^:\s.*$# br /br b #^to$#i /b #^:\s.*$# br /br /font /div',
