@@ -29,17 +29,17 @@ $(document).ready(function() {
 				If you need help setting up DeskPRO, have a problem or just want to submit feedback, simply fill in this form below.
 			</p>
 			<div class="form">
-				<textarea class="message" style="width: 450px; height: 29px;" placeholder="Enter your message"></textarea>
-				<button class="btn send-mock" style="display: inline-block; vertical-align: text-bottom; position:relative; bottom: 2px;">Send your message</button>
-				<br />
-				<div class="email-addy-wrap" style="display: none;">
-					<div class="default-addy">
-						We'll reply to your email address at {{ app.user.primary_email_address }} (<span style="text-decoration: underline; cursor:pointer;">change</span>)
-					</div>
-					<div class="input-addy" style="display: none;">
-						We'll reply to your email address <input type="text" class="email_address" value="{{ app.user.primary_email_address }}" />
-					</div>
+				<div style="font-size: 11px;">
+					<strong style="display: inline-block;">To:</strong> <a href="mailto:support@deskpro.com">support@deskpro.com</a><br/>
+					<strong style="display: inline-block;">From:</strong> <span class="default-addy">
+						{{ app.user.primary_email_address }} (<span style="text-decoration: underline; cursor:pointer;">change</span>)
+					</span>
+					<span class="input-addy" style="display: none;">
+						<input type="text" class="email_address" value="{{ app.user.primary_email_address }}" style="padding: 0; font-size: 11px; margin: 0; width: 230px;" />
+					</span>
 				</div>
+				<textarea class="message" style="width: 450px; height: 27px;" placeholder="Enter your message"></textarea>
+				<button class="btn send-mock" style="display: inline-block; vertical-align: text-bottom; position:relative;">Send your message</button>
 				<button class="btn send-trigger" style="display: none;">Send your message</button>
 				<i class="flat-spinner send-loading" style="display: none;"></i>
 			</div>
@@ -51,5 +51,27 @@ $(document).ready(function() {
 			</p>
 		</div>
 	</article>
+	<article id="admin_live_support" style="display: none;">
+		<div style="background: url({{ asset('images/agent/chat/agent-chat.png') }}) no-repeat 0 50%; padding: 0px 0 0px 28px;">
+			Live support is currently available.
+			<a class="btn" style="padding: 6px; line-height: 100%;" href="https://support.deskpro.com/new-ticket" onclick="window.open('http://support.deskpro.com/widget/chat.html?is_window_mode=1', null, 'height=350, width=540, toolbar=0, location=0, status=1, scrollbars=0, resizable=1'); return false;">
+				Chat with one of our agents now &rarr;
+			</a>
+		</div>
+	</article>
+	<script type="text/javascript">
+		DpChatWidget = {
+			initWidget: function() {
+				$('#admin_live_support').show();
+			}
+		}
+		$(document).ready(function() {
+			var script_tag = document.createElement('script');
+			script_tag.setAttribute("type", "text/javascript");
+			script_tag.setAttribute("src", 'http://support.deskpro.com/dp.php/chat/is-available.js');
+			script_tag.setAttribute("async", 'true');
+			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+		});
+	</script>
 </div>
 </div>
