@@ -16,7 +16,7 @@
 	}
 
 	#email_forward_list input[type="text"] {
-		width: 50%;
+		width: 70%;
 	}
 
 	.select2-container .select2-choice span {
@@ -67,27 +67,6 @@ $(document).ready(function() {
 //######################################################################################################################
 
 $(document).ready(function() {
-	var container = $('#email_forward_list');
-
-	container.on('click', '.remove-trigger', function(ev) {
-		ev.preventDefault();
-		$(this).closest('tr').remove();
-	});
-
-	container.find('button.add-trigger').on('click', function(ev) {
-		ev.preventDefault();
-		var html = '<tr><td><div style="float: right"><button class="clean-white remove-trigger">Remove</button></div><input type="text" name="helpdesk_emails[]" placeholder="Email address or a full domain name" value="" /></td></tr>';
-		container.find('tbody').find('tr').last().before(html);
-	});
-
-	$('#email_forward_list_chk').on('change', function() {
-		if (this.checked) {
-			$('#email_forward_list').slideDown();
-		} else {
-			$('#email_forward_list').slideUp();
-		}
-	});
-
 	DP.select($('select.change-linked-dep'));
 
 	$('select.change-linked-dep').on('change', function() {
@@ -332,7 +311,7 @@ $(document).ready(function() {
 								</span></span>
 							</li>
 							<li>
-								Custom Alias:
+								Custom Email Address:
 								<span
 									class="set-gateway-alias editable-link"
 									data-gateway-id="{{ gateway.id }}"
@@ -399,16 +378,16 @@ $(document).ready(function() {
 	</div>
 </div>
 
-<div id="setalias_overlay" style="width: 400px; height: 210px; display: none;">
+<div id="setalias_overlay" style="width: 400px; height: 287px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Custom Email Forward</h4>
+		<h4>Custom Email Address</h4>
 	</div>
 	<div class="overlay-content">
 		<form class="dp-form" method="POST" action="{{ path('admin_emailgateways_cloud_alias') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-input">
-					Make sure you configure your email address to <strong>forward</strong> mail to<br /><strong><span class="email-account-title"></span></strong>.
+					This allows you to use a custom email address you control with this mailbox. Any email we send out will be "From" your custom email address.
 				</div>
 			</div>
 
@@ -422,6 +401,13 @@ $(document).ready(function() {
 						<div class="invalid_email">Please enter a valid email address</div>
 						<div class="dupe">You already have this alias attached to a different account</div>
 					</div>
+				</div>
+			</div>
+
+			<div class="dp-form-row">
+				<div class="dp-form-input">
+					<strong>Important:</strong>
+					Make sure your email address to forwards mail to<br /><span class="email-account-title"></span>
 				</div>
 			</div>
 		</form>
