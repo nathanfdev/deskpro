@@ -120,8 +120,6 @@ class Connection extends \Doctrine\DBAL\Connection
 				$this->exec("SET NAMES '{$this->names_charset}'");
 			}
 
-			$this->setNestTransactionsWithSavepoints(true);
-
 			return true;
 		}
 
