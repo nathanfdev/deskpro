@@ -289,48 +289,50 @@ pageMeta.baseId = '{{ baseId }}';
 		</article>
 		{% if convo.visitor %}
 			<article id="{{baseId}}_session" style="direction: none;">
-				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
-					<tbody>
-						<tr>
-							<th>IP Address:</th>
-							<td>
-								{{ convo.visitor.ip_address }}
-							</td>
-						</tr>
-						<tr>
-							<th>User Agent:</th>
-							<td>
-								{{ convo.visitor.user_agent }}
-							</td>
-						</tr>
-						{% if convo.session %}
+				<div class="data-display-table-wrap">
+					<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table">
+						<tbody>
 							<tr>
-								<th>Session Start Time:</th>
-								<td>{{ convo.session.date_last|date('fulltime') }}</td>
+								<th>IP Address:</th>
+								<td>
+									{{ convo.visitor.ip_address }}
+								</td>
 							</tr>
-						{% endif %}
-						{% if convo.visitor.session_landing_page %}
 							<tr>
-								<th>Session Landing Page:</th>
-								<td>{{ convo.visitor.session_landing_page }}</td>
+								<th>User Agent:</th>
+								<td>
+									{{ convo.visitor.user_agent }}
+								</td>
 							</tr>
-						{% endif %}
-						<tr>
-							<th>Initial Visit Time:</th>
-							<td>
-								{{ convo.visitor.date_last|date('fulltime') }}
-							</td>
-						</tr>
-						{% if convo.visitor.landing_page %}
-						<tr>
-							<th>Initial Landing Page:</th>
-							<td>
-								{{ convo.visitor.landing_page }}
-							</td>
-						</tr>
-						{% endif %}
-					</tbody>
-				</table>
+							{% if convo.session %}
+								<tr>
+									<th>Session Start Time:</th>
+									<td>{{ convo.session.date_last|date('fulltime') }}</td>
+								</tr>
+							{% endif %}
+							{% if convo.visitor.session_landing_page %}
+								<tr>
+									<th>Session Landing Page:</th>
+									<td>{{ convo.visitor.session_landing_page }}</td>
+								</tr>
+							{% endif %}
+							<tr>
+								<th>Initial Visit Time:</th>
+								<td>
+									{{ convo.visitor.date_last|date('fulltime') }}
+								</td>
+							</tr>
+							{% if convo.visitor.landing_page %}
+							<tr>
+								<th>Initial Landing Page:</th>
+								<td>
+									{{ convo.visitor.landing_page }}
+								</td>
+							</tr>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
 			</article>
 		{% endif %}
 		{% if convo.status == 'open' or block %}
