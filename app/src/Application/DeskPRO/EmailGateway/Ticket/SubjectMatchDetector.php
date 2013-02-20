@@ -164,7 +164,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		$from = $reader->getFromAddress()->getEmail();
 
 		foreach ($tickets as $ticket) {
-			if (($p = $ticket->findUserByEmail($from)) && (!$p->is_agent || $ticket->person->getId() == $p->getId())) {
+			if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
 				$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id);
 				$this->_found_person = $p;
 				return $ticket;

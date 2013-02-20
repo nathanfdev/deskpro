@@ -705,7 +705,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Try to find a user that is a part of this tikcet based on
 	 * their email address.
-	 * @param $email_address
+	 * @param string $email_address
 	 * @return Person
 	 */
 	public function findUserByEmail($email_address)
@@ -720,6 +720,28 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			foreach ($this->getUserParticipants() as $part) {
 				if ($part->person->findEmailAddress($email_address)) {
+					return $part->person;
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Try to find an agent that is part of this ticket based on an email addres
+	 *
+	 * @param string $email_address
+	 * @return Person|null
+	 */
+	public function findAgentByEmail($email_address)
+	{
+		if ($this->person->is_agent && $this->person->findEmailAddress($email_address)) {
+			return $this->person;
+		} else {
+			foreach ($this->participants as $part) {
+				if ($part->person->is_agent && $part->person->findEmailAddress($email_address)) {
 					return $part->person;
 				}
 			}
