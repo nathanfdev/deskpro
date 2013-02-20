@@ -17,7 +17,6 @@ dp_load_config();
 #------------------------------
 
 if (!defined('DPC_IS_CLOUD') && file_exists(dp_get_tmp_dir() . '/apc-clear.trigger')) {
-	error_log("cleared");
 	if (function_exists('apc_clear_cache')) {
 		apc_clear_cache();
 		apc_clear_cache('user');

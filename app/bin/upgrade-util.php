@@ -1093,6 +1093,7 @@ class Upgrade
 		}
 		if (function_exists('wincache_ucache_clear')) {
 			wincache_ucache_clear();
+			wincache_refresh_if_changed();
 			$touch_trigger = true;
 		}
 
