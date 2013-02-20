@@ -293,7 +293,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			App::setCurrentPerson($person);
 
-			if ($person['is_agent'] && strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false) {
+			// If the agent is replying to an email that is not a notification, then this check doesnt
+			// need to run (e.g., they replied to an email they were CCd on).
+			$is_reply_to_dpmail = false;
+			if ($body_html = $this->reader->getBodyHtml()->getBody()) {
+				if (
+					strpos($body_html, 'DP_BOTTOM_MARK') !== false
+					|| strpos($body_html, 'DP_TOP_MARK') !== false
+					|| strpos($body_html, 'DP_MESSAGE_BEGIN') !== false
+				) {
+					$is_reply_to_dpmail = true;
+				}
+			}
+
+			if ($is_reply_to_dpmail) {
+				$this->logMessage('[TicketGatewayProcessor] IS a reply to a DeskPRO email');
+			} else {
+				$this->logMessage('[TicketGatewayProcessor] NOT a reply to a DeskPRO email');
+			}
+
+			if ($person['is_agent'] && strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false && $is_reply_to_dpmail) {
 				$this->logMessage('[TicketGatewayProcessor] runNewAgentReply');
 				$ret = $this->runNewAgentReply($ticket, $person);
 			} else {
@@ -946,7 +965,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				continue;
 			}
 
-			if ($cc_person->is_agent) {
+			if ($cc_person->is_agent && !$this->person->is_agent) {
 				if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
 					if (!App::getSetting('core_tickets.add_agent_ccs')) {
 						$this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
