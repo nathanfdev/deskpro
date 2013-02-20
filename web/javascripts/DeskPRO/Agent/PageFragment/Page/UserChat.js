@@ -377,6 +377,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (this.hasEnded) return;
 		this.hasEnded = true;
 
+		this.getEl('messages_box').addClass('chat-ended');
 		this.getEl('replybox').hide().addClass('chat-ended');
 		this.getEl('create_ticket_btn2').css('display', 'block');
 		this.updateUi();
