@@ -479,10 +479,17 @@ class PortalController extends AbstractController
 			$widget_url = 'http://' . DPC_SITE_DOMAIN . '/';
 		}
 
+		$chat_online = false;
+		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
+			$chat_online = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+			$chat_online = (bool)$chat_online;
+		}
+
 		return $this->render('AdminBundle:Portal:website-widgets.html.twig', array(
-			'articles'  => $articles,
-			'downloads' => $downloads,
-			'news'      => $news,
+			'articles'    => $articles,
+			'downloads'   => $downloads,
+			'news'        => $news,
+			'chat_online' => $chat_online,
 
 			'selections' => $selections,
 			'department' => $department,

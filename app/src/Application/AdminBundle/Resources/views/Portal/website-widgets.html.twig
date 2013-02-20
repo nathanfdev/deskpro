@@ -162,6 +162,15 @@ $(document).ready(function() {
 
 						<p>{{ phrase('admin.portal.website_widgets_chat_explain') }}</p>
 
+						<p style="background-color: #F8FFC4;">
+							<strong>Important:</strong>
+							The chat widget only appears when there are agents available for chat in the Agent Interface.
+
+							{% if not chat_online %}
+								<br/>At the moment, there no agents signed in to chat so the widget will not appear.
+							{% endif %}
+						</p>
+
 						{% set code %}{% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}{% endset %}
 						<textarea class="code" wrap="off">{{ code|replace({"\t":"    "})|e }}</textarea>
 						<p>{{ phrase('admin.portal.website_widget_install') }}</p>
