@@ -635,6 +635,35 @@ class UserChatManager
 
 
 	/**
+	 * Mark the chat as ended due to a wait timeout
+	 *
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @return void
+	 */
+	public function waitTimeout(ChatConversation $convo)
+	{
+		$this->em->beginTransaction();
+		try {
+
+			$this->addSystemMessage(
+				$convo,
+				'message_wait-timeout',
+				array(),
+				array('wait_timed_out' => true)
+			);
+			$this->endChat($convo, null, 'wait_timeout');
+
+			$this->em->flush();
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * @param $reason
 	 * @return void
 	 */
@@ -652,9 +681,12 @@ class UserChatManager
 		} elseif ($reason == 'timeout') {
 			$reason = '';
 			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_TIMEOUT;
+		} elseif ($reason == 'wait_timeout') {
+			$reason = '';
+			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_WAIT_TIMEOUT;
 		}
 
-		if ($convo->ended_by != 'timeout') {
+		if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout') {
 			if ($author) {
 				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayNameUser()), array('chat_ended' => true));
 			} else {

@@ -36,4 +36,10 @@
 	 * Time until proactive popup
 	 */
 	'core_chat.proactive_time' => 0,
+
+	/**
+	 * The max amount of time a chat remains in un-assigned
+	 * state before we kill the chat and show user link to ticket
+	 */
+	'core_chat.max_wait_time' => 900,
 );

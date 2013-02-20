@@ -29,36 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Chat\UserChat;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class AvailableTrigger
+class Build1361373780 extends AbstractBuild
 {
-	/**
-	 * Update the chat status
-	 *
-	 * @param bool|null $is_chat_available True/false to mark chat as available/unavailable, null to auto-detect with query
-	 */
-	public static function update($is_chat_available = null)
+	public function run()
 	{
-		if ($is_chat_available === null) {
-			$is_chat_available = false;
-			if (App::getSetting('core.apps_chat') && App::getOrm()->getRepository('DeskPRO:Session')->hasAvailableAgents(true)) {
-				$is_chat_available = true;
-			}
-		}
-
-		$is_chat_available = (bool)$is_chat_available;
-
-		$trigger_File = dp_get_data_dir() . '/chat_is_available.trigger';
-		if ($is_chat_available) {
-			file_put_contents($trigger_File, time());
-			@chmod($trigger_File, 0777);
-		} elseif (is_file($trigger_File)) {
-			unlink($trigger_File);
-		}
+		$this->out("Add chat_conversations.date_user_waiting");
+		$this->execMutateSql("ALTER TABLE chat_conversations ADD date_user_waiting DATETIME DEFAULT NULL");
 	}
 }

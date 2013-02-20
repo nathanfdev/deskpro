@@ -363,6 +363,7 @@ class DpLoader extends LoaderAbstract
 				'agent.userchat.message_assigned',
 				'agent.userchat.message_unassigned',
 				'agent.userchat.message_agent-timeout',
+				'agent.userchat.message_wait-timeout',
 				'agent.userchat.message_user-timeout',
 				'agent.userchat.message_ended_by',
 				'agent.userchat.message_ended',

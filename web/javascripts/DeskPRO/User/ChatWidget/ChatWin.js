@@ -502,6 +502,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					message = Orb.escapeHtml(message);
 					message = Orb.linkUrls(message);
 				}
+
+				if (data.phrase_id == 'message_wait-timeout') {
+					this.chatEndedWaitTimeout();
+				}
 			}
 
 			tpl = document.getElementById('dp_chat_tpl_sys_message').innerHTML;
@@ -602,6 +606,16 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 				$('#dp_chat_done').find('.form-row.email-field').hide();
 			}
 		}
+	},
+
+	chatEndedWaitTimeout: function() {
+		this.ajaxPoller.disable = true;
+		this.ajaxPoller._clearDelays();
+
+		$('#dp_chat_start').hide();
+		$('#dp_chat_finding_agent').hide();
+		$('#dp_chat_active').hide();
+		$('#dp_chat_done_unassigned').show();
 	},
 
 	endChatReal: function(callback) {

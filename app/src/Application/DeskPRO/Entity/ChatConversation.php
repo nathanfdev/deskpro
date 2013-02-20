@@ -53,9 +53,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_OPEN  = 'open';
 	const STATUS_ENDED = 'ended';
 
-	const ENDED_TIMEOUT = 'timeout';
-	const ENDED_AGENT   = 'agent';
-	const ENDED_USER    = 'user';
+	const ENDED_TIMEOUT      = 'timeout';
+	const ENDED_WAIT_TIMEOUT = 'wait_timeout';
+	const ENDED_AGENT        = 'agent';
+	const ENDED_USER         = 'user';
 
 	/**
 	 * @var int
@@ -176,6 +177,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_created;
 
 	/**
+	 * Since when the user has started waiting (i.e., time the assignment was 0)
+	 * @var \DateTime
+	 */
+	protected $date_user_waiting = null;
+
+	/**
 	 * @var \DateTime
 	 */
 	protected $date_assigned;
@@ -222,10 +229,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->participants   = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->messages       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->date_created   = new \DateTime();
+		$this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->participants      = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->messages          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->date_created      = new \DateTime();
+		$this->date_user_waiting = new \DateTime();
 	}
 
 
@@ -534,6 +542,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($old_agent) {
 			$this->addParticipant($old_agent, true);
 		}
+
+		if ($this->agent) {
+			$this->date_user_waiting = null;
+		} else {
+			$this->date_user_waiting = new \DateTime();
+		}
 	}
 
 	public function getAgentId()
@@ -659,6 +673,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param bool $v
+	 */
+	public function setIsAgent($v)
+	{
+		$this->setModelField('is_agent', $v);
+		if ($v) {
+			$this->date_user_waiting = null;
+		}
+	}
+
+
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
@@ -699,6 +725,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent', ));
 		$metadata->mapField(array( 'fieldName' => 'is_window', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_window', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->mapField(array( 'fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting', ));
 		$metadata->mapField(array( 'fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned', ));
 		$metadata->mapField(array( 'fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message', ));
 		$metadata->mapField(array( 'fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended', ));

@@ -106,10 +106,36 @@ class ChatPingTimeout extends AbstractJob
 			$this->logger->log("User timed out in chat {$chat->id}", Logger::INFO);
 		}
 
+		#------------------------------
+		# Max waiting times
+		#------------------------------
+
+		$max_time = App::getSetting('core_chat.max_wait_time');
+		$count_wait = 0;
+
+		if ($max_time) {
+			$timesnip = date('Y-m-d H:i:s', time() - $max_time);
+			$chat_ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM chat_conversations c
+				WHERE c.status = 'open' AND c.date_user_waiting < ?
+			", array($timesnip));
+
+			while ($chat_id = array_pop($chat_ids)) {
+				$chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
+				$chat_manager->waitTimeout($chat);
+
+				$count_wait++;
+				$secs = time() - $chat->date_user_waiting->getTimestamp();
+				$this->logger->log("Wait timed out chat {$chat->id} (waiting $secs seconds)", Logger::INFO);
+			}
+		}
+
 		if ($count_agents || $count_users) {
-			$this->logStatus("Set timeout on {$count_agents} agents and {$count_users} users in chats", array(
+			$this->logStatus("Chat timeouts: {$count_agents} agents, {$count_users} users, {$count_wait} wait", array(
 				'count_agents' => $count_agents,
-				'count_users'  => $count_users
+				'count_users'  => $count_users,
+				'count_wait'   => $count_wait
 			));
 		}
 	}
