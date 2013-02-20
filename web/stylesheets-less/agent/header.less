@@ -1958,29 +1958,71 @@ ul#dp_notify_list li#dp_notify_list_none {
 		margin: 6px;
 	}
 
-	li {
+	ul.me {
+		margin: 0;
+		padding: 6px;
+		li {
+			border: none;
+			height: 34px;
+			line-height: 34px;
+			padding-left: 38px;
+
+			.avatar {
+				position: absolute;
+				top: 2px; left: 2px;
+
+				width: 30px;
+				height: 30px;
+			}
+		}
+	}
+
+	li.agent {
 		font-size: 11px;
 
 		background-color: #F3F3F3;
 		border-bottom: 1px solid #E3E4E6;
-		padding: 0 10px 0px 38px;
+		padding: 0 10px 0px 24px;
 		position: relative;
-		height: 34px;
-		line-height: 34px;
-
-		font-family: @heading-font;
-		font-weight: bold;
-		font-size: 11px;
+		height: 20px;
+		line-height: 20px;
 
 		.avatar {
 			position: absolute;
 			top: 2px; left: 2px;
 
-			width: 30px;
-			height: 30px;
+			width: 16px;
+			height: 16px;
 			background-color: #fff;
 			background-repeat: no-repeat;
 			background-position: 50% 50%;
+			border-radius: 3px;
+			overflow: hidden;
+		}
+	}
+
+	li.last {
+		border-bottom: none;
+		padding-bottom: none;
+	}
+
+	header.list-header {
+		background-color: #fff;
+		border-top: 1px solid #E3E4E6;
+		border-bottom: 1px solid #E3E4E6;
+		padding: 4px;
+
+		h6 {
+			margin: 0;
+			padding: 0;
+			font-size: 11pt;
+			font-family: @heading-font;
+			font-weight: normal;
+		}
+
+		.group-option {
+			float: right;
+			font-size: 11px;
 		}
 	}
 

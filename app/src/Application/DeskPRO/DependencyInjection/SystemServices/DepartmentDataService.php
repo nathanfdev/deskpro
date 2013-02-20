@@ -298,7 +298,7 @@ class DepartmentDataService extends BaseRepositoryService
 		return $this->cats[$this->default_id];
 	}
 
-	public function getFullNames($type = 'tickets')
+	public function getFullNames($type = 'tickets', $include_parents = true)
 	{
 		$names = array();
 		foreach ($this->getRootNodes() as $dep) {
@@ -307,9 +307,13 @@ class DepartmentDataService extends BaseRepositoryService
 				continue;
 			}
 
-			$names[$dep->getId()] = $dep->title;
+			$children = $this->getChildren($dep);
 
-			foreach ($this->getChildren($dep) as $subdep) {
+			if ($include_parents || !$children) {
+				$names[$dep->getId()] = $dep->title;
+			}
+
+			foreach ($children as $subdep) {
 				if (!$subdep->isType($type)) {
 					continue;
 				}

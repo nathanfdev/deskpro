@@ -4,6 +4,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
+		var self = this;
 		this.buttonEl = $('#chat_section');
 		this.setSectionElement($('<section id="chat_outline"></section>'));
 		this.groups = {};
@@ -41,6 +42,103 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this.openingChatTimeout = {};
 		this.refreshCountsTimeout = null;
+
+		var status_menu_el = $('#agent_status_menu_onlinelist');
+		this.onlineAgentsGroupDepCheck = status_menu_el.find('.group-dep');
+		this.onlineAgentsList = status_menu_el.find('ul.list.normal');
+		this.onlineAgentsListGrouped = status_menu_el.find('ul.list.department-grouped');
+
+		status_menu_el.find('.group-option').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			self.onlineAgentsGroupDepCheck.toggleClass('checked');
+
+			if (self.onlineAgentsGroupDepCheck.hasClass('checked')) {
+				self.refreshOnlineAgentDepGroups();
+				self.onlineAgentsListGrouped.show();
+				self.onlineAgentsList.hide();
+			} else {
+				self.onlineAgentsListGrouped.hide();
+				self.onlineAgentsList.show();
+			}
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', function(info) {
+			var list = $('#agent_status_menu_onlinelist');
+			var count = 0;
+			var hasme = false;
+
+			if (info.online_agents && info.online_agents.length) {
+				list.find('li').hide().removeClass('on last');
+				Array.each(info.online_agents, function(agent_id) {
+					if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
+						hasme = true;
+					} else {
+						count++;
+						list.find('li.agent-' + agent_id).show().addClass('on');
+					}
+				});
+
+				list.find('li.on').last().addClass('last');
+			}
+
+			if (count) {
+				list.show();
+			} else {
+				list.hide();
+			}
+
+			if (!hasme) {
+				if (!$('#chatStatusWrap').hasClass('offline')) {
+					$('#chatStatusWrap').addClass('offline');
+					$('#agent_status_menu_onlinerow').hide();
+					$('#agent_status_menu_offlinerow').show();
+				}
+			}
+
+			if (!$('#chatStatusWrap').hasClass('offline')) {
+				count++;
+			}
+
+			DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
+			DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
+
+			if (count) {
+				$('#chatStatusWrap').removeClass('red');
+			} else {
+				$('#chatStatusWrap').addClass('red');
+			}
+
+			self.refreshOnlineAgentDepGroups();
+
+		}, this);
+	},
+
+	refreshOnlineAgentDepGroups: function() {
+		var self = this;
+		if (!this.onlineAgentsGroupDepCheck.hasClass('checked')) {
+			return;
+		}
+
+		this.onlineAgentsListGrouped.find('li.dep').hide();
+		this.onlineAgentsListGrouped.find('ul').empty();
+
+		this.onlineAgentsList.find('li.on').each(function(li) {
+			var li = $(this);
+
+			var depIds = li.data('department-ids') || '';
+			depIds = depIds.split(',');
+
+			if (depIds.length) {
+				depIds.each(function(depId) {
+					var depRow = self.onlineAgentsListGrouped.find('li.dep-' + depId);
+					var depList = depRow.find('ul');
+					depList.append(li.clone());
+
+					depRow.show();
+				});
+			}
+		});
 	},
 
 	refreshOpenCounts: function(now) {

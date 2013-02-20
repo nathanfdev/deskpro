@@ -2511,52 +2511,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', function(info) {
-			var list = $('#agent_status_menu_onlinelist');
-			var count = 0;
-			var hasme = false;
-
-			if (info.online_agents && info.online_agents.length) {
-				list.find('li').hide();
-				Array.each(info.online_agents, function(agent_id) {
-					if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
-						hasme = true;
-					} else {
-						count++;
-						list.find('li.agent-' + agent_id).show();
-					}
-				});
-			}
-
-			if (count) {
-				list.show();
-			} else {
-				list.hide();
-			}
-
-			if (!hasme) {
-				if (!$('#chatStatusWrap').hasClass('offline')) {
-					$('#chatStatusWrap').addClass('offline');
-					$('#agent_status_menu_onlinerow').hide();
-					$('#agent_status_menu_offlinerow').show();
-				}
-			}
-
-			if (!$('#chatStatusWrap').hasClass('offline')) {
-				count++;
-			}
-
-			DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
-			DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
-
-			if (count) {
-				$('#chatStatusWrap').removeClass('red');
-			} else {
-				$('#chatStatusWrap').addClass('red');
-			}
-
-		}, this);
-
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', function (info) {
 			DeskPRO_Window.showRefreshAlert(info.person_name);
 		});

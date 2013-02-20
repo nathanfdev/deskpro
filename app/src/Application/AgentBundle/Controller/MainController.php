@@ -117,6 +117,14 @@ class MainController extends AbstractController
 			WHERE p.is_agent = true AND s.date_last > ?
 		", array($cutoff));
 
+		$agent_chat_depmap = $this->db->fetchAllGrouped("
+			SELECT department_permissions.person_id, department_permissions.department_id
+			FROM department_permissions
+			WHERE
+				department_permissions.person_id IS NOT NULL
+				AND department_permissions.app = 'chat' AND department_permissions.value = 1
+		", array(), 'person_id', null, 'department_id');
+
 		$is_first_login = false;
 		$is_first_login_name = false;
 
@@ -132,6 +140,7 @@ class MainController extends AbstractController
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names'         => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
 			'online_agent_ids'    => $online_agent_ids,
+			'agent_chat_depmap'   => $agent_chat_depmap,
 			'is_demo'             => $this->in->checkIsset('show-demo-bar'),
 			'last_message_id'     => $last_message_id,
 			'js_debug'            => App::getConfig('debug.js', array()),
