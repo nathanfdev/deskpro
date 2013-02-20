@@ -49,7 +49,7 @@
 					<span class="list-counter" id="userchat_list_allagents_counter" data-count-key="counts.active" data-count="{{ counts.active|default(0) }}">{{ counts.active|default(0) }}</span>
 					{{ phrase('agent.chat.title_active_chats') }}
 				</h3>
-				<ul class="sub-group show">
+				<ul class="sub-group show" style="border-top: none;">
 					{% for agent_id,agent_name in agent_names %}
 						{% if agent_id != app.user.id %}
 							<li class="" {% if not counts[agent_id] %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
