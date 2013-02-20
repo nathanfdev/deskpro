@@ -198,6 +198,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.getEl('replybox_txt').on('blur', function() {
 			$(this).removeClass('is-focused');
 		});
+
+		this.getEl('messages_box').on('click', '.truncated-wrap', function() {
+			var content = $(this).find('textarea').val();
+			self.showFullMessage(content);
+		});
 	},
 
 	handleNewMessageCm: function(data, name) {
@@ -306,9 +311,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
+		var preview = data.preview;
+		if (preview.length > 500) {
+			preview = '...' + preview.substring(preview.length - 500);
+		}
+
 		this.userTypingTime = (new Date()).getTime();
 		var el = this.getEl('user_typing');
-		$('.prop-msg', el).text(data.preview);
+		$('.prop-msg', el).text(preview);
 		el.detach().appendTo(this.getEl('messages_box'));
 		el.show();
 
@@ -517,8 +527,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			$('.prop-msg', row).html(msg);
 		} else {
 			var titleMsg = msg;
+			var isTruncated = false;
+			var origMsg = msg;
+			if (type == 'user' && msg.length > 500) {
+				isTruncated = true;
+				msg = msg.substring(0, 500);
+			}
+
 			msg = Orb.escapeHtml(msg);
+			msg = Orb.nl2br(msg);
 			msg = DeskPRO_Window.util.linkUrls(msg);
+
+			if (isTruncated) {
+				msg += ' <div class="truncated-wrap"><div class="truncated-btn">&bull; &bull; &bull;</div><textarea class="orig-message" style="display:none;">' + Orb.escapeHtml(origMsg) + '</textarea></div>';
+			}
 
 			$('.prop-msg', row).html(msg);
 		}
@@ -573,6 +595,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/chat/invite/' + this.meta.conversation_id + '/' + agent_id
 		});
+	},
+
+	showFullMessage: function(msg) {
+		if (!this.fullMessageOverlay) {
+			this.fullMessageOverlay = new DeskPRO.UI.Overlay({
+				contentElement: this.getEl('view_fulle_message_overlay')
+			});
+		}
+
+		msg = Orb.escapeHtml(msg);
+		msg = Orb.nl2br(msg);
+
+		this.getEl('view_full_message_content').html(msg);
+		this.fullMessageOverlay.openOverlay();
 	},
 
 	//#################################################################

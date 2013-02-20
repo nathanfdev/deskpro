@@ -240,7 +240,12 @@ pageMeta.baseId = '{{ baseId }}';
 										{% if message.is_html %}
 											{{message.content|raw}}
 										{% else %}
-											{{message.content|safe_link_urls}}
+											{% if message.content|length > 500 %}
+												{{ message.content|truncate(500, false) }}
+												<div class="truncated-wrap"><div class="truncated-btn">&bull; &bull; &bull;</div><textarea class="orig-message" style="display:none;">{{ message.content }}</textarea></div>
+											{% else %}
+												{{message.content|safe_link_urls}}
+											{% endif %}
 										{% endif %}
 										<span class="bubbleRight"></span>
 									</div>
@@ -442,5 +447,17 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 {{ dp_widgets(baseId, 'chat', '', '', convo_api) }}
+
+<div id="{{ baseId }}_view_fulle_message_overlay" style="display:none;">
+	<div class="alert-overlay mass-actions-overlay" style="width: 800px; height: 600px;">
+		<div class="overlay-title">
+			<span class="close-trigger">{{ phrase('agent.general.dismiss') }}</span>
+			<h4>Full Message</h4>
+		</div>
+		<div class="overlay-content">
+			<div style="max-height: 500px; overflow: auto;" id="{{ baseId }}_view_full_message_content"></div>
+		</div>
+	</div>
+</div>
 
 </div>

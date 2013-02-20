@@ -330,13 +330,20 @@ class TemplatingExtension extends \Twig_Extension
 		return Dates::secsToReadable($secs, $detail);
 	}
 
-	public function strTruncate($str, $width = 80)
+	public function strTruncate($str, $width = 80, $dots = true)
 	{
 		if (strlen($str) <= $width) {
 			return $str;
 		}
 
-		return trim(substr($str, 0, $width). '...');
+		if ($dots) {
+			if ($dots === true) {
+				$dots = '...';
+			}
+			return trim(substr($str, 0, $width). $dots);
+		} else {
+			return trim(substr($str, 0, $width));
+		}
 	}
 
 	public function startCounter($name = 'default', $start = 1)

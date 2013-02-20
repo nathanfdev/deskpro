@@ -203,6 +203,17 @@ Orb.escapeHtml = function(string) {
 
 
 /**
+ * Convert newlines into HTML breaks
+ *
+ * @param string
+ * @return string
+ */
+Orb.nl2br = function(string) {
+	return string.replace(/\r\n|\n/g, "<br />\n");
+};
+
+
+/**
  * Link URLs in texts
  *
  * @param string
