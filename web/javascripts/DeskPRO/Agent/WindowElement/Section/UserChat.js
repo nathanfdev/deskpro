@@ -593,6 +593,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		var notifyWin = $('#new_user_chat_alert_' + data.conversation_id);
 		if (notifyWin[0]) {
+			if (DP_USERCHAT_HIDE_CLAIMED_CHAT) {
+				notifyWin.remove();
+				return;
+			}
+
+			notifyWin.addClass('claimed');
 			notifyWin.find('.waiting.row').hide();
 			notifyWin.find('.taken.row').show().find('.place-assigned-name').text(data.new_agent_name);
 			notifyWin.find('button.accept-trigger').hide();

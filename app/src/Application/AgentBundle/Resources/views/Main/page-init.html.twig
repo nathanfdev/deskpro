@@ -81,6 +81,12 @@
 			desktopNotifications: {% if app.user.getPref('agent.ui.desktop_notifications') %}'{{ app.user.getPref('agent.ui.desktop_notifications') }}'{% else %}false{% endif %}
 		});
 
+		{% if app.user.getPref('agent.hide_claimed_chat', false) %}
+			DP_USERCHAT_HIDE_CLAIMED_CHAT = true;
+		{% else %}
+			DP_USERCHAT_HIDE_CLAIMED_CHAT = false;
+		{% endif %}
+
 		DP_POLLER_INTERVAL = 5000;
 
 		{% if constant('DP_DEBUG') %}

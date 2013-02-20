@@ -109,6 +109,13 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
+			<div class="dp-form-label"><label>User Chat</label></div>
+			<div class="dp-form-input">
+				<label>{{ form_widget(form.hide_claimed_chat) }} Immediately dismiss "new chat" window when another agent takes a chat</label>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
 			<div class="dp-form-label"><label>After Replying to a Ticket</label></div>
 			<div class="dp-form-input">
 				<label>{{ form_widget(form.ticket_go_next_reply) }} Automatically load the next ticket in the list (only if closing the ticket tab)</label>
