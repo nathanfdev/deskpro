@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -321,7 +322,17 @@ class TicketSearch extends SearcherAbstract
 		$time = microtime(true);
 
 		$db = App::getDbRead();
-		$ticket_ids = $db->fetchAllCol($sql);
+
+		try {
+			$ticket_ids = $db->fetchAllCol($sql);
+		} catch (\PDOException $e) {
+			$ticket_ids = array();
+			KernelErrorHandler::logException($e, true);
+
+			if (defined('DP_DEBUG') && DP_DEBUG) {
+				throw $e;
+			}
+		}
 
 		$this->getLogger()->logDebug("-- Time: " . sprintf("%.5f", microtime(true) - $time));
 		$this->getLogger()->logDebug("-- Count: " . count($ticket_ids));
@@ -482,7 +493,17 @@ class TicketSearch extends SearcherAbstract
 		$time = microtime(true);
 
 		$db = App::getDbRead();
-		$result = $db->fetchColumn($sql);
+
+		try {
+			$result = $db->fetchColumn($sql);
+		} catch (\PDOException $e) {
+			$result = 0;
+			KernelErrorHandler::logException($e, true);
+
+			if (defined('DP_DEBUG') && DP_DEBUG) {
+				throw $e;
+			}
+		}
 
 		$this->getLogger()->logDebug("-- Time: " . sprintf("%.5f", microtime(true) - $time));
 		$this->getLogger()->logDebug("-- Count: " . $result);
