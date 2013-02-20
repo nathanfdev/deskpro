@@ -321,6 +321,17 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$sess_rec['is_chat_available'] = 0;
 		}
 
+		if (isset($_SESSION['_symfony2']['attributes']['dp_interface'])) {
+			$sess_rec['interface'] = $_SESSION['_symfony2']['attributes']['dp_interface'];
+
+			if ($sess_rec['interface'] != 'agent') {
+				$sess_rec['active_status'] = '';
+				$sess_rec['is_chat_available'] = 0;
+			}
+		} else {
+			$sess_rec['interface'] = '';
+		}
+
 		if (isset($GLOBALS['DP_NON_HELPDESK_SESSION']) && !$this->session->is_helpdesk) {
 			$sess_rec['is_helpdesk'] = 0;
 		} else {

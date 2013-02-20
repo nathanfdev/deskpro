@@ -65,6 +65,13 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $auth;
 
 	/**
+	 * The Interface the session is for
+	 *
+	 * @var string
+	 */
+	protected $interface = '';
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person = null;
@@ -289,6 +296,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+		$metadata->mapField(array( 'fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface', ));
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person', ));
 		$metadata->mapField(array( 'fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot', ));

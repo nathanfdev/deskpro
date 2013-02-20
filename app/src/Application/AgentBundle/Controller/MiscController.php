@@ -566,6 +566,18 @@ JS;
 		$this->session->set('active_status', $status);
 		$this->session->save();
 
+		// Update status in all other active sessions
+		$this->db->executeUpdate("
+			UPDATE sessions
+			SET is_chat_available = ?, active_status = ?
+			WHERE person_id = ? AND interface = ?
+		", array(
+			$this->in->getBool('is_chat_available'),
+			$status,
+			$this->person->getId(),
+			'agent')
+		);
+
 		$this->em->transactional(function($em) use ($sessionEnt) {
 			$em->persist($sessionEnt);
 			$em->flush();
