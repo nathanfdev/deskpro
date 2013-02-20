@@ -191,6 +191,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (notifRow) {
 			DeskPRO_Window.notifications.removeRow(notifRow);
 		}
+
+		this.getEl('replybox_txt').on('focus', function() {
+			$(this).addClass('is-focused');
+		});
+		this.getEl('replybox_txt').on('blur', function() {
+			$(this).removeClass('is-focused');
+		});
 	},
 
 	handleNewMessageCm: function(data, name) {
@@ -359,6 +366,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	chatHasEnded: function() {
+
+		if (this.getEl('replybox_txt').hasClass('is-focused')) {
+			DeskPRO_Window.keyboardShortcuts.pause();
+			$(document).one('click', function() {
+				DeskPRO_Window.keyboardShortcuts.resume();
+			});
+		}
 
 		if (this.hasEnded) return;
 		this.hasEnded = true;

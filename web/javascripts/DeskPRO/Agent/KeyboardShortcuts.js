@@ -60,6 +60,21 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		this.addContextShortcut('person', 'shift+o', 'openOrgProfile');
 	},
 
+	/**
+	 * Pause all keyboard shortcuts
+	 */
+	pause: function() {
+		this.isPaused = true;
+	},
+
+
+	/**
+	 * Resume shortcuts
+	 */
+	resume: function() {
+		this.isPaused = false;
+	},
+
 
 	/**
 	 * Adds a shortcut that only applies to specific tab types. When the shortcut is run,
@@ -70,6 +85,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	 * @param eventName
 	 */
 	addContextShortcut: function(pageTypeName, key, eventName) {
+		if (this.isPaused) return;
 		if (!this.boundShortkuts[key]) {
 			this.boundShortkuts[key] = {};
 			$(document).bind('keydown', key, (function(ev) {
@@ -89,6 +105,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	 * @param key
 	 */
 	dispatchShortcutEvent: function(ev, key) {
+		if (this.isPaused) return;
+
 		if (!this.boundShortkuts[key]) {
 			return;
 		}
@@ -106,6 +124,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	//#########################################################################
 
 	goTabTop: function() {
+		if (this.isPaused) return;
+
 		var page = DeskPRO_Window.getCurrentTabPage();
 		if (page) {
 			page.goTabTop();
@@ -113,34 +133,44 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	showNewTicket: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newTicketLoader.toggle();
 	},
 	showNewArticle: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newArticleLoader.toggle();
 	},
 	showNewNews: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newNewsLoader.toggle();
 	},
 	showNewDownload: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newDownloadLoader.toggle();
 	},
 	showNewFeedback: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newFeedbackLoader.toggle();
 	},
 	showNewPerson: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newPersonLoader.toggle();
 	},
 	showNewOrganization: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newOrganizationLoader.toggle();
 	},
 	showNewTask: function(ev) {
+		if (this.isPaused) return;
 		$('form#newTaskForm input, form#newTaskForm select').val('');
 		DeskPRO_Window.newTaskLoader.toggle();
 	},
 	showNewTweet: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newTweetLoader.toggle();
 	},
 	showNewDeal: function(ev) {
+		if (this.isPaused) return;
 		DeskPRO_Window.newDealLoader.toggle();
 	},
 
@@ -149,6 +179,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	 * are checked first, and then tabs.
 	 */
 	saveContent: function() {
+		if (this.isPaused) return;
+
 		var page = null;
 		Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
 			if (inst.isOpen()) {
@@ -185,6 +217,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	tabLeft: function(ev) {
+		if (this.isPaused) return;
+
 		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.prev();
 
@@ -198,6 +232,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	tabRight: function(ev) {
+		if (this.isPaused) return;
+
 		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.next();
 
@@ -211,6 +247,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	closeTab: function(ev) {
+		if (this.isPaused) return;
+
 		var activeTab = DeskPRO_Window.TabBar.getActiveTab();
 		if (activeTab) {
 			DeskPRO_Window.TabBar.removeTabById(activeTab.id);
