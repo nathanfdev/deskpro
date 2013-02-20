@@ -50,6 +50,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
+use Orb\Validator\StringEmail;
 
 /**
  * Manages interactions between users, agents and the server.
@@ -142,6 +143,21 @@ class UserChatManager
 					$convo->department = $dep;
 				}
 			}
+
+			$chat_options['name']  = empty($chat_options['name']) ? '' : $chat_options['name'];
+			$chat_options['email'] = empty($chat_options['email']) ? '' : $chat_options['email'];
+
+			// Mixed up name/email boxes
+			if ($chat_options['name'] && $chat_options['email'] && StringEmail::isValueValid($chat_options['name']) && !StringEmail::isValueValid($chat_options['email'])) {
+				$tmp = $chat_options['email'];
+				$chat_options['email'] = $chat_options['name'];
+				$chat_options['name']  = $tmp;
+			// Put email into name box
+			} elseif ($chat_options['name'] && !$chat_options['email'] && StringEmail::isValueValid($chat_options['name'])) {
+				$chat_options['email'] = $chat_options['name'];
+				$chat_options['name']  = '';
+			}
+
 			if (!empty($chat_options['name'])) {
 				$convo->person_name = $chat_options['name'];
 			}

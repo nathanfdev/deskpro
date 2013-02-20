@@ -7,7 +7,12 @@
 			{% if person %}
 				<a data-route="person:{{ path('agent_people_view', {person_id: person.id}) }}">{{ person.display_name }} &lt;{{ person.email_address }}&gt;</a>
 			{% else %}
-				{{ phrase('agent.chat.x_by_anonymousymous') }}
+				{% if convo.person_name or convo.person_email %}
+					{% if convo.person_name %}{{ convo.person_name }}{% endif %}
+					{% if convo.person_email %}&lt;{{ convo.person_email }}&gt;{% endif %}
+				{% else %}
+					{{ phrase('agent.chat.x_by_anonymousymous') }}
+				{% endif %}
 			{% endif %}
 			</span>
 		</div>
