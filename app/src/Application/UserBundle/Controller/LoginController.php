@@ -182,6 +182,9 @@ HTML;
 		} elseif ($this->in->getString('to') == 'agent') {
 			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o');
 		} else {
+			if ($this->in->getString('via') == 'user_chat') {
+				return $this->redirectRoute('user_widget_chat');
+			}
 			return $this->redirectRoute('user');
 		}
 	}
