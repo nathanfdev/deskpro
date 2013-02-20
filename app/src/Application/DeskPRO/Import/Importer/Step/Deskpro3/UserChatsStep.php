@@ -235,6 +235,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 				if (!$agent) {
 					continue;
 				}
+				$message['origin']      = 'agent';
 				$message['author_id']   = $agent->id;
 				$message['person_name'] = $agent->getDisplayName();
 				$message['content']     = $message_info['message'];
@@ -248,6 +249,8 @@ class UserChatsStep extends AbstractDeskpro3Step
 					if (!$person) {
 						continue;
 					}
+
+					$message['origin']      = 'user';
 					$message['author_id']   = $person->id;
 					$message['person_name'] = $person->getDisplayName();
 				}
