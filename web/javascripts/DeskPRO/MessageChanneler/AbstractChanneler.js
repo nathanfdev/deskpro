@@ -21,26 +21,6 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 
 	_init: function() { /* Child class hook method */ },
 
-	subscribeChannel: function(channel, callback, context) {
-		// Override
-	},
-
-	_doneSubscribeChannels: function(channels) {
-		Array.each(channels, function(c) {
-			this.channels.include(c);
-		}, this);
-	},
-
-	unsubscribeChannel: function(channel) {
-		// Override
-	},
-
-	_doneUnsubscribeChannels: function(channels) {
-		Array.each(channels, function(c) {
-			this.channels.erase(c);
-		}, this);
-	},
-
 	sendMessage: function(channel, message) {
 
 		if (DeskPRO_Window && DeskPRO_Window.getDebug('logClientMessages')) {

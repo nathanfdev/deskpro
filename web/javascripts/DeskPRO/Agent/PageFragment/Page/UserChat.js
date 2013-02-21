@@ -60,8 +60,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			this.addEvent('destroy', function() {
 				DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
-				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + self.meta.conversation_id);
-				clearInterval(subscribeInterval);
 				if (self.chatStatus == 'ended') {
 					return;
 				}
@@ -79,14 +77,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this._initUpload();
 		this._initBlock();
 		this._initLabels();
-
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
-
-		var subscribeInterval = setInterval(function() {
-			if (self.meta.conversation_id) {
-				DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + self.meta.conversation_id);
-			}
-		}, 60000);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.hidden_newmessage', this.handleNewMessageCm, this, [this.OBJ_ID]);
