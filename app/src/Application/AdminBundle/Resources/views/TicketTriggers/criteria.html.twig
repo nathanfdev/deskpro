@@ -393,22 +393,6 @@
 	</div>
 	{% endif %}
 
-	<div class="builder-type" title="New message body" data-rule-type="message">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="message" value="" />
-		</div>
-	</div>
-
 	{% if app.getSetting('core.use_ticket_category') %}
 		<div class="builder-type" title="{{ phrase('agent.general.category') }}" data-rule-group="Ticket" data-rule-type="category" data-term-type="GenericMenuTerm">
 			<div class="builder-op">
