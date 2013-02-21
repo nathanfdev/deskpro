@@ -148,7 +148,23 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 
 		if (data.assignment === '') {
 			// unassigned
-			this._adjustSectionCount(types.unassigned, data, adjustAmount);
+			if (data.is_favorited) {
+				this._adjustSectionCount(types.unassigned, data, adjustAmount);
+			} else {
+				switch (data.status_type) {
+					case 'direct':
+						if (data.is_from_self) {
+							// own DM, consider as sent
+							break;
+						}
+						// break missing intentionally
+
+					case 'reply':
+					case 'mention':
+					case 'retweet':
+						this._adjustSectionCount(types.unassigned, data, adjustAmount);
+				}
+			}
 		}
 
 		if (data.is_favorited) {
