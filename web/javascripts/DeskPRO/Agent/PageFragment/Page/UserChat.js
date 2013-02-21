@@ -62,12 +62,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
 				if (self.chatStatus == 'ended') {
 					return;
-				}
-
-				if (self.closeAction == 'unassign') {
+				} if (self.closeAction == 'unassign') {
 					self.leaveConvo('unassign');
 				} else if (self.closeAction == 'end') {
 					self.leaveConvo('end');
+				} else {
+					self.leaveConvo(null);
 				}
 			});
 		}
@@ -423,10 +423,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var self = this;
 
 		var action = '';
-		if (after && after == 'unassign') {
-			var action = 'unassign';
-		} else if (after && after == 'end') {
-			var action = 'end';
+		if (after) {
+			if (after == 'unassign') {
+				action = 'unassign';
+			} else if (after == 'end') {
+				action = 'end';
+			}
 		}
 
 		DeskPRO_Window.util.ajaxWithClientMessages({

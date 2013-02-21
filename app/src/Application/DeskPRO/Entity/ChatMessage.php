@@ -62,6 +62,13 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $origin = '';
 
 	/**
+	 * The type of message this is
+	 *
+	 * @var string
+	 */
+	protected $tag = null;
+
+	/**
 	 * The conversation the message belongs to
 	 * @var \Application\DeskPRO\Entity\ChatConversation
 	 */
@@ -302,6 +309,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_setUserName', 'prePersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'tag', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'tag', ));
 		$metadata->mapField(array( 'fieldName' => 'origin', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'origin', ));
 		$metadata->mapField(array( 'fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name', ));
 		$metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));

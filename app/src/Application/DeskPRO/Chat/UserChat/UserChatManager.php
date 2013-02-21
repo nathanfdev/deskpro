@@ -323,7 +323,24 @@ class UserChatManager
 	 */
 	public function personJoined(ChatConversation $convo, Person $person)
 	{
-		if ($convo->hasParticipant($person) || ($convo->agent && $convo->agent->getId() == $person->getId())) {
+		$tag1 = 'user_joined.' . $person->getId();
+		$tag2 = 'user_left.' . $person->getId();
+
+		$joined_left_counts = App::getDb()->fetchAllKeyValue("
+			SELECT tag, COUNT(*)
+			FROM chat_messages
+			WHERE tag IN (?, ?)
+			GROUP BY tag
+		", array($tag1, $tag2));
+
+		if (
+			$joined_left_counts
+			&& isset($joined_left_counts[$tag1])
+			&& isset($joined_left_counts[$tag2])
+			&& $joined_left_counts[$tag1] != $joined_left_counts[$tag2]
+		) {
+			// We dont need to add another "Joined" message
+			// if the user left/returned before the system had a change to register
 			return;
 		}
 
@@ -356,6 +373,27 @@ class UserChatManager
 	 */
 	public function personLeft(ChatConversation $convo, Person $person)
 	{
+		$tag1 = 'user_joined.' . $person->getId();
+		$tag2 = 'user_left.' . $person->getId();
+
+		$joined_left_counts = App::getDb()->fetchAllKeyValue("
+			SELECT tag, COUNT(*)
+			FROM chat_messages
+			WHERE tag IN (?, ?)
+			GROUP BY tag
+		", array($tag1, $tag2));
+
+		if (
+			$joined_left_counts
+			&& isset($joined_left_counts[$tag1])
+			&& isset($joined_left_counts[$tag2])
+			&& $joined_left_counts[$tag1] != $joined_left_counts[$tag2]
+		) {
+			// We dont need to add another "Left" message
+			// if the user left/returned before the system had a change to register
+			return;
+		}
+
 		$this->em->beginTransaction();
 		try {
 
@@ -961,6 +999,12 @@ class UserChatManager
 		$msg = new ChatMessage();
 		$msg->is_sys = true;
 		$msg->content = $message;
+
+		if (isset($metadata['user_joined']) && isset($metadata['person_id']) && $metadata['person_id']) {
+			$msg->tag = 'user_joined.' . $metadata['person_id'];
+		} elseif (isset($metadata['user_left']) && isset($metadata['person_id']) && $metadata['person_id']) {
+			$msg->tag = 'user_left.' . $metadata['person_id'];
+		}
 
 		if (isset($metadata['user_hidden'])) {
 			$msg->is_user_hidden = true;
