@@ -249,7 +249,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			if (!$person->getPrimaryEmailAddress()) {
 				$this->tracker->logMessage("[NewTicketAction] User has no primary email address, setting enable_notify=0");
 				$this->enable_notify = false;
-			} elseif ($person->disable_autoresponses) {
+			} elseif ($person->disable_autoresponses && !$ticket->isAgentCreated()) {
 				$this->tracker->logMessage("[NewTicketAction] User has disable_autoresponses enabled, setting enable_notify=0");
 				$this->enable_notify = false;
 
