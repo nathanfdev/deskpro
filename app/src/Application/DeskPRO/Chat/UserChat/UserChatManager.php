@@ -664,16 +664,40 @@ class UserChatManager
 
 
 	/**
+	 * Mark the chat as ended due to a wait timeout
+	 *
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @return void
+	 */
+	public function userAbandoned(ChatConversation $convo)
+	{
+		$this->em->beginTransaction();
+		try {
+
+			$this->addSystemMessage(
+				$convo,
+				'message_ended-by-user',
+				array(),
+				array('user_abandoned' => true)
+			);
+			$this->endChat($convo, null, 'abandoned');
+
+			$this->em->flush();
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * @param $reason
 	 * @return void
 	 */
 	public function endChat(ChatConversation $convo, Person $author = null, $reason = '')
 	{
-		// Already ended
-		if ($convo->status == 'ended') {
-			return;
-		}
-
 		$convo->status = 'ended';
 
 		if ($author) {
@@ -684,9 +708,12 @@ class UserChatManager
 		} elseif ($reason == 'wait_timeout') {
 			$reason = '';
 			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_WAIT_TIMEOUT;
+		} elseif ($reason == 'abandoned') {
+			$reason = '';
+			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_ABANDONED;
 		}
 
-		if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout') {
+		if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
 			if ($author) {
 				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayNameUser()), array('chat_ended' => true));
 			} else {
@@ -705,7 +732,7 @@ class UserChatManager
 
 		$this->em->flush();
 
-		if ($reason !== 'timeout') {
+		if ($reason !== 'timeout' && $reason !== 'wait_timeout' && $reason != 'abandoned') {
 			$this->autoSendChatTranscript($convo);
 		}
 	}

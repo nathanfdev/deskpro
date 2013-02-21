@@ -20,7 +20,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			BASE_URL + 'agent/chat/view/' + this.meta.conversation_id
 		);
 
-		if (!this.meta.isEnded) {
+		this.chatStatus  = this.meta.status;
+		this.chatEndedBy = this.meta.ended_by;
+
+		if (this.chatStatus != 'ended' || this.chatEndedBy == 'timeout') {
 			var messageTextarea = this.getEl('replybox_txt');
 
 			var sendMsg = function() {
@@ -59,7 +62,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
 				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + self.meta.conversation_id);
 				clearInterval(subscribeInterval);
-				if (self.meta.isEnded) {
+				if (self.chatStatus == 'ended') {
 					return;
 				}
 
@@ -155,7 +158,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.addEvent('closeTab', function(event) {
 			// Already ended or not assigned to us
-			if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID || this.meta.isEnded) {
+			if (this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID || this.chatStatus == 'ended') {
 				return;
 			}
 
@@ -364,7 +367,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	leaveChat: function() {
-		if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
+		if (this.chatStatus == 'ended' || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
 			return;
 		}
 		$.ajax({
@@ -375,7 +378,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 	},
 
-	chatHasEnded: function() {
+	chatHasEnded: function(data) {
+
+		this.chatStatus = 'ended';
+		this.chatEndedBy = data.ended_by;
+
+		if (this.chatEndedBy == 'timeout') {
+			return;
+		}
 
 		if (this.getEl('replybox_txt').hasClass('is-focused')) {
 			DeskPRO_Window.keyboardShortcuts.pause();
@@ -383,9 +393,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				DeskPRO_Window.keyboardShortcuts.resume();
 			});
 		}
-
-		if (this.hasEnded) return;
-		this.hasEnded = true;
 
 		this.getEl('messages_box').addClass('chat-ended');
 		this.getEl('replybox').hide().addClass('chat-ended');

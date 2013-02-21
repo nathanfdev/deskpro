@@ -42,4 +42,9 @@
 	 * state before we kill the chat and show user link to ticket
 	 */
 	'core_chat.max_wait_time' => 900,
+
+	/**
+	 * Max amount of time after a user timeout before the chat is closed for real
+	 */
+	'core_chat.abandoned_time' => 480,
 );

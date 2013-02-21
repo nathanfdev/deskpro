@@ -7,7 +7,7 @@ pageMeta.youName          = {{ app.user.display_name|json_encode|raw }};
 pageMeta.youPictureUrl    = '{{ app.user.getPictureUrl(25) }}';
 pageMeta.tabIdClass       = 'user_chat_tab_{{convo.id}}';
 pageMeta.status           = '{{ convo.status }}';
-pageMeta.isEnded          = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
+pageMeta.ended_by         = '{{ convo.ended_by }}';
 pageMeta.email            = {{ convo.person_email|json_encode|raw }};
 pageMeta.convo            = {{ convo_api|json_encode|raw }};
 pageMeta.userPictureUrl   = '{{ convo.getPersonPictureUrl() }}';
@@ -130,7 +130,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						{% endif %}
 
-						<button id="{{baseId}}_create_ticket_btn2" class="clean-white" style="margin: 0 0 5px 11px; {% if convo.status != 'ended' %}display: none{% else %}display:block{% endif %}">Create Ticket</button>
+						<button id="{{baseId}}_create_ticket_btn2" class="clean-white" style="margin: 0 0 5px 11px; {% if convo.status != 'ended' and convo.ended_by != 'timeout' %}display: none{% else %}display:block{% endif %}">Create Ticket</button>
                     </article>
 					{{ dp_widget_tabs(baseId, 'chat', 'people', 'article', convo_api) }}
                 </section>
@@ -199,7 +199,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<section>
 		<article id="{{baseId}}_chat" class="chat-tab">
-			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
+			<div class="messages chat-transcript {% if convo.status == 'ended' and convo.ended_by != 'timeout' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
 					<div class="row server-ack user-ack {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
 						{% if message.is_sys %}
@@ -276,7 +276,7 @@ pageMeta.baseId = '{{ baseId }}';
 					</div>
 				</div>
 			</div>
-			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status != 'open' %}display: none{% endif %};">
+			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status == 'ended' and convo.ended_by != 'timeout' %}display: none{% endif %};">
 				<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 				<nav>
 					<ul class="option-buttons">

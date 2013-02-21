@@ -131,6 +131,31 @@ class ChatPingTimeout extends AbstractJob
 			}
 		}
 
+		#------------------------------
+		# Abandoned chats after user timeout
+		#------------------------------
+
+		$max_time = App::getSetting('core_chat.abandoned_time');
+		$count_abandoned = 0;
+
+		if ($max_time) {
+			$timesnip = date('Y-m-d H:i:s', time() - $max_time);
+			$chat_ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM chat_conversations c
+				WHERE c.status = 'ended' AND c.ended_by = 'timeout' AND c.date_ended < ?
+			", array($timesnip));
+
+			while ($chat_id = array_pop($chat_ids)) {
+				$chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
+				$chat_manager->userAbandoned($chat);
+
+				$count_abandoned++;
+				$secs = time() - $chat->date_ended->getTimestamp();
+				$this->logger->log("Timed out user abandoned chat {$chat->id} (its been $secs seconds)", Logger::INFO);
+			}
+		}
+
 		if ($count_agents || $count_users) {
 			$this->logStatus("Chat timeouts: {$count_agents} agents, {$count_users} users, {$count_wait} wait", array(
 				'count_agents' => $count_agents,

@@ -55,6 +55,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	const ENDED_TIMEOUT      = 'timeout';
 	const ENDED_WAIT_TIMEOUT = 'wait_timeout';
+	const ENDED_ABANDONED    = 'abandoned';
 	const ENDED_AGENT        = 'agent';
 	const ENDED_USER         = 'user';
 
@@ -658,6 +659,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$info['department_id']    = $this->department_id;
 		$info['department_name']  = $this->department ? $this->department->getFullTitle() : '';
 		$info['date_created']     = $this->date_created->getTimestamp();
+
+		if ($this->date_ended) {
+			$info['date_ended'] = $this->date_ended->getTimestamp();
+			$info['ended_by']   = $this->ended_by;
+		}
 
 		return $info;
 	}
