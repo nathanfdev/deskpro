@@ -231,26 +231,6 @@ $collection->add('agent_recyclebin_more', new Route(
 	array()
 ));
 
-$collection->add('agent_client_messages_getnew', new Route(
-	'/client-messages/get-new-messages',
-	array('_controller' => 'AgentBundle:ClientMessages:getNewMessages', 'since' => '0'),
-	array('since' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_client_messages_subscribe_channels', new Route(
-	'/client-messages/subscribe-channels',
-	array('_controller' => 'AgentBundle:ClientMessages:subscribeChannels'),
-	array(),
-	array()
-));
-
-$collection->add('agent_client_messages_unsubscribe_channels', new Route(
-	'/client-messages/unsubscribe-channels',
-	array('_controller' => 'AgentBundle:ClientMessages:unsubscribeChannels'),
-	array(),
-	array()
-));
 
 
 ################################################################################

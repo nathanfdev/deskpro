@@ -29,54 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use \Doctrine\ORM\EntityRepository;
-
-class ClientChannelSubscription extends AbstractEntityRepository
+class Build1361447637 extends AbstractBuild
 {
-	public function getSubscriptionsForClient($session_id)
+	public function run()
 	{
-		if ($session_id instanceof Entity\Session) {
-			$session_id = $session_id['id'];
-		}
-
-		$expire = new \DateTime('-10 minutes');
-		$expire = $expire->format('Y-m-d H:i:s');
-
-		$subs = $this->getEntityManager()->createQuery("
-			SELECT s
-			FROM DeskPRO:ClientChannelSubscription s
-			WHERE s.session = ?1
-			AND s.date_ping > ?2
-		")->execute(array(1=>$session_id, 2=>$expire));
-
-		return $subs;
-	}
-
-	public function findSubscriptionForClient($channel, $session_id)
-	{
-		if ($session_id instanceof Entity\Session) {
-			$session_id = $session_id['id'];
-		}
-
-		$subs = $this->getEntityManager()->createQuery("
-			SELECT s
-			FROM DeskPRO:ClientChannelSubscription s
-			WHERE s.session = ?1 AND s.channel = ?2
-			ORDER BY s.id DESC
-		")->setMaxResults(1)->execute(array(1=>$session_id, 2=>$channel));
-
-		if (!$subs OR !count($subs)) {
-			return null;
-		}
-
-		return $subs[0];
+		$this->out("Drop client_channel_subscriptions");
+		$this->execMutateSql("DROP TABLE `client_channel_subscriptions`");
 	}
 }

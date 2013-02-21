@@ -517,16 +517,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @param  $agent
 	 * @return void
 	 */
-	public function setAgent($agent)
+	public function setAgent($agent = null)
 	{
 		if (!$agent) $agent = null;
 
 		$old_agent = $this->agent;
-		if ($this->agent == $agent) {
+		if (($agent === null && $old_agent === null) || ($agent && $old_agent && $agent->getId() == $old_agent->getId())) {
 			return;
 		}
 
-		$this->_onPropertyChanged('agent', $this->agent, $agent);
+		$this->_onPropertyChanged('agent', $old_agent, $agent);
 
 		$this->agent = $agent;
 		if ($agent AND !$this->date_assigned) {
@@ -544,9 +544,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if ($this->agent) {
-			$this->date_user_waiting = null;
+			$this->setModelField('date_user_waiting', null);
 		} else {
-			$this->date_user_waiting = new \DateTime();
+			$this->setModelField('date_user_waiting', new \DateTime());
 		}
 	}
 

@@ -53,14 +53,6 @@ class ClientMessage extends AbstractEntityRepository
 	 */
 	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $with_last_since = null, $is_initial = false)
 	{
-		// Automatically ping
-		// AJAX clients dont send ping manually, it's just part of this call
-		// Only matters for non-agents, as agents have hard-coded subscriptions
-		if (!$person->is_agent) {
-			$person->loadHelper('ClientChannelSubscriptions', array('session' => $session));
-			$person->getClientChannelSubs()->pingSubscriptions();
-		}
-
 		$data = array('messages' => array(), 'last_id' => -1);
 		$all_messages = false;
 
@@ -291,11 +283,6 @@ class ClientMessage extends AbstractEntityRepository
 			$channels[] = 'chat.ended';
 			$channels[] = 'chat.depchange';
 			$channels[] = 'chat.invited';
-		}
-
-		$channels_obj = $this->_em->getRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
-		foreach ($channels_obj as $ch) {
-			$channels[] = $ch['channel'];
 		}
 
 		// They're automatically subscribed to their own chats of course

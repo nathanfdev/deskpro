@@ -2086,6 +2086,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.messageChanneler.poller.addData((function () {
 			return {'at': parseInt(this.activityTime.getTime() / 1000)};
 		}).bind(this), 'at', { recurring: true });
+
+		// Add chats we're looking at right now
+		this.messageChanneler.poller.addData((function () {
+			var chatIdsData = [];
+			Array.each(this.getTabWatcher().findTabType('userchat'), function(t) {
+				chatIdsData.push({
+					name: 'chat_ids[]',
+					value: t.page.meta.conversation_id
+				});
+			});
+
+			if (!chatIdsData.length) {
+				return false;
+			}
+
+			return chatIdsData;
+		}).bind(this), 'chat_ids', { recurring: true });
 	},
 
 	_initRoutes: function() {

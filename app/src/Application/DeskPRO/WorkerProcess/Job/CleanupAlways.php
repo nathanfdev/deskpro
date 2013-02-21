@@ -85,17 +85,6 @@ class CleanupAlways extends AbstractJob
 		}
 
 		#------------------------------
-		# client_channel_subscriptions
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - 600); // 10 minutes
-		$num = App::getDb()->executeUpdate("DELETE FROM client_channel_subscriptions WHERE date_ping < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale client channel subscriptions");
-		}
-
-		#------------------------------
 		# Try to delete old update status file
 		#------------------------------
 

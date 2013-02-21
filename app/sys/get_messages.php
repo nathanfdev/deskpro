@@ -351,17 +351,13 @@ class AgentMessagesLoader extends LoaderAbstract
 
 		$channels[] = 'agent.filter-update';
 
-		$q = $this->getPdo()->prepare("
-			SELECT channel
-			FROM client_channel_subscriptions
-			WHERE session_id = ?
-		");
-		$q->execute(array($client_id));
-		while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
-			$channels[] = $row['channel'];
+		if (isset($_REQUEST['chat_ids']) && is_array($_REQUEST['chat_ids'])) {
+			foreach ($_REQUEST['chat_ids'] as $chat_id) {
+				$chat_id = (int)$chat_id;
+				if (!$chat_id) continue;
+				$channels[] = 'chat_convo.' . $chat_id;
+			}
 		}
-
-		// They're automatically subscribed to their own chats of course
 
 		$q = $this->getPdo()->prepare("
 			SELECT c.id
@@ -374,6 +370,8 @@ class AgentMessagesLoader extends LoaderAbstract
 		while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
 			$channels[] = 'chat_convo.' . $row['id'];
 		}
+
+		$channels = array_unique($channels);
 
 		return $this->getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);
 	}

@@ -164,6 +164,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			}
 
 			item_data = this.transformData(item_name, item_data, item_opts);
+			sent_info.push([item_orig_data, item_name, item_opts]);
 
 			if (!item_data) continue;
 
@@ -174,8 +175,6 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 					send_data.push({ name: k, value: v });
 				});
 			}
-
-			sent_info.push([item_orig_data, item_name, item_opts]);
 		}
 
 		if (!this.options.alwaysRequest && !sent_info.length) {

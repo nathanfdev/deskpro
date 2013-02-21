@@ -19,6 +19,7 @@
 	'agent.userchat.message_user-timeout'   => 'User timed out',
 	'agent.userchat.message_user_joined'    => '{{name}} joined the chat',
 	'agent.userchat.message_user_left'      => '{{name}} left the chat',
+	'agent.userchat.message_wait-timeout'   => 'Chat ended: Could not find an agent',
 	'agent.userchat.msg_agent_timeout'      => '{{name}} is not responding. Please wait while will try to find another agent.',
 	'agent.userchat.msg_new_user_track'     => 'User is viewing: {{label}}',
 	'agent.userchat.msg_user_timeout'       => 'User is not responding.',

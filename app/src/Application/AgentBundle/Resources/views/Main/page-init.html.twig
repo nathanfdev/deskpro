@@ -73,8 +73,6 @@
 		window.DeskPRO_Window = new DeskPRO.Agent.Window({
 			messageChanneler: {
 				ajaxMessagesUrl: BASE_PATH + 'get_messages.php',
-				ajaxSubscribeUrl: '{{ path('agent_client_messages_subscribe_channels') }}',
-				ajaxUnsubscribeUrl: '{{ path('agent_client_messages_unsubscribe_channels') }}',
 				lastMessageId: {{last_message_id}}
 			},
 			faviconCount: {% if app.user.getPref('agent.ui.favicon_count') %}'{{ app.user.getPref('agent.ui.favicon_count') }}'{% else %}false{% endif %},
