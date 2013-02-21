@@ -1,14 +1,16 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
-pageMeta.title = {{ convo.subjectLine|json_encode|raw }};
-pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
-pageMeta.conversation_id = {{convo.id}};
-pageMeta.youName         = {{ app.uassign_ob_triggerser.display_name|json_encode|raw }};
-pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
-pageMeta.status = '{{ convo.status }}';
-pageMeta.isEnded = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
-pageMeta.email = {{ convo.person_email|json_encode|raw }};
-pageMeta.convo = {{ convo_api|json_encode|raw }};
+pageMeta.fragmentClass    = 'DeskPRO.Agent.PageFragment.Page.UserChat';
+pageMeta.title            = {{ convo.subjectLine|json_encode|raw }};
+pageMeta.url_fragment     = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
+pageMeta.conversation_id  = {{convo.id}};
+pageMeta.youName          = {{ app.user.display_name|json_encode|raw }};
+pageMeta.youPictureUrl    = '{{ app.user.getPictureUrl(25) }}';
+pageMeta.tabIdClass       = 'user_chat_tab_{{convo.id}}';
+pageMeta.status           = '{{ convo.status }}';
+pageMeta.isEnded          = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
+pageMeta.email            = {{ convo.person_email|json_encode|raw }};
+pageMeta.convo            = {{ convo_api|json_encode|raw }};
+pageMeta.userPictureUrl   = '{{ convo.getPersonPictureUrl() }}';
 
 pageMeta.session_id = {{ session.id|default(0) }};
 {% if convo.person.id %}
@@ -199,7 +201,6 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_chat" class="chat-tab">
 			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
-
 					<div class="row server-ack user-ack {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
 						{% if message.is_sys %}
 							<div class="message-content">
@@ -217,9 +218,11 @@ pageMeta.baseId = '{{ baseId }}';
 									{% endif %}
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
+								<div class="chat-clear"></div>
 							</div>
 						{% elseif message.origin == 'agent' %}
 							<div class="message-content">
+								<div class="avatar tipped" title="{{ message.getAuthorName() }}"><img src="{{ message.getAuthorPictureUrl(25) }}" /></div>
 								<div class="chatSend">
 									<div class="chatMsgSend">
 										{% if message.is_html %}
@@ -232,9 +235,11 @@ pageMeta.baseId = '{{ baseId }}';
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
 								<span class="ack-icon"></span>
+								<div class="chat-clear"></div>
 							</div>
 						{% else %}
 							<div class="message-content">
+								<div class="avatar tipped" title="{{ message.getAuthorName() }}"><img src="{{ message.getAuthorPictureUrl(25) }}" /></div>
 								<div class="chatRecieve">
 									<div class="chatMsgRecieve">
 										{% if message.is_html %}
@@ -251,6 +256,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</div>
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
+								<div class="chat-clear"></div>
 							</div>
 						{% endif %}
 					</div>

@@ -166,6 +166,47 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		return 'User';
 	}
 
+
+	/**
+	 * Gets the URL to a picture for the person. Note that this will always return
+	 * a path to an image, even if it's the default.
+	 *
+	 * @return null|string
+	 */
+	public function getAuthorPictureUrl($size = 80, $secure = null)
+	{
+		// Null means detect
+		if ($secure === null AND App::isWebRequest()) {
+			$request = App::getRequest();
+			if ($request->isSecure()) {
+				$secure = true;
+			}
+		}
+
+		$url = false;
+		if ($this->author) {
+			$url = $this->author->getPictureUrl($size, $secure);
+		}
+
+		if (!$url && !$this->conversation->is_agent) {
+			$url = $this->conversation->getPersonPictureUrl($size, $secure);
+		}
+
+		if (!$url) {
+			$url = App::get('router')->generate('serve_default_picture', array(
+				's' => $size,
+				'size-fit' => 1,
+			), true);
+		}
+
+		if ($secure) {
+			$url = preg_replace('#^http:#', 'https:', $url);
+		}
+
+		return $url;
+	}
+
+
 	/**
 	 */
 	public function _setUserName()

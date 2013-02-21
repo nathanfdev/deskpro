@@ -32,7 +32,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 
 				var tmp_id = Orb.uuid();
-				self.addMessageRow(self.meta.youName, msg, 'agent', false, tmp_id, { no_notify: true });
+				self.addMessageRow(self.meta.youName, msg, 'agent', false, tmp_id, { no_notify: true, person_avatar: self.meta.youPictureUrl });
 
 				self.sendMessage(msg, function(message_id) {
 					// Sets the real message ID after we've come back from ajax
@@ -466,14 +466,24 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			this.getEl('messages_box').find('.row.agent').addClass('user-ack');
 		}
+
+		var avatarHtml = '';
+		var person_avatar = metadata.person_avatar || this.meta.userPictureUrl;
+		person_avatar = person_avatar.replace(/\/avatar\/\d+\//, "/avatar/25/", person_avatar);
+		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(metadata.author_name || '') +'"><img src="' + person_avatar + '" /></div>';
+
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
 			if (type == 'sys') {
 				html.push('<div class="message prop-msg"></div><time></time>');
 			} else if (type == 'agent') {
+				html.push(avatarHtml);
 				html.push('<div class="chatSend"><div class="chatMsgSend"><div class="prop-msg"></div><span class="bubbleLeft"></span></div></div><time></time><span class="ack-icon"></span>');
+				html.push('<div class="chat-clear"></div>');
 			} else if (type == 'user') {
 				this.userTyping();
+				html.push(avatarHtml);
 				html.push('<div class="chatRecieve"><div class="chatMsgRecieve"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
+				html.push('<div class="chat-clear"></div>');
 			}
 		html.push('</div></div>');
 
@@ -548,6 +558,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		$('time', row).attr('datetime', (new Date()).toString());
 
+		DeskPRO_Window.initInterfaceLayerEvents(row);
 		row.appendTo(this.getEl('messages_box'));
 
 		this.getEl('messages_box').scrollTop(10000);

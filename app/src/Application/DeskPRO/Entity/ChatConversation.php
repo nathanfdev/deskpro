@@ -685,6 +685,52 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Gets the URL to a picture for the person. Note that this will always return
+	 * a path to an image, even if it's the default.
+	 *
+	 * @return null|string
+	 */
+	public function getPersonPictureUrl($size = 80, $secure = null)
+	{
+		// Null means detect
+		if ($secure === null AND App::isWebRequest()) {
+			$request = App::getRequest();
+			if ($request->isSecure()) {
+				$secure = true;
+			}
+		}
+
+		$url = false;
+		if ($this->person) {
+			$url = $this->person->getPictureUrl($size, $secure);
+		}
+
+		if (!$url) {
+			if (App::getSetting('core.use_gravatar') && $this->person_email) {
+				$hash = md5(strtolower($this->person_email));
+				if ($secure) {
+					$url = 'https://secure.gravatar.com/avatar/' . $hash . '?';
+				} else {
+					$url = 'http://www.gravatar.com/avatar/' . $hash . '?';
+				}
+				$url .= 's=' . $size . '&d=mm';
+			} else {
+				$url = App::get('router')->generate('serve_default_picture', array(
+					's' => $size,
+					'size-fit' => 1,
+				), true);
+			}
+		}
+
+		if ($secure) {
+			$url = preg_replace('#^http:#', 'https:', $url);
+		}
+
+		return $url;
+	}
+
+
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
