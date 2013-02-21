@@ -74,6 +74,9 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 					try {
 						$sforce->login($user, $password . $token);
 					} catch (\SoapFault $e) {
+						if ($e->getMessage()) {
+							return $controller->createJsonResponse(array('error' => 'Salesforce error: ' . $e->getMessage()));
+						}
 						return $controller->createJsonResponse(array('error' => 'Invalid Salesforce API user, password, or token.'));
 					}
 
