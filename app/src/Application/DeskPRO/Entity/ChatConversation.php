@@ -755,6 +755,30 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Check if this ticket has a custom field.
+	 *
+	 * @param $field_id
+	 * @return bool
+	 */
+	public function hasCustomField($field_id)
+	{
+		foreach ($this->custom_data as $data) {
+			if ($data->field['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{

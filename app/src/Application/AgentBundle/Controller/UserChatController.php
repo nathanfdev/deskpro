@@ -104,15 +104,20 @@ class UserChatController extends AbstractController
 			$block = $this->em->getRepository('DeskPRO:ChatBlock')->getBlockForVisitor($convo->visitor);
 		}
 
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($convo);
+
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
-			'convo' => $convo,
-			'convo_api' => $convo_api,
-			'session' => $session,
-			'visitor' => $visitor,
-			'other_chats' => $other_chats,
-			'agents' => $agents,
-			'block' => $block,
+			'convo'          => $convo,
+			'convo_api'      => $convo_api,
+			'session'        => $session,
+			'visitor'        => $visitor,
+			'other_chats'    => $other_chats,
+			'agents'         => $agents,
+			'block'          => $block,
+			'$field_manager' => $field_manager,
+			'custom_fields'  => $custom_fields,
 		));
 	}
 
@@ -234,6 +239,30 @@ class UserChatController extends AbstractController
 		}
 
 		return $this->createJsonCmResponse();
+	}
+
+
+	/**
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function saveFieldsAction($conversation_id)
+	{
+		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		/** @var $field_manager \Application\DeskPRO\CustomFields\ChatFieldManager */
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+
+		$field_manager->saveFormToObject($this->in->getCleanValueArray('custom_fields', 'raw', 'raw'), $convo);
+		$custom_fields = $field_manager->getDisplayArrayForObject($convo);
+
+		return $this->render('AgentBundle:UserChat:view-page-display-holders.html.twig', array(
+			'convo' => $convo,
+			'custom_fields'  => $custom_fields,
+		));
 	}
 
 

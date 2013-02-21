@@ -184,6 +184,8 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',
 		'javascripts/DeskPRO/Agent/PageHelper/TicketFields.js',
 		'javascripts/DeskPRO/Agent/PageHelper/TicketFieldDisplay.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ChatFields.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ChatFieldDisplay.js',
 		'javascripts/DeskPRO/Agent/PageHelper/ListSearchForm.js',
 		'javascripts/DeskPRO/Agent/PageHelper/CategoryEdit.js',
 		'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',

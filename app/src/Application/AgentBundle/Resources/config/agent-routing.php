@@ -2566,6 +2566,13 @@ $collection->add('agent_userchat_view', new Route(
 	array('fragment_name' => 'c')
 ));
 
+$collection->add('agent_userchat_save_fields', new Route(
+	'/chat/{conversation_id}/save-fields',
+	array('_controller' => 'AgentBundle:UserChat:saveFields'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('agent_userchat_blockuser', new Route(
 	'/chat/block-user/{conversation_id}',
 	array('_controller' => 'AgentBundle:UserChat:blockUser'),

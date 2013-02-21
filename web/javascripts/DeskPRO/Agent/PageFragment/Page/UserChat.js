@@ -196,6 +196,24 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			var content = $(this).find('textarea').val();
 			self.showFullMessage(content);
 		});
+
+		this.chatFields = new DeskPRO.Agent.PageHelper.ChatFields(this);
+		this.chatFields.updateDisplay();
+		this.ownObject(this.chatFields);
+
+		var maintabs = this.getEl('main_tabs_nav');
+		if (maintabs.data('simpletabs')) {
+			maintabs.data('simpletabs').addEvent('tabSwitch', function(evData) {
+				var tabEl = $(evData.tabEl);
+				if (tabEl[0]) {
+					if (tabEl.hasClass('is-fields-tab')) {
+						self.getEl('field_edit_controls').show();
+					} else {
+						self.getEl('field_edit_controls').hide();
+					}
+				}
+			});
+		}
 	},
 
 	handleNewMessageCm: function(data, name) {

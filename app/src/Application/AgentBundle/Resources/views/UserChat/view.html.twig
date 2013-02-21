@@ -187,8 +187,17 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container chat-box" id="{{ baseId }}_chat_view">
 	<header>
-		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>
+		<div class="controls" id="{{baseId}}_field_edit_controls" style="display: none">
+			<div class="is-not-loading">
+				<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
+				<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
+				<button class="save" id="{{baseId}}_field_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
+			</div>
+			<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
+		</div>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs" id="{{ baseId }}_main_tabs_nav"><ul>
 			<li data-tab-for="#{{baseId}}_chat">{{ phrase('agent.general.chat') }}</li>
+			<li data-tab-for="#{{ baseId }}_fields_display_main_wrap" id="{{ baseId }}_fields_display_main_wrap_tab" class="is-fields-tab">Fields</li>
 			{% if convo.visitor %}
 				<li data-tab-for="#{{baseId}}_session">Visitor Information</li>
 			{% endif %}
@@ -298,8 +307,13 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 		</article>
+		<article id="{{baseId}}_fields_display_main_wrap" style="display: none;">
+			<div id="{{baseId}}_field_holders">
+				{% include 'AgentBundle:UserChat:view-page-display-holders.html.twig' %}
+			</div>
+		</article>
 		{% if convo.visitor %}
-			<article id="{{baseId}}_session" style="direction: none;">
+			<article id="{{baseId}}_session" style="display: none;">
 				<div class="data-display-table-wrap">
 					<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table">
 						<tbody>
