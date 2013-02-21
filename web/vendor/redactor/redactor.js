@@ -840,6 +840,11 @@ var RLANG = {
 						this.formatNewLine(e);
 					}
 
+					if ($.browser.mozilla)
+					{
+						this.execRun('unlink', false);
+					}
+
 					// convert links
 					if (this.opts.convertLinks)
 					{
