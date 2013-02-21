@@ -42,6 +42,7 @@
 		{% if run %}
 			<div class="report-actions">
 				<button class="btn" name="output" value="csv">CSV</button>
+				<button class="btn" name="output" value="pdf">PDF</button>
 				<button class="btn" name="run" value="1" onclick="window.print(); return false;">Print</button>
 				<button class="btn" name="clone" value="1">Clone</button>
 				{% if not (report.isEditable() and report.isQueryDifferent(query)) %}

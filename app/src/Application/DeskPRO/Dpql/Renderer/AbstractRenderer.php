@@ -42,7 +42,8 @@ abstract class AbstractRenderer
 {
 	protected static $_rendererMap = array(
 		'csv' => 'Csv',
-		'html' => 'Html'
+		'html' => 'Html',
+		'pdf' => 'Pdf'
 	);
 
 	/**
@@ -65,6 +66,11 @@ abstract class AbstractRenderer
 	 * @var string
 	 */
 	protected $_typeName = '';
+
+	/**
+	 * @var string
+	 */
+	protected $_title = '';
 
 	/**
 	 * Format of the output (table, bar, etc) in the specified output type.
@@ -159,6 +165,11 @@ abstract class AbstractRenderer
 		$this->_handler = $resultHandler;
 		$this->_results = $results;
 		$this->_valueRenderer = $this->_getDefaultValueRenderer();
+	}
+
+	public function setTitle($title)
+	{
+		$this->_title = $title;
 	}
 
 	public function getFileName($name)

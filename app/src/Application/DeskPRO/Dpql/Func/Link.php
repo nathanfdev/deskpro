@@ -118,7 +118,7 @@ class Link extends AbstractFunc
 			$argValues[] = urlencode($renderer->getColumnValue($row, $key));
 		}
 
-		$link = App::getRequest()->getBasePath() . '/' . vsprintf($format, $argValues);
+		$link = App::getRequest()->getUriForPath('') . '/' . vsprintf($format, $argValues);
 
 		return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $print . '</a>';
 	}

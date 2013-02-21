@@ -462,29 +462,24 @@ class ReportBuilderController extends AbstractController
 		$compiler = new Compiler();
 		$statement = $compiler->compile($query, $params);
 		$statement->setImplicitLimit(0);
+
 		$renderer = $statement->getRenderer($type);
+		$renderer->setTitle($title);
 		$output = $renderer->render();
 
 		$response = $this->response;
 		$response->headers->set('Content-Type', $renderer->getContentType());
 		$response->headers->set('Content-Disposition', 'inline; filename=' . $renderer->getFileName($title));
 		$response->setContent($output);
+
 		return $response;
 	}
 
 	public function renderQuery($query, $renderer, &$error = false, array $params = array())
 	{
-		@set_time_limit(0);
-
-		$error = false;
-		try {
-			$compiler = new Compiler();
-			$statement = $compiler->compile($query, $params);
-			return $statement->getRenderer($renderer)->render();
-		} catch (DpqlException $e) {
-			$error = $e->getMessage();
-			return false;
-		}
+		return \Application\DeskPRO\Dpql\Statement\Display::renderQuery(
+			$renderer, $query, $params, $error
+		);
 	}
 
 	public function getReportOr404($id)

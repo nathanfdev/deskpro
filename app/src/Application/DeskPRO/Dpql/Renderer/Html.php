@@ -148,7 +148,7 @@ class Html extends AbstractRenderer
 	 */
 	protected function _renderTableWrapper($inner, $extraClass = '')
 	{
-		return "<table class=\"report-builder-table $extraClass\">\n$inner\n</table>\n";
+		return "<table class=\"report-builder-table $extraClass\" cellspacing=\"0\">\n$inner\n</table>\n";
 	}
 
 	/**

@@ -1023,6 +1023,29 @@ class Display
 	}
 
 	/**
+	 * @param string $renderer Output type (html, csv, etc)
+	 * @param string $query DPQL query
+	 * @param array $params Parameters for the query (if applicable)
+	 * @param mixed $error If an error occurs, the error message
+	 *
+	 * @return bool|string
+	 */
+	public static function renderQuery($renderer, $query, array $params = array(), &$error = false)
+	{
+		@set_time_limit(0);
+
+		$error = false;
+		try {
+			$compiler = new \Application\DeskPRO\Dpql\Compiler();
+			$statement = $compiler->compile($query, $params);
+			return $statement->getRenderer($renderer)->render();
+		} catch (Exception $e) {
+			$error = $e->getMessage();
+			return false;
+		}
+	}
+
+	/**
 	 * Gets a DPQL query string from a list of parts.
 	 *
 	 * @param array $parts
