@@ -44,5 +44,6 @@
 	'user.chat.window_open-new'                 => 'Open this chat in a new window',
 	'user.chat.window_resume-button'            => 'Open your chat',
 	'user.chat.window_start-button'             => 'Click here to chat with us',
+	'user.chat.window_offline-button'           => 'Click here to contact us',
 	'user.chat.window_upload-drag'              => 'Drop your file here to upload it to the chat',
 );

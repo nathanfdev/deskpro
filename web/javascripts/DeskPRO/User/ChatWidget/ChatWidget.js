@@ -109,7 +109,8 @@ var DpChatWidget = new (function() {
 		deskproUrl: null,
 		btnClass: 'dp-chat-btn',
 		onInitCallback: null,
-		languageId: 0
+		languageId: 0,
+		offlineUrl: null
 	};
 
 	var self = this;
@@ -469,6 +470,21 @@ var DpChatWidget = new (function() {
 
 	this.setNotAvailable = function() {
 		util.addClass(body, 'dp-chat-disabled');
+
+		if (DpChatWidget_Options && DpChatWidget_Options.offlineUrl) {
+			options.offlineUrl = DpChatWidget_Options.offlineUrl;
+		}
+
+		if (options.offlineUrl) {
+			drawButton();
+
+			util.hideEl(document.getElementById('dpchat_btn_label_start_chat2'));
+			util.showEl(document.getElementById('dpchat_btn_label_offline2'));
+
+			util.bind(openBtn, 'click', function(ev) {
+				window.location = options.offlineUrl;
+			});
+		}
 	},
 
 	this.initWidget = function(sessionId) {
@@ -487,6 +503,47 @@ var DpChatWidget = new (function() {
 
 		DpConsole.log('DpChatWidget.initWidget');
 
+		drawButton();
+
+		util.bind(openBtn, 'click', function(ev) {
+			if (ev && ev.preventDefault) ev.preventDefault();
+			else window.event.returnValue = false;
+
+			if (ev && ev.stopPropagation) ev.stopPropagation();
+			else window.event.cancelBubble = true;
+
+			self.open();
+		});
+
+		if (this.isWindowChat) {
+
+		} else {
+			if (this.doResume) {
+				self.open();
+			} else {
+				util.showEl(openBtn);
+			}
+		}
+
+		util.addClass(body, 'dp-chat-enabled');
+		if (document.getElementsByClassName) {
+			tmp = document.getElementsByClassName('dp-chat-trigger');
+			for (tmpi = 0; tmpi < tmp.length; tmpi++) {
+				util.bind(tmp[tmpi], 'click', function(ev) {
+					if (ev && ev.preventDefault) ev.preventDefault();
+					else window.event.returnValue = false;
+
+					DpChatWidget.open();
+				});
+			}
+		}
+
+		if (options.onInitCallback) {
+			options.onInitCallback(this);
+		}
+	};
+
+	var drawButton = function() {
 		if (window.DpChatWidget_Options) {
 			util.extend(options, window.DpChatWidget_Options);
 		}
@@ -561,7 +618,7 @@ var DpChatWidget = new (function() {
 			#dpchat_border_table td#dpchat_border_21 div em { \
 			  font: " + font + "; \
 			  color: transparent; \
-			  padding: 0 15px; \
+			  padding: 0 12px 0 19px; \
 			} \
 			 \
 			#dpchat_border_table td#dpchat_border_22 div { \
@@ -592,7 +649,7 @@ var DpChatWidget = new (function() {
 			  bottom: 5px; \
 			  color: " + textColor + "; \
 			  text-align: center; \
-			  padding: 0 16px; \
+			  padding: 0 0 0 16px; \
 			} \
 			#dpchat_btn_text em { \
 			  display: block; \
@@ -623,6 +680,7 @@ var DpChatWidget = new (function() {
 					<td id="dpchat_border_21" style="width:100px;"><div> \
 					  <em id="dpchat_btn_label_start_chat">PHRASE1</em> \
 					  <em id="dpchat_btn_label_open_chat" style="display:none;">PHRASE2</em> \
+					  <em id="dpchat_btn_label_offline" style="display:none;">PHRASE3</em> \
 					</div></td> \
 					<td id="dpchat_border_22"><div>&#160;</div></td> \
 				  </tr> \
@@ -635,16 +693,21 @@ var DpChatWidget = new (function() {
 			  <div id="dpchat_btn_text"> \
 				<em id="dpchat_btn_label_start_chat2">PHRASE1</em> \
 				<em id="dpchat_btn_label_open_chat2" style="display: none;">PHRASE2</em> \
+				<em id="dpchat_btn_label_offline2" style="display:none;">PHRASE3</em> \
 			  </div> \
 			</div>';
 
-		var phrase1 = 'Chat with us';
+		var phrase1 = 'Click here to chat with us';
 		var phrase2 = 'Open your chat';
+		var phrase3 = 'Click here to contact us';
 		if (DpChatWidget_Options && DpChatWidget_Options.lang) {
 			if (DpChatWidget_Options.lang['user.chat.window_start-button']) {
 				phrase1 = DpChatWidget_Options.lang['user.chat.window_start-button'];
 			}
 			if (DpChatWidget_Options.lang['user.chat.window_resume-button']) {
+				phrase2 = DpChatWidget_Options.lang['user.chat.window_resume-button'];
+			}
+			if (DpChatWidget_Options.lang['user.chat.window_offline-button']) {
 				phrase2 = DpChatWidget_Options.lang['user.chat.window_resume-button'];
 			}
 		}
@@ -655,55 +718,38 @@ var DpChatWidget = new (function() {
 		if (DpChatWidget_Options && DpChatWidget_Options.resumePhrase) {
 			phrase2 = DpChatWidget_Options.resumePhrase;
 		}
+		if (DpChatWidget_Options && DpChatWidget_Options.offlinePhrase) {
+			phrase3 = DpChatWidget_Options.offlinePhrase;
+		}
 
 		tpl = tpl.replace(/PHRASE1/g, phrase1);
 		tpl = tpl.replace(/PHRASE2/g, phrase2);
+		tpl = tpl.replace(/PHRASE3/g, phrase3);
 
 		openBtn = util.createEl(tpl);
 		if (isRtl) {
 			util.addClass(openBtn, 'rtl');
 		}
-		if (this.isWindowChat) {
+		if (self.isWindowChat) {
 			util.hideEl(openBtn);
 		}
 		body.appendChild(openBtn);
 
-		util.bind(openBtn, 'click', function(ev) {
-			if (ev && ev.preventDefault) ev.preventDefault();
-			else window.event.returnValue = false;
-
-			if (ev && ev.stopPropagation) ev.stopPropagation();
-			else window.event.cancelBubble = true;
-
-			self.open();
-		});
-
-		if (this.isWindowChat) {
-
-		} else {
-			if (this.doResume) {
-				self.open();
-			} else {
-				util.showEl(openBtn);
-			}
+		tmp = util.getElWidth(document.getElementById('dpchat_btn_label_start_chat2'));
+		tmpi = util.getElWidth(document.getElementById('dpchat_btn_label_open_chat2'));
+		if (tmpi > tmp) {
+			tmp = tmpi;
 		}
-
-		util.addClass(body, 'dp-chat-enabled');
-		if (document.getElementsByClassName) {
-			tmp = document.getElementsByClassName('dp-chat-trigger');
-			for (tmpi = 0; tmpi < tmp.length; tmpi++) {
-				util.bind(tmp[tmpi], 'click', function(ev) {
-					if (ev && ev.preventDefault) ev.preventDefault();
-					else window.event.returnValue = false;
-
-					DpChatWidget.open();
-				});
-			}
+		tmpi = util.getElWidth(document.getElementById('dpchat_btn_label_offline2'));
+		if (tmpi > tmp) {
+			tmp = tmpi;
 		}
-
-		if (options.onInitCallback) {
-			options.onInitCallback(this);
-		}
+		document.getElementById('dpchat_btn_label_start_chat').style.width = tmp + 'px';
+		document.getElementById('dpchat_btn_label_open_chat').style.width = tmp + 'px';
+		document.getElementById('dpchat_btn_label_offline').style.width = tmp + 'px';
+		document.getElementById('dpchat_btn_label_start_chat2').style.width = tmp + 'px';
+		document.getElementById('dpchat_btn_label_open_chat2').style.width = tmp + 'px';
+		document.getElementById('dpchat_btn_label_offline2').style.width = tmp + 'px';
 	};
 
 	var confirmGoingAway = function() {
