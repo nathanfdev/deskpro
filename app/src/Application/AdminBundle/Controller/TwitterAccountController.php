@@ -63,13 +63,19 @@ class TwitterAccountController extends AbstractController
 		}
 
 		$verified = array();
+		$errors = array();
 		foreach ($accounts as $account) {
-			$verified[$account['id']] = $account->verifyCredentials();
+			$ok = $account->verifyCredentials($message, $code);
+			$verified[$account['id']] = $ok;
+			if (!$ok) {
+				$errors[$account['id']] = $message;
+			}
 		}
 
 		return $this->render('AdminBundle:TwitterAccount:list.html.twig', array(
 			'accounts' => $accounts,
 			'verified' => $verified,
+			'errors' => $errors
 		));
 	}
 

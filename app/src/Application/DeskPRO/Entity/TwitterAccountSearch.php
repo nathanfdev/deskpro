@@ -117,14 +117,18 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$em = App::getOrm();
 
-		$api = $this->account->getTwitterApi();
-		$results = $api->get_searchTweets(array(
-			'q' => $this->term,
-			'result_type' => 'recent',
-			'count' => self::SEARCH_RESULTS,
-			'since_id' => $since_id,
-			'include_entities' => true
-		));
+		try {
+			$api = $this->account->getTwitterApi();
+			$results = $api->get_searchTweets(array(
+				'q' => $this->term,
+				'result_type' => 'recent',
+				'count' => self::SEARCH_RESULTS,
+				'since_id' => $since_id,
+				'include_entities' => true
+			));
+		} catch (\EpiTwitterException $e) {
+			return array();
+		}
 
 		$new_statuses = array();
 

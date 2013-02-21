@@ -358,16 +358,22 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return $api;
 	}
 
-	public function verifyCredentials()
+	public function verifyCredentials(&$message = null, &$code = null)
 	{
-		$api = $this->getTwitterApi();
-
 		try {
-			$res = $api->get_accountVerify_credentials();
-			if ($res->id_str) {
+			$result = $this->getTwitterApi()->get_applicationRate_limit_status(array('resources' => 'application'));
+			if ($result->rate_limit_context) {
 				return true;
 			}
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			$data = @json_decode($e->getMessage(), true);
+			if (isset($data['errors'][0]['message'])) {
+				$message = $data['errors'][0]['message'];
+			}
+			if (isset($data['errors'][0]['code'])) {
+				$code = $data['errors'][0]['code'];
+			}
+		}
 
 		return false;
 	}

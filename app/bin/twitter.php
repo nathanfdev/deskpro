@@ -182,6 +182,27 @@ if (!empty($argv[1])) {
 	define('TWITTER_CONSUMER_KEY', \Application\DeskPRO\Service\Twitter::getAgentConsumerKey());
 	define('TWITTER_CONSUMER_SECRET', \Application\DeskPRO\Service\Twitter::getAgentConsumerSecret());
 
+	$api = new EpiTwitter(
+		\Application\DeskPRO\Service\Twitter::getAgentConsumerKey(),
+		\Application\DeskPRO\Service\Twitter::getAgentConsumerSecret(),
+		$account['oauth_token'],
+		$account['oauth_token_secret']
+	);
+	$verified = false;
+	try {
+		$result = $api->get_applicationRate_limit_status();
+		if ($result->rate_limit_context) {
+			$verified = true;
+		}
+	} catch (\Exception $e) {}
+
+	if (!$verified) {
+		$log_status("[Account $account[id]] Twitter auth could not be verified. Waiting 60 seconds before exiting.");
+		sleep(60);
+		$log_status("[Account $account[id]] Twitter auth could not be verified. Exiting.");
+		exit;
+	}
+
 	$consumer = new \Application\DeskPRO\Service\Phirehose\UserStream($account['oauth_token'], $account['oauth_token_secret']);
 	$consumer->setWriteCallback(function($data) use ($get_db) {
 		$db = $get_db();
@@ -195,12 +216,6 @@ if (!empty($argv[1])) {
 		$log_status("[Account $account[id] REST] Processor starting with PID " . getmypid() . ". Last processed: $account[last_processed_id]");
 
 		if ($account['last_processed_id']) {
-			$api = new EpiTwitter(
-				\Application\DeskPRO\Service\Twitter::getAgentConsumerKey(),
-				\Application\DeskPRO\Service\Twitter::getAgentConsumerSecret(),
-				$account['oauth_token'],
-				$account['oauth_token_secret']
-			);
 			$max_id = false;
 
 			try {

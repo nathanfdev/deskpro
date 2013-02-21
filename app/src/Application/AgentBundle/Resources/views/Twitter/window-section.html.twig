@@ -13,6 +13,9 @@
 		<span data-account-id="{{ account.id }}" class="twitter-account-add-status add"></span>
 		<h1>@{{ account.user.screen_name }} (<span id="twitter_{{ account.id }}_following_count_header">{{ account.countFollowing() }}</span> / <span id="twitter_{{ account.id }}_followers_count_header">{{ account.countFollowers() }}</span>)</h1>
 	</header>
+	{% if not account.verifyCredentials() %}
+		<div class="warning">This account is not properly authenticated with Twitter.</div>
+	{% endif %}
 	<article>
 	<ul class="source-list" id="twitter-section-counts-{{ account.id }}">
 		<li data-type="mine" data-grouping-ignore="agent,team" data-initial-grouping="{{ groupings[account.id].mine.group }}">

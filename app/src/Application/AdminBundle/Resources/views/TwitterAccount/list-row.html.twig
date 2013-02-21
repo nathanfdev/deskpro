@@ -16,7 +16,7 @@
 			{% if verified[account.id] %}
 				<span style="color:green">{{ phrase('agent.general.verified') }}</span>
 			{% else %}
-				<span style="color:red">{{ phrase('admin.twitter.error') }}</span>
+				<span style="color:red" class="tipped" title="{{ errors[account.id] }}">{{ phrase('admin.twitter.error') }}</span>
 			{% endif %}
 		</div>
 		<div style="margin-top: 2px">
