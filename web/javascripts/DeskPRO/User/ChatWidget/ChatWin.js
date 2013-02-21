@@ -110,6 +110,47 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this._initSysObjects();
 	},
 
+	setTypedMessage: function(msg) {
+		if (typeof sessionStorage == 'undefined') {
+			return;
+		}
+		if (!this.conversationId) {
+			return;
+		}
+
+		if (!msg || msg === "") {
+			if (typeof sessionStorage.dp_chat_id != 'undefined') {
+				delete sessionStorage.dp_chat_id;
+			}
+			if (typeof sessionStorage.dp_chat_msg != 'undefined') {
+				delete sessionStorage.dp_chat_msg;
+			}
+		} else {
+			sessionStorage.dp_chat_id = this.conversationId;
+			sessionStorage.dp_chat_msg = msg;
+		}
+	},
+
+	restoreTypedMessage: function() {
+		if (typeof sessionStorage == 'undefined') {
+			return;
+		}
+		if (!this.conversationId) {
+			return;
+		}
+		if (typeof sessionStorage.dp_chat_id == 'undefined') {
+			return;
+		}
+		if (typeof sessionStorage.dp_chat_msg == 'undefined') {
+			return;
+		}
+		if (parseInt(this.conversationId) != parseInt(sessionStorage.dp_chat_id)) {
+			return;
+		}
+
+		return sessionStorage.dp_chat_msg;
+	},
+
 	initPage: function() {
 		var self = this;
 
@@ -208,12 +249,18 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			}
 		});
 
-		$('#dp_chat_message_input').on('keypress', (function(ev) {
+		$('#dp_chat_message_input').on('keypress', function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				self.sendTypedMessage();
+			} else {
+				self.setTypedMessage($.trim($('#dp_chat_message_input').val()));
 			}
-		}).bind(this));
+		});
+
+		$('#dp_chat_message_input').on('keyup', function(ev) {
+			self.setTypedMessage($.trim($('#dp_chat_message_input').val()));
+		});
 
 		if (this.conversationId) {
 			if (this.options.initialMessages) {
@@ -386,13 +433,14 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	},
 
 	sendTypedMessage: function() {
+		this.setTypedMessage(false);
 		var message = $('#dp_chat_message_input').val().trim();
-		$('#dp_chat_message_input').val('');
 
 		if (!message) {
 			return;
 		}
 
+		$('#dp_chat_message_input').val('');
 		this.sendMessage(message);
 		$('#dp_chat_message_input').focus();
 	},
@@ -579,6 +627,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	},
 
 	chatEnded: function(userEnded, callback) {
+		this.setTypedMessage(false);
+
 		this.hasEnded = true;
 		if (userEnded) {
 			$.ajax({
@@ -893,5 +943,12 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		};
 
 		this.ajaxPoller = ajaxPoller;
+
+		var restoreMessage = this.restoreTypedMessage();
+		if (restoreMessage) {
+			window.setTimeout(function() {
+				$('#dp_chat_message_input').val(restoreMessage);
+			}, 350);
+		}
 	}
 });
