@@ -695,6 +695,7 @@ class App
 		'tickets.filters'            => 'Application\\DeskPRO\\Tickets\\Filters',
 		'tickets.edit'               => 'Application\\DeskPRO\\Tickets\\TicketEdit',
 		'tickets.search'             => 'Application\\DeskPRO\\Tickets\\TicketSearch',
+		'custom_fields.chats'        => 'Application\\DeskPRO\\CustomFields\\ChatFields',
 		'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
 		'custom_fields.tickets'      => 'Application\\DeskPRO\\CustomFields\\TicketFields',
 		'custom_fields.articles'     => 'Application\\DeskPRO\\CustomFields\\ArticleFields',

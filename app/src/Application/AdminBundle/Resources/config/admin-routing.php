@@ -2445,4 +2445,44 @@ $collection->add('admin_kb_gateways_del', new Route(
 	array()
 ));
 
+
+################################################################################
+# Chat
+################################################################################
+
+$collection->add('admin_customdefchat', new Route(
+	'/chat-fields',
+	array('_controller' => 'AdminBundle:CustomDefChat:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_customdefchat_new_choosetype', new Route(
+	'/chat-fields/new-choose-type',
+	array('_controller' => 'AdminBundle:CustomDefChat:newChooseType', 'field_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_customdefchat_edit', new Route(
+	'/chat-fields/{field_id}/edit',
+	array('_controller' => 'AdminBundle:CustomDefChat:edit'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdefchat_delete', new Route(
+	'/chat-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefChat:delete'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdefchat_setenabled', new Route(
+	'/chat-fields/{field_id}/set-enabled',
+	array('_controller' => 'AdminBundle:CustomDefChat:setEnabled'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
 return $collection;

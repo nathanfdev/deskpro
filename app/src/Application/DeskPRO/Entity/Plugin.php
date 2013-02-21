@@ -49,7 +49,7 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The unique ID.
 	 *
-	 * @var int
+	 * @var string
 	 */
 	protected $id = null;
 
