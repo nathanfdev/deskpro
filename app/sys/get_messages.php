@@ -99,6 +99,22 @@ class AgentMessagesLoader extends LoaderAbstract
 			}
 			$is_initial_pool = !empty($_GET['is_initial_poll']);
 
+			// Update chat trigger time if its getting old
+			if ($agent_session['active_status'] == 'available' && $agent_session['is_chat_available']) {
+				$online_time = 0;
+				if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
+					$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+				}
+
+				if ($online_time < time() - 720) {
+					@file_put_contents(dp_get_data_dir() . '/chat_is_available.trigger', time());
+					if (!$online_time) {
+						// We created it, make sure cli can update it
+						@chmod(dp_get_data_dir() . '/chat_is_available.trigger', 0777);
+					}
+				}
+			}
+
 			#------------------------------
 			# Standard client messages
 			#------------------------------
