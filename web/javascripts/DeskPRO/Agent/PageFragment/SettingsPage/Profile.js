@@ -120,28 +120,56 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			var notificationsRow = el.find('.dp-desktop-notifications');
 			notificationsRow.show();
 
+			var enableButton = notificationsRow.find('.enable-desktop-notifications');
+
 			var permissionCallback = function() {
 				var permission = window.webkitNotifications.checkPermission();
 
 				if (permission == 0) {
 					// granted
-					notificationsRow.find('button').hide();
+					enableButton.hide();
 					notificationsRow.find('.dp-desktop-notifications-enabled').show();
+					notificationsRow.find('.dp-desktop-notifications-disabled').hide();
 				} else if (permission == 1) {
 					// no action
-					notificationsRow.find('button').show();
+					enableButton.show();
 					notificationsRow.find('.dp-desktop-notifications-enabled').hide();
+					notificationsRow.find('.dp-desktop-notifications-disabled').hide();
 				} else {
 					// explicitly denied
-					notificationsRow.hide();
+					enableButton.hide();
+					notificationsRow.find('.dp-desktop-notifications-enabled').hide();
+					notificationsRow.find('.dp-desktop-notifications-disabled').show();
 				}
 			};
 
 			permissionCallback();
 
-			notificationsRow.find('button').click(function(e) {
+			this.addEvent('updateUi', function() {
+				permissionCallback();
+			});
+
+			enableButton.click(function(e) {
 				e.preventDefault();
 				window.webkitNotifications.requestPermission(permissionCallback);
+			});
+
+			notificationsRow.find('.generate-test-notification').click(function(e){
+				e.preventDefault();
+
+				if (window.webkitNotifications.checkPermission() != 0) {
+					return;
+				}
+
+				var notification = window.webkitNotifications.createNotification(
+					'', 'DeskPRO', 'This is a test DeskPRO desktop notification.'
+				);
+				notification.ondisplay = function() {
+					setTimeout(function() {
+						notification.cancel();
+					}, 60 * 1000);
+				};
+				notification.show();
 			});
 		}
 	}

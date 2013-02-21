@@ -82,10 +82,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		<div class="dp-form-row dp-desktop-notifications" style="display:none">
 			<div class="dp-form-label"><label>Desktop Notifications</label></div>
 			<div class="dp-form-input">
-				<button class="clean-white">Enable Desktop Notifications</button>
+				<button class="clean-white enable-desktop-notifications">Enable Desktop Notifications</button>
 				<div class="dp-desktop-notifications-enabled">
-					<div>Desktop notifications are currently enabled. They can only be disabled via the browser itself.</div>
+					<div>Desktop notifications are currently enabled. They can only be disabled via controls on the notification itself.</div>
 					<div>Automatically hide notifications after: {{ form_widget(form.auto_dismiss_notifications) }}</div>
+					<div><button class="clean-white generate-test-notification">Generate Test Notification</button></div>
+				</div>
+				<div class="dp-desktop-notifications-disabled" style="display:none">
+					<div>Desktop notifications have been explicitly disabled. They must be enabled for this domain via the browser itself (Settings &gt; Show advanced settings &gt; Content settings &gt; Notifications &gt; Manage exceptions).</div>
 				</div>
 			</div>
 		</div>
