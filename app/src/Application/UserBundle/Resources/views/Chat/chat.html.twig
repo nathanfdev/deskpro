@@ -51,6 +51,10 @@
 	<script src="{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWin.js') }}" type="text/javascript"></script>
 
 	<script type="text/javascript">
+	{{ chat_display_js|raw }}
+	</script>
+
+	<script type="text/javascript">
 		window.DeskPRO_Window = new DeskPRO.User.Window();
 		var ChatWin = new DeskPRO.User.WebsiteWidget.ChatWin({
 			parentUrl: {{ parent_url|json_encode|raw }},
@@ -100,24 +104,7 @@
 		<h3>{{ phrase('user.chat.form_create_title') }}</h3>
 	</header>
 	<article>
-		{% if not app.user.id %}
-			<div class="dp-control-group">
-				<div class="dp-control-label">
-					<label>{{ phrase('user.chat.name') }}</label>
-				</div>
-				<div class="dp-controls">
-					<input type="text" name="name" placeholder="{{ phrase('user.chat.name') }}" value="{{ initial_name }}"/>
-				</div>
-			</div>
-			<div class="dp-control-group">
-				<div class="dp-control-label">
-					<label>{{ phrase('user.chat.email') }}</label>
-				</div>
-				<div class="dp-controls">
-					<input type="text" name="email" placeholder="{{ phrase('user.chat.email') }}" value="{{ initial_email }}" />
-				</div>
-			</div>
-		{% else %}
+		{% if app.user.id %}
 			<div class="dp-control-group">
 				<div class="dp-control-label">
 					<label>{{ phrase('user.chat.name') }}</label>
@@ -147,28 +134,12 @@
 			</div>
 		{% endif %}
 
-		{% set online_chat_deps = app.getDataRepository('Department').getOnlineChatDepartments(app.user) %}
-		{% if online_chat_deps|length %}
-			{% if online_chat_deps|length == 1 %}
-				{% for cat in online_chat_deps %}
-					<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
-				{% endfor %}
-			{% else %}
-				<div class="dp-control-group">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.chat.form_create_department') }}</label>
-					</div>
-					<div class="dp-controls">
-						<select name="department_id" class="department_id">
-							<option value=""></option>
-							{% for cat in online_chat_deps %}
-								{{ formmacro.select_options_hierarchy(cat, initial_department_id) }}
-							{% endfor %}
-						</select>
-					</div>
-				</div>
-			{% endif %}
-		{% endif %}
+		{#--- FIELDS CONTAINER ---#}
+		<div id="fields_container">
+			{# First time outputs items in order and visible depending on the page data #}
+			{% include 'UserBundle:Chat:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+		</div>
+		{#--- FIELDS CONTAINER ---#}
 
 		<div style="vertical-align: middle">
 			<button class="dp-btn dp-btn-success" id="dp_chat_start_go">{{ phrase('user.chat.form_create_button-submit') }}</button>

@@ -110,6 +110,89 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this._initSysObjects();
 	},
 
+	//#########################################################################
+	//# Department and field stuff
+	//#########################################################################
+
+	_initFields: function() {
+		this.depSelect = $('select.department_id, input.department_id').first();
+		this.departmentId = -1;
+
+		var self = this;
+		this.depSelect.on('change', function() {
+			self.handleDepChange();
+		});
+		this.depSelect.data('original-name', this.depSelect.attr('name'));
+
+		this.handleDepChange();
+	},
+
+	handleDepChange: function() {
+		this.setDepartment(this.depSelect.val());
+	},
+
+	setDepartment: function(department_id) {
+
+		if (department_id == this.departmentId) {
+			// nochange
+			//return;
+		}
+
+		this.clearAll();
+
+		this.departmentId = department_id;
+		var activeDepId = this.departmentId;
+
+		if (!window.DESKPRO_CHAT_DISPLAY) {
+			return;
+		}
+		if (!activeDepId || !window.DESKPRO_CHAT_DISPLAY[activeDepId]) {
+			activeDepId = 0;
+		}
+
+		var depItems = window.DESKPRO_CHAT_DISPLAY[activeDepId];
+		this.depItems = depItems;
+
+		DP.console.log('depItems %o', depItems);
+
+		$('.chat-display-field').hide();
+
+		Array.each(depItems, function(item) {
+			var itemId = this.getItemId(item);
+			var itemEl = $('.' + itemId).closest('.chat-display-field');
+
+			// Detach and re-attach to correct ordering
+			itemEl.detach().appendTo('#fields_container');
+			itemEl.show();
+		}, this);
+	},
+
+	findItemForEl: function(el) {
+		var fieldId = el.data('field-id');
+		var theitem = null;
+		Array.each(this.depItems, function(item) {
+			if (item.id == fieldId) {
+				theitem = item;
+				return false;
+			}
+		});
+
+		return theitem;
+	},
+
+	clearAll: function() {
+		$('.chat-display-field').hide().removeClass('field-enabled with-criteria');
+	},
+
+	getItemId: function(item) {
+		var itemId = item.field_type;
+		if (item.field_id) {
+			itemId += '_' + item.field_id;
+		}
+
+		return itemId;
+	},
+
 	setTypedMessage: function(msg) {
 		if (typeof sessionStorage == 'undefined') {
 			return;
@@ -362,6 +445,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			window.open(BASE_URL + 'new-ticket?nochat', 'dp_newticket');
 			self.endChatReal();
 		});
+
+		this._initFields();
 	},
 
 	startChat: function() {
@@ -370,7 +455,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		} else {
 			this.hasEmailAddress = false;
 		}
-		var data = $('#dp_chat_start').find('input, select').serializeArray();
+		var data = $('#dp_chat_start').find('input, select, textarea').serializeArray();
 		this.sendMessage('', data, { starting: true });
 
 		this.startFindingAgent();

@@ -210,6 +210,13 @@ class UserChatManager
 			$this->em->persist($this->visitor);
 			$this->em->flush();
 
+			if (isset($chat_options['chat_fields']) && is_array($chat_options['chat_fields']) && !empty($chat_options['chat_fields'])) {
+				$field_manager = App::getSystemService('chat_fields_manager');
+				if ($chat_options['chat_fields']) {
+					$field_manager->saveFormToObject($chat_options['chat_fields'], $convo);
+				}
+			}
+
 			if ($is_new_convo) {
 				$this->addSystemMessage($convo, 'message_started', array(), array(
 					'user_hidden' => true,

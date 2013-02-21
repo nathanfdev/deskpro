@@ -139,8 +139,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $participants;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $messages;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $custom_data;
 
 	/**
 	 * @var string
@@ -233,6 +239,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->participants      = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->custom_data       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->date_created      = new \DateTime();
 		$this->date_user_waiting = new \DateTime();
 	}
@@ -736,6 +743,17 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		return $url;
 	}
 
+	/**
+	 * Add a custom data item to this chat
+	 *
+	 * @param CustomDataChat $data
+	 */
+	public function addCustomData(CustomDataChat $data)
+	{
+		$this->custom_data->add($data);
+		$data['conversation'] = $this;
+	}
+
 
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -792,6 +810,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'chat_conversation_to_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'indexBy' => 'id', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'conversation',  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataChat', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'conversation', 'orphanRemoval' => true,  'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelChatConversation', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'chat', 'orphanRemoval' => true, 'dpApi' => true ));
 	}
 }

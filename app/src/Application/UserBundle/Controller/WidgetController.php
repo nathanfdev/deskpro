@@ -375,17 +375,61 @@ class WidgetController extends AbstractController
 			$this->em->flush();
 		}
 
+		$chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
+		$chat_display->setPersonContext($this->person);
+		$chat_display->addPagesFromDb();
+		$chat_display_js = "window.DESKPRO_CHAT_DISPLAY = " . $chat_display->compileJs() . ";";
+
+		$default_page = $chat_display->getDepartmentPage(0);
+
+		if ($default_page) {
+			$default_page_data = $default_page->getPageDisplay('default')->data;
+			$page_data_field_ids = array();
+			foreach ($default_page->getPageDisplay('default')->data as $info) {
+				$page_data_field_ids[] = $info['id'];
+			}
+		} else {
+			$default_page_data = array();
+			$page_data_field_ids = array();
+		}
+
+		$unique_items = array();
+		foreach ($chat_display->getPagesData() as $page) {
+			foreach ($page as $item) {
+				$unique_items[$item['id']] = $item;
+			}
+		}
+
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'chat_fields');
+
+		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+		$fm = $this->container->getSystemService('ChatFieldsManager');
+		if (isset($_POST['newchat']['custom_chat_fields'])) {
+			$field_data = $fm->getStrucutredDataFromForm($_POST['newchat']['custom_chat_fields'], 'Application\\DeskPRO\\Entity\\CustomDataChat');
+
+			$field_form_data = $fm->createFieldDataFromArray($field_data);
+			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+		} else {
+			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
+		}
+
 		$vars = array(
-			'parent_url' => $this->in->getString('parent_url'),
-			'session_code' => $session->getSessionCode(),
-			'convo' => $convo,
-			'convo_messages' => $convo_messages,
-			'departments' => $departments,
-			'initial_name' => $this->in->getString('name'),
-			'initial_email' => $this->in->getString('email'),
-			'initial_department_id' => $this->in->getUint('department_id'),
-			'auto_start' => $this->in->getBool('auto_start'),
-			'is_window_mode' => $is_window
+			'custom_fields'          => $custom_fields,
+			'chat_display_js'        => $chat_display_js,
+			'all_items'              => $unique_items,
+			'default_page_data'      => $default_page_data,
+			'page_data_field_ids'    => $page_data_field_ids,
+
+			'parent_url'             => $this->in->getString('parent_url'),
+			'session_code'           => $session->getSessionCode(),
+			'convo'                  => $convo,
+			'convo_messages'         => $convo_messages,
+			'departments'            => $departments,
+			'initial_name'           => $this->in->getString('name'),
+			'initial_email'          => $this->in->getString('email'),
+			'initial_department_id'  => $this->in->getUint('department_id'),
+			'auto_start'             => $this->in->getBool('auto_start'),
+			'is_window_mode'         => $is_window
 		);
 
 		if ($convo) {

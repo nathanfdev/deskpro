@@ -2485,4 +2485,54 @@ $collection->add('admin_customdefchat_setenabled', new Route(
 	array()
 ));
 
+
+$collection->add('admin_chat_editor_reset', new Route(
+	'/chat/editor/reset-all/{security_token}',
+	array('_controller' => 'AdminBundle:Chat:resetEditor'),
+	array(),
+	array()
+));
+
+$collection->add('admin_chat_editor', new Route(
+	'/chat/editor/{department_id}/{section}',
+	array('_controller' => 'AdminBundle:Chat:editor', 'department_id' => 0, 'section' => 'create'),
+	array('department_id' => '\d+'),
+	array()
+));
+
+$collection->add('admin_chat_editor_toggleper', new Route(
+	'/chat/editor/toggle-per-department',
+	array('_controller' => 'AdminBundle:Chat:togglePerDepartment'),
+	array(),
+	array()
+));
+
+$collection->add('admin_chat_editor_dep_init', new Route(
+	'/chat/editor/{department_id}/{section}/init',
+	array('_controller' => 'AdminBundle:Chat:initEditor', 'section' => 'create'),
+	array(),
+	array()
+));
+
+$collection->add('admin_chat_editor_dep_revert', new Route(
+	'/chat/editor/{department_id}/{section}/revert',
+	array('_controller' => 'AdminBundle:Chat:revertEditor', 'section' => 'create'),
+	array(),
+	array()
+));
+
+$collection->add('admin_chat_editor_dep', new Route(
+	'/chat/editor/{department_id}/{section}',
+	array('_controller' => 'AdminBundle:Chat:editor', 'section' => 'create'),
+	array(),
+	array()
+));
+
+$collection->add('admin_chat_editor_dep_save', new Route(
+	'/chat/editor/{department_id}/{section}/save',
+	array('_controller' => 'AdminBundle:Chat:saveEditor'),
+	array('_method' => 'POST'),
+	array()
+));
+
 return $collection;

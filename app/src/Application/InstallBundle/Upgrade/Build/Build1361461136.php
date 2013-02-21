@@ -46,5 +46,7 @@ class Build1361461136 extends AbstractBuild
 		$this->execMutateSql("ALTER TABLE custom_data_chat ADD CONSTRAINT FK_94E84EEE3F6A6D56 FOREIGN KEY (root_field_id) REFERENCES custom_def_chat (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE custom_def_chat ADD CONSTRAINT FK_2DE86CE5727ACA70 FOREIGN KEY (parent_id) REFERENCES custom_def_chat (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE custom_def_chat ADD CONSTRAINT FK_2DE86CE5EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE TABLE chat_page_display (id INT AUTO_INCREMENT NOT NULL, department_id INT DEFAULT NULL, zone VARCHAR(50) NOT NULL, options LONGBLOB NOT NULL COMMENT '(DC2Type:array)', section VARCHAR(50) NOT NULL, data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', INDEX IDX_85AF0B7AE80F5DF (department_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE chat_page_display ADD CONSTRAINT FK_85AF0B7AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE");
 	}
 }

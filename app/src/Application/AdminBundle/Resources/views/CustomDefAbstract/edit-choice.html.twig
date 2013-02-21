@@ -30,6 +30,7 @@
 		</div>
 	</div>
 
+	{% if not no_validation_options %}
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
@@ -91,6 +92,7 @@
 			</div>
 		</div>
 	</div>
+	{% endif %}
 
 	<div id="define_choices_overlay" class="choice-builder-overlay" style="width: 600px; height: 500px; overflow:auto; display: none;">
 		<div class="overlay-title">
