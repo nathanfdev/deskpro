@@ -286,7 +286,6 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status == 'ended' and convo.ended_by != 'timeout' %}display: none{% endif %};">
-				<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 				<nav>
 					<ul class="option-buttons">
 						<li class="tipped attach" title="{{ phrase('agent.general.attachments') }}">
@@ -305,6 +304,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div class="input-wrap">
 					<textarea placeholder="" id="{{baseId}}_replybox_txt" name="message"></textarea>
 					<input type="hidden" id="{{baseId}}_is_html_reply" name="is_html_reply" value="0" />
+					<div class="drop-file-zone drop-file-zone-rte chat"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>
 			</div>
 		</article>

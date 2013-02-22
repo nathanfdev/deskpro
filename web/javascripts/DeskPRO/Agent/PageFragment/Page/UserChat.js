@@ -30,6 +30,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			if (messageTextarea.data('redactor')) {
 				messageTextarea.setCode('');
+				messageTextarea.change();
+
+				self.getEl('replybox').css('height', 40+69);
+				self.getEl('messages_box').css('bottom', 40+69);
 			} else {
 				messageTextarea.val('');
 			}
@@ -137,7 +141,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					window.setTimeout(function() {
 						var tmp = ed.height();
 						if (lastH != tmp) {
-							lastH = ed.height();
+							lastH = tmp;
 							self.getEl('replybox').css('height', lastH+69);
 							self.getEl('messages_box').css('bottom', lastH+69);
 						}
@@ -787,7 +791,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		DeskPRO_Window.util.fileupload(this.el, {
 			uploadTemplate: $('.template-upload', this.el),
-			downloadTemplate: $('.template-download', this.el)
+			downloadTemplate: $('.template-download', this.el),
+			dropZone: this.getEl('replybox').find('nav')
 		});
 		this.el.bind('fileuploaddone', function(ev, data) {
 			if (data.result && data.result.length) {
