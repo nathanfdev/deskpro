@@ -7,6 +7,20 @@
 		{% set action = 'ASSIGNED TEAM' %}
 	{% elseif type_flag == 'added_part' %}
 		{% set action = 'FOLLOWED' %}
+	{% elseif type_flag == 'status_changed' %}
+		{% if ticket.status == 'awaiting_agent' %}
+			{% set action = 'AWAITING AGENT' %}
+		{% elseif ticket.status == 'awaiting_user' %}
+			{% set action = 'AWAITING USER' %}
+		{% elseif ticket.status == 'resolved' %}
+			{% set action = 'RESOLVED' %}
+		{% elseif ticket.status_code == 'hidden.deleted' %}
+			{% set action = 'DELETED' %}
+		{% elseif ticket.status_code == 'hidden.spam' %}
+			{% set action = 'SPAM' %}
+		{% else %}
+			{% set action = 'UPDATED' %}
+		{% endif %}
 	{% else %}
 		{% set action = 'UPDATED' %}
 	{% endif %}

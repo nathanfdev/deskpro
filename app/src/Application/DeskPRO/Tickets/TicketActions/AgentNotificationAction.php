@@ -367,6 +367,10 @@ class AgentNotificationAction extends AbstractAction
 				$type_flag = $change_info['notify_type'];
 			}
 
+			if ($type_flag == 'updated' && ($status_change = $this->tracker->getChangedProperty('status'))) {
+				$type_flag = 'status_changed';
+			}
+
 			$this->tracker->logMessage("[AgentNotificationAction] Type flag: " . $type_flag);
 
 			$performer = App::getCurrentPerson();
@@ -394,6 +398,7 @@ class AgentNotificationAction extends AbstractAction
 				'page_display'       => $page_display,
 				'mention_agents'     => $this->mention_agents,
 				'is_my_mention'      => isset($this->mention_agents[$agent->getId()]),
+				'tracker'            => $this->tracker,
 			);
 
 			if (isset($this->notify_info[$agent->id]) && $this->notify_info[$agent->id]) {
