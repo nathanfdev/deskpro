@@ -50,6 +50,10 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		this.isPaused = false;
 	},
 
+	setInterval: function(interval) {
+		this.options.interval = interval;
+	},
+
 
 
 	/**

@@ -318,6 +318,7 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
 
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
+		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
 

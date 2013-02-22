@@ -108,9 +108,11 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 		this.watchedTypes[typename].push(watcher);
 
-		Array.each(DeskPRO_Window.getTabWatcher().findTabType(typename), function(tab) {
-			watcher.fireEvent('watchedTabAdded', tab);
-		});
+		if (notifyOfExisting) {
+			Array.each(DeskPRO_Window.getTabWatcher().findTabType(typename), function(tab) {
+				watcher.fireEvent('watchedTabAdded', tab);
+			});
+		}
 	},
 
 

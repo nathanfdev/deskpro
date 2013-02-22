@@ -2103,6 +2103,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			return chatIdsData;
 		}).bind(this), 'chat_ids', { recurring: true });
+
+		this.getTabWatcher().addTabTypeWatcher('userchat', new DeskPRO.Agent.WindowElement.TabWatcher.UserChat());
 	},
 
 	_initRoutes: function() {
