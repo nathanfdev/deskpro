@@ -942,6 +942,11 @@ class UserChatManager
 			$metadata['person_avatar_icon'] = $author->getPictureUrl(16);
 		}
 
+		if (isset($metadata['is_html'])) {
+			$msg->is_html = (bool)$metadata['is_html'];
+			unset($metadata['is_html']);
+		}
+
 		$msg->metadata = $metadata;
 		$convo->addMessage($msg);
 

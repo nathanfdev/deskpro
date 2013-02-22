@@ -23,54 +23,57 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.chatStatus  = this.meta.status;
 		this.chatEndedBy = this.meta.ended_by;
 
-		if (this.chatStatus != 'ended' || this.chatEndedBy == 'timeout') {
-			var messageTextarea = this.getEl('replybox_txt');
+		var messageTextarea = this.getEl('replybox_txt');
 
-			var sendMsg = function() {
-				var msg = messageTextarea.val().trim();
+		var sendMsg = function() {
+			var msg = messageTextarea.val().trim();
+
+			if (messageTextarea.data('redactor')) {
+				messageTextarea.setCode('');
+			} else {
 				messageTextarea.val('');
-
-				if (!msg.length) {
-					return;
-				}
-
-				var tmp_id = Orb.uuid();
-				self.addMessageRow(self.meta.youName, msg, 'agent', false, tmp_id, { no_notify: true, person_avatar: self.meta.youPictureUrl });
-
-				self.sendMessage(msg, function(message_id) {
-					// Sets the real message ID after we've come back from ajax
-					self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id);
-				});
 			}
 
-			messageTextarea.on('keypress', function(ev) {
-				if (ev.keyCode == 13 && !ev.metaKey) {
-					ev.preventDefault();
-					sendMsg();
-				}
-			});
+			if (!msg.length) {
+				return;
+			}
 
-			this.getEl('send_btn').on('click', function() {
-				sendMsg();
-			});
+			var tmp_id = Orb.uuid();
+			self.addMessageRow(self.meta.youName, msg, 'agent', DeskPRO_Window.canUseAgentReplyRte(), tmp_id, { no_notify: true, person_avatar: self.meta.youPictureUrl });
 
-			this.getEl('end_btn').on('click', function() {
-				self.endChat();
-			});
-
-			this.addEvent('destroy', function() {
-				DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
-				if (self.chatStatus == 'ended') {
-					return;
-				} if (self.closeAction == 'unassign') {
-					self.leaveConvo('unassign');
-				} else if (self.closeAction == 'end') {
-					self.leaveConvo('end');
-				} else {
-					self.leaveConvo(null);
-				}
+			self.sendMessage(msg, function(message_id) {
+				// Sets the real message ID after we've come back from ajax
+				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id);
 			});
 		}
+
+		messageTextarea.on('keypress', function(ev) {
+			if (ev.keyCode == 13 && !ev.metaKey) {
+				ev.preventDefault();
+				sendMsg();
+			}
+		});
+
+		this.getEl('send_btn').on('click', function() {
+			sendMsg();
+		});
+
+		this.getEl('end_btn').on('click', function() {
+			self.endChat();
+		});
+
+		this.addEvent('destroy', function() {
+			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
+			if (self.chatStatus == 'ended') {
+				return;
+			} if (self.closeAction == 'unassign') {
+				self.leaveConvo('unassign');
+			} else if (self.closeAction == 'end') {
+				self.leaveConvo('end');
+			} else {
+				self.leaveConvo(null);
+			}
+		});
 
 		this._initMenus();
 		this._initAssignControl();
@@ -102,6 +105,33 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				self.getEl('replybox_txt').val(val);
 			}
 		});
+
+		//------------------------------
+		// Editor
+		//------------------------------
+
+		var textarea = this.getEl('replybox_txt'), isWysiwyg = false;
+
+		if (DeskPRO_Window.canUseAgentReplyRte()) {
+			isWysiwyg = true;
+
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				minHeight: 100,
+				inlineHiddenPosition: this.getEl('is_html_reply')
+			});
+			this.getEl('is_html_reply').val(1);
+
+			if (textarea.data('redactor')) {
+				var ed = textarea.getEditor();
+				ed.on('keypress', function(ev) {
+					if (ev.keyCode == 13 && !ev.metaKey) {
+						ev.preventDefault();
+						sendMsg();
+					}
+				});
+			}
+		}
 
 		//------------------------------
 		// Intercept close events and cancel, so we
@@ -609,7 +639,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.util.ajaxWithClientMessages({
 			type: 'POST',
 			url: BASE_URL + 'agent/chat/send-message/' + this.meta.conversation_id,
-			data: {content: msg},
+			data: {
+				content: msg,
+				is_html: DeskPRO_Window.canUseAgentReplyRte()
+			},
 			execSuccessBefore: true,
 			success: function(data) {
 				if (success && data.message_id) {

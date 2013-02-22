@@ -426,9 +426,25 @@ class UserChatController extends AbstractController
 
 		$other_data = array();
 		if ($this->in->getString('content')) {
+
+			$metadata = array();
+			if ($this->in->getBool('is_html')) {
+				$metadata['is_html'] = true;
+
+				$content = Strings::trimHtml($this->in->getHtmlCore('content'));
+				$content = Strings::prepareWysiwygHtml($content);
+			} else {
+				$content = $this->in->getString('content');
+			}
+
 			/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 			$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
-			$message = $chat_manager->addMessage($convo, $this->person, $this->in->getString('content'));
+			$message = $chat_manager->addMessage(
+				$convo,
+				$this->person,
+				$content,
+				$metadata
+			);
 
 			$other_data['message_id'] = $message->getId();
 		}
