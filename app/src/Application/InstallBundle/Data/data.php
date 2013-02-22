@@ -994,6 +994,18 @@ $em->persist($j);
 $em->flush();
 
 
+##BEGIN:create_jobs.chat_transcripts##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'chat_transcripts';
+$j['worker_group'] = 'chat';
+$j['title'] = 'Send Chat Transcripts';
+$j['description'] = 'Send chat transcripts';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatTranscripts';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ChatTranscripts::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
 ##BEGIN:create_jobs.sitemap_file##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'sitemap_file';

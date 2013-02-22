@@ -342,6 +342,7 @@ class DpLoader extends LoaderAbstract
 
 			$add_phrases = array(
 				'agent.userchat.message_started',
+				'agent.userchat.transcript_sent',
 				'agent.userchat.message_user_joined',
 				'agent.userchat.message_user_left',
 				'agent.userchat.message_set_department',
@@ -445,6 +446,7 @@ class DpLoader extends LoaderAbstract
 
 			$add_phrases = array(
 				'user.chat.message_started',
+				'user.chat.transcript_sent',
 				'user.chat.message_user-joined',
 				'user.chat.message_user-left',
 				'user.chat.message_user-returned',

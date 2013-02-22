@@ -592,6 +592,20 @@ $collection->add('user_chat_chatended_feedback', new Route(
 	array()
 ));
 
+$collection->add('user_chatlogs', new Route(
+	'/chat-logs',
+	array('_controller' => 'UserBundle:ChatLog:list'),
+	array(),
+	array()
+));
+
+$collection->add('user_chatlogs_view', new Route(
+	'/chat-logs/{conversation_id}',
+	array('_controller' => 'UserBundle:ChatLog:view'),
+	array('conversation_id' => '\d+'),
+	array()
+));
+
 $collection->add('user_widget_overlay', new Route(
 	'/widget/overlay.html',
 	array('_controller' => 'UserBundle:Widget:overlay'),

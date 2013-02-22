@@ -29,39 +29,28 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage PageDisplay
+ * @subpackage
  */
 
-namespace Application\DeskPRO\PageDisplay\Item\Portal;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
-
-class Userinfo extends Template
+class Build1361540185 extends AbstractBuild
 {
-	protected function init()
+	public function run()
 	{
-		$this->setOption('tpl', 'UserBundle:Portal:userinfo-' . $this->section . '.html.twig');
-	}
+		$this->out("Changes to chat_conversations");
+		$this->execMutateSql("ALTER TABLE chat_conversations ADD should_send_transcript TINYINT(1) NOT NULL, ADD date_transcript_sent DATETIME DEFAULT NULL");
+		$this->execMutateSql("CREATE INDEX should_send_transcript_idx ON chat_conversations (should_send_transcript)");
 
-	public function getVars()
-	{
-		$ticket_count     = 0;
-		$org_ticket_count = 0;
-		$chat_count       = 0;
-
-		if (!$this->person_context->isGuest()) {
-			$counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
-			$ticket_count     = $counts['person'];
-			$org_ticket_count = $counts['org'];
-
-			$chat_count = App::getEntityRepository('DeskPRO:ChatConversation')->getCountForPerson($this->person_context);
-		}
-
-		return array(
-			'ticket_count'     => $ticket_count,
-			'org_ticket_count' => $org_ticket_count,
-			'chat_count'       => $chat_count,
-		);
+		// Insert new worker job
+		$j = new \Application\DeskPRO\Entity\WorkerJob();
+		$j['id'] = 'chat_transcripts';
+		$j['worker_group'] = 'chat';
+		$j['title'] = 'Send Chat Transcripts';
+		$j['description'] = 'Send chat transcripts';
+		$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatTranscripts';
+		$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ChatTranscripts::DEFAULT_INTERVAL;
+		$this->container->getEm()->persist($j);
+		$this->container->getEm()->flush();
 	}
 }

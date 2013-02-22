@@ -413,4 +413,13 @@ class ChatConversation extends AbstractEntityRepository
 
 		return $chats;
 	}
+
+	public function getCountForPerson(PersonEntity $person)
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM chat_conversations
+			WHERE person_id = ? AND is_agent = 0
+		", array($person->getId()));
+	}
 }

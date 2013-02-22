@@ -875,7 +875,10 @@ class UserChatManager
 		}
 
 		if ($email) {
-			$this->sendChatTranscript($convo, $email, $name);
+			$convo->should_send_transcript = true;
+			App::getOrm()->persist($convo);
+			App::getOrm()->flush($convo);
+
 			return true;
 		}
 

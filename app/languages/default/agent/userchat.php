@@ -11,6 +11,7 @@
 	'agent.userchat.message_set-department' => '{{name}} set department to {{department}}',
 	'agent.userchat.message_set_department' => '{{name}} set department to {{department}}',
 	'agent.userchat.message_started'        => 'Chat started',
+	'agent.userchat.transcript_sent'        => 'Transcript sent to {{email}}',
 	'agent.userchat.message_unassigned'     => 'Chat unassigned',
 	'agent.userchat.message_uploading'      => 'Uploading...',
 	'agent.userchat.message_user-joined'    => '{{name}} joined the chat',

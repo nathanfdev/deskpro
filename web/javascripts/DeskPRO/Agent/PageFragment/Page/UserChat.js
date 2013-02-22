@@ -435,24 +435,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	chatHasEnded: function(data) {
 
-		this.chatStatus = 'ended';
-		this.chatEndedBy = data.ended_by;
-
-		if (this.chatEndedBy == 'timeout') {
-			return;
-		}
-
-		if (this.getEl('replybox_txt').hasClass('is-focused')) {
-			DeskPRO_Window.keyboardShortcuts.pause();
-			$(document).one('click', function() {
-				DeskPRO_Window.keyboardShortcuts.resume();
-			});
-		}
-
-		this.getEl('messages_box').addClass('chat-ended');
-		this.getEl('replybox').hide().addClass('chat-ended');
-		this.getEl('create_ticket_btn2').css('display', 'block');
-		this.updateUi();
 	},
 
 	addPart: function(agent_id) {
@@ -534,6 +516,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var avatarHtml = '';
 		var person_avatar = metadata.person_avatar || this.meta.userPictureUrl;
 		person_avatar = person_avatar.replace(/\/avatar\/\d+\//, "/avatar/25/", person_avatar);
+		person_avatar = person_avatar.replace(/\/size\/\d+\//, "/size/25/", person_avatar);
 		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(metadata.author_name || '') +'"><img src="' + person_avatar + '" /></div>';
 
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];

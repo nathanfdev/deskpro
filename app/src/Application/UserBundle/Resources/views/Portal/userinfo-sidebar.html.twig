@@ -26,6 +26,12 @@
 						<a href="{{ path('user_tickets_organization') }}">{{ phrase('user.tickets.view_organization_x_tickets', {organization: app.user.organization.name, count: org_ticket_count })}}</a>
 					</li>
 				{% endif %}
+				{% if chat_count %}
+					<li>
+						<i class="dp-icon-comment"></i>
+						<a href="{{ path('user_chatlogs') }}">{{ phrase('user.chat.log_nav-view-chats', {count: chat_count })}}</a>
+					</li>
+				{% endif %}
 				{% if app.user.is_agent and app.user.can_agent %}
 					<li>
 						<i class="dp-icon-asterisk"></i>

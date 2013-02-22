@@ -29,39 +29,64 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage PageDisplay
+ * @subpackage UserBundle
  */
 
-namespace Application\DeskPRO\PageDisplay\Item\Portal;
+namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 
-class Userinfo extends Template
+class ChatLogController extends AbstractController implements RequireUserInterface
 {
-	protected function init()
+	############################################################################
+	# list
+	############################################################################
+
+	public function listAction()
 	{
-		$this->setOption('tpl', 'UserBundle:Portal:userinfo-' . $this->section . '.html.twig');
+		$chat_conversations = $this->em->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE
+				c.is_agent = 0
+				AND c.status = 'ended'
+				AND c.person = ?0
+			ORDER BY c.id DESC
+		")->execute(array($this->person));
+
+		return $this->render('UserBundle:ChatLog:list.html.twig', array(
+			'chat_conversations' => $chat_conversations,
+		));
 	}
 
-	public function getVars()
+	############################################################################
+	# view
+	############################################################################
+
+	public function viewAction($conversation_id)
 	{
-		$ticket_count     = 0;
-		$org_ticket_count = 0;
-		$chat_count       = 0;
+		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person_context->isGuest()) {
-			$counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
-			$ticket_count     = $counts['person'];
-			$org_ticket_count = $counts['org'];
-
-			$chat_count = App::getEntityRepository('DeskPRO:ChatConversation')->getCountForPerson($this->person_context);
+		if (!$convo || $convo->is_agent || !$convo->person || $convo->person->getId() != $this->person->getId()) {
+			throw $this->createNotFoundException();
 		}
 
-		return array(
-			'ticket_count'     => $ticket_count,
-			'org_ticket_count' => $org_ticket_count,
-			'chat_count'       => $chat_count,
-		);
+		$convo_messages = $this->em->createQuery("
+			SELECT m
+			FROM DeskPRO:ChatMessage m
+			WHERE m.conversation = ?0 AND m.is_user_hidden = false
+			ORDER BY m.id ASC
+		")->execute(array($convo));
+
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($convo);
+
+		return $this->render('UserBundle:ChatLog:view.html.twig', array(
+			'convo'           => $convo,
+			'custom_fields'   => $custom_fields,
+			'convo_messages'  => $convo_messages,
+		));
 	}
 }

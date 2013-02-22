@@ -215,6 +215,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $ended_by = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $should_send_transcript = false;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_transcript_sent = null;
+
+	/**
 	 * @var array
 	 */
 	protected $_created_messages = array();
@@ -592,7 +602,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			return $this->subject;
 		}
 		if ($this->person_name && $this->person_email) {
-			return $this->person_name . '<' . $this->person_email . '>';
+			return $this->person_name . ' <' . $this->person_email . '>';
 		}
 		if ($this->person_name) {
 			return $this->person_name;
@@ -779,7 +789,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
@@ -806,6 +815,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			'name' => 'chat_conversations',
 			'indexes' => array(
 				'status_idx' => array('columns' => array('status')),
+				'should_send_transcript_idx' => array('columns' => array('should_send_transcript'))
 			),
 		));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
@@ -823,6 +833,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned', ));
 		$metadata->mapField(array( 'fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message', ));
 		$metadata->mapField(array( 'fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended', ));
+		$metadata->mapField(array( 'fieldName' => 'should_send_transcript', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'should_send_transcript', ));
+		$metadata->mapField(array( 'fieldName' => 'date_transcript_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_transcript_sent', ));
 		$metadata->mapField(array( 'fieldName' => 'total_to_ended', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_ended'));
 		$metadata->mapField(array( 'fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
