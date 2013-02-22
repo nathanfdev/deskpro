@@ -117,7 +117,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
-				minHeight: 100,
+				minHeight: 40,
+				maxHeight: 40,
 				inlineHiddenPosition: this.getEl('is_html_reply')
 			});
 			this.getEl('is_html_reply').val(1);
@@ -129,6 +130,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 						ev.preventDefault();
 						sendMsg();
 					}
+				});
+
+				var lastH = ed.height();
+				ed.on('keypress change', function() {
+					window.setTimeout(function() {
+						var tmp = ed.height();
+						if (lastH != tmp) {
+							lastH = ed.height();
+							self.getEl('replybox').css('height', lastH+69);
+							self.getEl('messages_box').css('bottom', lastH+69);
+						}
+					}, 50);
 				});
 			}
 		}
