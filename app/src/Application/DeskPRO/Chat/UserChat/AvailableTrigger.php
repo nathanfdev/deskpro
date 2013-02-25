@@ -44,14 +44,32 @@ class AvailableTrigger
 	 */
 	public static function update($is_chat_available = null)
 	{
-		if ($is_chat_available === null) {
-			$is_chat_available = false;
-			if (App::getSetting('core.apps_chat') && App::getOrm()->getRepository('DeskPRO:Session')->hasAvailableAgents(true)) {
+		$is_chat_available = false;
+
+		if (!App::getSetting('core.apps_chat')) {
+			$agent_ids = array();
+		} else {
+			$agent_ids = App::getDb()->fetchAllCol("
+				SELECT person_id
+				FROM sessions
+				WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1
+			", array(date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'))));
+			$agent_ids = array_unique($agent_ids);
+		}
+
+		if ($agent_ids) {
+			// At least one department needs to be allowed for the online agents
+			$dep_check = App::getDb()->fetchColumn("
+				SELECT department_id
+				FROM department_permissions
+				WHERE person_id IN (" . implode(',', $agent_ids) . ") AND app = 'chat' AND value = '1'
+				LIMIT 1
+			");
+
+			if ($dep_check) {
 				$is_chat_available = true;
 			}
 		}
-
-		$is_chat_available = (bool)$is_chat_available;
 
 		$trigger_File = dp_get_data_dir() . '/chat_is_available.trigger';
 		if ($is_chat_available) {

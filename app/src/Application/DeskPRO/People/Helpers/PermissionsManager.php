@@ -349,7 +349,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		if ($name == 'news.use' && !App::getSetting('core.apps_news')) {
 			return false;
 		}
-		if ($name == 'chat.use') {
+		if ($name == 'chat.use' || $name == 'agent_chat.use') {
 			if (!App::getSetting('core.apps_chat')) {
 				return false;
 			}
