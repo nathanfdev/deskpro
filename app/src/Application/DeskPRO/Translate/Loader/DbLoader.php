@@ -100,7 +100,7 @@ class DbLoader implements LoaderInterface
 		// their ID's are always higher.
 
 		// Depending on the interface, we load user, user+agent or user+agent+admin
-		if (DP_INTERFACE == 'admin') {
+		if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'cron' || DP_INTERFACE == 'cli') {
 			$sql = "
 				SELECT name, phrase, original_phrase
 				FROM phrases
