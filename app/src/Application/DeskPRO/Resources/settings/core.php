@@ -357,4 +357,9 @@
 	 * The time is considered to be of the default timezone.
 	 */
 	'core.task_reminder_time' => '09:00',
+
+	/**
+	 * How long to keep visitor tracks around for
+	 */
+	'core.visitor_cleanup_time' => 604800,
 );

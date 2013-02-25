@@ -149,53 +149,19 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		if ($this->getEntity()->visitor) {
 			$vis = $this->getEntity()->visitor;
 		} else{
-			$vis_id = empty($_COOKIE['dpvid']) ? null : $_COOKIE['dpvid'];
+			$vis_id = empty($_COOKIE['dpvc']) ? null : $_COOKIE['dpvc'];
 			if ($vis_id) {
 				$vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($vis_id);
 			}
-		}
-		if (!$vis) {
-			$vis = App::getEntityRepository('DeskPRO:Visitor')->smartFind(
-				$user_ip,
-				empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT']
-			);
-		}
-
-		if (App::getContainer()->isScopeActive('request')) {
-			$current_page = App::getRequest()->getUri();
-		} else {
-			$current_page = null;
-		}
-		$ref_page = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
-
-		if (!empty($_GET['_1'])) {
-			$current_page = $_GET['_1'];
-		}
-		if (!empty($_GET['_2'])) {
-			$ref_page = $_GET['_2'];
-		}
-
-		if (!$vis) {
-			$vis = new Entity\Visitor();
-			$vis['ip_address'] = $user_ip;
-			$vis['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
-			$vis['ref_page'] = $ref_page;
 		}
 
 		$path = '';
 		if (App::getContainer()->isScopeActive('request')) {
 			$path = App::getRequest()->getPathInfo();
-			if (!App::getRequest()->isXmlHttpRequest() && !preg_match('#^/(internal\-data/|widget/|chat/poll|chat/send\-message|download/|favicon\.ico|dp/)#', $path)) {
-				$vis['last_page'] = $current_page;
+		}
 
-				if ($this->getEntity()->getIsNew() || !$vis['session_landing_page']) {
-					$vis['session_landing_page'] = $current_page;
-				}
-
-				if (!$vis['landing_page']) {
-					$vis['landing_page'] = $current_page;
-				}
-			}
+		if (!$vis) {
+			$vis = new Entity\Visitor();
 		}
 
 		$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];

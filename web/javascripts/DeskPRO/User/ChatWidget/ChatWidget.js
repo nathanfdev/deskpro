@@ -423,13 +423,32 @@ var DpChatWidget = new (function() {
 			tabLocation = DpChatWidget_Options.tabLocation;
 		}
 
-		var url = DpChatWidget_Options.deskproUrl.replace(/index\.php\//, '') + 'dp.php/chat/is-available.js?_1=';
+		var url = DpChatWidget_Options.deskproUrl.replace(/index\.php\//, '') + 'dp.php/vis.js?chat&url=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageUrl) {
-			url += DpChatWidget_Options.currentPageUrl;
+			url += encodeURIComponent(DpChatWidget_Options.currentPageUrl);
 		} else {
-			url += encodeURIComponent(document.location.href);
+			url += encodeURIComponent((document.location.href+'') || '');
 		}
-		url += '&_2=';
+
+		if (DpChatWidget_Options && DpChatWidget_Options.visitorCode) {
+			url += '&vc=' + encodeURIComponent(DpChatWidget_Options.visitorCode);
+		} else if (DESKPRO_VISITOR_ID) {
+			url += '&vc=' + encodeURIComponent(DESKPRO_VISITOR_ID);
+		}
+
+		url += '&title=';
+		if (DpChatWidget_Options && DpChatWidget_Options.currentPageTitle) {
+			url += encodeURIComponent(DpChatWidget_Options.currentPageTitle);
+		} else {
+			url += encodeURIComponent(document.title || '');
+		}
+
+		url += '&rurl=';
+		if (DpChatWidget_Options && DpChatWidget_Options.referrerPageUrl) {
+			url += encodeURIComponent(DpChatWidget_Options.referrerPageUrl);
+		} else {
+			url += encodeURIComponent((document.referrer+'') || '');
+		}
 
 		if (typeof DESKPRO_SESSION_ID != 'undefined') {
 			var sid = DESKPRO_SESSION_ID;
@@ -441,12 +460,6 @@ var DpChatWidget = new (function() {
 		}
 
 		url += 'current_page=' + window.location.href + '&';
-
-		if (DpChatWidget_Options && DpChatWidget_Options.referrerPageUrl) {
-			url += encodeURIComponent(document.location.href);
-		} else {
-			url += encodeURIComponent(document.referrer);
-		}
 
 		url += '&'+(new Date().getTime());
 

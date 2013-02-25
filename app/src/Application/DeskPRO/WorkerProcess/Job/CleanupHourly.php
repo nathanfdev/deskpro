@@ -86,6 +86,20 @@ class CleanupHourly extends AbstractJob
 		}
 
 		#------------------------------
+		# Old visitors
+		#------------------------------
+
+		$datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM visitors
+			WHERE date_last < ?
+		", array($datesnip));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num stale visitors");
+		}
+
+		#------------------------------
 		# chat blocks
 		#------------------------------
 

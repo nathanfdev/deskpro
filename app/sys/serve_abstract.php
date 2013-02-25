@@ -72,14 +72,20 @@ abstract class LoaderAbstract
 		date_default_timezone_set('UTC');
 		ini_set('default_charset', 'UTF-8');
 
-		// Wrap in if-check,
-		// Strings is included in the compiled file so using require_once
-		// on the classfile wont prevent a possible dupe
-		if (!class_exists('Orb\\Util\\Strings', false)) {
-			require DP_ROOT.'/src/Orb/Util/Strings.php';
+		if (!defined('ORB_STRINGS_UTF8_DIR')) {
+			define('ORB_STRINGS_UTF8_DIR', DP_ROOT.'/vendor/php-utf8');
 		}
 
-		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
+		spl_autoload_register(function($class) {
+			switch ($class) {
+				case 'Orb\\Util\\Util':
+					require(DP_ROOT . '/src/Orb/Util/Util.php');
+					break;
+				case 'Orb\\Util\\Strings':
+					require(DP_ROOT . '/src/Orb/Util/Strings.php');
+					break;
+			}
+		});
 
 		#------------------------------
 		# Undo magic quotes

@@ -2117,7 +2117,11 @@ class Strings
 	public static function __callStatic($name, $args)
 	{
 		if (!self::$php_utf8_dir) {
-			throw new \BadMethodCallException('Unknown method `'.$name.'`');
+			if (defined('ORB_STRINGS_UTF8_DIR')) {
+				self::$php_utf8_dir = \ORB_STRINGS_UTF8_DIR;
+			} else {
+				throw new \BadMethodCallException('Unknown method `'.$name.'`');
+			}
 		}
 
 		static $funcmap = array(

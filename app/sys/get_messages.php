@@ -41,8 +41,6 @@ use Application\DeskPRO\App;
 
 if (!defined('DP_ROOT')) exit('No access');
 
-require_once DP_ROOT.'/src/Orb/Util/Util.php';
-require_once DP_ROOT.'/src/Orb/Util/Strings.php';
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
 class AgentMessagesLoader extends LoaderAbstract
@@ -52,6 +50,9 @@ class AgentMessagesLoader extends LoaderAbstract
 
 	public function runAction()
 	{
+		require_once DP_ROOT.'/src/Orb/Util/Util.php';
+		require_once DP_ROOT.'/src/Orb/Util/Strings.php';
+
 		try {
 			$agent_session_id = isset($_COOKIE['dpsid-agent']) ? strval($_COOKIE['dpsid-agent']) : '';
 			if (!$agent_session_id) {

@@ -47,10 +47,11 @@ class Visitor extends AbstractEntityRepository
 	 */
 	public function getVisitorFromCode($vis_code)
 	{
-		$visitor_id = Entity\Session::getIdFromCode($vis_code);
-		if (!$visitor_id) {
+		if (!strpos($vis_code, '-')) {
 			return null;
 		}
+
+		list ($visitor_id, $auth) = explode('-', $vis_code, 2);
 
 		$visitor = $this->find($visitor_id);
 		if (!$visitor OR !$visitor->checkVisitorCode($vis_code)) {

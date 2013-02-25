@@ -37,11 +37,9 @@ namespace DeskPRO\Kernel;
 
 if (!defined('DP_ROOT')) exit('No access');
 
-require_once DP_ROOT.'/src/Orb/Util/Strings.php';
-require_once DP_ROOT.'/src/Orb/Util/Util.php';
-require_once DP_ROOT.'/sys/serve_abstract.php';
-
 use Orb\Util\Util;
+
+require_once DP_ROOT.'/sys/serve_abstract.php';
 
 /**
  * A light-weight loader for website widgetss
@@ -53,8 +51,13 @@ class DpLoader extends LoaderAbstract
 		try {
 			$pathinfo = $this->getPathInfo();
 
-			if (preg_match('#^/chat/is-available\.js#', $pathinfo)) {
-				$this->isChatAvailableAction();
+			if (preg_match('#^/vis\.js#', $pathinfo)) {
+				$this->visitorPingAction();
+
+			} elseif (preg_match('#^/chat/is-available\.js#', $pathinfo)) {
+				// Legacy
+				$_GET['chat'] = true;
+				$this->visitorPingAction();
 
 			} elseif (preg_match('#^/request-session\.(json|js)#', $pathinfo)) {
 				$this->requestSessionAction();
@@ -83,6 +86,289 @@ class DpLoader extends LoaderAbstract
 
 			$this->handleException($exception);
 		}
+	}
+
+	####################################################################################################################
+	# visitorPing
+	####################################################################################################################
+
+	protected function visitorPingAction()
+	{
+		$visitor_id   = null;
+		$visitor_code = null;
+		$visitor      = null;
+
+		if (isset($_REQUEST['vc'])) {
+			$visitor_code = (string)$_REQUEST['vc'];
+		} elseif (isset($_COOKIE['dpvc'])) {
+			$visitor_code = (string)$_COOKIE['dpvc'];
+		}
+
+		if ($visitor_code && !strpos($visitor_code, '-')) {
+			$visitor_code = null;
+		}
+
+		$js_out = array();
+
+		#-----------------------------------
+		# Authorize a visitor id
+		#-----------------------------------
+
+		if ($visitor_code) {
+			list ($visitor_id, $visitor_auth) = explode('-', $visitor_code, 2);
+			$visitor_id = (int)$visitor_id;
+
+			$q = $this->getPdo()->prepare("
+				SELECT
+					visitors.id, visitors.initial_track_id, visitors.auth, visitors.chat_invite, visitors.page_count, visitors.date_last,
+					visitor_tracks.date_created AS date_last_track
+				FROM visitors
+				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
+				WHERE visitors.id = ?
+			");
+			$q->execute(array($visitor_id));
+			$visitor = $q->fetch(\PDO::FETCH_ASSOC);
+
+			if (!$visitor || $visitor['auth'] != $visitor_auth) {
+				$visitor_id = null;
+				$visitor_code = null;
+				$visitor = null;
+			}
+		}
+
+		#-----------------------------------
+		# If we have no visitor, create one
+		#-----------------------------------
+
+		$is_new_visit_session = false;
+		$is_new_visitor = false;
+
+		if (!$visitor) {
+			$is_new_visitor = true;
+			$is_new_visit_session = true;
+
+			$visitor = array(
+				'auth'         => '',
+				'page_count'   => 1,
+				'date_created' => date('Y-m-d H:i:s'),
+				'date_last'    => date('Y-m-d H:i:s'),
+			);
+
+			$tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			for ($i = 0; $i < 15; $i++) {
+				$t = mt_rand(0, 35);
+				$visitor['auth'] .= $tmp[$t];
+			}
+
+			$this->getPdo()->prepare("
+				INSERT INTO visitors
+				SET auth = ?, page_count = 1, date_created = ?, date_last = ?
+			")->execute(array(
+				$visitor['auth'],
+				$visitor['date_created'],
+				$visitor['date_last'],
+			));
+
+			$visitor['id'] = $this->getPdo()->lastInsertId();
+		} else {
+			$is_new_visitor = false;
+
+			if ($visitor['date_last_track']) {
+				$last_time = strtotime($visitor['date_last']);
+
+				if ($last_time < (time() - 2400)) {
+					$is_new_visit_session = true;
+				}
+			} else {
+				$is_new_visit_session = true;
+			}
+		}
+
+		$visitor_code = "{$visitor['id']}-{$visitor['auth']}";
+
+		#-----------------------------------
+		# Create the track
+		#-----------------------------------
+
+		$visitor_track = array();
+		$visitor_track['visitor_id']   = $visitor_id;
+		$visitor_track['is_new_visit'] = $is_new_visit_session;
+		if (!empty($_REQUEST['url'])) {
+			$visitor_track['page_url'] = (string)$_REQUEST['url'];
+		} elseif (!empty($_SERVER['HTTP_REFERER'])) {
+			$visitor_track['page_url'] = (string)$_SERVER['HTTP_REFERER'];
+		} else {
+			$visitor_track['page_url'] = '<unknown>';
+		}
+
+		if (!empty($_REQUEST['title'])) {
+			$visitor_track['page_title'] = (string)$_REQUEST['title'];
+		}
+		if (!empty($_REQUEST['rurl'])) {
+			$visitor_track['ref_page_url'] = (string)$_REQUEST['rurl'];
+		}
+
+		$visitor_track['user_agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+		$visitor_track['user_browser'] = '';
+		$visitor_track['user_os']      = '';
+		$visitor_track['ip_address']   = $_SERVER['REMOTE_ADDR'];
+		$visitor_track['date_created'] = date('Y-m-d H:i:s');
+
+		$set_q = array();
+		foreach ($visitor_track as $k => $v) {
+			$set_q[] = "$k = ?";
+		}
+		$set_q = implode(', ', $set_q);
+
+		$this->getPdo()->prepare("
+			INSERT INTO visitor_tracks
+			SET $set_q
+		")->execute(array_values($visitor_track));
+
+		$visitor_track['id'] = $this->getPdo()->lastInsertId();
+
+		#-----------------------------------
+		# Update the last times for the visitor
+		#-----------------------------------
+
+		if ($is_new_visitor) {
+			$this->getPdo()->prepare("
+				UPDATE visitors
+				SET initial_track_id = ?, last_track_id = ?
+				WHERE id = ?
+			")->execute(array(
+				$visitor_track['id'],
+				$visitor_track['id'],
+				$visitor['id']
+			));
+		} else {
+			$this->getPdo()->prepare("
+				UPDATE visitors
+				SET page_count = ?, initial_track_id = ?, last_track_id = ?, date_last = ?
+				WHERE id = ?
+			")->execute(array(
+				$visitor['page_count']+1,
+				$visitor['initial_track_id'] ?: $visitor_track['id'],
+				$visitor_track['id'],
+				date('Y-m-d H:i:s'),
+				$visitor['id']
+			));
+		}
+
+		$js_out[] = "window.DESKPRO_VISITOR_ID = '$visitor_code';";
+		$js_out[] = "if (window.DpVisLoaded) window.DpVisLoaded();";
+
+		#------------------------------
+		# Chat is available
+		#------------------------------
+
+		if (isset($_GET['chat'])) {
+			$online_time = 0;
+			if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
+				$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+			}
+
+			if ($online_time && $online_time > time() - 900) {
+
+				$session_id = isset($_GET['__sid']) ? $_GET['__sid'] : null;
+				if (!$session_id) {
+					$session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+				}
+
+				$chat_id = isset($_COOKIE['dpchatid']) ? $_COOKIE['dpchatid'] : null;
+
+				// they already have a chat active, load up system to get read to resume
+				if ($session_id && $chat_id) {
+					$to_login_page = false;
+
+					$container = $this->bootFullSystem();
+
+					$sessionObj = $container->get('session');
+					$session_id = $sessionObj->getId();
+					$session = $sessionObj->getEntity();
+					$chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));
+
+					// True to allow fetching of chats w/ timeout
+					$convo = $chat_manager->getChat(true);
+
+					// If the user is on a new page, tell the agent
+					if ($convo) {
+						// If the status is ended then it's because of a timeout, but the user is back! so pop open the chat again
+						if ($convo['status'] == 'ended') {
+							$chat_manager->reopenTimoutChat($convo);
+						}
+
+						$current_page = !empty($_GET['current_page']) ? strval($_GET['current_page']) : false;
+						if ($current_page) {
+							$chat_manager->addUserTrack($convo, $current_page);
+						}
+						$container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+
+						$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
+						$cookie->send();
+					} else {
+						$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+						$cookie->send();
+					}
+				} else {
+					$to_login_page = false;
+					$convo = false;
+					$session_id = null;
+				}
+
+				if ($convo) {
+					$js_out[] = "DpChatWidget.doResume = true;\n";
+					if ($convo->is_window) {
+						$js_out[] = "DpChatWidget.isWindowChat = true;\n";
+					}
+				}
+				if ($to_login_page) {
+					$js_out[] = "DpChatWidget.toLoginPage = true;\n";
+				}
+
+				if ($session_id) {
+					$js_out[] = "DpChatWidget.initWidget('$session_id');";
+
+					// Connect the visitor to the session
+					$this->getPdo()->prepare("UPDATE session SET visitor_id = ? WHERE id = ?")->execute(array(
+						$visitor['id'],
+						$session_id
+					));
+
+					// Connect the chat as well
+					if ($convo) {
+						$this->getPdo()->prepare("
+							UPDATE chat_conversations
+							SET visitor_id = ? WHERE id = ?
+						")->execute(array(
+							$visitor['id'],
+							$convo->getId()
+						));
+					}
+				} else {
+					$js_out[] = "DpChatWidget.initWidget(null);";
+				}
+
+			// Chat unavailable
+			} else {
+				$js_out[] = "DpChatWidget.setNotAvailable();\n";
+			}
+		}
+
+		#-----------------------------------
+		# Output
+		#-----------------------------------
+
+		$js_out = implode("\n", $js_out);
+
+		setcookie('dpvc', $visitor_code, time() + 15552000, '/', null);
+		header('Content-Type: text/javascript; filename=vis.js');
+		header('Content-Length: ' . strlen($js_out));
+		header('Content-Disposition: inline; filename=vis.js');
+		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Cache-Control: max-age=0,private');
+		echo $js_out;
 	}
 
 	####################################################################################################################
@@ -184,116 +470,8 @@ class DpLoader extends LoaderAbstract
 	}
 
 	####################################################################################################################
-	# isChatAvailableAction
+	# agentLanguage
 	####################################################################################################################
-
-	protected function isChatAvailableAction()
-	{
-		#------------------------------
-		# Chat is available
-		#------------------------------
-
-		$online_time = 0;
-		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
-			$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
-		}
-
-		if ($online_time && $online_time > time() - 900) {
-
-			$session_id = isset($_GET['__sid']) ? $_GET['__sid'] : null;
-			if (!$session_id) {
-				$session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
-			}
-
-			$chat_id = isset($_COOKIE['dpchatid']) ? $_COOKIE['dpchatid'] : null;
-
-			// they already have a chat active, load up system to get read to resume
-			if ($session_id && $chat_id) {
-				$to_login_page = false;
-
-				$container = $this->bootFullSystem();
-
-				$sessionObj = $container->get('session');
-				$session_id = $sessionObj->getId();
-				$session = $sessionObj->getEntity();
-				$chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));
-
-				// True to allow fetching of chats w/ timeout
-				$convo = $chat_manager->getChat(true);
-
-				// If the user is on a new page, tell the agent
-				if ($convo) {
-					// If the status is ended then it's because of a timeout, but the user is back! so pop open the chat again
-					if ($convo['status'] == 'ended') {
-						$chat_manager->reopenTimoutChat($convo);
-					}
-
-					$current_page = !empty($_GET['current_page']) ? strval($_GET['current_page']) : false;
-					if (!$current_page) {
-						$current_page = $session->getVisitor()->getLastPage();
-					} else if ($current_page != $session->getVisitor()->getLastPage()) {
-						$vis = $session->getVisitor();
-						$vis['last_page'] = $current_page;
-
-						if ($session->getIsNew() || !$vis['session_landing_page']) {
-							$vis['session_landing_page'] = $current_page;
-						}
-
-						if (!$vis['landing_page']) {
-							$vis['landing_page'] = $current_page;
-						}
-						$container->getOrm()->persist($vis);
-						$container->getOrm()->flush();
-					}
-
-					$chat_manager->addUserTrack($convo, $current_page);
-					$container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
-
-					$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
-					$cookie->send();
-				} else {
-					$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
-					$cookie->send();
-				}
-			} else {
-				$to_login_page = false;
-				$convo = false;
-				$session_id = null;
-			}
-
-			$content = '';
-			if ($convo) {
-				$content .= "DpChatWidget.doResume = true;\n";
-				if ($convo->is_window) {
-					$content .= "DpChatWidget.isWindowChat = true;\n";
-				}
-			}
-			if ($to_login_page) {
-				$content .= "DpChatWidget.toLoginPage = true;\n";
-			}
-
-			if ($session_id) {
-				$content .= "DpChatWidget.initWidget('$session_id');";
-			} else {
-				$content .= "DpChatWidget.initWidget(null);";
-			}
-
-		#------------------------------
-		# Chat unavailable
-		#------------------------------
-
-		} else {
-			$content = "DpChatWidget.setNotAvailable();\n";
-		}
-
-		header('Content-Type: text/javascript; filename=is-chat-available.js');
-		header('Content-Length: ' . strlen($content));
-		header('Content-Disposition: inline; filename=is-chat-available.js');
-		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-		header('Cache-Control: max-age=0,private');
-		echo $content;
-	}
 
 	public function agentLanguageAction($language_id)
 	{
