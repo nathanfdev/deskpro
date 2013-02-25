@@ -83,12 +83,9 @@ class TicketViewController extends AbstractController
 					break;
 
 				case 'ref':
-					$ref_gen = $this->container->getSystemService('RefGenerator');
-					if ($ref_gen->isRefMatch($ticket_ref)) {
-						$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
-						if ($ticket) {
-							return $this->viewTicket($ticket, $display_data);
-						}
+					$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+					if ($ticket) {
+						return $this->viewTicket($ticket, $display_data);
 					}
 					break;
 
