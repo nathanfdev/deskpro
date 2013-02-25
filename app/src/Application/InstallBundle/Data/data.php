@@ -1385,6 +1385,7 @@ $em->getConnection()->executeUpdate("
 		($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_user_others'),
 		($ugid, NULL, '1', 'agent_tickets.modify_set_awaiting_agent_others'),
 		($ugid, NULL, '1', 'agent_tickets.modify_set_resolved_others'),
+		($ugid, NULL, '1', 'agent_people.use'),
 		($ugid, NULL, '1', 'agent_people.create'),
 		($ugid, NULL, '1', 'agent_people.edit'),
 		($ugid, NULL, '1', 'agent_people.validate'),

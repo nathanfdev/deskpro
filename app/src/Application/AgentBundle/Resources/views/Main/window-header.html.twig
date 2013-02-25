@@ -291,35 +291,45 @@
 		<span class="close close-search-sheet"></span>
 		<em>{{ phrase('agent.general.search') }}:</em>
 		<ul>
-			<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.general.tickets') }}</li>
-			<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.general.people') }}</li>
-			<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.general.organizations') }}</li>
-			<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.general.publish_and_feedback') }}</li>
+			{% if app.user.hasPerm('agent_tickets.use') %}<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.general.tickets') }}</li>{% endif %}
+			{% if app.user.hasPerm('agent_people.use') %}<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.general.people') }}</li>{% endif %}
+			{% if app.user.hasPerm('agent_people.use') %}<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.general.organizations') }}</li>{% endif %}
+			{% if app.getSetting('core.apps_feedback') or app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
+				<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.general.publish_and_feedback') }}</li>
+			{% endif %}
 		</ul>
 	</div>
 
 	{# Ticket Search Form #}
-	<div class="sheet-section" id="dp_searchsheet_tickets" data-type="tickets">
-		{% include 'AgentBundle:Main:search-sheet-tickets.html.twig' %}
-	</div>
+	{% if app.user.hasPerm('agent_tickets.use') %}
+		<div class="sheet-section" id="dp_searchsheet_tickets" data-type="tickets">
+			{% include 'AgentBundle:Main:search-sheet-tickets.html.twig' %}
+		</div>
+	{% endif %}
 	{# /Ticket Search Form #}
 
 	{# People Search Form #}
-	<div class="sheet-section" id="dp_searchsheet_people" data-type="people">
-		{% include 'AgentBundle:Main:search-sheet-people.html.twig' %}
-	</div>
+	{% if app.user.hasPerm('agent_people.use') %}
+		<div class="sheet-section" id="dp_searchsheet_people" data-type="people">
+			{% include 'AgentBundle:Main:search-sheet-people.html.twig' %}
+		</div>
+	{% endif %}
 	{# /People Search Form #}
 
 	{# Orgs Search Form #}
-	<div class="sheet-section" id="dp_searchsheet_orgs" data-type="orgs">
-		{% include 'AgentBundle:Main:search-sheet-orgs.html.twig' %}
-	</div>
+	{% if app.user.hasPerm('agent_people.use') %}
+		<div class="sheet-section" id="dp_searchsheet_orgs" data-type="orgs">
+			{% include 'AgentBundle:Main:search-sheet-orgs.html.twig' %}
+		</div>
+	{% endif %}
 	{# /Orgs Search Form #}
 
 	{# Content Search Form #}
-	<div class="sheet-section" id="dp_searchsheet_content" data-type="content">
-		{% include 'AgentBundle:Main:search-sheet-content.html.twig' %}
-	</div>
+	{% if app.getSetting('core.apps_feedback') or app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
+		<div class="sheet-section" id="dp_searchsheet_content" data-type="content">
+			{% include 'AgentBundle:Main:search-sheet-content.html.twig' %}
+		</div>
+	{% endif %}
 	{# /Content Search Form #}
 
 	<div class="footer-section">

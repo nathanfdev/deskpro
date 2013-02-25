@@ -129,6 +129,7 @@
 				</tr>
 			</thead>
 			<tbody>
+				<!-- PERMISSION:agent_people.use -->{{ col.perm_col("Browse the people and organizations directory", usergroup_values, 'agent_people', 'use') }}
 				<!-- PERMISSION:agent_people.create -->{{ col.perm_col(phrase('admin.agents.create_people'), usergroup_values, 'agent_people', 'create') }}
 				<!-- PERMISSION:agent_people.edit -->{{ col.perm_col(phrase('admin.agents.edit_people'), usergroup_values, 'agent_people', 'edit') }}
 				<!-- PERMISSION:agent_people.validate -->{{ col.perm_col(phrase('admin.agents.validate_users_and_emails'), usergroup_values, 'agent_people', 'validate', 'agent_people_edit') }}

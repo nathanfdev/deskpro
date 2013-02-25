@@ -16,10 +16,12 @@
 				</li>
 			{% endif %}
 
-			<li id="people_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.People">
-				<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-				<a><span class="peopleNavIcon">{{ phrase('agent.general.people') }}</span></a>
-			</li>
+			{% if app.user.hasPerm('agent_people.use') %}
+				<li id="people_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.People">
+					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
+					<a><span class="peopleNavIcon">{{ phrase('agent.general.people') }}</span></a>
+				</li>
+			{% endif %}
 
 			{% if app.getSetting('core.apps_feedback')  %}
 				<li id="feedback_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Feedback">
