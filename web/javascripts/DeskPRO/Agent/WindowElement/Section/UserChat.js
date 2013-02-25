@@ -10,6 +10,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.groups = {};
 		this.urlFragmentName = 'userchat';
 		this.hasSectionInitialised = false;
+		this.lastOnlineUserLoad = null;
+		this.lastOnlineUserCount = null;
 
 		$('#new_user_chat_alert').template('new_user_chat_alert');
 		$('#invite_chat_alert').template('invite_chat_alert');
@@ -112,6 +114,47 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			self.refreshOnlineAgentDepGroups();
 
 		}, this);
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
+			var count = parseInt(info.online_count);
+			DeskPRO_Window.util.modCountEl($('#userOnlineCount'), '=', count);
+			DeskPRO_Window.util.modCountEl($('#userOnlineCount2'), '=', count);
+
+			if (count != self.lastOnlineUserCount) {
+				self.lastOnlineUserLoad = null;
+			}
+			self.lastOnlineUserCount = count;
+		});
+
+		$('#chatStatusWrap').on('click', function(ev) {
+			self.refreshOnlineUsersIfNeeded();
+		});
+	},
+
+	refreshOnlineUsersIfNeeded: function() {
+		var now = new Date();
+
+		if (!this.lastOnlineUserLoad || (now.getTime() - this.lastOnlineUserLoad.getTime()) > 15000) {
+			this.refreshOnlineUsers();
+		}
+	},
+
+	refreshOnlineUsers: function() {
+
+		if (!this.lastOnlineUserLoad) {
+			$('#agent_status_online_users').empty().html('<div class="loading-icon-big" style="margin: 10px;"></div>');
+		}
+
+		$.ajax({
+			url: BASE_URL + 'agent/user-track/win-header-table.html',
+			type: 'GET',
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				$('#agent_status_online_users').empty().html(html);
+				this.lastOnlineUserLoad = new Date();
+			}
+		});
 	},
 
 	refreshOnlineAgentDepGroups: function() {

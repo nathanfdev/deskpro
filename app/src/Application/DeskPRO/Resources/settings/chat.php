@@ -47,4 +47,9 @@
 	 * Max amount of time after a user timeout before the chat is closed for real
 	 */
 	'core_chat.abandoned_time' => 480,
+
+	/**
+	 * Time until we stop showing a user as "online" in online users list
+	 */
+	'core_chat.user_online_time' => 600,
 );

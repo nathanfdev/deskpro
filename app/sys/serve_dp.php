@@ -120,7 +120,7 @@ class DpLoader extends LoaderAbstract
 
 			$q = $this->getPdo()->prepare("
 				SELECT
-					visitors.id, visitors.initial_track_id, visitors.auth, visitors.chat_invite, visitors.page_count, visitors.date_last,
+					visitors.id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.chat_invite, visitors.page_count, visitors.date_last,
 					visitor_tracks.date_created AS date_last_track
 				FROM visitors
 				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
@@ -214,6 +214,26 @@ class DpLoader extends LoaderAbstract
 		$visitor_track['ip_address']   = $_SERVER['REMOTE_ADDR'];
 		$visitor_track['date_created'] = date('Y-m-d H:i:s');
 
+		if (dp_get_config('trust_proxy_data') && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$visitor_track['ip_address'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+
+		if ($is_new_visit_session && function_exists('geoip_record_by_name')) {
+			if ($geo = @geoip_record_by_name($visitor_track['ip_address'])) {
+				if (!empty($geo['continent_code'])) $visitor_track['geo_continent'] = $geo['continent_code'];
+				if (!empty($geo['country_code']))   $visitor_track['geo_country']   = $geo['country_code'];
+				if (!empty($geo['region']))         $visitor_track['geo_region']    = $geo['region'];
+				if (!empty($geo['city']))           $visitor_track['geo_city']      = $geo['city'];
+				if (!empty($geo['longitude']))      $visitor_track['geo_long']      = $geo['longitude'];
+				if (!empty($geo['latitude']))       $visitor_track['geo_lat']       = $geo['latitude'];
+			} elseif ($geo_country = @geoip_country_code_by_name($visitor_track['ip_address'])) {
+				$visitor_track['geo_country'] = $geo_country;
+				if ($geo_continent = @geoip_continent_code_by_name($visitor_track['ip_address'])) {
+					$visitor_track['geo_continent'] = $geo_continent;
+				}
+			}
+		}
+
 		$set_q = array();
 		foreach ($visitor_track as $k => $v) {
 			$set_q[] = "$k = ?";
@@ -231,29 +251,34 @@ class DpLoader extends LoaderAbstract
 		# Update the last times for the visitor
 		#-----------------------------------
 
+		$visitor_update = array();
+
 		if ($is_new_visitor) {
-			$this->getPdo()->prepare("
-				UPDATE visitors
-				SET initial_track_id = ?, last_track_id = ?
-				WHERE id = ?
-			")->execute(array(
-				$visitor_track['id'],
-				$visitor_track['id'],
-				$visitor['id']
-			));
+			$visitor_update['initial_track_id'] = $visitor_track['id'];
+			$visitor_update['last_track_id']    = $visitor_track['id'];
+			$visitor_update['visit_track_id']   = $visitor_track['id'];
 		} else {
-			$this->getPdo()->prepare("
-				UPDATE visitors
-				SET page_count = ?, initial_track_id = ?, last_track_id = ?, date_last = ?
-				WHERE id = ?
-			")->execute(array(
-				$visitor['page_count']+1,
-				$visitor['initial_track_id'] ?: $visitor_track['id'],
-				$visitor_track['id'],
-				date('Y-m-d H:i:s'),
-				$visitor['id']
-			));
+			if (!$visitor['initial_track_id']) {
+				$visitor_update['initial_track_id'] = $visitor_track['id'];
+			}
+			if (!$visitor['visit_track_id'] || $is_new_visit_session) {
+				$visitor_update['visit_track_id'] = $visitor_track['id'];
+			}
+			$visitor_update['last_track_id'] = $visitor_track['id'];
+			$visitor_update['date_last']     = date('Y-m-d H:i:s');
 		}
+
+		$set_q = array();
+		foreach ($visitor_update as $k => $v) {
+			$set_q[] = "$k = ?";
+		}
+		$set_q = implode(', ', $set_q);
+
+		$this->getPdo()->prepare("
+			UPDATE visitors
+			SET $set_q
+			WHERE id = {$visitor_id}
+		")->execute(array_values($visitor_update));
 
 		$js_out[] = "window.DESKPRO_VISITOR_ID = '$visitor_code';";
 		$js_out[] = "if (window.DpVisLoaded) window.DpVisLoaded();";

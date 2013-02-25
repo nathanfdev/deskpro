@@ -151,6 +151,9 @@ class AgentMessagesLoader extends LoaderAbstract
 			if ($count && $count % 2 === 0) {
 				$dos[] = 'get-online-agents';
 				$dos = array_unique($dos);
+			} elseif ($count && $count % 3 === 0) {
+				$dos[] = 'get-online-visitors';
+				$dos = array_unique($dos);
 			}
 
 			foreach ($dos as $do) {
@@ -496,6 +499,28 @@ class AgentMessagesLoader extends LoaderAbstract
 		}
 
 		return $messages;
+	}
+
+	############################################################################
+	# getOnlineVisitors
+	############################################################################
+
+	public function getOnlineVisitorsMessage()
+	{
+		$timeout = $this->_getSetting('core_chat.user_online_time', 600);
+		$cutoff = date('Y-m-d H:i:s', time() - $timeout);
+
+		$q = $this->getPdo()->prepare("
+			SELECT COUNT(*)
+			FROM visitors
+			WHERE date_last > ?
+		");
+		$q->execute(array($cutoff));
+
+		$online_count = $q->fetchColumn(0);
+		return array(
+			array(null, 'agent.online-users-count', array('online_count' => $online_count)),
+		);
 	}
 
 	############################################################################

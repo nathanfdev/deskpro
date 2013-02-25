@@ -6976,6 +6976,27 @@ table.field-holders-table.mode-edit-on tr.mode-display { display: none; }
 	font-size: 8pt;
 }
 
+.data-display-table-wrap .table-head {
+	background-color: #EAEAEA;
+	border-bottom: 1px solid #BDBFBF;
+	font-weight: bold;
+	padding: 10px;
+}
+
+table.data-display-table thead tr th {
+	background: #EFEFEF;
+	font-weight: bold;
+	text-align: left;
+	border-bottom: 1px solid #BDBFBF !important;
+}
+
+table.data-display-table tbody tr th.col-head {
+	background: #EFEFEF;
+	font-weight: bold;
+	text-align: left;
+	border-bottom: 1px solid #BDBFBF !important;
+}
+
 table.data-display-table tr td,
 table.data-display-table tr th {
 	padding: 7px;
@@ -7015,4 +7036,36 @@ table.data-display-table tr:last-child th {
 
 .message-content .truncated-wrap .truncated-btn:hover {
 	background-color: #ADADAD;
+}
+
+#agent_status_menu_body > table td.agent-list {
+	padding-right: 8px;
+	border-right: 1px solid #C7CDD4;
+}
+
+#agent_status_menu_body > table td.user-list {
+	padding-left: 8px;
+}
+
+#agent_status_online_users {
+	width: 600px;
+}
+
+#agent_status_online_users .data-display-table tr td {
+	background-color: #fff;
+}
+
+#agent_status_online_users em.details-link {
+	background: transparent	url(../../images/agent/icons/page.png);
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	overflow: hidden;
+	display: block;
+}
+
+#agent_status_online_users .with-country {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 19px;
 }

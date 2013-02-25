@@ -1,0 +1,45 @@
+{% if visitors|length %}
+	<div class="data-display-table-wrap">
+		<div class="table-head">
+			{{ visitors|length }} Online Users
+		</div>
+		<div style="max-height: 600px; overflow: auto">
+			<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table with-head">
+				<tbody style="max-height: 600px; overflow: auto">
+					<tr>
+						<th class="col-head">User</th>
+						<th class="col-head">Current Page</th>
+						<th class="col-head" width="10">Time</th>
+						<th class="col-head" width="10">&nbsp;</th>
+						<th class="col-head" width="10">&nbsp;</th>
+					</tr>
+					{% for vis in visitors %}
+						<tr>
+							<td nowrap="nowrap">
+								<span {% if vis.visit_track.geo_country %}class="with-country" style="background-image: url({{ asset('images/flags/' ~ vis.visit_track.geo_country|lower ~ '.png') }});" title="{{ vis.visit_track.geo_country }}" {% endif %}>
+									{% if vis.person %}
+										{{ vis.person.getDisplayName() }}
+									{% else %}
+										Anon #{{ vis.id }}
+									{% endif %}
+								</span>
+							</td>
+							<td>
+								<div style="width: 300px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+									<a href="{{ vis.last_track.page_url }}" target="_blank">{{ vis.last_track.page_url|url_trim_scheme }}</a>
+								</div>
+							</td>
+							<td nowrap="nowrap">{{ vis.date_last|date('time') }}</td>
+							<td><button class="clean-white">Start Chat</button></td>
+							<td><em class="details-link" title="View details"></em></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% else %}
+	<p style="padding: 20px;">
+		There are no online users.
+	</p>
+{% endif %}

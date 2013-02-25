@@ -2700,6 +2700,17 @@ $collection->add('agent_userchat_getsectiondata', new Route(
 ));
 
 ################################################################################
+# User Tracking
+################################################################################
+
+$collection->add('agent_usertrack_winheadertable', new Route(
+	'/user-track/win-header-table.html',
+	array('_controller' => 'AgentBundle:UserTrack:winHeaderTable'),
+	array(),
+	array()
+));
+
+################################################################################
 # Media Manager
 ################################################################################
 
