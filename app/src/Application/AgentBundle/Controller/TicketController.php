@@ -3101,7 +3101,7 @@ class TicketController extends AbstractController
 			$person = $this->em->find('DeskPRO:Person', $person_id);
 		}
 		if (!$person && $this->in->getString('email')) {
-			$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+			$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($this->in->getString('email'));
 		}
 
 		$session = null;
