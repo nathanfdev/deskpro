@@ -259,7 +259,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		foreach ($this->person->twitter_users AS $account) {
 			if ($account->id == $account_id) {
 				$this->em->remove($account);
-				$twitter_user_id = $account->twitter_user->id;
+				$twitter_user_id = $account->twitter_user_id;
 				break;
 			}
 		}
