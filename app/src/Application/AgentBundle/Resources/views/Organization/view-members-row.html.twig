@@ -1,5 +1,5 @@
 <tr class="line-1 member-row member-{{ person.id }} {% if person.is_disabled %}disabled{% endif %}" data-person-id="{{ person.id }}">
-	<td>
+	<td width="100%">
 		<div class="fade-container">
 			<div class="line {% if person.organization_manager %}is-manager{% endif %}">
 				<a
@@ -8,17 +8,11 @@
 					{% if person.primary_email_address %}title="{{ person.primary_email_address }}"{% endif %}
 					style="background: url('{{ person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 20px;"
 				>{{ person.getNameWithTitle() }}</a>
-				<span
-					class="organization-manager-icon"
-					data-is-manager="Organization Manager. Click to remove."
-					data-not-manager="Click to set as organization manager."
-					data-save-url="{{ path('agent_org_save_member_manager', {'organization_id': org.id, 'person_id': person.id }) }}"
-				></span>
 			</div>
 			<div class="bound-fade"></div>
 		</div>
 	</td>
-	<td class="position-edit-trigger" style="text-align: right;">
+	<td class="position-edit-trigger" style="text-align: right; white-space: nowrap" nowrap="nowrap">
 		<span class="position-label single-click-activate">
 			{% if person.organization_position %}
 				{{ person.organization_position }}
@@ -36,7 +30,16 @@
 			/>
 		</div>
 	</td>
-	<td width="5">
+	<td width="11" style="text-align: center; width: 11px;">
+		<span
+			class="organization-manager-icon"
+			data-is-manager="Organization Manager. Click to remove."
+			data-not-manager="Click to set as organization manager."
+			data-save-url="{{ path('agent_org_save_member_manager', {'organization_id': org.id, 'person_id': person.id }) }}"
+			style="position:relative;top:-1px;"
+		></span>
+	</td>
+	<td width="5" style="width: 5px;">
 		<span class="remove remove-icon">x</span>
 	</td>
 </tr>

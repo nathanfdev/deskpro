@@ -207,7 +207,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this.getEl('members_list').on('click', '.organization-manager-icon', function(ev) {
 			ev.stopPropagation();
 
-			var $this = $(this), line = $this.closest('.line');
+			var $this = $(this), line = $this.closest('tr');
 
 			line.toggleClass('is-manager');
 
