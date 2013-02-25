@@ -308,6 +308,11 @@
 	DpChatWidget_Options.referrerPageUrl = document.referrer;
 	{% if constant('DP_DEBUG') %}var DpChatWidget_EnableDebug = true;{% endif %}
 
+	DpChatWidget_Options.startPhrase = {{ phrase('user.chat.window_start-button')|json_encode|raw }};
+	DpChatWidget_Options.resumePhrase = {{ phrase('user.chat.window_resume-button')|json_encode|raw }};
+	DpChatWidget_Options.offlinePhrase = {{ phrase('user.chat.window_offline-button')|json_encode|raw }};
+	DpChatWidget_Options.openInWindowPhrase = {{ phrase('user.chat.window_open-new')|json_encode|raw }};
+
 	(function() {
 		var scr = document.createElement('script');
 		scr.src = '//{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js')|url_trim_scheme }}';

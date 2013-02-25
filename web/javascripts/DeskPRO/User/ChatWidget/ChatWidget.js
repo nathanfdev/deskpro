@@ -243,8 +243,8 @@ var DpChatWidget = new (function() {
 			css = css.join(';');
 
 			var phrase = 'Open this chat in a new window';
-			if (typeof DESKPRO_LANG != 'undefined' && DESKPRO_LANG['user.chat.window_open-new']) {
-				phrase = DESKPRO_LANG['user.chat.window_open-new'];
+			if (DpChatWidget_Options && DpChatWidget_Options.openInWindowPhrase) {
+				phrase = DpChatWidget_Options.openInWindowPhrase;
 			}
 			chatIframeWinTab = util.createEl('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + phrase + '</div>');
 			chatIframeHolder.appendChild(chatIframeWinTab);
@@ -275,9 +275,6 @@ var DpChatWidget = new (function() {
 			css = css.join(';');
 
 			var phrase = 'Minimize';
-			if (typeof DESKPRO_LANG != 'undefined' && DESKPRO_LANG['user.chat.window_open-minimize']) {
-				phrase = DESKPRO_LANG['user.chat.window_open-minimize'];
-			}
 			tmp = util.createEl('<div id="dp_chat_iframe_closebtn" class="dp-chat-iframe-closetab" title="'+phrase+'" style="' + css + '">&#9660;</div>');
 			chatIframeHolder.appendChild(tmp);
 			util.bind(tmp, 'click', function() { self.close() });
@@ -618,7 +615,7 @@ var DpChatWidget = new (function() {
 			#dpchat_border_table td#dpchat_border_21 div em { \
 			  font: " + font + "; \
 			  color: transparent; \
-			  padding: 0 12px 0 19px; \
+			  padding: 0 10px; \
 			} \
 			 \
 			#dpchat_border_table td#dpchat_border_22 div { \
@@ -649,7 +646,7 @@ var DpChatWidget = new (function() {
 			  bottom: 5px; \
 			  color: " + textColor + "; \
 			  text-align: center; \
-			  padding: 0 0 0 16px; \
+			  padding: 0; \
 			} \
 			#dpchat_btn_text em { \
 			  display: block; \
@@ -700,17 +697,6 @@ var DpChatWidget = new (function() {
 		var phrase1 = 'Click here to chat with us';
 		var phrase2 = 'Open your chat';
 		var phrase3 = 'Click here to contact us';
-		if (DpChatWidget_Options && DpChatWidget_Options.lang) {
-			if (DpChatWidget_Options.lang['user.chat.window_start-button']) {
-				phrase1 = DpChatWidget_Options.lang['user.chat.window_start-button'];
-			}
-			if (DpChatWidget_Options.lang['user.chat.window_resume-button']) {
-				phrase2 = DpChatWidget_Options.lang['user.chat.window_resume-button'];
-			}
-			if (DpChatWidget_Options.lang['user.chat.window_offline-button']) {
-				phrase2 = DpChatWidget_Options.lang['user.chat.window_resume-button'];
-			}
-		}
 
 		if (DpChatWidget_Options && DpChatWidget_Options.startPhrase) {
 			phrase1 = DpChatWidget_Options.startPhrase;
@@ -735,21 +721,16 @@ var DpChatWidget = new (function() {
 		}
 		body.appendChild(openBtn);
 
-		tmp = util.getElWidth(document.getElementById('dpchat_btn_label_start_chat2'));
-		tmpi = util.getElWidth(document.getElementById('dpchat_btn_label_open_chat2'));
-		if (tmpi > tmp) {
-			tmp = tmpi;
-		}
-		tmpi = util.getElWidth(document.getElementById('dpchat_btn_label_offline2'));
-		if (tmpi > tmp) {
-			tmp = tmpi;
-		}
-		document.getElementById('dpchat_btn_label_start_chat').style.width = tmp + 'px';
-		document.getElementById('dpchat_btn_label_open_chat').style.width = tmp + 'px';
-		document.getElementById('dpchat_btn_label_offline').style.width = tmp + 'px';
+		tmp = util.getElWidth(document.getElementById('dpchat_border_11'));
 		document.getElementById('dpchat_btn_label_start_chat2').style.width = tmp + 'px';
 		document.getElementById('dpchat_btn_label_open_chat2').style.width = tmp + 'px';
 		document.getElementById('dpchat_btn_label_offline2').style.width = tmp + 'px';
+
+		// Correct width if the phrase is long
+		tmp = util.getElWidth(document.getElementById('dpchat_border_table'));
+		if (tmp > 225) {
+			document.getElementById('dpchat_wrap').style.width = (tmp+30) + 'px';
+		}
 	};
 
 	var confirmGoingAway = function() {
@@ -783,6 +764,11 @@ var DpChatWidget = new (function() {
 				// The button might be hidden because of doResume above,
 				// but we want to show it all the time (its overlapped anyway)
 				util.showEl(openBtn);
+
+				tmp = util.getElWidth(document.getElementById('dpchat_border_11'));
+				document.getElementById('dpchat_btn_label_start_chat2').style.width = tmp + 'px';
+				document.getElementById('dpchat_btn_label_open_chat2').style.width = tmp + 'px';
+				document.getElementById('dpchat_btn_label_offline2').style.width = tmp + 'px';
 
 				if (data[0]) {
 					setCookie('dpchat_sid', data[0], 7);
