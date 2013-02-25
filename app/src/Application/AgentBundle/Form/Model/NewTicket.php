@@ -156,7 +156,7 @@ class NewTicket
 		if ($this->person->id) {
 			$person = $this->_em->find('DeskPRO:Person', $this->person->id);
 		} else {
-			$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+			$person = App::getSystemService('UsersourceManager')->findPersonByEmail($this->person->email_address);
 		}
 
 		if (!$person) {
