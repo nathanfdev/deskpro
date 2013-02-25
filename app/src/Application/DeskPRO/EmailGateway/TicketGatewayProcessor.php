@@ -119,7 +119,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($has_processed) {
 				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
-				$this->logMessage(sprintf("Detected duplicate for source %d", $this->reader->getProperty('email_source')->uid));
+				$this->logMessage(sprintf("Detected duplicate for source %s", $this->reader->getProperty('email_source')->uid));
 				return null;
 			}
 		}
