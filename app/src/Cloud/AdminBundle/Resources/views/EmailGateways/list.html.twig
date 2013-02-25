@@ -70,9 +70,7 @@ $(document).ready(function() {
 
 	var sels = $('select.change-linked-dep');
 
-	sels.each(function() {
-		$(this).width($(this).width() + 100);
-	}).data('select-width', 'auto');
+	sels.data('select-width', '300');
 
 	DP.select(sels);
 
