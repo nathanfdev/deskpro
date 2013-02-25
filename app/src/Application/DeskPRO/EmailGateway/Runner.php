@@ -157,6 +157,11 @@ class Runner
 	 */
 	public function executeSource(EmailSource $source)
 	{
+		if (!$this->log_messages) {
+			$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
+			$this->logger->addWriter($this->log_messages);
+		}
+
 		$this->logger->logDebug('Executing Source ' . $source->getId());
 
 		$gateway = $source->gateway;
