@@ -46,8 +46,8 @@ $(document).ready(function() {
 	var sels = $('select.change-linked-dep');
 
 	sels.each(function() {
-		$(this).width($(this).width() + 100);
-	});
+		$(this).width($(this).width() + 140);
+	}).data('select-width', 'auto');
 
 	DP.select(sels, {
 		formatResult: function(result) {

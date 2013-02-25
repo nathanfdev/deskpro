@@ -143,10 +143,14 @@ class Department extends AbstractCategoryRepository
 
 		$old_email_gateway = $department->email_gateway;
 
+		$queries = array();
+
 		// Unlink old
 		if ($old_email_gateway) {
 			$old_email_gateway->department = null;
 			$em->persist($old_email_gateway);
+
+			$queries[] = "UPDATE email_gateways SET department_id = NULL WHERE department_id = {$department->getId()}";
 
 			$department->email_gateway = null;
 		}
@@ -156,6 +160,8 @@ class Department extends AbstractCategoryRepository
 			$old_dep->email_gateway = null;
 			$em->persist($old_dep);
 
+			$queries[] = "UPDATE departments SET email_gateway_id = NULL WHERE id = {$old_dep->getId()}";
+
 			$email_gateway->department = null;
 		}
 
@@ -164,10 +170,17 @@ class Department extends AbstractCategoryRepository
 			$department->email_gateway = $email_gateway;
 			$email_gateway->department = $department;
 			$em->persist($email_gateway);
+
+			$queries[] = "UPDATE departments SET email_gateway_id = {$email_gateway->getId()} WHERE id = {$department->getId()}";
+			$queries[] = "UPDATE email_gateways SET department_id = {$department->getId()} WHERE id = {$email_gateway->getId()}";
 		}
 
 		$em->persist($department);
 		$em->flush();
+
+		foreach ($queries as $q) {
+			$em->getConnection()->executeUpdate($q);
+		}
 
 		// validate links
 		if ($email_gateway) {

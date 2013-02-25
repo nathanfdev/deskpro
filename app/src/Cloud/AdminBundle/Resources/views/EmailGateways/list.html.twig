@@ -67,7 +67,14 @@ $(document).ready(function() {
 //######################################################################################################################
 
 $(document).ready(function() {
-	DP.select($('select.change-linked-dep'));
+
+	var sels = $('select.change-linked-dep');
+
+	sels.each(function() {
+		$(this).width($(this).width() + 100);
+	}).data('select-width', 'auto');
+
+	DP.select(sels);
 
 	$('select.change-linked-dep').on('change', function() {
 		var gateway_id = $(this).data('gateway-id');
@@ -327,7 +334,7 @@ $(document).ready(function() {
 								{% if dep.children|length %}
 									<optgroup label="{{ dep.title }}">
 										{% for subdep in dep.children %}
-											<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == dep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
+											<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == subdep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
 										{% endfor %}
 									</optgroup>
 								{% else %}
