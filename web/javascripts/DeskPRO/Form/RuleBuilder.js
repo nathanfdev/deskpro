@@ -228,7 +228,20 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 						Object.each(val, function(subval, subname) {
 							var sub_name = name_safe + "["+subname+"]";
 							var sub_name_safe = name_safe + "\\["+subname+"\\]";
-							var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval).change();
+
+							if (typeOf(subval) == 'object') {
+								Object.each(subval, function(v, k) {
+									var k_name = sub_name + "[" + k + "]";
+									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row).first();
+									if (el.is(':checkbox')) {
+										el.prop('checked', true).change();
+									} else {
+										el.val(v).change();
+									}
+								}, this);
+							} else {
+								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval).change();
+							}
 						}, this);
 					} else if (typeOf(val) == 'array') {
 						if (name == 'labels') {

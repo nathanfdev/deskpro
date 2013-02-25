@@ -136,98 +136,6 @@
 			</div>
 		</div>
 	{% endif %}
-
-
-	{% if app.getSetting('core.use_ticket_category') %}
-		<div class="builder-type" title="{{ phrase('agent.general.category') }}" data-rule-group="Ticket" data-rule-type="category" data-term-type="GenericMenuTerm">
-			<div class="builder-op">
-				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.general.is') }}</option>
-					<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				</select>
-			</div>
-			<div class="builder-options">
-				<select name="category">
-					<option value="0">None</option>
-					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
-						{% if cat.children|length %}
-							<optgroup label="{{ cat.title }}">
-								{% for subcat in cat.children %}
-									<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
-								{% endfor %}
-							</optgroup>
-						{% else %}
-							<option value="{{ cat.id }}">{{ cat.title }}</option>
-						{% endif %}
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if app.getSetting('core.use_ticket_priority') %}
-		<div class="builder-type" title="{{ phrase('agent.general.priority') }}" data-rule-group="Ticket" data-rule-type="priority" data-term-type="GenericMenuTerm">
-			<div class="builder-op">
-				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.general.is') }}</option>
-					<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				</select>
-			</div>
-			<div class="builder-options">
-				<select name="priority">
-					<option value="0">None</option>
-					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
-						<option value="{{ id }}">{{ name }}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if app.getSetting('core.use_ticket_workflow') %}
-		<div class="builder-type" title="{{ phrase('agent.general.workflow') }}" data-rule-group="Ticket" data-rule-type="workflow" data-term-type="GenericMenuTerm">
-			<div class="builder-op">
-				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.general.is') }}</option>
-					<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				</select>
-			</div>
-			<div class="builder-options">
-				<select name="workflow">
-					<option value="0">None</option>
-					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
-						<option value="{{ work.id }}">{{ work.title }}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if 'ticket_field' not in no_show_fields and app.getTicketFieldManager().getFields() %}
-		{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than') } %}
-		{% for field in app.getTicketFieldManager().getDisplayArray() %}
-			{% if field.field_def.getFilterCapabilities(search_context) %}
-			<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Ticket" data-rule-type="ticket_field[{{field.field_def.id}}]">
-				<div class="builder-op">
-					<select name="op" class="op">
-						{% if search_context == 'filter' %}
-							{% for op in field.field_def.getFilterCapabilities(search_context) %}
-								<option value="{{op}}">{{op_lang[op]}}</option>
-							{% endfor %}
-						{% else %}
-							{% for op in field.field_def.getSearchCapabilities(search_context) %}
-								<option value="{{op}}">{{op_lang[op]}}</option>
-							{% endfor %}
-						{% endif %}
-					</select>
-				</div>
-				<div class="builder-options">
-					{{ form_widget(field.formView) }}
-				</div>
-			</div>
-			{% endif %}
-		{% endfor %}
-	{% endif %}
 {% endif %}
 
 {##################################################################################################################}
@@ -392,7 +300,9 @@
 		</div>
 	</div>
 	{% endif %}
+{% endif %}
 
+{% if event_trigger_sub == 'web' or event_trigger_sub == '' or event_trigger_master == 'update' %}
 	{% if app.getSetting('core.use_ticket_category') %}
 		<div class="builder-type" title="{{ phrase('agent.general.category') }}" data-rule-group="Ticket" data-rule-type="category" data-term-type="GenericMenuTerm">
 			<div class="builder-op">
