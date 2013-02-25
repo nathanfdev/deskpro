@@ -131,7 +131,7 @@ class ChoiceField extends CustomFieldAbstract
 		$field->setOption('expanded', $this->expanded);
 
 		if ($this->validation_type == 'required') {
-			$field->setOption('required', $this->required);
+			$field->setOption('required', true);
 			$field->setOption('min_length', $this->min_length);
 			$field->setOption('max_length', $this->max_length);
 		} else {

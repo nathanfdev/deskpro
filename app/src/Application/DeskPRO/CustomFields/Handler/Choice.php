@@ -209,8 +209,16 @@ class Choice extends HandlerAbstract
 		#------------------------------
 
 		$children = $this->getFieldChildren();
+		$parent_option_ids = array();
+
+		foreach ($children as $c) {
+			if ($pid = $c->getOption('parent_id')) {
+				$parent_option_ids[$pid] = $pid;
+			}
+		}
+
 		foreach ($data as $id) {
-			if (!is_numeric($id) || !isset($children[$id])) {
+			if (!is_numeric($id) || !isset($children[$id]) || isset($parent_option_ids[$id])) {
 				return $this->makeErrorArray(array('invalid_choice'));
 			}
 		}
