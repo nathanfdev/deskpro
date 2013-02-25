@@ -18,7 +18,7 @@
 			<option value="creator" {% if sort == 'creator' %}selected="selected"{% endif %}>{{ phrase('user.tickets.creator') }}</option>
 			<option value="department" {% if sort == 'department' %}selected="selected"{% endif %}>{{ phrase('user.tickets.fields_department') }}</option>
 		</select>
-		<input type="submit" class="dp-btn-primary" value="Sort" />
+		<input type="submit" class="dp-btn-primary" value="{{ phrase('user.general.btn_sort') }}" />
 	</form>
 {% endset %}
 

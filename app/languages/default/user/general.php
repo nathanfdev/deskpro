@@ -50,4 +50,5 @@
 	'user.general.your_email_address'            => 'Your Email Address',
 	'user.general.your_name'                     => 'Your Name',
 	'user.general.can-view-because-agent'        => 'You can see this page because you are an agent. Normal users will not be able to view this page.',
+	'user.general.btn_sort'                      => 'Sort',
 );

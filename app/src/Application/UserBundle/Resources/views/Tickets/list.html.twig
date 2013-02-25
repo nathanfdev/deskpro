@@ -49,7 +49,7 @@
 			<option value="last_reply" {% if sort == 'last_reply' %}selected="selected"{% endif %}>{{ phrase('user.tickets.last_reply') }}</option>
 			<option value="department" {% if sort == 'department' %}selected="selected"{% endif %}>{{ phrase('user.tickets.fields_department') }}</option>
 		</select>
-		<input type="submit" class="dp-btn-primary" value="Sort" />
+		<input type="submit" class="dp-btn-primary" value="{{ phrase('user.general.btn_sort') }}" />
 	</form>
 {% endset %}
 
