@@ -104,10 +104,23 @@ class TreeProxy implements \ArrayAccess
 		}
 
 		$children = $this->__obj->getChildren();
-		if (!$children) {
+		if (!$children || !count($children)) {
 			$this->__child_cache = array();
 			return array();
 		}
+		$children = $children->toArray();
+
+		uasort($children, function($a, $b) {
+			if (!isset($a->display_order)) {
+				return 0;
+			}
+
+			if ($a->display_order == $b->display_order) {
+				return 0;
+			}
+
+			return ($a->display_order < $b->display_order) ? -1 : 1;
+		});
 
 		$this->__child_cache = self::makeTreeProxyArray($children, $this->__filter);
 		return $this->__child_cache;
@@ -120,7 +133,7 @@ class TreeProxy implements \ArrayAccess
 
 	public function offsetExists($offset)
 	{
-		if ($offset == 'children') {
+		if ($offset == 'children' || $offset == 'children_ordered') {
 			return true;
 		}
 
@@ -129,7 +142,7 @@ class TreeProxy implements \ArrayAccess
 
 	public function offsetGet($offset)
 	{
-		if ($offset == 'children') {
+		if ($offset == 'children' || $offset == 'children_ordered') {
 			return $this->getChildren();
 		}
 
@@ -138,7 +151,7 @@ class TreeProxy implements \ArrayAccess
 
 	public function offsetSet($offset, $value)
 	{
-		if ($offset == 'children') {
+		if ($offset == 'children' || $offset == 'children_ordered') {
 			throw new \RuntimeException();
 		}
 
@@ -147,7 +160,7 @@ class TreeProxy implements \ArrayAccess
 
 	public function offsetUnset($offset)
 	{
-		if ($offset == 'children') {
+		if ($offset == 'children' || $offset == 'children_ordered') {
 			throw new \RuntimeException();
 		}
 
@@ -161,7 +174,7 @@ class TreeProxy implements \ArrayAccess
 
 	function __get($name)
 	{
-		if ($name == 'children') {
+		if ($name == 'children' || $name == 'children_ordered') {
 			return $this->getChildren();
 		}
 
@@ -170,7 +183,7 @@ class TreeProxy implements \ArrayAccess
 
 	function __set($name, $value)
 	{
-		if ($name == 'children') {
+		if ($name == 'children' || $name == 'children_ordered') {
 			throw new \RuntimeException();
 		}
 
