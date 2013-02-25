@@ -95,18 +95,13 @@ class DbLoader implements LoaderInterface
 
 		$lang_in = implode(',', $langs);
 
-		// Note that ordering by lang id here is an easy way to give child phrases
-		// priority over parent phrases. Children are always created after parents, therefore
-		// their ID's are always higher.
-
 		// Depending on the interface, we load user, user+agent or user+agent+admin
 		if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'cron' || DP_INTERFACE == 'cli') {
 			$sql = "
 				SELECT name, phrase, original_phrase
 				FROM phrases
 				WHERE language_id IN ($lang_in)
-				GROUP BY name
-				ORDER BY language_id DESC
+				ORDER BY language_id ASC
 			";
 		} elseif (DP_INTERFACE == 'agent') {
 			$sql = "
@@ -115,8 +110,7 @@ class DbLoader implements LoaderInterface
 				WHERE
 					(language_id IN ($lang_in) AND groupname LIKE 'agent.%' OR groupname LIKE 'user.%')
 					OR (language_id IN ($specific_lang_ids) AND groupname LIKE \"obj_%\" OR groupname = \"custom\")
-				GROUP BY name
-				ORDER BY language_id DESC
+				ORDER BY language_id ASC
 			";
 		} else {
 			$sql = "
@@ -125,8 +119,7 @@ class DbLoader implements LoaderInterface
 				WHERE
 					(language_id IN ($lang_in) AND groupname LIKE 'user.%')
 					OR (language_id IN ($specific_lang_ids) AND groupname LIKE \"obj_%\" OR groupname = \"custom\")
-				GROUP BY name
-				ORDER BY language_id DESC
+				ORDER BY language_id ASC
 			";
 		}
 
