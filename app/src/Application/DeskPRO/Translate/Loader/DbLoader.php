@@ -135,6 +135,10 @@ class DbLoader implements LoaderInterface
 		$phrases = array();
 		while ($r = $q->fetch()) {
 
+			if ($r['name'] == 'user.general.helpdesk_by') {
+				continue;
+			}
+
 			$phrase_text = $r['phrase'];
 			if (empty($phrase_text)) {
 				$phrase_text = $r['original_phrase'];
