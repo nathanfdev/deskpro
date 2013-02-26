@@ -55,9 +55,14 @@
 }
 
 .deskproTabList li.is-alerting:hover .bound-fade,
-.deskproTabList li:hover, .deskproTabList li.over,
 .deskproTabList li.is-alerting.alert-highlight .bound-fade {
 	background: transparent !important;
+	filter: none !important;
+	-ms-filter: none !important;
+}
+
+.deskproTabList li:hover, .deskproTabList li.over {
+	background: #fff;
 	filter: none !important;
 	-ms-filter: none !important;
 }
