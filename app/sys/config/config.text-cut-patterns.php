@@ -22,4 +22,6 @@
 	'generic_3'                          => '#^On .*? <.*?@[a-zA-Z0-9\.\-_]+> wrote:\s*$#m',
 	'generic_4'                          => '#^On .*? <.*?@[a-zA-Z0-9\.\-_]+<.*?@[a-zA-Z0-9\.\-_]+>> wrote:\s*$#m',
 	'generic_5_it'                       => '#^Il .*? ha scritto:\s*$#m',
+
+	'generic_6'                          => '#^.*? wrote on [0-9/]+ [0-9:]+( (am|AM|pm|PM))?:#im',
 );
