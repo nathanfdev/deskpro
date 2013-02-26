@@ -6,7 +6,7 @@
 
 {% block pagebar %}
 	<input id="datepicker1" type="hidden" value="{{ view_date1|date('Y-m-d') }}" />
-	<input id="datepicker2" type="hidden" value="{% if view_date2 %}{{ view_date2|date('Y-m-d') }}{% endif %}" />
+	<input id="datepicker2" type="hidden" value="{{ view_date2|date('Y-m-d') }}" />
 	<ul>
 		<li>
 			<span class="dp-title">
@@ -260,6 +260,7 @@ table.chart_parent_table td {
 
 			$(this).hide();
 			$('#set_range_ctrl').show();
+			$('.datepicker2 > a').click();
 		});
 
         $(window).on('resize', resize);
