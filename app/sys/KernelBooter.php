@@ -75,8 +75,13 @@ class KernelBooter
 			}
 
 			$file = $debug_dir . DIRECTORY_SEPARATOR . date('YmdHis') . '-' . mt_rand(10000,99999);
-			xdebug_start_trace($file);
+
 			ini_set('xdebug.collect_params', 3);
+			if (isset($DP_CONFIG['debug']['enable_debug_trace_format'])) {
+				ini_set('xdebug.trace_format', $DP_CONFIG['debug']['enable_debug_trace_format']);
+			}
+
+			xdebug_start_trace($file);
 			define('DP_DEBUG_TRACE_FILE', $file . '.xt');
 		}
 	}
