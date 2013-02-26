@@ -236,7 +236,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.resultsHelper.prependResultId(ticket_id);
 
 		if (this.resultsHelper.getCurrentPage() == 1) {
-			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
+			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType || '');
 
 			if (replace_existing) {
 				var exist = self.getEl('results_wrap').find('article.ticket-' + ticket_id);

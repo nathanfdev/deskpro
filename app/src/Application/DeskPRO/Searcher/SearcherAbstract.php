@@ -265,8 +265,8 @@ abstract class SearcherAbstract implements PersonContextInterface
 	{
 		$terms = $this->getTerms();
 		$fields = array();
-		foreach ($terms as $term => $x) {
-			$fields[] = $term;
+		foreach ($terms as $info) {
+			$fields[] = $info[0];
 		}
 
 		return $fields;
