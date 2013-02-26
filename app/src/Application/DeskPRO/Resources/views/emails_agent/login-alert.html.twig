@@ -13,7 +13,7 @@
 {% endif %}
 
 {{ phrase('agent.emails.user_ip') }}: {{ session.visitor.ip_address }}<br />
-{{ phrase('agent.general.user_agent') }}: {{ session.visitor.user_agent }}<br />
+{{ phrase('agent.general.user_agent') }}: {{ session.visitor.last_track.user_agent }}<br />
 {{ phrase('agent.emails.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
 {{ phrase('agent.general.landing_page') }}: {{ session.visitor.landing_page|default('n/a') }}<br />
 {{ phrase('agent.emails.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />

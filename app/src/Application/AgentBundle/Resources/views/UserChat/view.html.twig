@@ -321,13 +321,13 @@ pageMeta.baseId = '{{ baseId }}';
 							<tr>
 								<th>IP Address:</th>
 								<td>
-									{{ convo.visitor.ip_address }}
+									{{ convo.visitor.last_track.ip_address }}
 								</td>
 							</tr>
 							<tr>
 								<th>User Agent:</th>
 								<td>
-									{{ convo.visitor.user_agent }}
+									{{ convo.visitor.last_track.user_agent }}
 								</td>
 							</tr>
 							{% if convo.session %}
@@ -339,7 +339,7 @@ pageMeta.baseId = '{{ baseId }}';
 							{% if convo.visitor.session_landing_page %}
 								<tr>
 									<th>Session Landing Page:</th>
-									<td>{{ convo.visitor.session_landing_page }}</td>
+									<td>{{ convo.visitor.visit_track.page_url }}</td>
 								</tr>
 							{% endif %}
 							<tr>
@@ -352,7 +352,7 @@ pageMeta.baseId = '{{ baseId }}';
 							<tr>
 								<th>Initial Landing Page:</th>
 								<td>
-									{{ convo.visitor.landing_page }}
+									{{ convo.visitor.initial_track.page_url }}
 								</td>
 							</tr>
 							{% endif %}

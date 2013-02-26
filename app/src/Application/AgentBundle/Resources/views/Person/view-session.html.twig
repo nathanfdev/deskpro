@@ -83,16 +83,16 @@ pageMeta.baseId = '{{ baseId }}';
 					<td class="value">
 						<time>{{session.date_last|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_last|date('c', 'UTC')}}"></time>)
-						{{ phrase('agent.people.on_page') }} <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
+						{{ phrase('agent.people.on_page') }} <em class="tipped" title="{{ session.visitor.last_track.page_url }}">...</em>
 				</tr>
 				<tr>
 					<td class="label">{{ phrase('agent.general.landing_page') }}</td>
 					<td class="value">
 						{{ phrase('agent.people.user_landed_on_page') }}
-						<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
-						{% if session.visitor.ref_page %}
+						<em class="tipped" title="{{ session.visitor.initial_track.page_url }}">...</em>
+						{% if session.visitor.visit_track.page_ref_url %}
 							{{ phrase('agent.people.and_came_from') }}
-							<em class="tipped" title="{{ session.visitor.ref_page }}">...</em>
+							<em class="tipped" title="{{ session.visitor.visit_track.page_ref_url }}">...</em>
 						{% endif %}
 					</td>
 				</tr>
@@ -105,7 +105,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<tr>
 					<td class="label">{{ phrase('agent.general.user_agent') }}</td>
 					<td class="value">
-						{{ session.visitor.user_agent }}
+						{{ session.visitor.last_track.user_agent }}
 					</td>
 				</tr>
 			</table>

@@ -8,15 +8,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 <table class="list" cellspacing="0" width="100%">
 	<tr class="white line-1">
 		<td width="120">{{ phrase('agent.general.landing_page') }}</td>
-		<td><input type="text" style="width: 90%" value="{{ session.visitor.landing_page }}" /></td>
+		<td><input type="text" style="width: 90%" value="{{ session.visitor.initial_track.page_url }}" /></td>
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.current_page') }}</td>
-		<td><input type="text" style="width: 90%" value="{{ session.visitor.last_page }}" /></td>
+		<td><input type="text" style="width: 90%" value="{{ session.visitor.last_track.page_url }}" /></td>
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.referrer') }}</td>
-		<td><input type="text" style="width: 90%" value="{{ session.visitor.ref_page }}" /></td>
+		<td><input type="text" style="width: 90%" value="{{ session.visitor.visit_track.page_ref_url }}" /></td>
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.initial_visit') }}</td>
@@ -41,6 +41,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.browser_agent') }}</td>
-		<td>{{ session.visitor.user_agent }}</td>
+		<td>{{ session.visitor.last_track.user_agent }}</td>
 	</tr>
 </table>

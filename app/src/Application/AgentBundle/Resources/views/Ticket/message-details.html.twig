@@ -35,7 +35,7 @@
 		<dd>{{ message.visitor.id }}</dd>
 
 		<dt>{{ phrase('agent.general.browser_agent') }}</dt>
-		<dd>{{ message.visitor.user_agent }}</dd>
+		<dd>{{ message.visitor.last_track.user_agent }}</dd>
 
 		<dt>{{ phrase('agent.general.initial_visit') }}</dt>
 		<dd>{{ message.visitor.date_created|date('fulltime') }}</dd>
@@ -44,7 +44,7 @@
 		<dd>{{ message.visitor.date_last|date('fulltime') }}</dd>
 
 		<dt>{{ phrase('agent.general.landing_page') }}</dt>
-		<dd>{{ message.visitor.landing_page }}</dd>
+		<dd>{{ message.visitor.initial_track.page_url }}</dd>
 	{% endif %}
 </dl>
 </section>
