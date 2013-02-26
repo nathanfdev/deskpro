@@ -52,7 +52,11 @@ class Standard extends AbstractRunner
 	public function _initLogger(Logger $logger, Entity\WorkerJob $worker_job)
 	{
 		if ($this->is_verbose) {
-			$out_writer = new \Orb\Log\Writer\Stream('php://stdout');
+			if (isset($GLOBALS['DP_OUTPUT'])) {
+				$out_writer = new \Orb\Log\Writer\ConsoleOutputWriter($GLOBALS['DP_OUTPUT']);
+			} else {
+				$out_writer = new \Orb\Log\Writer\Stream('php://stdout');
+			}
 			$logger->addWriter($out_writer);
 		}
 

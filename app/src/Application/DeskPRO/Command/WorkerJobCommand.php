@@ -419,6 +419,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		$runner->setJobOptions($options);
 
 		if ($verbose) {
+			$GLOBALS['DP_OUTPUT'] = $output;
 			$runner->setVerbose();
 		}
 
