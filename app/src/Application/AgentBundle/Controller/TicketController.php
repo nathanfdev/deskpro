@@ -1786,7 +1786,9 @@ class TicketController extends AbstractController
 			$newticket->setValuesFromTicket($ticket);
 
 			foreach (array('category_id', 'priority_id', 'product_id', 'workflow_id') as $f) {
-				$newticket->{$f} = $this->in->getUint("actions.$f");
+				if ($this->in->checkIsset("actions.$f")) {
+					$newticket->{$f} = $this->in->getUint("actions.$f");
+				}
 			}
 			if (isset($_REQUEST['custom_fields'])) {
 				$newticket->ticket_fields = $_REQUEST['custom_fields'];
