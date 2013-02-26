@@ -321,7 +321,7 @@ class NewTicketValidator extends AbstractValidator
 
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 					'category_repository' => App::getEntityRepository('DeskPRO:Product'),
-					'allow_none' => true
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_user_required')
 				));
 				if (!$validator->isValid($this->newticket->ticket->product_id)) {
 					$this->addError('ticket.product_id.invalid');
@@ -331,7 +331,7 @@ class NewTicketValidator extends AbstractValidator
 			case 'ticket_category':
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 					'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
-					'allow_none' => true
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_user_required')
 				));
 				if (!$validator->isValid($this->newticket->ticket->category_id)) {
 					$this->addError('ticket.category_id.invalid');
@@ -340,7 +340,7 @@ class NewTicketValidator extends AbstractValidator
 
 			case 'ticket_priority':
 				$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
-					'allow_none' => true
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_user_required')
 				));
 				if (!$validator->isValid($this->newticket->ticket->priority_id)) {
 					$this->addError('ticket.priority_id.invalid');

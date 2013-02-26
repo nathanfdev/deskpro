@@ -138,29 +138,38 @@ class NewTicketValidator extends AbstractValidator
 
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 					'category_repository' => App::getEntityRepository('DeskPRO:Product'),
-					'allow_none' => true
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_agent_required')
 				));
 				if (!$validator->isValid($this->newticket->product_id)) {
-					$this->addError('ticket.product_id.invalid');
+					$this->addError('ticket.product_id', array('message' => 'Select a product'));
 				}
 				break;
 
 			case 'ticket_category':
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 					'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
-					'allow_none' => true
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_agent_required')
 				));
 				if (!$validator->isValid($this->newticket->category_id)) {
-					$this->addError('ticket.category_id.invalid');
+					$this->addError('ticket.category_id', array('message' => 'Select a category'));
 				}
 				break;
 
 			case 'ticket_priority':
 				$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
-					'allow_none' => true
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_agent_required')
 				));
 				if (!$validator->isValid($this->newticket->priority_id)) {
-					$this->addError('ticket.priority_id.invalid');
+					$this->addError('ticket.priority_id', array('message' => 'Select a priority'));
+				}
+				break;
+
+			case 'ticket_workflow':
+				$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
+					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_work_agent_required')
+				));
+				if (!$validator->isValid($this->newticket->priority_id)) {
+					$this->addError('ticket.workflow_id', array('message' => 'Select a workflow'));
 				}
 				break;
 

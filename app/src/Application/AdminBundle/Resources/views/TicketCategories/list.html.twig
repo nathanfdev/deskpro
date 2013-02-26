@@ -135,6 +135,8 @@
 			<button class="clean-white">Update</button>
 		</form>
 	</div>
+
+	{% include 'AdminBundle:TicketFeatures:field-cat-validation-options.html.twig' with {field_id: 'ticket_cat'} %}
 {% endif %}
 
 </div>

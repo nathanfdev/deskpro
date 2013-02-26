@@ -206,8 +206,10 @@ class SettingsController extends AbstractController
 			throw $e;
 		}
 
-		$this->session->setFlash('saved_settings', 1);
-		$this->session->save();
+		if (!$this->getRequest()->isXmlHttpRequest()) {
+			$this->session->setFlash('saved_settings', 1);
+			$this->session->save();
+		}
 
 		// may have changed the default language
 		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
@@ -220,6 +222,10 @@ class SettingsController extends AbstractController
 				// Disabled
 				App::getDb()->executeUpdate("UPDATE tickets SET status = 'resolved' WHERE status = 'closed'");
 			}
+		}
+
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('success' => true));
 		}
 
 		$return = $this->in->getString('return');

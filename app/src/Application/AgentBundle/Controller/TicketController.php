@@ -1784,6 +1784,10 @@ class TicketController extends AbstractController
 			// Validate based on department...
 			$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
 			$newticket->setValuesFromTicket($ticket);
+
+			foreach (array('category_id', 'priority_id', 'product_id', 'workflow_id') as $f) {
+				$newticket->{$f} = $this->in->getUint("actions.$f");
+			}
 			if (isset($_REQUEST['custom_fields'])) {
 				$newticket->ticket_fields = $_REQUEST['custom_fields'];
 			}
