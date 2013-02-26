@@ -210,6 +210,19 @@ class DetectFilterMatches
 		$all_agents  = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		$team2agents = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamToAgentsMap();
 
+		$old_dep_id = null;
+		$new_dep_id = null;
+		if ($dep_change = $this->tracker->getChangedProperty('department')) {
+			$old_dep_id = $dep_change['old'];
+			if ($old_dep_id) {
+				$old_dep_id = $old_dep_id->getId();
+			}
+			$new_dep_id = $dep_change['new'];
+			if ($new_dep_id) {
+				$new_dep_id = $new_dep_id->getId();
+			}
+		}
+
 		$orig_ticket = $this->tracker->getOriginalTicket();
 		$new_ticket  = $this->tracker->getTicket();
 
@@ -290,14 +303,30 @@ class DetectFilterMatches
 				$orig_match_failterm = null;
 				$new_match_failterm = null;
 
-				if ($this->tracker->isNewTicket()) {
-					// there is no such thing as an original match with a new ticket
-					$orig_match = false;
-				} else {
-					$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
+				if ($dep_change) {
+					if (!$this->tracker->isNewTicket() && !$agent->AgentPermissions->isDepartmentAllowed($old_dep_id)) {
+						$orig_match = false;
+						$orig_match_failterm = 'ticket.department_id';
+					}
+
+					if (!$agent->AgentPermissions->isDepartmentAllowed($new_dep_id)) {
+						$new_match = false;
+						$new_match_failterm = 'ticket.department_id';
+					}
 				}
 
-				$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
+				if ($orig_match_failterm === null) {
+					if ($this->tracker->isNewTicket()) {
+						// there is no such thing as an original match with a new ticket
+						$orig_match = false;
+					} else {
+						$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
+					}
+				}
+
+				if ($new_match_failterm === null) {
+					$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
+				}
 
 				if ($orig_match && $agent->PermissionsManager->TicketChecker->canView($orig_ticket)) {
 					$changed[$filter->id]['orig_match'][] = $agent;
