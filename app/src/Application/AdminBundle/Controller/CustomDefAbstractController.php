@@ -76,7 +76,7 @@ abstract class CustomDefAbstractController extends AbstractController
 	 */
 	public function indexAction()
 	{
-		$existing_fields = $this->getApi()->getEnabledFields();
+		$existing_fields = $this->getApi()->getFields();
 
 		return $this->render($this->getTemplateName('index.html.twig'), $this->getTemplateVars(array(
 			'fields' => $existing_fields
@@ -326,7 +326,7 @@ abstract class CustomDefAbstractController extends AbstractController
 	/**
 	 * Get the handler for working with custom fields.
 	 *
-	 * @return Application\DeskPRO\CustomFields\AbstractFields
+	 * @return \Application\DeskPRO\CustomFields\AbstractFields
 	 */
 	public function getApi()
 	{
