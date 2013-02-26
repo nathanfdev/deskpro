@@ -218,6 +218,19 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return string
+	 */
+	public function getIpAddress()
+	{
+		if (!$this->last_track) {
+			return null;
+		}
+
+		return $this->last_track->ip_address;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
