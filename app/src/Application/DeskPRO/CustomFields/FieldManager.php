@@ -211,10 +211,6 @@ class FieldManager
 	 */
 	public function getDisplayArray($field_data = array(), $field_group = null, $use_default = false)
 	{
-		if (!$field_group) {
-			$field_group = App::get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		}
-
 		$custom_fields = array();
 		foreach ($this->getFields() as $f_def) {
 			$display = new FieldDisplayArray($this, $f_def, $field_data, $field_group, $use_default);

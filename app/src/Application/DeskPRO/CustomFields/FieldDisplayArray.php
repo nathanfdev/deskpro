@@ -125,7 +125,10 @@ class FieldDisplayArray implements \ArrayAccess
 				$f = $this->field_def->getHandler()->getFormField($this->data['value']);
 
 				if ($field_group) {
-					$field_group->add($f);
+					if (!$field_group->has($this->data['name'])) {
+						$field_group->add($f);
+					}
+
 					$form = $field_group->getForm();
 					$formView = $form->createView();
 					$formView = $formView[$this->data['name']];
