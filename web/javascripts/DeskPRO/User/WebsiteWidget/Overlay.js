@@ -174,7 +174,7 @@ var DpOverlayWidget = new (function() {
 
 	var lastWinHeight = 0;
 	var lastWinWidth = 0;
-	var childRequestedHeight = 350;
+	var childRequestedHeight = 500;
 
 	var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
 	var ieVer = 0;
@@ -594,7 +594,7 @@ var DpOverlayWidget = new (function() {
 		comms.setupReciever(function(m) {
 			me.childListen(m);
 		}, src);
-		setHeight(750);
+		setHeight(500);
 		updatePosition();
 
 		util.showEl(overlayBack);

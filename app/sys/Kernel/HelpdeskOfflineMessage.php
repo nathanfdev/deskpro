@@ -142,6 +142,13 @@ class HelpdeskOfflineMessage
 		$fn_scope = function() use ($vars, $tpl_file) {
 			extract($vars);
 
+			$is_widget = false;
+			if (defined('DP_REQUEST_URL')) {
+				if (strpos(DP_REQUEST_URL, '/widget/overlay.html')) {
+					$is_widget = 'overlay';
+				}
+			}
+
 			ob_start();
 			include(DP_ROOT . '/src/Application/DeskPRO/Resources/views/offline_pages/' . $tpl_file . '.html.php');
 			$page_html = ob_get_clean();
