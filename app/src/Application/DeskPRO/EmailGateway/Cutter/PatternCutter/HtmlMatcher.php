@@ -224,6 +224,12 @@ class HtmlMatcher
 		$this->getQp()->writeXHTML();
 		$this->marked_body = ob_get_clean();
 
+		// We muck around adding <?xml declaration to QueryPath to force PHP's DOMDocument
+		// into UTF mode, so now strip those out here
+		$this->marked_body = trim($this->marked_body);
+		$this->marked_body = preg_replace('#^<\?xml.*?\?>\s*#', '', $this->marked_body);
+		$this->marked_body = preg_replace('#<\?xml.*?\?\?>\s*#', '', $this->marked_body);
+
 		$wrap_pos = strpos($this->marked_body, 'DP_MARK_EL');
 		if ($wrap_pos) {
 			$piece1 = substr($this->marked_body, 0, $wrap_pos);
