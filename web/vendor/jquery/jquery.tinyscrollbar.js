@@ -207,8 +207,10 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oContent.ratio = oViewport[options.axis] / oContent[options.axis];
 				if (oContent.ratio >= 1) {
 					oScrollbar.obj.addClass('disable');
+					oViewport.obj.addClass('scroll-disabled');
 				} else {
 					oScrollbar.obj.removeClass('disable');
+					oViewport.obj.removeClass('scroll-disabled');
 				}
 				oTrack[options.axis] = options.size == 'auto' ? oViewport[options.axis] : options.size;
 				oThumb[options.axis] = Math.min(oTrack[options.axis], Math.max(0, ( options.sizethumb == 'auto' ? (oTrack[options.axis] * oContent.ratio) : options.sizethumb )));

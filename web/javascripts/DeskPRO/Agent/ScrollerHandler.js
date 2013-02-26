@@ -15,6 +15,8 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		element.data('scroll_handler', this);
 		element.addClass('with-scroll-handler');
 
+		var scrollTrack = null;
+
 		var onScrollTimer = false;
 
 		function initScroll() {
@@ -43,6 +45,14 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 			}
 		}
 
+		function isScrollEnabled() {
+			if (!scrollTrack) {
+				element.find('> .scrollbar');
+			}
+
+			return element.hasClass('disable');
+		};
+
 		function restorePosition() {
 			if (!element) return;
 			if (hasInit && element) {
@@ -69,6 +79,7 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		this.updateSize = updateSize;
 		this.restorePosition = restorePosition;
 		this.destroy = destroy;
+		this.isScrollEnabled = isScrollEnabled;
 		this.isInitialized = function() { return hasInit };
 	}
 });

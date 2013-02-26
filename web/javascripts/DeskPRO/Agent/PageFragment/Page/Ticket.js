@@ -686,6 +686,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
 			}
+
+			var vp = this.wrapper.find('.scroll-viewport').first();
+			if (vp.hasClass('scroll-disabled')) {
+				if (!vp.hasClass('reply-btm-fixed')) {
+					var c = vp.find('> .scroll-content');
+					var c_p = c.parent();
+					var diff = c_p.height() - c.height();
+
+					vp.addClass('reply-btm-fixed');
+
+					this.wrapper.find('.reply-box-wrap').css({'margin-top': diff-10});
+				}
+			} else {
+				if (vp.hasClass('reply-btm-fixed')) {
+					vp.removeClass('reply-btm-fixed');
+					this.wrapper.find('.reply-box-wrap').css({'margin-top': 0});
+				}
+			}
 		}
 	},
 
