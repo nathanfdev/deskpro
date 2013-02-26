@@ -541,12 +541,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	setNewByPerson: function(data) {
-		this.getEl('person_title').text(data.name + " (" + data.email + ")");
-		$('.pending-info.person', this.wrapper).show();
-		this.setUser(data.person_id);
-		this.getEl('user_section').hide();
 		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
+		this.getEl('choose_user').hide();
+		this.getEl('user_section').show();
+		this.getEl('user_choice').show().html('<div style="padding:10px;"><div class="loading-icon-big"></div></div>');
 
+		this.setUser(data.person_id);
 		this.updateUi();
 	},
 
