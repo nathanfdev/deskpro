@@ -96,7 +96,6 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 							ticketsSection.addCustomFilter(data.filter_id, data.filter_title);
 						} else {
 							ticketsSection.updateCustomFilterTitle(data.filter_id, data.filter_title);
-							ticketsSection.getUpdatedFilterCounts();
 						}
 					}
 

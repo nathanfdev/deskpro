@@ -392,17 +392,18 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	_initFilters: function() {
 		var self = this;
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-sys-filter-counts'}],
-			'filters.counts',
-			{recurring: true, minDelay: 57000/*57sec*/ }
+			[{name: 'do[]', value: 'get-sys-filters-data'}],
+			'filters.filter_data',
+			{recurring: true, minDelay: 33000/*33sec*/ }
 		);
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-custom-filter-counts'}],
-			'filters.counts',
-			{recurring: true, minDelay: 57000/*57sec*/, minDelayAfterOne:true }
+			[{name: 'do[]', value: 'get-custom-filters-data'}],
+			'filters.filter_data',
+			{recurring: true, minDelay: 68000/*68sec*/, minDelayAfterOne:true }
 		);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
 			var ticketId = data.ticket_id;
@@ -563,26 +564,39 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 	},
 
-	getUpdatedFilterCounts: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/get-filter-counts.json',
-			dataType: 'json',
-			context: this,
-			success: function(data) {
-				this.updateFilterCounts(data);
-			}
-		});
-	},
+	updateFilterData: function(data) {
 
-	updateFilterCounts: function(counts) {
-		Object.each(counts, function (count, filter_id) {
-			if (this.archiveFilterIds.indexOf(filter_id) != -1) {
-				return;
+		var viewingFilterId = null;
+		var refreshUrl = null;
+		if (this.listPage && this.listPage.meta) {
+			if (this.listPage.meta.filter_id) {
+				viewingFilterId = this.listPage.meta.filter_id;
 			}
-			this.setFilterCount(filter_id, count);
+			if (this.listPage.meta.refreshUrl) {
+				refreshUrl = this.listPage.meta.refreshUrl;
+			}
+		}
+
+		Object.each(data, function(ticketIds, filterId) {
+			filterId = parseInt(filterId);
+
+			var oldCount = 0;
+			if (this.filterTicketIds[filterId]) {
+				oldCount = this.filterTicketIds[filterId].length;
+			}
+			var newCount = ticketIds.length;
+
+			this.filterTicketIds[filterId] = ticketIds;
+
+			if (oldCount != newCount) {
+				this.setFilterCount(filterId, newCount);
+
+				// If we are currently viewing this filter that is out of date, we need to refresh it now
+				if (viewingFilterId == filterId && refreshUrl) {
+					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl);
+				}
+			}
 		}, this);
-
-		this._recountHold();
 	},
 
 	filterUpdated: function(data) {

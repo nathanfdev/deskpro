@@ -35,6 +35,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Application\DeskPRO\App;
@@ -150,11 +151,11 @@ class AgentMessagesLoader extends LoaderAbstract
 			}
 			if ($count && $count % 2 === 0) {
 				$dos[] = 'get-online-agents';
-				$dos = array_unique($dos);
 			} elseif ($count && $count % 3 === 0) {
 				$dos[] = 'get-online-visitors';
-				$dos = array_unique($dos);
 			}
+
+			$dos = array_unique($dos);
 
 			foreach ($dos as $do) {
 				$do = Strings::dashToCamelCase($do);
@@ -445,22 +446,36 @@ class AgentMessagesLoader extends LoaderAbstract
 	# getFilterCounts
 	############################################################################
 
-	public function getSysFilterCountsMessage()
+	public function getSysFiltersDataMessage()
 	{
 		$this->_getContainer();
-		$filters = new \Application\DeskPRO\Tickets\Filters();
-		$all_counts = $filters->getAllCountsSystemFilters($this->_getPerson());
+		$filters_api = new \Application\DeskPRO\Tickets\Filters();
 
-		return array(array(null, 'filters.counts', array($all_counts)));
+		$filter_info = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
+		$filters = array();
+		foreach (array('all_filters', 'sys_filters', 'sys_filters_hold', 'archive_filters') as $k) {
+			foreach ($filter_info[$k] as $f) {
+				$filters[] = $f;
+			}
+		}
+
+		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filters);
+		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
+
+		return array(array(null, 'filters.filter_data', $filter_id_matches));
 	}
 
-	public function getCustomFilterCountsMessage()
+	public function getCustomFiltersDataMessage()
 	{
 		$this->_getContainer();
-		$filters = new \Application\DeskPRO\Tickets\Filters();
-		$all_counts = $filters->getAllCountsCustomFilters($this->_getPerson());
+		$filters_api = new \Application\DeskPRO\Tickets\Filters();
 
-		return array(array(null, 'filters.counts', array($all_counts)));
+		$filter_info      = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
+
+		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters']);
+		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
+
+		return array(array(null, 'filters.filter_data', $filter_id_matches));
 	}
 
 
