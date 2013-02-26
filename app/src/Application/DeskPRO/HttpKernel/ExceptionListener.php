@@ -83,6 +83,10 @@ class ExceptionListener
 			return;
 		}
 
+		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+			return;
+		}
+
 		$exception->_dp_sn = KernelErrorHandler::genSessionName();
 
 		$errinfo = KernelErrorHandler::getExceptionInfo($exception);
