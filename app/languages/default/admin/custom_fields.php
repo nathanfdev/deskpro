@@ -4,6 +4,7 @@
 	'admin.custom_fields.choice'                     => 'Choice',
 	'admin.custom_fields.toggle'                     => 'Single Checkbox (on/off)',
 	'admin.custom_fields.choice_require_user_input'  => 'Require user to input a value for this field',
+	'admin.custom_fields.choice_require_agent_input' => 'Require agent to input a value for this field',
 	'admin.custom_fields.custom_css_class'           => 'Custom CSS class',
 	'admin.custom_fields.custom_styling'             => 'Custom Styling',
 	'admin.custom_fields.display'                    => 'Display',
