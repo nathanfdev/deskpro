@@ -61,12 +61,54 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		);
 	}
 
+	protected function loginViaToken()
+	{
+		if (($token = $this->in->getString('tok')) && strpos($token, '-')) {
+			list($person_id, $login_token) = explode('-', $token, 2);
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+			if ($person && $person->checkPassword($login_token)) {
+				$set_active = false;
+				if (!$person->date_last_login) {
+					$set_active = true;
+				}
+
+				if ($set_active) {
+					$person->setLastLoginAt();
+				}
+
+				$this->em->persist($person);
+				$this->em->flush();
+
+				$this->session->set('auth_person_id', $person->getId());
+				$this->session->set('dp_interface', DP_INTERFACE);
+
+				App::setCurrentPerson($person);
+
+				// Announce if its an agent
+				if ($set_active) {
+					$this->session->set('active_status', 'available');
+					$this->session->set('is_chat_available', 1);
+				}
+
+				$this->session->save();
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Handles showing the login form, and on POST handles login credentials
 	 * through the auth adapters.
 	 */
 	public function indexAction()
 	{
+		if ($this->loginViaToken()) {
+			return $this->redirectRoute($this->route_prefix);
+		}
+
 		$return = $this->in->getStringFromGet('return');
 		if ($return AND $return[0] != '/') {
 			// Always be a path on the current domain,

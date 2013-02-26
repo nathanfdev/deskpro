@@ -50,6 +50,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
+		if ($this->loginViaToken()) {
+			return $this->redirectRoute($this->route_prefix);
+		}
+
 		$agent_session_code = $this->in->getString('dpsid-agent');
 		$agent_session = null;
 		if ($agent_session_code) {

@@ -51,6 +51,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
+		if ($this->loginViaToken()) {
+			return $this->redirectRoute($this->route_prefix);
+		}
+
 		// Already logged in
 		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
 			return $this->redirectRoute($this->route_prefix);
