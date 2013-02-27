@@ -91,7 +91,7 @@ class ContentRating
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @param \Application\DeskPRO\Entity\Visitor $visitor
 	 */
-	public function __construct(ContentAbstract $content_object, Person $person, Visitor $visitor)
+	public function __construct(ContentAbstract $content_object, Person $person, Visitor $visitor = null)
 	{
 		$this->person = $person;
 		$this->visitor = $visitor;
@@ -128,17 +128,31 @@ class ContentRating
 
 		$res = null;
 		if ($this->person) {
-			$res = $em->createQuery("
-				SELECT r
-				FROM DeskPRO:Rating r
-				WHERE
-					r.object_type = ?1 AND r.object_id = ?2
-					AND r.visitor = ?3
-			")->setParameter(1, $this->content_object->getContentType())
-			  ->setParameter(2, $this->content_object->getId())
-			  ->setParameter(3, $this->visitor)
-			  ->execute();
-		} else {
+			if ($this->visitor) {
+				$res = $em->createQuery("
+					SELECT r
+					FROM DeskPRO:Rating r
+					WHERE
+						r.object_type = ?1 AND r.object_id = ?2
+						AND (r.visitor = ?3 OR r.person = ?4)
+				")->setParameter(1, $this->content_object->getContentType())
+				  ->setParameter(2, $this->content_object->getId())
+				  ->setParameter(3, $this->visitor)
+				  ->setParameter(4, $this->person)
+				  ->execute();
+			} else {
+				$res = $em->createQuery("
+					SELECT r
+					FROM DeskPRO:Rating r
+					WHERE
+						r.object_type = ?1 AND r.object_id = ?2
+						AND (r.person = ?3)
+				")->setParameter(1, $this->content_object->getContentType())
+				  ->setParameter(2, $this->content_object->getId())
+				  ->setParameter(3,$this->person)
+				  ->execute();
+			}
+		} elseif ($this->visitor) {
 			$res = $em->createQuery("
 				SELECT r
 				FROM DeskPRO:Rating r
