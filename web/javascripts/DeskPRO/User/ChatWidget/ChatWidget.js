@@ -434,6 +434,11 @@ var DpChatWidget = new (function() {
 			url += '&vc=' + encodeURIComponent(DpChatWidget_Options.visitorCode);
 		} else if (window.DESKPRO_VISITOR_ID) {
 			url += '&vc=' + encodeURIComponent(window.DESKPRO_VISITOR_ID);
+		} else {
+			var vc = getCookie('dpvc');
+			if (vc) {
+				url += '&vc=' + encodeURIComponent(vc);
+			}
 		}
 
 		if (DpChatWidget_Options && DpChatWidget_Options.visitorUpdateTrackId) {
@@ -502,6 +507,13 @@ var DpChatWidget = new (function() {
 			});
 		}
 	},
+
+	this.initVisitorCode = function(visitor_code) {
+		if (visitor_code) {
+			window.DESKPRO_VISITOR_ID = visitor_code;
+			setCookie('dpvc', visitor_code, 365);
+		}
+	};
 
 	this.initWidget = function(sessionId) {
 
@@ -896,3 +908,9 @@ var DpChatWidget = new (function() {
 
 	return this;
 })();
+
+var DpVis = {
+	init: function(visitor_code) {
+		window.DpChatWidget.initVisitorCode();
+	}
+};

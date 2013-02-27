@@ -184,7 +184,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		// Insert tracks
 		$track = null;
-		if (DP_INTERFACE == 'user') {
+		if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url)) {
 			$track = new Entity\VisitorTrack();
 			$track->visitor = $vis;
 			$track->page_url = $url;
@@ -235,7 +235,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			App::getOrm()->flush();
 		}
 
-		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never', true);
+		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never', true);
 		$cookie->send();
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {

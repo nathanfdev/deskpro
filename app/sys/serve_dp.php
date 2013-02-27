@@ -307,7 +307,7 @@ class DpLoader extends LoaderAbstract
 		")->execute(array_values($visitor_update));
 
 		$js_out[] = "window.DESKPRO_VISITOR_ID = '$visitor_code';";
-		$js_out[] = "if (window.DpVisLoaded) window.DpVisLoaded();";
+		$js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code');";
 
 		#------------------------------
 		# Chat is available
