@@ -34,6 +34,11 @@
 		'repos' => 'git://github.com/facebook/php-sdk.git',
 		'version' => 'v3.1.1',
 	),
+	'geoip_api' => array(
+		'into' => DP_ROOT.'/vendor/geoip-api',
+		'repos' => 'git://github.com/maxmind/geoip-api-php.git',
+		'version' => 'HEAD',
+	),
 	'imagine' => array(
 		'into' => DP_ROOT.'/vendor/imagine',
 		'repos' => 'git://github.com/avalanche123/Imagine.git',

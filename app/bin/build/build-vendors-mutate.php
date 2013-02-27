@@ -113,7 +113,19 @@ class VendorMutate
 		$source = str_replace('return new EntityManager(', 'return new static(', $source);
 		return $source;
 	}
+
+	public function mutateGeoipApi()
+	{
+		$path = DP_ROOT.'/vendor/geoip-api/geoipcity.inc';
+		$file = file_get_contents($path);
+
+		$file = str_replace("require_once 'geoip.inc';", "require_once DP_ROOT.'/vendor/geoip-api/geoip.inc';", $file);
+		$file = str_replace("require_once 'geoipregionvars.php';", "require_once DP_ROOT.'/vendor/geoip-api/geoipregionvars.php';", $file);
+
+		file_put_contents($path, $file);
+	}
 }
 
 $mutate = new VendorMutate();
 $mutate->mutateDoctrine();
+$mutate->mutateGeoipApi();
