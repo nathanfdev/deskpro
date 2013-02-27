@@ -21,7 +21,7 @@
 									{% if vis.person %}
 										{{ vis.person.getDisplayName() }}
 									{% else %}
-										Anon #{{ vis.id }}
+										Anon {{ vis.visit_track.ip_address }}
 									{% endif %}
 								</span>
 							</div>

@@ -3,8 +3,8 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Visitor';
 {% if visitor.person %}
 	pageMeta.title = {{ ("Visitor: " ~ visitor.person.display_name)|json_encode|raw }};
-{% else %}
-	pageMeta.title = 'Visitor #{{ visitor.id }}';
+{% elseif visitor.email %}
+	pageMeta.title = 'Visitor {{ vis.visit_track.ip_address }}';
 {% endif %}
 pageMeta.visitor_id = {{visitor.id|default(0)}};
 
@@ -20,8 +20,8 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	{% if visitor.visit_track.geo_country %}
 		<span class="country" style="background-image: url({{ asset('images/flags/' ~ visitor.visit_track.geo_country|lower ~ '.png') }});" title="{{ visitor.visit_track.geo_country }}"></span>
-		<span class="ip-address">{{ visitor.visit_track.ip_address }}</span>
 	{% endif %}
+	<span class="ip-address">{{ visitor.visit_track.ip_address }}</span>
 	<h4 class="id-number">#{{ visitor.id }}</h4>
 	<h1>
 		{% if visitor.person %}
