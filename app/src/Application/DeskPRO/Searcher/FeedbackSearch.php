@@ -265,7 +265,7 @@ class FeedbackSearch extends SearcherAbstract
 
 				if ($this->person->id) {
 					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
-				} else {
+				} elseif ($this->visitor) {
 					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.visitor_id = {$this->visitor->id})";
 				}
 
