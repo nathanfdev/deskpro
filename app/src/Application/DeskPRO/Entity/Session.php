@@ -82,6 +82,20 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $visitor = null;
 
 	/**
+	 * The users user agent string
+	 *
+	 * @var string
+	 */
+	protected $user_agent = '';
+
+	/**
+	 * The users IP address
+	 *
+	 * @var string
+	 */
+	protected $ip_address;
+
+	/**
 	 * @var string
 	 */
 	protected $data = '';
@@ -292,6 +306,8 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
 		$metadata->mapField(array( 'fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface', ));
+		$metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent', ));
+		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person', ));
 		$metadata->mapField(array( 'fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot', ));
