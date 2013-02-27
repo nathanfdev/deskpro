@@ -297,7 +297,7 @@ var DpChatWidget = new (function() {
 
 			var sid = getCookie('dpchat_sid');
 			if (sid) {
-				qs += '__sid=' + sid;
+				qs += 'dpsid=' + sid;
 			}
 
 			if (data) {
@@ -456,7 +456,7 @@ var DpChatWidget = new (function() {
 			var sid = getCookie('dpchat_sid');
 		}
 		if (sid) {
-			url += '&__sid=' + sid + '&';
+			url += '&dpsid=' + sid + '&';
 		}
 
 		url += 'current_page=' + window.location.href + '&';

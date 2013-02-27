@@ -1,7 +1,14 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.Section');
 
+/**
+ * The UserChat section also controls the chat status at the top of the window.
+ */
 DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
+
+	//##################################################################################################################
+	//# Init
+	//##################################################################################################################
 
 	init: function() {
 		var self = this;
@@ -13,38 +20,132 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.lastOnlineUserLoad = null;
 		this.lastOnlineUserCount = null;
 
-		$('#new_user_chat_alert').template('new_user_chat_alert');
-		$('#invite_chat_alert').template('invite_chat_alert');
-		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
-		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
-		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
-
+		this.onlineUsersWrap = $('#agent_status_online_users');
+		this.statusMenuOpen = false;
 		this.dismissedChats = {};
+		this.openingChatTimeout = {};
+		this.refreshCountsTimeout = null;
 
+		this._initStatusMenu();
+		this._initStatusMenuAgents();
+		this._initStatusMenuUsers();
+		this._initTemplates();
 		this._initMessageHandlers();
-
-		this.getSectionElement().on('click', '.sub-toggle', function(ev) {
-			var row = $(this).closest('li');
-			var sub = $('> ul.sub-group', row);
-			if (sub.length) {
-				if (sub.is(':visible')) {
-					row.removeClass('sub-expanded');
-					sub.slideUp('fast');
-				} else {
-					row.addClass('sub-expanded');
-					sub.slideDown('fast');
-				}
-			}
-		});
 
 		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('chat_section', (function(data) {
 			this._initSection(data);
 		}).bind(this));
+	},
 
-		this.openingChatTimeout = {};
-		this.refreshCountsTimeout = null;
+	_initSection: function(data) {
 
+		var self = this;
+
+		var lastSelectedId = null;
+		if (this.contentEl) {
+			lastSelectedId = this.contentEl.find('.nav-selected').find('.list-counter').attr('id');
+		}
+
+		if(this.hasSectionInitialised) {
+			this._lastLoaded = new Date();
+			this.filterGroupEditor.destroy();
+			this.contentEl.empty();
+		}
+
+		this.hasSectionInitialised = true;
+		var self = this;
+
+		this.setHasInitialLoaded();
+		this.contentEl.html(data.section_html);
+
+		if('filterGroupEditor' in this)
+			this.filterGroupEditor.destroy();
+
+		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
+			containerElement: '#chat_outline',
+			listElement: '#chats_outline_sys_filters',
+			triggerElement: '#chat_filter_launch_editor',
+			controlElement: '#chat_filter_group_editor',
+			useIntId: false,
+			onGroupingChanged: function(data) {
+				self.refreshFilterGrouping(data);
+			},
+			onSetMarginTop: function(evData) {
+				evData.marginTop = $('#chats_outline_sys_filters').position().top;
+			}
+		});
+		this.filterGroupEditor._initControl();
+		this.refreshFilterGrouping(data, lastSelectedId);
+		this.updateGroupingVars();
+
+		this._lastLoaded = new Date();
+        this.handleUpdateCounts();
+
+		if (lastSelectedId) {
+			$('#' + lastSelectedId).closest('.is-nav-item').addClass('nav-selected');
+		}
+
+		new DeskPRO.ElementHandler.SimpleTabs($('#chat_outline_labels_switcher'));
+	},
+
+	_initStatusMenu: function() {
+		var self = this;
+
+		$('#chatStatusWrap').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var list = $('#agent_status_menu');
+			list.hide().detach().appendTo('body');
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+				self.statusMenuOpen = false;
+				self.fireEvent('statusMenuClosed');
+			};
+			backdrop.one('click', close);
+			$('#agent_status_away_overlay').one('click', close);
+			self.statusMenuOpen = true;
+			self.fireEvent('statusMenuOpened');
+		});
+
+		$('#agent_status_menu').find('button.toggle-status-trigger').on('click', function(ev) {
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			$('#chatStatusWrap').toggleClass('offline');
+			self.sendUpdateAgentStatus();
+
+			if ($('#chatStatusWrap').hasClass('offline')) {
+				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '-');
+				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '-');
+
+				$('#agent_status_menu_onlinerow').hide();
+				$('#agent_status_menu_offlinerow').show();
+			} else {
+				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '+');
+				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '+');
+
+				$('#agent_status_menu_onlinerow').show();
+				$('#agent_status_menu_offlinerow').hide();
+			}
+
+			if (count) {
+				$('#chatStatusWrap').removeClass('red');
+			} else {
+				$('#chatStatusWrap').addClass('red');
+			}
+		});
+	},
+
+	_initStatusMenuAgents: function() {
+		var self = this;
 		var status_menu_el = $('#agent_status_menu_onlinelist');
 		this.onlineAgentsGroupDepCheck = status_menu_el.find('.group-dep');
 		this.onlineAgentsList = status_menu_el.find('ul.list.normal');
@@ -62,6 +163,35 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			} else {
 				self.onlineAgentsListGrouped.hide();
 				self.onlineAgentsList.show();
+			}
+		});
+
+		// We broadcast this when setting the status manually
+		// It means any other locations we're signed in under get the same
+		// message and we all sync our status properly
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.user-chat-status', function(info) {
+			if (info.is_online) {
+				$('#chatStatusWrap').removeClass('offline');
+				$('#agent_status_menu_onlinerow').show();
+				$('#agent_status_menu_offlinerow').hide();
+			} else {
+				$('#chatStatusWrap').addClass('offline');
+				$('#agent_status_menu_onlinerow').hide();
+				$('#agent_status_menu_offlinerow').show();
+			}
+		});
+
+		this.getSectionElement().on('click', '.sub-toggle', function(ev) {
+			var row = $(this).closest('li');
+			var sub = $('> ul.sub-group', row);
+			if (sub.length) {
+				if (sub.is(':visible')) {
+					row.removeClass('sub-expanded');
+					sub.slideUp('fast');
+				} else {
+					row.addClass('sub-expanded');
+					sub.slideDown('fast');
+				}
 			}
 		});
 
@@ -114,6 +244,21 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			self.refreshOnlineAgentDepGroups();
 
 		}, this);
+	},
+
+	_initStatusMenuUsers: function() {
+		var self = this;
+
+		this.addEvent('statusMenuOpened', function() {
+			this.refreshOnlineUsers();
+		}, this);
+
+		this.addEvent('statusMenuOpened', function() {
+			if (this.onlineUsersRefreshTimer) {
+				window.clearTimeout(this.onlineUsersRefreshTimer);
+				this.onlineUsersRefreshTimer = null;
+			}
+		}, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
 			var count = parseInt(info.online_count);
@@ -126,9 +271,51 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			self.lastOnlineUserCount = count;
 		});
 
-		$('#chatStatusWrap').on('click', function(ev) {
-			self.refreshOnlineUsersIfNeeded();
+		this.onlineUsersWrap.on('click', '.reload-table-btn', function() {
+			self.onlineUsersWrap.addClass('refreshing refreshing-clicked');
+			self.refreshOnlineUsers();
 		});
+	},
+
+	_initTemplates: function() {
+		$('#new_user_chat_alert').template('new_user_chat_alert');
+		$('#invite_chat_alert').template('invite_chat_alert');
+		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
+		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
+		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
+	},
+
+	_initMessageHandlers: function() {
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new', this.handleNewChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.reassigned', this.handleReassignedChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.unassigned', this.handleUnassignedChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', this.handleChatEnded, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.depchange', this.handleDepChange, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.invited', this.handleInvited, this);
+	},
+
+	//##################################################################################################################
+	//# Window: Online users / tracking
+	//##################################################################################################################
+
+	startRefreshingWhileOpenTimer: function() {
+		var self = this;
+		if (!this.statusMenuOpen) {
+			return;
+		}
+
+		if (this.onlineUsersRefreshAjax) {
+			return;
+		}
+
+		if (this.onlineUsersRefreshTimer) {
+			window.clearTimeout(this.onlineUsersRefreshTimer);
+			this.onlineUsersRefreshTimer = null;
+		}
+
+		this.onlineUsersRefreshTimer = window.setTimeout(function() {
+			self.refreshOnlineUsers();
+		}, 5000);
 	},
 
 	refreshOnlineUsersIfNeeded: function() {
@@ -140,22 +327,29 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	refreshOnlineUsers: function() {
+		this.onlineUsersWrap.addClass('refreshing');
 
-		if (!this.lastOnlineUserLoad) {
-			$('#agent_status_online_users').empty().html('<div class="loading-icon-big" style="margin: 10px;"></div>');
-		}
-
-		$.ajax({
+		this.onlineUsersRefreshAjax = $.ajax({
 			url: BASE_URL + 'agent/user-track/win-header-table.html',
 			type: 'GET',
 			dataType: 'html',
 			context: this,
+			complete: function() {
+				this.onlineUsersRefreshAjax = null;
+				this.onlineUsersWrap.removeClass('refreshing refreshing-clicked');
+				this.startRefreshingWhileOpenTimer();
+			},
 			success: function(html) {
 				$('#agent_status_online_users').empty().html(html);
 				this.lastOnlineUserLoad = new Date();
 			}
 		});
 	},
+
+
+	//##################################################################################################################
+	//# Window: Online agents / status
+	//##################################################################################################################
 
 	refreshOnlineAgentDepGroups: function() {
 		var self = this;
@@ -183,6 +377,41 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 		});
 	},
+
+	sendUpdateAgentStatus: function() {
+
+		var status   = 'available';
+		var postData = [];
+
+		if (!$('#chatStatusWrap').hasClass('offline')) {
+			postData.push({
+				name: 'is_chat_available',
+				value: 1
+			});
+		} else {
+			postData.push({
+				name: 'is_chat_available',
+				value: 0
+			});
+		}
+
+		if (status == 'available') {
+			$.ajax({
+				url: BASE_URL + 'agent/misc/set-agent-status/available',
+				type: 'POST',
+				data: postData
+			});
+		} else if (status == 'away') {
+			$.ajax({
+				url: BASE_URL + 'agent/misc/set-agent-status/away',
+				type: 'POST'
+			});
+		}
+	},
+
+	//##################################################################################################################
+	//# Source pane
+	//##################################################################################################################
 
 	refreshOpenCounts: function(now) {
 
@@ -239,55 +468,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		} else {
 			this.refreshCountsTimeout = window.setTimeout(fn, 4500);
 		}
-	},
-
-	_initSection: function(data) {
-
-		var lastSelectedId = null;
-		if (this.contentEl) {
-			lastSelectedId = this.contentEl.find('.nav-selected').find('.list-counter').attr('id');
-		}
-
-		if(this.hasSectionInitialised) {
-			this._lastLoaded = new Date();
-			this.filterGroupEditor.destroy();
-			this.contentEl.empty();
-		}
-
-		this.hasSectionInitialised = true;
-		var self = this;
-
-		this.setHasInitialLoaded();
-		this.contentEl.html(data.section_html);
-
-		if('filterGroupEditor' in this)
-			this.filterGroupEditor.destroy();
-
-		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
-			containerElement: '#chat_outline',
-			listElement: '#chats_outline_sys_filters',
-			triggerElement: '#chat_filter_launch_editor',
-			controlElement: '#chat_filter_group_editor',
-			useIntId: false,
-			onGroupingChanged: function(data) {
-				self.refreshFilterGrouping(data);
-			},
-			onSetMarginTop: function(evData) {
-				evData.marginTop = $('#chats_outline_sys_filters').position().top;
-			}
-		});
-		this.filterGroupEditor._initControl();
-		this.refreshFilterGrouping(data, lastSelectedId);
-		this.updateGroupingVars();
-
-		this._lastLoaded = new Date();
-        this.handleUpdateCounts();
-
-		if (lastSelectedId) {
-			$('#' + lastSelectedId).closest('.is-nav-item').addClass('nav-selected');
-		}
-
-		new DeskPRO.ElementHandler.SimpleTabs($('#chat_outline_labels_switcher'));
 	},
 
 	refreshFilterGrouping: function(filterId, lastSelectedId) {
@@ -377,15 +557,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}, this);
 
 		return isOpen;
-	},
-
-	_initMessageHandlers: function() {
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new', this.handleNewChat, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.reassigned', this.handleReassignedChat, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.unassigned', this.handleUnassignedChat, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', this.handleChatEnded, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.depchange', this.handleDepChange, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.invited', this.handleInvited, this);
 	},
 
 	modListingCount: function(id, op, count) {

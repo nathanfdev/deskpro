@@ -120,7 +120,7 @@ class DpLoader extends LoaderAbstract
 
 			$q = $this->getPdo()->prepare("
 				SELECT
-					visitors.id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.chat_invite, visitors.page_count, visitors.date_last,
+					visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.chat_invite, visitors.page_count, visitors.date_last,
 					visitor_tracks.date_created AS date_last_track
 				FROM visitors
 				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
@@ -149,6 +149,7 @@ class DpLoader extends LoaderAbstract
 
 			$visitor = array(
 				'auth'         => '',
+				'person_id'    => null,
 				'page_count'   => 1,
 				'date_created' => date('Y-m-d H:i:s'),
 				'date_last'    => date('Y-m-d H:i:s'),
@@ -287,6 +288,8 @@ class DpLoader extends LoaderAbstract
 		# Chat is available
 		#------------------------------
 
+		$session_id = null;
+
 		if (isset($_GET['chat'])) {
 			$online_time = 0;
 			if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
@@ -355,7 +358,7 @@ class DpLoader extends LoaderAbstract
 					$js_out[] = "DpChatWidget.initWidget('$session_id');";
 
 					// Connect the visitor to the session
-					$this->getPdo()->prepare("UPDATE session SET visitor_id = ? WHERE id = ?")->execute(array(
+					$this->getPdo()->prepare("UPDATE sessions SET visitor_id = ? WHERE id = ?")->execute(array(
 						$visitor['id'],
 						$session_id
 					));
@@ -378,6 +381,54 @@ class DpLoader extends LoaderAbstract
 			} else {
 				$js_out[] = "DpChatWidget.setNotAvailable();\n";
 			}
+		}
+
+		#------------------------------
+		# Try to connect an authenticated user
+		# with a visitor if they have a session
+		# cookie as well
+		#------------------------------
+
+		// We loaded chat, in which case
+		// we have the full session already
+		if (isset($sessionObj)) {
+			$visitor_person_id = $sessionObj->getPerson()->getId();
+
+		// Otherwise we need to query the sessions table
+		} else {
+			$session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
+			if (!$session_code) {
+				$session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+			}
+			if (!$session_code) {
+				$session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
+			}
+			if (!$session_code) {
+				$session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
+			}
+
+			if ($session_code && strpos($session_code, '-')) {
+				list ($session_id, $session_auth) = explode('-', $session_code, 2);
+
+				$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
+
+				$q = $this->getPdo()->prepare("
+					SELECT person_id
+					FROM sessions
+					WHERE id = ? AND auth = ?
+				");
+				$q->execute(array($session_id, $session_auth));
+
+				$visitor_person_id = $q->fetchColumn();
+			}
+		}
+
+		if ($visitor_person_id && $visitor_person_id != $visitor['person_id']) {
+			$this->getPdo()->prepare("
+				UPDATE visitors
+				SET person_id = ?
+				WHERE id = ?
+			")->execute(array($visitor_person_id, $visitor['id']));
 		}
 
 		#-----------------------------------

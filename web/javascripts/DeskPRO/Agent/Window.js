@@ -2466,106 +2466,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			getkbbackdrop().show();
 		});
 
-		// Status
-		$('#chatStatusWrap').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var list = $('#agent_status_menu');
-			list.hide().detach().appendTo('body');
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
-			};
-			backdrop.on('click', close);
-			$('#agent_status_away_overlay').on('click', close);
-		});
-
-
-		$('#agent_status_menu').find('button.toggle-status-trigger').on('click', function(ev) {
-
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			$('#chatStatusWrap').toggleClass('offline');
-			self._sendUpdateAgentStatus();
-
-			if ($('#chatStatusWrap').hasClass('offline')) {
-				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '-');
-				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '-');
-
-				$('#agent_status_menu_onlinerow').hide();
-				$('#agent_status_menu_offlinerow').show();
-			} else {
-				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '+');
-				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '+');
-
-				$('#agent_status_menu_onlinerow').show();
-				$('#agent_status_menu_offlinerow').hide();
-			}
-
-			if (count) {
-				$('#chatStatusWrap').removeClass('red');
-			} else {
-				$('#chatStatusWrap').addClass('red');
-			}
-		});
-
-		// We broadcast this when setting the status manually
-		// It means any other locations we're signed in under get the same
-		// message and we all sync our status properly
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.user-chat-status', function(info) {
-			if (info.is_online) {
-				$('#chatStatusWrap').removeClass('offline');
-				$('#agent_status_menu_onlinerow').show();
-				$('#agent_status_menu_offlinerow').hide();
-			} else {
-				$('#chatStatusWrap').addClass('offline');
-				$('#agent_status_menu_onlinerow').hide();
-				$('#agent_status_menu_offlinerow').show();
-			}
-		});
-
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', function (info) {
 			DeskPRO_Window.showRefreshAlert(info.person_name);
 		});
 
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
-	},
-
-	_sendUpdateAgentStatus: function() {
-
-		var status   = 'available';
-		var postData = [];
-
-		if (!$('#chatStatusWrap').hasClass('offline')) {
-			postData.push({
-				name: 'is_chat_available',
-				value: 1
-			});
-		} else {
-			postData.push({
-				name: 'is_chat_available',
-				value: 0
-			});
-		}
-
-		if (status == 'available') {
-			$.ajax({
-				url: BASE_URL + 'agent/misc/set-agent-status/available',
-				type: 'POST',
-				data: postData
-			});
-		} else if (status == 'away') {
-			$.ajax({
-				url: BASE_URL + 'agent/misc/set-agent-status/away',
-				type: 'POST'
-			});
-		}
 	},
 
 	_initSections: function() {

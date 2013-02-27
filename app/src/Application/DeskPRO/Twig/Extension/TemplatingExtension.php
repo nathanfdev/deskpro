@@ -1069,9 +1069,16 @@ class TemplatingExtension extends \Twig_Extension
 		return \DeskPRO\Kernel\KernelErrorHandler::varToString($var);
 	}
 
-	public function urlTrimScheme($url)
+	public function urlTrimScheme($url, $trim_adv = false)
 	{
-		return preg_replace('#^https?://#', '', $url);
+		$ret = preg_replace('#^https?://#i', '', $url);
+
+		if ($trim_adv) {
+			$ret = preg_replace('#^www\.#i', '', $ret);
+			$ret = trim($ret, '/?#');
+		}
+
+		return $ret;
 	}
 
 	protected $_widgetCache = array();
