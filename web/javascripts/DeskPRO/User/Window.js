@@ -65,7 +65,8 @@ DeskPRO.User.Window = new Orb.Class({
 		this.initLanguageChoices();
 
 		$('#dp_footer').css({'display': 'block', 'opacity': 1, 'visibility': 'visible'});
-		$('.dp-copy, .dp-copy a').css({'display': 'block', 'opacity': 1, 'visibility': 'visible'});
+		$('.dp-copy').css({'display': 'block', 'opacity': 1, 'visibility': 'visible'})
+				.find('a').css({'display': 'inline', 'opacity': 1, 'visibility': 'visible'});
 
 		if ($('html').attr('dir') == 'rtl' && $('#share-this-js').length) {
 			var interval;
