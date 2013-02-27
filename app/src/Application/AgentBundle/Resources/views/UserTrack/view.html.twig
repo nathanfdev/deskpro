@@ -3,7 +3,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Visitor';
 {% if visitor.person %}
 	pageMeta.title = {{ ("Visitor: " ~ visitor.person.display_name)|json_encode|raw }};
-{% elseif visitor.email %}
+{% else %}
 	pageMeta.title = 'Visitor #{{ visitor.id }}';
 {% endif %}
 pageMeta.visitor_id = {{visitor.id|default(0)}};
