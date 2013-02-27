@@ -517,6 +517,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var person_avatar = metadata.person_avatar || this.meta.userPictureUrl;
 		person_avatar = person_avatar.replace(/\/avatar\/\d+\//, "/avatar/25/", person_avatar);
 		person_avatar = person_avatar.replace(/\/size\/\d+\//, "/size/25/", person_avatar);
+		if (person_avatar.indexOf('gravatar.com') !== -1) {
+			person_avatar = person_avatar.replace(/&?s=\d+\//, "", person_avatar);
+			person_avatar = Orb.appendQueryData(person_avatar, 's', '25');
+		}
+
 		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(metadata.author_name || '') +'"><img src="' + person_avatar + '" /></div>';
 
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
