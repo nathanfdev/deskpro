@@ -486,6 +486,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Orb\GeoIp\AbstractGeoIp
+	 */
+	public function getGeoIp()
+	{
+		return $this->getSystemService('geo_ip');
+	}
+
+
+	/**
 	 * Get the path to PHP executable used on the CLI.
 	 *
 	 * Returns false if the path could not be found and if 'php_path' in config is not set.

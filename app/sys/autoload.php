@@ -96,6 +96,10 @@ spl_autoload_register(function($classname) {
 	return ezcBase::autoload($classname);
 });
 
+if (!defined('GEOIP_API_INC_PATH')) {
+	define('GEOIP_API_INC_PATH', DP_ROOT.'/vendor/geoip-api');
+}
+
 // Needed for assetic build to work
 class_exists('CssMin');
 
