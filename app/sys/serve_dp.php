@@ -265,6 +265,10 @@ class DpLoader extends LoaderAbstract
 		$visitor_update['last_track_id'] = $visitor_track['id'];
 		$visitor_update['date_last']     = date('Y-m-d H:i:s');
 
+		if (!$is_new_visitor) {
+			$visitor_update['page_count'] = $visitor['page_count'] + 1;
+		}
+
 		$set_q = array();
 		foreach ($visitor_update as $k => $v) {
 			$set_q[] = "$k = ?";
