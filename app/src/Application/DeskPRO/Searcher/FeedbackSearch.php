@@ -267,6 +267,9 @@ class FeedbackSearch extends SearcherAbstract
 					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
 				} elseif ($this->visitor) {
 					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.visitor_id = {$this->visitor->id})";
+				} else {
+					$order_by = "ORDER BY feedback.date_published $dir";
+					return $order_by;
 				}
 
 				$order_by = array(
