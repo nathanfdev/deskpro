@@ -191,7 +191,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		if ($vis) {
 			$this->set('dpvid', $vis['id']);
+		} else {
+			$this->remove('dpvid');
 		}
+
 		$this->set('dplast', time());
 		$_SESSION['_symfony2']['dplast'] = time();
 
