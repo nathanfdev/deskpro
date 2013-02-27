@@ -3120,7 +3120,7 @@ class TicketController extends AbstractController
 
 		if (!$person) {
 			$person = new Person();
-			if ($session) {
+			if ($session && $session->visitor) {
 				$person->name = $session->visitor->name;
 				if ($session->visitor->email) {
 					$person->setEmail($session->visitor->email);

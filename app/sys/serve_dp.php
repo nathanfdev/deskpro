@@ -148,11 +148,14 @@ class DpLoader extends LoaderAbstract
 			$is_new_visit_session = true;
 
 			$visitor = array(
-				'auth'         => '',
-				'person_id'    => null,
-				'page_count'   => 1,
-				'date_created' => date('Y-m-d H:i:s'),
-				'date_last'    => date('Y-m-d H:i:s'),
+				'auth'             => '',
+				'person_id'        => null,
+				'page_count'       => 1,
+				'date_created'     => date('Y-m-d H:i:s'),
+				'date_last'        => date('Y-m-d H:i:s'),
+				'initial_track_id' => null,
+				'visit_track_id'   => null,
+				'last_track_id'    => null,
 			);
 
 			$tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -170,7 +173,7 @@ class DpLoader extends LoaderAbstract
 				$visitor['date_last'],
 			));
 
-			$visitor['id'] = $this->getPdo()->lastInsertId();
+			$visitor_id = $visitor['id'] = $this->getPdo()->lastInsertId();
 		} else {
 			$is_new_visitor = false;
 
@@ -253,21 +256,14 @@ class DpLoader extends LoaderAbstract
 		#-----------------------------------
 
 		$visitor_update = array();
-
-		if ($is_new_visitor) {
+		if (!$visitor['initial_track_id']) {
 			$visitor_update['initial_track_id'] = $visitor_track['id'];
-			$visitor_update['last_track_id']    = $visitor_track['id'];
-			$visitor_update['visit_track_id']   = $visitor_track['id'];
-		} else {
-			if (!$visitor['initial_track_id']) {
-				$visitor_update['initial_track_id'] = $visitor_track['id'];
-			}
-			if (!$visitor['visit_track_id'] || $is_new_visit_session) {
-				$visitor_update['visit_track_id'] = $visitor_track['id'];
-			}
-			$visitor_update['last_track_id'] = $visitor_track['id'];
-			$visitor_update['date_last']     = date('Y-m-d H:i:s');
 		}
+		if (!$visitor['visit_track_id'] || $is_new_visit_session) {
+			$visitor_update['visit_track_id'] = $visitor_track['id'];
+		}
+		$visitor_update['last_track_id'] = $visitor_track['id'];
+		$visitor_update['date_last']     = date('Y-m-d H:i:s');
 
 		$set_q = array();
 		foreach ($visitor_update as $k => $v) {
@@ -275,7 +271,7 @@ class DpLoader extends LoaderAbstract
 		}
 		$set_q = implode(', ', $set_q);
 
-		$this->getPdo()->prepare("
+		$q = $this->getPdo()->prepare("
 			UPDATE visitors
 			SET $set_q
 			WHERE id = {$visitor_id}
@@ -388,6 +384,8 @@ class DpLoader extends LoaderAbstract
 		# with a visitor if they have a session
 		# cookie as well
 		#------------------------------
+
+		$visitor_person_id = null;
 
 		// We loaded chat, in which case
 		// we have the full session already

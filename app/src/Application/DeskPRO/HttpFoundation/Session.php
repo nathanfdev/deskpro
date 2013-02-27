@@ -160,23 +160,24 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$path = App::getRequest()->getPathInfo();
 		}
 
-		if (!$vis) {
-			$vis = new Entity\Visitor();
-		}
+		if ($vis) {
+			$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
+			$vis['date_last'] = new \DateTime();
 
-		$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
-		$vis['date_last'] = new \DateTime();
-
-		App::getOrm()->persist($vis);
-		App::getOrm()->flush();
-
-		if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
-			$this->getEntity()->visitor = $vis;
-			App::getOrm()->persist($this->getEntity());
+			App::getOrm()->persist($vis);
 			App::getOrm()->flush();
-		}
 
-		$this->visitor = $vis;
+			if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
+				$this->getEntity()->visitor = $vis;
+				App::getOrm()->persist($this->getEntity());
+				App::getOrm()->flush();
+			}
+
+			$this->visitor = $vis;
+
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never', true);
+			$cookie->send();
+		}
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
             $agent = $this->getPerson();
@@ -188,10 +189,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
             App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
         }
 
-		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never', true);
-		$cookie->send();
-
-		$this->set('dpvid', $vis['id']);
+		if ($vis) {
+			$this->set('dpvid', $vis['id']);
+		}
 		$this->set('dplast', time());
 		$_SESSION['_symfony2']['dplast'] = time();
 
