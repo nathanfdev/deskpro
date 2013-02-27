@@ -314,12 +314,12 @@ class WidgetController extends AbstractController
 		$sessionObj = $this->get('session');
 		$session = $sessionObj->getEntity();
 
+		if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		// User is blocked
 		$blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked($this->getRequest()->getClientIp(), $session->visitor);
-
-		if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
-			$blocked = true;
-		}
 
 		if ($blocked) {
 			$response = $this->createResponse('');
