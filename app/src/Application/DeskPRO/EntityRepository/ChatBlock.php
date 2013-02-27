@@ -54,11 +54,19 @@ class ChatBlock extends AbstractEntityRepository
 	{
 		$datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
 
-		$block = $this->_em->createQuery("
-			SELECT b
-			FROM DeskPRO:ChatBlock b
-			WHERE (b.ip_address = ?0 OR b.visitor = ?1) AND b.date_created > ?2
-		")->setParameters(array($visitor->ip_address, $visitor, $datecut))->setMaxResults(1)->getOneOrNullResult();
+		if ($visitor) {
+			$block = $this->_em->createQuery("
+				SELECT b
+				FROM DeskPRO:ChatBlock b
+				WHERE (b.ip_address = ?0 OR b.visitor = ?1) AND b.date_created > ?2
+			")->setParameters(array($visitor->ip_address, $visitor, $datecut))->setMaxResults(1)->getOneOrNullResult();
+		} else {
+			$block = $this->_em->createQuery("
+				SELECT b
+				FROM DeskPRO:ChatBlock b
+				WHERE (b.ip_address = ?0) AND b.date_created > ?2
+			")->setParameters(array(App::getRequest()->getClientIp(), $datecut))->setMaxResults(1)->getOneOrNullResult();
+		}
 
 		return $block;
 	}
