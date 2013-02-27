@@ -10,7 +10,7 @@
 					<th class="col-head">User</th>
 					<th class="col-head">Current Page</th>
 					<th class="col-head" width="10">Time</th>
-					<th class="col-head" width="10">&nbsp;</th>
+					{#<th class="col-head" width="10">&nbsp;</th>#}
 					<th class="col-head" width="10">&nbsp;</th>
 				</tr>
 				{% for vis in visitors %}
@@ -34,8 +34,8 @@
 							</div>
 						</td>
 						<td nowrap="nowrap" width="10">{{ vis.date_last|date('time') }}</td>
-						<td style="padding-right: 0px;"><button class="clean-white">Start Chat</button></td>
-						<td><em class="details-link" title="View details"></em></td>
+						{#<td style="padding-right: 0px;"><button class="clean-white">Start Chat</button></td>#}
+						<td><em class="details-link" title="View details" data-route="page:{{ path('agent_usertrack_view', {visitor_id: vis.id}) }}"></em></td>
 					</tr>
 				{% else %}
 					<tr>

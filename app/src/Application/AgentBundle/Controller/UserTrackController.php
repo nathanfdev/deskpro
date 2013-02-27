@@ -45,6 +45,10 @@ use Orb\Util\Util;
 
 class UserTrackController extends AbstractController
 {
+	####################################################################################################################
+	# win-header-table
+	####################################################################################################################
+
 	public function winHeaderTableAction()
 	{
 		$cut = new \DateTime("@" . (time() - $this->settings->get('core_chat.user_online_time')));
@@ -60,6 +64,57 @@ class UserTrackController extends AbstractController
 
 		return $this->render('AgentBundle:UserTrack:header-table.html.twig', array(
 			'visitors' => $visitors
+		));
+	}
+
+	####################################################################################################################
+	# view
+	####################################################################################################################
+
+	public function viewAction($visitor_id)
+	{
+		$visitor = $this->em->find('DeskPRO:Visitor', $visitor_id);
+
+		if (!$visitor) {
+			throw $this->createNotFoundException();
+		}
+
+		$tracks = $this->em->createQuery("
+			SELECT t
+			FROM DeskPRO:VisitorTrack t
+			WHERE t.visitor = ?0
+			ORDER BY t.id DESC
+		")->execute(array($visitor));
+
+		$visit_tracks = $this->em->createQuery("
+			SELECT t
+			FROM DeskPRO:VisitorTrack t
+			WHERE t.visitor = ?0 AND t.is_new_visit = true
+			ORDER BY t.id DESC
+		")->execute(array($visitor));
+
+		$ip_addresses  = array();
+		$user_agents   = array();
+		$geo_countries = array();
+		foreach ($visit_tracks as $t) {
+			if ($t->ip_address) {
+				$ip_addresses[] = $t->ip_address;
+			}
+			if ($t->user_agent) {
+				$user_agents[] = $t->user_agent;
+			}
+			if ($t->geo_country) {
+				$geo_country[] = $t->geo_country;
+			}
+		}
+
+		return $this->render('AgentBundle:UserTrack:view.html.twig', array(
+			'visitor'         => $visitor,
+			'tracks'          => $tracks,
+			'visit_tracks'    => $visit_tracks,
+			'ip_addresses'    => $ip_addresses,
+			'user_agents'     => $user_agents,
+			'geo_countries'   => $geo_countries,
 		));
 	}
 }

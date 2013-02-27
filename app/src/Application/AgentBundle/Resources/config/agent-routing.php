@@ -2710,6 +2710,13 @@ $collection->add('agent_usertrack_winheadertable', new Route(
 	array()
 ));
 
+$collection->add('agent_usertrack_view', new Route(
+	'/user-track/{visitor_id}',
+	array('_controller' => 'AgentBundle:UserTrack:view'),
+	array('visitor_id' => '\d+', '_method' => 'GET'),
+	array()
+));
+
 ################################################################################
 # Media Manager
 ################################################################################

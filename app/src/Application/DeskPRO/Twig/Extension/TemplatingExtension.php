@@ -1075,7 +1075,13 @@ class TemplatingExtension extends \Twig_Extension
 
 		if ($trim_adv) {
 			$ret = preg_replace('#^www\.#i', '', $ret);
-			$ret = trim($ret, '/?#');
+
+			// Hashes/tokens
+			$ret = preg_replace('#([a-zA-Z0-9\-_]+)=([a-zA-Z0-9]{32})&?#', '', $ret);
+			$ret = preg_replace('#([a-zA-Z0-9\-_]+)=([a-zA-Z0-9]{40})&?#', '', $ret);
+			$ret = preg_replace('#([a-zA-Z0-9\-_]+)=([a-zA-Z0-9]{6})\-([a-zA-Z]{10})\-([a-zA-Z0-9]{40})&?#', '', $ret);
+
+			$ret = trim($ret, '/?#&');
 		}
 
 		return $ret;

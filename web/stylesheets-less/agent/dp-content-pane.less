@@ -7109,3 +7109,53 @@ table.data-display-table tr:last-child th {
 #agent_status_online_users td {
 	vertical-align: middle;
 }
+
+.visitor-page header.page-header {
+	background-color: #fff;
+
+	.user-link {
+		padding-left: 38px;
+		background-repeat: no-repeat;
+		background-position: 0 50%;
+	}
+
+	.ip-address {
+		float: right;
+		font-size: 10px;
+		margin-right: 8px;
+		line-height: 16px;
+		display: block;
+	}
+
+	.country {
+		float: right;
+		width: 16px;
+		height: 16px;
+		display: block;
+		background-repeat: no-repeat;
+		background-position: 0 50%;
+		line-height: 16px;
+	}
+}
+
+.visitor-page .main-box {
+	position: absolute;
+	top: 42px;
+	bottom: 1px;
+	left: 1px;
+	right: 1px;
+	overflow: hidden;
+
+	> section {
+		position: absolute;
+		top: 27px;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		overflow: auto;
+	}
+
+	table td, table th {
+		font-size: 11px;
+	}
+}
