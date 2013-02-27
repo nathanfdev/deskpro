@@ -77,7 +77,7 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $page_ref_url = '';
+	protected $ref_page_url = '';
 
 	/**
 	 * The users user agent string

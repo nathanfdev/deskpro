@@ -140,9 +140,21 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$user_ip = \Orb\Util\Web::getUserIp();
 		}
 
-		if (!$user_ip) {
-			$user_ip = '';
+		$path = '';
+		if (App::getContainer()->isScopeActive('request')) {
+			$path = App::getRequest()->getPathInfo();
 		}
+
+		$url = '';
+		if (App::getContainer()->isScopeActive('request')) {
+			$url = App::getRequest()->getUri();
+		}
+
+		// Set this for SessionEntityStorage
+		// which is usually dumb of the app, but we want to use
+		// getClientIp method because we might be using a proxy-passed
+		// IP, but dont want to tie the App/container/request into SessionEntityStorage
+		$GLOBALS['DP_CURRENT_USER_IP'] = $user_ip;
 
 		// Also make sure the user is a visitor
 		$vis = null;
@@ -155,29 +167,76 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
-		$path = '';
-		if (App::getContainer()->isScopeActive('request')) {
-			$path = App::getRequest()->getPathInfo();
+		if (!$vis) {
+			$vis = new Entity\Visitor();
 		}
 
-		if ($vis) {
+		if (!empty($_SESSION['_symfony2']['auth_person_id']) && $_SESSION['_symfony2']['auth_person_id']) {
 			$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
-			$vis['date_last'] = new \DateTime();
+		}
 
-			App::getOrm()->persist($vis);
-			App::getOrm()->flush();
+		$prev_date_last = $vis->date_last;
 
-			if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
-				$this->getEntity()->visitor = $vis;
-				App::getOrm()->persist($this->getEntity());
-				App::getOrm()->flush();
+		$vis->page_count = $vis->page_count + 1;
+		$vis->date_last  = new \DateTime();
+
+		$this->visitor = $vis;
+
+		// Insert tracks
+		$track = null;
+		if (DP_INTERFACE == 'user') {
+			$track = new Entity\VisitorTrack();
+			$track->visitor = $vis;
+			$track->page_url = $url;
+			$track->ref_page_url = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+			$track->ip_address = $user_ip;
+			$track->user_Agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+			if (!$vis->initial_track) {
+				$track->is_new_visit = true;
 			}
 
-			$this->visitor = $vis;
-
-			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never', true);
-			$cookie->send();
+			if (function_exists('geoip_record_by_name')) {
+				if ($geo = @geoip_record_by_name($user_ip)) {
+					if (!empty($geo['continent_code'])) $track['geo_continent'] = $geo['continent_code'];
+					if (!empty($geo['country_code']))   $track['geo_country']   = $geo['country_code'];
+					if (!empty($geo['region']))         $track['geo_region']    = $geo['region'];
+					if (!empty($geo['city']))           $track['geo_city']      = $geo['city'];
+					if (!empty($geo['longitude']))      $track['geo_long']      = $geo['longitude'];
+					if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
+				} elseif ($geo_country = @geoip_country_code_by_name($user_ip)) {
+					$visitor_track['geo_country'] = $geo_country;
+					if ($geo_continent = @geoip_continent_code_by_name($user_ip)) {
+						$visitor_track['geo_continent'] = $geo_continent;
+					}
+				}
+			}
 		}
+
+		App::getOrm()->persist($vis);
+		if ($track) {
+			$vis->last_track = $track;
+
+			if (!$vis->initial_track) {
+				$vis->initial_track = $track;
+				$vis->visit_track   = $track;
+			} elseif ($prev_date_last->getTimestamp() > (time() - 2400)) {
+				$vis->visit_track = $track;
+			}
+
+			App::getOrm()->persist($vis);
+			App::getOrm()->persist($track);
+		}
+		App::getOrm()->flush();
+
+		if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
+			$this->getEntity()->visitor = $vis;
+			App::getOrm()->persist($this->getEntity());
+			App::getOrm()->flush();
+		}
+
+		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never', true);
+		$cookie->send();
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
             $agent = $this->getPerson();

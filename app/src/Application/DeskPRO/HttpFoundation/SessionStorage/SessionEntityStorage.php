@@ -299,6 +299,16 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$sess_rec['person_id'] = null;
 		$sess_rec['visitor_id'] = (isset($_SESSION['_symfony2']['attributes']['dpvid']) ? $_SESSION['_symfony2']['attributes']['dpvid'] : null);
 
+		if (!empty($GLOBALS['DP_CURRENT_USER_IP'])) {
+			$sess_rec['ip_address'] = $GLOBALS['DP_CURRENT_USER_IP'];
+		} elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+			$sess_rec['ip_address'] = $_SERVER['REMOTE_ADDR'];
+		}
+
+		if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+			$sess_rec['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+		}
+
 		if (!empty($_SESSION['_symfony2']['attributes']['auth_person_id'])) {
 			$sess_rec['is_person'] = 1;
 			$sess_rec['person_id'] = $_SESSION['_symfony2']['attributes']['auth_person_id'];

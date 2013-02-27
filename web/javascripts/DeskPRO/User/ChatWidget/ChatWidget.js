@@ -436,6 +436,12 @@ var DpChatWidget = new (function() {
 			url += '&vc=' + encodeURIComponent(window.DESKPRO_VISITOR_ID);
 		}
 
+		if (DpChatWidget_Options && DpChatWidget_Options.visitorUpdateTrackId) {
+			url += '&v_tid=' + encodeURIComponent(DpChatWidget_Options.visitorUpdateTrackId);
+		} else if (window.DESKPRO_VISITOR_TRACK_ID) {
+			url += '&v_tid=' + encodeURIComponent(window.DESKPRO_VISITOR_TRACK_ID);
+		}
+
 		url += '&title=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageTitle) {
 			url += encodeURIComponent(DpChatWidget_Options.currentPageTitle);

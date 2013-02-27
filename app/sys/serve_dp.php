@@ -142,6 +142,7 @@ class DpLoader extends LoaderAbstract
 
 		$is_new_visit_session = false;
 		$is_new_visitor = false;
+		$update_track_id = null;
 
 		if (!$visitor) {
 			$is_new_visitor = true;
@@ -177,14 +178,30 @@ class DpLoader extends LoaderAbstract
 		} else {
 			$is_new_visitor = false;
 
-			if ($visitor['date_last_track']) {
-				$last_time = strtotime($visitor['date_last']);
+			// If our main page is DeskPRO, then a track was inserted
+			// as part of its session. We want toupdate that track
+			// with better information we have access to from Javascript
+			if (!empty($_GET['v_tid'])) {
+				// Just need to verify its the correct visitor
+				$q = $this->getPdo()->prepare("
+					SELECT id
+					FROM visitor_tracks
+					WHERE id = ? AND visitor_id = ?
+				");
+				$q->execute(array($_GET['v_tid'], $visitor['id']));
+				$update_track_id = $q->fetchColumn(0);
+			}
 
-				if ($last_time < (time() - 2400)) {
+			if (!$update_track_id) {
+				if ($visitor['date_last_track']) {
+					$last_time = strtotime($visitor['date_last']);
+
+					if ($last_time < (time() - 2400)) {
+						$is_new_visit_session = true;
+					}
+				} else {
 					$is_new_visit_session = true;
 				}
-			} else {
-				$is_new_visit_session = true;
 			}
 		}
 
@@ -196,13 +213,13 @@ class DpLoader extends LoaderAbstract
 
 		$visitor_track = array();
 		$visitor_track['visitor_id']   = $visitor_id;
-		$visitor_track['is_new_visit'] = $is_new_visit_session;
+		if ($is_new_visit_session) {
+			$visitor_track['is_new_visit'] = $is_new_visit_session;
+		}
 		if (!empty($_REQUEST['url'])) {
 			$visitor_track['page_url'] = (string)$_REQUEST['url'];
 		} elseif (!empty($_SERVER['HTTP_REFERER'])) {
 			$visitor_track['page_url'] = (string)$_SERVER['HTTP_REFERER'];
-		} else {
-			$visitor_track['page_url'] = '<unknown>';
 		}
 
 		if (!empty($_REQUEST['title'])) {
@@ -244,10 +261,18 @@ class DpLoader extends LoaderAbstract
 		}
 		$set_q = implode(', ', $set_q);
 
-		$this->getPdo()->prepare("
-			INSERT INTO visitor_tracks
-			SET $set_q
-		")->execute(array_values($visitor_track));
+		if ($update_track_id) {
+			$this->getPdo()->prepare("
+				UPDATE visitor_tracks
+				SET $set_q
+				WHERE id = {$update_track_id}
+			")->execute(array_values($visitor_track));
+		} else {
+			$this->getPdo()->prepare("
+				INSERT INTO visitor_tracks
+				SET $set_q
+			")->execute(array_values($visitor_track));
+		}
 
 		$visitor_track['id'] = $this->getPdo()->lastInsertId();
 
@@ -265,7 +290,7 @@ class DpLoader extends LoaderAbstract
 		$visitor_update['last_track_id'] = $visitor_track['id'];
 		$visitor_update['date_last']     = date('Y-m-d H:i:s');
 
-		if (!$is_new_visitor) {
+		if (!$is_new_visitor && !$update_track_id) {
 			$visitor_update['page_count'] = $visitor['page_count'] + 1;
 		}
 

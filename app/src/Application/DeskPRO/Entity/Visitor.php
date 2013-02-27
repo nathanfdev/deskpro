@@ -125,6 +125,11 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_last;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\VisitorTrack
+	 */
+	protected $_set_last_track;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -256,6 +261,24 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 		return $this->last_track->page_url;
 	}
 
+
+	/**
+	 * @param VisitorTrack $track
+	 */
+	public function setLastTrack(VisitorTrack $track)
+	{
+		$this->setModelField('last_track', $track);
+		$this->_set_last_track = $track;
+	}
+
+
+	/**
+	 * @return VisitorTrack
+	 */
+	public function getSetLastTrack()
+	{
+		return $this->_set_last_track;
+	}
 
 
 	############################################################################
