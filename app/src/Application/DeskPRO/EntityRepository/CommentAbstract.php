@@ -77,7 +77,7 @@ class CommentAbstract extends AbstractEntityRepository
 		}
 	}
 
-	public function getDisplayComments($object, PersonEntity $person_context = null, VisitorEntity $visitor_context)
+	public function getDisplayComments($object, PersonEntity $person_context = null, VisitorEntity $visitor_context = null)
 	{
 		$params = array('obj_id' => $object->getId());
 		$dql = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
