@@ -432,8 +432,8 @@ var DpChatWidget = new (function() {
 
 		if (DpChatWidget_Options && DpChatWidget_Options.visitorCode) {
 			url += '&vc=' + encodeURIComponent(DpChatWidget_Options.visitorCode);
-		} else if (DESKPRO_VISITOR_ID) {
-			url += '&vc=' + encodeURIComponent(DESKPRO_VISITOR_ID);
+		} else if (window.DESKPRO_VISITOR_ID) {
+			url += '&vc=' + encodeURIComponent(window.DESKPRO_VISITOR_ID);
 		}
 
 		url += '&title=';

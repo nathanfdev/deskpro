@@ -231,6 +231,32 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return string
+	 */
+	public function getUserAgent()
+	{
+		if (!$this->last_track) {
+			return null;
+		}
+
+		return $this->last_track->user_agent;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLastPage()
+	{
+		if (!$this->last_track) {
+			return null;
+		}
+
+		return $this->last_track->page_url;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata

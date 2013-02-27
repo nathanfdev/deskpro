@@ -336,7 +336,7 @@ pageMeta.baseId = '{{ baseId }}';
 									<td>{{ convo.session.date_last|date('fulltime') }}</td>
 								</tr>
 							{% endif %}
-							{% if convo.visitor.session_landing_page %}
+							{% if convo.visitor.visit_track %}
 								<tr>
 									<th>Session Landing Page:</th>
 									<td>{{ convo.visitor.visit_track.page_url }}</td>
@@ -348,7 +348,7 @@ pageMeta.baseId = '{{ baseId }}';
 									{{ convo.visitor.date_last|date('fulltime') }}
 								</td>
 							</tr>
-							{% if convo.visitor.landing_page %}
+							{% if convo.visitor.initial_track %}
 							<tr>
 								<th>Initial Landing Page:</th>
 								<td>
