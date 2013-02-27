@@ -185,11 +185,13 @@ class UserChatManager
 
 			// Update the visitor name/email while we have a chance,
 			// its used elsewhere and stays for a long time
-			if ($convo->person_name) {
-				$this->visitor->name = $convo->person_name;
-			}
-			if ($convo->person_email) {
-				$this->visitor->email = $convo->person_email;
+			if ($this->visitor) {
+				if ($convo->person_name) {
+					$this->visitor->name = $convo->person_name;
+				}
+				if ($convo->person_email) {
+					$this->visitor->email = $convo->person_email;
+				}
 			}
 		}
 
@@ -207,7 +209,9 @@ class UserChatManager
 			}
 
 			$this->em->persist($convo);
-			$this->em->persist($this->visitor);
+			if ($this->visitor) {
+				$this->em->persist($this->visitor);
+			}
 			$this->em->flush();
 
 			if (isset($chat_options['chat_fields']) && is_array($chat_options['chat_fields']) && !empty($chat_options['chat_fields'])) {
