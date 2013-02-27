@@ -237,22 +237,35 @@ class DpLoader extends LoaderAbstract
 
 		if (dp_get_config('trust_proxy_data') && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			$visitor_track['ip_address'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			$visitor_track['ip_address'] = explode(',', $visitor_track['ip_address']);
+			if (isset($visitor_track['ip_address'][0])) {
+				$visitor_track['ip_address'] = $visitor_track['ip_address'][0];
+			} else {
+				$visitor_track['ip_address'] = $_SERVER['REMOTE_ADDR'];
+			}
 		}
 
-		if ($is_new_visit_session && function_exists('geoip_record_by_name')) {
-			if ($geo = @geoip_record_by_name($visitor_track['ip_address'])) {
-				if (!empty($geo['continent_code'])) $visitor_track['geo_continent'] = $geo['continent_code'];
-				if (!empty($geo['country_code']))   $visitor_track['geo_country']   = $geo['country_code'];
-				if (!empty($geo['region']))         $visitor_track['geo_region']    = $geo['region'];
-				if (!empty($geo['city']))           $visitor_track['geo_city']      = $geo['city'];
-				if (!empty($geo['longitude']))      $visitor_track['geo_long']      = $geo['longitude'];
-				if (!empty($geo['latitude']))       $visitor_track['geo_lat']       = $geo['latitude'];
-			} elseif ($geo_country = @geoip_country_code_by_name($visitor_track['ip_address'])) {
-				$visitor_track['geo_country'] = $geo_country;
-				if ($geo_continent = @geoip_continent_code_by_name($visitor_track['ip_address'])) {
-					$visitor_track['geo_continent'] = $geo_continent;
+		if ($is_new_visit_session || 1) {
+
+			if (dp_get_config('disable_geoip')) {
+				$geoip = new \Orb\GeoIp\GeoIpNull();
+			} else {
+				if (function_exists('geoip_db_avail')) {
+					$geoip = new \Orb\GeoIp\GeoIpExtension();
+				} else {
+					$geoip = new \Orb\GeoIp\GeoIpPhp();
+					$geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor/geoip-db/GeoIP.dat');
 				}
 			}
+
+			$geo = $geoip->lookup($visitor_track['ip_address']);
+
+			if (!empty($geo['continent']))      $visitor_track['geo_continent'] = $geo['continent'];
+			if (!empty($geo['country']))        $visitor_track['geo_country']   = $geo['country'];
+			if (!empty($geo['region']))         $visitor_track['geo_region']    = $geo['region'];
+			if (!empty($geo['city']))           $visitor_track['geo_city']      = $geo['city'];
+			if (!empty($geo['longitude']))      $visitor_track['geo_long']      = $geo['longitude'];
+			if (!empty($geo['latitude']))       $visitor_track['geo_lat']       = $geo['latitude'];
 		}
 
 		$set_q = array();

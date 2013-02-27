@@ -76,14 +76,23 @@ abstract class LoaderAbstract
 			define('ORB_STRINGS_UTF8_DIR', DP_ROOT.'/vendor/php-utf8');
 		}
 
+		if (!defined('GEOIP_API_INC_PATH')) {
+			define('GEOIP_API_INC_PATH', DP_ROOT.'/vendor/geoip-api');
+		}
+
 		spl_autoload_register(function($class) {
 			switch ($class) {
 				case 'Orb\\Util\\Util':
 					require(DP_ROOT . '/src/Orb/Util/Util.php');
-					break;
+					return;
 				case 'Orb\\Util\\Strings':
 					require(DP_ROOT . '/src/Orb/Util/Strings.php');
-					break;
+					return;
+			}
+
+			if (strpos($class, 'Orb\\') === 0) {
+				$path = DP_ROOT . '/src/' . str_replace('\\', '/', $class) . '.php';
+				require($path);
 			}
 		});
 

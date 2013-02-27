@@ -196,21 +196,15 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				$track->is_new_visit = true;
 			}
 
-			if (function_exists('geoip_record_by_name')) {
-				if ($geo = @geoip_record_by_name($user_ip)) {
-					if (!empty($geo['continent_code'])) $track['geo_continent'] = $geo['continent_code'];
-					if (!empty($geo['country_code']))   $track['geo_country']   = $geo['country_code'];
-					if (!empty($geo['region']))         $track['geo_region']    = $geo['region'];
-					if (!empty($geo['city']))           $track['geo_city']      = $geo['city'];
-					if (!empty($geo['longitude']))      $track['geo_long']      = $geo['longitude'];
-					if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
-				} elseif ($geo_country = @geoip_country_code_by_name($user_ip)) {
-					$visitor_track['geo_country'] = $geo_country;
-					if ($geo_continent = @geoip_continent_code_by_name($user_ip)) {
-						$visitor_track['geo_continent'] = $geo_continent;
-					}
-				}
-			}
+			$geoip = App::getSystemService('geo_ip');
+			$geo = $geoip->lookup($user_ip);
+
+			if (!empty($geo['continent']))      $track['geo_continent'] = $geo['continent'];
+			if (!empty($geo['country']))        $track['geo_country']   = $geo['country'];
+			if (!empty($geo['region']))         $track['geo_region']    = $geo['region'];
+			if (!empty($geo['city']))           $track['geo_city']      = $geo['city'];
+			if (!empty($geo['longitude']))      $track['geo_long']      = $geo['longitude'];
+			if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
 		}
 
 		App::getOrm()->persist($vis);
