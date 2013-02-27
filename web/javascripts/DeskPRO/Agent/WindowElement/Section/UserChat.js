@@ -92,27 +92,39 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	_initStatusMenu: function() {
 		var self = this;
 
-		$('#chatStatusWrap').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var list = $('#agent_status_menu');
-			list.hide().detach().appendTo('body');
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
+		var statusMenuHandler = {
+			getBackdrop: function() {
+				if (!this.backdrop) {
+					this.backdrop = $('<div class="backdrop" />').appendTo('body');
+					this.backdrop.on('click', function() { statusMenuHandler.close(); });
+				}
+				return this.backdrop;
+			},
+			getList: function() {
+				if (!this.list) {
+					this.list = $('#agent_status_menu').hide().detach().appendTo('body');
+				}
+				return this.list;
+			},
+			open: function() {
+				this.getBackdrop().show();
+				this.getList().show();
+				self.statusMenuOpen = true;
+				self.fireEvent('statusMenuOpened');
+			},
+			close: function() {
+				this.getBackdrop().hide();
+				this.getList().hide();
 				self.statusMenuOpen = false;
-				self.fireEvent('statusMenuClosed');
-			};
-			backdrop.one('click', close);
-			$('#agent_status_away_overlay').one('click', close);
-			self.statusMenuOpen = true;
-			self.fireEvent('statusMenuOpened');
-		});
+				self.fireEvent('statusMenuClosed')
+			},
+			init: function() {
+				$('#chatStatusWrap').on('click', function() { statusMenuHandler.open(); });
+				$('#agent_status_away_overlay').on('click', function() { statusMenuHandler.close(); });
+				$('#agent_status_menu').find('.notifHead').on('click', function() { statusMenuHandler.close(); });
+			}
+		};
+		statusMenuHandler.init();
 
 		$('#agent_status_menu').find('button.toggle-status-trigger').on('click', function(ev) {
 
