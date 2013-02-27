@@ -46,8 +46,8 @@ class ChatTranscripts extends AbstractJob
 		$chat_ids = App::getDb()->fetchAllCol("
 			SELECT id
 			FROM chat_conversations
-			WHERE should_send_transcript = 1 AND status = 'ended' AND ended_by != 'timeout' AND date_ended < ?
-		", array(date('Y-m-d H:i:s', time() - 300)));
+			WHERE should_send_transcript = 1 AND status = 'ended' AND ended_by != 'timeout' AND date_ended < ? AND date_ended > ?
+		", array(date('Y-m-d H:i:s', time() - 300), date('Y-m-d H:i:s', time() - 18000)));
 
 		if (!$chat_ids) {
 			return;
