@@ -453,13 +453,13 @@ class AgentMessagesLoader extends LoaderAbstract
 
 		$filter_info = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
 		$filters = array();
-		foreach (array('all_filters', 'sys_filters', 'sys_filters_hold', 'archive_filters') as $k) {
+		foreach (array('sys_filters', 'sys_filters_hold', 'archive_filters') as $k) {
 			foreach ($filter_info[$k] as $f) {
-				$filters[] = $f;
+				$filters[$f->id] = $f;
 			}
 		}
 
-		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filters);
+		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filters, $this->_getPerson());
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
 		return array(array(null, 'filters.filter_data', $filter_id_matches));
@@ -472,7 +472,7 @@ class AgentMessagesLoader extends LoaderAbstract
 
 		$filter_info      = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
 
-		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters']);
+		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
 		return array(array(null, 'filters.filter_data', $filter_id_matches));

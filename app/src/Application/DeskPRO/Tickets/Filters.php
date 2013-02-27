@@ -235,12 +235,12 @@ class Filters
 	 * @param $ticket_filters
 	 * @return array
 	 */
-	public function getAllIdsForFiltersCollection($ticket_filters)
+	public function getAllIdsForFiltersCollection($ticket_filters, Person $person_context = null)
 	{
 		$all_ids = array();
 
 		foreach ($ticket_filters as $ticket_filter) {
-			$all_ids[$ticket_filter['id']] = $ticket_filter->getResults();
+			$all_ids[$ticket_filter['id']] = $ticket_filter->getResults($person_context);
 		}
 
 		return $all_ids;
