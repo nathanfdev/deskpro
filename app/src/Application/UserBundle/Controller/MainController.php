@@ -113,6 +113,13 @@ class MainController extends AbstractController
 
 	public function acceptTempUploadAction()
 	{
+		$security_token = $this->in->getString('security_token');
+		if (!$this->session->getEntity()->checkSecurityToken('attach_temp', $security_token)) {
+			return $this->createJsonResponse(array(array(
+				'error_code' => 'invalid_security_token'
+			)), 403);
+		}
+
 		$file = $this->request->files->get('attach');
 		if (is_array($file)) {
 			$file = array_pop($file);
@@ -131,13 +138,6 @@ class MainController extends AbstractController
 			}
 			$error['error'] = $this->container->getTranslator()->phrase($phrase_id, $error);
 			return $this->createJsonResponse(array($error));
-		}
-
-		$security_token = $this->in->getString('security_token');
-		if (!$this->session->getEntity()->checkSecurityToken('attach_temp', $security_token)) {
-			return $this->createJsonResponse(array(array(
-				'error_code' => 'invalid_security_token'
-			)), 403);
 		}
 
 		if ($error) {
