@@ -46,23 +46,12 @@ unset($mem_size);
 
 define('DP_REAL_MAX_EXEC_TIME', @ini_get('max_execution_time'));
 
-if (defined('PHP_OS') && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-	// Slightly higher default max exec time for Windows
-	// because Windows counts non-script work (eg database) towards the time
-	// whereas all other platforms dont
-	if (!isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
-		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 150;
-	}
-	if (!defined('DP_PREF_MAX_EXEC_TIME')) {
-		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 150;
-	}
-} else {
-	if (!isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
-		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 60;
-	}
-	if (!defined('DP_PREF_MAX_EXEC_TIME')) {
-		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 60;
-	}
+if (!isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
+	$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 600;
+}
+
+if (defined('DP_PREF_MAX_EXEC_TIME')) {
+	$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = DP_PREF_MAX_EXEC_TIME;
 }
 
 $max_time = DP_REAL_MAX_EXEC_TIME;
