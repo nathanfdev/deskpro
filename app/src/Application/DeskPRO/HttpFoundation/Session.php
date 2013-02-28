@@ -168,77 +168,77 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
-		$soft_visitor_id = null;
-		if (!$vis) {
-			$vis = new Entity\Visitor();
-
-			// If there have been multiple requests from the same ip
-			// and those visitor counts arent increasing, it probably means
-			// this is a bot or a user without cookies. So prevent the
-			// track from being displayed to agents a bajillion times.
-			$soft_visitor_id = App::getDb()->fetchColumn("
-				SELECT v.id
-				FROM visitors v
-				LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
-				WHERE
-					v.date_last > ?
-					AND v.page_count = 1
-					AND v.hint_hidden = 0
-					AND vt.ip_address = ?
-				LIMIT 1
-			", array(
-				date('Y-m-d H:i:s', time() - 600),
-				$user_ip
-			));
-
-			if ($soft_visitor_id) {
-				$vis->hint_hidden = true;
-			}
-		} else {
-			// This was requested a second time, so the user is "real"
-			// disbale the hidden hint if it was enabled
-			if ($vis->hint_hidden) {
-				$vis->hint_hidden = false;
-			}
-		}
-
-		if (!empty($_SESSION['_symfony2']['auth_person_id']) && $_SESSION['_symfony2']['auth_person_id']) {
-			$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
-		}
-
-		$prev_date_last = $vis->date_last;
-
-		$vis->page_count = $vis->page_count + 1;
-		$vis->date_last  = new \DateTime();
-
-		$this->visitor = $vis;
-
-		// Insert tracks
-		$track = null;
-		if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url)) {
-			$track = new Entity\VisitorTrack();
-			$track->visitor      = $vis;
-			$track->page_url     = $url;
-			$track->ref_page_url = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-			$track->ip_address   = $user_ip;
-			$track->user_Agent   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
-
-			if (!$vis->initial_track) {
-				$track->is_new_visit = true;
-			}
-
-			$geoip = App::getSystemService('geo_ip');
-			$geo = $geoip->lookup($user_ip);
-
-			if (!empty($geo['continent']))      $track['geo_continent'] = $geo['continent'];
-			if (!empty($geo['country']))        $track['geo_country']   = $geo['country'];
-			if (!empty($geo['region']))         $track['geo_region']    = $geo['region'];
-			if (!empty($geo['city']))           $track['geo_city']      = $geo['city'];
-			if (!empty($geo['longitude']))      $track['geo_long']      = $geo['longitude'];
-			if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
-		}
-
 		if (!Web::isBotUseragent()) {
+			$soft_visitor_id = null;
+			if (!$vis) {
+				$vis = new Entity\Visitor();
+
+				// If there have been multiple requests from the same ip
+				// and those visitor counts arent increasing, it probably means
+				// this is a bot or a user without cookies. So prevent the
+				// track from being displayed to agents a bajillion times.
+				$soft_visitor_id = App::getDb()->fetchColumn("
+					SELECT v.id
+					FROM visitors v
+					LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
+					WHERE
+						v.date_last > ?
+						AND v.page_count = 1
+						AND v.hint_hidden = 0
+						AND vt.ip_address = ?
+					LIMIT 1
+				", array(
+					date('Y-m-d H:i:s', time() - 600),
+					$user_ip
+				));
+
+				if ($soft_visitor_id) {
+					$vis->hint_hidden = true;
+				}
+			} else {
+				// This was requested a second time, so the user is "real"
+				// disbale the hidden hint if it was enabled
+				if ($vis->hint_hidden) {
+					$vis->hint_hidden = false;
+				}
+			}
+
+			if (!empty($_SESSION['_symfony2']['auth_person_id']) && $_SESSION['_symfony2']['auth_person_id']) {
+				$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
+			}
+
+			$prev_date_last = $vis->date_last;
+
+			$vis->page_count = $vis->page_count + 1;
+			$vis->date_last  = new \DateTime();
+
+			$this->visitor = $vis;
+
+			// Insert tracks
+			$track = null;
+			if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url)) {
+				$track = new Entity\VisitorTrack();
+				$track->visitor      = $vis;
+				$track->page_url     = $url;
+				$track->ref_page_url = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+				$track->ip_address   = $user_ip;
+				$track->user_Agent   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+
+				if (!$vis->initial_track) {
+					$track->is_new_visit = true;
+				}
+
+				$geoip = App::getSystemService('geo_ip');
+				$geo = $geoip->lookup($user_ip);
+
+				if (!empty($geo['continent']))      $track['geo_continent'] = $geo['continent'];
+				if (!empty($geo['country']))        $track['geo_country']   = $geo['country'];
+				if (!empty($geo['region']))         $track['geo_region']    = $geo['region'];
+				if (!empty($geo['city']))           $track['geo_city']      = $geo['city'];
+				if (!empty($geo['longitude']))      $track['geo_long']      = $geo['longitude'];
+				if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
+			}
+
 			App::getOrm()->persist($vis);
 			if ($track) {
 				$vis->last_track = $track;
@@ -292,6 +292,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			} else {
 				$this->remove('dpvid');
 			}
+		} else {
+			$this->visitor = null;
+			$this->getEntity()->visitor = null;
+			$this->remove('dpvid');
 		}
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
