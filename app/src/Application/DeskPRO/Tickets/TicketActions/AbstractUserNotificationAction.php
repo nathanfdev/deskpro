@@ -208,6 +208,7 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 
 			if (isset($vars['is_auto']) && $vars['is_auto']) {
 				$message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');
+				$message->setSuppressAutoreplies(true);
 			}
 
 			if ($attach_attachments) {

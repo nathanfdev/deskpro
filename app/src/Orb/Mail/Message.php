@@ -50,7 +50,7 @@ class Message extends \Swift_Message
 	/**
 	 * @var bool
 	 */
-	protected $_suppress_autoreply = true;
+	protected $_suppress_autoreply = false;
 
 	/**
 	 * @var \Swift_Transport
@@ -96,9 +96,25 @@ class Message extends \Swift_Message
 
 		$this->has_prepared = true;
 
+		$from = $this->getFrom();
+		if ($from && count($from) == 1) {
+			if (!$this->getReplyTo()) {
+				$this->setReplyTo($from);
+			}
+
+			if (!$this->_suppress_autoreply && !$this->getReturnPath()) {
+				$addr = array_keys($from);
+				$addr = array_pop($addr);
+				$this->setReturnPath($addr);
+			}
+		}
+
 		if ($this->_suppress_autoreply) {
 			// Tell Outlook/Exchange to suppress autoreplies (http://msdn.microsoft.com/en-us/library/ee219609(v=exchg.80).aspx)
-			$this->_setHeaderParameter('X-Auto-Response-Suppress', 'All', null);
+			$this->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'All');
+			if (!$this->getReturnPath()) {
+				$this->getHeaders()->addTextHeader('Return-Path', '<>');
+			}
 		}
 
 		$this->doPrepare();
