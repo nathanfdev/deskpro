@@ -513,8 +513,6 @@ class DepartmentsController extends AbstractController
 			$date_created = date('Y-m-d H:i:s');
 
 			foreach ($ticket_ids as $ids) {
-				set_time_limit(100);
-
 				$ids_string = implode(',', $ids);
 
 				$this->db->beginTransaction();

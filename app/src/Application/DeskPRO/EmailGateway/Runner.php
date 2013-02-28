@@ -68,6 +68,27 @@ class Runner
 	 */
 	protected $set_time_limit = 0;
 
+	/**
+	 * When non-0, sets when the email loop will break early when
+	 * DP_START_TIME has gone over.
+	 *
+	 * @var int
+	 */
+	protected $soft_time_limit = 0;
+
+	/**
+	 * When non-0, sets when the email loop will break early
+	 * when this many messages have been processed;
+	 *
+	 * @var int
+	 */
+	protected $message_limit = 0;
+
+	/**
+	 * @var int
+	 */
+	protected $message_count = 0;
+
 	public function __construct()
 	{
 		$this->logger = new \Application\DeskPRO\Log\Logger();
@@ -82,11 +103,29 @@ class Runner
 	 * the script, and whatever message that was being processed will be stuck in the 'inserted'
 	 * state.
 	 *
-	 * @param $time_limit
+	 * @param int $time_limit
 	 */
 	public function setPhpTimeLimit($time_limit)
 	{
 		$this->set_time_limit = $time_limit;
+	}
+
+
+	/**
+	 * @param int $time_limit
+	 */
+	public function setSoftTimeLimit($time_limit)
+	{
+		$this->soft_time_limit = $time_limit;
+	}
+
+
+	/**
+	 * @param int $limit
+	 */
+	public function setMessageLimit($limit)
+	{
+		$this->message_limit = $limit;
 	}
 
 
@@ -396,6 +435,23 @@ class Runner
 				KernelErrorHandler::logException($e);
 				while (App::getDb()->isTransactionActive()) {
 					App::getDb()->commit();
+				}
+			}
+
+			if ($this->message_limit) {
+				if ($this->message_count >= $this->message_limit) {
+					$this->logger->logWarn(sprintf("Hit message limit, breaking :: Processed %d messages", $this->message_count));
+					break;
+				}
+			}
+
+			$this->message_count++;
+
+			if ($this->soft_time_limit) {
+				$t = microtime(true) - DP_START_TIME;
+				if ($t > $this->soft_time_limit) {
+					$this->logger->logWarn(sprintf("Hit soft time limit, breaking :: Running for %.3fs", $t));
+					break;
 				}
 			}
 

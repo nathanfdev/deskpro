@@ -49,6 +49,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 	protected $set_verbose = false;
 	protected $ignore_interval = false;
 	protected $output;
+	protected $cron_id;
 
 	protected function configure()
 	{
@@ -68,7 +69,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 		@ini_set('track_errors', true);
 
-		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 1000;
+		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 1800;
 		@set_time_limit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
 
 		$is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
@@ -82,7 +83,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			$jobs = App::getOrm()->createQuery("
 				SELECT j
 				FROM DeskPRO:WorkerJob j
-				ORDER BY j.interval ASC
+				ORDER BY j.last_run_date ASC
 			")->execute();
 
 			$last_run = App::getSetting('core.last_cron_run');
@@ -417,6 +418,22 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		}
 
 		$runner->setJobOptions($options);
+
+		$runner->setPostJobCallback(function($runner, $worker_job, $logger) {
+			$t = microtime(true) - DP_START_TIME;
+			if ($t > 600) {
+				$runner->haltJobLoop();
+				$logger->log(sprintf("haltJobLoop after {$worker_job['id']} :: Time running: %.3fs", $t), Logger::WARN, array('flag' => 'halt_job_loop'));
+			}
+
+			// Reset the cron timer so we dont try and restart while we still run
+			if (isset($GLOBALS['DP_CRON_ID']) && $GLOBALS['DP_CRON_ID']) {
+				App::getDb()->replace('settings', array(
+					'name'  => 'core.croncheck.' . $GLOBALS['DP_CRON_ID'],
+					'value' => time()
+				));
+			}
+		});
 
 		if ($verbose) {
 			$GLOBALS['DP_OUTPUT'] = $output;

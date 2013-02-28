@@ -1734,8 +1734,6 @@ class Upgrade
 	{
 		$this->log(sprintf("execCommand: dir(%s)  cmd(%s)", $dir, $command));
 
-		@set_time_limit(1800);
-
 		if ($dir) {
 			chdir($dir);
 		}
@@ -1743,8 +1741,6 @@ class Upgrade
 		$command .= ' 2>&1';
 		$ret = 0;
 		exec($command, $out, $ret);
-
-		@set_time_limit(0);
 
 		$this->log(sprintf("execCommand: -> result: %d", $ret));
 		if (strpos($command, '--help') === false) {

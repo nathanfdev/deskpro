@@ -71,7 +71,24 @@ class ProcessEmailGateways extends AbstractJob
 
 		$runner = new \Application\DeskPRO\EmailGateway\Runner();
 		$runner->setLogger($logger);
-		$runner->setPhpTimeLimit(300);
+
+		if (isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
+			$runner->setPhpTimeLimit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
+		} else {
+			$runner->setPhpTimeLimit(900);
+		}
+
+		if (dp_get_config('gateway_soft_time_limit')) {
+			$runner->setSoftTimeLimit(dp_get_config('gateway_soft_time_limit'));
+		} else {
+			$runner->setSoftTimeLimit(480);
+		}
+
+		if (dp_get_config('gateway_message_limit')) {
+			$runner->setMessageLimit(dp_get_config('gateway_message_limit'));
+		} else {
+			$runner->setMessageLimit(40);
+		}
 
 		if ($this->options->get('run_source_id')) {
 			$sid = $this->options->get('run_source_id');

@@ -64,7 +64,35 @@ abstract class AbstractRunner
 	/**
 	 * @var int
 	 */
-	protected $job_time_limit = 300;
+	protected $job_time_limit = 900;
+
+	/**
+	 * @var callable
+	 */
+	protected $post_job_callback;
+
+	/**
+	 * @var bool
+	 */
+	protected $halt_job_loop = false;
+
+
+	/**
+	 * @param $callback
+	 */
+	public function setPostJobCallback($callback)
+	{
+		$this->post_job_callback = $callback;
+	}
+
+
+	/**
+	 * Signals that the job should break, even if there are still jobs to process.
+	 */
+	public function haltJobLoop()
+	{
+		$this->halt_job_loop = true;
+	}
 
 
 	/**
@@ -87,6 +115,9 @@ abstract class AbstractRunner
 	{
 		foreach ($jobs as $job) {
 			$this->runJob($job);
+			if ($this->halt_job_loop) {
+				break;
+			}
 		}
 	}
 
@@ -151,6 +182,10 @@ abstract class AbstractRunner
 
 		if ($this->job_time_limit) {
 			@set_time_limit(0);
+		}
+
+		if ($this->post_job_callback) {
+			call_user_func($this->post_job_callback, $this, $worker_job, $logger);
 		}
 
 		unset($GLOBALS['DP_CRON_LOGGER']);
