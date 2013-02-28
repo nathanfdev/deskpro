@@ -25,6 +25,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.dismissedChats = {};
 		this.openingChatTimeout = {};
 		this.refreshCountsTimeout = null;
+		this.onlineAgentIds = [];
 
 		this._initStatusMenu();
 		this._initStatusMenuAgents();
@@ -131,28 +132,29 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			$('#chatStatusWrap').toggleClass('offline');
-			self.sendUpdateAgentStatus();
+			$('#agent_status_menu_me_list').addClass('loading');
 
+			var is_available;
 			if ($('#chatStatusWrap').hasClass('offline')) {
-				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '-');
-				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '-');
-
-				$('#agent_status_menu_onlinerow').hide();
-				$('#agent_status_menu_offlinerow').show();
+				// Toggle on
+				is_available = true;
 			} else {
-				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '+');
-				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '+');
-
-				$('#agent_status_menu_onlinerow').show();
-				$('#agent_status_menu_offlinerow').hide();
+				// Toggle off
+				is_available = false;
 			}
 
-			if (count) {
-				$('#chatStatusWrap').removeClass('red');
-			} else {
-				$('#chatStatusWrap').addClass('red');
-			}
+			self.sendUpdateAgentStatus(is_available, function() {
+				$('#agent_status_menu_me_list').removeClass('loading');
+
+				if (!is_available) {
+					self.onlineAgentIds.erase(DESKPRO_PERSON_ID);
+				} else {
+					self.onlineAgentIds.include(DESKPRO_PERSON_ID);
+				}
+
+				self.refreshOnlineAgentsList();
+				self.refreshOnlineAgentDepGroups();
+			});
 		});
 	},
 
@@ -208,53 +210,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', function(info) {
-			var list = $('#agent_status_menu_onlinelist');
-			var count = 0;
-			var hasme = false;
+			self.onlineAgentIds = [];
 
 			if (info.online_agents && info.online_agents.length) {
-				list.find('li').hide().removeClass('on last');
 				Array.each(info.online_agents, function(agent_id) {
-					if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
-						hasme = true;
-					} else {
-						count++;
-						list.find('li.agent-' + agent_id).show().addClass('on');
-					}
+					self.onlineAgentIds.push(parseInt(agent_id));
 				});
-
-				list.find('li.on').last().addClass('last');
 			}
 
-			if (count) {
-				list.show();
-			} else {
-				list.hide();
-			}
-
-			if (!hasme) {
-				if (!$('#chatStatusWrap').hasClass('offline')) {
-					$('#chatStatusWrap').addClass('offline');
-					$('#agent_status_menu_onlinerow').hide();
-					$('#agent_status_menu_offlinerow').show();
-				}
-			}
-
-			if (!$('#chatStatusWrap').hasClass('offline')) {
-				count++;
-			}
-
-			DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
-			DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
-
-			if (count) {
-				$('#chatStatusWrap').removeClass('red');
-			} else {
-				$('#chatStatusWrap').addClass('red');
-			}
-
+			self.refreshOnlineAgentsList();
 			self.refreshOnlineAgentDepGroups();
-
 		}, this);
 	},
 
@@ -366,6 +331,49 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	//# Window: Online agents / status
 	//##################################################################################################################
 
+	refreshOnlineAgentsList: function() {
+		var self = this;
+		var list = $('#agent_status_menu_onlinelist');
+		var count;
+		var hasme = false;
+		list.find('li').hide().removeClass('on last');
+
+		Array.each(this.onlineAgentIds, function(agent_id) {
+			if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
+				hasme = true;
+			}
+
+			list.find('li.agent-' + agent_id).show().addClass('on');
+		});
+
+		list.find('li.on').last().addClass('last');
+
+		count = self.onlineAgentIds.length;
+
+		if (count) {
+			list.show();
+		} else {
+			list.hide();
+		}
+
+		if (!hasme) {
+			if (!$('#chatStatusWrap').hasClass('offline')) {
+				$('#chatStatusWrap').addClass('offline');
+				$('#agent_status_menu_onlinerow').hide();
+				$('#agent_status_menu_offlinerow').show();
+			}
+		}
+
+		DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
+		DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
+
+		if (count) {
+			$('#chatStatusWrap').removeClass('red');
+		} else {
+			$('#chatStatusWrap').addClass('red');
+		}
+	},
+
 	refreshOnlineAgentDepGroups: function() {
 		var self = this;
 		if (!this.onlineAgentsGroupDepCheck.hasClass('checked')) {
@@ -375,9 +383,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.onlineAgentsListGrouped.find('li.dep').hide();
 		this.onlineAgentsListGrouped.find('ul').empty();
 
-		this.onlineAgentsList.find('li.on').each(function(li) {
-			var li = $(this);
-
+		Array.each(this.onlineAgentIds, function(agentId) {
+			var li = this.onlineAgentsList.find('li.agent-' + agentId);
 			var depIds = li.data('department-ids') || '';
 			depIds = depIds.split(',');
 
@@ -386,19 +393,18 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 					var depRow = self.onlineAgentsListGrouped.find('li.dep-' + depId);
 					var depList = depRow.find('ul');
 					depList.append(li.clone());
-
 					depRow.show();
 				});
 			}
-		});
+		}, this);
 	},
 
-	sendUpdateAgentStatus: function() {
+	sendUpdateAgentStatus: function(is_available, callback) {
 
 		var status   = 'available';
 		var postData = [];
 
-		if (!$('#chatStatusWrap').hasClass('offline')) {
+		if (is_available) {
 			postData.push({
 				name: 'is_chat_available',
 				value: 1
@@ -414,12 +420,27 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/misc/set-agent-status/available',
 				type: 'POST',
-				data: postData
+				data: postData,
+				complete: function() {
+					if (!is_available) {
+						$('#chatStatusWrap').addClass('offline');
+					} else {
+						$('#chatStatusWrap').removeClass('offline');
+					}
+					if (callback) {
+						callback();
+					}
+				}
 			});
 		} else if (status == 'away') {
 			$.ajax({
 				url: BASE_URL + 'agent/misc/set-agent-status/away',
-				type: 'POST'
+				type: 'POST',
+				complete: function() {
+					if (callback) {
+						callback();
+					}
+				}
 			});
 		}
 	},

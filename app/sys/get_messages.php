@@ -551,7 +551,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			SELECT DISTINCT s.person_id
 			FROM sessions s
 			INNER JOIN people p ON (s.person_id = p.id)
-			WHERE (p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?)
+			WHERE (p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ? AND interface = 'agent')
 				OR s.person_id = ?
 		");
 		$q->execute(array($cutoff, $this->_person_id));
@@ -564,7 +564,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$q = $this->getPdo()->prepare("
 			SELECT DISTINCT person_id
 			FROM sessions
-			WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1
+			WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1 AND interface = 'agent'
 		");
 		$q->execute(array($cutoff));
 

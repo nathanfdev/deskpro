@@ -50,16 +50,26 @@
 					<table cellspacing="0" cellpadding="0" border="0">
 						<tr>
 							<td valign="top" class="agent-list">
-								<ul class="me">
+								<ul class="me" id="agent_status_menu_me_list">
 									<li class="agent" id="agent_status_menu_onlinerow">
 										<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
 										You are currently available for chat.
-										<button class="clean-white toggle-status-trigger">Sign out of chat</button>
+										<div style="display: inline-block; width: 108px; text-align: right;">
+											<button class="clean-white toggle-status-trigger is-not-loading">Sign out of chat</button>
+											<span class="is-loading">
+												<span class="flat-spinner" style="display: inline-block;"></span>
+											</span>
+										</div?
 									</li>
 									<li class="agent" id="agent_status_menu_offlinerow" style="display: none;">
 										<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
 										You are currently away from chat.
-										<button class="clean-white toggle-status-trigger">Sign in to chat</button>
+										<div style="display: inline-block; width: 108px; text-align: right;">
+											<button class="clean-white toggle-status-trigger is-not-loading">Sign in to chat</button>
+											<span class="is-loading">
+												<span class="flat-spinner" style="display: inline-block;"></span>
+											</span>
+										</div>
 									</li>
 								</ul>
 
@@ -70,7 +80,7 @@
 											By department
 										</div>
 										<h6>
-											Other agents online for chat
+											Agents online for chat
 										</h6>
 									</header>
 									<ul class="list department-grouped" style="display: none;">
@@ -82,11 +92,10 @@
 										{% endfor %}
 									</ul>
 									<ul class="list normal">
-										{% for agent in agents if agent.id != app.user.id %}
+										{% for agent in agents %}
 											<li
 												data-department-ids="{{ agent_chat_depmap[agent.id]|join(',') }}"
 												class="agent agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"
-												style="{% if agent.id == app.user.id %}display: none;{% endif %}"
 											>
 												<div class="avatar" style="background-image: url({{ agent.getPictureUrl(16) }});"></div>
 												{{ agent.display_name }}
