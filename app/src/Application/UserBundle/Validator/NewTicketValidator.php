@@ -318,38 +318,43 @@ class NewTicketValidator extends AbstractValidator
 				break;
 
 			case 'ticket_product':
-
-				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
-					'category_repository' => App::getEntityRepository('DeskPRO:Product'),
-					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_user_required')
-				));
-				if (!$validator->isValid($this->newticket->ticket->product_id)) {
-					$this->addError('ticket.product_id.invalid');
+				if (App::getSetting('core.use_product')) {
+					$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
+						'category_repository' => App::getEntityRepository('DeskPRO:Product'),
+						'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_user_required')
+					));
+					if (!$validator->isValid($this->newticket->ticket->product_id)) {
+						$this->addError('ticket.product_id.invalid');
+					}
 				}
 				break;
 
 			case 'ticket_category':
-				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
-					'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
-					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_user_required')
-				));
-				if (!$validator->isValid($this->newticket->ticket->category_id)) {
-					$this->addError('ticket.category_id.invalid');
+				if (App::getSetting('core.use_ticket_category')) {
+					$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
+						'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
+						'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_user_required')
+					));
+					if (!$validator->isValid($this->newticket->ticket->category_id)) {
+						$this->addError('ticket.category_id.invalid');
+					}
 				}
 				break;
 
 			case 'ticket_priority':
-				$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
-					'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_user_required')
-				));
-				if (!$validator->isValid($this->newticket->ticket->priority_id)) {
-					$this->addError('ticket.priority_id.invalid');
+				if (App::getSetting('core.use_ticket_priority')) {
+					$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
+						'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_user_required')
+					));
+					if (!$validator->isValid($this->newticket->ticket->priority_id)) {
+						$this->addError('ticket.priority_id.invalid');
+					}
 				}
 				break;
 
 			case 'ticket_field':
 				$field = App::getSystemService('TicketFieldsManager')->getFieldFromId($item['field_id']);
-				if ($field) {
+				if ($field && $field->is_enabled) {
 					$errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
 					foreach ($errors as $code) {
 						$this->addError('ticket.' . $code);
