@@ -1,0 +1,6 @@
+{% extends 'AgentBundle::layout-popup.html.twig' %}
+{% block content %}
+	<div style="background-color: #fff; padding: 10px;">
+		{% if message.message_full %}{{ message.message_full|raw }}{% else %}{{ message.message_html|raw }}{% endif %}
+	</div>
+{% endblock %}

@@ -23,8 +23,16 @@
 		</header>
 		<div class="body-text">
 			<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
-				{{message.message_html|safe_link_urls_html }}
-				{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
+				{% if message.getMessageLength() > 1100000 %}
+					{{message.getMessageHtmlClipped(1100000)|raw }}
+					<br/><br/><br/>
+					<div style="text-align: center;">
+						This message has been clipped because it is very long. <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">View the entire message in a new window &rarr;</a>
+					</div>
+				{% else %}
+					{{message.message_html|safe_link_urls_html }}
+					{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
+				{% endif %}
 			</div>
 			{% if message.message_full %}
 				<div class="body-text-full-message {% if message.show_full_hint %}loaded{% endif %}" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
@@ -47,6 +55,15 @@
 				</ul>
 			{%endif%}
 			<div class="fade-bar"></div>
+			<div class="fade-bar-longmsg">
+				<em>
+					<strong>
+						<i></i>
+						View Full Message
+						<i class="last"></i>
+					</strong>
+				</em>
+			</div>
 		</div>
 		{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}

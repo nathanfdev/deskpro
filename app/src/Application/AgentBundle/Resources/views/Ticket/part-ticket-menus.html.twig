@@ -1,6 +1,10 @@
 <ul class="ticket-message-edit-menu" style="display:none">
 	<li data-option-id="view-details">{{ phrase('agent.general.detail') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
+	<li data-option-id="window" data-url="{{ path('agent_ticket_message_window', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">View message in a new window</li>
+	{% if message.message_raw %}
+		<li data-option-id="window" data-url="{{ path('agent_ticket_message_raw', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">View raw HTML message</li>
+	{% endif %}
 	<li data-option-id="fwd">Forward Message</li>
 	{% if ticket_perms.delete %}<li class="delete-link" data-option-id="delete">Delete</li>{% endif %}
 	{% if ticket_perms.delete %}<li class="delete-attachments-link" data-option-id="delete-attachments">Delete attachments</li>{% endif %}

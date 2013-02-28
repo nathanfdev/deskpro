@@ -2826,6 +2826,17 @@ class TicketController extends AbstractController
 		return $res;
 	}
 
+	public function viewMessageWindowAction($message_id)
+	{
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+		$ticket = $message->ticket;
+
+		return $this->render('AgentBundle:Ticket:ticket-message-window.html.twig', array(
+			'message' => $message,
+			'ticket' => $ticket
+		));
+	}
+
 	############################################################################
 	# new
 	############################################################################

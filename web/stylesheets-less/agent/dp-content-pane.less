@@ -1294,6 +1294,74 @@ article.content-message .content header .comment-validate-btn {
 article.content-message .content .body-text {
 	padding: 6px;
 	font-size: 13px;
+	max-height: 600px;
+	overflow: hidden;
+	position: relative;
+}
+
+article.content-message .content .body-text .fade-bar-longmsg {
+	display: none;
+	background-color: rgb(248,248,248);
+	.fade-away-v(rgba(248,248,248,0), rgba(248,248,248,1), 50px);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	em {
+		cursor: pointer;
+		display: block;
+		position: absolute;
+		bottom: 4px;
+		left: 0;
+		right: 0;
+		text-align: center;
+
+		strong {
+			font-weight: normal;
+			font-style: normal;
+			font-size: 11px;
+			background: #E4E4E4;
+			border: 1px solid #999999;
+			line-height: 100%;
+			padding: 1px 8px;
+			.rounded(3px);
+			text-shadow: none;
+		}
+
+		i {
+			.iconbase(7px, 5px);
+			background-image: url(../../images/agent/button-downarrow.png);
+			margin-right: 10px;
+			position: relative;
+			top: -1px;
+
+			&.last {
+				margin-right: 0;
+				margin-left: 10px;
+			}
+		}
+	}
+}
+
+.show-collapsed-messages article.content-message.with-clipped-body .content .body-text .fade-bar-longmsg {
+	display: none !important;
+}
+
+.show-collapsed-messages article.content-message.with-clipped-body {
+	overflow: hidden;
+}
+
+article.content-message.with-clipped-body .content .body-text .fade-bar-longmsg {
+	display: block;
+}
+
+article.content-message.with-clipped-body.clipped-show .content .body-text .fade-bar-longmsg {
+	display: none;
+}
+
+article.content-message.with-clipped-body.clipped-show .content .body-text {
+	max-height: none;
 }
 
 article.content-message .content .body-text .message-counter {

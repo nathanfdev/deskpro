@@ -1286,6 +1286,13 @@ $collection->add('agent_ticket_message_raw', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_message_window', new Route(
+	'/tickets/{ticket_id}/message-details/{message_id}/window',
+	array('_controller' => 'AgentBundle:Ticket:viewMessageWindow'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_message_emailsource', new Route(
 	'/tickets/{ticket_id}/message-details/{message_id}/email-source',
 	array('_controller' => 'AgentBundle:Ticket:viewEmailSource'),

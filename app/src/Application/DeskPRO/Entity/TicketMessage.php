@@ -160,6 +160,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $withNewSubject = '';
 
+	protected $_message_length = null;
+
 	public function __construct()
 	{
 		$this->setModelField('date_created', new \DateTime());
@@ -192,6 +194,30 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	public function getPersonId()
 	{
 		return $this->person['id'];
+	}
+
+	public function getMessageLength()
+	{
+		if ($this->_message_length !== null) {
+			return $this->_message_length;
+		}
+
+		$this->_message_length = strlen(strip_tags($this->message));
+		return $this->message;
+	}
+
+	public function getMessageHtmlClipped($max_length)
+	{
+		$message = $this->getMessageHtml();
+		if (strlen($message) <= $max_length) {
+			return $message;
+		}
+
+		$message = substr($message, 0, $max_length);
+
+		// Just closes tags we might have chopped up
+		$message = App::getContainer()->getInputCleaner()->clean($message, 'html_fix');
+		return $message;
 	}
 
 	public function getMessageHtml()
