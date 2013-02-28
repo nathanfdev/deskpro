@@ -58,7 +58,7 @@ class UserTrackController extends AbstractController
 			FROM DeskPRO:Visitor v
 			LEFT JOIN v.last_track t
 			LEFT JOIN v.visit_track ti
-			WHERE v.date_last > ?0
+			WHERE v.date_last > ?0 AND v.last_track IS NOT NULL
 			ORDER BY v.date_last DESC
 		")->setMaxResults(100)->execute(array($cut));
 

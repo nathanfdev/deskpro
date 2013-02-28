@@ -125,6 +125,12 @@ class MainController extends AbstractController
 				AND department_permissions.app = 'chat' AND department_permissions.value = 1
 		", array(), 'person_id', null, 'department_id');
 
+		foreach ($agent_chat_depmap as &$v) {
+			if ($v) {
+				$v = array_unique($v, \SORT_NUMERIC);
+			}
+		}
+
 		$is_first_login = false;
 		$is_first_login_name = false;
 
