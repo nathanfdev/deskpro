@@ -356,9 +356,9 @@
 						<td class="value">
 							{{ phrase('agent.people.user_landed_on_page') }}
 							<em class="short-url-prev tipped" title="{{ session.visitor.initial_track.page_url }}">{{ session.visitor.initial_track.page_url|url_domain }}</em>
-							{% if session.visitor.visit_track.page_ref_url %}
+							{% if session.visitor.visit_track.ref_page_url %}
 								{{ phrase('agent.people.and_came_from') }}
-								<em class="short-url-prev tipped" title="{{ session.visitor.visit_track.page_ref_url }}">{{ session.visitor.visit_track.page_ref_url|url_domain }}</em>
+								<em class="short-url-prev tipped" title="{{ session.visitor.visit_track.ref_page_url }}">{{ session.visitor.visit_track.ref_page_url|url_domain }}</em>
 							{% endif %}
 						</td>
 					</tr>
@@ -387,9 +387,9 @@
 						<td class="value">
 							{{ phrase('agent.people.user_landed_on_page') }}
 							<em class="tipped" title="{{ visitor.initial_track.page_url }}">...</em>
-							{% if visitor.visit_track.page_ref_url %}
+							{% if visitor.visit_track.ref_page_url %}
 								{{ phrase('agent.people.and_came_from') }}
-								<em class="tipped" title="{{ visitor.visit_track.page_ref_url }}">...</em>
+								<em class="tipped" title="{{ visitor.visit_track.ref_page_url }}">...</em>
 							{% endif %}
 						</td>
 					</tr>
