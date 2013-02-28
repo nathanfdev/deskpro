@@ -1082,6 +1082,9 @@ class TemplatingExtension extends \Twig_Extension
 			$ret = preg_replace('#([a-zA-Z0-9\-_]+)=([a-zA-Z0-9]{6})\-([a-zA-Z]{10})\-([a-zA-Z0-9]{40})&?#', '', $ret);
 
 			$ret = trim($ret, '/?#&');
+
+			// Trailing index.php, index.html
+			$ret = preg_replace('#/index\.(html|php)#', '', $ret);
 		}
 
 		return $ret;

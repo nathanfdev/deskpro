@@ -5,7 +5,7 @@
 	</div>
 	<div style="max-height: 600px; overflow: auto">
 		<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table with-head">
-			<tbody style="max-height: 600px; overflow: auto">
+			<tbody>
 				<tr>
 					<th class="col-head">User</th>
 					<th class="col-head">Current Page</th>
@@ -29,7 +29,7 @@
 							</div>
 						</td>
 						<td>
-							<div style="width: 320px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+							<div style="width: 300px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
 								<a href="{{ vis.recent_track.page_url }}" target="_blank">
 									{{ vis.recent_track.page_url|url_trim_scheme(true) }}
 								</a>
