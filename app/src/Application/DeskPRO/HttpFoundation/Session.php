@@ -39,6 +39,7 @@ use Orb\Util\Util;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Web;
 
 /**
  * Session is able to load up a user, their language etc.
@@ -214,7 +215,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		// Insert tracks
 		$track = null;
-		if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url)) {
+		if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url)) {
 			$track = new Entity\VisitorTrack();
 			$track->visitor      = $vis;
 			$track->page_url     = $url;
@@ -237,53 +238,61 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
 		}
 
-		App::getOrm()->persist($vis);
-		if ($track) {
-			$vis->last_track = $track;
+		if (!Web::isBotUseragent()) {
+			App::getOrm()->persist($vis);
+			if ($track) {
+				$vis->last_track = $track;
 
-			if (!$vis->initial_track) {
-				$vis->initial_track = $track;
-				$vis->visit_track   = $track;
-			} elseif ($prev_date_last->getTimestamp() > (time() - 2400)) {
-				$vis->visit_track = $track;
+				if (!$vis->initial_track) {
+					$vis->initial_track = $track;
+					$vis->visit_track   = $track;
+				} elseif ($prev_date_last->getTimestamp() > (time() - 2400)) {
+					$vis->visit_track = $track;
+				}
+
+				App::getOrm()->persist($vis);
+				App::getOrm()->persist($track);
+			}
+			App::getOrm()->flush();
+
+			if ($track && $soft_visitor_id) {
+				// If we suspect this is linked to a different visitor,
+				// duplicate the track and set it as the soft link
+				$track_dupe = $track->toArray(Entity\VisitorTrack::TOARRAY_ONLY_PRIMATIVES);
+				unset($track_dupe['id']);
+				$track_dupe['visitor_id'] = $soft_visitor_id;
+				$track_dupe['is_soft_track'] = 1;
+
+				// Also update the last time so it appears in the agent list
+				App::getDb()->insert('visitor_tracks', $track_dupe);
+				$soft_track_id = App::getDb()->lastInsertId();
+
+				App::getDb()->executeUpdate("
+					UPDATE visitors
+					SET date_last = ?, last_track_id_soft = ?
+					WHERE id = ?
+				", array(
+					date('Y-m-d H:i:s'),
+					$soft_track_id,
+					$soft_visitor_id
+				));
 			}
 
-			App::getOrm()->persist($vis);
-			App::getOrm()->persist($track);
+			if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
+				$this->getEntity()->visitor = $vis;
+				App::getOrm()->persist($this->getEntity());
+				App::getOrm()->flush();
+			}
+
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never', true);
+			$cookie->send();
+
+			if ($vis) {
+				$this->set('dpvid', $vis['id']);
+			} else {
+				$this->remove('dpvid');
+			}
 		}
-		App::getOrm()->flush();
-
-		if ($track && $soft_visitor_id) {
-			// If we suspect this is linked to a different visitor,
-			// duplicate the track and set it as the soft link
-			$track_dupe = $track->toArray(Entity\VisitorTrack::TOARRAY_ONLY_PRIMATIVES);
-			unset($track_dupe['id']);
-			$track_dupe['visitor_id'] = $soft_visitor_id;
-			$track_dupe['is_soft_track'] = 1;
-
-			// Also update the last time so it appears in the agent list
-			App::getDb()->insert('visitor_tracks', $track_dupe);
-			$soft_track_id = App::getDb()->lastInsertId();
-
-			App::getDb()->executeUpdate("
-				UPDATE visitors
-				SET date_last = ?, last_track_id_soft = ?
-				WHERE id = ?
-			", array(
-				date('Y-m-d H:i:s'),
-				$soft_track_id,
-				$soft_visitor_id
-			));
-		}
-
-		if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
-			$this->getEntity()->visitor = $vis;
-			App::getOrm()->persist($this->getEntity());
-			App::getOrm()->flush();
-		}
-
-		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never', true);
-		$cookie->send();
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
             $agent = $this->getPerson();
@@ -294,12 +303,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
             App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
         }
-
-		if ($vis) {
-			$this->set('dpvid', $vis['id']);
-		} else {
-			$this->remove('dpvid');
-		}
 
 		$this->set('dplast', time());
 		$_SESSION['_symfony2']['dplast'] = time();

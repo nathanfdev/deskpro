@@ -38,6 +38,7 @@ namespace DeskPRO\Kernel;
 if (!defined('DP_ROOT')) exit('No access');
 
 use Orb\Util\Util;
+use Orb\Util\Web;
 
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
@@ -94,6 +95,16 @@ class DpLoader extends LoaderAbstract
 
 	protected function visitorPingAction()
 	{
+		if (Web::isBotUseragent()) {
+			echo "// Detected that you are a bot";
+			header('Content-Type: text/javascript; filename=vis.js');
+			header('Content-Disposition: inline; filename=vis.js');
+			header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+			header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+			header('Cache-Control: max-age=0,private');
+			return;
+		}
+
 		$visitor_id   = null;
 		$visitor_code = null;
 		$visitor      = null;
