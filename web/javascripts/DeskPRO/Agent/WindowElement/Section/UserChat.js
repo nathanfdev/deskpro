@@ -353,6 +353,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			},
 			success: function(html) {
 				$('#agent_status_online_users').empty().html(html);
+				var count = parseInt($.trim($('#agent_status_online_users').find('.count-online-users').text()));
+				count = 99;
+				$('#userOnlineCount').text(count);
+				$('#userOnlineCount2').text(count);
 				this.lastOnlineUserLoad = new Date();
 			}
 		});
