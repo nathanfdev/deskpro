@@ -44,7 +44,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs" id="{{ baseId }}_main_tabs_nav">
 			<ul>
 				<li data-tab-for="#{{baseId}}_tracks">Visited Pages</li>
-				<li data-tab-for="#{{baseId}}_visits">Visit History</li>
+				<li data-tab-for="#{{baseId}}_visits">Landing Pages</li>
 				<li data-tab-for="#{{baseId}}_details">Details</li>
 			</ul>
 		</nav>
@@ -75,7 +75,7 @@ pageMeta.baseId = '{{ baseId }}';
 								</div>
 								{% endif %}
 							</td>
-							<td nowrap="nowrap" width="10">{{ vis.date_last|date('fulltime') }}</td>
+							<td nowrap="nowrap" width="10"><span style="white-space: nowrap; display: block;">{{ track.date_created|date('fulltime') }}</span></td>
 						</tr>
 					{% else %}
 						<tr>
@@ -116,7 +116,7 @@ pageMeta.baseId = '{{ baseId }}';
 							<td>
 								IP Address: {{ track.ip_address }}
 							</td>
-							<td nowrap="nowrap" width="10">{{ vis.date_last|date('fulltime') }}</td>
+							<td nowrap="nowrap" width="10"><span style="white-space: nowrap; display: block;">{{ track.date_created|date('fulltime') }}</span></td>
 						</tr>
 					{% else %}
 						<tr>
@@ -164,8 +164,8 @@ pageMeta.baseId = '{{ baseId }}';
 							<th>Countries:</th>
 							<td>
 								<ul>
-									{% for r in ip_addresses %}
-										<li>{{ r }}</li>
+									{% for r in geo_countries %}
+										<li>&bull; {{ r }}</li>
 									{% endfor %}
 								</ul>
 							</td>
@@ -176,7 +176,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<td>
 							<ul>
 								{% for r in ip_addresses %}
-									<li>{{ r }}</li>
+									<li>&bull; {{ r }}</li>
 								{% endfor %}
 							</ul>
 						</td>
@@ -186,7 +186,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<td>
 							<ul>
 								{% for r in user_agents %}
-									<li>{{ r }}</li>
+									<li>&bull; {{ r }}</li>
 								{% endfor %}
 							</ul>
 						</td>

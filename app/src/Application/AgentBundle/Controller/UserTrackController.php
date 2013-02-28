@@ -104,7 +104,7 @@ class UserTrackController extends AbstractController
 				$user_agents[] = $t->user_agent;
 			}
 			if ($t->geo_country) {
-				$geo_country[] = $t->geo_country;
+				$geo_countries[] = $t->geo_country;
 			}
 		}
 
