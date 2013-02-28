@@ -55,6 +55,8 @@
 	'admin.portal.color_header_tagline_color_title'        => 'The text color of your custom tagline if you have one set',
 	'admin.portal.color_header_text_color_desc'            => 'The text color of the title in the header bar',
 	'admin.portal.color_header_text_color_title'           => 'Header bar text color',
+	'admin.portal.color_header_tabs_link_color_title'      => 'Header tabs link color',
+	'admin.portal.color_header_tabs_link_color_desc'       => 'The color of the links in the main tab navigation',
 	'admin.portal.color_light_well_bg_color_desc'          => 'The background color of the light well areas, including the inner wrappers of the comment form, usually the same as the content background',
 	'admin.portal.color_light_well_bg_color_title'         => 'Light well background color',
 	'admin.portal.color_link_color_desc'                   => 'Main link color',

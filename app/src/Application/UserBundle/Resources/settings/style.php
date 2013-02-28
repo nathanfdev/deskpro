@@ -10,6 +10,8 @@
 	'user_style.header_name_color'               => '#000000',
 	'user_style.header_tagline_color'            => '#5A5A5A',
 
+	'user_style.header_tabs_link_color'          => '#0088CC',
+
 	'user_style.body_bg_color'                   => '#ededed',
 	'user_style.content_bg_color'                => '#FFFFFF',
 	'user_style.content_border_color'            => '#D2D0D0',
