@@ -939,9 +939,10 @@ class TicketController extends AbstractController
 		}
 
 		if ($person->id) {
-			if ($ticket->hasParticipantPerson($person)) {
+			if ($ticket->hasParticipantPerson($person) || $ticket->person->getId() == $person->getId()) {
 				return $this->createJsonResponse(array(
 					'success' => true,
+					'is_dupe' => true,
 					'cc_list' => $this->_getTicketCcList($ticket)
 				));
 			}
@@ -1761,6 +1762,7 @@ class TicketController extends AbstractController
 		$language = $ticket->language;
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$error_messages = array();
 
 		$macro_id = $this->in->getUint('macro_id');
 		if ($macro_id) {
@@ -1825,7 +1827,8 @@ class TicketController extends AbstractController
 			$this->em->beginTransaction();
 
 			if ($this->in->getBool('with_set_agent_parts')) {
-				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard'));
+				$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
+				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
 				$ticket->setAgentParticipants($agents);
 			}
 

@@ -915,7 +915,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		if ($person->id == $this->person->id) {
+		if ($person->id == $this->person->id && DP_INTERFACE != 'agent') {
 			return null;
 		}
 

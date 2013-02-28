@@ -69,6 +69,11 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 							return;
 						}
 
+						if (data.is_dupe) {
+							DeskPRO_Window.showAlert('The user you specified is already on this ticket.');
+							return;
+						}
+
 						addRow.find('input').val('');
 
 						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
