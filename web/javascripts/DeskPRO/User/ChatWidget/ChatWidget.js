@@ -499,8 +499,6 @@ var DpChatWidget = new (function() {
 			url += '&dpsid=' + sid + '&';
 		}
 
-		url += 'current_page=' + window.location.href + '&';
-
 		url += '&'+(new Date().getTime());
 
 		if (options.displayType == 'DpWindow') {

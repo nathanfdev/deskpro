@@ -184,7 +184,6 @@ class DpLoader extends LoaderAbstract
 				$visitor_id   = null;
 				$visitor_code = null;
 				$visitor      = null;
-				$user_token   = null;
 			}
 		}
 
@@ -193,8 +192,9 @@ class DpLoader extends LoaderAbstract
 		#-----------------------------------
 
 		$is_new_visit_session = false;
-		$is_new_visitor = false;
-		$update_track_id = null;
+		$is_new_visitor       = false;
+		$update_track_id      = null;
+		$soft_visitor_id      = null;
 
 		if (!$visitor) {
 			$is_new_visitor = true;
@@ -205,12 +205,13 @@ class DpLoader extends LoaderAbstract
 			// this is a bot or a user without cookies. So prevent the
 			// track from being displayed to agents a bajillion times.
 			$q = $this->getPdo()->prepare("
-				SELECT COUNT(*)
+				SELECT v.id
 				FROM visitors v
 				LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
 				WHERE
 					v.date_last > ?
 					AND v.page_count = 1
+					AND v.hint_hidden = 0
 					AND vt.ip_address = ?
 				LIMIT 1
 			");
@@ -218,7 +219,7 @@ class DpLoader extends LoaderAbstract
 				date('Y-m-d H:i:s', time() - 600),
 				$user_ip
 			));
-			$vis_hide_check = $q->fetchColumn(0);
+			$soft_visitor_id = $q->fetchColumn(0);
 
 			$visitor = array(
 				'auth'             => '',
@@ -229,7 +230,7 @@ class DpLoader extends LoaderAbstract
 				'initial_track_id' => null,
 				'visit_track_id'   => null,
 				'last_track_id'    => null,
-				'hint_hidden'      => $vis_hide_check,
+				'hint_hidden'      => $soft_visitor_id ? 1 : 0,
 				'user_token'       => $user_token ?: null,
 			);
 
@@ -289,7 +290,6 @@ class DpLoader extends LoaderAbstract
 		#-----------------------------------
 
 		$visitor_track = array();
-		$visitor_track['visitor_id']   = $visitor_id;
 		if ($is_new_visit_session) {
 			$visitor_track['is_new_visit'] = $is_new_visit_session;
 		}
@@ -359,9 +359,33 @@ class DpLoader extends LoaderAbstract
 		if (!isset($visitor_track['id']) || !$visitor_track['id']) {
 			$this->getPdo()->prepare("
 				INSERT INTO visitor_tracks
-				SET $set_q
+				SET $set_q, visitor_id = $visitor_id
 			")->execute(array_values($visitor_track));
 			$visitor_track['id'] = $this->getPdo()->lastInsertId();
+		}
+
+		if (!$update_track_id && $soft_visitor_id) {
+			// If we suspect this is linked to a different visitor,
+			// duplicate the track and set it as the soft link
+			$dupe = $visitor_track;
+			unset($dupe['id']);
+
+			$this->getPdo()->prepare("
+				INSERT INTO visitor_tracks
+				SET $set_q, is_soft_track = 1, visitor_id = $soft_visitor_id
+			")->execute(array_values($dupe));
+			$soft_track_id = $this->getPdo()->lastInsertId();
+
+			// Also update the last time so it appears in the agent list
+			$this->getPdo()->prepare("
+				UPDATE visitors
+				SET date_last = ?, last_track_id_soft = ?
+				WHERE id = ?
+			")->execute(array(
+				date('Y-m-d H:i:s'),
+				$soft_track_id,
+				$soft_visitor_id
+			));
 		}
 
 		#-----------------------------------
@@ -376,6 +400,7 @@ class DpLoader extends LoaderAbstract
 			$visitor_update['visit_track_id'] = $visitor_track['id'];
 		}
 		$visitor_update['last_track_id'] = $visitor_track['id'];
+		$visitor_update['last_track_id_soft'] = null;
 		$visitor_update['date_last']     = date('Y-m-d H:i:s');
 
 		if (!$is_new_visitor && !$update_track_id) {
@@ -383,8 +408,6 @@ class DpLoader extends LoaderAbstract
 		}
 
 		if (!$is_new_visitor) {
-			// If its not a new visitor, then the user re-requested
-			// a track which means we know they are real
 			$visitor_update['hint_hidden'] = '0';
 		}
 
@@ -455,7 +478,7 @@ class DpLoader extends LoaderAbstract
 							$chat_manager->reopenTimoutChat($convo);
 						}
 
-						$current_page = !empty($_GET['current_page']) ? strval($_GET['current_page']) : false;
+						$current_page = !empty($_GET['url']) ? strval($_GET['url']) : false;
 						if ($current_page) {
 							$chat_manager->addUserTrack($convo, $current_page);
 						}

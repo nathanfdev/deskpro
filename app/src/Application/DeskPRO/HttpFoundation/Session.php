@@ -167,6 +167,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
+		$soft_visitor_id = null;
 		if (!$vis) {
 			$vis = new Entity\Visitor();
 
@@ -174,13 +175,14 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			// and those visitor counts arent increasing, it probably means
 			// this is a bot or a user without cookies. So prevent the
 			// track from being displayed to agents a bajillion times.
-			$vis_hide_check = App::getDb()->fetchColumn("
-				SELECT COUNT(*)
+			$soft_visitor_id = App::getDb()->fetchColumn("
+				SELECT v.id
 				FROM visitors v
 				LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
 				WHERE
 					v.date_last > ?
 					AND v.page_count = 1
+					AND v.hint_hidden = 0
 					AND vt.ip_address = ?
 				LIMIT 1
 			", array(
@@ -188,14 +190,14 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				$user_ip
 			));
 
-			if ($vis_hide_check) {
+			if ($soft_visitor_id) {
 				$vis->hint_hidden = true;
 			}
 		} else {
 			// This was requested a second time, so the user is "real"
 			// disbale the hidden hint if it was enabled
 			if ($vis->hint_hidden) {
-				$vis->hint_hidden = true;
+				$vis->hint_hidden = false;
 			}
 		}
 
@@ -250,6 +252,29 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			App::getOrm()->persist($track);
 		}
 		App::getOrm()->flush();
+
+		if ($track && $soft_visitor_id) {
+			// If we suspect this is linked to a different visitor,
+			// duplicate the track and set it as the soft link
+			$track_dupe = $track->toArray(Entity\VisitorTrack::TOARRAY_ONLY_PRIMATIVES);
+			unset($track_dupe['id']);
+			$track_dupe['visitor_id'] = $soft_visitor_id;
+			$track_dupe['is_soft_track'] = 1;
+
+			// Also update the last time so it appears in the agent list
+			App::getDb()->insert('visitor_tracks', $track_dupe);
+			$soft_track_id = App::getDb()->lastInsertId();
+
+			App::getDb()->executeUpdate("
+				UPDATE visitors
+				SET date_last = ?, last_track_id_soft = ?
+				WHERE id = ?
+			", array(
+				date('Y-m-d H:i:s'),
+				$soft_track_id,
+				$soft_visitor_id
+			));
+		}
 
 		if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
 			$this->getEntity()->visitor = $vis;

@@ -138,6 +138,11 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
 	protected $geo_lat = null;
 
 	/**
+	 * @var boolean
+	 */
+	protected $is_soft_track = false;
+
+	/**
 	 * @var array
 	 */
 	protected $data = null;
@@ -194,6 +199,7 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'geo_city', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_city', ));
 		$metadata->mapField(array( 'fieldName' => 'geo_long', 'type' => 'decimal','precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_long', ));
 		$metadata->mapField(array( 'fieldName' => 'geo_lat', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_lat', ));
+		$metadata->mapField(array( 'fieldName' => 'is_soft_track', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_soft_track', ));
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'nullable' => true, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));

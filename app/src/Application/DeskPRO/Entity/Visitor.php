@@ -92,6 +92,11 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $last_track;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\VisitorTrack
+	 */
+	protected $last_track_soft;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person = null;
@@ -293,6 +298,20 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get the most recent track we have, either the soft track
+	 * or the latest track.
+	 */
+	public function getRecentTrack()
+	{
+		if ($this->last_track_soft) {
+			return $this->last_track_soft;
+		}
+
+		return $this->last_track;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -325,5 +344,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'initial_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'initial_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'visit_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visit_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'last_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'last_track_soft', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id_soft', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

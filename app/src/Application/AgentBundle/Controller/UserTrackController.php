@@ -58,7 +58,7 @@ class UserTrackController extends AbstractController
 			FROM DeskPRO:Visitor v
 			LEFT JOIN v.last_track t
 			LEFT JOIN v.visit_track ti
-			WHERE v.date_last > ?0 AND v.last_track IS NOT NULL
+			WHERE v.date_last > ?0 AND v.last_track IS NOT NULL AND v.hint_hidden = 0
 			ORDER BY v.date_last DESC
 		")->setMaxResults(100)->execute(array($cut));
 
@@ -89,7 +89,7 @@ class UserTrackController extends AbstractController
 		$visit_tracks = $this->em->createQuery("
 			SELECT t
 			FROM DeskPRO:VisitorTrack t
-			WHERE t.visitor = ?0 AND t.is_new_visit = true
+			WHERE t.visitor = ?0 AND t.is_new_visit = true AND t.is_soft_track = 0
 			ORDER BY t.id DESC
 		")->execute(array($visitor));
 

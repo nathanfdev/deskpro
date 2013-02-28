@@ -528,7 +528,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$q = $this->getPdo()->prepare("
 			SELECT COUNT(*)
 			FROM visitors
-			WHERE date_last > ?
+			WHERE date_last > ? AND last_track IS NOT NULL AND hint_hidden = 0
 		");
 		$q->execute(array($cutoff));
 
