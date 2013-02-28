@@ -281,11 +281,7 @@ var DP = {
 
 						el.find('option').each(function() {
 							var s_el = $(this);
-							if (s_el.data('single-title')) {
-								tmp = ($.trim(s_el.data('single-title')).length * charsize) + 15; // +15 for optgroup indent
-							} else {
-								tmp = ($.trim(s_el.text()).length * charsize) + 15; // +15 for optgroup indent
-							}
+							tmp = ($.trim(s_el.text()).length * charsize) + 15; // +15 for optgroup indent
 							if (tmp > largest) {
 								largest = tmp;
 							}
