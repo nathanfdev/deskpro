@@ -362,4 +362,10 @@
 	 * How long to keep visitor tracks around for
 	 */
 	'core.visitor_cleanup_time' => 604800,
+
+	/**
+	 * How long to keep visitor tracks around for
+	 * when they are suspected dupes/bots/unconnected
+	 */
+	'core.visitor_cleanup_bogus_time' => 1800,
 );

@@ -108,6 +108,26 @@ class DpLoader extends LoaderAbstract
 			$visitor_code = null;
 		}
 
+		$user_token = null;
+		if (isset($_REQUEST['vut'])) {
+			$user_token = $_REQUEST['vut'];
+		} elseif (isset($_COOKIE['dpvut'])) {
+			$user_token = $_REQUEST['vut'];
+		}
+
+		$user_ip = $_SERVER['REMOTE_ADDR'];
+		if (dp_get_config('trust_proxy_data') && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			$user_ip = explode(',', $user_ip);
+			if (isset($user_ip[0])) {
+				$user_ip = $user_ip;
+			} else {
+				$user_ip = $_SERVER['REMOTE_ADDR'];
+			}
+		}
+
+		$user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+
 		$js_out = array();
 
 		#-----------------------------------
@@ -120,7 +140,7 @@ class DpLoader extends LoaderAbstract
 
 			$q = $this->getPdo()->prepare("
 				SELECT
-					visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.chat_invite, visitors.page_count, visitors.date_last,
+					visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
 					visitor_tracks.date_created AS date_last_track
 				FROM visitors
 				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
@@ -130,9 +150,41 @@ class DpLoader extends LoaderAbstract
 			$visitor = $q->fetch(\PDO::FETCH_ASSOC);
 
 			if (!$visitor || $visitor['auth'] != $visitor_auth) {
-				$visitor_id = null;
+				$visitor_id   = null;
 				$visitor_code = null;
-				$visitor = null;
+				$visitor      = null;
+				$user_token   = null;
+			}
+		}
+
+		#-----------------------------------
+		# Try to find an existing visitor
+		#-----------------------------------
+
+		if (!$visitor && $user_token) {
+			$q = $this->getPdo()->prepare("
+				SELECT
+					visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
+					visitor_tracks.date_created AS date_last_track
+				FROM visitors
+				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
+				WHERE
+					visitors.user_token = ?
+					AND visitor_tracks.ip_address = ?
+					AND visitors.date_last > ?
+			");
+			$q->execute(array(
+				$user_token,
+				$user_ip,
+				date('Y-m-d H:i:s', time() - 600)
+			));
+			$visitor = $q->fetch(\PDO::FETCH_ASSOC);
+
+			if (!$visitor) {
+				$visitor_id   = null;
+				$visitor_code = null;
+				$visitor      = null;
+				$user_token   = null;
 			}
 		}
 
@@ -148,6 +200,26 @@ class DpLoader extends LoaderAbstract
 			$is_new_visitor = true;
 			$is_new_visit_session = true;
 
+			// If there have been multiple requests from the same ip
+			// and those visitor counts arent increasing, it probably means
+			// this is a bot or a user without cookies. So prevent the
+			// track from being displayed to agents a bajillion times.
+			$q = $this->getPdo()->prepare("
+				SELECT COUNT(*)
+				FROM visitors v
+				LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
+				WHERE
+					v.date_last > ?
+					AND v.page_count = 1
+					AND vt.ip_address = ?
+				LIMIT 1
+			");
+			$q->execute(array(
+				date('Y-m-d H:i:s', time() - 600),
+				$user_ip
+			));
+			$vis_hide_check = $q->fetchColumn(0);
+
 			$visitor = array(
 				'auth'             => '',
 				'person_id'        => null,
@@ -157,6 +229,8 @@ class DpLoader extends LoaderAbstract
 				'initial_track_id' => null,
 				'visit_track_id'   => null,
 				'last_track_id'    => null,
+				'hint_hidden'      => $vis_hide_check,
+				'user_token'       => $user_token ?: null,
 			);
 
 			$tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -165,13 +239,16 @@ class DpLoader extends LoaderAbstract
 				$visitor['auth'] .= $tmp[$t];
 			}
 
-			$this->getPdo()->prepare("
+			$q = $this->getPdo()->prepare("
 				INSERT INTO visitors
-				SET auth = ?, page_count = 1, date_created = ?, date_last = ?
-			")->execute(array(
+				SET auth = ?, page_count = 1, date_created = ?, date_last = ?, hint_hidden = ?, user_token = ?
+			");
+			$q->execute(array(
 				$visitor['auth'],
 				$visitor['date_created'],
 				$visitor['date_last'],
+				$visitor['hint_hidden'],
+				$visitor['user_token'],
 			));
 
 			$visitor_id = $visitor['id'] = $this->getPdo()->lastInsertId();
@@ -229,21 +306,11 @@ class DpLoader extends LoaderAbstract
 			$visitor_track['ref_page_url'] = (string)$_REQUEST['rurl'];
 		}
 
-		$visitor_track['user_agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+		$visitor_track['user_agent']   = $user_agent;
 		$visitor_track['user_browser'] = '';
 		$visitor_track['user_os']      = '';
-		$visitor_track['ip_address']   = $_SERVER['REMOTE_ADDR'];
+		$visitor_track['ip_address']   = $user_ip;
 		$visitor_track['date_created'] = date('Y-m-d H:i:s');
-
-		if (dp_get_config('trust_proxy_data') && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			$visitor_track['ip_address'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
-			$visitor_track['ip_address'] = explode(',', $visitor_track['ip_address']);
-			if (isset($visitor_track['ip_address'][0])) {
-				$visitor_track['ip_address'] = $visitor_track['ip_address'][0];
-			} else {
-				$visitor_track['ip_address'] = $_SERVER['REMOTE_ADDR'];
-			}
-		}
 
 		if ($is_new_visit_session || 1) {
 
@@ -275,19 +342,27 @@ class DpLoader extends LoaderAbstract
 		$set_q = implode(', ', $set_q);
 
 		if ($update_track_id) {
-			$this->getPdo()->prepare("
+			$q = $this->getPdo()->prepare("
 				UPDATE visitor_tracks
 				SET $set_q
 				WHERE id = {$update_track_id}
-			")->execute(array_values($visitor_track));
-		} else {
+			");
+			$q->execute(array_values($visitor_track));
+
+			if ($q->rowCount()) {
+				$visitor_track['id'] = $update_track_id;
+			} else {
+				$visitor_track['id'] = 0;
+			}
+		}
+
+		if (!isset($visitor_track['id']) || !$visitor_track['id']) {
 			$this->getPdo()->prepare("
 				INSERT INTO visitor_tracks
 				SET $set_q
 			")->execute(array_values($visitor_track));
+			$visitor_track['id'] = $this->getPdo()->lastInsertId();
 		}
-
-		$visitor_track['id'] = $this->getPdo()->lastInsertId();
 
 		#-----------------------------------
 		# Update the last times for the visitor
@@ -307,6 +382,16 @@ class DpLoader extends LoaderAbstract
 			$visitor_update['page_count'] = $visitor['page_count'] + 1;
 		}
 
+		if (!$is_new_visitor) {
+			// If its not a new visitor, then the user re-requested
+			// a track which means we know they are real
+			$visitor_update['hint_hidden'] = '0';
+		}
+
+		if ($user_token) {
+			$visitor_update['user_token'] = $user_token;
+		}
+
 		$set_q = array();
 		foreach ($visitor_update as $k => $v) {
 			$set_q[] = "$k = ?";
@@ -317,10 +402,16 @@ class DpLoader extends LoaderAbstract
 			UPDATE visitors
 			SET $set_q
 			WHERE id = {$visitor_id}
-		")->execute(array_values($visitor_update));
+		");
+		$q->execute(array_values($visitor_update));
 
 		$js_out[] = "window.DESKPRO_VISITOR_ID = '$visitor_code';";
-		$js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code');";
+		if ($user_token) {
+			$js_out[] = "window.DESKPRO_VISITOR_USER_TOKEN = '$user_token';";
+			$js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', '$user_token');";
+		} else {
+			$js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', null);";
+		}
 
 		#------------------------------
 		# Chat is available
@@ -478,6 +569,9 @@ class DpLoader extends LoaderAbstract
 		$js_out = implode("\n", $js_out);
 
 		setcookie('dpvc', $visitor_code, time() + 15552000, '/', null);
+		if ($user_token) {
+			setcookie('dpvut', $user_token, time() + 15552000, '/', null);
+		}
 		header('Content-Type: text/javascript; filename=vis.js');
 		header('Content-Length: ' . strlen($js_out));
 		header('Content-Disposition: inline; filename=vis.js');

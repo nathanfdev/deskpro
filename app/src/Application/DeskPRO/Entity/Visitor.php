@@ -55,6 +55,8 @@ use Orb\Util\Util;
  */
 class Visitor extends \Application\DeskPRO\Domain\DomainObject
 {
+	const BOT = 1;
+
 	/**
 	 * The unique ID.
 	 *
@@ -68,6 +70,11 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $auth;
+
+	/**
+	 * @var string
+	 */
+	protected $user_token = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\VisitorTrack
@@ -113,6 +120,11 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * @var array
 	 */
 	protected $chat_invite = null;
+
+	/**
+	 * @var boolean
+	 */
+	protected $hint_hidden = false;
 
 	/**
 	 * @var \DateTime
@@ -301,8 +313,10 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 		));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+		$metadata->mapField(array( 'fieldName' => 'user_token', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_token', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
+		$metadata->mapField(array( 'fieldName' => 'hint_hidden', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'hint_hidden', ));
 		$metadata->mapField(array( 'fieldName' => 'chat_invite', 'type' => 'array', 'nullable' => true, 'columnName' => 'chat_invite', ));
 		$metadata->mapField(array( 'fieldName' => 'page_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_count', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

@@ -169,6 +169,34 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		if (!$vis) {
 			$vis = new Entity\Visitor();
+
+			// If there have been multiple requests from the same ip
+			// and those visitor counts arent increasing, it probably means
+			// this is a bot or a user without cookies. So prevent the
+			// track from being displayed to agents a bajillion times.
+			$vis_hide_check = App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM visitors v
+				LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
+				WHERE
+					v.date_last > ?
+					AND v.page_count = 1
+					AND vt.ip_address = ?
+				LIMIT 1
+			", array(
+				date('Y-m-d H:i:s', time() - 600),
+				$user_ip
+			));
+
+			if ($vis_hide_check) {
+				$vis->hint_hidden = true;
+			}
+		} else {
+			// This was requested a second time, so the user is "real"
+			// disbale the hidden hint if it was enabled
+			if ($vis->hint_hidden) {
+				$vis->hint_hidden = true;
+			}
 		}
 
 		if (!empty($_SESSION['_symfony2']['auth_person_id']) && $_SESSION['_symfony2']['auth_person_id']) {
@@ -186,11 +214,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$track = null;
 		if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url)) {
 			$track = new Entity\VisitorTrack();
-			$track->visitor = $vis;
-			$track->page_url = $url;
+			$track->visitor      = $vis;
+			$track->page_url     = $url;
 			$track->ref_page_url = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-			$track->ip_address = $user_ip;
-			$track->user_Agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+			$track->ip_address   = $user_ip;
+			$track->user_Agent   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
 
 			if (!$vis->initial_track) {
 				$track->is_new_visit = true;

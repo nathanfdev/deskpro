@@ -100,6 +100,25 @@ class CleanupHourly extends AbstractJob
 		}
 
 		#------------------------------
+		# Bogus visitors
+		#------------------------------
+
+		$datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM visitors
+			WHERE
+				date_last < ?
+				AND (
+					visitors.hint_hidden = 1
+					OR visitors.last_track IS NULL
+				)
+		", array($datesnip));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num bogus visitors");
+		}
+
+		#------------------------------
 		# chat blocks
 		#------------------------------
 

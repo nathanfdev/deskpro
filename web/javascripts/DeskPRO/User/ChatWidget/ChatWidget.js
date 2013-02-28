@@ -94,6 +94,21 @@ var DpChatWidget = new (function() {
 			}
 
 			return obj;
+		},
+
+		makeId: function(len) {
+			var text  = "";
+			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+			if (!len) {
+				len = 8;
+			}
+
+			for( var i = 0; i < len; i++) {
+				text += chars.charAt(Math.floor(Math.random() * chars.length));
+			}
+
+			return text;
 		}
 	};
 
@@ -441,6 +456,20 @@ var DpChatWidget = new (function() {
 			}
 		}
 
+		if (DpChatWidget_Options && DpChatWidget_Options.visitorUserToken) {
+			url += '&vut=' + encodeURIComponent(DpChatWidget_Options.visitorUserToken);
+		} else if (window.DESKPRO_VISITOR_USER_TOKEN) {
+			url += '&vut=' + encodeURIComponent(window.DESKPRO_VISITOR_USER_TOKEN);
+		} else {
+			var vut = getCookie('dpvut');
+			if (!vut) {
+				vut = util.makeId(8);
+				setCookie('dpvut', vut, 1);
+			}
+
+			url += '&vut=' + encodeURIComponent(vut);
+		}
+
 		if (DpChatWidget_Options && DpChatWidget_Options.visitorUpdateTrackId) {
 			url += '&v_tid=' + encodeURIComponent(DpChatWidget_Options.visitorUpdateTrackId);
 		} else if (window.DESKPRO_VISITOR_TRACK_ID) {
@@ -508,10 +537,15 @@ var DpChatWidget = new (function() {
 		}
 	},
 
-	this.initVisitorCode = function(visitor_code) {
+	this.initVisitorCode = function(visitor_code, user_token) {
 		if (visitor_code) {
 			window.DESKPRO_VISITOR_ID = visitor_code;
 			setCookie('dpvc', visitor_code, 365);
+
+			if (user_token) {
+				window.DESKPRO_USER_TOKEN = user_token;
+				setCookie('dpvut', user_token, 1);
+			}
 		}
 	};
 
@@ -910,7 +944,7 @@ var DpChatWidget = new (function() {
 })();
 
 var DpVis = {
-	init: function(visitor_code) {
-		window.DpChatWidget.initVisitorCode();
+	init: function(visitor_code, user_token) {
+		window.DpChatWidget.initVisitorCode(visitor_code, user_token);
 	}
 };
