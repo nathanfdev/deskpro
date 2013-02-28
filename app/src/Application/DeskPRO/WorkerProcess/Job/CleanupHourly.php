@@ -110,7 +110,7 @@ class CleanupHourly extends AbstractJob
 				date_last < ?
 				AND (
 					visitors.hint_hidden = 1
-					OR visitors.last_track IS NULL
+					OR visitors.last_track_id IS NULL
 				)
 		", array($datesnip));
 
