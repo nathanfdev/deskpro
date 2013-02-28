@@ -123,7 +123,7 @@ class DpLoader extends LoaderAbstract
 		if (isset($_REQUEST['vut'])) {
 			$user_token = $_REQUEST['vut'];
 		} elseif (isset($_COOKIE['dpvut'])) {
-			$user_token = $_REQUEST['vut'];
+			$user_token = $_REQUEST['dpvut'];
 		}
 
 		$user_ip = $_SERVER['REMOTE_ADDR'];
