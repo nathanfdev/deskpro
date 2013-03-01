@@ -169,8 +169,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 
 		if (!Web::isBotUseragent()) {
+			$is_new_vis = false;
 			$soft_visitor_id = null;
 			if (!$vis) {
+				$is_new_vis = true;
 				$vis = new Entity\Visitor();
 
 				// If there have been multiple requests from the same ip
@@ -254,8 +256,15 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				if (!empty($geo['latitude']))       $track['geo_lat']       = $geo['latitude'];
 			}
 
-			App::getOrm()->persist($vis);
+			if ($is_new_vis) {
+				App::getOrm()->persist($vis);
+				App::getOrm()->flush();
+			}
+
 			if ($track) {
+				App::getOrm()->persist($track);
+				App::getOrm()->flush();
+
 				$vis->last_track = $track;
 
 				if (!$vis->initial_track) {
@@ -266,9 +275,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				}
 
 				App::getOrm()->persist($vis);
-				App::getOrm()->persist($track);
+				App::getOrm()->flush();
 			}
-			App::getOrm()->flush();
 
 			if ($track && $soft_visitor_id) {
 				// If we suspect this is linked to a different visitor,
@@ -324,7 +332,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
         }
 
 		$this->set('dplast', time());
-		$_SESSION['_symfony2']['dplast'] = time();
+		if (defined('DP_INTERFACE')) {
+			$this->set('dp_interface', DP_INTERFACE);
+		}
 
 		$me = $this;
 		\DpShutdown::add(function() use ($me) {
