@@ -220,7 +220,7 @@ class TicketTriggersController extends AbstractController
 	{
 		if ($id) {
 			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-			if (!$trigger) {
+			if (!$trigger || $trigger->is_uneditable) {
 				throw $this->createNotFoundException();
 			}
 		} else {

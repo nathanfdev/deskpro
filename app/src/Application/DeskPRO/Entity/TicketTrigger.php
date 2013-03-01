@@ -98,6 +98,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
+	 * @var bool
+	 */
+	protected $is_uneditable = false;
+
+	/**
 	 * @var string
 	 */
 	protected $terms = array();
@@ -513,13 +518,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			return false;
 		}
 
-		static $uneditable = array(
-			'email_validation.web' => 1,
-			'email_validation.email' => 1,
-			'email_validation.widget' => 1,
-		);
-
-		return isset($uneditable[$this->sys_name]);
+		return $this->is_uneditable;
 	}
 
 
@@ -670,6 +669,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'event_trigger', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_trigger', ));
 		$metadata->mapField(array( 'fieldName' => 'event_trigger_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'event_trigger_options', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
+		$metadata->mapField(array( 'fieldName' => 'is_uneditable', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_uneditable', ));
 		$metadata->mapField(array( 'fieldName' => 'terms', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'terms', ));
 		$metadata->mapField(array( 'fieldName' => 'terms_any', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'terms_any', ));
 		$metadata->mapField(array( 'fieldName' => 'actions', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'actions', ));
