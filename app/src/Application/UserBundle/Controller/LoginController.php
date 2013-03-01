@@ -167,7 +167,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$this->session->replace(array());
 		$this->session->save();
 
-		foreach (array('dpsid', 'dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
+		foreach (array('dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
 			if (!empty($_COOKIE[$cookie_name])) {
 				$sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
 				if ($sess2) {
