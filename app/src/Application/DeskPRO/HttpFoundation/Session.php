@@ -237,30 +237,36 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 			$prev_date_last = $vis->date_last;
 
-			$vis->page_count = $vis->page_count + 1;
-			$vis->date_last  = new \DateTime();
 			if (!$vis->user_token) {
 				$vis->user_token = Strings::random(8, Strings::CHARS_KEY);
 			}
 
 			$this->visitor = $vis;
 
+			$is_ajax = false;
+			if (App::getContainer()->isScopeActive('request')) {
+				$is_ajax = App::getRequest()->isXmlHttpRequest();
+			}
+
 			// Insert tracks
 			$track = null;
-			if (!$vis->initial_track || (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url))) {
-				$track = new Entity\VisitorTrack();
-				$track->visitor      = $vis;
-				$track->page_url     = $url;
-				$track->ref_page_url = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-				$track->ip_address   = $user_ip;
-				$track->user_Agent   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+			if (!$vis->initial_track || (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url) && !$is_ajax)) {
+				$track = array();
+				$track['date_created'] = date('Y-m-d H:i:s');
+				$track['visitor_id']   = $vis->getId();
+				$track['page_url']     = $url;
+				$track['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+				$track['ip_address']   = $user_ip;
+				$track['user_Agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
 
 				if (DP_INTERFACE == 'agent') {
-					$track->page_url = preg_replace('#/agent/.*?$#', '/agent/', $track->page_url);
+					$track['page_url'] = preg_replace('#/agent/.*?$#', '/agent/', $track->page_url);
 				}
 
-				if (!$vis->initial_track) {
-					$track->is_new_visit = true;
+				if (!$vis->initial_track || $prev_date_last->getTimestamp() < time() - 900) {
+					$track['is_new_visit'] = 1;
+				} else {
+					$track['is_new_visit'] = 0;
 				}
 
 				$geoip = App::getSystemService('geo_ip');
@@ -280,20 +286,45 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 
 			if ($track) {
-				App::getOrm()->persist($track);
-				App::getOrm()->flush();
+				App::getDb()->insert('visitor_tracks' , $track);
+				$track['id'] = App::getDb()->lastInsertId();
 
-				$vis->last_track = $track;
+				$set = array();
+				$set_q = array();
 
-				if (!$vis->initial_track) {
-					$vis->initial_track = $track;
-					$vis->visit_track   = $track;
-				} elseif ($prev_date_last->getTimestamp() > (time() - 2400)) {
-					$vis->visit_track = $track;
+				$set[] = "date_last = ?";
+				$set_q[] = date('Y-m-d H:i:s');
+
+				if ($vis->user_token) {
+					$set[] = "user_token = ?";
+					$set_q[] = $vis->user_token;
 				}
 
-				App::getOrm()->persist($vis);
-				App::getOrm()->flush();
+				if (!$vis->initial_track) {
+					$set[] = "initial_track_id = ?";
+					$set_q[] = $track['id'];
+				}
+
+				if ($track['is_new_visit']) {
+					$set[] = "visit_track_id = ?";
+					$set_q[] = $track['id'];
+				}
+
+				$set[] = "last_track_id = ?";
+				$set_q[] = $track['id'];
+
+				if (!$vis->hint_hidden) {
+					$set[] = "hint_hidden = 0";
+					$set[] = "last_track_id_soft = NULL";
+				}
+
+				$set[] = "page_count = page_count + 1";
+
+				App::getDb()->executeUpdate("
+					UPDATE visitors
+					SET " . implode(', ', $set) . "
+					WHERE id = {$vis->getId()}
+				", $set_q);
 			}
 
 			if ($track && $soft_visitor_id) {
@@ -322,18 +353,15 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
 				$this->getEntity()->visitor = $vis;
 				App::getOrm()->persist($this->getEntity());
-				App::getOrm()->flush();
 			}
 
 			if ($vis) {
 				$this->set('dpvid', $vis['id']);
 
 				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never')->setPath('/')->send();
-				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvut', $vis['user_token'], '+1 day')->setPath('/')->send();
 			} else {
 				$this->remove('dpvid');
 				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
-				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvut')->send();
 			}
 		} else {
 			$this->visitor = null;
@@ -341,7 +369,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$this->remove('dpvid');
 
 			\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
-			\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvut')->send();
 		}
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
