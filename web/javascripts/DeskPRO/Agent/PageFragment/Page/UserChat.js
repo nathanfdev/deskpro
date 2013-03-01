@@ -93,6 +93,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ack_messages', function(data) { this.ackMessages(data); }, this, [this.OBJ_ID]);
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', function(data) {
+			if (this.meta.conversation_id = data.conversation_id) {
+				this.chatStatus = 'ended';
+			}
+		} , this, [this.OBJ_ID]);
+
 		//------------------------------
 		// Snippets Viewer
 		//------------------------------
@@ -196,6 +202,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.addEvent('closeTab', function(event) {
 			// Already ended or not assigned to us
 			if (this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID || this.chatStatus == 'ended') {
+				return;
+			}
+
+			if (this.chatStatus == 'ended') {
 				return;
 			}
 
