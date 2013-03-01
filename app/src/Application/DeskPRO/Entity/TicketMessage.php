@@ -387,8 +387,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($visitor === null) return;
 
-		if (!$this->ip_address) {
-			$this['ip_address'] = $visitor['ip_address'];
+		if (!$this->ip_address && $visitor->getIpAddress()) {
+			$this['ip_address'] = $visitor->getIpAddress();
 		}
 	}
 

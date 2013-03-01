@@ -876,7 +876,7 @@ class UserChatController extends AbstractController
 			$block->by_person = $this->person;
 			$block->reason = $this->in->getString('reason');
 
-			if ($this->in->getBool('block_ip')) {
+			if ($this->in->getBool('block_ip') && $convo->visitor->ip_address) {
 				$block->ip_address = $convo->visitor->ip_address;
 			}
 
