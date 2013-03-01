@@ -595,9 +595,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	modListingCount: function(id, op, count) {
 		var el = $('#userchat_list_' + (id != '0'?id:'allagents') + '_counter');
-		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
-
 		var oldCount = parseInt(el.text().trim()) || 0;
+		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
 
 		if (id != '0') {
 			var row = el.closest('li');
@@ -642,8 +641,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			else {
 				row.hide();
 			}
-		}
-		else {
+		} else {
 			this.handleUpdateCounts();
 		}
 	},
