@@ -29,7 +29,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{{ visitor.person.display_name }}
 			</span>
 		{% else %}
-			Anonymous Visitor
+			{% if visitor.name or visitor.email %}
+				Anonymous: {{ visitor.name }} {% if visitor.email %}({{ visitor.email }}){% endif %}
+			{% endif %}
 		{% endif %}
 	</h1>
 	<br class="clear" />

@@ -165,6 +165,62 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		if ($this->person) {
+			return $this->person->getDisplayName();
+		}
+
+		if ($this->name) {
+			return $this->name;
+		}
+
+		if ($this->visit_track) {
+			return $this->visit_track->ip_address;
+		}
+
+		return 'Anon-' . $this->id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSetName()
+	{
+		return $this->name;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEmail()
+	{
+		if ($this->person) {
+			return $this->person->getEmailAddress();
+		}
+
+		if ($this->email) {
+			return $this->email;
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSetEmail()
+	{
+		return $this->email;
+	}
+
+
+	/**
 	 * Gets the ID for this vis. It's an encoded ID and an authcode.
 	 *
 	 * @return string
