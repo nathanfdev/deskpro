@@ -105,6 +105,18 @@ class DpLoader extends LoaderAbstract
 			return;
 		}
 
+		if (isset($_GET['notrack'])) {
+			$js_out = $this->checkChatAvailable();
+			header('Content-Type: text/javascript; filename=vis.js');
+			header('Content-Length: ' . strlen($js_out));
+			header('Content-Disposition: inline; filename=vis.js');
+			header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+			header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+			header('Cache-Control: max-age=0,private');
+			echo $js_out;
+			return;
+		}
+
 		$visitor_id   = null;
 		$visitor_code = null;
 		$visitor      = null;
@@ -458,6 +470,82 @@ class DpLoader extends LoaderAbstract
 		}
 
 		#------------------------------
+		# Try to connect an authenticated user
+		# with a visitor if they have a session
+		# cookie as well
+		#------------------------------
+
+		$visitor_person_id = null;
+
+		$session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
+		if (!$session_code) {
+			$session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+		}
+		if (!$session_code) {
+			$session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
+		}
+		if (!$session_code) {
+			$session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
+		}
+
+		if ($session_code && strpos($session_code, '-')) {
+			list ($session_id, $session_auth) = explode('-', $session_code, 2);
+
+			$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
+
+			$q = $this->getPdo()->prepare("
+				SELECT person_id
+				FROM sessions
+				WHERE id = ? AND auth = ?
+			");
+			$q->execute(array($session_id, $session_auth));
+
+			$visitor_person_id = $q->fetchColumn();
+		}
+
+		if ($visitor_person_id && $visitor_person_id != $visitor['person_id']) {
+			$this->getPdo()->prepare("
+				UPDATE visitors
+				SET person_id = ?
+				WHERE id = ?
+			")->execute(array($visitor_person_id, $visitor['id']));
+		}
+
+		#------------------------------
+		# Chat
+		#------------------------------
+
+		$js_out[] = $this->checkChatAvailable($visitor);
+
+		#-----------------------------------
+		# Output
+		#-----------------------------------
+
+		$js_out = implode("\n", $js_out);
+
+		setcookie('dpvc', $visitor_code, time() + 15552000, '/', null);
+		if ($user_token) {
+			setcookie('dpvut', $user_token, time() + 15552000, '/', null);
+		}
+		header('Content-Type: text/javascript; filename=vis.js');
+		header('Content-Length: ' . strlen($js_out));
+		header('Content-Disposition: inline; filename=vis.js');
+		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Cache-Control: max-age=0,private');
+		echo $js_out;
+	}
+
+
+	/**
+	 * Check if chat is available / current chat is active
+	 * @return string JS string to return
+	 */
+	public function checkChatAvailable(array $visitor = null)
+	{
+		$js_out = array();
+
+		#------------------------------
 		# Chat is available
 		#------------------------------
 
@@ -530,21 +618,23 @@ class DpLoader extends LoaderAbstract
 				if ($session_id) {
 					$js_out[] = "DpChatWidget.initWidget('$session_id');";
 
-					// Connect the visitor to the session
-					$this->getPdo()->prepare("UPDATE sessions SET visitor_id = ? WHERE id = ?")->execute(array(
-						$visitor['id'],
-						$session_id
-					));
-
-					// Connect the chat as well
-					if ($convo) {
-						$this->getPdo()->prepare("
-							UPDATE chat_conversations
-							SET visitor_id = ? WHERE id = ?
-						")->execute(array(
+					if ($visitor && !empty($visitor['id'])) {
+						// Connect the visitor to the session
+						$this->getPdo()->prepare("UPDATE sessions SET visitor_id = ? WHERE id = ?")->execute(array(
 							$visitor['id'],
-							$convo->getId()
+							$session_id
 						));
+
+						// Connect the chat as well
+						if ($convo) {
+							$this->getPdo()->prepare("
+								UPDATE chat_conversations
+								SET visitor_id = ? WHERE id = ?
+							")->execute(array(
+								$visitor['id'],
+								$convo->getId()
+							));
+						}
 					}
 				} else {
 					$js_out[] = "DpChatWidget.initWidget(null);";
@@ -556,73 +646,7 @@ class DpLoader extends LoaderAbstract
 			}
 		}
 
-		#------------------------------
-		# Try to connect an authenticated user
-		# with a visitor if they have a session
-		# cookie as well
-		#------------------------------
-
-		$visitor_person_id = null;
-
-		// We loaded chat, in which case
-		// we have the full session already
-		if (isset($sessionObj)) {
-			$visitor_person_id = $sessionObj->getPerson()->getId();
-
-		// Otherwise we need to query the sessions table
-		} else {
-			$session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
-			if (!$session_code) {
-				$session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
-			}
-			if (!$session_code) {
-				$session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
-			}
-			if (!$session_code) {
-				$session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
-			}
-
-			if ($session_code && strpos($session_code, '-')) {
-				list ($session_id, $session_auth) = explode('-', $session_code, 2);
-
-				$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
-
-				$q = $this->getPdo()->prepare("
-					SELECT person_id
-					FROM sessions
-					WHERE id = ? AND auth = ?
-				");
-				$q->execute(array($session_id, $session_auth));
-
-				$visitor_person_id = $q->fetchColumn();
-			}
-		}
-
-		if ($visitor_person_id && $visitor_person_id != $visitor['person_id']) {
-			$this->getPdo()->prepare("
-				UPDATE visitors
-				SET person_id = ?
-				WHERE id = ?
-			")->execute(array($visitor_person_id, $visitor['id']));
-		}
-
-		#-----------------------------------
-		# Output
-		#-----------------------------------
-
-		$js_out = implode("\n", $js_out);
-
-		setcookie('dpvc', $visitor_code, time() + 15552000, '/', null);
-		if ($user_token) {
-			setcookie('dpvut', $user_token, time() + 15552000, '/', null);
-		}
-		header('Content-Type: text/javascript; filename=vis.js');
-		header('Content-Length: ' . strlen($js_out));
-		header('Content-Disposition: inline; filename=vis.js');
-		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-		header('Cache-Control: max-age=0,private');
-		echo $js_out;
+		return implode("\n", $js_out);
 	}
 
 	####################################################################################################################

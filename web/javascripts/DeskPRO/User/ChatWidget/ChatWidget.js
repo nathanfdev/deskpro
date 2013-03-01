@@ -505,6 +505,10 @@ var DpChatWidget = new (function() {
 			url += '&is_window=1';
 		}
 
+		if (DpChatWidget_Options && DpChatWidget_Options.noTrack) {
+			url += '&notrack=1';
+		}
+
 		url += '&_ts=' + ((new Date()).getTime());
 
 		DpConsole.log('DpChatWidget.initSession: adding script: ' + url);
