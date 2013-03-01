@@ -782,6 +782,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					ev.preventDefault();
 					fullEl.hide();
 					simpleEl.show();
+					self._initTicketMessageClipped(article);
 					self.updateUi();
 				});
 				simpleEl.find('.message-toggle-btn > em').on('click', function(ev) {
@@ -799,6 +800,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							type: 'GET',
 							success: function(data) {
 								row.find('.full-message-content').html(data.message_full)
+								self._initTicketMessageClipped(article);
 								self.updateUi();
 							}
 						});
@@ -806,14 +808,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			}
 
-			var h = article.find('div.body-text').height();
-			if (h >= 600) {
-				article.addClass('with-clipped-body');
-				article.find('.fade-bar-longmsg').on('click', function(ev) {
-					ev.stopPropagation();
-					article.addClass('clipped-show');
-				});
-			}
+			self._initTicketMessageClipped(article);
 		});
 		this.lastMessageCount = lastCount;
 
@@ -825,6 +820,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$(this).attr('title', $(this).text()).text(counterText).removeClass('message-id-txt');
 			}
 		});
+	},
+
+	_initTicketMessageClipped: function(article) {
+		var h = article.find('div.body-text').height();
+		if (h >= 600) {
+			if (!article.hasClass('with-clipped-body')) {
+				article.addClass('with-clipped-body');
+				article.find('.fade-bar-longmsg').one('click', function(ev) {
+					ev.stopPropagation();
+					article.addClass('clipped-show');
+				});
+			}
+		} else {
+			if (article.hasClass('with-clipped-body')) {
+				article.removeClass('with-clipped-body')
+			}
+		}
 	},
 
 	incCount: function(id) {
