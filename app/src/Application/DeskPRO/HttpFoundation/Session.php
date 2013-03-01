@@ -201,6 +201,17 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				if ($vis->hint_hidden) {
 					$vis->hint_hidden = false;
 				}
+
+				// Clear out any soft links to this record
+				// If there's a page2, then it means any soft-links
+				// are not actually theirs.
+				// (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
+				if ($vis->page_count < 4) {
+					App::getDb()->executeUpdate("
+						DELETE FROM visitor_tracks
+						WHERE visitor_id = ? AND is_soft_track = 1
+					")->execute(array($vis->getId()));
+				}
 			}
 
 			if (!empty($_SESSION['_symfony2']['auth_person_id']) && $_SESSION['_symfony2']['auth_person_id']) {

@@ -420,6 +420,17 @@ class DpLoader extends LoaderAbstract
 
 		if (!$is_new_visitor) {
 			$visitor_update['hint_hidden'] = '0';
+
+			// Clear out any soft links to this record
+			// If there's a page2, then it means any soft-links
+			// are not actually theirs.
+			// (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
+			if ($visitor['page_count'] < 4) {
+				$this->getPdo()->prepare("
+					DELETE FROM visitor_tracks
+					WHERE visitor_id = ? AND is_soft_track = 1
+				")->execute(array($visitor_id));
+			}
 		}
 
 		if ($user_token) {
