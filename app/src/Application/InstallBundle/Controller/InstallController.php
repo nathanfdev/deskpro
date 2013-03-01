@@ -218,7 +218,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			if (count($server_check->getErrors()) == 1 && $server_check->hasErrorType('config')) {
 				// Dont send when its just a config.php missing error
 			} else {
-				$e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
+				$errors = $server_check->getFatalErrors();
+				$msg = array();
+				foreach ($errors as $k => $er) {
+					$msg[] = "$k: {$er['message']}";
+				}
+				$msg = implode(", ", $msg);
+				$e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: $msg");
 				$this->sendInstallReport($e);
 			}
 		}
