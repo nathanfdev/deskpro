@@ -91,6 +91,7 @@ class ChatTranscripts extends AbstractJob
 				$message = App::getMailer()->createMessage();
 				$message->setTo($email, $name);
 				$message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+				$message->setSuppressAutoreplies(true);
 				App::getMailer()->send($message);
 
 				// Add a chat log line for it
