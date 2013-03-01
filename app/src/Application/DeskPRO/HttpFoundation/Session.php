@@ -227,13 +227,17 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 			// Insert tracks
 			$track = null;
-			if (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url)) {
+			if (!$vis->initial_track || (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url))) {
 				$track = new Entity\VisitorTrack();
 				$track->visitor      = $vis;
 				$track->page_url     = $url;
 				$track->ref_page_url = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 				$track->ip_address   = $user_ip;
 				$track->user_Agent   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+
+				if (DP_INTERFACE == 'agent') {
+					$track->page_url = preg_replace('#/agent/.*?$#', '/agent/', $track->page_url);
+				}
 
 				if (!$vis->initial_track) {
 					$track->is_new_visit = true;
