@@ -232,6 +232,9 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 			if (!$('#lic_website_url').val().trim().length) {
 				reqlicGroup.find('.errors-box').show().find('li.error_site_url').show();
 			}
+			if (!$('#lic_name').val().trim().length) {
+				reqlicGroup.find('.errors-box').show().find('li.error_name').show();
+			}
 			if (reqlicGroup.find('.errors-box').is(':visible')) {
 				return;
 			}

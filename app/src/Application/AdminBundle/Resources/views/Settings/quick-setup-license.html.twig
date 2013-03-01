@@ -19,6 +19,7 @@
 					<li class="error-item error_site_name">{{ phrase('admin.license.error_site_name') }}</li>
 					<li class="error-item error_site_url">{{ phrase('admin.license.error_site_url') }}</li>
 					<li class="error-item error_phone">{{ phrase('admin.license.error_phone') }}</li>
+					<li class="error-item error_name">Please enter your name</li>
 				</ul>
 
 				<div class="error-item error_timeout error_server_error error_request_error error_unknown_request_error" style="display: none">
@@ -44,6 +45,14 @@
 			<input type="hidden" name="install_key" value="{{ app.getSetting('core.install_key') }}" />
 			<input type="hidden" name="install_token" value="{{ app.getSetting('core.install_token') }}" />
 			<table cellspacing="0" cellpadding="0" class="form-table" width="100%">
+				<tr>
+					<td class="label" width="250" valign="middle">Email Address to Send License:</td>
+					<td><input type="text" id="lic_email_address" name="email_address" value="{{ app.user.primary_email_address }}" style="width: 90%;" placeholder="Email Address" /></td>
+				</tr>
+				<tr>
+					<td class="label" width="250" valign="middle">Your Name:</td>
+					<td><input type="text" id="lic_name" name="user_name" value="{{ app.user.display_name }}" style="width: 90%;" placeholder="Your Name" /></td>
+				</tr>
 				<tr>
 					<td class="label" valign="middle">Your Organization's Name:</td>
 					<td><input type="text" id="lic_website_name" name="website_name" value="{{ app.getSetting('core.site_name') }}" style="width: 90%;" placeholder="Organization Name" /></td>
@@ -74,10 +83,6 @@
 							</tr>
 						</table>
 					</td>
-				</tr>
-				<tr>
-					<td class="label" width="250" valign="middle">Email Address to Send License:</td>
-					<td><input type="text" id="lic_email_address" name="email_address" value="{{ app.user.primary_email_address }}" style="width: 90%;" placeholder="Email Address" /></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
