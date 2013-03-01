@@ -185,13 +185,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		// message and we all sync our status properly
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.user-chat-status', function(info) {
 			if (info.is_online) {
-				$('#chatStatusWrap').removeClass('offline');
-				$('#agent_status_menu_onlinerow').show();
-				$('#agent_status_menu_offlinerow').hide();
+				self.onlineAgentIds.include(DESKPRO_PERSON_ID);
 			} else {
-				$('#chatStatusWrap').addClass('offline');
-				$('#agent_status_menu_onlinerow').hide();
-				$('#agent_status_menu_offlinerow').show();
+				self.onlineAgentIds.erase(DESKPRO_PERSON_ID);
 			}
 		});
 
@@ -356,12 +352,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			list.hide();
 		}
 
-		if (!hasme) {
-			if (!$('#chatStatusWrap').hasClass('offline')) {
-				$('#chatStatusWrap').addClass('offline');
-				$('#agent_status_menu_onlinerow').hide();
-				$('#agent_status_menu_offlinerow').show();
-			}
+		if (hasme) {
+			$('#chatStatusWrap').removeClass('offline');
+			$('#agent_status_menu_onlinerow').show();
+			$('#agent_status_menu_offlinerow').hide();
+		} else {
+			$('#chatStatusWrap').addClass('offline');
+			$('#agent_status_menu_onlinerow').hide();
+			$('#agent_status_menu_offlinerow').show();
 		}
 
 		DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
@@ -891,7 +889,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this.refreshOpenCounts();
 
-		if ($('#chatStatusWrap').hasClass('offline')) {
+		if (!this.onlineAgentIds.contains(DESKPRO_PERSON_ID)) {
 			return;
 		}
 
