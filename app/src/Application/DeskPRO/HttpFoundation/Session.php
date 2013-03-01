@@ -210,7 +210,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 					App::getDb()->executeUpdate("
 						DELETE FROM visitor_tracks
 						WHERE visitor_id = ? AND is_soft_track = 1
-					")->execute(array($vis->getId()));
+					", array($vis->getId()));
 				}
 			}
 
