@@ -123,7 +123,7 @@ class DpLoader extends LoaderAbstract
 		if (isset($_REQUEST['vut'])) {
 			$user_token = $_REQUEST['vut'];
 		} elseif (isset($_COOKIE['dpvut'])) {
-			$user_token = $_REQUEST['dpvut'];
+			$user_token = $_COOKIE['dpvut'];
 		}
 
 		$user_ip = $_SERVER['REMOTE_ADDR'];
@@ -181,7 +181,6 @@ class DpLoader extends LoaderAbstract
 				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
 				WHERE
 					visitors.user_token = ?
-					AND visitor_tracks.ip_address = ?
 					AND visitors.date_last > ?
 			");
 			$q->execute(array(

@@ -110,6 +110,48 @@ class Cookie extends BaseCookie
 		return $str;
 	}
 
+	public function setDomain($domain)
+	{
+		$this->domain = $domain;
+		return $this;
+	}
+
+	public function setExpire($expire)
+	{
+		$this->expire = $expire;
+		return $this;
+	}
+
+	public function setHttpOnly($httpOnly)
+	{
+		$this->httpOnly = $httpOnly;
+		return $this;
+	}
+
+	public function setName($name)
+	{
+		$this->name = $name;
+		return $this;
+	}
+
+	public function setPath($path)
+	{
+		$this->path = $path;
+		return $this;
+	}
+
+	public function setSecure($secure)
+	{
+		$this->secure = $secure;
+		return $this;
+	}
+
+	public function setValue($value)
+	{
+		$this->value = $value;
+		return $this;
+	}
+
 	public function send()
 	{
 		header('Set-Cookie: ' . $this->__toString(), false);

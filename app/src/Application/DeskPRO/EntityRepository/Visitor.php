@@ -78,27 +78,20 @@ class Visitor extends AbstractEntityRepository
 		  ->getOneOrNullResult();
 	}
 
-	/**
-	 * @return Visitor
-	 */
-	public function smartFind($ip_address, $user_agent)
-	{
-		$datecut = new \DateTime('@' . (time()-86400));
-		$datecut = $datecut->format('Y-m-d H:i:s');
 
-		try {
-			return $this->getEntityManager()->createQuery("
-				SELECT v
-				FROM DeskPRO:Visitor v
-				WHERE v.date_last > ?1 AND v.ip_address = ?2 AND v.user_agent = ?3
-				ORDER BY v.id DESC
-			")->setParameter(1, $datecut)
-			  ->setParameter(2, $ip_address)
-			  ->setParameter(3, $user_agent)
-			  ->setMaxResults(1)
-			  ->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
-		}
+	/**
+	 * @param string $user_token
+	 */
+	public function getVisitorFromUserToken($user_token)
+	{
+		$datecut = new \DateTime('@' . (time() - 600));
+		return $this->getEntityManager()->createQuery("
+			SELECT v
+			FROM DeskPRO:Visitor v
+			WHERE v.date_last > ?0 AND v.user_token = ?1
+		")->setParameters(array(
+			$datecut,
+			$user_token
+		))->setMaxResults(1)->getOneOrNullResult();
 	}
 }

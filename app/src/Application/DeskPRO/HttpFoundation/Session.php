@@ -168,6 +168,21 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
+		$user_token = null;
+		if (isset($_COOKIE['dpvut'])) {
+			$user_token = $_COOKIE['dpvut'];
+		}
+
+		if (!$vis) {
+			if ($this->getEntity()->getPersonId()) {
+				$vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorForPerson($this->getEntity()->getPersonId());
+			}
+
+			if (!$vis && $user_token) {
+				$vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromUserToken($user_token);
+			}
+		}
+
 		if (!Web::isBotUseragent()) {
 			$is_new_vis = false;
 			$soft_visitor_id = null;
@@ -224,6 +239,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 			$vis->page_count = $vis->page_count + 1;
 			$vis->date_last  = new \DateTime();
+			if (!$vis->user_token) {
+				$vis->user_token = Strings::random(8, Strings::CHARS_KEY);
+			}
 
 			$this->visitor = $vis;
 
@@ -307,18 +325,23 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				App::getOrm()->flush();
 			}
 
-			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never', true);
-			$cookie->send();
-
 			if ($vis) {
 				$this->set('dpvid', $vis['id']);
+
+				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never')->setPath('/')->send();
+				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvut', $vis['user_token'], '+1 day')->setPath('/')->send();
 			} else {
 				$this->remove('dpvid');
+				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
+				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvut')->send();
 			}
 		} else {
 			$this->visitor = null;
 			$this->getEntity()->visitor = null;
 			$this->remove('dpvid');
+
+			\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
+			\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvut')->send();
 		}
 
         if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
