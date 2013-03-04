@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Twig\Extension;
 
+use Orb\Data\Countries;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Application\DeskPRO\App;
@@ -164,6 +165,7 @@ class TemplatingExtension extends \Twig_Extension
 			'last'                   => new \Twig_Filter_Method($this, 'getLast'),
 			'filesize_display'       => new \Twig_Filter_Method($this, 'filesizeDisplay'),
 			'url_trim_scheme'        => new \Twig_Filter_Method($this, 'urlTrimScheme'),
+			'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
 
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -1088,6 +1090,20 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $ret;
+	}
+
+	public function countryName($code)
+	{
+		if (strlen($code != 2)) {
+			return $code;
+		}
+
+		$name = Countries::getCountryFromCode($code);
+		if (!$name) {
+			return $code;
+		}
+
+		return $name;
 	}
 
 	protected $_widgetCache = array();

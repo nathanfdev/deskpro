@@ -19,7 +19,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <header class="page-header">
 	{% if visitor.visit_track.geo_country %}
-		<span class="country" style="background-image: url({{ asset('images/flags/' ~ visitor.visit_track.geo_country|lower ~ '.png') }});" title="{{ visitor.visit_track.geo_country }}"></span>
+		<span class="country" style="background-image: url({{ asset('images/flags/' ~ visitor.visit_track.geo_country|lower ~ '.png') }});" title="{{ visitor.visit_track.geo_country|country_name }}"></span>
 	{% endif %}
 	<span class="ip-address">{{ visitor.visit_track.ip_address }}</span>
 	<h4 class="id-number">#{{ visitor.id }}</h4>
