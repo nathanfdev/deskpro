@@ -129,6 +129,10 @@ class Draft extends AbstractEntityRepository
 		$draft->person = $person;
 
 		$this->getEntityManager()->persist($draft);
+
+		$this->getEntityManager()->getConnection()->executeUpdate("
+			DELETE FROM drafts WHERE content_type = ? AND content_id = ? AND person_id =?
+		", array($content_type, $content_id, $person->getId()));
 		$this->getEntityManager()->flush();
 
 		return $draft;
