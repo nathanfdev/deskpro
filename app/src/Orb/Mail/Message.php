@@ -112,9 +112,6 @@ class Message extends \Swift_Message
 		if ($this->_suppress_autoreply) {
 			// Tell Outlook/Exchange to suppress autoreplies (http://msdn.microsoft.com/en-us/library/ee219609(v=exchg.80).aspx)
 			$this->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'All');
-			if (!$this->getReturnPath()) {
-				$this->getHeaders()->addTextHeader('Return-Path', '<>');
-			}
 		}
 
 		$this->doPrepare();
