@@ -279,9 +279,11 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			);
 			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 
-			$this->tracker->logMessage("[NewTicketAction] Sending email " . $tpl . " to " . $person->getPrimaryEmailAddress());
-
 			$from_address = $this->getFromAddress($ticket);
+
+			$this->tracker->logMessage("[NewTicketAction] Sending email template: " . $tpl);
+			$this->tracker->logMessage("[NewTicketAction] Sending email to: " . $person->getEmailAddress());
+			$this->tracker->logMessage("[NewTicketAction] Sending email from: " . print_r($from_address,true));
 
 			$vars = array(
 				'ticket' => $ticket,
