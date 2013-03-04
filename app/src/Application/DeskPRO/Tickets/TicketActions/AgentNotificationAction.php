@@ -440,8 +440,8 @@ class AgentNotificationAction extends AbstractAction
 			$this->tracker->logMessage("[AgentNotificationAction] From name: " . $from_name);
 			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $from_address);
 
-			$from_address = array($from_address => $from_address ? $from_name : $from_address);
-			$message->setFrom($from_address);
+			$from_address_set = array($from_address => $from_address ? $from_name : $from_address);
+			$message->setFrom($from_address_set);
 
 			$email_time = microtime(true);
 			App::getMailer()->send($message);
