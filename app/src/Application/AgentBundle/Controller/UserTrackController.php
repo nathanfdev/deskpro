@@ -98,13 +98,13 @@ class UserTrackController extends AbstractController
 		$geo_countries = array();
 		foreach ($visit_tracks as $t) {
 			if ($t->ip_address) {
-				$ip_addresses[] = $t->ip_address;
+				$ip_addresses[$t->ip_address] = $t->ip_address;
 			}
 			if ($t->user_agent) {
-				$user_agents[] = $t->user_agent;
+				$user_agents[$t->user_agent] = $t->user_agent;
 			}
 			if ($t->geo_country) {
-				$geo_countries[] = $t->geo_country;
+				$geo_countries[$t->geo_country] = $t->geo_country;
 			}
 		}
 
