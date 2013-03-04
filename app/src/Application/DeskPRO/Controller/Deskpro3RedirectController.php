@@ -387,6 +387,11 @@ class Deskpro3RedirectController extends AbstractController
 
 		$html = preg_replace('#../images/(.*?)\b#', 'manual.php?m='.$manual_id.'&img=$1', $html);
 
+		if (dp_get_config('legacy_manual_custom_header')) {
+			$header_markup = file_get_contents(dp_get_config('legacy_manual_custom_header'));
+			$html = str_replace('<body>', $header_markup, $html);
+		}
+
 		return $this->createResponse($html);
 	}
 
