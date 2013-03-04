@@ -573,9 +573,14 @@ JS;
 		$this->session->save();
 
 		// Update status in all other active sessions
+		$is_chat_avail = (int)$this->in->getBool('is_chat_available');
+		$is_chat_avail_old = (int)(!$this->in->getBool('is_chat_available'));
+
+		// using REPLACE on the session data as a quick way to toggle the status in session data
+		// without actually loading up the entire record
 		$this->db->executeUpdate("
 			UPDATE sessions
-			SET is_chat_available = ?, active_status = ?
+			SET is_chat_available = ?, active_status = ?, data = REPLACE(data, '\"is_chat_available\";i:$is_chat_avail_old;', '\"is_chat_available\";i:$is_chat_avail;')
 			WHERE person_id = ? AND interface = ?
 		", array(
 			$this->in->getBool('is_chat_available'),
