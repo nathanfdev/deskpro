@@ -107,12 +107,28 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
 			triggerElement: this.getEl('quick_replies'),
 			onSnippetClick: function(info) {
-				var val = self.getEl('replybox_txt').val();
-				if (val.length) {
-					val += " ";
+				var val = info.snippet;
+
+				var messageTextarea = self.getEl('replybox_txt')
+				if (messageTextarea.data('redactor')) {
+					messageTextarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(val, true));
+					messageTextarea.change();
+					window.setTimeout(function() {
+						var tmp = ed.height();
+						if (lastH != tmp) {
+							lastH = tmp;
+							self.getEl('replybox').css('height', lastH+69);
+							self.getEl('messages_box').css('bottom', lastH+69);
+						}
+					}, 100);
+				} else {
+					var pos = messageTextarea.getCaretPosition();
+					if (!pos) {
+						messageTextarea.setCaretPosition(0);
+					}
+
+					messageTextarea.insertAtCaret(val);
 				}
-				val += info.snippet;
-				self.getEl('replybox_txt').val(val);
 			}
 		});
 
