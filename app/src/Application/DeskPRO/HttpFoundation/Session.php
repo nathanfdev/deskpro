@@ -330,7 +330,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			if ($track && $soft_visitor_id) {
 				// If we suspect this is linked to a different visitor,
 				// duplicate the track and set it as the soft link
-				$track_dupe = $track->toArray(Entity\VisitorTrack::TOARRAY_ONLY_PRIMATIVES);
+				$track_dupe = $track;
 				unset($track_dupe['id']);
 				$track_dupe['visitor_id'] = $soft_visitor_id;
 				$track_dupe['is_soft_track'] = 1;
