@@ -197,7 +197,6 @@ class DpLoader extends LoaderAbstract
 			");
 			$q->execute(array(
 				$user_token,
-				$user_ip,
 				date('Y-m-d H:i:s', time() - 600)
 			));
 			$visitor = $q->fetch(\PDO::FETCH_ASSOC);
