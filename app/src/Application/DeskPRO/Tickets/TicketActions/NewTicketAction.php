@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * This action handles toggling email validation features,
@@ -271,19 +272,21 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 			$parts = $ticket->getUserParticipants();
 
-			$change_info = array(
-				'type'        => 'user_notify',
-				'notify_type' => $ticket->isAgentCreated() ? 'newticket_agent' : 'newticket',
-				'emailed'     => array($ticket->person),
-				'cced'        => $parts ?: array()
-			);
-			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
-
 			$from_address = $this->getFromAddress($ticket);
 
 			$this->tracker->logMessage("[NewTicketAction] Sending email template: " . $tpl);
 			$this->tracker->logMessage("[NewTicketAction] Sending email to: " . $person->getEmailAddress());
 			$this->tracker->logMessage("[NewTicketAction] Sending email from: " . print_r($from_address,true));
+
+			$change_info = array(
+				'type'        => 'user_notify',
+				'notify_type' => $ticket->isAgentCreated() ? 'newticket_agent' : 'newticket',
+				'emailed'     => array($ticket->person),
+				'cced'        => $parts ?: array(),
+				'from_name'   => Arrays::getFirstKey($from_address),
+				'from_email'  => Arrays::getFirstItem($from_address)
+			);
+			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 
 			$vars = array(
 				'ticket' => $ticket,

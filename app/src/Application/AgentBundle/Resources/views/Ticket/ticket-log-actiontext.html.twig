@@ -164,6 +164,10 @@
 	{% else %}{{ log.details.type }}
 	{% endif %}
 
+	{% if log.details.from_name or log.details.from_email %}
+		(Sent from {{ log.details.from_name }} {{ log.details.from_email }})
+	{% endif %}
+
 	<div class="expand-set" style="display: none">
 		<ul>
 			{% for info in log.details.who_emailed %}
@@ -191,6 +195,10 @@
             <span class="new-val expand" data-set=".set-cced">{{ phrase('agent.tickets.count_users', {'count':log.details.who_cced|length}) }}</span>
         {% endset %}
         {{ phrase('agent.tickets.and_count_were_cced', {'display_count':phrase_part,'count':log.details.who_cced|length}, true) }}
+	{% endif %}
+
+	{% if log.details.from_name or log.details.from_email %}
+		(Sent from {{ log.details.from_name }} {{ log.details.from_email }})
 	{% endif %}
 
 	<div class="expand-set set-emailed" style="display: none">

@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Email\TicketUtil;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * Sets agent
@@ -110,8 +111,12 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 
 		$parts  = $ticket->getUserParticipants();
 
-		$change_info['emailed'] = array($person);
-		$change_info['cced'] = $parts;
+		$from_address = $this->getFromAddress($ticket);
+
+		$change_info['emailed']    = array($person);
+		$change_info['cced']       = $parts;
+		$change_info['from_name']  = Arrays::getFirstKey($from_address);
+		$change_info['from_email'] = Arrays::getFirstItem($from_address);
 
 		// Is null if not provided,
 		// or an array of people ID's if provided (from agent reply)
@@ -122,8 +127,6 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		$vars['person'] = $person;
 		$vars['participants'] = $parts;
 		$vars['access_code'] = $ticket->getAccessCode();
-
-		$from_address = $this->getFromAddress($ticket);
 
 		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
 		$vars['ticketdisplay'] = $ticketdisplay;

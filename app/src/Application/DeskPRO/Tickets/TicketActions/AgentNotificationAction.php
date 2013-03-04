@@ -251,10 +251,15 @@ class AgentNotificationAction extends AbstractAction
 
 		$this->tracker->logMessage("[AgentNotificationAction] Agents: " . implode(', ', $this->notify_agents));
 
+		$from_name    = $this->getFromName($ticket);
+		$from_address = $this->getFromAddress($ticket);
+
 		$change_info = array(
-			'type' => 'agent_notify',
-			'notify_type' => 'updated',
-			'emailed' => array()
+			'type'         => 'agent_notify',
+			'notify_type'  => 'updated',
+			'emailed'      => array(),
+			'from_name'    => $from_name,
+			'from_address' => $from_address
 		);
 
 		$is_new_ticket      = false;
@@ -431,9 +436,6 @@ class AgentNotificationAction extends AbstractAction
 					$this->_addAttachments($message, $attachments, $new_message->getUsedSignatureImageBlobs());
 				}
 			}
-
-			$from_name    = $this->getFromName($ticket);
-			$from_address = $this->getFromAddress($ticket);
 
 			$this->tracker->logMessage("[AgentNotificationAction] From name: " . $from_name);
 			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $from_address);
