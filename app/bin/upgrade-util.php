@@ -571,6 +571,26 @@ class Upgrade
 			$checks_fail = true;
 		}
 
+		// Check for disabled functions
+		$disabled_f = array();
+		foreach (array(
+			'escapeshellarg',
+			'exec',
+			'passthru',
+			'chdir',
+			'proc_open'
+		) as $f) {
+			if (\Orb\Util\Env::isFunctionDisabled($f)) {
+				$disabled_f[] = $f;
+			}
+		}
+
+		if ($disabled_f) {
+			$write_status('error_disabled_functions', implode(', ', $disabled_f));
+			$this->outAndLog("These functions are disabled: " . implode($disabled_f));
+			$checks_fail = true;
+		}
+
 		#---
 		# File permissions: CHeck a few dirs/files to make sure we can write them all
 		#---

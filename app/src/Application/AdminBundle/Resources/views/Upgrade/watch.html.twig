@@ -105,6 +105,22 @@
 						<span class="place-message"></span>
 					</p>
 				</div>
+				<div style="display:none" class="error_disabled_functions">
+					<h3>You have disabled functions in php.ini</h3>
+					<p>
+						Your php.ini has a <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disabled_functions</a> directive that is disabling one or more functions required by the automatic upgrader.
+					</p>
+					<p>
+						<span class="place-message"></span>
+					</p>
+					<p>
+						To use the automatic upgrader, you will need to edit your php.ini and remove the disabled_functions directive.
+					</p>
+					<p>
+						You can still upgrade DeskPRO manually if you cannot change php.ini. Refer to our online manual:<br/>
+						<a href="http://support.deskpro.com/kb/articles/135-manually-installing-updates" target="_blank">http://support.deskpro.com/kb/articles/135-manually-installing-updates</a>
+					</p>
+				</div>
 				<div style="display: none" class="error_zip_ext">
 					<p>
 						The upgrade utility requires the <a href="http://php.net/manual/en/book.zlib.php">zlib</a>

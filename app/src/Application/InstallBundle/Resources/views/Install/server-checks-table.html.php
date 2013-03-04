@@ -229,14 +229,14 @@
 		<?php if (!isset($errors['php_functions'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; $failed_phpini = true; ?>
-		<span class="label important" style="float:right">FAIL</span>
+		<span class="label notice" style="float:right">RECOMMENDED</span>
 		<?php endif ?>
 		Check for disabled functions
 		<?php if ($failed): ?>
 		<div class="alert-message block-message error">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_disabled_functions') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 			We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disable_functions</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?>.
-			Some functions are required for DeskPRO to function (escapeshellarg, exec, passthru, chdir and proc_open). You must edit your php.ini and remove the disable_functions directive.
+			If you want to use the automatic upgrade feature, you must edit your php.ini and remove the disable_functions directive. These functions are required for automatic upgrades: escapeshellarg, exec, passthru, chdir and proc_open.
 		</div>
 		<?php endif ?>
 	</td>

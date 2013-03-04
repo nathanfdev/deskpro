@@ -338,10 +338,10 @@ class ServerChecks
 				$this->has_fatal_server_errors = true;
 				$has_disabled_str = implode(', ', $has_disabled);
 				$msg = "Edit php.ini and remove the disabled_functions line (Found these disabled functions: $has_disabled_str)";
-				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->getLogger()->log($msg, Logger::INFO);
 				$this->server_errors['php_functions'] = array(
 					'message' => $msg,
-					'level' => 'fatal',
+					'level' => 'recommended',
 					'has_disabled' => $has_disabled,
 					'has_disabled_str' => $has_disabled_str,
 				);
