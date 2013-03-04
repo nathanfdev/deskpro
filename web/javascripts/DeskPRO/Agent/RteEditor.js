@@ -304,6 +304,8 @@ DeskPRO.Agent.RteEditor = {
 							api.opts.imageUploadCallback(api, json);
 						}
 					}
+
+					textarea.data('redactor').insertHtml('');
 				}
 			});
 
