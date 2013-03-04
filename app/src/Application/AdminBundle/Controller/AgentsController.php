@@ -549,7 +549,12 @@ class AgentsController extends AbstractController
 				$this->em->flush();
 
 				// Default to non-destructive perm group, or if thats deleted, the default all perms group
-				$has_ug = App::getDb()->fetchColumn("SELECT id FROM usergroups WHERE id IN (4,3) ORDER BY id DESC");
+				$has_ug = App::getDb()->fetchColumn("
+					SELECT id
+					FROM usergroups
+					WHERE id IN (4,3) AND is_agent_group = 1 AND is_enabled = 1
+					ORDER BY id DESC
+				");
 				if ($has_ug) {
 					$this->db->insert('person2usergroups', array(
 						'person_id' => $agent->getId(),
