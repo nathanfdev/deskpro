@@ -260,7 +260,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				$track['user_Agent']   = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
 
 				if (DP_INTERFACE == 'agent') {
-					$track['page_url'] = preg_replace('#/agent/.*?$#', '/agent/', $track->page_url);
+					$track['page_url'] = preg_replace('#/agent/.*?$#', '/agent/', $track['page_url']);
 				}
 
 				if (!$vis->initial_track || $prev_date_last->getTimestamp() < time() - 900) {
