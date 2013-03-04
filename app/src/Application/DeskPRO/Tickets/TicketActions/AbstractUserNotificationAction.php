@@ -115,8 +115,8 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 
 		$change_info['emailed']    = array($person);
 		$change_info['cced']       = $parts;
-		$change_info['from_name']  = Arrays::getFirstKey($from_address);
-		$change_info['from_email'] = Arrays::getFirstItem($from_address);
+		$change_info['from_name']  = Arrays::getFirstItem($from_address);
+		$change_info['from_email'] = Arrays::getFirstKey($from_address);
 
 		// Is null if not provided,
 		// or an array of people ID's if provided (from agent reply)

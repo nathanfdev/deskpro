@@ -283,8 +283,8 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				'notify_type' => $ticket->isAgentCreated() ? 'newticket_agent' : 'newticket',
 				'emailed'     => array($ticket->person),
 				'cced'        => $parts ?: array(),
-				'from_name'   => Arrays::getFirstKey($from_address),
-				'from_email'  => Arrays::getFirstItem($from_address)
+				'from_name'   => Arrays::getFirstItem($from_address),
+				'from_email'  => Arrays::getFirstKey($from_address)
 			);
 			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 

@@ -42,12 +42,16 @@ class UserNotify extends AbstractLogAction
 	protected $type;
 	protected $who_emailed;
 	protected $who_cced;
+	protected $from_name = '';
+	protected $from_email = '';
 
 	public function __construct(array $info)
 	{
-		$this->type = $info['notify_type'];
+		$this->type        = $info['notify_type'];
 		$this->who_emailed = $info['emailed'];
-		$this->who_cced = $info['cced'];
+		$this->who_cced    = $info['cced'];
+		$this->from_name   = isset($info['from_name']) ? $info['from_name'] : '';
+		$this->from_email  = isset($info['from_email']) ? $info['from_email'] : '';
 	}
 
 	public function getLogName()
@@ -58,9 +62,11 @@ class UserNotify extends AbstractLogAction
 	public function getLogDetails()
 	{
 		$details = array();
-		$details['type'] = $this->type;
+		$details['type']        = $this->type;
 		$details['who_emailed'] = array();
-		$details['who_cced'] = array();
+		$details['who_cced']    = array();
+		$details['from_name']   = $this->from_name;
+		$details['from_email']  = $this->from_email;
 
 		foreach ($this->who_emailed as $person) {
 			$details['who_emailed'][] = array(
