@@ -5,3 +5,8 @@
 
 {{ phrase('user.emails.register-welcome') }}<br/>
 <a href="{{ url_full('user') }}">{{ url_full('user') }}</a>
+
+{% if not person.is_agent_confirmed %}
+	<br /><br />
+	{{ phrase('user.emails.register-agent-validation') }}
+{% endif %}
