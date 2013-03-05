@@ -445,16 +445,6 @@ class Runner
 				}
 			}
 
-			$this->message_count++;
-
-			if ($this->soft_time_limit) {
-				$t = microtime(true) - DP_START_TIME;
-				if ($t > $this->soft_time_limit) {
-					$this->logger->logWarn(sprintf("Hit soft time limit, breaking :: Running for %.3fs", $t));
-					break;
-				}
-			}
-
 			$m = memory_get_usage();
 
 			if ($next_inserted_id = array_shift($inserted_source_ids)) {
@@ -511,6 +501,16 @@ class Runner
 
 			if ($ret_code == 'memory_limit') {
 				break;
+			}
+
+			$this->message_count++;
+
+			if ($this->soft_time_limit) {
+				$t = microtime(true) - DP_START_TIME;
+				if ($t > $this->soft_time_limit) {
+					$this->logger->logWarn(sprintf("Hit soft time limit, breaking :: Running for %.3fs", $t));
+					break;
+				}
 			}
 		}
 
