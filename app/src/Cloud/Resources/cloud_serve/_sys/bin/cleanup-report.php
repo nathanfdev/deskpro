@@ -81,7 +81,7 @@ $is_verbose = false;
 $outfile    = null;
 $logfile    = null;
 
-$options = getopt('vfdo:l:', array(
+$options = getopt('vfmdo:l:', array(
 	'machine::',
 	'just-db',
 	'just-fs',
@@ -90,8 +90,12 @@ $options = getopt('vfdo:l:', array(
 	'outfile:',
 ));
 
-if (!$options) {
-	echo "Usage: cleanup-report.php [--machine] [--just-db] [--just-fs] [--verbose] [--logfile] [--outfile]";
+foreach (array('m', 'v', 'f', 'd', 'o', 'l', 'machine', 'just-db', 'just-fs', 'verbose', 'logfile', 'outfile') as $k) {
+	if (!isset($options[$k])) {
+		$options[$k] = null;
+	} elseif ($options[$k] === false) {
+		$options[$k] = true;
+	}
 }
 
 if ($options['d'] || $options['just-db']) {
@@ -119,7 +123,7 @@ if ($options['l'] || $options['logfile']) {
 	$logfile = $options['l'] ?: $options['logfile'];
 }
 
-$cloud_config = require __DIR__.'/../config.php';
+$datastore_path = CloudConfig::getConfig('datastore_path');
 
 ########################################################################
 # Util
@@ -163,7 +167,7 @@ $site_db_names   = array();
 
 $db = CloudConfig::getDb();
 $st = $db->prepare("
-	SELECT cloud_sites.master_domain, cloud_sites.db_user, cloud_sites.db_name,
+	SELECT cloud_sites.master_domain, cloud_sites.db_user, cloud_sites.db_name
 	FROM cloud_sites
 	ORDER BY cloud_sites.id ASC
 ");
@@ -176,10 +180,12 @@ while ($r = $st->fetch(\PDO::FETCH_ASSOC)) {
 	$site_db_names[]   = $r['db_name'];
 }
 
-$site_domains    = array_combine($site_domains, $site_domains);
-$site_domains_us = array_combine($site_domains_us, $site_domains_us);
-$site_db_users   = array_combine($site_db_users, $site_db_users);
-$site_db_names   = array_combine($site_db_names, $site_db_names);
+if ($site_domains) {
+	$site_domains    = array_combine($site_domains, $site_domains);
+	$site_domains_us = array_combine($site_domains_us, $site_domains_us);
+	$site_db_users   = array_combine($site_db_users, $site_db_users);
+	$site_db_names   = array_combine($site_db_names, $site_db_names);
+}
 
 dp_logf("\t-> Loaded %d sites in %.3fs", count($site_domains), microtime(true)-$t);
 
@@ -194,7 +200,7 @@ if ($do_fs) {
 	dp_logf("Checking filesystem data directories ...");
 	$t = microtime(true);
 
-	$dir = dir($cloud_config['datastore_path']);
+	$dir = dir($datastore_path);
 
 	while (($f = $dir->read()) !== false) {
 		$f_path = $dir->path . '/' . $f;
