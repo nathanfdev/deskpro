@@ -56,6 +56,11 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	protected $old_ptac;
 
 	/**
+	 * @var string
+	 */
+	protected $old_ref = '';
+
+	/**
 	 * @var int
 	 */
 	protected $new_ticket_id = 0;
@@ -117,10 +122,16 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'tickets_deleted', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'tickets_deleted',
+			'indexes' => array(
+				'old_ref_idx' => array('columns' => array('old_ref'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'old_ptac', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_ptac', ));
+		$metadata->mapField(array( 'fieldName' => 'old_ref', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_ref', ));
 		$metadata->mapField(array( 'fieldName' => 'new_ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_ticket_id', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'reason', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'reason', ));

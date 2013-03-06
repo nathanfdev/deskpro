@@ -354,7 +354,7 @@ class MainController extends AbstractController
 
 			$ref_gen = $this->container->getSystemService('RefGenerator');
 			if ($ref_gen->isRefMatch($q)) {
-				$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($q);
+				$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef($q);
 				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 					$results['ticket'][] = $ticket;
 				}

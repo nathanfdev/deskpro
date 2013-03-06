@@ -109,6 +109,33 @@ class Ticket extends AbstractEntityRepository
 
 
 	/**
+	 * Find a ticket ref and if it cant be found, try to find it through deleted records.
+	 *
+	 * @param $ticket_ref
+	 * @return Ticket
+	 */
+	public function findTicketRef($ticket_ref)
+	{
+		$ticket = $this->findOneBy(array('ref' => $ticket_ref));
+		if ($ticket) {
+			return $ticket;
+		}
+
+		$del_ticket = $this->_em->createQuery("
+			SELECT t
+			FROM DeskPRO:TicketDeleted t
+			WHERE t.old_ref = ?0
+		")->setParameters(array($ticket_ref))->setMaxResults(1)->getOneOrNullResult();
+
+		if (!$del_ticket) {
+			return null;
+		}
+
+		return $this->resolveDeletedTicket($del_ticket);
+	}
+
+
+	/**
 	 * @param \Application\DeskPRO\Entity\TicketDeleted $del_ticket
 	 */
 	public function resolveDeletedTicket(TicketDeletedEntity $del_ticket)

@@ -200,6 +200,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket_del = new TicketDeleted();
 				$ticket_del->ticket_id = $this->other_ticket['id'];
 				$ticket_del->old_ptac = $this->other_ticket->auth;
+				$ticket_del->old_ref = $this->other_ticket->ref;
 			}
 
 			$ticket_del->new_ticket_id = $this->ticket['id'];
