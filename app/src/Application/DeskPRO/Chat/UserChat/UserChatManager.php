@@ -1111,9 +1111,22 @@ class UserChatManager
 	 */
 	public function ackMessages(ChatConversation $convo, array $message_ids)
 	{
+		if (!$message_ids) {
+			return;
+		}
+
 		$this->em->beginTransaction();
 
 		try {
+			$d = date('Y-m-d H:i:s');
+			$this->db->executeUpdate("
+				UPDATE chat_messages
+				SET date_received = ?
+				WHERE
+					id IN (" . implode(', ', $message_ids) . ")
+					AND conversation_id = ?
+			", array($d, $convo->getId()));
+
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => $convo->getChannelId('ack_messages'),

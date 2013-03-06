@@ -593,6 +593,27 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			message = Orb.linkUrls(message);
 		}
 
+		var d = new Date();
+
+		var a_p = "am";
+		var curr_hour = d.getHours();
+		if (d.getHours() > 12) {
+			a_p = "pm";
+		}
+		if (curr_hour == 0) {
+			curr_hour = 12;
+		} else if (curr_hour > 12) {
+			curr_hour = curr_hour - 12;
+		}
+
+		var curr_min = d.getMinutes();
+		curr_min = curr_min + "";
+		if (curr_min.length == 1) {
+			curr_min = "0" + curr_min;
+		}
+
+		var time = curr_hour + ":" + curr_min + "" + a_p;
+
 		//data.author_name, data.content, data.author_type, data.metadata
 
 		if (data.author_type == 'user') {
@@ -651,6 +672,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			ev.preventDefault();
 			window.open($(this).attr('href'));
 		});
+		row.find('.time').text(time);
 
 		row.appendTo($('#dp_chat_messages_pane'));
 		$('#dp_chat_messages_pane').scrollTop(10000000);

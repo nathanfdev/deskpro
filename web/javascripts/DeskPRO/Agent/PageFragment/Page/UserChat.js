@@ -46,8 +46,29 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			self.addMessageRow(self.meta.youName, msg, 'agent', DeskPRO_Window.canUseAgentReplyRte(), tmp_id, { no_notify: true, person_avatar: self.meta.youPictureUrl });
 
 			self.sendMessage(msg, function(message_id) {
+				var d = new Date();
+
+				var a_p = "am";
+				var curr_hour = d.getHours();
+				if (d.getHours() > 12) {
+					a_p = "pm";
+				}
+				if (curr_hour == 0) {
+					curr_hour = 12;
+				} else if (curr_hour > 12) {
+					curr_hour = curr_hour - 12;
+				}
+
+				var curr_min = d.getMinutes();
+				curr_min = curr_min + "";
+				if (curr_min.length == 1) {
+					curr_min = "0" + curr_min;
+				}
+
+				var time = curr_hour + ":" + curr_min + "" + a_p;
+
 				// Sets the real message ID after we've come back from ajax
-				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id);
+				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id).attr('title', 'User read message at: ' + time);
 			});
 		}
 
