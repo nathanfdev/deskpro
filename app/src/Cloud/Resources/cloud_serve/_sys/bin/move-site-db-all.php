@@ -61,6 +61,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 set_time_limit(0);
 
+$is_demo = 1;
+if (array_search('--pay-sites', $_SERVER['argv']) !== false) {
+	$is_demo = 0;
+}
 
 ########################################################################
 # Run tasks
@@ -69,13 +73,39 @@ set_time_limit(0);
 $db = CloudConfig::getDb();
 $migrate_db_config = CloudConfig::getConfig('migrate_db');
 
-$st = $db->prepare("
-	SELECT
-		cloud_sites.*
-	FROM cloud_sites
-	WHERE cloud_sites.build_number > 0 AND cloud_sites.in_use = 1 AND cloud_sites.db_host != '{$migrate_db_config['host']}'
-	ORDER BY cloud_sites.id ASC
-");
+if ($is_demo) {
+	$demo_expire = date('Y-m-d H:i:s', time() - 777600); // 9 days
+	$st = $db->prepare("
+		SELECT
+			cloud_sites.*
+		FROM cloud_sites
+		LEFT JOIN cloud_accounts ON (cloud_accounts.cloud_site_id = cloud_sites.id)
+		WHERE
+			cloud_sites.build_number > 0
+			AND cloud_sites.in_use = 1
+			AND cloud_sites.db_host != '{$migrate_db_config['host']}'
+			AND cloud_accounts.id IS NOT NULL
+			AND cloud_accounts.is_demo = 1
+			AND cloud_accounts.date_demo_expire > '$demo_expire'
+			AND cloud_accounts.is_cancelled = 0
+		ORDER BY cloud_sites.id ASC
+	");
+} else {
+	$st = $db->prepare("
+		SELECT
+			cloud_sites.*
+		FROM cloud_sites
+		LEFT JOIN cloud_accounts ON (cloud_accounts.cloud_site_id = cloud_sites.id)
+		WHERE
+			cloud_sites.build_number > 0
+			AND cloud_sites.in_use = 1
+			AND cloud_sites.db_host != '{$migrate_db_config['host']}'
+			AND cloud_accounts.id IS NOT NULL
+			AND cloud_accounts.is_demo = 0
+			AND cloud_accounts.is_cancelled = 0
+		ORDER BY cloud_sites.id ASC
+	");
+}
 
 $st->execute();
 $sites = $st->fetchAll(\PDO::FETCH_ASSOC);

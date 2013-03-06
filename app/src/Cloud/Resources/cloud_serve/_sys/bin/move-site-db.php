@@ -311,8 +311,7 @@ if (!file_put_contents($sys_disabled_file, 'upgrading')) {
 $dump_path = $site_ds_path . '/dump.sql';
 
 if (file_exists($dump_path)) {
-	dp_log("Site dump already exists at $dump_path");
-	exit(1);
+	unlink($dump_path);
 }
 
 #------------------------------
@@ -392,6 +391,8 @@ if (!unlink($sys_disabled_file)) {
 ########################################################################
 # All done
 ########################################################################
+
+unlink($dump_path);
 
 dp_log("");
 dp_log("--- DONE ---");
