@@ -615,7 +615,9 @@ class TermSummary
 				break;
 
 			case 'email_header':
-				$summary = $this->_stringMatchSummary("Email header '" .  $choice['header'] . "'", $op, $choice);
+				$c = $choice;
+				unset($c['header_name']);
+				$summary = $this->_stringMatchSummary("Email header " .  $choice['header_name'], $op, $c);
 				break;
 
 			case 'message':
