@@ -897,16 +897,18 @@ class TicketChangeTracker extends ChangeTracker
 
 		$this->_cleanOldWriters();
 
-		$log = implode("\n", $this->arr_writer->getMessages());
-		if ($log && $this->ticket && $this->ticket->getId() && !$this->ticket->_isRemoved && !$this->isExtraSet('bare_delete')) {
-			try {
-				App::getDb()->insert('ticket_changetracker_logs', array(
-					'ticket_id'    => $this->ticket['id'],
-					'log'          => $log,
-					'date_created' => date('Y-m-d H:i:s')
-				));
-			} catch (\Exception $e) {
-				\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+		if (dp_get_config('enable_changetracker_log')) {
+			$log = implode("\n", $this->arr_writer->getMessages());
+			if ($log && $this->ticket && $this->ticket->getId() && !$this->ticket->_isRemoved && !$this->isExtraSet('bare_delete')) {
+				try {
+					App::getDb()->insert('ticket_changetracker_logs', array(
+						'ticket_id'    => $this->ticket['id'],
+						'log'          => $log,
+						'date_created' => date('Y-m-d H:i:s')
+					));
+				} catch (\Exception $e) {
+					\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+				}
 			}
 		}
 
