@@ -174,8 +174,8 @@ $st = $db->prepare("
 $st->execute();
 
 while ($r = $st->fetch(\PDO::FETCH_ASSOC)) {
-	$site_domains[]    = $r['master_domain'];
-	$site_domains_us[] = str_replace('.', '_', $r['master_domain']);
+	$site_domains[]    = strtolower($r['master_domain']);
+	$site_domains_us[] = strtolower(str_replace('.', '_', $r['master_domain']));
 	$site_db_users[]   = $r['db_user'];
 	$site_db_names[]   = $r['db_name'];
 }
@@ -206,7 +206,7 @@ if ($do_fs) {
 		$f_path = $dir->path . '/' . $f;
 		if ($f == '.' || $f == '..' || !is_dir($f_path) || $f == '_cloud') continue;
 
-		if (!isset($site_domains_us[$f])) {
+		if (!isset($site_domains_us[strtolower($f)])) {
 			dp_logf("\t-> Found stale directory: %s", $f);
 			$cleanup_dirs[] = $f_path;
 		}
@@ -233,7 +233,7 @@ if ($do_db) {
 			continue;
 		}
 		if (!isset($site_db_names[$db_name])) {
-			dp_logf("\t-> Found stale database: %s", $f);
+			dp_logf("\t-> Found stale database: %s", $db_name);
 			$cleanup_databases[] = $db_name;
 		}
 	}
@@ -255,7 +255,7 @@ if ($do_db) {
 	$st = $db->prepare("SELECT * FROM `mysql`.`user`");
 	$st->execute();
 
-	while ($userinfo = $st->fetchColumn(0)) {
+	while ($userinfo = $st->fetch(\PDO::FETCH_ASSOC)) {
 		if (strpos($userinfo['User'], 'dp_cloud_') !== 0) {
 			continue;
 		}
@@ -269,14 +269,14 @@ if ($do_db) {
 		}
 	}
 
-	dp_logf("Finished scanning databases in %.3fs. Found %d stale database users.", microtime(true)-$t, count($cleanup_database_users));
+	dp_logf("Finished scanning database users in %.3fs. Found %d stale database users.", microtime(true)-$t, count($cleanup_database_users));
 }
 
 ########################################################################
 # Report
 ########################################################################
 
-dp_logf("Scan complete in %.3f", microtime(true)-$t_start);
+dp_logf("All scans complete in %.3f", microtime(true)-$t_start);
 
 $machine = json_encode(array(
 	'cleanup_dirs'           => $cleanup_dirs,
@@ -306,8 +306,10 @@ if ($is_machine) {
 		}
 		if ($cleanup_database_users) {
 			printf("Found %d stale database users:\n", count($cleanup_database_users));
-			echo "\t" . implode("\n\t", $cleanup_database_users);
-			echo "\n\n";
+			foreach ($cleanup_database_users as $u) {
+				echo "\t{$u['user']}@{$u['host']}\n";
+			}
+			echo "\n";
 		}
 	}
 }
