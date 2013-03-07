@@ -354,7 +354,8 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				$message = App::getMailer()->createMessage();
 				$message->setContextId('ticket_gateway');
 				$message->setTemplate($tpl, $vars);
-				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+
+				$message->setTo($ticket->getPersonEmailAddress(), $person->getDisplayName());
 				foreach ($parts as $part) {
 					if ($part['email_address']) {
 						$message->addCc($part['email_address'], $part->person->getDisplayName());

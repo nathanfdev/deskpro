@@ -182,7 +182,7 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 				if (!empty($vars['validating_email'])) {
 					$message->setTo($vars['validating_email']->getEmail());
 				} else {
-					$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+					$message->setTo($ticket->getPersonEmailAddress(), $person->getDisplayName());
 				}
 			}
 
