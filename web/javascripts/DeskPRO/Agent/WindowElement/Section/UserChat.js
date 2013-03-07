@@ -562,6 +562,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		window.setTimeout(function() {
 			if (!self.isVisible()) {
 				DeskPRO_Window.getSectionData('chat_section', self._initSection.bind(self));
+				var el = self.getSectionElement().find('.nav-selected');
+				if (el[0]) {
+					if (el.data('route')) {
+						DeskPRO_Window.runPageRouteFromElement(el);
+					} else {
+						DeskPRO_Window.runPageRouteFromElement(el.closest('[data-route]'));
+					}
+				}
 			}
 		}, 250);
 	},
@@ -617,7 +625,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var newCount = parseInt(el.text().trim()) || 0;
 
 		if (oldCount != newCount) {
-			DeskPRO_Window.runPageRouteFromElement(el.closest('[data-route]'));
+			if (this.isVisible()) {
+				DeskPRO_Window.runPageRouteFromElement(el.closest('[data-route]'));
+			}
 		}
 	},
 
