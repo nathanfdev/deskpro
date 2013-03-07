@@ -325,6 +325,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 					SET " . implode(', ', $set) . "
 					WHERE id = {$vis->getId()}
 				", $set_q);
+
+				$vis->new_track_id = $track['id'];
 			}
 
 			if ($track && $soft_visitor_id) {

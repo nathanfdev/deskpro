@@ -147,6 +147,18 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $_set_last_track;
 
 	/**
+	 * See app/src/Application/DeskPRO/HttpFoundation/Session.php
+	 * Session inserts a raw track (not an entity) and this is the track ID it inserted.
+	 *
+	 * This is a performance related thing not to use an entity. But it means
+	 * the visit track/last track in this model arent true for the current page-load.
+	 * (This doesnt matter since they sholudnt be used on the same page as the user is on anyway).
+	 *
+	 * @var int
+	 */
+	public $new_track_id;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
