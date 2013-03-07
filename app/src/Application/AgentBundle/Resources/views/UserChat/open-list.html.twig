@@ -28,6 +28,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 				</div>
 				<div class="top-row-right">
 					<div class="bound-fade"></div>
+					{% if convo.agent %}<span class="tipped agent-inline-icon" title="{{ convo.agent.display_name }}" style="background: url('{{ convo.agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; width: 16px;"></span>{% endif %}
 				</div>
 			</div>
 			<div class="userinfo general">
