@@ -74,6 +74,6 @@ class DeleteModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return '';
+		return 'Delete ticket';
 	}
 }
