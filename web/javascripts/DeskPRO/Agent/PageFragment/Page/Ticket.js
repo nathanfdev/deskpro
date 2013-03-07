@@ -100,6 +100,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		}).bind(this), this.pageUid);
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', function (info) {
+			self.getReplyTextArea().trigger('dp_autosave_trigger');
+		});
+
 		this.addEvent('shortcutFocusReply', function(ev) {
 
 			ev.preventDefault();

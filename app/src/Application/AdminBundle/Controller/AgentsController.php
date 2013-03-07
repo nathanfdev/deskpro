@@ -670,6 +670,8 @@ class AgentsController extends AbstractController
 			);
 		}
 
+		$this->sendAgentReloadSignal();
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'agents' => $agents_data
@@ -1093,6 +1095,8 @@ class AgentsController extends AbstractController
 		$this->session->setFlash('saved_agent', 1);
 		$this->session->save();
 
+		$this->sendAgentReloadSignal();
+
 		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}
 
@@ -1160,6 +1164,8 @@ class AgentsController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
+
 		if ($set_to) {
 			return $this->redirectRoute('admin_agents');
 		} else {
@@ -1209,6 +1215,8 @@ class AgentsController extends AbstractController
 				throw $e;
 			}
 
+			$this->sendAgentReloadSignal();
+
 			return $this->redirectRoute('admin_agents');
 		}
 
@@ -1255,6 +1263,7 @@ class AgentsController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
 		return $this->redirectRoute('admin_agents');
 	}
 
@@ -1303,6 +1312,7 @@ class AgentsController extends AbstractController
 				throw $e;
 			}
 
+			$this->sendAgentReloadSignal();
 			return $this->redirectRoute('admin_agents_groups_edit', array('usergroup_id' => $usergroup->id));
 		}
 
@@ -1347,6 +1357,7 @@ class AgentsController extends AbstractController
 			throw $e;
 		}
 
+		$this->sendAgentReloadSignal();
 		return $this->redirectRoute('admin_agents');
 	}
 

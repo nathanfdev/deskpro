@@ -158,7 +158,7 @@ DeskPRO.Agent.RteEditor = {
 			var autosaveContent = api.getCode(),
 				autosaveData = getAutosaveData(api);
 
-			var autosaveTimer = setInterval($.proxy(function() {
+			var saveFn = $.proxy(function() {
 				if (!textarea.data('redactor')) {
 					clearInterval(autosaveTimer);
 					autosaveTimer = false;
@@ -208,7 +208,11 @@ DeskPRO.Agent.RteEditor = {
 						}
 					}, this)
 				});
-			}, api), autosaveInterval * 1000);
+			}, api);
+
+			var autosaveTimer = setInterval(saveFn, autosaveInterval * 1000);
+
+			textarea.on('dp_autosave_trigger', saveFn);
 		}
 
 		// drag onto the editor to upload
