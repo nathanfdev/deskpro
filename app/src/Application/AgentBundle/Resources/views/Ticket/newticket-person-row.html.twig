@@ -5,7 +5,15 @@
 			<td>
 				{% if person.id and person.primary_email and person.primary_email.email %}
 					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
-					{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">View Profile</a>
+					{% if person.emails|length %}
+						<select name="newticket[person][email_address]">
+							{% for email in person.getEmailAddresses() %}
+								<option value="{{ email }}" {% if email == person.email_address %}selected="selected"{% endif %}>{{ email }}</option>
+							{% endfor %}
+						</select>
+					{% else %}
+						{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">View Profile</a>
+					{% endif %}
 				{% else %}
 					<input type="text" name="newticket[person][email_address]" class="email" value="" style="margin:0;" />
 				{% endif %}
