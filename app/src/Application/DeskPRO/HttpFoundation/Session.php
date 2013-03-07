@@ -136,7 +136,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 
 		if (App::getContainer()->isScopeActive('request')) {
-			$user_ip = App::getRequest()->getClientIp();
+			if (dp_get_config('trust_proxy_data')) {
+				$user_ip = App::getRequest()->getClientIp(true);
+			} else {
+				$user_ip = App::getRequest()->getClientIp();
+			}
 		} else {
 			$user_ip = \Orb\Util\Web::getUserIp();
 		}
