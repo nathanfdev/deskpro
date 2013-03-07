@@ -45,7 +45,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 					{% endif %}
 				{% endif %}
 
-				{{ phrase('agent.general.by_name', {'name':phrase_part|trim}, true) }} |
+				<span style="display: inline-block">{{ phrase('agent.general.by_name', {'name':phrase_part|trim}, true) }}</span> |
 				<time class="timeago" datetime="{{ convo.date_created|date('c', 'UTC') }}">{{ convo.date_created|date('day_short') }}</time>
 			</div>
 		</article>
