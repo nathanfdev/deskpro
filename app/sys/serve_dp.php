@@ -562,12 +562,45 @@ class DpLoader extends LoaderAbstract
 
 			if ($online_time && $online_time > time() - 900) {
 
-				$session_id = isset($_GET['__sid']) ? $_GET['__sid'] : null;
+				$session_id = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
 				if (!$session_id) {
 					$session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
 				}
 
+				if (!strpos($session_id, '-')) {
+					$session_id = null;
+				}
+
 				$chat_id = isset($_COOKIE['dpchatid']) ? $_COOKIE['dpchatid'] : null;
+				if ($session_id && !$chat_id) {
+					// They have an active session but no indication if they have a chat
+					// open right now, so we need to look it up
+					list ($sid, $sauth) = explode('-', $session_id, 2);
+					$sid = Util::baseDecode($sid, Util::BASE36_ALPHABET);
+
+					$timeout_limit = date('Y-m-d H:i:s', time() - 1800);
+
+					$q = $this->getPdo()->prepare("
+						SELECT chat_conversations.id
+						FROM chat_conversations
+						LEFT JOIN sessions ON (sessions.id = chat_conversations.session_id)
+						WHERE
+							sessions.id = ?
+							AND sessions.auth = ?
+							AND (
+								chat_conversations.status == 'open'
+								OR (chat_conversations.ended_by == 'timeout' AND chat_conversations.date_ended > ?)
+							)
+						ORDER BY chat_conversations.id DESC
+						LIMIT 1
+					");
+					$q->execute(array(
+						$sid,
+						$sauth,
+						$timeout_limit
+					));
+					$chat_id = $q->fetchColumn(0);
+				}
 
 				// they already have a chat active, load up system to get read to resume
 				if ($session_id && $chat_id) {
