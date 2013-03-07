@@ -158,7 +158,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
 					$this->session->save();
 
-					if ($from_ticket && $this->person->hasPerm('tickets.use')) {
+					if ($from_ticket && $person->hasPerm('tickets.use')) {
 						return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $from_ticket->id));
 					}
 				}
