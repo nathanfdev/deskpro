@@ -78,9 +78,10 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _rel
+			SELECT content_search.object_type, content_search.object_id, MATCH (content) AGAINST (?) AS _rel
 			FROM content_search
-			WHERE $where
+			LEFT JOIN tickets ON (tickets.id = content_search.object_id)
+			WHERE $where AND tickets.hidden_status IS NULL
 			ORDER BY _rel DESC
 			LIMIT $start, $per_page
 		";

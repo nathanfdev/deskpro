@@ -442,7 +442,9 @@ class MainController extends AbstractController
 				if ($results['person']) {
 					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
 					foreach ($tickets as $t) {
-						$results['ticket'][] = $t;
+						if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
+							$results['ticket'][] = $t;
+						}
 					}
 				}
 			} // is label
