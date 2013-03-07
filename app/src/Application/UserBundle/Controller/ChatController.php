@@ -337,7 +337,9 @@ class ChatController extends AbstractController
 
 		// If the user is on a new page, tell the agent
 		if ($convo) {
-			$chat_manager->addUserTrack($convo, $session->getVisitor()->getLastPage());
+			if ($this->in->getString('parent_url')) {
+				$chat_manager->addUserTrack($convo, $this->in->getString('parent_url'));
+			}
 			$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 		}
 
