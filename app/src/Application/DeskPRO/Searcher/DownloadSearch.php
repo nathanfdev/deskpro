@@ -158,9 +158,11 @@ class DownloadSearch extends SearcherAbstract
 		#------------------------------
 
 		$sql .= "WHERE ";
-		$where_perm = $this->getPermWhere();
-		if ($where_perm) {
-			$sql .= $where_perm . ' AND ';
+		if (!$this->findTerm(self::TERM_AGENT_LIST)) {
+			$where_perm = $this->getPermWhere();
+			if ($where_perm) {
+				$sql .= $where_perm . ' AND ';
+			}
 		}
 		if ($parts['wheres']) {
 			$sql .= implode(" AND ", $parts['wheres']);
@@ -225,9 +227,11 @@ class DownloadSearch extends SearcherAbstract
 		#------------------------------
 
 		$sql .= "WHERE ";
-		$where_perm = $this->getPermWhere();
-		if ($where_perm) {
-			$sql .= $where_perm . ' AND ';
+		if (!$this->findTerm(self::TERM_AGENT_LIST)) {
+			$where_perm = $this->getPermWhere();
+			if ($where_perm) {
+				$sql .= $where_perm . ' AND ';
+			}
 		}
 		if ($parts['wheres']) {
 			$sql .= implode(" AND ", $parts['wheres']);
