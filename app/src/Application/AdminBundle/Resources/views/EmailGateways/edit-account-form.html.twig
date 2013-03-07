@@ -180,9 +180,10 @@
 									<td>
 										<input
 											type="checkbox"
-											{% if edittrans.smtp_options.username or edittrans.smtp_options.password %}checked="checked"{% endif %}
+											{% if trans_form.smtp_options.username or trans_form.smtp_options.password %}checked="checked"{% endif %}
 											data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
 											data-targets="#smtp_auth_username, #smtp_auth_password"
+											onclick="$('#transport_smtp_options_username, #transport_smtp_options_password').val('');"
 										/> {{ phrase('admin.general.yes') }}
 									</td>
 								</tr>
