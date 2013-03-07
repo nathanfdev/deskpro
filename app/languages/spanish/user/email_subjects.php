@@ -13,6 +13,8 @@
 	'user.email_subjects.password_agent-reset'                             => 'Un agente ha reiniciado su contraseña',
 	'user.email_subjects.password_reset'                                   => 'Reinicializar contraseña',
 	'user.email_subjects.re'                                               => 'RE: {{subject}}',
+	'user.email_subjects.ticket-rate'                                      => 'Valore la experiencia del soporte en su ticket "{{ticket.subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Una nueva persona ha sido añadida a su ticket',
+	'user.email_subjects.tickets_re'                                       => 'RE: {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'Validar su correo electrónico',
 );

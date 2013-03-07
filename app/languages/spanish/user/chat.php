@@ -1,6 +1,7 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Su dirección de correo electrónico',
 	'user.chat.ended-no-agent'                                             => 'Lo sentimos pero no hay nadie disponible para conversar en este momento. Envíenos un correo electrónico o inténtelo de nuevo más tarde.',
+	'user.chat.error'                                                      => 'Error en chat',
 	'user.chat.form_chat_button-submit'                                    => 'Enviar',
 	'user.chat.form_chat_send-file'                                        => 'Enviar un archivo',
 	'user.chat.form_create_button-submit'                                  => 'Comenzar conversación',
@@ -37,6 +38,7 @@
 	'user.chat.window_cancel'                                              => 'Cancelar',
 	'user.chat.window_cancel-confirm'                                      => '¿Está seguro de querer finalizar la conversación?',
 	'user.chat.window_close'                                               => 'No gracias, sólo cerrar la ventana',
+	'user.chat.window_close_only'                                          => 'Cerrar la ventana',
 	'user.chat.window_end-chat'                                            => 'Fin de conversación',
 	'user.chat.window_open-new'                                            => 'Abrir esta conversación en una nueva ventana',
 	'user.chat.window_resume-button'                                       => 'Abrir su conversación',

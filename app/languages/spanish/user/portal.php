@@ -25,6 +25,8 @@
 	'user.portal.tab_feedback-description'                                 => 'Sugerencias de clientes',
 	'user.portal.tab_knowledgebase'                                        => 'Base de conocimiento',
 	'user.portal.tab_knowledgebase-description'                            => 'Leer artículos de ayuda',
+	'user.portal.tab_news'                                                 => 'Noticias',
+	'user.portal.tab_news-description'                                     => 'Noticias y actualizaciones',
 	'user.portal.tab_tickets'                                              => 'Contáctenos',
 	'user.portal.tab_tickets-description'                                  => 'Estamos para ayudarle',
 	'user.portal.twitter-user-link'                                        => '@{{name}} en twitter',

@@ -1,4 +1,5 @@
 <?php return array(
+	'user.emails.auto-close'                                               => 'Su ticket "{{ticket.subject}}" no cerrará automáticamente porque no lo ha actualizado recientemente. Si no quiere que su ticket sea cerrado, puede enviar una respuesta para que nuestros agentes continuen ayudándole.',
 	'user.emails.chat_transcript'                                          => 'Gracias por conversar con nosotros. Aquí tiene su transcripción',
 	'user.emails.comment_approved'                                         => 'Su comentario ha sido publicado.',
 	'user.emails.comment_deleted'                                          => 'Su comentario se ha utilizado para mejorar la página.',
@@ -34,6 +35,10 @@ los nuevos tickets solo se aceptan desde miembros de nuestro servicio. Si tiene 
 Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.',
 	'user.emails.ticket_message_title'                                     => 'El día {{date}} a {{time}}, {{author}} escribió:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Alerta: Correos electrónicos de confirmación desactivados',
+	'user.emails.ticket_rate-negative'                                     => 'No',
+	'user.emails.ticket_rate-neutral'                                      => 'Ha ayudado',
+	'user.emails.ticket_rate-positive'                                     => 'Si',
+	'user.emails.ticket_rate-question'                                     => '¿ Le ha ayudado este mensaje ?',
 	'user.emails.ticket_received'                                          => 'Se ha recibido su ticket. Uno de nuestros agentes le responderán pronto.',
 	'user.emails.ticket_reply-confirm'                                     => 'Gracias por su respuesta. Uno de nuestros agentes le responderá pronto.',
 	'user.emails.ticket_validate'                                          => 'Gracias por contactar con nosotros.
