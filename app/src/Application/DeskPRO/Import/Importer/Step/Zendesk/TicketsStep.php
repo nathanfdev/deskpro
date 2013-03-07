@@ -241,15 +241,19 @@ class TicketsStep extends AbstractZendeskStep
 
 			foreach ($all_field_info as $old_field_id => $field_val) {
 
-				if ($field_val === null) {
-					continue;
-				}
-
 				$field_id = $this->getMappedNewId('zd_ticket_field_id', $old_field_id);
 
 				$field = $this->fieldmanager->getFieldFromId($field_id);
 				if (!$field) {
 					continue;
+				}
+
+				if ($field_val === null) {
+					if ($field->getOption('zd_type') == 'integer') {
+						$field_val = 0;
+					} else {
+						continue;
+					}
 				}
 
 				switch ($field->handler_class) {

@@ -135,6 +135,7 @@ class TicketFieldsStep extends AbstractZendeskStep
 					$new_field->setOption('required', true);
 					$new_field->setOption('min_length', 1);
 				}
+
 				break;
 
 			case 'textarea':
@@ -166,6 +167,7 @@ class TicketFieldsStep extends AbstractZendeskStep
 				break;
 		}
 
+		$new_field->setOption('zd_type', $field_info['type']);
 		$this->getEm()->persist($new_field);
 		$this->getEm()->flush();
 
