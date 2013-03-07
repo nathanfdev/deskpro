@@ -86,6 +86,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$cookieDefaults['domain'] = App::getSetting('core.cookie_domain');
 		$cookieDefaults['path']   = App::getSetting('core.cookie_path');
 
+		if (\Orb\Util\Web::getRequestProtocol() == 'HTTPS') {
+			$cookieDefaults['secure'] = true;
+		}
+
         $this->options = array_merge(array(
             'name'          => $cookie_name,
             'lifetime'      => $cookieDefaults['lifetime'],

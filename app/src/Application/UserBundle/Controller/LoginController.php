@@ -345,7 +345,13 @@ HTML;
 
 		// Remember me cookie
 		if ($this->in->getBool('remember_me')) {
-			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpreme', $person->getId() . '-' . $person->getRememberMeCookieCode(), 'never', true);
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie(
+				'dpreme',
+				$person->getId() . '-' . $person->getRememberMeCookieCode(),
+				'never',
+				true,
+				\Orb\Util\Web::getRequestProtocol() == 'HTTPS' ? true : false
+			);
 			$cookie->send();
 		}
 
