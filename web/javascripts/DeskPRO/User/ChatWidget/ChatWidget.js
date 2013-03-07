@@ -655,6 +655,7 @@ var DpChatWidget = new (function() {
 			  border-collapse: collapse; \
 			  padding: 0; \
 			  margin: 0; \
+			  vertical-align: bottom;\
 			} \
 			#dpchat_border_table td#dpchat_border_11 div { \
 			  background: " + bgColor + "; \
