@@ -62,6 +62,17 @@ if ($results['organization']) {
 	}
 }
 
+if ($results['chat']) {
+	$OUTPUT['chat'] = array();
+	foreach ($results['chat'] as $r) {
+		$OUTPUT['chat'][] = array(
+			'id' => $r->id,
+			'title' => htmlspecialchars($r->getSubjectLine()),
+			'route' => 'page:' . $router->generate('agent_userchat_view', array('conversation_id' => $r->id))
+		);
+	}
+}
+
 if ($results['article']) {
 	$OUTPUT['article'] = array();
 	foreach ($results['article'] as $r) {

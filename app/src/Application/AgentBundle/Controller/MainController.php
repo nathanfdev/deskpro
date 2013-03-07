@@ -299,23 +299,25 @@ class MainController extends AbstractController
 		$q = $this->in->getString('q');
 
 		$type_to_ent = array(
-			'article'  => 'DeskPRO:Article',
-			'download' => 'DeskPRO:Download',
+			'article'      => 'DeskPRO:Article',
+			'download'     => 'DeskPRO:Download',
 			'feedback'     => 'DeskPRO:Feedback',
-			'news'     => 'DeskPRO:News',
-			'ticket'   => 'DeskPRO:Ticket',
-			'person'   => 'DeskPRO:Person',
-			'organization' => 'DeskPRO:Organization'
+			'news'         => 'DeskPRO:News',
+			'ticket'       => 'DeskPRO:Ticket',
+			'person'       => 'DeskPRO:Person',
+			'organization' => 'DeskPRO:Organization',
+			'chat'         => 'DeskPRO:ChatConversation'
 		);
 
 		$results = array(
-			'article' => array(),
-			'download' => array(),
-			'feedback' => array(),
-			'news' => array(),
-			'ticket' => array(),
-			'person' => array(),
-			'organization' => array()
+			'article'      => array(),
+			'download'     => array(),
+			'feedback'     => array(),
+			'news'         => array(),
+			'ticket'       => array(),
+			'person'       => array(),
+			'organization' => array(),
+			'chat'         => array()
 		);
 
 		$result_meta = array();
