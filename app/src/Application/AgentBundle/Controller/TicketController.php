@@ -3333,6 +3333,14 @@ class TicketController extends AbstractController
 
 		$ticket = $q->getOneOrNullResult();
 
+		// If no ticket, check the delete log in case it was merged since
+		if (!$ticket) {
+			$merged_ticket_id = $this->em->getRepository('DeskPRO:Ticket')->findTicketId($ticket_id);
+			if ($merged_ticket_id) {
+				return $this->getTicketOr404($merged_ticket_id, $check_perm);
+			}
+		}
+
 		if (!$ticket) {
 			throw $this->createNotFoundException("There is no ticket with ID $ticket_id");
 		}
