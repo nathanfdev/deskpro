@@ -107,7 +107,7 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 		}
 
 		$desc = $this->getContainer()->getSystemService('filestorage')->createRandomPath();
-		$desc->write($tmpfile, array(
+		$desc->writeFromFile($tmpfile, array(
 			'content_type' => $blob_info['content_type'],
 			'filename'     => $blob_info['filename'],
 		));
