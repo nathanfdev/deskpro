@@ -798,18 +798,8 @@ class AgentsController extends AbstractController
 			$errors[] = 'The email address you entered is not valid.';
 		} elseif (!$agent or !$agent->findEmailAddress($email)) {
 			$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($exist_check) {
-				if ($person_id) {
-					$errors[] = "The email address you entered already belongs to an existing user.";
-				} else {
-					if ($exist_check->is_agent) {
-						$errors[] = "The email address you entered already belongs to an existing user.";
-					} else {
-						if (!$this->in->getBool('confirm_email_dupe')) {
-							$errors[] = 'show_dupe_confirm';
-						}
-					}
-				}
+			if ($exist_check && !$this->in->getBool('confirm_email_dupe')) {
+				$errors[] = 'show_dupe_confirm';
 			}
 		}
 
@@ -828,6 +818,7 @@ class AgentsController extends AbstractController
 	{
 		$set_email = $this->in->getString('agent.email');
 		$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
+		$did_merge = false;
 
 		if (!$person_id && $exist_check && !$exist_check->is_agent && $this->in->getBool('confirm_email_dupe')) {
 			$person_id = $exist_check->getId();
@@ -840,6 +831,22 @@ class AgentsController extends AbstractController
 		} elseif ($person_id) {
 			$agent = $this->getAgentOr404($person_id);
 			$is_new = false;
+
+			// We may be merging
+			if ($exist_check && $exist_check->getId() != $agent->getId() && $this->in->getBool('confirm_email_dupe')) {
+				$email_id = $exist_check->primary_email->getId();
+
+				$did_merge = true;
+				$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $agent, $exist_check);
+				$merge->merge();
+
+				// Switch primary email around
+				$this->db->executeUpdate("
+					UPDATE people
+					SET primary_email_id = ?
+					WHERE id = ?
+				", array($email_id, $agent->getId()));
+			}
 		} else {
 
 			$agent = new \Application\DeskPRO\Entity\Person();
@@ -904,7 +911,7 @@ class AgentsController extends AbstractController
 			# Basic properties
 			#------------------------------
 
-			if ($set_email) {
+			if (!$did_merge && $set_email) {
 				$old_email = $agent->getPrimaryEmail();
 				if ($old_email && $old_email->email != $set_email) {
 					$agent->removeEmailAddressId($old_email->id);
