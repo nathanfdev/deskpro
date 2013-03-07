@@ -139,13 +139,17 @@ class DpLoader extends LoaderAbstract
 		}
 
 		$user_ip = $_SERVER['REMOTE_ADDR'];
-		if (dp_get_config('trust_proxy_data') && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-			$user_ip = explode(',', $user_ip);
-			if (isset($user_ip[0])) {
-				$user_ip = $user_ip[0];
-			} else {
-				$user_ip = $_SERVER['REMOTE_ADDR'];
+		if (dp_get_config('trust_proxy_data')) {
+			if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+				$user_ip = $_SERVER['HTTP_CLIENT_IP'];
+			} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+				$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+				$user_ip = explode(',', $user_ip);
+				if (isset($user_ip[0])) {
+					$user_ip = $user_ip[0];
+				} else {
+					$user_ip = $_SERVER['REMOTE_ADDR'];
+				}
 			}
 		}
 
