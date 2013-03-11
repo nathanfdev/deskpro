@@ -155,7 +155,7 @@ class KbController extends AbstractController
                 'P' // Orientation
             );
 
-            $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
+            $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url') . '/');
 
             $mpdf->WriteHTML($content_html);
 
