@@ -162,7 +162,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
-	protected $ip_address;
+	protected $ip_address = '';
 
 	/**
 	 * @var string

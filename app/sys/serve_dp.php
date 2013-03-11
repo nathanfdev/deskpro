@@ -257,6 +257,7 @@ class DpLoader extends LoaderAbstract
 				'last_track_id'    => null,
 				'hint_hidden'      => $soft_visitor_id ? 1 : 0,
 				'user_token'       => $user_token ?: null,
+				'ip_address'       => $user_ip,
 			);
 
 			$tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
