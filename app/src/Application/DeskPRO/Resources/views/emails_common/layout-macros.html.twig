@@ -24,6 +24,13 @@
 {% endmacro %}
 
 {##
+# Shows the first message of the messages array (a new reply) in quoted style
+##}
+{% macro show_latest_message(context) %}
+	{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {message: context.messages|first} %}
+{% endmacro %}
+
+{##
 # Shows all messages
 ##}
 {% macro show_all_messages(context) %}

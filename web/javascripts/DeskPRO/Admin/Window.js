@@ -492,6 +492,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 		window.setTimeout(function() {
 			self.sessionPing();
 		}, 30000);
+
+		DP.select($('select.dp-select'));
 	},
 
 	/**

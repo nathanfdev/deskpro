@@ -253,9 +253,50 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$reply_as_new = false;
 		if ($ticket AND $person AND $ticket->status == 'resolved' AND !$person->hasPerm('tickets.reopen_resolved')) {
+
+			$this->logMessage('[TicketGatewayProcessor] Ticket is resolved');
+
 			// ticket is resolved and can't be reopend, so make a new ticket
-			$ticket = null;
-			$reply_as_new = true;
+			if ($person->hasPerm('tickets.reopen_resolved_createnew')) {
+				$this->logMessage('[TicketGatewayProcessor] Has perm reopen_resolved_createnew so creating a new ticket');
+				$ticket = null;
+				$reply_as_new = true;
+
+			// No perm to create new ticket from resolved,
+			// so its a rejection
+			} else {
+				$this->logMessage('[TicketGatewayProcessor] Message is being rejected because ticket is resolved');
+
+				$email_to = '';
+				if ($this->gateway_address) {
+					$email_to = $this->gateway_address->match_pattern;
+				} else {
+					$email_trans = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport();
+					if ($email_trans) {
+						$email_to = $email_trans->match_pattern;
+					}
+				}
+
+				// user is disabled so can't create/reply to tickets
+				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', array(
+					'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
+					'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+					'ticket'   => $ticket,
+					'person'   => $person,
+					'email_to' => $email_to
+				));
+				$message->setTo($this->reader->getFromAddress()->getEmail());
+				$message->attach(\Swift_Attachment::newInstance(
+					$this->reader->getRawSource(),
+					'message.eml',
+					'message/rfc822'
+				));
+				App::getMailer()->send($message);
+
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_OBJ_CLOSED;
+				return null;
+			}
 		}
 
 		$ret = null;

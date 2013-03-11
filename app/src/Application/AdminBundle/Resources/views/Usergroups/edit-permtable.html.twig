@@ -11,7 +11,7 @@
 
 <div id="permgroup_tickets" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:tickets.use --><input class="onoff-slider master-check {% if permissions_everyone['tickets.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['tickets.use'] or permissions_everyone['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> {{ phrase('admin.user_groups.can_use_tickets') }}
-	<div class="check-grid">
+	<div class="check-grid" style="margin-top: 10px;">
 		<table width="100%">
 			<thead>
 				<tr>
@@ -22,7 +22,29 @@
 			<tbody>
 				<tr>
 					<td class="title">Can re-open resolved tickets</td>
-					<!-- PERMISSION:tickets.reopen_resolved --><td class="prop"><input class="onoff-slider {% if permissions_everyone['tickets.reopen_resolved'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['tickets.reopen_resolved'] or permissions_everyone['tickets.reopen_resolved'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.reopen_resolved]" value="1" /></td>
+					<!-- PERMISSION:tickets.reopen_resolved -->
+					<td class="prop">
+						<input
+							class="onoff-slider {% if permissions_everyone['tickets.reopen_resolved'] %}everyone-on{% endif %}"
+							type="checkbox"
+							{% if permissions['tickets.reopen_resolved'] or permissions_everyone['tickets.reopen_resolved'] or not usergroup.id %}checked="checked"{% endif %}
+							name="permissions[tickets.reopen_resolved]"
+							value="1"
+							onchange="if (this.checked) $('#tickets_reopen_resolved_createnew_row').hide(); else $('#tickets_reopen_resolved_createnew_row').show();"
+						/>
+					</td>
+				</tr>
+				<tr id="tickets_reopen_resolved_createnew_row" style="{% if permissions['tickets.reopen_resolved'] or permissions_everyone['tickets.reopen_resolved'] or not usergroup.id %}display: none;{% endif %}">
+					<td class="title" colspan="2">
+						<!-- PERMISSION:tickets.reopen_resolved_createnew -->
+						<div style="margin-left: 30px;">
+							How should the helpdesk handle an email reply to a resolved ticket?<br/>
+							<select name="permissions[tickets.reopen_resolved_createnew]" class="dp-select">
+								<option value="0" {% if not (permissions['tickets.reopen_resolved_createnew'] or permissions_everyone['tickets.reopen_resolved_createnew']) %}selected="selected"{% endif %}>REJECT &middot; Reject the message and send an auto-reply to the user</option>
+								<option value="1" {% if permissions['tickets.reopen_resolved_createnew'] or permissions_everyone['tickets.reopen_resolved_createnew'] %}selected="selected"{% endif %}>NEW TICKET &middot; Accept the new message as a new ticket</option>
+							</select>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
