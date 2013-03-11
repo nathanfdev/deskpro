@@ -324,6 +324,21 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 				$set[] = "page_count = page_count + 1";
 
+				foreach (array(
+					'page_title',
+					'page_url',
+					'ref_page_url',
+					'user_agent',
+					'ip_address',
+					'geo_continent',
+					'geo_country'
+				) as $field) {
+					if (isset($track[$field])) {
+						$set[] = "`$field` = ?";
+						$set_q[] = $track[$field];
+					}
+				}
+
 				App::getDb()->executeUpdate("
 					UPDATE visitors
 					SET " . implode(', ', $set) . "

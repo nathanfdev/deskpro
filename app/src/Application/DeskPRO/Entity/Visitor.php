@@ -122,6 +122,79 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $email = '';
 
 	/**
+	 * @var string
+	 */
+	protected $page_title = '';
+
+	/**
+	 * @var string
+	 */
+	protected $page_url = '';
+
+	/**
+	 * @var string
+	 */
+	protected $ref_page_url = '';
+
+	/**
+	 * The users user agent string
+	 *
+	 * @var string
+	 */
+	protected $user_agent = '';
+
+	/**
+	 * The users user agent string
+	 *
+	 * @var string
+	 */
+	protected $user_browser = '';
+
+	/**
+	 * The users user agent string
+	 *
+	 * @var string
+	 */
+	protected $user_os = '';
+
+	/**
+	 * The users IP address
+	 *
+	 * @var string
+	 */
+	protected $ip_address;
+
+	/**
+	 * @var string
+	 */
+	protected $geo_continent = null;
+
+	/**
+	 * @var string
+	 */
+	protected $geo_country = null;
+
+	/**
+	 * @var string
+	 */
+	protected $geo_region = null;
+
+	/**
+	 * @var string
+	 */
+	protected $geo_city = null;
+
+	/**
+	 * @var string
+	 */
+	protected $geo_long = null;
+
+	/**
+	 * @var string
+	 */
+	protected $geo_lat = null;
+
+	/**
 	 * @var array
 	 */
 	protected $chat_invite = null;
@@ -312,32 +385,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return string
 	 */
-	public function getIpAddress()
-	{
-		if (!$this->last_track) {
-			return null;
-		}
-
-		return $this->last_track->ip_address;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getUserAgent()
-	{
-		if (!$this->last_track) {
-			return null;
-		}
-
-		return $this->last_track->user_agent;
-	}
-
-
-	/**
-	 * @return string
-	 */
 	public function getLastPage()
 	{
 		if (!$this->last_track) {
@@ -404,6 +451,19 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'user_token', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_token', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
+		$metadata->mapField(array( 'fieldName' => 'page_title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_title', ));
+		$metadata->mapField(array( 'fieldName' => 'page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_url', ));
+		$metadata->mapField(array( 'fieldName' => 'ref_page_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_page_url', ));
+		$metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent', ));
+		$metadata->mapField(array( 'fieldName' => 'user_browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_browser', ));
+		$metadata->mapField(array( 'fieldName' => 'user_os', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_os', ));
+		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_continent', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_continent', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_region', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_region', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_city', 'type' => 'string', 'length' => 2, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_city', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_long', 'type' => 'decimal','precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_long', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_lat', 'type' => 'decimal', 'precision' => 16, 'scale' => 8, 'nullable' => true, 'columnName' => 'geo_lat', ));
 		$metadata->mapField(array( 'fieldName' => 'hint_hidden', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'hint_hidden', ));
 		$metadata->mapField(array( 'fieldName' => 'chat_invite', 'type' => 'array', 'nullable' => true, 'columnName' => 'chat_invite', ));
 		$metadata->mapField(array( 'fieldName' => 'page_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_count', ));

@@ -447,6 +447,20 @@ class DpLoader extends LoaderAbstract
 			}
 		}
 
+		foreach (array(
+			'page_title',
+			'page_url',
+			'ref_page_url',
+			'user_agent',
+			'ip_address',
+			'geo_continent',
+			'geo_country'
+		) as $field) {
+			if (isset($visitor_track[$field])) {
+				$visitor_update[$field] = $visitor_track[$field];
+			}
+		}
+
 		if ($user_token) {
 			$visitor_update['user_token'] = $user_token;
 		}
