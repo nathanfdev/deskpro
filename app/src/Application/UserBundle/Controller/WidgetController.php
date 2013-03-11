@@ -356,7 +356,11 @@ class WidgetController extends AbstractController
 			$this->db->update('chat_conversations', array('is_window' => 1), array('id' => $convo->getId()));
 		}
 
-		$departments = $this->container->getDataService('Department')->getPersonDepartments($sessionObj->getPerson() ?: $this->person, 'chat');
+		$departments = $this->container->getDataService('Department')->getOnlineChatDepartments($sessionObj->getPerson() ?: $this->person);
+		if (!count($departments) && !$convo) {
+			// no agents online in any departments the user can view
+			return $this->renderLoginOrPermissionError();
+		}
 
 		$chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
 		$chat_display->setPersonContext($this->person);
