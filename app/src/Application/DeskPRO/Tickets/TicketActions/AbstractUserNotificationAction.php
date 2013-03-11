@@ -132,6 +132,19 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		$vars['ticketdisplay'] = $ticketdisplay;
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
+		if ($this->via_message) {
+			$has = false;
+			foreach ($vars['messages'] as $m) {
+				if ($m->getId() == $this->via_message->getId()) {
+					$has = true;
+					break;
+				}
+			}
+			if (!$has) {
+				array_unshift($vars['messages'], $this->via_message);
+			}
+		}
+
 		$attach_attachments = array();
 		if (!$this->tracker->isExtraSet('is_user_reply') && $this->via_message) {
 			$max = App::getSetting('core.sendemail_attach_maxsize');
