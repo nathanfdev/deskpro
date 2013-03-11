@@ -193,6 +193,7 @@ $(document).ready(function() {
 								<th>Assignment</th>
 								<th>User Message</th>
 								<th>Agent Message</th>
+								<th>Agent Note</th>
 								<th>Property Change</th>
 							</tr>
 						</thead>
@@ -405,6 +406,7 @@ $(document).ready(function() {
 								<th>Assignment</th>
 								<th>User Message</th>
 								<th>Agent Message</th>
+								<th>Agent Note</th>
 								<th>Property Change</th>
 							</tr>
 						</thead>
@@ -427,7 +429,11 @@ $(document).ready(function() {
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[1][alert_agent_activity]" value="1" {% if my_subs[1].alert_agent_activity %}checked="checked"{% endif %} />
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when another agent replies to or adds a note to a ticket assigned to me"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when another agent replies to a ticket assigned to me"></span>
+								</td>
+								<td class="prop">
+									<input type="checkbox" name="filter_sub[1][alert_agent_note]" value="1" {% if my_subs[1].alert_agent_note %}checked="checked"{% endif %} />
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when another agent adds a note to a ticket assigned to me"></span>
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[1][alert_property_change]" value="1" {% if my_subs[1].alert_property_change %}checked="checked"{% endif %} />
@@ -453,7 +459,11 @@ $(document).ready(function() {
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[3][alert_agent_activity]" value="1" {% if my_subs[3].alert_agent_activity %}checked="checked"{% endif %} />
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket I follow"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket I follow"></span>
+								</td>
+								<td class="prop">
+									<input type="checkbox" name="filter_sub[3][alert_agent_note]" value="1" {% if my_subs[3].alert_agent_note %}checked="checked"{% endif %} />
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds  a note to a ticket I follow"></span>
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[3][alert_property_change]" value="1" {% if my_subs[3].alert_property_change %}checked="checked"{% endif %} />
@@ -479,7 +489,11 @@ $(document).ready(function() {
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[2][alert_agent_activity]" value="1" {% if my_subs[2].alert_agent_activity %}checked="checked"{% endif %} />
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket assigned to one of my teams"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket assigned to one of my teams"></span>
+								</td>
+								<td class="prop">
+									<input type="checkbox" name="filter_sub[2][alert_agent_note]" value="1" {% if my_subs[2].alert_agent_note %}checked="checked"{% endif %} />
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket assigned to one of my teams"></span>
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[2][alert_property_change]" value="1" {% if my_subs[2].alert_property_change %}checked="checked"{% endif %} />
@@ -505,7 +519,11 @@ $(document).ready(function() {
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[4][alert_agent_activity]" value="1" {% if my_subs[4].alert_agent_activity %}checked="checked"{% endif %} />
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to an unassigned ticket"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to an unassigned ticket"></span>
+								</td>
+								<td class="prop">
+									<input type="checkbox" name="filter_sub[4][alert_agent_note]" value="1" {% if my_subs[4].alert_agent_note %}checked="checked"{% endif %} />
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to an unassigned ticket"></span>
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[4][alert_property_change]" value="1" {% if my_subs[4].alert_property_change %}checked="checked"{% endif %} />
@@ -528,7 +546,11 @@ $(document).ready(function() {
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[5][alert_agent_activity]" value="1" {% if my_subs[5].alert_agent_activity %}checked="checked"{% endif %} />
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to any ticket"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to any ticket"></span>
+								</td>
+								<td class="prop">
+									<input type="checkbox" name="filter_sub[5][alert_agent_note]" value="1" {% if my_subs[5].alert_agent_note %}checked="checked"{% endif %} />
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an adds a note to any ticket"></span>
 								</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[5][alert_property_change]" value="1" {% if my_subs[5].alert_property_change %}checked="checked"{% endif %} />
@@ -550,7 +572,8 @@ $(document).ready(function() {
 								<th>New Ticket <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that matches this filter"></span></th>
 								<th>Filter Match <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a change to a ticket causes it to match this filter"></span></th>
 								<th>User Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a user replies to a ticket that matches this filter"></span></th>
-								<th>Agent Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket that matches this filter"></span></th>
+								<th>Agent Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket that matches this filter"></span></th>
+								<th>Agent Note <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket that matches this filter"></span></th>
 								<th>Property Change <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any change is made to a ticket that matches this filter"></span></th>
 							</tr>
 						</thead>
@@ -569,6 +592,9 @@ $(document).ready(function() {
 									</td>
 									<td class="prop">
 										<input type="checkbox" name="filter_sub[{{ filter.id }}][alert_agent_activity]" value="1" {% if my_subs[filter.id].alert_agent_activity %}checked="checked"{% endif %} />
+									</td>
+									<td class="prop">
+										<input type="checkbox" name="filter_sub[{{ filter.id }}][alert_agent_note]" value="1" {% if my_subs[filter.id].alert_agent_note %}checked="checked"{% endif %} />
 									</td>
 									<td class="prop">
 										<input type="checkbox" name="filter_sub[{{ filter.id }}][alert_property_change]" value="1" {% if my_subs[filter.id].alert_property_change %}checked="checked"{% endif %} />
