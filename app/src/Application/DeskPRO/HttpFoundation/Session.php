@@ -83,7 +83,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		$this->is_first_page = empty($_SESSION);
 
-		if (DP_INTERFACE != 'admin' && (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['auth_person_id']) || !$_SESSION['_symfony2']['auth_person_id'])) {
+		if (DP_INTERFACE != 'admin' && (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['attributes']['auth_person_id']) || !$_SESSION['_symfony2']['attributes']['auth_person_id'])) {
 			list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
@@ -237,10 +237,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 						WHERE visitor_id = ? AND is_soft_track = 1
 					", array($vis->getId()));
 				}
-			}
-
-			if (!empty($_SESSION['_symfony2']['auth_person_id']) && $_SESSION['_symfony2']['auth_person_id']) {
-				$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
 			}
 
 			$prev_date_last = $vis->date_last;
