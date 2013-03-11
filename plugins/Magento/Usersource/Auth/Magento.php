@@ -212,7 +212,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 		$is_first_page
 	)
 	{
-		if (!$this->options->get('sso_js') || $person->id || !empty($_COOKIE['dplogout']) || !$is_first_page) {
+		if (!$this->options->get('sso_js')) {
 			return '';
 		}
 
@@ -220,18 +220,20 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 
 		return
 			'<script type="text/javascript">
-				window.dpMagentoLogin = function(login) {
-					if (window.DeskPRO_Window && window.DeskPRO_Window.showAutoSignInOverlay) {
-						window.DeskPRO_Window.showAutoSignInOverlay();
-					}
-					login(BASE_URL + \'login/usersource-sso/\' + ' . $source->id . '+ \'/\');
-				};
-				(function(d) {
-					var s = d.createElement(\'script\'), ref = d.getElementsByTagName(\'script\')[0];
-					s.async = true;
-					s.src = \'' . $magento_url . '/dpsso/\';
-					ref.parentNode.insertBefore(s, ref);
-				})(document);
+			    if ((!window.DESKPRO_PERSON_ID || window.DESKPRO_PERSON_ID === 0) && !$.cookie(\'dplogout\')) {
+					window.dpMagentoLogin = function(login) {
+						if (window.DeskPRO_Window && window.DeskPRO_Window.showAutoSignInOverlay) {
+							window.DeskPRO_Window.showAutoSignInOverlay();
+						}
+						login(BASE_URL + \'login/usersource-sso/\' + ' . $source->id . '+ \'/\');
+					};
+					(function(d) {
+						var s = d.createElement(\'script\'), ref = d.getElementsByTagName(\'script\')[0];
+						s.async = true;
+						s.src = \'' . $magento_url . '/dpsso/\';
+						ref.parentNode.insertBefore(s, ref);
+					})(document);
+				}
 			</script>';
 	}
 
