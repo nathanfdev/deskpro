@@ -72,6 +72,58 @@ class CleanupDaily extends AbstractJob
 			}
 		}
 
+		if (App::getSetting('core.email_source_storetime_error')) {
+			$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
+			$email_sources = App::getDb()->fetchAllCol("
+				SELECT email_sources.id
+				FROM email_sources
+				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND source.error_code IN ('server_error', 'timeout')
+				ORDER BY email_sources.id ASC
+				LIMIT 1000
+			", array($snip));
+
+			$num = 0;
+			foreach ($email_sources as $source) {
+				$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->id);
+				$desc->delete();
+
+				App::getOrm()->detach($source);
+				App::getOrm()->flush();
+
+				$num++;
+			}
+
+			if ($num) {
+				$this->logStatus("Cleaned up $num stale email sources");
+			}
+		}
+
+		if (App::getSetting('core.email_source_storetime_rejection')) {
+			$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
+			$email_sources = App::getDb()->fetchAllCol("
+				SELECT email_sources.id
+				FROM email_sources
+				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND source.error_code NOT IN ('server_error', 'timeout')
+				ORDER BY email_sources.id ASC
+				LIMIT 1000
+			", array($snip));
+
+			$num = 0;
+			foreach ($email_sources as $source) {
+				$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->id);
+				$desc->delete();
+
+				App::getOrm()->detach($source);
+				App::getOrm()->flush();
+
+				$num++;
+			}
+
+			if ($num) {
+				$this->logStatus("Cleaned up $num stale email sources");
+			}
+		}
+
 		#------------------------------
 		# sendmail log
 		#------------------------------

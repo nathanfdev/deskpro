@@ -185,7 +185,9 @@
 	/**
 	 * How long, in seconds, are email sources kept for before being cleaned up
 	 */
-	'core.email_source_storetime' => 0,
+	'core.email_source_storetime' => 5184000, // 60 days
+	'core.email_source_storetime_error' => 15552000, // 180 days
+	'core.email_source_storetime_rejection' => 1296000, // 15 days
 
 	/**
 	 * When to use the mail queue: never, hint, always
