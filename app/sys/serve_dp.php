@@ -527,6 +527,31 @@ class DpLoader extends LoaderAbstract
 				SET person_id = ?
 				WHERE id = ?
 			")->execute(array($visitor_person_id, $visitor['id']));
+
+			// If we have a person_id from the session,
+			// we can combine any tracks we have from this user
+			$q = $this->getPdo()->prepare("
+				SELECT id
+				FROM visitors
+				WHERE person_id = ? AND id != ?
+			");
+			$q->execute(array($visitor_person_id, $visitor['id']));
+
+			$vids = array();
+			while ($i = $q->fetchColumn(0)) {
+				$vids[] = $i;
+			}
+			if ($vids) {
+				$vids = array_unique($vids);
+				$this->getPdo()->prepare("
+					UPDATE visitor_tracks
+					SET visitor_id = {$visitor['id']} WHERE visitor_id IN (" . implode(',', $vids) . ")
+				")->execute();
+				$this->getPdo()->prepare("
+					DELETE FROM visitors
+					WHERE id IN (" . implode(',', $vids) . ")
+				")->execute();
+			}
 		}
 
 		#------------------------------
