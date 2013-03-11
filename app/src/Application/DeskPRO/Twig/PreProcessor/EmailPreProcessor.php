@@ -66,6 +66,7 @@ class EmailPreProcessor extends AbstractPreProcessor
 		$source = $this->processSelfTagAsMacro($source, 'agent-reply', 'show_first_message');
 		$source = $this->processSelfTagAsMacro($source, 'user-reply', 'show_first_message');
 		$source = $this->processSelfTagAsMacro($source, 'ticket-history', 'show_rest_message');
+		$source = $this->processSelfTagAsMacro($source, 'ticket-messages', 'show_all_messages');
 		$source = $this->processSelfTagAsMacro($source, 'agent-ticket-history', 'show_rest_message_agent');
 		$source = $this->processSelfTagAsMacro($source, 'ticket-logs', 'show_ticket_logs');
 		$source = $this->processSelfTagAsMacro($source, 'ticket-rating-links', 'show_rating_links');

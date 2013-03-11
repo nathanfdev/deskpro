@@ -24,6 +24,17 @@
 {% endmacro %}
 
 {##
+# Shows all messages
+##}
+{% macro show_all_messages(context) %}
+	{% for message in context.messages %}
+		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+			message: message
+		} %}
+	{% endfor %}
+{% endmacro %}
+
+{##
 # Shows the rest of the mssages array other than the first (eg the rest of the thread)
 ##}
 {% macro show_rest_message(context) %}
