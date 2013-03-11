@@ -63,6 +63,11 @@ class Message extends \Swift_Message
 	protected  $has_prepared = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $has_presend = false;
+
+	/**
 	 * Metadata that might be used by the transports or queue processor
 	 * @var array
 	 */
@@ -96,28 +101,45 @@ class Message extends \Swift_Message
 
 		$this->has_prepared = true;
 
-		$from = $this->getFrom();
-		if ($from && count($from) == 1) {
-			if (!$this->getReplyTo()) {
-				$this->setReplyTo($from);
-			}
-
-			if (!$this->_suppress_autoreply && !$this->getReturnPath()) {
-				$addr = array_keys($from);
-				$addr = array_pop($addr);
-				$this->setReturnPath($addr);
-			}
-		}
-
-		if ($this->_suppress_autoreply) {
-			// Tell Outlook/Exchange to suppress autoreplies (http://msdn.microsoft.com/en-us/library/ee219609(v=exchg.80).aspx)
-			$this->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'All');
-		}
-
 		$this->doPrepare();
 	}
 
 	protected function doPrepare() { }
+
+
+	/**
+	 * Called just before a send attempt
+	 */
+	public function preSend()
+	{
+		if (!$this->has_presend) {
+			$from = $this->getFrom();
+			if ($from && count($from) == 1) {
+				if (!$this->getReplyTo()) {
+					$this->setReplyTo($from);
+				}
+
+				if (!$this->_suppress_autoreply && !$this->getReturnPath()) {
+					$addr = array_keys($from);
+					$addr = array_pop($addr);
+					$this->setReturnPath($addr);
+				}
+			}
+
+			if ($this->_suppress_autoreply) {
+				// Tell Outlook/Exchange to suppress autoreplies (http://msdn.microsoft.com/en-us/library/ee219609(v=exchg.80).aspx)
+				$this->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'All');
+			}
+
+			$this->doPreSend(false);
+		} else {
+			$this->doPreSend(true);
+		}
+
+		$this->has_presend = true;
+	}
+
+	protected function doPreSend($is_retry = false) { }
 
 
 	/**

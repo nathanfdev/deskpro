@@ -406,6 +406,9 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 */
 	public function sendNow(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
+		if ($message instanceof \Orb\Mail\Message) {
+			$message->preSend();
+		}
 		return parent::send($message, $failedRecipients);
 	}
 }
