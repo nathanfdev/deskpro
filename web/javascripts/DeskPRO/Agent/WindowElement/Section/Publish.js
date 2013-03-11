@@ -48,6 +48,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		}
 
 		var el = this.commentCountEls[type];
+		if (!el || !el[0]) {
+			return;
+		}
+
 		DeskPRO_Window.util.modCountEl(el, op, num);
 		DeskPRO_Window.util.modCountEl(this.commentCountEls.all, op, num);
 
