@@ -205,7 +205,7 @@ class TicketDisplay implements PersonContextInterface
 		$last_agent_message = 0;
 
 		foreach ($this->getMessages() as $message) {
-			if ($message->person->is_agent) {
+			if ($message->person && $message->person->is_agent) {
 				$last_agent_message = $message->id;
 			} else {
 				$last_user_message = $message->id;
