@@ -713,11 +713,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			if (grouping) {
-				Array.each(this.filterTicketIds[filterId], function(tid) {
-					postData.push({
-						name: 'batches['+filterId+'][ticket_ids][]',
-						value: tid
-					});
+				postData.push({
+					name: 'batches['+filterId+'][ticket_ids]',
+					value: this.filterTicketIds[filterId].join(',')
 				});
 			}
 
@@ -729,11 +727,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					});
 
 					if (grouping) {
-						Array.each(this.filterTicketIds[boundFilterId], function(tid) {
-							postData.push({
-								name: 'batches['+boundFilterId+'][ticket_ids][]',
-								value: tid
-							});
+						postData.push({
+							name: 'batches['+boundFilterId+'][ticket_ids]',
+							value: this.filterTicketIds[boundFilterId].join(',')
 						});
 					}
 				} else {

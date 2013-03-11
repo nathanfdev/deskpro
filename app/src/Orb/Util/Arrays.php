@@ -897,7 +897,7 @@ class Arrays
 	    $ret = array();
 
 	    foreach ($array as $k => $v) {
-	        if ($key_type !== null) {
+	        if ($key_type !== null && $key_type != 'discard') {
 	            settype($k, $key_type);
 	        }
 
@@ -905,7 +905,11 @@ class Arrays
 	            settype($v, $val_type);
 	        }
 
-	        $ret[$k] = $v;
+			if ($key_type === 'discard') {
+				$ret[] = $v;
+			} else {
+				$ret[$k] = $v;
+			}
 	    }
 
 	    return $ret;
