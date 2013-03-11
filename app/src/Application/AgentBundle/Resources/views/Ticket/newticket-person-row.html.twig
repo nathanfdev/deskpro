@@ -5,7 +5,7 @@
 			<td>
 				{% if person.id and person.primary_email and person.primary_email.email %}
 					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
-					{% if person.emails|length %}
+					{% if person.emails|length > 1 %}
 						<select name="newticket[person][email_address]">
 							{% for email in person.getEmailAddresses() %}
 								<option value="{{ email }}" {% if email == person.email_address %}selected="selected"{% endif %}>{{ email }}</option>
