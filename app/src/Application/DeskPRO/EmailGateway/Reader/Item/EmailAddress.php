@@ -45,9 +45,14 @@ class EmailAddress
 	public $name_utf8;
 	public $original_charset;
 
-	public function getEmail()
+	public function getRealEmail()
 	{
 		return $this->email;
+	}
+
+	public function getEmail()
+	{
+		return strtolower($this->email);
 	}
 
 	public function getName()
