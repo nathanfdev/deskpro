@@ -323,6 +323,21 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		return $filename_safe;
 	}
 
+
+	/**
+	 * The name hash is 6 chars long that represents the original filename
+	 *
+	 * @return string
+	 */
+	public function getNameHash()
+	{
+		$namehash = strtoupper(substr(sha1($this->filename . $this->id), 0, 3));
+		$namehash .= strtoupper(substr(md5($this->filename . $this->id), 0, 3));
+
+		return $namehash;
+	}
+
+
 	/**
 	 * @return string
 	 */
