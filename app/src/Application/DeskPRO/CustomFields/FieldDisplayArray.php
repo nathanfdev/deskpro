@@ -70,7 +70,7 @@ class FieldDisplayArray implements \ArrayAccess
 		$this->field_group   = $field_group;
 		$this->use_default   = $use_default;
 
-		$value = !empty($field_data[$field_def['id']]) ? $field_data[$field_def['id']] : null;
+		$value = !empty($field_data[$field_def['id']]) && $field_data[$field_def['id']] !== 0 && $field_data[$field_def['id']] !== '0' ? $field_data[$field_def['id']] : null;
 
 		$default_value = $field_def->default_value;
 		if ($field_def->getTypeName() == 'hidden') {
@@ -81,7 +81,7 @@ class FieldDisplayArray implements \ArrayAccess
 			}
 		}
 
-		if (!$value && $use_default && $default_value) {
+		if ($value === null && $use_default && $default_value) {
 			if ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
 				$value = array('children' => array($default_value => array('value' => 1)));
 			} else {

@@ -46,7 +46,7 @@ class Text extends HandlerAbstract
 	public function getFormField($data = null)
 	{
 		$setData = null;
-		if ($data AND !empty($data['value'])) {
+		if ($data AND (!empty($data['value']) || $data['value'] === '0' || $data['value'] === 0)) {
 			$setData = $data['value'];
 		}
 
@@ -60,7 +60,7 @@ class Text extends HandlerAbstract
 		$name = $this->getFormFieldName();
 
 		$value = null;
-		if (!empty($form_data[$name])) {
+		if (!empty($form_data[$name]) || $form_data[$name] === '0') {
 			$value = $form_data[$name];
 		}
 

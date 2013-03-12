@@ -248,7 +248,7 @@ class FieldManager
 					break;
 
 				default:
-					if (!empty($data['value'])) {
+					if (!empty($data['value']) || $data['value'] === 0 || $data['value'] === '0') {
 						$form_data['field_' . $field_id] = $data['value'];
 					}
 					break;
@@ -269,9 +269,9 @@ class FieldManager
 	{
 		$custom_fields = array();
 		foreach ($this->getFields() as $f_def) {
-			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
+			$value = !empty($field_data[$f_def['id']]) && $field_data[$f_def['id']] !== 0 && $field_data[$f_def['id']] !== '0' ? $field_data[$f_def['id']] : null;
 
-			$rendered = $value ? $f_def->getHandler()->renderText($value) : null;
+			$rendered = $value !== null ? $f_def->getHandler()->renderText($value) : null;
 			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
@@ -412,7 +412,7 @@ class FieldManager
 				$item['children'] = $this->_createDataHierarchy($data_keys, $field_datas, $this->field_to_children[$def->getId()]);
 			}
 
-			if ($item['value'] || $item['children']) {
+			if ($item['value'] || $item['children'] || $item['value'] === 0 || $item['value'] === '0') {
 				$structure[$def['id']] = $item;
 			}
 		}
