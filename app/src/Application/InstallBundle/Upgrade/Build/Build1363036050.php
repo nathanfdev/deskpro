@@ -49,7 +49,7 @@ class Build1363036050 extends AbstractBuild
 
 		$ins = array();
 		foreach ($ticket_ids as $tid) {
-			$ins = array(
+			$ins[] = array(
 				'ticket_id' => $tid,
 				'date_created' => '2012-01-01 00:00:00',
 				'reason' => '(system marked)'
