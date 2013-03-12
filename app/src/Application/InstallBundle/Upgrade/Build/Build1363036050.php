@@ -56,6 +56,8 @@ class Build1363036050 extends AbstractBuild
 			);
 		}
 
-		$this->container->getDb()->batchInsert('tickets_deleted', $ins, true);
+		if($ins) {
+			$this->container->getDb()->batchInsert('tickets_deleted', $ins, true);
+		}
 	}
 }
