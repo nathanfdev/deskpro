@@ -166,16 +166,22 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				defaultIsHtml: true,
 				minHeight: 40,
 				maxHeight: 40,
-				inlineHiddenPosition: this.getEl('is_html_reply')
+				inlineHiddenPosition: this.getEl('is_html_reply'),
+				convertLinks: false // we'll do it ourselves
 			});
 			this.getEl('is_html_reply').val(1);
 
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
 				ed.on('keypress', function(ev) {
-					if (ev.keyCode == 13 && !ev.metaKey) {
+					if (ev.keyCode === 13 && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
 						ev.preventDefault();
-						sendMsg();
+						window.setTimeout(function() {
+							ed.linkify();
+							window.setTimeout(function() {
+								sendMsg();
+							}, 100);
+						}, 10);
 					}
 				});
 
