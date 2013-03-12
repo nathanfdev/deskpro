@@ -120,6 +120,47 @@ class DpLoader extends LoaderAbstract
 		$visitor_id   = null;
 		$visitor_code = null;
 		$visitor      = null;
+		$session_id   = null;
+		$session_auth = null;
+		$session_code = null;
+		$visitor_person_id = null;
+
+		$session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+		if (!$session_code) {
+			$session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
+		}
+		if (!$session_code) {
+			$session_code = isset($_COOKIE['dpchat_sid']) ? $_COOKIE['dpchat_sid'] : null;
+		}
+		if (!$session_code) {
+			$session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
+		}
+		if (!$session_code) {
+			$session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
+		}
+
+		if ($session_code && strpos($session_code, '-')) {
+			list ($session_id, $session_auth) = explode('-', $session_code, 2);
+
+			$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
+
+			$q = $this->getPdo()->prepare("
+				SELECT id, person_id
+				FROM sessions
+				WHERE id = ? AND auth = ?
+			");
+			$q->execute(array($session_id, $session_auth));
+
+			$r = $q->fetch(\PDO::FETCH_ASSOC);
+			if ($r) {
+				$visitor_person_id = $r['person_id'];
+				$session_id = $r['id'];
+			} else {
+				$session_code = null;
+			}
+		} else {
+			$session_code = null;
+		}
 
 		if (isset($_REQUEST['vc'])) {
 			$visitor_code = (string)$_REQUEST['vc'];
@@ -161,7 +202,28 @@ class DpLoader extends LoaderAbstract
 		# Authorize a visitor id
 		#-----------------------------------
 
-		if ($visitor_code) {
+		if ($session_id) {
+			$q = $this->getPdo()->prepare("
+				SELECT
+					visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
+					visitor_tracks.date_created AS date_last_track
+				FROM visitors
+				LEFT JOIN sessions ON (sessions.visitor_id = visitors.id)
+				LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
+				WHERE sessions.id = ?
+			");
+			$q->execute(array($session_id));
+			$visitor = $q->fetch(\PDO::FETCH_ASSOC);
+
+			if (!$visitor) {
+				$visitor = null;
+			} else {
+				$visitor_id   = $visitor['id'];
+				$visitor_code = $visitor['id'] . '-' . $visitor['auth'];
+			}
+		}
+
+		if ($visitor_code && !$visitor) {
 			list ($visitor_id, $visitor_auth) = explode('-', $visitor_code, 2);
 			$visitor_id = (int)$visitor_id;
 
@@ -248,7 +310,7 @@ class DpLoader extends LoaderAbstract
 
 			$visitor = array(
 				'auth'             => '',
-				'person_id'        => null,
+				'person_id'        => $visitor_person_id ?: null,
 				'page_count'       => 1,
 				'date_created'     => date('Y-m-d H:i:s'),
 				'date_last'        => date('Y-m-d H:i:s'),
@@ -429,6 +491,10 @@ class DpLoader extends LoaderAbstract
 		$visitor_update['last_track_id_soft'] = null;
 		$visitor_update['date_last']     = date('Y-m-d H:i:s');
 
+		if ($visitor_person_id) {
+			$visitor_update['person_id'] = $visitor_person_id;
+		}
+
 		if (!$is_new_visitor && !$update_track_id) {
 			$visitor_update['page_count'] = $visitor['page_count'] + 1;
 		}
@@ -485,73 +551,6 @@ class DpLoader extends LoaderAbstract
 			$js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', '$user_token');";
 		} else {
 			$js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', null);";
-		}
-
-		#------------------------------
-		# Try to connect an authenticated user
-		# with a visitor if they have a session
-		# cookie as well
-		#------------------------------
-
-		$visitor_person_id = null;
-
-		$session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
-		if (!$session_code) {
-			$session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
-		}
-		if (!$session_code) {
-			$session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
-		}
-		if (!$session_code) {
-			$session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
-		}
-
-		if ($session_code && strpos($session_code, '-')) {
-			list ($session_id, $session_auth) = explode('-', $session_code, 2);
-
-			$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
-
-			$q = $this->getPdo()->prepare("
-				SELECT person_id
-				FROM sessions
-				WHERE id = ? AND auth = ?
-			");
-			$q->execute(array($session_id, $session_auth));
-
-			$visitor_person_id = $q->fetchColumn();
-		}
-
-		if ($visitor_person_id && $visitor_person_id != $visitor['person_id']) {
-			$this->getPdo()->prepare("
-				UPDATE visitors
-				SET person_id = ?
-				WHERE id = ?
-			")->execute(array($visitor_person_id, $visitor['id']));
-
-			// If we have a person_id from the session,
-			// we can combine any tracks we have from this user
-			$q = $this->getPdo()->prepare("
-				SELECT id
-				FROM visitors
-				WHERE person_id = ? AND id != ?
-			");
-			$q->execute(array($visitor_person_id, $visitor['id']));
-
-			$vids = array();
-			while ($i = $q->fetchColumn(0)) {
-				$vids[] = $i;
-			}
-			if ($vids) {
-				$vids = array_unique($vids);
-				$this->getPdo()->prepare("
-					UPDATE visitor_tracks
-					SET visitor_id = {$visitor['id']} WHERE visitor_id IN (" . implode(',', $vids) . ")
-				")->execute();
-				$this->getPdo()->prepare("
-					DELETE FROM visitors
-					WHERE id IN (" . implode(',', $vids) . ")
-				")->execute();
-			}
 		}
 
 		#------------------------------

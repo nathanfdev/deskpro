@@ -380,29 +380,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				$this->set('dpvid', $vis['id']);
 
 				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvc', $vis['visitor_code'], 'never')->setPath('/')->send();
-
-				if ($this->getPerson() && $this->getPerson()->getId()) {
-					// If we have a person_id from the session,
-					// we can combine any tracks we have from this user
-					$vids = App::getDb()->fetchAllCol("
-						SELECT id
-						FROM visitors
-						WHERE person_id = ? AND id != ?
-					", array($this->getPerson()->getId(), $vis['id']));
-
-					if ($vids) {
-						$vids = array_unique($vids);
-						App::getDb()->executeUpdate("
-							UPDATE visitor_tracks
-							SET visitor_id = {$vis['id']}
-							WHERE visitor_id IN (" . implode(',', $vids) . ")
-						");
-						App::getDb()->executeUpdate("
-							DELETE FROM visitors
-							WHERE id IN (" . implode(',', $vids) . ")
-						");
-					}
-				}
 			} else {
 				$this->remove('dpvid');
 				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
