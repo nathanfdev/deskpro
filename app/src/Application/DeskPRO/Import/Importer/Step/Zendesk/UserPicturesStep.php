@@ -42,7 +42,7 @@ class UserPicturesStep extends AbstractZendeskStep
 
 	public static function getTitle()
 	{
-		return 'Download Blobs';
+		return 'Download User Pictures';
 	}
 
 	public function countPages()

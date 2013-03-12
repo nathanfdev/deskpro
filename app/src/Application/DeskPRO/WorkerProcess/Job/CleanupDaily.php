@@ -77,7 +77,7 @@ class CleanupDaily extends AbstractJob
 			$email_sources = App::getDb()->fetchAllCol("
 				SELECT email_sources.id
 				FROM email_sources
-				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND source.error_code IN ('server_error', 'timeout')
+				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND email_sources.error_code IN ('server_error', 'timeout')
 				ORDER BY email_sources.id ASC
 				LIMIT 1000
 			", array($snip));
@@ -103,7 +103,7 @@ class CleanupDaily extends AbstractJob
 			$email_sources = App::getDb()->fetchAllCol("
 				SELECT email_sources.id
 				FROM email_sources
-				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND source.error_code NOT IN ('server_error', 'timeout')
+				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND email_sources.error_code NOT IN ('server_error', 'timeout')
 				ORDER BY email_sources.id ASC
 				LIMIT 1000
 			", array($snip));

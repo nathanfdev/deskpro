@@ -60,15 +60,11 @@ class GroupsStep extends AbstractZendeskStep
 		}
 
 		if ($check_uids) {
-			$valid_uids = $this->db->fetchAllKeyValue("
-				SELECT id
-				FROM people
-				WHERE id IN (" . implode(',', $check_uids) . ")
-			", array(), 0, 0 );
-
 			foreach ($raw as $r) {
+				$user_id =  $this->getMappedNewId('zd_user_id', $r['user_id']);
+
 				// Invalid user for whatever reason
-				if (!isset($valid_uids[$r['user_id']])) {
+				if (!$user_id) {
 					continue;
 				}
 
@@ -76,7 +72,7 @@ class GroupsStep extends AbstractZendeskStep
 					$group_members[$r['group_id']] = array();
 				}
 
-				$group_members[$r['group_id']][] = $r['user_id'];
+				$group_members[$r['group_id']][] = $user_id;
 			}
 		}
 
@@ -145,7 +141,9 @@ class GroupsStep extends AbstractZendeskStep
 			$insert_bulk_perms[] = array(
 				'department_id' => $dep_id,
 				'person_id'     => $uid,
-				'app'           => 'tickets'
+				'app'           => 'tickets',
+				'name'          => 'full',
+				'value'         => '1',
 			);
 		}
 

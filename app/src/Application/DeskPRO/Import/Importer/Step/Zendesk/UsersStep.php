@@ -100,6 +100,10 @@ class UsersStep extends AbstractZendeskStep
 	 */
 	protected function processUser($user_info)
 	{
+		if ($this->getMappedNewId('zd_user_id', $user_info['id'])) {
+			return;
+		}
+
 		#----------------------------------------
 		# Insert user record
 		#----------------------------------------

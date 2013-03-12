@@ -38,7 +38,7 @@ use Orb\Data\ContentTypes;
 
 class TicketAttachmentsStep extends AbstractZendeskStep
 {
-	const PERPAGE = 250;
+	const PERPAGE = 25;
 
 	public static function getTitle()
 	{
@@ -92,6 +92,9 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 	{
 		$tmpfile = tempnam(sys_get_temp_dir(), 'dp');
 
+		echo "\n";
+		echo $blob_info['url'];
+
 		if (!copy($blob_info['url'], $tmpfile)) {
 			$this->logMessage("Failed copy blob: " . print_r($blob_info,1));
 			return;
@@ -107,7 +110,7 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 		}
 
 		$desc = $this->getContainer()->getSystemService('filestorage')->createRandomPath();
-		$desc->writeFromFile($tmpfile, array(
+		$desc->write(file_get_contents($tmpfile), array(
 			'content_type' => $blob_info['content_type'],
 			'filename'     => $blob_info['filename'],
 		));

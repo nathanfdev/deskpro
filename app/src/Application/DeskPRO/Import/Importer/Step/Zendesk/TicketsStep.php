@@ -40,7 +40,7 @@ use Orb\Util\OptionsArray;
 
 class TicketsStep extends AbstractZendeskStep
 {
-	const PERPAGE = 100;
+	const PERPAGE = 50;
 
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
@@ -92,7 +92,7 @@ class TicketsStep extends AbstractZendeskStep
 	{
 		$ticket_id = $ticket_info['id'];
 
-		if ($this->getMappedNewId('zd_ticket_id', $ticket_id)) {
+		if ($this->db->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($ticket_id))) {
 			// Already imported (skip)
 			return;
 		}
@@ -364,6 +364,7 @@ class TicketsStep extends AbstractZendeskStep
 
 					if (!empty($line['attachments'])) {
 						foreach ($line['attachments'] as $attach) {
+							print_r($attach);
 							$add_datastore[] = array(
 								'typename' => 'attach.ticket.' . uniqid('t'.$ticket_id),
 								'data'     => serialize(array(
@@ -373,6 +374,7 @@ class TicketsStep extends AbstractZendeskStep
 									'person_id'     => $this->getMappedNewId('zd_user_id', $line['author_id']) ?: $insert_ticket['person_id'],
 									'is_agent_note' => $line['public'] ? 0 : 1,
 									'url'           => $attach['content_url'],
+									'zd_attach_id'  => $attach['id'],
 									'filename'      => $attach['file_name'],
 									'filesize'      => $attach['size'],
 									'content_type'  => $attach['content_type'],
