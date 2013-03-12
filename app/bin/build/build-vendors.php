@@ -295,6 +295,12 @@ function deskpro_build_cleanvendors_assetic($dir)
 	deskpro_build_exec_exit_error("rm -rf docs tests .gitignore CHANGELOG phpunit.xml.dist README.md", $dir);
 }
 
+function deskpro_build_cleanvendors_aws_sdk_php($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf build/ docs/ tests/ .gitignore CHANGELOG.md CONTRIBUTING.md NOTICE.md README.md UPGRADING.md build.xml composer.json phpunit.functional.xml.dist phpunit.xml.dist test_services.json.dist", $dir);
+	deskpro_build_exec_exit_error("rm -rf AutoScaling/ CloudFormation/ CloudSearch/ CloudWatch/ DataPipeline/ DirectConnect/ DynamoDb/ Ec2/ ElastiCache/ ElasticBeanstalk/ ElasticLoadBalancing/ ElasticTranscoder/ Emr/ Glacier/ Iam/ ImportExport/ OpsWorks/ Rds/ Redshift/ Route53/ Ses/ SimpleDb/ Sns/ Sqs/ StorageGateway/ Sts/ Swf/", $dir.'/src/Aws');
+}
+
 function deskpro_build_cleanvendors_elastica($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf test .gitignore build.xml changes.txt README.markdown", $dir);
@@ -328,6 +334,11 @@ function deskpro_build_cleanvendors_facebook($dir)
 function deskpro_build_cleanvendors_geoip_api($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf admin timezone/ ChangeLog benchmark.php sample-v6.php sample.php sample_asn-v6.php sample_city-v6.php sample_city.php sample_distributed.php sample_domain.php sample_netspeed.php sample_netspeedcell.php sample_org.php sample_region.php", $dir);
+}
+
+function deskpro_build_cleanvendors_guzzle($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf phing/ tests/ .gitignore .travis.yml CHANGELOG.md README.md UPGRADING.md build.xml composer.json phar-stub.php phpunit.xml.dist", $dir);
 }
 
 function deskpro_build_cleanvendors_imagine($dir)
