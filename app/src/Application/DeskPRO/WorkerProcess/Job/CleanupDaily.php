@@ -46,6 +46,9 @@ class CleanupDaily extends AbstractJob
 		# email sources
 		#------------------------------
 
+		$source_ids = array();
+		$blob_ids = array();
+
 		if (App::getSetting('core.email_source_storetime')) {
 			$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
 			$email_sources = App::getDb()->fetchAllCol("
@@ -58,12 +61,14 @@ class CleanupDaily extends AbstractJob
 
 			$num = 0;
 			foreach ($email_sources as $source) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->id);
-				$desc->delete();
+				$desc = App::getApi('filestorage')->getFileDescriptor($source['blob_id']);
 
-				App::getOrm()->detach($source);
-				App::getOrm()->flush();
+				if ($desc) {
+					$desc->delete();
+				}
 
+				$source_ids[] = $source['id'];
+				$blob_ids[] = $source['blob_id'];
 				$num++;
 			}
 
@@ -84,11 +89,14 @@ class CleanupDaily extends AbstractJob
 
 			$num = 0;
 			foreach ($email_sources as $source) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->id);
-				$desc->delete();
+				$desc = App::getApi('filestorage')->getFileDescriptor($source['blob_id']);
 
-				App::getOrm()->detach($source);
-				App::getOrm()->flush();
+				if ($desc) {
+					$desc->delete();
+				}
+
+				$source_ids[] = $source['id'];
+				$blob_ids[] = $source['blob_id'];
 
 				$num++;
 			}
@@ -110,11 +118,14 @@ class CleanupDaily extends AbstractJob
 
 			$num = 0;
 			foreach ($email_sources as $source) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->id);
-				$desc->delete();
+				$desc = App::getApi('filestorage')->getFileDescriptor($source['blob_id']);
 
-				App::getOrm()->detach($source);
-				App::getOrm()->flush();
+				if ($desc) {
+					$desc->delete();
+				}
+
+				$source_ids[] = $source['id'];
+				$blob_ids[] = $source['blob_id'];
 
 				$num++;
 			}
@@ -122,6 +133,13 @@ class CleanupDaily extends AbstractJob
 			if ($num) {
 				$this->logStatus("Cleaned up $num stale email sources");
 			}
+		}
+
+		if ($source_ids) {
+			App::getDb()->deleteIn('email_sources', $source_ids);
+		}
+		if ($blob_ids) {
+			App::getDb()->deleteIn('blobs', $blob_ids);
 		}
 
 		#------------------------------
