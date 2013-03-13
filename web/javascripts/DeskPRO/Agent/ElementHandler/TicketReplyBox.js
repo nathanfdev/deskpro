@@ -16,6 +16,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 
 		this.isNote = false;
+		var snippetBtn = null;
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val();
@@ -56,6 +57,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					});
 
 					return data;
+				},
+				callback: function(obj) {
+					obj.addBtnAfter('horizontalrule', 'dp_snippets', 'Open snippets', function(){});
+					obj.addBtnAfter('dp_snippets', 'dp_attach', 'Attach a file', function(){});
+					obj.addBtnSeparatorAfter('horizontalrule');
+					obj.addBtnSeparatorAfter('dp_snippets');
+
+					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+					snippetBtn.addClass('snippets').find('a').text('Snippets');
+
+					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+					attachBtn.addClass('attach');
+					attachBtn.find('a').append('<input type="file" class="file" name="file-upload" />');
 				}
 			});
 			this.getElById('is_html_reply').val(1);
@@ -322,7 +336,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: this.el.data('snippet-viewer-url'),
-			triggerElement: this.getElById('text_snippets_btn'),
+			triggerElement: snippetBtn,
 			onBeforeOpen: function() {
 				if (isWysiwyg && textarea.data('redactor')) {
 					textarea.data('redactor').saveSelection();

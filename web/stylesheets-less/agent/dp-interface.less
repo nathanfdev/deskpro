@@ -3600,3 +3600,40 @@ blockquote {
 .twitter-user-find {
 	cursor: pointer;
 }
+
+.redactor_toolbar li a.redactor_btn_dp_attach {
+	background: transparent url(../../images/agent/icons/attach.png) no-repeat 50% 50%;
+}
+
+.redactor_toolbar li a.redactor_btn_dp_snippets {
+	background: transparent url(../../images/agent/icons/document_pencil.png) no-repeat 2px 50%;
+	text-indent: 0;
+	width: auto;
+	line-height: 27px;
+	font-size: 11px;
+	padding-left: 25px;
+	padding-right: 2px;
+	color: #000;
+}
+
+.redactor_toolbar li a.redactor_btn_dp_attach {
+	position: relative;
+	overflow: hidden;
+}
+
+.redactor_toolbar li a.redactor_btn_dp_attach input[type="file"] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	border: solid transparent;
+	border-width: 0 0 100px 200px;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	-moz-transform: translate(-300px, 0) scale(4);
+	direction: ltr;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	z-index: 2;
+}

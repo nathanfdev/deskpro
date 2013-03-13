@@ -40,32 +40,6 @@
 		</nav>
 	</header>
 	<section class="ticketreply">
-
-		<nav id="{{replyBaseId}}_header_rows">
-			<ul class="option-buttons">
-				<li class="tipped attach" title="{{ phrase('agent.general.attachments') }}">
-					<input type="file" class="file" name="file-upload" />
-					<span></span>
-				</li>
-				<li class="tipped snippets hide-note" id="{{replyBaseId}}_text_snippets_btn" title="{{ phrase('agent.general.snippets') }}"><a href="javascript:"></a></li>
-			</ul>
-
-			<ul class="option-buttons right">
-				<li class="tipped closetab toggle keep_open_toggle {% if app.user.getPref('agent.ticket_close_reply', true) %}radio-on on{% endif %}" title="{{ phrase('agent.tickets.close_tab_after_reply') }}" id="{{ replyBaseId }}_keep_open_toggle">
- 					<span>{{ phrase('agent.general.close_tab') }}<em class="check"></em></span>
- 					<input type="checkbox" name="options[close_tab]" />
- 				</li>
-				<li class="tipped article toggle hide-note" title="{{ phrase('agent.general.mark_as_pending_kb') }}">
-					<span><em class="check"></em></span>
-					<input type="checkbox" name="options[do_kbpending]"/>
-				</li>
-				<li class="tipped notifyuser toggle hide-note {% if app.getSetting('core_tickets.default_send_user_notify') %}on{% endif %}" title="Send notification email to users about your reply">
-					<span><em class="check"></em></span>
-					<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
-				</li>
-				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('agent.general.send') }}</span><span class="hide-reply" style="display: none">{{ phrase('agent.general.add_note') }}</span></li>
-			</ul>
-		</nav>
 		<article>
 			<section>
 				<div class="option-rows">
@@ -225,8 +199,27 @@
 				</div>
 			</section>
 		</article>
-
 	</section>
+	<footer>
+		<table cellpadding="0" cellspacing="0" border="0"><tr>
+			<td valign="middle" style="vertical-align: middle;">
+				<button class="clean-white">Send Reply</button>
+			</td><td valign="middle" style="vertical-align: middle;">
+				<label>
+					<input type="checkbox" name="options[close_tab]" />
+					Close tab after replying
+				</label>
+				<label>
+					<input type="checkbox" name="options[do_kbpending]"/>
+					Mark as pending article
+				</label>
+				<label>
+					<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
+					Send email notification to user
+				</label>
+			</td>
+		</tr></table>
+	</footer>
 </div>
 
 {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'attach[]'} %}
