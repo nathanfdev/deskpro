@@ -433,6 +433,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\BlobStorage\DeskproBlobStorage
+	 */
+	public function getBlobStorage()
+	{
+		return $this->getSystemService('blob_storage');
+	}
+
+
+	/**
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get

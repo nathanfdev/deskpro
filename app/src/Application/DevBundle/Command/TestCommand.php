@@ -59,6 +59,12 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$bs = App::getContainer()->getBlobStorage();
+
+		$blob = $bs->saveBlobRecordFromString("test 123: " . date('Y-m-d H:i:s'), 'test.txt', 'text/plain');
+
+		echo $blob->getDownloadUrl(true);
+
 		echo "\n";
 		exit;
 	}

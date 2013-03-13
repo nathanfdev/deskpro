@@ -33,15 +33,22 @@
 
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
+use Orb\Log\Loggable;
 use Orb\Util\OptionsArray;
 use Application\DeskPRO\BlobStorage\Blob;
+use Orb\Log\Logger;
 
-abstract class AbstractStorageAdapter
+abstract class AbstractStorageAdapter implements Loggable
 {
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */
 	protected $options;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
 
 	public function __construct(array $options = null)
 	{
@@ -57,11 +64,30 @@ abstract class AbstractStorageAdapter
 		}
 
 		$this->options = $options;
+		$this->logger = new Logger();
 
 		$this->init();
 	}
 
 	protected function init() {}
+
+
+	/**
+	 * @param Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
+	}
 
 
 	/**

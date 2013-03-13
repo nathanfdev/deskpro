@@ -39,9 +39,12 @@ use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
 use Orb\Data\ContentTypes;
+use Orb\Log\Loggable;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Orb\Log\Logger;
 
-class DeskproBlobStorage
+class DeskproBlobStorage implements Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter[]
@@ -63,12 +66,37 @@ class DeskproBlobStorage
 	 */
 	protected $em;
 
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
 	public function __construct(EntityManager $em)
 	{
 		$this->adapters = array();
 		$this->em = $em;
 		$this->db = $em->getConnection();
+		$this->logger = new Logger();
 	}
+
+
+	/**
+	 * @param Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
+	}
+
 
 	/**
 	 * @param StorageAdapter\AbstractStorageAdapter $adapter
@@ -100,6 +128,8 @@ class DeskproBlobStorage
 	 */
 	private function _createBlobEntity($filename, $content_type, array $props = null)
 	{
+		$this->logger->logDebug("[DeskproBlobStorage] (_createBlobEntity) Filename: $filename   ContentType: $content_type");
+
 		$blob_entity = new BlobEntity();
 		$blob_entity->filename     = $filename;
 		$blob_entity->content_type = $content_type;
@@ -128,6 +158,8 @@ class DeskproBlobStorage
 	 */
 	public function saveBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
 	{
+		$this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $source_path");
+
 		$blob_entity = $this->_createBlobEntity($filename, $content_type, $props);
 		$blob_entity->filesize     = filesize($source_path);
 		$blob_entity->blob_hash    = md5_file($source_path);
@@ -150,6 +182,8 @@ class DeskproBlobStorage
 		$blob_entity->authcode  = $authcode;
 		$blob_entity->save_path = $batch . '/' . $authcode;
 
+		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Blob ID: {$blob_entity->id}  Auth: {$blob_entity->id}   Path: {$blob_entity->save_path}");
+
 		// Now call the blob storages
 		$blob = new Blob(
 			$blob_entity->save_path,
@@ -166,11 +200,14 @@ class DeskproBlobStorage
 				continue;
 			}
 
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Attempting adapter: $adapter_id");
+
 			/** @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
 			try {
 				$adapter->writeBlobFromFile($blob, $source_path);
 				$blob_entity->storage_loc = $adapter_id;
 			} catch (\Exception $e) {
+				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
 				KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
@@ -178,6 +215,8 @@ class DeskproBlobStorage
 
 		// None of the succeeded, try to delete this half-inserted blob and then throw an error
 		if (!$blob_entity->storage_loc) {
+			$this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromFile) All adapters failed");
+
 			$this->em->remove($blob_entity);
 			$this->em->flush();
 
@@ -186,6 +225,8 @@ class DeskproBlobStorage
 
 		$this->em->persist($blob_entity);
 		$this->em->flush();
+
+		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
 
 		return $blob_entity;
 	}
@@ -197,6 +238,8 @@ class DeskproBlobStorage
 	 */
 	public function saveBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
 	{
+		$this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string " . Numbers::filesizeDisplay(strlen($source_data)));
+
 		$blob_entity = $this->_createBlobEntity($filename, $content_type, $props);
 		$blob_entity->filesize  = strlen($source_data);
 		$blob_entity->blob_hash = md5($source_data);
@@ -223,6 +266,8 @@ class DeskproBlobStorage
 		$blob_entity->authcode  = $authcode;
 		$blob_entity->save_path = $batch . '/' . $authcode;
 
+		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Blob ID: {$blob_entity->id}  Auth: {$blob_entity->id}   Path: {$blob_entity->save_path}");
+
 		// Now call the blob storages
 		$blob = new Blob(
 			$blob_entity->save_path,
@@ -239,11 +284,14 @@ class DeskproBlobStorage
 				continue;
 			}
 
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Attempting adapter: $adapter_id");
+
 			/** @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
 			try {
 				$adapter->writeBlobString($blob, $source_data);
 				$blob_entity->storage_loc = $adapter_id;
 			} catch (\Exception $e) {
+				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromString) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
 				KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
@@ -251,6 +299,8 @@ class DeskproBlobStorage
 
 		// None of the succeeded, try to delete this half-inserted blob and then throw an error
 		if (!$blob_entity->storage_loc) {
+			$this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromString) All adapters failed");
+
 			$this->em->remove($blob_entity);
 			$this->em->flush();
 
@@ -259,6 +309,8 @@ class DeskproBlobStorage
 
 		$this->em->persist($blob_entity);
 		$this->em->flush();
+
+		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
 
 		return $blob_entity;
 	}
@@ -269,7 +321,10 @@ class DeskproBlobStorage
 	 */
 	public function readBlobRecord(BlobEntity $blob_entity)
 	{
+		$this->logger->logDebug("[DeskproBlobStorage] (readBlobRecord) Read blob record {$blob_entity->id} from {$blob_entity->storage_loc}");
+
 		if (!isset($this->adapters[$blob_entity->storage_loc])) {
+			$this->logger->logError("[DeskproBlobStorage] (readBlobRecord) FAIL: Storage adapter not configured");
 			throw new \InvalidArgumentException("There is no configured storage adapter for: " . $blob_entity->storage_loc);
 		}
 
@@ -284,6 +339,15 @@ class DeskproBlobStorage
 			)
 		);
 
-		return $adapter->readBlobString($blob);
+		try {
+			$data = $adapter->readBlobString($blob);
+		} catch (\Exception $e) {
+			$this->logger->logDebug("[DeskproBlobStorage] (readBlobRecord) Read failed: {$e->getCode()} {$e->getMessage()}");
+			throw $e;
+		}
+
+		$this->logger->logDebug("[DeskproBlobStorage] (readBlobRecord) Read success: " . Numbers::filesizeDisplay(strlen($data)));
+
+		return $data;
 	}
 }

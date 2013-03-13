@@ -35,6 +35,7 @@ namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
 use Doctrine\DBAL\Connection;
+use Orb\Util\Numbers;
 
 class DatabaseStorage extends AbstractStorageAdapter
 {
@@ -99,9 +100,19 @@ class DatabaseStorage extends AbstractStorageAdapter
 	{
 		$path_field = $this->path_field;
 
-		$this->db->delete($this->table, array(
-			$path_field => $this->getDbPathId($blob)
-		));
+		$id = $this->getDbPathId($blob);
+		$this->logger->logInfo("[DatabaseStorage] (deleteBlob) Delete $id");
+
+		try {
+			$num = $this->db->delete($this->table, array(
+				$path_field => $id
+			));
+		} catch (\Exception $e) {
+			$this->logger->logError("[DatabaseStorage] (deleteBlob) Failed: {$e->getCode()} {$e->getMessage()}");
+			throw $e;
+		}
+
+		$this->logger->logInfo("[DatabaseStorage] (deleteBlob) Affected rows: $num");
 
 		return true;
 	}
@@ -127,12 +138,15 @@ class DatabaseStorage extends AbstractStorageAdapter
 	 */
 	public function checkBlobExists(Blob $blob)
 	{
+		$id = $this->getDbPathId($blob);
 		$x = $this->db->fetchColumn("
 			SELECT COUNT(*)
 			FROM `{$this->table}`
 			WHERE `{$this->path_field}` = ?
 			LIMIT 1
 		", array($this->getDbPathId($blob)));
+
+		$this->logger->logInfo("[DatabaseStorage] (checkBlobExists) Blob $id " . ($x ? 'exists' : 'no exist'));
 
 		return $x ? true : false;
 	}
@@ -151,7 +165,9 @@ class DatabaseStorage extends AbstractStorageAdapter
 		$data_field  = $this->data_field;
 		$order_field = $this->order_field;
 
-		$data = str_split($blob, $this->seg_size);
+		$size = strlen($data);
+
+		$data = str_split($data, $this->seg_size);
 		foreach ($data as $k => $d) {
 			if ($this->manual_order) {
 				$this->db->insert($this->table, array(
@@ -167,7 +183,9 @@ class DatabaseStorage extends AbstractStorageAdapter
 			}
 		}
 
-		return strlen($data);
+		$this->logger->logInfo("[DatabaseStorage] (writeBlobString) Blob $path: Wrote " . Numbers::filesizeDisplay($size) . " in " . count($data) . " segments");
+
+		return $size;
 	}
 
 
@@ -201,20 +219,26 @@ class DatabaseStorage extends AbstractStorageAdapter
 	 */
 	public function readBlobString(Blob $blob)
 	{
+		$id = $this->getDbPathId($blob);
+
 		$q = $this->db->prepare("
 			SELECT `{$this->data_field}`
 			FROM `{$this->table}`
 			WHERE `{$this->path_field}` = ?
 			ORDER BY `{$this->order_field}` ASC
 		");
-		$q->execute(array($this->getDbPathId($blob)));
+		$q->execute(array($id));
 
 		$data = '';
+		$count = 0;
 		while ($d = $q->fetchColumn(0)) {
+			$count++;
 			$data .= $d;
 		}
 
 		$q->closeCursor();
+
+		$this->logger->logInfo("[DatabaseStorage] (readBlobString) Blob $id: Read " . Numbers::filesizeDisplay(strlen($data)) . " in " . $count . " segments");
 
 		return $data;
 	}
