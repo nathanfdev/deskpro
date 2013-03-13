@@ -611,6 +611,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (!$this->getTransactionNestingLevel()) {
 			\DpShutdown::run('db_done_trans');
+			\DpShutdown::run('db_done_trans_commit');
 		}
 	}
 
@@ -642,6 +643,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (!$level) {
 			\DpShutdown::run('db_done_trans');
+			\DpShutdown::run('db_done_trans_rollback');
 		}
 	}
 }

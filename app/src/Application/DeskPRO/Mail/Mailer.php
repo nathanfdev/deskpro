@@ -174,8 +174,13 @@ class Mailer extends \Swift_Mailer implements Loggable
 			}
 		} catch (\Exception $e) {}
 
-		\DpShutdown::add(array($this, 'sendQueuedSilent'), null, 'db_done_trans');
+		// After successful runs, send queued messages
+		\DpShutdown::add(array($this, 'sendQueuedSilent'), null, 'db_done_trans_commit');
 		\DpShutdown::add(array($this, 'sendQueuedSilent'), null, 'shutdown', 1000);
+
+		// If there was an error and db is being rolled back,
+		// clear any queued messages made during the transaction
+		\DpShutdown::add(array($this, 'clearQueuedMessages'), null, 'db_done_trans_rollback');
 	}
 
 	/**
@@ -270,6 +275,15 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function removeQueuedMessage($id)
 	{
 		unset($this->queued[$id]);
+	}
+
+
+	/**
+	 * Remove all queued messages so they wont sent (eg database error so dont send messages)
+	 */
+	public function clearQueuedMessages()
+	{
+		$this->queued = array();
 	}
 
 
