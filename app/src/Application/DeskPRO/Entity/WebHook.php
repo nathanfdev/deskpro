@@ -56,7 +56,7 @@ class WebHook extends \Application\DeskPRO\Domain\DomainObject
 
 	public function trigger(array $data)
 	{
-		$client = new \Zend\Http\Client($this->url);
+		$client = new \Zend\Http\Client($this->url, array('timeout' => 30));
 		if ($this->username) {
 			$client->setAuth($this->username, $this->password);
 		}

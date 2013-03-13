@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class CallWebHookAction extends AbstractAction
 {
@@ -72,7 +73,11 @@ class CallWebHookAction extends AbstractAction
 			$data['organization'] = $ticket->organization->toApiData();
 		}
 
-		$hook->trigger($data);
+		try {
+			$hook->trigger($data);
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e, false);
+		}
 	}
 
 
