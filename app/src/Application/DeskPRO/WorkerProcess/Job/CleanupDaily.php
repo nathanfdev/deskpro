@@ -51,8 +51,8 @@ class CleanupDaily extends AbstractJob
 
 		if (App::getSetting('core.email_source_storetime')) {
 			$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
-			$email_sources = App::getDb()->fetchAllCol("
-				SELECT email_sources.id
+			$email_sources = App::getDb()->fetchAll("
+				SELECT email_sources.id, email_sources.blob_id
 				FROM email_sources
 				WHERE email_sources.date_created < ? AND email_sources.status = 'complete'
 				ORDER BY email_sources.id ASC
@@ -79,8 +79,8 @@ class CleanupDaily extends AbstractJob
 
 		if (App::getSetting('core.email_source_storetime_error')) {
 			$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
-			$email_sources = App::getDb()->fetchAllCol("
-				SELECT email_sources.id
+			$email_sources = App::getDb()->fetchAll("
+				SELECT email_sources.id, email_sources.blob_id
 				FROM email_sources
 				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND email_sources.error_code IN ('server_error', 'timeout')
 				ORDER BY email_sources.id ASC
@@ -108,8 +108,8 @@ class CleanupDaily extends AbstractJob
 
 		if (App::getSetting('core.email_source_storetime_rejection')) {
 			$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
-			$email_sources = App::getDb()->fetchAllCol("
-				SELECT email_sources.id
+			$email_sources = App::getDb()->fetchAll("
+				SELECT email_sources.id, email_sources.blob_id
 				FROM email_sources
 				WHERE email_sources.date_created < ? AND email_sources.status = 'error' AND email_sources.error_code NOT IN ('server_error', 'timeout')
 				ORDER BY email_sources.id ASC
