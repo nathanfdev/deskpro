@@ -202,10 +202,42 @@
 </div>
 
 <div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply" data-rule-group="Ticket">
-	<div class="builder-options" style="display:block">
-		<textarea name="reply_text" cols="80" rows="4"></textarea>
+	<div class="builder-options">
+		<textarea name="reply_text" cols="80" rows="4" style="width: 90%;"></textarea>
+		<div style="padding-top: 3px;">
+			<select name="reply_pos">
+				<option value="append">Append to existing reply text</option>
+				<option value="prepend">Prepend to existing reply text</option>
+				<option value="overwrite">Overwrite existing reply text</option>
+			</select>
+			<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This defines where the above message is set if this macro is used during a reply and you have already entered text into the reply box"></span>
+		</div>
 	</div>
 </div>
+
+{% if app.user.Agent.getGroupedSnippets()|length %}
+	<div class="builder-type" title="Add reply from snippet" data-rule-type="reply_snippet" data-rule-group="Ticket">
+		<div class="builder-options">
+			<select name="snippet_id" class="select2">
+				{% for info in app.user.Agent.getGroupedSnippets() if info.snippets %}
+					<optgroup label="{{ info.category.title }}">
+						{% for snippet in info.snippets %}
+							<option value="{{ snippet.id }}">{{ snippet.title }}</option>
+						{% endfor %}
+					</optgroup>
+				{% endfor %}
+			</select>
+			<div style="padding-top: 3px;">
+				<select name="reply_pos">
+					<option value="append">Append to existing reply text</option>
+					<option value="prepend">Prepend to existing reply text</option>
+					<option value="overwrite">Overwrite existing reply text</option>
+				</select>
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This defines where the above message is set if this macro is used during a reply and you have already entered text into the reply box"></span>
+			</div>
+		</div>
+	</div>
+{% endif %}
 
 {% for field in app.getTicketFieldManager().getDisplayArray() %}
 	{% if field.field_def.isFormField() %}

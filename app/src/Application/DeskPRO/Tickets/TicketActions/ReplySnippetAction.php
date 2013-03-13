@@ -43,18 +43,35 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Person;
 
-class ReplyAction extends AbstractAction implements PersonContextInterface, PermissionableAction
+class ReplySnippetAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
-	protected $reply_text;
+	/**
+	 * @var \Application\DeskPRO\Entity\TicketSnippet
+	 */
+	protected $snippet;
+
+	/**
+	 * @var int
+	 */
+	protected $snippet_id;
+
+	/**
+	 * Possible values: append, prepend, overwrite
+	 * @var string
+	 */
 	protected $reply_pos;
-	protected $attach_ids = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
 	protected $person_context;
 
-	public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null)
+	public function __construct($snippet_id, $reply_pos = null)
 	{
-		$this->reply_text = $reply_text;
-		$this->attach_ids = $attach_ids;
+		$this->snippet_id = $snippet_id;
 		$this->reply_pos  = $reply_pos;
+
+		$this->snippet = App::getOrm()->find('DeskPRO:TicketSnippet', $snippet_id);
 	}
 
 
@@ -84,6 +101,10 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if (!$this->snippet) {
+			return;
+		}
+
 		if (!$this->person_context) {
 			if ($ticket->agent) {
 				$this->person_context = $ticket->agent;
@@ -109,22 +130,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
-		$message->message_text = $this->reply_text;
+		$message->message_text = $this->snippet->snippetFormattedHtml($ticket, $this->person_context);
 		$ticket->addMessage($message);
-
-		if ($this->attach_ids) {
-			foreach ($this->attach_ids as $blob_id) {
-				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-				if ($blob) {
-					$attach = new TicketAttachment();
-					$attach['blob'] = $blob;
-					$attach['person'] = $this->person_context;
-
-					//$message->addAttachment($attach);
-				}
-			}
-		}
 	}
 
 
@@ -135,8 +142,12 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	 */
 	public function getApplyActions(Ticket $ticket)
 	{
+		if (!$this->snippet) {
+			return array();
+		}
+
 		return array(
-			array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids)
+			array('action' => 'reply_snippet', 'snippet_id' => $this->snippet_id, 'reply_pos' => $this->reply_pos)
 		);
 	}
 
@@ -146,20 +157,9 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	 *
 	 * @return int
 	 */
-	public function getReplyText()
+	public function getSnippetId()
 	{
-		return $this->reply_text;
-	}
-
-
-	/**
-	 * Get attach ids
-	 *
-	 * @return array
-	 */
-	public function getAttachIds()
-	{
-		return $this->attach_ids;
+		return $this->snippet_id;
 	}
 
 
@@ -186,13 +186,10 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	 */
 	public function getDescription($as_html = true)
 	{
-		$tr = App::getTranslator();
-
-		if ($as_html) {
-			$flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
-			if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
-			return $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => '<span class="highlight-description">'.htmlspecialchars($flat).'</span>'));
+		if (!$this->snippet) {
+			return "<error>Unknown Snippet #{$this->snippet}</error>";
 		}
-		return $tr->phrase('agent.tickets.add_reply_action');
+
+		return "Reply with snippet: " . $this->snippet->title;
 	}
 }

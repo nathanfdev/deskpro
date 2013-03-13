@@ -403,11 +403,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 								el.remove();
 							}
 						});
-
-						//var html = 'snippet inserted tooowoioeiwe';
-						//textarea.data('redactor').restoreSelection();
-						//textarea.data('redactor').setBuffer();
-						//textarea.data('redactor').insertHtml(html);
 					}
 				}
 			});

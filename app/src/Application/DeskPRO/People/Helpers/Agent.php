@@ -49,6 +49,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	protected $_access = null;
 	protected $_agent_teams = null;
 	protected $_agent_team_ids = null;
+	protected $_snippets;
 
 	protected $_dep_allowed_ids = null;
 	protected $_dep_disallowed_ids = null;
@@ -358,6 +359,21 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 		return '';
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getGroupedSnippets()
+	{
+		if ($this->_snippets !== null) {
+			return $this->_snippets;
+		}
+
+		$this->_snippets = App::getOrm()->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+
+		return $this->_snippets;
+	}
+
 
 	/**
 	 * Gets the agent's Tweet signature
