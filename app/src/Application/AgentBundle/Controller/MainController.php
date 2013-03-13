@@ -139,6 +139,8 @@ class MainController extends AbstractController
 			$is_first_login_name = $this->person->getPref('agent.first_login_name');
 		}
 
+		$chat_dep_ids = $this->person->getHelper('PermissionsManager')->get('Departments')->getAllowed('chat');
+
 		\Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
 		return $this->render('AgentBundle:Main:index.html.twig', array(
@@ -147,6 +149,7 @@ class MainController extends AbstractController
 			'agent_names'         => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
 			'online_agent_ids'    => $online_agent_ids,
 			'agent_chat_depmap'   => $agent_chat_depmap,
+			'chat_dep_ids'        => $chat_dep_ids,
 			'is_demo'             => $this->in->checkIsset('show-demo-bar'),
 			'last_message_id'     => $last_message_id,
 			'js_debug'            => App::getConfig('debug.js', array()),

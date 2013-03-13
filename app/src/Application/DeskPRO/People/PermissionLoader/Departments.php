@@ -43,6 +43,8 @@ use Orb\Util\Arrays;
 
 class Departments extends AbstractLoader implements NoCache, PersonContextInterface
 {
+	protected $has_init = false;
+
 	/**
 	 * An array of categories allowed for real, that we get by computing
 	 * inheritance.
@@ -52,13 +54,14 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 	public function _init()
 	{
-		static $has_init = false;
-		if ($has_init) return;
-		$has_init = true;
+		if ($this->has_init) {
+			return;
+		}
+		$this->has_init = true;
 
 		$in = implode(',', $this->getUsergroupIds());
 
-		if (DP_INTERFACE == 'agent') {
+		if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
 			$res = App::getDb()->fetchAll("
 				SELECT department_id, app, name, value
 				FROM department_permissions

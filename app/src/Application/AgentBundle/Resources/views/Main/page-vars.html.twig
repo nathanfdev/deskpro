@@ -18,7 +18,7 @@
 		'agent_org.create': {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %},
 		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %},
 		'chat_dep_ids': [
-			0{% for id in app.user.PermissionsManager.get('Departments').getAllowed('chat') %},{{id}}{% endfor %}
+			0{% for id in chat_dep_ids %},{{id}}{% endfor %}
 		]
 	};
 
