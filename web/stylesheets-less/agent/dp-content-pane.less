@@ -3299,8 +3299,22 @@ article.content-message .content .body-text .fade-bar {
 	text-align: center;
 }
 
+.snippets-overlay .snippet-sections header.cat-title {
+	background: #DDE1E6;
+	border: 1px solid #D9D9D9;
+	border-left: none;
+	border-right: none;
+	padding: 7px 10px;
+	margin-top: 10px;
+}
+
+.snippets-overlay .snippet-sections header.cat-title.first {
+	margin-top: 0;
+}
+
 .snippets-overlay .snippet-sections li.snippet {
 	border-bottom: 1px solid #E1E1E1;
+	padding-top: 8px;
 
 	&:hover {
 		background-color: #EAEAEA;
@@ -3315,6 +3329,25 @@ article.content-message .content .body-text .fade-bar {
 
 	.main-content {
 		padding: 0 8px;
+	}
+}
+
+.snippets-overlay .snippet-sections .cat-controls {
+	background: #F0F0F2;
+	border: 1px solid #D9D9D9;
+	border-left: none;
+	border-right: none;
+	padding: 4px 5px;
+
+	.filter-input {
+		margin: 0;
+		padding: 2px 5px;
+		font-size: 12px;
+		width: 180px;
+	}
+
+	button.add-snippet-trigger {
+		padding: 1px 5px;
 	}
 }
 
@@ -3435,6 +3468,38 @@ article.content-message .content .body-text .fade-bar {
 
 .snippet-editor-overlay input[name="title"] {
 	margin-bottom: 4px;
+}
+
+.snippet-editor-overlay .faux-link {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.snippet-editor-overlay .snippet-code-wrap {
+	display: inline-block;
+	padding: 1px 2px;
+	background-color: #EAEAEA;
+	border: 1px solid #D4D4D4;
+	border-radius: 3px;
+	font-family: Monaco, Consolas, monospace;
+
+	input {
+		font-family: Monaco, Consolas, monospace;
+		margin: 0;
+		border: none;
+		box-shadow: none;
+		filter: none;
+		font-size: 11px;
+		background: transparent;
+		color: #000;
+		padding: 0 3px 0 3px;
+		width: 120px;
+		text-align: center;
+	}
+}
+
+.editor-inserting-var {
+	background-color: #D9EBEB;
 }
 
 .snippet-editor-overlay textarea {

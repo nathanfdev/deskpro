@@ -27,6 +27,7 @@
 	<form class="edit" style="display: none">
 		<input type="hidden" name="snippet_id" value="{{ snippet.id }}" />
 		<input type="text" name="title" value="{{ snippet.title }}" />
+		<input type="text" name="shortcut_code" value="{{ snippet.shortcut_code }}" />
 		<textarea name="snippet">{{ snippet.snippet }}</textarea>
 		<textarea name="snippet_html" style="display:none">{{ snippet.snippet_html }}</textarea>
 	</form>

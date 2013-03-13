@@ -139,6 +139,25 @@ class MiscController extends AbstractController
 		$ticket_display->addPagesFromDb();
 		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
 
+		// Snippet short codes
+		$ticket_snippets = $this->em->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+		$snippet_short_codes = array();
+		foreach ($ticket_snippets as $snippet_cat) {
+			if ($snippet_cat['snippets']) {
+				foreach ($snippet_cat['snippets'] as $snippet) {
+					if ($snippet->shortcut_code) {
+						$snippet_short_codes[$snippet->shortcut_code] = $snippet->id;
+					}
+				}
+			}
+		}
+
+		if ($snippet_short_codes) {
+			$js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = " . json_encode($snippet_short_codes) . ";";
+		} else {
+			$js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};";
+		}
+
 		// Chat display elements
 		$chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
 		$chat_display->addPagesFromDb();

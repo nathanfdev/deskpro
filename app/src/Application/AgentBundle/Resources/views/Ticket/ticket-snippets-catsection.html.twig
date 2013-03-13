@@ -1,8 +1,9 @@
 <article class="cat-section cat-{{ category.id }}" data-category-id="{{ category.id }}" style="display:none;">
+	<div class="cat-controls">
+		<button class="clean-white add-snippet-trigger" style="float:right;">{{ phrase('agent.general.add_new_snippet') }}</button>
+		<input type="text" class="filter-input" placeholder="Filter snippets ..." />
+	</div>
 	<ul>
-		<li class="new-snippet">
-			<button class="clean-white add-snippet-trigger">{{ phrase('agent.general.add_new_snippet') }}</button>
-		</li>
 		{% set has_snippets = true %}
 		{% for snippet in snippets %}
 			{% include 'AgentBundle:Ticket:ticket-snippets-row.html.twig' %}

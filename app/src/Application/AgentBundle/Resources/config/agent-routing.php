@@ -1132,6 +1132,13 @@ $collection->add('agent_ticket_snippetviewer', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_getsnippet', new Route(
+	'/tickets/{ticket_id}/get-snippet/{snippet_id}',
+	array('_controller' => 'AgentBundle:Ticket:getSnippet'),
+	array('ticket_id' => '\\d+', 'snippet_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_snippetviewer_newcat', new Route(
 	'/tickets/snippet-viewer/new-cat',
 	array('_controller' => 'AgentBundle:Ticket:newSnippetCat'),

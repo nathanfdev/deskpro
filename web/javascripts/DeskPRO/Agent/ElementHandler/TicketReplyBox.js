@@ -357,6 +357,62 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
+		if (textarea.data('redactor')) {
+			var ed = textarea.getEditor();
+			var api = textarea.data('redactor');
+
+			var te = new DeskPRO.TextExpander({
+				textarea: ed,
+				onCombo: function(combo, ev) {
+					combo = combo.replace(/%/g, '');
+					if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
+						ev.preventDefault();
+
+						var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo];
+
+						var focus = api.getFocus(),
+							focusNode = $(focus[0]),
+							testText;
+
+						if (focus[0].nodeType == 3) {
+							testText = focusNode.text().substring(0, focus[1]);
+						} else {
+							focus[0] = focusNode.contents().get(focus[1] - 1);
+							focusNode = $(focus[0]);
+							testText = focusNode.text();
+							focus[1] = testText.length;
+						}
+
+						var	lastAt = testText.lastIndexOf('%'), matches = [];
+
+						if (lastAt != -1) {
+							api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+						}
+
+						// web kit handles content editable without an issue. this prevents the span
+						// from being extended unnecessarily
+						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>&nbsp;');
+
+						$.ajax({
+							url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/get-snippet/' + snippetId,
+							dataType: 'text',
+							success: function(data) {
+								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+								el.after(data);
+								el.remove();
+							}
+						});
+
+						//var html = 'snippet inserted tooowoioeiwe';
+						//textarea.data('redactor').restoreSelection();
+						//textarea.data('redactor').setBuffer();
+						//textarea.data('redactor').insertHtml(html);
+					}
+				}
+			});
+		}
+
 		//------------------------------
 		// Status
 		//------------------------------

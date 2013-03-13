@@ -89,6 +89,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			}
 		};
 
+		this._initFiltering();
+
 		DeskPRO_Window.activeListNav = this.listNav;
 	},
 
@@ -254,7 +256,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				row.data('snippet-id'),
 				editRow.find('input[name=title]').val(),
 				editRow.find('textarea[name=snippet]').val(),
-				editRow.find('textarea[name=snippet_html]').val()
+				editRow.find('textarea[name=snippet_html]').val(),
+				editRow.find('input[name=shortcut_code]').val()
 			);
 		});
 
@@ -354,7 +357,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 	},
 
-	openSnippetEditor: function(snippet_id, title, text, html) {
+	openSnippetEditor: function(snippet_id, title, text, html, shortcut_code) {
 		snippet_id = parseInt(snippet_id, 10);
 
 		var textarea = this.snippetEditorOverlay.find('textarea[name=snippet]');
@@ -373,6 +376,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		} else {
 			this.snippetEditorOverlay.find('.is-new-snippet').show();
 			this.snippetEditorOverlay.find('.is-edit-snippet').hide();
+		}
+
+		if (shortcut_code) {
+			this.snippetEditorOverlay.find('.shortcut-code-input').val(shortcut_code);
+		} else {
+			this.snippetEditorOverlay.find('.shortcut-code-input').val('');
 		}
 
 		this.snippetEditorOverlayObj.open();
@@ -455,6 +464,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				}
 				new_row.show();
 				this.processSnippetRow(new_row);
+
+				var catList = this.wrapper.find('.cat-'+data.category_id).find('ul').html();
+				this.wrapper.find('.alt-cat-'+data.category_id).html(catList);
+
+				if (data.shortcut_code) {
+					if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES) {
+						window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};
+					}
+
+					window.DESKPRO_TICKET_SNIPPET_SHORTCODES[data.shortcut_code] = data.snippet_id;
+				}
+
 				self.updateUi();
 			}
 		}).always(function() {
@@ -469,5 +490,47 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			show.css('max-height', '30').addClass('long');
 			show.closest('.snippet').addClass('long');
 		}
+	},
+
+	//#########################################################################
+	// Filtering
+	//#########################################################################
+
+	_initFiltering: function() {
+		var self = this;
+		this.wrapper.find('.filter-input').on('keyup', function() {
+			var input = $.trim($(this).val());
+			var section = $(this).closest('.cat-section');
+
+			if (!input) {
+				section.find('li.snippet').show();
+
+				if (section.hasClass('cat-0')) {
+					section.find('.cat-group').show();
+				}
+
+			} else {
+				input = input.toLowerCase();
+				section.find('li.snippet').each(function() {
+					if ($(this).find('label').text().toLowerCase().indexOf(input) !== -1) {
+						$(this).show().addClass('filter-show');
+					} else {
+						$(this).hide().removeClass('filter-show');
+					}
+				});
+
+				if (section.hasClass('cat-0')) {
+					section.find('.cat-group').each(function() {
+						if ($(this).find('li.filter-show')[0]) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					});
+				}
+			}
+
+			self.updateUi();
+		});
 	}
 });

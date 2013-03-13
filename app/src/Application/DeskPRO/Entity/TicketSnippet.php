@@ -78,6 +78,11 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
+	protected $shortcut_code = null;
+
+	/**
+	 * @var string
+	 */
 	protected $snippet_html = '';
 
 	protected static $_replacement_cache = array();
@@ -314,6 +319,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code', ));
 		$metadata->mapField(array( 'fieldName' => 'snippet', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet', ));
 		$metadata->mapField(array( 'fieldName' => 'snippet_html', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet_html', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

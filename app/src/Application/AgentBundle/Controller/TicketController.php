@@ -690,6 +690,11 @@ class TicketController extends AbstractController
 		}
 		$snippet->person = $this->person;
 
+		$snippet->shortcut_code = $this->in->getString('shortcut_code');
+		if (!$snippet->shortcut_code) {
+			$snippet->shortcut_code = null;
+		}
+
 		$this->em->transactional(function($em) use ($snippet) {
 			$em->persist($snippet);
 			$em->flush();
@@ -703,6 +708,21 @@ class TicketController extends AbstractController
 			$person = null;
 		}
 
+		// Check for dupe codes
+		if ($snippet->shortcut_code) {
+			$exists = $this->db->fetchColumn("
+				SELECT id FROM ticket_snippets
+				WHERE shortcut_code = ?
+				AND id != ?
+			", array($snippet->shortcut_code, $snippet->id));
+
+			if ($exists) {
+				$snippet->shortcut_code = $snippet->shortcut_code . $snippet->id;
+				$this->em->persist($snippet);
+				$this->em->flush();
+			}
+		}
+
 		return $this->createJsonResponse(array(
 			'snippet_row_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-row.html.twig', array(
 				'snippet' => $snippet,
@@ -710,6 +730,7 @@ class TicketController extends AbstractController
 				'person' => $person,
 			)),
 			'snippet_id' => $snippet['id'],
+			'shortcut_code' => $snippet['shortcut_code'],
 			'category_id' => $category['id']
 		));
 	}
@@ -734,6 +755,19 @@ class TicketController extends AbstractController
 			'snippet_id' => $snippet_id,
 			'category_id' => $category_id
 		));
+	}
+
+	public function getSnippetAction($ticket_id, $snippet_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$snippet = $this->em->find('DeskPRO:TicketSnippet', $snippet_id);
+
+		if (!$snippet || !$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$res = new Response($snippet->snippetFormattedHtml($ticket, $this->person));
+		return $res;
 	}
 
 	############################################################################

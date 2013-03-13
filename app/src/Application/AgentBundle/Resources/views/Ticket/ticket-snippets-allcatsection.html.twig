@@ -1,0 +1,24 @@
+<article class="cat-section cat-0" data-category-id="0" style="display:none;">
+	<div class="cat-controls">
+		<input type="text" class="filter-input" placeholder="Filter snippets ..." />
+	</div>
+
+	{% for category in ticket_snippet_cats %}
+		<div class="cat-group catgroup-{{ category.id }}">
+			<header class="cat-title {% if loop.index == 1 %}first{% endif %}">{{ category.title }}</header>
+
+			<div class="alt-cat-{{ category.id }}">
+				{% set group = ticket_snippets[category.id] %}
+				<ul>
+					{% set has_snippets = true %}
+					{% for snippet in group.snippets %}
+						{% include 'AgentBundle:Ticket:ticket-snippets-row.html.twig' %}
+					{% else %}
+						{% set has_snippets = false %}
+					{% endfor %}
+					<li class="no-snippets" {% if has_snippets %}style="display: none"{% endif %}>This category has no snippets.</li>
+				</ul>
+			</div>
+		</div>
+	{% endfor %}
+</article>
