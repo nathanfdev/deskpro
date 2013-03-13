@@ -24,6 +24,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				$('li.snippet', info.tabContent).each(function() {
 					self.processSnippetRow($(this));
 				});
+
+				window.setTimeout(function() {
+					self.updateUi();
+				}, 10);
 			}
 		});
 		this.ownObject(this.catTabs);
