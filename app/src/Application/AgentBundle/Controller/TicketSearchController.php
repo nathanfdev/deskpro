@@ -385,7 +385,7 @@ class TicketSearchController extends AbstractController
 				$prefs['agent.ui.ticket-source-grouping.' . $batch_id] = $ticket_batch['grouping'];
 			}
 
-			if ($ticket_batch && is_string($ticket_batch['ticket_ids'])) {
+			if ($ticket_batch && !empty($ticket_batch['ticket_ids']) && is_string($ticket_batch['ticket_ids'])) {
 				$ticket_batch['ticket_ids'] = explode(',', $ticket_batch['ticket_ids']);
 				$ticket_batch['ticket_ids'] = Arrays::func($ticket_batch['ticket_ids'], 'trim');
 				$ticket_batch['ticket_ids'] = Arrays::castToType($ticket_batch['ticket_ids'], 'int', 'discard');
