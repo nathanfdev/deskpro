@@ -210,7 +210,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_chat" class="chat-tab">
 			<div class="messages chat-transcript {% if convo.status == 'ended' and convo.ended_by != 'timeout' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
-					<div class="row server-ack user-ack {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
+					<div class="row server-ack {% if message.date_received %}user-ack{% endif %} {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
 						{% if message.is_sys %}
 							<div class="message-content">
 								<div class="message">
@@ -243,7 +243,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</div>
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
-								<span class="ack-icon"></span>
+								<span class="ack-icon" {% if message.date_received %}title="User recieved message at: {{ message.date_received|date('fulltime') }}"{% endif %}></span>
 								<div class="chat-clear"></div>
 							</div>
 						{% else %}
