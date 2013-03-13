@@ -94,6 +94,12 @@ class WorkHoursSet
 		$this->work_days = $work_days;
 		$this->work_timezone = $work_timezone;
 		$this->work_holidays = $work_holidays;
+
+		if ($this->work_start > $this->work_end) {
+			$tmp = $this->work_start;
+			$this->work_start = $this->work_end;
+			$this->work_end = $tmp;
+		}
 	}
 
 	public function getActiveTime()
