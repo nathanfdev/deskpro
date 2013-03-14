@@ -693,7 +693,6 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/token-field/token-field.css',
 		'vendor/select2/select2.css',
 		'vendor/redactor/redactor.css',
-		'vendor/font-awesome/font-awesome.min.css'
 	)
 );
 
