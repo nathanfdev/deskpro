@@ -43,7 +43,11 @@ class TicketMacro extends AbstractEntityRepository
 {
 	public function getMacrosForPerson(Entity\Person $person)
 	{
-		// TODO:permissions
-		return $this->findAll();
+		return $this->_em->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMacro m
+			WHERE (m.person = ?0 OR m.is_global = 1) AND m.is_enabled = true
+			ORDER BY m.title ASC
+		")->execute(array($person));
 	}
 }
