@@ -483,6 +483,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var result = ajaxHit;
 
+			if (result.refresh_tab) {
+				// Reload the ticket page
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+				self.closeSelf();
+			}
+
 			loadingEl.hide();
 
 			if (result.error && result.error == 'no_message') {

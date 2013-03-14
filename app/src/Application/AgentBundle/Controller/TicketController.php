@@ -1153,6 +1153,7 @@ class TicketController extends AbstractController
 
 		$add_reply_html = array();
 		$add_snippet_html = array();
+		$refresh_tab = false;
 
 		$factory = new ActionsFactory();
 		$collection = new ActionsCollection();
@@ -1165,6 +1166,7 @@ class TicketController extends AbstractController
 					if ($action instanceof AgentAction || $action instanceof AgentTeamAction || $action instanceof ReplyAction || $action instanceof ReplySnippetAction) {
 						// Ignore, the replybox itself changed for these actions
 					} else {
+						$refresh_tab = true;
 						$collection->add($action);
 					}
 				}
@@ -1503,6 +1505,7 @@ class TicketController extends AbstractController
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],
 			'close_tab' => $close_tab,
+			'refresh_tab' => $refresh_tab,
 			'client_messages' => $client_messages,
 			'cc_list' => $cc_list,
 		));
