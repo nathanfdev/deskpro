@@ -67,7 +67,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					obj.addBtnSeparatorAfter('dp_snippets');
 
 					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
-					snippetBtn.addClass('snippets').find('a').text('Snippets');
+					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
 
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
@@ -741,7 +741,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 	setReplyAsOption: function(item) {
 		var replyAsType = this.getElById('reply_as_type');
-		replyAsType.data('type', item.data('type')).text(item.data('label'));
+
+		var html = Orb.escapeHtml(item.data('label'));
+		html = html.replace(/^Send Reply/, 'Send <span class="show-key-shortcut">R</span>eply');
+		replyAsType.data('type', item.data('type')).html(html);
 
 		var macroUrl = item.data('get-macro-url');
 

@@ -15,10 +15,10 @@
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
 <ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
-	<li class="open-settings-trigger">Create Macros</li>
 	{% for macro in macros %}
 		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
 	{% endfor %}
+	<li class="open-settings-trigger" style="background-color: #E4E4E4; border-top: 1px solid #C1C1C1;"><i class="icon-cog"></i> Manage Macros</li>
 </ul>
 
 <div class="delete-ticket-overlay overlay" style="display:none">

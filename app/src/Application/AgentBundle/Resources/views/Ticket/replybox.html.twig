@@ -46,15 +46,15 @@
 			<ul>
 				<li data-type="awaiting_user" data-label="Send Reply as Awaiting User">
 					<div class="on-icon"><i class="icon-ok"></i></div>
-					<i class="icon-circle-blank"></i> Awaiting User
+					<i class="icon-circle-blank"></i> Awaiting <span class="show-key-shortcut">U</span>ser
 				</li>
 				<li data-type="awaiting_agent" data-label="Send Reply as Awaiting Agent">
 					<div class="on-icon"><i class="icon-ok"></i></div>
-					<i class="icon-circle"></i> Awaiting Agent
+					<i class="icon-circle"></i> Awaiting <span class="show-key-shortcut">A</span>gent
 				</li>
 				<li data-type="resolved" data-label="Send Reply as Resolved">
 					<div class="on-icon"><i class="icon-ok"></i></div>
-					<i class="icon-certificate"></i> Resolved
+					<i class="icon-certificate"></i> Resolve<span class="show-key-shortcut">d</span>
 				</li>
 			</ul>
 		</div>
@@ -241,13 +241,13 @@
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
 							{% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' or (ticket.status == 'awaiting_user' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send Reply as Awaiting User</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting User</span>
 							{% elseif app.getSetting('core_tickets.reply_status') == 'awaiting_agent' or (ticket.status == 'awaiting_agent' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send Reply as Awaiting Agent</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting Agent</span>
 							{% elseif app.getSetting('core_tickets.reply_status') == 'resolved' or (ticket.status == 'resolved' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="resolved">Send Reply as Resolved</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="resolved">Send <span class="show-key-shortcut">R</span>eply as Resolved</span>
 							{% else %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send Reply as Awaiting User</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting User</span>
 							{% endif %}
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
