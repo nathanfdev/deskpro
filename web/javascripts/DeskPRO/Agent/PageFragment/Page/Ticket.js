@@ -445,7 +445,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var form = this.getEl('replybox_wrap').find('.ticket-reply-form');
 		var keepOpen = true;
-		if (this.getEl('replybox_wrap').find('.keep_open_toggle').hasClass('radio-on')) {
+		if (this.getEl('replybox_wrap').find('[name="options[close_tab]"]').prop('checked')) {
 			keepOpen = false;
 		}
 
