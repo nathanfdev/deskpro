@@ -56,6 +56,12 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		this.addContextShortcut('ticket', 'shift+r', 'shortcutFocusReply');
 		this.addContextShortcut('ticket', 'shift+p', 'openUserProfile');
+		this.addContextShortcut('ticket', 'ctrl+s', 'shortcutOpenSnippets');
+		this.addContextShortcut('ticket', 'ctrl+r', 'shortcutSendReply');
+		this.addContextShortcut('ticket', 'ctrl+u', 'shortcutReplySetAwaitingUser');
+		this.addContextShortcut('ticket', 'ctrl+a', 'shortcutReplySetAwaitingAgent');
+		this.addContextShortcut('ticket', 'ctrl+d', 'shortcutReplySetResolved');
+		this.addContextShortcut('ticket', 'ctrl+o', 'shortcutReplyOpenProperties');
 		this.addContextShortcut('ticket', 'shift+o', 'openOrgProfile');
 		this.addContextShortcut('person', 'shift+o', 'openOrgProfile');
 	},

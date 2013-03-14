@@ -17,6 +17,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.hasInitPopout = false;
 		this.popoutPage = null;
 		this.lastActiveDate = null;
+		this.ticketReplyBox = null;
 	},
 
 	initPage: function(el) {
@@ -105,13 +106,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.addEvent('shortcutFocusReply', function(ev) {
-
 			ev.preventDefault();
 
 			// Scroll down
 			self.wrapper.find('div.layout-content').trigger('goscrollbottom');
-
 			self.focusOnReply();
+		});
+
+		this.addEvent('shortcutOpenSnippets', function(ev) {
+			ev.preventDefault();
+			self.shortcutOpenSnippets();
+		});
+		this.addEvent('shortcutSendReply', function(ev) {
+			ev.preventDefault();
+			self.shortcutSendReply();
+		});
+		this.addEvent('shortcutReplySetAwaitingUser', function(ev) {
+			ev.preventDefault();
+			self.shortcutReplySetAwaitingUser();
+		});
+		this.addEvent('shortcutReplySetAwaitingAgent', function(ev) {
+			ev.preventDefault();
+			self.shortcutReplySetAwaitingAgent();
+		});
+		this.addEvent('shortcutReplySetResolved', function(ev) {
+			ev.preventDefault();
+			self.shortcutReplySetResolved();
+		});
+		this.addEvent('shortcutReplyOpenProperties', function(ev) {
+			ev.preventDefault();
+			self.shortcutReplyOpenProperties();
 		});
 
 		this.addEvent('openUserProfile', function(ev) {
@@ -2055,5 +2079,63 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.getEl('editname_start').on('click', startEditable);
 		this.getEl('editname_end').on('click', stopEditable);
+	},
+
+	shortcutOpenSnippets: function() {
+		if (!this.ticketReplyBox) {
+			return;
+		}
+
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.focusOnReply();
+		this.ticketReplyBox.snippetsViewer.open();
+	},
+
+	shortcutSendReply: function() {
+		if (!this.ticketReplyBox) {
+			return;
+		}
+
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.ticketReplyBox.el.find('.submit-trigger').click();
+	},
+
+	shortcutReplySetAwaitingUser: function() {
+		if (!this.ticketReplyBox) {
+			return;
+		}
+
+		this.ticketReplyBox.setReplyAsOptionName('awaiting_user');
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.focusOnReply();
+	},
+
+	shortcutReplySetAwaitingAgent: function() {
+		if (!this.ticketReplyBox) {
+			return;
+		}
+
+		this.ticketReplyBox.setReplyAsOptionName('awaiting_agent');
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.focusOnReply();
+	},
+
+	shortcutReplySetResolved: function() {
+		if (!this.ticketReplyBox) {
+			return;
+		}
+
+		this.ticketReplyBox.setReplyAsOptionName('resolved');
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.focusOnReply();
+	},
+
+	shortcutReplyOpenProperties: function() {
+		if (!this.ticketReplyBox) {
+			return;
+		}
+
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.ticketReplyBox.openStatusMenu();
 	}
 });

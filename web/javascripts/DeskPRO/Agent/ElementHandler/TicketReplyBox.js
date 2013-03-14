@@ -11,6 +11,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
+		this.page.ticketReplyBox = this;
 		var sigTrimmed = false;
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
@@ -78,6 +79,44 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
 				var lastH = ed.height();
+				ed.on('keyup', function(ev) {
+					if (ev.ctrlKey) {
+						if (ev.ctrlKey && (ev.which == 85)) {
+							ev.preventDefault();
+							self.page.shortcutReplySetAwaitingUser();
+							return;
+						}
+						if (ev.ctrlKey && (ev.which == 65)) {
+							ev.preventDefault();
+							self.page.shortcutReplySetAwaitingAgent();
+							return;
+						}
+						if (ev.ctrlKey && (ev.which == 68)) {
+							ev.preventDefault();
+							self.page.shortcutReplySetResolved();
+							return;
+						}
+						if (ev.ctrlKey && (ev.which == 82)) {
+							ev.preventDefault();
+							self.page.shortcutSendReply();
+							return;
+						}
+						if (ev.ctrlKey && (ev.which == 83)) {
+							ev.preventDefault();
+							window.setTimeout(function() {
+								self.page.shortcutOpenSnippets();
+							}, 10);
+							return;
+						}
+						if (ev.ctrlKey && (ev.which == 79)) {
+							ev.preventDefault();
+							window.setTimeout(function() {
+								self.page.shortcutReplyOpenProperties();
+							}, 10);
+							return;
+						}
+					}
+				});
 				ed.on('keypress change', function() {
 					textarea.addClass('touched');
 
@@ -580,6 +619,23 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				});
 
 				statusMacroFilter.on('keyup', function(ev) {
+
+					if (ev.ctrlKey && (ev.which == 85)) {
+						closeStatusMenu();
+						self.page.shortcutReplySetAwaitingUser();
+						return;
+					}
+					if (ev.ctrlKey && (ev.which == 65)) {
+						closeStatusMenu();
+						self.page.shortcutReplySetAwaitingAgent();
+						return;
+					}
+					if (ev.ctrlKey && (ev.which == 68)) {
+						closeStatusMenu();
+						self.page.shortcutReplySetResolved();
+						return;
+					}
+
 					if (ev.keyCode == 13 /* enter key */) {
 						ev.preventDefault();
 						var current = statusListItems.filter('.cursor');
@@ -666,10 +722,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			statusMacroFilter.focus();
 		};
 
+		this.openStatusMenu = openStatusMenu;
+
 		statusMenuTrigger.on('click', function(ev) {
 			ev.preventDefault();
 			openStatusMenu();
 		});
+	},
+
+	setReplyAsOptionName: function(name) {
+		var item = this.getElById('status_menu').find('li[data-type="' + name + '"]').first();
+		if (item[0]) {
+			this.setReplyAsOption(item);
+		}
 	},
 
 	setReplyAsOption: function(item) {
@@ -781,6 +846,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 			});
 		}
+
+		this.page.focusOnReply()
 	},
 
 	hideAgentNotifyList: function() {
