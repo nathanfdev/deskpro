@@ -22,7 +22,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Macros';
 					<td><label class="obj-macro" data-macro-id="{{ macro.id }}">{{ macro.title }}</label></td>
 					<td class="prop" style="text-align: center;">
 						<ul class="controls">
-							<li class="delete delete-macro" data-delete-url="{{ path('agent_settings_ticketmacros_del', { 'macro_id': macro.id }) }}"></li>
+							<li class="delete delete-macro" data-delete-url="{{ path('agent_settings_ticketmacros_del', { 'macro_id': macro.id }) }}" data-macro-id="{{ macro.id }}"></li>
 							<li class="edit"  data-route="poppage:{{ path('agent_settings_ticketmacros_edit', { 'macro_id': macro.id }) }}" data-zindex="32050"></li>
 						</ul>
 					</td>

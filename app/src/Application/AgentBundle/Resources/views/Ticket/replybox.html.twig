@@ -25,21 +25,19 @@
 <input type="hidden" id="{{replyBaseId}}_action" name="options[action]" value="" />
 
 <div class="dp-menu replybox" id="{{ replyBaseId }}_status_menu" style="min-width: 225px;">
-	{% if app.user.getHelper('Agent').getMacros()|length %}
-		<section>
-			<div class="dp-menu-area small">
-				<input type="text" class="label-input macro-filter" placeholder="Reply and set a macro..." />
-				<ul class="macro-list">
-					{% for macro in app.user.getHelper('Agent').getMacros() %}
-						<li data-type="macro:{{ macro.id }}" data-label="Send Reply and apply {{ macro.title }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
-							<div class="on-icon"><i class="icon-ok"></i></div>
-							{{ macro.title }}
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-		</section>
-	{% endif %}
+	<section>
+		<div class="dp-menu-area small">
+			<input type="text" class="label-input macro-filter" placeholder="Reply and set a macro..." />
+			<ul class="macro-list">
+				{% for macro in app.user.getHelper('Agent').getMacros() %}
+					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="Send Reply and apply {{ macro.title }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
+						<div class="on-icon"><i class="icon-ok"></i></div>
+						<span class="macro-title">{{ macro.title }}</span>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</section>
 	<section>
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label>Reply and set a status</label>

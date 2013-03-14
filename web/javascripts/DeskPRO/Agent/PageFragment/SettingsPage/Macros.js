@@ -30,6 +30,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Macros = new Orb.Class({
 		this.el.on('click', '.delete-macro', function() {
 			var row = $(this).closest('tr');
 			var url = $(this).data('delete-url');
+			var macroId = $(this).data('macro-id');
 
 			DeskPRO_Window.showConfirm('Are you sure you want to permanantly delete this macros?', function() {
 				$.ajax({
@@ -38,6 +39,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Macros = new Orb.Class({
 						row.fadeOut(function() {
 							row.remove();
 						});
+
+						$('.res-ticketmacro-'+ macroId).remove();
 					}
 				});
 			});

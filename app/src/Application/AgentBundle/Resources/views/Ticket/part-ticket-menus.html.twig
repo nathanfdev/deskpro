@@ -16,7 +16,7 @@
 </ul>
 <ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
 	{% for macro in macros %}
-		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
+		<li class="res-ticketmacro-{{ macro.id }}" data-macro-id="{{macro.id}}"><span class="macro-title">{{macro.title}}</span></li>
 	{% endfor %}
 	<li class="open-settings-trigger" style="background-color: #E4E4E4; border-top: 1px solid #C1C1C1;"><i class="icon-cog"></i> Manage Macros</li>
 </ul>

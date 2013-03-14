@@ -439,6 +439,7 @@ class SettingsController extends AbstractController
 
 		if ($macro_id) {
 
+			$is_new = false;
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if (!$macro) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
@@ -447,6 +448,7 @@ class SettingsController extends AbstractController
 		} else {
 			$macro = new Entity\TicketMacro();
 			$macro['person'] = $this->person;
+			$is_new = true;
 		}
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -460,7 +462,8 @@ class SettingsController extends AbstractController
 
         return $this->render('AgentBundle:Settings:ticket-macro-edit.html.twig', array(
 			'ticket_options' => $ticket_options,
-			'macro' => $macro
+			'macro'          => $macro,
+			'is_new'         => $is_new,
 		));
 	}
 
@@ -468,6 +471,7 @@ class SettingsController extends AbstractController
 	{
 		if ($macro_id) {
 
+			$is_new = false;
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if (!$macro) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
@@ -476,6 +480,7 @@ class SettingsController extends AbstractController
 		} else {
 			$macro = new Entity\TicketMacro();
 			$macro['person'] = $this->person;
+			$is_new = true;
 		}
 
 		$macro['title'] = $this->in->getString('macro.title');
@@ -489,7 +494,12 @@ class SettingsController extends AbstractController
 		$this->em->persist($macro);
 		$this->em->flush();
 
-		return $this->createJsonResponse(array('success' => true));
+		return $this->createJsonResponse(array(
+			'success'  => true,
+			'is_new'   => $is_new,
+			'macro_id' => $macro->id,
+			'title'    => $macro->title
+		));
 	}
 
 	public function ticketMacroDeleteAction($macro_id)
