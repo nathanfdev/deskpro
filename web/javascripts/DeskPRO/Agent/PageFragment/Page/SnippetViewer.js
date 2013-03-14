@@ -8,6 +8,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'ticket_snippets';
 		this.allowDupe = true;
+		this.activeSection = null;
+		this.activeSnippets = $([]);
 	},
 
 	initPage: function(el) {
@@ -26,6 +28,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				});
 
 				window.setTimeout(function() {
+					self.activeSection = $(info.tabContent);
+					$(info.tabContent).find('.filter-input').first().focus();
 					self.updateUi();
 				}, 10);
 			}
@@ -43,30 +47,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var snippetId = $(this).data('snippet-id');
-			var snippetEl = $('.snippet-' + snippetId, self.wrapper);
-			var snippetValEl = $('textarea.value.formatted.text', snippetEl);
-			var snippetValHtmlEl = $('textarea.value.formatted.html', snippetEl);
-
-			var snippet, snippetHtml;
-
-			if (!snippetValEl.length) {
-				snippet = $('.content.raw.text', snippetEl).text().trim();
-				snippetHtml = $('.content.raw.html', snippetEl).html().trim();
-			} else {
-				snippet = snippetValEl.val().trim();
-				snippetHtml = snippetValHtmlEl.val().trim();
-			}
-
-			var evData = {
-				event: ev,
-				snippetId: snippetId,
-				snippetEl: snippetEl,
-				snippet: snippet,
-				snippetHtml: snippetHtml
-			};
-
-			self.fireEvent('snippetClick', [evData]);
+			self.insertSnippetEl($(this), ev);
 
 			self.closeSelf();
 		});
@@ -95,6 +76,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		this._initFiltering();
 
+		this.addEvent('activate', function() {
+			if (this.activeSection) {
+				window.setTimeout(function() {
+					self.activeSection.find('.filter-input').first().focus();
+				}, 10);
+			}
+		})
+
 		DeskPRO_Window.activeListNav = this.listNav;
 	},
 
@@ -112,6 +101,33 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			DeskPRO_Window.activeListNav = null;
 		}
 		if (this.newCatOverlay) this.newCatOverlay.remove();
+	},
+
+	insertSnippetEl: function(el, event) {
+		var snippetId = el.data('snippet-id');
+		var snippetEl = $('.snippet-' + snippetId, self.wrapper);
+		var snippetValEl = $('textarea.value.formatted.text', snippetEl);
+		var snippetValHtmlEl = $('textarea.value.formatted.html', snippetEl);
+
+		var snippet, snippetHtml;
+
+		if (!snippetValEl.length) {
+			snippet = $('.content.raw.text', snippetEl).text().trim();
+			snippetHtml = $('.content.raw.html', snippetEl).html().trim();
+		} else {
+			snippet = snippetValEl.val().trim();
+			snippetHtml = snippetValHtmlEl.val().trim();
+		}
+
+		var evData = {
+			event: event || null,
+			snippetId: snippetId,
+			snippetEl: snippetEl,
+			snippet: snippet,
+			snippetHtml: snippetHtml
+		};
+
+		this.fireEvent('snippetClick', [evData]);
 	},
 
 	//#########################################################################
@@ -500,9 +516,64 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	// Filtering
 	//#########################################################################
 
+	refreshKbNavList: function() {
+		if (this.activeSection) {
+			this.activeSnippets = this.activeSection.find('li.snippet').not('.filter-hide');
+			if (!this.activeSnippets.filter('.cursor')) {
+				this.el.find('li.snippet.cursor').removeClass('cursor');
+			}
+		}
+	},
+
 	_initFiltering: function() {
 		var self = this;
-		this.wrapper.find('.filter-input').on('keyup', function() {
+		this.wrapper.find('.filter-input').on('keydown', function(ev) {
+			var activeSnippets = self.activeSnippets;
+
+			if (ev.keyCode == 13 /* enter key */) {
+				ev.preventDefault();
+				var current = activeSnippets.filter('.cursor');
+				if (current[0]) {
+					current.click();
+					self.insertSnippetEl(current);
+					window.setTimeout(function() {
+						self.activeSection.find('.filter-input').first().focus();
+					}, 20);
+				}
+			} else if (ev.keyCode == 27 /* escape key */) {
+				ev.preventDefault();
+				self.closeSelf();
+			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+				ev.preventDefault();
+				var dir = ev.keyCode == 40 ? 'down' : 'up';
+
+				var current = activeSnippets.filter('.cursor');
+				if (!current.length) {
+					if (dir == 'down') {
+						activeSnippets.first().addClass('cursor');
+					} else {
+						activeSnippets.last().addClass('cursor');
+					}
+				} else {
+					var nextIndex = activeSnippets.index(current);
+					if (dir == 'down') {
+						nextIndex++;
+					} else {
+						nextIndex--;
+					}
+
+					if (nextIndex < 0) {
+						nextIndex = activeSnippets.length-1;
+					} else if (nextIndex > (activeSnippets.length-1)) {
+						nextIndex = 0;
+					}
+
+					current.removeClass('cursor');
+					activeSnippets.eq(nextIndex).addClass('cursor');
+				}
+			}
+		});
+		this.wrapper.find('.filter-input').on('keyup', function(ev) {
 			var input = $.trim($(this).val());
 			var section = $(this).closest('.cat-section');
 
@@ -517,15 +588,15 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				input = input.toLowerCase();
 				section.find('li.snippet').each(function() {
 					if ($(this).find('label').text().toLowerCase().indexOf(input) !== -1) {
-						$(this).show().addClass('filter-show');
+						$(this).show().removeClass('filter-hide');
 					} else {
-						$(this).hide().removeClass('filter-show');
+						$(this).hide().addClass('filter-hide');
 					}
 				});
 
 				if (section.hasClass('cat-0')) {
 					section.find('.cat-group').each(function() {
-						if ($(this).find('li.filter-show')[0]) {
+						if ($(this).find('li').not('.filter-hide')[0]) {
 							$(this).show();
 						} else {
 							$(this).hide();
@@ -534,6 +605,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				}
 			}
 
+			self.refreshKbNavList();
 			self.updateUi();
 		});
 	}

@@ -389,7 +389,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 
 				if (isWysiwyg && textarea.data('redactor')) {
-					textarea.data('redactor').restoreSelection();
+					try {
+						textarea.data('redactor').restoreSelection();
+					} catch (e) {}
 					textarea.data('redactor').setBuffer();
 					textarea.data('redactor').insertHtml(info.snippetHtml);
 				} else {
