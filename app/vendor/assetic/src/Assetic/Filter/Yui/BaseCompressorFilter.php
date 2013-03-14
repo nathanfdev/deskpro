@@ -92,11 +92,9 @@ abstract class BaseCompressorFilter implements FilterInterface
         unlink($input);
 
         if (0 < $code) {
-            if (file_exists($output)) {
-                unlink($output);
-            }
-
-            throw new \RuntimeException($proc->getErrorOutput());
+			$new_file = realpath(DP_ROOT.'/../') . '/data/debug/' . basename($output);
+			file_put_contents($new_file, $content);
+            throw new \RuntimeException("At: $new_file: " . $proc->getErrorOutput());
         } elseif (!file_exists($output)) {
             throw new \RuntimeException('Error creating output file.');
         }
