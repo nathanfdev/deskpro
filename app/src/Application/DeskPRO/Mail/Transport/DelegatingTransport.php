@@ -221,6 +221,9 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 			if (!$tr->isStarted()) $tr->start();
 
+			if ($message instanceof \Orb\Mail\Message) {
+				$message->preSend();
+			}
 			$success = $tr->send($message, $failedRecipients);
 		} elseif ($use_queue) {
 			$tr= $this->getQueueTransport();
@@ -228,6 +231,9 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Sending to queue transport: %s", get_class($tr)));
 
+			if ($message instanceof \Orb\Mail\Message) {
+				$message->preSend();
+			}
 			$success = $tr->send($message);
 		} else {
 			try {
@@ -236,6 +242,9 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 				$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Using detected transport: %s", get_class($tr)));
 
+				if ($message instanceof \Orb\Mail\Message) {
+					$message->preSend();
+				}
 				$success = $tr->send($message, $failedRecipients);
 			} catch (\Swift_TransportException $e) {
 				$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Send failed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
@@ -247,6 +256,10 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$this->getLogger()->logInfo("[DelegatingTransport] Send failed");
 				if (!$is_retrying && $this->isQueueEnabled()) {
 					$this->getLogger()->logInfo("[DelegatingTransport] Saving to queue to retry later");
+
+					if ($message instanceof \Orb\Mail\Message) {
+						$message->preSend();
+					}
 					$success = $this->getQueueTransport()->send($message);
 				} else {
 					$success = false;
