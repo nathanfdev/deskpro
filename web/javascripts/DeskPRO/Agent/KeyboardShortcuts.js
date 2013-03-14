@@ -5,6 +5,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 	initialize: function() {
 		var self = this;
+		this.isWindows = navigator.platform.toUpperCase().indexOf('WIN') !== -1;
+		this.isMac     = navigator.platform.toUpperCase().indexOf('MAC') !== -1;
 
 		$(document).bind('keydown', 'ctrl+shift+left', this.tabLeft.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+right', this.tabRight.bind(this));
@@ -56,12 +58,23 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		this.addContextShortcut('ticket', 'shift+r', 'shortcutFocusReply');
 		this.addContextShortcut('ticket', 'shift+p', 'openUserProfile');
-		this.addContextShortcut('ticket', 'ctrl+s', 'shortcutOpenSnippets');
-		this.addContextShortcut('ticket', 'ctrl+r', 'shortcutSendReply');
-		this.addContextShortcut('ticket', 'ctrl+u', 'shortcutReplySetAwaitingUser');
-		this.addContextShortcut('ticket', 'ctrl+a', 'shortcutReplySetAwaitingAgent');
-		this.addContextShortcut('ticket', 'ctrl+d', 'shortcutReplySetResolved');
-		this.addContextShortcut('ticket', 'ctrl+o', 'shortcutReplyOpenProperties');
+
+		if (this.isMac) {
+			this.addContextShortcut('ticket', 'ctrl+s', 'shortcutOpenSnippets');
+			this.addContextShortcut('ticket', 'ctrl+r', 'shortcutSendReply');
+			this.addContextShortcut('ticket', 'ctrl+u', 'shortcutReplySetAwaitingUser');
+			this.addContextShortcut('ticket', 'ctrl+a', 'shortcutReplySetAwaitingAgent');
+			this.addContextShortcut('ticket', 'ctrl+d', 'shortcutReplySetResolved');
+			this.addContextShortcut('ticket', 'ctrl+o', 'shortcutReplyOpenProperties');
+		} else {
+			this.addContextShortcut('ticket', 'alt+s', 'shortcutOpenSnippets');
+			this.addContextShortcut('ticket', 'alt+r', 'shortcutSendReply');
+			this.addContextShortcut('ticket', 'alt+u', 'shortcutReplySetAwaitingUser');
+			this.addContextShortcut('ticket', 'alt+a', 'shortcutReplySetAwaitingAgent');
+			this.addContextShortcut('ticket', 'alt+d', 'shortcutReplySetResolved');
+			this.addContextShortcut('ticket', 'alt+o', 'shortcutReplyOpenProperties');
+		}
+
 		this.addContextShortcut('ticket', 'shift+o', 'openOrgProfile');
 		this.addContextShortcut('person', 'shift+o', 'openOrgProfile');
 	},

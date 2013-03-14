@@ -29,9 +29,9 @@ DeskPRO.TextExpander = new Orb.Class({
 			// Other input keys after 'start'
 			// of combo string
 			} else if (self.comboString) {
-				var char = String.fromCharCode(ev.which);
-				if (char.match(/[a-zA-Z0-9:\.\-_]/)) {
-					self.comboString += char;
+				var chr = String.fromCharCode(ev.which);
+				if (chr.match(/[a-zA-Z0-9:\.\-_]/)) {
+					self.comboString += chr;
 				} else {
 					self.comboString = null;
 				}

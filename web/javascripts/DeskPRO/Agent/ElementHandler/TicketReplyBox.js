@@ -80,35 +80,42 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var ed = textarea.getEditor();
 				var lastH = ed.height();
 				ed.on('keyup', function(ev) {
-					if (ev.ctrlKey) {
-						if (ev.ctrlKey && (ev.which == 85)) {
+					var isCtrl = false;
+					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+						isCtrl = true;
+					} else if (ev.altKey) {
+						isCtrl = true;
+					}
+
+					if (isCtrl) {
+						if (isCtrl && (ev.which == 85)) {
 							ev.preventDefault();
 							self.page.shortcutReplySetAwaitingUser();
 							return;
 						}
-						if (ev.ctrlKey && (ev.which == 65)) {
+						if (isCtrl && (ev.which == 65)) {
 							ev.preventDefault();
 							self.page.shortcutReplySetAwaitingAgent();
 							return;
 						}
-						if (ev.ctrlKey && (ev.which == 68)) {
+						if (isCtrl && (ev.which == 68)) {
 							ev.preventDefault();
 							self.page.shortcutReplySetResolved();
 							return;
 						}
-						if (ev.ctrlKey && (ev.which == 82)) {
+						if (isCtrl && (ev.which == 82)) {
 							ev.preventDefault();
 							self.page.shortcutSendReply();
 							return;
 						}
-						if (ev.ctrlKey && (ev.which == 83)) {
+						if (isCtrl && (ev.which == 83)) {
 							ev.preventDefault();
 							window.setTimeout(function() {
 								self.page.shortcutOpenSnippets();
 							}, 10);
 							return;
 						}
-						if (ev.ctrlKey && (ev.which == 79)) {
+						if (isCtrl && (ev.which == 79)) {
 							ev.preventDefault();
 							window.setTimeout(function() {
 								self.page.shortcutReplyOpenProperties();
@@ -622,20 +629,28 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 				statusMacroFilter.on('keyup', function(ev) {
 
-					if (ev.ctrlKey && (ev.which == 85)) {
-						closeStatusMenu();
-						self.page.shortcutReplySetAwaitingUser();
-						return;
+					var isCtrl = false;
+					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+						isCtrl = true;
+					} else if (ev.altKey) {
+						isCtrl = true;
 					}
-					if (ev.ctrlKey && (ev.which == 65)) {
-						closeStatusMenu();
-						self.page.shortcutReplySetAwaitingAgent();
-						return;
-					}
-					if (ev.ctrlKey && (ev.which == 68)) {
-						closeStatusMenu();
-						self.page.shortcutReplySetResolved();
-						return;
+					if (isCtrl) {
+						if (isCtrl && (ev.which == 85)) {
+							closeStatusMenu();
+							self.page.shortcutReplySetAwaitingUser();
+							return;
+						}
+						if (isCtrl && (ev.which == 65)) {
+							closeStatusMenu();
+							self.page.shortcutReplySetAwaitingAgent();
+							return;
+						}
+						if (isCtrl && (ev.which == 68)) {
+							closeStatusMenu();
+							self.page.shortcutReplySetResolved();
+							return;
+						}
 					}
 
 					if (ev.keyCode == 13 /* enter key */) {
