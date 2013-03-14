@@ -37,6 +37,12 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Tickets\TicketActions\AgentAction;
+use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
+use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
+use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -122,7 +128,7 @@ class TicketController extends AbstractController
 
 		$ticket_flagged = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
 
-		$macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+		$macros = $this->person->Agent->getMacros();
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
 
@@ -1134,6 +1140,37 @@ class TicketController extends AbstractController
 
 		$ticket = $this->getTicketOr404($ticket_id, 'reply');
 
+		$action_type = $this->in->getString('options.action');
+		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
+		if ($macro_id) {
+			$action_type = 'macro';
+		}
+
+		$macro = null;
+		if ($macro_id) {
+			$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+		}
+
+		$add_reply_html = array();
+		$add_snippet_html = array();
+
+		$factory = new ActionsFactory();
+		$collection = new ActionsCollection();
+
+		if ($macro) {
+			foreach ($macro->actions as $action) {
+				$action = $factory->createFromInfo($action);
+				if ($action) {
+
+					if ($action instanceof AgentAction || $action instanceof AgentTeamAction || $action instanceof ReplyAction || $action instanceof ReplySnippetAction) {
+						// Ignore, the replybox itself changed for these actions
+					} else {
+						$collection->add($action);
+					}
+				}
+			}
+		}
+
 		#------------------------------
 		# Handle new message
 		#------------------------------
@@ -1241,7 +1278,6 @@ class TicketController extends AbstractController
 		}
 
 		// havent persisted the messag yet, it was just for dupe checking
-
 		if (App::getSetting('core_tickets.enable_billing') && $this->in->getUint('charge_time') && !$message['is_agent_note']) {
 			$charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
 		} else {
@@ -1310,6 +1346,10 @@ class TicketController extends AbstractController
 			$tracker->recordExtra('enabled_cc', $new_user_ids);
 		}
 
+		if (!$message['is_agent_note'] && $collection->countActions()) {
+			$collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+		}
+
 		#------------------------------
 		# Save
 		#------------------------------
@@ -1341,8 +1381,8 @@ class TicketController extends AbstractController
 					$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 				}
 
-				if ($this->in->getString('options.status')) {
-					$ticket['status'] = $this->in->getString('options.status');
+				if ($action_type != 'macro') {
+					$ticket['status'] = $action_type;
 				}
 
 				if ($this->in->getBool('options.do_kbpending')) {
@@ -1963,6 +2003,7 @@ class TicketController extends AbstractController
 	public function ajaxGetMacroAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
+		$GLOBALS['DP_ACTIVE_TICKET'] = $ticket;
 
 		$macro_id = $this->in->getUint('macro_id');
 

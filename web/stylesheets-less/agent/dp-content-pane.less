@@ -2068,11 +2068,13 @@ header.page-header .edit-name-gear {
 }
 
 .profile-box-container > footer {
-	padding: 4px;
+	padding: 5px;
 	background: #D9DADE;
 	.border-radius(0, 0, 3px, 3px);
 	border: 1px solid #ACB6BF;
 	font-size: 11px;
+	-webkit-box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
 
 	.dp-btn {
 		font-size: 12px;
@@ -2090,6 +2092,24 @@ header.page-header .edit-name-gear {
 .profile-box-container > section.ticketreply {
 	border-bottom: none;
 	.border-radius(0, 0, 0, 0);
+}
+
+.profile-box-container > section.ticketreply .actions-row {
+	ul {
+		margin-left: 75px;
+	}
+
+	ul > li.load {
+		list-style-type: none;
+	}
+
+	ul > li {
+		margin-left: 15px;
+		margin-right: 40px;
+		padding: 0;
+		list-style-type: disc;
+		float: left;
+	}
 }
 
 nav.section-subnav {

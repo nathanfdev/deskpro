@@ -50,6 +50,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	protected $_agent_teams = null;
 	protected $_agent_team_ids = null;
 	protected $_snippets;
+	protected $_macros;
 
 	protected $_dep_allowed_ids = null;
 	protected $_dep_disallowed_ids = null;
@@ -372,6 +373,21 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		$this->_snippets = App::getOrm()->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
 
 		return $this->_snippets;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getMacros()
+	{
+		if ($this->_macros !== null) {
+			return $this->_macros;
+		}
+
+		$this->_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+
+		return $this->_macros;
 	}
 
 

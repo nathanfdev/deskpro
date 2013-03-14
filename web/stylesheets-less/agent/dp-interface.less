@@ -2762,6 +2762,88 @@ z-index: 2;
 }
 
 
+/*****************************************************************************
+ * dp-menu
+/*****************************************************************************/
+
+.dp-menu {
+	position: absolute;
+	z-index: 1000;
+	display: none;
+	min-width: 160px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	background-color: #ffffff;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	*border-right-width: 2px;
+	*border-bottom-width: 2px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding;
+	background-clip: padding-box;
+	overflow: hidden;
+}
+
+.dp-menu .dp-menu-area {
+	label {
+		padding: 3px 8px;
+		font-size: 12px;
+		font-weight: bold;
+		color: #8D8D8D;
+	}
+
+	input.label-input {
+		box-shadow: none;
+		filter: none;
+		border: none;
+		margin: 0;
+		border-bottom: 1px dotted #C8C8C8;
+		width: 100%;
+		background: url(../../images/agent/mag-left.png) no-repeat 5px 50%;
+		padding-left: 23px;
+	}
+
+	ul {
+		margin: 0;
+		padding: 0;
+	}
+
+	ul > li {
+		margin: 0;
+		padding: 3px 8px;
+		cursor: pointer;
+	}
+
+	ul > li.cursor, ul > li:hover {
+		background-color: #CBCBCB;
+	}
+}
+
+.dp-menu .dp-menu-area.dp-menu-area-primary {
+	border-top: 2px solid #C8C8C8;
+	padding-top: 2px;
+	background-color: #EAEAEA;
+}
+
+.dp-menu .dp-menu-area.small li {
+	font-size: 11px;
+	padding: 1px 8px;
+}
+
+.dp-menu .dp-menu-area li .on-icon {
+	float: right;
+	display: none;
+}
+.dp-menu .dp-menu-area li.on .on-icon {
+	display: block;
+}
 
 /*****************************************************************************
  * Interface elements
@@ -4226,7 +4308,16 @@ blockquote {
 }
 
 .redactor_toolbar li a.redactor_btn_dp_attach {
-	background: transparent url(../../images/agent/icons/attach.png) no-repeat 50% 50%;
+	position: relative;
+	overflow: hidden;
+	background: transparent url(../../images/agent/icons/attach.png) no-repeat 2px 50%;
+	text-indent: 0;
+	width: auto;
+	line-height: 27px;
+	font-size: 11px;
+	padding-left: 25px;
+	padding-right: 5px;
+	color: #000;
 }
 
 .redactor_toolbar li a.redactor_btn_dp_snippets {
@@ -4236,13 +4327,8 @@ blockquote {
 	line-height: 27px;
 	font-size: 11px;
 	padding-left: 25px;
-	padding-right: 2px;
+	padding-right: 5px;
 	color: #000;
-}
-
-.redactor_toolbar li a.redactor_btn_dp_attach {
-	position: relative;
-	overflow: hidden;
 }
 
 .redactor_toolbar li a.redactor_btn_dp_attach input[type="file"] {

@@ -164,6 +164,15 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
 
 	/**
+	 * @return \Application\DeskPRO\Entity\TicketSnippet
+	 */
+	public function getSnippet()
+	{
+		return $this->snippet;
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function getReplyPos()
@@ -188,6 +197,27 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 	{
 		if (!$this->snippet) {
 			return "<error>Unknown Snippet #{$this->snippet}</error>";
+		}
+
+		// Hack ot append the proper position
+		// when being viewed from replybox
+		// See TicketController::ajaxGetMacroAction
+		if (isset($_GET['macro_reply_context'])) {
+			if ($this->reply_pos == 'overwrite') {
+				$ret = "Reply with snippet: " . $this->snippet->title;
+			} elseif ($this->reply_pos == 'append') {
+				$ret = "Append snippet to reply: " . $this->snippet->title;
+			} else {
+				$ret ="Prepend snippet to reply: " . $this->snippet->title;
+			}
+
+			$html = '';
+			if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
+				$html = $this->snippet->snippetFormatted($GLOBALS['DP_ACTIVE_TICKET'], App::getCurrentPerson());
+			}
+
+			$ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
+			return $ret;
 		}
 
 		return "Reply with snippet: " . $this->snippet->title;

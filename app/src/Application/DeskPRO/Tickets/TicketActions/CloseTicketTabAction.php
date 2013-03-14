@@ -89,6 +89,6 @@ class CloseTicketTabAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
-        return "Close ticket tab";
+        return "<span class=\"with-close-tab\">Close ticket tab</span>";
 	}
 }

@@ -180,7 +180,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 					case 'update.agent': return 'Assign the agent who made the change';
 				}
 			}
-			return $tr->phrase('agent.tickets.assign_current_action');
+			return '<span class="with-agent" data-agent-id="' . $this->agent_id . '">' . $tr->phrase('agent.tickets.assign_current_action') . '</span>';
 		} elseif ($this->agent_id == 0) {
 			if ($this->trigger && $this->trigger->event_trigger == 'new.email.agent') {
 				return 'Do not assign ticket to anyone';
@@ -193,7 +193,9 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 			}
 			if ($name === null) $name = "<error>Unknown #{$this->agent_id}</error>";
 
-			return $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name));
+			$ret = '<span class="with-agent" data-agent-id="' . $this->agent_id . '">' . $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name)) . '</span>';
+
+			return $ret;
 		}
 	}
 }

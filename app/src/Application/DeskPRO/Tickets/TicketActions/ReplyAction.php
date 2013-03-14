@@ -191,8 +191,27 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 		if ($as_html) {
 			$flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
 			if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
-			return $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => '<span class="highlight-description">'.htmlspecialchars($flat).'</span>'));
+
+			$desc = '<span class="highlight-description">'.htmlspecialchars($flat).'</span>';
+
+			if (isset($_GET['macro_reply_context'])) {
+				if ($this->reply_pos == 'overwrite') {
+					$ret = "Set reply text";
+				} elseif ($this->reply_pos == 'append') {
+					$ret = "Append reply text";
+				} else {
+					$ret = "Prepend reply text";
+				}
+
+				$html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_pos), \ENT_QUOTES)) . '</p>';
+
+				$ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
+				return $ret;
+			}
+
+			$ret = $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => $desc));
 		}
+
 		return $tr->phrase('agent.tickets.add_reply_action');
 	}
 }

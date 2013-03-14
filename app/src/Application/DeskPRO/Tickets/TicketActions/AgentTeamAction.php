@@ -172,7 +172,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
 					case 'update.agent': return 'Assign the team of the agent who made the change';
 				}
 			}
-			return $tr->phrase('agent.tickets.assign_current_team_action');
+			return '<span class="with-agent-team" data-agent-team-id="' . $this->agent_team_id . '">' . $tr->phrase('agent.tickets.assign_current_team_action') . '</span>';
 		} elseif ($this->agent_team_id == 0) {
 			return $tr->phrase('agent.tickets.unassign_team');
 		} else {
@@ -182,7 +182,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
 			}
 			if ($name === null) $name = "<error>Unknown #{$this->agent_team_id}</error>";
 
-			return $tr->phrase('agent.tickets.assign_team_action', array('name' => $name));
+			return '<span class="with-agent-team" data-agent-team-id="' . $this->agent_team_id . '">' . $tr->phrase('agent.tickets.assign_team_action', array('name' => $name)) . '</span>';
 		}
 	}
 }

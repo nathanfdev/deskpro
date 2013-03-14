@@ -14,6 +14,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var sigTrimmed = false;
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
+		this.textarea = textarea;
 
 		this.isNote = false;
 		var snippetBtn = null;
@@ -59,9 +60,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					return data;
 				},
 				callback: function(obj) {
-					obj.addBtnAfter('horizontalrule', 'dp_snippets', 'Open snippets', function(){});
-					obj.addBtnAfter('dp_snippets', 'dp_attach', 'Attach a file', function(){});
-					obj.addBtnSeparatorAfter('horizontalrule');
+					obj.addBtnFirst('dp_attach', 'Attach a file', function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
+					obj.addBtnSeparatorAfter('dp_attach');
 					obj.addBtnSeparatorAfter('dp_snippets');
 
 					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
@@ -69,7 +70,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
-					attachBtn.find('a').append('<input type="file" class="file" name="file-upload" />');
+					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
 				}
 			});
 			this.getElById('is_html_reply').val(1);
@@ -499,13 +500,15 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			ev.stopPropagation();
 		});
 
-		this.getElById('send_btn').on('click', function(ev) {
+		this.el.find('.submit-trigger').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
 			if (isWysiwyg && textarea.data('redactor')) {
 				textarea.data('redactor').syncCode();
 			}
+
+			self.getElById('action').val(self.getElById('reply_as_type').data('type'));
 
 			var formData = self.el.serializeArray();
 			self.el.trigger('replyboxsubmit', [formData, self]);
@@ -519,6 +522,265 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				$(this).addClass('radio-on on');
 			}
 		});
+
+		//------------------------------
+		// Status menu
+		//------------------------------
+
+		var statusMenuTrigger = this.el.find('.status-menu-trigger');
+		var footerEl = this.el.find('footer').first();
+		var statusMenu = this.getElById('status_menu');
+		var statusMenuH = null;
+		var statusBackdrop = null;
+		var statusMacroFilter = null;
+		var statusMacroList = null;
+		var statusListItems = null;
+		var replyAsType = this.getElById('reply_as_type');
+
+		var closeStatusMenu = function() {
+			statusBackdrop.hide();
+			statusMenu.hide();
+		};
+
+		var updateStatusPos = function() {
+			statusMenuH = statusMenu.height();
+			if (statusMenu > 500) {
+				statusMenu.find('macro-list').css('max-height', 500).css('overflow', 'auto');
+				statusMenuH = 500;
+			}
+
+			var pos = footerEl.offset();
+			statusMenu.css({
+				left: pos.left + 6,
+				top: pos.top - statusMenuH + 3
+			});
+		};
+
+		var openStatusMenu = function() {
+			statusListItems = statusMenu.find('li[data-type]').not('.off');
+
+			// Means we're opening fo rhte first time
+			if (!statusBackdrop) {
+				statusBackdrop = $('<div class="backdrop"></div>');
+				statusBackdrop.appendTo('body');
+				statusBackdrop.on('click', function(ev) {
+					ev.stopPropagation();
+					closeStatusMenu();
+				});
+				statusMenu.detach().appendTo('body');
+
+				// Handle macro filtering
+				statusMacroFilter = statusMenu.find('.macro-filter');
+				statusMacroList = statusMenu.find('.macro-list');
+
+				statusMenu.on('click', 'li[data-type]', function(ev) {
+					ev.stopPropagation();
+					self.setReplyAsOption($(this));
+					closeStatusMenu();
+				});
+
+				statusMacroFilter.on('keyup', function(ev) {
+					if (ev.keyCode == 13 /* enter key */) {
+						ev.preventDefault();
+						var current = statusListItems.filter('.cursor');
+						if (current[0]) {
+							self.setReplyAsOption(current);
+							closeStatusMenu();
+						}
+					} else if (ev.keyCode == 27 /* escape key */) {
+						ev.preventDefault();
+						closeStatusMenu();
+					} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+						ev.preventDefault();
+						var dir = ev.keyCode == 40 ? 'down' : 'up';
+
+						var current = statusListItems.filter('.cursor');
+						if (!current.length) {
+							if (dir == 'down') {
+								statusListItems.first().addClass('cursor');
+							} else {
+								statusListItems.last().addClass('cursor');
+							}
+						} else {
+							var nextIndex = statusListItems.index(current);
+							if (dir == 'down') {
+								nextIndex++;
+							} else {
+								nextIndex--;
+							}
+
+							if (nextIndex < 0) {
+								nextIndex = statusListItems.length-1;
+							} else if (nextIndex > (statusListItems.length-1)) {
+								nextIndex = 0;
+							}
+
+							current.removeClass('cursor');
+							statusListItems.eq(nextIndex).addClass('cursor');
+						}
+					}
+				});
+
+				statusMacroFilter.on('keyup', function() {
+					var val = $.trim($(this).val());
+
+					if (!val) {
+						statusMacroList.find('li').show().removeClass('off');
+						updateStatusPos();
+					} else {
+						val = val.toLowerCase();
+						statusMacroList.find('li').each(function() {
+							if ($(this).text().toLowerCase().indexOf(val) !== -1) {
+								$(this).show().removeClass('off');
+							} else {
+								$(this).hide().addClass('off');
+							}
+						});
+						updateStatusPos();
+					}
+
+					statusListItems = statusMenu.find('li[data-type]').not('.off');
+					if (!statusListItems.filter('.cursor')[0]) {
+						statusMenu.find('li.cursor').removeClass('cursor');
+						statusListItems.first().addClass('cursor');
+					}
+				});
+			}
+
+			// Pre-select proper value
+			var type = replyAsType.data('type');
+			statusMenu.find('li').removeClass('cursor')
+				.filter('[data-type]').removeClass('on')
+				.filter('[data-type="' + type + '"]').addClass('on');
+
+			var w = self.getElById('reply_btn_group').width() - 3;
+			if (w < 200) {
+				w = 200;
+			}
+			statusMenu.width(w);
+
+			statusBackdrop.show();
+			updateStatusPos();
+			statusMenu.show();
+
+			statusMacroFilter.focus();
+		};
+
+		statusMenuTrigger.on('click', function(ev) {
+			ev.preventDefault();
+			openStatusMenu();
+		});
+	},
+
+	setReplyAsOption: function(item) {
+		var replyAsType = this.getElById('reply_as_type');
+		replyAsType.data('type', item.data('type')).text(item.data('label'));
+
+		var macroUrl = item.data('get-macro-url');
+
+		var api = this.textarea.data('redactor');
+		api.$editor.find('.editor-text-insertion-point').remove();
+
+		if (!macroUrl) {
+			this.getElById('actions_row').hide();
+			this.page.updateUi();
+			this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		} else {
+			var actionsRow = this.getElById('actions_row');
+			var actionsRowList = actionsRow.find('ul');
+			actionsRowList.empty();
+			actionsRowList.append('<li class="load"><i class="flat-spinner"></i></li>');
+
+			actionsRow.show();
+
+			this.page.updateUi();
+			this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+
+			$.ajax({
+				url: macroUrl,
+				type: 'GET',
+				context: this,
+				dataType: 'json',
+				success: function(data) {
+					actionsRowList.empty();
+					Array.each(data.descriptions, function(desc) {
+						var li = $('<li />');
+						li.html(desc);
+
+						actionsRowList.append(li);
+					});
+
+					// There's a snippet reply point
+					var sig = api.$editor.find('.dp-signature-start');
+					if (!sig[0]) {
+						sig = null;
+					}
+
+					actionsRowList.find('.with-reply, .with-snippet').each(function() {
+						var pos = $(this).data('reply-pos');
+						var html = $(this).find('.reply-text').get(0).innerHTML;
+
+						if (pos) {
+							if (pos == 'overwrite') {
+								api.$editor.html(html);
+								if (sig) {
+									api.$editor.append(sig);
+								}
+							} else if (pos == 'prepend') {
+								api.$editor.prepend(html);
+							} else {
+								if (sig) {
+									var usesig = sig;
+									var prev = sig.prev();
+									if (prev[0] && prev.is('p') && $.trim(prev.text()) === '') {
+										usesig = prev;
+										var prev2 = prev.prev();
+										if (prev2[0] && prev2.is('p') && $.trim(prev2.text()) === '') {
+											prev2.remove()
+										}
+									}
+									usesig.before(html);
+								} else {
+									api.$editor.append(html);
+								}
+							}
+
+							api.syncCode();
+						}
+					});
+
+					var agentId = parseInt(actionsRowList.find('.with-agent').data('agent-id'));
+					if (agentId) {
+						if (agentId == -1) {
+							agentId = DESKPRO_PERSON_ID;
+						}
+
+						this.getElById('agent_sel').select2('val', agentId);
+					}
+					var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
+					if (agentTeamId) {
+						if (agentTeamId == -1) {
+							if (!window.DESKPRO_TEAM_IDS || !window.DESKPRO_TEAM_IDS.length) {
+								agentTeamId = null;
+							} else {
+								agentTeamId = window.DESKPRO_TEAM_IDS[0];
+							}
+						}
+
+						if (agentTeamId) {
+							this.getElById('agent_team_sel').select2('val', agentTeamId);
+						}
+					}
+
+					if (actionsRowList.find('.with-close-tab')) {
+						this.getElById('close_tab_opt').prop('checked', true);
+					}
+
+					this.page.updateUi();
+					this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				}
+			});
+		}
 	},
 
 	hideAgentNotifyList: function() {
