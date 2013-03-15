@@ -16,6 +16,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
+		el.find('select').addClass('with-select2');
+
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 		});
@@ -181,7 +183,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				DP.select($(this));
 			});
 			self.updateUi();
-		}, 300);
+		}, 50);
 
 		self.wrapper.find('select').each(function() {
 			var len = 0;
