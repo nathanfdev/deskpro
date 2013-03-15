@@ -335,10 +335,18 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			downloadTemplate: $('.template-download', this.el)
 		});
 		this.el.bind('fileuploaddone', function() {
-			self.getElById('attach_row').slideDown().removeClass('is-hidden');
+			self.getElById('attach_row').show().removeClass('is-hidden');
+			self.page.updateUi();
+			if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+				$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+			}
 		});
 		this.el.bind('fileuploadstart', function() {
-			self.getElById('attach_row').slideDown().removeClass('is-hidden');
+			self.getElById('attach_row').show().removeClass('is-hidden');
+			self.page.updateUi();
+			if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+				$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+			}
 		});
 
 		this.el.on('click', '.remove-attach-trigger', function() {
@@ -349,7 +357,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 				var rows = $('ul.files li', self.getElById('attach_row'));
 				if (!rows.length) {
-					self.getElById('attach_row').slideUp().addClass('is-hidden');
+					self.getElById('attach_row').hide().addClass('is-hidden');
+					self.page.updateUi();
+					if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+						$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+					}
 				}
 			});
         });

@@ -81,5 +81,6 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		this.destroy = destroy;
 		this.isScrollEnabled = isScrollEnabled;
 		this.isInitialized = function() { return hasInit };
+		this.getElement = function() { return element; }
 	}
 });
