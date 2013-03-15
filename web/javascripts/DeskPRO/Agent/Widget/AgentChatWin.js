@@ -364,6 +364,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	open: function() {
 		if (this.wrapper) {
 			this.wrapper.addClass('open');
+			this.wrapper.find('textarea').focus();
 		}
 	},
 
