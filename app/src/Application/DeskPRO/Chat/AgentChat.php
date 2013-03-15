@@ -69,8 +69,6 @@ class AgentChat
 			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation);
 		}
 
-		$message = htmlspecialchars($message);
-
 		$chat_message = $conversation->addNewMessage(
 			$message,
 			$this->person
