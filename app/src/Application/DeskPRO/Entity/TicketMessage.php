@@ -203,7 +203,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_message_length = strlen(strip_tags($this->message));
-		return $this->message;
+		return $this->_message_length;
 	}
 
 	public function getMessageHtmlClipped($max_length)
