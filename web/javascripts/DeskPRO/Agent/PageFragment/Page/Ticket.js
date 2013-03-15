@@ -496,6 +496,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				return;
 			}
 
+			if (result.dupe_message) {
+				DeskPRO_Window.showAlert("You have already sent that message.");
+				self.loadMessagePage(0, true);
+				return;
+			}
+
 			self.handleTicketUpdate(result);
 
 			if (!result.dupe_message) {
@@ -508,12 +514,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				var statusProp = self.changeManager.getPropertyManager('status');
 				statusProp.setIncomingValue(result.status);
-			}
-
-			if (result.dupe_message) {
-				DeskPRO_Window.showAlert("You have already sent that message.");
-				self.loadMessagePage(0, true);
-				return;
 			}
 
 			// Reload the message row in results
