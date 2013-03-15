@@ -61,7 +61,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					return data;
 				},
 				callback: function(obj) {
-					obj.addBtnFirst('dp_attach', 'Attach a file', function(){});
+					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
 					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
 					obj.addBtnSeparatorAfter('dp_attach');
 					obj.addBtnSeparatorAfter('dp_snippets');
