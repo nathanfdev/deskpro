@@ -51,7 +51,7 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 		$this->getDb()->insert('ticket_snippet_categories', array(
 			'person_id' => $this->getDb()->fetchColumn("SELECT id FROM people WHERE can_admin = 1 ORDER BY id ASC LIMIT 1"),
 			'is_global' => 1,
-			'title' => "Top Level"
+			'title' => "General"
 		));
 		$this->cat_map[0] = $this->getDb()->lastInsertId();
 
