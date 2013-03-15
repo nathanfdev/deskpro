@@ -261,18 +261,24 @@
 				<div style="padding-top: 1px; line-height: 100%;">
 					<label>
 						<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
-						Close Tab
-						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span>
+						<span class="opt-label-text">
+							Close Tab
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span>
+						</span>
 					</label>
 					<label>
 						<input type="checkbox" name="options[do_kbpending]"/>
-						Pending Article
-						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Create a new pending article linked to this ticket"></span>
+						<span class="opt-label-text">
+							Pending Article
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Create a new pending article linked to this ticket"></span>
+						</span>
 					</label>
 					<label class="hide-note">
 						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
-						Send Email to User
-						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span>
+						<span class="opt-label-text">
+							Send Email to User
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span>
+						</span>
 					</label>
 				</div>
 			</td>
