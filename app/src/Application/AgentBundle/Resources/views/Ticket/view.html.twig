@@ -230,7 +230,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 						{% if tickets_by_user %}
 							<li class="section-title">Other Tickets from User</li>
 						{% for ticket_by_user in tickets_by_user %}
-							<li data-merge-id="{{ ticket_by_user.id }}">{{ ticket_by_user.subject }}</li>
+							<li data-merge-id="{{ ticket_by_user.id }}" style="max-width: 200px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ ticket_by_user.subject }}</li>
 						{% endfor %}
 						{% endif %}
 						<li class="tab-insert always-show section-title">Other Tickets</li>

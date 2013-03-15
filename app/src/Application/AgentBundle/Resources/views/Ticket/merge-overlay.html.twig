@@ -58,8 +58,14 @@
 							</tr>
 							<tr class="always-keep">
 								<th nowrap="nowrap"><div>Subject</div></th>
-								<td width="50%">{{ ticket.subject }}</td>
-								{% if other_ticket %}<td width="50%">{{ other_ticket.subject }}</td>{% endif %}
+								<td width="50%">
+									<div style="max-width: 325px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ ticket.subject }}</div>
+								</td>
+								{% if other_ticket %}
+									<td width="50%">
+										<div style="max-width: 325px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ other_ticket.subject }}</div>
+									</td>
+								{% endif %}
 							</tr>
 							<tr class="always-keep">
 								<th nowrap="nowrap"><div>Person</div></th>
