@@ -68,6 +68,8 @@ DeskPRO.User.Window = new Orb.Class({
 		$('.dp-copy').css({'display': 'block', 'opacity': 1, 'visibility': 'visible'})
 				.find('a').css({'display': 'inline', 'opacity': 1, 'visibility': 'visible'});
 
+		$('<style type="text/css">#dp_footer, .dp-copy { display: block !important; opacity: 1 !important; visibility: visible !important; } .dp-copy a { display: inline !important; opacity: 1 !important; visibility: visible !important; }</style>').appendTo('head');
+
 		if ($('html').attr('dir') == 'rtl' && $('#share-this-js').length) {
 			var interval;
 
