@@ -203,10 +203,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Macros
 		//------------------------------
 
-		this.macroControls  = $('.macro-controls');
-		this.macroApplyBtn  = $('.save', this.macroControls);
-		this.macroCancelBtn = $('.cancel', this.macroControls);
-
 		var macroMenu = this.getEl('macros_menu');
 		this.macrosMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('macros_menu_trigger'),
@@ -231,14 +227,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				li.appendTo(macroMenu);
 			});
 		});
-
-		this.macroCancelBtn.on('click', (function() {
-			this.revertMacro();
-		}).bind(this));
-
-		this.macroApplyBtn.on('click', (function() {
-			this.saveMacro();
-		}).bind(this));
 
 		this.page.getEl('headerbox_box_props').find('select').each(function() {
 			DP.select($(this));

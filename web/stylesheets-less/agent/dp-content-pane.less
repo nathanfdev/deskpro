@@ -7355,3 +7355,174 @@ table.data-display-table tr th {
 		font-size: 11px;
 	}
 }
+
+
+/*****************************************************************************
+ * Ticket View
+/*****************************************************************************/
+
+.page-ticket header.main-header {
+	background-color: #fff;
+	padding: 5px;
+	//-webkit-box-shadow: inset 0px -1px 2px 1px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 0px -1px 2px 0px rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid #B1AFAF;
+
+	.pic-wrap {
+		width: 70px;
+		height: 70px;
+		overflow: hidden;
+		.rounded(3px);
+	}
+	.person-picture-box {
+		width: 70px;
+		height: 70px;
+	}
+
+	.row {
+		vertical-align: middle;
+		margin: 7px 0;
+		color: #555;
+	}
+
+	.row.first {
+		margin-top: 0;
+	}
+	.row.last {
+		margin-bottom: 0;
+	}
+
+	.id-number {
+		display: block;
+		float: left;
+		font-size: 11px;
+		line-height: 18px;
+		margin-right: 5px;
+
+		> span {
+			display: inline-block;
+			line-height: 100%;
+			background-color: #E9E9E9;
+			border: 1px solid #999999;
+			color: #666;
+			cursor: pointer;
+			padding: 1px 4px;
+			.rounded(2px);
+			vertical-align: text-top;
+		}
+	}
+
+	h1 {
+		display: block;
+		padding: 0;
+		margin: 0;
+		line-height: 100%;
+		font-size: 15px;
+		font-weight: normal;
+		line-height: 18px;
+
+		input[type="text"] {
+			width: 60%;
+		}
+	}
+
+	.author {
+		font-size: 12px;
+		a {
+			color: #404040;
+			text-decoration: underline;
+		}
+	}
+
+	.labels {
+		font-size: 12px;
+		> ul {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+		}
+
+		> ul > li {
+			margin: 0;
+			padding: 0;
+			display: inline-block;
+			background-color: #F8F8F8;
+			border: 1px solid #D9D9D9;
+			.rounded(1px);
+			line-height: 100%;
+			padding: 1px 3px;
+			margin-left: 3px;
+		}
+
+		> ul > li.add {
+			color: #888;
+			font-style: italic;
+			cursor: pointer;
+		}
+	}
+
+	.ccs {
+		display: inline-block;
+
+		> ul {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+		}
+
+		> ul > li {
+			margin: 0;
+			padding: 0;
+			display: inline-block;
+			line-height: 100%;
+			margin-left: 3px;
+		}
+
+		> ul > li.add {
+			color: #888;
+			font-style: italic;
+			cursor: pointer;
+		}
+	}
+}
+
+.page-ticket nav.header-nav {
+	.gradient(#fafafa, #d4d4d4, 30px);
+	height: 30px;
+	overflow: hidden;
+	border-bottom: 1px solid #B1AFAF;
+	line-height: 30px;
+
+	> ul.right {
+		float:right;
+	}
+
+	> ul.right > li {
+		border-left: 1px solid #CACACA;
+		border-right: none;
+	}
+
+	> ul {
+		margin: 0;
+		padding: 0;
+	}
+
+	> ul > li {
+		display: block;
+		float: left;
+		padding: 0 10px;
+		border-right: 1px solid #CACACA;
+		cursor: pointer;
+
+		.dp-caret {
+			vertical-align: middle;
+			height: 3px;
+			margin-left: 3px;
+			border-top-color: #888;
+		}
+	}
+
+	> ul > li:hover .dp-caret {
+		border-top-color: #000;
+	}
+}
