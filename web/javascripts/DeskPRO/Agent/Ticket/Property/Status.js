@@ -46,6 +46,9 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 			value += '_' + hidden_status;
 		}
 		this.ticketPage.getEl('status_code').val(value);
+
+		var txt = this.ticketPage.getEl('status_code').find('option:selected').text().trim();
+		this.getInterfaceElement().text(txt);
 	},
 
 	getValue: function() {
@@ -64,7 +67,7 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 	},
 
 	getInterfaceElement: function() {
-		return $('.status.set-status', this.ticketPage.contentWrapper);
+		return this.ticketPage.getEl('status_txt');
 	},
 
 	getName: function() {

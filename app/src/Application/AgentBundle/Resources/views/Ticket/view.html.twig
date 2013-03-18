@@ -76,359 +76,125 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	{% include 'AgentBundle:Ticket:view-hidden-bar.html.twig' %}
 {% endif %}
 
-<header class="page-header" id="{{ baseId }}_page_header">
+<header class="main-header" id="{{ baseId }}_page_header">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
-		{% if edit_person %}
-		<div class="person-picture-box tipped" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
-		{% else %}
-		<div class="person-picture-box">
-		{% endif %}
-			<img src="{{ ticket.person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
-			{% if ticket.person.is_disabled %}<span class="person-disabled"></span>{% endif %}
+		{% if edit_person %}<div class="person-picture-box" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">{% else %}<div class="person-picture-box">{% endif %}
+			<div class="pic-wrap">
+				<img src="{{ ticket.person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
+				{% if ticket.person.is_disabled %}<span class="person-disabled"></span>{% endif %}
+			</div>
 		</div>
 	</td><td>
-		<div class="titlewrap">
-			<h4 class="id-number" id="{{ baseId }}_idref_switch">
-				<span id="{{ baseId }}_id_num">#{{ ticket.id }}</span>
-				<span id="{{ baseId }}_ref_num" style="display: none;">Ref: {{ ticket.ref }}</span>
-			</h4>
+		<div class="row title first">
+			<div class="id-number" id="{{ baseId }}_idref_switch">
+				<span id="{{ baseId }}_id_num" title="Ticket ID"><i class="icon-bookmark"></i> {{ ticket.id }}</span>
+				<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference"><i class="icon-bookmark-empty"></i> {{ ticket.ref }}</span>
+			</div>
 			<h1>
 				<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
 				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
-				{% if ticket_perms.modify_fields %}<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>{% endif %}
 				<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 			</h1>
-			<div class="labels-line">
-				{% if ticket_perms.modify_labels or ticket.labels|length %}
-					<input
-						type="hidden"
-						id="{{baseId}}_labels_input"
-						class="dpe_select dpe_select_noborder"
-						data-select-width="auto"
-						data-placeholder="Add a label"
-						value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
-					/>
-				{% endif %}
+		</div>
+		<div class="row author last">
+			<div class="dp-btn-group">
+				<a class="dp-btn as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"><i class="icon-user"></i>
+					{{ ticket.person.getNameWithTitle() }}
+					<span class="email">({{ ticket.person_email_address }})</span>
+				</a>
+				<a class="dp-btn dp-dropdown-toggle status-menu-trigger" id="{{baseId}}_changeuser_trigger" title="Change user"><span class="dp-caret"></span></a>
 			</div>
+
+			{% if ticket.person.organization %}
+				&nbsp;&nbsp;
+				<a id="{{ baseId }}_org_link" class="dp-btn as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i class="icon-briefcase"></i>
+					{{ ticket.person.organization }}
+					{% if ticket.person.organization_position %}<span class="email">({{ ticket.person.organization_position }})</span>{% endif %}
+				</a>
+			{% endif %}
 		</div>
 	</td></tr></table>
 </header>
 
-<div style="position:relative;">
-	<div class="ticket-errors-overlay" style="margin: 0 10px;">
-		<strong>
-			There are errors with the ticket fields that you must correct before applying changes.
-		</strong>
-	</div>
+<nav class="header-nav">
+	<ul class="right">
+		<li>
+			<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons" data-invisible-trigger="1">
+				<option
+					value=""
+					data-icon="{{ asset('images/agent/icons/flag-gray.png' ) }}"
+				>None</option>
+				{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
+					<option
+						value="{{color}}"
+						{% if ticket_flagged == color %}selected="selected"{% endif %}
+						data-icon="{{ asset('images/agent/icons/flag-' ~ color ~ '.png' ) }}"
+					>{{ flag.flag_name(color) }}</option>
+				{% endfor %}
+			</select>
 
-	{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
+			<i id="{{ baseId }}_flagicon" class="icon-flag flag-color-{{ ticket_flagged|default('none') }}" style="margin:0; padding: 0;"></i>
+			Flag
 
-	<div class="profile-box-container">
-		<header>
-			{{ dp_widget_tabs_header(baseId, 'ticket', 'headerbox', {
-				(baseId ~ '_headerbox_box_props'): 'Properties &amp; Actions'
-			}) }}
-		</header>
-		<section id="{{baseId}}_headerbox_container">
-			<article id="{{baseId}}_headerbox_box_props" class="headerbox">
-				<div style="position:relative;">
-					<table cellspacing="0" cellpadding="0"><tr>
-						<td>
-							<label>Department</label>
-							{% if ticket_perms.modify_department %}
-								{% set blank_option = false %}
-								{% if not ticket.department %}{% set blank_option = true %}{% endif %}
-								{% include 'AgentBundle:Common:select-department.html.twig' with {
-									'name': "department_id",
-									'with_blank': blank_option,
-									'blank_title': 'None',
-									'class': department_id,
-									'selected': ticket.department.id|default(0),
-									'id': baseId ~ '_department_id',
-									'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
-								} %}
-							{% else %}
-								<input type="hidden" name="department_id" value="{{ticket.department.id|default(0) }}" />
-								{{ ticket.department.full_title|default('None') }}
-							{% endif %}
-						</td>
-						<td>
-							<label>Status</label>
-							<select name="status_code" class="status_code" id="{{baseId}}_status_code">
-								{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
-									<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
-								{% endif %}
-								{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
-									<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
-								{% endif %}
-								{% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
-									<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
-								{% endif %}
-								{%  if ticket.status_code == 'closed' %}
-									<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Archived</option>
-								{% endif %}
-							</select>
-						</td>
-						<td>
-							<label>Urgency</label>
-							<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency">
-								{% for i in 1..10 %}
-									<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
-								{% endfor %}
-							</select>
-						</td>
-					</tr></table>
-					{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-				</div>
-				<div class="sep">-</div>
-				<div style="position:relative;">
-					<table cellspacing="0" cellpadding="0" width="100%"><tr>
-						<td id="{{baseId}}_action_buttons">
-							<a class="clean-white" id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>Lock Ticket</a>
-							<div id="{{ baseId }}_hold_container" style="{% if ticket.status != 'awaiting_agent' %}display: none{% else %}display: inline{% endif %}">
-								<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
-								<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
-							</div>
-							{% if ticket_perms.modify_merge %}
-								<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
-							{% endif %}
-							<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
-							{% if ticket_perms.delete %}
-								{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
-									<a class="clean-white arrow menu-fitted" id="{{baseId}}_remove_menu_trigger"><span>Remove</span><em></em></a>
-								{% endif %}
+			<span class="dp-caret"></span>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			{% include 'AgentBundle:Common:select-department.html.twig' with {
+				'name': "department_id",
+				'with_blank': blank_option,
+				'blank_title': 'None',
+				'selected': ticket.department.id|default(0),
+				'id': baseId ~ '_department_id',
+				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden"',
+				'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
+			} %}
 
-								<ul style="display:none" id="{{baseId}}_remove_menu">
-									<li data-action="spam">Set Ticket as Spam</li>
-									<li data-action="delete">Delete this Ticket</li>
-									{% if app.user.hasPerm('agent_people.delete') %}
-										{% if person_object_counts.tickets > 1 or person_object_counts.chats > 0 %}
-											{% if person_object_counts.tickets > 1 %}
-												<li data-action="delete.ban">Permanently Delete User and their {{ person_object_counts.tickets }} Tickets</li>
-											{% else %}
-												<li data-action="delete.ban">Permanently Delete User and their other content</li>
-											{% endif %}
-										{% else %}
-											<li data-action="delete.ban">Permanently Delete User and this Ticket</li>
-										{% endif %}
-									{% endif %}
-								</ul>
-							{% endif %}
+			<i class="icon-folder-close"></i>
+			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default('None') }}</span>
 
-							<a class="clean-white arrow menu-fitted" id="{{baseId}}_actions_menu_trigger"><span>Actions</span><em></em></a>
-
-							<ul style="display:none" id="{{baseId}}_actions_menu">
-								{% if ticket_perms.modify_merge %}<li data-action="split">Split Messages to New Ticket</li>{% endif %}
-								<li data-action="print">{{ phrase('agent.general.print') }}</li>
-								<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
-							</ul>
-
-							<span class="flat-spinner" id="{{baseId}}_actions_loading" style="display: none"></span>
-						</td>
-					</tr></table>
-					<ul id="{{baseId}}_merge_menu" style="display: none;">
-						{% if tickets_by_user %}
-							<li class="section-title">Other Tickets from User</li>
-						{% for ticket_by_user in tickets_by_user %}
-							<li data-merge-id="{{ ticket_by_user.id }}" style="max-width: 200px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ ticket_by_user.subject }}</li>
-						{% endfor %}
-						{% endif %}
-						<li class="tab-insert always-show section-title">Other Tickets</li>
-						<li>Find ticket...</li>
-					</ul>
-					{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-				</div>
-				{% if ticket.linked_chat %}
-					<div class="sep">-</div>
-					<table cellspacing="0" cellpadding="0" width="100%"><tr>
-						<td>
-							<label>{{ phrase('agent.general.linked_chat') }}</label>
-							<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
-						</td>
-					</tr></table>
+			<span class="dp-caret"></span>
+		</li>
+		<li>
+			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none">
+				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
+					<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
 				{% endif %}
-				{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
-				<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
-					<div class="sep">-</div>
-					<div class="locked-message">
-						<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
-							You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
-							{% if app.getSetting('core_tickets.unlock_on_close') %}This lock will automatically be released when you close this ticket.{% endif %}
-						</div>
-						{% if ticket.locked_by_agent and not locked_self %}
-							<div id="{{baseId}}_locked_message_other">
-								{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
-							</div>
-						{% endif %}
+				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
+					<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
+				{% endif %}
+				{% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
+					<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
+				{% endif %}
+				{%  if ticket.status_code == 'closed' %}
+					<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Archived</option>
+				{% endif %}
+			</select>
 
-						<br />
-						<button class="clean-white" id="{{baseId}}_unlock_ticket">Unlock Ticket</button>
-					</div>
-				</div>
-			</article>
-			{{ dp_widget_tabs(baseId, 'ticket', 'headerbox', 'article', ticket_api) }}
-		</section>
-	</div>
+			<i class="icon-circle"></i>
+			<span id="{{ baseId }}_status_txt">Awaiting Agent</span>
 
-	{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
+			<span class="dp-caret"></span>
+		</li>
+		<li>
+			<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency" style="display: none" data-invisible-trigger="1">
+				{% for i in 1..10 %}
+					<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
+				{% endfor %}
+			</select>
 
-	<table cellspacing="0" cellpadding="0" width="100%" class="people-box"><tr><td width="50%" valign="top" class="first">
-		{{ dp_widgets(baseId, 'ticket', 'people', 'above', ticket_api) }}
-		<div class="profile-box-container" style="margin-top: 0;">
-			<header>
-				{{ dp_widget_tabs_header(baseId, 'ticket', 'people', {
-					(baseId ~ '_people_box_person'): phrase('agent.general.people')
-				}) }}
-			</header>
-			<section id="{{baseId}}_people_box_person_container">
-				<article id="{{baseId}}_people_box_person">
-					<dl>
-						<dt>
-							{{ phrase('agent.general.owner') }}
-							{% if ticket_perms.modify_merge %}<span class="btn-edit-gear2" id="{{baseId}}_changeuser_trigger"></span>{% endif %}
-						</dt>
-						<dd>
-							<a id="{{ baseId }}_profile_link" class="user-link clean-white as-popover preload tipped" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}" title="Click to view user profile">
-								<span style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">
-									{{ ticket.person.getNameWithTitle() }}
-									{% if ticket.person.organization %}
-										|
-										{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}, {% endif %}
-										<span id="{{ baseId }}_org_link" class="as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}">{{ ticket.person.organization }}</span>
-									{% endif %}
-									<span class="email"><b class="pemail-{{ticket.person.id}}" data-hide="@parent">{{ ticket.person_email_address }}</b></span>
-								</span>
-							</a>
-							<div class="clear"></div>
-						</dd>
-					</dl>
-					<dl>
-						{% if ticket_perms.modify_cc or user_parts|length %}
-							<dt>
-								{{ phrase('agent.tickets.cc') }}
-							</dt>
-							<dd
-								class="cc-row"
-								data-element-handler="DeskPRO.Agent.ElementHandler.TicketCcManage"
-								data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
-								data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
-								data-replybox-container="#{{baseId}}_replybox_wrap"
-							>
-								<ul class="cc-row-list">
-									{% for part in user_parts %}
-										{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
-									{% endfor %}
-								</ul>
-								{% if ticket_perms.modify_cc %}
-									<div class="cc-autocomplete addrow noedit-hide">
-										<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
-										<div class="person-search-box" style="display: none">
-											<section>
-												<ul class="results-list">
-												</ul>
-											</section>
-										</div>
-										<span class="is-not-loading">
-											<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
-										</span>
-										<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
-									</div>
-								{% endif %}
-								<script class="user-row-tpl" type="text/x-deskpro-tmpl">
-									<li>
-										<a>
-											<span class="user-name"></span>
-											<address>&lt;<span class="user-email"></span>&gt;</address>
-											<div class="bound-fade"></div>
-										</a>
-									</li>
-								</script>
-							</dd>
-						{% endif %}
-					</dl>
-				</article>
-				{{ dp_widget_tabs(baseId, 'ticket', 'people', 'article', ticket_api) }}
-			</section>
-		</div>
-		{{ dp_widgets(baseId, 'ticket', 'people', 'below', ticket_api) }}
-	</td><td width="50%" valign="top" class="second">
-		{{ dp_widgets(baseId, 'ticket', 'assignments', 'above', ticket_api) }}
-		<div class="profile-box-container" style="margin-top: 0;">
-			<header>
-				<div class="controls" id="{{baseId}}_agent_prop_controls">
-					<span style="display:none" class="mark-loading"></span>
-					<span style="display:none" class="mark-saved">Saved</span>
-				</div>
-				{{ dp_widget_tabs_header(baseId, 'ticket', 'assignments', {
-					(baseId ~ '_people_box_agent'): phrase('agent.general.assignments')
-				}) }}
-			</header>
-			<section id="{{baseId}}_people_box_agent_container">
-				<article id="{{baseId}}_people_box_agent" style="position:relative;">
-					{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-					<dl>
-						<dt>{{ phrase('agent.general.agent') }}</dt>
-						<dd>
+			<i class="icon-fire"></i>
+			<span id="{{ baseId }}_urgency_txt" class="urgency-value-{{ ticket.urgency }}">1</span>
 
-							<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-								<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
-								{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
-									<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
-								{% endif %}
-								{% for agent in agents %}
-									{% if agent.id != app.user.id %}
-										<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-						</dd>
-						<dt>{{ phrase('agent.general.team') }}</dt>
-						<dd>
-							<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
-								{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
-									<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
-								{% endif %}
-
-								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
-								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
-									{% for team in app.user.getAgent().getTeams() %}
-										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
-									{% endfor %}
-								</optgroup>
-								{% endif %}
-
-								{% for team in agent_teams %}
-									{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
-										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-						</dd>
-
-						<dt>{{ phrase('agent.general.followers') }}</dt>
-						<dd class="followers">
-							<select id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
-								{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
-									<option {% if agent_parts[app.user.id] %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
-								{% endif %}
-								{% for agent in agents %}
-									{% if agent.id != app.user.id %}
-										<option {% if agent_parts[agent.id] %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-						</dd>
-					</dl>
-				</article>
-				{{ dp_widget_tabs(baseId, 'ticket', 'assignments', 'article', ticket_api) }}
-			</section>
-		</div>
-		{{ dp_widgets(baseId, 'ticket', 'assignments', 'below', ticket_api) }}
-	</td></tr></table>
-</div>
+			<span class="dp-caret"></span>
+		</li>
+	</ul>
+</nav>
 
 {{ dp_widgets(baseId, 'ticket', 'properties', 'above', ticket_api) }}
 
+<div class="header-profile-box">
 <div class="profile-box-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
@@ -445,8 +211,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% for ticket_sla in ticket.ticket_slas %}<span class="sla-pip {{ ticket_sla.sla_status }}" data-sla-id="{{ ticket_sla.sla_id }}"></span>{% endfor %}
 		{% endset %}
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
-			(baseId ~ '_fields_display_main_wrap'): 'Fields',
-			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>) &amp; Flag (<span id="' ~ baseId ~ '_flag_count">' ~ (ticket_flagged ? '1' : '0') ~ '</span>)',
+			(baseId ~ '_fields_display_main_wrap'): 'Properties',
+			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)',
 			(baseId ~ '_sla_wrap'): (((addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty) ? 'SLAs ' ~ sla_pips|raw : false),
 			(baseId ~ '_billing_wrap'): (app.getSetting('core_tickets.enable_billing') ? 'Billing' : false)
 		}) }}
@@ -460,7 +226,131 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endfor %}
 			</ul>
 		</div>
-		<article id="{{baseId}}_fields_display_main_wrap">
+		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox">
+			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
+			<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
+				<div class="sep">-</div>
+				<div class="locked-message">
+					<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
+						You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
+						{% if app.getSetting('core_tickets.unlock_on_close') %}This lock will automatically be released when you close this ticket.{% endif %}
+					</div>
+					{% if ticket.locked_by_agent and not locked_self %}
+						<div id="{{baseId}}_locked_message_other">
+							{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
+						</div>
+					{% endif %}
+
+					<br />
+					<button class="clean-white" id="{{baseId}}_unlock_ticket">Unlock Ticket</button>
+				</div>
+			</div>
+			<table cellspacing="0" cellpadding="0" width="100%"><tr>
+				<td>
+					<label>Agent</label>
+					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+						<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
+						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
+							<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+						{% endif %}
+						{% for agent in agents %}
+							{% if agent.id != app.user.id %}
+								<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+				<td>
+					<label>Team</label>
+					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
+							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+						{% endif %}
+
+						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+						<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+							{% for team in app.user.getAgent().getTeams() %}
+								<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+							{% endfor %}
+						</optgroup>
+						{% endif %}
+
+						{% for team in agent_teams %}
+							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+								<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+				<td width="100%">
+					<label>Followers</label>
+					<select id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
+						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
+							<option {% if agent_parts[app.user.id] %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+						{% endif %}
+						{% for agent in agents %}
+							{% if agent.id != app.user.id %}
+								<option {% if agent_parts[agent.id] %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+			</tr></table>
+			<div class="sep">-</div>
+			{% if ticket_perms.modify_cc or user_parts|length %}
+				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table"><tr>
+					<th width="80" style="vertical-align: middle">CC's</th>
+					<td style="vertical-align: middle">
+						<div
+							class="cc-row"
+							data-element-handler="DeskPRO.Agent.ElementHandler.TicketCcManage"
+							data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
+							data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
+							data-replybox-container="#{{baseId}}_replybox_wrap"
+						>
+							<ul class="cc-row-list">
+								{% for part in user_parts %}
+									{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
+								{% endfor %}
+							</ul>
+							{% if ticket_perms.modify_cc %}
+								<div class="cc-autocomplete addrow noedit-hide" style="margin:0;">
+									<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
+									<div class="person-search-box" style="display: none">
+										<section>
+											<ul class="results-list">
+											</ul>
+										</section>
+									</div>
+									<span class="is-not-loading">
+										<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
+									</span>
+									<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
+								</div>
+							{% endif %}
+							<script class="user-row-tpl" type="text/x-deskpro-tmpl">
+								<li>
+									<a>
+										<span class="user-name"></span>
+										<address>&lt;<span class="user-email"></span>&gt;</address>
+										<div class="bound-fade"></div>
+									</a>
+								</li>
+							</script>
+						</div>
+					</td>
+				</tr></table>
+			{% endif %}
+			{% if ticket.linked_chat %}
+				<table cellspacing="0" cellpadding="0" width="100%"><tr>
+					<td>
+						<label>{{ phrase('agent.general.linked_chat') }}</label>
+						<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
+					</td>
+				</tr></table>
+				<div class="sep">-</div>
+			{% endif %}
 			<div id="{{baseId}}_field_holders">
 				{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 			</div>
@@ -481,6 +371,66 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
 	</section>
 </div>
+</div>
+
+<nav class="header-nav">
+	<ul>
+		<li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>
+			<i class="icon-lock"></i>
+			Lock
+		</li>
+		{% if ticket_perms.modify_merge %}
+			<li class="merge-menu-trigger noedit-hide">
+				<i class="icon-columns"></i>
+				Merge
+				<span class="dp-caret"></span>
+			</li>
+		{% endif %}
+		<li id="{{baseId}}_macros_menu_trigger">
+			<i class="icon-tasks"></i>
+			Macros
+			<span class="dp-caret"></span>
+		</li>
+		{% if ticket_perms.delete %}
+			{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
+				<li id="{{baseId}}_remove_menu_trigger">
+					<i class="icon-trash"></i>
+					Remove
+					<span class="dp-caret"></span>
+				</li>
+			{% endif %}
+		{% endif %}
+	</ul>
+</nav>
+
+<ul style="display:none" id="{{baseId}}_remove_menu">
+	<li data-action="spam">Set Ticket as Spam</li>
+	<li data-action="delete">Delete this Ticket</li>
+	{% if app.user.hasPerm('agent_people.delete') %}
+		{% if person_object_counts.tickets > 1 or person_object_counts.chats > 0 %}
+			{% if person_object_counts.tickets > 1 %}
+				<li data-action="delete.ban">Permanently Delete User and their {{ person_object_counts.tickets }} Tickets</li>
+			{% else %}
+				<li data-action="delete.ban">Permanently Delete User and their other content</li>
+			{% endif %}
+		{% else %}
+			<li data-action="delete.ban">Permanently Delete User and this Ticket</li>
+		{% endif %}
+	{% endif %}
+</ul>
+
+<ul id="{{baseId}}_merge_menu" style="display: none;">
+	{% if tickets_by_user %}
+		<li class="section-title">Other Tickets from User</li>
+	{% for ticket_by_user in tickets_by_user %}
+		<li data-merge-id="{{ ticket_by_user.id }}">{{ ticket_by_user.subject }}</li>
+	{% endfor %}
+	{% endif %}
+	<li class="tab-insert always-show section-title">Other Tickets</li>
+	<li>Find ticket...</li>
+</ul>
+
+<div class="pagecontent">
 
 {{ dp_widgets(baseId, 'ticket', 'properties', 'below', ticket_api) }}
 {{ dp_widgets(baseId, 'ticket', 'messages', 'above', ticket_api) }}
@@ -765,6 +715,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 {% include 'AgentBundle:Ticket:custom-view-include.html.twig' %}
 
 {{ dp_widgets(baseId, 'ticket', '', '', ticket_api) }}
+
+</div>
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

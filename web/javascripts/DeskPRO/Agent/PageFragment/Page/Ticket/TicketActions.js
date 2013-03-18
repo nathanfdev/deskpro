@@ -228,11 +228,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
-		this.page.getEl('headerbox_box_props').find('select').each(function() {
-			DP.select($(this));
-		});
 
 		DP.select(this.page.getEl('flag'));
+		DP.select(this.page.getEl('department_id'));
+		DP.select(this.page.getEl('status_code'));
+		DP.select(this.page.getEl('urgency'));
 	},
 
 	_initMacroOverlay: function() {

@@ -1,28 +1,6 @@
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
 	<tbody>
 		<tr>
-			<th width="80">
-				Your Flag
-			</th>
-			<td>
-				<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons">
-					<option
-						value=""
-						data-icon="{{ asset('images/agent/icons/flag-gray.png' ) }}"
-					>None</option>
-					{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
-						<option
-							value="{{color}}"
-							{% if ticket_flagged == color %}selected="selected"{% endif %}
-							data-icon="{{ asset('images/agent/icons/flag-' ~ color ~ '.png' ) }}"
-						>{{ flag.flag_name(color) }}</option>
-					{% endfor %}
-				</select>
-			</td>
-		</tr>
-	</tbody>
-	<tbody>
-		<tr>
 			<th style="vertical-align: top; border-bottom: none;">
 				Tasks
 			</th>

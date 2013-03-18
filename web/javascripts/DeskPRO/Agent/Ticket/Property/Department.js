@@ -31,13 +31,13 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 
 		var el = this.getInterfaceElement();
 
-		var name = DeskPRO_Window.getDisplayName('department_full', value);
+		var name = this.ticketPage.getEl('department_id').find('option:selected').data('full-title');
 		this.getInterfaceElement().text(name);
 		this.ticketPage.getEl('value_form').find('.department_id').val(value);
 	},
 
 	getInterfaceElement: function() {
-		return $('.label-department-id', this.ticketPage.wrapper);
+		return this.ticketPage.getEl('department_txt');
 	},
 
 

@@ -154,7 +154,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				metaId: self.meta.ticket_id,
 				metaIdName: 'ticket_id',
 				menu: this.getEl('merge_menu'),
-				trigger: $('.merge', this.getEl('action_buttons')),
+				trigger: $('.merge-menu-trigger', this.wrapper),
 				overlayUrl: BASE_URL + 'agent/tickets/{id}/merge-overlay/{other}',
 				mergeUrl: BASE_URL + 'agent/tickets/{id}/merge/{other}',
 				loadRoute: 'ticket:' + BASE_URL + 'agent/tickets/{id}',

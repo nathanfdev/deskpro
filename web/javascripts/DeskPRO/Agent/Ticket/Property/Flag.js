@@ -41,5 +41,10 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 				new_flag: new_flag
 			});
 		}
+
+		this.ticketPage.getEl('flagicon').get(0).className = this.ticketPage.getEl('flagicon').get(0).className.replace(/flag\-color\-\w+/g, '');
+		if (value) {
+			this.ticketPage.getEl('flagicon').addClass('flag-color-' + value);
+		}
 	}
 });
