@@ -486,6 +486,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				statusMacroList.append(li);
 			});
 		});
+
+		this.el.find('.expander').on('click', function() {
+			var target = self.el.find($(this).data('target'));
+			if (target.is(':visible')) {
+				$(this).removeClass('expanded').addClass('is-hidden');
+				target.slideUp('fast');
+			} else {
+				$(this).addClass('expanded').removeClass('is-hidden');
+				target.slideDown('fast');
+			}
+		});
 	},
 
 	setReplyAsOptionName: function(name) {

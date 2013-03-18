@@ -290,7 +290,10 @@ pageMeta.baseId = '{{ baseId }}';
 				<div class="option-rows">
 					<ul id="{{baseId}}_option_rows">
 						<li class="with-select2">
-							<label>Assign:</label>
+							<label>
+								<span class="expander" data-target="#{{baseId}}_cc_row">+/-</span>
+								Assign:
+							</label>
 							<div>
 								{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
 								{% else %}{% set agent_id = ticket.agent %}{% endif %}
@@ -315,6 +318,18 @@ pageMeta.baseId = '{{ baseId }}';
 									{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
 										{% if id not in app.user.getAgent().getTeamIds() %}
 											<option value="{{ id }}">{{ name }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</div>
+						</li>
+						<li id="{{baseId}}_cc_row" class="cc-row is-hidden" style="display: none;">
+							<label style="padding-top: 6px;">Followers:</label>
+							<div style="margin-left: 65px;">
+								<select name="add_followers[]" id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
+									{% for agent in app.getDataRepository('Agent').getAgents() %}
+										{% if agent.id != app.user.id %}
+											<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 										{% endif %}
 									{% endfor %}
 								</select>

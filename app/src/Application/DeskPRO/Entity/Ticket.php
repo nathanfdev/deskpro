@@ -1031,7 +1031,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$part['person_id'] = $agent_id;
 
 				$this->addParticipant($part);
-				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $participants[$k]);
+				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $part);
 			}
 		}
 	}

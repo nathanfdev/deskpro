@@ -3155,6 +3155,17 @@ class TicketController extends AbstractController
 				}
 
 				#------------------------------
+				# Add Followers
+				#------------------------------
+
+				$add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
+				if ($add_followers) {
+					$ticket->setParticipantAgentIds($add_followers);
+					$this->em->persist($ticket);
+					$this->em->flush();
+				}
+
+				#------------------------------
 				# Related chat
 				#------------------------------
 
