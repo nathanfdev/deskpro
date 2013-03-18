@@ -43,6 +43,7 @@ use Application\DeskPRO\Tickets\TicketActions\AgentAction;
 use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
+use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -1151,8 +1152,6 @@ class TicketController extends AbstractController
 			$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
 		}
 
-		$add_reply_html = array();
-		$add_snippet_html = array();
 		$refresh_tab = false;
 
 		$factory = new ActionsFactory();
@@ -2005,7 +2004,12 @@ class TicketController extends AbstractController
 
 	public function ajaxGetMacroAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
+		if (!$ticket_id) {
+			$ticket = new \Application\DeskPRO\Entity\Ticket();
+		} else {
+			$ticket = $this->getTicketOr404($ticket_id);
+		}
+
 		$GLOBALS['DP_ACTIVE_TICKET'] = $ticket;
 
 		$macro_id = $this->in->getUint('macro_id');
@@ -2960,6 +2964,42 @@ class TicketController extends AbstractController
 		$form = $this->get('form.factory')->create($formType, $newticket);
 
 		if ($this->get('request')->getMethod() == 'POST') {
+
+			$action_type = $this->in->getString('options.action');
+			$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
+			if ($macro_id) {
+				$action_type = 'macro';
+			}
+
+			$macro = null;
+			if ($macro_id) {
+				$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+			}
+
+			$factory = new ActionsFactory();
+			$collection = new ActionsCollection();
+			$set_status = 'awaiting_agent';
+
+			if ($action_type != 'macro') {
+				$set_status = $action_type;
+			}
+
+			if ($macro) {
+				foreach ($macro->actions as $action) {
+					$action = $factory->createFromInfo($action);
+					if ($action) {
+
+						if ($action instanceof AgentAction || $action instanceof AgentTeamAction || $action instanceof ReplyAction || $action instanceof ReplySnippetAction) {
+							// Ignore, the replybox itself changed for these actions
+						} elseif ($action instanceof StatusAction) {
+							$set_status = $action->getFullStatus();
+						} else {
+							$collection->add($action);
+						}
+					}
+				}
+			}
+
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
@@ -3011,6 +3051,7 @@ class TicketController extends AbstractController
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
 			$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
+			$newticket->status = $set_status;
 			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
 			$validator->setPageData($default_page->getPageDisplay('default')->data);
 
@@ -3059,6 +3100,11 @@ class TicketController extends AbstractController
 				$ticket = $newticket->getTicket();
 
 				$this->em->flush();
+
+				if ($collection->countActions()) {
+					$collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+					$this->em->flush();
+				}
 
 				#------------------------------
 				# Labels

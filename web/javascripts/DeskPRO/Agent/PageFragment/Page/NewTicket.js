@@ -13,6 +13,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
+		this.el = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
@@ -41,7 +42,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 		}
 
-		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
+		$('.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		//------------------------------
 		// Upload handling
@@ -291,6 +292,321 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
 		updateFields();
+
+
+		//------------------------------
+		// Status menu
+		//------------------------------
+
+		var statusMenuTrigger = this.el.find('.status-menu-trigger');
+		var footerEl = this.getEl('message_footer');
+		var statusMenu = this.getEl('status_menu');
+		statusMenu.css('z-index', 999999);
+		var statusMenuH = null;
+		var statusBackdrop = null;
+		var statusMacroFilter = null;
+		var statusMacroList = statusMenu.find('.macro-list');
+		var statusListItems = null;
+		var replyAsType = this.getEl('reply_as_type');
+
+		var closeStatusMenu = function() {
+			statusBackdrop.hide();
+			statusMenu.hide();
+		};
+
+		var updateStatusPos = function() {
+			statusMenuH = statusMenu.height();
+			if (statusMenu > 500) {
+				statusMenu.find('macro-list').css('max-height', 500).css('overflow', 'auto');
+				statusMenuH = 500;
+			}
+
+			var pos = footerEl.offset();
+			statusMenu.css({
+				left: pos.left + 6,
+				top: pos.top - statusMenuH + 3
+			});
+		};
+
+		var openStatusMenu = function() {
+			statusListItems = statusMenu.find('li[data-type]').not('.off');
+
+			// Means we're opening fo rhte first time
+			if (!statusBackdrop) {
+				statusBackdrop = $('<div class="backdrop"></div>');
+				statusBackdrop.appendTo('body');
+				statusBackdrop.on('click', function(ev) {
+					ev.stopPropagation();
+					closeStatusMenu();
+				});
+				statusMenu.detach().appendTo('body');
+
+				// Handle macro filtering
+				statusMacroFilter = statusMenu.find('.macro-filter');
+
+				statusMenu.on('click', 'li[data-type]', function(ev) {
+					ev.stopPropagation();
+					self.setReplyAsOption($(this));
+					closeStatusMenu();
+				});
+
+				statusMacroFilter.on('keyup', function(ev) {
+
+					var isCtrl = false;
+					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+						isCtrl = true;
+					} else if (ev.altKey) {
+						isCtrl = true;
+					}
+					if (isCtrl) {
+						if (isCtrl && (ev.which == 85)) {
+							closeStatusMenu();
+							self.page.shortcutReplySetAwaitingUser();
+							return;
+						}
+						if (isCtrl && (ev.which == 65)) {
+							closeStatusMenu();
+							self.page.shortcutReplySetAwaitingAgent();
+							return;
+						}
+						if (isCtrl && (ev.which == 68)) {
+							closeStatusMenu();
+							self.page.shortcutReplySetResolved();
+							return;
+						}
+					}
+
+					if (ev.keyCode == 13 /* enter key */) {
+						ev.preventDefault();
+						var current = statusListItems.filter('.cursor');
+						if (current[0]) {
+							self.setReplyAsOption(current);
+							closeStatusMenu();
+						}
+					} else if (ev.keyCode == 27 /* escape key */) {
+						ev.preventDefault();
+						closeStatusMenu();
+					} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+						ev.preventDefault();
+						var dir = ev.keyCode == 40 ? 'down' : 'up';
+
+						var current = statusListItems.filter('.cursor');
+						if (!current.length) {
+							if (dir == 'down') {
+								statusListItems.first().addClass('cursor');
+							} else {
+								statusListItems.last().addClass('cursor');
+							}
+						} else {
+							var nextIndex = statusListItems.index(current);
+							if (dir == 'down') {
+								nextIndex++;
+							} else {
+								nextIndex--;
+							}
+
+							if (nextIndex < 0) {
+								nextIndex = statusListItems.length-1;
+							} else if (nextIndex > (statusListItems.length-1)) {
+								nextIndex = 0;
+							}
+
+							current.removeClass('cursor');
+							statusListItems.eq(nextIndex).addClass('cursor');
+						}
+					}
+				});
+
+				statusMacroFilter.on('keyup', function() {
+					var val = $.trim($(this).val());
+
+					if (!val) {
+						statusMacroList.find('li').show().removeClass('off');
+						updateStatusPos();
+					} else {
+						val = val.toLowerCase();
+						statusMacroList.find('li').each(function() {
+							if ($(this).text().toLowerCase().indexOf(val) !== -1) {
+								$(this).show().removeClass('off');
+							} else {
+								$(this).hide().addClass('off');
+							}
+						});
+						updateStatusPos();
+					}
+
+					statusListItems = statusMenu.find('li[data-type]').not('.off');
+					if (!statusListItems.filter('.cursor')[0]) {
+						statusMenu.find('li.cursor').removeClass('cursor');
+						statusListItems.first().addClass('cursor');
+					}
+				});
+			}
+
+			// Pre-select proper value
+			var type = replyAsType.data('type');
+			statusMenu.find('li').removeClass('cursor')
+				.filter('[data-type]').removeClass('on')
+				.filter('[data-type="' + type + '"]').addClass('on');
+
+			var w = self.getEl('reply_btn_group').width() - 3;
+			if (w < 200) {
+				w = 200;
+			}
+			statusMenu.width(w);
+
+			statusBackdrop.show();
+			updateStatusPos();
+			statusMenu.show();
+
+			statusMacroFilter.focus();
+		};
+
+		this.openStatusMenu = openStatusMenu;
+
+		statusMenuTrigger.on('click', function(ev) {
+			ev.preventDefault();
+			openStatusMenu();
+		});
+
+		$('#settingswin').on('dp_macros_updated', function(ev) {
+			Array.each(ev.macroItems, function(info) {
+				var has = statusMacroList.find('.res-ticketmacro-' + info.id);
+				if (has[0]) {
+					return;
+				}
+
+				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
+				li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+				li.data('label', 'Send Reply and ' + info.title);
+				li.data('type', 'macro:'+info.id);
+				li.attr('data-type', 'macro:'+info.id);
+				li.find('.macro-title').text(info.title);
+
+				statusMacroList.append(li);
+			});
+		});
+	},
+
+	setReplyAsOptionName: function(name) {
+		var item = this.getEl('status_menu').find('li[data-type="' + name + '"]').first();
+		if (item[0]) {
+			this.setReplyAsOption(item);
+		}
+	},
+
+	setReplyAsOption: function(item) {
+		var replyAsType = this.getEl('reply_as_type');
+
+		var html = Orb.escapeHtml(item.data('label'));
+		html = html.replace(/^Send Reply/, 'Send <span class="show-key-shortcut">R</span>eply');
+		replyAsType.data('type', item.data('type')).html(html);
+
+		var macroUrl = item.data('get-macro-url');
+
+		var api = this.textarea.data('redactor');
+		api.$editor.find('.editor-text-insertion-point').remove();
+
+		if (!macroUrl) {
+			this.getEl('actions_row').hide();
+			this.updateUi();
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		} else {
+			var actionsRow = this.getEl('actions_row');
+			var actionsRowList = actionsRow.find('ul');
+			actionsRowList.empty();
+			actionsRowList.append('<li class="load"><i class="flat-spinner"></i></li>');
+
+			actionsRow.show();
+
+			this.updateUi();
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+
+			$.ajax({
+				url: macroUrl,
+				type: 'GET',
+				context: this,
+				dataType: 'json',
+				success: function(data) {
+					actionsRowList.empty();
+					Array.each(data.descriptions, function(desc) {
+						var li = $('<li />');
+						li.html(desc);
+
+						actionsRowList.append(li);
+					});
+
+					// There's a snippet reply point
+					var sig = api.$editor.find('.dp-signature-start');
+					if (!sig[0]) {
+						sig = null;
+					}
+
+					actionsRowList.find('.with-reply, .with-snippet').each(function() {
+						var pos = $(this).data('reply-pos');
+						var html = $(this).find('.reply-text').get(0).innerHTML;
+
+						if (pos) {
+							if (pos == 'overwrite') {
+								api.$editor.html(html);
+								if (sig) {
+									api.$editor.append(sig);
+								}
+							} else if (pos == 'prepend') {
+								api.$editor.prepend(html);
+							} else {
+								if (sig) {
+									var usesig = sig;
+									var prev = sig.prev();
+									if (prev[0] && prev.is('p') && $.trim(prev.text()) === '') {
+										usesig = prev;
+										var prev2 = prev.prev();
+										if (prev2[0] && prev2.is('p') && $.trim(prev2.text()) === '') {
+											prev2.remove()
+										}
+									}
+									usesig.before(html);
+								} else {
+									api.$editor.append(html);
+								}
+							}
+
+							api.syncCode();
+						}
+					});
+
+					var agentId = parseInt(actionsRowList.find('.with-agent').data('agent-id'));
+					if (agentId) {
+						if (agentId == -1) {
+							agentId = DESKPRO_PERSON_ID;
+						}
+
+						this.getEl('agent_sel').select2('val', agentId);
+					}
+					var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
+					if (agentTeamId) {
+						if (agentTeamId == -1) {
+							if (!window.DESKPRO_TEAM_IDS || !window.DESKPRO_TEAM_IDS.length) {
+								agentTeamId = null;
+							} else {
+								agentTeamId = window.DESKPRO_TEAM_IDS[0];
+							}
+						}
+
+						if (agentTeamId) {
+							this.getEl('agent_team_sel').select2('val', agentTeamId);
+						}
+					}
+
+					if (actionsRowList.find('.with-close-tab')) {
+						this.getEl('close_tab_opt').prop('checked', true);
+					}
+
+					this.updateUi();
+					this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				}
+			});
+		}
 	},
 
 	markForReload: function() {
@@ -311,6 +627,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	submit: function() {
 
+		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
 
 		$('div.error.section', this.wrapper).removeClass('error');
@@ -772,6 +1089,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.loadSnippetsViewer();
 
 		var textarea = this.getEl('message');
+		this.textarea = textarea;
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.getEl('signature_value_html').val();
@@ -782,7 +1100,22 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
-				inlineHiddenPosition: this.getEl('is_html_reply')
+				inlineHiddenPosition: this.getEl('is_html_reply'),
+				callback: function(obj) {
+					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){
+						self.openSnippetsViewer();
+					});
+					obj.addBtnSeparatorAfter('dp_attach');
+					obj.addBtnSeparatorAfter('dp_snippets');
+
+					var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+
+					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+					attachBtn.addClass('attach');
+					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+				}
 			});
 			this.getEl('is_html_reply').val(1);
 
