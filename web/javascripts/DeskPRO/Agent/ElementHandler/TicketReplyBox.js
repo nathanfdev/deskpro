@@ -467,15 +467,35 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						// web kit handles content editable without an issue. this prevents the span
 						// from being extended unnecessarily
 						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-						api.insertHtml('<p><span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span></p>');
+						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
 						$.ajax({
 							url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/get-snippet/' + snippetId,
 							dataType: 'text',
 							success: function(data) {
 								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+								data = $(data);
+
+								// trailing newlines
+								var coll;
+								if (data.length == 1) {
+									coll = data;
+								} else {
+									coll = data.find('> p');
+								}
+								coll.each(function() {
+									var l = $(this).find('> *').last();
+									if (l.is('br')) {
+										l.remove();
+									}
+								});
+
+								data.append('<span class="_cursor"></span>');
+								var cursor = data.find('._cursor');
+
 								el.after(data);
 								el.remove();
+								api.setSelection(cursor[0], 0, cursor[0], 0);
 							}
 						});
 					}
