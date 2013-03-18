@@ -513,6 +513,11 @@ class PersonController extends AbstractController
 				$old_org = $person->organization;
 
 				if ($org) {
+					$add = 0;
+					if ($org && $person->organization && $person->organization->getId() != $org->getId()) {
+						$add = 1;
+					}
+
 					$person->organization = $org;
 					$person->organization_position = $this->in->getString('position');
 					$person->organization_manager = $this->in->getBool('manager');
@@ -523,7 +528,7 @@ class PersonController extends AbstractController
 					$org_members_count = null;
 					$org_contact_data = null;
 					if ($person->organization) {
-						$org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+						$org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization) + $add;
 
 						$org_contact_data = array();
 						foreach ($person->organization->contact_data as $cd) {
@@ -538,7 +543,7 @@ class PersonController extends AbstractController
 					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
 						'org' => $org,
 						'person' => $person,
-						'org_members_count' => ++$org_members_count,
+						'org_members_count' => $org_members_count,
 						'org_contact_data' => $org_contact_data,
 					));
 
