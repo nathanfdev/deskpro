@@ -53,7 +53,7 @@
 {% include 'AdminBundle:Main:welcome-box.html.twig' %}
 {% include 'AdminBundle:Main:onboarding.html.twig' %}
 
-{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or gateway_error_count or app.getSetting('core.error_unable_allocate_memory') %}
+{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or gateway_error_count or app.getSetting('core.error_unable_allocate_memory') or apc_misses_warn %}
 <div class="content-table" style="border: 1px solid #A31612;">
 	<table width="100%">
 		<thead>
@@ -83,6 +83,22 @@
 					<td>
 						<a href="#" class="hide-setting-error close-icon" data-setting="core.error_unable_allocate_memory">Hide</a>
 						APC has been unable to allocate memory for use by PHP. This indicates a misconfiguration with the APC PHP extension. <a href="http://www.cyberciti.biz/faq/linux-unix-php-warning-unable-to-allocate-memory-for-pool/" target="_blank">Learn more.</a>
+					</td>
+				</tr>
+			{% endif %}
+			{% if apc_misses_warn %}
+				<tr>
+					<td>
+						<strong>
+							APC is reporting cache misses {{ apc_miss_perc }}% of the time.
+						</strong>
+						This is usually means you have not configured APC with enough memory to cache DeskPRO's source files. A high miss-rate minimizes the effectiveness
+						of APC. To improve performance you need to allocate more memory by ediitng your php.ini file.
+						<a href="http://www.cyberciti.biz/faq/linux-unix-php-warning-unable-to-allocate-memory-for-pool/" target="_blank">Learn more.</a>
+						{% if apc_graph_html %}
+							<hr/>
+							{{ apc_graph_html|raw }}
+						{% endif %}
 					</td>
 				</tr>
 			{% endif %}
