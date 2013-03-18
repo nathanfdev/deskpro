@@ -78,13 +78,13 @@ DeskPRO.Agent.RteEditor = {
 
 		if (options.autosaveContent && options.autosaveContentId) {
 			defaultOptions.autosave = BASE_URL + 'agent/misc/redactor-autosave/' + options.autosaveContent + '/' + options.autosaveContentId;
-			defaultOptions.interval = 30;
+			defaultOptions.interval = 5;
 		}
 
 		options = Object.merge(defaultOptions, options);
 
 		var autosaveUrl = options.autosave,
-			autosaveInterval = options.interval || 30,
+			autosaveInterval = options.interval || 5,
 			preAutosaveCallback = options.preAutosaveCallback;
 
 		options.autosave = false;
