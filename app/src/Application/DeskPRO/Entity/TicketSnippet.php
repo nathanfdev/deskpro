@@ -78,7 +78,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $shortcut_code = null;
+	protected $shortcut_code = '';
 
 	/**
 	 * @var string

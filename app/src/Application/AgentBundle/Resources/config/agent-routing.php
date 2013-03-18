@@ -188,6 +188,13 @@ $collection->add('agent_snippetviewer_savesnippet', new Route(
 	array()
 ));
 
+$collection->add('agent_snippetviewer_getsnippet', new Route(
+	'/misc/snippet-viewer/get-snippet/{snippet_id}',
+	array('_controller' => 'AgentBundle:Misc:getSnippet'),
+	array('snippet_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_snippetviewer_delsnippet', new Route(
 	'/misc/snippet-viewer/delete-snippet',
 	array('_controller' => 'AgentBundle:Misc:deleteSnippet'),

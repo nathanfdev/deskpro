@@ -6,6 +6,7 @@
 		</div>
 		<div class="snippet-content tipped" title="Click to insert this snippet" data-snippet-id="{{ snippet.id }}">
 			<label>{{ snippet.title }}</label>
+			{% if snippet.shortcut_code %}<span class="snippet-code">%{{ snippet.shortcut_code }}%</span>{% endif %}
 			<div class="content show">
 				<div class="main-content">
 					{% if no_formatting %}

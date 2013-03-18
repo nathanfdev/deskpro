@@ -82,7 +82,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					self.activeSection.find('.filter-input').first().focus();
 				}, 10);
 			}
-		})
+		});
 
 		DeskPRO_Window.activeListNav = this.listNav;
 	},

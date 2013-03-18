@@ -199,6 +199,85 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		}
 
+		if (textarea.data('redactor')) {
+			var ed = textarea.getEditor();
+			var api = textarea.data('redactor');
+
+			var te = new DeskPRO.TextExpander({
+				textarea: ed,
+				onCombo: function(combo, ev) {
+					combo = combo.replace(/%/g, '');
+					if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo]) {
+						ev.preventDefault();
+
+						var snippetId = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo];
+
+						var focus = api.getFocus(),
+							focusNode = $(focus[0]),
+							testText;
+
+						if (focus[0].nodeType == 3) {
+							testText = focusNode.text().substring(0, focus[1]);
+						} else {
+							focus[0] = focusNode.contents().get(focus[1] - 1);
+							focusNode = $(focus[0]);
+							testText = focusNode.text();
+							focus[1] = testText.length;
+						}
+
+						var	lastAt = testText.lastIndexOf('%'), matches = [];
+
+						if (lastAt != -1) {
+							api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+						}
+
+						// web kit handles content editable without an issue. this prevents the span
+						// from being extended unnecessarily
+						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
+
+						$.ajax({
+							url: BASE_URL + 'agent/misc/snippet-viewer/get-snippet/' + snippetId,
+							dataType: 'text',
+							success: function(data) {
+								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+
+								var wrapper = $('<div/>');
+								wrapper.html(data);
+
+								if (wrapper.find('> *')[0]) {
+									data = wrapper.find('> *');
+								} else {
+									data = wrapper;
+								}
+
+								// trailing newlines
+								var coll;
+								if (data.length == 1) {
+									coll = data;
+								} else {
+									coll = data.find('> p');
+								}
+								coll.each(function() {
+									var l = $(this).find('> *').last();
+									if (l.is('br')) {
+										l.remove();
+									}
+								});
+
+								data.append('<span class="_cursor"></span>');
+								var cursor = data.find('._cursor');
+
+								el.after(data);
+								el.remove();
+								api.setSelection(cursor[0], 0, cursor[0], 0);
+							}
+						});
+					}
+				}
+			});
+		}
+
 		//------------------------------
 		// Intercept close events and cancel, so we
 		// can confirm

@@ -15,6 +15,13 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
+		this.snippetType = this.meta.snippetType || 'unknown';
+
+		this.windowShortcodeMapName = 'DESKPRO_' + this.snippetType.toUpperCase() +  '_SNIPPET_SHORTCODES';
+		if (!window[this.windowShortcodeMapName]) {
+			window[this.windowShortcodeMapName] = {};
+		}
+
 		// Set up the tabs
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('nav ul > li', this.wrapper),
@@ -23,6 +30,12 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 				$('li.snippet', info.tabContent).each(function() {
 					self.processSnippetRow($(this));
 				});
+
+				window.setTimeout(function() {
+					self.activeSection = $(info.tabContent);
+					$(info.tabContent).find('.filter-input').first().focus();
+					self.updateUi();
+				}, 10);
 			}
 		});
 		this.ownObject(this.catTabs);
@@ -70,6 +83,15 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 		});
 
 		this._initEditing();
+		this._initFiltering();
+
+		this.addEvent('activate', function() {
+			if (this.activeSection) {
+				window.setTimeout(function() {
+					self.activeSection.find('.filter-input').first().focus();
+				}, 10);
+			}
+		});
 	},
 
 	closeSelf: function() {
@@ -392,6 +414,14 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 				}
 				new_row.show();
 				this.processSnippetRow(new_row);
+
+				var catList = this.wrapper.find('.cat-'+data.category_id).find('ul').html();
+				this.wrapper.find('.alt-cat-'+data.category_id).html(catList);
+
+				if (data.shortcut_code) {
+					window[this.windowShortcodeMapName][data.shortcut_code] = data.snippet_id;
+				}
+
 				self.updateUi();
 			}
 		}).always(function() {
@@ -406,5 +436,103 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			show.css('max-height', '30').addClass('long');
 			show.closest('.snippet').addClass('long');
 		}
+	},
+
+	//#########################################################################
+	// Filtering
+	//#########################################################################
+
+	refreshFilteredNavList: function() {
+		if (this.activeSection) {
+			this.activeSnippets = this.activeSection.find('li.snippet').not('.filter-hide');
+			if (!this.activeSnippets.filter('.cursor')) {
+				this.el.find('li.snippet.cursor').removeClass('cursor');
+			}
+		}
+	},
+
+	_initFiltering: function() {
+		var self = this;
+		this.wrapper.find('.filter-input').on('keydown', function(ev) {
+			var activeSnippets = self.activeSnippets;
+
+			if (ev.keyCode == 13 /* enter key */) {
+				ev.preventDefault();
+				var current = activeSnippets.filter('.cursor');
+				if (current[0]) {
+					current.click();
+					self.insertSnippetEl(current);
+					window.setTimeout(function() {
+						self.activeSection.find('.filter-input').first().focus();
+					}, 20);
+				}
+			} else if (ev.keyCode == 27 /* escape key */) {
+				ev.preventDefault();
+				self.closeSelf();
+			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+				ev.preventDefault();
+				var dir = ev.keyCode == 40 ? 'down' : 'up';
+
+				var current = activeSnippets.filter('.cursor');
+				if (!current.length) {
+					if (dir == 'down') {
+						activeSnippets.first().addClass('cursor');
+					} else {
+						activeSnippets.last().addClass('cursor');
+					}
+				} else {
+					var nextIndex = activeSnippets.index(current);
+					if (dir == 'down') {
+						nextIndex++;
+					} else {
+						nextIndex--;
+					}
+
+					if (nextIndex < 0) {
+						nextIndex = activeSnippets.length-1;
+					} else if (nextIndex > (activeSnippets.length-1)) {
+						nextIndex = 0;
+					}
+
+					current.removeClass('cursor');
+					activeSnippets.eq(nextIndex).addClass('cursor');
+				}
+			}
+		});
+		this.wrapper.find('.filter-input').on('keyup', function(ev) {
+			var input = $.trim($(this).val());
+			var section = $(this).closest('.cat-section');
+
+			if (!input) {
+				section.find('li.snippet').show();
+
+				if (section.hasClass('cat-0')) {
+					section.find('.cat-group').show();
+				}
+
+			} else {
+				input = input.toLowerCase();
+				section.find('li.snippet').each(function() {
+					if ($(this).find('label').text().toLowerCase().indexOf(input) !== -1) {
+						$(this).show().removeClass('filter-hide');
+					} else {
+						$(this).hide().addClass('filter-hide');
+					}
+				});
+
+				if (section.hasClass('cat-0')) {
+					section.find('.cat-group').each(function() {
+						if ($(this).find('li').not('.filter-hide')[0]) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					});
+				}
+			}
+
+			self.refreshFilteredNavList();
+			self.updateUi();
+		});
 	}
 });

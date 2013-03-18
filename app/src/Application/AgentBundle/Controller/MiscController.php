@@ -41,6 +41,7 @@ use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Response;
 
 class MiscController extends AbstractController
 {
@@ -156,6 +157,25 @@ class MiscController extends AbstractController
 			$js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = " . json_encode($snippet_short_codes) . ";";
 		} else {
 			$js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};";
+		}
+
+		// Snippet short codes
+		$text_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('chat', $this->person);
+		$snippet_short_codes = array();
+		foreach ($text_snippets as $snippet_cat) {
+			if ($snippet_cat['snippets']) {
+				foreach ($snippet_cat['snippets'] as $snippet) {
+					if ($snippet->shortcut_code) {
+						$snippet_short_codes[$snippet->shortcut_code] = $snippet->id;
+					}
+				}
+			}
+		}
+
+		if ($snippet_short_codes) {
+			$js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = " . json_encode($snippet_short_codes) . ";";
+		} else {
+			$js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = {};";
 		}
 
 		// Chat display elements
@@ -757,10 +777,30 @@ JS;
 		$snippet['snippet'] = $this->in->getString('snippet');
 		$snippet->person = $this->person;
 
+		$snippet->shortcut_code = $this->in->getString('shortcut_code');
+		if (!$snippet->shortcut_code) {
+			$snippet->shortcut_code = null;
+		}
+
 		$this->em->transactional(function($em) use ($snippet) {
 			$em->persist($snippet);
 			$em->flush();
 		});
+
+		// Check for dupe codes
+		if ($snippet->shortcut_code) {
+			$exists = $this->db->fetchColumn("
+				SELECT id FROM text_snippets
+				WHERE shortcut_code = ?
+				AND id != ?
+			", array($snippet->shortcut_code, $snippet->id));
+
+			if ($exists) {
+				$snippet->shortcut_code = $snippet->shortcut_code . $snippet->id;
+				$this->em->persist($snippet);
+				$this->em->flush();
+			}
+		}
 
 		return $this->createJsonResponse(array(
 			'snippet_row_html' => $this->renderView('AgentBundle:Common:text-snippets-row.html.twig', array(
@@ -769,6 +809,18 @@ JS;
 			'snippet_id' => $snippet['id'],
 			'category_id' => $category['id']
 		));
+	}
+
+	public function getSnippetAction($snippet_id)
+	{
+		$snippet = $this->em->find('DeskPRO:TextSnippet', $snippet_id);
+
+		if (!$snippet) {
+			throw $this->createNotFoundException();
+		}
+
+		$res = new Response($snippet->formatHtml());
+		return $res;
 	}
 
 	public function deleteSnippetAction()

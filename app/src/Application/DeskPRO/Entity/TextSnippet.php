@@ -66,6 +66,11 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
+	protected $shortcut_code = '';
+
+	/**
+	 * @var string
+	 */
 	protected $title;
 
 	/**
@@ -125,7 +130,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @param array $options
-	 * @return void
+	 * @return string
 	 */
 	public function format(array $options = array())
 	{
@@ -142,12 +147,25 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 * Format a snippet for displaying as a preview. This is where the terms are highlighed.
 	 *
 	 * @param array $options
-	 * @return void
+	 * @return string
 	 */
 	public function formatPreviewHtml(array $options = array())
 	{
 		$options = array_merge($options, array('wrap_left' => '<span class="replacement">', 'wrap_right' => '</span>', 'is_html' => true));
 		return $this->format($options);
+	}
+
+
+	/**
+	 * @param string $sc
+	 */
+	public function setShortcutCode($sc)
+	{
+		if (!$sc) {
+			$this->setModelField('shortcut_code', '');
+		} else {
+			$this->setModelField('shortcut_code', $sc);
+		}
 	}
 
 
@@ -163,6 +181,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'text_snippets', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code', ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'snippet', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
