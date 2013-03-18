@@ -286,21 +286,6 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status == 'ended' and convo.ended_by != 'timeout' %}display: none{% endif %};">
-				<nav>
-					<ul class="option-buttons">
-						<li class="tipped attach" title="{{ phrase('agent.general.attachments') }}">
-							<input type="file" class="file" name="file-upload" />
-							<span></span>
-						</li>
-						<li class="tipped snippets" id="{{baseId}}_quick_replies" title="{{ phrase('agent.chat.snippets') }}"><span></span></li>
-						<li class="tipped ticket" id="{{baseId}}_create_ticket_btn" title="{{ phrase('agent.general.create_ticket') }}"><span></span></li>
-					</ul>
-
-					<ul class="option-buttons right">
-						<li class="closetab tipped" id="{{baseId}}_end_btn" title="{{ phrase('agent.general.end_chat') }}"><span>{{ phrase('agent.general.send') }}</span></li>
-						<li class="send" id="{{baseId}}_send_btn"><span>{{ phrase('agent.general.send') }}</span></li>
-					</ul>
-				</nav>
 				<div class="input-wrap">
 					<textarea placeholder="" id="{{baseId}}_replybox_txt" name="message"></textarea>
 					<input type="hidden" id="{{baseId}}_is_html_reply" name="is_html_reply" value="0" />

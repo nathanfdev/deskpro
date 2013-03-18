@@ -72,19 +72,15 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			});
 		}
 
+		this.doSendMsg = function() {
+			self.sendMsg();
+		}
+
 		messageTextarea.on('keypress', function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				sendMsg();
 			}
-		});
-
-		this.getEl('send_btn').on('click', function() {
-			sendMsg();
-		});
-
-		this.getEl('end_btn').on('click', function() {
-			self.endChat();
 		});
 
 		this.addEvent('destroy', function() {
@@ -121,39 +117,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		} , this, [this.OBJ_ID]);
 
 		//------------------------------
-		// Snippets Viewer
-		//------------------------------
-
-		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
-			triggerElement: this.getEl('quick_replies'),
-			onSnippetClick: function(info) {
-				var val = info.snippet;
-
-				var messageTextarea = self.getEl('replybox_txt')
-				if (messageTextarea.data('redactor')) {
-					messageTextarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(val, true));
-					messageTextarea.change();
-					window.setTimeout(function() {
-						var tmp = ed.height();
-						if (lastH != tmp) {
-							lastH = tmp;
-							self.getEl('replybox').css('height', lastH+69);
-							self.getEl('messages_box').css('bottom', lastH+69);
-						}
-					}, 100);
-				} else {
-					var pos = messageTextarea.getCaretPosition();
-					if (!pos) {
-						messageTextarea.setCaretPosition(0);
-					}
-
-					messageTextarea.insertAtCaret(val);
-				}
-			}
-		});
-
-		//------------------------------
 		// Editor
 		//------------------------------
 
@@ -167,7 +130,40 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				minHeight: 40,
 				maxHeight: 40,
 				inlineHiddenPosition: this.getEl('is_html_reply'),
-				convertLinks: false // we'll do it ourselves
+				convertLinks: false, // we'll do it ourselves
+				callback: function(obj) {
+					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
+
+					obj.addBtnAfter('horizontalrule', 'dp_create_ticket', 'Create Ticket', function(){
+						DeskPRO_Window.newTicketLoader.open(function(page) {
+							page.setNewByChat({ chat_id: self.meta.conversation_id, chat_title: self.meta.chatTitle, person_id: self.meta.person_id, sesson_id: self.meta.session_id, email: self.meta.email });
+						});
+					});
+					obj.addBtnAfter('dp_create_ticket', 'dp_end_chat', 'End Chat', function(){
+						self.endChat();
+					});
+
+					obj.addBtnAfter('dp_end_chat', 'dp_send_message', 'Send your message (or press the Enter or Return key on your keyboard)', function(){
+						self.doSendMsg();
+					});
+
+					obj.addBtnSeparatorAfter('dp_attach');
+					obj.addBtnSeparatorAfter('dp_snippets');
+					obj.addBtnSeparatorAfter('horizontalrule');
+					obj.addBtnSeparatorAfter('dp_end_chat');
+
+					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+
+					var tmp = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+					tmp.addClass('attach');
+					tmp.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+
+					tmp = obj.$toolbar.find('.redactor_btn_dp_send_message').closest('li');
+					tmp.addClass('dp_send_message');
+					tmp.find('a').text('Send');
+				}
 			});
 			this.getEl('is_html_reply').val(1);
 
@@ -279,6 +275,39 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		//------------------------------
+		// Snippets Viewer
+		//------------------------------
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
+			triggerElement: snippetBtn,
+			onSnippetClick: function(info) {
+				var val = info.snippet;
+
+				var messageTextarea = self.getEl('replybox_txt')
+				if (messageTextarea.data('redactor')) {
+					messageTextarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(val, true));
+					messageTextarea.change();
+					window.setTimeout(function() {
+						var tmp = ed.height();
+						if (lastH != tmp) {
+							lastH = tmp;
+							self.getEl('replybox').css('height', lastH+69);
+							self.getEl('messages_box').css('bottom', lastH+69);
+						}
+					}, 100);
+				} else {
+					var pos = messageTextarea.getCaretPosition();
+					if (!pos) {
+						messageTextarea.setCaretPosition(0);
+					}
+
+					messageTextarea.insertAtCaret(val);
+				}
+			}
+		});
+
+		//------------------------------
 		// Intercept close events and cancel, so we
 		// can confirm
 		//------------------------------
@@ -336,12 +365,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			this._confirmCloseOverlay.open();
 		}, this);
-
-		this.getEl('create_ticket_btn').on('click', function() {
-			DeskPRO_Window.newTicketLoader.open(function(page) {
-				page.setNewByChat({ chat_id: self.meta.conversation_id, chat_title: self.meta.chatTitle, person_id: self.meta.person_id, sesson_id: self.meta.session_id, email: self.meta.email });
-			});
-		});
 
 		this.getEl('create_ticket_btn2').on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
