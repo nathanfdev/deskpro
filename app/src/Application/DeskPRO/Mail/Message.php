@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Mail;
 
+use Orb\Html\Html2Text;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Blob;
@@ -140,6 +141,13 @@ class Message extends \Orb\Mail\Message
 
 			$body = $this->replaceEmbeds($body);
 			$this->setBody($body, 'text/html');
+
+			try {
+				$plaintext = Html2Text::convertHtml($body);
+				if ($body) {
+					$this->addPart($plaintext, 'text/plain');
+				}
+			} catch (\Exception $e) {}
 		}
 
 		// These need to be unset so the message can be properly serialized
