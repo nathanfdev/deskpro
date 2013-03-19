@@ -135,6 +135,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC's...</em></a>
 			{% endif %}
 
+			{% if ticket_perms.modify_cc or user_parts|length %}
 			<div
 				id="{{ baseId }}_cc_list"
 				class="cc-row"
@@ -176,6 +177,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					</li>
 				</script>
 			</div>
+			{% endif %}
 		</div>
 	</td></tr></table>
 </header>
@@ -341,50 +343,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				</td>
 			</tr></table>
 			<div class="sep">-</div>
-			{% if ticket_perms.modify_cc or user_parts|length %}
-				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table"><tr>
-					<th width="80" style="vertical-align: middle">CC's</th>
-					<td style="vertical-align: middle">
-						<div
-							class="cc-row"
-							data-element-handler="DeskPRO.Agent.ElementHandler.TicketCcManage"
-							data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
-							data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
-							data-replybox-container="#{{baseId}}_replybox_wrap"
-						>
-							<ul class="cc-row-list">
-								{% for part in user_parts %}
-									{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
-								{% endfor %}
-							</ul>
-							{% if ticket_perms.modify_cc %}
-								<div class="cc-autocomplete addrow noedit-hide" style="margin:0;">
-									<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
-									<div class="person-search-box" style="display: none">
-										<section>
-											<ul class="results-list">
-											</ul>
-										</section>
-									</div>
-									<span class="is-not-loading">
-										<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
-									</span>
-									<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
-								</div>
-							{% endif %}
-							<script class="user-row-tpl" type="text/x-deskpro-tmpl">
-								<li>
-									<a>
-										<span class="user-name"></span>
-										<address>&lt;<span class="user-email"></span>&gt;</address>
-										<div class="bound-fade"></div>
-									</a>
-								</li>
-							</script>
-						</div>
-					</td>
-				</tr></table>
-			{% endif %}
 			{% if ticket.linked_chat %}
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
 					<td>
