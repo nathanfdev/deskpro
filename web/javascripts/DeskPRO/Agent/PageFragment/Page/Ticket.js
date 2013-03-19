@@ -702,6 +702,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEl('locked_message').hide();
 			this.getEl('locked_message').data('locked-self', false);
 			this.getEl('lock_ticket').show();
+			this.getEl('unlock_ticket').hide();
 		}
 
 		Array.each(['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold', 'agent_id', 'agent_team_id'], function(propId) {
@@ -983,11 +984,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initTicketLocking: function() {
 		var self = this;
-		this.getEl('unlock_ticket').on('click', function() {
+		$([this.getEl('unlock_ticket').get(0), this.getEl('unlock_ticket2').get(0)]).on('click', function() {
 			self.wrapper.find('.lock-overlay').remove();
 			self.getEl('locked_message').hide();
 			self.getEl('locked_message').data('locked-self', false);
 			self.getEl('lock_ticket').show();
+			self.getEl('unlock_ticket').hide();
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/unlock-ticket.json',
 				type: 'POST',
@@ -1005,6 +1007,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('locked_message_self').show();
 			self.getEl('locked_message_other').hide();
 			self.getEl('lock_ticket').hide();
+			self.getEl('unlock_ticket').show();
 
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/lock-ticket.json',

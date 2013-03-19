@@ -78,6 +78,22 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 {% endif %}
 
 <header class="main-header" id="{{ baseId }}_page_header">
+	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
+		<div class="locked-message">
+			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">Unlock Ticket</button>
+			<div style="margin-right: 100px;">
+				<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
+					You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
+					{% if app.getSetting('core_tickets.unlock_on_close') %}This lock will automatically be released when you close this ticket.{% endif %}
+				</div>
+				{% if ticket.locked_by_agent and not locked_self %}
+					<div id="{{baseId}}_locked_message_other">
+						{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
 		<div class="row title first">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="10" nowrap="nowrap">
@@ -227,23 +243,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
-			<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
-				<div class="sep">-</div>
-				<div class="locked-message">
-					<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
-						You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
-						{% if app.getSetting('core_tickets.unlock_on_close') %}This lock will automatically be released when you close this ticket.{% endif %}
-					</div>
-					{% if ticket.locked_by_agent and not locked_self %}
-						<div id="{{baseId}}_locked_message_other">
-							{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
-						</div>
-					{% endif %}
-
-					<br />
-					<button class="clean-white" id="{{baseId}}_unlock_ticket">Unlock Ticket</button>
-				</div>
-			</div>
 			<table cellspacing="0" cellpadding="0" width="100%"><tr>
 				<td>
 					<label>Agent</label>
@@ -389,6 +388,10 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 <nav class="header-nav">
 	<ul>
+		<li id="{{ baseId }}_unlock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %}>
+			<i class="icon-unlock"></i>
+			Unlock
+		</li>
 		<li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>
 			<i class="icon-lock"></i>
 			Lock
