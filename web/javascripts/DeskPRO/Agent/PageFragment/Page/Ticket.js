@@ -315,6 +315,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.meta.ticket_reverse_order) {
 			this.focusOnReply();
 		}
+
+		this.getEl('cc_list_btn').on('click', function(ev) {
+			ev.preventDefault();
+			$(this).hide();
+			self.getEl('cc_list').show();
+			self.getEl('cc_list').find('.addrow').show();
+			self.getEl('cc_list').find('.cc-addrow-off').hide();
+		});
 	},
 
 	loadMessagePage: function(page, noShowLoading) {
