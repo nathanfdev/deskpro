@@ -119,7 +119,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 <nav class="header-nav">
 	<ul class="right">
 		<li>
-			<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons" data-invisible-trigger="1">
+			<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons" data-invisible-trigger="1" data-dropdown-css-class="ticket-header">
 				<option
 					value=""
 					data-icon="{{ asset('images/agent/icons/flag-gray.png' ) }}"
@@ -147,7 +147,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				'blank_title': 'None',
 				'selected': ticket.department.id|default(0),
 				'id': baseId ~ '_department_id',
-				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden"',
+				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header"',
 				'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 
@@ -157,7 +157,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<span class="dp-caret"></span>
 		</li>
 		<li>
-			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none">
+			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header">
 				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
 					<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
 				{% endif %}
@@ -178,7 +178,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<span class="dp-caret"></span>
 		</li>
 		<li>
-			<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency" style="display: none" data-invisible-trigger="1">
+			<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency" style="display: none" data-invisible-trigger="1" data-dropdown-css-class="ticket-header">
 				{% for i in 1..10 %}
 					<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
 				{% endfor %}

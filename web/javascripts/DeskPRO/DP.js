@@ -402,6 +402,10 @@ var DP = {
 			options.dropdownCssClass = (options.dropdownCssClass || '') + ' invisible-trigger right';
 		}
 
+		if (el.data('dropdown-css-class')) {
+			options.dropdownCssClass = (options.dropdownCssClass || '') + ' ' + el.data('dropdown-css-class');
+		}
+
 		el.addClass('with-select2');
 		el.select2(options);
 	}
