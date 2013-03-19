@@ -1048,6 +1048,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_pref_values[$name];
 		}
 
+		if ($default === null && $name == 'agent.ticket_reverse_order') {
+			return App::getSetting('core_tickets.default_ticket_reverse_order');
+		}
+
 		return $default;
 	}
 

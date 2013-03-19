@@ -107,8 +107,18 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-label"><label>Ticket Tabs</label></div>
 			<div class="dp-form-input">
 				Automatically close ticket tabs when:
-					<label>{{ form_widget(form.ticket_close_reply) }} replying</label> |
+					<label>{{ form_widget(form.ticket_close_reply) }} replying</label> &nbsp;&nbsp;
 					<label>{{ form_widget(form.ticket_close_note) }} adding a note</label>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Ticket Message Ordering</label></div>
+			<div class="dp-form-input">
+				<label>
+					{{ form_widget(form.ticket_reverse_order) }}
+					Show newest messages first (reverse chronological order) with the replybox at the top
+				</label>
 			</div>
 		</div>
 

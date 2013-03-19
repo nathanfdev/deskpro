@@ -109,7 +109,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			ev.preventDefault();
 
 			// Scroll down
-			self.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			if (!self.meta.ticket_reverse_order) {
+				self.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			}
 			self.focusOnReply();
 		});
 
@@ -280,13 +282,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var messagesWrap = this.getEl('messages_wrap');
 		this.getEl('message_prev_page').on('click', function(ev) {
 			ev.preventDefault();
-			var p = parseInt(messagesWrap.data('page')) + 1;
+			if (self.meta.ticket_reverse_order) {
+				var p = parseInt(messagesWrap.data('page')) - 1;
+			} else {
+				var p = parseInt(messagesWrap.data('page')) + 1;
+			}
 			self.loadMessagePage(p);
 		});
 
 		this.getEl('message_next_page').on('click', function(ev) {
 			ev.preventDefault();
-			var p = parseInt(messagesWrap.data('page')) - 1;
+			if (self.meta.ticket_reverse_order) {
+				var p = parseInt(messagesWrap.data('page')) + 1;
+			} else {
+				var p = parseInt(messagesWrap.data('page')) - 1;
+			}
 			self.loadMessagePage(p);
 		});
 	},
@@ -326,15 +336,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				messagesWrap.data('page', page);
 				var numPages = parseInt(messagesWrap.data('page-count'));
 
-				if (page == numPages) {
-					this.getEl('message_prev_page').hide();
+				if (this.meta.ticket_reverse_order) {
+					if (page == numPages) {
+						this.getEl('message_prev_page').show();
+					} else {
+						this.getEl('message_prev_page').hide();
+					}
+					if (page == 1) {
+						this.getEl('message_next_page').show();
+					} else {
+						this.getEl('message_next_page').hide();
+					}
 				} else {
-					this.getEl('message_prev_page').show();
-				}
-				if (page == 1) {
-					this.getEl('message_next_page').hide();
-				} else {
-					this.getEl('message_next_page').show();
+					if (page == numPages) {
+						this.getEl('message_prev_page').hide();
+					} else {
+						this.getEl('message_prev_page').show();
+					}
+					if (page == 1) {
+						this.getEl('message_next_page').hide();
+					} else {
+						this.getEl('message_next_page').show();
+					}
 				}
 			}
 		});
@@ -875,7 +898,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.insertTextInReply(content);
 
 		// Scroll down
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
+		}
 
 		this.focusOnReply();
 
@@ -1228,7 +1253,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.insertTextInReply(quote.trim() + "\n");
 
 				// Scroll down
-				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				if (!this.meta.ticket_reverse_order) {
+					this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				}
 
 				this.focusOnReply();
 
@@ -2079,7 +2106,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
 		this.focusOnReply();
 		this.ticketReplyBox.snippetsViewer.open();
 	},
@@ -2089,7 +2118,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
 		this.ticketReplyBox.el.find('.submit-trigger').click();
 	},
 
@@ -2099,7 +2130,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		this.ticketReplyBox.setReplyAsOptionName('awaiting_user');
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
 		this.focusOnReply();
 	},
 
@@ -2109,7 +2142,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		this.ticketReplyBox.setReplyAsOptionName('awaiting_agent');
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
 		this.focusOnReply();
 	},
 
@@ -2119,7 +2154,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		this.ticketReplyBox.setReplyAsOptionName('resolved');
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
 		this.focusOnReply();
 	},
 
@@ -2128,7 +2165,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		if (!this.meta.ticket_reverse_order) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
 		this.ticketReplyBox.openStatusMenu();
 	}
 });

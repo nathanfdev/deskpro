@@ -51,6 +51,7 @@ class SettingsProfile
 	public $ticket_close_note = false;
 	public $hide_claimed_chat = false;
 	public $ticket_go_next_reply = false;
+	public $ticket_reverse_order = false;
 	public $default_team_id = 0;
 	public $reset_api_token = false;
 
@@ -82,6 +83,7 @@ class SettingsProfile
 		$this->ticket_go_next_reply = (bool)$person->getPref('agent.ticket_go_next_reply', false);
 		$this->hide_claimed_chat = (bool)$person->getPref('agent.hide_claimed_chat', false);
 		$this->default_team_id = $person->getPref('agent.ticket_default_team_id');
+		$this->ticket_reverse_order = (bool)$person->getPref('agent.ticket_reverse_order');
 		if ($this->default_team_id === null) {
 			$teams = $person->getAgent()->getTeams();
 			$last_team = end($teams);
@@ -150,6 +152,7 @@ class SettingsProfile
 			$person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
 			$person->setPreference('agent.ticket_go_next_reply', $this->ticket_go_next_reply ? 1 : 0);
 			$person->setPreference('agent.hide_claimed_chat', $this->hide_claimed_chat ? 1 : 0);
+			$person->setPreference('agent.ticket_reverse_order', $this->ticket_reverse_order ? 1 : 0);
 
 			$assign_team_setting = (
 				App::getSetting('core_tickets.new_assignteam') == 'assign'

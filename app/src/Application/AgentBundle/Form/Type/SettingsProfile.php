@@ -54,6 +54,7 @@ class SettingsProfile extends AbstractType
 	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
 	    $builder->add('hide_claimed_chat', 'checkbox', array('required' => false));
 		$builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
+		$builder->add('ticket_reverse_order', 'checkbox', array('required' => false));
 
 		$builder->add('reset_api_token', 'hidden', array('required' => false));
 

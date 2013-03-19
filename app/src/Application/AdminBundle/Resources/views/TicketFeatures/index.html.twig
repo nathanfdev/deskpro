@@ -34,6 +34,7 @@
 <input type="hidden" name="set_settings[]" value="core_tickets.reassign_auto_change_status" />
 <input type="hidden" name="set_settings[]" value="core_tickets.resolve_auto_close_tab" />
 <input type="hidden" name="set_settings[]" value="core_tickets.default_send_user_notify" />
+<input type="hidden" name="set_settings[]" value="core_tickets.default_ticket_reverse_order" />
 
 <div class="setting_field_row">
 	<h4>{{ phrase('agent.general.feedback') }}</h4>
@@ -121,6 +122,13 @@
 			<label>
 				<input type="checkbox" name="settings[core_tickets.resolve_auto_close_tab]" value="1" {% if app.getSetting('core_tickets.resolve_auto_close_tab') %}checked="checked"{% endif %} />
 				When changing the status to Resolved from the reply box, automatically check the "close tab after reply" option
+			</label>
+		</div>
+		<div class="field_row" style="margin-top: 10px;">
+			<strong>Ticket Message Ordering</strong>
+			<label>
+				<input type="checkbox" name="settings[core_tickets.default_ticket_reverse_order]" value="1" {% if app.getSetting('core_tickets.default_ticket_reverse_order') %}checked="checked"{% endif %} />
+				Show newest messages first (reverse chronological order) with the replybox at the top. This setting can be overriden by each agent from their profile settings.
 			</label>
 		</div>
 		<div class="field_row" style="margin-top: 10px;">

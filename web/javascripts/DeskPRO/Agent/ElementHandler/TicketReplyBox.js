@@ -129,7 +129,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 					if (self.page && lastH != ed.height()) {
 						lastH = ed.height();
-						self.page.doScrollBottom = true;
+						if (!self.page.meta.ticket_reverse_order) {
+							self.page.doScrollBottom = true;
+						}
 						window.setTimeout(function() {
 							if (self.page) {
 								self.page.updateUi();
@@ -150,7 +152,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var h = $(this).height();
 				window.setTimeout(function() {
 					if (self.page && $(window).height() - 500 > h) {
-						self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+						if (!self.page.meta.ticket_reverse_order) {
+							self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+						}
 					}
 				}, 250);
 			});
@@ -202,7 +206,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (self.page) {
 				var scroller = self.page.wrapper.find('div.layout-content');
 				scroller.data('scroll_handler').updateSize();
-				scroller.trigger('goscrollbottom');
+				if (!self.page.meta.ticket_reverse_order) {
+					scroller.trigger('goscrollbottom');
+				}
 			}
 		});
 
@@ -242,7 +248,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (self.page) {
 				var scroller = self.page.wrapper.find('div.layout-content');
 				scroller.data('scroll_handler').updateSize();
-				scroller.trigger('goscrollbottom');
+				if (!self.page.meta.ticket_reverse_order) {
+					scroller.trigger('goscrollbottom');
+				}
 			}
 		});
 
@@ -337,15 +345,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.el.bind('fileuploaddone', function() {
 			self.getElById('attach_row').show().removeClass('is-hidden');
 			self.page.updateUi();
-			if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-				$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+			if (!self.page.meta.ticket_reverse_order) {
+				if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+					$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+				}
 			}
 		});
 		this.el.bind('fileuploadstart', function() {
 			self.getElById('attach_row').show().removeClass('is-hidden');
 			self.page.updateUi();
 			if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-				$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+				if (!self.page.meta.ticket_reverse_order) {
+					$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+				}
 			}
 		});
 
@@ -359,8 +371,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				if (!rows.length) {
 					self.getElById('attach_row').hide().addClass('is-hidden');
 					self.page.updateUi();
-					if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-						$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+					if (!self.page.meta.ticket_reverse_order) {
+						if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+							$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+						}
 					}
 				}
 			});
@@ -818,7 +832,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		if (!macroUrl) {
 			this.getElById('actions_row').hide();
 			this.page.updateUi();
-			this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			if (!this.page.meta.ticket_reverse_order) {
+				this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			}
 		} else {
 			var actionsRow = this.getElById('actions_row');
 			var actionsRowList = actionsRow.find('ul');
@@ -828,7 +844,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			actionsRow.show();
 
 			this.page.updateUi();
-			this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			if (!this.page.meta.ticket_reverse_order) {
+				this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			}
 
 			$.ajax({
 				url: macroUrl,
@@ -911,7 +929,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					}
 
 					this.page.updateUi();
-					this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+					if (!this.page.meta.ticket_reverse_order) {
+						this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+					}
 				}
 			});
 		}

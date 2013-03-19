@@ -1,4 +1,7 @@
 <div data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
+	{% if app.user.getPref('agent.ticket_reverse_order') %}
+		{% set ticket_messages = ticket_messages|reverse %}
+	{% endif %}
 	{% for message in ticket_messages %}
 		{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {message: message, message_num: ticket_messages_num[message.id] } %}
 		{% if ticket_message_logs[message.id] %}

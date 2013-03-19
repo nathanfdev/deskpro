@@ -17,6 +17,7 @@ pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getq
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.lastMessageId = {{ last_message_id|default(0) }};
 pageMeta.lastLogId = {{ last_log_id|default(0) }};
+pageMeta.ticket_reverse_order = {% if app.user.getPref('agent.ticket_reverse_order') %}true{% else %}false{% endif %};
 
 pageMeta.person_id    = {{ ticket.person.id }};
 pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
@@ -451,6 +452,17 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 {{ dp_widgets(baseId, 'ticket', 'properties', 'below', ticket_api) }}
 {{ dp_widgets(baseId, 'ticket', 'messages', 'above', ticket_api) }}
 
+{% if app.user.getPref('agent.ticket_reverse_order') %}
+	{% if ticket_perms.reply or ticket_perms.modify_note %}
+	<div style="position:relative;">
+		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
+			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+		</div>
+	</div>
+	{% endif %}
+{% endif %}
+
 <div class="profile-box-container ticket-messages">
 	<header>
 		{% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
@@ -484,8 +496,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		</ul>
 	</nav>
 	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap" data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
-		<div class="message-page-prev" {% if message_page == message_page_count %}style="display: none"{% endif %} id="{{ baseId }}_message_prev_page">
-			<strong>View earlier messages</strong>
+		<div class="message-page-prev" {% if message_page == message_page_count or app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_prev_page">
+			<strong>{% if not app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
 		</div>
 		<div id="{{ baseId }}_message_page_wrap">
 			{{ ticket_messages_block|raw }}
@@ -497,8 +509,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endif %}
 			{% endfor %}
 		{% endif %}
-		<div class="message-page-next" {% if message_page == 1 %}style="display: none"{% endif %} id="{{ baseId }}_message_next_page">
-			<strong>View later messages</strong>
+		<div class="message-page-next" {% if message_page == message_page_count or not app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_next_page">
+			<strong>{% if app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
 		</div>
 	</section>
 	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
@@ -633,13 +645,15 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 {{ dp_widgets(baseId, 'ticket', 'messages', 'below', ticket_api) }}
 {{ dp_widgets(baseId, 'ticket', 'reply', 'above', ticket_api) }}
 
-{% if ticket_perms.reply or ticket_perms.modify_note %}
-<div style="position:relative;">
-	{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-	<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
-		{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+{% if not app.user.getPref('agent.ticket_reverse_order') %}
+	{% if ticket_perms.reply or ticket_perms.modify_note %}
+	<div style="position:relative;">
+		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
+			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+		</div>
 	</div>
-</div>
+	{% endif %}
 {% endif %}
 
 {{ dp_widgets(baseId, 'ticket', 'reply', 'below', ticket_api) }}
