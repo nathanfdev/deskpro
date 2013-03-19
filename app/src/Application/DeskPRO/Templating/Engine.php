@@ -195,4 +195,18 @@ class Engine extends BaseEngine
 	{
 		return self::$varied_templates;
 	}
+
+
+	/**
+	 * @param mixed $name
+	 * @return bool
+	 */
+	public function exists($name)
+	{
+		try {
+			return parent::exists($name);
+		} catch (\Exception $e) {
+			return false;
+		}
+	}
 }
