@@ -846,6 +846,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.lastMessageCount = lastCount;
 
+		messageEl.find('img').bind('load', function() {
+			var article = $(this).closest('article.content-message');
+			self._initTicketMessageClipped(article);
+		});
+
 		var wr = this.getEl('messages_wrap');
 		wr.find('.message-id-txt').each(function() {
 			var findclass = '.message-counter-' + $(this).data('message-id');
