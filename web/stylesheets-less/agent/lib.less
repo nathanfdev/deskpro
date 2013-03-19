@@ -100,10 +100,11 @@
 }
 
 .opacity(@opacity: 100) {
-	filter: e(%("alpha(opacity=%d)", @opacity));
 	-khtml-opacity: (@opacity / 100);
 	-moz-opacity: (@opacity / 100);
 	opacity: (@opacity / 100);
+	-ms-filter: e(%('"progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)"', @opacity));
+    filter: e(%("progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)", @opacity));
 }
 
 .opacity-important(@opacity: 100) {

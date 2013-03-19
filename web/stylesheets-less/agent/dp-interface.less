@@ -608,6 +608,23 @@ select.dpe_select, select.with-select2 {
 		top: 0;
 		left: 0;
 		.opacity(0);
+		min-height: 1px; // triggers hasLayout in IE
+		display: block;
+
+		> a {
+			.opacity(0);
+			min-height: 1px;
+		}
+
+		> a div, > a span, > a b, > a abbr {
+			.opacity(0);
+			min-height: 1px;
+		}
+
+		> .select2-drop {
+			.opacity(0);
+			min-height: 1px;
+		}
 
 		&.right {
 			right: 0;
