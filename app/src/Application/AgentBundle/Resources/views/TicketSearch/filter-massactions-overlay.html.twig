@@ -18,15 +18,14 @@
         {{ agentui.scroll_containers('', '') }}
 			{% if macros|length %}
 				<div class="macro-load">
-					<select class="macro is-not-loading">
-						<option value="">{{ phrase('agent.general.macros') }}</option>
-						<option value="">------------</option>
-						{% for macro in macros %}
-							<option value="{{ macro.id }}">{{ macro.title }}</option>
-						{% endfor %}
+					<select name="macro_id" class="macro macro_id is-not-loading" data-placeholder="Apply a macro">
+						<option value="0">Apply a macro...</option>
+						<optgroup label="Macros">
+							{% for macro in macros %}
+								<option value="{{ macro.id }}">{{ macro.title }}</option>
+							{% endfor %}
+						</optgroup>
 					</select>
-
-					<button class="is-not-loading clean-white small apply-macro-trigger">{{ phrase('agent.general.load_macro') }}</button>
 					<span class="is-loading loading-icon" style="float:left; position: relative; top: 2px;"></span>
 				</div>
 			{% endif %}

@@ -297,23 +297,38 @@ class TicketSearchController extends AbstractController
 		// Accept changes to apply for previewing
 		// - We just apply the changes but dont save them, they'll be
 		//   properly displayed in the listing.
-		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+		$collection = null;
 		$changed_fields = array();
 
-		if ($actions && $tickets) {
-			$factory = new ActionsFactory();
-			$collection = new ActionsCollection();
+		if ($macro_id = $this->in->getUint('run_macro_id')) {
+			$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+			$actions = null;
+			$collection = $macro->getActionsCollection();
 
-			foreach ($actions as $name => $opt) {
-				$action = $factory->createFromForm($name, $opt);
-
+			foreach ($collection->getActions() as $action) {
 				if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ActionInterface) {
 					$action->setMetaData(array('is_preview' => true));
 				}
+			}
+		} else {
+			$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+		}
 
-				$collection->add($action);
+		if (($actions || $collection) && $tickets) {
+			if (!$collection) {
+				$factory = new ActionsFactory();
+				$collection = new ActionsCollection();
+				foreach ($actions as $name => $opt) {
+					$action = $factory->createFromForm($name, $opt);
 
-				$display_fields[] = $name;
+					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ActionInterface) {
+						$action->setMetaData(array('is_preview' => true));
+					}
+
+					$collection->add($action);
+
+					$display_fields[] = $name;
+				}
 			}
 
 			foreach ($tickets as $t) {

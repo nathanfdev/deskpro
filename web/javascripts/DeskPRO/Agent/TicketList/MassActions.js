@@ -114,6 +114,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
 
 		this.countEl = $('.selected-tickets-count', this.wrapper);
+		DP.select($('select.macro', this.wrapper));
 
 		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
 		var scrollEl = $('.with-scrollbar', this.wrapper).first();
@@ -168,7 +169,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		// These events registered first because hasAnyChange flag must be set before updatePreview()
 		// is called
-		$('select, :radio, :checkbox', this.wrapper).on('change', function() { self.hasAnyChange = true; });
+		$('select, :radio, :checkbox', this.wrapper).on('change', function() { if (!$(this).hasClass('macro')) self.hasAnyChange = true; });
 		$('input, textarea', this.wrapper).on('change keypress', function() { self.hasAnyChange = true; });
 
 		this.wrapper.on('click', function(ev) {
@@ -288,12 +289,10 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			this.clearPreview();
 		}, this);
 
-		$('.apply-macro-trigger', this.wrapper).on('click', (function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			this.loadMacro($('select.macro', this.wrapper).val());
-		}).bind(this));
+		$('select.macro', this.wrapper).on('change', function() {
+			self.loadMacro($(this).val());
+			self.updatePreview(null, true);
+		});
 
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
 			this.apply();
@@ -414,10 +413,10 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		if (!info) info = {};
 		info.actionsCount = 0;
 
-		if (this.wrapper.find('input.macro_id')[0]) {
+		if (this.wrapper.find('select.macro_id')[0] && this.wrapper.find('select.macro_id').val() != '0') {
 			appendArray.push({
 				name: 'run_macro_id',
-				value: this.wrapper.find('input.macro_id').val()
+				value: this.wrapper.find('select.macro_id').val()
 			});
 			info.actionsCount = 1;
 			return appendArray;
@@ -770,6 +769,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			macroEl.find('ul.actions-list').empty();
 			macroEl.find('input.macro_id').remove();
 			inputActionsEl.show();
+			this.updateUi();
+			this.updatePositions();
 			return;
 		}
 
@@ -803,6 +804,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				macroBtnEl.removeClass('loading');
 
 				self.hasAnyChange = true;
+				this.updateUi();
+				this.updatePositions();
 			}
 		});
 
