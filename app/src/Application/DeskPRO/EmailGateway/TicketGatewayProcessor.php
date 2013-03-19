@@ -299,6 +299,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
+		if ($ticket AND App::getSetting('core_tickets.process_agent_fwd') AND $person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+			$this->logMessage(sprintf("Found a ticket match #%d but this is an agent fwd so unsetting", $ticket->getId()));
+			$ticket = null;
+		}
+
 		$ret = null;
 		if ($ticket AND $person) {
 
