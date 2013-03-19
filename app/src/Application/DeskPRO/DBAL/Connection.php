@@ -75,6 +75,11 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	protected $trans_count = 0;
 
+	/**
+	 * @var bool
+	 */
+	protected $has_run_avoid = false;
+
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
 		if (!isset($params['driverOptions'])) {
@@ -125,6 +130,25 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		return false;
 	}
+
+
+	/**
+	 * Modifies the wait_timeout and "pings" the MySQL server to keep the connection alive
+	 */
+	public function avoidTimeout()
+	{
+		if (!$this->has_run_avoid) {
+			try {
+				$this->exec("SET SESSION wait_timeout = 1800");
+			} catch (\Exception $e) {}
+			$this->has_run_avoid = true;
+		}
+
+		try {
+			$this->fetchColumn("SELECT 1");
+		} catch (\Exception $e) {}
+	}
+
 
 	/**
 	 * Gets the max packet size.

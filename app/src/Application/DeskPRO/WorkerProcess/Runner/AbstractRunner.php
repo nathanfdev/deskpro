@@ -114,6 +114,7 @@ abstract class AbstractRunner
 	public function runJobs($jobs)
 	{
 		foreach ($jobs as $job) {
+			App::getDb()->avoidTimeout();
 			$this->runJob($job);
 			if ($this->halt_job_loop) {
 				break;

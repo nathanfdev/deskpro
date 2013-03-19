@@ -179,6 +179,7 @@ class Runner
 
 		if ($this->gateways) {
 			foreach ($this->gateways as $gateway) {
+				App::getDb()->avoidTimeout();
 				$this->executeGateway($gateway, $time_limit);
 
 				$time_so_far = time() - $exec_start;
