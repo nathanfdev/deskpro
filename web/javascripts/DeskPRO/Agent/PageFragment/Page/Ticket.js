@@ -25,6 +25,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		this.getEl('replybox_wrap').data('page', this);
 
+		this.wrapper.find('.copy-btn').each(function() {
+			var btn = $(this);
+			var clip = new ZeroClipboard(this);
+			clip.on('complete', function(client, args) {
+				btn.addClass('done');
+				window.setTimeout(function() {
+					btn.removeClass('done');
+				}, 3200);
+			});
+		});
+
 		DeskPRO_Window.recentTabs.add(
 			'tickets',
 			this.meta.ticket_id,

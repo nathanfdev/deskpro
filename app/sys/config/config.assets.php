@@ -95,7 +95,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/tinycon/tinycon.min.js',
 
-		'vendor/select2/select2.js'
+		'vendor/select2/select2.js',
+		'vendor/ZeroClipboard/ZeroClipboard.min.js'
 	)
 );
 

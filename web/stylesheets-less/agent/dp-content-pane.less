@@ -7478,7 +7478,7 @@ table.data-display-table tr th {
 			.rounded(2px);
 		}
 
-		&:hover .copy-btn {
+		> span:hover .copy-btn, .copy-btn.over, .copy-btn.zeroclipboard-is-hover {
 			display: block;
 		}
 
@@ -7494,6 +7494,10 @@ table.data-display-table tr th {
 			padding: 4px 4px 5px 4px;
 			font-size: 12px;
 			text-shadow: none;
+			&.done {
+				background-color: #9CDB7F;
+				border-color: #52DB3C;
+			}
 		}
 	}
 
