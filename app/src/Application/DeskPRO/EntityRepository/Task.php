@@ -663,7 +663,7 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('tomorrow', $tomorrow);
 		} elseif ($filter_type == 'overdue') {
 			$qb->andWhere('t.date_due < :today');
-			$qb->setParameter('date_due', $today);
+			$qb->setParameter('today', $today);
 		}
 
 		$qb->setParameters(array('person_id'=> $person['id']));
