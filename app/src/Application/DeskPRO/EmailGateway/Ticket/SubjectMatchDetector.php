@@ -133,7 +133,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 			$subject_re   = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($last_subject));
 			$subject_re   = trim($subject_re);
 
-			if ($subject_re == $last_subject) {
+			if ($subject_re == $last_subject || !$subject_re) {
 				break;
 			}
 
