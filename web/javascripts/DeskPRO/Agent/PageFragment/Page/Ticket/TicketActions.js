@@ -56,6 +56,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			var agent_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentProp = self.changeManager.getPropertyManager('agent_id');
 
+			if (self.page.ticketReplyBox) {
+				self.page.ticketReplyBox.getElById('agent_sel').select2('val', agent_id);
+			}
+
 			callQueue.call(function() {
 				self.changeManager.setInstantChange(agentProp, agent_id, function() {
 					callQueue.next();
@@ -72,6 +76,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			var agent_team_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
+
+			if (self.page.ticketReplyBox) {
+				self.page.ticketReplyBox.getElById('agent_team_sel').select2('val', agent_team_id);
+			}
 
 			callQueue.call(function() {
 				self.changeManager.setInstantChange(agentTeamProp, agent_team_id, function() {
