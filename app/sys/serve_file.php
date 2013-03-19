@@ -40,6 +40,10 @@ if (!defined('DP_ROOT')) exit('No access');
 require_once DP_ROOT.'/src/Orb/Data/ContentTypes.php';
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
+if (!isset($DP_LOG_MESSAGES)) {
+	$DP_LOG_MESSAGES = array();
+}
+
 /**
  * Database and filesystem-stored files are served through this file.
  *
@@ -90,6 +94,8 @@ class FilestorageLoader extends LoaderAbstract
 		try {
 			$pathinfo = $this->getPathInfo();
 
+			$this->addLogMessage("pathinfo: %s", $pathinfo);
+
 			if (preg_match('#^/size/([0-9]+)/#', $pathinfo, $m)) {
 				$_GET['s'] = $m[1];
 				$pathinfo = str_replace($m[0], '/', $pathinfo);
@@ -127,6 +133,7 @@ class FilestorageLoader extends LoaderAbstract
 			// That is: /(batch)(authcode)(id)(namehash)/name.zip
 			//0XNSNTQHTNR43DD567
 			} elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})/(.*?)$#', $pathinfo, $m)) {
+				$this->addLogMessage("handleFilesystemBlobRequest: ", implode(', ', $m));
 				$this->handleFilesystemBlobRequest(
 					$m[1],
 					$m[2],
@@ -139,16 +146,30 @@ class FilestorageLoader extends LoaderAbstract
 			// That is (id)(authcode0)
 			// The trailing 0 denotes it as a database storage authcode
 			} elseif (preg_match('#^/([0-9]+)([A-Z]+0)/(.*?)$#', $pathinfo, $m)) {
+				$this->addLogMessage("handleDbBlobRequest: ", implode(', ', $m));
 				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
 			} elseif (preg_match('#^/gradient$#', $pathinfo)) {
 				$this->handleGradientRequest();
 			} else {
+				if ($this->error_mode == 'exception') {
+					throw new \Exception("File not found. (bad_route)", 400);
+				}
 				header("HTTP/1.0 404 Not Found");
 				echo "File not found. (bad_route)";
 			}
 		} catch (\Exception $exception) {
-			if (isset($GLOBALS['DP_CONFIG']['debug']['dev'])) {
-				echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
+			if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) || isset($GLOBALS['DP_CONFIG']['serve_file_debug']) && $GLOBALS['DP_CONFIG']['serve_file_debug']) {
+
+				if (!empty($GLOBALS['DP_LOG_MESSAGES'])) {
+					echo "\n\n\n";
+					echo "LOG\n" . str_repeat('=', 72) . "\n";
+					foreach ($GLOBALS['DP_LOG_MESSAGES'] as $minfo) {
+						printf("[%s] %s\n", date('Y-m-d H:i:s', $minfo['time']), $minfo['message']);
+					}
+				}
+
+				echo "\n\n\nEXCEPTION\n" . str_repeat('=', 72) . "\n";
+				echo "[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
 				$backtrace = $exception->getTrace();
 				$trace = self::formatBacktrace($backtrace);
@@ -157,6 +178,26 @@ class FilestorageLoader extends LoaderAbstract
 
 			$this->handleException($exception);
 		}
+	}
+
+	/**
+	 * @param string $message
+	 */
+	private function addLogMessage($message)
+	{
+		global $DP_LOG_MESSAGES;
+
+		$args = func_get_args();
+		array_shift($args);
+
+		if ($args) {
+			$message = vsprintf($message, $args);
+		}
+
+		$DP_LOG_MESSAGES[] = array(
+			'time' => time(),
+			'message' => $message
+		);
 	}
 
 
@@ -615,20 +656,6 @@ class FilestorageLoader extends LoaderAbstract
 	protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $filename)
 	{
 		#------------------------------
-		# See if we need to resize
-		#------------------------------
-
-		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
-			$size = $_GET['s'];
-		}
-
-		if ($size) {
-			$this->showBlob($blob_id, $size);
-			return;
-		}
-
-		#------------------------------
 		# If its a simple file request we
 		# can serve it without a db connection
 		#------------------------------
@@ -641,6 +668,8 @@ class FilestorageLoader extends LoaderAbstract
 
 		$check_namehash = strtoupper(substr(sha1($filename . $blob_id), 0, 3));
 		$check_namehash .= strtoupper(substr(md5($filename . $blob_id), 0, 3));
+
+		$this->addLogMessage("Expecting file path: %s", $filepath);
 
 		// Invalid hash, or the file doesnt exist on disk
 		if (!file_exists($filepath)) {
@@ -656,6 +685,8 @@ class FilestorageLoader extends LoaderAbstract
 		// But we have to double-check before failing since the filename could
 		// possibly be custom in the case of downloads
 		if ($check_namehash != $namehash) {
+			$this->addLogMessage("Hash mismatch: %s !=", $check_namehash, $namehash);
+
 			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
@@ -669,6 +700,25 @@ class FilestorageLoader extends LoaderAbstract
 				return;
 			}
 		}
+
+		#------------------------------
+		# See if we need to resize
+		#------------------------------
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
+			$size = $_GET['s'];
+			$this->addLogMessage("With size: %s", $size);
+		}
+
+		if ($size) {
+			$this->showBlob($blob_id, $size);
+			return;
+		}
+
+		#------------------------------
+		# Serve up
+		#------------------------------
 
 		$mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
 		if (!$mimetype) {
@@ -723,9 +773,17 @@ class FilestorageLoader extends LoaderAbstract
 
 			$blob_id = $blob;
 
+			$this->addLogMessage("Loading blob %d", $blob_id);
+
 			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+			if (!$blob) {
+				$this->addLogMessage("Could not load blob record");
+			} elseif ($blob_auth && $blob['authcode'] != $blob_auth) {
+				$this->addLogMessage("bad authcode: %s != %s", $blob['authcode'], $blob_auth);
+			}
 
 			if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
 				if ($this->error_mode == 'exception') {
@@ -760,10 +818,13 @@ class FilestorageLoader extends LoaderAbstract
 		}
 
 		if ($is_image && $size) {
+			$this->addLogMessage("Showing resized");
+
 			$is_fit = false;
 
 			if (isset($_GET['size-fit'])) {
 				$is_fit = (boolean)$_GET['size-fit'];
+				$this->addLogMessage("Is fit: %d", $is_fit);
 			}
 
 			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
@@ -839,6 +900,8 @@ class FilestorageLoader extends LoaderAbstract
 
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $blob['save_path'];
 
+		$this->addLogMessage("Expecting file path: %s", $filepath);
+
 		if (!file_exists($filepath)) {
 			if ($this->error_mode == 'exception') {
 				throw new \Exception("File not found. (4)", 400);
@@ -885,6 +948,8 @@ class FilestorageLoader extends LoaderAbstract
 			$sys_name .= '-fit';
 		}
 
+		$this->addLogMessage("Sized blob sys_name: %s", $sys_name);
+
 		return $sys_name;
 	}
 
@@ -901,6 +966,8 @@ class FilestorageLoader extends LoaderAbstract
 		$file = $desc->get();
 
 		if (!$file) {
+			$this->addLogMessage("Could not load blob file descriptor");
+
 			if ($this->error_mode == 'exception') {
 				throw new \Exception("File not found. (no_exist)", 400);
 			}
@@ -914,6 +981,7 @@ class FilestorageLoader extends LoaderAbstract
 			// So @ to get rid of those exceptions
 			$image = @$container->getImagine()->load($file);
 		} catch (\Imagine\Exception\InvalidArgumentException $e) {
+			$this->addLogMessage("Failed to resize: %s", $e->getMessage());
 			if ($die_fail) {
 				header("HTTP/1.0 500 Internal Server Error");
 				echo "Invalid image file. (invalid_image_data)";
@@ -958,6 +1026,8 @@ class FilestorageLoader extends LoaderAbstract
 			'sys_name' => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
 			'original_blob_id' => $blob->id,
 		));
+
+		$this->addLogMessage("Cached resize as blob %d", $desc->getPath());
 
 		$new_blob_info = $container->getDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($desc->getPath()));
 		$new_blob_info['filename_safe'] = $blob->getFilenameSafe();
