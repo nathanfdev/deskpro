@@ -133,7 +133,7 @@ class FilestorageLoader extends LoaderAbstract
 			// That is: /(batch)(authcode)(id)(namehash)/name.zip
 			//0XNSNTQHTNR43DD567
 			} elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})/(.*?)$#', $pathinfo, $m)) {
-				$this->addLogMessage("handleFilesystemBlobRequest: ", implode(', ', $m));
+				$this->addLogMessage("handleFilesystemBlobRequest: %s", implode(', ', $m));
 				$this->handleFilesystemBlobRequest(
 					$m[1],
 					$m[2],
@@ -146,7 +146,7 @@ class FilestorageLoader extends LoaderAbstract
 			// That is (id)(authcode0)
 			// The trailing 0 denotes it as a database storage authcode
 			} elseif (preg_match('#^/([0-9]+)([A-Z]+0)/(.*?)$#', $pathinfo, $m)) {
-				$this->addLogMessage("handleDbBlobRequest: ", implode(', ', $m));
+				$this->addLogMessage("handleDbBlobRequest: %s", implode(', ', $m));
 				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
 			} elseif (preg_match('#^/gradient$#', $pathinfo)) {
 				$this->handleGradientRequest();
