@@ -175,12 +175,17 @@ class Runner
 			$time_limit = 9999999999;
 		}
 
+		$this->logger->logDebug("Time limit: " . $time_limit);
+
 		if ($this->gateways) {
 			foreach ($this->gateways as $gateway) {
 				$this->executeGateway($gateway, $time_limit);
 
-				$time_limit -= (time() - $exec_start);
-				if ($time_limit <= 0) {
+				$time_so_far = time() - $exec_start;
+				$this->logger->logDebug("Time taken so far: " . $time_so_far);
+
+				if ($time_limit && $time_so_far >= $time_limit) {
+					$this->logger->logDebug("Breaking, out of time");
 					break;
 				}
 			}
