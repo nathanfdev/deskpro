@@ -311,6 +311,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			});
 		}
+
+		if (this.meta.ticket_reverse_order) {
+			this.focusOnReply();
+		}
 	},
 
 	loadMessagePage: function(page, noShowLoading) {
