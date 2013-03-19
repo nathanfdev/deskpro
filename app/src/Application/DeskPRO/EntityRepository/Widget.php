@@ -112,8 +112,6 @@ class Widget extends AbstractEntityRepository
 		return array(
 			'ticket' => array(
 				'header' => array('Page Header', 'below'),
-				'people' => array('People', ''),
-				'assignments' => array('Assignments', ''),
 				'properties' => array('Properties', ''),
 				'messages' => array('Messages and Notes', ''),
 				'reply' => array('Reply Box', 'above,below'),
