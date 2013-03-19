@@ -131,14 +131,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				</a>
 			{% endif %}
 
-			{% if not user_parts|length %}
-				<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC's...</em></a>
-			{% endif %}
+			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC's...</em></a>
 
 			{% if ticket_perms.modify_cc or user_parts|length %}
 			<div
 				id="{{ baseId }}_cc_list"
-				class="cc-row"
+				class="cc-row {% if user_parts|length %}cc-open{% endif %}"
 				data-element-handler="DeskPRO.Agent.ElementHandler.TicketCcManage"
 				data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
 				data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
@@ -146,13 +144,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% if not user_parts|length %}style="display: none;"{% endif %}
 			>
 				<strong>CC's</strong>
-				<ul class="cc-row-list">
+				<ul class="cc-row-list" id="{{ baseId }}_cc_row_list">
 					{% for part in user_parts %}
 						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 					{% endfor %}
 				</ul>
 				{% if ticket_perms.modify_cc %}
-					<div class="cc-addrow-off"><a class="cc-btn"><i class="icon-envelope"></i> <em>Add another CC</em></a></div>
 					<div class="cc-autocomplete addrow noedit-hide" style="margin:0; display: none;">
 						<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
 						<div class="person-search-box" style="display: none">

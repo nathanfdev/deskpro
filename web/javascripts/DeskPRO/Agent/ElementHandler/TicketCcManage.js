@@ -41,7 +41,6 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 		});
 
 		var addRow = $('.addrow', this.el);
-		var addRowOff = this.el.find('.cc-btn');
 		if (addRow.length) {
 			addRow.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(addRow);
 
@@ -80,15 +79,8 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
 							$(this).empty().html(data.cc_list || '');
 						});
-						addRow.hide();
-						addRowOff.show();
 					}
 				});
-			});
-
-			addRowOff.on('click', function() {
-				addRow.show();
-				addRowOff.hide();
 			});
 		}
 	}

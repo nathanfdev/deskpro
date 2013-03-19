@@ -318,10 +318,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('cc_list_btn').on('click', function(ev) {
 			ev.preventDefault();
-			$(this).hide();
-			self.getEl('cc_list').show();
-			self.getEl('cc_list').find('.addrow').show();
-			self.getEl('cc_list').find('.cc-addrow-off').hide();
+
+			if (self.getEl('cc_list').hasClass('cc-open')) {
+				if (!self.getEl('cc_row_list').find('li')[0]) {
+					self.getEl('cc_list').hide().removeClass('cc-open');
+				} else {
+					self.getEl('cc_list').find('.addrow').toggle();
+				}
+			} else {
+				self.getEl('cc_list').show().addClass('cc-open');
+				self.getEl('cc_list').find('.addrow').show();
+			}
 		});
 	},
 
