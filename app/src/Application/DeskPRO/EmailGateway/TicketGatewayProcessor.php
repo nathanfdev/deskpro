@@ -203,7 +203,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($ticket AND !$person AND (!$detector || $detector->canAddUnknownPerson())) {
 
-			$this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user, creating new with email %s', $this->reader->getFromAddress()->getEmail()));
+			$this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
 
 			// If the detector didnt find a person, doesnt mean they dont exist
 			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
@@ -212,16 +212,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if (!$person) {
 				$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
 				$person = Entity\Person::newContactPerson(array('email' => $this->reader->getFromAddress()->getEmail()));
-			}
 
-			App::getDb()->beginTransaction();
-			try {
-				App::getOrm()->persist($person);
-				App::getOrm()->flush($person);
-				App::getDb()->commit();
-			} catch (\Exception $e) {
-				App::getDb()->rollback();
-				throw $e;
+				App::getDb()->beginTransaction();
+				try {
+					App::getOrm()->persist($person);
+					App::getOrm()->flush($person);
+					App::getDb()->commit();
+				} catch (\Exception $e) {
+					App::getDb()->rollback();
+					throw $e;
+				}
 			}
 
 			$ticket->addParticipantPerson($person);
@@ -331,6 +331,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					strpos($body_html, 'DP_BOTTOM_MARK') !== false
 					|| strpos($body_html, 'DP_TOP_MARK') !== false
 					|| strpos($body_html, 'DP_MESSAGE_BEGIN') !== false
+					|| strpos($body_html, 'DP_USER_EMAIL') !== false
+					|| strpos($body_html, 'DP_AGENT_EMAIL') !== false
 				) {
 					$is_reply_to_dpmail = true;
 				}
@@ -342,7 +344,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] NOT a reply to a DeskPRO email');
 			}
 
-			if ($person['is_agent'] && strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false && $is_reply_to_dpmail) {
+			if (
+				$person['is_agent']
+				&& (
+					// Is not a user email
+					(strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false && $is_reply_to_dpmail)
+					||
+					// Or is a text email where user email markers wouldnt be detected
+					($this->detected_tac_person && $this->detected_tac_person->getId() == $person->getId() && !$is_reply_to_dpmail)
+				)
+			) {
 				$this->logMessage('[TicketGatewayProcessor] runNewAgentReply');
 				$ret = $this->runNewAgentReply($ticket, $person);
 			} else {
