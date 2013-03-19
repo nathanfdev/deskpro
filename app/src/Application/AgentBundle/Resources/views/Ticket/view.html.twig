@@ -78,33 +78,34 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 {% endif %}
 
 <header class="main-header" id="{{ baseId }}_page_header">
-	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
-		{% if edit_person %}<div class="person-picture-box" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">{% else %}<div class="person-picture-box">{% endif %}
-			<div class="pic-wrap">
-				<img src="{{ ticket.person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
-				{% if ticket.person.is_disabled %}<span class="person-disabled"></span>{% endif %}
-			</div>
-		</div>
-	</td><td>
+	<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
 		<div class="row title first">
-			<div class="id-number" id="{{ baseId }}_idref_switch">
-				<span id="{{ baseId }}_id_num" title="Ticket ID"><i class="icon-bookmark"></i> {{ ticket.id }}</span>
-				<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference"><i class="icon-bookmark-empty"></i> {{ ticket.ref }}</span>
-			</div>
-			<h1>
-				<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
-				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
-				<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
-			</h1>
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="10" nowrap="nowrap">
+				<div class="id-number" id="{{ baseId }}_idref_switch">
+					<span id="{{ baseId }}_id_num" title="Ticket ID">
+						<span class="copy-btn" data-copy-text="{{ ticket.id }}" title="Copy to clipboard" onclick="prompt('Ticket ID', '{{ ticket.id }}');"><i class="icon-paste"></i></span>
+						ID: {{ ticket.id }}
+					</span>
+					<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
+						<span class="copy-btn" data-copy-text="{{ ticket.ref }}" title="Copy to clipboard" onclick="prompt('Ticket Ref', '{{ ticket.ref }}');"><i class="icon-paste"></i></span>
+						Ref: {{ ticket.ref }}
+					</span>
+				</div>
+			</td><td>
+				<h1>
+					<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
+					<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
+					<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
+				</h1>
+			</td></tr></table>
 		</div>
 		<div class="row author last">
-			<div class="dp-btn-group">
-				<a class="dp-btn as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"><i class="icon-user"></i>
+			<a class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 					{{ ticket.person.getNameWithTitle() }}
 					<span class="email">({{ ticket.person_email_address }})</span>
-				</a>
-				<a class="dp-btn dp-dropdown-toggle status-menu-trigger" id="{{baseId}}_changeuser_trigger" title="Change user"><span class="dp-caret"></span></a>
-			</div>
+				</span>
+			</a>
 
 			{% if ticket.person.organization %}
 				&nbsp;&nbsp;
@@ -135,13 +136,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</select>
 
 			<i id="{{ baseId }}_flagicon" class="icon-flag flag-color-{{ ticket_flagged|default('none') }}" style="margin:0; padding: 0;"></i>
-			Flag
 
 			<span class="dp-caret"></span>
 		</li>
 	</ul>
 	<ul>
-		<li>
+		<li title="Ticket Department">
 			{% include 'AgentBundle:Common:select-department.html.twig' with {
 				'name': "department_id",
 				'with_blank': blank_option,
@@ -152,12 +152,11 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 
-			<i class="icon-folder-close"></i>
 			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default('None') }}</span>
 
 			<span class="dp-caret"></span>
 		</li>
-		<li>
+		<li title="Ticket Status">
 			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header">
 				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
 					<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
@@ -173,19 +172,17 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endif %}
 			</select>
 
-			<i class="icon-circle"></i>
 			<span id="{{ baseId }}_status_txt">Awaiting Agent</span>
 
 			<span class="dp-caret"></span>
 		</li>
-		<li>
+		<li title="Ticket Urgency">
 			<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency" style="display: none" data-invisible-trigger="1" data-dropdown-css-class="ticket-header">
 				{% for i in 1..10 %}
 					<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
 				{% endfor %}
 			</select>
 
-			<i class="icon-fire"></i>
 			<span id="{{ baseId }}_urgency_txt" class="urgency-value-{{ ticket.urgency }}">1</span>
 
 			<span class="dp-caret"></span>
@@ -417,6 +414,11 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				</li>
 			{% endif %}
 		{% endif %}
+		<li id="{{ baseId }}_actions_menu_trigger">
+			<i class="icon-edit"></i>
+			Actions
+			<span class="dp-caret"></span>
+		</li>
 	</ul>
 </nav>
 
@@ -434,6 +436,13 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<li data-action="delete.ban">Permanently Delete User and this Ticket</li>
 		{% endif %}
 	{% endif %}
+</ul>
+
+<ul style="display:none" id="{{baseId}}_actions_menu">
+	<li data-action="change-user">Change User</li>
+	{% if ticket_perms.modify_merge %}<li data-action="split">Split Messages to New Ticket</li>{% endif %}
+	<li data-action="print">{{ phrase('agent.general.print') }}</li>
+	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
 </ul>
 
 <ul id="{{baseId}}_merge_menu" style="display: none;">

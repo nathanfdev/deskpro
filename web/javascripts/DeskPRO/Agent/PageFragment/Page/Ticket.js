@@ -176,19 +176,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			});
 			this.ownObject(this.merge);
-
-			this.getEl('changeuser_trigger').on('click', function() {
-				var changeUserOverlay = new DeskPRO.Agent.Widget.TicketChangeUser({
-					ticketId: self.getMetaData('ticket_id'),
-					destroyOnClose: true,
-					onSuccess: function(data) {
-						self.closeSelf();
-						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-						changeUserOverlay.close();
-					}
-				});
-				changeUserOverlay.open();
-			});
 		}
 
 		if (this.meta.ticket_perms.reply) {
@@ -299,6 +286,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 			self.loadMessagePage(p);
 		});
+
+		var head = this.getEl('properties_header');
+		var st   = head.find('nav').data('simpletabs');
+		if (st) {
+			st.addEvent('tabSwitch', function(evData) {
+				var id = $(evData.tabEl).attr('id') || '';
+
+				if (id && id.indexOf('fields_display_main_wrap_tab') !== -1) {
+					head.removeClass('controls-off');
+				} else {
+					head.addClass('controls-off');
+				}
+			});
+		}
 	},
 
 	loadMessagePage: function(page, noShowLoading) {
@@ -1048,6 +1049,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var it = $(info.itemEl);
 
 				switch(it.data('action')) {
+					case 'change-user':
+					var changeUserOverlay = new DeskPRO.Agent.Widget.TicketChangeUser({
+							ticketId: self.getMetaData('ticket_id'),
+							destroyOnClose: true,
+							onSuccess: function(data) {
+								self.closeSelf();
+								DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+								changeUserOverlay.close();
+							}
+						});
+						changeUserOverlay.open();
+						break;
+
 					case 'split':
 						self.showSplitOverlay('');
 						break;
