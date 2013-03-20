@@ -36,6 +36,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				defaultIsHtml: true,
 				inlineHiddenPosition: this.getElById('is_html_reply'),
 				autosaveContent: 'ticket',
+				minHeight: 120,
 				autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
 				preAutosaveCallback: function(textarea, data) {
 					data.push({

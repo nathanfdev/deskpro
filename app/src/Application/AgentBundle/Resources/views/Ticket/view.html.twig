@@ -340,7 +340,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 			</div>
 			{% if ticket_perms.modify_labels or ticket.labels|length %}
-				<div class="sep">-</div>
 				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table"><tr>
 					<th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">Labels:</th>
 					<td style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">
