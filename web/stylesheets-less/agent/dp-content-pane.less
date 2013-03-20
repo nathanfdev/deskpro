@@ -3022,7 +3022,7 @@ header .message-counter,
 
 .page-ticket .cc-row {
 	font-size: 12px;
-	margin: 5px 0 0 8px;
+	margin: 5px 0 0 0;
 }
 
 .page-ticket .ticketreply .cc-row {
@@ -7405,9 +7405,15 @@ table.data-display-table tr th {
 
 .page-ticket header.main-header {
 	background-color: #fff;
-	padding: 12px 12px;
+	padding: 10px;
+	padding-bottom: 0;
 	box-shadow: inset 0px -1px 2px 0px rgba(0, 0, 0, 0.1);
 	border-bottom: 1px solid #B1AFAF;
+
+	.margin {
+		display: block;
+		margin-top: 12px;
+	}
 
 	td {
 		vertical-align: middle;
@@ -7440,7 +7446,7 @@ table.data-display-table tr th {
 	.id-number {
 		position: relative;
 		display: block;
-		margin-right: 5px;
+		margin-right: 9px;
 
 		> span {
 			*zoom: 1;
@@ -7487,21 +7493,29 @@ table.data-display-table tr th {
 			white-space: nowrap;
 		}
 
-		> span:hover .copy-btn, .copy-btn.over, .copy-btn.zeroclipboard-is-hover {
+		> span:hover .copy-btn, .copy-btn-outer:hover .copy-btn, .copy-btn.zeroclipboard-is-hover {
 			display: block;
 		}
 
+		.copy-btn-outer {
+			display: block;
+			position: absolute;
+			top: 0px;
+			right: -23px;
+			width: 40px;
+			bottom: 0;
+		}
 		.copy-btn {
 			display: none;
 			position: absolute;
 			top: 0px;
-			right: -23px;
+			right: 0;
 			background-color: #FFF6A8;
 			border: 1px solid #DBD38F;
 			.rounded(2px);
 			line-height: 100%;
 			padding: 4px 4px 5px 4px;
-			font-size: 12px;
+			font-size: 11px;
 			text-shadow: none;
 			&.done {
 				background-color: #9CDB7F;
@@ -7525,6 +7539,7 @@ table.data-display-table tr th {
 	}
 
 	.author {
+		margin-top: 10px;
 		font-size: 13px;
 		.email {
 			color: #666;
@@ -7574,28 +7589,33 @@ table.data-display-table tr th {
 			cursor: pointer;
 		}
 	}
+}
 
-	.ccs {
+.cc-row .addrow {
+	margin: 5px 0 0 0 !important;
+}
+
+.cc-row-list {
+	li {
 		display: inline-block;
+	}
 
-		> ul {
-			display: inline-block;
-			margin: 0;
-			padding: 0;
-		}
+	a.dp-btn {
+		padding: 0 5px 0 3px;
+	}
+	.text {
+		background-position: 0 50%;
+		background-repeat: no-repeat;
+		padding-left: 19px;
+		line-height: 21px;
+	}
 
-		> ul > li {
-			margin: 0;
-			padding: 0;
-			display: inline-block;
-			line-height: 100%;
-			margin-left: 3px;
-		}
-
-		> ul > li.add {
-			color: #888;
-			font-style: italic;
-			cursor: pointer;
+	.remove-row-trigger {
+		color: #7C7C7C;
+		font-size: 11px;
+		&:hover {
+			color: #000;
+			text-shadow: 0px 0px 8px #f00;
 		}
 	}
 }

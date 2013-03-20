@@ -26,20 +26,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('replybox_wrap').data('page', this);
 
 		this.wrapper.find('.copy-btn').each(function() {
+			var btnEl = this;
 			var btn = $(this);
 
-			var clip = new ZeroClipboard(this);
+			var clip = new ZeroClipboard(this, {
+				btnEl: this,
+				savePuffEl: self.getEl('idref_switch')
+			});
+			clip.on('mouseover', function(client, args) {
+				$(client.options.btnEl).addClass('over');
+			});
+			clip.on('mouseout', function(client, args) {
+				$(client.options.btnEl).removeClass('over');
+			});
 			clip.on('complete', function(client, args) {
-				DeskPRO_Window.util.showSavePuff(self.getEl('idref_switch'));
+				DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
 			});
 
-			btn.parent().on('mouseover', function() {
+			self.addEvent('destroy', function() {
+				clip.unglue(btnEl);
+			});
+			self.addEvent('activate', function() {
 				clip.reposition();
-				btn.addClass('over');
-			}).on('mouseout', function() {
-				window.setTimeout(function() {
-					btn.removeClass('over');
-				}, 400);
 			});
 		});
 

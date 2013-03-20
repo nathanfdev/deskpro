@@ -12,6 +12,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 		var newrow = $('li.newrow', this.el);
 
 		this.el.find('ul').on('click', '.remove-row-trigger', function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+
 			var row = $(this).closest('li');
 			var personId = row.data('person-id');
 			var email = row.data('email-address');
