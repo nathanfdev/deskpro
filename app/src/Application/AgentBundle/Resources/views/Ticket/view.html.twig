@@ -201,7 +201,19 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endif %}
 			</select>
 
-			<span id="{{ baseId }}_status_txt" class="urgency-text">Awaiting Agent</span>
+			<span id="{{ baseId }}_status_txt" class="urgency-text">
+				{% if ticket.status_code == 'awaiting_user' %}
+					Awaiting User
+				{% elseif ticket.status_code == 'agent' %}
+					Awaiting Agent
+				{% elseif ticket.status_code == 'resolved' %}
+					Resolved
+				{% elseif ticket.status_code %}
+					Archived
+				{% else %}
+					Hidden
+				{% endif %}
+			</span>
 
 			<span class="dp-caret"></span>
 		</li>
