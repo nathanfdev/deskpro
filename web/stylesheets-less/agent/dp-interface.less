@@ -648,6 +648,29 @@ select.dpe_select, select.with-select2 {
 	.select2-drop.invisible-trigger.ticket-header {
 		margin-top: 2px;
 	}
+
+	.select2-drop.dp-select2-nosearch .select2-results {
+		margin-top: 0;
+	}
+	.select2-drop.dp-select2-nosearch .select2-search {
+		display: block;
+		padding: 0;
+		margin: 0;
+		border: none;
+		min-height: 1px;
+		height: 1px;
+		overflow: hidden;
+
+		input {
+			border: none;
+			font-size: 8px;
+			margin: 0;
+			padding: 0;
+			box-shadow: none;
+			background: transparent;
+			color: transparent;
+		}
+	}
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {

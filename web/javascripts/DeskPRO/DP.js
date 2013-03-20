@@ -406,6 +406,10 @@ var DP = {
 			options.dropdownCssClass = (options.dropdownCssClass || '') + ' ' + el.data('dropdown-css-class');
 		}
 
+		if (el.data('dropdown-nosearch')) {
+			options.dropdownCssClass = (options.dropdownCssClass || '') + ' dp-select2-nosearch';
+		}
+
 		el.addClass('with-select2');
 		el.select2(options);
 	}

@@ -6,9 +6,13 @@ DeskPRO.Agent.Ticket.Property.Urgency = new Class({
 	setValue: function(value) {
 		this.ticketPage.getEl('urgency').select2('val', value);
 
+		var layoutDiv = this.ticketPage.wrapper.find('div.layout-content');
+
 		this.getInterfaceElement().text(value || 1);
 		this.getInterfaceElement().get(0).className = this.getInterfaceElement().get(0).className.replace(/urgency\-value\-\d+/g, '');
+		layoutDiv.get(0).className = layoutDiv.get(0).className.replace(/urgency\-\d+/g, '');
 		this.getInterfaceElement().addClass('urgency-value-' + value);
+		layoutDiv.addClass('urgency-' + value);
 	},
 
 	getValue: function() {
