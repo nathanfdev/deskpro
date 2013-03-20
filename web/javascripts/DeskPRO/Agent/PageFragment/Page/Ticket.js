@@ -1681,7 +1681,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var txt = this.getReplyTextArea();
 
 		if (txt.data('redactor')) {
+			var first = !txt.hasClass('touched');
 			txt.setFocus();
+
+			if (first) {
+				var cursor = txt.data('redactor').$editor.find('> *').first();
+				txt.data('redactor').setSelection(cursor[0], 0, cursor[0], 0);
+			}
 		} else {
 			txt.focus();
 		}
