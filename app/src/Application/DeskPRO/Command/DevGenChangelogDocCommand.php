@@ -51,10 +51,17 @@ class DevGenChangelogDocCommand extends ContainerAwareCommand
 		$this->setHelp("Generates a new changelog doc");
 		$this->setName('dpdev:gen-changelog-doc');
 		$this->addArgument('id', InputArgument::REQUIRED, 'The ID of the doc. The date prefix will be added automatically.');
+		$this->addArgument('target', InputArgument::REQUIRED, 'Target must be "agent" or "admin"');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$target = $input->getArgument('target');
+
+		if (!$target || ($target != 'agent' && $target != 'admin')) {
+			$output->writeln('<error>You must enter a target of either agent or admin</error>');
+		}
+
 		$real_id = date('Ymd') . '-' . $input->getArgument('id');
 
 		$path = DP_ROOT . '/docs/changelog/' . $real_id . '/log.html';
@@ -92,6 +99,15 @@ HTML;
 			$output->writeln("<error>Failed to write empty log template file</error>");
 			return 1;
 		}
+
+		$docs_path = DP_ROOT.'/docs/changelog/docs.php';
+		$docs = require($docs_path);
+		$docs[$real_id] = array(
+			'date' => date('Y-m-d H:i:s'),
+			'target' => $target
+		);
+
+		file_put_contents($docs_path, '<?php return ' . var_export($docs, true) . ';');
 
 		return 0;
 	}

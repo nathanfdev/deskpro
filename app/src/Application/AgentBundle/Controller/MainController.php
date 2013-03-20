@@ -34,7 +34,9 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\People\PrefNoticeSet;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class MainController extends AbstractController
 {
@@ -143,6 +145,13 @@ class MainController extends AbstractController
 
 		\Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
+		$version_notices = new PrefNoticeSet(
+			$this->db,
+			$this->person,
+			'agent.ui.version_notices',
+			DP_ROOT.'/docs/changelog/docs.php'
+		);
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
@@ -166,7 +175,63 @@ class MainController extends AbstractController
 			'is_first_login'      => $is_first_login,
 			'is_first_login_name' => $is_first_login_name,
 			'timezones'           => \DateTimeZone::listIdentifiers(),
+			'version_notices'     => $version_notices,
 		));
+	}
+
+	public function loadVersionNoticeAction($id)
+	{
+		$id = preg_replace('#[^a-zA-Z0-9_\-]#', 'x', $id);
+		$target_dir = DP_ROOT.'/docs/changelog/' . $id;
+		if (!is_dir($target_dir)) {
+			throw $this->createNotFoundException();
+		}
+
+		$html = file_get_contents($target_dir . '/log.html');
+		$html = Strings::extractRegexMatch('#<body>(.*?)</body>#s', $html, 1);
+
+		if (preg_match_all('#<[^>]+src=(\'|")(.*?)(\'|")[^>]+>#', $html, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $m) {
+				$attach_path = $target_dir . '/' . $m[2];
+				if (file_exists($attach_path)) {
+					if (Strings::getExtension($attach_path) == 'png') {
+						$type = 'image/png;';
+					} elseif (Strings::getExtension($attach_path) == 'gif') {
+						$type = 'image/gif;';
+					} else {
+						$type = '';
+					}
+					$url = "data:{$type}base64," . base64_encode(file_get_contents($attach_path));
+
+					$str = $m[0];
+					$str = str_replace($m[2], $url, $str);
+					$html = str_replace($m[0], $str, $html);
+				}
+			}
+		}
+
+		return $this->createResponse($html);
+	}
+
+	public function dismissVersionNoticeAction($id)
+	{
+		$version_notices = new PrefNoticeSet(
+			$this->db,
+			$this->person,
+			'agent.ui.version_notices',
+			DP_ROOT.'/docs/changelog/docs.php'
+		);
+
+		if ($id == 'ALL') {
+			foreach ($version_notices->getWaitingIds() as $id) {
+				$version_notices->dismiss($id);
+			}
+		} else {
+			$version_notices->dismiss($id);
+		}
+		$version_notices->save();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	/**

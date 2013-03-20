@@ -121,6 +121,20 @@ $collection->add('agent_proxy', new Route(
 	array()
 ));
 
+$collection->add('agent_load_version_notice', new Route(
+	'/misc/version-notices/{id}/log.html',
+	array('_controller' => 'AgentBundle:Main:loadVersionNotice'),
+	array(),
+	array()
+));
+
+$collection->add('agent_dismiss_version_notice', new Route(
+	'/misc/version-notices/{id}/dismiss.json',
+	array('_controller' => 'AgentBundle:Main:dismissVersionNotice'),
+	array(),
+	array()
+));
+
 $collection->add('agent_redirect_out', new Route(
 	'/redirect-out/{url}',
 	array('_controller' => 'AgentBundle:Misc:redirectExternal'),

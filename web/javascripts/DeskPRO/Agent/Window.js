@@ -612,6 +612,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$(document).on('click mousemove keypress', function() {
 			self.activityTime = new Date();
 		});
+
+		if (document.getElementById('notice_trigger')) {
+			this._noticeIndex = -1;
+			this._noticeIds = $('#notice_trigger').data('ids').split(',');
+			$('#notice_trigger').on('click', function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				self.openNotices();
+			});
+
+			self._noticeBleepInterval = window.setInterval(function() {
+				$('#notice_trigger').toggleClass('bleep');
+			}, 800);
+		}
 	},
 
 	addOnloadFunction: function(fn) {
@@ -3429,5 +3443,153 @@ DeskPRO.Agent.Window = new Orb.Class({
 			url: BASE_URL + 'agent/save-dom.json',
 			data: {html: html}
 		});
+	},
+
+	//##################################################################################################################
+	// Notices Window
+	//##################################################################################################################
+
+	openNotices: function() {
+		var first = false;
+		if (!this._noticeEl) {
+			first = true;
+		}
+		this.getNoticeEl().show();
+		if (first) {
+			this.loadNextNotice();
+		}
+
+		if (this._noticeBleepInterval) {
+			$('#notice_trigger').removeClass('bleep');
+			window.clearInterval(this._noticeBleepInterval);
+			this._noticeBleepInterval = null;
+		}
+	},
+
+	_updateNoticeEl: function() {
+		var left = ($(window).width() / 2) - (this._noticeEl.outerWidth() / 2);
+		this._noticeEl.css('left', left);
+
+		if (this._noticeIds.length == 1) {
+			$('#notices_control').remove();
+			$('#notices_content').css('padding-bottom', 0);
+		}
+	},
+
+	getNoticeEl: function() {
+		var self = this;
+
+		if (this._noticeEl) {
+			this._updateNoticeEl();
+			return this._noticeEl;
+		}
+
+		var html = '<div class="dark-overlay-box dp-notices-box">' +
+				'<em class="close-trigger"></em>' +
+				'<form>' +
+					'<div class="title">' +
+						'<div style="float:right">' +
+							'<button class="clean-white dismiss">Dismiss</button>' +
+							'<button class="clean-white dismiss-all">Dismiss All</button>' +
+						'</div>' +
+						'New Version Notes</div>' +
+					'<div id="notices_content"></div>' +
+					'<div id="notices_control">' +
+						'<button class="clean-white prev">&larr;</button>' +
+						'<button class="clean-white next">&rarr;</button>' +
+					'</div>' +
+				'</form>' +
+			'</div>';
+
+		this._noticeEl = $(html);
+		this._noticeEl.hide();
+		this._noticeEl.appendTo('body');
+
+		this._noticeEl.find('.close-trigger').on('click', function() {
+			self._noticeEl.hide();
+		});
+		this._noticeEl.find('.dismiss-all').on('click', function() {
+			self.dismissAllNotices();
+		});
+		this._noticeEl.find('.dismiss').on('click', function() {
+			var current = self._noticeIds[self._noticeIndex];
+			self.dismissNotice(current);
+
+			self._noticeIndex--;
+			self.loadNextNotice();
+		});
+		this._noticeEl.find('.prev').on('click', function() {
+			self.loadPrevNotice();
+		});
+		this._noticeEl.find('.next').on('click', function() {
+			self.loadNextNotice();
+		});
+
+		this._updateNoticeEl();
+
+		return this._noticeEl;
+	},
+
+	dismissAllNotices: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/misc/version-notices/ALL/dismiss.json',
+			dataType: 'json'
+		});
+
+		this._noticeEl.hide();
+		$('.DP-version-notes').hide();
+	},
+
+	dismissNotice: function(id) {
+		$.ajax({
+			url: BASE_URL + 'agent/misc/version-notices/' + id + '/dismiss.json',
+			dataType: 'json'
+		});
+
+		this._noticeIds.erase(id);
+
+		if (!this._noticeIds.length) {
+			this._noticeEl.hide();
+			$('.DP-version-notes').hide();
+			return;
+		}
+
+		this._updateNoticeEl();
+		$('.DP-version-notes').find('em').text(this._noticeIds.length);
+	},
+
+	loadNotice: function(id) {
+		$('#notices_content').html('<div class="loading-icon-big"></div>');
+		$.ajax({
+			url: BASE_URL + 'agent/misc/version-notices/' + id + '/log.html',
+			dataType: 'html',
+			success: function(html) {
+				$('#notices_content').html(html);
+			}
+		});
+	},
+
+	loadNextNotice: function() {
+		this._noticeIndex++;
+		if (this._noticeIds.length == this._noticeIndex) {
+			this._noticeIndex = 0;
+		}
+
+		if (!this._noticeIds.length) {
+			this._noticeEl.hide();
+			$('.DP-version-notes').hide();
+			return;
+		}
+
+		this.loadNotice(this._noticeIds[this._noticeIndex]);
+	},
+
+	loadPrevNotice: function() {
+		this._noticeIndex--;
+		if (this._noticeIndex < 0) {
+			this._noticeIndex = this._noticeIds.length - 1;
+		}
+
+		this.loadNotice(this._noticeIds[this._noticeIndex]);
 	}
 });

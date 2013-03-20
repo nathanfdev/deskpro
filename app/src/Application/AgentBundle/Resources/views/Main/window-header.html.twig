@@ -264,6 +264,15 @@
 		</div>
 	</div>
 	<!-- END STATUS SECTION -->
+
+	{% if version_notices.count() %}
+		<div class="DP-version-notes">
+			<a title="An update to the helpdesk was installed" data-ids="{{ version_notices.getWaitingIds()|join(',') }}" id="notice_trigger">
+				<i class="icon-bullhorn"></i>
+				<em>{{ version_notices.count() }}</em>
+			</a>
+		</div>
+	{% endif %}
 <!-- END HEADER BAR -->
 </div>
 
