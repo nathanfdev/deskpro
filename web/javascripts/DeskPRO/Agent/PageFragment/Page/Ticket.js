@@ -312,10 +312,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		}
 
-		if (this.meta.ticket_reverse_order) {
-			this.focusOnReply();
-		}
-
 		this.getEl('cc_list_btn').on('click', function(ev) {
 			ev.preventDefault();
 
@@ -330,6 +326,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.getEl('cc_list').find('.addrow').show();
 			}
 		});
+	},
+
+	setTicketReplyBox: function(rb) {
+		var isFirst = this.ticketReplyBox ? false : true;
+		this.ticketReplyBox = rb;
+
+		if (isFirst && this.meta.ticket_reverse_order) {
+			this.focusOnReply();
+		}
 	},
 
 	loadMessagePage: function(page, noShowLoading) {

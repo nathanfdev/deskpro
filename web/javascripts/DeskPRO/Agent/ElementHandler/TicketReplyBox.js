@@ -11,7 +11,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
-		this.page.ticketReplyBox = this;
 		var sigTrimmed = false;
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
@@ -808,6 +807,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				statusMacroList.append(li);
 			});
 		});
+
+		this.page.setTicketReplyBox(this);
 	},
 
 	setReplyAsOptionName: function(name) {
