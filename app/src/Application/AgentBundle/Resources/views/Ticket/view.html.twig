@@ -383,6 +383,14 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<i class="icon-lock"></i>
 			Lock
 		</li>
+		<li class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}>
+			<i class="icon-circle-blank"></i>
+			Set hold
+		</li>
+		<li class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}>
+			<i class="icon-circle"></i>
+			Set hold
+		</li>
 		{% if ticket_perms.modify_merge %}
 			<li class="merge-menu-trigger noedit-hide">
 				<i class="icon-columns"></i>

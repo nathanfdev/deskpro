@@ -7660,6 +7660,19 @@ table.data-display-table tr th {
 .page-ticket li.urgency-item {
 	display: none !important;
 }
+.page-ticket nav.header-nav > ul > li.set-hold {
+	display: none;
+}
+
+.page-ticket nav.header-nav > ul > li.set-hold.unhold {
+	.gradient(#d4d4d4, #999999, 30px);
+	-webkit-box-shadow: inset 0px 0px 3px 1px rgba(255, 255, 255, 0.5);
+	box-shadow: inset 0px 0px 3px 1px rgba(255, 255, 255, 0.6);
+}
+
+.page-ticket.awaiting_agent nav.header-nav > ul > li.set-hold {
+	display: block;
+}
 
 .page-ticket.awaiting_agent li.urgency-item {
 	display: block !important;

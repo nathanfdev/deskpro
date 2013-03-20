@@ -1182,7 +1182,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			dataType: 'json',
 			success: function(data) {
 				self.deleteOverlay.closeOverlay();
-				self.getEl('hold_container').hide();
 				self.getEl('remove_menu_trigger').hide();
 
 				if (data.hidden_html) {
@@ -1209,7 +1208,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			},
 			success: function(data) {
 				self.getEl('actions_loading').hide();
-				self.getEl('hold_container').hide();
 				self.getEl('remove_menu_trigger').hide();
 
 				if (data.hidden_html) {
@@ -1467,7 +1465,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.deleteMessageOverlay.closeOverlay();
 
 				if (data.ticket_deleted) {
-					self.getEl('hold_container').hide();
 					self.getEl('remove_menu_trigger').hide();
 
 					if (data.hidden_html) {
