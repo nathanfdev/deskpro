@@ -389,14 +389,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				if (this.meta.ticket_reverse_order) {
 					if (page == numPages) {
-						this.getEl('message_prev_page').show();
+						this.getEl('message_next_page').hide();
 					} else {
-						this.getEl('message_prev_page').hide();
+						this.getEl('message_next_page').show();
 					}
 					if (page == 1) {
-						this.getEl('message_next_page').show();
+						this.getEl('message_prev_page').hide();
 					} else {
-						this.getEl('message_next_page').hide();
+						this.getEl('message_prev_page').show();
 					}
 				} else {
 					if (page == numPages) {
