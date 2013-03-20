@@ -456,7 +456,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 {% if app.user.getPref('agent.ticket_reverse_order') %}
 	{% if ticket_perms.reply or ticket_perms.modify_note %}
-	<div style="position:relative;">
+	<div style="position:relative;" class="ticket_reverse_order">
 		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
