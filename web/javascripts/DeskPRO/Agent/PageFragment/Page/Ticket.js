@@ -27,12 +27,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.wrapper.find('.copy-btn').each(function() {
 			var btn = $(this);
+
 			var clip = new ZeroClipboard(this);
 			clip.on('complete', function(client, args) {
-				btn.addClass('done');
+				DeskPRO_Window.util.showSavePuff(self.getEl('idref_switch'));
+			});
+
+			btn.parent().on('mouseover', function() {
+				clip.reposition();
+				btn.addClass('over');
+			}).on('mouseout', function() {
 				window.setTimeout(function() {
-					btn.removeClass('done');
-				}, 3200);
+					btn.removeClass('over');
+				}, 400);
 			});
 		});
 
