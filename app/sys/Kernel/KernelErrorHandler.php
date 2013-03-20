@@ -412,7 +412,9 @@ class KernelErrorHandler
 					$message = App::getMailer()->createMessage();
 					$message->setTo(DP_TECHNICAL_EMAIL);
 					$message->setSubject($line);
-					$message->setBody($email_str, 'text/plain');
+
+					$email_str = nl2br(htmlspecialchars($email_str, 'UTF-8'));
+					$message->setBody($email_str, 'text/html');
 
 					if (isset($errinfo['attach_logs']) && $errinfo['attach_logs']) {
 						if (is_file(dp_get_log_dir() . '/error.log')) {
@@ -436,7 +438,7 @@ class KernelErrorHandler
 							));
 						}
 
-						if (is_file('cli-phperr.log')) {
+						if (is_file(dp_get_log_dir() . '/cli-phperr.log')) {
 							$file = @file_get_contents(dp_get_log_dir() . '/cli-phperr.log');
 							if (isset($file[3670016])) {
 								$file = substr($file, -3670016);
