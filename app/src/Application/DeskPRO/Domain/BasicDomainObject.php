@@ -97,7 +97,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 			if (!($mode & self::TOARRAY_LOAD_UNLOADED)) {
 				// If a relation isn't loaded then dont access it, or else we'll lazy load it
-				if (!is_scalar($val) AND !is_array($val) AND !\Application\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
+				if (!is_scalar($val) AND !is_array($val) AND is_null($val) AND ($val instanceof \DateTime) AND !\Application\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
 					continue;
 				}
 			}
@@ -107,7 +107,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 				$values[$name] = $val;
 
 			} elseif ($mode & self::TOARRAY_ONLY_PRIMATIVES) {
-				if (is_scalar($val) OR is_array($val)) {
+				if (is_scalar($val) OR is_array($val) OR is_null($val)) {
 					$values[$name] = $val;
 				} elseif ($val instanceof \DateTime) {
 					$values[$name] = $val->format('Y-m-d H:i:s');
