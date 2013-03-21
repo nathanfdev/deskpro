@@ -77,8 +77,7 @@ class PortalController extends AbstractController
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
 				}
 
-				$orig_desc = $this->container->getSystemService('filestorage')->getFileDescriptor($orig_blob['id']);
-				$file = $orig_desc->get();
+				$file = $this->container->getBlobStorage()->copyBlobRecordToString($orig_blob);
 
 				if ($orig_blob->content_type != 'image/x-icon') {
 					if (class_exists('Imagick')) {

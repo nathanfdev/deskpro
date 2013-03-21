@@ -35,6 +35,8 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\Domain\DomainObject;
+
 if (!defined('DP_ROOT')) exit('No access');
 
 require_once DP_ROOT.'/src/Orb/Data/ContentTypes.php';
@@ -590,16 +592,14 @@ class FilestorageLoader extends LoaderAbstract
 		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
 		if (!$blob) {
 			$container = $this->bootFullSystem();
-			$desc = $container->getSystemService('filestorage')->createRandomPath();
-			$desc->write(file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg'), array(
-				'content_type' => 'image/jpeg',
-				'filename' => $name . '.jpeg',
-				'sys_name' => $name,
-			));
+			$blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
+				DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
+				$name . '.jpeg',
+				'image/jpeg',
+				array('sys_name' => $name)
+			);
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
-			$sth->execute(array('id' => $desc->getPath()));
-			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+			$blob = $blob_entity->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
 		}
 
 		$size = null;
@@ -627,16 +627,14 @@ class FilestorageLoader extends LoaderAbstract
 		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
 		if (!$blob) {
 			$container = $this->bootFullSystem();
-			$desc = $container->getSystemService('filestorage')->createRandomPath();
-			$desc->write(file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg'), array(
-				'content_type' => 'image/jpeg',
-				'filename' => $name . '.jpeg',
-				'sys_name' => $name,
-			));
+			$blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
+				DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
+				$name . '.jpeg',
+				'image/jpeg',
+				array('sys_name' => $name)
+			);
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
-			$sth->execute(array('id' => $desc->getPath()));
-			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+			$blob = $blob_entity->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
 		}
 
 		$size = null;
@@ -848,7 +846,7 @@ class FilestorageLoader extends LoaderAbstract
 			}
 		}
 
-		if ($blob['file_url']) {
+		if (!empty($blob['file_url']) && $blob['file_url']) {
 			header("HTTP/1.1 301 Moved Permanently");
 			header("Location: {$blob['file_url']}");
 			exit;
@@ -1031,7 +1029,7 @@ class FilestorageLoader extends LoaderAbstract
 
 		$this->addLogMessage("Cached resize as blob %d", $new_blob->getId());
 
-		$new_blob_info = $new_blob->toArray();
+		$new_blob_info = $new_blob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
 		$new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
 		return $new_blob_info;
