@@ -183,14 +183,12 @@ abstract class AbstractGatewayProcessor
 
 		foreach ($this->reader->getAttachments() as $attach) {
 
-			$desc = App::getApi('filestorage')->createRandomPath();
-			$desc->write($attach->getFileContents(), array(
-				'content_type' => $attach->getMimeType(),
-				'filename' => $attach->getFileName()
-			));
-
-			$blob_id = $desc->getPath();
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+				$attach->getFileContents(),
+				$attach->getFileName(),
+				$attach->getMimeType()
+			);
+			$blob_id = $blob->getId();
 
 			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;

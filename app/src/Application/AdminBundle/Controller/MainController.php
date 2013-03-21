@@ -214,15 +214,12 @@ HTML;
 			return $this->createJsonResponse(array($error));
 		}
 
-		$desc = App::getApi('filestorage')->createRandomPath();
-
-		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $file->getClientMimeType(),
-			'filename' => $file->getClientOriginalName()
-		));
-
-		$blob_id = $desc->getPath();
-		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
+			$file->getRealPath(),
+			$file->getClientOriginalName(),
+			$file->getClientMimeType()
+		);
+		$blob_id = $blob->getId();
 
 		if ($this->in->getString('attach_to_object')) {
 			switch ($this->in->getString('attach_to_object')) {

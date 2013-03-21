@@ -46,11 +46,15 @@ use Application\DeskPRO\Entity\LabelBlob;
 /**
  * A blob is just a pointer to data.
  *
+ * @property int $id
+ * @property int $sys_name
+ * @property int $original_blob
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
+	const STORAGE_LOC_DATABASE   = 'db';
 	const STORAGE_LOC_FILESYSTEM = 'fs';
-	const STORAGE_LOC_S3 = 's3';
+	const STORAGE_LOC_S3         = 's3';
 
 	/**
 	 * @var int
@@ -74,11 +78,24 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $original_blob;
 
 	/**
-	 * If not stored in the database, this is where the file is stored.
+	 * The storage adapter that knows how to load this file
 	 *
 	 * @var string
 	 */
-	protected $storage_loc = null;
+	protected $storage_loc = 'db';
+
+	/**
+	 * The preferred storage adapter. This is used to mark when we want to move
+	 * a file from one storage location to another. For example, if an upload
+	 * to S3 failed and we saved the file in the database instead,
+	 * then the $storage_loc would be 'db' but $storage_loc_pref would be 's3'.
+	 *
+	 * The cron jobs will look for when these two values don't match and will
+	 * attempt to move resources gradually.
+	 *
+	 * @var string
+	 */
+	protected $storage_loc_pref = null;
 
 	/**
 	 * The path to the file if it's not stored in the database.
@@ -86,6 +103,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $save_path = null;
+
+	/**
+	 * The HTTP link to download the file
+	 *
+	 * @var string
+	 */
+	protected $file_url = null;
 
 	/**
 	 * The original filename
@@ -282,6 +306,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getDownloadUrl($absolute = false)
 	{
+		if ($this->file_url) {
+			return $this->file_url;
+		}
+
 		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
 	}
 
@@ -359,6 +387,19 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @param string $storage_loc
+	 */
+	public function setStorageLocPref($storage_loc)
+	{
+		if (!$storage_loc) {
+			$this->setModelField('storage_loc_pref', null);
+		} else {
+			$this->setModelField('storage_loc_pref', $storage_loc);
+		}
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
 	public function getLabelManager()
@@ -394,13 +435,16 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			'name' => 'blobs',
 			'indexes' => array(
 				'authcode_idx' => array('columns' => array('authcode')),
+				'storage_loc_idx' => array('columns' => array('storage_loc', 'storage_loc_pref'))
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc', ));
+		$metadata->mapField(array( 'fieldName' => 'storage_loc_pref', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_pref', ));
 		$metadata->mapField(array( 'fieldName' => 'save_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'save_path', ));
+		$metadata->mapField(array( 'fieldName' => 'file_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'file_url', ));
 		$metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 120, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filename', ));
 		$metadata->mapField(array( 'fieldName' => 'filesize', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filesize', ));
 		$metadata->mapField(array( 'fieldName' => 'content_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content_type', ));

@@ -75,15 +75,12 @@ class NewReply
 
 		$attach = false;
 		if ($this->new_upload) {
-			$desc = App::getApi('filestorage')->createRandomPath();
-
-			$desc->write(file_get_contents($this->new_upload->getRealPath()), array(
-				'content_type' => $this->new_upload->getClientMimeType(),
-				'filename' => $this->new_upload->getClientOriginalName()
-			));
-
-			$blob_id = $desc->getPath();
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+				$this->new_upload->getRealPath(),
+				$this->new_upload->getClientOriginalName(),
+				$this->new_upload->getClientMimeType()
+			);
+			$blob_id = $blob->getId();
 
 			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 			$attach['blob'] = $blob;

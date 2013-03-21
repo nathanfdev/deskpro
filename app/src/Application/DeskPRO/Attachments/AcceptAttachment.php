@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\Attachments;
 
 use Doctrine\ORM\EntityManager;
-use Orb\FileStorage\AbstractStorage as AbstractFileStorage;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 
 use Orb\Util\Numbers;
 use Orb\Data\ContentTypes;
@@ -55,19 +55,19 @@ class AcceptAttachment
 	protected $em;
 
 	/**
-	 * @var \Orb\FileStorage\AbstractStorage
+	 * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
 	 */
-	protected $filestorage;
+	protected $blobstorage;
 
 	/**
 	 * @var \Application\DeskPRO\Attachments\RestrictionSet[]
 	 */
 	protected $restriction_sets = array();
 
-	public function __construct(EntityManager $em, AbstractFileStorage $filestorage)
+	public function __construct(EntityManager $em, DeskproBlobStorage $blobstorage)
 	{
 		$this->em = $em;
-		$this->filestorage = $filestorage;
+		$this->blobstorage = $blobstorage;
 	}
 
 
@@ -209,8 +209,6 @@ class AcceptAttachment
 	 */
 	public function accept(UploadedFile $file, $is_temp = false)
 	{
-		$desc = $this->filestorage->createRandomPath();
-
 		try {
 			$mime_type = $file->getMimeType();
 		} catch (\Exception $e) {
@@ -234,14 +232,12 @@ class AcceptAttachment
 			}
 		}
 
-		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $mime_type,
-			'filename' => $filename,
-			'is_temp' => $is_temp
-		));
-
-		$blob_id = $desc->getPath();
-		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $this->blobstorage->createBlobRecordFromFile(
+			$file->getRealPath(),
+			$filename,
+			$mime_type,
+			array('is_temp' => $is_temp)
+		);
 
 		return $blob;
 	}

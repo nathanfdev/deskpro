@@ -57,9 +57,7 @@ class BlobController extends AbstractController
 			}
 
 			if ($cached_blob) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($cached_blob['id']);
-				$file = $desc->get();
-				unset($desc);
+				$file = App::getContainer()->getBlobStorage()->copyBlobRecordToString($cached_blob);
 			} else {
 				$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
 				$file = $desc->get();

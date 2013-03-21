@@ -52,7 +52,7 @@ class BlobStorageService
 
 		$logger = new Logger();
 
-		if (dp_get_config('enable_blobstorage_log')) {
+		if (!dp_get_config('enable_blobstorage_log')) {
 			$logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
 		}
 

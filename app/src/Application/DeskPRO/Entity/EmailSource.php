@@ -207,8 +207,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_raw !== null) return $this->_raw;
 
-		$desc = App::getSystemService('filestorage')->getFileDescriptor($this->blob->id);
-		$this->_raw = $desc->get();
+		$this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
 		return $this->_raw;
 	}

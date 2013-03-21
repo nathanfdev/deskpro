@@ -28,6 +28,8 @@ $loader->registerNamespaces(array(
 	'Elao'                           => DP_ROOT.'/vendor/profiler',
 	'Profiler'                       => DP_ROOT.'/vendor/profiler',
 	'Imagine'                        => DP_ROOT.'/vendor/imagine/lib',
+	'Aws'                            => DP_ROOT.'/vendor/aws-sdk-php/src',
+	'Guzzle'                         => DP_ROOT.'/vendor/guzzle/src',
 ));
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 

@@ -73,6 +73,26 @@ abstract class AbstractStorageAdapter implements Loggable
 
 
 	/**
+	 * @param Blob $blob
+	 * @return string
+	 */
+	public function makePathForBlob(Blob $blob)
+	{
+		$path = array();
+		if ($blob->getMeta('batch')) {
+			$path[] = $blob->getMeta('batch');
+		}
+		if ($blob->getMeta('authcode')) {
+			$path[] = $blob->getMeta('authcode');
+		} else {
+			$path[] = md5(uniqid('', true)) . '-' . $blob->getFilenameSafe();
+		}
+
+		return implode('/', $path);
+	}
+
+
+	/**
 	 * @param Logger $logger
 	 */
 	public function setLogger(Logger $logger)

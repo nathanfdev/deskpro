@@ -34,6 +34,7 @@
 namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -149,9 +150,13 @@ class EmailGatewayErrorsController extends AbstractController
 
 		$this->db->executeUpdate("DELETE FROM email_sources WHERE $where");
 
-		foreach ($blob_ids as $bid) {
-			$desc = App::getApi('filestorage')->getFileDescriptor($bid);
-			$desc->delete();
+		$blobs = App::getOrm()->getRepository('DeskPRO:Blob')->getByIds($blob_ids);
+		foreach ($blobs as $blob) {
+			try {
+				App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e, false);
+			}
 		}
 
 		if ($type == 'errors') {
@@ -175,13 +180,16 @@ class EmailGatewayErrorsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		if ($source->blob) {
+			try {
+				App::getContainer()->getBlobStorage()->deleteBlobRecord($source->blob);
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e, false);
+			}
+		}
+
 		$this->em->remove($source);
 		$this->em->flush();
-
-		if ($source->blob) {
-			$desc = App::getApi('filestorage')->getFileDescriptor($source->blob->getId());
-			$desc->delete();
-		}
 
 		if ($source->error_code == 'server_error' || $source->error_code == 'timeout') {
 			return $this->redirectRoute('admin_emailgateway_errors');

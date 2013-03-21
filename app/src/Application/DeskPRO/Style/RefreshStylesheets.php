@@ -51,13 +51,11 @@ class RefreshStylesheets
 
 		if ($style) {
 			if ($style->css_blob && $style->css_blob->getId()) {
-				$desc = $container->getFilestorage()->getFileDescriptor($style->css_blob->getId());
-				$desc->delete();
+				$container->getBlobStorage()->deleteBlobRecord($style->css_blob);
 			}
 
 			if ($style->css_blob_rtl && $style->css_blob_rtl->getId()) {
-				$desc = $container->getFilestorage()->getFileDescriptor($style->css_blob_rtl->getId());
-				$desc->delete();
+				$container->getBlobStorage()->deleteBlobRecord($style->css_blob_rtl);
 			}
 
 			$style->css_blob = null;

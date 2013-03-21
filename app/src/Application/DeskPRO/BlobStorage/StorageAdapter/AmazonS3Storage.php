@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
+use Aws\S3\Enum\CannedAcl;
 use Aws\S3\S3Client;
 
 class AmazonS3Storage extends AbstractStorageAdapter
@@ -66,6 +67,26 @@ class AmazonS3Storage extends AbstractStorageAdapter
 		if (!$this->bucket) {
 			throw new \InvalidArgumentException("bucket is a required option");
 		}
+	}
+
+
+	/**
+	 * @param Blob $blob
+	 * @return string
+	 */
+	public function makePathForBlob(Blob $blob)
+	{
+		$path = array();
+		if ($blob->getMeta('batch')) {
+			$path[] = $blob->getMeta('batch');
+		}
+		if ($blob->getMeta('authcode')) {
+			$path[] = $blob->getMeta('authcode');
+		} else {
+			$path[] = md5(uniqid('', true));
+		}
+
+		return implode('/', $path) . '-' . $blob->getFilenameSafe();
 	}
 
 
@@ -119,12 +140,17 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	 */
 	public function writeBlobString(Blob $blob, $data)
 	{
+		$path = $this->resolvePath($blob->getPath());
+
 		$this->s3->putObject(array(
 			'Bucket'      => $this->bucket,
 			'Body'        => $data,
 			'Key'         => $this->resolvePath($blob->getPath()),
 			'ContentType' => $blob->getContentType(),
+			'ACL'         => CannedAcl::PUBLIC_READ,
 		));
+
+		$blob->setMeta('file_url', 'https://'. $this->bucket . '.s3.amazonaws.com' . $path);
 
 		return strlen($data);
 	}
@@ -137,7 +163,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	 */
 	public function writeBlobFromStream(Blob $blob, $fp_source)
 	{
-		return $this->writeBlobFromStream($blob, stream_get_contents($fp_source));
+		return $this->writeBlobString($blob, stream_get_contents($fp_source));
 	}
 
 
@@ -189,5 +215,14 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	public function readBlobToStream(Blob $blob, $fp_target)
 	{
 		return fwrite($fp_target, $this->readBlobString($blob));
+	}
+
+
+	/**
+	 * @param Blob $blob
+	 */
+	public function getFileUrlLink(Blob $blob)
+	{
+
 	}
 }

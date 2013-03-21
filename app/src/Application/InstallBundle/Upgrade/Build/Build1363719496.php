@@ -29,57 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Attachments\AcceptAttachment;
+use Orb\Util\Env;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Env as EnvUtil;
-
-class AttachmentAccepterService
+class Build1363719496 extends AbstractBuild
 {
-	public static function create(DeskproContainer $container)
+	public function run()
 	{
-		$accepter = new AcceptAttachment(
-			$container->getEm(),
-			$container->getBlobStorage()
-		);
+		$this->out("Changes to blobs");
+		$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_pref VARCHAR(50) DEFAULT NULL, ADD file_url VARCHAR(255) DEFAULT NULL");
+		$this->execMutateSql("CREATE INDEX storage_loc_idx ON blobs (storage_loc, storage_loc_pref)");
+		$this->execMutateSql("UPDATE blobs SET storage_loc = 'db' WHERE storage_loc IS NULL OR storage_loc = ''");
 
-		$effective_max_size = EnvUtil::getEffectiveMaxUploadSize();
-
-		foreach (array('agent', 'user') as $type) {
-			$res = new \Application\DeskPRO\Attachments\RestrictionSet();
-
-			$max_size  = $container->getSetting('core.attach_'.$type.'_maxsize');
-			$max_size  = min($effective_max_size, $max_size);
-
-			$must_exts = $container->getSetting('core.attach_'.$type.'_must_exts');
-			$not_exts  = $container->getSetting('core.attach_'.$type.'_not_exts');
-
-			if ($must_exts) {
-				$must_exts = explode(',', strtolower($must_exts));
-				array_walk($must_exts, 'trim');
-			} else {
-				$must_exts = null;
-			}
-
-			if ($not_exts) {
-				$not_exts = explode(',', strtolower($not_exts));
-				array_walk($not_exts, 'trim');
-			} else {
-				$not_exts = null;
-			}
-
-			$res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
-
-			$accepter->addRestrictionSet($type, $res);
+		$this->out("Standardise Windows paths in blobs");
+		if (Env::isWindows()) {
+			$this->execMutateSql("UPDATE blobs SET save_path = REPLACE(save_path, '\\', '/')");
 		}
-
-		return $accepter;
 	}
 }

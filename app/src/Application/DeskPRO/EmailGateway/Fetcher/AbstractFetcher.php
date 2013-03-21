@@ -220,10 +220,12 @@ abstract class AbstractFetcher
 			}
 
 			if ($raw_message->too_big) {
-				$desc = App::getSystemService('filestorage')->createRandomPath();
-				$desc->write($raw_message->content, array(
-					'filename' => 'email.dat',
-				));
+				$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+					$raw_message->content,
+					'email.eml',
+					'message/rfc822'
+				);
+				$blob_id = $blob->getId();
 
 				// Unset the content now, its not used from here on out
 				$raw_message->content = '';
@@ -235,14 +237,13 @@ abstract class AbstractFetcher
 					'max_size' => $this->max_size
 				);
 			} else {
-				$desc = App::getSystemService('filestorage')->createRandomPath();
-				$desc->write($raw_message->content, array(
-					'filename' => 'email.dat',
-				));
+				$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+					$raw_message->content,
+					'email.eml',
+					'message/rfc822'
+				);
+				$blob_id = $blob->getId();
 			}
-
-			$blob_id = $desc->getPath();
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
 			$source->blob = $blob;
 
