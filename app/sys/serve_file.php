@@ -371,12 +371,12 @@ class FilestorageLoader extends LoaderAbstract
 				$css = str_replace('/*@/no_rtl*/', '', $css);
 			}
 
-			$desc = $container->getFilestorage()->createRandomPath();
-			$desc->write($css, array(
-				'content_type' => 'text/css',
-				'filename' => ($is_rtl ? 'main-rtl.css' : 'main.css')
-			));
-			$blob_id = $desc->getPath();
+			$blob = $container->getBlobStorage()->createBlobRecordFromString(
+				$css,
+				$is_rtl ? 'main-rtl.css' : 'main.css',
+				'text/css'
+			);
+			$blob_id = $blob->getId();
 
 			$container->getDb()->update('styles', array($blob_column => $blob_id), array('id' => 1));
 
