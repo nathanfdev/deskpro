@@ -596,6 +596,7 @@ class DeskproBlobStorage implements Loggable
 				'blob_id' => $blob_entity->id
 			)
 		);
+		$blob->setPath($blob_entity->save_path);
 		if ($blob_entity->file_url) {
 			$blob->setMeta('file_url', $blob_entity->file_url);
 		}
