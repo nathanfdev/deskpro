@@ -204,13 +204,13 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<span id="{{ baseId }}_status_txt" class="urgency-text">
 				{% if ticket.status_code == 'awaiting_user' %}
 					Awaiting User
-				{% elseif ticket.status_code == 'agent' %}
+				{% elseif ticket.status_code == 'awaiting_agent' %}
 					Awaiting Agent
 				{% elseif ticket.status_code == 'resolved' %}
 					Resolved
-				{% elseif ticket.status_code %}
+				{% elseif ticket.status_code == 'closed' %}
 					Archived
-				{% else %}
+				{% elseif ticket.status == 'hidden' %}
 					Hidden
 				{% endif %}
 			</span>
