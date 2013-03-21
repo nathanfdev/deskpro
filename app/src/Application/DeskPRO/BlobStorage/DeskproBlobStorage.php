@@ -134,6 +134,15 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
+	 * @return string[]
+	 */
+	public function getAdapterIds()
+	{
+		return array_keys($this->adapters);
+	}
+
+
+	/**
 	 * @return AbstractStorageAdapter
 	 */
 	public function getPreferredAdapter()
@@ -602,5 +611,49 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		return $blob;
+	}
+
+
+	/**
+	 * @param BlobEntity $blob_entity
+	 * @param string $adapter_id
+	 */
+	public function moveBlobRecordToAdapter(BlobEntity $blob_entity, $adapter_id)
+	{
+		$old_blob = $this->getBlobFromBlobRecord($blob_entity);
+		$old_adapter_id = $blob_entity->storage_loc;
+
+		$blob = $this->getBlobFromBlobRecord($blob_entity);
+		$file_data = $this->copyBlobRecordToString($blob_entity);
+
+		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
+		if ($adapter_id == 'fs') {
+			$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity->getId() . $blob_entity->getNameHash();
+		} else {
+			$authcode = $blob_entity->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+		}
+
+		$blob->setMeta('authcode', $authcode);
+		$blob->setMeta('batch', $batch);
+
+		$adapter = $this->getAdapter($adapter_id);
+		$path = $adapter->makePathForBlob($blob);
+		$blob->setPath($path);
+		$adapter->writeBlobString($blob, $file_data);
+
+		$blob_entity->save_path = $path;
+		$blob_entity->storage_loc = $adapter_id;
+
+		$blob_entity->authcode  = $blob->getMeta('authcode');
+
+		if ($blob->getMeta('file_url')) {
+			$blob_entity->file_url = $blob->getMeta('file_url');
+		}
+
+		$this->em->persist($blob_entity);
+		$this->em->flush();
+
+		// Delete the old one
+		$this->deleteBlob($old_blob, $old_adapter_id);
 	}
 }
