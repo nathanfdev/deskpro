@@ -334,6 +334,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			// Means we're opening fo rhte first time
 			if (!statusBackdrop) {
 				statusBackdrop = $('<div class="backdrop"></div>');
+				statusBackdrop.css('z-index', 999999999);
 				statusBackdrop.appendTo('body');
 				statusBackdrop.on('click', function(ev) {
 					ev.stopPropagation();

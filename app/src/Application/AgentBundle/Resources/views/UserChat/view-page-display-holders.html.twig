@@ -4,7 +4,7 @@
 	{% for f in custom_fields %}
 		<tbody class="chat_field_{{f.id}} custom-field item" data-field-type="chat_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
 			<tr class="mode-display">
-				<th width="80">
+				<th width="120">
 					<span class="custom-field edit-trigger chat_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 				</th>
 				<td>
@@ -19,7 +19,7 @@
 			</tr>
 			<tr class="mode-edit">
 				{% if f.field_def.isFormField() %}
-					<th width="80">{{ f.title }}:</th>
+					<th width="120">{{ f.title }}:</th>
 					<td>
 						<div class="custom-field field-input chat_field_{{f.id}}" data-item-id="{{f.id}}">
 							{{ render_custom_field_form(f) }}

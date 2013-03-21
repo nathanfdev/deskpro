@@ -115,7 +115,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		</td></tr></table>
 	</div>
 	<div class="row author last">
-		<a class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+		<a class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 			<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 				{{ ticket.person.getNameWithTitle() }}
 				<span class="email">({{ ticket.person_email_address }})</span>
@@ -124,13 +124,15 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 		{% if ticket.person.organization %}
 			&nbsp;&nbsp;
-			<a id="{{ baseId }}_org_link" class="dp-btn as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i class="icon-briefcase"></i>
+			<a id="{{ baseId }}_org_link" class="dp-btn as-popover preload" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i class="icon-briefcase"></i>
 				{{ ticket.person.organization }}
 				{% if ticket.person.organization_position %}<span class="email">({{ ticket.person.organization_position }})</span>{% endif %}
 			</a>
 		{% endif %}
 
-		<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC's...</em></a>
+		{% if ticket_perms.modify_cc and not user_parts|length %}
+			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC</em></a>
+		{% endif %}
 
 		{% if ticket_perms.modify_cc or user_parts|length %}
 		<div
@@ -144,11 +146,21 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		>
 			<ul class="cc-row-list" id="{{ baseId }}_cc_row_list">
 				{% for part in user_parts %}
-					{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
+					{% if loop.index0 < 2 %}
+						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms, preload: true } %}
+					{% else %}
+						{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
+					{% endif %}
 				{% endfor %}
 			</ul>
+			<div class="cc-btn-holder">
+				{% if ticket_perms.modify_cc and user_parts|length %}
+					<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC</em></a>
+				{% endif %}
+			</div>
+
 			{% if ticket_perms.modify_cc %}
-				<div class="cc-autocomplete addrow noedit-hide" style="display: none;">
+				<div class="cc-autocomplete addrow noedit-hide" style="display: none; clear:left; padding-top: 4px;">
 					<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
 					<div class="person-search-box" style="display: none">
 						<section>
@@ -162,6 +174,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
 				</div>
 			{% endif %}
+			<div style="clear:left;"></div>
 		</div>
 		{% endif %}
 	</div>
@@ -287,9 +300,9 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
-			<table cellspacing="0" cellpadding="0" width="100%"><tr>
-				<td>
-					<label>Agent</label>
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
+				<div style="float:left; padding-right: 10px; max-width: 30%;">
+					<label class="field-label-title">Agent</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
@@ -301,9 +314,9 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 							{% endif %}
 						{% endfor %}
 					</select>
-				</td>
-				<td>
-					<label>Team</label>
+				</div>
+				<div style="float:left; padding-right: 10px; max-width: 30%;">
+					<label class="field-label-title">Team</label>
 					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
@@ -323,9 +336,9 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 							{% endif %}
 						{% endfor %}
 					</select>
-				</td>
-				<td width="100%">
-					<label>Followers</label>
+				</div>
+				<div style="float:left; min-width: 200px; padding-right: 10px; width: 30%;">
+					<label class="field-label-title">Followers</label>
 					<select id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
 							<option {% if agent_parts[app.user.id] %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
@@ -336,8 +349,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 							{% endif %}
 						{% endfor %}
 					</select>
-				</td>
-			</tr></table>
+				</div>
+			</td></tr></table>
 			<div class="sep">-</div>
 			{% if ticket.linked_chat %}
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
@@ -353,7 +366,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</div>
 			{% if ticket_perms.modify_labels or ticket.labels|length %}
 				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table"><tr>
-					<th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">Labels:</th>
+					<th width="120" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">Labels:</th>
 					<td style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">
 						<input
 							type="hidden"

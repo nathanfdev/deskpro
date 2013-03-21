@@ -288,7 +288,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var cc_user_rows = this.getElById('cc_user_rows');
 
         cc_row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(cc_row);
-        this.ccRowTpl = DeskPRO_Window.util.getPlainTpl($('.email-row-tpl', cc_row));
+        this.ccRowTpl = '';
         var ccRemoveFunction = function() {
 			var row = $(this).closest('.cc-user-row');
 			var input = $('<input type="hidden" />');
