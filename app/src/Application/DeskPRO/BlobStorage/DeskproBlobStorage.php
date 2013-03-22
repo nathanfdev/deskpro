@@ -581,7 +581,7 @@ class DeskproBlobStorage implements Loggable
 
 		try {
 			$this->deleteBlob($blob, $blob_entity->storage_loc);
-			$this->em->remove($blob);
+			$this->em->remove($blob_entity);
 			$this->em->flush();
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete failed: {$e->getCode()} {$e->getMessage()}");
