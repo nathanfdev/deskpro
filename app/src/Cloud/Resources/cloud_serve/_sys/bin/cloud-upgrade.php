@@ -52,6 +52,7 @@ if (php_sapi_name() != 'cli') {
  *     --dry-run             Dont actually do upgrades, just see what would happen
  *     --site-id             Run a specific site ID
  *     --limit               How many to run at a time (default 999999)
+ *     --wait                How many seconds to wait between each site
  *
  * @package DeskPRO_Cloud
  */
@@ -134,6 +135,15 @@ if (($k = array_search('--limit', $args)) !== false && !empty($args[$k+1])) {
 
 if (!$limit) {
 	$limit = 99999;
+}
+
+#------------------------------
+# limit
+#------------------------------
+
+$wait_time = false;
+if (($k = array_search('--wait', $args)) !== false && !empty($args[$k+1])) {
+	$wait_time = (int)$args[$k+1];
 }
 
 ########################################################################
@@ -223,6 +233,10 @@ foreach ($sites as $siteinfo) {
 	}
 
 	dp_logf("--- END SITE %d %s (took %.4f s) ---", $siteinfo['id'], $siteinfo['master_domain'], microtime(true) - $site_time_begin);
+
+	if ($wait_time) {
+		sleep($wait_time);
+	}
 }
 
 dp_logf("--------------- UPGRADE DONE (took %.4f s) ---------------", microtime(true) - $time_begin);
