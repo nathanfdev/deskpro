@@ -1357,6 +1357,8 @@ class TicketController extends AbstractController
 
 		$this->db->beginTransaction();
 
+		$changed_agent = false;
+		$changed_team  = false;
 		try {
 
 			if ($add_parts) {
@@ -1375,9 +1377,11 @@ class TicketController extends AbstractController
 			#------------------------------
 
 			if ($this->in->getInt('options.agent_id') != -1) {
+				$changed_agent = true;
 				$ticket['agent_id'] = $this->in->getUint('options.agent_id');
 			}
 			if ($this->in->getInt('options.agent_team_id') != -1) {
+				$changed_team = true;
 				$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 			}
 
@@ -1496,17 +1500,20 @@ class TicketController extends AbstractController
 		$data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
 
 		$data = array_merge($data, array(
-			'updated_agent_parts_html' => isset($updated_agent_parts) ? $updated_agent_parts : '',
-			'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
-			'replybox_html' => $replybox,
-			'charge_html' => $charge_html,
-			'agent_id' => $ticket['agent_id'],
-			'agent_team_id' => $ticket['agent_team_id'],
-			'status' => $ticket['status'],
-			'close_tab' => $close_tab,
-			'refresh_tab' => $refresh_tab,
-			'client_messages' => $client_messages,
-			'cc_list' => $cc_list,
+			'via_reply'                        => true,
+			'updated_agent_parts_html'         => isset($updated_agent_parts) ? $updated_agent_parts : '',
+			'updated_agent_parts_html_count'   => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
+			'replybox_html'                    => $replybox,
+			'charge_html'                      => $charge_html,
+			'changed_agent'                    => $changed_team,
+			'agent_id'                         => $ticket['agent_id'],
+			'changed_team'                     => $changed_team,
+			'agent_team_id'                    => $ticket['agent_team_id'],
+			'status'                           => $ticket['status'],
+			'close_tab'                        => $close_tab,
+			'refresh_tab'                      => $refresh_tab,
+			'client_messages'                  => $client_messages,
+			'cc_list'                          => $cc_list,
 		));
 
 		return $this->createJsonResponse($data);

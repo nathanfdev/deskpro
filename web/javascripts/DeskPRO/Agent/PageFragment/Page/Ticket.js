@@ -578,18 +578,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			self.handleTicketUpdate(result);
 
-			if (!result.dupe_message) {
-				// Apply changed props
-				var agentProp = self.changeManager.getPropertyManager('agent_id');
-				agentProp.setIncomingValue(result.agent_id);
-
-				var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
-				agentTeamProp.setIncomingValue(result.agent_team_id);
-
-				var statusProp = self.changeManager.getPropertyManager('status');
-				statusProp.setIncomingValue(result.status);
-			}
-
 			// Reload the message row in results
 			//addTicket
 			if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
@@ -744,7 +732,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEl('unlock_ticket').hide();
 		}
 
-		Array.each(['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold', 'agent_id', 'agent_team_id'], function(propId) {
+		var props = ['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold'];
+		if (data.via_reply) {
+			if (data.changed_agent) {
+				props.push('agent_id');
+			}
+			if (data.changed_team) {
+				props.push('agent_team_id');
+			}
+		} else {
+			props.push('agent_id');
+			props.push('agent_team_id');
+		}
+
+		Array.each(props, function(propId) {
 			var val = '0';
 			if (data[propId]) {
 				val = data[propId];

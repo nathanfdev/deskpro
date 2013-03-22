@@ -549,11 +549,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSel   = this.getElById('agent_team_sel');
 		var statusSel = this.getElById('status_sel');
 
-		window.setTimeout(function() {
-			DP.select(agentSel);
-			DP.select(teamSel);
-			DP.select(statusSel);
-		}, 150);
+		if (!this.el.data('is-top-order')) {
+			window.setTimeout(function() {
+				DP.select(agentSel);
+				DP.select(teamSel);
+				DP.select(statusSel);
+			}, 150);
+		}
 
 		var hasSwitched = false;
 
@@ -909,6 +911,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 							agentId = DESKPRO_PERSON_ID;
 						}
 
+						this.getElById('agent_sel').val(agentId);
 						this.getElById('agent_sel').select2('val', agentId);
 					}
 					var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
@@ -922,6 +925,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}
 
 						if (agentTeamId) {
+							this.getElById('agent_team_sel').val(agentTeamId);
 							this.getElById('agent_team_sel').select2('val', agentTeamId);
 						}
 					}
