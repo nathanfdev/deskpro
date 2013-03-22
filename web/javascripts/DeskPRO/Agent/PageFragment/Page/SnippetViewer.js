@@ -477,7 +477,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				new_row.hide();
 
 				if (!snippetId) {
-					$('.cat-' + data.category_id + ' .new-snippet', this.wrapper).after(new_row);
+					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).before(new_row);
 					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).hide();
 				} else {
 					$('.snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
