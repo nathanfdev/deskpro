@@ -79,13 +79,16 @@ class BlobStorageService
 			$adapter->setLogger($logger);
 
 			$bs->addAdapter('s3', $adapter);
-		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
-			$adapter = new FilesystemStorage(array(
-				'base_path' => $container->getBlobDir(),
-			));
-			$adapter->setLogger($logger);
 
-			$bs->addAdapter('fs', $adapter);
+			// Cloud always has fs enabled (legacy while blobs are moved)
+			if (defined('DPC_IS_CLOUD')) {
+				$adapter = new FilesystemStorage(array(
+					'base_path' => $container->getBlobDir(),
+				));
+				$adapter->setLogger($logger);
+
+				$bs->addAdapter('fs', $adapter);
+			}
 		}
 
 		// Always fallback on DB
