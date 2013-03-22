@@ -94,6 +94,14 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</div>
 		</div>
 	</div>
+	<div id="{{baseId}}_hold_message" {% if not ticket.is_hold %}style="display: none"{% endif %}>
+		<div class="hold-message">
+			<button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">Unhold Ticket</button>
+			<div style="margin-right: 100px;">
+				This ticket is currently on hold.
+			</div>
+		</div>
+	</div>
 	<div class="row title first">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="10" nowrap="nowrap">
 			<div class="id-number" id="{{ baseId }}_idref_switch">
@@ -408,14 +416,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<i class="icon-lock"></i>
 			Lock
 		</li>
-		<li class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}>
-			<i class="icon-circle-blank"></i>
-			Set hold
-		</li>
-		<li class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}>
-			<i class="icon-circle"></i>
-			Set hold
-		</li>
 		{% if ticket_perms.modify_merge %}
 			<li class="merge-menu-trigger noedit-hide">
 				<i class="icon-columns"></i>
@@ -463,6 +463,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 <ul style="display:none" id="{{baseId}}_actions_menu">
 	<li data-action="change-user">Change User</li>
+	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">Put ticket on hold</li>
+	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">Remove ticket from hold</li>
 	{% if ticket_perms.modify_merge %}<li data-action="split">Split Messages to New Ticket</li>{% endif %}
 	<li data-action="print">{{ phrase('agent.general.print') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>

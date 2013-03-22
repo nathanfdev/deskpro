@@ -24,15 +24,17 @@ DeskPRO.Agent.Ticket.Property.Hold = new Class({
 			value = parseInt(value);
 		}
 
-		$('.set-hold', this.ticketPage.wrapper).hide();
+		this.getFormEl().val(value);
 
 		if (value) {
-			$('.set-hold.unhold', this.ticketPage.wrapper).show();
+			this.ticketPage.getEl('hold_message').show();
+			this.ticketPage.getEl('menu_set_hold').hide();
+			this.ticketPage.getEl('menu_unset_hold').show();
 		} else {
-			$('.set-hold.hold', this.ticketPage.wrapper).show();
+			this.ticketPage.getEl('hold_message').hide();
+			this.ticketPage.getEl('menu_set_hold').show();
+			this.ticketPage.getEl('menu_unset_hold').hide();
 		}
-
-		this.getFormEl().val(value);
 	},
 
 	_formEl: null,

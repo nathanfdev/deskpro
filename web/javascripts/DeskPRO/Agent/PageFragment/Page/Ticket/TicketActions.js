@@ -180,15 +180,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 
 		//------------------------------
-		// Hold/unhold
-		//------------------------------
-
-		wrapper.on('click', '.set-hold', function() {
-
-
-		});
-
-		//------------------------------
 		// Urgency
 		//------------------------------
 

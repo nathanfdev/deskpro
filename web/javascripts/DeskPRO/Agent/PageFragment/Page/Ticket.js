@@ -1127,9 +1127,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					case 'print':
 						window.print();
 						break;
+
+					case 'set-hold':
+						self.setHold(true);
+						break;
+
+					case 'unset-hold':
+						self.setHold(false);
+						break;
 				}
 			}
 		});
+
+		this.getEl('unhold_btn').on('click', function(ev) {
+			ev.preventDefault();
+			self.setHold(false);
+		});
+	},
+
+	setHold: function(val) {
+		var prop = this.changeManager.getPropertyManager('is_hold');
+		this.changeManager.setInstantChange(prop, val ? 1 : 0);
 	},
 
 	_initDeleteOverlay: function() {
