@@ -816,7 +816,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			});
 		});
 
-		this.page.setTicketReplyBox(this);
+		if (this.page) {
+			this.page.setTicketReplyBox(this);
+		}
 	},
 
 	setReplyAsOptionName: function(name) {
