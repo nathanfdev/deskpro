@@ -125,8 +125,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
 		$path = $this->resolvePath($blob->getPath());
 
 		$this->s3->deleteObject(array(
-			$this->bucket,
-			$path
+			'Bucket' => $this->bucket,
+			'Key' => $path
 		));
 
 		return true;
