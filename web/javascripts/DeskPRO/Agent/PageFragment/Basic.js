@@ -406,6 +406,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}
 
 		DeskPRO_Window.notifications.removeRowById(id);
+		DeskPRO_Window.notifications.removeRowByClass(id);
 	},
 
 	destroy: function() {

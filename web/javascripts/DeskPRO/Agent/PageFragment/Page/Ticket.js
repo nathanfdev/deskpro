@@ -20,6 +20,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.ticketReplyBox = null;
 	},
 
+	getAlertId: function() {
+		return 'ticket-row-' + this.meta.ticket_id;
+	},
+
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;

@@ -154,6 +154,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 	},
 
+	removeRowByClass: function(id) {
+		var row = $('#dp_notify_list').find('li.' + id);
+		if (row[0]) {
+			this.removeRow(row);
+		}
+	},
+
 	modCount: function(type, op, count) {
 		var el   = $('#dp_notif_bed .notif-' + type);
 		var el2  = $('#notificationDropdown .notif-' + type);
