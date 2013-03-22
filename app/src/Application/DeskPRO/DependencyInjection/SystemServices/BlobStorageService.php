@@ -89,6 +89,13 @@ class BlobStorageService
 
 				$bs->addAdapter('fs', $adapter);
 			}
+		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
+			$adapter = new FilesystemStorage(array(
+				'base_path' => $container->getBlobDir(),
+			));
+			$adapter->setLogger($logger);
+
+			$bs->addAdapter('fs', $adapter);
 		}
 
 		// Always fallback on DB
