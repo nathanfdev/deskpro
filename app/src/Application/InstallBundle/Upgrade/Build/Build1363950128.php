@@ -47,7 +47,7 @@ class Build1363950128 extends AbstractBuild
 
 		$this->out("Standardise Windows paths in blobs");
 		if (Env::isWindows()) {
-			$this->execMutateSql("UPDATE blobs SET save_path = REPLACE(save_path, '\\', '/')");
+			$this->execMutateSql("UPDATE blobs SET save_path = REPLACE(save_path, '\\\\', '/')");
 		}
 	}
 }
