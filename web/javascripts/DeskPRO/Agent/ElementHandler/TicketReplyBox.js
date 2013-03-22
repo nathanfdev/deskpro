@@ -488,27 +488,32 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 							dataType: 'text',
 							success: function(data) {
 								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-								data = $(data);
+								data = $('<div>' + data + '</div>');
 
 								// trailing newlines
-								var coll;
-								if (data.length == 1) {
-									coll = data;
-								} else {
-									coll = data.find('> p');
-								}
-								coll.each(function() {
-									var l = $(this).find('> *').last();
-									if (l.is('br')) {
-										l.remove();
-									}
-								});
+								var coll = data.find('> br');
+								coll.last().remove();
 
-								data.append('<span class="_cursor"></span>');
-								var cursor = data.find('._cursor');
+								var cursor = $('<span class="_cursor"></span>');
+								var cursorPos = data.find('> p');
+								if (!cursorPos[0]) {
+									cursorPos = data;
+								}
 
 								el.after(data);
+								cursorPos.append(cursor);
 								el.remove();
+
+								var next = data.next();
+								if (next.is('br')) {
+									next.remove();
+								}
+								if (cursor.next().is('br')) {
+									cursor.next().remove();
+								}
+								if (cursor.prev().is('br')) {
+									cursor.prev().remove();
+								}
 								api.setSelection(cursor[0], 0, cursor[0], 0);
 							}
 						});
