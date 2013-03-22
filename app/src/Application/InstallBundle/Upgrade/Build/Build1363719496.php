@@ -29,89 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage FileStorage
+ * @subpackage
  */
 
-namespace Application\DeskPRO\FileStorage;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
+use Orb\Util\Env;
 
-use Orb\Util\Util;
-
-/**
- * This handler stores metadata in the database but actual blobs in the filesystem.
- */
-class Filesystem extends \Orb\FileStorage\AbstractStorage
+class Build1363719496 extends AbstractBuild
 {
-	/**
-	 * Database connection to use
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
-
-	/**
-	 * @var string
-	 */
-	protected $base_path;
-
-	/**
-	 * @var bool
-	 */
-	protected $is_pre_s3 = false;
-
-	public function __construct($base_path, \Application\DeskPRO\DBAL\Connection $db)
+	public function run()
 	{
-		if (!$db) {
-			$db = App::getDb();
+		$this->out("Changes to blobs");
+		$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_pref VARCHAR(50) DEFAULT NULL, ADD file_url VARCHAR(255) DEFAULT NULL");
+		$this->execMutateSql("CREATE INDEX storage_loc_idx ON blobs (storage_loc, storage_loc_pref)");
+		$this->execMutateSql("UPDATE blobs SET storage_loc = 'db' WHERE storage_loc IS NULL OR storage_loc = ''");
+
+		$this->out("Standardise Windows paths in blobs");
+		if (Env::isWindows()) {
+			$this->execMutateSql("UPDATE blobs SET save_path = REPLACE(save_path, '\\', '/')");
 		}
-
-		$this->db = $db;
-		$this->base_path = $base_path;
-	}
-
-
-	/**
-	 * Mark the file as pre-S3 storage. That is, a file is saved locally before offloading on to S3.
-	 */
-	public function enableIsPreS3()
-	{
-		$this->is_pre_s3 = true;
-	}
-
-
-	/**
-	 * Gets a file descriptor object for a certain path. Note that this
-	 * path might not exist.
-	 *
-	 * @return \Orb\FileStorage\FileDescriptor\Filesystem
-	 */
-	public function getFileDescriptor($blob_id)
-	{
-		$desc = new FileDescriptor\Filesystem($blob_id, $this->base_path, $this->db);
-
-		if ($this->is_pre_s3) {
-			$desc->enableIsPreS3();
-		}
-
-		return $desc;
-	}
-
-
-	/**
-	 * Get a file descriptor object with a new, randomly generated path. This is
-	 * useful for storing things like attachments, where the filename doesn't matter
-	 * because the real name is stored somewhere else.
-	 *
-	 * @return \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
-	 */
-	public function createRandomPath()
-	{
-		$desc = $this->getFileDescriptor(null);
-
-		if ($this->is_pre_s3) {
-			$desc->enableIsPreS3();
-		}
-
-		return $desc;
 	}
 }

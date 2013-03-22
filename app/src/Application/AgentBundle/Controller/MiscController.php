@@ -371,8 +371,8 @@ JS;
 		$response->headers->set('Content-Length', $blob['filesize']);
 		$response->headers->set('Content-Disposition', 'inline; filename=' . $blob['filename']);
 
-		$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
-		$response->setContent($desc->get());
+		$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+		$response->setContent($file);
 
 		return $response;
 	}

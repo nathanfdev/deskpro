@@ -61,11 +61,13 @@ class CleanupDaily extends AbstractJob
 
 			$num = 0;
 			foreach ($email_sources as $source) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($source['blob_id']);
 
-				if ($desc) {
-					$desc->delete();
-				}
+				try {
+					$blob = App::getOrm()->find('DeskPRO:Blob', $source['blob_id']);
+					if ($blob) {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					}
+				} catch (\Exception $e) {}
 
 				$source_ids[] = $source['id'];
 				$blob_ids[] = $source['blob_id'];
@@ -89,11 +91,12 @@ class CleanupDaily extends AbstractJob
 
 			$num = 0;
 			foreach ($email_sources as $source) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($source['blob_id']);
-
-				if ($desc) {
-					$desc->delete();
-				}
+				try {
+					$blob = App::getOrm()->find('DeskPRO:Blob', $source['blob_id']);
+					if ($blob) {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					}
+				} catch (\Exception $e) {}
 
 				$source_ids[] = $source['id'];
 				$blob_ids[] = $source['blob_id'];
@@ -118,11 +121,12 @@ class CleanupDaily extends AbstractJob
 
 			$num = 0;
 			foreach ($email_sources as $source) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($source['blob_id']);
-
-				if ($desc) {
-					$desc->delete();
-				}
+				try {
+					$blob = App::getOrm()->find('DeskPRO:Blob', $source['blob_id']);
+					if ($blob) {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					}
+				} catch (\Exception $e) {}
 
 				$source_ids[] = $source['id'];
 				$blob_ids[] = $source['blob_id'];

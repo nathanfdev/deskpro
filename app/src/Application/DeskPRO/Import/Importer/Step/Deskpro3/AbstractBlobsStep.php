@@ -136,12 +136,13 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			@unlink($tmpfname);
 		}
 
-		$desc = $this->getContainer()->getSystemService('filestorage')->createRandomPath();
-		$desc->write($file, array(
-			'content_type' => $filetype,
-			'filename' => $record['filename'],
-		));
-		$new_blob_id = $desc->getPath();
+		$blob = $this->getContainer()->getBlobStorage()->createBlobRecordFromString(
+			$file,
+			$record['filename'],
+			$filetype
+		);
+		$new_blob_id = $blob->getId();
+
 		$this->getDb()->update('blobs', array(
 			'filename' => $record['filename'],
 			'filesize' => $record['filesize'],

@@ -314,15 +314,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 			$attach = null;
 			if ($this->ticket->new_upload) {
-				$desc = App::getApi('filestorage')->createRandomPath();
-
-				$desc->write(file_get_contents($this->ticket->new_upload->getRealPath()), array(
-					'content_type' => $this->ticket->new_upload->getClientMimeType(),
-					'filename' => $this->ticket->new_upload->getClientOriginalName()
-				));
-
-				$blob_id = $desc->getPath();
-				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+				$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+					$this->ticket->new_upload->getRealPath(),
+					$this->ticket->new_upload->getClientOriginalName(),
+					$this->ticket->new_upload->getClientMimeType()
+				);
+				$blob_id = $blob->getId();
 
 				$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 				$attach['blob'] = $blob;

@@ -35,6 +35,8 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\Domain\DomainObject;
+
 if (!defined('DP_ROOT')) exit('No access');
 
 require_once DP_ROOT.'/src/Orb/Data/ContentTypes.php';
@@ -132,7 +134,7 @@ class FilestorageLoader extends LoaderAbstract
 			// A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
 			// That is: /(batch)(authcode)(id)(namehash)/name.zip
 			//0XNSNTQHTNR43DD567
-			} elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})/(.*?)$#', $pathinfo, $m)) {
+			} elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})(?:/|\-)(.*?)$#', $pathinfo, $m)) {
 				$this->addLogMessage("handleFilesystemBlobRequest: %s", implode(', ', $m));
 				$this->handleFilesystemBlobRequest(
 					$m[1],
@@ -145,7 +147,7 @@ class FilestorageLoader extends LoaderAbstract
 			// A database-stored bloblike /123AHSDHJGSD0/filename.zip
 			// That is (id)(authcode0)
 			// The trailing 0 denotes it as a database storage authcode
-			} elseif (preg_match('#^/([0-9]+)([A-Z]+0)/(.*?)$#', $pathinfo, $m)) {
+			} elseif (preg_match('#^/([0-9]+)([A-Z]+0)(?:/|\-)(.*?)$#', $pathinfo, $m)) {
 				$this->addLogMessage("handleDbBlobRequest: %s", implode(', ', $m));
 				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
 			} elseif (preg_match('#^/gradient$#', $pathinfo)) {
@@ -369,12 +371,12 @@ class FilestorageLoader extends LoaderAbstract
 				$css = str_replace('/*@/no_rtl*/', '', $css);
 			}
 
-			$desc = $container->getFilestorage()->createRandomPath();
-			$desc->write($css, array(
-				'content_type' => 'text/css',
-				'filename' => ($is_rtl ? 'main-rtl.css' : 'main.css')
-			));
-			$blob_id = $desc->getPath();
+			$blob = $container->getBlobStorage()->createBlobRecordFromString(
+				$css,
+				$is_rtl ? 'main-rtl.css' : 'main.css',
+				'text/css'
+			);
+			$blob_id = $blob->getId();
 
 			$container->getDb()->update('styles', array($blob_column => $blob_id), array('id' => 1));
 
@@ -590,16 +592,14 @@ class FilestorageLoader extends LoaderAbstract
 		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
 		if (!$blob) {
 			$container = $this->bootFullSystem();
-			$desc = $container->getSystemService('filestorage')->createRandomPath();
-			$desc->write(file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg'), array(
-				'content_type' => 'image/jpeg',
-				'filename' => $name . '.jpeg',
-				'sys_name' => $name,
-			));
+			$blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
+				DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
+				$name . '.jpeg',
+				'image/jpeg',
+				array('sys_name' => $name)
+			);
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
-			$sth->execute(array('id' => $desc->getPath()));
-			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+			$blob = $blob_entity->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
 		}
 
 		$size = null;
@@ -627,16 +627,14 @@ class FilestorageLoader extends LoaderAbstract
 		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
 		if (!$blob) {
 			$container = $this->bootFullSystem();
-			$desc = $container->getSystemService('filestorage')->createRandomPath();
-			$desc->write(file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg'), array(
-				'content_type' => 'image/jpeg',
-				'filename' => $name . '.jpeg',
-				'sys_name' => $name,
-			));
+			$blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
+				DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
+				$name . '.jpeg',
+				'image/jpeg',
+				array('sys_name' => $name)
+			);
 
-			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
-			$sth->execute(array('id' => $desc->getPath()));
-			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+			$blob = $blob_entity->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
 		}
 
 		$size = null;
@@ -848,6 +846,12 @@ class FilestorageLoader extends LoaderAbstract
 			}
 		}
 
+		if (!empty($blob['file_url']) && $blob['file_url']) {
+			header("HTTP/1.1 301 Moved Permanently");
+			header("Location: {$blob['file_url']}");
+			exit;
+		}
+
 		if ($blob['storage_loc'] == 'fs') {
 			$this->sendFromFilesystem($blob);
 		} else {
@@ -959,11 +963,10 @@ class FilestorageLoader extends LoaderAbstract
 	protected function createSizedBlob($blob_info, $size, $is_fit, $die_fail = true)
 	{
 		$container = $this->bootFullSystem();
+		$bs = $container->getBlobStorage();
 
 		$blob = $container->getEm()->find('DeskPRO:Blob', $blob_info['id']);
-
-		$desc = $container->getSystemService('filestorage')->getFileDescriptor($blob['id']);
-		$file = $desc->get();
+		$file = $bs->copyBlobRecordToString($blob);
 
 		if (!$file) {
 			$this->addLogMessage("Could not load blob file descriptor");
@@ -1019,17 +1022,14 @@ class FilestorageLoader extends LoaderAbstract
 
 		$file = $image->get($blob->getImageType());
 
-		$desc = $container->getSystemService('filestorage')->createRandomPath();
-		$desc->write($file, array(
-			'content_type' => $blob->content_type,
-			'filename' => $blob->filename,
-			'sys_name' => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
-			'original_blob_id' => $blob->id,
+		$new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, array(
+			'sys_name'       => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
+			'original_blobd' => $blob
 		));
 
-		$this->addLogMessage("Cached resize as blob %d", $desc->getPath());
+		$this->addLogMessage("Cached resize as blob %d", $new_blob->getId());
 
-		$new_blob_info = $container->getDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($desc->getPath()));
+		$new_blob_info = $new_blob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
 		$new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
 		return $new_blob_info;

@@ -52,20 +52,23 @@ class SitemapFile extends AbstractJob
 		$old_sitemap_file = App::getSetting('core.sitemap_blob_id');
 
 		if ($old_sitemap_file) {
-			$old_desc = App::getContainer()->getFilestorage()->getFileDescriptor($old_sitemap_file);
-			if ($old_desc) {
-				$old_desc->delete();
-			}
+			try {
+				$blob = App::getOrm()->find('DeskPRO:Blob', $old_sitemap_file);
+				if ($blob) {
+					App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+				}
+			} catch (\Exception $e) {}
 		}
 
 		$gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());
 		$file = $gen->getXml();
 
-		$new_desc = App::getContainer()->getFilestorage()->createRandomPath();
-		$new_desc->write($file, array(
-			'filename' => 'sitemap.xml',
-			'content_type' => 'text/xml',
-			'sys_name' => 'sitemap_xml',
-		));
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+			$file,
+			'sitemap.xml',
+			'text/xml',
+			array('sys_name' => 'sitemap_xml')
+		);
+		$blob_id = $blob->getId();
 	}
 }

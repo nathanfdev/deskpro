@@ -142,13 +142,11 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
 			$source->object_type    = ($gateway->gateway_type == 'tickets' ? 'ticket' : $gateway->gateway_type);
 
-			$desc = App::getSystemService('filestorage')->createRandomPath();
-			$desc->write($raw_source, array(
-				'filename' => 'email.dat',
-			));
-
-			$blob_id = $desc->getPath();
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+				$raw_source,
+				'email.eml',
+				'message/rfc822'
+			);
 
 			$source->blob = $blob;
 

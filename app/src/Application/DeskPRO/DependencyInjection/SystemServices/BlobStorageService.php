@@ -52,7 +52,7 @@ class BlobStorageService
 
 		$logger = new Logger();
 
-		if (dp_get_config('enable_blobstorage_log')) {
+		if (!dp_get_config('enable_blobstorage_log')) {
 			$logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
 		}
 
@@ -74,6 +74,7 @@ class BlobStorageService
 			$adapter = new AmazonS3Storage(array(
 				's3_client' => $client,
 				'bucket'    => $container->getSetting('core.filestorage_s3_bucket'),
+				'base_path' => $container->getSetting('core.filestorage_s3_basepath')
 			));
 			$adapter->setLogger($logger);
 

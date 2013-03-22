@@ -48,6 +48,11 @@ class Blob
 	/**
 	 * @var string
 	 */
+	protected $filename_safe = null;
+
+	/**
+	 * @var string
+	 */
 	protected $content_type;
 
 	/**
@@ -55,12 +60,20 @@ class Blob
 	 */
 	protected $meta;
 
-	public function __construct($path, $filename, $content_type, array $meta = array())
+	public function __construct($filename, $content_type, array $meta = array())
 	{
-		$this->path = $path;
 		$this->filename = $filename;
 		$this->content_type = $content_type;
 		$this->meta = $meta;
+	}
+
+
+	/**
+	 * @param $path
+	 */
+	public function setPath($path)
+	{
+		$this->path = $path;
 	}
 
 
@@ -79,6 +92,29 @@ class Blob
 	public function getContentType()
 	{
 		return $this->content_type;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getFilename()
+	{
+		return $this->filename;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getFilenameSafe()
+	{
+		if ($this->filename_safe !== null) {
+			return $this->filename_safe;
+		}
+
+		$this->filename_safe = preg_replace('#[^a-zA-Z0-9\.\-_]#', '-', $this->filename);
+		return $this->filename_safe;
 	}
 
 

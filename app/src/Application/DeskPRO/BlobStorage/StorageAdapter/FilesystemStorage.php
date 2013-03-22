@@ -145,7 +145,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	public function writeBlobFromStream(Blob $blob, $fp_source)
 	{
 		$fp = $this->getBlobWriteStream($blob);
-		$ret = stream_copy_to_stream($fp, $fp_source);
+		$ret = $this->_copyStream($fp_source, $fp);
 		fclose($fp);
 
 		$this->logger->logInfo("[FilesystemStorage] (writeBlobFromStream) Wrote " . Numbers::filesizeDisplay($ret) . " from stream to " . $this->resolvePath($blob->getPath()));
@@ -213,7 +213,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	public function readBlobToStream(Blob $blob, $fp_target)
 	{
 		$fp = $this->getBlobReadStream($blob);
-		$ret = stream_copy_to_stream($fp, $fp_target);
+		$ret = $this->_copyStream($fp, $fp_target);
 		fclose($fp);
 
 		$this->logger->logInfo("[FilesystemStorage] (readBlobToStream) Read " . Numbers::filesizeDisplay($ret) . " to stream from " . $this->resolvePath($blob->getPath()));
@@ -268,5 +268,20 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	{
 		$path = trim($path, '/\\');
 		return $this->base_path . DIRECTORY_SEPARATOR . $path;
+	}
+
+	/**
+	 * @param $fp_from
+	 * @param $fp_to
+	 * @return int
+	 */
+	protected function _copyStream($fp_from, $fp_to)
+	{
+		$size = 0;
+        while (!feof($fp_from)) {
+			$size += fwrite($fp_to, fread($fp_from, 8192));
+		}
+
+        return $size;
 	}
 }

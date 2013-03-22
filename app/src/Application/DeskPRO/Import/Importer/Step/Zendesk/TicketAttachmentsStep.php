@@ -109,12 +109,12 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 			}
 		}
 
-		$desc = $this->getContainer()->getSystemService('filestorage')->createRandomPath();
-		$desc->write(file_get_contents($tmpfile), array(
-			'content_type' => $blob_info['content_type'],
-			'filename'     => $blob_info['filename'],
-		));
-		$new_blob_id = $desc->getPath();
+		$blob = $this->getContainer()->getBlobStorage()->createBlobRecordFromFile(
+			$tmpfile,
+			$blob_info['filename'],
+			$blob_info['content_type']
+		);
+		$new_blob_id = $blob->getId();
 
 		$this->db->update('blobs', array(
 			'filename' => $blob_info['filename'],

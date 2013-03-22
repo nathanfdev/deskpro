@@ -54,15 +54,12 @@ class MediaBrowserController extends AbstractController
 		foreach ($files as $file) {
 			/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
 
-			$desc = App::getApi('filestorage')->createRandomPath();
-
-			$desc->write(file_get_contents($file->getRealPath()), array(
-				'content_type' => $file->getClientMimeType(),
-				'filename' => $file->getClientOriginalName()
-			));
-
-			$blob_id = $desc->getPath();
-			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
+				$file->getRealPath(),
+				$file->getClientOriginalName(),
+				$file->getClientMimeType()
+			);
+			$blob_id = $blob->getId();
 
 			$data[] = array(
 				'blob_id' => $blob_id,
@@ -90,21 +87,18 @@ class MediaBrowserController extends AbstractController
 		/** @var $blob \Application\DeskPRO\Entity\Blob */
 		$blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-		$desc_orig = App::getApi('filestorage')->getFileDescriptor($blob['id']);
-		$file = $desc_orig->get();
+		$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
 		$im = new \Imagick();
 		$im->readImageBlob($file, $blob['filename']);
 		$im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
 
-		$desc = App::getApi('filestorage')->createRandomPath();
-		$desc->write($im->getImageBlob(), array(
-			'content_type' => $blob['content_type'],
-			'filename' => $blob['filename']
-		));
-
-		$new_blob_id = $desc->getPath();
-		$new_blob = $this->em->getRepository('DeskPRO:Blob')->find($new_blob_id);
+		$new_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
+			$im->getImageBlob(),
+			$blob['filename'],
+			$blob['content_type']
+		);
+		$new_blob_id = $blob->getId();
 		$new_blob['original_blob'] = $blob;
 
 		$this->em->persist($new_blob);

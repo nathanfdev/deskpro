@@ -163,7 +163,7 @@ class Message extends \Orb\Mail\Message
 			}
 
 			$this->attach(\Swift_Attachment::newInstance(
-				App::getSystemService('filestorage')->getFileDescriptor($blob->getId())->get(),
+				App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
 				$blob->filename,
 				$blob->content_type
 			));
@@ -196,7 +196,7 @@ class Message extends \Orb\Mail\Message
 				if (!isset($embed_map[$src])) {
 					// in case the src is referenced twice
 					$embed_map[$src] = $self->embed(\Swift_Image::newInstance(
-						App::getSystemService('filestorage')->getFileDescriptor($blob->getId())->get(),
+						App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
 						$blob->filename,
 						$blob->content_type
 					));

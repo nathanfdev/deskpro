@@ -424,15 +424,6 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \Application\DeskPRO\FileStorage\Filesystem
-	 */
-	public function getFilestorage()
-	{
-		return $this->getSystemService('filestorage');
-	}
-
-
-	/**
 	 * @return \Application\DeskPRO\BlobStorage\DeskproBlobStorage
 	 */
 	public function getBlobStorage()

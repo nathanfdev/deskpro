@@ -726,12 +726,8 @@ class App
 			throw new \OutOfBoundsException("API handler does not exist");
 		}
 
-		if ($name == 'filestorage') {
-			return self::getSystemService('filestorage');
-		} else {
-			$classname = self::$_api_handler_names[$name];
-			self::$_api_handlers[$name] = new $classname();
-		}
+		$classname = self::$_api_handler_names[$name];
+		self::$_api_handlers[$name] = new $classname();
 
 		return self::$_api_handlers[$name];
 	}

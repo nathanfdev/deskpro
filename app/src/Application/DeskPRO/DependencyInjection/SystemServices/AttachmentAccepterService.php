@@ -47,7 +47,7 @@ class AttachmentAccepterService
 	{
 		$accepter = new AcceptAttachment(
 			$container->getEm(),
-			App::getApi('filestorage')
+			$container->getBlobStorage()
 		);
 
 		$effective_max_size = EnvUtil::getEffectiveMaxUploadSize();

@@ -41,70 +41,6 @@ use Orb\Util\Numbers;
 
 class BlobController extends AbstractController
 {
-	protected function getDownloadResponse($blob, array $options = array())
-	{
-		$response = $this->container->get('response');
-
-		if (!empty($options['size']) AND $blob->isImage()) {
-
-			$cached_blob = null;
-			$name = 'blob-' . $blob['id'] . '-' . $options['size'];
-
-			if (isset($options['cache']) && $options['cache']) {
-
-				//cache_date_cleanup
-				$cached_blob = $this->em->getRepository('DeskPRO:Blob')->getSystemBlob($name);
-			}
-
-			if ($cached_blob) {
-				$desc = App::getApi('filestorage')->getFileDescriptor($cached_blob['id']);
-				$file = $desc->get();
-				unset($desc);
-			} else {
-				$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
-				$file = $desc->get();
-				unset($desc);
-
-				$image = $this->container->getImagine()->load($file);
-				$image->resize(new \Imagine\Image\Box($options['size'], $options['size']));
-				$file = $image->get($blob->getImageType());
-
-				$desc = App::getApi('filestorage')->createRandomPath();
-				$desc->write($file, array(
-					'content_type' => $blob->content_type,
-					'filename' => $blob->filename,
-					'sys_name' => $name,
-					'date_cleanup' => isset($options['cache_date_cleanup']) ? $options['cache_date_cleanup'] : null,
-					'original_blob_id' => $blob->id,
-				));
-			}
-		} else {
-			$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
-			$file = $desc->get();
-			unset($desc);
-		}
-
-		$response->headers->set('Content-Type', $blob['content_type'] . '; filename=' . $blob['filename']);
-		$response->headers->set('Content-Length', strlen($file));
-
-		if ($blob->isImage()) {
-			$response->headers->set('Content-Disposition', 'inline; filename=' . $blob['filename']);
-		} else {
-			$response->headers->set('Content-Disposition', 'attachment; filename=' . $blob['filename']);
-		}
-
-		// Blobs are always the same. If there were such a thing as "edit", its delete+new blob
-		// So its safe to set the hard cache options
-		$response->setLastModified($blob['date_created']);
-		$response->setExpires(date_create("+2 years"));
-		$response->setMaxAge(31556926);
-		$response->setSharedMaxAge(31556926);
-		$response->setPublic();
-		$response->setContent($file);
-
-		return $response;
-	}
-
 	/**
 	 * Favicon
 	 */
@@ -117,7 +53,9 @@ class BlobController extends AbstractController
 		}
 
 		if ($blob) {
-			$response = $this->getDownloadResponse($blob);
+			$response = $this->container->get('response');
+			$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+			$response->setContent($file);
 		} else {
 			$file = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/favicon.ico');
 

@@ -144,8 +144,12 @@ class CleanupHourly extends AbstractJob
 
 		$num = 0;
 		foreach ($blob_ids as $blob_id) {
-			$desc = App::getApi('filestorage')->getFileDescriptor($blob_id);
-			$desc->delete();
+			try {
+				$blob = App::getOrm()->find('DeskPRO:Blob', $blob_id);
+				if ($blob) {
+					App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+				}
+			} catch (\Exception $e) {}
 			$num++;
 		}
 
