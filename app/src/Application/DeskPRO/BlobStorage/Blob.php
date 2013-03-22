@@ -33,6 +33,8 @@
 
 namespace Application\DeskPRO\BlobStorage;
 
+use Orb\Data\ContentTypes;
+
 class Blob
 {
 	/**
@@ -65,6 +67,15 @@ class Blob
 		$this->filename = $filename;
 		$this->content_type = $content_type;
 		$this->meta = $meta;
+
+		// Automatically detect disposition if none provided
+		if (!isset($this->meta['content_disposition'])) {
+			if (ContentTypes::isInlineContentType($content_type, true)) {
+				$this->meta['content_disposition'] = 'inline';
+			} else {
+				$this->meta['content_disposition'] = 'attachment';
+			}
+		}
 	}
 
 

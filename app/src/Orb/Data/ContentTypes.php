@@ -66,6 +66,7 @@ class ContentTypes
 		'crt'      => 'application/x-x509-ca-cert',
 		'csh'      => 'application/x-csh',
 		'css'      => 'text/css',
+		'csv'      => 'text/csv',
 		'dcr'      => 'application/x-director',
 		'der'      => 'application/x-x509-ca-cert',
 		'dir'      => 'application/x-director',
