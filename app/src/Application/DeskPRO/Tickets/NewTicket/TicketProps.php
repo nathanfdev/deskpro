@@ -67,7 +67,7 @@ class TicketProps
 		$this->department_id   = App::getSetting('core.default_ticket_dep') ?: 0;
 		$this->category_id     = App::getSetting('core.default_ticket_cat') ?: 0;
 		$this->priority_id     = App::getSetting('core.default_ticket_pri') ?: 0;
-		$this->product_id      = App::getSetting('core.default_product_id') ?: 0;
+		$this->product_id      = App::getSetting('core.default_prod_id') ?: 0;
 		$this->workflow_id     = App::getSetting('core.default_ticket_work') ?: 0;
 	}
 }
