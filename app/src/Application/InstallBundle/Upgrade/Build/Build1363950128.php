@@ -36,7 +36,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Orb\Util\Env;
 
-class Build1363719496 extends AbstractBuild
+class Build1363950128 extends AbstractBuild
 {
 	public function run()
 	{
