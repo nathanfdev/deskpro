@@ -265,7 +265,7 @@
 							{% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' or (ticket.status == 'awaiting_user' and not app.getSetting('core_tickets.reply_status')) %}
 								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting User</span>
 							{% elseif app.getSetting('core_tickets.reply_status') == 'awaiting_agent' or (ticket.status == 'awaiting_agent' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting Agent</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_agent">Send <span class="show-key-shortcut">R</span>eply as Awaiting Agent</span>
 							{% elseif app.getSetting('core_tickets.reply_status') == 'resolved' or (ticket.status == 'resolved' and not app.getSetting('core_tickets.reply_status')) %}
 								<span id="{{ replyBaseId }}_reply_as_type" data-type="resolved">Send <span class="show-key-shortcut">R</span>eply as Resolved</span>
 							{% else %}
