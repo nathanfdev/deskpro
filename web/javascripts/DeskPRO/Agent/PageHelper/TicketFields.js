@@ -198,10 +198,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		// No Changes, dont need to do any expensive dom work
 		if (!change) {
-			var ons = this.display.find('tbody.item-on');
-			ons.removeClass('last');
-			ons.last().addClass('last');
-
 			console.log("[TicketFields] No change");
 			return;
 		}
@@ -209,6 +205,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.currentDisplayModify = fields;
 
 		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
+		var last = this.display.find('tbody.always-bottom');
 
 		Array.each(this.currentDisplayModify, function(f) {
 			if (f.field_type == 'ticket_field') {
@@ -220,11 +217,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
-		var ons = this.display.find('tbody.item-on');
-		if (ons[0]) {
-			ons.removeClass('last');
-			ons.last().addClass('last');
-		}
+		last.detach().appendTo(this.display);
 	},
 
 	updateDisplay_view: function() {
@@ -256,17 +249,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		// No Changes, dont need to do any expensive dom work
 		if (!change) {
 			console.log("[TicketFields] No change");
-
-			var ons = this.display.find('tbody.item-on').not('.no-value');
-			ons.removeClass('last');
-			ons.last().addClass('last');
-
 			return;
 		}
 
 		this.currentDisplay = fields;
 
 		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
+		var last = this.display.find('tbody.always-bottom');
 
 		Array.each(this.currentDisplay, function(f) {
 			if (f.field_type == 'ticket_field') {
@@ -278,11 +267,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
-		var ons = this.display.find('tbody.item-on').not('.no-value');
-		if (ons[0]) {
-			ons.removeClass('last');
-			ons.last().addClass('last');
-		}
+		last.detach().appendTo(this.display);
 	},
 
 	saveChanges: function() {
