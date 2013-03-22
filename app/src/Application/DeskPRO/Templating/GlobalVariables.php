@@ -73,6 +73,17 @@ class GlobalVariables extends BaseGlobalVariables
 
 		if ($group == 'user_style') {
 			$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+
+			// If static path isnt an absolute URL and the storage adapter is
+			// a remote adapter, then we need to rewrite the static path to be
+			// absolute for images in CSS to work properly
+			if (!preg_match('#^https?://#', $group_vars['static_path']) && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
+				$url = App::getSetting('core.deskpro_url');
+				$url = str_replace('index.php', '', $url);
+				$url = trim($url, '/');
+
+				$group_vars['static_path'] = $url . '/' . $group_vars['static_path'];
+			}
 		}
 
 		return $group_vars;
