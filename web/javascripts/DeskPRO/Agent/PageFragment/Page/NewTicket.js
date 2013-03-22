@@ -516,8 +516,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var macroUrl = item.data('get-macro-url');
 
+		var textarea = this.textarea;
 		var api = this.textarea.data('redactor');
-		api.$editor.find('.editor-text-insertion-point').remove();
 
 		if (!macroUrl) {
 			this.getEl('actions_row').hide();
@@ -549,9 +549,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					});
 
 					// There's a snippet reply point
-					var sig = api.$editor.find('.dp-signature-start');
-					if (!sig[0]) {
-						sig = null;
+					var sig = null;
+					if (api) {
+						sig = api.$editor.find('.dp-signature-start');
+						if (!sig[0]) {
+							sig = null;
+						}
 					}
 
 					actionsRowList.find('.with-reply, .with-snippet').each(function() {
@@ -559,31 +562,37 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						var html = $(this).find('.reply-text').get(0).innerHTML;
 
 						if (pos) {
-							if (pos == 'overwrite') {
-								api.$editor.html(html);
-								if (sig) {
-									api.$editor.append(sig);
-								}
-							} else if (pos == 'prepend') {
-								api.$editor.prepend(html);
-							} else {
-								if (sig) {
-									var usesig = sig;
-									var prev = sig.prev();
-									if (prev[0] && prev.is('p') && $.trim(prev.text()) === '') {
-										usesig = prev;
-										var prev2 = prev.prev();
-										if (prev2[0] && prev2.is('p') && $.trim(prev2.text()) === '') {
-											prev2.remove()
-										}
+							if (api) {
+								if (pos == 'overwrite') {
+									api.$editor.html(html);
+									if (sig) {
+										api.$editor.append(sig);
 									}
-									usesig.before(html);
+								} else if (pos == 'prepend') {
+									api.$editor.prepend(html);
 								} else {
-									api.$editor.append(html);
+									if (sig) {
+										var usesig = sig;
+										var prev = sig.prev();
+										if (prev[0] && prev.is('p') && $.trim(prev.text()) === '') {
+											usesig = prev;
+											var prev2 = prev.prev();
+											if (prev2[0] && prev2.is('p') && $.trim(prev2.text()) === '') {
+												prev2.remove()
+											}
+										}
+										usesig.before(html);
+									} else {
+										api.$editor.append(html);
+									}
 								}
-							}
 
-							api.syncCode();
+								api.syncCode();
+							} else {
+								var text = $('<div>' + html + '</div>');
+								text = text.text().trim();
+								textarea.val($.trim(textarea.val() + "\n\n" + text));
+							}
 						}
 					});
 
