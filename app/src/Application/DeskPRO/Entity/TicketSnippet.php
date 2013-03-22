@@ -305,6 +305,14 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 		return $this->snippet_html;
 	}
 
+	public function setShortcutCode($sc)
+	{
+		if (!$sc) {
+			$this->setModelField('shortcut_code', '');
+		} else {
+			$this->setModelField('shortcut_code', $sc);
+		}
+	}
 
 
 	############################################################################
