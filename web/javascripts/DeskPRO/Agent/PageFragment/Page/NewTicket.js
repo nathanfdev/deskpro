@@ -695,7 +695,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						});
 					}
 
-					if (data.can_view) {
+					if (data.can_view && this.getEl('opt_open_tab').is(':checked')) {
 						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 					}
 					this.closeSelf();
