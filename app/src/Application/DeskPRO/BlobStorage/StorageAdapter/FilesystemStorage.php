@@ -78,7 +78,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 			return true;
 		}
 
-		$res = unlink($path);
+		$res = @unlink($path);
 
 		if ($res) {
 			$this->logger->logInfo("[FilesystemStorage] (deleteBlob) Deleted path: $path");
@@ -98,8 +98,8 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	public function writeBlobString(Blob $blob, $data)
 	{
 		$fp = $this->getBlobWriteStream($blob);
-		$ret = fwrite($fp, $data);
-		fclose($fp);
+		$ret = @fwrite($fp, $data);
+		@fclose($fp);
 
 		$this->logger->logInfo("[FilesystemStorage] (writeBlobString) Wrote " . Numbers::filesizeDisplay($ret) . " from string to " . $this->resolvePath($blob->getPath()));
 
@@ -114,7 +114,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	 */
 	public function writeBlobFromFile(Blob $blob, $source_path)
 	{
-		$fp_source = fopen($source_path, 'r');
+		$fp_source = @fopen($source_path, 'r');
 
 		if (!$fp_source) {
 			@fclose($fp_source);
@@ -146,7 +146,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	{
 		$fp = $this->getBlobWriteStream($blob);
 		$ret = $this->_copyStream($fp_source, $fp);
-		fclose($fp);
+		@fclose($fp);
 
 		$this->logger->logInfo("[FilesystemStorage] (writeBlobFromStream) Wrote " . Numbers::filesizeDisplay($ret) . " from stream to " . $this->resolvePath($blob->getPath()));
 
@@ -166,10 +166,10 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
 		$str = '';
 		while (!feof($fp)) {
-			$str .= fread($fp, 1000);
+			$str .= @fread($fp, 1000);
 		}
 
-		fclose($fp);
+		@fclose($fp);
 
 		$this->logger->logInfo("[FilesystemStorage] (readBlobString) Read " . Numbers::filesizeDisplay(strlen($str)) . " from " . $this->resolvePath($blob->getPath()));
 
@@ -184,7 +184,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	 */
 	public function readBlobToFile(Blob $blob, $target_path)
 	{
-		$fp_target = fopen($target_path, 'w');
+		$fp_target = @fopen($target_path, 'w');
 
 		if (!$fp_target) {
 			@fclose($fp_target);
@@ -234,7 +234,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 			@mkdir($dir, 0777, true);
 		}
 
-		$fp = fopen($path, 'w');
+		$fp = @fopen($path, 'w');
 
 		if (!$fp) {
 			$this->logger->logError("[FilesystemStorage] (getBlobWriteStream) Failed to open path for writing: $path");
@@ -252,7 +252,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	{
 		$path = $this->resolvePath($blob->getPath());
 
-		$fp = fopen($path, 'r');
+		$fp = @fopen($path, 'r');
 
 		if (!$fp) {
 			$this->logger->logError("[FilesystemStorage] (getBlobReadStream) Failed to open path for reading: $path");
@@ -284,7 +284,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	{
 		$size = 0;
         while (!feof($fp_from)) {
-			$size += fwrite($fp_to, fread($fp_from, 8192));
+			$size += @fwrite($fp_to, fread($fp_from, 8192));
 		}
 
         return $size;
