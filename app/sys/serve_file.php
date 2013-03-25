@@ -1024,7 +1024,7 @@ class FilestorageLoader extends LoaderAbstract
 
 		$new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, array(
 			'sys_name'       => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
-			'original_blobd' => $blob
+			'original_blob'  => $blob
 		));
 
 		$this->addLogMessage("Cached resize as blob %d", $new_blob->getId());
