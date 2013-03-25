@@ -359,8 +359,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getNameHash()
 	{
-		$namehash = strtoupper(substr(sha1($this->filename . $this->id), 0, 3));
-		$namehash .= strtoupper(substr(md5($this->filename . $this->id), 0, 3));
+		$namehash = strtoupper(substr(sha1($this->getFilenameSafe() . $this->id), 0, 3));
+		$namehash .= strtoupper(substr(md5($this->getFilenameSafe() . $this->id), 0, 3));
 
 		return $namehash;
 	}

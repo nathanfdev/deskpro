@@ -664,8 +664,11 @@ class FilestorageLoader extends LoaderAbstract
 
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
 
-		$check_namehash = strtoupper(substr(sha1($filename . $blob_id), 0, 3));
-		$check_namehash .= strtoupper(substr(md5($filename . $blob_id), 0, 3));
+		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename);
+		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+
+		$check_namehash = strtoupper(substr(sha1($filename_safe . $blob_id), 0, 3));
+		$check_namehash .= strtoupper(substr(md5($filename_safe . $blob_id), 0, 3));
 
 		$this->addLogMessage("Expecting file path: %s", $filepath);
 
@@ -689,7 +692,12 @@ class FilestorageLoader extends LoaderAbstract
 			$sth->execute(array('id' => $blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
-			if (!$blob || $blob['filename'] != $filename) {
+			if ($blob['filename']) {
+				$blob['filename_safe'] = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename']);
+				$blob['filename_safe'] = preg_replace('#\-{2,}#', '-', $blob['filename_safe']);
+			}
+
+			if (!$blob || ($blob['filename'] != $filename && $blob['filename_safe'] != $filename && $blob['filename_safe'] != $filename_safe)) {
 				if ($this->error_mode == 'exception') {
 					throw new \Exception("File not found. (2.1)", 400);
 				}
