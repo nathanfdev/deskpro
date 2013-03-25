@@ -238,7 +238,7 @@
 								<label>{{ phrase('user.general.label_captcha') }} *</label>
 							</div>
 							<div class="dp-controls dp-fill">
-								{% include 'UserBundle:Common:recaptcha.html.twig' %}
+								{{ captcha.getHtml()|raw }}
 								{% if error_fields['captcha'] %}
 									<div class="dp-help-inline dp-error-explain">
 										{{ phrase('user.tickets.form_error_captcha_invalid') }}
