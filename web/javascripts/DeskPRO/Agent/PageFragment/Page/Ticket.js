@@ -786,6 +786,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 		if (this.wrapper) {
+			if (!this.propdiv1) {
+				this.propdiv1 = this.getEl('propdiv1');
+				this.propdiv2 = this.getEl('propdiv2');
+				this.propdiv3 = this.getEl('propdiv3');
+			}
 			if (!this.scrollHandlers) {
 				this.scrollHandlers = this.wrapper.find('div.with-scroll-handler');
 			}
@@ -800,6 +805,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
 			}
+
+			var w = this.propdiv1.width() + this.propdiv2.width();
+			var targetW = this.wrapper.width() - 95;
+			var setW = targetW = (targetW - w);
+			if (setW < 250) {
+				setW = 250;
+			}
+			this.propdiv3.width(setW);
 		}
 	},
 
