@@ -80,18 +80,18 @@ $collection->add('report_agent_activity_list', new Route(
 # Agent Feedback
 ################################################################################
 
+$collection->add('report_agent_feedback_summary', new Route(
+    '/agent-feedback/summary/{date}',
+    array('_controller' => 'ReportBundle:AgentFeedback:summary', 'date' => ''),
+    array(),
+    array()
+));
+
 $collection->add('report_agent_feedback_feed', new Route(
 	'/agent-feedback/{page}',
 	array('_controller' => 'ReportBundle:AgentFeedback:feed', 'page' => '0'),
 	array(),
 	array()
-));
-
-$collection->add('report_agent_feedback_summary', new Route(
-    '/agent-feedback/summary/{date}',
-    array('_controller' => 'ReportBundle:AgentFeedback:summary'),
-    array(),
-    array()
 ));
 
 ################################################################################
