@@ -84,7 +84,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<div style="margin-right: 100px;">
 				<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
 					You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
-					{% if app.getSetting('core_tickets.unlock_on_close') %}This lock will automatically be released when you close this ticket.{% endif %}
+					{% if app.getSetting('core_tickets.unlock_on_close') %}<br/>This lock will automatically be released when you close this ticket.{% endif %}
 				</div>
 				{% if ticket.locked_by_agent and not locked_self %}
 					<div id="{{baseId}}_locked_message_other">
@@ -305,7 +305,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endfor %}
 			</ul>
 		</div>
-		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox">
+		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
