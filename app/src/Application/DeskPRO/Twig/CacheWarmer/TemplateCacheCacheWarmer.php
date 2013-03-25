@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Twig\CacheWarmer;
 
+use Symfony\Component\Finder\Finder;
+
 class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\TemplateCacheCacheWarmer
 {
 	public function warmUp($cacheDir)
@@ -58,14 +60,31 @@ class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\Te
 			'ReportBundle:Chart:DeskPRO/detailedDrillDown.html.twig',
 			'ReportBundle:Chart:DeskPRO/simpleDrillDown.html.twig',
 			'ReportBundle:Chart:DeskPRO/simpleVariation.html.twig',
-
-			'Highrise:Admin:config.html.twig',
-			'HipChat:Admin:config.html.twig',
-			'HipChat:Admin:ticket-trigger-actions.html.twig',
-			'Magento:Admin:config.html.twig',
-			'Magento:Admin:usersource-edit-magento.html.twig',
-			'Salesforce:Admin:config.html.twig',
 		);
+
+		// plugin templates
+		$template_files = Finder::create()->in(DP_ROOT.'/plugins')->name('*.twig');
+
+		$extra = array();
+		foreach ($template_files as $file) {
+			$path = $file->getRealPath();
+			$path = str_replace('\\', '/', $path);
+			$path = str_replace(DP_ROOT.'/plugins/DeskproPlugins/', '', $path);
+
+			if (!strpos($path, 'Resources/views')) {
+				continue;
+			}
+
+			$path = str_replace('/Resources/views', '', $path);
+			$path = str_replace('/', ':', $path);
+
+			// Top-level templates, like AddThis::widget.html.twig
+			if (substr_count($path, ':') === 1){
+				$path = str_replace(':', '::', $path);
+			}
+
+			$extra[] = $path;
+		}
 
         foreach ($extra as $template_name) {
             try {
