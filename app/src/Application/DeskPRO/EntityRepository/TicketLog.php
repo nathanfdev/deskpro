@@ -43,12 +43,16 @@ class TicketLog extends AbstractEntityRepository
 {
 	public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
 	{
+		if (!isset($options['order_dir'])) {
+			$options['order_dir'] = 'ASC';
+		}
+
 		if (!empty($options['since_id'])) {
 			$query = $this->_em->createQuery("
 				SELECT log
 				FROM DeskPRO:TicketLog log INDEX BY log.id
 				WHERE log.ticket = ?1 AND log.id > ?2
-				ORDER BY log.date_created ASC
+				ORDER BY log.date_created {$options['order_dir']}
 			")->setParameter(1, $ticket)->setParameter(2, $options['since_id']);
 		} else {
 			$query = $this->_em->createQuery("
