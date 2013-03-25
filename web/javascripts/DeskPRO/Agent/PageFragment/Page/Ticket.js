@@ -1538,7 +1538,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				});
 				wrapper.on('click', '.content header', function(e) {
-					if ($(e.srcElement).is('.message-id-checkbox')) {
+					if ($(e.target).is('.message-id-checkbox')) {
 						return;
 					}
 
