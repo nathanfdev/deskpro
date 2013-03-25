@@ -842,9 +842,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		if (!macroUrl) {
 			this.getElById('actions_row').hide();
-			this.page.updateUi();
-			if (!this.page.meta.ticket_reverse_order) {
-				this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			if (this.page) {
+				this.page.updateUi();
+				if (!this.page.meta.ticket_reverse_order) {
+					this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				}
 			}
 		} else {
 			var actionsRow = this.getElById('actions_row');
@@ -854,9 +856,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			actionsRow.show();
 
-			this.page.updateUi();
-			if (!this.page.meta.ticket_reverse_order) {
-				this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			if (this.page) {
+				this.page.updateUi();
+				if (!this.page.meta.ticket_reverse_order) {
+					this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				}
 			}
 
 			$.ajax({
@@ -950,15 +954,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						this.getElById('close_tab_opt').prop('checked', true);
 					}
 
-					this.page.updateUi();
-					if (!this.page.meta.ticket_reverse_order) {
-						this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+					if (this.page) {
+						this.page.updateUi();
+						if (!this.page.meta.ticket_reverse_order) {
+							this.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+						}
 					}
 				}
 			});
 		}
 
-		this.page.focusOnReply()
+		if (this.page) {
+			this.page.focusOnReply()
+		}
 	},
 
 	hideAgentNotifyList: function() {
