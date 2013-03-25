@@ -91,13 +91,22 @@ class TicketSplit
 		}
 
 		$new_ticket = $ticket->copy();
+		$first = null;
 		foreach ($messages as $m) {
 			$ticket->messages->removeElement($m);
 			$new_ticket->addMessage($m);
 
+			if (!$first) {
+				$first = $m;
+			}
+
 			foreach ($m->attachments as $attach) {
 				$attach->ticket = $new_ticket;
 			}
+		}
+
+		if ($first) {
+			$new_ticket->date_created = $first->date_created;
 		}
 
 		$new_ticket->creation_system = Ticket::CREATED_WEB_AGENT;
