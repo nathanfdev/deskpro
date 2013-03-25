@@ -801,6 +801,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	updateWindowUrlFragment: function() {
 
 		if (this.DEBUG.disableUrlFragments) return;
+		if (!jQuery.history) return;
 
 		var segments = [];
 
