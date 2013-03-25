@@ -1145,6 +1145,10 @@ class TicketController extends AbstractController
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
 		if ($macro_id) {
 			$action_type = 'macro';
+		} else {
+			if (!$action_type) {
+				$action_type = 'awaiting_user';
+			}
 		}
 
 		$macro = null;
