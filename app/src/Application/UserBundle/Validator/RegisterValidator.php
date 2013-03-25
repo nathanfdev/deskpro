@@ -82,6 +82,10 @@ class RegisterValidator extends AbstractValidator
 			if ($check_exist) {
 				$this->addError('email.in_use');
 			}
+
+			if (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->register->email)) {
+				$this->addError('email.in_use');
+			}
 		}
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 5));

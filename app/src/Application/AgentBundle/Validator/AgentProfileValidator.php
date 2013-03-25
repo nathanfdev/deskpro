@@ -61,7 +61,7 @@ class AgentProfileValidator extends AbstractValidator
 			$this->addError('name.short');
 		}
 
-		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($this->profile->email)) {
 			$this->addError('email.invalid');
 		} else {
 			$check_exist = App::getDb()->fetchColumn("

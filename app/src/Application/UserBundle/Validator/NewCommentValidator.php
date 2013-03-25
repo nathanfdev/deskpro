@@ -91,6 +91,8 @@ class NewCommentValidator extends AbstractValidator
 			$validator = new \Orb\Validator\StringEmail();
 			if (!$validator->isValid($this->newcomment->email)) {
 				$this->addError('email.invalid');
+			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->newcomment->email)) {
+				$this->addError('email.invalid');
 			}
 
 			if ($this->captca) {

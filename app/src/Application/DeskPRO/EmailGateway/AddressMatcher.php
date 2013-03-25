@@ -91,6 +91,27 @@ class AddressMatcher
 
 
 	/**
+	 * Check an email address to see if its a helpdesk managed address.
+	 * That is, does it match any helpdesk account or is it a know helpdesk address?
+	 *
+	 * @param string $addr
+	 * @return bool
+	 */
+	public function isManagedAddress($addr)
+	{
+		if ($this->isHelpdeskAddress($addr)) {
+			return true;
+		}
+
+		if ($this->getMatchingAddress($addr)) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Checks if an address is a known helpdesk address
 	 */
 	public function isHelpdeskAddress($addr)

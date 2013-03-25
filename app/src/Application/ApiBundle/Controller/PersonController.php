@@ -187,7 +187,7 @@ class PersonController extends AbstractController
 		}
 
 		$email = $this->in->getString('email');
-		if (!$email || !\Orb\Validator\StringEmail::isValueValid($email)) {
+		if (!$email || !\Orb\Validator\StringEmail::isValueValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
 			$errors['email'] = array('required_field.email', 'email is empty or invalid');
 		} else {
 			$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -199,7 +199,7 @@ class PersonController extends AbstractController
 		}
 
 		foreach ($this->in->getCleanValueArray('secondary_email', 'string') AS $secondary_email) {
-			if (!$secondary_email || !\Orb\Validator\StringEmail::isValueValid($secondary_email)) {
+			if (!$secondary_email || !\Orb\Validator\StringEmail::isValueValid($secondary_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($secondary_email)) {
 				$errors['secondary_email'] = array('invalid_argument.secondary_email', 'secondary_email is empty or invalid');
 			} else {
 				$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($secondary_email);
@@ -488,7 +488,7 @@ class PersonController extends AbstractController
 			return $this->createApiErrorResponse('required_field.email', 'email missing');
 		}
 
-		if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
 			return $this->createApiErrorResponse('invalid_argument.email', 'invalid email');
 		}
 

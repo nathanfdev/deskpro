@@ -130,7 +130,7 @@ class TicketController extends AbstractController
 		} else if ($this->in->checkIsset('person_email')) {
 			$email = $this->in->getString('person_email');
 
-			if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
 				$errors['person_email'] = array('invalid_email', 'Invalid email address');
 			} else {
 				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -939,7 +939,7 @@ class TicketController extends AbstractController
 		if ($this->in->getUint('person_id')) {
 			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 		} elseif ($email_address = $this->in->getString('email')) {
-			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($email_address) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
 				return $this->createApiErrorResponse('invalid_email', 'Invalid email address');
 			}
 

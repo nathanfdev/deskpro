@@ -176,7 +176,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 
 		if ($email) {
 			$email = strtolower($email);
-			if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
 				return $this->createJsonResponse(array('error' => 'invalid_email'));
 			}
 

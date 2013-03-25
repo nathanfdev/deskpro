@@ -194,7 +194,7 @@ class NewTicket
 		$add_cc_people = $this->add_cc_newpeople;
 
 		foreach ($this->add_cc_newperson as $info) {
-			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email'])) {
+			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::getSystemService('gateway_address_matcher')->isManagedAddress($info['email'])) {
 				continue;
 			}
 

@@ -452,7 +452,7 @@ class ChatController extends AbstractController
 			return $this->createJsonResponse(array('success' => false));
 		}
 
-		if (!$convo->person_email && $this->in->getString('email') && \Orb\Validator\StringEmail::isValueValid($this->in->getString('email'))) {
+		if (!$convo->person_email && $this->in->getString('email') && \Orb\Validator\StringEmail::isValueValid($this->in->getString('email')) && !App::getSystemService('gateway_address_matcher')->isManagedAddress($this->in->getString('email'))) {
 			$convo->person_email = $this->in->getString('email');
 
 			$this->_sendTranscript($convo, $convo->person_email, '');

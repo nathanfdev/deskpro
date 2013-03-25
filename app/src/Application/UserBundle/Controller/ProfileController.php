@@ -386,7 +386,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->redirectRoute('user_profile');
 		}
 
-		if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($email_address) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
 			$this->session->setFlash('invalid_email', 1);
 			$this->session->save();
 			return $this->redirectRoute('user_profile');

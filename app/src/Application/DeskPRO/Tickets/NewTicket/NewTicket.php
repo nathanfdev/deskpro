@@ -411,7 +411,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
-					if (!\Orb\Validator\StringEmail::isValueValid($_)) {
+					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::getSystemService('gateway_address_matcher')->isManagedAddress($_)) {
 						$_ = null;
 					}
 				}
@@ -445,7 +445,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 	{
 		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
 
-		if (!\Orb\Validator\StringEmail::isValueValid($cc_email)) {
+		if (!\Orb\Validator\StringEmail::isValueValid($cc_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($cc_email)) {
 			return null;
 		}
 

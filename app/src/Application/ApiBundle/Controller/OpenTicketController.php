@@ -49,7 +49,7 @@ class OpenTicketController extends AbstractController
 
 	public function newTicketMessageAction()
 	{
-		if (!\Orb\Validator\StringEmail::isValueValid($this->in->getString('email'))) {
+		if (!\Orb\Validator\StringEmail::isValueValid($this->in->getString('email')) || App::getSystemService('gateway_address_matcher')->isManagedAddress($this->in->getString('email'))) {
 			return $this->createApiErrorResponse('invalid_email', 'The email address supplied is invalid');
 		}
 		if (!$this->in->getString('subject')) {

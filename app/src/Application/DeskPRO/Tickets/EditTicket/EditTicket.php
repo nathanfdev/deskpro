@@ -130,7 +130,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
-					if (!\Orb\Validator\StringEmail::isValueValid($_)) {
+					if (!\Orb\Validator\StringEmail::isValueValid($_) || App::getSystemService('gateway_address_matcher')->isManagedAddress($_)) {
 						$_ = null;
 					}
 				}

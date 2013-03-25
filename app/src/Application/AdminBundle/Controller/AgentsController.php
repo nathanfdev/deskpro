@@ -482,7 +482,10 @@ class AgentsController extends AbstractController
 
 		// Filter out non-addresses
 		$emails = array_filter($emails, function($email) {
-			return \Orb\Validator\StringEmail::isValueValid($email);
+			if (\Orb\Validator\StringEmail::isValueValid($email) && !App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+				return true;
+			}
+			return false;
 		});
 
 		if (!$emails) {
@@ -796,6 +799,8 @@ class AgentsController extends AbstractController
 		$email = $this->in->getString('agent.email');
 		if (!$email or !\Orb\Validator\StringEmail::isValueValid($email)) {
 			$errors[] = 'The email address you entered is not valid.';
+		} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+			$errors[] = 'The email address you entered belongs to a ticket account.';
 		} elseif (!$agent or !$agent->findEmailAddress($email)) {
 			$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 			if ($exist_check && !$this->in->getBool('confirm_email_dupe')) {
@@ -879,6 +884,8 @@ class AgentsController extends AbstractController
 		if (!$agent->findEmailAddress($set_email)) {
 			if (!\Orb\Validator\StringEmail::isValueValid($set_email)) {
 				$errors[] = 'The email address you entered is invalid';
+			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->register->email)) {
+				$errors[] = 'The email address you entered belongs to a ticket account.';
 			} else {
 				if ($exist_check && $exist_check->id != $agent->id) {
 					$errors[] = 'The new email address you entered already belongs to a different user.';

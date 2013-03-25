@@ -960,7 +960,7 @@ class TicketController extends AbstractController
 			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 		} elseif ($email_address = $this->in->getString('email_address')) {
 
-			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($email_address) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'error_code' => 'invalid_email'

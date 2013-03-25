@@ -242,6 +242,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 		$user_rule_proc->newEmail($this->person, $this);
 	}
 
+	public function _verifyEmailAddress()
+	{
+		// Email address should be validated by the time we get here,
+		// this is a failsafe check
+		if (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->email)) {
+			throw new \RuntimeException("`{$this->email}`` is an a gateway account address");
+		}
+	}
+
 
 
 	############################################################################
@@ -252,6 +261,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmail';
+
 		$metadata->setPrimaryTable(array(
 			'name' => 'people_emails',
 			'indexes' => array(
@@ -263,6 +273,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_postPersist', 'postPersist');
+		$metadata->addLifecycleCallback('_verifyEmailAddress', 'prePersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain', ));

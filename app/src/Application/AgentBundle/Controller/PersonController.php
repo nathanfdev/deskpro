@@ -814,6 +814,10 @@ class PersonController extends AbstractController
 						continue;
 					}
 
+					if (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+						$errors[] = "\"$email\" was not saved because it belongs to a ticket account";
+					}
+
 					$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
 					if ($check) {
 						if ($check->person->id == $person->id) {
@@ -1198,6 +1202,11 @@ class PersonController extends AbstractController
 			return $this->createJsonResponse(array(
 				'success' => false,
 				'error_messages' => array('Please enter a valid email address'),
+			));
+		} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->register->email)) {
+			return $this->createJsonResponse(array(
+				'success' => false,
+				'error_messages' => array('That email address is in use by a ticket account'),
 			));
 		} else {
 			$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
