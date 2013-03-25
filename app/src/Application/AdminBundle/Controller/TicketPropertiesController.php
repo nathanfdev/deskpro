@@ -62,9 +62,83 @@ class TicketPropertiesController extends AbstractController
 
 		$fields = App::getApi('custom_fields.tickets')->getFields();
 
+		// Build map of field to department
+		$all_pages = $this->db->fetchAllKeyValue("SELECT COALESCE(department_id, 0) AS department_id, data FROM ticket_page_display WHERE zone = 'create'");
+		foreach ($all_pages as &$v) {
+			$v = @unserialize($v);
+			if (!$v) {
+				$v = array();
+			}
+		}
+
+		$field_to_dep = array();
+		$deps = $this->container->getDataService('Department')->getRootNodes();
+
+		$fn_get_ids = function($name) use ($deps, $all_pages) {
+			$ids = array();
+
+			$in_default = false;
+			if (isset($all_pages[0])) {
+				foreach ($all_pages[0] as $info) {
+					if ($info['id'] == $name) {
+						$in_default = true;
+					}
+				}
+			}
+
+			foreach ($deps as $d) {
+				if (!$d->is_tickets_enabled) continue;
+
+				if ($d->children) {
+					foreach ($d->children as $subd) {
+						$in = $in_default;
+						if (isset($all_pages[$subd->id])) {
+							$in = false;
+							foreach ($all_pages[$subd->id] as $info) {
+								if ($info['id'] == $name) {
+									$in = true;
+								}
+							}
+						}
+
+						if ($in) {
+							$ids[$subd->id] = $subd->id;
+						}
+					}
+				} else {
+					$in = $in_default;
+					if (isset($all_pages[$d->id])) {
+						$in = false;
+						foreach ($all_pages[0] as $info) {
+							if ($info['id'] == $name) {
+								$in = true;
+							}
+						}
+					}
+
+					if ($in) {
+						$ids[$d->id] = $d->id;
+					}
+				}
+			}
+
+			return $ids;
+		};
+
+		foreach (array('ticket_department', 'ticket_priority', 'ticket_workflow', 'ticket_product', 'ticket_category') as $name) {
+			$field_to_dep[$name] = $fn_get_ids($name);
+		}
+		foreach ($fields as $f) {
+			$field_to_dep[$f->id] = $fn_get_ids("ticket_field[{$f->id}]");
+		}
+
+		$dep_flat = $this->container->getDataService('Department')->getFullNames();
+
 		return $this->render('AdminBundle:TicketProperties:list.html.twig', array(
-			'counts' => $counts,
-			'fields' => $fields
+			'counts'       => $counts,
+			'fields'       => $fields,
+			'field_to_dep' => $field_to_dep,
+			'dep_names'    => $dep_flat,
 		));
 	}
 
