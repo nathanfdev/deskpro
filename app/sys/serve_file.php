@@ -1006,26 +1006,27 @@ class FilestorageLoader extends LoaderAbstract
 
 		// Only shrink if it doesn't fit inside the box.
 		if (max($width, $height) > $size || $is_fit) {
-			$size_w = $size_h = $size;
 
-			// Preserve image ratio.
-			if ($height > $width) {
-				$size_w = round($size_w * ($width / $height));
-			}
-			elseif ($width > $height) {
-				$size_h = round($size_h * ($height / $width));
-			}
+			$width  = $size;
+			$height = $size;
 
-			if ($size_w == 0) {
-				$size_w = 1;
-			}
+			$size      = new \Imagine\Image\Box($width, $height);
+			$mode      = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
+			$resizeimg = $image->thumbnail($size, $mode);
+			$sizeR     = $resizeimg->getSize();
+			$widthR    = $sizeR->getWidth();
+			$heightR   = $sizeR->getHeight();
 
-			if ($size_h == 0) {
-				$size_h = 1;
+			$preserve  = $container->getImagine()->create($size);
+			$startX = $startY = 0;
+			if ( $widthR < $width ) {
+				$startX = ( $width - $widthR ) / 2;
 			}
-
-			$box = new \Imagine\Image\Box($size_w, $size_h);
-			$image->resize($box);
+			if ( $heightR < $height ) {
+				$startY = ( $height - $heightR ) / 2;
+			}
+			$preserve->paste($resizeimg, new \Imagine\Image\Point($startX, $startY));
+			$image = $preserve;
 		}
 
 		$file = $image->get($blob->getImageType());
