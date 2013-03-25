@@ -192,6 +192,9 @@ class UserChatManager
 				if ($convo->person_email) {
 					$this->visitor->email = $convo->person_email;
 				}
+				if ($convo->person) {
+					$this->visitor->person = $convo->person;
+				}
 			}
 		}
 
