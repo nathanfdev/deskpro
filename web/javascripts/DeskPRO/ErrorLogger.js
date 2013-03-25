@@ -26,6 +26,15 @@ var DpErrorLog = {
 			return;
 		}
 
+		if (trace && trace == '?() in :0') {
+			// not a usefu message
+			return;
+		}
+
+		if (!line || line == 0 || line === '0') {
+			return;
+		}
+
 		// Scripts of resource:// are extensions, so we dont want to log those
 		if (script && script.indexOf('resource://') === 0) {
 			return;
