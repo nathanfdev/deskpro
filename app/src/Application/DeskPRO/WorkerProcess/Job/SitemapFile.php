@@ -63,7 +63,7 @@ class SitemapFile extends AbstractJob
 		$gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());
 		$file = $gen->getXml();
 
-		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
 			$file,
 			'sitemap.xml',
 			'text/xml',
