@@ -304,9 +304,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * @param bool $absolute
 	 * @return string
 	 */
-	public function getDownloadUrl($absolute = false)
+	public function getDownloadUrl($absolute = false, $use_file_url = true)
 	{
-		if ($this->file_url) {
+		if ($use_file_url && $this->file_url) {
 			return $this->file_url;
 		}
 

@@ -439,7 +439,7 @@ JS;
 			'blob_id'           => $blob['id'],
 			'blob_auth'         => $blob->authcode,
 			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
-			'download_url'      => $blob->getDownloadUrl(true),
+			'download_url'      => $blob->getDownloadUrl(true, false),
 			'filename'          => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize(),
 			'is_image'          => $blob->isImage()
