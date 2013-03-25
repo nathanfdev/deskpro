@@ -158,7 +158,11 @@ DeskPRO.Agent.RteEditor = {
 			var autosaveContent = api.getCode(),
 				autosaveData = getAutosaveData(api);
 
+			var saveFnRunning = false;
 			var saveFn = $.proxy(function() {
+				if (saveFnRunning) {
+					return;
+				}
 				if (!textarea.data('redactor')) {
 					clearInterval(autosaveTimer);
 					autosaveTimer = false;
@@ -198,10 +202,14 @@ DeskPRO.Agent.RteEditor = {
 				autosaveContent = newContent;
 				autosaveData = newData;
 
+				saveFnRunning = true;
 				$.ajax({
 					url: autosaveUrl,
 					type: 'post',
 					data: newData,
+					complete: function() {
+						saveFnRunning = false;
+					},
 					success: $.proxy(function(data) {
 						if (typeof this.opts.autosaveCallback === 'function') {
 							this.opts.autosaveCallback(data, this);
