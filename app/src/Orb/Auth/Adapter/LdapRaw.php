@@ -199,6 +199,8 @@ class LdapRaw implements FormLoginInterface, Loggable
 					$raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
 				} elseif (!empty($raw_info['dn'])) {
 					$raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+				} else {
+					$raw_info['identity'] = $result->getIdentity();
 				}
 
 				if ($rec->getAttribute('givenName')) {
