@@ -123,7 +123,12 @@ class TwitterAccountController extends AbstractController
 
 		if ($this->in->getBool('start')) {
 			$api->setCallback($this->generateUrl('admin_twitter_accounts_new', array(), true));
-			return $this->redirect($api->getAuthorizationUrl());
+			try {
+				$url = $api->getAuthorizationUrl();
+			} catch (\EpiOAuthException $e) {
+				return $this->redirectRoute('admin_twitter_accounts');
+			}
+			return $this->redirect($url);
 		}
 
 		if ($this->in->getString('denied')) {
