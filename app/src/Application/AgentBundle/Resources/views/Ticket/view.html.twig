@@ -362,18 +362,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<div class="sep">-</div>
 			<div id="{{baseId}}_field_holders">
 				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
-					{% if ticket.linked_chat %}
-						<tbody>
-							<tr>
-								<th>
-									{{ phrase('agent.general.linked_chat') }}
-								</th>
-								<td>
-									<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
-								</td>
-							</tr>
-						</tbody>
-					{% endif %}
 					{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 					{% if ticket_perms.modify_labels or ticket.labels|length %}
 						<tbody class="always-bottom">
@@ -388,6 +376,18 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 										data-placeholder="Add a label"
 										value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
 									/>
+								</td>
+							</tr>
+						</tbody>
+					{% endif %}
+					{% if ticket.linked_chat %}
+						<tbody>
+							<tr>
+								<th>
+									{{ phrase('agent.general.linked_chat') }}
+								</th>
+								<td>
+									<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
 								</td>
 							</tr>
 						</tbody>
