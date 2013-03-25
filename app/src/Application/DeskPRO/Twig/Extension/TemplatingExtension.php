@@ -938,8 +938,12 @@ class TemplatingExtension extends \Twig_Extension
 		return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
 	}
 
-	public function getPhrase($context, $phrase_name, array $vars = array(), $raw = false)
+	public function getPhrase($context, $phrase_name, $vars = null, $raw = false)
 	{
+		if (!$vars || !is_array($vars)) {
+			$vars = array();
+		}
+
 		if (!$raw) {
 			foreach ($vars as &$v) {
 				$v = htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
