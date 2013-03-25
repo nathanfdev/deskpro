@@ -752,6 +752,7 @@ class KernelErrorHandler
 			|| strpos($errstr, 'fsockopen(): SSL: crypto enabling timeout') !== false
 			|| strpos($errstr, 'fsockopen(): Failed to enable crypto') !== false
 			|| strpos($errstr, 'fsockopen(): php_network_getaddresses: getaddrinfo failed') !== false
+			|| strpos($errstr, 'fsockopen(): SSL: connection timeout') !== false
 		) {
 			$no_send_error = true;
 		}
