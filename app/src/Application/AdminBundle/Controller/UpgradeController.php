@@ -98,6 +98,7 @@ class UpgradeController extends AbstractController
 		return $this->render('AdminBundle:Upgrade:watch.html.twig', array(
 			'backup_path' => dp_get_backup_dir(),
 			'config_hash' => $config_hash,
+			'is_wincache' => extension_loaded('wincache')
 		));
 	}
 

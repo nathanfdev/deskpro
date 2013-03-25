@@ -2647,6 +2647,12 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 		$this->out('');
 
+		if (extension_loaded('wincache')) {
+			$this->out("<error>RESTART REQUIRED</error>");
+			$this->out("Your server has WinCache installed. Due to a limitation of WinCache, updates to files are not always immediately recognised.");
+			$this->out("You must restart IIS (or your computer) to ensure the updates were fully installed.");
+		}
+
 		$this->upgrade->postUpgrade();
 
 		$this->upgrade->sendLog();

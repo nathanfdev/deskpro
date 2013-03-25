@@ -235,6 +235,16 @@
 			<strong>Done!</strong><br />
 			Your helpdesk has been upgraded successfully.
 
+			{% if is_wincache %}
+				<div style="padding-top: 10px; background-color: #FFD7B5; border: 2px solid #C2A389;">
+					<strong>Important:</strong>
+					Your server has WinCache installed. Due to a limitation of WinCache, updates to files are not always immediately recognised.
+					You must restart IIS (or your computer) to ensure the updates were fully installed.
+					<br/><br/>
+					If you do not restart, DeskPRO may behave strangely or you may see errors.
+				</div>
+			{% endif %}
+
 			{% if app.getSetting('core.upgrade_backup_files') or app.getSetting('core.upgrade_backup_db') %}
 				<div style="padding-top: 10px;">
 					You should download and verify the integrity of your backups:<br />
