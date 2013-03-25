@@ -228,6 +228,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	public function getBlobWriteStream(Blob $blob)
 	{
 		$path = $this->resolvePath($blob->getPath());
+		$dir = dirname($path);
+
+		if (!is_dir($dir)) {
+			@mkdir($dir, 0777, true);
+		}
 
 		$fp = fopen($path, 'w');
 
