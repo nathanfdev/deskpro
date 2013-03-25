@@ -103,7 +103,11 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
 				exit;
 			} else {
 				$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
-				$page_html = str_replace('{{ OFFLINE_MESSAGE }}', 'Currently installing updates', $page_html);
+				$message = 'The helpdesk is currently offline for maintenance. Please try again in a few minutes.';
+				if (file_exists(dp_get_data_dir() . '/helpdesk-offline-message.txt')) {
+					$message = file_get_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt');
+				}
+				$page_html = str_replace('{{ OFFLINE_MESSAGE }}', $message, $page_html);
 				echo $page_html;
 				exit;
 			}

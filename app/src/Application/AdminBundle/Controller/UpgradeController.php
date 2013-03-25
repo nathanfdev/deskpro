@@ -58,7 +58,7 @@ class UpgradeController extends AbstractController
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
 			$this->container->getSettingsHandler()->setSetting('core.helpdesk_disabled_message', $this->in->getString('user_message'));
-			@file_put_contents(dp_get_tmp_dir() . '/helpdesk-offline-message.txt', $this->in->getString('user_message'));
+			@file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->in->getString('user_message'));
 
 			if ($mins) {
 				$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());

@@ -142,6 +142,14 @@ class SettingsController extends AbstractController
 				unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
 			}
 
+			if ($this->in->getString('offline_message')) {
+				@file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->in->getString('offline_message'));
+			} else {
+				if (file_exists(dp_get_data_dir() . '/helpdesk-offline-message.txt')) {
+					@unlink(dp_get_data_dir() . '/helpdesk-offline-message.txt');
+				}
+			}
+
 			$this->_postSaveSettings();
 
 			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
@@ -159,6 +167,10 @@ class SettingsController extends AbstractController
 			'max_uploadsize_readable' => \Orb\Util\Numbers::filesizeDisplay($max_filesize),
 			'timezone_options' => $timezone_options,
 		);
+
+		if (file_exists(dp_get_data_dir() . '/helpdesk-offline-message.txt')) {
+			$vars['offline_message'] = file_get_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt');
+		}
 
 		$vars['outgoing_email'] = $this->em->createQuery("
 			SELECT t

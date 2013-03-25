@@ -50,8 +50,15 @@
 	<h4>{{ phrase('admin.general.helpdesk') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.helpdesk_is_offline %}checked="checked"{% endif %} />
+			<label style="display: inline-block"><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.helpdesk_is_offline %}checked="checked"{% endif %} />
 				{{ phrase('admin.settings.notice_helpdesk_disabled') }}</label>
+			&nbsp;&nbsp;
+			<button class="clean-white" onclick="$(this).hide(); $('#offline_message_edit').show(); return false;">Edit offline message</button>
+		</div>
+		<div id="offline_message_edit" style="display: none;">
+			This message will be displayed when the helpdesk is offline or when you are installing updates. HTML is allowed.<br/>
+			<textarea name="offline_message" style="width: 80%; height: 190px; font-family: Monaco, Consolas, monospace; font-size: 11px;">{{ offline_message }}</textarea>
+			<br/><br/>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.rewrite_urls]" {% if app.getSetting('core.rewrite_urls') %}checked="checked"{% endif %} />
