@@ -248,7 +248,7 @@ class FieldManager
 					break;
 
 				default:
-					if (!empty($data['value']) || $data['value'] === 0 || $data['value'] === '0') {
+					if (!empty($data['value']) || (isset($data['value']) && ($data['value'] === 0 || $data['value'] === '0'))) {
 						$form_data['field_' . $field_id] = $data['value'];
 					}
 					break;
