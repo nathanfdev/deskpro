@@ -318,7 +318,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			$vars['ticketdisplay'] = $ticketdisplay;
 
 			$attach_attachments = array();
-			if ($first) {
+			if ($first && $ticket->isAgentCreated()) {
 				$max = App::getSetting('core.sendemail_attach_maxsize');
 				$max_embed = App::getSetting('core.sendemail_embed_maxsize');
 				$size = 0;
