@@ -884,7 +884,7 @@ class AgentsController extends AbstractController
 		if (!$agent->findEmailAddress($set_email)) {
 			if (!\Orb\Validator\StringEmail::isValueValid($set_email)) {
 				$errors[] = 'The email address you entered is invalid';
-			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->register->email)) {
+			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($set_email)) {
 				$errors[] = 'The email address you entered belongs to a ticket account.';
 			} else {
 				if ($exist_check && $exist_check->id != $agent->id) {

@@ -1203,7 +1203,7 @@ class PersonController extends AbstractController
 				'success' => false,
 				'error_messages' => array('Please enter a valid email address'),
 			));
-		} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->register->email)) {
+		} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
 			return $this->createJsonResponse(array(
 				'success' => false,
 				'error_messages' => array('That email address is in use by a ticket account'),
