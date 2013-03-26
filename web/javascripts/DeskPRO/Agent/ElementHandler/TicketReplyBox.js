@@ -565,6 +565,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		agentSel.on('change', function() {
 			agentSelText.text($(this).find(':selected').text());
 			agentSelCheck.prop('checked', true);
+
+			if (agentSel.data('auto-switch-status')) {
+				agentSelCheck.on('change', function(){
+					if (self.getElById('action').val().indexOf('macro') === -1) {
+						self.setReplyAsOptionName('awaiting_agent')
+					}
+				});
+			}
 		});
 		teamSel.on('change', function() {
 			teamSelText.text($(this).find(':selected').text());
@@ -573,6 +581,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		agentSelText.text(agentSel.find(':selected').text());
 		teamSelText.text(teamSel.find(':selected').text());
+
+		if (agentSel.data('auto-switch-status')) {
+			agentSelCheck.on('change', function(){
+				if (self.getElById('action').val().indexOf('macro') === -1) {
+					self.setReplyAsOptionName('awaiting_agent')
+				}
+			});
+		}
 
 		//------------------------------
 		// Submit
@@ -821,6 +837,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		var textarea = this.textarea;
 		var api = this.textarea.data('redactor');
+
+		if (this.el.data('resolve-auto-close')) {
+			if (item.data('type') == 'resolved') {
+				this.getElById('close_tab_opt').prop('checked', true);
+			}
+		}
 
 		if (!macroUrl) {
 			this.getElById('actions_row').hide();
