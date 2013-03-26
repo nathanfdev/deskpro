@@ -481,6 +481,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">Put ticket on hold</li>
 	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">Remove ticket from hold</li>
 	{% if ticket_perms.modify_merge %}<li data-action="split">Split Messages to New Ticket</li>{% endif %}
+	<li data-action="kb-pending">Create a new pending article</li>
 	<li data-action="print">{{ phrase('agent.general.print') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
 </ul>
@@ -795,6 +796,27 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 {{ dp_widgets(baseId, 'ticket', '', '', ticket_api) }}
 
+</div>
+
+<div id="{{baseId}}_pending_add" style="display:none;" data-save-url="{{ path('agent_kb_newpending') }}">
+	<div class="mass-actions-overlay pending-article" style="width: 550px; height: 400px;">
+		<div class="overlay-title">
+			<h4>Add a pending article</h4>
+		</div>
+		<div class="overlay-content">
+			<div style="font-size: 12px; padding-bottom: 9px;">A pending article is a note in the Publish section about an article that needs to be written.</div>
+			<input type="hidden" name="ticket_id" value="{{ ticket.id }}" />
+			<textarea name="comment" placeholder="Enter a note or description about the article that needs to be written. It will also be linked to this ticket." style="width: 98%; height: 260px;"></textarea>
+		</div>
+		<div class="overlay-footer">
+			<div class="is-not-loading">
+				<button class="save-new-trigger clean-white">{{ phrase('agent.general.add') }}</button>
+			</div>
+			<div class="is-loading">
+				<i class="flat-spinner"></i>
+			</div>
+		</div>
+	</div>
 </div>
 
 </div></div> {# /scroll #}

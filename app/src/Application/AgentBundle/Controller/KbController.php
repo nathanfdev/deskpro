@@ -662,7 +662,7 @@ class KbController extends AbstractController
 		// First message
 		if ($ticket) {
 			$first_message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
-			$data['initial_message_html'] = $first_message->getMessagePlainHtml();
+			$data['initial_message_html'] = $first_message->getMessageHtml();
 			$data['initial_message_id'] = $first_message->id;
 		}
 

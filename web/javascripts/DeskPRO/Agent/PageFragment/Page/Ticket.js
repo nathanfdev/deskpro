@@ -1148,6 +1148,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					case 'unset-hold':
 						self.setHold(false);
 						break;
+
+					case 'kb-pending':
+						if (!self.pendingKbOverlay) {
+							var el = self.getEl('pending_add');
+							self.pendingKbOverlay = new DeskPRO.UI.Overlay({
+								contentElement: self.getEl('pending_add')
+							});
+
+							el.find('.save-new-trigger').on('click', function(ev) {
+								ev.preventDefault();
+								var formData = el.find('input, textarea').serializeArray();
+
+								el.addClass('loading');
+								$.ajax({
+									url: el.data('save-url'),
+									type: 'POST',
+									data: formData,
+									dataType: 'json',
+									complete: function() {
+										el.removeClass('loading');
+									},
+									success: function() {
+										self.pendingKbOverlay.close();
+										el.find('textarea').val('');
+									}
+								});
+							});
+						}
+						self.pendingKbOverlay.open();
+						break;
 				}
 			}
 		});

@@ -24,7 +24,11 @@
 				</div>
 				<div class="comment-text">
 					<div class="rendered" style="padding-bottom: 3px; padding-top: 3px; font-size: 11px; max-height: 100px; overflow: hidden; position:relative; text-overflow: ellipsis">
-						{{ first_messages[pending_article.ticket.id].getMessageText() }}
+						{% if pending_article.comment %}
+							{{ pending_article.comment }}
+						{% else %}
+							{{ first_messages[pending_article.ticket.id].getMessageText() }}
+						{% endif %}
 					</div>
 				</div>
 			{% else %}

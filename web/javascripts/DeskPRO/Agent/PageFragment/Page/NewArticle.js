@@ -154,13 +154,12 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		if (data.ticket_subject) {
 			this.setTitle(data.ticket_subject);
 		}
-		if (data.message_content_html) {
+		if (data.initial_message_html) {
 			var content = '';
 			if (data.initial_message_html) {
 				content = "<h3>Question:</h3>";
-				content += data.initial_message_html += "<br />><br /><h3>Answer:</h3>";
+				content += data.initial_message_html += "<br /><br />";
 			}
-			content += data.message_content_html;
 			this.setContent(content, true);
 		} else {
 			this.setContent('', true);
@@ -172,7 +171,9 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			$('.pending-ticket a', infoWrap).text(data.ticket_subject);
 			$('.pending-ticket a', infoWrap).data('route', 'page:' + data.ticket_url);
 			$('.pending-ticket', infoWrap).show();
-		} else {
+		}
+
+		if (data.comment) {
 			$('.pending-reason', infoWrap).text(data.comment).show();
 		}
 

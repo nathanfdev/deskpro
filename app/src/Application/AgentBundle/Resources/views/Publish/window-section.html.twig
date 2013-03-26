@@ -1,10 +1,3 @@
-{% if app.user.hasPerm('agent_publish.validate') and (
-	counts.validating_comments
-	or counts.validating_content
-	or counts.pending
-	or counts.drafts
-	or counts.all_drafts
-) %}
 <section class="group-section open" id="publish_section_pending">
 	<header><h1>{{ phrase('agent.general.pending') }}</h1></header>
 	<article>
@@ -26,14 +19,12 @@
 						</h3>
 					</li>
 				{% endif %}
-				{% if counts.pending %}
-					<li class="is-nav-item" data-route="listpane:{{ path('agent_kb_pending') }}">
-						<h3 class="title">
-							<span class="list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</span>
-							{{ phrase('agent.publish.pending_articles') }}
-						</h3>
-					</li>
-				{% endif %}
+				<li class="is-nav-item" data-route="listpane:{{ path('agent_kb_pending') }}">
+					<h3 class="title">
+						<span class="list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</span>
+						{{ phrase('agent.publish.pending_articles') }}
+					</h3>
+				</li>
 				{% if counts.drafts %}
 				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
 					<h3 class="title">
@@ -54,7 +45,6 @@
 		</section>
 	</article>
 </section>
-{% endif %}
 
 {% if app.getSetting('core.apps_kb') %}
 	<section class="group-section open" id="publish_section_kb">
