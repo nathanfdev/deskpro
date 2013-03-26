@@ -59,6 +59,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		$this->addOption('ignore-error', null, InputOption::VALUE_NONE, 'Do not exit on errors. The blob will not be lost, but the process will continue even if one blob fails for whatever reason.');
 		$this->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Only run this many blobs at once');
 		$this->addOption('run', null, InputOption::VALUE_NONE, 'Actually run the move now (default is to show info)');
+		$this->addOption('set-storage-loc', null, InputOption::VALUE_REQUIRED, 'Update every blob and set the preferred storage loc');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -66,6 +67,23 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		$bs = App::getContainer()->getBlobStorage();
 		$ignore_error = $input->getOption('ignore-error');
 		$limit = $input->getOption('limit');
+
+		if ($input->getOption('set-storage-loc')) {
+			$set_aid = $input->getOption('set-storage-loc');
+			$aids = $bs->getAdapterIds();
+			if (!in_array($set_aid, $aids)) {
+				$output->writeln("<error>Adapter is not installed: $set_aid</error>");
+				return 1;
+			}
+
+			$output->writeln("Updating preferred storage location to use adapter: $set_aid");
+			$t = microtime(true);
+			$c = App::getDb()->executeUpdate("
+				UPDATE blobs
+				SET storage_loc_pref = ? WHERE storage_loc != ?
+			", array($set_aid, $set_aid));
+			$output->writeln(sprintf("<info>$c records updated in %.3fs</info>", microtime(true)-$t));
+		}
 
 		if (!$input->getOption('run')) {
 			$t = array('Adapter', 'Count', 'Waiting Count', 'Is Installed');
