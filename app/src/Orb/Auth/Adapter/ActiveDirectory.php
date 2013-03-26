@@ -40,6 +40,7 @@ use Orb\Util\Arrays;
 
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Util\Strings;
 use Zend\Config\Processor\Filter;
 use Zend\Ldap\Ldap;
 
@@ -271,6 +272,12 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 			$this->logger->log("START Filter for email", Logger::DEBUG);
 		}
 
+		$set = false;
+		if (!$this->options['accountDomainName']) {
+			$set = true;
+			$this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
+		}
+
 		$zend_auth = $this->getZendAuthAdapter();
 		// Bogus because zend only creates ldap obj when its needed,
 		// so this is a hack to get it to set all the correct options
@@ -290,6 +297,11 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 		}
 
 		$r = $ldap->search($filter, $this->options['baseDn']);
+
+		if ($set) {
+			$this->options['accountDomainName'] = '';
+		}
+
 		if ($this->logger) {
 			$this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
 		}
