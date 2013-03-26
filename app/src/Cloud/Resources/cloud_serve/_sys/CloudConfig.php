@@ -85,7 +85,9 @@ class CloudConfig
 
 		self::getConfig(null);
 
-		if (!empty($_SERVER['HTTP_HOST'])) {
+		if (self::getConfig('allow_domain_param') && !empty($_GET['DPC_DOMAIN'])) {
+			$siteinfo = self::getSiteInfoFromDomain($_GET['DPC_DOMAIN']);
+		} elseif (!empty($_SERVER['HTTP_HOST'])) {
 			$siteinfo = self::getSiteInfoFromDomain(rtrim($_SERVER['HTTP_HOST'], '.'));
 		} else {
 			$siteinfo = null;
