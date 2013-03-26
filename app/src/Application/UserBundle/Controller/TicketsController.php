@@ -181,6 +181,11 @@ class TicketsController extends AbstractController
 			return $this->redirectRoute('user_tickets');
 		}
 
+		$allowed_ids = $this->person->getPermissionsManager()->Departments->getAllowedIds('tickets');
+		if (!$allowed_ids) {
+			return $this->redirectRoute('user_tickets');
+		}
+
 		$dql_join = '';
 		$sort = $this->in->getString('sort');
 		switch ($sort) {
@@ -209,9 +214,9 @@ class TicketsController extends AbstractController
 			SELECT ticket
 			FROM DeskPRO:Ticket ticket
 			$dql_join
-			WHERE ticket.organization = :organization AND ticket.status != 'hidden'
+			WHERE ticket.organization = :organization AND ticket.status != 'hidden' AND ticket.department IN (:dep_ids)
 			ORDER BY $sort_dql
-		")->execute(array('organization' => $this->person->organization));
+		")->execute(array('organization' => $this->person->organization, 'dep_ids' => $allowed_ids));
 
 		$active_tickets   = array();
 		$resolved_tickets = array();
@@ -600,6 +605,10 @@ class TicketsController extends AbstractController
 		);
 
 		if (!$is_participant AND !$is_org_manager AND !isset($this->session_allowed[$ticket['id']])) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
+		}
+
+		if ($is_org_manager && !$this->person->getPermissionsManager()->Departments->isAllowed($ticket->getDepartmentId(), 'tickets')) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 

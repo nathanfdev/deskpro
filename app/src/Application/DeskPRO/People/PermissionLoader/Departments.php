@@ -130,6 +130,31 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 
 	/**
+	 * @param string $app
+	 * @param string $permission
+	 * @return int[]
+	 */
+	public function getAllowedIds($app, $permission = 'full')
+	{
+		$this->_init();
+
+		if (empty($this->allowed_cats[$app])) {
+			return array();
+		}
+
+		$ids = array();
+
+		foreach ($this->allowed_cats[$app] as $id => $perms) {
+			if (isset($perms[$permission]) && $perms[$permission]) {
+				$ids[] = $id;
+			}
+		}
+
+		return $ids;
+	}
+
+
+	/**
 	 * Get an array of data we'll serialize
 	 *
 	 * @return array
