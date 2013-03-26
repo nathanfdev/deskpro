@@ -88,6 +88,9 @@ class BlobStorageService
 				$adapter->setLogger($logger);
 
 				$bs->addAdapter('fs', $adapter);
+
+				// Disable it so its not used for *new* blobs
+				$bs->disableAdapter('fs');
 			}
 		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
 			$adapter = new FilesystemStorage(array(
