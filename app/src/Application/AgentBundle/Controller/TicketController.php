@@ -1380,11 +1380,11 @@ class TicketController extends AbstractController
 			# Handle actions
 			#------------------------------
 
-			if ($this->in->getInt('options.agent_id') != -1) {
+			if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
 				$changed_agent = true;
 				$ticket['agent_id'] = $this->in->getUint('options.agent_id');
 			}
-			if ($this->in->getInt('options.agent_team_id') != -1) {
+			if ($this->in->getInt('options.agent_team_id') != -1 && $this->in->getBool('options.do_assign_team')) {
 				$changed_team = true;
 				$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 			}
@@ -1509,7 +1509,7 @@ class TicketController extends AbstractController
 			'updated_agent_parts_html_count'   => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
 			'replybox_html'                    => $replybox,
 			'charge_html'                      => $charge_html,
-			'changed_agent'                    => $changed_team,
+			'changed_agent'                    => $changed_agent,
 			'agent_id'                         => $ticket['agent_id'],
 			'changed_team'                     => $changed_team,
 			'agent_team_id'                    => $ticket['agent_team_id'],
