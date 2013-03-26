@@ -33,7 +33,7 @@
  * @package DeskPRO
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -54,17 +54,11 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 	protected function configure()
 	{
 		$this->setDefinition(array(
-		))->setName('dpdev:test');
+		))->setName('dp:test');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$bs = App::getContainer()->getBlobStorage();
-
-		$blob = $bs->saveBlobRecordFromString("test 123: " . date('Y-m-d H:i:s'), 'test.txt', 'text/plain');
-
-		echo $blob->getDownloadUrl(true);
-
 		echo "\n";
 		exit;
 	}
