@@ -94,6 +94,10 @@ class MainController extends AbstractController
 		if (!defined('DPC_IS_CLOUD') && function_exists('apc_cache_info')) {
 			$cacheinfo = @apc_cache_info('opcode');
 			$mem = apc_sma_info();
+			if (!$cacheinfo['num_hits'] && !$cacheinfo['num_misses']) {
+				// Prevents division by 0
+				$cacheinfo['num_misses']++;
+			}
 			$apc_miss_perc = sprintf("%.2f", $cacheinfo['num_misses']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']));
 			$mem_size = $mem['num_seg']*$mem['seg_size'];
 			$mem_avail= $mem['avail_mem'];
