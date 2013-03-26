@@ -550,47 +550,29 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Assignments
 		//------------------------------
 
-		var agentSel  = this.getElById('agent_sel');
-		var teamSel   = this.getElById('agent_team_sel');
-		var statusSel = this.getElById('status_sel');
+		var agentSel      = this.getElById('agent_sel');
+		var agentSelText  = this.getElById('agent_sel_text');
+		var agentSelCheck = this.getElById('agent_sel_check');
+		var teamSel       = this.getElById('agent_team_sel');
+		var teamSelText   = this.getElById('agent_team_sel_text');
+		var teamSelCheck  = this.getElById('agent_team_sel_check');
 
-		if (!this.el.data('is-top-order')) {
-			window.setTimeout(function() {
-				DP.select(agentSel);
-				DP.select(teamSel);
-				DP.select(statusSel);
-			}, 150);
-		}
+		window.setTimeout(function() {
+			DP.select(agentSel);
+			DP.select(teamSel);
+		}, 150);
 
-		var hasSwitched = false;
-
-		if (agentSel.data('auto-switch-status')) {
-			agentSel.one('change', function() {
-				if (hasSwitched) return;
-				hasSwitched = true;
-				statusSel.select2('val', 'awaiting_agent');
-			});
-		}
-		if (teamSel.data('auto-switch-status')) {
-			teamSel.one('change', function() {
-				if (hasSwitched) return;
-				hasSwitched = true;
-				statusSel.select2('val', 'awaiting_agent');
-			});
-		}
-		statusSel.one('change', function() {
-			hasSwitched = true;
+		agentSel.on('change', function() {
+			agentSelText.text($(this).find(':selected').text());
+			agentSelCheck.prop('checked', true);
+		});
+		teamSel.on('change', function() {
+			teamSelText.text($(this).find(':selected').text());
+			teamSelCheck.prop('checked', true);
 		});
 
-		if (statusSel.data('resolve-auto-close')) {
-			statusSel.on('change', function() {
-				var val = $(this).val();
-
-				if (val == 'resolved' && !self.getElById('keep_open_toggle').hasClass('on')) {
-					self.getElById('keep_open_toggle').click();
-				}
-			});
-		}
+		agentSelText.text(agentSel.find(':selected').text());
+		teamSelText.text(teamSel.find(':selected').text());
 
 		//------------------------------
 		// Submit
@@ -931,8 +913,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 							agentId = DESKPRO_PERSON_ID;
 						}
 
-						this.getElById('agent_sel').val(agentId);
 						this.getElById('agent_sel').select2('val', agentId);
+						this.getElById('agent_sel').change();
 					}
 					var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
 					if (agentTeamId) {
@@ -945,8 +927,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}
 
 						if (agentTeamId) {
-							this.getElById('agent_team_sel').val(agentTeamId);
 							this.getElById('agent_team_sel').select2('val', agentTeamId);
+							this.getElById('agent_team_sel').change();
 						}
 					}
 
