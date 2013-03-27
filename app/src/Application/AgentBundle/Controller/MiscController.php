@@ -511,7 +511,9 @@ JS;
 				$draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft(
 					$content_type, $content_id, $message, $message_html, $extras
 				);
-				$inserted = $draft->id;
+				if ($draft) {
+					$inserted = $draft->id;
+				}
 			}
 		}
 

@@ -203,12 +203,13 @@ DeskPRO.Agent.RteEditor = {
 				autosaveData = newData;
 
 				saveFnRunning = true;
-				$.ajax({
+				var ajax = $.ajax({
 					url: autosaveUrl,
 					type: 'post',
 					data: newData,
 					complete: function() {
 						saveFnRunning = false;
+						textarea.data('autosave-running', null);
 					},
 					success: $.proxy(function(data) {
 						if (typeof this.opts.autosaveCallback === 'function') {
@@ -216,6 +217,7 @@ DeskPRO.Agent.RteEditor = {
 						}
 					}, this)
 				});
+				textarea.data('autosave-running', ajax);
 			}, api);
 
 			var autosaveTimer = setInterval(saveFn, autosaveInterval * 1000);

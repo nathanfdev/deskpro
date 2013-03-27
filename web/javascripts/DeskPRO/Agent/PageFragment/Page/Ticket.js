@@ -519,7 +519,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
 		});
 
-		this.getReplyTextArea().data('disable-autosave', true);
+		if (this.getReplyTextArea()) {
+			this.getReplyTextArea().data('disable-autosave', true);
+			if (this.getReplyTextArea().data('autosave-running')) {
+				this.getReplyTextArea().data('autosave-running').abort();
+				this.getReplyTextArea().data('autosave-running', null);
+			}
+		}
 
 		var form = this.getEl('replybox_wrap').find('.ticket-reply-form');
 		var keepOpen = true;
