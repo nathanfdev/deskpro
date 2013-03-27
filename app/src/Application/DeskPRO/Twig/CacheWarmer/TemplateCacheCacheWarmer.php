@@ -65,7 +65,6 @@ class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\Te
 		// plugin templates
 		$template_files = Finder::create()->in(DP_ROOT.'/plugins')->name('*.twig');
 
-		$extra = array();
 		foreach ($template_files as $file) {
 			$path = $file->getRealPath();
 			$path = str_replace('\\', '/', $path);
