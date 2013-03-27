@@ -133,13 +133,14 @@ class PersonFromEmailProcessor
 		}
 
 		App::getOrm()->persist($person);
-		App::getOrm()->flush();
+		App::getOrm()->flush($person);
 
 		$person->addEmailAddress($email);
 		App::getOrm()->persist($person);
 		App::getOrm()->persist($email);
 
-		App::getOrm()->flush();
+		App::getOrm()->flush($person);
+		App::getOrm()->flush($email);
 
 		return $person;
 	}

@@ -473,6 +473,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $_isRemoved;
 
 	/**
+	 * When true the changelog tracker is auto-commited post-flush
+	 *
+	 * @var bool
+	 */
+	protected $_auto_commit_changelog = true;
+
+	/**
 	 * If the tikcet was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
 	 */
@@ -2585,8 +2592,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_ticket_logger = null;
 	}
 
-	/**
-	 */
+
+	public function _autoSaveTicketLogs()
+	{
+		if ($this->_auto_commit_changelog) {
+			$this->_saveTicketLogs();
+		}
+	}
+
 	public function _saveTicketLogs()
 	{
 		if (!$this->_no_log && $this->_ticket_logger) {
@@ -2949,6 +2962,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		);
 	}
 
+	public function disableChangetrackerAutocommit()
+	{
+		$this->_auto_commit_changelog = false;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -2974,8 +2992,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'prePersist');
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'preUpdate');
-		$metadata->addLifecycleCallback('_saveTicketLogs', 'postPersist');
-		$metadata->addLifecycleCallback('_saveTicketLogs', 'postUpdate');
+		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postPersist');
+		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postUpdate');
 		$metadata->addLifecycleCallback('_markRemoved', 'preRemove');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
