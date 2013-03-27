@@ -7830,3 +7830,38 @@ table.data-display-table tr th {
 #notice_trigger.bleep {
 	color: #FFC300;
 }
+
+.contact-data-list {
+	li .copy-btn-outer {
+		display: none;
+	}
+	li:hover .copy-btn-outer, li .copy-btn-outer.over {
+		display: block;
+	}
+
+	.copy-btn-outer {
+		position: absolute;
+		top: 0px;
+		left: 0;
+		bottom: 0;
+		z-index: 1;
+	}
+	.copy-btn {
+		cursor: pointer;
+		display: block;
+		position: absolute;
+		top: 0px;
+		left: 0;
+		background-color: #FFF6A8;
+		border: 1px solid #DBD38F;
+		.rounded(2px);
+		line-height: 100%;
+		padding: 1px 1px 2px 1px;
+		font-size: 11px;
+		text-shadow: none;
+		&.done {
+			background-color: #9CDB7F;
+			border-color: #52DB3C;
+		}
+	}
+}

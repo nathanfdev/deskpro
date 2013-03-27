@@ -17,8 +17,51 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		var self = this;
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
+
+		// Got to keep track of our own handlers weirdly until ZeroClip does it properly
+		// https://github.com/jonrohan/ZeroClipboard/issues/90
+		var lastActiveBtn = null;
+		var lastClip = null;
+		var lastLi = null;
+
+		this.wrapper.find('.copy-btn-outer').each(function() {
+			var btnEl = this;
+			var btn = $(this);
+
+			$(this).closest('li').on('mouseover', function() {
+				lastLi = $(this);
+
+				if (lastActiveBtn) {
+					lastActiveBtn.parent().removeClass('over');
+					if (lastClip) {
+						lastClip.unglue(lastActiveBtn.find('.copy-btn').get(0));
+					}
+					lastClip = null;
+					lastActiveBtn = null;
+				}
+
+				var target = btn.find('.copy-btn').get(0);
+				var clip = new ZeroClipboard(target, {
+					btnEl: target
+				});
+				clip.on('mouseover', function(client, args) {
+					lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
+					lastLi.find('.copy-btn-outer').addClass('over');
+				});
+				clip.on('mouseout', function(client, args) {
+					lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
+				});
+				clip.on('complete', function(client, args) {
+					DeskPRO_Window.util.showSavePuff(lastLi);
+				});
+
+				lastActiveBtn = btn;
+				lastClip = clip;
+			});
+		});
 
 		this.zIndex = 30001;
 
@@ -28,8 +71,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.meta.title,
 			BASE_URL + 'agent/people/' + this.meta.person_id
 		);
-
-		var self = this;
 
 		var cw = this.contentWrapper;
 
