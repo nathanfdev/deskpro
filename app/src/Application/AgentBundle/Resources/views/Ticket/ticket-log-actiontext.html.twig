@@ -187,6 +187,7 @@
 	{% if log.details.type == 'newticket' %}{{ phrase('agent.tickets.lc_new_ticket') }}
 	{% elseif log.details.type == 'newticket_agent' %}{{ phrase('agent.tickets.lc_new_ticket_agent') }}
 	{% elseif log.details.type == 'newreply' %}{{ phrase('agent.tickets.lc_new_reply') }}
+	{% elseif log.details.message %}{{ log.details.message|replace({'DeskPRO:emails_user:custom_': ''}) }}
 	{% else %}{{ log.details.type }}
 	{% endif %}
 
