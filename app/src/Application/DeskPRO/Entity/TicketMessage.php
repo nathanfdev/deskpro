@@ -233,6 +233,17 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			$download_url = App::getSetting('core.deskpro_url');
 			$download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
 
+			// Add a sign code
+			// There was a bug briefly in the wild where a blob that failed to save using its primary fs
+			// adapter could have the wrong authcode and be served from the db, which means any embedded images saved in the text of messages
+			// (rather than being output by the router) will be incorrect
+			if (substr($m[2], -1, 1) == '0') {
+				$aids = App::getContainer()->getBlobStorage()->getAdapterIds();
+				if (in_array('fs', $aids)) {
+					$download_url .= '?sc=' . \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.install_token') . $m[2]);
+				}
+			}
+
 			if ($m[1] == 'signature_image') {
 				$url = App::getSetting('core.deskpro_url');
 				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');

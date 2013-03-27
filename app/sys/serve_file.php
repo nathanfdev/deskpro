@@ -792,12 +792,27 @@ class FilestorageLoader extends LoaderAbstract
 			}
 
 			if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
-				if ($this->error_mode == 'exception') {
-					throw new \Exception("File not found. (3)", 400);
+				// Check for a sign code that overrides the authcode check
+				// (See TicketMessage::procInlineAttach)
+				$okay = false;
+				if (!empty($_GET['sc'])) {
+					$sth = $this->getPdo()->prepare("SELECT value FROM settings WHERE name = 'core.install_token'");
+					$sth->execute();
+					$install_token = $sth->fetchColumn(0);
+
+					if (\Orb\Util\Util::checkStaticSecurityToken($_GET['sc'], $install_token . $blob_auth)) {
+						$okay = true;
+					}
 				}
-				header("HTTP/1.0 404 Not Found");
-				echo "File not found. (3)";
-				return;
+
+				if (!$okay) {
+					if ($this->error_mode == 'exception') {
+						throw new \Exception("File not found. (3)", 400);
+					}
+					header("HTTP/1.0 404 Not Found");
+					echo "File not found. (3)";
+					return;
+				}
 			}
 		}
 
