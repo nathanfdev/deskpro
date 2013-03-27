@@ -773,7 +773,7 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$res = new Response($snippet->snippetFormattedHtml($ticket, $this->person));
+		$res = new Response($snippet->snippetFormattedHtml($ticket, $ticket->person));
 		return $res;
 	}
 
