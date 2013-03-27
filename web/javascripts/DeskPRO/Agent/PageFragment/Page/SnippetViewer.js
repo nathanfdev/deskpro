@@ -533,6 +533,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			if (ev.keyCode == 13 /* enter key */) {
 				ev.preventDefault();
 				var current = activeSnippets.filter('.cursor');
+				if (!current[0]) {
+					if (activeSnippets.length == 1) {
+						current = activeSnippets;
+					}
+				}
+
 				if (current[0]) {
 					current.click();
 					self.insertSnippetEl(current);
