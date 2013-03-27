@@ -316,8 +316,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
-			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-top: 0;">
-				<div style="float:left; padding-right: 10px; padding-top: 8px;" id="{{ baseId }}_propdiv1">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
 					<label class="field-label-title">Agent</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
@@ -330,41 +329,47 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 							{% endif %}
 						{% endfor %}
 					</select>
-				</div>
-				<div style="float:left; padding-right: 10px; padding-top: 8px;" id="{{ baseId }}_propdiv2">
-					<label class="field-label-title">Team</label>
-					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
-						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
-							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
-						{% endif %}
+			</td><td style="padding-right: 5px;">
+				<label class="field-label-title">Team</label>
+				<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+					{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
+						<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+					{% endif %}
 
-						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
-						<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
-							{% for team in app.user.getAgent().getTeams() %}
-								<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+					{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+					<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+						{% for team in app.user.getAgent().getTeams() %}
+							<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+						{% endfor %}
+					</optgroup>
+					{% endif %}
+
+					{% for team in agent_teams %}
+						{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+							<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			</td><td width="100%">
+				<label class="field-label-title">Followers</label>
+				<div class="followers-list">
+					<ul id="{{ baseId }}_followers_list">
+						{% for a in agent_parts %}
+							<li class="agent-{{ a.person.id }}" data-agent-id="{{ a.person.id }}"><a class="dp-btn dp-btn-small agent-link" data-agent-id="{{ a.person.id }}"><span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span><span class="remove-row-trigger"> <i class="icon-remove"></i></span></a></li>
+						{% endfor %}
+					</ul>
+					<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
+						<select id="{{ baseId }}_followers_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+							<option value="0">Select an Agent</option>
+							{% for agent in agents %}
+								<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}" data-icon-small="{{ agent.getPictureUrl(15) }}">{{ agent.display_name }}</option>
 							{% endfor %}
-						</optgroup>
-						{% endif %}
-
-						{% for team in agent_teams %}
-							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
-								<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
-							{% endif %}
-						{% endfor %}
-					</select>
-				</div>
-				<div style="float:left; padding-right: 10px; width: 250px; padding-top: 8px;" id="{{ baseId }}_propdiv3">
-					<label class="field-label-title">Followers</label>
-					<select id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
-						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
-							<option {% if agent_parts[app.user.id] %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
-						{% endif %}
-						{% for agent in agents %}
-							{% if agent.id != app.user.id %}
-								<option {% if agent_parts[agent.id] %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-							{% endif %}
-						{% endfor %}
-					</select>
+						</select>
+					</div>
+					<a class="new-follower-btn" id="{{ baseId }}_add_follower_btn">
+						<i class="icon-signin"></i>
+						Add a follower
+					</a>
 				</div>
 			</td></tr></table>
 			<div class="sep">-</div>

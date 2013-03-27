@@ -7865,3 +7865,59 @@ table.data-display-table tr th {
 		}
 	}
 }
+
+.followers-list {
+	ul {
+		margin: 0;
+		padding: 0;
+
+		li {
+			display: block;
+			line-height: 24px;
+			float: left;
+			margin-right: 10px;
+			margin-bottom: 5px;
+		}
+	}
+
+	.new-follower {
+		display: none;
+		margin-right: 10px;
+		float: left;
+	}
+	.new-follower.on {
+		display: block;
+	}
+
+	.new-follower-btn {
+		line-height: 26px;
+		float: left;
+		color: #888888;
+		font-size: 11px;
+		font-weight: normal;
+
+		&:hover {
+			color: #000;
+		}
+	}
+
+	a.dp-btn {
+		padding: 0 5px 0 3px;
+		text-decoration: none;
+	}
+	.text {
+		background-position: 0 50%;
+		background-repeat: no-repeat;
+		padding-left: 19px;
+		line-height: 21px;
+	}
+
+	.remove-row-trigger {
+		color: #7C7C7C;
+		font-size: 11px;
+		&:hover {
+			color: #000;
+			text-shadow: 0px 0px 8px #f00;
+		}
+	}
+}

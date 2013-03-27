@@ -88,6 +88,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
+		/**
 		this.getEl('followers_sel').on('change', function() {
 			var postData = [{
 				name: 'with_set_agent_parts',
@@ -106,29 +107,65 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				});
 			});
 		});
+		 **/
 
-		var box1 = self.getEl('people_box_person_container');
-		var box2 = self.getEl('people_box_agent_container');
-		var box1_in = $('> article', box1);
-		var box2_in = $('> article', box2);
+		//------------------------------
+		// Followers
+		//------------------------------
 
-		var syncSizes = function() {
-			var h1 = 0;
-			var h2 = 0;
+		var followerSel = this.page.getEl('followers_sel');
+		var followersList = this.page.getEl('followers_list');
 
-			box1_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h1) { h1 = thisH; } });
-			box2_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h2) { h2 = thisH; } });
+		this.page.getEl('add_follower_btn').on('click', function(ev) {
+			ev.preventDefault();
+			self.page.getEl('followers_sel_wrap').toggleClass('on');
+			followerSel.select2('val', '0');
+		});
 
-			var h = (h1 > h2) ? h1 : h2;
+		followerSel.on('change', function() {
+			var agentId = parseInt($(this).val());
+			self.page.getEl('followers_sel_wrap').removeClass('on');
 
-			box2.css('min-height', h);
-			box1.css('min-height', h);
+			if (!agentId || followersList.find('.agent-' + agentId)[0]) {
+				return;
+			}
+
+			var option = followerSel.find('option[value="' + agentId + '"]');
+
+			var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="icon-remove"></i></span></a></li>');
+			li.find('span.text').css('background-image', 'url(' +option.data('icon-small') + ')').text(option.text());
+
+			followersList.append(li);
+			updateFollowersList();
+		});
+
+		followersList.on('click', '.remove-row-trigger', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+
+			$(this).closest('li').remove();
+			updateFollowersList();
+		});
+
+		var updateFollowersList = function() {
+			var postData = [{
+				name: 'with_set_agent_parts',
+				value: 1
+			}];
+			followersList.find('li').each(function() {
+				postData.push({
+					name: 'set_agent_part_ids[]',
+					value: $(this).data('agent-id')
+				});
+			});
+
+			callQueue.call(function() {
+				self.changeManager.saveChanges(postData, function() {
+					callQueue.next();
+				});
+			});
 		};
-
-		// TODO handle resize without element resize monitor
-		box1.on('resize', syncSizes);
-		box2.on('resize', syncSizes);
-		syncSizes();
 
 		//------------------------------
 		// Status
