@@ -563,7 +563,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}, 150);
 
 		agentSel.on('change', function() {
-			agentSelText.text($(this).find(':selected').text());
+			var option = agentSel.find(':selected');
+			agentSelText.text(option.data('name-short'));
+			agentSelText.css('background-image', 'url(' + option.data('icon')+ ')');
 			agentSelCheck.prop('checked', true);
 
 			if (agentSel.data('auto-switch-status')) {
@@ -579,7 +581,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			teamSelCheck.prop('checked', true);
 		});
 
-		agentSelText.text(agentSel.find(':selected').text());
+		var option = agentSel.find(':selected');
+		agentSelText.text(option.data('name-short'));
+		agentSelText.css('background-image', 'url(' + option.data('icon')+ ')');
 		teamSelText.text(teamSel.find(':selected').text());
 
 		if (agentSel.data('auto-switch-status')) {
