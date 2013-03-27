@@ -61,6 +61,7 @@
 </div>
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
+	<div class="drop-file-zone drop-file-zone-file" id="{{ replyBaseId }}_file_drop_zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 	<div class="ticket-errors-overlay">
 		<strong>
 			There are errors with the ticket fields that you must correct before replying.
@@ -172,7 +173,6 @@
 							<br class="clear"/>
 						</li>
 					</ul>
-					<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 				</div>
 				<div class="input-wrap unreset">
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>

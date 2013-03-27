@@ -338,7 +338,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//------------------------------
 
 		DeskPRO_Window.util.fileupload(this.el, {
-			dropZone: $('.option-rows', this.el),
+			dropZone: this.getElById('file_drop_zone'),
 			uploadTemplate: $('.template-upload', this.el),
 			downloadTemplate: $('.template-download', this.el)
 		});
