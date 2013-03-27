@@ -3506,23 +3506,28 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._noticeEl.hide();
 		this._noticeEl.appendTo('body');
 
-		this._noticeEl.find('.close-trigger').on('click', function() {
+		this._noticeEl.find('.close-trigger').on('click', function(ev) {
+			ev.preventDefault();
 			self._noticeEl.hide();
 		});
-		this._noticeEl.find('.dismiss-all').on('click', function() {
+		this._noticeEl.find('.dismiss-all').on('click', function(ev) {
+			ev.preventDefault();
 			self.dismissAllNotices();
 		});
-		this._noticeEl.find('.dismiss').on('click', function() {
+		this._noticeEl.find('.dismiss').on('click', function(ev) {
+			ev.preventDefault();
 			var current = self._noticeIds[self._noticeIndex];
 			self.dismissNotice(current);
 
 			self._noticeIndex--;
 			self.loadNextNotice();
 		});
-		this._noticeEl.find('.prev').on('click', function() {
+		this._noticeEl.find('.prev').on('click', function(ev) {
+			ev.preventDefault();
 			self.loadPrevNotice();
 		});
-		this._noticeEl.find('.next').on('click', function() {
+		this._noticeEl.find('.next').on('click', function(ev) {
+			ev.preventDefault();
 			self.loadNextNotice();
 		});
 
