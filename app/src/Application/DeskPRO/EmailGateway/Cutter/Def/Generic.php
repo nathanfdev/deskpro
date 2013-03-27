@@ -145,6 +145,7 @@ class Generic implements ForwardDef, QuoteDef
 			'fwd_from_email'       => null,
 			'fwd_from_name'        => null,
 			'fwd_cc_addresses'     => null,
+			'fwd_cc_unknown'       => null,
 		);
 
 		$parts = null;
@@ -249,6 +250,8 @@ class Generic implements ForwardDef, QuoteDef
 						'email' => $e->email,
 					);
 				}
+			} else {
+				$forward_data['fwd_cc_unknown'] = $cc_line;
 			}
 		}
 

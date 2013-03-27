@@ -380,6 +380,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket[$k] = $v;
 			}
 
+			if (!empty($tracker_extra['fwd_cc_unknown'])) {
+				$ticket->getTicketLogger()->recordMultiPropertyChanged('log_actions', null, array(
+					'type' => 'Free',
+					'message' => "Unknown users in CC line: " . $tracker_extra['fwd_cc_unknown']
+				));
+				unset($tracker_extra['fwd_cc_unknown']);
+			}
+
 			foreach ($tracker_extra AS $k => $v) {
 				$ticket->getTicketLogger()->recordExtra($k, $v);
 			}

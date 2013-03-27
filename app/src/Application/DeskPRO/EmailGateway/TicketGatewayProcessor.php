@@ -1409,6 +1409,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$tracker_extras['force_notify_alert'] = array($agent->id);
 		}
 
+		$fwd_info = $fwd_cutter->getData();
+		if (!empty($fwd_info['fwd_cc_unknown'])) {
+			$tracker_extras['fwd_cc_unknown'] = $fwd_info['fwd_cc_unknown'];
+		}
+
 		App::getOrm()->beginTransaction();
 		$ticket = $newticket->save(array(), $tracker_extras);
 
