@@ -316,8 +316,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
-			<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
-				<div style="float:left; padding-right: 10px;" id="{{ baseId }}_propdiv1">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-top: 0;">
+				<div style="float:left; padding-right: 10px; padding-top: 8px;" id="{{ baseId }}_propdiv1">
 					<label class="field-label-title">Agent</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
@@ -331,7 +331,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 						{% endfor %}
 					</select>
 				</div>
-				<div style="float:left; padding-right: 10px;" id="{{ baseId }}_propdiv2">
+				<div style="float:left; padding-right: 10px; padding-top: 8px;" id="{{ baseId }}_propdiv2">
 					<label class="field-label-title">Team</label>
 					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
@@ -353,7 +353,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 						{% endfor %}
 					</select>
 				</div>
-				<div style="float:left; padding-right: 10px; width: 250px" id="{{ baseId }}_propdiv3">
+				<div style="float:left; padding-right: 10px; width: 250px; padding-top: 8px;" id="{{ baseId }}_propdiv3">
 					<label class="field-label-title">Followers</label>
 					<select id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
