@@ -63,8 +63,17 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="overlay-content">
 
+			<div style="padding-bottom: 4px; vertical-align: middle;">
+				Category: <select name="category_id" id="{{ baseId }}_newsnippet_category_select">
+					{% for category in ticket_snippet_cats %}
+						<option value="{{ category.id }}">{{ category.title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+
 			<input type="hidden" name="snippet_id" value="0" />
 			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box" />
+
 			<div style="width: 100%">
 				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
 			</div>

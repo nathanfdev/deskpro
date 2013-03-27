@@ -378,6 +378,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	openSnippetEditor: function(snippet_id, title, text, html, shortcut_code) {
+
+		var catId = parseInt(this.getEl('catlist').find('li.on').data('category'));
+		if (catId) {
+			this.getEl('newsnippet_category_select').find('[value="'+catId+'"]').prop('selected', true);
+		}
+
 		snippet_id = parseInt(snippet_id, 10);
 
 		var textarea = this.snippetEditorOverlay.find('textarea[name=snippet]');
@@ -436,6 +442,11 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 				this.catTabs.addTriggerElement(li);
 				this.catTabs.activateTab(li);
+
+				var opt = $('<option />');
+				opt.val(li.data('category'));
+				opt.text(li.find('.label').text());
+				this.getEl('newsnippet_category_select').append(opt);
 			}
 		});
 	},
@@ -447,7 +458,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		}
 
 		var self = this;
-		var data = $('input, textarea', row).serializeArray();
+		var data = $('input, textarea, select', row).serializeArray();
 		var snippetId = parseInt(row.find('input[name=snippet_id]').val(), 10);
 
 		if (this.meta.ticket_id) {
@@ -457,10 +468,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			});
 		}
 
-		data.push({
-			name: 'category_id',
-			value: this.catTabs.getActiveTab().data('category')
-		});
+		if (!row.find('[name="category_id"]')[0]) {
+			data.push({
+				name: 'category_id',
+				value: this.catTabs.getActiveTab().data('category')
+			});
+		}
 
 		row.addClass('loading');
 
