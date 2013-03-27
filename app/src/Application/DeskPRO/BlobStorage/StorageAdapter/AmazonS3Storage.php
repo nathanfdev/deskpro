@@ -142,12 +142,15 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	{
 		$path = $this->resolvePath($blob->getPath());
 
+		$disposition = $blob->getMeta('content_disposition') ?: 'attachment';
+		$disposition .= '; filename="' . str_replace(array('\'', '"'), '-', $blob->getFilename()) . '"';
+
 		$this->s3->putObject(array(
 			'Bucket'             => $this->bucket,
 			'Body'               => $data,
 			'Key'                => $this->resolvePath($blob->getPath()),
 			'ContentType'        => $blob->getContentType(),
-			'ContentDisposition' => $blob->getMeta('content_disposition') ?: 'attachment',
+			'ContentDisposition' => $disposition,
 			'ACL'                => CannedAcl::PUBLIC_READ,
 		));
 
