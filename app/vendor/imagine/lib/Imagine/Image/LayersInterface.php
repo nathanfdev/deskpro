@@ -9,13 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Imagine\Exception;
-
-use RuntimeException as BaseRuntimeException;
+namespace Imagine\Image;
 
 /**
- * Imagine-specific runtime exception
+ * The layers interface
  */
-class RuntimeException extends BaseRuntimeException implements Exception
+interface LayersInterface extends \Iterator, \Countable
 {
+    /**
+     * Merge layers into the original objects
+     *
+     * @throws RuntimeException
+     */
+    public function merge();
 }

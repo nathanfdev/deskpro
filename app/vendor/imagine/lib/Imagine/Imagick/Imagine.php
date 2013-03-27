@@ -17,10 +17,13 @@ use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\RuntimeException;
 use Imagine\Image\ImagineInterface;
 
+/**
+ * Imagine implementation using the Imagick PHP extension
+ */
 final class Imagine implements ImagineInterface
 {
     /**
-     * @throws Imagine\Exception\RuntimeException
+     * @throws RuntimeException
      */
     public function __construct()
     {
@@ -38,33 +41,30 @@ final class Imagine implements ImagineInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImagineInterface::open()
+     * {@inheritdoc}
      */
     public function open($path)
     {
-        if (!is_file($path)) {
+        $handle = @fopen($path, 'r');
+
+        if (false === $handle) {
             throw new InvalidArgumentException(sprintf(
                 'File %s doesn\'t exist', $path
             ));
         }
 
         try {
-            $imagick = new \Imagick($path);
-
-            $imagick->setImageMatte(true);
-
-            return new Image($imagick);
-        } catch (\ImagickException $e) {
-            throw new RuntimeException(
-                sprintf('Could not open path "%s"', $path), $e->getCode(), $e
-            );
+            $image = $this->read($handle);
+        } catch (\Exception $e) {
+            fclose($handle);
+            throw $e;
         }
+
+        return $image;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImagineInterface::create()
+     * {@inheritdoc}
      */
     public function create(BoxInterface $size, Color $color = null)
     {
@@ -97,8 +97,7 @@ final class Imagine implements ImagineInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImagineInterface::load()
+     * {@inheritdoc}
      */
     public function load($string)
     {
@@ -117,8 +116,7 @@ final class Imagine implements ImagineInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImagineInterface::read()
+     * {@inheritdoc}
      */
     public function read($resource)
     {
@@ -126,12 +124,20 @@ final class Imagine implements ImagineInterface
             throw new InvalidArgumentException('Variable does not contain a stream resource');
         }
 
-        return $this->load(stream_get_contents($resource));
+        try {
+            $imagick = new \Imagick();
+            $imagick->readImageFile($resource);
+        } catch (\ImagickException $e) {
+            throw new RuntimeException(
+                'Could not read image from resource', $e->getCode(), $e
+            );
+        }
+
+        return new Image($imagick);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImagineInterface::font()
+     * {@inheritdoc}
      */
     public function font($file, $size, Color $color)
     {

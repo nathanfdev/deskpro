@@ -11,32 +11,19 @@
 
 namespace Imagine\Filter\Basic;
 
-use Imagine\Filter\FilterInterface;
 use Imagine\Image\ImageInterface;
+use Imagine\Filter\FilterInterface;
 
 /**
- * An apply mask filter
+ * A strip filter
  */
-class ApplyMask implements FilterInterface
+class Strip implements FilterInterface
 {
-    /**
-     * @var ImageInterface
-     */
-    private $mask;
-
-    /**
-     * @param ImageInterface $mask
-     */
-    public function __construct(ImageInterface $mask)
-    {
-        $this->mask = $mask;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function apply(ImageInterface $image)
     {
-        return $image->applyMask($this->mask);
+        return $image->strip();
     }
 }

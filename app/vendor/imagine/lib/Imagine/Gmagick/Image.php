@@ -23,21 +23,29 @@ use Imagine\Image\Fill\FillInterface;
 use Imagine\Image\Point;
 use Imagine\Image\PointInterface;
 
+/**
+ * Image implementation using the Gmagick PHP extension
+ */
 class Image implements ImageInterface
 {
     /**
-     * @var Gmagick
+     * @var \Gmagick
      */
     private $gmagick;
+    /**
+     * @var Layers
+     */
+    private $layers;
 
     /**
      * Constructs Image with Gmagick and Imagine instances
      *
-     * @param Gmagick $gmagick
+     * @param \Gmagick $gmagick
      */
     public function __construct(\Gmagick $gmagick)
     {
         $this->gmagick = $gmagick;
+        $this->layers = new Layers($this, $this->gmagick);
     }
 
     /**
@@ -52,8 +60,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::copy()
+     * {@inheritdoc}
      */
     public function copy()
     {
@@ -61,8 +68,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::crop()
+     * {@inheritdoc}
      */
     public function crop(PointInterface $start, BoxInterface $size)
     {
@@ -91,8 +97,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::flipHorizontally()
+     * {@inheritdoc}
      */
     public function flipHorizontally()
     {
@@ -108,8 +113,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::flipVertically()
+     * {@inheritdoc}
      */
     public function flipVertically()
     {
@@ -125,8 +129,23 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::paste()
+     * {@inheritdoc}
+     */
+    public function strip()
+    {
+        try {
+            $this->gmagick->stripimage();
+        } catch (\GmagickException $e) {
+            throw new RuntimeException(
+                'Strip operation failed', $e->getCode(), $e
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function paste(ImageInterface $image, PointInterface $start)
     {
@@ -157,25 +176,13 @@ class Image implements ImageInterface
             );
         }
 
-        /**
-         * @see http://pecl.php.net/bugs/bug.php?id=22435
-         */
-        if (method_exists($this->gmagick, 'flattenImages')) {
-            try {
-                $this->gmagick->flattenImages();
-            } catch (\GmagickException $e) {
-                throw new RuntimeException(
-                    'Paste operation failed', $e->getCode(), $e
-                );
-            }
-        }
+        $this->flatten();
 
         return $this;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::resize()
+     * {@inheritdoc}
      */
     public function resize(BoxInterface $size)
     {
@@ -196,12 +203,12 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::rotate()
+     * {@inheritdoc}
      */
     public function rotate($angle, Color $background = null)
     {
         try {
+            $background = $background ?: new Color('fff');
             $pixel = $this->getColor($background);
 
             $this->gmagick->rotateimage($pixel, $angle);
@@ -217,14 +224,51 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::save()
+     * Internal
+     *
+     * Applies options before save or output
+     *
+     * @param \Gmagick $image
+     * @param array    $options
+     */
+    private function applyImageOptions(\Gmagick $image, array $options)
+    {
+        if (isset($options['quality'])) {
+            $image->setCompressionQuality($options['quality']);
+        }
+
+        if(isset($options['resolution-units']) && isset($options['resolution-x'])
+          && isset($options['resolution-y'])) {
+
+            if ($options['resolution-units'] == ImageInterface::RESOLUTION_PIXELSPERCENTIMETER) {
+                $image->setimageunits(\Gmagick::RESOLUTION_PIXELSPERCENTIMETER);
+            } elseif ($options['resolution-units'] == ImageInterface::RESOLUTION_PIXELSPERINCH) {
+                $image->setimageunits(\Gmagick::RESOLUTION_PIXELSPERINCH);
+            } else {
+                throw new RuntimeException('Unsupported image unit format');
+            }
+
+            $image->setimageresolution($options['resolution-x'], $options['resolution-y']);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function save($path, array $options = array())
     {
         try {
             if (isset($options['format'])) {
                 $this->gmagick->setimageformat($options['format']);
+            }
+
+            $this->layers()->merge();
+            $this->applyImageOptions($this->gmagick, $options);
+
+            // flatten only if image has multiple layers
+            if ((!isset($options['flatten']) || $options['flatten'] === true)
+                && count($this->layers()) > 1) {
+                $this->flatten();
             }
 
             $this->gmagick->writeimage($path);
@@ -238,8 +282,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::show()
+     * {@inheritdoc}
      */
     public function show($format, array $options = array())
     {
@@ -250,12 +293,12 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::get()
+     * {@inheritdoc}
      */
     public function get($format, array $options = array())
     {
         try {
+            $this->applyImageOptions($this->gmagick, $options);
             $this->gmagick->setimageformat($format);
         } catch (\GmagickException $e) {
             throw new RuntimeException(
@@ -267,8 +310,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::__toString()
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -276,8 +318,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::thumbnail()
+     * {@inheritdoc}
      */
     public function thumbnail(BoxInterface $size, $mode = ImageInterface::THUMBNAIL_INSET)
     {
@@ -311,8 +352,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::draw()
+     * {@inheritdoc}
      */
     public function draw()
     {
@@ -320,8 +360,15 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::getSize()
+     * {@inheritdoc}
+     */
+    public function effects()
+    {
+        return new Effects($this->gmagick);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getSize()
     {
@@ -333,12 +380,12 @@ class Image implements ImageInterface
                 'Get size operation failed', $e->getCode(), $e
             );
         }
+
         return new Box($width, $height);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::applyMask()
+     * {@inheritdoc}
      */
     public function applyMask(ImageInterface $mask)
     {
@@ -377,8 +424,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::mask()
+     * {@inheritdoc}
      */
     public function mask()
     {
@@ -396,8 +442,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ManipulatorInterface::fill()
+     * {@inheritdoc}
      */
     public function fill(FillInterface $fill)
     {
@@ -429,24 +474,24 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::histogram()
+     * {@inheritdoc}
      */
     public function histogram()
     {
         $pixels = $this->gmagick->getimagehistogram();
 
         return array_map(
-            function(\GmagickPixel $pixel)
-            {
-                $info = $pixel->getColor();
+            function(\GmagickPixel $pixel) {
+                $info = $pixel->getColor(true);
+                $opacity = isset($infos['a']) ? $info['a'] : 0;
+
                 return new Color(
                     array(
                         $info['r'],
                         $info['g'],
                         $info['b'],
                     ),
-                    (int) round($info['a'] * 100)
+                    (int) round($opacity * 100)
                 );
             },
             $pixels
@@ -454,23 +499,71 @@ class Image implements ImageInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Image\ImageInterface::getColorAt()
+     * {@inheritdoc}
      */
-    public function getColorAt(PointInterface $point) {
-        if(!$point->in($this->getSize())) {
+    public function getColorAt(PointInterface $point)
+    {
+        if (!$point->in($this->getSize())) {
             throw new RuntimeException(sprintf(
                 'Error getting color at point [%s,%s]. The point must be inside the image of size [%s,%s]',
                 $point->getX(), $point->getY(), $this->getSize()->getWidth(), $this->getSize()->getHeight()
             ));
         }
-        throw new RuntimeException('Not Implemented!');
+
+        try {
+            $cropped   = clone $this->gmagick;
+            $histogram = $cropped->cropImage(1, 1, $point->getX(), $point->getY())
+                ->getImageHistogram();
+        } catch (\GmagickException $e) {
+            throw new RuntimeException('Unable to get the pixel');
+        }
+
+        $pixel = array_shift($histogram);
+
+        unset($histogram, $cropped);
+
+        return new Color(array(
+                $pixel->getColorValue(\Gmagick::COLOR_RED) * 255,
+                $pixel->getColorValue(\Gmagick::COLOR_GREEN) * 255,
+                $pixel->getColorValue(\Gmagick::COLOR_BLUE) * 255,
+            )
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function layers()
+    {
+        return $this->layers;
+    }
+
+
+    /**
+     * Internal
+     *
+     * Flatten the image.
+     */
+    private function flatten()
+    {
+        /**
+         * @see http://pecl.php.net/bugs/bug.php?id=22435
+         */
+        if (method_exists($this->gmagick, 'flattenImages')) {
+            try {
+                $this->gmagick = $this->gmagick->flattenImages();
+            } catch (\GmagickException $e) {
+                throw new RuntimeException(
+                    'Flatten operation failed', $e->getCode(), $e
+                );
+            }
+        }
     }
 
     /**
      * Gets specifically formatted color string from Color instance
      *
-     * @param Imagine\Image\Color $color
+     * @param Color $color
      *
      * @return string
      */
@@ -492,16 +585,17 @@ class Image implements ImageInterface
 
     /**
      * Internal
-     * 
+     *
      * Get the mime type based on format.
-     * 
+     *
      * @param string $format
-     * 
+     *
      * @return string mime-type
-     * 
+     *
      * @throws RuntimeException
      */
-    private function getMimeType($format) {
+    private function getMimeType($format)
+    {
         static $mimeTypes = array(
             'jpeg' => 'image/jpeg',
             'jpg'  => 'image/jpeg',

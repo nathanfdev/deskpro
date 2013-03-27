@@ -15,17 +15,20 @@ use Imagine\Filter\FilterInterface;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\BoxInterface;
 
+/**
+ * A resize filter
+ */
 class Resize implements FilterInterface
 {
     /**
-     * @var Imagine\Image\BoxInterface
+     * @var BoxInterface
      */
     private $size;
 
     /**
      * Constructs Resize filter with given width and height
      *
-     * @param Imagine\Image\BoxInterface $size
+     * @param BoxInterface $size
      */
     public function __construct(BoxInterface $size)
     {
@@ -33,8 +36,7 @@ class Resize implements FilterInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Imagine\Filter\FilterInterface::apply()
+     * {@inheritdoc}
      */
     public function apply(ImageInterface $image)
     {
