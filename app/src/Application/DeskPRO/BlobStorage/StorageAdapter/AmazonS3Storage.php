@@ -54,11 +54,23 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	 */
 	protected $base_path;
 
+	/**
+	 * @var int
+	 */
+	protected $attempts = 2;
+
+	/**
+	 * @var int
+	 */
+	protected $retry_sleep = 1;
+
 	protected function init()
 	{
-		$this->s3        = $this->options->get('s3_client');
-		$this->bucket    = $this->options->get('bucket');
-		$this->base_path = rtrim($this->options->get('base_path', ''), '/\\');
+		$this->s3            = $this->options->get('s3_client');
+		$this->bucket        = $this->options->get('bucket');
+		$this->base_path     = rtrim($this->options->get('base_path', ''), '/\\');
+		$this->attempts      = $this->options->get('attempts', 1);
+		$this->retry_sleep   = $this->options->get('retry_sleep', 1);
 
 		if (!$this->s3 || !($this->s3 instanceof S3Client)) {
 			throw new \InvalidArgumentException("s3_client must be an instance of Aws\\S3\\S3Client");
@@ -145,14 +157,27 @@ class AmazonS3Storage extends AbstractStorageAdapter
 		$disposition = $blob->getMeta('content_disposition') ?: 'attachment';
 		$disposition .= '; filename="' . str_replace(array('\'', '"'), '-', $blob->getFilename()) . '"';
 
-		$this->s3->putObject(array(
-			'Bucket'             => $this->bucket,
-			'Body'               => $data,
-			'Key'                => $this->resolvePath($blob->getPath()),
-			'ContentType'        => $blob->getContentType(),
-			'ContentDisposition' => $disposition,
-			'ACL'                => CannedAcl::PUBLIC_READ,
-		));
+		$try = $this->attempts;
+		while (--$try >= 0) {
+			try {
+				$this->s3->putObject(array(
+					'Bucket'             => $this->bucket,
+					'Body'               => $data,
+					'Key'                => $this->resolvePath($blob->getPath()),
+					'ContentType'        => $blob->getContentType(),
+					'ContentDisposition' => $disposition,
+					'ACL'                => CannedAcl::PUBLIC_READ,
+				));
+				break;
+			} catch (\Exception $e) {
+				if ($try == 0) {
+					throw $e;
+				}
+				if ($this->retry_sleep) {
+					sleep($this->retry_sleep);
+				}
+			}
+		}
 
 		$blob->setMeta('file_url', 'https://'. $this->bucket . '.s3.amazonaws.com' . $path);
 
@@ -190,11 +215,24 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	 */
 	public function readBlobString(Blob $blob)
 	{
-		/** @var $model \Guzzle\Service\Resource\Model */
-		$model = $this->s3->getObject(array(
-			'Bucket' => $this->bucket,
-			'Key'    => $this->resolvePath($blob->getPath()),
-		));
+		$try = $this->attempts;
+		while (--$try >= 0) {
+			try {
+				/** @var $model \Guzzle\Service\Resource\Model */
+				$model = $this->s3->getObject(array(
+					'Bucket' => $this->bucket,
+					'Key'    => $this->resolvePath($blob->getPath()),
+				));
+				break;
+			} catch (\Exception $e) {
+				if ($try == 0) {
+					throw $e;
+				}
+				if ($this->retry_sleep) {
+					sleep($this->retry_sleep);
+				}
+			}
+		}
 
 		return $model->get('body');
 	}
