@@ -9,8 +9,8 @@
 
 	pageMeta.filter_id = {{filter_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
-	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}';
-	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type&view_name={{ view_name }}';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_name={{ view_name }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'filter', 'content_id': filter_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
 {% elseif sla_id %}
 	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}';
@@ -19,15 +19,15 @@
 	pageMeta.sla_status = '{{ sla_status }}';
 	pageMeta.sla_filter = '{{ sla_filter }}';
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketSla';
-	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}';
-	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type&view_name={{ view_name }}';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_name={{ view_name }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'sla', 'content_id': sla_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
 
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
-	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}';
-	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type&view_name={{ view_name }}';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&group_by={{ group_by }}&grouping_option={{ grouping_option }}&view_type=$view_type&view_name={{ view_name }}';
 	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'content_type': 'filter', 'content_id': filter_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
 {% endif %}
 {% if not tickets %}
@@ -47,6 +47,11 @@ pageMeta.view_name = '{{ view_name }}';
 {% if set_group_term  %}
 	pageMeta.topGroupingTerm = '{{ set_group_term }}';
 	pageMeta.topGroupingOption = '{{ set_group_option }}';
+{% endif %}
+
+{% if group_by %}
+	pageMeta.groupBy = '{{ group_by }}';
+	pageMeta.groupByOption = '{{ grouping_option }}';
 {% endif %}
 
 {% set baseId = el_uid() %}

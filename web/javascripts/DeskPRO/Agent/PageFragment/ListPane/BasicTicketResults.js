@@ -213,6 +213,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			}
 		}
 
+		if (self.meta.groupBy) {
+			if (self.meta.routeData && self.meta.routeData.route) {
+				DeskPRO_Window.runPageRoute(self.meta.routeData.route);
+			}
+		}
+
 		self.addTicket(ticketId, false);
 		return true;
 	},
