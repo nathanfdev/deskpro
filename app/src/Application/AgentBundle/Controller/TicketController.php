@@ -960,10 +960,15 @@ class TicketController extends AbstractController
 			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 		} elseif ($email_address = $this->in->getString('email_address')) {
 
-			if (!\Orb\Validator\StringEmail::isValueValid($email_address) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
 				return $this->createJsonResponse(array(
 					'error' => true,
 					'error_code' => 'invalid_email'
+				));
+			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email_address)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_code' => 'invalid_email_gatewayaccount'
 				));
 			}
 
@@ -2591,6 +2596,11 @@ class TicketController extends AbstractController
 					'success' => false,
 					'error' => 'Please enter a valid email address',
 				));
+			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
+				return $this->createJsonResponse(array(
+					'success' => false,
+					'error' => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot set an email account as the ticket user.',
+				));
 			}
 
 			$new_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -3038,6 +3048,8 @@ class TicketController extends AbstractController
 					$errors['person_no_user'] = true;
 				} elseif (!\Orb\Validator\StringEmail::isValueValid($new_email)) {
 					$errors['person_email_address'] = true;
+				} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+					$errors['person_email_address_gateway'] = true;
 				}
 			}
 

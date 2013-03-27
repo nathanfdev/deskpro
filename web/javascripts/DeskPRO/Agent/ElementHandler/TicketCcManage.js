@@ -68,6 +68,8 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 						if (data.error) {
 							if (data.error_code == 'invalid_email') {
 								DeskPRO_Window.showAlert('Please enter a valid email address');
+							} else if (data.error_code == 'invalid_email_gatewayaccount') {
+								DeskPRO_Window.showAlert('The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot add email accounts as CCs.');
 							}
 							return;
 						}
