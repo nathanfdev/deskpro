@@ -343,7 +343,7 @@ function deskpro_build_cleanvendors_guzzle($dir)
 
 function deskpro_build_cleanvendors_imagine($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf docs tests .gitignore .travis.yml composer.json Gemfile imagine.phar phpunit.xml.dist Rakefile README.md", $dir);
+	deskpro_build_exec_exit_error("rm -rf docs tests .gitignore .travis.yml composer.json composer.lock Gemfile imagine.phar phpunit.xml.dist Rakefile README.md", $dir);
 }
 
 function deskpro_build_cleanvendors_metadata($dir)

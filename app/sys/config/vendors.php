@@ -52,7 +52,7 @@
 	'imagine' => array(
 		'into'    => DP_ROOT.'/vendor/imagine',
 		'repos'   => 'git://github.com/avalanche123/Imagine.git',
-		'version' => 'v0.2.8'
+		'version' => 'v0.4.1'
 	),
 	'metadata' => array(
 		'into'    => DP_ROOT.'/vendor/metadata',
