@@ -362,17 +362,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					if (isCtrl) {
 						if (isCtrl && (ev.which == 85)) {
 							closeStatusMenu();
-							self.page.shortcutReplySetAwaitingUser();
+							self.setReplyAsOptionName('awaiting_user');
 							return;
 						}
 						if (isCtrl && (ev.which == 65)) {
 							closeStatusMenu();
-							self.page.shortcutReplySetAwaitingAgent();
+							self.setReplyAsOptionName('awaiting_agent');
 							return;
 						}
 						if (isCtrl && (ev.which == 68)) {
 							closeStatusMenu();
-							self.page.shortcutReplySetResolved();
+							self.setReplyAsOptionName('resolved');
 							return;
 						}
 					}
