@@ -345,7 +345,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getFilenameSafe()
 	{
-		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $this->filename);
+		$filename_safe = Strings::utf8_accents_to_ascii($this->filename);
+		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
 		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
 
 		return $filename_safe;

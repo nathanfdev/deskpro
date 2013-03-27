@@ -33,7 +33,9 @@
 
 namespace Application\DeskPRO\BlobStorage;
 
+use Application\DeskPRO\Dpql\Statement\Part\String;
 use Orb\Data\ContentTypes;
+use Orb\Util\Strings;
 
 class Blob
 {
@@ -124,7 +126,10 @@ class Blob
 			return $this->filename_safe;
 		}
 
-		$this->filename_safe = preg_replace('#[^a-zA-Z0-9\.\-_]#', '-', $this->filename);
+		$this->filename_safe = $this->filename;
+		$this->filename_safe = Strings::utf8_accents_to_ascii($this->filename_safe);
+		$this->filename_safe = preg_replace('#[^a-zA-Z0-9\.\-_]#', '-', $this->filename_safe);
+		$this->filename_safe = preg_replace('#\-{2,}#', '-', $this->filename_safe);
 		return $this->filename_safe;
 	}
 

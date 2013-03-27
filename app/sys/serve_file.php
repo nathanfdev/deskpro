@@ -36,6 +36,7 @@
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Orb\Util\Strings;
 
 if (!defined('DP_ROOT')) exit('No access');
 
@@ -664,7 +665,8 @@ class FilestorageLoader extends LoaderAbstract
 
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
 
-		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename);
+		$filename_safe = Strings::utf8_accents_to_ascii($filename);
+		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
 		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
 
 		$check_namehash = strtoupper(substr(sha1($filename_safe . $blob_id), 0, 3));
@@ -693,7 +695,8 @@ class FilestorageLoader extends LoaderAbstract
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 			if ($blob['filename']) {
-				$blob['filename_safe'] = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename']);
+				$blob['filename_safe'] = Strings::utf8_accents_to_ascii($blob['filename']);
+				$blob['filename_safe'] = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename_safe']);
 				$blob['filename_safe'] = preg_replace('#\-{2,}#', '-', $blob['filename_safe']);
 			}
 
@@ -823,7 +826,8 @@ class FilestorageLoader extends LoaderAbstract
 		#------------------------------
 
 		if (!isset($blob['filename_safe'])) {
-			$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename']);
+			$filename_safe = Strings::utf8_accents_to_ascii($blob['filename']);
+			$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
 			$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
 			$blob['filename_safe'] = $filename_safe;
 		}
@@ -892,13 +896,13 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	protected function sendHeaders($blob)
 	{
-		header('Content-Type: ' . $blob['content_type'] . '; filename=' . $blob['filename_safe']);
+		header('Content-Type: ' . $blob['content_type'] . '; filename="' . $blob['filename'] . '"');
 		header('Content-Length: ' . $blob['filesize']);
 
 		if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
-			header('Content-Disposition: inline; filename=' . $blob['filename_safe']);
+			header('Content-Disposition: inline; filename="' . $blob['filename'] . '"');
 		} else {
-			header('Content-Disposition: attachment; filename=' . $blob['filename_safe']);
+			header('Content-Disposition: attachment; filename="' . $blob['filename_safe'] . '"');
 		}
 
 		$d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);

@@ -1982,7 +1982,7 @@ class Strings
 	 * @param string $string
 	 * @return string
 	 */
-	public function removeBom($string)
+	public static function removeBom($string)
 	{
 		static $bom = null;
 
