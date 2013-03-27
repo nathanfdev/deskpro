@@ -258,6 +258,7 @@ class AgentNotificationAction extends AbstractAction
 			'type'         => 'agent_notify',
 			'notify_type'  => 'updated',
 			'emailed'      => array(),
+			'emailed_info' => array(),
 			'from_name'    => $from_name,
 			'from_address' => $from_address
 		);
@@ -449,6 +450,12 @@ class AgentNotificationAction extends AbstractAction
 			$this->tracker->logMessage("[AgentNotificationAction] Email to " . $agent_id . ' ' . $agent->getPrimaryEmailAddress() . " with template $tpl (took " . sprintf("%.4f", microtime(true)-$email_time) . " s)");
 
 			$change_info['emailed'][] = $agent;
+
+			if (!empty($this->notify_info[$agent->id])) {
+				$change_info['emailed_info'][$agent->id] = $this->notify_info[$agent->id];
+			} else {
+				$change_info['emailed_info'][$agent->id] = array('is_via_trigger' => true);
+			}
 		}
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);

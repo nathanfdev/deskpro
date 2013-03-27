@@ -41,15 +41,17 @@ class AgentNotify extends AbstractLogAction
 {
 	protected $type;
 	protected $who_emailed;
+	protected $emailed_info;
 	protected $from_name = '';
 	protected $from_email = '';
 
 	public function __construct(array $info)
 	{
-		$this->type = $info['notify_type'];
-		$this->who_emailed = $info['emailed'];
-		$this->from_name   = isset($info['from_name']) ? $info['from_name'] : '';
-		$this->from_email  = isset($info['from_email']) ? $info['from_email'] : '';
+		$this->type         = $info['notify_type'];
+		$this->who_emailed  = $info['emailed'];
+		$this->emailed_info = $info['emailed_info'];
+		$this->from_name    = isset($info['from_name']) ? $info['from_name'] : '';
+		$this->from_email   = isset($info['from_email']) ? $info['from_email'] : '';
 	}
 
 	public function getLogName()
@@ -60,16 +62,25 @@ class AgentNotify extends AbstractLogAction
 	public function getLogDetails()
 	{
 		$details = array();
-		$details['type'] = $this->type;
-		$details['who_emailed'] = array();
-		$details['from_name']   = $this->from_name;
-		$details['from_email']  = $this->from_email;
+		$details['type']         = $this->type;
+		$details['who_emailed']  = array();
+		$details['emailed_info'] = array();
+		$details['from_name']    = $this->from_name;
+		$details['from_email']   = $this->from_email;
 
 		foreach ($this->who_emailed as $person) {
+			$info = isset($this->emailed_info[$person->id]) ? $this->emailed_info[$person->id] : array();
+			if (!empty($info['filters'])) {
+				foreach ($info['filters'] as &$f) {
+					$f = $f->getTitle();
+				}
+			}
+
 			$details['who_emailed'][] = array(
 				'person_id'    => $person['id'],
 				'person_name'  => $person['display_name'],
-				'person_email' => $person['primary_email_address']
+				'person_email' => $person['primary_email_address'],
+				'info'         => $info
 			);
 		}
 

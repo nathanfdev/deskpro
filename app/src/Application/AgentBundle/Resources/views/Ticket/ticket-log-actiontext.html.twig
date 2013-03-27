@@ -177,6 +177,12 @@
 					{% else %}
 						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
 					{% endif %}
+
+					{% if info.info %}
+						{% if info.info.filters %}(Subscription on filter: {{ info.info.filters|join(', ') }})
+						{% elseif info.info.is_via_trigger %}(Trigger forced notification)
+						{% endif %}
+					{% endif %}
 				</li>
 			{% endfor %}
 		</ul>
