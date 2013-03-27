@@ -781,17 +781,34 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 					var selectedGrouping = filterEl.find('ul.sub-group li.nav-selected').data('grouping-option');
 					var li = filterEl.find('li.grouping-' + selectedGrouping);
+					var currentRoute = null;
+
+					if (li.data('route')) {
+						currentRoute = li.data('route');
+					} else {
+						currentRoute = li.find('[data-route]').data('route');
+					}
 
 					var count = parseInt(li.find('span.list-counter').text());
 
 					this.setFilterGroupingContent(filterId, html, grouping);
+
+					var hasCurrentSelection = filterEl.find('ul.sub-group').find('li.grouping-' + selectedGrouping);
+
+					// New view doestn have the grouping anymore, meaning it just
+					// went to 0
+					if (!hasCurrentSelection[0]) {
+
+						if (currentRoute) {
+							DeskPRO_Window.runPageRoute(currentRoute);
+						}
 
 					// Update currently viewed list if we're viewing a
 					// subgrouping and its a non-delete update.
 					// - If its a delete, then the ticket is simply removed,
 					// any other update would require a server call to see
 					// if its visible in this group at all
-					if (selectedGrouping != 'undefined') {
+					} else if (selectedGrouping != 'undefined') {
 						filterEl = $('.filter-' + filterId, this.sectionEl);
 						li = filterEl.find('li.grouping-' + selectedGrouping);
 						if (li[0]) {
