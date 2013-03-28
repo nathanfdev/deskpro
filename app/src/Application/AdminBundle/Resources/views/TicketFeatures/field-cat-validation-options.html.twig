@@ -41,7 +41,7 @@ $(document).ready(function() {
 				<div class="dp-form-input">
 					<div class="dp-input-group">
 						<label>
-							<input type="radio" class="option-trigger" name="settings[{{ user_setting_name }}" value="0" {% if not app.getSetting(user_setting_name) %}checked="checked"{% endif %} />
+							<input type="radio" class="option-trigger" name="settings[{{ user_setting_name }}]" value="0" {% if not app.getSetting(user_setting_name) %}checked="checked"{% endif %} />
 							{{ phrase('admin.custom_fields.no_validation') }}
 						</label>
 					</div>

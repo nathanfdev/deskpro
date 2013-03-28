@@ -93,16 +93,16 @@ class GenericCategory extends AbstractPersonContextValidator
 	 */
 	protected function checkIsValid($value)
 	{
-		if (!Numbers::isInteger($value)) {
-			$this->addError('invalid_int');
-			return false;
-		}
-
 		if (!$value) {
 			if ($this->allow_none) {
 				return true;
 			}
 			$this->addError('none');
+			return false;
+		}
+
+		if (!Numbers::isInteger($value)) {
+			$this->addError('invalid_int');
 			return false;
 		}
 
