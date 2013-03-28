@@ -10,8 +10,8 @@
 	data-upload-url="{{ path('agent_accept_upload') }}"
 	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
 	data-base-id="{{replyBaseId}}"
-    data-close-reply="{{ app.user.getPref('agent.ticket_close_reply', true) ? 1 : '' }}"
-    data-close-note="{{ app.user.getPref('agent.ticket_close_note', false) ? 1 : '' }}"
+    {% if app.user.getPref('agent.ticket_close_reply') %}data-close-reply="1"{% endif %}
+    {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}
 	{% if app.user.getPref('agent.ticket_reverse_order') %}data-is-top-order="1"{% endif %}
 	{% if app.getSetting('core_tickets.resolve_auto_close_tab') %}data-resolve-auto-close="1"{% endif %}
 	{% if draft and draft.extras.is_note %}

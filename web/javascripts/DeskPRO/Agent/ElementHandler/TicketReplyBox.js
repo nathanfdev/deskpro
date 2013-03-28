@@ -19,6 +19,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.isNote = false;
 		var snippetBtn = null;
 
+		var closeTabCheck = this.getElById('close_tab_opt');
+		var closeReply    = this.el.data('close-reply') ? true : false;
+		var closeNote     = this.el.data('close-note') ? true : false;
+
+		var agentSel      = this.getElById('agent_sel');
+		var agentSelText  = this.getElById('agent_sel_text');
+		var agentSelCheck = this.getElById('agent_sel_check');
+		var teamSel       = this.getElById('agent_team_sel');
+		var teamSelText   = this.getElById('agent_team_sel_text');
+		var teamSelCheck  = this.getElById('agent_team_sel_check');
+
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val();
 			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
@@ -164,9 +175,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			});
 		}
 
-		var keepOpenBtn   = this.getElById('keep_open_toggle');
-		var keepOpenReply = this.el.data('close-reply') == '1' ? true : false;
-		var keepOpenNote  = this.el.data('close-note') == '1' ? true : false;
+		var wasAgentChecked = agentSelCheck.prop('checked');
+		var wasTeamChecked  = teamSelCheck.prop('checked');
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
 			self.el.removeClass('dp-note-on');
@@ -178,10 +188,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.isNote = false;
 			self.hideAgentNotifyList();
 
-			if (keepOpenReply) {
-				keepOpenBtn.addClass('radio-on on');
+			if (closeReply) {
+				closeTabCheck.prop('checked', true);
 			} else {
-				keepOpenBtn.removeClass('radio-on on');
+				closeTabCheck.prop('checked', false);
+			}
+
+			if (wasAgentChecked) {
+				agentSelCheck.prop('checked', true);
+			}
+			if (wasTeamChecked) {
+				teamSelCheck.prop('checked', true);
 			}
 
 			if (sigTrimmed) {
@@ -222,11 +239,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.isNote = true;
 			self.hideAgentNotifyList();
 
-			if (keepOpenNote) {
-				keepOpenBtn.addClass('radio-on on');
+			if (closeNote) {
+				closeTabCheck.prop('checked', true);
 			} else {
-				keepOpenBtn.removeClass('radio-on on');
+				closeTabCheck.prop('checked', false);
 			}
+
+			wasAgentChecked = agentSelCheck.prop('checked');
+			wasTeamChecked  = teamSelCheck.prop('checked');
+
+			agentSelCheck.prop('checked', false);
+			teamSelCheck.prop('checked', false);
 
 			if (isWysiwyg && textarea.data('redactor')) {
 				var reply = textarea.getCode();
@@ -550,13 +573,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Assignments
 		//------------------------------
 
-		var agentSel      = this.getElById('agent_sel');
-		var agentSelText  = this.getElById('agent_sel_text');
-		var agentSelCheck = this.getElById('agent_sel_check');
-		var teamSel       = this.getElById('agent_team_sel');
-		var teamSelText   = this.getElById('agent_team_sel_text');
-		var teamSelCheck  = this.getElById('agent_team_sel_check');
-
 		window.setTimeout(function() {
 			DP.select(agentSel);
 			DP.select(teamSel);
@@ -820,6 +836,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		if (this.page) {
 			this.page.setTicketReplyBox(this);
+
+			// If agent/team already set to the default values, dont precheck (makes it a bit clearer that nothing would change)
+			if (agentSel.val() == this.page.getEl('value_form').find('.agent_id').val()) {
+				agentSelCheck.prop('checked', false);
+			}
+			if (teamSel.val() == this.page.getEl('value_form').find('.agent_team_id').val()) {
+				teamSelCheck.prop('checked', false);
+			}
 		}
 	},
 
