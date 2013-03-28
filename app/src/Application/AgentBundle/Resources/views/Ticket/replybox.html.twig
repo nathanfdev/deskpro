@@ -221,28 +221,6 @@
 			</td><td valign="middle" style="vertical-align: middle;height: 30px;">
 				<div style="padding-top: 1px; line-height: 100%;">
 					<div style="display: inline-block; margin-left: 10px;">
-						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
-							<label>
-								<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
-								<span class="opt-label-text">
-									Close Tab
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span>
-								</span>
-							</label>
-						</td></tr></table>
-					</div>
-					<div style="display: inline-block; margin-left: 10px;">
-						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
-							<label class="hide-note">
-								<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
-								<span class="opt-label-text">
-									Send Email to User
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span>
-								</span>
-							</label>
-						</td></tr></table>
-					</div>
-					<div style="display: inline-block; margin-left: 10px;">
 						{% if ticket.agent %}
 							{% set assign_opt = 'core_tickets.reply_assign_assigned' %}
 						{% else %}
@@ -293,6 +271,28 @@
 									{% endfor %}
 								</select>
 							</div>
+						</td></tr></table>
+					</div>
+					<div style="display: inline-block; margin-left: 10px;">
+						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
+							<label>
+								<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
+								<span class="opt-label-text">
+									Close Tab
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span>
+								</span>
+							</label>
+						</td></tr></table>
+					</div>
+					<div style="display: inline-block; margin-left: 10px;">
+						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
+							<label class="hide-note">
+								<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
+								<span class="opt-label-text">
+									Email User
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span>
+								</span>
+							</label>
 						</td></tr></table>
 					</div>
 				</div>
