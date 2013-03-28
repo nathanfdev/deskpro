@@ -381,14 +381,15 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 							<tr>
 								<th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0;">Labels:</th>
 								<td style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">
-									<input
-										type="hidden"
-										id="{{baseId}}_labels_input"
-										class="dpe_select dpe_select_noborder"
-										data-select-width="auto"
-										data-placeholder="Add a label"
-										value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
-									/>
+									<div style="width: 98%" id="{{ baseId }}_labels_wrap">
+										<input
+											type="hidden"
+											id="{{baseId}}_labels_input"
+											class="dpe_select dpe_select_noborder"
+											data-placeholder="Add a label"
+											value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+										/>
+									</div>
 								</td>
 							</tr>
 						</tbody>

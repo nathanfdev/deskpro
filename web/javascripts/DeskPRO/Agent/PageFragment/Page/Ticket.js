@@ -806,6 +806,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
 			}
+
+			this.getEl('labels_wrap').find('.select2-input').width('95%');
 		}
 	},
 
