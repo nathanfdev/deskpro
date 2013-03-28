@@ -37,7 +37,7 @@
 							{% if result.user_category %}
 								<li class="dp-user-category"><i class="dp-icon-folder-close"></i> {{ result.user_category.getTitle() }}</li>
 							{% endif %}
-							<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</a></li>
+							<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</a></li>
 						</ul>
 					</div>
 				</td>
