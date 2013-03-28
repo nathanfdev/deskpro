@@ -138,6 +138,7 @@ class TicketPropertiesController extends AbstractController
 			'counts'       => $counts,
 			'fields'       => $fields,
 			'field_to_dep' => $field_to_dep,
+			'all_pages'    => $all_pages,
 			'dep_names'    => $dep_flat,
 		));
 	}

@@ -28,7 +28,7 @@
 	</div>
 
 	{% macro linked_deps(name, context) %}
-		{% if context.field_to_dep %}
+		{% if context.all_pages %}
 			<div class="linked-deps">
 				<span>{% if context.field_to_dep[name]|length == context.dep_names|length %}All Departments{% else %}{{ context.field_to_dep[name]|length }} Departments{% endif %}</span>
 				<div class="list">
@@ -67,7 +67,9 @@
             {{ phrase('admin.tickets.explain_products') }}
             {{ phrase('admin.tickets.have_count_products', {'count':counts.product}) }}
 		</p>
-		{{ macro.linked_deps('ticket_product', _context) }}
+		{% if app.getSetting('core.use_product') %}
+			{{ macro.linked_deps('ticket_product', _context) }}
+		{% endif %}
 	</li>
 
 	<li>
@@ -82,7 +84,9 @@
             {{ phrase('admin.tickets.explain_categories') }}
             {{ phrase('admin.tickets.have_count_categories', {'count':counts.ticket_category}) }}
 		</p>
-		{{ macro.linked_deps('ticket_category', _context) }}
+		{% if app.getSetting('core.use_ticket_category') %}
+			{{ macro.linked_deps('ticket_category', _context) }}
+		{% endif %}
 	</li>
 
 	<li>
@@ -97,7 +101,9 @@
             {{ phrase('admin.tickets.explain_priorities') }}
             {{ phrase('admin.tickets.have_count_priorities', {'count':counts.ticket_priority}) }}
 		</p>
-		{{ macro.linked_deps('ticket_priority', _context) }}
+		{% if app.getSetting('core.use_ticket_priority') %}
+			{{ macro.linked_deps('ticket_priority', _context) }}
+		{% endif %}
 	</li>
 
 	<li>
@@ -112,7 +118,9 @@
             {{ phrase('admin.tickets.explain_workflows') }}
             {{ phrase('admin.tickets.have_count_workflows', {'count':counts.ticket_workflow}) }}
 		</p>
-		{{ macro.linked_deps('ticket_workflow', _context) }}
+		{% if app.getSetting('core.use_ticket_workflow') %}
+			{{ macro.linked_deps('ticket_workflow', _context) }}
+		{% endif %}
 	</li>
 
 	{% for field in fields %}
@@ -126,7 +134,9 @@
 				<br class="clear" />
 			</header>
 			<p>{{ phrase(field.handler_class_phrase) }}</p>
-			{{ macro.linked_deps(field.id, _context) }}
+			{% if field.is_enabled %}
+				{{ macro.linked_deps(field.id, _context) }}
+			{% endif %}
 		</li>
 	{% endfor %}
 
