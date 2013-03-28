@@ -22,10 +22,12 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 					var typename = $(this).data('content-type');
 					var id = $(this).data('content-id');
 
-					data.push({
-						name: 'content[' + typename + '][]',
-						value: id
-					});
+					if (typename && id) {
+						data.push({
+							name: 'content[' + typename + '][]',
+							value: id
+						});
+					}
 				});
 
 				if (!data.length) {
