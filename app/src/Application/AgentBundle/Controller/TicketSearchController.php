@@ -1502,6 +1502,8 @@ class TicketSearchController extends AbstractController
 					$collection->add($action);
 				}
 
+				$collection->applyAllModifiers();
+
 				foreach ($tickets as $ticket) {
 
 					if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
