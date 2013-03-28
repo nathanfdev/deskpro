@@ -93,9 +93,18 @@ class BlobStorageService
 				$bs->disableAdapter('fs');
 			}
 		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
-			$adapter = new FilesystemStorage(array(
+			$opts = array(
 				'base_path' => $container->getBlobDir(),
-			));
+			);
+
+			if ($container->getSetting('core.filestorage_file_mode')) {
+				$opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
+			}
+			if ($container->getSetting('core.filestorage_dir_mode')) {
+				$opts['dir_mode'] = $container->getSetting('core.filestorage_dir_mode');
+			}
+
+			$adapter = new FilesystemStorage($opts);
 			$adapter->setLogger($logger);
 
 			$bs->addAdapter('fs', $adapter);
