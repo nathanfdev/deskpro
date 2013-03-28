@@ -116,7 +116,7 @@
 	</li>
 
 	{% for field in fields %}
-		<li class="short" {% if loop.index == 2 %}style="clear:left"{% endif %}>
+		<li {% if loop.index == 2 %}style="clear:left"{% endif %}>
 			<header>
 				<span class="field-id">ID: {{ field.id }}</span>
 				<h3><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">{{ field.title }}</a></h3>
