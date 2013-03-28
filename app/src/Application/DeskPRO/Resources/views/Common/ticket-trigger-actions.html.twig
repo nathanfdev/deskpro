@@ -65,11 +65,13 @@
 	</div>
 </div>
 
-<div class="builder-type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete" data-rule-group="Ticket">
-	<div class="builder-options">
-		<input type="hidden" name="delete_ticket" value="1" />
+{% if not app.user.getHelper('PermissionsManager').get('TicketChecker') or app.user.getHelper('PermissionsManager').get('TicketChecker').canDeleteAny() %}
+	<div class="builder-type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete" data-rule-group="Ticket">
+		<div class="builder-options">
+			<input type="hidden" name="delete_ticket" value="1" />
+		</div>
 	</div>
-</div>
+{% endif %}
 
 <div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department" data-rule-group="Ticket">
 	<div class="builder-options">
