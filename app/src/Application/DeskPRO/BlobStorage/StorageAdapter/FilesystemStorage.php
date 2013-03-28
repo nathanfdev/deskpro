@@ -136,7 +136,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 		if (!$fp_source) {
 			@fclose($fp_source);
 			$this->logger->logError("[FilesystemStorage] (writeBlobFromFile) Could not open $source_path for reading");
-			throw new \RuntimeException("Could not open \$source_path for reading");
+			throw new \RuntimeException("Could not open source_path for reading: $source_path");
 		}
 
 		try {
@@ -211,7 +211,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 		if (!$fp_target) {
 			@fclose($fp_target);
 			$this->logger->logError("[FilesystemStorage] (readBlobToFile) Could not open $target_path for writing");
-			throw new \RuntimeException("Could not open \$target_path for writing");
+			throw new \RuntimeException("Could not open target_path for writing: $target_path");
 		}
 
 		try {
@@ -261,7 +261,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
 		if (!$fp) {
 			$this->logger->logError("[FilesystemStorage] (getBlobWriteStream) Failed to open path for writing: $path");
-			throw new \RuntimeException("Could not open blob for writing");
+			throw new \RuntimeException("Could not open blob for writing: $path");
 		}
 
 		return $fp;
@@ -279,7 +279,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
 		if (!$fp) {
 			$this->logger->logError("[FilesystemStorage] (getBlobReadStream) Failed to open path for reading: $path");
-			throw new \RuntimeException("Could not open blob for reading");
+			throw new \RuntimeException("Could not open blob for reading: $path");
 		}
 
 		return $fp;
