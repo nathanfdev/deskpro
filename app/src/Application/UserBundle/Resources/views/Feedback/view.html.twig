@@ -54,6 +54,9 @@
 					{% endif %}
 					<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
 				</ul>
+				{% if feedback.hidden_status and app.user.is_agent %}
+					<div class="sub-note">{{ phrase('user.general.can-view-because-agent') }}</div>
+				{% endif %}
 			</td>
 		</tr></table>
 	</header>
