@@ -229,7 +229,22 @@ class UserChatManager
 					'user_hidden' => true,
 					'is_html' => false,
 				));
-				$this->addUserTrack($convo, $this->visitor->getLastPage());
+				if (isset($_GET['parent_url']) && is_string($_GET['parent_url'])) {
+					$this->addUserTrack($convo, $_GET['parent_url']);
+				} else {
+					$url = $this->visitor->getLastPage();
+					if ($k = strpos($url, 'parent_url=')) {
+						$str = substr($url, $k);
+						$vars = null;
+						@parse_str($str, $vars);
+
+						if (!empty($vars['parent_url']) && is_string($vars['parent_url'])) {
+							$url = $vars['parent_url'];
+						}
+					}
+
+					$this->addUserTrack($convo, $url);
+				}
 			}
 
 			if (!$convo->agent && $this->auto_assigner) {
