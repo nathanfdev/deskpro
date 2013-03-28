@@ -43,9 +43,26 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 	 */
 	protected $base_path;
 
+	/**
+	 * @var int
+	 */
+	protected $file_mode = 0777;
+
+	/**
+	 * @var int
+	 */
+	protected $dir_mode = 0777;
+
 	protected function init()
 	{
 		$this->base_path = rtrim($this->options->get('base_path'), '/\\');
+
+		if ($this->options->has('file_mode')) {
+			$this->file_mode = (int)$this->options->get('file_mode');
+		}
+		if ($this->options->has('dir_mode')) {
+			$this->file_mode = (int)$this->options->get('dir_mode');
+		}
 	}
 
 
@@ -150,6 +167,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
 		$this->logger->logInfo("[FilesystemStorage] (writeBlobFromStream) Wrote " . Numbers::filesizeDisplay($ret) . " from stream to " . $this->resolvePath($blob->getPath()));
 
+		$path = $this->resolvePath($blob->getPath());
+		if (file_exists($path)) {
+			$this->_chmod($path, $this->file_mode);
+		}
+
 		return $ret;
 	}
 
@@ -232,6 +254,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
 		if (!is_dir($dir)) {
 			@mkdir($dir, 0777, true);
+			$this->_chmod($dir, $this->dir_mode);
 		}
 
 		$fp = @fopen($path, 'w');
@@ -288,5 +311,19 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 		}
 
         return $size;
+	}
+
+	/**
+	 * chmod's a file to $mode. Resets current umask in case it is set.
+	 *
+	 * @param string $file
+	 * @param int $mode
+	 */
+	private function _chmod($file, $mode)
+	{
+		$current_umask = umask();
+        @umask(0000);
+		@chmod($file, $mode);
+        @umask($current_umask);
 	}
 }
