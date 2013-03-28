@@ -148,17 +148,19 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	removeRowById: function(id) {
+		var self = this;
 		var row = $('#dp_notify_list').find('li.id-' + id);
-		if (row[0]) {
-			this.removeRow(row);
-		}
+		row.each(function() {
+			self.removeRow($(this));
+		});
 	},
 
 	removeRowByClass: function(id) {
+		var self = this;
 		var row = $('#dp_notify_list').find('li.' + id);
-		if (row[0]) {
-			this.removeRow(row);
-		}
+		row.each(function() {
+			self.removeRow($(this));
+		})
 	},
 
 	modCount: function(type, op, count) {
