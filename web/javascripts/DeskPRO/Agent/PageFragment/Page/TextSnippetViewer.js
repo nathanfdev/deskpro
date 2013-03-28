@@ -51,24 +51,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var snippetId = $(this).data('snippet-id');
-			var snippetEl = $('.snippet-' + snippetId, self.wrapper);
-			var snippetValEl = $('textarea.value.formatted', snippetEl);
-
-			if (!snippetValEl.length) {
-				snippetValEl = $('textarea.value.raw', snippetEl);
-			}
-
-			var snippet = snippetValEl.val().trim();
-
-			var evData = {
-				event: ev,
-				snippetId: snippetId,
-				snippetEl: snippetEl,
-				snippet: snippet
-			};
-
-			self.fireEvent('snippetClick', [evData]);
+			self.insertSnippetEl($(this), ev);
 
 			self.closeSelf();
 		});
@@ -108,6 +91,27 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			DeskPRO_Window.activeListNav = null;
 		}
 		if (this.newCatOverlay) this.newCatOverlay.remove();
+	},
+
+	insertSnippetEl: function(el, ev) {
+		var snippetId = el.data('snippet-id');
+		var snippetEl = $('.snippet-' + snippetId, this.wrapper);
+		var snippetValEl = $('textarea.value.formatted', snippetEl);
+
+		if (!snippetValEl.length) {
+			snippetValEl = $('textarea.value.raw', snippetEl);
+		}
+
+		var snippet = snippetValEl.val().trim();
+
+		var evData = {
+			event: ev || null,
+			snippetId: snippetId,
+			snippetEl: snippetEl,
+			snippet: snippet
+		};
+
+		this.fireEvent('snippetClick', [evData]);
 	},
 
 	//#########################################################################
@@ -384,13 +388,8 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 
 	saveSnippet: function(row) {
 		var self = this;
-		var data = $('input, textarea', row).serializeArray();
+		var data = $('input, textarea, select', row).serializeArray();
 		var snippetId = parseInt(row.find('input[name=snippet_id]').val(), 10);
-
-		data.push({
-			name: 'category_id',
-			value: this.catTabs.getActiveTab().data('category')
-		});
 
 		row.addClass('loading');
 
@@ -407,7 +406,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 				new_row.hide();
 
 				if (!snippetId) {
-					$('.cat-' + data.category_id + ' .new-snippet', this.wrapper).after(new_row);
+					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).before(new_row);
 					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).hide();
 				} else {
 					$('.snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
@@ -455,12 +454,20 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 		var self = this;
 		this.wrapper.find('.filter-input').on('keydown', function(ev) {
 			var activeSnippets = self.activeSnippets;
+			if (!activeSnippets) {
+				self.refreshFilteredNavList();
+				activeSnippets = self.activeSnippets;
+			}
 
 			if (ev.keyCode == 13 /* enter key */) {
 				ev.preventDefault();
+				ev.stopPropagation();
 				var current = activeSnippets.filter('.cursor');
+				if (!current[0] && activeSnippets[0]) {
+					current = activeSnippets.first();
+				}
+
 				if (current[0]) {
-					current.click();
 					self.insertSnippetEl(current);
 					window.setTimeout(function() {
 						self.activeSection.find('.filter-input').first().focus();

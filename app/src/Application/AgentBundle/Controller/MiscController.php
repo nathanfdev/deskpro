@@ -784,10 +784,8 @@ JS;
 			$snippet->shortcut_code = null;
 		}
 
-		$this->em->transactional(function($em) use ($snippet) {
-			$em->persist($snippet);
-			$em->flush();
-		});
+		$this->em->persist($snippet);
+		$this->em->flush();
 
 		// Check for dupe codes
 		if ($snippet->shortcut_code) {
