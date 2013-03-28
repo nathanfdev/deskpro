@@ -649,6 +649,8 @@ class Upgrade
 			$write_status("error_basic_checks_fail");
 			$this->outAndLog("Failed basic checks");
 
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+
 			$e = new \RuntimeException("Failed basic checks");
 			$this->sendLog($e);
 			exit(10);
@@ -663,6 +665,8 @@ class Upgrade
 		try {
 			$this->getLatestVersion();
 		} catch (ServiceCallException $e) {
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+
 			$write_status("error_server_comm", $e->getMessage());
 			$this->outAndLog("Error communicating with server: " . $e->getMessage());
 			$this->sendLog($e);
@@ -678,6 +682,8 @@ class Upgrade
 			if (!$is_quiet) {
 				$this->out("You are all up to date.");
 			}
+
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 			exit(0);
 		}
 
@@ -700,6 +706,8 @@ class Upgrade
 
 			$write_status("downloading_update_done");
 		} catch (\Exception $e) {
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+
 			$write_status("error_downloading_update", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
