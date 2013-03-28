@@ -368,13 +368,14 @@ class Structure implements PersonContextInterface
 			$counts = $this->db->fetchAllKeyValue("
 				SELECT status, COUNT(*)
 				FROM feedback
-				WHERE category_id IN ($in_cats)
+				WHERE category_id IN ($in_cats) AND hidden_status IS NULL
 				GROUP BY status
 			");
 		} else {
 			$counts = $this->db->fetchAllKeyValue("
 				SELECT status, COUNT(*)
 				FROM feedback
+				WHERE hidden_status IS NULL
 				GROUP BY status
 			");
 		}
