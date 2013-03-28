@@ -127,7 +127,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
-				minHeight: 40,
+				minHeight: 65,
 				maxHeight: 40,
 				inlineHiddenPosition: this.getEl('is_html_reply'),
 				convertLinks: false, // we'll do it ourselves
@@ -187,8 +187,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 						var tmp = ed.height();
 						if (lastH != tmp) {
 							lastH = tmp;
-							self.getEl('replybox').css('height', lastH+69);
-							self.getEl('messages_box').css('bottom', lastH+69);
+							self.getEl('replybox').css('height', lastH+44);
+							self.getEl('messages_box').css('bottom', lastH+44);
 						}
 					}, 50);
 				});
