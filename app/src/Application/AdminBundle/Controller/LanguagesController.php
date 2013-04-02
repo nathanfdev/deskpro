@@ -375,12 +375,14 @@ class LanguagesController extends AbstractController
 				WHERE groupname = 'custom' OR language_id = $language_id
 			", array(), 0, 0);
 
-			//$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
-			//$vars['master_phrases'] = array_merge($vars['master_phrases'], $vars['lang_phrases']['custom']);
-
 			foreach ($vars['master_phrases'] as $k => $v) {
 				if (!isset($custom_ids[$k])) {
 					unset($vars['master_phrases'][$k]);
+				}
+			}
+			foreach ($custom_ids as $k) {
+				if (!isset($vars['master_phrases'][$k]) && isset($vars['lang_phrases']['custom'][$k])) {
+					$vars['master_phrases'][$k] = $vars['lang_phrases']['custom'][$k];
 				}
 			}
 		}
