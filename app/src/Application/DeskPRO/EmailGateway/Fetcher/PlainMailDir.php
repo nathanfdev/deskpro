@@ -158,6 +158,12 @@ class PlainMailDir extends AbstractFetcher
 
 		$mailfile = $this->maildir . '/' . $next;
 
+		if (!is_writable($mailfile)) {
+			error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
+			$this->logger->logError("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
+			return $this->_readNext();
+		}
+
 		if (dp_get_config('plainmaildir_track_read')) {
 			$check_name = 'plainmaildir::' . $mailfile;
 			$check = App::getDb()->fetchColumn("
@@ -225,7 +231,10 @@ class PlainMailDir extends AbstractFetcher
 		$this->logger->log("Marking message as deleted: $id", 'debug');
 
 		if (!unlink($this->maildir . '/' . $id)) {
-			$this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
+			sleep(1);
+			if (!unlink($this->maildir . '/' . $id)) {
+				$this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
+			}
 		}
 	}
 
