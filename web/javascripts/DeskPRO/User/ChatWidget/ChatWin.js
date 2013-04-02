@@ -165,6 +165,12 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			itemEl.detach().appendTo('#fields_container');
 			itemEl.show();
 		}, this);
+
+		if ($('#dp_chat_start_form .inner-wrapper').height() > $('#dp_chat_start_form').height()) {
+			$('#dp_chat_start_footer').addClass('dp-relative');
+		} else {
+			$('#dp_chat_start_footer').removeClass('dp-relative');
+		}
 	},
 
 	findItemForEl: function(el) {
