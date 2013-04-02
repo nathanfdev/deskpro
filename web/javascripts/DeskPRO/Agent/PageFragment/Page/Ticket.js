@@ -349,6 +349,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	setTicketReplyBox: function(rb) {
 		var isFirst = this.ticketReplyBox ? false : true;
+
+		if (this.ticketReplyBox) {
+			this.ticketReplyBox.destroy();
+			this.ticketReplyBox = null;
+		}
+
 		this.ticketReplyBox = rb;
 
 		if (isFirst && this.meta.ticket_reverse_order) {
@@ -647,6 +653,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	destroyPage: function() {
+		if (this.ticketReplyBox) {
+			this.ticketReplyBox.destroy();
+			this.ticketReplyBox = null;
+		}
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 

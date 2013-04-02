@@ -128,7 +128,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 					$(this).select2('destroy');
 				});
 				self.wrapper.find('textarea.with-redactor').each(function() {
-					$(this).getObject().destroy();
+					var obj = $(this).getObject();
+					if (obj) {
+						$(this).getObject().destroy();
+					}
 				});
 
 				self.wrapper.data('with-page-fragment', null);

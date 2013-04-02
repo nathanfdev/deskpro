@@ -1077,5 +1077,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		if (this.agentNotifyList) {
 			this.agentNotifyList.remove();
 		}
+		if (this.snippetsViewer) {
+			this.snippetsViewer.destroy();
+		}
 	}
 });
