@@ -679,7 +679,13 @@ class Translate implements PersonContextInterface
 
 			$phrase_text = $this->getPhraseObject($object, $property, $language);
 		} elseif (isset($vars['count'])) {
-			$phrase_text = $this->getPhraseTextCount($phrase_name, $vars['count'], $language);
+			try {
+				$phrase_text = $this->getPhraseTextCount($phrase_name, $vars['count'], $language);
+			} catch (\Exception $e) {
+				// Fall back on just using a normal phrase without any pluralising
+				// In case user modified phrase to remove the plural syntax
+				$phrase_text = $this->getPhraseText($phrase_name, $language);
+			}
 		} else {
 			$phrase_text = $this->getPhraseText($phrase_name, $language);
 		}
