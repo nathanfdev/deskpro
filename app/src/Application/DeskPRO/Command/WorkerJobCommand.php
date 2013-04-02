@@ -185,7 +185,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 				$last_timestamp = null;
 				$x = 0;
 				while ($x++ < 100) {
-					$line_start = strrpos($log, "\n[", min($last_pos-1000, 0));
+					$line_start = strrpos($log, "\n[", max($last_pos-1000, 0));
 					$last_timestamp = Strings::extractRegexMatch('#\[((.*?)-(.*?)-(.*?) (.*?))\]#', substr($log, $line_start, 100));
 
 					if ($last_timestamp) {
