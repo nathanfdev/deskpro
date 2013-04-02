@@ -819,7 +819,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		imageEls.colorbox({
 			title: function(){
-				var url = $(this).attr('href');
+				if ($(this).data('deskpro-url')) {
+					var url = $(this).data('deskpro-url');
+				} else {
+					var url = $(this).attr('href');
+				}
 				var dl_url = Orb.appendQueryData(url, 'dl', '1');
 				return '<a href="'+url+'" target="_blank">Open In New Window</a> | <a href="'+dl_url+'" target="_blank">Download</a>'
 			},

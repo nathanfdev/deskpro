@@ -874,6 +874,18 @@ class FilestorageLoader extends LoaderAbstract
 		}
 
 		if (!empty($blob['file_url']) && $blob['file_url']) {
+			// Need to send through this controller if its a download
+			// request and the file is usually stored with an inline disposition
+			if (!empty($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
+				$this->sendHeaders($blob);
+				$fp = @fopen($blob['file_url'], 'r');
+				while (!@feof($fp)) {
+					echo @fread($fp, 1024);
+				}
+				@fclose($fp);
+				exit;
+			}
+
 			header("HTTP/1.1 301 Moved Permanently");
 			header("Location: {$blob['file_url']}");
 			exit;
