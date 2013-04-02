@@ -47,9 +47,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			self.insertSnippetEl($(this), ev);
+			var evData = {
+				cancelClose: false
+			};
+			self.insertSnippetEl($(this), ev, evData);
 
-			self.closeSelf();
+			if (!evData.cancelClose) {
+				self.closeSelf();
+			}
 		});
 
 		this.wrapper.on('click', '.expand-trigger', function(ev) {
@@ -103,7 +108,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (this.newCatOverlay) this.newCatOverlay.remove();
 	},
 
-	insertSnippetEl: function(el, event) {
+	insertSnippetEl: function(el, event, evData) {
 		var snippetId = el.data('snippet-id');
 		var snippetEl = $('.snippet-' + snippetId, this.wrapper).first();
 		var snippetValEl = $('textarea.value.formatted.text', snippetEl);
@@ -119,13 +124,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			snippetHtml = snippetValHtmlEl.val().trim();
 		}
 
-		var evData = {
+		evData = evData || {};
+		evData = $.extend(evData, {
 			event: event || null,
 			snippetId: snippetId,
 			snippetEl: snippetEl,
 			snippet: snippet,
 			snippetHtml: snippetHtml
-		};
+		});
 
 		this.fireEvent('snippetClick', [evData]);
 	},

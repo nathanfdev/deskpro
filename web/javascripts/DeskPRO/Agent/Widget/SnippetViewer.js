@@ -9,7 +9,8 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			viewUrl: null,
 			triggerElement: null,
 			positionMode: 'side',
-			sidePosition: 'bottom'
+			sidePosition: 'bottom',
+			destroyOnClose: false
 		};
 
 		var self = this;
@@ -36,6 +37,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 				});
 
 				page.addEvent('snippetClick', function(ev) {
+					ev.page = page;
 					self.fireEvent('snippetClick', [ev]);
 				});
 			}
@@ -53,6 +55,10 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			this.pop.close();
 		}
 		DeskPRO.Agent.Widget.SnippetViewer.HasOpen = false;
+
+		if (this.options.destroyOnClose) {
+			this.destroy();
+		}
 	},
 
 	destroy: function() {

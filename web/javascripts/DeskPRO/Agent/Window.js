@@ -570,11 +570,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 		$('#user_settings_link_snippets').on('click', function(ev) {
 			ev.preventDefault();
-			var snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-				viewUrl: $(this).data('snippet-viewer-url')
-			});
 
-			snippetsViewer.open();
+			// Open it for the current ticket if we are viewing one
+			var currentTab = DeskPRO_Window.TabBar.getActiveTab();
+			if (currentTab && currentTab.page && currentTab.page.TYPENAME && currentTab.page.TYPENAME == 'ticket') {
+				currentTab.page.shortcutOpenSnippets();
+			} else {
+				var snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+					viewUrl: $(this).data('snippet-viewer-url'),
+					destroyOnClose: true,
+					onSnippetClick: function(evData) {
+						evData.cancelClose = true;
+						evData.snippetEl.find('.edit-trigger').click();
+					}
+				});
+				snippetsViewer.open();
+			}
 		});
 
 		$(document).on('click', '.click-confirm', function(ev) {
