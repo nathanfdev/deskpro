@@ -157,6 +157,29 @@ class PlainMailDir extends AbstractFetcher
 		}
 
 		$mailfile = $this->maildir . '/' . $next;
+
+		if (dp_get_config('plainmaildir_track_read')) {
+			$check_name = 'plainmaildir::' . $mailfile;
+			$check = App::getDb()->fetchColumn("
+				SELECT data
+				FROM install_data
+				WHERE build = ? AND name = ?
+				LIMIT 1
+			", array(DP_BUILD_TIME, $check_name));
+
+			if ($check) {
+				$this->logger->logError("Skipping mailfile $mailfile because it has been marked as read");
+				error_log("Skipping mailfile $mailfile because it has been marked as read");
+				return $this->_readNext();
+			}
+
+			App::getDb()->insert('install_data', array(
+				'build' => DP_BUILD_TIME,
+				'name'  => $check_name,
+				'data'  => 1
+			));
+		}
+
 		$message_size = filesize($mailfile);
 
 		$start_time = microtime(true);
@@ -200,7 +223,10 @@ class PlainMailDir extends AbstractFetcher
 	protected function _doneRead($id)
 	{
 		$this->logger->log("Marking message as deleted: $id", 'debug');
-		@unlink($this->maildir . '/' . $id);
+
+		if (!unlink($this->maildir . '/' . $id)) {
+			$this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
+		}
 	}
 
 
