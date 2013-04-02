@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
@@ -163,25 +162,10 @@ if (($k = array_search('--force', $args)) !== false) {
 }
 
 #------------------------------
-# Proc file path
-#------------------------------
-
-$proc_file = CloudConfig::getDatastorePath() . '/_cloud/cloud-cron.%RANGE_START%.%RANGE_END%.time';
-if (($k = array_search('--proc-file', $args)) !== false && isset($args[$k+1])) {
-	$proc_file = $args[$k+1];
-}
-
-$proc_file = str_replace(array('%RANGE_START%', '%RANGE_END%'), array($range_start, $range_end), $proc_file);
-
-if (!is_dir(dirname($proc_file))) {
-	mkdir(dirname($proc_file), 0777, true);
-}
-
-#------------------------------
 # Proc file timeout
 #------------------------------
 
-$proc_timeout = 300;
+$proc_timeout = 900;
 if (($k = array_search('--proc-timeout', $args)) !== false && isset($args[$k+1])) {
 	$proc_timeout = $args[$k+1];
 }
@@ -190,13 +174,13 @@ if (($k = array_search('--proc-timeout', $args)) !== false && isset($args[$k+1])
 # Alert threshold
 #------------------------------
 
-$alert_threshold = 60;
+$alert_threshold = 500;
 if (($k = array_search('--alert-threshold', $args)) !== false && isset($args[$k+1])) {
 	$alert_threshold = $args[$k+1];
 }
 
 #------------------------------
-# Account type
+# Proc file timeout
 #------------------------------
 
 $account_type = null;
@@ -207,6 +191,25 @@ if (($k = array_search('--account-type', $args)) !== false && isset($args[$k+1])
 if ($account_type && $account_type != 'demo'&& $account_type != 'paid') {
 	echo "--account-type must be 'demo' or 'paid'\n";
 	exit(1);
+}
+
+
+#------------------------------
+# Proc file path
+#------------------------------
+
+$proc_file = CloudConfig::getDatastorePath() . '/_cloud/cloud-cron.%TYPE%.%RANGE_START%.%RANGE_END%.time';
+if (($k = array_search('--proc-file', $args)) !== false && isset($args[$k+1])) {
+	$proc_file = $args[$k+1];
+}
+
+$proc_file = str_replace(array('%RANGE_START%', '%RANGE_END%'), array($range_start, $range_end), $proc_file);
+if ($account_type) {
+	$proc_file = str_replace('%TYPE%', $account_type, $proc_file);
+}
+
+if (!is_dir(dirname($proc_file))) {
+	mkdir(dirname($proc_file), 0777, true);
 }
 
 ########################################################################
@@ -256,7 +259,6 @@ if (file_exists($proc_file)) {
 
 		$DO_REPORT_LOG = true;
 	} else {
-		// Exit to prevent it from running again
 		exit;
 	}
 }
@@ -279,10 +281,10 @@ $db = CloudConfig::getDb();
 if ($account_type) {
 	if ($account_type == 'demo') {
 		$runner_id = "demo_$range_start-$range_end";
-		$where = "cloud_accounts.is_demo = 1 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1 AND cloud_accounts.date_demo_expire > NOW()";
+		$where = "cloud_accounts.is_demo = 1 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1 AND cloud_accounts.date_demo_expire > NOW() AND cloud_accounts.is_cancelled = 0 AND cloud_accounts.is_deleted = 0";
 	} else {
 		$runner_id = "paid_$range_start-$range_end";
-		$where = "cloud_accounts.is_demo = 0 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1";
+		$where = "cloud_accounts.is_demo = 0 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1 AND cloud_accounts.is_cancelled = 0 AND cloud_accounts.is_deleted = 0";
 	}
 	$st = $db->prepare("
 		SELECT COUNT(*)
@@ -300,11 +302,10 @@ if ($account_type) {
 
 	$per_run = ceil($num_sites / $range_end);
 	$limit_start = ($range_start - 1) * $per_run;
-
 	$st = $db->prepare("
 		SELECT
 			cloud_sites.*,
-			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, cloud_accounts.cron_off
+			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 		WHERE $where
@@ -316,9 +317,7 @@ if ($account_type) {
 	$sites = $st->fetchAll(\PDO::FETCH_ASSOC);
 
 } else {
-
-	$runner_id = "all_$range_start-$range_end";
-
+	$runner_id = 'all';
 	$st = $db->prepare("
 		SELECT COUNT(*)
 		FROM cloud_sites
@@ -339,7 +338,7 @@ if ($account_type) {
 	$st = $db->prepare("
 		SELECT
 			cloud_sites.*,
-			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, cloud_accounts.cron_off
+			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 		WHERE cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
@@ -358,18 +357,13 @@ dp_logf("Batch %d of %d running %d of %d sites", $range_start, $range_end, count
 #------------------------------
 
 foreach ($sites as $siteinfo) {
-	if ($siteinfo['cron_off']) {
-		dp_logf("--- SITE %d %s cron_off=1, skipping ---", $siteinfo['id'], $siteinfo['master_domain']);
-		continue;
-	}
-
 	$site_time_begin = microtime(true);
 	dp_logf("--- BEGIN SITE %d %s ---", $siteinfo['id'], $siteinfo['master_domain']);
 
 	$pass_args_set = $pass_args;
 	$pass_args_set = str_replace('%DPC_SITE_ID%', $siteinfo['id'], $pass_args_set);
 
-	$cmd = "/usr/bin/nice -n 3 /usr/bin/php cron.php --verbose $pass_args_set";
+	$cmd = "nice -n 5 php cron.php --verbose $pass_args_set";
 	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $siteinfo['build_number']);
 	$proc->setTimeout(900);
@@ -402,15 +396,20 @@ $time_start = DP_TIME_START;
 $time_end   = DP_TIME_END;
 $time_total = DP_TIME_END - DP_TIME_START;
 
-$db->exec("
-	INSERT INTO cloud_cron_runs
-	SET
-		runner_id    = '$runner_id',
-		date_start   = '$date_start',
-		time_start   = '$time_start',
-		time_end     = '$time_end',
-		time_total   = '$time_total'
-");
+try {
+	$db->exec("
+		INSERT INTO cloud_cron_runs
+		SET
+			runner_id    = '$runner_id',
+			date_start   = '$date_start',
+			time_start   = '$time_start',
+			time_end     = '$time_end',
+			time_total   = '$time_total'
+	");
+} catch (\Exception $e) {
+	error_log($e->getMessage());
+	echo $e->getMessage();
+}
 
 if ($alert_threshold && $time_total > $alert_threshold) {
 	$DO_REPORT_LOG = true;
