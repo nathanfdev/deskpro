@@ -364,7 +364,6 @@ class TicketsStep extends AbstractZendeskStep
 
 					if (!empty($line['attachments'])) {
 						foreach ($line['attachments'] as $attach) {
-							print_r($attach);
 							$add_datastore[] = array(
 								'typename' => 'attach.ticket.' . uniqid('t'.$ticket_id),
 								'data'     => serialize(array(
