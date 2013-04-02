@@ -7,7 +7,11 @@
 			{% if log.sla %}
 				<span class="sla">SLA {{ log.sla.title }}{% if log.sla_status == 'warning' %} (Warning){% elseif log.sla_status == 'fail' %} (Failed){% endif %}</span>,
 			{% elseif log.trigger_id %}
-				<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: log.trigger_id}) }}</span>,
+				{% if log.details.trigger_is_escalation %}
+					<span class="trigger-id">Escalation {{ log.trigger_id }}</span>,
+				{% else %}
+					<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: log.trigger_id}) }}</span>,
+				{% endif %}
 			{% elseif log.person %}
 				<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': log.person.id}) }}">{{ log.person.display_name }}</a>,
 			{% endif %}

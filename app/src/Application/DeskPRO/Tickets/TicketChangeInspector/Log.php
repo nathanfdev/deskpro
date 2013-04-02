@@ -236,6 +236,9 @@ class Log
 				if ($action) {
 					if (isset($info['trigger_id'])) {
 						$action->addMetaData('trigger_id', $info['trigger_id']);
+						if (App::getDataService('ticket_trigger')->hasEscalationId($info['trigger_id'])) {
+							$action->addMetaData('trigger_is_escalation', true);
+						}
 					}
 					if (isset($info['sla_id'])) {
 						$action->addMetaData('sla_id', $info['sla_id']);
@@ -336,6 +339,9 @@ class Log
 
 				if (isset($info['trigger_id'])) {
 					$action->addMetaData('trigger_id', $info['trigger_id']);
+					if (App::getDataService('ticket_trigger')->hasEscalationId($info['trigger_id'])) {
+						$action->addMetaData('trigger_is_escalation', true);
+					}
 				}
 				if (isset($info['sla_id'])) {
 					$action->addMetaData('sla_id', $info['sla_id']);
@@ -364,6 +370,9 @@ class Log
 
 				if (isset($info['trigger_id'])) {
 					$action->addMetaData('trigger_id', $info['trigger_id']);
+					if (App::getDataService('ticket_trigger')->hasEscalationId($info['trigger_id'])) {
+						$action->addMetaData('trigger_is_escalation', true);
+					}
 				}
 				if (isset($info['sla_id'])) {
 					$action->addMetaData('sla_id', $info['sla_id']);
@@ -388,6 +397,9 @@ class Log
 
 				if (isset($info['trigger_id'])) {
 					$action->addMetaData('trigger_id', $info['trigger_id']);
+					if (App::getDataService('ticket_trigger')->hasEscalationId($info['trigger_id'])) {
+						$action->addMetaData('trigger_is_escalation', true);
+					}
 				}
 				if (isset($info['sla_id'])) {
 					$action->addMetaData('sla_id', $info['sla_id']);
@@ -417,6 +429,9 @@ class Log
 
 				if (isset($info['trigger_id'])) {
 					$action->addMetaData('trigger_id', $info['trigger_id']);
+					if (App::getDataService('ticket_trigger')->hasEscalationId($info['trigger_id'])) {
+						$action->addMetaData('trigger_is_escalation', true);
+					}
 				}
 				if (isset($info['sla_id'])) {
 					$action->addMetaData('sla_id', $info['sla_id']);
@@ -535,10 +550,25 @@ class Log
 		$ticket_log['action_type'] = $action->getLogName();
 		$ticket_log['details'] = $action->getLogDetails();
 
+		$trigger_is_escalation = false;
+
 		$metadata = $action->getMetaData();
 		if (isset($metadata['trigger_id'])) {
 			$ticket_log['trigger_id'] = $metadata['trigger_id'];
+			if (App::getDataService('ticket_trigger')->hasEscalationId($metadata['trigger_id'])) {
+				$trigger_is_escalation = true;
+			}
 		}
+		if (isset($metadata['trigger_is_escalation'])) {
+			$trigger_is_escalation = true;
+		}
+
+		if ($trigger_is_escalation) {
+			$d = $ticket_log['details'];
+			$d['trigger_is_escalation'] = true;
+			$ticket_log['details'] = $d;
+		}
+
 		if (isset($metadata['sla_id'])) {
 			$ticket_log['sla_id'] = $metadata['sla_id'];
 			if (isset($metadata['sla_status'])) {

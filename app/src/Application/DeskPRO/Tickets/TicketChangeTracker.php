@@ -646,6 +646,9 @@ class TicketChangeTracker extends ChangeTracker
 
 		if ($this->applying_trigger) {
 			$data['trigger_id'] = $this->applying_trigger->getId();
+			if (App::getDataService('ticket_trigger')->hasEscalationId($data['trigger_id'])) {
+				$data['trigger_is_escalation'] = true;
+			}
 		}
 		if ($this->applying_sla) {
 			$data['sla_id'] = $this->applying_sla->getId();
