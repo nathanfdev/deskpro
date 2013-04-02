@@ -112,7 +112,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">{{ phrase('agent.general.usergroups') }}</dt>
 						<dd class="prop">
 							<div id="{{baseId}}_ug_container">
-								<select name="newperson[usergroups][]">
+								<select name="newperson[usergroups][]" class="dpe_select">
 									{% for id,name in usergroup_names %}
 										<option value="{{ id }}">{{ name }}</option>
 									{% endfor %}
@@ -123,7 +123,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 						<dt class="prop">{{ phrase('agent.general.timezone') }}</dt>
 						<dd class="prop">
-							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px">
+							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px" class="dpe_select">
 								<option></option>
 								{% for tz in timezone_options %}
 									<option value="{{tz}}">{{ tz }}</option>

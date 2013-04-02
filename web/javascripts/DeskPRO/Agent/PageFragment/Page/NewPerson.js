@@ -50,6 +50,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
         });
         el.bind('fileuploadstart', function(event, data) {
         });
+
+		self.wrapper.find('.dpe_select').each(function() {
+			DP.select($(this));
+		});
 	},
 
 	markForReload: function() {
