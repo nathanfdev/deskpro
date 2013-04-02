@@ -81,6 +81,16 @@ class ServerController extends AbstractController
 		$sections['Info'] = Strings::keyValueAsciiTable($items);
 		$sections['Reporter Info'] = Strings::keyValueAsciiTable(ErrorReporter::getBasicData(true));
 
+		try {
+			$mysqlinfo = $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
+			$sections['MySQL Variables'] = Strings::keyValueAsciiTable($mysqlinfo);
+		} catch (\Exception $e) {}
+
+		try {
+			$mysqlstatus = $this->db->fetchAllKeyValue("SHOW STATUS", array(), 0, 1);
+			$sections['MySQL Status'] = Strings::keyValueAsciiTable($mysqlstatus);
+		} catch (\Exception $e) {}
+
 		$sections['Web PHP Info'] = $vars['web_php']['phpinfo'];
 		$sections['CLI PHP Info'] = isset($vars['cli_php']['phpinfo']) ? $vars['cli_php']['phpinfo'] : '(unset)';
 
