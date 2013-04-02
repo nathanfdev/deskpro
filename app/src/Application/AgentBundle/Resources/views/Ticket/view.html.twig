@@ -253,7 +253,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				{% endfor %}
 			</select>
 
-			<span id="{{ baseId }}_urgency_txt" class="urgency-value-{{ ticket.urgency }}">1</span>
+			<span id="{{ baseId }}_urgency_txt" class="urgency-value-{{ ticket.urgency }}">{{ ticket.urgency }}</span>
 
 			<span class="dp-caret"></span>
 		</li>
