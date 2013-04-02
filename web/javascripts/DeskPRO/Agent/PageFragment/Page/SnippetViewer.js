@@ -105,7 +105,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	insertSnippetEl: function(el, event) {
 		var snippetId = el.data('snippet-id');
-		var snippetEl = $('.snippet-' + snippetId, self.wrapper);
+		var snippetEl = $('.snippet-' + snippetId, this.wrapper).first();
 		var snippetValEl = $('textarea.value.formatted.text', snippetEl);
 		var snippetValHtmlEl = $('textarea.value.formatted.html', snippetEl);
 
