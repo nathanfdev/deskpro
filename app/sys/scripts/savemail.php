@@ -101,6 +101,10 @@ if (!is_dir($cat_dir)) {
 
 $name = date('Y-m-d.H-i-s') . '-' . mt_rand(100000000,999999999) . '.eml';
 move_uploaded_file($_FILES['mailfile']['tmp_name'], $cat_dir . '/' . $name);
+
+$current_umask = umask();
+umask(0000);
 chmod($cat_dir . '/' . $name, 0777);
+umask($current_umask);
 
 echo "DP_MAIL_ACCEPT";
