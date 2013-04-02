@@ -26,19 +26,19 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td width="200">Every user</td>
-				<td>Add to usergroup: <a href="{{ path('admin_usergroups_edit', {id: reg_ug.id}) }}">{{ reg_ug.title }}</a></td>
+				<td>Every user</td>
+				<td nowrap="nowrap" style="white-space: nowrap"><div style="white-space: nowrap">Add to usergroup: <a href="{{ path('admin_usergroups_edit', {id: reg_ug.id}) }}">{{ reg_ug.title }}</a></div></td>
 			</tr>
 			{% for rule in rules %}
 				<tr>
 					<td>
-						{% for p in rule.email_patterns %}{{ p }}{% if not loop.last %},{% endif %}{% endfor %}
+						{% if rule.email_patterns|length > 50 %}<textarea style="width:95%; height: 100px; font-family: Monaco, Consolas, monospace; font-size: 9pt;">{% endif %}{% for p in rule.email_patterns %}{{ p }}{% if not loop.last %}, {% endif %}{% endfor %}{% if rule.email_patterns|length > 50 %}</textarea>{% endif %}
 					</td>
-					<td>
+					<td style="vertical-align: top; white-space: nowrap; text-align: right;" nowrap="nowrap">
 						{% if rule.add_usergroup %}{{ phrase('admin.user_rules.add_to_usergroup') }}: <a href="{{ path('admin_usergroups_edit', {id: rule.add_usergroup.id}) }}">{{ rule.add_usergroup.title }}</a><br />{% endif %}
 						{% if rule.add_organization %}{{ phrase('admin.user_rules.add_to_organization') }}: {{ rule.add_organization.title }}{% endif %}
 					</td>
-					<td style="padding: 3px 3px 0 0; text-align: right;">
+					<td style="padding: 3px 3px 0 0; text-align: right; vertical-align: top;">
 						<a href="{{ path('admin_userrules_edit', {rule_id:rule.id}) }}"><span class="btn-edit-gear"></span></a>
 					</td>
 				</tr>
