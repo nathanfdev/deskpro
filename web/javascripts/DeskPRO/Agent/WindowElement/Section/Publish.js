@@ -485,6 +485,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		}
 
 		this.fireEvent('sectionInit');
+		this.updateUi();
 	},
 
 	recountBadge: function() {
