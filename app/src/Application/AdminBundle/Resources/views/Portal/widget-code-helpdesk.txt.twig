@@ -1,11 +1,11 @@
-<!-- DeskPRO Ticket Form -->
+<!-- DeskPRO Helpdesk Embed -->
 <div id="dp_helpdesk" style="display: none;"></div>
 <script type="text/javascript">
 	var DpHelpdesk_Options = DpHelpdesk_Options || {};
 
-	// Uncomment this line to enable simple mode which hides
-	// the sidebar and frame of the portal when embedded into your site
-	//DpHelpdesk_Options.simpleMode = true;
+	// When this option is enabled, the sidebar and frame of the portal are hidden
+	// Comment this line out if you want the entire helpdesk (including your logo etc) to display
+	DpHelpdesk_Options.simpleMode = true;
 
 	// Change this line to the default path to open on your helpdesk.
 	// Here are a few examples:
@@ -29,6 +29,6 @@
 		})();
 	}
 </script>
-<!-- /DeskPRO Ticket Form -->
+<!-- /DeskPRO Helpdesk Embed -->
 
 {% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}
