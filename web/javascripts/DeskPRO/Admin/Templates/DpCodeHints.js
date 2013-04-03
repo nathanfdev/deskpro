@@ -178,11 +178,15 @@ function DpCodeHints() {
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var el = $('#edittpl_overlay');
+			$('#edittpl_overlay').remove();
+			var tpl = $('#edittpl_overlay_source').get(0).innerHTML;
+			var el = $(tpl);
+			el.appendTo('body');
+
 			var template_name = name	;
 			var overlay = new DeskPRO.UI.Overlay({
 				contentElement: el,
-				destroyOnClose: false,
+				destroyOnClose: true,
 				fullScreen: true,
 				onBeforeOverlayOpened: function() {
 					if (el.is('.has-init')) return;

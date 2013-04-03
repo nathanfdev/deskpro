@@ -141,7 +141,9 @@ $(document).ready(function() {
 		</div>
 	</footer>
 
-	{{ tplmacro.render_editor_overlay() }}
+	<script type="text/x-deskpro-plain" id="edittpl_overlay_source">
+		{{ tplmacro.render_editor_overlay() }}
+	</script>
 	{{ tplmacro.render_addphrase_overlay() }}
 	{{ tplmacro.render_addvariation_overlay() }}
 	{{ tplmacro.render_lang_overlay() }}
