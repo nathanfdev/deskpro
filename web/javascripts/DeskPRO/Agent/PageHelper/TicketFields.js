@@ -302,8 +302,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var last = this.display.find('tbody.always-bottom');
 		last.detach();
 
-		this.display.html('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
-		this.display = this.page.getEl('field_holders').find('.field-holders-table');
+		var old = this.display;
+		this.display = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		old.after(this.display);
+		old.remove();
 		this.display.append(last);
 
 		this.currentDisplay = [];
