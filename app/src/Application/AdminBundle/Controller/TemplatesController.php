@@ -230,7 +230,7 @@ class TemplatesController extends AbstractController
 				);
 
 				$twig = $this->container->get('twig');
-				$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $template->variant_of);
+				$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $template->name);
 
 				$template->setTemplate($code, $compiled);
 				$this->em->persist($template);
