@@ -1696,6 +1696,7 @@ class TicketSearch extends SearcherAbstract
 						}
 						break; // end break TERM_TICKET_FIELD
 
+					case 'time_waiting':
 					case self::TERM_USER_WAITING:
 						$this->enableArchiveSearch();
 						$this->affected_fields[] = 'ticket.date_user_waiting';
@@ -1958,6 +1959,7 @@ class TicketSearch extends SearcherAbstract
 
 					break;
 
+				case 'time_waiting':
 				case self::TERM_USER_WAITING:
 					if (!$ticket->date_user_waiting) {
 						return false;
