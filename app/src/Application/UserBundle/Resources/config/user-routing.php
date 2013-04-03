@@ -363,6 +363,13 @@ $collection->add('user_tickets_resolve', new Route(
 	array()
 ));
 
+$collection->add('user_tickets_unresolve', new Route(
+	'/ticket-edit/{ticket_ref}/unresolve',
+	array('_controller' => 'UserBundle:Tickets:unresolve'),
+	array(),
+	array()
+));
+
 $collection->add('user_tickets_feedback', new Route(
 	'/ticket-rate/{ticket_ref}/{auth}/{message_id}',
 	array('_controller' => 'UserBundle:Tickets:feedback'),

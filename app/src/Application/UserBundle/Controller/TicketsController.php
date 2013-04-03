@@ -578,6 +578,21 @@ class TicketsController extends AbstractController
 		));
 	}
 
+	public function unresolveAction($ticket_ref)
+	{
+		$ticket  = $this->getTicketOr404($ticket_ref);
+
+		if ($ticket->status != 'resolved' || !$this->person->hasPerm('tickets.reopen_resolved')) {
+			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+		}
+
+		$ticket->setStatus('awaiting_agent');
+		$this->em->persist($ticket);
+		$this->em->flush();
+
+		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
