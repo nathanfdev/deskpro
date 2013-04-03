@@ -17,6 +17,50 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 			autoUpload: true,
 			formData: {
 				security_token: this.el.data('security-token')
+			},
+			done: function(e, data) {
+				var that = $(this).data('fileupload'),
+					template,
+					preview;
+
+				if (!that) {
+					return;
+				}
+
+				if (data.context) {
+					data.context.each(function (index) {
+						var file = ($.isArray(data.result) &&
+								data.result[index]) || {error: 'emptyResult'};
+						if (file.error && that._adjustMaxNumberOfFiles) {
+							that._adjustMaxNumberOfFiles(1);
+						}
+						that._transition($(this)).done(
+							function () {
+								var node = $(this);
+								template = that._renderDownload([file])
+									.css('height', node.height())
+									.replaceAll(node);
+								that._forceReflow(template);
+								that._transition(template).done(
+									function () {
+										data.context = $(this);
+										that._trigger('completed', e, data);
+									}
+								);
+							}
+						);
+					});
+				} else {
+					template = that._renderDownload(data.result)
+						.appendTo(that.options.filesContainer);
+					that._forceReflow(template);
+					that._transition(template).done(
+						function () {
+							data.context = $(this);
+							that._trigger('completed', e, data);
+						}
+					);
+				}
 			}
 		};
 

@@ -2886,17 +2886,25 @@ dp .dp-new-feedback td {
 
 #dp ul.file-list li {
 	padding: 0;
-	margin: 0 0 4px 0;
+	margin: 4px 0 4px 0;
 	list-style: none;
-	line-height: 20px;
+	line-height: 16px;
+}
+
+#dp ul.file-list li label {
+	line-height: 16px;
+	margin: 0;
+	padding: 0;
 }
 
 #dp ul.file-list li em.remove-attach-trigger {
 	float: left;
+	display: inline-block;
 	background: url({{ stylevar.static_path }}/images/user/cross.png) no-repeat 0 50%;
 	width: 16px;
-	height: 20px;
+	height: 16px;
 	margin-right: 5px;
+	line-height: 16px;
 	cursor: pointer;
 }
 

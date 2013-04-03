@@ -113,6 +113,7 @@ class MainController extends AbstractController
 
 	public function acceptTempUploadAction()
 	{
+		sleep(5);
 		$security_token = $this->in->getString('security_token');
 		if (!$this->session->getEntity()->checkSecurityToken('attach_temp', $security_token)) {
 			return $this->createJsonResponse(array(array(
