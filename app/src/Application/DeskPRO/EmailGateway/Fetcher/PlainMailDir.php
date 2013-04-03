@@ -230,9 +230,9 @@ class PlainMailDir extends AbstractFetcher
 	{
 		$this->logger->log("Marking message as deleted: $id", 'debug');
 
-		if (!unlink($this->maildir . '/' . $id)) {
+		if (is_file($this->maildir . '/' . $id) && !@unlink($this->maildir . '/' . $id)) {
 			sleep(1);
-			if (!unlink($this->maildir . '/' . $id)) {
+			if (is_file($this->maildir . '/' . $id) && !unlink($this->maildir . '/' . $id)) {
 				$this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
 			}
 		}

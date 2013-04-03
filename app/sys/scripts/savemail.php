@@ -72,7 +72,7 @@ if (!defined('DP_SAVEMAIL_DIR')) {
 }
 
 if (!is_dir(DP_SAVEMAIL_DIR)) {
-	if (!mkdir(DP_SAVEMAIL_DIR, 0755, true)) {
+	if (!mkdir(DP_SAVEMAIL_DIR, 0777, true)) {
 		echo "DP_SAVEMAIL_DIR_INVALID";
 		exit(1);
 	}
@@ -89,7 +89,7 @@ $cat = strtolower($cat);
 $cat_dir = DP_SAVEMAIL_DIR . '/' . $cat;
 
 if (!is_dir($cat_dir)) {
-	if (!mkdir($cat_dir, 0755, true)) {
+	if (!mkdir($cat_dir, 0777, true)) {
 		echo "DP_SAVEMAIL_DIR_MAKE_ERROR";
 		exit(1);
 	}
@@ -100,11 +100,22 @@ if (!is_dir($cat_dir)) {
 #------------------------------
 
 $name = date('Y-m-d.H-i-s') . '-' . mt_rand(100000000,999999999) . '.eml';
-move_uploaded_file($_FILES['mailfile']['tmp_name'], $cat_dir . '/' . $name);
+
+$tmp_path = dp_get_tmp_dir() . '/tmp_eml_' . $name;
+if (!is_dir(dp_get_tmp_dir())) {
+	if (!mkdir(dp_get_tmp_dir(), 0755, true)) {
+		echo "DP_SAVEMAIL_TMPDIR_MAKE_ERROR";
+		exit(1);
+	}
+}
+
+move_uploaded_file($_FILES['mailfile']['tmp_name'], $tmp_path);
 
 $current_umask = umask();
 umask(0000);
-chmod($cat_dir . '/' . $name, 0777);
+chmod($tmp_path, 0777);
 umask($current_umask);
+
+rename($tmp_path, $cat_dir . '/' . $name);
 
 echo "DP_MAIL_ACCEPT";
