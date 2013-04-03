@@ -257,7 +257,7 @@ if (file_exists($proc_file)) {
 		dp_log("Task has timed out, restarting");
 		unlink($proc_file);
 
-		$DO_REPORT_LOG = true;
+		$DO_REPORT_LOG = 'runner_timeout';
 	} else {
 		exit;
 	}
@@ -374,12 +374,12 @@ foreach ($sites as $siteinfo) {
 		});
 	} catch (\RuntimeException $e) {
 		dp_log("!!! PROCESS TIMED OUT !!!");
-		$DO_REPORT_LOG = true;
+		$DO_REPORT_LOG = 'cron_timeout';
 	}
 
 	if (!$proc->isSuccessful()) {
 		dp_log("!!! DETECTED ERROR STATUS !!!");
-		$DO_REPORT_LOG = true;
+		$DO_REPORT_LOG = 'cron_error';
 	}
 
 	dp_logf("--- END SITE %d %s (took %.4f s) ---", $siteinfo['id'], $siteinfo['master_domain'], microtime(true) - $site_time_begin);
@@ -412,15 +412,46 @@ try {
 }
 
 if ($alert_threshold && $time_total > $alert_threshold) {
-	$DO_REPORT_LOG = true;
+	$DO_REPORT_LOG = 'time_alert';
 }
 
 if ($DO_REPORT_LOG) {
+	switch ($DO_REPORT_LOG) {
+		case 'runner_timeout':
+			$subject = 'Runner process timed out';
+			break;
+
+		case 'cron_timeout':
+			$subject = 'Cron process timed out';
+			break;
+
+		case 'cron_error':
+			$subject = 'Error during a cron run';
+			break;
+
+		case 'time_alert':
+			$subject = 'Run took too long';
+			break;
+
+		default:
+			$subject = 'Runner report';
+			break;
+	}
+
+	$summary = $subject;
+	$summary .= "\n\nType: " . ($account_type ?: 'all');
+	$summary .= "\nBatch: " . $range_start . '-' . $range_end;
+	$summary .= "\nBatch Size: " . count($sites);
+	$summary .= "\nTime Start: " . date('M j Y H:i', (int)$time_begin);
+	$summary .= "\nTime Finished: " . date('M j Y H:i', time());
+	$summary .= "\nTime Taken: $time_total";
+	$summary .= "\n\n\n----------------------------------------\n\n\n";
+
 	$dp_log_messages = implode('', $dp_log_messages);
 	mail(
 		CloudConfig::getErrorContact(),
-		sprintf('[Cloud Cron] Processing Error. Batch %d-%d started at %s', $range_start, $range_end, date('M j Y H:i', (int)$time_begin)),
-		$dp_log_messages,
+		sprintf('[Cloud Cron %s-%d-%d] (%s) %s', $account_type ?: 'all', $range_start, $range_end, date('Y-m-d H:i', (int)$time_begin), $subject),
+		$summary . $dp_log_messages,
 		"From: cloud-cron@helium.serv.deskpro.com\r\n"
 	);
 
