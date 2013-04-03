@@ -481,7 +481,7 @@ class OrganizationController extends AbstractController
 
 	public function ajaxSaveNoteAction($organization_id)
 	{
-		if (!$this->person->hasPerm('agent_org.note')) {
+		if (!$this->person->hasPerm('agent_org.notes')) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
