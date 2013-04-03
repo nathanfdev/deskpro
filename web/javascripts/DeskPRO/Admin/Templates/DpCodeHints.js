@@ -198,6 +198,18 @@ function DpCodeHints() {
 						}
 					});
 
+					$('.revert-trigger', el).on('click', function() {
+						el.find('.overlay-footer').addClass('loading');
+						$.ajax({
+							url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name,
+							type: 'POST',
+							context: this,
+							success: function(val) {
+								overlay.close();
+							}
+						});
+					});
+
 					$('.save-trigger', el).on('click', function() {
 
 						el.find('.overlay-footer').addClass('loading');
