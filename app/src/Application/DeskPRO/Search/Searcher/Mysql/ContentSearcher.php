@@ -272,6 +272,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			return new ResultSet(0, array());
 		}
 
+		$limit_type_names = $limit_types;
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
 		$query_words = explode(' ', $query_text);
@@ -298,6 +299,11 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			if (!$this->ignore_perms) {
 				$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
 				$permfilter->setPersonContext($this->person);
+
+				if ($limit_type_names) {
+					$permfilter->setTypes($limit_type_names);
+				}
+
 				$perm_join  = $permfilter->getJoin();
 				$perm_where = $permfilter->getWhere();
 				if (!$perm_where) {

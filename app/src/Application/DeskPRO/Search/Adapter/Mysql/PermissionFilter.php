@@ -75,11 +75,24 @@ class PermissionFilter implements PersonContextInterface
 	protected $perm_join = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $has_gen = false;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function setPersonContext(Person $person)
 	{
 		$this->person_context = $person;
+	}
+
+	/**
+	 * @param array $types
+	 */
+	public function setTypes(array $types)
+	{
+		$this->types = $types;
 	}
 
 	protected function _gen()
@@ -88,11 +101,10 @@ class PermissionFilter implements PersonContextInterface
 			throw new \RuntimeException("PermissionFilter requires you to set a person context");
 		}
 
-		static $has_done = false;
-		if ($has_done) {
+		if ($this->has_gen) {
 			return;
 		}
-		$has_done = true;
+		$this->has_gen = true;
 
 		$join = array();
 		$where = array();
