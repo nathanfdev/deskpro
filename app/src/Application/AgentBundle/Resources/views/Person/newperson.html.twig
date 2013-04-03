@@ -97,44 +97,49 @@ pageMeta.baseId = '{{ baseId }}';
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
 				</ul>
 			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
-				{# Tab Properties #}
-				<div class="tab-properties" style="display: none">
-					<dl>
-						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
-						<dd class="prop">
-							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.newperson.labels %}{{label}},{% endfor %}"/>
-							</div>
-						</dd>
-
+			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none;padding: 0;">
+				<div class="tab-properties content-table" style="border: none;">
+					<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
+						<tr>
+							<th width="150">{{ phrase('agent.general.labels') }}</th>
+							<td>
+								<input
+									type="hidden"
+									id="{{baseId}}_labels_input"
+									class="labels-input dpe_select dpe_select_noborder"
+									data-select-width="auto"
+									data-placeholder="Add a label"
+									value="{% for label in state.newperson.labels %}{{label}},{% endfor %}"
+								/>
+							</td>
+						</tr>
 						{% if usergroup_names|length %}
-						<dt class="prop">{{ phrase('agent.general.usergroups') }}</dt>
-						<dd class="prop">
-							<div id="{{baseId}}_ug_container">
-								<select name="newperson[usergroups][]" class="dpe_select">
-									{% for id,name in usergroup_names %}
-										<option value="{{ id }}">{{ name }}</option>
+							<tr>
+								<th>{{ phrase('agent.general.usergroups') }}</th>
+								<td>
+									<div id="{{baseId}}_ug_container">
+										<select name="newperson[usergroups][]" class="dpe_select">
+											{% for id,name in usergroup_names %}
+												<option value="{{ id }}">{{ name }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</td>
+							</tr>
+						{% endif %}
+						<tr class="last">
+							<th class="prop">{{ phrase('agent.general.timezone') }}</th>
+							<td class="prop">
+								<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px" class="dpe_select">
+									<option></option>
+									{% for tz in timezone_options %}
+										<option value="{{tz}}">{{ tz }}</option>
 									{% endfor %}
 								</select>
-							</div>
-						</dd>
-						{% endif %}
-
-						<dt class="prop">{{ phrase('agent.general.timezone') }}</dt>
-						<dd class="prop">
-							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px" class="dpe_select">
-								<option></option>
-								{% for tz in timezone_options %}
-									<option value="{{tz}}">{{ tz }}</option>
-								{% endfor %}
-							</select>
-						</dd>
-					</dl>
+							</td>
+						</tr>
+					</table>
 				</div>
-				{# /Tab Properties #}
-
-				<br class="clear" />
 			</div>
 		</div>
 		{# /Tab Container #}

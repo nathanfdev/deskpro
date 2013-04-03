@@ -52,7 +52,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
         });
 
 		self.wrapper.find('.dpe_select').each(function() {
-			DP.select($(this));
+			// Label input is handled by labels class
+			if (!$(this).hasClass('labels-input')) {
+				DP.select($(this));
+			}
 		});
 	},
 
@@ -142,14 +145,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			context: this.getEl('other_props_tabs_content'),
 			autoSelectFirst: false,
 			onTabSwitch: function(eventData) {
-				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
+				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties') && self.getEl('labels_input')[0]) {
 					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'people',
-						fieldName: 'newperson[labels]',
-						textarea: $(".tags-wrap input", eventData.tabContent),
-						onChange: function() {
-							self.stateSaver.triggerChange();
-						}
+						type: 'tickets',
+						input: self.getEl('labels_input')
 					});
 					self.ownObject(self.labelsInput);
 				}
