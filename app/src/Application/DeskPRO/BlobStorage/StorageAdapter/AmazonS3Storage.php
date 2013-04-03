@@ -52,6 +52,11 @@ class AmazonS3Storage extends AbstractStorageAdapter
 	/**
 	 * @var string
 	 */
+	protected $file_url_domain;
+
+	/**
+	 * @var string
+	 */
 	protected $base_path;
 
 	/**
@@ -66,11 +71,12 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
 	protected function init()
 	{
-		$this->s3            = $this->options->get('s3_client');
-		$this->bucket        = $this->options->get('bucket');
-		$this->base_path     = rtrim($this->options->get('base_path', ''), '/\\');
-		$this->attempts      = $this->options->get('attempts', 1);
-		$this->retry_sleep   = $this->options->get('retry_sleep', 1);
+		$this->s3              = $this->options->get('s3_client');
+		$this->bucket          = $this->options->get('bucket');
+		$this->file_url_domain = $this->options->get('file_url_domain');
+		$this->base_path       = rtrim($this->options->get('base_path', ''), '/\\');
+		$this->attempts        = $this->options->get('attempts', 1);
+		$this->retry_sleep     = $this->options->get('retry_sleep', 1);
 
 		if (!$this->s3 || !($this->s3 instanceof S3Client)) {
 			throw new \InvalidArgumentException("s3_client must be an instance of Aws\\S3\\S3Client");
@@ -179,7 +185,11 @@ class AmazonS3Storage extends AbstractStorageAdapter
 			}
 		}
 
-		$blob->setMeta('file_url', 'https://'. $this->bucket . '.s3.amazonaws.com' . $path);
+		if (!$this->file_url_domain) {
+			$blob->setMeta('file_url', 'https://'. $this->bucket . '.s3.amazonaws.com' . $path);
+		} else {
+			$blob->setMeta('file_url', 'https://'. $this->file_url_domain . $path);
+		}
 
 		return strlen($data);
 	}
