@@ -73,7 +73,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		this.doSendMsg = function() {
-			self.sendMsg();
+			sendMsg();
 		}
 
 		messageTextarea.on('keypress', function(ev) {
