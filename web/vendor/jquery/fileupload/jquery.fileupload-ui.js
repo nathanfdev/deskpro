@@ -140,61 +140,49 @@
             },
             // Callback for successful uploads:
             done: function (e, data) {
-                var that = $(this).data('blueimp-fileupload') ||
-                        $(this).data('fileupload'),
-                    files = that._getFilesFromResponse(data),
-                    template,
-                    deferred;
-                if (data.context) {
-                    data.context.each(function (index) {
-                        var file = files[index] ||
-                                {error: 'Empty file upload result'},
-                            deferred = that._addFinishedDeferreds();
-                        if (file.error) {
-                            that._adjustMaxNumberOfFiles(1);
-                        }
-                        that._transition($(this)).done(
-                            function () {
-                                var node = $(this);
-                                template = that._renderDownload([file])
-                                    .replaceAll(node);
-                                that._forceReflow(template);
-                                that._transition(template).done(
-                                    function () {
-                                        data.context = $(this);
-                                        that._trigger('completed', e, data);
-                                        that._trigger('finished', e, data);
-                                        deferred.resolve();
-                                    }
-                                );
-                            }
-                        );
-                    });
-                } else {
-                    if (files.length) {
-                        $.each(files, function (index, file) {
-                            if (data.maxNumberOfFilesAdjusted && file.error) {
-                                that._adjustMaxNumberOfFiles(1);
-                            } else if (!data.maxNumberOfFilesAdjusted &&
-                                    !file.error) {
-                                that._adjustMaxNumberOfFiles(-1);
-                            }
-                        });
-                        data.maxNumberOfFilesAdjusted = true;
-                    }
-                    template = that._renderDownload(files)
-                        .appendTo(that.options.filesContainer);
-                    that._forceReflow(template);
-                    deferred = that._addFinishedDeferreds();
-                    that._transition(template).done(
-                        function () {
-                            data.context = $(this);
-                            that._trigger('completed', e, data);
-                            that._trigger('finished', e, data);
-                            deferred.resolve();
-                        }
-                    );
-                }
+                var that = $(this).data('fileupload'),
+					template,
+					preview;
+
+				// Means the widget is no longer visible (eg tab closed before upload finished)
+				if (!that) {
+					return;
+				}
+
+				if (data.context) {
+					data.context.each(function (index) {
+						var file = ($.isArray(data.result) &&
+								data.result[index]) || {error: 'emptyResult'};
+						if (file.error && that._adjustMaxNumberOfFiles) {
+							that._adjustMaxNumberOfFiles(1);
+						}
+						that._transition($(this)).done(
+							function () {
+								var node = $(this);
+								template = that._renderDownload([file])
+									.css('height', node.height())
+									.replaceAll(node);
+								that._forceReflow(template);
+								that._transition(template).done(
+									function () {
+										data.context = $(this);
+										that._trigger('completed', e, data);
+									}
+								);
+							}
+						);
+					});
+				} else {
+					template = that._renderDownload(data.result)
+						.appendTo(that.options.filesContainer);
+					that._forceReflow(template);
+					that._transition(template).done(
+						function () {
+							data.context = $(this);
+							that._trigger('completed', e, data);
+						}
+					);
+				}
             },
             // Callback for failed (abort or error) uploads:
             fail: function (e, data) {
