@@ -50,7 +50,7 @@ class MainController extends AbstractController
 	public function adminRenderTemplateAction($type)
 	{
 		if (!$this->person->can_admin) {
-			throw new $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		if ($pid = \Orb\Util\Strings::extractRegexMatch('#^block:([0-9]+)$#', $type)) {
