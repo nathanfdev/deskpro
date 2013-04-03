@@ -691,6 +691,9 @@ abstract class SearcherAbstract implements PersonContextInterface
 			return '1';
 		}
 
+		$range1 = (int)$range1;
+		$range2 = (int)$range2;
+
 		// Normalize operations
 		if ($op == self::OP_LT) $op = self::OP_LTE;
 		if ($op == self::OP_GT) $op = self::OP_GTE;

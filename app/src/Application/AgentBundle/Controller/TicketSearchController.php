@@ -908,7 +908,7 @@ class TicketSearchController extends AbstractController
 
         $tickets = array();
 
-		if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1') {
+		if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1' || $this->in->getString('grouping_option') == 'DP_NOT_SET') {
 			// User looking at all results
 			$is_grouping = false;
 			$grouping_option = 'DP_NOT_SET';
@@ -919,6 +919,9 @@ class TicketSearchController extends AbstractController
 			// User looking at just a group of results
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
+			if ($grouping_option == 'DP_NOT_SET') {
+				$grouping_option = -1;
+			}
 
             if($view_type != 'csv') {
 			    $tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
