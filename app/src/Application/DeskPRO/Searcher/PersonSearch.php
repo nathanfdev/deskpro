@@ -752,16 +752,17 @@ class PersonSearch extends SearcherAbstract
 					$choice = isset($choice['usergroup']) ? (array)$choice['usergroup'] : array();
 
 					foreach ($person->getUsergroupIds() as $ug_id) {
-						if ($this->_testChoiceMatch($ug_id, $op, $choice)) {
+						if (in_array($ug_id, $choice)) {
 							$any = true;
-							if ($op == self::OP_NOTCONTAINS || $op == self::OP_NOT) {
-								return false;
-							}
+							break;
 						}
 					}
 
 					if (($op == self::OP_IS || $op == self::OP_CONTAINS) AND !$any) {
 						return false;
+					}
+					if (($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) AND $any) {
+							return false;
 					}
 					break;
 
