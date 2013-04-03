@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class AvailableTrigger
 {
@@ -89,6 +90,25 @@ class AvailableTrigger
 			@chmod($trigger_File, 0777);
 		} elseif (is_file($trigger_File)) {
 			unlink($trigger_File);
+		}
+
+		if ($update_urls = dp_get_config('chat_status_update_urls')) {
+			$val = $is_chat_available ? '1' : '0';
+
+			foreach ($update_urls as $url) {
+
+				$url = str_replace('%CHAT_STATUS%', $val, $url);
+
+				$res = file_get_contents($url);
+
+				if ($is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_AVAILABLE') === false) {
+					$e = new \RuntimeException("Failed to send chat status (1) to $url. Got response: $res");
+					KernelErrorHandler::logException($e, false);
+				} elseif (!$is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_UNAVAILABLE') === false) {
+					$e = new \RuntimeException("Failed to send chat status (0) to $url. Got response: $res");
+					KernelErrorHandler::logException($e, false);
+				}
+			}
 		}
 	}
 }
