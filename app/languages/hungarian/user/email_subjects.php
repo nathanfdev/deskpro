@@ -12,9 +12,9 @@
 	'user.email_subjects.feedback_updated'                                 => 'Visszajelzése frissítésre került: {{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'Jelszavát alaphelyzetbe állítottuk',
 	'user.email_subjects.password_reset'                                   => 'Jelszócsere',
-	'user.email_subjects.re'                                               => 'Válasz: {{subject}}',
+	'user.email_subjects.re'                                               => 'RE: {{subject}}',
 	'user.email_subjects.ticket-rate'                                      => 'Értékelje munkánkat: "{{ticket.subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Ügyéhez új személy került hozzárendelésre',
-	'user.email_subjects.tickets_re'                                       => 'Válasz: {{ticket.subject}}',
+	'user.email_subjects.tickets_re'                                       => 'RE: {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'Erősítse meg e-mail címét',
 );
