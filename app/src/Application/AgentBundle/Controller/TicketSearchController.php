@@ -543,7 +543,7 @@ class TicketSearchController extends AbstractController
 			}
 
 			$user_searcher  = new \Application\DeskPRO\Searcher\PersonSearch();
-			$org_searcher   = new \Application\DeskPRO\Searcher\OrganizationSearch();
+						$org_searcher   = new \Application\DeskPRO\Searcher\OrganizationSearch();
 			$has_user_terms = false;
 			$has_org_terms  = false;
 

@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity;
 
 class PersonSearch extends SearcherAbstract
 {
+	const MODE_ANY = 'any';
 	const MODE_USER = 'user';
 	const MODE_AGENT = 'agent';
 
@@ -643,10 +644,12 @@ class PersonSearch extends SearcherAbstract
 			}
 		}
 
-		if ($this->mode == self::MODE_AGENT) {
-			$wheres[] = "people.is_agent = 1";
-		} else {
-			$wheres[] = "people.is_agent = 0";
+		if ($this->mode != self::MODE_ANY) {
+			if ($this->mode == self::MODE_AGENT) {
+				$wheres[] = "people.is_agent = 1";
+			} else {
+				$wheres[] = "people.is_agent = 0";
+			}
 		}
 
 		$wheres[] = 'people.is_deleted = 0';
