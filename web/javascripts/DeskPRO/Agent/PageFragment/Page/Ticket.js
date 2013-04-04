@@ -33,26 +33,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var btnEl = this;
 			var btn = $(this);
 
-			var clip = new ZeroClipboard(this, {
-				btnEl: this,
-				savePuffEl: self.getEl('idref_switch')
-			});
-			clip.on('mouseover', function(client, args) {
-				$(client.options.btnEl).addClass('over');
-			});
-			clip.on('mouseout', function(client, args) {
-				$(client.options.btnEl).removeClass('over');
-			});
-			clip.on('complete', function(client, args) {
-				DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
-			});
+			try {
+				var clip = new ZeroClipboard(this, {
+					btnEl: this,
+					savePuffEl: self.getEl('idref_switch')
+				});
+				clip.on('mouseover', function(client, args) {
+					$(client.options.btnEl).addClass('over');
+				});
+				clip.on('mouseout', function(client, args) {
+					$(client.options.btnEl).removeClass('over');
+				});
+				clip.on('complete', function(client, args) {
+					DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
+				});
 
-			self.addEvent('destroy', function() {
-				clip.unglue(btnEl);
-			});
-			self.addEvent('activate', function() {
-				clip.reposition();
-			});
+				self.addEvent('destroy', function() {
+					clip.unglue(btnEl);
+				});
+				self.addEvent('activate', function() {
+					clip.reposition();
+				});
+			} catch (e) {}
 		});
 
 		DeskPRO_Window.recentTabs.add(

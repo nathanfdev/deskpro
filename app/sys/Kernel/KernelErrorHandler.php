@@ -635,6 +635,10 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \Zend\Ldap\Exception && strpos($exception->getMessage(), 'LDAP extension not loaded') !== false) {
+			return true;
+		}
+
 		return false;
 	}
 

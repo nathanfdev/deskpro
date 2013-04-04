@@ -44,19 +44,22 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 
 				var target = btn.find('.copy-btn').get(0);
-				var clip = new ZeroClipboard(target, {
-					btnEl: target
-				});
-				clip.on('mouseover', function(client, args) {
-					lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
-					lastLi.find('.copy-btn-outer').addClass('over');
-				});
-				clip.on('mouseout', function(client, args) {
-					lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
-				});
-				clip.on('complete', function(client, args) {
-					DeskPRO_Window.util.showSavePuff(lastLi);
-				});
+
+				try {
+					var clip = new ZeroClipboard(target, {
+						btnEl: target
+					});
+					clip.on('mouseover', function(client, args) {
+						lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
+						lastLi.find('.copy-btn-outer').addClass('over');
+					});
+					clip.on('mouseout', function(client, args) {
+						lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
+					});
+					clip.on('complete', function(client, args) {
+						DeskPRO_Window.util.showSavePuff(lastLi);
+					});
+				} catch (e) {}
 
 				lastActiveBtn = btn;
 				lastClip = clip;
