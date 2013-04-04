@@ -49,7 +49,7 @@ class AgentNotify extends AbstractLogAction
 	{
 		$this->type         = $info['notify_type'];
 		$this->who_emailed  = $info['emailed'];
-		$this->emailed_info = $info['emailed_info'];
+		$this->emailed_info = !empty($info['emailed_info']) ? $info['emailed_info'] : array();
 		$this->from_name    = isset($info['from_name']) ? $info['from_name'] : '';
 		$this->from_email   = isset($info['from_email']) ? $info['from_email'] : '';
 	}
