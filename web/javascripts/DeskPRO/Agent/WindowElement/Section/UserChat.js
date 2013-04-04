@@ -265,6 +265,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', this.handleChatEnded, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.depchange', this.handleDepChange, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.invited', this.handleInvited, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated', this.handlePartsUpdated, this);
 	},
 
 	//##################################################################################################################
@@ -711,6 +712,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	handlePartsUpdated: function(data) {
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_user_agent.chat-parts-updated-' + data.conversation_id, data);
+
+		if (data && data.participant_ids && data.participant_ids.contains(DESKPRO_PERSON_ID)) {
+			if (!this.isChatOpen(data.conversation_id)) {
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+			}
+		}
 	},
 
 	handleNewChat: function(data) {
@@ -831,7 +838,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleReassignedChat: function(data) {
 		var self = this;
 
-		if (!this.isDepAllowed(data.department_id)) {
+		if (!this.isDepAllowed(data.department_id) && data.agent_id != DESKPRO_PERSON_ID) {
 			return;
 		}
 

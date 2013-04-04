@@ -71,6 +71,10 @@ class ChatChecker extends AbstractChecker
 			return true;
 		}
 
+		if (in_array($this->person->id, $convo->getParticipantIds())) {
+			return true;
+		}
+
 		#------------------------------
 		# Can't view certain deps
 		#------------------------------

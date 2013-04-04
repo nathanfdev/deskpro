@@ -334,6 +334,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$channels[] = 'chat.depchange';
 		$channels[] = 'chat.invited';
 		$channels[] = 'chat.ended';
+		$channels[] = 'chat_user_agent.chat-parts-updated';
 
 		$channels[] = 'agent_chat.new-message';
 		$channels[] = 'agent.new-agent-online';
