@@ -165,7 +165,7 @@ class PlainMailDir extends AbstractFetcher
 		}
 
 		if (dp_get_config('plainmaildir_track_read')) {
-			$check_name = 'plainmaildir::' . $mailfile;
+			$check_name = md5('plainmaildir::' . $mailfile);
 			$check = App::getDb()->fetchColumn("
 				SELECT data
 				FROM install_data
