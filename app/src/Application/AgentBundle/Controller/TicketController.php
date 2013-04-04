@@ -766,14 +766,25 @@ class TicketController extends AbstractController
 
 	public function getSnippetAction($ticket_id, $snippet_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
 		$snippet = $this->em->find('DeskPRO:TicketSnippet', $snippet_id);
-
-		if (!$snippet || !$ticket) {
+		if (!$snippet) {
 			throw $this->createNotFoundException();
 		}
 
-		$res = new Response($snippet->snippetFormattedHtml($ticket, $ticket->person));
+		$ticket = null;
+		$person = null;
+		if ($ticket_id) {
+			$ticket = $this->getTicketOr404($ticket_id);
+			if (!$ticket) {
+				throw $this->createNotFoundException();
+			}
+
+			$person = $ticket->person;
+		} elseif ($person_id = $this->in->getUint('person_id')) {
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+		}
+
+		$res = new Response($snippet->snippetFormattedHtml($ticket, $person));
 		return $res;
 	}
 

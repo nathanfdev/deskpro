@@ -28,6 +28,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 
+		this.addEvent('activate', function() {
+			window.setTimeout(function() {
+				self.focusOnReply();
+			}, 50);
+		});
+
 		if (this.getEl('headerbox_box_billing').length) {
 			var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
 				auto_start_bill: this.meta.auto_start_bill
@@ -292,7 +298,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
 		updateFields();
-
 
 		//------------------------------
 		// Status menu
@@ -1141,7 +1146,53 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.getEl('is_html_reply').val(1);
 
 			var ed = textarea.getEditor();
+			var api = textarea.data('redactor');
 			var lastH = ed.height();
+			ed.on('keyup', function(ev) {
+				var isCtrl = false;
+				if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+					isCtrl = true;
+				} else if (ev.altKey) {
+					isCtrl = true;
+				}
+
+				if (isCtrl) {
+					if (isCtrl && (ev.which == 85)) {
+						ev.preventDefault();
+						self.page.shortcutReplySetAwaitingUser();
+						return;
+					}
+					if (isCtrl && (ev.which == 65)) {
+						ev.preventDefault();
+						self.page.shortcutReplySetAwaitingAgent();
+						return;
+					}
+					if (isCtrl && (ev.which == 68)) {
+						ev.preventDefault();
+						self.page.shortcutReplySetResolved();
+						return;
+					}
+					if (isCtrl && (ev.which == 82)) {
+						ev.preventDefault();
+						self.page.shortcutSendReply();
+						return;
+					}
+					if (isCtrl && (ev.which == 83)) {
+						ev.preventDefault();
+						window.setTimeout(function() {
+							self.shortcutOpenSnippets();
+						}, 10);
+						return;
+					}
+					if (isCtrl && (ev.which == 79)) {
+						ev.preventDefault();
+						window.setTimeout(function() {
+							self.shortcutReplyOpenProperties();
+						}, 10);
+						return;
+					}
+				}
+			});
 			ed.on('keypress change', function() {
 				textarea.addClass('touched');
 
@@ -1153,6 +1204,79 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							self.page.updateUi();
 						}
 					}, 50);
+				}
+			});
+
+			var te = new DeskPRO.TextExpander({
+				textarea: ed,
+				onCombo: function(combo, ev) {
+					combo = combo.replace(/%/g, '');
+					if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
+						ev.preventDefault();
+
+						var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo];
+
+						var focus = api.getFocus(),
+							focusNode = $(focus[0]),
+							testText;
+
+						if (focus[0].nodeType == 3) {
+							testText = focusNode.text().substring(0, focus[1]);
+						} else {
+							focus[0] = focusNode.contents().get(focus[1] - 1);
+							focusNode = $(focus[0]);
+							testText = focusNode.text();
+							focus[1] = testText.length;
+						}
+
+						var	lastAt = testText.lastIndexOf('%'), matches = [];
+
+						if (lastAt != -1) {
+							api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+						}
+
+						// web kit handles content editable without an issue. this prevents the span
+						// from being extended unnecessarily
+						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
+
+						var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
+						$.ajax({
+							url: BASE_URL + 'agent/tickets/0/get-snippet/' + snippetId,
+							dataType: 'text',
+							data: {person_id: personId},
+							success: function(data) {
+								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+								data = $('<div>' + data + '</div>');
+
+								// trailing newlines
+								var coll = data.find('> br');
+								coll.last().remove();
+
+								var cursor = $('<span class="_cursor"></span>');
+								var cursorPos = data.find('> p');
+								if (!cursorPos[0]) {
+									cursorPos = data;
+								}
+
+								el.after(data);
+								cursorPos.append(cursor);
+								el.remove();
+
+								var next = data.next();
+								if (next.is('br')) {
+									next.remove();
+								}
+								if (cursor.next().is('br')) {
+									cursor.next().remove();
+								}
+								if (cursor.prev().is('br')) {
+									cursor.prev().remove();
+								}
+								api.setSelection(cursor[0], 0, cursor[0], 0);
+							}
+						});
+					}
 				}
 			});
 		} else {
@@ -1292,5 +1416,45 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 			self.updateUi();
 		});
+	},
+
+	focusOnReply: function() {
+		var txt = this.textarea;
+
+		if (txt.data('redactor')) {
+			var first = !txt.hasClass('touched');
+			txt.setFocus();
+
+			if (first) {
+				var cursor = txt.data('redactor').$editor.find('> *').first();
+				txt.data('redactor').setSelection(cursor[0], 0, cursor[0], 0);
+			}
+		} else {
+			txt.focus();
+		}
+	},
+
+	shortcutOpenSnippets: function() {
+		this.openSnippetsViewer();
+	},
+
+	shortcutSendReply: function() {
+		this.submit();
+	},
+
+	shortcutReplySetAwaitingUser: function() {
+		this.setReplyAsOptionName('awaiting_user');
+	},
+
+	shortcutReplySetAwaitingAgent: function() {
+		this.setReplyAsOptionName('awaiting_agent');
+	},
+
+	shortcutReplySetResolved: function() {
+		this.setReplyAsOptionName('resolved');
+	},
+
+	shortcutReplyOpenProperties: function() {
+		this.openStatusMenu();
 	}
 });
