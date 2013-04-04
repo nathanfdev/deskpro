@@ -303,4 +303,17 @@ class DiskKeyCache implements \Swift_KeyCache
 			$this->clearAll($nsKey);
 		}
 	}
+
+	/**
+	 * Ensure the save path is always the one we want after unserialize.
+	 *
+	 * E.g., the message was queued on web server and then this is unserialized to send
+	 * from cron server, in which case the temp paths may be different.
+	 */
+	public function __wakeup()
+	{
+		if (isset($GLOBALS['DP_SWIFTMAIL_TMPDIR'])) {
+			$this->_path = $GLOBALS['DP_SWIFTMAIL_TMPDIR'];
+		}
+	}
 }

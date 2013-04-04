@@ -92,6 +92,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 		}
 
 		\Swift_Preferences::getInstance()->setTempDir($tmpdir);
+		$GLOBALS['DP_SWIFTMAIL_TMPDIR'] = $tmpdir;
 
 		$this->messagesLog = new \Orb\Log\Writer\ArrayWriter();
 
