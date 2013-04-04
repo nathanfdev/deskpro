@@ -72,7 +72,11 @@ class GlobalVariables extends BaseGlobalVariables
 		$group_vars = App::get('deskpro.core.settings')->getGroup($group);
 
 		if ($group == 'user_style') {
-			$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+			if (preg_match('#^https?://#', App::getConfig('static_path'))) {
+				$group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
+			} else {
+				$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+			}
 
 			// If static path isnt an absolute URL and the storage adapter is
 			// a remote adapter, then we need to rewrite the static path to be
