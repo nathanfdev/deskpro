@@ -437,7 +437,7 @@ pageMeta.baseId = '{{ baseId }}';
 							{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
 								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">New Ticket as Awaiting User</span>
 							{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
-								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">New Ticket as Awaiting Agent</span>
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_agent">New Ticket as Awaiting Agent</span>
 							{% elseif app.getSetting('core_tickets.new_status') == 'resolved' %}
 								<span id="{{ baseId }}_reply_as_type" data-type="resolved">New Ticket as Resolved</span>
 							{% else %}
