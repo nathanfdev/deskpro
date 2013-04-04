@@ -2153,7 +2153,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if (!$reason) {
 				$reason = 'Unknown';
 			}
-			$reason .= ' (' . date('M j Y @ H:i') . ')';
+			$reason .= ' (' . date('M j Y @ H:i') . ' UTC)';
 			$this->setModelField('disable_autoresponses_log', $reason);
 		}
 	}
