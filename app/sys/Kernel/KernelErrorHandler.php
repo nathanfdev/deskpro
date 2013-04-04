@@ -631,6 +631,10 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Cannot create Imagine instance') !== false) {
+			return true;
+		}
+
 		return false;
 	}
 
