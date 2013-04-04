@@ -148,6 +148,13 @@ class TicketChecker extends AbstractChecker
 			return true;
 		}
 
+		#------------------------------
+		# Can delete others
+		#------------------------------
+
+		if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_others')) {
+			return true;
+		}
 
         #------------------------------
         # Can delete followed
