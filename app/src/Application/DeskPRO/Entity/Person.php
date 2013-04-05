@@ -489,7 +489,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		// If we're loaded, then set default timezone from setting
 		if (class_exists('Application\\DeskPRO\\App')) {
 			try {
-				$this->setModelField('timezone', App::getSetting('core.default_timezone'));
+				$this->setTimezone(App::getSetting('core.default_timezone'));
 			} catch (\Exception $e) {};
 		}
 
@@ -2082,6 +2082,23 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->_person_logger) {
 			$this->_person_logger->preSave();
 		}
+	}
+
+	public function setTimezone($tz)
+	{
+		$tz = trim($tz);
+		if (!$tz) {
+			$tz = 'UTC';
+		}
+
+		// Make sure its valid
+		try {
+			$dt = new \DateTimeZone($tz);
+		} catch (\Exception $e) {
+			$tz = 'UTC';
+		}
+
+		$this->setModelField('timezone', $tz);
 	}
 
 	public function getTimezone()
