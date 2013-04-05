@@ -2117,7 +2117,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getDateTimezone()
 	{
-		return new \DateTimeZone($this->getTimezone());
+		try {
+			return new \DateTimeZone($this->getTimezone());
+		} catch (\Exception $e) {
+			return new \DateTimeZone('UTC');
+		}
 	}
 
 	public function getDateTime()
