@@ -273,7 +273,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 						if (License::getLicense()->isPastExpireDate()) {
 							// Admin just goes right to billing
 							if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
-								$response = new RedirectResponse($request->getBaseUrl . '/billing');
+								$response = new RedirectResponse($request->getBaseUrl() . '/billing');
 								return $response;
 							} else {
 								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_demo_expired', $request->getBaseUrl()));
@@ -285,13 +285,13 @@ abstract class AbstractKernel extends BaseAbstractKernel
 						if (DPC_BILL_FAILED) {
 							// Admin just goes right to billing
 							if (DP_INTERFACE == 'admin') {
-								$response = new RedirectResponse($request->getBaseUrl . '/billing');
+								$response = new RedirectResponse($request->getBaseUrl() . '/billing');
 								return $response;
 							}
 
 							// Agent might be disbaled
 							if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
-								$response = new RedirectResponse($request->getBaseUrl . '/billing');
+								$response = new RedirectResponse($request->getBaseUrl() . '/billing');
 								return $response;
 							}
 
