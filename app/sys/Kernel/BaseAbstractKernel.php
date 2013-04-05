@@ -94,7 +94,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			}
 		}
 
-		if ($this->environment == 'prod' && !defined('DP_BUILDING')) {
+		if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
 			// If the container doesnt exist and we're in prod, then means we're installing an update.
 			// Halt now. This prevents the system from trying to generate the cache itself,
 			// even though the new files will be installed in a second.
