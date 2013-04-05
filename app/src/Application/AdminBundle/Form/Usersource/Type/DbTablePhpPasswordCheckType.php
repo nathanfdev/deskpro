@@ -34,6 +34,7 @@
 
 namespace Application\AdminBundle\Form\Usersource\Type;
 
+use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
@@ -45,7 +46,7 @@ class DbTablePhpPasswordCheckType extends AbstractType
 		$builder->add('lost_password_url', 'text', array('required' => false));
 		$builder->add('db_dsn', 'text', array('required' => true));
 		$builder->add('db_username', 'text', array('required' => false));
-		$builder->add('db_password', 'text', array('required' => false));
+		$builder->add('db_password', new PasswordValueType(), array('required' => true, 'always_empty' => false));
 		$builder->add('table', 'text', array('required' => true));
 		$builder->add('field_id', 'text', array('required' => true));
 		$builder->add('field_username', 'text', array('required' => false));
