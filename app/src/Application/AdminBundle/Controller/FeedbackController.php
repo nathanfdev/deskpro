@@ -94,20 +94,12 @@ class FeedbackController extends AbstractController
 	{
 		$cat = $this->getStatusOr404($category_id);
 
-		$count_existing = $this->em->getRepository('DeskPRO:Feedback')->countInStatusCategory($cat);
-
-		if ($cat->status_type == 'active') {
-			$other_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-		} else {
-			$other_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
-		}
-
-		unset($other_cats[$cat->id]);
+		$cat->title = $this->in->getString('cat.title');
+		$this->em->persist($cat);
+		$this->em->flush();
 
 		return $this->render('AdminBundle:Feedback:status-edit.html.twig', array(
 			'cat' => $cat,
-			'count_existing' => $count_existing,
-			'other_cats' => $other_cats,
 		));
 	}
 
