@@ -160,7 +160,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.title = page.getMetaData('title', 'Untitled');
 		data.callback_render = function(container) {
 			container = $(container);
-			page.fireEvent('render', [container, id]);
+			page.fireEvent('render', [container.first(), id]);
 		};
 		data.callback_remove_content = function(data, container) {
 			if (data.isInited) {
