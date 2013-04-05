@@ -73,13 +73,13 @@ class PortalController extends AbstractController
 				}
 
 				$ext = strtolower(\Orb\Util\Strings::getExtension($orig_blob->getFilename()));
-				if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg'))) {
+				if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
 				}
 
 				$file = $this->container->getBlobStorage()->copyBlobRecordToString($orig_blob);
 
-				if ($orig_blob->content_type != 'image/x-icon') {
+				if ($orig_blob->content_type != 'image/x-icon' && $orig_blob->content_type != 'image/vnd.microsoft.icon') {
 					if (class_exists('Imagick')) {
 						$im = new \Imagick();
 						try {
@@ -114,12 +114,7 @@ class PortalController extends AbstractController
 				);
 				$blob_id = $blob->getId();
 
-				if ($blob->file_url) {
-					$url = $blob->file_url;
-				} else {
-					$url = 'file.php/' . $blob->getAuthId() . '/' . $blob->getFilenameSafe();
-				}
-
+				$url = trim($blob->getDownloadUrl(true, false), '/');
 
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_id', $blob_id);
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_url', $url);
