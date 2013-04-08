@@ -111,6 +111,10 @@ class BlobStorageService
 			$bs->addAdapter('fs', $adapter);
 		}
 
+		if (defined('DP_BLOBSTORAGE_PUBLISH_LIST_URL')) {
+			$bs->setPublishFilelistUrl(DP_BLOBSTORAGE_PUBLISH_LIST_URL);
+		}
+
 		// Always fallback on DB
 		$adapter = new DatabaseStorage(array(
 			'db'                   => $container->getDb(),

@@ -76,12 +76,38 @@ class DeskproBlobStorage implements Loggable
 	 */
 	protected $logger;
 
+	/**
+	 * @var string
+	 */
+	protected $publish_filelist;
+
+	/**
+	 * @param EntityManager $em
+	 */
 	public function __construct(EntityManager $em)
 	{
 		$this->adapters = array();
 		$this->em = $em;
 		$this->db = $em->getConnection();
 		$this->logger = new Logger();
+	}
+
+
+	/**
+	 * A special host that we will notify when a file is saved
+	 *
+	 * @param string $url
+	 */
+	public function setPublishFilelistUrl($url)
+	{
+		$info = @parse_url($url, \PHP_URL_QUERY);
+		if (!$info) {
+			$url .= '?';
+		} else {
+			$url .= '&';
+		}
+
+		$this->publish_filelist = $url;
 	}
 
 
@@ -314,6 +340,24 @@ class DeskproBlobStorage implements Loggable
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
 
+		if ($this->publish_filelist) {
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Publish filelist: {$this->publish_filelist}");
+
+			$info = array(
+				'db'           => defined('DP_DATABASE_HOST') ? DP_DATABASE_HOST . '/' . DP_DATABASE_NAME : '',
+				'id'           => $blob_entity->id,
+				'filename'     => $blob_entity->filename,
+				'content_type' => $blob_entity->content_type,
+				'save_path'    => $blob_entity->save_path,
+				'storage_loc'  => $blob_entity->storage_loc,
+				'file_url'     => $blob_entity->file_url,
+			);
+			$url = $this->publish_filelist . http_build_query($info);
+			$res = @file_get_contents($url);
+
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) --> " . $res);
+		}
+
 		return $blob_entity;
 	}
 
@@ -417,6 +461,24 @@ class DeskproBlobStorage implements Loggable
 		$this->em->flush();
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
+
+		if ($this->publish_filelist) {
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Publish filelist: {$this->publish_filelist}");
+
+			$info = array(
+				'db'           => defined('DP_DATABASE_HOST') ? DP_DATABASE_HOST . '/' . DP_DATABASE_NAME : '',
+				'id'           => $blob_entity->id,
+				'filename'     => $blob_entity->filename,
+				'content_type' => $blob_entity->content_type,
+				'save_path'    => $blob_entity->save_path,
+				'storage_loc'  => $blob_entity->storage_loc,
+				'file_url'     => $blob_entity->file_url,
+			);
+			$url = $this->publish_filelist . http_build_query($info);
+			$res = @file_get_contents($url);
+
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) --> " . $res);
+		}
 
 		return $blob_entity;
 	}
