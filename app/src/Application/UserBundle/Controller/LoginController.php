@@ -237,6 +237,10 @@ HTML;
 			return $this->redirectRoute('user_login');
 		}
 
+		if (!$this->consumeRequest('user_login')) {
+			return $this->redirectRoute('user_login');
+		}
+
 		$return = $this->in->getString('return');
 
 		$result = $this->authLocalInput();
