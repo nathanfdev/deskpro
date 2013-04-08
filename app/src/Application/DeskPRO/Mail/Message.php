@@ -143,7 +143,11 @@ class Message extends \Orb\Mail\Message
 			$this->setBody($body, 'text/html');
 
 			try {
-				$plaintext = Html2Text::convertHtml($body);
+				try {
+					$plaintext = Html2Text::convertHtml($body);
+				} catch (\Exception $e) {
+					$plaintext = null;
+				}
 				if ($body) {
 					$this->addPart($plaintext, 'text/plain');
 				}

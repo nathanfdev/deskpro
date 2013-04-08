@@ -70,7 +70,7 @@ class Html2Text
 		$html = Strings::standardEol($html);
 
 		$doc = new DOMDocument();
-        if (!$doc->loadHTML($html)) {
+        if (!@$doc->loadHTML($html)) {
 			throw new \InvalidArgumentException("Error loading HTML into DOMDocument");
 		}
 
