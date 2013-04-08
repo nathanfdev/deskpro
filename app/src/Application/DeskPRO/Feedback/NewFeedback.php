@@ -138,16 +138,9 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 				// Means use the same person, but depending on the setting we
 				// might require the user to log in (in which case the ticket is a temp ticket for a bit)
 				if ($email) {
-					if (App::getSetting('core.existing_account_login')) {
-						$person = $email->person;
-						$person->name = $this->person_name;
-						$this->require_login = true;
-
-					} else {
-						$person = $email->person;
-						$person->name = $this->person_name;
-					}
-
+					$person = $email->person;
+					$person->name = $this->person_name;
+					$this->require_login = true;
 					$email_validating = null;
 
 				// Email doesnt exist,

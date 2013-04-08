@@ -40,6 +40,14 @@
 		</div>
 	{% endif %}
 
+	{% if app.getSession().get('submitted_feedback')|length %}
+		<div class="dp-alert dp-alert-success">
+			<p>
+				{{ phrase('user.profile.explain_login_feedback') }}
+			<p>
+		</div>
+	{% endif %}
+
 	{% if app.getSession().get('login_validate_comments') %}
 		<div class="dp-alert dp-alert-error">
 			{{ phrase('user.profile.explain_login_comment') }}
