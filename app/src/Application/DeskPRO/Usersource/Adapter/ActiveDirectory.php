@@ -74,67 +74,54 @@ class ActiveDirectory extends AbstractAdapter
 	{
 		$usersource = clone $this->usersource;
 		$usersource->setOption('bindRequiresDn', true);
-		$adapter = $usersource->getAdapter();
+		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
-		/** @var $zend_auth \Zend\Authentication\Adapter\Ldap */
-		$zend_auth = $adapter->getAuthAdapter()->getZendAuthAdapter();
-
-		// Bogus because zend only creates ldap obj when its needed,
-		// so this is a hack to get it to set all the correct options
-		// for us
-		try {
-			$zend_auth->setUsername('__bogus__');
-			$zend_auth->setPassword('__bogus__');
-			$zend_auth->authenticate();
-		} catch (\Exception $e) {}
-
-		/** @var $ldap \Zend\Ldap\Ldap */
-		$ldap = $zend_auth->getLdap();
-
-		$raw_info = null;
-
-		try {
-			$dn = $ldap->getCanonicalAccountName($email_address, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
-			$rec = $ldap->getNode($dn);
-		} catch (\Exception $e) {
-			return null;
-		}
+		$adapter->setFormData(array(
+			'username' => $email_address,
+			'password' => '',
+		));
+		$rec = $adapter->findRecordViaEmail($email_address);
 
 		$raw_info = null;
 		if ($rec) {
-			$raw_info = array();
+			$raw_info = $rec;
+
+			if (isset($rec['dn'])) {
+				$raw_info['dn'] = $rec['dn'];
+			} elseif (isset($rec['distinguishedname'])) {
+				$raw_info['dn'] = $rec['distinguishedname'];
+			} else {
+				return null;
+			}
 
 			$raw_info['domain'] = $usersource->getOption('accountDomainName');
 
-			if ($rec->getAttribute('userPrincipalName')) {
-				$raw_info['identity'] = $rec->getAttribute('userPrincipalName', 0);
-			} elseif ($rec->getAttribute('sAMAccountName')) {
-				$raw_info['identity'] = $rec->getAttribute('sAMAccountName', 0);
-			} elseif ($rec->getAttribute('uid')) {
-				$raw_info['identity'] = $rec->getAttribute('uid', 0);
+			if (!empty($rec['userprincipalname'])) {
+				$raw_info['identity'] = $rec['userprincipalname'][0];
+			} elseif (!empty($rec['samaccountname'])) {
+				$raw_info['identity'] = $rec['samaccountname'][0];
+			} elseif (!empty($rec['uid'])) {
+				$raw_info['identity'] = $rec['uid'][0];
 			} else {
-				$raw_info['identity'] = $dn;
+				$raw_info['identity'] = $raw_info['dn'];
 			}
 
-			$raw_info['dn'] = $dn;
-
-			if ($rec->getAttribute('givenName')) {
-				$raw_info['first_name'] = $rec->getAttribute('givenName', 0);
-			}
-			if ($rec->getAttribute('sn')) {
-				$raw_info['last_name'] = $rec->getAttribute('sn', 0);
+			if (!empty($rec['givenname'])) {
+				$raw_info['first_name'] = $rec['givenname'][0];
+			} elseif (!empty($rec['sn'])) {
+				$raw_info['last_name'] = $rec['sn'][0];
 			}
 
-			if ($rec->getAttribute('name')) {
-				$raw_info['name'] = $rec->getAttribute('name', 0);
-			} elseif ($rec->getAttribute('cn')) {
-				$raw_info['name'] = $rec->getAttribute('cn', 0);
+			if (!empty($rec['name'])) {
+				$raw_info['name'] = $rec['name'][0];
+			} elseif (!empty($rec['cn'])) {
+				$raw_info['name'] = $rec['cn'][0];
 			}
 
-			if ($rec->getAttribute('mail')) {
-				$raw_info['email_address'] = $rec->getAttribute('mail', 0);
-			} elseif (\Orb\Validator\StringEmail::isValueValid($rec->getAttribute('userPrincipalName', 0))) {
-				$raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
+			if (!empty($rec['mail'])) {
+				$raw_info['email_address'] = $rec['mail'][0];
+			} elseif (!empty($rec['userprincipalname']) && \Orb\Validator\StringEmail::isValueValid($rec['userprincipalname'][0])) {
+				$raw_info['email_address'] = $rec['userprincipalname'][0];
 			}
 
 			foreach ($raw_info as &$v) {
