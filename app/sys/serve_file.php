@@ -674,14 +674,10 @@ class FilestorageLoader extends LoaderAbstract
 
 		$this->addLogMessage("Expecting file path: %s", $filepath);
 
-		// Invalid hash, or the file doesnt exist on disk
-		if (!file_exists($filepath)) {
-			if ($this->error_mode == 'exception') {
-				throw new \Exception("File not found. (2)", 400);
-			}
-			header("HTTP/1.0 404 Not Found");
-			echo "File not found. (2)";
-			return;
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
+			$size = $_GET['s'];
+			$this->addLogMessage("With size: %s", $size);
 		}
 
 		// Invalid name hash
@@ -710,15 +706,22 @@ class FilestorageLoader extends LoaderAbstract
 			}
 		}
 
+		// The file doesnt exist on disk
+		if (!file_exists($filepath)) {
+			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth->execute(array('id' => $blob_id));
+			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+			// Fallback on DB check, it may have been moved
+			if ($blob['storage_loc'] != 'fs') {
+				$this->showBlob($blob_id, $size);
+			}
+			return;
+		}
+
 		#------------------------------
 		# See if we need to resize
 		#------------------------------
-
-		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
-			$size = $_GET['s'];
-			$this->addLogMessage("With size: %s", $size);
-		}
 
 		if ($size) {
 			$this->showBlob($blob_id, $size);
