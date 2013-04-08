@@ -248,6 +248,10 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
+		if ($limit && count($ids) > $limit) {
+			$ids = array_slice($ids, 0, $limit);
+		}
+
 		return $this->getByIds($ids, true);
 	}
 
