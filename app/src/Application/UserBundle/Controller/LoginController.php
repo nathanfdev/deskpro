@@ -39,6 +39,7 @@ use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -444,7 +445,12 @@ HTML;
 				'username' => $this->in->getString('email'),
 				'password' => $this->in->getString('password')
 			));
-			$result = $adapter->authenticate();
+
+			try {
+				$result = $adapter->authenticate();
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e, false);
+			}
 
 			if ($result->isValid()) {
 				$login_processor = new LoginProcessor($us, $result->getIdentity());
