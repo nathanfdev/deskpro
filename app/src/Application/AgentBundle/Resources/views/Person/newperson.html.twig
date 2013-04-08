@@ -133,7 +133,7 @@ pageMeta.baseId = '{{ baseId }}';
 								<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px" class="dpe_select">
 									<option></option>
 									{% for tz in timezone_options %}
-										<option value="{{tz}}">{{ tz }}</option>
+										<option value="{{tz}}" {% if tz == app.getSetting('core.default_timezone') %}selected="selected"{% endif %}>{{ tz }}</option>
 									{% endfor %}
 								</select>
 							</td>
