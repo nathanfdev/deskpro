@@ -483,7 +483,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 
 				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
-				li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+				li.data('get-macro-url', BASE_URL + 'agent/tickets/0/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
 				li.data('label', 'Send Reply and ' + info.title);
 				li.data('type', 'macro:'+info.id);
 				li.attr('data-type', 'macro:'+info.id);
