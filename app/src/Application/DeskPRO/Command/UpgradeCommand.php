@@ -131,31 +131,20 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		}
 
 		#------------------------------
-		# attempt to auto-correct bad indexes and keys
+		# Auto-crrect keys
 		#------------------------------
 
-		if (!defined('DP_UPGRADE_NO_CORRECT_KEYS')) {
-			$schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
-			if ($schemadiff) {
-				$output->writeln("<info>Correcting schema...</info>");
-				foreach ($schemadiff as $line) {
-					$output->writeln("-> " . $line);
-					try {
-						App::getDb()->exec($line);
-					} catch (\Exception $e) {
-						KernelErrorHandler::handleException($e, false);
-
-						// If it failed, log the error and force it with FK checks off
-						try {
-							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
-							App::getDb()->exec($line);
-							App::getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
-						} catch (\Exception $e) {}
-					}
-				}
-			}
+		if (!defined('DP_UPGRADE_NO_CORRECT_KEYS') && !defined('DPC_IS_CLOUD')) {
+			$output->writeln("<info>Running automatic schema correction</info>");
+			$cmd = dp_get_php_command('cmd.php', 'dp:schema-correction --apply');
+			passthru($cmd, $ret);
 		}
 
+		#------------------------------
+		# Post Run
+		#------------------------------
+
+		$output->writeln("<info>Running post scripts</info>");
 	    $manager->postUpgrade();
 
 		if (defined('DP_BUILD_TIME')) {
@@ -165,6 +154,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 				App::getDb()->replace('settings', array('value' => DP_BUILD_NUM, 'name' => 'core.deskpro_build_num'));
 			}
 		}
+
+		$output->writeln("<info>Done All</info>");
 
 		return 0;
 	}
