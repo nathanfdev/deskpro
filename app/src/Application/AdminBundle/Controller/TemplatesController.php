@@ -214,7 +214,11 @@ class TemplatesController extends AbstractController
 			);
 
 			$twig = $this->container->get('twig');
-			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $template->variant_of);
+
+			$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+			$compile_code = $proc->process($code, $template->variant_of);
+
+			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($compile_code), $template->variant_of);
 
 			$template->setTemplate($code, $compiled);
 			$this->em->persist($template);
@@ -229,8 +233,11 @@ class TemplatesController extends AbstractController
 					App::getTemplating()->getDefaultSource($template->name)
 				);
 
+				$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+				$compile_code = $proc->process($code, $template->name);
+
 				$twig = $this->container->get('twig');
-				$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $template->name);
+				$compiled = $twig->compileSource($this->_preProcessCustomTemplate($compile_code), $template->name);
 
 				$template->setTemplate($code, $compiled);
 				$this->em->persist($template);
