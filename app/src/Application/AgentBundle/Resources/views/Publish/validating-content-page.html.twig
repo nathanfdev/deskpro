@@ -22,11 +22,11 @@
 					<li>{{ get_type(content) }}</li>
 					{% if info.revision_id %}
 						<li>
-                            {{ phrase('agent.general.by_name', {'name':content.revisions[info.revision_id].person.display_name}) }}
+                            {{ phrase('agent.publish.revision_by', {'name':content.person.display_name}) }}
 						</li>
 					{% else %}
 						<li>
-                            {{ phrase('agent.publish.revision_by', {'name':content.person.display_name}) }}
+                            {{ phrase('agent.general.by_name', {'name':content.revisions[info.revision_id].person.display_name}) }}
 						</li>
 					{% endif %}
 				</ul>
