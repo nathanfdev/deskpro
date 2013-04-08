@@ -507,6 +507,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleReplySave: function(ev, formData, handler) {
 
+		if (this.replySaveAjax) {
+			return;
+		}
+
 		var self = this;
 		var closetabTimeoutHit = false;
 		var ajaxHit = false;
@@ -608,7 +612,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.clearAlerts();
 
-		$.ajax({
+		this.replySaveAjax = $.ajax({
 			url: reply_form.attr('action'),
 			type: 'POST',
 			dataType: 'json',
@@ -616,6 +620,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			context: this,
 			noErrorOverride: true,
 			complete: function() {
+				this.replySaveAjax = null;
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
 
 				this.getReplyTextArea().data('disable-autosave', false);
