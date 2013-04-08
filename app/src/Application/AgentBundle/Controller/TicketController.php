@@ -2821,6 +2821,8 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$message_raw = $message->procInlineAttach($message_raw);
+
 		$date_created = clone $ticket->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
 		$date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
@@ -2852,6 +2854,8 @@ class TicketController extends AbstractController
 		if (strpos($message_raw, '<body') === false) {
 			$message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>' . $message_raw . '</body></html>';
 		}
+
+		$message_raw = $message->procInlineAttach($message_raw);
 
 		$email = $this->container->getMailer()->createMessage();
 		$email->setTo($to);
@@ -2935,6 +2939,8 @@ class TicketController extends AbstractController
 		if (strpos($message_raw, '<body') === false) {
 			$message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>' . $message_raw . '</body></html>';
 		}
+
+		$message_raw = $message->procInlineAttach($message_raw);
 
 		$res = new Response($message_raw);
 		return $res;

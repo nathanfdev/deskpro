@@ -225,7 +225,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		return $this->procInlineAttach($this->message);
 	}
 
-	protected function procInlineAttach($message)
+	/**
+	 * @param string $message
+	 * @return string
+	 */
+	public function procInlineAttach($message)
 	{
 		// An email might have inline attachments and we tokenize them with these
 		// codes so we can now turn them into inline images or attachment links
