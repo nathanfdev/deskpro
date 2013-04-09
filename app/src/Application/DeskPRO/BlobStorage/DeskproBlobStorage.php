@@ -79,7 +79,7 @@ class DeskproBlobStorage implements Loggable
 	/**
 	 * @var string
 	 */
-	protected $publish_filelist;
+	protected $save_copy_path;
 
 	/**
 	 * @param EntityManager $em
@@ -94,20 +94,16 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * A special host that we will notify when a file is saved
+	 * After a file is saved, copy a second copy to this filepath
+	 *
+	 * The filepath is represented as a full path that a file will be written to. Include
+	 * any of these variables in the path: %ID%, %AUTH%, %BATCH%, %FILENAME%, %DATETIME%
 	 *
 	 * @param string $url
 	 */
-	public function setPublishFilelistUrl($url)
+	public function setSaveCopyPath($path)
 	{
-		$info = @parse_url($url, \PHP_URL_QUERY);
-		if (!$info) {
-			$url .= '?';
-		} else {
-			$url .= '&';
-		}
-
-		$this->publish_filelist = $url;
+		$this->save_copy_path = $path;
 	}
 
 
@@ -340,22 +336,42 @@ class DeskproBlobStorage implements Loggable
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
 
-		if ($this->publish_filelist) {
-			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Publish filelist: {$this->publish_filelist}");
+		if ($this->save_copy_path) {
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Saving copy");
 
-			$info = array(
-				'db'           => defined('DP_DATABASE_HOST') ? DP_DATABASE_HOST . '/' . DP_DATABASE_NAME : '',
-				'id'           => $blob_entity->id,
-				'filename'     => $blob_entity->filename,
-				'content_type' => $blob_entity->content_type,
-				'save_path'    => $blob_entity->save_path,
-				'storage_loc'  => $blob_entity->storage_loc,
-				'file_url'     => $blob_entity->file_url,
+			$batch = (int)(($blob_entity->id-1) / 1000) + 1;
+			$copy_path = str_replace(
+				array('%ID%', '%AUTH%', '%DATETIME%', '%FILENAME%', '%BATCH%'),
+				array($blob_entity->id, $blob_entity->authcode, $blob_entity->date_created->format('YmdHis'), $blob_entity->filename, $batch),
+				$this->save_copy_path
 			);
-			$url = $this->publish_filelist . http_build_query($info);
-			$res = @file_get_contents($url);
+			$meta_path = $copy_path . '.meta';
 
-			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) --> " . $res);
+			$dirname = dirname($copy_path);
+
+			if (!is_dir($dirname)) {
+				if (!@mkdir($dirname, 0777, true)) {
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Failed to create copy dir: $dirname");
+				}
+			}
+
+			if (is_dir($dirname)) {
+				if (@copy($source_path, $copy_path)) {
+					@chmod($copy_path, 0777);
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Wrote file: $copy_path");
+				} else {
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Failed to write copy file: $copy_path");
+					error_log("Failed to write copy file: $copy_path");
+				}
+
+				if (@file_put_contents($meta_path, json_encode($blob_entity->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
+					@chmod($meta_path, 0777);
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Wrote metadata file: $meta_path");
+				} else {
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Failed to write copy file metadata: $meta_path");
+					error_log("Failed to write copy file metadata: $copy_path");
+				}
+			}
 		}
 
 		return $blob_entity;
@@ -462,22 +478,42 @@ class DeskproBlobStorage implements Loggable
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
 
-		if ($this->publish_filelist) {
-			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Publish filelist: {$this->publish_filelist}");
+		if ($this->save_copy_path) {
+			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Saving copy");
 
-			$info = array(
-				'db'           => defined('DP_DATABASE_HOST') ? DP_DATABASE_HOST . '/' . DP_DATABASE_NAME : '',
-				'id'           => $blob_entity->id,
-				'filename'     => $blob_entity->filename,
-				'content_type' => $blob_entity->content_type,
-				'save_path'    => $blob_entity->save_path,
-				'storage_loc'  => $blob_entity->storage_loc,
-				'file_url'     => $blob_entity->file_url,
+			$batch = (int)(($blob_entity->id-1) / 1000) + 1;
+			$copy_path = str_replace(
+				array('%ID%', '%AUTH%', '%DATETIME%', '%FILENAME%', '%BATCH%'),
+				array($blob_entity->id, $blob_entity->authcode, $blob_entity->date_created->format('YmdHis'), $blob_entity->filename, $batch),
+				$this->save_copy_path
 			);
-			$url = $this->publish_filelist . http_build_query($info);
-			$res = @file_get_contents($url);
+			$meta_path = $copy_path . '.meta';
 
-			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) --> " . $res);
+			$dirname = dirname($copy_path);
+
+			if (!is_dir($dirname)) {
+				if (!@mkdir($dirname, 0777, true)) {
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Failed to create copy dir: $dirname");
+				}
+			}
+
+			if (is_dir($dirname)) {
+				if (@file_put_contents($copy_path, $source_data)) {
+					@chmod($copy_path, 0777);
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Wrote file: $copy_path");
+				} else {
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Failed to write copy file: $copy_path");
+					error_log("Failed to write copy file: $copy_path");
+				}
+
+				if (@file_put_contents($meta_path, json_encode($blob_entity->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
+					@chmod($meta_path, 0777);
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Wrote metadata file: $meta_path");
+				} else {
+					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Failed to write copy file metadata: $meta_path");
+					error_log("Failed to write copy file metadata: $copy_path");
+				}
+			}
 		}
 
 		return $blob_entity;

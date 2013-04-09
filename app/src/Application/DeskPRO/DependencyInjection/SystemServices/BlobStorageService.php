@@ -111,8 +111,8 @@ class BlobStorageService
 			$bs->addAdapter('fs', $adapter);
 		}
 
-		if (defined('DP_BLOBSTORAGE_PUBLISH_LIST_URL')) {
-			$bs->setPublishFilelistUrl(DP_BLOBSTORAGE_PUBLISH_LIST_URL);
+		if (defined('DP_BLOBSTORAGE_SAVECOPY_PATH')) {
+			$bs->setSaveCopyPath(DP_BLOBSTORAGE_SAVECOPY_PATH);
 		}
 
 		// Always fallback on DB
