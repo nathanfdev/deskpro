@@ -89,7 +89,7 @@ class LdapModel
 			'port'                   => $this->port,
 			'baseDn'                 => $this->baseDn,
 			'username'               => $this->username,
-			'password'               => $this->password,
+			'password'               => $this->password ?: $this->_usersource->getOption('password'),
 			'field_username'         => $this->field_username,
 			'field_email'            => $this->field_email,
 			'accountFilterFormat'    => $this->accountFilterFormat

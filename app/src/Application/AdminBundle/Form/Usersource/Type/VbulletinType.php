@@ -45,7 +45,7 @@ class VbulletinType extends AbstractType
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('lost_password_url', 'text', array('required' => false));
 		$builder->add('db_dsn', 'text', array('required' => true));
-		$builder->add('db_password', new PasswordValueType(), array('required' => true, 'always_empty' => false));
+		$builder->add('db_password', new PasswordValueType(), array('required' => false, 'always_empty' => true));
 		$builder->add('db_password', 'text', array('required' => false));
 		$builder->add('table_prefix', 'text', array('required' => false));
 	}

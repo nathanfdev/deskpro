@@ -88,7 +88,7 @@ class BaseDbTableModel
 		$options = array(
 			'db_dsn'           => $this->db_dsn,
 			'db_username'      => $this->db_username,
-			'db_password'      => $this->db_password,
+			'db_password'      => $this->db_password ?: $this->_usersource->getOption('db_password'),
 		);
 
 		$this->_usersource->options = $options;

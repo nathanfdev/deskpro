@@ -86,7 +86,7 @@ class ActiveDirectoryModel
 			'port'                   => $this->port,
 			'baseDn'                 => $this->baseDn,
 			'username'               => $this->username,
-			'password'               => $this->password,
+			'password'               => $this->password ?: $this->_usersource->getOption('password'),
 			'accountDomainName'      => $this->accountDomainName,
 			'accountDomainNameShort' => $this->accountDomainNameShort,
 			'accountFilterFormat'    => $this->accountFilterFormat

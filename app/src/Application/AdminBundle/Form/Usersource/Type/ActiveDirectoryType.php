@@ -50,7 +50,7 @@ class ActiveDirectoryType extends AbstractType
 		$builder->add('host', 'text', array('required' => true));
 		$builder->add('baseDn', 'text', array('required' => true));
 		$builder->add('username', 'text', array('required' => true));
-		$builder->add('password', new PasswordValueType(), array('required' => true, 'always_empty' => false));
+		$builder->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => true));
 		$builder->add('accountDomainName', 'text', array('required' => true));
 		$builder->add('accountDomainNameShort', 'text', array('required' => true));
 		$builder->add('accountFilterFormat', 'text', array('required' => false));
