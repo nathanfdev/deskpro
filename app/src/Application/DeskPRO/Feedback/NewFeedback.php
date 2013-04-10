@@ -246,31 +246,33 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			$this->em->commit();
 
 			// Send confirmation email
-			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($feedback, $person, $email_validating, $email, $validating) {
+			if ($feedback->status_code != 'hidden.temp') {
+				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($feedback, $person, $email_validating, $email, $validating) {
 
-				if ($validating == 'existing') {
-					$email_to       = $email->email;
-				} elseif ($validating == 'new') {
-					$email_to       = $email_validating->email;
-				} else {
-					$email_to       = $person->primary_email_address;
-				}
+					if ($validating == 'existing') {
+						$email_to       = $email->email;
+					} elseif ($validating == 'new') {
+						$email_to       = $email_validating->email;
+					} else {
+						$email_to       = $person->primary_email_address;
+					}
 
-				$vars = array(
-					'feedback' => $feedback,
-					'person' => $person,
-					'email_validating' => $email_validating,
-					'email' => $email,
-					'validating' => $validating,
-				);
+					$vars = array(
+						'feedback' => $feedback,
+						'person' => $person,
+						'email_validating' => $email_validating,
+						'email' => $email,
+						'validating' => $validating,
+					);
 
-				$message = App::getMailer()->createMessage();
-				$message->setTo($email_to, $person->getDisplayName());
-				$message->setTemplate('DeskPRO:emails_user:feedback-new.html.twig', $vars);
-				$message->enableQueueHint();
+					$message = App::getMailer()->createMessage();
+					$message->setTo($email_to, $person->getDisplayName());
+					$message->setTemplate('DeskPRO:emails_user:feedback-new.html.twig', $vars);
+					$message->enableQueueHint();
 
-				App::getMailer()->send($message);
-			});
+					App::getMailer()->send($message);
+				});
+			}
 
 		} catch (\Exception $e) {
 			$this->em->rollback();

@@ -369,7 +369,13 @@ class FeedbackController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$feedback->setStatusCode('hidden.validating');
+		if (!$this->person->hasPerm('feedback.no_submit_validate')) {
+			$feedback->setStatusCode('hidden.validating');
+		} else {
+			$feedback['status'] = Entity\Feedback::STATUS_NEW;
+			$feedback['validating'] = null;
+		}
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {
@@ -383,6 +389,24 @@ class FeedbackController extends AbstractController
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+
+		$person = $this->person;
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($feedback, $person) {
+
+			$vars = array(
+				'feedback' => $feedback,
+				'person' => $person,
+				'email' => $person->primary_email,
+				'validating' => $feedback['validating'],
+			);
+
+			$message = App::getMailer()->createMessage();
+			$message->setTo($person->primary_email_address, $person->getDisplayName());
+			$message->setTemplate('DeskPRO:emails_user:feedback-new.html.twig', $vars);
+			$message->enableQueueHint();
+
+			App::getMailer()->send($message);
+		});
 
 		return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
 	}
