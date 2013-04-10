@@ -167,7 +167,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		this.getEl('billing_amount').val('');
 		this.getEl('billing_comment').val('');
 
-		if (this.getEl('billing_type_hidden').val() == 'time') {
+		if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
 			this.startBillingTimer(true);
 		} else {
 			this.stopBillingTimer(true);
