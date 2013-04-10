@@ -55,6 +55,7 @@ class FeedbackSearch extends SearcherAbstract
 	const ORDER_DATE  = 'id';
 	const ORDER_NUM_RATINGS = 'num_ratings';
 
+	protected $include_hidden = false;
 	protected $visitor;
 
 	public function setVisitor($visitor)
@@ -152,7 +153,11 @@ class FeedbackSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		$sql .= "WHERE ";
+		if ($this->include_hidden) {
+			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
+		} else {
+			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
+		}
 		$where_perm = $this->getPermWhere();
 		if ($where_perm) {
 			$sql .= $where_perm . ' AND ';
@@ -205,7 +210,11 @@ class FeedbackSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		$sql .= "WHERE ";
+		if ($this->include_hidden) {
+			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
+		} else {
+			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
+		}
 		$where_perm = $this->getPermWhere();
 		if ($where_perm) {
 			$sql .= $where_perm . ' AND ';
@@ -342,6 +351,9 @@ class FeedbackSearch extends SearcherAbstract
 							$cats[] = $c;
 						} else {
 							$types[] = $c;
+							if ($c == 'hidden') {
+								$this->include_hidden = true;
+							}
 						}
 					}
 
@@ -361,6 +373,10 @@ class FeedbackSearch extends SearcherAbstract
 					}
 					if ($hidden_types) {
 						$part_where[] = "(feedback.status = 'hidden' AND " . $this->_stringMatch('feedback.hidden_status', $op, $types) . ')';
+					}
+
+					if ($hidden_types) {
+						$this->include_hidden = true;
 					}
 
 					$part_where = "(" . implode(' OR ', $part_where) . ")";

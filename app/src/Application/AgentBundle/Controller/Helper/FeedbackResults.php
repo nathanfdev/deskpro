@@ -95,7 +95,7 @@ class FeedbackResults
 			$form_terms = Arrays::removeFalsey($form_terms);
 
 			if (!$form_terms AND !empty($options['default_terms'])) {
-				$form_terms = $default_terms;
+				$form_terms = $options['default_terms'];
 			}
 
 			if (!empty($options['specific_terms'])) {

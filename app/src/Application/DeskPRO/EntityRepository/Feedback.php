@@ -109,9 +109,9 @@ class Feedback extends AbstractEntityRepository
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
 			FROM feedback
-			WHERE status = ? AND hidden_status != ?
+			WHERE status = ? AND hidden_status != ? AND hidden_status != ?
 			GROUP BY hidden_status WITH ROLLUP
-		", array('hidden', 'validating'));
+		", array('hidden', 'validating', 'temp'));
 	}
 
 
