@@ -74,6 +74,10 @@ class Register
 			$person = Person::newRegularPerson();
 		}
 
+		if ($this->language_id && $lang = App::getDataService('Language')->get($this->language_id)) {
+			$person->language = $lang;
+		}
+
 		$this->em = App::getOrm();
 		$this->em->getConnection()->beginTransaction();
 
