@@ -33,7 +33,7 @@
  * @package DeskPRO
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -56,7 +56,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 	protected function configure()
 	{
 		$this->setDefinition(array(
-		))->setName('dpdev:test-email-decode');
+		))->setName('dp:test-email-decode');
 
 		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
