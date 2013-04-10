@@ -236,15 +236,17 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		#------------------------------
 
 		$time_start = microtime(true);
-		App::getDb()->insert('log_items', array(
-			'log_name' => 'worker_job.cron_runner',
-			'session_name' => 'cron_runner.' . $time_start,
-			'flag' => 'cron_start',
-			'priority' => 6,
-			'priority_name' => 'INFO',
-			'message' => 'Cron runner started',
-			'date_created' => date('Y-m-d H:i:s')
-		));
+		if (!defined('DP_DISABLE_DBCRONLOG')) {
+			App::getDb()->insert('log_items', array(
+				'log_name' => 'worker_job.cron_runner',
+				'session_name' => 'cron_runner.' . $time_start,
+				'flag' => 'cron_start',
+				'priority' => 6,
+				'priority_name' => 'INFO',
+				'message' => 'Cron runner started',
+				'date_created' => date('Y-m-d H:i:s')
+			));
+		}
 		App::getDb()->replace('settings', array('name' => 'core.last_cron_start', 'value' => time()));
 
 		$cron_id = 'dp-cron';
@@ -356,15 +358,17 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
 
 		$done_time = microtime(true);
-		App::getDb()->insert('log_items', array(
-			'log_name' => 'worker_job.cron_runner',
-			'session_name' => 'cron_runner.' . $time_start,
-			'flag' => 'cron_end',
-			'priority' => 6,
-			'priority_name' => 'INFO',
-			'message' => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
-			'date_created' => date('Y-m-d H:i:s')
-		));
+		if (!defined('DP_DISABLE_DBCRONLOG')) {
+			App::getDb()->insert('log_items', array(
+				'log_name' => 'worker_job.cron_runner',
+				'session_name' => 'cron_runner.' . $time_start,
+				'flag' => 'cron_end',
+				'priority' => 6,
+				'priority_name' => 'INFO',
+				'message' => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
+				'date_created' => date('Y-m-d H:i:s')
+			));
+		}
 
 		unset($GLOBALS['DP_CRON_ID']);
 

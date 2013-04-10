@@ -923,9 +923,11 @@ class App
 		$logger->addFilter($indent_filter);
 
 		// Writer to the DB
-		$writer = new \Application\DeskPRO\Log\Writer\LogItemEntity();
-		$writer->addFilter(new \Orb\Log\Filter\PriorityFilter(\Orb\Log\Logger::INFO));
-		$logger->addWriter($writer);
+		if (strpos($log_name, 'worker_job') !== 0 || !defined('DP_DISABLE_DBCRONLOG')) {
+			$writer = new \Application\DeskPRO\Log\Writer\LogItemEntity();
+			$writer->addFilter(new \Orb\Log\Filter\PriorityFilter(\Orb\Log\Logger::INFO));
+			$logger->addWriter($writer);
+		}
 
 		return $logger;
 	}
