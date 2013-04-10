@@ -89,7 +89,7 @@ class TicketPropertiesController extends AbstractController
 			foreach ($deps as $d) {
 				if (!$d->is_tickets_enabled) continue;
 
-				if ($d->children) {
+				if (count($d->children)) {
 					foreach ($d->children as $subd) {
 						$in = $in_default;
 						if (isset($all_pages[$subd->id])) {
@@ -109,7 +109,7 @@ class TicketPropertiesController extends AbstractController
 					$in = $in_default;
 					if (isset($all_pages[$d->id])) {
 						$in = false;
-						foreach ($all_pages[0] as $info) {
+						foreach ($all_pages[$d->id] as $info) {
 							if ($info['id'] == $name) {
 								$in = true;
 							}
