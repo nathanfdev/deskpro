@@ -95,7 +95,13 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 		echo "\n";
 		echo $blob_info['url'];
 
-		if (!copy($blob_info['url'], $tmpfile)) {
+		$context = stream_context_create(array(
+			'http' => array(
+				'header' => 'Authorization: Basic ' . base64_encode($this->zd->getZendeskApiUserId() . '/token:' . $this->zd->getZendeskApiKey(false))
+			)
+		));
+
+		if (!copy($blob_info['url'], $tmpfile, $context)) {
 			$this->logMessage("Failed copy blob: " . print_r($blob_info,1));
 			return;
 		}

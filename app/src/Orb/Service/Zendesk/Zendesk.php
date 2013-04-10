@@ -109,6 +109,37 @@ class Zendesk
 
 
 	/**
+	 * @return string
+	 */
+	public function getZendeskUrl()
+	{
+		return $this->zendesk_url;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getZendeskApiUserId()
+	{
+		return $this->user_id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getZendeskApiKey($token_prefix = true)
+	{
+		if ($token_prefix) {
+			return $this->api_key;
+		}
+
+		return preg_replace('#^token:#', '', $this->api_key);
+	}
+
+
+	/**
 	 * Add a callback function to listen to events. Mainly useful for logging.
 	 *
 	 * The callbacks are passed an array and must return the same array
