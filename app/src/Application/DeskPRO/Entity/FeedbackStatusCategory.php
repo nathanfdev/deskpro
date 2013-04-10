@@ -34,14 +34,17 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Util;
 
 /**
  * Feedback status types for accepted/declined statuses
  *
  */
-class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject
+class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	const STATUS_ACTIVE = 'active';
 	const STATUS_CLOSED = 'closed';
@@ -77,6 +80,52 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 	public function getStatusCode()
 	{
 		return $this->status_type . '.' . $this->id;
+	}
+
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * Return a unique ID that we can use to look up translations for this object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
+	{
+		if (!$property) {
+			$property = 'title';
+		}
+		$name = strtolower(Util::getBaseClassname($this));
+		$phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
+
+		return $phrase_name;
+	}
+
+
+	/**
+	 * Get the default value phrase for the object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
+	{
+		return $this->title;
+	}
+
+
+	public function getSelectTitle()
+	{
+		return $this->title;
+	}
+
+
+	public function __toString()
+	{
+		return $this->title;
 	}
 
 

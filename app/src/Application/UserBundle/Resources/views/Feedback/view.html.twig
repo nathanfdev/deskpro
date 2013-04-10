@@ -14,7 +14,7 @@
 {% block breadcrumb %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback') }}">{{ phrase('user.feedback.feedback') }}</a></li>
 	{% for cat in category_path %}
-		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{ phrase_object(cat) }}</a></li>
 	{% endfor %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></li>
 {% endblock %}
@@ -23,7 +23,7 @@
 	-
 	{{ phrase('user.feedback.feedback') }}
 	{% for cat in category_path %}
-		/ {{ cat.title }}
+		/ {{ phrase_object(cat) }}
 	{% endfor %}
 {% endblock %}
 {% block content %}
@@ -36,7 +36,7 @@
 				{% if feedback.status != 'hidden' %}
 					<span class="dp-feedback-status" style="float: {% if is_rtl() %}left{% else %}right{% endif %}; margin-{% if is_rtl() %}right{% else %}left{% endif %}: 6px;">
 						{% if feedback.status_category %}
-							{{ feedback.status_category.title }}
+							{{ phrase_object(feedback.status_category) }}
 						{% else %}
 							{% if feedback.status == 'new' %}{{ phrase('user.feedback.status_new') }}
 							{% elseif feedback.status == 'active' %}{{ phrase('user.feedback.status_active') }}
@@ -48,7 +48,7 @@
 				<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
 				<ul class="dp-post-info">
 					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name_user }}</li>
-					<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
+					<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'slug': feedback.category.url_slug}) }}">{{ phrase_object(feedback.category) }}</a></li>
 					{% if display.user_category %}
 						<li class="dp-user-category"><i class="dp-icon-folder-close"></i> {{ display.user_category.getTitle() }}</li>
 					{% endif %}

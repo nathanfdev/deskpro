@@ -20,7 +20,7 @@
 									<div class="dp-feedback-status-wrap-inner dp-{{ feedback.status }}">
 										<span class="dp-feedback-status">
 											{% if feedback.status_category %}
-												{{ feedback.status_category.title }}
+												{{ phrase_object(feedback.status_category) }}
 											{% else %}
 												{% if feedback.status == 'new' %}{{ phrase('user.feedback.status_new') }}
 												{% elseif feedback.status == 'active' %}{{ phrase('user.feedback.status_active') }}
@@ -33,7 +33,7 @@
 							</h3></div>
 						<ul class="dp-post-info">
 							<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name_user }}</li>
-							<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
+							<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ phrase_object(feedback.category) }}</a></li>
 							{% if result.user_category %}
 								<li class="dp-user-category"><i class="dp-icon-folder-close"></i> {{ result.user_category.getTitle() }}</li>
 							{% endif %}

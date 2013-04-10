@@ -269,6 +269,34 @@ class LanguagesController extends AbstractController
 	}
 
 	############################################################################
+	# edit-feedback
+	############################################################################
+
+	public function feedbackAction($language_id)
+	{
+		$vars = $this->getLangInfo($language_id);
+
+		$all_statuses = $this->em->createQuery("
+			SELECT s
+			FROM DeskPRO:FeedbackStatusCategory s
+			ORDER BY s.display_order ASC
+		")->getResult();
+		$vars['all_statuses'] = $all_statuses;
+
+		$all_types = $this->em->createQuery("
+			SELECT s
+			FROM DeskPRO:FeedbackCategory s
+			ORDER BY s.display_order ASC
+		")->getResult();
+		$vars['all_types'] = $all_types;
+
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], 'obj_feedbackstatuscategory');
+		$vars['lang_phrases'] = array_merge($this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], 'obj_feedbackcategory'), $vars['lang_phrases']);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-feedback.html.twig', $vars);
+	}
+
+	############################################################################
 	# edit-language
 	############################################################################
 

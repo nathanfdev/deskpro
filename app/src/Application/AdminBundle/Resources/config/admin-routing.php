@@ -1171,6 +1171,13 @@ $collection->add('admin_langs_ticketcategories', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_feedback', new Route(
+	'/languages/{language_id}/phrases/feedback',
+	array('_controller' => 'AdminBundle:Languages:feedback'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_langs_customfields', new Route(
 	'/languages/{language_id}/phrases/fields/{field_type}',
 	array('_controller' => 'AdminBundle:Languages:customFields'),

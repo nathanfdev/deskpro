@@ -12,7 +12,7 @@
 {% endblock %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
-		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ phrase_object(cat) }}</a>
 		{% if cat.children|length %}
 			<ul>
 				{% for subcat in cat.children %}
@@ -37,9 +37,9 @@
 		</li>
 		{% if category %}
 			{% for cat in category.getTreeParents() %}
-				<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
+				<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ phrase_object(cat) }}</a></li>
 			{% endfor %}
-			<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a></li>
+			<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ phrase_object(category) }}</a></li>
 		{% endif %}
 		{% if parent_status and parent_status != 'open' %}
 			<li>
@@ -57,9 +57,9 @@
 					<span class="dp-divider">{{ language_arrow('right') }}</span>
 					<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
 						{% if parent_status == 'active' %}
-							{{ active_status_cats[sub_status_id].title }}
+							{{ phrase_object(active_status_cats[sub_status_id]) }}
 						{% else %}
-							{{ closed_status_cats[sub_status_id].title }}
+							{{ phrase_object(closed_status_cats[sub_status_id]) }}
 						{% endif %}
 					</a>
 				</li>
@@ -78,9 +78,9 @@
 	{% endif %}
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
-			- {{ cat.title }}
+			- {{ phrase_object(cat) }}
 		{% endfor %}
-		- {{ category.title }}
+		- {{ phrase_object(category) }}
 	{% endif %}
 	{% if parent_status and parent_status != 'open' %}
 		-
@@ -92,9 +92,9 @@
 		{% if parent_status != status %}
 			-
 			{% if parent_status == 'active' %}
-				{{ active_status_cats[sub_status_id].title }}
+				{{ phrase_object(active_status_cats[sub_status_id]) }}
 			{% else %}
-				{{ closed_status_cats[sub_status_id].title }}
+				{{ phrase_object(closed_status_cats[sub_status_id]) }}
 			{% endif %}
 		{% endif %}
 	{% endif %}

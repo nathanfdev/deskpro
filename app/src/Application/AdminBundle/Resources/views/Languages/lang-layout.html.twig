@@ -49,6 +49,9 @@
 					</li>
 				{% endif %}
 				<li>
+					<a href="{{ path('admin_langs_feedback', {'language_id': language.id}) }}">Feedback</a>
+				</li>
+				<li>
 					<a href="{{ path('admin_langs_customfields', {'language_id': language.id, 'field_type': 'tickets'}) }}">Ticket Fields</a>
 				</li>
 				<li>
