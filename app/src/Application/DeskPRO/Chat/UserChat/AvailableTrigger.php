@@ -99,7 +99,12 @@ class AvailableTrigger
 
 				$url = str_replace('%CHAT_STATUS%', $val, $url);
 
-				$res = file_get_contents($url);
+				$context = stream_context_create(array(
+					'http' => array(
+						'timeout' => 5
+					)
+				));
+				$res = file_get_contents($url, false, $context);
 
 				if ($is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_AVAILABLE') === false) {
 					$e = new \RuntimeException("Failed to send chat status (1) to $url. Got response: $res");
