@@ -143,6 +143,7 @@
 {##################################################################################################################}
 
 {% if event_trigger_master == 'update' %}
+	{% if not (event_trigger_sub == 'web' or event_trigger_sub == '' or event_trigger_master == 'update') %}
 	<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
 			<select name="op" class="op">
@@ -169,6 +170,7 @@
 			</select>
 		</div>
 	</div>
+	{% endif %}
 
 	{% if event_trigger == 'update.agent' or event_trigger == 'update.user' %}
 		<div class="builder-type" title="Updated by email reply" data-rule-type="is_via_email" data-term-type="GenericMenuTerm">
