@@ -74,7 +74,7 @@ function DpCodeHints() {
 					break;
 
 				case '<dp:agent-reply':
-					lastTip = createTemplateTip("Inserts the agents reply.", 'DeskPRO:emails_common:ticket-message.html.twig', pos);
+					lastTip = createTemplateTip("Inserts the agents reply.", 'DeskPRO:emails_common:ticket-message-agent.html.twig', pos);
 					break;
 
 				case '<dp:user-reply':
@@ -252,7 +252,6 @@ function DpCodeHints() {
 								url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
 							});
 
-							callback('reset');
 							overlay.close();
 						} else {
 							$.ajax({
@@ -268,7 +267,6 @@ function DpCodeHints() {
 										return;
 									}
 
-									callback('update', data);
 									overlay.close();
 								}
 							});

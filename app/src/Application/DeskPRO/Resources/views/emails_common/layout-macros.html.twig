@@ -20,7 +20,12 @@
 # Shows the first message of the messages array (a new reply)
 ##}
 {% macro show_first_message(context) %}
-	{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: context.messages|first} %}
+	{% set message = context.messages|first %}
+	{% if message.person.is_agent %}
+		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message} %}
+	{% else %}
+		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message} %}
+	{% endif %}
 {% endmacro %}
 
 {##

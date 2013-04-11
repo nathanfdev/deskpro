@@ -10,7 +10,11 @@
 	</td></tr>
 	<tr><td>
 		<table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>
-			<div class="dp-quoted-message">{% include 'DeskPRO:emails_common:ticket-message.html.twig' %}<!-- DP_MESSAGE_END --></div>
+			{% if message.person.is_agent %}
+				<div class="dp-quoted-message">{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' %}<!-- DP_MESSAGE_END --></div>
+			{% else %}
+				<div class="dp-quoted-message">{% include 'DeskPRO:emails_common:ticket-message.html.twig' %}<!-- DP_MESSAGE_END --></div>
+			{% endif %}
 		</td></tr></table>
 	</td></tr>
 </table>
