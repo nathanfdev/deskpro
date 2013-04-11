@@ -93,6 +93,9 @@ class NewTicketValidator extends AbstractValidator
 		if ($newticket->priority_id) {
 			$this->mock_ticket->setPriorityId($newticket->priority_id);
 		}
+		if ($newticket->priority_id) {
+			$this->mock_ticket->setWorkflowId($newticket->workflow_id);
+		}
 
 		$this->_traverseItems($this->page_data);
 
@@ -171,10 +174,10 @@ class NewTicketValidator extends AbstractValidator
 
 			case 'ticket_workflow':
 				if (App::getSetting('core.use_ticket_workflow')) {
-					$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
+					$validator = new \Application\DeskPRO\Validator\TicketWorkflow(array(
 						'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_work_agent_required')
 					));
-					if (!$validator->isValid($this->newticket->priority_id)) {
+					if (!$validator->isValid($this->newticket->workflow_id)) {
 						$this->addError('ticket.workflow_id', array('message' => 'Select a workflow'));
 					}
 				}
