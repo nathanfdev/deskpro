@@ -437,6 +437,9 @@ DeskPRO.Agent.RteEditor = {
 				html = html.replace(/<div/gi, '<p').replace(/<\/div>/g, '</p>');
 				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<p$1>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
 				html = html.replace(/(<p[^>]*) data-redactor="1"/g, '$1');
+				html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+				html = html.replace(/^<p>/, '');
+				html = html.replace(/<\/p>$/, '');
 
 				this.pasteCleanUp(html);
 
