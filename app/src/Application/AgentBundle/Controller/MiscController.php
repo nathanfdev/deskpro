@@ -501,6 +501,7 @@ JS;
 
 		$message = $this->in->getString('message');
 		$extras = $this->in->getCleanValueArray('extras');
+		$draft = null;
 		if ($message) {
 			$message_html = Strings::trimHtml($this->in->getHtmlCore('message'));
 			$message_html = Strings::prepareWysiwygHtml($message_html);

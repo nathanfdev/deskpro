@@ -132,7 +132,8 @@ class Draft extends AbstractEntityRepository
 			$this->getEntityManager()->getConnection()->executeUpdate("
 				DELETE FROM drafts WHERE content_type = ? AND content_id = ? AND person_id =?
 			", array($content_type, $content_id, $person->getId()));
-			$this->getEntityManager()->flush();
+			$this->getEntityManager()->persist($draft);
+			$this->getEntityManager()->flush($draft);
 		} catch (\PDOException $e) {
 			return null;
 		}
