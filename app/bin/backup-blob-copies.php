@@ -57,7 +57,7 @@ if (!empty($options['remote'])) {
 }
 
 if ($usage) {
-	echo "Usage: backup-blob-copies.php --local path --remote user@remote-server.com:/path/to/store [--remote-pubfile path.pub --remote-privkey key] [--remote-privkey-passphrase phrase]";
+	echo "Usage: backup-blob-copies.php --local path --remote user@remote-server.com/path/to/store [--remote-pubfile path.pub --remote-privkey key] [--remote-privkey-passphrase phrase]";
 	echo "\n\n";
 	echo "\tverbose:\tOutput info. Quiet by default (suitable for cron) so enable this if you want to see things.\n";
 	echo "\tlocal:\tThe local path to process\n";
