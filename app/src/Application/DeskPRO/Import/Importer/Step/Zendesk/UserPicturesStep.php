@@ -100,7 +100,15 @@ class UserPicturesStep extends AbstractZendeskStep
 
 		$tmpcontent = file_get_contents($blob_info['url'], null, $context);
 		if (!$tmpcontent) {
-			$this->logMessage("Failed copy blob: " . print_r($blob_info,1));
+			sleep(2);
+			$tmpcontent = file_get_contents($blob_info['url'], null, $context);
+			if ($tmpcontent) {
+				sleep(2);
+				$tmpcontent = file_get_contents($blob_info['url'], null, $context);
+				if (!$tmpcontent) {
+					$this->logMessage("Failed copy blob: " . print_r($blob_info,1));
+				}
+			}
 			return;
 		}
 		file_put_contents($tmpfile, $tmpcontent);
