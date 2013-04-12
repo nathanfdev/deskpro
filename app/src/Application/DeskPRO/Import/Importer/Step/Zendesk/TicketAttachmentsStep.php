@@ -92,9 +92,6 @@ class TicketAttachmentsStep extends AbstractZendeskStep
 	{
 		$tmpfile = tempnam(sys_get_temp_dir(), 'dp');
 
-		echo "\n";
-		echo $blob_info['url'];
-
 		$context = stream_context_create(array(
 			'http' => array(
 				'header' => 'Authorization: Basic ' . base64_encode($this->zd->getZendeskApiUserId() . '/token:' . $this->zd->getZendeskApiKey(false))
