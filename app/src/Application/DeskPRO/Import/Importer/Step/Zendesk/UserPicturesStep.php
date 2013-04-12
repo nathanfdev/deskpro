@@ -98,10 +98,13 @@ class UserPicturesStep extends AbstractZendeskStep
 			)
 		));
 
-		if (!copy($blob_info['url'], $tmpfile, $context)) {
+		$tmpcontent = file_get_contents($blob_info['url'], null, $context);
+		if (!$tmpcontent) {
 			$this->logMessage("Failed copy blob: " . print_r($blob_info,1));
 			return;
 		}
+		file_put_contents($tmpfile, $tmpcontent);
+		unset($tmpcontent);
 
 		$dim_w = $dim_h = 0;
 		if (in_array($blob_info['content_type'], ContentTypes::getImageContentTypes())) {
