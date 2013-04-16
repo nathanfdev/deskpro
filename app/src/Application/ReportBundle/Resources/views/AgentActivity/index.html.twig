@@ -2,6 +2,7 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block nav_block %}
 {% endblock %}
+{% set url_agent_or_team_id %}{% if team_id %}team-{{ team_id }}{% elseif agent_id %}{{ agent_id }}{% else %}0{% endif %}{% endset %}
 {% block pagebar %}
 <ul>
 	<li>
@@ -24,7 +25,11 @@
 			</select>
 		</form>
 		on
+		<span class="dp-nav-btn"><a href="{{ path('report_agent_activity_list', {'agent_or_team_id': url_agent_or_team_id, 'date':view_prev_date|date('Y-m-d')}) }}">&lt;</a></span>
 		<span class="dp-nav-btn datepicker"><a>{{ view_date|date('jS F Y') }}</a><em class="drop"></em><span class="hidden"></span></span>
+		{% if view_next_date %}
+			<span class="dp-nav-btn"><a href="{{ path('report_agent_activity_list', {'agent_or_team_id': url_agent_or_team_id, 'date': view_next_date|date('Y-m-d') }) }}">&gt;</a></span>
+		{% endif %}
 	</li>
 </ul>
 {% endblock %}
@@ -99,8 +104,8 @@
         $('.datepicker > span').datepicker(
                 {
                     'onSelect': function(dateText) {
-                        document.location = "{{ path('report_agent_activity_list', {'agent_or_team_id': 0, 'date':''}) }}/" + dateText;
-                    },
+						document.location = "{{ path('report_agent_activity_list', {'agent_or_team_id': url_agent_or_team_id, 'date':''}) }}/" + dateText;
+					},
                     'dateFormat': 'yy-mm-dd',
                     'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} -1, {{ view_date|date('d') }}),
                     'maxDate': new Date({{ today|date('Y') }}, {{ today|date('m') }} -1, {{ today|date('d') }})

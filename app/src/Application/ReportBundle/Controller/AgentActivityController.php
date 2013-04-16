@@ -55,9 +55,13 @@ class AgentActivityController extends AbstractController
         $date = $this->createDateFromParamString($date);
         $all_agents = $em->getRepository('DeskPRO:Person')->getAgents();
 
+		$agent_id = null;
+		$team_id = null;
         if (preg_match('/^team-(\d+)$/', $agent_or_team_id, $match)) {
+			$team_id = $match[1];
 			$agent_list = $em->getRepository('DeskPRO:AgentTeam')->getMembers($match[1]);
 		} else if ($agent_or_team_id && ctype_digit($agent_or_team_id)) {
+			$agent_id = $agent_or_team_id;
             $agent_list = array($em->getRepository('DeskPRO:Person')->find($agent_or_team_id));
         } else {
 			$agent_list = false;
@@ -115,6 +119,18 @@ class AgentActivityController extends AbstractController
 		$vars['agent_teams'] = $em->getRepository('DeskPRO:AgentTeam')->getTeams();
         $vars['view_date'] = $date;
         $vars['today'] = new \DateTime('now', new \DateTimeZone('UTC'));
+		$vars['agent_id'] = $agent_id;
+		$vars['team_id'] = $team_id;
+
+		if ($date->format('Y-m-d') != date('Y-m-d')) {
+			$d2 = clone $date;
+			$d2->add(new \DateInterval('PT24H'));
+			$vars['view_next_date'] = $d2;
+		}
+
+		$d2 = clone $date;
+		$d2->sub(new \DateInterval('PT24H'));
+		$vars['view_prev_date'] = $d2;
 
         return $this->render('ReportBundle:AgentActivity:index.html.twig', $vars);
     }
