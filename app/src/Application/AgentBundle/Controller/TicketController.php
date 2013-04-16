@@ -2897,6 +2897,15 @@ class TicketController extends AbstractController
 
 		$this->container->getMailer()->send($email);
 
+		// Log the action
+		$this->db->insert('tickets_logs', array(
+			'ticket_id'    => $ticket->id,
+			'person_id'    => $this->person->id,
+			'action_type'  => 'free',
+			'details'      => serialize(array('message' => 'Forwarded message ID '.$message_id. ' to ' . implode(', ', array_keys($to)))),
+			'date_created' => date('Y-m-d H:i:s')
+		));
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 
