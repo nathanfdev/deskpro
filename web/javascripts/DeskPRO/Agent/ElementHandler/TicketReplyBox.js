@@ -506,9 +506,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
 						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
+						self.page.pauseSend = true;
 						$.ajax({
 							url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/get-snippet/' + snippetId,
 							dataType: 'text',
+							complete: function() {
+								self.page.pauseSend = false;
+							},
 							success: function(data) {
 								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 								data = $('<div>' + data + '</div>');
@@ -538,6 +542,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 									cursor.prev().remove();
 								}
 								api.setSelection(cursor[0], 0, cursor[0], 0);
+								api.syncCode();
 							}
 						});
 					}

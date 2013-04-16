@@ -653,6 +653,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	submit: function() {
 
+		if (this.pauseSend) {
+			window.setTimeout(this.submit.bind(this), 250);
+		}
+
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
 
@@ -1241,10 +1245,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
 						var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
+						self.pauseSend = true
 						$.ajax({
 							url: BASE_URL + 'agent/tickets/0/get-snippet/' + snippetId,
 							dataType: 'text',
 							data: {person_id: personId},
+							complete: function() {
+								self.pauseSend = false;
+							},
 							success: function(data) {
 								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 								data = $('<div>' + data + '</div>');
@@ -1274,6 +1282,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 									cursor.prev().remove();
 								}
 								api.setSelection(cursor[0], 0, cursor[0], 0);
+								api.syncCode();
 							}
 						});
 					}

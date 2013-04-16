@@ -507,6 +507,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleReplySave: function(ev, formData, handler) {
 
+		if (this.pauseSend) {
+			window.setTimeout((function() {
+				this.handleReplySave(ev, formData, handler);
+			}).bind(this), 250);
+		}
+
 		if (this.replySaveAjax) {
 			return;
 		}
