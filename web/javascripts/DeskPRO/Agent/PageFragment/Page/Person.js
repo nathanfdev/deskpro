@@ -27,43 +27,31 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var lastClip = null;
 		var lastLi = null;
 
-		this.wrapper.find('.copy-btn-outer').each(function() {
+		this.wrapper.find('.copy-btn').each(function() {
 			var btnEl = this;
 			var btn = $(this);
 
-			$(this).closest('li').on('mouseover', function() {
-				lastLi = $(this);
+			try {
+				var clip = new ZeroClipboard(this, {
+					btnEl: this
+				});
+				clip.on('mouseover', function(client, args) {
+					$(client.options.btnEl).addClass('over');
+				});
+				clip.on('mouseout', function(client, args) {
+					$(client.options.btnEl).removeClass('over');
+				});
+				clip.on('complete', function(client, args) {
 
-				if (lastActiveBtn) {
-					lastActiveBtn.parent().removeClass('over');
-					if (lastClip) {
-						lastClip.unglue(lastActiveBtn.find('.copy-btn').get(0));
-					}
-					lastClip = null;
-					lastActiveBtn = null;
-				}
+				});
 
-				var target = btn.find('.copy-btn').get(0);
-
-				try {
-					var clip = new ZeroClipboard(target, {
-						btnEl: target
-					});
-					clip.on('mouseover', function(client, args) {
-						lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
-						lastLi.find('.copy-btn-outer').addClass('over');
-					});
-					clip.on('mouseout', function(client, args) {
-						lastLi.closest('ul').find('.copy-btn-outer').removeClass('over');
-					});
-					clip.on('complete', function(client, args) {
-						DeskPRO_Window.util.showSavePuff(lastLi);
-					});
-				} catch (e) {}
-
-				lastActiveBtn = btn;
-				lastClip = clip;
-			});
+				self.addEvent('destroy', function() {
+					clip.unglue(btnEl);
+				});
+				self.addEvent('activate', function() {
+					clip.reposition();
+				});
+			} catch (e) {}
 		});
 
 		this.zIndex = 30001;
