@@ -19,7 +19,52 @@
 			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
-			<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}">{{message.date_created|date('fulltime')}}</time>
+			{% set elid = el_uid() %}
+			<time class="timeago with-stickytip" datetime="{{message.date_created|date('c', 'UTC')}}" data-stickytip-target="#{{ elid }}">{{message.date_created|date('fulltime')}}</time>
+			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<th>Date Created:</th>
+						<td>{{ message.date_created|date('fulltime') }}</td>
+					</tr>
+					<tr>
+						<th>Via:</th>
+						<td>
+							{% if message.creation_system == 'web.agent.portal' %}
+								Agent Interface
+							{% elseif message.creation_system == 'web.person.portal' %}
+								User Portal
+							{% elseif message.creation_system == 'web.person.widget' %}
+								Website Widget
+							{% elseif message.creation_system == 'web.person.embed' %}
+								Website Embed
+							{% elseif message.creation_system == 'gateway.person' %}
+								Email
+							{% elseif message.creation_system == 'gateway.agent' %}
+								Email (by agent)
+							{% else %}
+								{{ message.creation_system }}
+							{% endif %}
+						</td>
+					</tr>
+					{% if message.email %}
+						<tr>
+							<th>From Email Address:</th>
+							<td>
+								{{ message.email }}
+							</td>
+						</tr>
+					{% endif %}
+					{% if message.ip_address %}
+						<tr>
+							<th>IP Address:</th>
+							<td>
+								{{ message.ip_address }}
+							</td>
+						</tr>
+					{% endif %}
+				</table>
+			</div>
 		</header>
 		<div class="body-text">
 			<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>

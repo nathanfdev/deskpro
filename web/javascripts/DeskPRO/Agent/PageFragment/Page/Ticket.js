@@ -838,6 +838,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
+		DeskPRO_Window.initStickyTips(messageEl);
+
 		$('.timeago', messageEl).timeago();
 
 		imageEls.colorbox({

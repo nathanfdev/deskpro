@@ -2499,6 +2499,84 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 	},
 
+	initStickyTips: function(els) {
+		if (!els.hasClass('with-stickytip')) {
+			els = els.find('.with-stickytip');
+		}
+
+		els.each(function() {
+			if ($(this).hasClass('dp-stickytip-init')) {
+				return;
+			}
+
+			var me = $(this);
+			$(this).addClass('dp-stickytip-init');
+
+			$(this).one('mouseover', function() {
+				$(this).attr('title', '');
+				var target = $(me.data('stickytip-target'));
+				me.data('stickytip-target', target);
+
+				var hideTimout = null;
+				var hideFn = function() {
+					if (target.hasClass('over') || me.hasClass('over')) {
+						return;
+					}
+
+					target.hide();
+					target.removeClass('over');
+					me.removeClass('over');
+				};
+
+				var showFn = function() {
+					var pos = me.offset();
+					target.css({
+						left: pos.left,
+						top: pos.top + 15
+					});
+					target.show();
+				};
+
+				var hideTimeout = null;
+
+				target.on('mouseover', function() {
+					target.addClass('over');
+					if (hideTimeout) {
+						window.clearTimeout(hideTimeout);
+						hideTimeout = null;
+					}
+				}).on('mouseout', function() {
+					target.removeClass('over');
+					if (hideTimeout) {
+						window.clearTimeout(hideTimeout);
+						hideTimeout = null;
+					}
+					hideTimeout = window.setTimeout(hideFn, 240);
+				});
+
+				me.on('mouseover', function() {
+					me.addClass('over');
+					showFn();
+					if (hideTimeout) {
+						window.clearTimeout(hideTimeout);
+						hideTimeout = null;
+					}
+				}).on('mouseout', function() {
+					me.removeClass('over');
+					if (hideTimeout) {
+						window.clearTimeout(hideTimeout);
+						hideTimeout = null;
+					}
+					hideTimeout = window.setTimeout(hideFn, 240);
+				});
+
+				me.addClass('over');
+				target.detach().appendTo('body');
+				showFn();
+			});
+		});
+	},
+
 	_initSections: function() {
 
 		var self = this;
