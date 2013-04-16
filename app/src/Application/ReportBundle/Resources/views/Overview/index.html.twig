@@ -55,9 +55,11 @@
 		{% include 'ReportBundle:Overview:tickets-opened-hour.html.twig' with { data: tickets_opened_hour_data, initial_display: true } %}
 	</div>
 
-	<br />
+	{#
+		<br />
 
-	<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'kb_views_hour'}) }}">
-		{% include 'ReportBundle:Overview:kb-views-hour.html.twig' with { data: kb_views_hour_data, initial_display: true } %}
-	</div>
+		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'kb_views_hour'}) }}">
+			{% include 'ReportBundle:Overview:kb-views-hour.html.twig' with { data: kb_views_hour_data, initial_display: true } %}
+		</div>
+	#}
 {% endblock %}
