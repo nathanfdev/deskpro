@@ -94,13 +94,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 			<dt>{{ phrase('agent.general.author') }}:</dt>
 			<dd>
-                {% set phrase_part %}
-                    {% for author in feedback.authors %}
-                        <cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>
-                        {% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                {% endset %}
-                {{ phrase('agent.feedback.by_people_on_date', {'people':phrase_part,'date':feedback.date_created|date('day')}, true) }}
+				{% for author in feedback.authors %}
+					<a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': author.id}) }}">
+						<span class="text" style="background-image: url({{ author.getPictureUrl(15) }}); padding-left: 16px;">
+							{{ author.getNameWithTitle() }}
+							({{ author.primary_email_address }})
+						</span>
+					</a>
+				{% endfor %}
 			</dd>
 		</dl>
 
