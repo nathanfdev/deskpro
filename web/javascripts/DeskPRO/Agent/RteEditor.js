@@ -66,6 +66,7 @@ DeskPRO.Agent.RteEditor = {
 			uploadFields: {
 				_rt: window.DP_REQUEST_TOKEN
 			},
+			plugins: ['clean_text'],
 			imageUploadCallback: function(obj, json) {
 				if (inlineHiddenPosition) {
 					inlineHiddenPosition.after($('<input type="hidden" name="blob_inline_ids[]" />').val(json.blob_id));
@@ -451,3 +452,49 @@ DeskPRO.Agent.RteEditor = {
 		return textarea;
 	}
 };
+
+if (typeof RedactorPlugins === 'undefined') var RedactorPlugins = {};
+
+// Based on the plugin by João Sardinha
+// (https://github.com/johnsardine/redactor-plugins)
+RedactorPlugins.clean_text = {
+
+	init: function() {
+
+		// Create button
+		this.addBtn('clean_text', 'Clean selection formatting', function(redactor, event, button_key) {
+
+			// Grab selected text
+			var html = redactor.getSelectedHtml();
+
+			html = html.replace(/\s*<div[^>]*>\s*/g, "\n");
+			html = html.replace(/\s*<\/p>\s*<p[^>]*>\s*/g, "\n\n");
+			html = html.replace(/\s*<p[^>]*>\s*/g, "\n");
+			html = html.replace(/\s*<br[^>]*\/>\s*/g, "\n");
+			html = html.replace(/\s*<br[^>]*>\s*/g, "\n");
+
+			// Strip out html
+			html = html.replace(/(<([^>]+)>)/ig,"");
+			html = html.replace(/\r|\r\n|\n/g, "\n<br/>");
+			html = $.trim(html);
+
+			// Set buffer (allows undo shortcut)
+			redactor.setBuffer();
+
+			// Replace selection with clean text
+			redactor.insertHtml(html);
+
+			// Sync code
+			redactor.syncCode();
+		});
+
+		// Add separator before button
+		this.addBtnSeparatorBefore('clean_text');
+
+		// Add icon to button
+		jQuery('a.redactor_btn_clean_text').css({
+			backgroundImage : ' url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQ0lEQVQYV2MMDQ39zwAEq1evZgTR6AAmzwhjYFOMLAc2BZtidDG4dcgSyNbDnITiLnTFyO4mXSFRVhPlGaKDh9gABwAJuDgDsQ44aQAAAABJRU5ErkJggg==)',
+			backgroundPosition : '7px 8px'
+		});
+	}
+}
