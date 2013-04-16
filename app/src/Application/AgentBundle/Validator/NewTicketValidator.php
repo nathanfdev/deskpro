@@ -93,7 +93,7 @@ class NewTicketValidator extends AbstractValidator
 		if ($newticket->priority_id) {
 			$this->mock_ticket->setPriorityId($newticket->priority_id);
 		}
-		if ($newticket->priority_id) {
+		if ($newticket->workflow_id) {
 			$this->mock_ticket->setWorkflowId($newticket->workflow_id);
 		}
 
