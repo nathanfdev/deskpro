@@ -319,7 +319,7 @@
 			<div class="builder-options">
 				<select name="category">
 					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
-						{% if cat.children %}
+						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
 									<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
@@ -443,7 +443,7 @@
 			<div class="builder-options">
 				<select name="category">
 					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
-						{% if cat.children %}
+						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
 									<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
