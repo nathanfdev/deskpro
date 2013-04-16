@@ -166,6 +166,12 @@ class PersonEditManager implements PersonContextInterface
 	 */
 	public function saveFilterSubscriptions(Person $person, array $subs)
 	{
+		if (DP_INTERFACE != 'admin') {
+			if ($person->getPref('agent_notif.no_allow_set_email') && $person->getPref('agent_notif.no_allow_set_browser')) {
+				return array();
+			}
+		}
+
 		$valid_names = array(
 			'email_created', 'email_new', 'email_leave', 'email_user_activity', 'email_agent_activity', 'email_agent_note', 'email_property_change',
 			'alert_created', 'alert_new', 'alert_leave', 'alert_user_activity', 'alert_agent_activity', 'alert_agent_note', 'alert_property_change',
@@ -179,16 +185,40 @@ class PersonEditManager implements PersonContextInterface
 
 		try {
 
+			$current = $this->db->fetchAllKeyed("SELECT * FROM ticket_filter_subscriptions WHERE person_id = ?", array($person->id), 'filter_id');
+
 			// First delete all the ones the user has now, we're just gonna rebuild
 			$this->db->delete('ticket_filter_subscriptions', array('person_id' => $person->id));
 
 			foreach ($filter_info['all_filters'] as $filter) {
-				if (!isset($subs[$filter->id])) continue;
+				if (!isset($subs[$filter->id])) $subs[$filter->id] = array();
 
 				$props = array();
 				foreach ($valid_names as $k) {
 					if (isset($subs[$filter->id][$k]) && $subs[$filter->id][$k]) {
 						$props[$k] = true;
+					}
+				}
+
+				if (DP_INTERFACE != 'admin') {
+					if ($person->getPref('agent_notif.no_allow_set_email')) {
+						foreach ($valid_names as $k) {
+							if (strpos($k, 'email_') !== 0) continue;
+							if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
+								$props[$k] = true;
+							} else {
+								unset($props[$k]);
+							}
+						}
+					} elseif ($person->getPref('agent_notif.no_allow_set_browser')) {
+						foreach ($valid_names as $k) {
+							if (strpos($k, 'alert_') !== 0) continue;
+							if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
+								$props[$k] = true;
+							} else {
+								unset($props[$k]);
+							}
+						}
 					}
 				}
 
