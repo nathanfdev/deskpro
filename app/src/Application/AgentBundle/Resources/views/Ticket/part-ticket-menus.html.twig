@@ -6,12 +6,12 @@
 		<li data-option-id="window" data-url="{{ path('agent_ticket_message_raw', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">View raw HTML message</li>
 	{% endif %}
 	<li data-option-id="fwd">Forward Message</li>
-	{% if ticket_perms.delete %}<li class="delete-link" data-option-id="delete">Delete</li>{% endif %}
+	{% if ticket_perms.modify_messages %}<li class="delete-link" data-option-id="delete">Delete</li>{% endif %}
 	{% if ticket_perms.delete %}<li class="delete-attachments-link" data-option-id="delete-attachments">Delete attachments</li>{% endif %}
 	<li class="set-as-note" data-option-id="setnote.note">Set as agent note</li>
 	<li class="set-as-message" data-option-id="setnote.message">Set as normal message</li>
 	{% if ticket_perms.modify_merge %}<li data-option-id="split">Split to new ticket</li>{% endif %}
-	<li data-option-id="edit">Edit</li>
+	{% if ticket_perms.modify_messages %}<li data-option-id="edit">Edit</li>{% endif %}
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
 <ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>

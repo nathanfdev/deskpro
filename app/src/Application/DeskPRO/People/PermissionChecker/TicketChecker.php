@@ -301,6 +301,72 @@ class TicketChecker extends AbstractChecker
 
 
 	/**
+	 * Check if the user can modify (or delete) a message
+	 *
+	 * @param Ticket $ticket
+	 */
+	public function canEditMessages(Ticket $ticket)
+	{
+		if (!$this->canView($ticket)) {
+			return false;
+		}
+
+		#------------------------------
+		# Can delete own
+		#------------------------------
+
+		if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
+			if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+				return true;
+			}
+
+			if ($ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+				return true;
+			}
+		}
+
+		#------------------------------
+		# Can delete unassigned
+		#------------------------------
+
+		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
+			return true;
+		}
+
+		#------------------------------
+		# Can delete others
+		#------------------------------
+
+		if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
+			return true;
+		}
+
+		#------------------------------
+		# Can delete others
+		#------------------------------
+
+		if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
+			return true;
+		}
+
+        #------------------------------
+        # Can delete followed
+        #------------------------------
+
+        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_messages_followed')) {
+            return true;
+        }
+
+
+		#------------------------------
+		# Cant delete
+		#------------------------------
+
+		return false;
+	}
+
+
+	/**
 	 * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
 	 *
 	 * @param Ticket $ticket1

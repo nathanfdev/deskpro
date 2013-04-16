@@ -384,6 +384,8 @@ class TicketController extends AbstractController
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 
+		$ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket, $p);
+
 		return $ticket_perms;
 	}
 
@@ -1629,7 +1631,7 @@ class TicketController extends AbstractController
 		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$ticket = null;
-		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+		if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
 			$ticket = $message->ticket;
 		}
 
@@ -1704,7 +1706,7 @@ class TicketController extends AbstractController
 		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$ticket = null;
-		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+		if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
 			$ticket = $message->ticket;
 		}
 

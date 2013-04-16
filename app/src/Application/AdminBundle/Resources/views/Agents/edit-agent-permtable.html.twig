@@ -49,6 +49,7 @@
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_own -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_own -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_own -->{{ col.perm_col(phrase('admin.agents.set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_messages_own -->{{ col.perm_col('Can edit and delete messages in own tickets', usergroup_values, 'agent_tickets', 'modify_messages_own', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.delete_own -->{{ col.perm_col(phrase('admin.agents.delete_own_and_team_tickets'), usergroup_values, 'agent_tickets', 'delete_own', 'agent_tickets_use') }}
 			</tbody>
             <tbody>
@@ -69,6 +70,7 @@
             <!-- PERMISSION:agent_tickets.modify_set_awaiting_user_followed -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
             <!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_followed -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
             <!-- PERMISSION:agent_tickets.modify_set_resolved_followed -->{{ col.perm_col(phrase('admin.agents.set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+			<!-- PERMISSION:agent_tickets.modify_messages_followed -->{{ col.perm_col('Can edit and delete messages in followed tickets', usergroup_values, 'agent_tickets', 'modify_messages_followed', 'agent_tickets_use') }}
             <!-- PERMISSION:agent_tickets.delete_followed -->{{ col.perm_col(phrase('admin.agents.delete_followed_tickets'), usergroup_values, 'agent_tickets', 'delete_followed', 'agent_tickets_use') }}
             </tbody>
 			<tbody>
@@ -90,6 +92,7 @@
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_unassigned -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_unassigned -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_unassigned -->{{ col.perm_col(phrase('admin.agents.set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_messages_unassigned -->{{ col.perm_col('Can edit and delete messages in unassigned tickets', usergroup_values, 'agent_tickets', 'modify_messages_unassigned', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ col.perm_col(phrase('admin.agents.delete_unassigned_tickets'), usergroup_values, 'agent_tickets', 'delete_unassigned', 'agent_tickets_view_unassigned') }}
 			</tbody>
 			<tbody>
@@ -111,6 +114,7 @@
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_others -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_others -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_others -->{{ col.perm_col(phrase('admin.agents.set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_messages_others -->{{ col.perm_col('Can edit and delete messages in unassigned tickets', usergroup_values, 'agent_tickets', 'modify_messages_others', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.delete_others -->{{ col.perm_col(phrase('admin.agents.delete_others_tickets'), usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
 			</tbody>
 		</table>
