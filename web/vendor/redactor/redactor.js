@@ -1607,7 +1607,7 @@ var RLANG = {
 						$element.replaceWith(newElement);
 						newElement.html('<br />');
 						this.setSelection(newElement[0], 0, newElement[0], 0);
-					} 
+					}
 				}
 				else if (element.tagName === 'P' && !isEmpty)
 				{
@@ -2639,7 +2639,9 @@ var RLANG = {
 				if (sel.collapse && sel.extend)
 				{
 					sel.collapse(orgn, orgo);
-					sel.extend(focn, foco);
+					try {
+						sel.extend(focn, foco);
+					} catch (e) {}
 				}
 				else // IE9
 				{
