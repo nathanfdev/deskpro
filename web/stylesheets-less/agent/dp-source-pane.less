@@ -976,12 +976,27 @@ section.source-labels-cloud ul li.nav-selected span {
 }
 
 #ticket_sla_group_editor .filter-group-editor {
-	padding: 2px 10px 0;
-	width: 180px;
+	padding-top: 10px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	width: 202px;
+	.close {
+		top: -31px;
+	}
+	.ticket-filter-wrap {
+		height: 26px;
+		background-color: #ECEFF1;
+		position:absolute;
+		top: -26px;
+		left: 0;
+		right: 0;
+		border: 1px solid #CED4D9;
+		padding: 2px 5px;
+		box-shadow: 1px 1px 5px 0 rgba(50, 50, 50, 0.6);
+	}
 	select {
 		width: 155px;
+		position: absolute;
 	}
 	.manage-slas {
 		margin-top: 3px;
@@ -989,6 +1004,10 @@ section.source-labels-cloud ul li.nav-selected span {
 		font-weight: bold;
 		font-family: @source-heading-font;
 		font-size: 11px;
+	}
+
+	.filter-row .field-option {
+		padding-left: 5px;
 	}
 }
 

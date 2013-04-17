@@ -86,7 +86,7 @@ class TicketSearchController extends AbstractController
 		$filter_show_options = $this->db->fetchAllKeyValue("
 			SELECT name, value_str
 			FROM people_prefs
-			WHERE person_id = ? AND name LIKE 'agent.ui.filter-visibility.%'
+			WHERE person_id = ? AND (name LIKE 'agent.ui.filter-visibility.%' OR name LIKE 'agent.ui.sla.filter-visibility.%')
 		", array($this->person->id));
 
 		#------------------------------

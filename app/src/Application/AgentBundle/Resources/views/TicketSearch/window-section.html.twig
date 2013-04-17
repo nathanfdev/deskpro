@@ -99,9 +99,10 @@
 		</header>
 		<article id="sla_list_wrap">
 			<ul id="tickets_outline_slas" class="source-list">
+			{% set has_any_showing = false %}
 			{% for sla in slas %}
 				<li
-					class="sla sla-{{sla.id}}"
+					class="sla sla-{{sla.id}} {% if filter_show_options['agent.ui.sla.filter-visibility.' ~ sla.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %}"
 					data-sla-id="{{sla.id}}"
 				>
 					<h3
@@ -115,22 +116,34 @@
 					</h3>
 				</li>
 			{% endfor %}
+				<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
+					Click <span class="gear-icon"></span> to show SLAs
+				</li>
 			</ul>
 		</article>
 		<div id="ticket_sla_group_editor" style="display:none">
 			<div class="sla-group-editor filter-group-editor">
 				<span class="close"></span>
-				<select class="ticket-filter">
-					<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All Tickets</option>
-					<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My Tickets</option>
-					{% if app.user.getAgentTeamIds()|length %}
-						<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My Team's Tickets</option>
-					{% endif %}
-				</select>
-				{% if app.user.can_admin and false %}
-					<div class="manage-slas"><a href="{{ app.request.getBaseUrl() }}/admin/tickets/slas">Manage SLAs</a></div>
-				{% endif %}
+				<div class="ticket-filter-wrap">
+					<select class="ticket-filter">
+						<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All Tickets</option>
+						<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My Tickets</option>
+						{% if app.user.getAgentTeamIds()|length %}
+							<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My Team's Tickets</option>
+						{% endif %}
+					</select>
+				</div>
 			</div>
+			<script type="text/x-deskpro-plain" class="editor-row-tpl">
+				<div class="filter-row">
+					<div class="field-wrap"></div>
+				</div>
+			</script>
+			<script type="text/x-deskpro-plain" class="editor-fields-tpl">
+				<div>
+					<label><input type="checkbox" checked="checked" class="dp-checkbox" /> {{ phrase('agent.general.show') }}</label>
+				</div>
+			</script>
 		</div>
 	</section>
 {% endif %}

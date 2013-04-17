@@ -255,8 +255,27 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			this.slaGroupEditor = new DeskPRO.Agent.Widget.SlaOptionsPop({
 				containerElement: '#tickets_outline .scroll-content',
-				listElement: '#ticket_slas_header',
+				listElement: '#sla_list_wrap',
 				triggerElement: $('.launch-sla-editor', this.contentEl),
+				onInit: function(ed) {
+					ed.controlRealEl.on('click', ':checkbox', function() {
+						var row = $(this).closest('.filter-row');
+						var filter_id = parseInt(row.data('sla-id'));
+
+						var filter_row = $('#tickets_outline_slas .sla-' + filter_id);
+						if ($(this).is(':checked')) {
+							filter_row.removeClass('filter-hidden');
+						} else {
+							filter_row.addClass('filter-hidden');
+						}
+					});
+				},
+				onInitRow: function(row, filter_id, ed) {
+					var filter_row = $('#tickets_outline_slas .sla-' + filter_id);
+					if (filter_row.is('.filter-hidden')) {
+						$(':checkbox', row).attr('checked', false);
+					}
+				},
 
 				onPreOpen: function(ed) {
 					if (self.customFilterGroupEditor) {
@@ -268,16 +287,47 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 					var row = ed.controlRealEl;
 					slaVal = row.find('.ticket-filter').val();
+
+					$('#tickets_outline_slas li.filter-hidden').show();
+					$('#tickets_outline_slas').addClass('ed-open');
+
+					$('#tickets_outline_slas .no-data').hide();
 				},
 
 				onClose: function(ed) {
+
+					$('#tickets_outline_slas li.filter-hidden').slideUp(300);
+					window.setTimeout(function() {
+						$('#tickets_outline_custom_filters').removeClass('ed-open');
+
+						if ($('#tickets_outline_slas .sla').not('.filter-hidden').length) {
+							$('#tickets_outline_slas .no-data').hide();
+						} else {
+							$('#tickets_outline_slas .no-data').show();
+						}
+
+					}, 310);
+
 					var postData = [];
+					$('#tickets_outline_slas li.sla').each(function() {
+						var id = parseInt($(this).data('sla-id'));
+						var v;
+
+						if ($(this).is('.filter-hidden')) {
+							v = 'hidden';
+						} else {
+							v = '';
+						}
+
+						postData.push({
+							name: 'prefs[agent.ui.sla.filter-visibility.' + id + ']',
+							value: v
+						});
+					});
+
+
 					var row = ed.controlRealEl;
 					var val = row.find('.ticket-filter').val();
-
-					if (val == slaVal) {
-						return;
-					}
 
 					postData.push({
 						name: 'prefs[agent.ui.sla.ticket-filter]',

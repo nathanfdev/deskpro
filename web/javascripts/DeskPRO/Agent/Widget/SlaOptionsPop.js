@@ -23,6 +23,8 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 			 */
 			listElement: null,
 
+			elements: '.sla',
+
 			/**
 			 * The widget control element that is already rendered on the page
 			 * and contains the special 'editor-fields' and 'editor-
@@ -61,6 +63,11 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 		this.containerElement = $(this.options.containerElement);
 		this.listElement = $(this.options.listElement);
 
+		this.elements = this.options.elements;
+		if (typeOf(this.elements) == 'string') {
+			this.elements = $(this.elements, $('#tickets_outline_slas'));
+		}
+
 		this.controlEl = $(this.options.controlEl);
 		this.controlEl.detach().hide().appendTo('body');
 
@@ -73,6 +80,29 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 		this.controlRealEl.on('click', function(ev) {
 			ev.stopPropagation();
 		});
+
+		this.editorRowTpl    = $('.editor-row-tpl', this.controlEl).first().get(0).innerHTML.trim();
+		this.editorFieldsTpl = $('.editor-fields-tpl', this.controlEl).first().get(0).innerHTML.trim();
+
+		this.elements.each((function(i, el) {
+			el = $(el);
+			var id = el.data('sla-id');
+
+			var row = $(this.editorRowTpl);
+			var field = $(this.editorFieldsTpl);
+			field.addClass('field-option');
+			$('.field-wrap', row).append(field);
+
+			row.addClass('sla-' + id);
+			row.addClass('filter-row');
+			row.data('sla-id', id);
+
+			this.fireEvent('initRow', [row, id, this]);
+
+			DeskPRO_Window.util.dpCheckbox($('input.dp-checkbox', row));
+			row.appendTo(this.controlRealEl);
+
+		}).bind(this));
 
 		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
 		this.backdrop.on('click', this.close.bind(this));
@@ -196,6 +226,19 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 		this.controlRealEl.css({
 			'margin-top': top-1
 		});
+
+		$(this.options.elements, $('#tickets_outline_slas')).each((function(i, el) {
+			el = $(el);
+			var id = el.data('sla-id');
+
+			// Get its position within the wrapper, we'll copy it over
+			var pos = el.position();
+			var editEl = $('.sla-' + id, this.controlEl);
+
+			editEl.css({
+				top: pos.top-top
+			});
+		}).bind(this));
 	},
 
 
@@ -210,7 +253,11 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 		}
 
 		var containerTop = this.containerElement.position().top;
-		this.controlRealEl.css('top', containerTop + 'px');
+		var listTop = this.listElement.position().top;
+
+		var realTop = containerTop;
+
+		this.controlRealEl.css('top', realTop + 'px');
 	},
 
 
