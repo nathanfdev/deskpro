@@ -16,7 +16,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
-		this.onloadStack = [];
 		this.routePrefixes = {};
 
 		this.messageChanneler = null;
@@ -539,11 +538,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		var fn;
-		while (fn = this.onloadStack.shift()) {
-			fn();
-		}
-
 		$('#user_settings_link_profile').on('click', function(ev) {
 			ev.preventDefault();
 			$('#settingswin').trigger('dp_open', 'profile');
@@ -637,10 +631,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$('#notice_trigger').toggleClass('bleep');
 			}, 800);
 		}
-	},
-
-	addOnloadFunction: function(fn) {
-		this.onloadStack.push(fn);
 	},
 
 	loadHashPath: function(browserHash) {
