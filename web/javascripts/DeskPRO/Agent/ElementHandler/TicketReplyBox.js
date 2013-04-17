@@ -367,19 +367,23 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 		this.el.bind('fileuploaddone', function() {
 			self.getElById('attach_row').show().removeClass('is-hidden');
-			self.page.updateUi();
-			if (!self.page.meta.ticket_reverse_order) {
-				if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-					$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+			if (self.page) {
+				self.page.updateUi();
+				if (!self.page.meta.ticket_reverse_order) {
+					if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+						$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+					}
 				}
 			}
 		});
 		this.el.bind('fileuploadstart', function() {
 			self.getElById('attach_row').show().removeClass('is-hidden');
-			self.page.updateUi();
-			if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-				if (!self.page.meta.ticket_reverse_order) {
-					$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+			if (self.page) {
+				self.page.updateUi();
+				if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+					if (!self.page.meta.ticket_reverse_order) {
+						$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+					}
 				}
 			}
 		});
@@ -393,10 +397,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var rows = $('ul.files li', self.getElById('attach_row'));
 				if (!rows.length) {
 					self.getElById('attach_row').hide().addClass('is-hidden');
-					self.page.updateUi();
-					if (!self.page.meta.ticket_reverse_order) {
-						if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-							$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+					if (self.page) {
+						self.page.updateUi();
+						if (!self.page.meta.ticket_reverse_order) {
+							if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+								$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+							}
 						}
 					}
 				}
