@@ -191,7 +191,7 @@ $errors = array();
 $errors_codes = array();
 
 if (!deskpro_install_check_version()) {
-	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer but you are using " . phpversion() . ". You need to upgrade your version.";
+	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer but <a href='?phpinfo'>you are using " . phpversion() . "</a>. You need to upgrade your version.";
 	$errors_codes[] = 'php_version';
 }
 
@@ -250,9 +250,15 @@ if ($errors) {
 		echo $msg;
 	} else {
 
+		$is_installed = file_exists(dp_get_data_dir().'/is_installed.dat');
+		if (!$is_installed && isset($_GET['phpinfo'])) {
+			phpinfo();
+			exit;
+		}
+
 		if (!deskpro_install_check_version() && version_compare(phpversion(), '5.3', '<')) {
 			$v = phpversion();
-			$errors = 'DeskPRO requires PHP version v5.3.2 (or v5.4.x) to function. Your server currently has PHP v'.$v.' installed. Support for the version of PHP you have installed was ended by <a href="http://php.net/archive/2010.php">The PHP Group in 2010</a> and it is strongly recommended you upgrade.';
+			$errors = 'DeskPRO requires PHP version v5.3.2 (or v5.4.x) to function. Your server currently has <a href="?phpinfo">PHP v'.$v.'</a> installed. Support for the version of PHP you have installed was ended by <a href="http://php.net/archive/2010.php">The PHP Group in 2010</a> and it is strongly recommended you upgrade.';
 
 			if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
 				if (!empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
