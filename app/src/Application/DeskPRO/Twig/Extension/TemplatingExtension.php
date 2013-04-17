@@ -130,6 +130,8 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
 			'base_template_name'               => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
 			'array_attr'                       => new \Twig_Function_Method($this, 'getArrayAttribute'),
+			'min'                              => new \Twig_Function_Method($this, 'min'),
+			'max'                              => new \Twig_Function_Method($this, 'max'),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -166,6 +168,7 @@ class TemplatingExtension extends \Twig_Extension
 			'filesize_display'       => new \Twig_Filter_Method($this, 'filesizeDisplay'),
 			'url_trim_scheme'        => new \Twig_Filter_Method($this, 'urlTrimScheme'),
 			'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
+			'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
 
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -1331,6 +1334,32 @@ class TemplatingExtension extends \Twig_Extension
 	public function getArrayAttribute($array, $key)
 	{
 		return array_key_exists($key, $array) ? $array[$key] : null;
+	}
+
+
+	public function countLines($str)
+	{
+		if (is_object($str) && method_exists($str, '__toString')) {
+			$str = (string)$str;
+		}
+		if (!is_scalar($str)) {
+			return 0;
+		}
+
+		$str = Strings::standardEol($str);
+		return substr_count($str, "\n") + 1;
+	}
+
+	public function min()
+	{
+		$args = func_get_args();
+		return call_user_func_array('min', $args);
+	}
+
+	public function max()
+	{
+		$args = func_get_args();
+		return call_user_func_array('max', $args);
 	}
 }
 

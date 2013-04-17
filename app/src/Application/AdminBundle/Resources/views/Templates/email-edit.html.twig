@@ -66,6 +66,10 @@
 .lang_overlay_nav .select2-container {
 	margin-right: 6px;
 }
+
+.subject .CodeMirror-scroll {
+	height: {{ max(50, source.subject|count_lines * 24) }}px;
+}
 </style>
 
 <script type="text/javascript">
