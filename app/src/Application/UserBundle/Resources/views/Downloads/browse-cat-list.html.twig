@@ -3,7 +3,7 @@
  ##}
 
 {% for cat in categories %}
-	<li>
+	<li class="dp-download-folder">
 		<div class="dp-fadeaway-container">
 			<i class="dp-icon-folder-close"></i>
 			<a class="dp-fadetitle" href="{{ path('user_downloads', {slug: cat.url_slug}) }}">{{ cat.title }}</a>
