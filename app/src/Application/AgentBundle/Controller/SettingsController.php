@@ -441,7 +441,7 @@ class SettingsController extends AbstractController
 
 			$is_new = false;
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-			if (!$macro || $macro->person->id != $this->person->id) {
+			if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 			}
 
@@ -473,7 +473,7 @@ class SettingsController extends AbstractController
 
 			$is_new = false;
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-			if (!$macro) {
+			if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 			}
 
@@ -484,7 +484,7 @@ class SettingsController extends AbstractController
 		}
 
 		$macro['title'] = $this->in->getString('macro.title');
-		$macro['is_global'] = false;
+		$macro['is_global'] = $this->in->getBool('macro.is_global');
 
 		$action_rules = RuleBuilder::newActionsBuilder();
 		$actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
@@ -505,7 +505,7 @@ class SettingsController extends AbstractController
 	public function ticketMacroDeleteAction($macro_id)
 	{
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-		if (!$macro) {
+		if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 		}
 

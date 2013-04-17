@@ -24,6 +24,16 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 
 		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Who can use this macro?</label></div>
+			<div class="dp-form-input">
+				<select name="macro[is_global]">
+					<option value="0" {% if not macro.is_global %}selected="selected"{% endif %}>Just me</option>
+					<option value="1" {% if macro.is_global %}selected="selected"{% endif %}>Everyone</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.actions') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="{{baseId}}_actions_list">

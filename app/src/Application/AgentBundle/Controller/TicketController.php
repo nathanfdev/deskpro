@@ -2050,7 +2050,7 @@ class TicketController extends AbstractController
 		/** @var $macro \Application\DeskPRO\Entity\TicketMacro */
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
-		if (!$macro || ($macro->person && $macro->person->getId() != $this->person->getId())) {
+		if (!$macro || (!$macro->is_global && $macro->person && $macro->person->getId() != $this->person->getId())) {
 			throw $this->createNotFoundException();
 		}
 
@@ -2070,7 +2070,7 @@ class TicketController extends AbstractController
 		/** @var $macro \Application\DeskPRO\Entity\TicketMacro */
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
-		if (!$macro || ($macro->person && $macro->person->getId() != $this->person->getId())) {
+		if (!$macro || (!$macro->is_global && $macro->person && $macro->person->getId() != $this->person->getId())) {
 			throw $this->createNotFoundException();
 		}
 
