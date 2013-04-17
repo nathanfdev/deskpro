@@ -314,6 +314,18 @@ class TriggerExecutor
 			}
 		}
 
+		if (in_array('new.web.agent.portal', $this->event_types)) {
+			// Enable newticket notification
+			// The checkbox option on the form toggles the extra status suppress_user_notify to turn it off
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+				$trigger->terms = array();
+				$trigger->actions = array(
+					array('type' => 'enable_new_ticket_confirmation', 'options' => array('enabled' => 1))
+				);
+
+				$all_triggers[] = $trigger;
+		}
+
 		#------------------------------
 		# Handle vacation mode agent
 		#------------------------------

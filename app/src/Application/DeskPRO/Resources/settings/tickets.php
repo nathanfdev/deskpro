@@ -53,6 +53,7 @@
 	'core_tickets.new_assign' => 'assign',
 	'core_tickets.new_assignteam' => false,
 	'core_tickets.default_send_user_notify' => true,
+	'core_tickets.new_default_send_user_notify' => true,
 
 	/**
 	 * True to add agents CC's in emails as followers

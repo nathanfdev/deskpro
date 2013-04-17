@@ -622,23 +622,6 @@ $q->actions = array(
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_trigger.newticket_confirm_web_agent##
-$q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = '';
-$q->sys_name = 'newticket_confirm.web_agent';
-$q->event_trigger = 'new.web.agent.portal';
-$q->is_enabled = 1;
-$q->terms = array();
-$q->actions = array(
-	array (
-		'type' => 'enable_new_ticket_confirmation',
-		'options' => array('enabled' => '1'),
-	)
-);
-
-$em->persist($q);
-$em->flush();
-
 ##BEGIN:create_trigger.email_validation_email##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = '';

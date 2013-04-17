@@ -3009,6 +3009,10 @@ class TicketController extends AbstractController
 		);
 		$newticket->setBlobInlineIds($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
 
+		if (!$this->in->getBool('options.notify_user')) {
+			$newticket->suppress_user_notify = true;
+		}
+
 		$formType = new \Application\AgentBundle\Form\Type\NewTicket();
 		$form = $this->get('form.factory')->create($formType, $newticket);
 

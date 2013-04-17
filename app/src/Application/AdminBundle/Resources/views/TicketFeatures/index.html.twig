@@ -34,6 +34,7 @@
 <input type="hidden" name="set_settings[]" value="core_tickets.reassign_auto_change_status" />
 <input type="hidden" name="set_settings[]" value="core_tickets.resolve_auto_close_tab" />
 <input type="hidden" name="set_settings[]" value="core_tickets.default_send_user_notify" />
+<input type="hidden" name="set_settings[]" value="core_tickets.new_default_send_user_notify" />
 <input type="hidden" name="set_settings[]" value="core_tickets.default_ticket_reverse_order" />
 <input type="hidden" name="set_settings_falseable[]" value="core_tickets.default_ticket_reverse_order" />
 
@@ -160,6 +161,15 @@
 						<select name="settings[core_tickets.new_assignteam]">
 							<option {% if not app.getSetting('core_tickets.new_assignteam') %}selected="selected"{% endif %} value="0">Unassigned</option>
 							<option {% if app.getSetting('core_tickets.new_assignteam') == 'assign' %}selected="selected"{% endif %} value="assign">Assign to own team</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td width="200">Send User Notification</td>
+					<td>
+						<select name="settings[core_tickets.new_default_send_user_notify]">
+							<option {% if app.getSetting('core_tickets.new_default_send_user_notify') %}selected="selected"{% endif %} value="1">Default on - user notification is sent</option>
+							<option {% if not app.getSetting('core_tickets.new_default_send_user_notify') %}selected="selected"{% endif %} value="0">Default off - no user notification is sent</option>
 						</select>
 					</td>
 				</tr>

@@ -93,6 +93,7 @@ class NewTicket
 	protected $_person_context;
 
 	protected $_blob_inline_ids = array();
+	public $suppress_user_notify = false;
 
 	public function __construct(EntityManager $em, Person $person_context)
 	{
@@ -234,6 +235,10 @@ class NewTicket
 		$ticket = new Ticket();
 		$ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
 		$ticket['language'] = $person->getRealLanguage();
+
+		if ($this->suppress_user_notify) {
+			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+		}
 
 		$this->_email = $person->findEmailAddress($this->person->email_address);
 		if ($this->_email) {
