@@ -47,5 +47,20 @@
 		<dd>{{ message.visitor.initial_track.page_url }}</dd>
 	{% endif %}
 </dl>
+
+{% if app.user.can_admin %}
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+
+		<dl class="info-list" style="font-size: 11px;">
+			<dt>Debug File</dt>
+			<dd>
+				<a href="{{ path('agent_ticket_download_debug_report', {ticket_id: message.ticket.id, _rt: security_token('request_token', 10800)}) }}">Download Debug File</a><br/>
+				A DeskPRO support agent may ask you to provide this file to help diagnose issues.
+			</dd>
+		</dl>
+	{% endif %}
 </section>
 {% endblock %}

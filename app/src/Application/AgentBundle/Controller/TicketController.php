@@ -36,6 +36,10 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
+use Application\DeskPRO\Debug\Data\TicketData;
+use Application\DeskPRO\Debug\Data\TicketFilterData;
+use Application\DeskPRO\Debug\Data\TicketTriggerData;
+use Application\DeskPRO\Debug\DataReportGenerator;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -3466,6 +3470,37 @@ class TicketController extends AbstractController
 		}
 
 		return $output;
+	}
+
+	############################################################################
+	# download-ticket-debug
+	############################################################################
+
+	public function downloadTicketDebugAction($ticket_id)
+	{
+		if (!$this->person->can_admin) {
+			throw $this->createNotFoundException();
+		}
+
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$report = new DataReportGenerator();
+		$report->addData(new TicketTriggerData());
+		$report->addData(new TicketFilterData());
+		$report->addData(new TicketData($ticket));
+
+		$report_file = $report->generateReport();
+
+		$ext = 'json';
+		if ($report_file['file_encode'] == 'gzip') {
+			$ext .= '.gz';
+		}
+
+		$response = new Response($report_file['data'], 200, array(
+			'Content-Type' => "application/octet-stream; filename=ticket-{$ticket->id}-report.$ext",
+			'Content-Disposition' => "attachment; filename=ticket-{$ticket->id}-report.$ext"
+		));
+		return $response;
 	}
 
 	############################################################################
