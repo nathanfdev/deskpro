@@ -135,20 +135,34 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}
 					}
 				});
-				ed.on('keypress change', function() {
+				var maxH = $('#dp_content_info').height() - 200;
+				ed.css('max-height', maxH);
+				var heightUp = function() {
 					textarea.addClass('touched');
 
 					if (self.page && lastH != ed.height()) {
 						lastH = ed.height();
+
+						maxH = $('#dp_content_info').height() - 200;
+						ed.css('max-height', maxH);
+
 						if (!self.page.meta.ticket_reverse_order) {
 							self.page.doScrollBottom = true;
 						}
 						window.setTimeout(function() {
 							if (self.page) {
+								var sEl = self.page.wrapper.find('.layout-content').first().find('.scroll-viewport').first();
+								sEl.get(0).scrollTop = 0;
 								self.page.updateUi();
 							}
-						}, 50);
+						}, 60);
 					}
+				};
+				ed.on('paste', function(ev) {
+					heightUp();
+				});
+				ed.on('keypress change', function() {
+					heightUp();
 				});
 
 				this._initAgentNotifier(textarea);
