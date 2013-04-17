@@ -12,9 +12,14 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			selectionBar: null,
 			selectedCount: null,
 			button: null,
-			checkSelector: 'input.item-select'
+			checkSelector: 'input.item-select',
+			saveSelectionId: null
 		};
 		this.setOptions(options);
+
+		if (this.options.saveSelectionId) {
+			this.options.saveSelectionRealId = 'dp.agent.selectionbar.' + this.options.saveSelectionId;
+		}
 
 		if (!this.options.selectionBar) {
 			this.options.selectionBar = $('.list-selection-bar', this.page.wrapper).first();
@@ -129,7 +134,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	},
 
 	checkNone: function() {
-		$(this.options.checkSelector + ':checked', this.page.wrapper).attr('checked', false);
+		$(this.options.checkSelector, this.page.wrapper).filter(':checked').attr('checked', false);
 
 		var count = this.updateCount();
 
@@ -138,14 +143,28 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 
 	handleCheckChange: function(el, is_checked) {
 		var count = this.updateCount();
-
 		this.fireEvent('checkChange', [el, is_checked, count]);
+	},
+
+	restoreFromSessionStorage: function() {
+		if (this.options.saveSelectionRealId && window.sessionStorage && window.sessionStorage[this.options.saveSelectionRealId]) {
+			var checked = window.sessionStorage[this.options.saveSelectionRealId].split(',');
+			if (checked.length) {
+				$(this.options.checkSelector, this.page.wrapper).each(function() {
+					if (this.value && checked.contains(this.value)) {
+						this.checked = true;
+					}
+				});
+				this.updateCount();
+			}
+		}
 	},
 
 	updateCount: function() {
 		var oldCount = parseInt(this.selectedCount.text(), 10) || 0;
 
-		var count = this.getCount();
+		var checkedEls = $(this.options.checkSelector, this.page.wrapper).filter(':checked');
+		var count = checkedEls.length;
 		this.selectedCount.text(count);
 
 		if (count > 0) {
@@ -154,7 +173,20 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			this.button.addClass('disabled');
 		}
 
-		if (this.page.wrapper.find(this.options.checkSelector).not(':checked').length || count == 0) {
+		if (this.options.saveSelectionRealId && window.sessionStorage) {
+			var checked = [];
+			if (count) {
+				checkedEls.each(function() {
+					if (this.value) {
+						checked.push(this.value);
+					}
+				});
+			}
+
+			sessionStorage[this.options.saveSelectionRealId] = checked.join(',');
+		}
+
+		if (checkedEls.length || count == 0) {
 			this.controlCheck.attr('checked', false);
 		} else {
 			this.controlCheck.attr('checked', true);

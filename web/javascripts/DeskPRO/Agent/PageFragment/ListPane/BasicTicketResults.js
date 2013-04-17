@@ -18,6 +18,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 		this.autoAddAjax = {};
+		this.wrapper = $(el);
 
 		if (this.meta.filter_id) {
 			DeskPRO_Window.sections.tickets_section.highlightFilterNav(this.meta.filter_id, this.meta.topGroupingOption || null);
@@ -65,7 +66,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			self.addTicket(ticketId, true);
 		}, null, [this.OBJ_ID]);
 
-		this.wrapper = $(el);
 		this.contentWrapper = $('.layout-content:first', this.wrapper);
 
 		this._initDisplayOptions();
@@ -91,6 +91,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 							self.massActions.destroy();
 						}
 
+						self.selectionBar.checkNone();
 						self.massActions = null;
 					}
 				});
@@ -100,6 +101,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		};
 
 		var opt = {
+			saveSelectionId: self.meta.filter_id ? ('filter_'+self.meta.filter_id) : null,
 			onButtonClick: function() {
 				openMassActions();
 			},
@@ -173,6 +175,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		if (this.meta.viewType != 'list') {
 			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 		}
+
+		this.selectionBar.restoreFromSessionStorage();
 	},
 
 	handleAutoAdd: function(ticketId) {
