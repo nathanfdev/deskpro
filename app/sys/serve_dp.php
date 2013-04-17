@@ -444,7 +444,7 @@ class DpLoader extends LoaderAbstract
 			}
 		}
 
-		if (!isset($visitor_track['id']) || !$visitor_track['id']) {
+		if (!$update_track_id && (!isset($visitor_track['id']) || !$visitor_track['id'])) {
 			$this->getPdo()->prepare("
 				INSERT INTO visitor_tracks
 				SET $set_q, visitor_id = $visitor_id
