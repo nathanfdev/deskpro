@@ -109,14 +109,16 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			cancelBtn.hide();
 			saveBtn.hide();
 
+			var formData = editArea.find('input, select, textarea').serializeArray();
+			formData.push({
+				name: 'action',
+				value: 'file'
+			});
+
 			loadingBtn.show();
 			$.ajax({
 				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-				data: {
-					action: 'file',
-					"download[title]": editArea.find('[name="download[title]"]').val(),
-					"download[attach]": editArea.find('[name="download[attach]"]').val()
-				},
+				data: formData,
 				error: function() {
 					loadingBtn.hide();
 					cancelBtn.show();

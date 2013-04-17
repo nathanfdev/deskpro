@@ -235,7 +235,7 @@ class DownloadsController extends AbstractController
 	public function downloadFileAction($slug)
 	{
 		$download = $this->em->getRepository('DeskPRO:Download')->getBySlug($slug);
-		if (!$download || !$download->blob) {
+		if (!$download || (!$download->blob && !$download->fileurl)) {
 			return $this->renderStandardError('@user.downloads.file_not_found', '@user.error.not-found', 404);
 		}
 
@@ -246,6 +246,10 @@ class DownloadsController extends AbstractController
 
 		// Inc download count
 		App::getDb()->executeUpdate("UPDATE downloads SET num_downloads = num_downloads + 1 WHERE id = ?", array($download->getId()));
+
+		if ($download->fileurl) {
+			return $this->redirect($download->fileurl);
+		}
 
 		return $this->redirectRoute('serve_blob', array('blob_auth_id' => $download->blob->auth_id, 'filename' => $download->filename));
 	}

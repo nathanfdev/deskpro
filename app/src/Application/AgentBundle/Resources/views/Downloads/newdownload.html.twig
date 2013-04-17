@@ -54,18 +54,41 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section file-section" id="{{baseId}}_file_section">
 	<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 	<div class="content">
-		<h4>File</h4>
-		<div id="{{baseId}}_file_section_up">
-			<input type="file" name="file-upload" multiple="multiple" />
-			<div class="error-message attach">Please upload a file</div>
+		<div class="error-message attach">Please choose a file.</div>
+		<div id="{{ baseId }}_file_upload_type" class="on">
+			<div class="content">
+				<h4 style="float:left;">File</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">Or hotlink an existing file</a></em>
+				<br class="clear" />
+				<div id="{{baseId}}_file_section_up">
+					<input type="file" name="file-upload" multiple="multiple" />
+				</div>
+				{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]' } %}
+				<ul class="files file-list"></ul>
+			</div>
+			<div class="content" style="margin-top: 8px;">
+				<h4>File Name</h4>
+				<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify a different filename.</small><br />
+				<input type="text" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
+			</div>
 		</div>
-		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]' } %}
-        <ul class="files file-list"></ul>
-	</div>
-	<div class="content" style="margin-top: 8px;">
-		<h4>Filename</h4>
-		<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify a different filename.</small><br />
-		<input type="text" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
+		<div id="{{ baseId }}_file_url_type" style="display: none;">
+			<div class="content" style="margin-top: 8px;">
+				<h4 style="float:left;">File</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">Or hotlink an existing file</a></em>
+				<br class="clear" />
+				<input type="text" name="newdownload[fileurl]" value="{{ state.newdownload.file_url }}" /><br/>
+				<small style="font-size: 11px; margin-bottom: 4px;">Enter the full URL to a file. A user clicking the "Download" button will be taken to this URL.</small><br />
+			</div>
+			<div class="content" style="margin-top: 8px;">
+				<h4>File Size</h4>
+				<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify the size of the file to display. Eg: 50 MB or 2 KB.</small><br />
+				<input type="text" name="newdownload[filesize]" value="{{ state.newdownload.filesize }}" />
+			</div>
+			<div class="content" style="margin-top: 8px;">
+				<h4>File Name</h4>
+				<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify a different filename.</small><br />
+				<input type="text" name="newdownload[filename]" id="{{baseId}}_title" value="{{ state.newdownload.filename }}" />
+			</div>
+		</div>
 	</div>
 </div>
 

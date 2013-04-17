@@ -29,91 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage
  */
 
-namespace Application\AgentBundle\Form\Model;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Person;
-
-class NewDownload
+class Build1366198726 extends AbstractBuild
 {
-	public $title = '';
-	public $category_id;
-	public $status;
-	public $content = '';
-
-	public $fileurl = null;
-	public $filename = null;
-	public $filesize = null;
-
-	public $slug;
-	public $labels_json;
-	public $labels = array();
-	public $attach = null;
-
-	protected $_download;
-
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
-
-	public function __construct(Person $person_context)
+	public function run()
 	{
-		$this->_person_context = $person_context;
-
-		$this->_em = App::getOrm();
-	}
-
-	public function save()
-	{
-		$this->_em->beginTransaction();
-
-		$download = new Download();
-		$download->person  = $this->_person_context;
-		$download->title   = $this->title;
-		$download->content = $this->content ?: '';
-		$download->setStatusCode($this->status);
-
-		$cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
-		$download->category = $cat;
-
-		if ($this->attach) {
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-			$download->blob = $blob;
-
-			if (!$download->title) {
-				$download->title = $blob->filename;
-			}
-
-			$blob->filename = $download->title;
-			$this->_em->persist($blob);
-		} else {
-			$download->setFileUrl($this->fileurl, $this->filesize, $this->filename);
-			if (!$download->title) {
-				$download->title = $download->getFileName();
-			}
-		}
-
-		$this->_em->persist($download);
-
-		$this->_em->flush();
-
-		if ($this->labels) {
-			$download->getLabelManager()->setLabelsArray($this->labels, $this->_em);
-		}
-
-		$this->_em->flush();
-		$this->_em->commit();
-
-		$this->_download = $download;
-	}
-
-	public function getDownload()
-	{
-		return $this->_download;
+		$this->out("Add new fields to downloads table");
+		$this->execMutateSql("ALTER TABLE downloads ADD fileurl VARCHAR(255) DEFAULT NULL, ADD filename VARCHAR(255) DEFAULT NULL, ADD filesize INT DEFAULT NULL");
 	}
 }

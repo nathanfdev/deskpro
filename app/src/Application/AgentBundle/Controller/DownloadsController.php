@@ -236,6 +236,12 @@ class DownloadsController extends AbstractController
 
 					$rev['title'] = $title;
 					$rev->blob = $download->blob;
+				} elseif ($this->in->getString('download.fileurl')) {
+					$download->setFileUrl(
+						$this->in->getString('download.fileurl'),
+						$this->in->getString('download.filesize'),
+						$this->in->getString('download.filename')
+					);
 				}
 
 				$data['file_html'] = $this->renderView('AgentBundle:Downloads:view-fileinfo.html.twig', array(

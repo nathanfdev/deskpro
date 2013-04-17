@@ -51,6 +51,19 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			self.updateUi();
 		}, 300);
 
+		this.wrapper.find('.switch-upload-type').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			if (self.getEl('file_upload_type').hasClass('on')) {
+				self.getEl('file_upload_type').removeClass('on').hide();
+				self.getEl('file_url_type').addClass('on').show();
+			} else {
+				self.getEl('file_url_type').removeClass('on').hide();
+				self.getEl('file_upload_type').addClass('on').show();
+			}
+		});
+
 		this.activate();
 	},
 
