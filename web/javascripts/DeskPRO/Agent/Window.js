@@ -2797,6 +2797,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 				ev.stopPropagation();
 
 				self.runPageRouteFromElement($(this));
+
+				// If this was a list-pane and we have an open popover,
+				// we need to close the popover so the listpane can actually load
+				if ($(this).data('route').indexOf('listpane:') === 0) {
+					Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+						if (inst.isOpen()) {
+							inst.close();
+						}
+					}, this);
+				}
 			});
 
 			$(context).on('click', '.agent-link', function(ev) {
