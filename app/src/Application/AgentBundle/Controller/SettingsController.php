@@ -421,7 +421,7 @@ class SettingsController extends AbstractController
 
 	public function ticketMacrosAction()
     {
-		$all_macros = $this->em->getRepository('DeskPRO:TicketMacro')->findAll();
+		$all_macros = $this->person->getHelper('Agent')->getMacros();
 
 		if (!count($all_macros)) {
 			$all_macros = false;
@@ -441,7 +441,7 @@ class SettingsController extends AbstractController
 
 			$is_new = false;
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-			if (!$macro) {
+			if (!$macro || $macro->person->id != $this->person->id) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 			}
 
