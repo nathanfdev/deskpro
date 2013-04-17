@@ -120,6 +120,12 @@ class KbController extends AbstractController
 			'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($article),
 		);
 
+		$user_view_count = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM page_view_log
+			WHER object_type = 'article' AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
+		");
+
         $vars = array(
             'article'              => $article,
             'custom_fields'        => $custom_fields,
@@ -134,6 +140,7 @@ class KbController extends AbstractController
             'article_products'     => $article_products,
             'glossary_words'       => $glossary_words,
 			'perms'                => $perms,
+			'user_view_count'      => $user_view_count,
         );
 
         if($is_pdf)

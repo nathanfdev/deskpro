@@ -80,6 +80,18 @@ class DownloadsController extends AbstractController
 			'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($download),
 		);
 
+		$user_view_count = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM page_view_log
+			WHERE object_type = 2 AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
+		", array($download->id));
+
+		$user_download_count = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM page_view_log
+			WHERE object_type = 2 AND object_id = ? AND view_action = 2 AND person_id IS NOT NULL
+		", array($download->id));
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'              => $download,
 			'download_comments'     => $download_comments,
@@ -89,6 +101,8 @@ class DownloadsController extends AbstractController
 			'sticky_search_words'   => $sticky_search_words,
 			'rated_searches'        => $rated_searches,
 			'perms'                 => $perms,
+			'user_view_count'       => $user_view_count,
+			'user_download_count'   => $user_download_count,
 		));
 	}
 

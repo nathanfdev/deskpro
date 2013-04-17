@@ -272,6 +272,13 @@ pageMeta.baseId = '{{ baseId }}';
 								{{ phrase('agent.publish.set_auto_publish_date') }}
 							</span>
 						</dd>
+
+						{% if user_view_count %}
+							<dt></dt>
+							<dd>
+								Registered views: <a href="{{ path('agent_publish_whoviewed', {object_type: 1, object_id: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+							</dd>
+						{% endif %}
 					</dl>
 
 					<div class="controls" id="{{baseId}}_action_buttons">

@@ -904,4 +904,25 @@ class PublishController extends AbstractController
 			'results'           => $results,
 		));
 	}
+
+	############################################################################
+	# who-viewed
+	############################################################################
+
+	public function whoViewedAction($object_type, $object_id, $view_action = 1)
+	{
+		$id_to_time = $this->db->fetchAllKeyValue("
+			SELECT person_id, date_created
+			FROM page_view_log
+			WHERE object_type = ? AND object_id = ? AND person_id IS NOT NULL
+			ORDER BY id DESC
+		", array($object_type, $object_id, $view_action));
+
+		$people = $this->em->getRepository('DeskPRO:Person')->getByIds(array_keys($id_to_time));
+
+		return $this->render('AgentBundle:Publish:who-viewed.html.twig', array(
+			'id_to_time' => $id_to_time,
+			'people' => $people
+		));
+	}
 }

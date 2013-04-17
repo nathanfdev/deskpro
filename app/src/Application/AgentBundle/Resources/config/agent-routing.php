@@ -1896,6 +1896,13 @@ $collection->add('agent_publish_ratingwhovoted', new Route(
 	array()
 ));
 
+$collection->add('agent_publish_whoviewed', new Route(
+	'/publish/who-viewed/{object_type}/{object_id}/{view_action}',
+	array('_controller' => 'AgentBundle:Publish:whoViewed', 'view_action' => 1),
+	array(),
+	array()
+));
+
 $collection->add('agent_publish_save_stickysearchwords', new Route(
 	'/publish/save-sticky-search-words/{type}/{content_id}',
 	array('_controller' => 'AgentBundle:Publish:saveStickySearchWords'),

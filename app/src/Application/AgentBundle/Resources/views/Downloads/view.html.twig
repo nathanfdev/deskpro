@@ -127,6 +127,20 @@ pageMeta.baseId = '{{ baseId }}';
 					'date': '<time>' ~ download.date_created|date('fulltime') ~ '</time>'
 				}, true) }}
 				</dd>
+
+				{% if user_view_count %}
+					<dt></dt>
+					<dd>
+						Registered views: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+					</dd>
+				{% endif %}
+
+				{% if user_download_count %}
+					<dt></dt>
+					<dd>
+						Registered downloads: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id, view_action: 2}) }}" class="open-who-viewed">{{ user_download_count }}</a>
+					</dd>
+				{% endif %}
 			</dl>
 
 			<div class="controls" id="{{baseId}}_action_buttons">

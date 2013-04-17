@@ -1,0 +1,27 @@
+<div class="rating-who-voted" style="width: 500px; max-height: 500px; overflow: auto;">
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger dbl-click-trigger nosel">
+			<tr>
+				<td>Who</td>
+				<td>When</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for person in people %}
+			<tr class="line-2">
+				<td>
+					<a class="dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
+						<span class="text" style="background-image: url({{ person.getPictureUrl(15) }}); padding-left: 16px;">
+							{{ person.getNameWithTitle() }}
+							({{ person.primary_email_address }})
+						</span>
+					</a>
+				</td>
+				<td>
+					{{ id_to_time[person.id]|date('full') }}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

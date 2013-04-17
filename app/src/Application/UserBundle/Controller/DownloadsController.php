@@ -246,6 +246,7 @@ class DownloadsController extends AbstractController
 
 		// Inc download count
 		App::getDb()->executeUpdate("UPDATE downloads SET num_downloads = num_downloads + 1 WHERE id = ?", array($download->getId()));
+		$this->container->getSystemService('view_log')->view($download, Entity\PageViewLog::ACTION_DOWNLOAD);
 
 		if ($download->fileurl) {
 			return $this->redirect($download->fileurl);
