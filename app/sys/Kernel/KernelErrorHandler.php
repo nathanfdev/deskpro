@@ -485,8 +485,8 @@ class KernelErrorHandler
 		$errfile = self::stripPathPrefix($exception->getFile());
 		$errline = $exception->getLine();
 
-		$errfile_hash     = self::getFilehash($errfile);
-		$errfile_modified = self::isFileModified($errfile, $errfile_hash);
+		$errfile_hash     = self::getFilehash($exception->getFile());
+		$errfile_modified = self::isFileModified($exception->getFile(), $errfile_hash);
 
 		$backtrace = $exception->getTrace();
 		$trace = self::formatBacktrace($backtrace);
@@ -711,11 +711,11 @@ class KernelErrorHandler
 			$set_setting = 'core.error_unable_allocate_memory';
 		}
 
-		$errstr  = self::stripPathPrefix($errstr);
-		$errfile = self::stripPathPrefix($errfile);
-
 		$errfile_hash     = self::getFilehash($errfile);
 		$errfile_modified = self::isFileModified($errfile, $errfile_hash);
+
+		$errstr  = self::stripPathPrefix($errstr);
+		$errfile = self::stripPathPrefix($errfile);
 
 		$backtrace = debug_backtrace();
 		$trace = self::formatBacktrace($backtrace);
@@ -929,6 +929,10 @@ class KernelErrorHandler
 	 */
 	public static function getFilehash($path)
 	{
+		if (!is_file($path)) {
+			return null;
+		}
+
 		$file_contents = @file_get_contents($path);
 
 		$bom = pack('CCC', 0xEF, 0xBB, 0xBF);
