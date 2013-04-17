@@ -120,4 +120,13 @@
 	'admin.portal.website_widgets_chat_explain'            => 'The chat widget puts a small button on the bottom left of your website. When the user clicks the button, a small chat window opens on top of your site and allows your visitors to chat with any online agents. Users can continue to browse around your site while the chat is active.',
 	'admin.portal.website_widgets_overlay'                 => 'Helpdesk Widget',
 	'admin.portal.website_widgets_overlay_explain'         => 'The tab widget places a tab button on the left of your website. When the user clicks the tab, an overlay opens on top of your site where a user can interact with the helpdesk without ever leaving the page they are on.',
+	'admin.portal.color_btn_bg1_title'         => 'Button Background Color 1',
+	'admin.portal.color_btn_bg1_desc'          => 'The starting color of the background gradient used on buttons',
+	'admin.portal.color_btn_bg2_title'         => 'Button Background Color 2',
+	'admin.portal.color_btn_bg2_desc'          => 'The ending color of the background gradient used on buttons',
+
+	'admin.portal.color_btn_primary_bg1_title'         => 'Primary Button Background Color 1',
+	'admin.portal.color_btn_primary_bg1_desc'          => 'The starting color of the background gradient used on primary buttons (usually submit/save buttons)',
+	'admin.portal.color_btn_primary_bg2_title'         => 'Primary  Button Background Color 2',
+	'admin.portal.color_btn_primary_bg2_desc'          => 'The ending color of the background gradient used on buttons (usually submit/save buttons)',
 );

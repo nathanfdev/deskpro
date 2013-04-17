@@ -27,4 +27,10 @@
 	'user_style.meta_text_color'                 => '#898888',
 
 	'user_style.big_header_color'                => '#B2B1B1',
+
+	'user_style.btn_bg1'                         => '#ffffff',
+	'user_style.btn_bg2'                         => '#e6e6e6',
+
+	'user_style.btn_primary_bg1'                => '#0088cc',
+	'user_style.btn_primary_bg2'                => '#0055cc',
 );
