@@ -47,7 +47,7 @@
 	'guzzle' => array(
 		'into'    => DP_ROOT.'/vendor/guzzle',
 		'repos'   => 'git://github.com/guzzle/guzzle.git',
-		'version' => 'v3.3.1',
+		'version' => 'v3.4.1',
 	),
 	'imagine' => array(
 		'into'    => DP_ROOT.'/vendor/imagine',
