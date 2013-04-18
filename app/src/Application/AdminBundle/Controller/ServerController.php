@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Service\ErrorReporter;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Server info
@@ -115,11 +116,12 @@ class ServerController extends AbstractController
 			$filetype = 'application/gzip';
 		}
 
-		header('Content-Disposition: attachment; filename='.$filename);
-		header('Content-type: '.$filetype.'; filename='.$filename);
-		$res = new \Symfony\Component\HttpFoundation\Response($out, 200);
+		$response = new Response($out, 200, array(
+			'Content-Type' => "application/octet-stream; filename=$filename",
+			'Content-Disposition' => "attachment; filename=$filename"
+		));
 
-		return $res;
+		return $response;
 	}
 
 	protected function _getPhpinfoVars($noencode = false)
@@ -575,7 +577,25 @@ class ServerController extends AbstractController
 
 		if ($this->in->getBool('download')) {
 
-			$file = file_get_contents(dp_get_log_dir() . '/error.log');
+			$file = str_repeat('#', 72) . "\n# error.log\n" . str_repeat('#', 72) . "\n\n";
+			$file .= file_get_contents(dp_get_log_dir() . '/error.log');
+
+			$log_file_path = @ini_get('error_log');
+			if (!$log_file_path) {
+				$log_file_path = dp_get_log_dir() . '/server-phperr-web.log';
+			}
+
+			if (is_file($log_file_path) && is_readable($log_file_path)) {
+				$file .= "\n\n\n\n\n" . str_repeat('#', 72) . "\n# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
+				$file .= file_get_contents($log_file_path);
+			}
+
+			$log_file_path = dp_get_log_dir() . '/cli-phperr.log';
+			if (is_file($log_file_path) && is_readable($log_file_path)) {
+				$file .= "\n\n\n\n\n" . str_repeat('#', 72) . "\n\n\n\n\n# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
+				$file .= file_get_contents($log_file_path);
+			}
+
 			$filename = 'error.log';
 			$filetype = 'text/plain';
 
@@ -585,11 +605,12 @@ class ServerController extends AbstractController
 				$filetype = 'application/gzip';
 			}
 
-			header('Content-Disposition: attachment; filename='.$filename);
-			header('Content-type: '.$filetype.'; filename='.$filename);
-			$res = new \Symfony\Component\HttpFoundation\Response($file, 200);
+			$response = new Response($file, 200, array(
+				'Content-Type' => "application/octet-stream; filename=$filename",
+				'Content-Disposition' => "attachment; filename=$filename"
+			));
 
-			return $res;
+			return $response;
 		}
 
 		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
