@@ -22,7 +22,8 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		this.updateCallerQuick = new DeskPRO.TouchCaller({
 			timeout: 250,
 			callback: this.updateResultsQuick,
-			context: this
+			context: this,
+			alwaysChange: true
 		});
 		this.updateCallerSearch = new DeskPRO.TouchCaller({
 			timeout: 1000,

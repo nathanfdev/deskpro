@@ -25,7 +25,12 @@ DeskPRO.TouchCaller = new Orb.Class({
 			/**
 			 * The object context in which to call the callback
 			 */
-			context: null
+			context: null,
+
+			/**
+			 * Any call to touch fires the event
+			 */
+			alwaysChange: false
 		};
 
 		this.setOptions(options);
@@ -51,7 +56,7 @@ DeskPRO.TouchCaller = new Orb.Class({
 
 		if (!force) {
 			// Not different, nothing to do
-			if (this.lastTouch !== null && this.lastTouch == touch) {
+			if (!this.options.alwaysChange && (this.lastTouch !== null && this.lastTouch == touch)) {
 				return;
 			}
 
