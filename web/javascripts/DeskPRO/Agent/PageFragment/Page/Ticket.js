@@ -1778,7 +1778,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var txt = this.getReplyTextArea();
 
 		if (txt.data('redactor')) {
-			txt.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text, true));
+			var html = DP.convertTextToWysiwygHtml(text, true);
+			html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+			html = html.replace(/^<p>/, '');
+			html = html.replace(/<\/p>$/, '')
+			txt.data('redactor').insertHtml(html);
 		} else {
 			var pos = txt.getCaretPosition();
 			if (!pos) {
