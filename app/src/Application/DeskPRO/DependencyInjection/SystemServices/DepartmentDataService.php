@@ -138,7 +138,11 @@ class DepartmentDataService extends BaseRepositoryService
 
 		if ($for_ids) {
 			foreach ($for_ids as $cid) {
-				$ret[$cid] = $this->translator->getPhraseObject($this->get($cid), 'title');
+				if (!$this->get($cid)) {
+					$ret[$cid] = "Unknown #$cid";
+				} else {
+					$ret[$cid] = $this->translator->getPhraseObject($this->get($cid), 'title');
+				}
 			}
 		} else {
 			foreach ($this->cat_ids as $cid) {
