@@ -305,7 +305,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 		}
 
 		if (!$this->handler_class) {
-			throw new \InvalidArgumentException("Invalid handler class: {$this->handler_class} on {$this->id}");
+			$this->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
 		}
 
 		$classname = $this->handler_class;
