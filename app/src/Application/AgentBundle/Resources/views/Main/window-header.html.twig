@@ -21,8 +21,10 @@
 				<li class="setting with-sub" id="user_settings_link"><a>{{ phrase('agent.general.settings') }}</a></li>
 				<li class="sub" id="user_settings_link_profile"><a>Profile</a></li>
 				{% if app.user.getPermissionsManager().get('GeneralChecker').canSetSignature() %}<li class="sub" id="user_settings_link_signature"><a>{{ phrase('agent.settings.signature') }}</a></li>{% endif %}
-				{% if not app.getSetting('core_tickets.disable_agent_notifications') %}<li class="sub" id="user_settings_link_ticketnotify"><a>Ticket Notifications</a></li>{% endif %}
-				<li class="sub" id="user_settings_link_othernotify"><a>Other Notifications</a></li>
+				{% if not app.getSetting('core_tickets.disable_agent_notifications') %}
+					<li class="sub" id="user_settings_link_ticketnotify"><a>Ticket Notifications</a></li>
+					<li class="sub" id="user_settings_link_othernotify"><a>Other Notifications</a></li>
+				{% endif %}
 				<li class="sub" id="user_settings_link_macros"><a>Macros</a></li>
 				<li class="sub" id="user_settings_link_filters"><a>Filters</a></li>
 				<li class="sub last" id="user_settings_link_snippets" data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': 0}) }}"><a>Snippets</a></li>

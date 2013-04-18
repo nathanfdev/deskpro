@@ -591,47 +591,47 @@ class AgentsController extends AbstractController
 							(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 							(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 					");
-				}
 
-				$this->db->executeUpdate("
-					INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
-					VALUES
-						($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_assign_self.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_assign_self.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_assign_team.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_assign_team.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_complete.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_complete.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_due.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.task_due.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_assign_self.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_assign_self.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_assign_team.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_assign_team.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_reply.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_reply.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_dm.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_dm.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_reply.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_reply.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_mention.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_mention.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_retweet.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.tweet_new_retweet.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment_validate.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
-				");
+					$this->db->executeUpdate("
+						INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
+						VALUES
+							($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_assign_self.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_assign_self.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_assign_team.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_assign_team.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_complete.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_complete.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_due.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.task_due.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_assign_self.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_assign_self.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_assign_team.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_assign_team.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_reply.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_reply.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_dm.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_dm.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_reply.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_reply.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_mention.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_mention.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_retweet.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.tweet_new_retweet.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment_validate.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+					");
+				}
 
 				// Add pref for first login marker
 				$this->db->insert('people_prefs', array(
@@ -1052,25 +1052,25 @@ class AgentsController extends AbstractController
 							(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 							(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 					");
-				}
 
-				$this->db->executeUpdate("
-					INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
-					VALUES
-						($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_comment_validate.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
-						($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
-				");
+					$this->db->executeUpdate("
+						INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
+						VALUES
+							($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_comment_validate.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
+							($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+					");
+				}
 			}
 
 			$this->em->flush();
@@ -1392,6 +1392,7 @@ class AgentsController extends AbstractController
 			if (isset($_REQUEST['settings']['core_tickets.disable_agent_notifications']) && $_REQUEST['settings']['core_tickets.disable_agent_notifications']) {
 				$this->container->getSettingsHandler()->setSetting('core_tickets.disable_agent_notifications', 1);
 				$this->container->getDb()->executeUpdate("DELETE FROM ticket_filter_subscriptions");
+				$this->container->getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'agent_notif.'");
 			} else {
 				$this->container->getSettingsHandler()->setSetting('core_tickets.disable_agent_notifications', 0);
 				$allow_set_agent   = $this->in->getCleanValueArray('allow_set_email', 'uint');
@@ -1458,7 +1459,12 @@ class AgentsController extends AbstractController
 			WHERE person_id = ?
 		", array($agent->getId()));
 
-		return $this->createJsonResponse($prefs);
+		$my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
+
+		return $this->createJsonResponse(array(
+			'ticket_filters' => $prefs,
+			'other' => $my_prefs
+		));
 	}
 
 	public function notificationsSaveAction($person_id)
@@ -1470,6 +1476,9 @@ class AgentsController extends AbstractController
 		$subs = $this->in->getCleanValueArray('filter_sub', 'array', 'uint');
 		$person_editor = $this->container->getSystemService('person_edit_manager');
 		$person_editor->saveFilterSubscriptions($agent, $subs);
+
+		$prefs = $this->in->getCleanValueArray('my_prefs', 'bool', 'string');
+		$person_editor->saveNotificationPreferences($agent, $prefs);
 
 		return $this->createJsonResponse(array('success' => true));
 	}
