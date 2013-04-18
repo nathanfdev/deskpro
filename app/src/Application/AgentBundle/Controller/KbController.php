@@ -123,8 +123,8 @@ class KbController extends AbstractController
 		$user_view_count = $this->db->fetchColumn("
 			SELECT COUNT(*)
 			FROM page_view_log
-			WHER object_type = 'article' AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
-		");
+			WHERE object_type = 1 AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
+		", array($article->id));
 
         $vars = array(
             'article'              => $article,

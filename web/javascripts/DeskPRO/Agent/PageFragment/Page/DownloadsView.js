@@ -83,6 +83,24 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 		this.ownObject(this.whoVotedOverlay);
 
+		this.whoViewedOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '.open-who-viewed',
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/publish/who-viewed/2/' + this.meta.download_id
+			}
+		});
+		this.ownObject(this.whoViewedOverlay);
+
+		this.whoDownloadedOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '.open-who-downloaded',
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/publish/who-viewed/2/' + this.meta.download_id + '/2'
+			}
+		});
+		this.ownObject(this.whoViewedOverlay);
+
 		var editBtn    = this.getEl('editfile_controls').find('.edit-trigger');
 		var cancelBtn  = this.getEl('editfile_controls').find('.cancel-trigger');
 		var saveBtn    = this.getEl('editfile_controls').find('.save-trigger');
@@ -148,10 +166,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 
 		var list = $('.file-list', editArea);
-		DeskPRO_Window.util.fileupload(editArea, { page: this });
-		this.wrapper.bind('fileuploadadd', function() {
-			$('ul.file-list', editArea).empty();
-		});
+		if (list[0]) {
+			DeskPRO_Window.util.fileupload(editArea, { page: this });
+			this.wrapper.bind('fileuploadadd', function() {
+				$('ul.file-list', editArea).empty();
+			});
+		}
 	},
 
 	handleUnloadRevisions: function(revision_id) {

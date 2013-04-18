@@ -82,6 +82,15 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 		this.ownObject(this.whoVotedOverlay);
 
+		this.whoViewedOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '.open-who-viewed',
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/publish/who-viewed/1/' + this.meta.article_id
+			}
+		});
+		this.ownObject(this.whoViewedOverlay);
+
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
 			revisionCompareUrl: BASE_URL + 'agent/kb/compare-revs/{OLD}/{NEW}'
 		});

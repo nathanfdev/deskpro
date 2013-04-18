@@ -53,6 +53,14 @@ class PublishController extends AbstractController
 	 */
 	protected $publish_helper;
 
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($action == 'whoViewedAction') {
+			return false;
+		}
+		return true;
+	}
+
 	protected function init()
 	{
 		parent::init();
@@ -911,18 +919,22 @@ class PublishController extends AbstractController
 
 	public function whoViewedAction($object_type, $object_id, $view_action = 1)
 	{
-		$id_to_time = $this->db->fetchAllKeyValue("
-			SELECT person_id, date_created
+		$id_to_info = $this->db->fetchAllKeyed("
+			SELECT person_id, date_created, COUNT(*) AS count
 			FROM page_view_log
-			WHERE object_type = ? AND object_id = ? AND person_id IS NOT NULL
+			WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
+			GROUP BY person_id
 			ORDER BY id DESC
-		", array($object_type, $object_id, $view_action));
+		", array($object_type, $object_id, $view_action), 'person_id');
 
-		$people = $this->em->getRepository('DeskPRO:Person')->getByIds(array_keys($id_to_time));
+		$people = $this->em->getRepository('DeskPRO:Person')->getByIds(array_keys($id_to_info));
 
 		return $this->render('AgentBundle:Publish:who-viewed.html.twig', array(
-			'id_to_time' => $id_to_time,
-			'people' => $people
+			'id_to_info'  => $id_to_info,
+			'people'      => $people,
+			'object_type' => $object_id,
+			'object_id'   => $object_id,
+			'view_action' => $view_action,
 		));
 	}
 }

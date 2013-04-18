@@ -138,7 +138,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if user_download_count %}
 					<dt></dt>
 					<dd>
-						Registered downloads: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id, view_action: 2}) }}" class="open-who-viewed">{{ user_download_count }}</a>
+						Registered downloads: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id, view_action: 2}) }}" class="open-who-downloaded">{{ user_download_count }}</a>
 					</dd>
 				{% endif %}
 			</dl>
