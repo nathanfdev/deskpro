@@ -85,20 +85,6 @@
 					<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
 				</div>
 			{% endif %}
-			{% if ticket_message_attachments[message.id] %}
-				<ul class="attachment-list">
-					{% for attach_id in ticket_message_attachments[message.id] %}
-						{% set ticket_attach = ticket_attachments[attach_id] %}
-						<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
-							{% if ticket_attach.blob.isImage() %}
-								<a href="{{ ticket_attach.blob.download_url }}" data-deskpro-url="{{ ticket_attach.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
-							{% endif %}
-							<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
-							<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
-						</li>
-					{% endfor %}
-				</ul>
-			{%endif%}
 			<div class="fade-bar"></div>
 			<div class="fade-bar-longmsg">
 				<em>
@@ -110,6 +96,20 @@
 				</em>
 			</div>
 		</div>
+		{% if ticket_message_attachments[message.id] %}
+			<ul class="attachment-list">
+				{% for attach_id in ticket_message_attachments[message.id] %}
+					{% set ticket_attach = ticket_attachments[attach_id] %}
+					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+						{% if ticket_attach.blob.isImage() %}
+							<a href="{{ ticket_attach.blob.download_url }}" data-deskpro-url="{{ ticket_attach.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+						{% endif %}
+						<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+						<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+					</li>
+				{% endfor %}
+			</ul>
+		{%endif%}
 		{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}
 			<div class="feedback">
@@ -127,17 +127,3 @@
 	</div>
 	<textarea class="message-quote-{{message.id}}" style="display: none">{{ message.message_quote }}</textarea>
 </article>
-{% if ticket_message_attachments[message.id] %}
-	{% for attach_id in ticket_message_attachments[message.id] %}
-		{% set ticket_attach = ticket_attachments[attach_id] %}
-		<ul class="attachment-list attachment-lone" style="display: none;">
-			<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
-				{% if ticket_attach.blob.isImage() %}
-					<a href="{{ ticket_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
-				{% endif %}
-				<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
-				<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
-			</li>
-		</ul>
-	{% endfor %}
-{% endif %}
