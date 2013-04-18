@@ -374,6 +374,12 @@ class ArticlesController extends AbstractController
 		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
 
 		if ($this->get('request')->getMethod() == 'POST') {
+			if (!$this->consumeRequest('newcomment_articles')) {
+				return $this->redirectRoute('user_articles_article', array(
+					'slug' => $article->getUrlSlug()
+				));
+			}
+
 			$form->bindRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {

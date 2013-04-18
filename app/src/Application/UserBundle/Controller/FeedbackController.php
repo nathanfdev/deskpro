@@ -528,6 +528,12 @@ class FeedbackController extends AbstractController
 		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
 
 		if ($this->get('request')->getMethod() == 'POST') {
+			if (!$this->consumeRequest('newcomment_feedback')) {
+				return $this->redirectRoute('user_feedback_view', array(
+					'slug' => $feedback->getUrlSlug(),
+				));
+			}
+
 			$form->bindRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {

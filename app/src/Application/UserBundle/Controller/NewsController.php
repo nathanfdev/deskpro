@@ -279,6 +279,13 @@ class NewsController extends AbstractController
 		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
 
 		if ($this->get('request')->getMethod() == 'POST') {
+
+			if (!$this->consumeRequest('newcomment_news')) {
+				return $this->redirectRoute('user_news_view', array(
+					'slug' => $post->getUrlSlug()
+				));
+			}
+
 			$form->bindRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {
