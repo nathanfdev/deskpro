@@ -5,6 +5,36 @@
 {%- endmacro -%}
 {% if log.action_type == 'free' %}
 	{{ log.details.message }}
+{% elseif log.action_type == 'action_starter' %}
+	{% if log.details.event == 'new.email.user' %}
+		New ticket by user via email gateway
+	{% elseif log.details.event == 'new.web.user.portal' %}
+		New ticket by user via portal
+	{% elseif log.details.event == 'new.web.user.embed' %}
+		New ticket by user via embedded form
+	{% elseif log.details.event == 'new.web.user.widget' %}
+		New ticket by user via website widget
+	{% elseif log.details.event == 'new.email.agent' %}
+		New ticket by agent via forward
+	{% elseif log.details.event == 'new.web.agent.portal' %}
+		New ticket by agent via web interface
+	{% elseif log.details.event == 'new.web.api' %}
+		New ticket via API
+	{% elseif log.details.event == 'update.agent' %}
+		{% if log.details.has_reply  %}
+			Reply by agent
+		{% else %}
+			Updated by agent
+		{% endif %}
+	{% elseif log.details.event == 'update.user' %}
+		{% if log.details.has_reply  %}
+			Reply by agent
+		{% else %}
+			Updated by user
+		{% endif %}
+	{% else %}
+		{{ log.details.event }}
+	{% endif %}
 {% elseif log.action_type == 'changed_agent' %}
 	<span class="type">{{ phrase('agent.general.assigned_agent') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_agent_name|default(phrase('agent.general.unassigned'))}}</span>

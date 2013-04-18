@@ -1,4 +1,4 @@
-{% if log.action_type != 'executed_triggers' %}
+<div class="log-batch">
 	<div
 		class="log-row log-{{log.id}} {% if log.sla %}with-sla{% endif %} {% if log.trigger_id %}with-trigger{% endif %} {% if log.action_type == 'message_created' and log.details.is_agent_note %}type-message_note_created{% else %}type-{{ log.action_type }}"{% endif %}
 		data-log-id="{{ log.id }}"
@@ -22,4 +22,32 @@
 			{% include 'AgentBundle:Ticket:ticket-log-actiontext.html.twig' %}
 		</div>
 	</div>
-{% endif %}
+
+	{% if log.grouped|length %}
+		{% for sublog in log.grouped %}
+			<div
+				class="log-row log-{{sublog.id}} {% if sublog.sla %}with-sla{% endif %} {% if sublog.trigger_id %}with-trigger{% endif %} {% if sublog.action_type == 'message_created' and sublog.details.is_agent_note %}type-message_note_created{% else %}type-{{ sublog.action_type }}"{% endif %}
+				data-log-id="{{ sublog.id }}"
+			>
+				<div class="info">
+					{% if sublog.sla %}
+						<span class="sla">SLA {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} (Warning){% elseif sublog.sla_status == 'fail' %} (Failed){% endif %}</span>,
+					{% elseif sublog.trigger_id %}
+						{% if sublog.details.trigger_is_escalation %}
+							<span class="trigger-id">Escalation {{ sublog.trigger_id }}</span>,
+						{% else %}
+							<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>,
+						{% endif %}
+					{% elseif sublog.person %}
+						<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': sublog.person.id}) }}">{{ sublog.person.display_name }}</a>,
+					{% endif %}
+					<time class="timeago" title="{{ sublog.date_created|date('c', 'UTC') }}">{{ sublog.date_created|date('day') }}</time>
+				</div>
+
+				<div class="{{ sublog.action_type }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat 0 3px;">
+					{% include 'AgentBundle:Ticket:ticket-log-actiontext.html.twig' with {log: sublog, plog: log} %}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+</div>

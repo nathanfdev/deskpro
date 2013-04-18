@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketTrigger;
 
+use Application\DeskPRO\EntityRepository\TicketLog;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
@@ -243,11 +244,49 @@ class TriggerExecutor
 			}
 		}
 
+		$primary_event = Arrays::getFirstItem($this->event_types);
+
 		if ($this->tracker->isExtraSet('is_fwd_reply')) {
 			$this->event_types[] = 'new.email.agent';
+			$primary_event = 'new.email.agent';
 		}
 
 		$this->tracker->logMessage('[TriggerExecutor] Events: ' . implode(', ', $this->event_types));
+		$this->tracker->logMessage('[TriggerExecutor] Primary Event: ' . $primary_event);
+
+		#-------------------------
+		# Primary ticket log
+		#-------------------------
+
+		if ($primary_event) {
+			$ticket_log = new \Application\DeskPRO\Entity\TicketLog();
+
+			if ((DP_INTERFACE == 'agent' || DP_INTERFACE == 'user') && (App::getCurrentPerson() && App::getCurrentPerson()->id)) {
+				$ticket_log['person'] = App::getCurrentPerson();
+			} elseif ($this->tracker->hasNewReply()) {
+				$ticket_log['person'] = $this->tracker->getNewReply()->person;
+			}
+
+			$ticket_log['ticket'] = $this->ticket;
+			$ticket_log['action_type'] = 'action_starter';
+			$ticket_log['details'] = array(
+				'event'     => $primary_event,
+				'interface' => DP_INTERFACE,
+				'has_reply' => $this->tracker->hasNewReply(),
+				'has_agent_reply' => $this->tracker->hasNewAgentReply(),
+				'has_user_reply'  => $this->tracker->hasNewUserReply(),
+			);
+
+			App::getOrm()->persist($ticket_log);
+			App::getOrm()->flush($ticket_log);
+
+			$this->tracker->recordExtra('primary_ticket_log', $ticket_log);
+		}
+
+
+		#-------------------------
+		# Triggers
+		#-------------------------
 
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
 
@@ -372,6 +411,7 @@ class TriggerExecutor
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 
 				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true)-$trigger_time));
+				$this->tracker->recordExtraMulti('trigger', $trigger);
 
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
@@ -388,7 +428,6 @@ class TriggerExecutor
 
 					if ($action) {
 						$actions_collection->add($action, array('trigger' => $trigger));
-						$this->tracker->recordExtraMulti('trigger', $trigger);
 					}
 				}
 			} else {

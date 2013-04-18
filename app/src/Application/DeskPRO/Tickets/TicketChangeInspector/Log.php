@@ -544,6 +544,11 @@ class Log
 	protected function createNewTicketLog(LogActionInterface $action)
 	{
 		$ticket_log = new Entity\TicketLog();
+
+		if ($this->tracker->getExtra('primary_ticket_log')) {
+			$ticket_log['parent'] = $this->tracker->getExtra('primary_ticket_log');
+		}
+
 		$ticket_log['person'] = $this->getPersonContext();
 
 		$ticket_log['ticket'] = $this->ticket;

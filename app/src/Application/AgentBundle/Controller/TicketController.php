@@ -428,9 +428,20 @@ class TicketController extends AbstractController
 			$ticket_message_attachments[$attach['message']->getId()][] = $attach->getId();
 		}
 
-		$ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket(
-			$ticket
-		);
+		$ticket_logs_raw = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
+		$ticket_logs = array();
+		foreach ($ticket_logs_raw as $l) {
+			if ($l->parent && isset($ticket_logs[$l->parent->id])) {
+				if (!isset($ticket_logs[$l->parent->id])) {
+					$ticket_logs[$l->parent->id] = $ticket_logs_raw[$l->parent->id];
+				}
+
+				$ticket_logs[$l->parent->id]->grouped[$l->id] = $l;
+			} else {
+				$ticket_logs[$l->id] = $l;
+			}
+		}
+
 		$ticket_message_logs = array();
 
 		$last_message_id = 0;

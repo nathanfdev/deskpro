@@ -51,6 +51,11 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\TicketLog
+	 */
+	protected $parent = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $ticket = null;
@@ -115,6 +120,13 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \DateTime
 	 */
 	protected $date_created;
+
+	/**
+	 * Used in TicketController to hold sub-logs
+	 *
+	 * @var array
+	 */
+	public $grouped = array();
 
 	public function __construct()
 	{
@@ -204,6 +216,7 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'details', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketLog', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'sla', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sla_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true,  ));
