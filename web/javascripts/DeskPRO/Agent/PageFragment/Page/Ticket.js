@@ -29,33 +29,38 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		this.getEl('replybox_wrap').data('page', this);
 
-		this.wrapper.find('.copy-btn').each(function() {
-			var btnEl = this;
-			var btn = $(this);
+		var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
+		if (flashEnabled) {
+			this.wrapper.find('.copy-btn').each(function() {
+				var btnEl = this;
+				var btn = $(this);
 
-			try {
-				var clip = new ZeroClipboard(this, {
-					btnEl: this,
-					savePuffEl: self.getEl('idref_switch')
-				});
-				clip.on('mouseover', function(client, args) {
-					$(client.options.btnEl).addClass('over');
-				});
-				clip.on('mouseout', function(client, args) {
-					$(client.options.btnEl).removeClass('over');
-				});
-				clip.on('complete', function(client, args) {
-					DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
-				});
+				try {
+					var clip = new ZeroClipboard(this, {
+						btnEl: this,
+						savePuffEl: self.getEl('idref_switch')
+					});
+					clip.on('mouseover', function(client, args) {
+						$(client.options.btnEl).addClass('over');
+					});
+					clip.on('mouseout', function(client, args) {
+						$(client.options.btnEl).removeClass('over');
+					});
+					clip.on('complete', function(client, args) {
+						DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
+					});
 
-				self.addEvent('destroy', function() {
-					clip.unglue(btnEl);
-				});
-				self.addEvent('activate', function() {
-					clip.reposition();
-				});
-			} catch (e) {}
-		});
+					self.addEvent('destroy', function() {
+						clip.unglue(btnEl);
+					});
+					self.addEvent('activate', function() {
+						clip.reposition();
+					});
+				} catch (e) {}
+			});
+		} else {
+			this.wrapper.find('.copy-btn').remove();
+		}
 
 		DeskPRO_Window.recentTabs.add(
 			'tickets',
