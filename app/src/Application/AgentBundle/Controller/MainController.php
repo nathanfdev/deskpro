@@ -410,6 +410,15 @@ class MainController extends AbstractController
 			}
 		}
 
+		// See if its a tac code (from the URL in user emails)
+		$info = \Application\DeskPRO\Entity\Ticket::decodeAccessCode($q);
+		if ($info) {
+			$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($info['ticket_id']);
+			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+				$results['ticket'][] = $ticket;
+			}
+		}
+
 		if (!$is_label && Numbers::isInteger($q)) {
 			foreach ($type_to_ent as $type => $ent) {
 				if ($type == 'ticket') {
