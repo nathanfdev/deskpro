@@ -1355,6 +1355,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					menuElement.find('li.delete-link').hide();
 				}
 
+				if (message.hasClass('agent-message')) {
+					menuElement.find('li.forward-message').hide();
+				} else {
+					menuElement.find('li.forward-message').show();
+				}
+
 				if (message.hasClass('with-attach')) {
 					menuElement.find('li.delete-attachments-link').show();
 				} else {
