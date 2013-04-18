@@ -401,6 +401,15 @@ class MainController extends AbstractController
 			$is_label = $m[1];
 		}
 
+		// We dont know about past ref formats, so just always try to find
+		// a ref if its a valid form
+		if (preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
+			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef($q);
+			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+				$results['ticket'][] = $ticket;
+			}
+		}
+
 		if (!$is_label && Numbers::isInteger($q)) {
 			foreach ($type_to_ent as $type => $ent) {
 				if ($type == 'ticket') {
@@ -421,14 +430,6 @@ class MainController extends AbstractController
 			}
 
 		} else {
-
-			$ref_gen = $this->container->getSystemService('RefGenerator');
-			if ($ref_gen->isRefMatch($q)) {
-				$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef($q);
-				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-					$results['ticket'][] = $ticket;
-				}
-			}
 
 			if (!$is_label) {
 				#------------------------------
