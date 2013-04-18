@@ -71,6 +71,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	const ERR_INVALID_FWD       = 'invalid_fwd';
 	const ERR_INVALID_FWD_EMAIL = 'invalid_fwd_email';
 	const ERR_MISSING_MARKER    = 'missing_marker';
+	const ERR_AGENT_BOUNCE      = 'agent_bounce';
 
 	/**
 	 * @var int

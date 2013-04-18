@@ -238,6 +238,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		if ($person && $person->is_agent && $this->is_bounce) {
+			$this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
+			$this->error = 'agent_bounce';
+			return null;
+		}
+
 		if (!$person['is_agent'] && $person['is_disabled']) {
 			// user is disabled so can't create/reply to tickets
 			$message = App::getMailer()->createMessage();

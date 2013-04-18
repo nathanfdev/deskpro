@@ -99,6 +99,9 @@
 						{% elseif source.error_code == 'invalid_fwd_email' %}
 							Invalid Agent Forward (Bad user email address)
 							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email was detected as a forwarded message, but the message did not contain a valid email address for the user"></span>
+						{% elseif source.error_code == 'agent_bounce' %}
+							Agent Auto-Response
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email was an agent reply but was detected to be an auto-response such as an out-of-office reply or bounce error."></span>
 						{% else %}
 							{{ source.error_code_title }}
 						{% endif %}
