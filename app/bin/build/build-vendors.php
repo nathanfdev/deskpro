@@ -396,6 +396,11 @@ function deskpro_build_cleanvendors_symfony_doctrine_migrations($dir)
 	deskpro_build_exec_exit_error("rm -rf README.markdown", $dir);
 }
 
+function deskpro_build_cleanvendors_spork($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf .gitignore .travis.yml README.md composer.json phpunit.xml.dist tests/", $dir);
+}
+
 function deskpro_build_cleanvendors_twig($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf bin doc ext test AUTHORS CHANGELOG composer.json package.xml.tpl phpunit.xml.dist README.markdown .travis.yml", $dir);

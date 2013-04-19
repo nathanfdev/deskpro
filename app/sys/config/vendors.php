@@ -106,6 +106,11 @@
 		'repos'   => 'git://github.com/symfony/DoctrineMigrationsBundle.git',
 		'version' => 'HEAD',
 	),
+	'spork' => array(
+		'into'    => DP_ROOT.'/vendor/spork',
+		'repos'   => 'git://github.com/kriswallsmith/spork.git',
+		'version' => 'HEAD'
+	),
 	'twig' => array(
 		'into'    => DP_ROOT.'/vendor/twig',
 		'repos'   => 'git://github.com/fabpot/Twig.git',
