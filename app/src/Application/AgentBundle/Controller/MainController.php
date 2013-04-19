@@ -412,7 +412,7 @@ class MainController extends AbstractController
 
 		// See if its a tac code (from the URL in user emails)
 		$info = \Application\DeskPRO\Entity\Ticket::decodeAccessCode($q);
-		if ($info) {
+		if (!empty($info['ticket_id']) && $info['ticket_id']) {
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($info['ticket_id']);
 			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 				$results['ticket'][] = $ticket;
