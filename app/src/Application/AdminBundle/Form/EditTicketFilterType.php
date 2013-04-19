@@ -42,7 +42,7 @@ use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditTicketFilterType extends AbstractType
+abstract class EditTicketFilterType extends AbstractType
 {
 	protected $filter;
 

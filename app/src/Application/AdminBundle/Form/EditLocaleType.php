@@ -42,7 +42,7 @@ use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditLocaleType extends AbstractType
+abstract class EditLocaleType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{

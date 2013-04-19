@@ -32,8 +32,9 @@
  * @category Usersources
  */
 
-namespace Application\AgentBundle\Usersource\AdminHandler;
+namespace Application\AdminBundle\Usersource\AdminHandler;
 
+use Application\AdminBundle\Usersource\AdminHandler\AbstractAdminHandler;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 

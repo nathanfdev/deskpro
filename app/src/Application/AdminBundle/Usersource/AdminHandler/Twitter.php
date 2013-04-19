@@ -32,7 +32,7 @@
  * @category Usersources
  */
 
-namespace Application\AgentBundle\Usersource\AdminHandler;
+namespace Application\AdminBundle\Usersource\AdminHandler;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

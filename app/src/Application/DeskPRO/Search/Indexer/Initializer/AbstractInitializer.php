@@ -31,8 +31,7 @@
  * @package DeskPRO
  * @subpackage Search
  */
-
-namespace Application\DeskPRO\Search\IndexInitializer;
+namespace Application\DeskPRO\Search\Indexer\Initializer;
 
 use Application\DeskPRO\Search\Adapter\AbstractAdapter;
 use Orb\Log\Logger;
@@ -55,7 +54,7 @@ abstract class AbstractInitializer
 	public function __construct(AbstractAdapter $adapter, Logger $logger = null)
 	{
 		$this->adapter = $adapter;
-		
+
 		if (!$this->logger) {
 			$this->logger = new Logger();
 		} else {

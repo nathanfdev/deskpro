@@ -30,6 +30,7 @@ $loader->registerNamespaces(array(
 	'Imagine'                        => DP_ROOT.'/vendor/imagine/lib',
 	'Aws'                            => DP_ROOT.'/vendor/aws-sdk-php/src',
 	'Guzzle'                         => DP_ROOT.'/vendor/guzzle/src',
+	'Metadata'                       => DP_ROOT.'/vendor/metadata/src',
 ));
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 
@@ -71,7 +72,8 @@ $loader->registerClassNames(array(
 	'EpiOSequence'                    => DP_ROOT.'/vendor/twitter-async/EpiOSequence.php',
 	'EpiTwitter'                      => DP_ROOT.'/vendor/twitter-async/EpiTwitter.php',
 
-	'phpthumb_ico'                    => DP_ROOT.'/vendor/phpthumb/phpthumb.ico.php'
+	'phpthumb_ico'                    => DP_ROOT.'/vendor/phpthumb/phpthumb.ico.php',
+	'PasswordHash'                    => DP_ROOT.'/vendor/phpass/PasswordHash.php',
 ));
 
 spl_autoload_register(function($classname) {

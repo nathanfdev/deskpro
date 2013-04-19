@@ -38,7 +38,7 @@ use Orb\Log\Logger;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Elastica\Type\AbstractType;
 
-class ContentInitializer extends AbstractInitializer
+class TicketInitializer extends AbstractInitializer
 {
 	public function run()
 	{

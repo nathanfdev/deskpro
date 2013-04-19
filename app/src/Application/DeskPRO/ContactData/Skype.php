@@ -40,7 +40,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-class LinkedIn extends AbstractContactData
+class Skype extends AbstractContactData
 {
 	/**
 	 * Apply form data to a contact record

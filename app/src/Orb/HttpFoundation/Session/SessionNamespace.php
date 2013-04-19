@@ -143,7 +143,7 @@ class SessionNamespace implements SessionInterface
 	 *
 	 * @param array $data Data
 	 */
-	public function setAllData(array $data)
+	public function setAllData($data)
 	{
 		$this->start();
 		$this->session->data[$this->namespace][$name] = $data;

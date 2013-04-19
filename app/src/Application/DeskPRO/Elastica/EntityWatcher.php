@@ -40,7 +40,7 @@ use Doctrine\ORM\Events;
 /**
  * Watches database transactions and keeps search index up to date
  */
-class EntityUpdater implements EventSubscriber
+class EntityWatcher implements EventSubscriber
 {
 	public function postPersist()
 	{

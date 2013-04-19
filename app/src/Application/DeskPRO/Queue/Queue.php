@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\QueueItem;
 
 use \Zend\Queue\Queue as ZendQueue;
 use \Zend\Queue\Exception as QueueException;
-use \Zend\Queue\Message;
+use \Zend\Queue\Message as ZendMessage;
 
 /**
  * Some changes to Queue to seamlessly handle messages that point to QueueItem datas.
@@ -110,7 +110,7 @@ class Queue extends ZendQueue
 	}
 
 
-	public function deleteMessage(Message $message)
+	public function deleteMessage(ZendMessage $message)
 	{
 		if ($this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
 			return $this->getAdapter()->deleteMessage($message);

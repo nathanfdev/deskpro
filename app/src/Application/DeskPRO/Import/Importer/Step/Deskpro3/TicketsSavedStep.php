@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketParticipant;
 
-class TicketsSaved extends AbstractDeskpro3Step
+class TicketsSavedStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()
 	{

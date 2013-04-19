@@ -32,7 +32,7 @@
  * @category Usersources
  */
 
-namespace Application\AgentBundle\Usersource\AdminHandler;
+namespace Application\AdminBundle\Usersource\AdminHandler;
 
 use Application\DeskPRO\Entity\Usersource;
 

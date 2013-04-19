@@ -42,7 +42,7 @@ use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditCustomFieldType extends AbstractType
+abstract class EditCustomFieldType extends AbstractType
 {
 	protected $field_save;
 

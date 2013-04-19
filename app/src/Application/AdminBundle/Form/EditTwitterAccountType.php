@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditTwitterAccountType extends AbstractType
+abstract class EditTwitterAccountType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{

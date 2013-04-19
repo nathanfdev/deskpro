@@ -32,7 +32,7 @@
  * @category Feedback
  */
 
-namespace Application\DeskPRO\Tickets;
+namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;

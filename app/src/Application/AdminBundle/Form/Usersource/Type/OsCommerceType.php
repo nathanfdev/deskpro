@@ -38,7 +38,7 @@ use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EzPublishType extends AbstractType
+class OsCommerceType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{

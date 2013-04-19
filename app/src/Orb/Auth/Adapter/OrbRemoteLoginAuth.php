@@ -98,7 +98,7 @@ use \Orb\Auth\Result;
  * - orba_email: A preferred email address, or an array of preferred email addresses in order of priority
  * - orba_name: The users real name
  */
-class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
+abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
 {
 	const ERR_INVALID_TOKEN = -10;
 	const ERR_SERVICE_ERR = -11;

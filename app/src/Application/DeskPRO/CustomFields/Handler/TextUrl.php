@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity;
  */
 class TextUrl extends Text
 {
-	public function renderHtml($data = null)
+	public function renderHtml($data = null, array $template_vars = array())
 	{
 		if ($data === null) return '';
 

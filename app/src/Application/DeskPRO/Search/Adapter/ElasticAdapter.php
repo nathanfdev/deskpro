@@ -52,7 +52,7 @@ use Orb\Util\Strings;
 /**
  * Search adapter
  */
-class ElasticAdapter extends AbstractAdapter
+abstract class ElasticAdapter extends AbstractAdapter
 {
 	public static $capabilities = array(
 		'searcher_content', 'searcher_content_labels', 'searcher_content_similar',

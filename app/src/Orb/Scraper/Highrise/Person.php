@@ -34,6 +34,8 @@
 
 namespace Orb\Scraper\Highrise;
 
+use Orb\Scraper\AbstractScraper;
+
 /**
  * Scrapes person data
  */
@@ -45,12 +47,12 @@ class Person extends AbstractScraper
 	protected $highrise;
 
 
-	
+
 	/**
 	 * @param int $person_id
 	 * @return ItemInterface
 	 */
-	function getData($person_id)
+	function getData($person_id = null)
 	{
 		if ($this->highrise === null) {
 			$this->highrise = new \Orb\Service\Highrise\Highrise(

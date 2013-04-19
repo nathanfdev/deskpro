@@ -42,7 +42,7 @@ use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditStyleType extends AbstractType
+abstract class EditStyleType extends AbstractType
 {
 	protected $style;
 

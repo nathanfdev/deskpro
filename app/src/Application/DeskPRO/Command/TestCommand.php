@@ -59,6 +59,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		echo "Within Command";
 		echo "\n";
 		exit;
 	}

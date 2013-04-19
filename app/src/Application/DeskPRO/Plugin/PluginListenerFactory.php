@@ -32,7 +32,7 @@
  * @subpackage Addons
  */
 
-namespace Application\DeskPRO\Addon;
+namespace Application\DeskPRO\Plugin;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Plugin;

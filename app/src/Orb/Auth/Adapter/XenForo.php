@@ -34,8 +34,6 @@
 
 namespace Orb\Auth\Adapter;
 
-require DP_ROOT . '/vendor/phpass/PasswordHash.php';
-
 class XenForo extends DbTable
 {
 	protected function initOptions()

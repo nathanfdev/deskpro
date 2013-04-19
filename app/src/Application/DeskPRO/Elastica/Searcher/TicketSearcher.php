@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Elastica\Searcher;
 
-class ContentSearcher extends AbstractSearcher
+class TicketSearcher extends AbstractSearcher
 {
 	public function search($query)
 	{
