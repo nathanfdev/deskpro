@@ -50,10 +50,13 @@ class FileinfoMimeTypeGuesser implements MimeTypeGuesserInterface
             return null;
         }
 
-        if (!$finfo = new \finfo(FILEINFO_MIME_TYPE)) {
+		// Patch from https://github.com/cursedcoder/symfony/blob/efe2e23f7f911b0a2713160ff7f007ab622e4b36/src/Symfony/Component/HttpFoundation/File/MimeType/FileinfoMimeTypeGuesser.php
+        if (!$finfo = new \finfo(FILEINFO_MIME)) {
             return null;
         }
 
-        return $finfo->file($path);
+        $mime = explode(";", $finfo->file($path));
+
+        return $mime[0];
     }
 }
