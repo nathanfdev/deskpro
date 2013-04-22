@@ -52,17 +52,20 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$this->addOption('with-owl', null, InputOption::VALUE_NONE);
 		$this->addOption('owl-size', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('real-send', null, InputOption::VALUE_NONE);
+		$this->addOption('subject', null, InputOption::VALUE_NONE);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
+
 		if (!$input->getOption('with-owl')) {
 			$source = <<<SRC
 Date: Mon, 10 Dec 2012 19:15:33 +0000
 From: %FROM_EMAIL%
 To: %TO_EMAIL%
 Message-ID: <144FD598151749D98C378FCF8B2E03C2@gmail.com>
-Subject: Test Email - %TIME%
+Subject: $subject
 X-Mailer: sparrow 1.6.4 (build 1176)
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="50c634de_3222e7cd_af2f"
