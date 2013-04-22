@@ -68,7 +68,8 @@ class TemplatesController extends AbstractController
 			$list['UserBundle']['!top']['templates']['UserBundle::custom-footer.html.twig'],
 			$list['UserBundle']['!top']['templates']['UserBundle::custom-header.html.twig'],
 			$list['UserBundle']['!top']['templates']['UserBundle::custom-headinclude.html.twig'],
-			$list['UserBundle']['Css']['templates']['UserBundle:Css:custom.css.twig']
+			$list['UserBundle']['Css']['templates']['UserBundle:Css:custom.css.twig'],
+			$list['UserBundle']['_form_fields']
 		);
 
 		return $this->render('AdminBundle:Templates:user-templates.html.twig', array(
