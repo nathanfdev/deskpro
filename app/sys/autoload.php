@@ -31,6 +31,7 @@ $loader->registerNamespaces(array(
 	'Aws'                            => DP_ROOT.'/vendor/aws-sdk-php/src',
 	'Guzzle'                         => DP_ROOT.'/vendor/guzzle/src',
 	'Metadata'                       => DP_ROOT.'/vendor/metadata/src',
+	'Spork'                          => DP_ROOT.'/vendor/spork/src',
 ));
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 

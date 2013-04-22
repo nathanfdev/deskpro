@@ -363,7 +363,7 @@ function deskpro_build_cleanvendors_php5_akismet($dir)
 
 function deskpro_build_cleanvendors_pheanstalk($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf doc tests .gitmodules README.md", $dir);
+	deskpro_build_exec_exit_error("rm -rf doc tests .gitmodules .gitignore .gitattributes .travis.yml composer.json pheanstalk_init.php phpunit.xml.dist README.md scripts/", $dir);
 }
 
 function deskpro_build_cleanvendors_webprofilerextra($dir)

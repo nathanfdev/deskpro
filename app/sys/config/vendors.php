@@ -67,7 +67,7 @@
 	'pheanstalk' => array(
 		'into'    => DP_ROOT.'/vendor/pheanstalk',
 		'repos'   => 'git://github.com/pda/pheanstalk.git',
-		'version' => 'v1.1.0',
+		'version' => 'v2.1.0',
 	),
 	'webprofilerextra' => array(
 		'into'    => DP_ROOT.'/vendor/profiler/Elao/WebProfilerExtraBundle',
