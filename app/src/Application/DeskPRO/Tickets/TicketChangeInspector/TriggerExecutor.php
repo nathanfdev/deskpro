@@ -278,8 +278,6 @@ class TriggerExecutor
 			);
 
 			App::getOrm()->persist($ticket_log);
-			App::getOrm()->flush($ticket_log);
-
 			$this->tracker->recordExtra('primary_ticket_log', $ticket_log);
 		}
 
