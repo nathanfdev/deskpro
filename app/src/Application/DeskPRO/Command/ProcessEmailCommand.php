@@ -51,8 +51,10 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 	{
 		$this->setName('dp:process-email');
 		$this->addOption('gateway', null, InputOption::VALUE_REQUIRED, 'ID of the gateway to process the source under. If not provided, then the first ticket gateway will be used.');
+		$this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
 		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
 		$this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
+		$this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool)');
 		$this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
 	}
 
@@ -66,28 +68,43 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$success_string = $input->getOption('success-string');
+
 		#----------------------------------------
 		# Get gateway account
 		#----------------------------------------
 
-		if ($input->getOption('gateway')) {
-			$gateway = $this->getContainer()->getEm()->find('DeskPRO:EmailGateway', $input->getOption('gateway'));
+		$gateway_id = $input->getOption('gateway');
+		$gateway = null;
 
-			if (!$gateway) {
-				$output->writeln("<error>Could not find gateway</error>");
-				return 1;
+		if (!$gateway_id and $input->getOption('to')) {
+			$matcher = App::getSystemService('gateway_address_matcher');
+			$addr = $matcher->getMatchingAddress($input->getOption('to'));
+			if ($addr) {
+				$gateway = $addr->gateway;
 			}
-		} else {
-			$gateway = $this->getContainer()->getEm()->createQuery("
-				SELECT g
-				FROM DeskPRO:EmailGateway g
-				WHERE g.gateway_type = 'tickets'
-				ORDER BY g.id ASC
-			")->setMaxResults(1)->getOneOrNullResult();
+		}
 
-			if (!$gateway) {
-				$output->writeln("<error>No ticket gateways exist</error>");
-				return 1;
+		if (!$gateway) {
+			if ($gateway_id) {
+				$gateway = $this->getContainer()->getEm()->find('DeskPRO:EmailGateway', $input->getOption('gateway'));
+
+				if (!$gateway) {
+					$output->writeln("<error>Could not find gateway</error>");
+					return 1;
+				}
+			} else {
+				$gateway = $this->getContainer()->getEm()->createQuery("
+					SELECT g
+					FROM DeskPRO:EmailGateway g
+					WHERE g.gateway_type = 'tickets'
+					ORDER BY g.id ASC
+				")->setMaxResults(1)->getOneOrNullResult();
+
+				if (!$gateway) {
+					$output->writeln("<error>No ticket gateways exist</error>");
+					return 1;
+				}
 			}
 		}
 
@@ -167,6 +184,12 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 		$runner->setLogger($logger);
 		$runner->setPhpTimeLimit(900);
 		$runner->executeSource($source);
+
+		if ($success_string) {
+			echo "\n";
+			echo $success_string;
+			echo "\n";
+		}
 
 		return 0;
 	}
