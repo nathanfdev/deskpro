@@ -159,6 +159,9 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
 			$source->object_type    = ($gateway->gateway_type == 'tickets' ? 'ticket' : $gateway->gateway_type);
 
+			$t = microtime(true);
+			$output->writeln("<info>Saving blob...</info>");
+
 			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
 				$raw_source,
 				'email.eml',
@@ -170,7 +173,7 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 			App::getOrm()->persist($source);
 			App::getOrm()->flush();
 
-			$output->writeln("<info>Saved email source #" . $source->getId() . "</info>");
+			$output->writeln(sprintf("<info>Saved email source #" . $source->getId() . " (took %.5s)</info>", microtime(true) - $t));
 		}
 
 		#----------------------------------------
@@ -179,6 +182,7 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
 		$logger = new Logger();
 		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
+		$logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
 
 		$runner = new Runner();
 		$runner->setLogger($logger);
