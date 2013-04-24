@@ -94,4 +94,6 @@ $files = array_merge($files, array(
 
 ClassCollectionLoader::load($files, dirname($cachefile), basename($cachefile, '.php'), false, false, '.php');
 
-file_put_contents($cachefile, "<?php\n".substr(file_get_contents($cachefile), 5));
+$file = "<?php\n".substr(file_get_contents($cachefile), 5);
+$file = str_replace('htmlspecialchars(', '@htmlspecialchars(', $file);
+file_put_contents($cachefile, $file);
