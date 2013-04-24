@@ -193,6 +193,10 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 			echo "\n";
 			echo $success_string;
 			echo "\n";
+		} else {
+			echo "\n\n";
+			echo "STATUS: DPC_EMAIL_SUCCESS";
+			echo "\n\n";
 		}
 
 		return 0;
