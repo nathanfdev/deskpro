@@ -153,7 +153,7 @@ class LanguagesController extends AbstractController
 
 		$vars['all_products'] = $all_products;
 
-		$group = 'obj_department';
+		$group = 'obj_product';
 		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
 
 		return $this->render('AdminBundle:Languages:lang-phrases-products.html.twig', $vars);
