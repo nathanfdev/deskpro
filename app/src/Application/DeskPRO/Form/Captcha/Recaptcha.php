@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Form\Captcha;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 
 class Recaptcha extends CaptchaAbstract
@@ -87,8 +88,13 @@ class Recaptcha extends CaptchaAbstract
 		$client->getRequest()->post()->set('challenge', $challenge);
 		$client->getRequest()->post()->set('response', $response);
 
-		$r_response = $client->send();
-		$r_body = $r_response->getBody();
+		try {
+			$r_response = $client->send();
+			$r_body = $r_response->getBody();
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e, false);
+			$r_body = '';
+		}
 
 		$line = trim(Strings::getFirstLine($r_body));
 
