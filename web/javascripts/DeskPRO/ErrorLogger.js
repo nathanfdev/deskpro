@@ -22,7 +22,7 @@ var DpErrorLog = {
 			var timeUsing = 0;
 		}
 
-		if (!message || message == 'false' || message.indexOf('Error connecting to extension') !== -1) {
+		if (!message || message == 'false' || message.indexOf('Error connecting to extension') !== -1 || message.indexOf('flashBridge') !== -1) {
 			return;
 		}
 

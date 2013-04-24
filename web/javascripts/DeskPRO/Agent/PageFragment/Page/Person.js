@@ -29,32 +29,36 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 		if (flashEnabled) {
-			this.wrapper.find('.copy-btn').each(function() {
-				var btnEl = this;
-				var btn = $(this);
+			// Set timeout to have it exec in global scope,
+			// so errors (eg flash has crashed) can be ignored and dont break the rest of this init
+			window.setTimeout(function() {
+				self.wrapper.find('.copy-btn').each(function() {
+					var btnEl = this;
+					var btn = $(this);
 
-				try {
-					var clip = new ZeroClipboard(this, {
-						btnEl: this
-					});
-					clip.on('mouseover', function(client, args) {
-						$(client.options.btnEl).addClass('over');
-					});
-					clip.on('mouseout', function(client, args) {
-						$(client.options.btnEl).removeClass('over');
-					});
-					clip.on('complete', function(client, args) {
+					try {
+						var clip = new ZeroClipboard(this, {
+							btnEl: this
+						});
+						clip.on('mouseover', function(client, args) {
+							$(client.options.btnEl).addClass('over');
+						});
+						clip.on('mouseout', function(client, args) {
+							$(client.options.btnEl).removeClass('over');
+						});
+						clip.on('complete', function(client, args) {
 
-					});
+						});
 
-					self.addEvent('destroy', function() {
-						clip.unglue(btnEl);
-					});
-					self.addEvent('activate', function() {
-						clip.reposition();
-					});
-				} catch (e) {}
-			});
+						self.addEvent('destroy', function() {
+							clip.unglue(btnEl);
+						});
+						self.addEvent('activate', function() {
+							clip.reposition();
+						});
+					} catch (e) {}
+				});
+			}, 100);
 		} else {
 			this.wrapper.find('.copy-btn').remove();
 		}
