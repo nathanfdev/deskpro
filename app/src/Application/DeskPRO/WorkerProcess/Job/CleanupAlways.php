@@ -60,28 +60,32 @@ class CleanupAlways extends AbstractJob
 		// client messages are nearly instant, so this timesnip is very low
 		$datetime = date('Y-m-d H:i:s', time() - 120);
 
+		// Long-lived channels are still only deleted after 3 days
+		$datetime2 = date('Y-m-d H:i:s', time() - 259200);
+
 		$long_lived_channels = array(
 			'agent_chat.new-message'
 		);
 
 		$long_lived_channels = "'" . implode("','", $long_lived_channels) . "'";
 
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM client_messages
-			WHERE
+		$ids = App::getDb()->fetchAllCol("
+			SELECT id FROM client_messages
+			WHERE (
 				date_created < ? AND channel NOT IN ($long_lived_channels)
-		", array($datetime));
-
-			// Long-lived channels are still only deleted after 3 days
-		$datetime = date('Y-m-d H:i:s', time() - 259200);
-		$num += App::getDb()->executeUpdate("
-			DELETE FROM client_messages
-			WHERE
+			) OR (
 				date_created < ? AND channel IN ($long_lived_channels)
-		", array($datetime));
+			)
+		", array($datetime, $datetime2));
+		if ($ids) {
+			$num = App::getDb()->executeUpdate("
+				DELETE FROM client_messages
+				WHERE id IN (" . implode(',', $ids) . ")
+			");
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num old client messages");
+			if ($num) {
+				$this->logStatus("Cleaned up $num old client messages");
+			}
 		}
 
 		#------------------------------
