@@ -1417,7 +1417,7 @@ class Strings
 
 		// Less common case of multiple body tags, we'll parse them out and append them into one string
 		} else {
-			$qp = \QueryPath::withHTML('<html>' . $value . '</html>', null, array('convert_to_encoding' => null));
+			$qp = \QueryPath::withHTML('<?xml version="1.0" encoding="UTF-8"?><html>' . $value . '</html>', null, array('convert_to_encoding' => null));
 			$set_value = array();
 
 			$qp->find('body');
@@ -1425,7 +1425,8 @@ class Strings
 				$set_value[] = $body->innerHTML();
 			}
 
-			$value = implode('', $set_value);
+			$value = str_replace('<?xml version="1.0" encoding="UTF-8"??>', '', $value);
+			$value = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $value);
 		}
 
 		$value = trim($value);
