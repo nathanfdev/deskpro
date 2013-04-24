@@ -28,10 +28,10 @@
 		{% if not setrating %}
 			<table class="dp-layout" width="100%"><tr>
 				<td style="vertical-align: top;" width="80">
-					<img src="{{ message.person.getPictureUrl(80) }}" alt="{{ message.person.display_name }}" style="float:left; margin: 0 11px 0 0;" />
+					<img src="{{ message.person.getPictureUrl(80) }}" alt="{{ message.person.display_name_user }}" style="float:left; margin: 0 11px 0 0;" />
 				</td>
 				<td style="vertical-align: top;">
-					<p>{{ phrase('user.tickets.rate-intro', {name: message.person.display_name, subject: ticket.subject}) }}</p>
+					<p>{{ phrase('user.tickets.rate-intro', {name: message.person.display_name_user, subject: ticket.subject}) }}</p>
 					<p>{{ phrase('user.tickets.rate-question') }}</p>
 
 					<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
