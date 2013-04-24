@@ -186,7 +186,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			sessionStorage[this.options.saveSelectionRealId] = checked.join(',');
 		}
 
-		if (checkedEls.length || count == 0) {
+		if (!checkedEls.length || count == 0) {
 			this.controlCheck.attr('checked', false);
 		} else {
 			this.controlCheck.attr('checked', true);
