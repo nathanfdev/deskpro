@@ -622,6 +622,14 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'No connection could be made') !== false) {
+			return true;
+		}
+
+		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'Got error 28 from storage engine') !== false) {
+			return true;
+		}
+
 		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
 			return true;
 		}
