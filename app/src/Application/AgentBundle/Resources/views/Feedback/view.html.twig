@@ -96,7 +96,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<dd>
 				{% for author in feedback.authors %}
 					<a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': author.id}) }}">
-						<span class="text" style="background-image: url({{ author.getPictureUrl(15) }}); padding-left: 16px;">
+						<span class="text" style="background: url({{ author.getPictureUrl(15) }}) no-repeat 0 50%; padding-left: 18px;">
 							{{ author.getNameWithTitle() }}
 							({{ author.primary_email_address }})
 						</span>
