@@ -351,7 +351,14 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$sess_rec['is_helpdesk'] = 1;
 		}
 
-		$this->db->update('sessions', $sess_rec, array('id' => $id));
+		try {
+			$this->db->update('sessions', $sess_rec, array('id' => $id));
+		} catch (\Exception $e) {
+			// Cron periodically clears things like visitor tracks, so there could in rare
+			// cases be an update where the visitor is no longer valid by the time this session is written
+			unset($sess_rec['visitor_id']);
+			$this->db->update('sessions', $sess_rec, array('id' => $id));
+		}
 
         return true;
     }
