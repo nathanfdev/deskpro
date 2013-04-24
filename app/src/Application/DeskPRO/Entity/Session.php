@@ -250,7 +250,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * @param int $timeout
 	 * @return string
 	 */
-	public function generateSecurityToken($name, $timeout = 43200)
+	public function generateSecurityToken($name = '', $timeout = 43200)
 	{
 		if ($this->visitor) {
 			return Util::generateStaticSecurityToken($this->visitor->getVisitorSecret($name), $timeout);
@@ -266,7 +266,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * @param $name
 	 * @return bool
 	 */
-	public function checkSecurityToken($name, $token)
+	public function checkSecurityToken($name = '', $token)
 	{
 		if ($this->visitor && $this->visitor->checkSecurityToken($name, $token)) {
 			return true;
