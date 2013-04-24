@@ -26,6 +26,11 @@ var DpErrorLog = {
 			return;
 		}
 
+		// Some errors made by browser extensions that we catch
+		if (message.indexOf('Automation server') !== -1) {
+			return;
+		}
+
 		if (trace && trace == '?() in :0') {
 			// not a usefu message
 			return;
