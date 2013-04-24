@@ -19,10 +19,11 @@ var TicketFormWidget = new (function() {
 	var iframe = null;
 
 	var options = {
-		deskproUrl:     DpNewTicket_Options.deskproUrl || '',
+		deskproUrl:     DpNewTicket_Options.deskproUrl    || '',
 		initialHeight:  DpNewTicket_Options.initialHeight || 500,
-		departmentId:   DpNewTicket_Options.departmentId || 0,
-		containerId:    DpNewTicket_Options.containerId || 'dp_newticket_form'
+		departmentId:   DpNewTicket_Options.departmentId  || 0,
+		containerId:    DpNewTicket_Options.containerId   || 'dp_newticket_form',
+		languageId:     DpNewTicket_Options.languageId    || 0
 	};
 
 	var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
@@ -99,6 +100,9 @@ var TicketFormWidget = new (function() {
 
 		var src = options.deskproUrl + 'tickets/new-simple/' + options.departmentId;
 		src += '?website_url=' + encodeURIComponent(window.location + '')
+		if (options.languageId) {
+			src += '&language_id=' + options.languageId
+		}
 		src += '#' + encodeURIComponent(document.location.href);
 
 		iframeContainer = document.getElementById(options.containerId);

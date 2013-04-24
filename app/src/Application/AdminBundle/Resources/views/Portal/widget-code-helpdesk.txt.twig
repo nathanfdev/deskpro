@@ -14,6 +14,11 @@
 	//DpHelpdesk_Options.loadPath = '/feedback';
 	//DpHelpdesk_Options.loadPath = '/new-ticket';
 
+	/**
+     * The Language ID to load for users with no language preference
+     */
+    DpHelpdesk_Options.languageId = 0;
+
 	DpHelpdesk_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
 	DpHelpdesk_Options.deskproUrl = DpHelpdesk_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
 	DpHelpdesk_Options.initialHeight = 700;

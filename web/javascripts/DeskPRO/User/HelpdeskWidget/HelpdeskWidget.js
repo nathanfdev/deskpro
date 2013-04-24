@@ -20,12 +20,13 @@ var HelpdeskWidget = new (function() {
 	var targetUrl = null;
 
 	var options = {
-		deskproUrl:     DpHelpdesk_Options.deskproUrl || '',
+		deskproUrl:     DpHelpdesk_Options.deskproUrl    || '',
 		initialHeight:  DpHelpdesk_Options.initialHeight || 500,
-		departmentId:   DpHelpdesk_Options.departmentId || 0,
-		containerId:    DpHelpdesk_Options.containerId || 'dp_helpdesk',
-		simpleMode:     DpHelpdesk_Options.simpleMode || false,
-		loadPath:       DpHelpdesk_Options.loadPath || false
+		departmentId:   DpHelpdesk_Options.departmentId  || 0,
+		containerId:    DpHelpdesk_Options.containerId   || 'dp_helpdesk',
+		simpleMode:     DpHelpdesk_Options.simpleMode    || false,
+		loadPath:       DpHelpdesk_Options.loadPath      || false,
+		languageId:     DpHelpdesk_Options.languageId    || 0
 	};
 
 	var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
@@ -155,6 +156,16 @@ var HelpdeskWidget = new (function() {
 		var src = options.deskproUrl;
 		if (options.loadPath) {
 			src += options.loadPath.replace(/^\//, '');
+		}
+
+		if (options.languageId) {
+			if (src.indexOf('?') === -1) {
+				src += '?';
+			} else {
+				src += '&';
+			}
+
+			src += 'language_id=' + options.languageId;
 		}
 
 		src += '#' + encodeURIComponent(document.location.href);
