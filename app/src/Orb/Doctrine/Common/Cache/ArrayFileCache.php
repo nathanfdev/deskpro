@@ -414,7 +414,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	 */
 	public function hasSlam()
 	{
-		if (file_exists($this->cache_file . '.slam') && filemtime($this->cache_file . '.slam') < time() - $this->slam_timeout) {
+		if (file_exists($this->cache_file . '.slam') && (@filemtime($this->cache_file . '.slam') ?: 0) < time() - $this->slam_timeout) {
 			return true;
 		}
 
