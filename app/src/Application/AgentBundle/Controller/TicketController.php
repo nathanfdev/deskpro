@@ -3092,6 +3092,10 @@ class TicketController extends AbstractController
 				if (!$check_person) {
 					$errors['person_id'] = true;
 				}
+
+				if ($check_person->is_disabled) {
+					$errors['person_disabled'] = true;
+				}
 			} else {
 				$new_email = $this->in->getString('newticket.person.email_address');
 				if (!$new_email) {
@@ -3105,6 +3109,11 @@ class TicketController extends AbstractController
 					$errors['person_email_address'] = true;
 				} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
 					$errors['person_email_address_gateway'] = true;
+				}
+
+				$check_person = $this->em->getRepository('DeskPRO::Person')->findOneByEmail($new_email);
+				if ($check_person && $check_person->is_disabled) {
+					$errors['person_disabled'] = true;
 				}
 			}
 

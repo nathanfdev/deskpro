@@ -244,6 +244,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		if ($person && $person->is_disabled && !$ticket) {
+			$this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
+			$this->error = 'from_disabled_user';
+			return null;
+		}
+
 		if (!$person['is_agent'] && $person['is_disabled']) {
 			// user is disabled so can't create/reply to tickets
 			$message = App::getMailer()->createMessage();
