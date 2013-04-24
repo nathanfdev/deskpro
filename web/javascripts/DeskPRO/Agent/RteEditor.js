@@ -467,6 +467,8 @@ RedactorPlugins.clean_text = {
 			// Grab selected text
 			var html = redactor.getSelectedHtml();
 
+			html = html.replace(/<\/td>/g, "\t");
+			html = html.replace(/<\/tr>/g, "\n");
 			html = html.replace(/\s*<div[^>]*>\s*/g, "\n");
 			html = html.replace(/\s*<\/p>\s*<p[^>]*>\s*/g, "\n\n");
 			html = html.replace(/\s*<p[^>]*>\s*/g, "\n");
@@ -475,8 +477,8 @@ RedactorPlugins.clean_text = {
 
 			// Strip out html
 			html = html.replace(/(<([^>]+)>)/ig,"");
-			html = html.replace(/\r|\r\n|\n/g, "\n<br/>");
 			html = $.trim(html);
+			html = html.replace(/\r|\r\n|\n/g, "\n<br/>");
 
 			// Set buffer (allows undo shortcut)
 			redactor.setBuffer();
