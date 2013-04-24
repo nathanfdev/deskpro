@@ -246,4 +246,9 @@ class GlobalVariables extends BaseGlobalVariables
 	{
 		return defined('DPC_IS_CLOUD');
 	}
+
+	public function __toString()
+	{
+		return '[app]';
+	}
 }
