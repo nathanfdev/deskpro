@@ -1415,16 +1415,11 @@ class Strings
 				$value = substr($value, 0, $pos);
 			}
 
-		// Less common case of multiple body tags, we'll parse them out and append them into one string
+		// Less common case of multiple body tags, we'll treat it as one big doc and just get rid of html/meta etc tags
 		} else {
-			$qp = \QueryPath::withHTML('<?xml version="1.0" encoding="UTF-8"?><html>' . $value . '</html>', null, array('convert_to_encoding' => null));
-			$set_value = array();
-
-			$qp->find('body');
-			foreach ($qp as $body) {
-				$set_value[] = $body->innerHTML();
-			}
-
+			$value = preg_replace('#<(style|head|meta)[^>]*>.*?</\\1>#is', '', $value);
+			$value = preg_replace('#<(html|body)[^>]*>#is', '', $value);
+			$value = preg_replace('#</(html|body)>#is', '', $value);
 			$value = str_replace('<?xml version="1.0" encoding="UTF-8"??>', '', $value);
 			$value = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $value);
 		}
