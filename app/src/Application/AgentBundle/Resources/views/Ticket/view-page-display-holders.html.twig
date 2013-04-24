@@ -42,10 +42,15 @@
 				<select name="ticket[category_id]" id="{{baseId}}_ticket_category_id" data-prop-id="category_id" class="prop-input-category_id">
 					<option value="0">{{ phrase('agent.general.none') }}</option>
 					{% for cat in ticket_options.ticket_categories_hierarchy %}
-						<option {% if ticket.category.id == cat.id %}selected="selected"{% endif %} value="{{ cat.id }}">{{ "--"|repeat(cat.depth) }} {{ cat.title }}</option>
-						{% for subcat in cat.children %}
-							<option {% if ticket.category.id == subcat.id %}selected="selected"{% endif %} value="{{ subcat.id }}">-- {{ subcat.title }}</option>
-						{% endfor %}
+						{% if cat.children|length %}
+							<optgroup label="{{ cat.title }}">
+								{% for subcat in cat.children %}
+									<option {% if ticket.category.id == subcat.id %}selected="selected"{% endif %} value="{{ subcat.id }}" data-full-title="{{ cat.title }} &gt; {{ subcat.title }}">{{ subcat.title }}</option>
+								{% endfor %}
+							</optgroup>
+						{% else %}
+							<option {% if ticket.category.id == cat.id %}selected="selected"{% endif %} value="{{ cat.id }}">{{ "--"|repeat(cat.depth) }} {{ cat.title }}</option>
+						{% endif %}
 					{% endfor %}
 				</select>
 			</td>
@@ -68,10 +73,15 @@
 				<select name="ticket[product_id]" id="{{baseId}}_ticket_product_id" data-prop-id="product" class="prop-input-product">
 					<option value="0">{{ phrase('agent.general.none') }}</option>
 					{% for prod in ticket_options.products_hierarchy %}
-						<option {% if ticket.product.id == prod.id %}selected="selected"{% endif %} value="{{ prod.id }}">{{ prod.title }}</option>
-						{% for subprod in prod.children %}
-							<option {% if ticket.product.id == subprod.id %}selected="selected"{% endif %} value="{{ subprod.id }}">-- {{ subprod.title }}</option>
-						{% endfor %}
+						{% if prod.children|length %}
+							<optgroup label="{{ prod.title }}">
+								{% for subprod in prod.children %}
+									<option {% if ticket.product.id == subprod.id %}selected="selected"{% endif %} data-full-title="{{ prod.title }} &gt; {{ subprod.title }}" value="{{ subprod.id }}">{{ subprod.title }}</option>
+								{% endfor %}
+							</optgroup>
+						{% else %}
+							<option {% if ticket.product.id == prod.id %}selected="selected"{% endif %} value="{{ prod.id }}">{{ prod.title }}</option>
+						{% endif %}
 					{% endfor %}
 				</select>
 			</td>
