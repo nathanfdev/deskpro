@@ -37,10 +37,12 @@ namespace Application\UserBundle\Validator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
+use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
-class NewCommentValidator extends AbstractValidator
+class NewCommentValidator extends AbstractValidator implements PersonContextInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Comments\NewComment
@@ -50,13 +52,21 @@ class NewCommentValidator extends AbstractValidator
 	/**
 	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
 	 */
-	protected $captca;
+	protected $captcha;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	public function setPersonContext(Entity\Person $person)
+	{
+		$this->person_context = $person;
+	}
 
 	public function init()
 	{
-		if (App::getSetting('user.publish_captcha')) {
-			$this->captca = App::getSystemObject('form_captcha', array('type' => 'new_comment'));
-		}
+
 	}
 
 	/**
@@ -64,7 +74,7 @@ class NewCommentValidator extends AbstractValidator
 	 */
 	public function setCaptcha(CaptchaAbstract $captcha)
 	{
-		$this->captca = $captcha;
+		$this->captcha = $captcha;
 	}
 
 	/**
@@ -75,6 +85,14 @@ class NewCommentValidator extends AbstractValidator
 	 */
 	protected function checkIsValid($newcomment)
 	{
+		if (!$this->captcha) {
+			if (App::getSetting('user.publish_captcha')) {
+				if ($this->person_context && (!$this->person_context->getId() || App::getSetting('user.always_show_captcha'))) {
+					$this->captcha = App::getSystemObject('form_captcha', array('type' => 'new_comment'));
+				}
+			}
+		}
+
 		$this->newcomment = $newcomment;
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 3));
@@ -94,11 +112,11 @@ class NewCommentValidator extends AbstractValidator
 			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->newcomment->email)) {
 				$this->addError('email.invalid');
 			}
+		}
 
-			if ($this->captca) {
-				if (!$this->captca->validate()) {
-					$this->addError('captcha.invalid');
-				}
+		if ($this->captcha) {
+			if (!$this->captcha->validate()) {
+				$this->addError('captcha.invalid');
 			}
 		}
 

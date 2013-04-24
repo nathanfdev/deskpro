@@ -16,5 +16,7 @@
 	'user.show_num_votes' => false,
 	'user.publish_captcha' => true,
 	'user.publish_comments' => true,
-	'user.register_captcha' => true
+	'user.register_captcha' => true,
+	'user.always_show_captcha' => false,
+	'user.feedback_notify_comments' => true,
 );

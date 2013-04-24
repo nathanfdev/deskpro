@@ -290,6 +290,7 @@ class DownloadsController extends AbstractController
 		$newcomment_formtype = new NewCommentFormType($this->person);
 		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
 		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
+		$validator->setPersonContext($this->person);
 
 		if ($this->get('request')->getMethod() == 'POST') {
 

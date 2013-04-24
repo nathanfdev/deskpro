@@ -264,6 +264,14 @@
 			<input type="hidden" name="set_settings_falseable[]" value="user.publish_captcha" />
 			<label><input type="checkbox" name="settings[user.publish_captcha]" {% if app.getSetting('user.publish_captcha') %}checked="checked"{% endif %} /> Enable captcha on new feedback and new comment forms</label>
 		</div>
+		<div class="field_row">
+			<input type="hidden" name="set_settings_falseable[]" value="user.always_show_captcha" />
+			<label><input type="checkbox" name="settings[user.always_show_captcha]" {% if app.getSetting('user.always_show_captcha') %}checked="checked"{% endif %} /> Always show captcha even when user is logged in</label>
+		</div>
+		<div class="field_row">
+			<input type="hidden" name="set_settings_falseable[]" value="user.feedback_notify_comments" />
+			<label><input type="checkbox" name="settings[user.feedback_notify_comments]" {% if app.getSetting('user.feedback_notify_comments') %}checked="checked"{% endif %} /> Notify users participating in Feedback posts when a new comment is added</label>
+		</div>
 
 		<div class="field_row">
 			<label>Google Analytics Tracking ID</label>

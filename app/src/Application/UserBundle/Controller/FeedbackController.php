@@ -121,7 +121,7 @@ class FeedbackController extends AbstractController
 
 		$captcha = null;
 		$captcha_html = '';
-		if ($this->container->getSetting('user.publish_captcha') && !$this->person->getId()) {
+		if ($this->container->getSetting('user.publish_captcha') && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId())) {
 			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
 			$captcha_html = $captcha->getHtml();
 		}
@@ -526,6 +526,7 @@ class FeedbackController extends AbstractController
 		$newcomment_formtype = new NewCommentFormType($this->person);
 		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
 		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
+		$validator->setPersonContext($this->person);
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			if (!$this->consumeRequest('newcomment_feedback')) {

@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Feedback;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Feedback;
@@ -128,6 +129,10 @@ class FeedbackCommenting implements PersonContextInterface
 	 */
 	public function newCommentNotify(FeedbackComment $comment)
 	{
+		if (!App::getSetting('user.feedback_notify_comments')) {
+			return;
+		}
+
 		$feedback = $comment->feedback;
 
 		$to_people_ids = array();
