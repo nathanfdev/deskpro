@@ -413,7 +413,7 @@ class KernelErrorHandler
 					$message->setTo(DP_TECHNICAL_EMAIL);
 					$message->setSubject($line);
 
-					$email_str = nl2br(htmlspecialchars($email_str, 'UTF-8'));
+					$email_str = nl2br(htmlspecialchars($email_str, \ENT_QUOTES, 'UTF-8'));
 					$message->setBody($email_str, 'text/html');
 
 					if (isset($errinfo['attach_logs']) && $errinfo['attach_logs']) {
