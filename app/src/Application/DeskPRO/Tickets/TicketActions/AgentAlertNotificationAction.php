@@ -155,7 +155,15 @@ class AgentAlertNotificationAction extends AbstractAction
 		$this->tracker->logMessage("[AgentAlertNotificationAction] Matching agents: " . implode(', ', $this->notify_agents));
 		$this->tracker->logMessage("[AgentAlertNotificationAction] Online agents: " . implode(', ', $online_agents));
 
-		$notify_list = array_filter($this->notify_agents, function($agent_id) use ($online_agents) {
+		// Dont send an update notification to the agent for agent replies made by themselves
+		$new_agent_reply = $this->tracker->getNewAgentReply();
+
+		$notify_list = array_filter($this->notify_agents, function($agent_id) use ($online_agents, $new_agent_reply) {
+			if ($new_agent_reply) {
+				if ($new_agent_reply->person->getId() == $agent_id && !$new_agent_reply->person->getPref("agent_notify_override.all.email")) {
+					return false;
+				}
+			}
 			return isset($online_agents[$agent_id]);
 		});
 
