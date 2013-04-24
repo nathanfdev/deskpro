@@ -151,7 +151,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					obj.addBtnSeparatorAfter('dp_attach');
 					obj.addBtnSeparatorAfter('dp_snippets');
 					obj.addBtnSeparatorAfter('horizontalrule');
-					obj.addBtnSeparatorAfter('dp_end_chat');
 
 					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
 					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
