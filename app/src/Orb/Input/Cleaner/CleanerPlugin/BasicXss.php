@@ -175,7 +175,10 @@ class BasicXss implements CleanerPlugin
 				// replace illegal attribute strings that are inside an html tag
 				if (count($attribs) > 0)
 				{
-					$value = preg_replace("/<(\/?[^><]+?)([^A-Za-z\-])(".implode('|', $attribs).")([\s><])([><]*)/i", '<$1$2$4$5', $value, -1, $count);
+					$attribs_chunks = array_chunk($attribs, 2);
+					foreach ($attribs_chunks as $attribs_chunk) {
+						$value = preg_replace("/<(\/?[^><]+?)([^A-Za-z\-])(".implode('|', $attribs_chunk).")([\s><])([><]*)/i", '<$1$2$4$5', $value, -1, $count);
+					}
 				}
 
 			} while ($count);
