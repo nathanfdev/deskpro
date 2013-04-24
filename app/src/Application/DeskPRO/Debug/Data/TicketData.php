@@ -68,16 +68,16 @@ class TicketData implements DataInterface
 
 			$data['email_sources'] = array();
 			foreach ($sources as $source) {
-				$source = $source->getRawSource();
-				if (isset($source[2097152])) {
-					$source = substr($source, 0, 2097152);
-					$source .= "\n(Clipped)";
+				$raw_source = $source->getRawSource();
+				if (isset($raw_source[2097152])) {
+					$raw_source = substr($raw_source, 0, 2097152);
+					$raw_source .= "\n(Clipped)";
 				}
 
 				$data['email_sources'][] = array(
-					'id' => $source->id,
-					'source_info' => $source->source_info ? $source->getSourceInfoAsString : '',
-					'source' => $source
+					'id'          => $source->id,
+					'source_info' => $source->source_info ? $source->getSourceInfoAsString() : '',
+					'source'      => $raw_source
 				);
 			}
 		}
