@@ -1012,6 +1012,14 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		if ($person->is_agent) {
+			return $this->createJsonResponse(array(
+				'error'      => true,
+				'error_code' => 'is_agent',
+				'cc_list'    => $this->_getTicketCcList($ticket)
+			));
+		}
+
 		if ($person->id) {
 			if ($ticket->hasParticipantPerson($person) || $ticket->person->getId() == $person->getId()) {
 				return $this->createJsonResponse(array(

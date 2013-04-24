@@ -70,6 +70,11 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 								DeskPRO_Window.showAlert('Please enter a valid email address');
 							} else if (data.error_code == 'invalid_email_gatewayaccount') {
 								DeskPRO_Window.showAlert('The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot add email accounts as CCs.');
+							} else if (data.error_code == 'is_agent') {
+								DeskPRO_Window.showAlert('The user you specified is an agent. To add an agent to this ticket, use the "Add a follower" button in the Properties box.');
+								self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
+									$(this).empty().html(data.cc_list || '');
+								});
 							}
 							return;
 						}
