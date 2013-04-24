@@ -117,7 +117,7 @@ class DbLoader implements LoaderInterface
 				SELECT name, phrase, original_phrase
 				FROM phrases
 				WHERE
-					(language_id IN ($lang_in) AND groupname LIKE 'user.%')
+					(language_id IN ($lang_in) AND groupname LIKE 'agent.%' OR groupname LIKE 'user.%')
 					OR (language_id IN ($specific_lang_ids) AND groupname LIKE \"obj_%\" OR groupname = \"custom\")
 				ORDER BY language_id ASC
 			";
