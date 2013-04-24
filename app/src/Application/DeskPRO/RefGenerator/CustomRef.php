@@ -155,7 +155,7 @@ class CustomRef implements RefGeneratorInterface
 		$field = 'ref';
 
 		$stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
-		$stmt2 = $this->db->prepare("SELECT COUNT(*) FROM `tmp_data` WHERE `name` = ? LIMIT 1");
+		$stmt2 = $this->db->prepare("SELECT COUNT(*) FROM `ref_reserve` WHERE `obj_type` = ? AND `ref` = ?");
 
 		$attempt = 0;
 		$append_count = 0;
@@ -184,37 +184,39 @@ class CustomRef implements RefGeneratorInterface
 			}
 		}
 
-		do {
-			$attempt++;
-			$append_count++;
+		while (true) {
+			do {
+				$attempt++;
+				$append_count++;
 
-			if ($attempt > $this->max_tries) {
-				throw new \Exception("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
+				if ($attempt > $this->max_tries) {
+					throw new \Exception("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
+				}
+
+				if ($attempt > $this->max_tries-5) {
+					// Last five allowed attempts, fallback to trying random nums at the end
+					$ref = $this->generateRefString($append_count . mt_rand(1000,9999));
+				} else {
+					$ref = $this->generateRefString($append_count);
+				}
+
+				$stmt->execute(array($ref));
+				$count = $stmt->fetchColumn();
+
+				$stmt2->execute(array($table, $ref));
+				$count2 = $stmt2->fetchColumn();
+			} while ($count > 0 || $count2 > 0);
+
+			try {
+				$this->db->insert('ref_reserve', array(
+					'obj_type' => $table,
+					'ref'      => $ref,
+				));
+				break;
+			} catch (\Exception $e) {
+				// Try again..
 			}
-
-			if ($attempt > $this->max_tries-5) {
-				// Last five allowed attempts, fallback to trying random nums at the end
-				$ref = $this->generateRefString($append_count . mt_rand(1000,9999));
-			} else {
-				$ref = $this->generateRefString($append_count);
-			}
-
-			$stmt->execute(array($ref));
-			$count = $stmt->fetchColumn();
-
-			$stmt2->execute(array("$table.ref.$ref"));
-			$count2 = $stmt2->fetchColumn();
-		} while ($count > 0 || $count2 > 0);
-
-		// Insert into tmp_data to reserve the ref,
-		// prevents most races due to the new record usually not being inserted right away
-		$this->db->insert('tmp_data', array(
-			'name'          => "$table.ref.$ref",
-			'auth'          => '000000000000000',
-			'data'          => '1',
-			'date_created'  => date('Y-m-d H:i:s'),
-			'date_expire'   => date('Y-m-d H:i:s', time() + 10),
-		));
+		}
 
 		return $ref;
 	}

@@ -147,6 +147,14 @@ class GenerateSchema
 		#------------------------------
 
 		$all_sql[] = <<<SQL
+CREATE TABLE `ref_reserve` (
+  `obj_type` varchar(50) NOT NULL,
+  `ref` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`obj_type`,`ref`)
+) ENGINE=MyISAM
+SQL;
+
+		$all_sql[] = <<<SQL
 CREATE TABLE `content_search` (
   `object_type` varchar(15) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL,
