@@ -755,12 +755,7 @@ class KernelErrorHandler
 			|| strpos($errstr, 'SSL: Broken pipe') !== false
 			|| strpos($errstr, 'errno=32 Broken pipe')
 			|| strpos($errstr, 'SSL: An established connection was aborted') !== false
-			|| strpos($errstr, 'fsockopen(): unable to connect to') !== false
-			|| strpos($errstr, 'fsockopen(): unable to connect to') !== false
-			|| strpos($errstr, 'fsockopen(): SSL: crypto enabling timeout') !== false
-			|| strpos($errstr, 'fsockopen(): Failed to enable crypto') !== false
-			|| strpos($errstr, 'fsockopen(): php_network_getaddresses: getaddrinfo failed') !== false
-			|| strpos($errstr, 'fsockopen(): SSL: connection timeout') !== false
+			|| strpos($errstr, 'fsockopen():') !== false
 		) {
 			$no_send_error = true;
 		}
