@@ -48,4 +48,5 @@ Before our agents will read and reply to your message, you must validate your em
 	'user.emails.reject_resolved'             => 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.',
 	'user.emails.reject_resolved-new'         => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a> or you can submit our online form at:<br/><a href="{{link}}">{{link}}</a>',
 	'user.emails.reject_resolved-newemail'    => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a>',
+	'user.emails.email-too-big'               => 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size this helpdesk accepts is {{max_size}}. Remove any attachments and try again.'
 );

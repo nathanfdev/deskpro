@@ -36,6 +36,7 @@ namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -73,6 +74,15 @@ class SettingsController extends AbstractController
 				$url = 'http://' . $url;
 			}
 
+			$gateway_max_email = intval(@$_POST['settings']['core.gateway_max_email']);
+			if (!$gateway_max_email || $gateway_max_email < 1 || $gateway_max_email == 20) {
+				$gateway_max_email = 0;
+			}
+
+			if ($gateway_max_email) {
+				$gateway_max_email = Numbers::parseIniSize($gateway_max_email . 'M');
+			}
+
 			$update_settings = $this->in->getCleanValueArray('settings', 'string', 'str_simple');
 			$update_settings = array_merge($update_settings, array(
 				'core.deskpro_name'            => $_POST['settings']['core.deskpro_name'],
@@ -97,6 +107,8 @@ class SettingsController extends AbstractController
 				'core.attach_user_not_exts'    => $format_exts($_POST['settings']['core.attach_user_not_exts']),
 
 				'core.sendemail_attach_maxsize' => (int)$_POST['settings']['core.sendemail_attach_maxsize'],
+
+				'core.gateway_max_email' => $gateway_max_email,
 
 				'core.date_fulltime'    => $_POST['settings']['core.date_fulltime'],
 				'core.date_full'    => $_POST['settings']['core.date_full'],

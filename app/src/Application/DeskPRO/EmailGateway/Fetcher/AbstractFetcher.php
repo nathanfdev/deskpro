@@ -75,12 +75,27 @@ abstract class AbstractFetcher
 		$this->gateway = $gateway;
 		$this->logger = new Logger();
 		$this->setMaxSize($max_size);
+		$this->init();
 	}
+
+	protected function init() {}
 
 	public function __destruct()
 	{
 		if ($this->storage) {
 			try { $this->storage->close(); } catch (\Exception $e) {}
+		}
+	}
+
+	/**
+	 * Closes the connection
+	 */
+	protected function _closeConnection()
+	{
+		if ($this->storage) {
+			try {
+				$this->storage->close();
+			} catch (\Exception $e) {}
 		}
 	}
 
@@ -110,8 +125,13 @@ abstract class AbstractFetcher
 	/**
 	 * @return mixed
 	 */
-	public function getStorage()
+	public function getStorage($reconnect = false)
 	{
+		if ($reconnect && $this->storage) {
+			$this->_closeConnection();
+			$this->storage = null;
+		}
+
 		if (!$this->storage) {
 			$this->storage = $this->_initConnection();
 		}

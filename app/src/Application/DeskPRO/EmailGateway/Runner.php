@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 /**
@@ -411,7 +412,12 @@ class Runner
 		/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
 		$fetcher = $gateway->getFetcher();
 		$fetcher->setLogger($this->logger);
-		$fetcher->setMaxSize(App::getSetting('core.gateway_max_email'));
+
+		$max_size = App::getSetting('core.gateway_max_email');
+		if (!$max_size) {
+			$max_size = 20971520;
+		}
+		$fetcher->setMaxSize($max_size);
 
 		$exec_start = time();
 		$source = null;
@@ -487,6 +493,27 @@ class Runner
 			// process it through the gateway handlers
 			if ($source->status == 'error') {
 				$this->logger->log(sprintf("Source marked as error :: %s", $source->error_code), 'debug');
+
+				// Send alert to user
+				if ($source->error_code == EmailSource::ERR_MESSAGE_TOO_BIG) {
+					$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+					$reader->setRawSource($source->headers . "\n\nBogus Body\n");
+					$from_email = $reader->getFromAddress()->getEmail();
+					$subject    = $reader->getSubject()->getSubjectUtf8();
+
+					if ($from_email and $subject) {
+						$this->logger->log('Sending too-big email response', 'debug');
+
+						$message = App::getMailer()->createMessage();
+						$message->setTemplate('DeskPRO:emails_user:email-too-big.html.twig', array(
+							'subject'  => $subject,
+							'max_size' => Numbers::filesizeDisplay($max_size)
+						));
+						$message->setTo($from_email);
+						App::getMailer()->send($message);
+					}
+				}
+
 				continue;
 			}
 

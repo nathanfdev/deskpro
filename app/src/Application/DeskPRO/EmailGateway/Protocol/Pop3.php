@@ -54,6 +54,15 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 	 */
 	protected $stream_timeout = 15;
 
+
+	/**
+	 * @param string $host
+	 * @param null $port
+	 * @param bool $ssl
+	 * @param Logger $logger
+	 * @param int $connect_timeout
+	 * @param int $stream_timeout
+	 */
 	public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null, $connect_timeout = 8, $stream_timeout = 15)
 	{
 		$this->logger = $logger;
@@ -62,6 +71,14 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 		parent::__construct($host, $port, $ssl);
 	}
 
+
+	/**
+	 * @param string $host
+	 * @param null $port
+	 * @param bool $ssl
+	 * @return string
+	 * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+	 */
 	public function connect($host, $port = null, $ssl = false)
     {
         if ($ssl == 'SSL') {
@@ -101,11 +118,49 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
         return $welcome;
     }
 
+
+	/**
+	 * @param Logger $logger
+	 */
 	public function setLogger(Logger $logger = null)
 	{
 		$this->logger = $logger;
 	}
 
+
+	/**
+     * Make a RETR call for retrieving a full message with headers and body
+     *
+     * @param  int $msgno  message number
+     * @return string message
+     */
+    public function retrieveToStream($msgno, $stream)
+    {
+        $result = $this->requestToStream("RETR $msgno", $stream);
+        return $result;
+    }
+
+
+	/**
+     * Send request and get resposne
+     *
+     * @see sendRequest(), readResponse()
+     *
+     * @param  string $request    request
+     * @param  resource $stream stream
+     * @return int Number of bytes read to stream
+     */
+    public function requestToStream($request, $stream)
+    {
+        $this->sendRequest($request);
+        return $this->readResponseToStream($stream);
+    }
+
+
+	/**
+	 * @param string $request
+	 * @return null
+	 */
 	public function sendRequest($request)
 	{
 		if ($this->logger) {
@@ -119,6 +174,12 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 		return parent::sendRequest($request);
 	}
 
+
+	/**
+	 * @param bool $multiline
+	 * @return string
+	 * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+	 */
 	public function readResponse($multiline = false)
 	{
 		$result = @fgets($this->_socket);
@@ -150,7 +211,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
                 }
                 $message .= $line;
                 $line = fgets($this->_socket);
-				if ($this->logger && !isset($log_msg[1000])) {
+				if ($this->logger && !isset($log_msg[350])) {
 					$log_msg .= $line;
 				}
             }
@@ -158,5 +219,51 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
         }
 
         return $message;
+	}
+
+
+	/**
+	 * This reads a multi-line response to a stream and returns the number of bytes read.
+	 *
+	 * @param $stream
+	 * @return int
+	 * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+	 */
+	public function readResponseToStream($stream)
+	{
+		$result = @fgets($this->_socket);
+        if (!is_string($result)) {
+			if ($this->logger) $this->logger->logDebug("[Response] read failed - connection closed?");
+            throw new Exception\RuntimeException('read failed - connection closed?');
+        }
+
+        $result = trim($result);
+        if (strpos($result, ' ')) {
+            list($status, ) = explode(' ', $result, 2);
+        } else {
+            $status = $result;
+        }
+
+        if ($status != '+OK') {
+			if ($this->logger) $this->logger->logDebug("[Response] $status");
+            throw new Exception\RuntimeException('last request failed');
+        }
+
+		$bytes = 0;
+		$line = fgets($this->_socket);
+		$log_msg = '';
+		while ($line && rtrim($line, "\r\n") != '.') {
+			if ($line[0] == '.') {
+				$line = substr($line, 1);
+			}
+			$bytes += fwrite($stream, $line);
+			$line = fgets($this->_socket);
+			if ($this->logger && !isset($log_msg[350])) {
+				$log_msg .= $line;
+			}
+		}
+		if ($this->logger) $this->logger->logDebug("[Response] $status $log_msg");
+
+        return $bytes;
 	}
 }

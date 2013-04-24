@@ -35,6 +35,9 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Numbers;
+use Zend\Mail\Protocol\Exception\RuntimeException;
 
 /**
  * Fetches mail from a pop3 server
@@ -52,6 +55,44 @@ class Pop3 extends AbstractFetcher
 	 * @var array
 	 */
 	protected $message_list_ids = array();
+
+	/**
+	 * @var array
+	 */
+	protected $message_files = array();
+
+	/**
+	 * The size in bytes a message must be before the "memory protection"
+	 * features are enabled.
+	 *
+	 * @var int
+	 */
+	protected $memory_protection_size = 0;
+
+	/**
+	 * @var bool
+	 */
+	protected $done_read_finished = false;
+
+	/**
+	 * Files written as part of the memory protection.
+	 * These should be removed after a successful read.
+	 *
+	 * @var array
+	 */
+	protected $backup_file = array();
+
+	public function init()
+	{
+		$m_limit = @ini_get('memory_limit');
+		if ($m_limit && $m_limit != '-1' && $m_limit != '0') {
+			$m_limit = Numbers::parseIniSize($m_limit);
+			$m_limit /= 2.5;
+
+			$m_limit = max(20, $m_limit);
+			$this->memory_protection_size = $m_limit;
+		}
+	}
 
 	/**
 	 * Initiates the connection
@@ -85,6 +126,13 @@ class Pop3 extends AbstractFetcher
 			$this->storage->close();
 			$this->storage = null;
 		}
+	}
+
+	public function resetConnection()
+	{
+		$this->logger->logDebug('Resetting connection');
+		$this->getStorage(true);
+		$this->_initMessageList(true);
 	}
 
 	/**
@@ -196,6 +244,8 @@ class Pop3 extends AbstractFetcher
 	 */
 	protected function _readNext()
 	{
+		$this->done_read_finished = null;
+
 		$this->getStorage();
 		$this->_initMessageList();
 
@@ -210,6 +260,15 @@ class Pop3 extends AbstractFetcher
 		$message_size = $next['size'];
 		$message_num  = $next['num'];
 		$message_id   = $next['uid'];
+
+		// Memory protection enables writing the email to a file and then immediately
+		// deleting it from the server (which causes a server disconnect/reconnect).
+		// So if theres a crash, the same message wont be attempted next run and hold
+		// up all other messages.
+		$memory_protection = false;
+		if ($this->memory_protection_size && $message_size >= $this->memory_protection_size) {
+			$memory_protection = true;
+		}
 
 		if (!$message_id && $this->canUniqueId()) {
 			try {
@@ -229,7 +288,33 @@ class Pop3 extends AbstractFetcher
 		if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
 			$raw_message->content = $this->getStorage()->getProtocol()->top($message_num) . "\n\n";
 		} else {
-			$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
+			if ($memory_protection) {
+				$this->logger->logInfo('Memory protected enabled');
+				$content_file = dp_get_backup_dir() . '/eml-' . uniqid('', true) . '.eml';
+				$fp = fopen($content_file, 'w');
+				if ($fp) {
+					$this->getStorage()->getProtocol()->retrieveToStream($message_num, $fp);
+					fclose($fp);
+
+					$this->_doneRead($message_num);
+					$this->done_read_finished = $message_num;
+
+					// Disconnect from server so message is deleted now
+					$this->resetConnection();
+				} else {
+					$memory_protection = false;
+					$e = new \RuntimeException("Could not save email backup file to {$raw_message->content_file}");
+					KernelErrorHandler::logException($e, false);
+				}
+
+				$this->logger->logInfo('Message source saved to: ' . $content_file);
+				$raw_message->content = file_get_contents($content_file);
+				$this->backup_file = $content_file;
+			}
+
+			if (!$memory_protection) {
+				$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
+			}
 		}
 		$headers = null;
 
@@ -273,6 +358,15 @@ class Pop3 extends AbstractFetcher
 	 */
 	protected function _doneRead($id)
 	{
+		if ($this->backup_file) {
+			unlink($this->backup_file);
+			$this->backup_file = null;
+		}
+
+		if ($this->done_read_finished !== null && $this->done_read_finished == $id) {
+			return;
+		}
+
 		if ($this->gateway->keep_read) {
 			$this->logger->log(sprintf("Done read, but keep_read is enabled"), 'debug');
 			return;

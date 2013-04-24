@@ -73,12 +73,16 @@
 
 {% if not app.isCloud() %}
 	<div class="setting_field_row">
-		<h4>Outgoing Email</h4>
+		<h4>Email</h4>
 		<div class="setting_fields">
 			<div class="field_row">
 				Default mail sent from {{ app.getSetting('core.default_from_email') }} (via {{ outgoing_email.title }}).
 				<br />
 				<a class="clean-white" href="{{ path('admin_emailtrans_setup') }}">Edit outgoing mail account &rarr;</a>
+			</div>
+			<div class="field_row">
+				<label>Max incoming email size for emails sent to a <a href="{{ path('admin_emailgateways') }}">ticket account</a>:</label>
+				<input type="text" name="settings[core.gateway_max_email]" value="{% if not app.getSetting('core.gateway_max_email') %}20{% else %}{{ app.getSetting('core.gateway_max_email') / 1024 / 1024 }}{% endif %}" size="10" /> megabytes
 			</div>
 		</div>
 	</div>

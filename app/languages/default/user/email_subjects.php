@@ -18,4 +18,5 @@
 	'user.email_subjects.validate-email'           => 'Validate your email address',
 	'user.email_subjects.ticket-rate'              => 'Rate your support experience on your ticket "{{ticket.subject}}"',
 	'user.email_subjects.register-welcome'         => 'Thank you for registering',
+	'user.email_subjects.email-too-big'            => 'Your email "{{subject}}" was not accepted'
 );
