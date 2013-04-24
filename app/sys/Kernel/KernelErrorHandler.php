@@ -610,28 +610,37 @@ class KernelErrorHandler
 			return true;
 		}
 
-		if ($exception instanceof \PDOException && strpos($exception->getFile(), 'DbTablePhpPasswordCheck.php') !== false) {
-			return true;
-		}
+		if ($exception instanceof \PDOException) {
+			if (strpos($exception->getFile(), 'DbTablePhpPasswordCheck.php') !== false) {
+				return true;
+			}
 
-		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'Incorrect key file for table') !== false) {
-			return true;
-		}
+			if (strpos($exception->getMessage(), 'Incorrect key file for table') !== false) {
+				return true;
+			}
 
-		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'A connection attempt failed') !== false) {
-			return true;
-		}
+			if (strpos($exception->getMessage(), 'A connection attempt failed') !== false) {
+				return true;
+			}
 
-		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'No connection could be made') !== false) {
-			return true;
-		}
+			if (strpos($exception->getMessage(), 'No connection could be made') !== false) {
+				return true;
+			}
 
-		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'Got error 28 from storage engine') !== false) {
-			return true;
-		}
+			// disk is full
+			if (strpos($exception->getMessage(), 'Got error 28 from storage engine') !== false) {
+				return true;
+			}
 
-		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'Got error -1 from storage engine') !== false) {
-			return true;
+			// innodb error, probably during recovery of disk issue
+			if (strpos($exception->getMessage(), 'Got error -1 from storage engine') !== false) {
+				return true;
+			}
+
+			// table is full
+			if (strpos($exception->getMessage(), 'General error: 1114 The table') !== false) {
+				return true;
+			}
 		}
 
 		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
