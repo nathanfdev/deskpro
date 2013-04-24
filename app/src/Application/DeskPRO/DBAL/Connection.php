@@ -449,7 +449,7 @@ class Connection extends \Doctrine\DBAL\Connection
 		} catch (\PDOException $e) {
 
 			if ($is_retry <= 2 && stripos($e->getMessage(), 'deadlock') !== false) {
-				usleep(333333);
+				usleep(500000);
 				return $this->executeUpdate($query, $params, $types, $is_retry+1);
 			}
 
