@@ -388,7 +388,7 @@ class TicketController extends AbstractController
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 
-		$ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket, $p);
+		$ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
 
 		return $ticket_perms;
 	}
