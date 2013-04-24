@@ -618,6 +618,10 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \PDOException && strpos($exception->getMessage(), 'A connection attempt failed') !== false) {
+			return true;
+		}
+
 		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
 			return true;
 		}
