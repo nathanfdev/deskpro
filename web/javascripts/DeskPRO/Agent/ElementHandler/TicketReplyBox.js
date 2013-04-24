@@ -469,7 +469,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						textarea.data('redactor').restoreSelection();
 					} catch (e) {}
 					textarea.data('redactor').setBuffer();
-					textarea.data('redactor').insertHtml(info.snippetHtml);
+					var html = info.snippetHtml;
+					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+					html = html.replace(/^<p>/, '');
+					html = html.replace(/<\/p>$/, '');
+					textarea.data('redactor').insertHtml(html);
 				} else {
 					self.page.insertTextInReply(info.snippet);
 				}
