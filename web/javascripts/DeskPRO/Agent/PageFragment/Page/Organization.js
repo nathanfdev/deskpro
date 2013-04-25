@@ -266,7 +266,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 			var done = function() {
 				var val = inputTxt.val();
-				label.text(val);
+				if (val) {
+					label.text(val);
+				} else {
+					label.empty().append($('<span style="font-size: 11px; color: #959595;">No position set</span>'));
+				}
 
 				input.fadeOut('fast', function() {
 					label.fadeIn('fast');
