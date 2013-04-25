@@ -98,7 +98,7 @@ var ticketReader = {
 	 # Email
 	 ###############}
 
-	<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+	<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}" {% if hide_email_field and not error_fields[form_key_prefix ~ 'email'] %}style="display:none;"{% endif %}>
 		<div class="dp-control-label">
 			<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
 		</div>

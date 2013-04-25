@@ -72,6 +72,17 @@ class NewTicketController extends AbstractController
 		);
 		$newticket->setPersonContext($this->person);
 
+		$hide_name_field  = false;
+		$hide_email_field = false;
+		if ($this->in->getString('default_user_name')) {
+			$newticket->person->name = $this->in->getString('default_user_name');
+			$hide_name_field = true;
+		}
+		if ($this->in->getString('default_user_email')) {
+			$newticket->person->email = $this->in->getString('default_user_email');
+			$hide_email_field = true;
+		}
+
 		if ($website_url) {
 			$newticket->creation_system_option = $website_url;
 		}
@@ -275,6 +286,9 @@ class NewTicketController extends AbstractController
 
 			'redirect_after' => $redirect_after,
 			'website_url' => $website_url,
+
+			'hide_name_field'  => $hide_name_field,
+			'hide_email_field' => $hide_email_field,
 		));
     }
 

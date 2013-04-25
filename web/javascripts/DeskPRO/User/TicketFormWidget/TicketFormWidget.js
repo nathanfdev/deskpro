@@ -23,7 +23,9 @@ var TicketFormWidget = new (function() {
 		initialHeight:  DpNewTicket_Options.initialHeight || 500,
 		departmentId:   DpNewTicket_Options.departmentId  || 0,
 		containerId:    DpNewTicket_Options.containerId   || 'dp_newticket_form',
-		languageId:     DpNewTicket_Options.languageId    || 0
+		languageId:     DpNewTicket_Options.languageId    || 0,
+		formUserName:   DpNewTicket_Options.formUserName  || false,
+		formUserEmail:  DpNewTicket_Options.formUserEmail || false
 	};
 
 	var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
@@ -102,6 +104,12 @@ var TicketFormWidget = new (function() {
 		src += '?website_url=' + encodeURIComponent(window.location + '')
 		if (options.languageId) {
 			src += '&language_id=' + options.languageId
+		}
+		if (options.formUserName) {
+			src += '&default_user_name=' + encodeURIComponent(options.formUserName);
+		}
+		if (options.formUserEmail) {
+			src += '&default_user_email=' + encodeURIComponent(options.formUserEmail);
 		}
 		src += '#' + encodeURIComponent(document.location.href);
 

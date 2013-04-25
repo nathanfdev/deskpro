@@ -13,6 +13,18 @@
      */
     DpNewTicket_Options.languageId = 0;
 
+	/**
+     * If the user name is already known, you can set it here.
+     * When set, the name field is hidden in the form.
+     */
+    DpNewTicket_Options.formUserName = '';
+
+    /**
+     * If the user email is already known, you can set it here.
+     * When set, the email field is hidden in the form.
+     */
+    DpNewTicket_Options.formUserEmail = '';
+
 	if (document.getElementsByTagName) {
 		(function() {
 			var scr   = document.createElement('script');
