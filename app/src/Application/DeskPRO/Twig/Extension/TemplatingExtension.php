@@ -174,6 +174,7 @@ class TemplatingExtension extends \Twig_Extension
 
 			'trans'                  => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
 			'transchoice'            => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
+			'plain_template_filter'  => new \Twig_Filter_Method($this, 'plain_template_filter'),
 
 			// Override for custom UTF-8 handling
 			'upper'                  => new \Twig_Filter_Method($this, 'strUpper'),
@@ -1360,6 +1361,13 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$args = func_get_args();
 		return call_user_func_array('max', $args);
+	}
+
+	public function plain_template_filter($content)
+	{
+		$content = preg_replace('#<\s*script#i', '<deskpro_script', $content);
+		$content = preg_replace('#<\s*/\s*script#i', '</deskpro_script', $content);
+		return $content;
 	}
 }
 

@@ -21,6 +21,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			pageUrl: '',
 
 			/**
+			 * Optionally an ID on the page with the prelaoded content
+			 */
+			preloadId: null,
+
+			/**
 			 * Callback method for loading the page instead of using default ajax loader.
 			 */
 			pageCallback: null,
@@ -100,6 +105,19 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this.autoloadTimeout) {
 			window.clearTimeout(this.autoloadTimeout);
 			this.autoloadTimeout = null;
+		}
+
+		if (this.options.preloadId) {
+			preloadEl = document.getElementById(this.options.preloadId);
+			if (preloadEl) {
+				var content = preloadEl.innerHTML;
+				preloadEl.parentNode.removeChild(preloadEl);
+				content = content.replace(/<deskpro_script/g, '<script');
+				content = content.replace(/<\/deskpro_script/g, '</script');
+				this._isLoading = false;
+				this.setHtml(content);
+				return;
+			}
 		}
 
 		this.loadingAjax = $.ajax({

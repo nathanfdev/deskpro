@@ -19,6 +19,10 @@
 	{% endif %}
 {% endmacro %}
 
+{% macro preload_content(id, content) %}
+	{% if content %}<script type="text/x-deskpro-plain" id="{{ id }}">{{ content|plain_template_filter|raw }}</script>{% endif %}
+{% endmacro %}
+
 {% macro scroll_containers(addclass, outOfScrollArea) %}
 	<div class="layout-content with-scrollbar {{ addclass }}">
 	{{ outOfScrollArea }}

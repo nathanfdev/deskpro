@@ -1425,6 +1425,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
+		if (el.data('route-preload-id')) {
+			extraData.preloadId = el.data('route-preload-id');
+		}
+
 		this.runPageRoute(el.data('route'), extraData);
 	},
 
@@ -1561,7 +1565,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			routeData.routeTriggerEl.addClass(routeData.toggleOpenClass);
 		}
 
-		this._doAjaxLoadRoute(url, routeData, (function(data) {
+		var successFn = (function(data) {
 			try {
 				var page = this.createPageFragment(data);
 			} catch (e) {
@@ -1586,7 +1590,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.addPageTab(page);
 
 			if (callback) callback(page);
-		}).bind(this));
+		}).bind(this);
+
+		if (routeData.preloadId) {
+			preloadEl = document.getElementById(routeData.preloadId);
+			if (preloadEl) {
+				var content = preloadEl.innerHTML;
+				preloadEl.parentNode.removeChild(preloadEl);
+				content = content.replace(/<deskpro_script/g, '<script');
+				content = content.replace(/<\/deskpro_script/g, '</script');
+				successFn(content);
+				return;
+			}
+		}
+
+		this._doAjaxLoadRoute(url, routeData, successFn);
 	},
 
 
@@ -2725,12 +2743,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var route = el.data('route');
 		var routeData = self.parseRoute(route);
+
+		if (el.data('route-preload-id')) {
+			routeData.preloadId = el.data('route-preload-id');
+		}
+
 		var popover;
 
 		if (!popover_inited[route]) {
 
 			popover = new DeskPRO.Agent.PageHelper.Popover({
 				pageUrl: routeData.url,
+				preloadId: routeData.preloadId,
 				tabRoute: route,
 				loadTimeout: (el.is('.preload') ? 1500 : 0)
 			});

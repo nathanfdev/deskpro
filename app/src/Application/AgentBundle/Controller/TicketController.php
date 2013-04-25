@@ -273,6 +273,22 @@ class TicketController extends AbstractController
 			}
 		}
 
+		#------------------------------
+		# Pre-load person and org
+		#------------------------------
+
+		$page_preload = array();
+		$r = $this->forward('AgentBundle:Person:view', array('person_id' => $ticket->person->id));
+		if ($r->getStatusCode() == 200) {
+			$page_preload['person'] = $r->getContent();
+		}
+
+		if ($ticket->person->organization) {
+			$r = $this->forward('AgentBundle:Organization:view', array('organization_id' => $ticket->person->organization->id));
+			if ($r->getStatusCode() == 200) {
+				$page_preload['person_organization'] = $r->getContent();
+			}
+		}
 
 		$vars = array(
 			'agents'                     => $agents,
@@ -323,7 +339,8 @@ class TicketController extends AbstractController
 			'agent_signature_html'       => $this->person->getSignatureHtml(),
 
 			'addable_slas'               => $addable_slas,
-			'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person)
+			'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
+			'page_preload'               => $page_preload,
 		);
 
         if($is_pdf)
