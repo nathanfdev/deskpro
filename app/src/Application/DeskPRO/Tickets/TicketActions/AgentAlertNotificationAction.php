@@ -218,9 +218,7 @@ class AgentAlertNotificationAction extends AbstractAction
 					'log_items'          => $log_items,
 				);
 
-				if ($is_new_ticket) {
-					$vars['performer'] = $ticket->person;
-				} elseif ($is_new_agent_reply || $is_new_user_reply) {
+				if ($is_new_agent_reply || $is_new_user_reply) {
 					$message = $this->tracker->getNewReply();
 					if ($message) {
 						$vars['performer'] = $message->person;

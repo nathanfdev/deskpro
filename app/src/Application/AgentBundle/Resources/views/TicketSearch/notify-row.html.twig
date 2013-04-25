@@ -11,7 +11,11 @@
 	<a><i class="row-icon"></i> {{ ticket.subject }}</a>
 	<div class="info">
 		{% if is_new_ticket %}
-            {{ phrase('agent.chat.new_ticket_by', {'name':performer.name,'email':performer.primary_email_address}) }}
+			{% if ticket.person.id != performer.id %}
+				{{ performer.name }} created a new ticket for {{ ticket.person.name }} ({{ ticket.person.email_address }})
+			{% else %}
+            	{{ phrase('agent.chat.new_ticket_by', {'name':performer.name,'email':performer.primary_email_address}) }}
+			{% endif %}
 		{% elseif is_new_agent_reply %}
 			{% if is_new_agent_note %}
 				{{ phrase('agent.chat.new_agent_note_by', {'name':performer.name}) }}
