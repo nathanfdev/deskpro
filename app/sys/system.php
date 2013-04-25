@@ -92,6 +92,9 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
 			// Show info to agent/admin interface
 			if (preg_match('#^/admin/?#', $path) || preg_match('#^/agent/?#', $path)) {
+				$db_build   = App::getSetting('core.deskpro_build');
+				$file_build = DP_BUILD_TIME;
+
 				echo deskpro_install_basic_error("
 					<p>
 						It appears as though you have recently upgraded the DeskPRO source files, but you have not performed the required database upgrades.
@@ -101,6 +104,15 @@ abstract class AbstractKernel extends BaseAbstractKernel
 					</p>
 					<div style=\"font-family: 'Monaco', 'Courier New', monaco; background: #fff; padding: 8px; border: 1px solid #999; \">
 						/path/to/php /path/to/deskpro/upgrade.php --run-db-upgrade
+					</div>
+					<div style=\"padding-top: 35px; font-size: 11px; color: #777;text-align: center;\">
+						<div style='display: inline-block; background: #ddd; padding: 5px 8px; border-radius: 3px;'>
+							Database build: $db_build
+							&nbsp;
+							|
+							&nbsp;
+							Files build: $file_build
+						</div>
 					</div>
 				", "DeskPRO Upgrade");
 				exit;
