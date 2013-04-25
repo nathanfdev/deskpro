@@ -68,7 +68,7 @@
 				<option value="0" {% if not department.email_gateway %}selected="selected"{% endif %}>None</option>
 				<option value="-1">Create a new email account &rarr;</option>
 				<optgroup label="Email Accounts">
-					{% for gateway in gateway_accounts %}
+					{% for gateway in gateway_accounts if gateway.gateway_type == 'tickets' %}
 						<option value="{{ gateway.id }}" {% if department.email_gateway.id == gateway.id %}selected="selected"{% endif %}>{{ gateway.getPrimaryEmailAddress() }}</option>
 					{% endfor %}
 				</optgroup>
