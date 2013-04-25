@@ -47,6 +47,8 @@ use Application\DeskPRO\Entity\Rating;
  */
 class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 {
+	protected $mode = 'default';
+
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
@@ -85,6 +87,11 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 		if ($visitor && $visitor->email && !$this->person_email) {
 			$this->person_email = $visitor->email;
 		}
+	}
+
+	public function enableWidgetMode()
+	{
+		$this->mode = 'widget';
 	}
 
 	public function setPersonContext(Person $person)
@@ -198,7 +205,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			$feedback['validating']   = $validating;
 			$feedback['person']       = $person;
 
-			if ($this->require_login) {
+			if ($this->require_login && $this->mode != 'widget') {
 				$feedback->setStatusCode('hidden.temp');
 			} elseif ($validating) {
 				$feedback->setStatusCode('hidden.user_validating');

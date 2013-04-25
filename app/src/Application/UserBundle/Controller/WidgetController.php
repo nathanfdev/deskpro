@@ -253,6 +253,8 @@ class WidgetController extends AbstractController
 	{
 		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback($this->session->getVisitor());
 		$newfeedback->setPersonContext($this->person);
+		$newfeedback->enableWidgetMode();
+
 		$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
@@ -285,6 +287,9 @@ class WidgetController extends AbstractController
 			if (!$dupe) {
 				$feedback = $newfeedback->save();
 				$feedback_id = $feedback->getId();
+
+				$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
+				$notify_send->send();
 			} else {
 				$feedback_id = $dupe;
 			}
