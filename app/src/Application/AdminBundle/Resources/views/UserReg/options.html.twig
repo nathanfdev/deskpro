@@ -74,11 +74,11 @@
 
 {% macro options_table(reg_triggers, everyone_ug) %}
 	<section class="sunken">
-		{% if reg_triggers %}
 			<div class="sunken-row">
 				<input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} />
 				Enable email validation for new registrations from the web portal
 			</div>
+		{% if reg_triggers %}
 			<div class="sunken-row">
 				Enable email validation for new tickets submitted via
 					{% if reg_triggers['email_validation.web'] %}<input class="trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> Web {% endif %}
