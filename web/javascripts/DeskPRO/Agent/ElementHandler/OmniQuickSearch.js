@@ -41,7 +41,10 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 		this.el.on('keydown', function(ev) {
 			self._handleKeyPress(ev);
-		}).on('keyup', function() {
+		}).on('keyup', function(ev) {
+			if (ev.keyCode == 27 /* escape key */ || ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+				return;
+			}
 
 			if (!self.el.val().trim().length) {
 				self.clearAll();
