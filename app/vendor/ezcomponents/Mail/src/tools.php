@@ -233,6 +233,15 @@ class ezcMailTools
         $pattern = '/<?\"?[a-zA-Z0-9!#\$\%\&\'\*\+\-\/=\?\^_`{\|}~\.]+\"?@[a-zA-Z0-9!#\$\%\&\'\*\+\-\/=\?\^_`{\|}~\.]+>?$/';
         if ( preg_match( trim( $pattern ), $address, $matches, PREG_OFFSET_CAPTURE ) != 1 )
         {
+			// DESKPRO EDIT
+			// If we're here, then the address is invalid. We've seen some cases where
+			// the From name is not formatted corrected: email@example.com (name)
+			// So lets try again and just get anything that looks like an email address:
+			if (preg_match('#([a-zA-Z0-9\-_\.+=]+@[a-zA-Z0-9\-_\.]+)#', $address, $m)) {
+				$address = new ezcMailAddress($m[1], '', 'utf-8');
+				return $address;
+			}
+
             return null;
         }
         $name = substr( $address, 0, $matches[0][1] );
