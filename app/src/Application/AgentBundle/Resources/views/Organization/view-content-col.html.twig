@@ -35,7 +35,7 @@
 	<header>
 		<nav>
 			{{ dp_widget_tabs_header(baseId, 'organization', 'members', {
-				(baseId ~ '_members_tab'): phrase('agent.general.members') ~ ' <i class="count" data-tag="org-members-count-' ~ org.id ~ '" id="' ~ baseId ~ '_members_count">' ~ members_count|default(0) ~ '</i>',
+				(baseId ~ '_members_tab'): phrase('agent.general.members') ~ ' <span class="count" data-tag="org-members-count-' ~ org.id ~ '" id="' ~ baseId ~ '_members_count">' ~ members_count|default(0) ~ '</span>',
 				(baseId ~ '_tickets_tab'): (org_tickets_count ? phrase('agent.general.tickets') ~ ' <span class="count" id="' ~ baseId ~ '_tickets_count">' ~ org_tickets_count|default(0) ~ '</span>' : false),
 				(baseId ~ '_chats_tab'): (org_chats_count ? phrase('agent.general.chats') ~ ' <span class="count" id="' ~ baseId ~ '_chats_count">' ~ org_chats_count|default(0) ~ '</span>' : false),
 				(baseId ~ '_billing_tab'): (org_charges ? 'Billing <span class="count">' ~ org_charge_totals.count ~ '</span>' : false)
