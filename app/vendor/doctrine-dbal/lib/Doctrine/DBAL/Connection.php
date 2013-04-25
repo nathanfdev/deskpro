@@ -700,7 +700,7 @@ class Connection implements DriverConnection
      *
      * @param string $statement
      * @param integer $fetchType
-     * @return Doctrine\DBAL\Driver\Statement
+     * @return \Doctrine\DBAL\Driver\Statement
      */
     public function query()
     {

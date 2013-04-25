@@ -29,57 +29,62 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\App;
 
-/**
- * Raw email sources
- *
- */
-class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
+class Build1366896573 extends AbstractBuild
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\SendmailQueue
-	 */
-	protected $queue = null;
-
-	/**
-	 * @var string
-	 */
-	protected $data;
-
-	/**
-	 * @return int
-	 */
-	public function getId()
+	public function run()
 	{
-		return $this->id;
-	}
+		$this->out("Add sendmail_queue.blob_id field");
+		$this->execMutateSql("ALTER TABLE sendmail_queue ADD blob_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE sendmail_queue ADD CONSTRAINT FK_DDB369C2ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_DDB369C2ED3E8EA5 ON sendmail_queue (blob_id)");
 
+		// Delete all success logs
+		$this->execMutateSql("
+			DELETE FROM sendmail_queue
+			WHERE has_sent = 1 OR date_created < " . date('Y-m-d H:i:s', time() - 604800) . "
+		");
 
+		// Process all sendmail_queue_part to blobs
+		$sm_ids = $this->container->getDb()->fetchAllCol("
+			SELECT id
+			FROM sendmail_queue
+			ORDER BY id ASC
+		");
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+		$st = $this->container->getDb()->prepare("
+			SELECT data
+			FROM sendmail_queue_part
+			WHERE sendmail_queue_id = ?
+			ORDER BY id ASC
+		");
+		foreach ($sm_ids as $id) {
+			$st->execute(array($id));
+			$data = '';
+			while ($x = $st->fetchColumn(0)) {
+				$data .= $x;
+			}
+			unset($x);
+			$st->closeCursor();
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'sendmail_queue_part', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'queue', 'targetEntity' => 'Application\\DeskPRO\\Entity\\SendmailQueue', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sendmail_queue_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+				$data,
+				'sendmail.eml',
+				'message/rfc822'
+			);
+
+			$this->container->getDb()->update('sendmail_queue', array(
+				'blob_id' => $blob->id
+			), array('id' => $id));
+		}
+
+		// Drop old sendmail_queue_part table
+		$this->execMutateSql("DROP TABLE sendmail_queue_part");
 	}
 }

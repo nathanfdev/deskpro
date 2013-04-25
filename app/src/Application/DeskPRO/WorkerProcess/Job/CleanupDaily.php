@@ -153,6 +153,19 @@ class CleanupDaily extends AbstractJob
 		$days = App::getSetting('core.store_sent_mail_days');
 
 		if (!$days) {
+			$blob_ids = App::getDb()->fetchAllCol("
+				SELECT blob_id FROM sendmail_queue
+				WHERE has_sent = 1 AND blob_id IS NOT NULL
+			");
+			if ($blob_ids) {
+				$blobs = App::getOrm()->getRepository('DeskPRO:Blob')->getByIds($blob_ids);
+				foreach ($blobs as $blob) {
+					try {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					} catch (\Exception $e) {}
+				}
+			}
+
 			$num = App::getDb()->executeUpdate("
 				DELETE FROM sendmail_queue
 				WHERE has_sent = 1
@@ -161,10 +174,24 @@ class CleanupDaily extends AbstractJob
 			$datetime = date('Y-m-d H:i:s', strtotime("-$days days"));
 			$datetime2 = date('Y-m-d H:i:s', strtotime("-" .($days * 5) ." days"));
 
+			$blob_ids = App::getDb()->fetchAllCol("
+				SELECT blob_id FROM sendmail_queue
+				WHERE (has_sent = 1 AND date_sent < ?) OR date_sent < ? AND blob_id IS NOT NULL
+			", array($datetime, $datetime2));
+
+			if ($blob_ids) {
+				$blobs = App::getOrm()->getRepository('DeskPRO:Blob')->getByIds($blob_ids);
+				foreach ($blobs as $blob) {
+					try {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					} catch (\Exception $e) {}
+				}
+			}
+
 			$num = App::getDb()->executeUpdate("
 				DELETE FROM sendmail_queue
-				WHERE (has_sent = 1 AND date_sent < ?) OR date_sent < ?",
-			array($datetime, $datetime2));
+				WHERE (has_sent = 1 AND date_sent < ?) OR date_sent < ?
+			", array($datetime, $datetime2));
 		};
 
 		if ($num) {

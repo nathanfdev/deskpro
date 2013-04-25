@@ -62,16 +62,26 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 
 			$queue_info['attempts']++;
 
-			$message = $db->fetchAllCol("
-				SELECT data FROM sendmail_queue_part
-				WHERE sendmail_queue_id = ?
-				ORDER BY id ASC
-			", array($queue_id));
-			$message = implode('', $message);
-			$message = unserialize($message);
+			$blob = App::getOrm()->find('DeskPRO:Blob', $queue_info['blob_id']);
+			$message = null;
 
+			if ($blob) {
+				try {
+					$message = App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob);
+					$message = @unserialize($message);
+				} catch (\Exception $e) {}
+			}
 
 			if (!$message) {
+				if ($blob) {
+					try {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					} catch (\Exception $e) {}
+				}
+				$db->executeUpdate("
+					DELETE FROM sendmail_queue
+					WHERE id = ?", array($queue_id)
+				);
 				throw new \RuntimeException('Failed to read or unserialize message');
 			}
 
@@ -84,6 +94,9 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 				$queue_info['date_sent'] = date('Y-m-d H:i:s');
 
 				if (!App::getSetting('core.store_sent_mail_days')) {
+					try {
+						App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+					} catch (\Exception $e) {}
 					$db->executeUpdate("
 						DELETE FROM sendmail_queue
 						WHERE id = ?", array($queue_id)
@@ -168,35 +181,22 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 	 */
 	public function addQueuedMessage(\Orb\Mail\Message $message)
 	{
-		$db = App::getDb();
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+			serialize($message),
+			'sendmail.eml',
+			'message/rfc822'
+		);
 
-		$db->beginTransaction();
-
-		$db->insert('sendmail_queue', array(
+		App::getDb()->insert('sendmail_queue', array(
 			'subject' => Util::coalesce($message->getSubject(), ''),
 			'to_address' => Util::coalesce(implode(', ', array_keys($message->getTo())), ''), // this is really just for info purposes, easier to grep the db
 			'date_created' => date('Y-m-d H:i:s'),
 			'date_next_attempt' => date('Y-m-d H:i:s', time() + 120),
+			'blob_id' => $blob->id
 		));
-		$queue_id = $db->lastInsertId();
+		$queue_id = App::getDb()->lastInsertId();
 
-		$message = serialize($message);
-		$data_len = strlen($message);
-
-		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
-		$max_size = ($db->getMaxPacketSize()/2)-200;
-		$parts = ceil($data_len / $max_size);
-
-		for ($i = 0; $i < $parts; $i++) {
-			$db->insert('sendmail_queue_part', array(
-				'sendmail_queue_id' => $queue_id,
-				'data' => substr($message, $i * $max_size, $max_size)
-			));
-		}
-
-		$db->commit();
-
-		return true;
+		return $queue_id;
 	}
 
 
@@ -208,38 +208,27 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 	public function addLoggedMessage(\Orb\Mail\Message $message)
 	{
 		if (!App::getSetting('core.store_sent_mail_days')) {
-			return;
+			return 0;
 		}
 
-		$db = App::getDb();
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+			serialize($message),
+			'sendmail.eml',
+			'message/rfc822'
+		);
 
-		$db->beginTransaction();
-
-		$db->insert('sendmail_queue', array(
+		App::getDb()->insert('sendmail_queue', array(
 			'subject' => Util::coalesce($message->getSubject(), ''),
 			'to_address' => Util::coalesce(implode(', ', array_keys($message->getTo())), ''),
 			'date_created' => date('Y-m-d H:i:s'),
 			'date_sent' => date('Y-m-d H:i:s'),
 			'has_sent' => true,
-			'attempts' => 1
+			'attempts' => 1,
+			'blob_id' => $blob->id
 		));
-		$queue_id = $db->lastInsertId();
+		$queue_id = App::getDb()->lastInsertId();
 
-		$message = serialize($message);
-		$data_len = strlen($message);
-
-		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
-		$max_size = ($db->getMaxPacketSize()/2)-200;
-		$parts = ceil($data_len / $max_size);
-
-		for ($i = 0; $i < $parts; $i++) {
-			$db->insert('sendmail_queue_part', array(
-				'sendmail_queue_id' => $queue_id,
-				'data' => substr($message, $i * $max_size, $max_size)
-			));
-		}
-
-		$db->commit();
+		return $queue_id;
 	}
 
 
