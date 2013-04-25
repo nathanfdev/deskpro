@@ -82,11 +82,19 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 			$ret = call_user_func($callback, $message);
 			if ($ret & self::PROCESS_SUCCESS) {
 				$queue_info['date_sent'] = date('Y-m-d H:i:s');
-				$db->executeUpdate("
-					UPDATE sendmail_queue
-					SET attempts = ?, date_sent = ?, has_sent = 1, date_next_attempt = null
-					WHERE id = ?", array($queue_info['attempts'], $queue_info['date_sent'], $queue_id)
-				);
+
+				if (!App::getSetting('core.store_sent_mail_days')) {
+					$db->executeUpdate("
+						DELETE FROM sendmail_queue
+						WHERE id = ?", array($queue_id)
+					);
+				} else {
+					$db->executeUpdate("
+						UPDATE sendmail_queue
+						SET attempts = ?, date_sent = ?, has_sent = 1, date_next_attempt = null
+						WHERE id = ?", array($queue_info['attempts'], $queue_info['date_sent'], $queue_id)
+					);
+				}
 			}
 
 			if ($ret & self::PROCESS_FAILURE) {
@@ -199,6 +207,10 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 	 */
 	public function addLoggedMessage(\Orb\Mail\Message $message)
 	{
+		if (!App::getSetting('core.store_sent_mail_days')) {
+			return;
+		}
+
 		$db = App::getDb();
 
 		$db->beginTransaction();
@@ -228,8 +240,6 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 		}
 
 		$db->commit();
-
-		return true;
 	}
 
 

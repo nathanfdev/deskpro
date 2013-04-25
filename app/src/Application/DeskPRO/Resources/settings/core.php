@@ -128,7 +128,7 @@
 	/**
 	 * How long, in days, to save successfully sent emails to
 	 */
-	'core.store_sent_mail_days' => 3,
+	'core.store_sent_mail_days' => 0,
 
 	/**
 	 * When the installation took place
