@@ -1418,6 +1418,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (el.data('route-notabreload')) {
 			extraData.noToggle = true;
+		} else {
+			if (el.closest('#dp_content_wrap')[0] || el.closest('.popover-wrapper')[0]) {
+				extraData.noToggle = true;
+				extraData.focus = true;
+			}
 		}
 
 		this.runPageRoute(el.data('route'), extraData);
@@ -1529,6 +1534,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = DeskPRO_Window.TabBar.findTabByRouteUrl(url);
 			if (existTab && routeData.noToggle) {
+				if (routeData.focus) {
+					DeskPRO_Window.TabBar.activateTab(existTab);
+				}
 				return;
 			}
 			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
