@@ -145,12 +145,18 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$this->session->save();
 		}
 
+		$captcha = null;
+		if ($this->container->getSetting('user.register_captcha')) {
+			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
+		}
+
 		return $this->render($this->tpl_prefix . ':index.html.twig', array(
 			'return' => $return,
 			'route_prefix' => $this->route_prefix,
 			'form' => $form->createView(),
 			'failed_login_name' => $failed_login_name,
-			'account_disabled' => $account_disabled
+			'account_disabled' => $account_disabled,
+			'captcha' => $captcha,
 		));
 	}
 
