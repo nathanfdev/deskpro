@@ -55,6 +55,10 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 				el = $(el);
 				var label = el.text().trim();
 
+				if (el.parent().is('optgroup')) {
+					label = el.parent().attr('label') + ' > ' + label;
+				}
+
 				var has_child = false;
 				var is_child = (label.indexOf('--') !== -1);
 				var child_depth = 0;
