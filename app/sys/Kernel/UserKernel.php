@@ -67,6 +67,8 @@ class UserKernel extends AbstractKernel
 		if (
 			!preg_match('#^/widget/#', $request->getPathInfo())
 			&& !preg_match('#^/chat/#', $request->getPathInfo())
+			&& !preg_match('#^/tickets/new-simple#', $request->getPathInfo())
+			&& !preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
 			&& !preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
 		) {
 			try {
