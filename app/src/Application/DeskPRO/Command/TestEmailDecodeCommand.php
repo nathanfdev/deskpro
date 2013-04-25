@@ -89,6 +89,13 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		echo "Subject: " . $r->getSubject()->getSubjectUtf8();
 		echo "\n";
 
+		if ($r->getFromAddress()->getName()) {
+			echo "From: " . $r->getFromAddress()->getName() . " <" . $r->getFromAddress()->getEmail() . ">";
+		} else {
+			echo "From: " . $r->getFromAddress()->getEmail();
+		}
+		echo "\n";
+
 		foreach ($r->getToAddresses() as $email) {
 			if ($email->getNameUtf8()) {
 				echo "To: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">\n";
