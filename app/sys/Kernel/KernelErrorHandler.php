@@ -199,10 +199,36 @@ class KernelErrorHandler
 
 
 	/**
-	 * @param \Exception $exception
+	 * @param \Exception $exception   The exception to log
+	 * @param bool $send              True to send a report to deskpro
+	 * @param string $unique_id       An error ID. if this error has been reported before, it will not be reported again
 	 */
-	public static function logException(\Exception $exception, $send = false)
+	public static function logException(\Exception $exception, $send = false, $unique_id = null)
 	{
+		static $got_unique_ids = array();
+
+		if ($unique_id) {
+			if (isset($got_unique_ids[$unique_id])) return;
+			$got_unique_ids[$unique_id] = true;
+
+			try {
+				$got = App::getDb()->fetchColumn("
+					SELECT data
+					FROM install_data
+					WHERE build = ? AND name = ?
+				", array(DP_BUILD_TIME, 'err_' . $unique_id));
+				if ($got) {
+					return;
+				}
+
+				App::getDb()->replace('install_data', array(
+					'data'  => '1',
+					'build' => DP_BUILD_TIME,
+					'name'  => 'err_' . $unique_id
+				));
+			} catch (\Exception $e) {}
+		}
+
 		$einfo = self::getExceptionInfo($exception);
 		if (!$send) {
 			$einfo['no_send_error'] = true;

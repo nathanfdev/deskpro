@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Twig;
 
+use DeskPRO\Kernel\KernelErrorHandler;
+
 class Environment extends \Twig_Environment
 {
 	protected $ext_dirty = false;
@@ -118,10 +120,30 @@ class Environment extends \Twig_Environment
 					eval('?>'.$tplinfo['template_compiled']);
 				} else {
 					if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
-						$this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
-					}
+						$fallback = false;
+						$e = null;
+						try {
+							$this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
+							require_once $cache;
+						} catch (\Exception $e) {
+							$fallback = true;
+						}
 
-					require_once $cache;
+						if ($fallback) {
+							// Fallback on just evalling the template so everything
+							$prev = null;
+							if ($e) {
+								$prev = $e;
+							}
+							$e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
+							KernelErrorHandler::logException($e, false, 'twig_write_failed');
+
+							$source = $this->compileSource($this->loader->getSource($name), $name);
+							eval('?>'.$source);
+						}
+					} else {
+						require_once $cache;
+					}
 				}
             }
         }
