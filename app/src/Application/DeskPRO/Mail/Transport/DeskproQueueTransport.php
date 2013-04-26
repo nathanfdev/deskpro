@@ -64,7 +64,20 @@ class DeskproQueueTransport implements \Swift_Transport
 	 */
 	private $job_headers;
 
+	/**
+	 * @var array
+	 */
 	private $next_job_headers;
+
+	/**
+	 * @var array
+	 */
+	private $email_data;
+
+	/**
+	 * @var
+	 */
+	private $next_email_data;
 
 
     /**
@@ -102,7 +115,16 @@ class DeskproQueueTransport implements \Swift_Transport
 		return $obj;
 	}
 
+	/**#@+ Not used */
+	public function isStarted() { return false; }
+    public function start() { }
+    public function stop() {}
+	/**#@-*/
+
+
 	/**
+	 * Set the queue server host and port
+	 *
 	 * @param $server_addr
 	 * @param $server_port
 	 */
@@ -114,10 +136,14 @@ class DeskproQueueTransport implements \Swift_Transport
 
 
 	/**
+	 * Set the job headers.
+	 *
+	 * Job headers are key=>value pairs added to the queue server data.
+	 *
 	 * @param array $headers
 	 * @param bool $next_only
 	 */
-	public function setJobHeaders(array $headers, $next_only = false)
+	public function setJobHeaders(array $headers = null, $next_only = false)
 	{
 		if ($next_only) {
 			$this->next_job_headers = $headers;
@@ -126,9 +152,24 @@ class DeskproQueueTransport implements \Swift_Transport
 		}
 	}
 
-    public function isStarted() { return false; }
-    public function start() { }
-    public function stop() {}
+
+	/**
+	 * Set additional email data.
+	 *
+	 * Email data is encoded as JSON and prepended to the payload file.
+	 *
+	 * @param array $email_data
+	 * @param bool $next_only
+	 */
+	public function setEmailData(array $email_data = null, $next_only = false)
+	{
+		if ($next_only) {
+			$this->next_email_data = $email_data;
+		} else {
+			$this->email_data = $email_data;
+		}
+	}
+
 
     /**
      * Send the given Message.
@@ -152,6 +193,12 @@ class DeskproQueueTransport implements \Swift_Transport
 		if (!$job_headers) {
 			$job_headers['created_at'] = time();
 		}
+
+		$data = $this->email_data ?: array();
+		if ($this->next_email_data) {
+			$data = array_merge($data, $this->next_email_data);
+		}
+		$this->next_email_data = null;
 
         $failedRecipients = (array) $failedRecipients;
 
@@ -182,13 +229,13 @@ class DeskproQueueTransport implements \Swift_Transport
 		# Generate special data block that prefixes the message
 		#------------------------------
 
-		$data = array(
+		$data = array_merge($data, array(
 			'subject'        => (string)$message->getSubject(),
 			'from_addresses' => '',
 			'to_addresses'   => array(),
 			'cc_addresses'   => array(),
 			'bcc_addresses'  => array(),
-		);
+		));
 
 		foreach (array(
 			'from_addresses' => 'getFrom',

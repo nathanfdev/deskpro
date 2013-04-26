@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Mail\Transport\DeskproQueueTransport;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -173,27 +174,47 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 			case 'smtp':
 				if (!$options['secure']) $options['secure'] = null;
 
-				$tr = \Swift_SmtpTransport::newInstance($options['host'], $options['port'], $options['secure']);
+				if (defined('DP_SMTP_USE_DESKPRO_QUEUE')) {
+					$tr = DeskproQueueTransport::newInstance(DP_SMTP_DESKPRO_QUEUE_HOST, DP_SMTP_DESKPRO_QUEUE_PORT);
+					$tr->setEmailData(array(
+						'smtp_options' => array(
+							'host'     => $options['host'],
+							'port'     => $options['port'],
+							'secure'   => $options['secure'] ? true : false,
+							'username' => !empty($options['username']) ? $options['username'] : null,
+							'password' => !empty($options['password']) ? $options['password'] : null
+						)
+					));
+				} else {
+					$tr = \Swift_SmtpTransport::newInstance($options['host'], $options['port'], $options['secure']);
+					if (!empty($options['username']) OR !empty($options['password'])) {
+						$tr->setUsername($options['username']);
+						$tr->setPassword($options['password']);
+					}
 
-				if (!empty($options['username']) OR !empty($options['password'])) {
-					$tr->setUsername($options['username']);
-					$tr->setPassword($options['password']);
+					$tr->setTimeout(120);
 				}
-
-				$tr->setTimeout(120);
 
 				break;
 
 			case 'gmail':
-
-				$options['host'] = 'smtp.gmail.com';
-				$options['secure'] = 'ssl';
-				$options['port'] = 465;
-
-				$tr = \Swift_SmtpTransport::newInstance($options['host'], $options['port'], $options['secure']);
-				$tr->setUsername($options['username']);
-				$tr->setPassword($options['password']);
-				$tr->setTimeout(120);
+				if (defined('DP_SMTP_USE_DESKPRO_QUEUE')) {
+					$tr = DeskproQueueTransport::newInstance(DP_SMTP_DESKPRO_QUEUE_HOST, DP_SMTP_DESKPRO_QUEUE_PORT);
+					$tr->setEmailData(array(
+						'smtp_options' => array(
+							'host'     => 'smtp.gmail.com',
+							'port'     => 465,
+							'secure'   => true,
+							'username' => !empty($options['username']) ? $options['username'] : null,
+							'password' => !empty($options['password']) ? $options['password'] : null
+						)
+					));
+				} else {
+					$tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
+					$tr->setUsername($options['username']);
+					$tr->setPassword($options['password']);
+					$tr->setTimeout(120);
+				}
 
 				break;
 
@@ -202,7 +223,11 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 				break;
 
 			case 'mail':
-				$tr = \Swift_MailTransport::newInstance();
+				if (defined('DP_SMTP_USE_DESKPRO_QUEUE')) {
+					$tr = DeskproQueueTransport::newInstance(DP_SMTP_DESKPRO_QUEUE_HOST, DP_SMTP_DESKPRO_QUEUE_PORT);
+				} else {
+					$tr = \Swift_MailTransport::newInstance();
+				}
 				break;
 
 			default:
