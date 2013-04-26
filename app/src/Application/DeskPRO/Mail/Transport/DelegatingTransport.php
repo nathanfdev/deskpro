@@ -135,8 +135,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	{
 		if ($this->queue_transport !== null) return $this->queue_transport;
 
-		$db_proc = new DatabaseQueueProcessor();
-		$this->queue_transport = new QueueTransport($db_proc, $this->event_dispatcher);
+		$this->queue_transport = new QueueTransport($this->event_dispatcher);
 
 		$this->attachLoggerOnce($this->queue_transport);
 
@@ -189,7 +188,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 		$queue_pref = App::getSetting('core.use_mail_queue');
 		$use_queue = false;
-		if ($queue_pref == 'always' OR ($queue_pref == 'smart' AND $message->isQueueHinted())) {
+		if ($queue_pref == 'always' OR ($queue_pref == 'hint' AND $message->isQueueHinted())) {
 			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Message is set for queue"));
 			$use_queue = true;
 		}

@@ -34,7 +34,7 @@
 
 namespace Orb\Mail\Transport;
 
-use \Orb\Mail\QueueProcessor\QueueProcessorInterface;
+use Application\DeskPRO\App;
 use \Orb\Mail\Message;
 
 use \Orb\Util\Strings;
@@ -48,9 +48,8 @@ class QueueTransport implements \Swift_Transport
 	protected $_queue_processor;
 	protected $_event_dispatcher;
 
-	public function __construct(QueueProcessorInterface $queue_processor, \Swift_Events_EventDispatcher $event_dispatcher)
+	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)
 	{
-		$this->_queue_processor = $queue_processor;
 		$this->_event_dispatcher = $event_dispatcher;
 	}
 
@@ -83,7 +82,12 @@ class QueueTransport implements \Swift_Transport
 			}
 		}
 
-		$success = $this->_queue_processor->addQueuedMessage($message);
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(serialize($message), 'sendmail.obj', 'plain/text');
+		$sendmail = new \Application\DeskPRO\Entity\SendmailQueue();
+		$sendmail->blob = $blob;
+		$sendmail->subject = $message->getSubject();
+		App::getOrm()->persist($sendmail);
+		App::getOrm()->flush();
 
 		if ($evt) {
 			$evt->setResult($success ? \Swift_Events_SendEvent::RESULT_SUCCESS : \Swift_Events_SendEvent::RESULT_FAILED);

@@ -94,6 +94,30 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param string $addr
+	 */
+	public function setFromAddress($addr)
+	{
+		if (is_array($addr)) {
+			$addr = array_shift($addr);
+		}
+
+		$this->setModelField('from_address', $addr);
+	}
+
+
+	/**
+	 * @param string|array $addr
+	 */
+	public function setToAddress($addr)
+	{
+		if (is_array($addr)) {
+			$addr = implode(',', $addr);
+		}
+
+		$this->setModelField('to_address', $addr);
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -111,7 +135,8 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
-		$metadata->mapField(array( 'fieldName' => 'to_address', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', ));
+		$metadata->mapField(array( 'fieldName' => 'to_address', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', ));
+		$metadata->mapField(array( 'fieldName' => 'from_address', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'from_address', ));
 		$metadata->mapField(array( 'fieldName' => 'attempts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'attempts', ));
 		$metadata->mapField(array( 'fieldName' => 'date_next_attempt', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_next_attempt', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

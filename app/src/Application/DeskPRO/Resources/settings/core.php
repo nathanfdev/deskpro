@@ -192,7 +192,7 @@
 	/**
 	 * When to use the mail queue: never, hint, always
 	 */
-	'core.use_mail_queue'  => 'never',
+	'core.use_mail_queue'  => 'hint',
 
 	//'core.disqus_shortname' => '',
 	//'core.facebook_comments_num_posts' => 10,

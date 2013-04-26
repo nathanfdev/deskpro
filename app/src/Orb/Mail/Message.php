@@ -152,6 +152,15 @@ class Message extends \Swift_Message
 
 
 	/**
+	 * Disable the queue hint
+	 */
+	public function disableQueueHint()
+	{
+		$this->_queue_hint = false;
+	}
+
+
+	/**
 	 * Set the suppress autoreplies headers
 	 *
 	 * @param bool $on

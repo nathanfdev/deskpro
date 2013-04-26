@@ -59,7 +59,11 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo "Within Command";
+		$message = App::getMailer()->createMessage();
+		$message->setTo('chroder@gmail.com')->setFrom('dpug@nadeau.ws')->setBody('Testing ' . date('Y-m-d @ H:i:s'));
+
+		App::getMailer()->send($message);
+
 		echo "\n";
 		exit;
 	}

@@ -171,6 +171,23 @@ class DeskproQueueTransport implements \Swift_Transport
 	}
 
 
+	/**
+	 * @return array
+	 */
+	protected function _getServerParams()
+	{
+		return array(
+			'protocol' => 'tcp',
+			'host' => $this->server_addr,
+			'port' => $this->server_port,
+			'timeout' => 30,
+			'blocking' => 1,
+			'tls' => false,
+			'type' => \Swift_Transport_IoBuffer::TYPE_SOCKET
+        );
+	}
+
+
     /**
      * Send the given Message.
      *
@@ -213,17 +230,7 @@ class DeskproQueueTransport implements \Swift_Transport
 		# Init the buffer
 		#------------------------------
 
-		$params = array(
-			'protocol' => 'tcp',
-			'host' => $this->server_addr,
-			'port' => $this->server_port,
-			'timeout' => 30,
-			'blocking' => 1,
-			'tls' => false,
-			'type' => \Swift_Transport_IoBuffer::TYPE_SOCKET
-        );
-
-		$this->_buf->initialize($params);
+		$this->_buf->initialize($this->_getServerParams());
 
 		#------------------------------
 		# Generate special data block that prefixes the message
@@ -289,6 +296,38 @@ class DeskproQueueTransport implements \Swift_Transport
 
         return $count;
     }
+
+
+	/**
+	 * @param array $job_headers
+	 * @param array $data
+	 * @param $file
+	 */
+	public function sendJobFile($file_path)
+	{
+		$this->_buf->initialize($this->_getServerParams());
+
+		$fp = fopen($file_path, 'r');
+		while (!feof($fp)) {
+			$this->_buf->write(fgets($fp));
+		}
+		fclose($file_path);
+
+		$this->_buf->write("\n" . chr(4) . "\n");
+
+		$result = '';
+		while (true) {
+			$x = $this->_buf->read(1024);
+			if ($x === false || $x === null) {
+				break;
+			}
+			$result .= $x;
+		}
+
+		$this->_buf->terminate();
+
+		return $result;
+	}
 
 
     /**

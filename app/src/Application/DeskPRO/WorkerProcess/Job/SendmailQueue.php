@@ -38,6 +38,7 @@ use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Mail\SendmailQueueRunner;
 use Application\DeskPRO\Mail\Transport\DelegatingTransport;
 
 /**
@@ -53,47 +54,12 @@ class SendmailQueue extends AbstractJob
 
 	public function run()
 	{
-		$this->time_start = time();
+		$runner = new SendmailQueueRunner();
+		$runner->setLogger($this->logger);
+		$count = $runner->run(0, 30);
 
-		$db_proc = new DatabaseQueueProcessor();
-		$db_proc->processQueue(array($this, '_sendMessage'));
-
-		$total = $this->count_success + $this->count_failed;
-		if ($total) {
-			$this->logStatus("Processed {$total} emails in queue. {$this->count_success} successful, {$this->count_failed} failed.");
+		if ($count) {
+			$this->logStatus("Processed {$count} emails in queue.");
 		}
-	}
-
-	public function _sendMessage($message)
-	{
-		$mailer = App::getMailer();
-		if ($mailer->getTransport() instanceof DelegatingTransport) {
-			$mailer->getTransport()->disableQueue();
-		}
-
-		$success = $mailer->sendNow($message);
-
-		if ($mailer->getTransport() instanceof DelegatingTransport) {
-			$mailer->getTransport()->enableQueue();
-		}
-
-		$ret = 0;
-
-		if (!$success) {
-			$this->count_failed++;
-			$ret = DatabaseQueueProcessor::PROCESS_FAILURE;
-		} else{
-			$this->count_success++;
-			$ret = DatabaseQueueProcessor::PROCESS_SUCCESS;
-		}
-
-		$time = time();
-		$running = $time - $this->time_start;
-		if ($running > 30) {
-			$this->logStatus("Running for {$running} seconds, stopping this round of processing");
-			$ret = $ret | DatabaseQueueProcessor::PROCESS_STOP;
-		}
-
-		return $ret;
 	}
 }

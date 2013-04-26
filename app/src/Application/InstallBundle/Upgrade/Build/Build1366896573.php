@@ -41,48 +41,14 @@ class Build1366896573 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Add sendmail_queue.blob_id field");
-		$this->execMutateSql("ALTER TABLE sendmail_queue ADD blob_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE sendmail_queue ADD blob_id INT DEFAULT NULL, ADD from_address LONGTEXT NOT NULL, CHANGE to_address to_address LONGTEXT NOT NULL");
 		$this->execMutateSql("ALTER TABLE sendmail_queue ADD CONSTRAINT FK_DDB369C2ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
 		$this->execMutateSql("CREATE INDEX IDX_DDB369C2ED3E8EA5 ON sendmail_queue (blob_id)");
 
 		// Delete all success logs
-		$this->execMutateSql("
-			DELETE FROM sendmail_queue
-			WHERE has_sent = 1 OR date_created < " . date('Y-m-d H:i:s', time() - 604800) . "
-		");
-
-		// Process all sendmail_queue_part to blobs
-		$sm_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id
-			FROM sendmail_queue
-			ORDER BY id ASC
-		");
-
-		$st = $this->container->getDb()->prepare("
-			SELECT data
-			FROM sendmail_queue_part
-			WHERE sendmail_queue_id = ?
-			ORDER BY id ASC
-		");
-		foreach ($sm_ids as $id) {
-			$st->execute(array($id));
-			$data = '';
-			while ($x = $st->fetchColumn(0)) {
-				$data .= $x;
-			}
-			unset($x);
-			$st->closeCursor();
-
-			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-				$data,
-				'sendmail.eml',
-				'message/rfc822'
-			);
-
-			$this->container->getDb()->update('sendmail_queue', array(
-				'blob_id' => $blob->id
-			), array('id' => $id));
-		}
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
+		$this->execMutateSql("TRUNCATE TABLE sendmail_queue");
+		$this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
 
 		// Drop old sendmail_queue_part table
 		$this->execMutateSql("DROP TABLE sendmail_queue_part");

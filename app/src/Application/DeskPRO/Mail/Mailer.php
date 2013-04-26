@@ -72,6 +72,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 	/**
 	 * @var bool
 	 */
+	protected $default_queue_hint = true;
+
+	/**
+	 * @var bool
+	 */
 	protected $is_sending_queue = false;
 
 	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
@@ -183,6 +188,16 @@ class Mailer extends \Swift_Mailer implements Loggable
 		// clear any queued messages made during the transaction
 		\DpShutdown::add(array($this, 'clearQueuedMessages'), null, 'db_done_trans_rollback');
 	}
+
+
+	/**
+	 * @param bool $on_or_off
+	 */
+	public function setDefaultQueueHint($on_or_off)
+	{
+		$this->default_queue_hint = $on_or_off;
+	}
+
 
 	/**
 	 * @return array
