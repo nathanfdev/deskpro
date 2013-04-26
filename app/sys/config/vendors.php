@@ -92,9 +92,7 @@
 	'swiftmailer' => array(
 		'into'    => DP_ROOT.'/vendor/swiftmailer',
 		'repos'   => 'git://github.com/swiftmailer/swiftmailer.git',
-		//'version' => 'v4.1.6',
-		// pre 4.1.7 for fix https://github.com/swiftmailer/swiftmailer/pull/175
-		'version' => '2e73ad9db3d7e778678243ef1c5ae082fbb18bc5',
+		'version' => 'v4.3.1',
 	),
 	'symfony' => array(
 		'into'    => DP_ROOT.'/vendor/symfony',
