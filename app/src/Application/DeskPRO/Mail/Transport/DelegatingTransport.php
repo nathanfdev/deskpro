@@ -86,6 +86,12 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)
 	{
 		$this->event_dispatcher = $event_dispatcher;
+
+		// If we are using a queue server,
+		// dont enable the local deskpro queue that runs on cron
+		if (defined('DP_SMTP_USE_DESKPRO_QUEUE')) {
+			$this->disableQueue();
+		}
 	}
 
 
