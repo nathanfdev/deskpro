@@ -659,6 +659,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					result.client_messages = null;
 				}
 
+				if (result.error_messages) {
+
+					var prop = self.changeManager.getPropertyManager('status');
+					self.changeManager.setInstantChange(prop, 'awaiting_agent');
+
+					var list = self.getEl('field_errors').find('ul').empty();
+					Array.each(result.error_messages, function(msg) {
+						var li = $('<li/>');
+						li.text(msg);
+						li.appendTo(list);
+					});
+
+					self.getEl('field_errors').show().addClass('on');
+
+					self.getEl('field_edit_cancel').show();
+					self.getEl('field_edit_save').show();
+					self.getEl('field_edit_controls').removeClass('loading');
+
+					DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+					keepOpen = true;
+				}
+
 				ajaxHit = result;
 				hitDone();
 			}

@@ -46,7 +46,7 @@ use Orb\Util\Arrays;
 class CustomDefTicket extends CustomDefAbstract
 {
 	/**
-	 * @var CustomDefPeople
+	 * @var CustomDefTicket
 	 */
 	protected $parent = null;
 

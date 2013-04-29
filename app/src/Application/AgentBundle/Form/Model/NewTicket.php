@@ -110,6 +110,7 @@ class NewTicket
 		$this->product_id    = $ticket->getProductId();
 		$this->priority_id   = $ticket->getPriorityId();
 		$this->category_id   = $ticket->getCategoryId();
+		$this->status        = $ticket->status;
 
 		$field_manager = App::getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->createFormArrayForObject($ticket);

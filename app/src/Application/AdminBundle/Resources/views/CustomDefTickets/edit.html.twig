@@ -19,6 +19,34 @@
 	{% endif %}
 {% endblock %}
 {% block form_extra2 %}
+	<div style="margin: -9px 0 14px 12px;" id="agent_validation_resolve_opt" style="display: none;">
+		<label>
+			<input type="checkbox" name="fielddef[agent_validation_resolve]" value="1" {% if field.getOption('agent_validation_resolve') %}checked="checked"{% endif %} />
+			Only enable agent validation when the ticket is being resolved
+		</label>
+	</div>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+		var res = $('#agent_validation_resolve_opt');
+		$('input[name="fielddef[agent_validation_type]"]').each(function() {
+			if ($(this).val() == '') {
+				res.hide();
+			} else {
+				res.show();
+			}
+
+			$(this).on('click', function() {
+				if ($(this).val() == '') {
+					res.hide();
+				} else {
+					res.show();
+				}
+			});
+		});
+	});
+	</script>
+
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>Agent Only</label>

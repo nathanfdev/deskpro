@@ -50,6 +50,7 @@ abstract class CustomFieldTypeAbstract extends AbstractType
 		$builder->add('handler_class', 'hidden', array('required' => true));
 		$builder->add('validation_type', 'hidden', array('required' => false));
 		$builder->add('agent_validation_type', 'hidden', array('required' => false));
+		$builder->add('agent_validation_resolve', 'hidden', array('required' => false));
 
 		$builder->add('required', 'checkbox', array('required' => false));
 		$builder->add('custom_css_classname', 'text', array('required' => false));

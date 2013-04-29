@@ -203,6 +203,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}
 
 		// Otherwise change and send one
+		var oldVal = property.getValue();
 		property.setValue(newValue);
 		property.changePersisted();
 
@@ -228,9 +229,29 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				dataType: 'json',
 				context: this,
 				success: function(data) {
+
+					if (data.error_messages) {
+						property.setValue(oldVal);
+
+						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
+						Array.each(data.error_messages, function(msg) {
+							var li = $('<li/>');
+							li.text(msg);
+							li.appendTo(list);
+						});
+
+						self.ticketPage.getEl('field_errors').show().addClass('on');
+
+						self.ticketPage.getEl('field_edit_cancel').show();
+						self.ticketPage.getEl('field_edit_save').show();
+						self.ticketPage.getEl('field_edit_controls').removeClass('loading');
+						return;
+					}
+
 					if (callback) {
 						callback(data);
 					}
+
 					this.fireEvent('updateResult', [data]);
 				}
 			});

@@ -1219,6 +1219,7 @@ class TicketController extends AbstractController
 		$factory = new ActionsFactory();
 		$collection = new ActionsCollection();
 
+		$set_status = null;
 		if ($macro) {
 			foreach ($macro->actions as $action) {
 				$action = $factory->createFromInfo($action);
@@ -1228,10 +1229,17 @@ class TicketController extends AbstractController
 						// Ignore, the replybox itself changed for these actions
 					} else {
 						$refresh_tab = true;
+
+						if ($action instanceof StatusAction) {
+							$set_status = $action->getFullStatus();
+						}
+
 						$collection->add($action);
 					}
 				}
 			}
+		} else {
+			$set_status = $action_type;
 		}
 
 		#------------------------------
@@ -1561,6 +1569,29 @@ class TicketController extends AbstractController
 		$drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
 		$data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
 
+		$error_messages = array();
+		if ($set_status == 'resolved') {
+			$newticket = new NewTicket($this->em, $this->person);
+			$newticket->setValuesFromTicket($ticket);
+			$validator = new NewTicketValidator();
+			$ticket_display = new TicketPageZoneCollection('create');
+			$ticket_display->setPersonContext($this->person);
+			$ticket_display->addPagesFromDb();
+			$default_page = $ticket_display->getDepartmentPage($ticket->department->id);
+			$validator->setPageData($default_page->getPageDisplay('default')->data);
+			if (!$validator->isValid($newticket)) {
+				foreach ($validator->getErrorsInfo() as $info) {
+					$error_messages[] = $info['message'];
+				}
+
+				// Need to undo setting status!
+				$close_tab = false;
+				$ticket->status = 'awaiting_agent';
+				$this->em->persist($ticket);
+				$this->em->flush();
+			}
+		}
+
 		$data = array_merge($data, array(
 			'via_reply'                        => true,
 			'updated_agent_parts_html'         => isset($updated_agent_parts) ? $updated_agent_parts : '',
@@ -1576,6 +1607,7 @@ class TicketController extends AbstractController
 			'refresh_tab'                      => $refresh_tab,
 			'client_messages'                  => $client_messages,
 			'cc_list'                          => $cc_list,
+			'error_messages'                   => $error_messages ?: false,
 		));
 
 		return $this->createJsonResponse($data);
@@ -1939,6 +1971,12 @@ class TicketController extends AbstractController
 			}
 			if (isset($_REQUEST['custom_fields'])) {
 				$newticket->ticket_fields = $_REQUEST['custom_fields'];
+			}
+
+			if ($this->in->getString('actions.status') == 'resolved') {
+				$newticket->status = 'resolved';
+			} else {
+				$newticket->status = '';
 			}
 
 			$validator = new NewTicketValidator();
