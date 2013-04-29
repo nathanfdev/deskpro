@@ -90,7 +90,7 @@ class QueueTransport implements \Swift_Transport
 		App::getOrm()->flush();
 
 		if ($evt) {
-			$evt->setResult($success ? \Swift_Events_SendEvent::RESULT_SUCCESS : \Swift_Events_SendEvent::RESULT_FAILED);
+			$evt->setResult(\Swift_Events_SendEvent::RESULT_SUCCESS);
 			$this->_event_dispatcher->dispatchEvent($evt, 'sendPerformed');
 		}
 
