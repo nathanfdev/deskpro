@@ -183,6 +183,40 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			self.fireEvent('close');
 			self.destroy();
 		});
+
+		this.loadLastConvo();
+	},
+
+	loadLastConvo: function() {
+		var data = [];
+		Array.each(this.agentIds, function(id) {
+			data.push({
+				name: 'agent_ids[]',
+				value: id
+			});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/agent-chat/get-last-convo',
+			data: data,
+			contentType: 'json',
+			context: this,
+			success: function(data) {
+				if (data.conversation_id) {
+					this.convoId = data.conversation_id;
+				}
+
+				if (data.messages) {
+					Array.each(data.messages, function(messageInfo) {
+						if (messageInfo.agent_id == DESKPRO_PERSON_ID) {
+							this.showMyMessage(messageInfo.message);
+						} else {
+							this.showMessage(messageInfo.agent_id, messageInfo.message, messageInfo.time);
+						}
+					}, this);
+				}
+			}
+		});
 	},
 
 	resetPosition: function() {

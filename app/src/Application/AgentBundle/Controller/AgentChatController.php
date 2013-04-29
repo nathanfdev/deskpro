@@ -141,6 +141,46 @@ class AgentChatController extends AbstractController
 		));
 	}
 
+	/**
+	 * Loads messages from the last conversation with agents
+	 */
+	public function loadConvoMessagesAction()
+	{
+		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
+		$date_cut = new \DateTime('-5 hours');
+
+		$find_agent_ids = $agent_ids;
+		$find_agent_ids[] = $this->person['id'];
+
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
+		if (!$conversation) {
+			return $this->createJsonResponse(array(
+				'messages' => array()
+			));
+		}
+
+		$messages = $this->em->createQuery("
+			SELECT m
+			FROM DeskPRO:ChatMessage m
+			WHERE m.conversation = ?0
+			ORDER BY m.id ASC
+		")->setParameters(array($conversation))->execute();
+
+		$data = array();
+		$data['conversation_id'] = $conversation;
+		$data['messages'] = array();
+		foreach ($messages as $message) {
+			$data['messages'][] = array(
+				'id'       => $message->id,
+				'agent_id' => $message->author->id,
+				'message'  => $message->content,
+				'time'     => $message->date_created->getTimestamp()
+			);
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
 	############################################################################
 	# List old chats
 	############################################################################

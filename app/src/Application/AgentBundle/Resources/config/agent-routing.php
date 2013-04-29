@@ -2566,6 +2566,13 @@ $collection->add('agent_agentchat_getonlineagents', new Route(
 	array()
 ));
 
+$collection->add('agent_agentchat_get_last_convo', new Route(
+	'/agent-chat/get-last-convo',
+	array('_controller' => 'AgentBundle:AgentChat:loadConvoMessages'),
+	array(),
+	array()
+));
+
 $collection->add('agent_agentchat_send_message', new Route(
 	'/agent-chat/send-message/{conversation_id}',
 	array('_controller' => 'AgentBundle:AgentChat:sendMessage'),
