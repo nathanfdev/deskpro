@@ -242,6 +242,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 						self.ticketPage.getEl('field_errors').show().addClass('on');
 
+						self.ticketPage.getEl('field_edit_start').click();
 						self.ticketPage.getEl('field_edit_cancel').show();
 						self.ticketPage.getEl('field_edit_save').show();
 						self.ticketPage.getEl('field_edit_controls').removeClass('loading');

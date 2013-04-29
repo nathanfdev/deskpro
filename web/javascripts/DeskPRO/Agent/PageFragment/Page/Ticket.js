@@ -673,6 +673,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					self.getEl('field_errors').show().addClass('on');
 
+					self.getEl('field_edit_start').click();
 					self.getEl('field_edit_cancel').show();
 					self.getEl('field_edit_save').show();
 					self.getEl('field_edit_controls').removeClass('loading');
