@@ -1608,6 +1608,7 @@ class TicketController extends AbstractController
 			'client_messages'                  => $client_messages,
 			'cc_list'                          => $cc_list,
 			'error_messages'                   => $error_messages ?: false,
+			'notified_agents'                  => $notify_agent_ids,
 		));
 
 		return $this->createJsonResponse($data);

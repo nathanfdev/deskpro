@@ -682,6 +682,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					keepOpen = true;
 				}
 
+				if (result.notified_agents && DeskPRO.Agent.Widget.AgentChatWin_Registry) {
+					Array.each(result.notified_agents, function(aid) {
+						aid = parseInt(aid);
+						Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(v,k) {
+							if (v.agentIds.length == 1 && v.agentIds.indexOf(aid) !== -1) {
+								v.loadLastConvo();
+							}
+						});
+					});
+				}
+
 				ajaxHit = result;
 				hitDone();
 			}
