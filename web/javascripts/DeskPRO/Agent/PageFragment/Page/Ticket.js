@@ -382,9 +382,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			page = parseInt(messagesWrap.data('page'));
 		}
 
+		var loadDiv = false;
 		if (!noShowLoading) {
-			messagePageWrap.empty();
-			messagePageWrap.html('<div style="padding: 25px;"><div class="loading-icon-big">&nbsp;</div></div>');
+			loadDiv = $('<div style="padding: 25px;"><div class="loading-icon-big">&nbsp;</div></div>');
+			if (!this.meta.ticket_reverse_order) {
+				messagePageWrap.empty();
+			}
+			messagePageWrap.append(loadDiv);
 			this.updateUi();
 		}
 
@@ -394,9 +398,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				messagePageWrap.empty();
-				messagePageWrap.html(html);
-				this._initMessage(messagePageWrap);
+				if (loadDiv) {
+					loadDiv.remove();
+				}
+				if (this.meta.ticket_reverse_order) {
+					var div = $('<div></div>');
+					div.html(html);
+					this._initMessage(messagePageWrap);
+
+					messagePageWrap.append(div);
+				} else {
+					messagePageWrap.empty();
+					messagePageWrap.html(html);
+					this._initMessage(messagePageWrap);
+				}
 				this.updateUi();
 
 				var d = messagePageWrap.find('> div').first();
@@ -413,11 +428,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						this.getEl('message_next_page').hide();
 					} else {
 						this.getEl('message_next_page').show();
-					}
-					if (page == 1) {
-						this.getEl('message_prev_page').hide();
-					} else {
-						this.getEl('message_prev_page').show();
 					}
 				} else {
 					if (page == numPages) {
