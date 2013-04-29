@@ -19,6 +19,19 @@
 	{% endif %}
 {% endblock %}
 {% block form_extra2 %}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Agent Only</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="dp-input-group">
+				<label>
+					<input type="checkbox" name="fielddef[is_agent_field]" value="1" {% if field.is_agent_field %}checked="checked"{% endif %} />
+					Only show this field to agents (this option can be overriden in the <a href="{{ path('admin_tickets_editor') }}">layout editor</a>).
+				</label>
+			</div>
+		</div>
+	</div>
 	{% if custom_form_deps_default or custom_form_deps %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">

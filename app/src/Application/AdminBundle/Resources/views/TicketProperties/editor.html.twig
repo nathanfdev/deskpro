@@ -210,10 +210,18 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 				<div class="dp-form">
 					<div class="choices-container"></div>
 					<div class="dp-form-row">
-						<div class="dp-form-label">
+						<div class="dp-form-label agent_only_opt">
 							<label>
 								<input type="checkbox" class="agent_only" name="agent_only" value="1" />
 								Only show this field for agents
+							</label>
+							<br />
+							<br />
+						</div>
+						<div class="dp-form-label not_agent_only_opt">
+							<label>
+								<input type="checkbox" class="not_agent_only" name="not_agent_only" value="1" />
+								Show this field for both users and agents
 							</label>
 							<br />
 							<br />

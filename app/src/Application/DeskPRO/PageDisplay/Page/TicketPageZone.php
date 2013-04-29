@@ -128,6 +128,16 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 			$data = array();
 			foreach ($page_display->data as $k => $d) {
 				if (!isset($d['agent_only']) || !$d['agent_only']) {
+					if (!empty($d['field_type']) && $d['field_type'] == 'ticket_field') {
+						$field = App::getSystemService('ticket_fields_manager')->getFieldFromId($d['field_id']);
+						if (!$field) {
+							continue;
+						}
+						if ($field->is_agent_field && (!isset($d['not_agent_only']) || !$d['not_agent_only'])) {
+							continue;
+						}
+					}
+
 					$data[$k] = $d;
 				}
 			}

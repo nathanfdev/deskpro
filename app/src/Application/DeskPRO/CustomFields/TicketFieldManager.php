@@ -41,6 +41,50 @@ use Doctrine\ORM\EntityManager;
 
 class TicketFieldManager extends FieldManager
 {
+	/**
+	 * Get a collection of all top-level (parent) fields
+	 *
+	 * @return array
+	 */
+	public function getFields()
+	{
+		if ($this->fields === null) {
+			$this->fields = array();
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+
+			foreach ($all_fields as $f) {
+
+				$this->all_fields[$f->getId()] = $f;
+
+				if (!$f->getParentId()) {
+					$this->fields[$f->getId()] = $f;
+				}
+
+				if ($p = $f->getParentId()) {
+					if (!isset($this->field_to_children[$p])) {
+						$this->field_to_children[$p] = array();
+					}
+					$this->field_to_children[$p][$f->getId()] = $f;
+				}
+			}
+
+			// Choice fields that have no options are considered disabled
+			foreach ($this->fields as $f) {
+				if ($f->isChoiceType()) {
+					if (!$this->getFieldChildren($f)) {
+						unset(
+							$this->all_fields[$f->getId()],
+							$this->fields[$f->getId()],
+							$this->field_to_children[$f->getId()]
+						);
+					}
+				}
+			}
+		}
+
+		return $this->fields;
+	}
+
 	public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
 	{
 		if (!$ticket->getTicketLogger()) {
