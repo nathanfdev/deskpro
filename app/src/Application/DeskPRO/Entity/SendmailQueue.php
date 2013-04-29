@@ -61,6 +61,11 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
+	protected $from_address;
+
+	/**
+	 * @var string
+	 */
 	protected $to_address;
 
 	/**

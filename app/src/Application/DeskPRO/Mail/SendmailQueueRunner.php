@@ -157,7 +157,7 @@ class SendmailQueueRunner implements Loggable
 			return;
 		}
 
-		if ($success) {
+		if (0 && $success) {
 			$this->blob_storage->deleteBlobRecord($sendmail->blob);
 			$this->db->delete('sendmail_queue', array('id' => $sendmail->id));
 		} else {
@@ -236,7 +236,7 @@ class SendmailQueueRunner implements Loggable
 	 */
 	public function sendJobBlob(Blob $blob)
 	{
-		if (defined('DP_SMTP_DESKPRO_QUEUE_HOST') || !DP_SMTP_DESKPRO_QUEUE_HOST || !defined('DP_SMTP_DESKPRO_QUEUE_PORT') || !DP_SMTP_DESKPRO_QUEUE_PORT) {
+		if (!defined('DP_SMTP_DESKPRO_QUEUE_HOST') || !DP_SMTP_DESKPRO_QUEUE_HOST || !defined('DP_SMTP_DESKPRO_QUEUE_PORT') || !DP_SMTP_DESKPRO_QUEUE_PORT) {
 			throw new \RuntimeException("The DeskPRO queue server is not being used");
 		}
 
@@ -251,16 +251,27 @@ class SendmailQueueRunner implements Loggable
 
 
 	/**
-	 * @return
+	 * @return \Application\DeskPRO\Entity\SendmailQueue
 	 */
 	public function getNext()
 	{
-		return $this->em->createQuery("
+		$date = date('Y-m-d H:i:s');
+		$this->logger->logDebug("Getting next send with date < $date");
+
+		$next = $this->em->createQuery("
 			SELECT s, b
 			FROM DeskPRO:SendmailQueue s
 			LEFT JOIN s.blob b
 			WHERE s.date_next_attempt < ?0 AND b IS NOT NULL
 			ORDER BY s.date_next_attempt ASC
-		")->setMaxResults(1)->setParameters(array(date('Y-m-d H:i:s')))->getOneOrNullResult();
+		")->setMaxResults(1)->setParameters(array($date))->getOneOrNullResult();
+
+		if ($next) {
+			$this->logger->logDebug("Got next: {$next->id}");
+			return $next;
+		}
+
+		$this->logger->logDebug("There is no next");
+		return null;
 	}
 }

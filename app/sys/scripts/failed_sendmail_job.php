@@ -45,13 +45,17 @@ use Orb\Util\Web;
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
 /**
- * Take a request that saves a failed email
+ * Take a request that saves a failed email.
+ *
+ * The mailfile payload format is like: <headers>\n\n<data>\n\n<email>
+ * We save the payload as-is, but parse out the 'data' (json encoded array) just
+ * so we can save the proper subject/address data on the SendmailQueue record.
  */
 class FailedSendmailJob extends LoaderAbstract
 {
 	public function runAction()
 	{
-		$auth = dp_get_config('set_failed_sendmail_job_auth');
+		$auth = defined('DPC_SAVE_FAILED_MAIL_AUTH') ? DPC_SAVE_FAILED_MAIL_AUTH : null;
 		if (!$auth || !isset($_GET[$auth])) {
 			echo 'DP_FAIL_AUTH';
 			exit;
@@ -62,56 +66,41 @@ class FailedSendmailJob extends LoaderAbstract
 			exit(1);
 		}
 
-		// email data
-		if (!isset($_POST['data'])) {
-			echo 'DP_MISSING_DATA';
-			exit;
-		}
-
-		$data = @json_decode($_POST['data'], true);
-
-		if (!$data) {
-			echo 'DP_INVALID_DATA';
-			exit;
-		}
-
-		// job data
-		if (!isset($_POST['job_data'])) {
-			echo 'DP_MISSING_JOBDATA';
-			exit;
-		}
-
-		$job_data = @json_decode($_POST['job_data'], true);
-
-		if (!$job_data) {
-			echo 'DP_INVALID_JOBDATA';
-			exit;
-		}
-
 		#------------------------------
-		# Save the job message file
+		# Parse out the headers/data
+		# from the payload so we can fetch the subject/addresses bit
 		#------------------------------
 
-		$tmppath = tempnam(sys_get_temp_dir(), 'dpe');
-		$fp = fopen($tmppath, 'w');
+		$data = '';
+		$mode = 0;
+		$fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
 
-		$header_string = Arrays::implodeTemplate($job_data, "{KEY}: {VAL}\n");
-		fwrite($fp, $header_string . "\n" . json_encode($data) . "\n\n");
+		while (!feof($fp)) {
+			$l = fgets($fp);
+			if ($l == "\n") {
+				$mode++;
+			} elseif ($mode == 1) {
+				$data .= $l;
+			}
 
-		$up_fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
-		while (!feof($up_fp)) {
-			fwrite($fp, fread(1024, $up_fp));
+			if ($mode > 1) {
+				break;
+			}
 		}
-		fclose($up_fp);
-
 		fclose($fp);
 
+		$data = @json_decode($data, true);
+		if (!$data) {
+			echo 'DP_BAD_MAILFILE';
+			exit;
+		}
+
 		#------------------------------
-		# Save it as a failed email
+		# Save it
 		#------------------------------
 
 		$container = $this->bootFullSystem();
-		$blob = $container->getBlobStorage()->createBlobRecordFromFile($tmppath, 'sendmail.job', 'plain/text');
+		$blob = $container->getBlobStorage()->createBlobRecordFromFile($_FILES['mailfile']['tmp_name'], 'sendmail.job', 'plain/text');
 
 		$email = new SendmailQueue();
 		$email->blob         = $blob;

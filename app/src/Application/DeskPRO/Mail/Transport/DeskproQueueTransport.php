@@ -245,7 +245,7 @@ class DeskproQueueTransport implements \Swift_Transport
 
 		$data = array_merge($data, array(
 			'subject'        => (string)$message->getSubject(),
-			'from_addresses' => '',
+			'from_addresses' => array(),
 			'to_addresses'   => array(),
 			'cc_addresses'   => array(),
 			'bcc_addresses'  => array(),
@@ -316,9 +316,9 @@ class DeskproQueueTransport implements \Swift_Transport
 
 		$fp = fopen($file_path, 'r');
 		while (!feof($fp)) {
-			$this->_buf->write(fgets($fp));
+			$this->_buf->write(fread($fp, 1024));
 		}
-		fclose($file_path);
+		fclose($fp);
 
 		$this->_buf->write("\n" . chr(4) . "\n");
 

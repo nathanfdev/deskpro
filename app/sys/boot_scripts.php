@@ -102,6 +102,10 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/savemail.php';
 		break;
 
+	case 'save_failed_sendmail':
+		require DP_ROOT . '/sys/scripts/failed_sendmail_job.php';
+		break;
+
 	case 'chat_status':
 		require DP_ROOT . '/sys/scripts/chat_status.php';
 		break;
