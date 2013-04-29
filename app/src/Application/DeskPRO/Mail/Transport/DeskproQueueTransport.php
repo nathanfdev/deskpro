@@ -207,6 +207,13 @@ class DeskproQueueTransport implements \Swift_Transport
 		}
 		$this->next_job_headers = null;
 
+		if (defined('DPC_SITE_ID')) {
+			$job_headers['site_id'] = DPC_SITE_ID;
+		}
+		if (defined('DPC_SITE_DOMAIN')) {
+			$job_headers['site_domain'] = DPC_SITE_DOMAIN;
+		}
+
 		if (!$job_headers) {
 			$job_headers['created_at'] = time();
 		}
