@@ -3,9 +3,9 @@
 	<ul>
 		<li><a href="{{ path('admin_usergroups_new') }}">{{ phrase('admin.user_rules.user_rules') }}</a></li>
 		{% if rule.id %}
-			<li>{{ phrase('admin.user_rules.new_rule') }}</li>
+			<li><a href="{{ path('admin_userrules_edit', {rule_id:rule.id}) }}">{{ phrase('admin.user_rules.edit_rule') }}</a></li>
 		{% else %}
-			<li>{{ phrase('admin.user_rules.edit_rule') }}</li>
+			<li>{{ phrase('admin.user_rules.new_rule') }}</li>
 		{% endif %}
 	</ul>
 	{% if rule.id %}
@@ -48,5 +48,9 @@
 
 <button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>
+
+<div style="padding-top: 10px; margin-top: 20px; border-top: 1px solid #ccc;">
+	<a href="{{ path('admin_userrules_apply', {rule_id:rule.id}) }}">Click here to apply this rule to all existing users &rarr;</a>
+</div>
 
 {% endblock %}

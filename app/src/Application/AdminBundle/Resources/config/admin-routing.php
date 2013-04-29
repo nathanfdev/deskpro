@@ -1545,6 +1545,20 @@ $collection->add('admin_userrules_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_userrules_apply', new Route(
+	'/user-rules/{rule_id}/apply',
+	array('_controller' => 'AdminBundle:UserRules:apply'),
+	array('rule_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_userrules_applyrun', new Route(
+	'/user-rules/{rule_id}/apply-run',
+	array('_controller' => 'AdminBundle:UserRules:applyRun'),
+	array('rule_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_userrules_delete', new Route(
 	'/user-rules/{rule_id}/delete',
 	array('_controller' => 'AdminBundle:UserRules:delete'),

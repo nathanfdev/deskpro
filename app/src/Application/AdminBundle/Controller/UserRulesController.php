@@ -146,4 +146,81 @@ class UserRulesController extends AbstractController
 
 		return $this->redirectRoute('admin_userrules');
 	}
+
+	############################################################################
+	# apply
+	############################################################################
+
+	public function applyAction($rule_id)
+	{
+		$rule = $this->em->getRepository('DeskPRO:UserRule')->find($rule_id);
+
+		if (!$rule) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->render('AdminBundle:UserRules:apply-rule.html.twig', array(
+			'rule' => $rule,
+		));
+	}
+
+	public function applyRunAction($rule_id)
+	{
+		$rule = $this->em->getRepository('DeskPRO:UserRule')->find($rule_id);
+
+		if (!$rule) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$p = $this->in->getUint('p');
+		$per_page = 2500;
+		$per_page = 1;
+		$start = $p * $per_page;
+
+		$email_to_user = $this->db->fetchAllKeyValue("
+			SELECT email, person_id
+			FROM people_emails
+			WHERE is_validated = 1
+			ORDER BY id ASC
+			LIMIT $start, $per_page
+		");
+
+		if (!$email_to_user) {
+			return $this->createJsonResponse(array(
+				'has_more' => false
+			));
+		}
+
+		$did_user = array();
+		$batch = array();
+		foreach ($email_to_user as $email => $user_id) {
+			if (isset($did_user[$user_id])) {
+				continue;
+			}
+
+			if ($rule->isEmailMatch($email)) {
+				$did_user[$user_id] = true;
+				if ($rule->add_organization) {
+					$this->db->update('people', array(
+						'organization_id' => $rule->add_organization->id
+					), array('id' => $user_id));
+				}
+				if ($rule->add_usergroup) {
+					$batch[] = array(
+						'person_id' => $user_id,
+						'usergroup_id' => $rule->add_usergroup->id
+					);
+				}
+			}
+		}
+
+		if ($batch) {
+			$this->db->batchInsert('person2usergroups', $batch, true);
+		}
+
+		return $this->createJsonResponse(array(
+			'log_text' => 'Done batch #' . ($p+1) . ' ...',
+			'has_more' => true
+		));
+	}
 }
