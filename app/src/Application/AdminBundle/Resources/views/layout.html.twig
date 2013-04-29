@@ -14,6 +14,7 @@
 		{% else %}
 			DP_DEBUG = false;
 		{% endif %}
+		{% if app.isCloud() %}DP_IS_CLOUD = true;{% else %}DP_IS_CLOUD = false;{% endif %}
 	</script>
 
 	{{ dp_asset_html('agent_vendors_css') }}

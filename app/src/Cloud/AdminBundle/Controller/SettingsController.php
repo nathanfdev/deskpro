@@ -57,6 +57,7 @@ class SettingsController extends BaseSettingsController
 
 		$update_settings = array(
 			'core.cloud_custom_domain' => $custom_domain ?: null,
+			'core.deskpro_url' => 'http://' . $custom_domain . '/',
 		);
 
 		foreach ($update_settings as $k => $v) {
@@ -70,41 +71,60 @@ class SettingsController extends BaseSettingsController
 
 	protected function _postSaveSettings()
 	{
-		$new_domain = strtolower($this->container->getSetting('core.cloud_custom_domain'));
-		if ($new_domain && (!preg_match('#^[a-z0-9\-\.]+$#', $new_domain) || preg_match('#\.deskpro\.com$#', $new_domain))) {
-			$new_domain = '';
+		$url_type = $this->in->getString('cloud_domain');
+
+		if ($url_type == 'default') {
+			if ($this->in->getString('cloud_domain_ssl') == 'https') {
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_url', 'https://' . DPC_SITE_DOMAIN . '/');
+			} else {
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_url', 'http://' . DPC_SITE_DOMAIN . '/');
+			}
+
 			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.cloud_custom_domain', null);
 			$this->container->getSettingsHandler()->setTemporarySettingValues(array('core.cloud_custom_domain' => null));
-		}
-
-		if ($new_domain != $this->old_domain) {
-			$set = $new_domain;
-
-			$tmpdata = new \Application\DeskPRO\Entity\TmpData();
-			$tmpdata->setType('dpc_set_domain');
-			$tmpdata->setData('by_person', $this->person->getId());
-			$tmpdata->setData('set_domain', $set);
-			$tmpdata->date_expire = new \DateTime('+30 minutes');
-
-			$this->em->persist($tmpdata);
-			$this->em->flush();
-
-			$url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
-
-			try {
-				$client = new \Zend\Http\Client(null, array('timeout' => 10));
-				$client->setMethod(\Zend\Http\Request::METHOD_GET);
-				$client->setUri($url);
-				$r = $client->send();
-			} catch (\Exception $e) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+		} else {
+			$new_domain = strtolower($this->container->getSetting('core.cloud_custom_domain'));
+			if ($new_domain && (!preg_match('#^[a-z0-9\-\.]+$#', $new_domain) || preg_match('#\.deskpro\.com$#', $new_domain))) {
+				$new_domain = '';
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.cloud_custom_domain', null);
+				$this->container->getSettingsHandler()->setTemporarySettingValues(array('core.cloud_custom_domain' => null));
 			}
-		}
 
-		// Make sure the master domain is set correctly if the custom domain was removed
-		$master_domain = @parse_url($this->container->getSetting('core.deskpro_url'));
-		if ($master_domain && $master_domain['host'] == $this->old_domain) {
-			$this->container->getSetting('core.deskpro_url', 'http://' . DPC_SITE_DOMAIN . '/');
+			if ($new_domain != $this->old_domain) {
+				$set = $new_domain;
+
+				$tmpdata = new \Application\DeskPRO\Entity\TmpData();
+				$tmpdata->setType('dpc_set_domain');
+				$tmpdata->setData('by_person', $this->person->getId());
+				$tmpdata->setData('set_domain', $set);
+				$tmpdata->date_expire = new \DateTime('+30 minutes');
+
+				$this->em->persist($tmpdata);
+				$this->em->flush();
+
+				$url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
+
+				try {
+					$client = new \Zend\Http\Client(null, array('timeout' => 10));
+					$client->setMethod(\Zend\Http\Request::METHOD_GET);
+					$client->setUri($url);
+					//$r = $client->send();
+				} catch (\Exception $e) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+				}
+
+				if ($new_domain) {
+					$this->container->getSettingsHandler()->setSetting('core.deskpro_url', 'http://' . $new_domain . '/');
+				}
+			}
+
+			// Make sure the master domain is set correctly if the custom domain was removed
+			if (!$new_domain) {
+				$master_domain = @parse_url($this->container->getSetting('core.deskpro_url'));
+				if ($master_domain && $master_domain['host'] == $this->old_domain) {
+					$this->container->getSettingsHandler()->setSetting('core.deskpro_url', 'http://' . DPC_SITE_DOMAIN . '/');
+				}
+			}
 		}
 	}
 

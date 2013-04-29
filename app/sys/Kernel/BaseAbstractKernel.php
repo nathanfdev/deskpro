@@ -364,7 +364,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	 */
 	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		if (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections']) {
+		if (
+			(isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
+			|| strpos($request->getPathInfo(), '/admin/') === 0
+		) {
 			return null;
 		}
 

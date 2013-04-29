@@ -132,6 +132,7 @@ class TemplatingExtension extends \Twig_Extension
 			'array_attr'                       => new \Twig_Function_Method($this, 'getArrayAttribute'),
 			'min'                              => new \Twig_Function_Method($this, 'min'),
 			'max'                              => new \Twig_Function_Method($this, 'max'),
+			'match'                            => new \Twig_Function_Method($this, 'match'),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1368,6 +1369,16 @@ class TemplatingExtension extends \Twig_Extension
 		$content = preg_replace('#<\s*script#i', '<deskpro_script', $content);
 		$content = preg_replace('#<\s*/\s*script#i', '</deskpro_script', $content);
 		return $content;
+	}
+
+	public function match($str, $regex)
+	{
+		$regex = Strings::getInputRegexPattern($regex);
+		if (!$regex) {
+			return false;
+		}
+
+		return preg_match($regex, $str);
 	}
 }
 

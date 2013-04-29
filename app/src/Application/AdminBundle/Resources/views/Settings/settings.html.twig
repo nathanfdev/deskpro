@@ -22,13 +22,15 @@
 					<label>{{ phrase('admin.settings.your_helpdesk_name') }}</label>
 					<input type="text" name="settings[core.deskpro_name]" value="{{app.getSetting('core.deskpro_name')}}" size="40" />
 				</td>
-				<td>
-					<label>{{ phrase('admin.settings.your_helpdesk_url') }}</label>
-					<input type="text" id="helpdesk_url" name="settings[core.deskpro_url]" value="{{app.getSetting('core.deskpro_url')}}" data-original-value="{{app.getSetting('core.deskpro_url')}}" size="40" />
-					<div id="helpdesk_url_invalid" style="color: red; display: none;">
-						The URL you entered appears to be invalid or the server is not responding.<br/>You should check the URL and try again.
-					</div>
-				</td>
+				{% if not app.isCloud() %}
+					<td>
+						<label>{{ phrase('admin.settings.your_helpdesk_url') }}</label>
+						<input type="text" id="helpdesk_url" name="settings[core.deskpro_url]" value="{{app.getSetting('core.deskpro_url')}}" data-original-value="{{app.getSetting('core.deskpro_url')}}" size="40" />
+						<div id="helpdesk_url_invalid" style="color: red; display: none;">
+							The URL you entered appears to be invalid or the server is not responding.<br/>You should check the URL and try again.
+						</div>
+					</td>
+				{% endif %}
 			</tr></table>
 		</div>
 		<div class="field_row">
@@ -51,7 +53,7 @@
 	<div class="setting_fields">
 		<div class="field_row">
 			<label style="display: inline-block"><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.helpdesk_is_offline %}checked="checked"{% endif %} />
-				{{ phrase('admin.settings.notice_helpdesk_disabled') }}</label>
+				Make the helpdesk disabled</label>
 			&nbsp;&nbsp;
 			<button class="clean-white" onclick="$(this).hide(); $('#offline_message_edit').show(); return false;">Edit offline message</button>
 		</div>
@@ -60,14 +62,19 @@
 			<textarea name="offline_message" style="width: 80%; height: 190px; font-family: Monaco, Consolas, monospace; font-size: 11px;">{{ offline_message }}</textarea>
 			<br/><br/>
 		</div>
-		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.rewrite_urls]" {% if app.getSetting('core.rewrite_urls') %}checked="checked"{% endif %} />
-				{{ phrase('admin.settings.rewrite_urls_desc') }}</label>
-		</div>
-		<div class="field_row">
-			<label><input type="checkbox" id="redirect_correct_url" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} onclick="if (this.checked) $(this).addClass('do-check'); else $(this).removeClass('do-check'); " />
-				{{ phrase('admin.settings.notice_always_redirect_users') }}
-		</div>
+		{% if app.isCloud() %}
+			<input type="hidden" name="settings[core.redirect_correct_url]" value="1" />
+			<input type="hidden" name="settings[core.rewrite_urls]" value="1" />
+		{% else %}
+			<div class="field_row">
+				<label><input type="checkbox" name="settings[core.rewrite_urls]" {% if app.getSetting('core.rewrite_urls') %}checked="checked"{% endif %} />
+					{{ phrase('admin.settings.rewrite_urls_desc') }}</label>
+			</div>
+			<div class="field_row">
+				<label><input type="checkbox" id="redirect_correct_url" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} onclick="if (this.checked) $(this).addClass('do-check'); else $(this).removeClass('do-check'); " />
+					{{ phrase('admin.settings.notice_always_redirect_users') }}
+			</div>
+		{% endif %}
 	</div>
 </div>
 

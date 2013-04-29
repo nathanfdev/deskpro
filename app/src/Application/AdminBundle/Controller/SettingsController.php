@@ -69,6 +69,9 @@ class SettingsController extends AbstractController
 
 		if ($this->in->getBool('process')) {
 
+			if (empty($_POST['settings']['core.deskpro_url'])) {
+				$_POST['settings']['core.deskpro_url'] = App::getSetting('core.deskpro_url');
+			}
 			$url = rtrim(preg_replace('#index\.php/?$#', '', $_POST['settings']['core.deskpro_url']), '/') . '/';
 			if (!preg_match('#^https?://#', $url)) {
 				$url = 'http://' . $url;
