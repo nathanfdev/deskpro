@@ -29,6 +29,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit = new Orb.Class({
 			$(this).data('add-count', count+1);
 
 			editor.addNewRow($('.search-terms', actList), basename);
+			self.el.find('article').first().scrollTop(10000);
 		});
 
 		var count = 0;

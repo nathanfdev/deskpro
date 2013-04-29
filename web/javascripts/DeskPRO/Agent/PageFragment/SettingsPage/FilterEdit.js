@@ -31,6 +31,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 			$(this).data('add-count', count+1);
 
 			editor.addNewRow($('.search-terms', critList), basename);
+			self.el.find('article').first().scrollTop(10000);
 		});
 
 		var count = 0;
