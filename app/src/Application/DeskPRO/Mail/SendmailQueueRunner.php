@@ -157,7 +157,7 @@ class SendmailQueueRunner implements Loggable
 			return;
 		}
 
-		if (0 && $success) {
+		if ($success) {
 			$this->blob_storage->deleteBlobRecord($sendmail->blob);
 			$this->db->delete('sendmail_queue', array('id' => $sendmail->id));
 		} else {
