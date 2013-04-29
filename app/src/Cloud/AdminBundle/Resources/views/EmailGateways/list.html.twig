@@ -262,25 +262,47 @@ $(document).ready(function() {
 	});
 });
 
+
+//######################################################################################################################
+// Edit an account
+//######################################################################################################################
+
+$(document).ready(function() {
+	$('.open-edit-email').on('click', function(ev) {
+		ev.preventDefault();
+		var overlay = new DeskPRO.UI.Overlay({
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: $(this).data('url'),
+				type	: 'GET',
+				dataType: 'html'
+			},
+			destroyOnClose: true
+		});
+
+		overlay.open();
+	});
+});
+
 </script>
 {% endblock %}
 {% block pagebar %}
 	<nav>
 		<ul>
 			<li style="margin-right: 8px;"><a href="{{ path('admin_emailgateway_rejections') }}">View Rejections ({{ rejection_count|default('0') }})</a></li>
-			<li class="add"><a href="#" id="newcat_trigger">{{ phrase('admin.gateway.add_email_gateway') }}</a></li>
+			<li class="add"><a href="#" id="newcat_trigger">Add Email Account</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.general.email_gateways') }}</a></li>
+		<li><a href="{{ path('admin_emailgateways') }}">Email Accounts</a></li>
 	</ul>
 {% endblock %}
 {% block page %}
 
 {{ design.helpbox() }}
 	<p>
-		An email gateway is an email address that your users send email to and their emails are processed into tickets in your helpdesk.
-		You can add as many email addresses as you want.
+		Your users send email to these email accounts and those emails are processed into tickets and replies in your helpdesk.
+		You can add as many email accounts as you want.
 	</p>
 {{ design.helpbox_end() }}
 
@@ -289,7 +311,7 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th style="text-align:left" colspan="2">{{ phrase('agent.general.email_address') }}</th>
-				<th style="text-align:left">Department</th>
+				<th style="text-align: left">Custom Alias</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -298,36 +320,11 @@ $(document).ready(function() {
 					<td style="vertical-align:top;">
 						<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');" style="position:relative;top:1px;"><span class="btn-remove"></span></a>
 					</td>
-					<td>
+					<td style="vertical-align: top;">
 						<strong>{{ gateway.title }}</strong>
-						<ul class="small-detail-list">
-							<li>
-								Customing SMTP account:
-								<span
-									class="set-outgoing-account editable-link"
-									data-gateway-id="{{ gateway.id }}"
-									data-gateway-title="{{ gateway.title }}"
-								><span>
-									{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
-										{{ gateway.linked_transport.title }}
-									{% else %}
-										None
-									{% endif %}
-								</span></span>
-							</li>
-							<li>
-								Custom Email Address:
-								<span
-									class="set-gateway-alias editable-link"
-									data-gateway-id="{{ gateway.id }}"
-									data-gateway-title="{{ gateway.title }}"
-								><span>{{ gateway.getAliasEmailAddress()|default('No alias set') }}</span></span>
-							</li>
-						</ul>
-					</td>
-					<td>
+						<br/>
 						<select class="change-linked-dep" data-gateway-id="{{ gateway.id }}">
-							<option value="0" {% if not gateway.department %}selected="selected"{% endif %}>None</option>
+							<option value="0" {% if not gateway.department %}selected="selected"{% endif %}>No linked department</option>
 							{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
 								{% if dep.children|length %}
 									<optgroup label="{{ dep.title }}">
@@ -341,15 +338,53 @@ $(document).ready(function() {
 							{% endfor %}
 						</select>
 					</td>
+					<td style="vertical-align: top">
+						{% if gateway.getAliasEmailAddress() %}
+							<strong>{{ gateway.getAliasEmailAddress() }}</strong>
+						{% else %}
+							<strong><span
+								class="open-edit-email editable-link"
+								data-url="{{ path('admin_emailgateways_cloud_editaccount', {gateway_id: gateway.id}) }}"
+								data-gateway-id="{{ gateway.id }}"
+								data-gateway-title="{{ gateway.title }}"
+							><span>Add a custom email alias</span></span></strong>
+						{% endif %}
+
+						<br/>
+
+						{% if gateway.addresses|length > 2 %}
+							Additional aliases:<br/>
+							<ul class="small-detail-list">
+								{% for addr in gateway.addresses %}
+									<li>{{ addr.match_pattern }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						<div style="padding-top: 5px;">
+							Custom SMTP account:<br/>
+							<ul class="small-detail-list">
+								<li>
+									<span
+										class="set-outgoing-account editable-link"
+										data-gateway-id="{{ gateway.id }}"
+										data-gateway-title="{{ gateway.title }}"
+									><span>
+										{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
+											{{ gateway.linked_transport.title }}
+										{% else %}
+											None
+										{% endif %}
+									</span></span>
+								</li>
+							</ul>
+						</div>
+					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 </div>
-
-<br />
-
-{% include 'AdminBundle:EmailGateways:list-fwd-list.html.twig' %}
 
 <div id="newcat_overlay" style="width: 400px; height: 180px; display: none;">
 	<div class="overlay-title">
@@ -378,80 +413,6 @@ $(document).ready(function() {
 			<button class="clean-white" id="newcat_savebtn">Create Email Address</button>
 		</div>
 		<div id="newcat_loading_wrap" style="display: none;">
-			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
-		</div>
-	</div>
-</div>
-
-<div id="setalias_overlay" style="width: 400px; height: 287px; display: none;">
-	<div class="overlay-title">
-		<span class="close-overlay"></span>
-		<h4>Custom Email Address</h4>
-	</div>
-	<div class="overlay-content">
-		<form class="dp-form" method="POST" action="{{ path('admin_emailgateways_cloud_alias') }}">
-			<div class="dp-form-row">
-				<div class="dp-form-input">
-					This allows you to use a custom email address you control with this mailbox. Any email we send out will be "From" your custom email address.
-				</div>
-			</div>
-
-			<div class="dp-form-row">
-				<div class="dp-form-label">
-					<label>Your Email Address:</label>
-				</div>
-				<div class="dp-form-input">
-					<input type="text" id="email_alias" value="" placeholder="Enter the email address you are forwarding" style="width: 300px;" />
-					<div id="setalias_err" style="display: none; padding: 6px; color: #f00;">
-						<div class="invalid_email">Please enter a valid email address</div>
-						<div class="dupe">You already have this alias attached to a different account</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="dp-form-row">
-				<div class="dp-form-input">
-					<strong>Important:</strong>
-					Make sure your email address to forwards mail to<br /><span class="email-account-title"></span>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="overlay-footer">
-		<div id="setalias_save_wrap">
-			<button class="clean-white" id="setalias_save">Save Custom Alias</button>
-		</div>
-		<div id="setalias_loading_wrap" style="display: none;">
-			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
-		</div>
-	</div>
-</div>
-
-<div id="setout_overlay" style="width: 700px; height: 500px; display: none;">
-	<div class="overlay-title">
-		<span class="close-overlay"></span>
-		<h4>Custom Outgoing Email Account</h4>
-	</div>
-	<div class="overlay-content">
-		<div id="setout_err" class="alert-message block-message error errors-box" style="display: none;">
-			<strong>Please correct the following errors:</strong>
-			<ul>
-				<li class="error-item error_default_email">Please enter a valid default "From" email address</li>
-				<li class="error-item error_smtp_host">Please enter a host for your SMTP server</li>
-				<li class="error-item error_smtp_port">Please enter a valid connection port for your SMTP server</li>
-				<li class="error-item error_smtp_username">You indicated your SMTP server requires authentication. You need to enter a username and password.</li>
-				<li class="error-item error_gapps_username">Please enter your Gmail / Google Apps email address</li>
-				<li class="error-item error_gapps_password">Please enter your Gmail / Google Apps password</li>
-			</ul>
-		</div>
-
-		<div id="setout_form_container"></div>
-	</div>
-	<div class="overlay-footer">
-		<div id="setout_save_wrap">
-			<button class="clean-white" id="setout_save">Save Custom Outgoing Email Account</button>
-		</div>
-		<div id="setout_loading_wrap" style="display: none;">
 			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
 		</div>
 	</div>

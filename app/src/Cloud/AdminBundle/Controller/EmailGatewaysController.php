@@ -283,6 +283,32 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		));
 	}
 
+	############################################################################
+	# edit-account
+	############################################################################
+
+	public function cloudEditAccountAction($gateway_id)
+	{
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $gateway_id);
+
+		if (!$gateway) {
+			throw $this->createNotFoundException();
+		}
+
+		$transport = $gateway->linked_transport;
+		if (!$transport) {
+			$transport = new \Application\DeskPRO\Entity\EmailTransport();
+		}
+		$edittrans = new EditEmailTransportModel($transport);
+		$trans_form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
+
+		return $this->render('CloudAdminBundle:EmailGateways:edit-account.html.twig', array(
+			'gateway' => $gateway,
+			'edittrans' => $edittrans,
+			'trans_form' => $trans_form->createView(),
+		));
+	}
+
 	####################################################################################################################
 
 	public function editAccountAction($id) { return $this->redirectRoute('admin_emailgateways'); }

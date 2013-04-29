@@ -201,6 +201,12 @@ $collection->add('admin_emailgateways_cloud_setoutgoing_form', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_cloud_editaccount', new Route(
+	'/email/incoming/cloud-edit-account/{gateway_id}',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:cloudEditAccount'),
+	array(),
+	array()
+));
 
 ################################################################################
 # Email Transports
