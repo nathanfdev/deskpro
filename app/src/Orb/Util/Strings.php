@@ -1243,21 +1243,21 @@ class Strings
 	{
 		$search_replace = array();
 
-		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\._]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\._]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#iu',function($m) use (&$search_replace, $attr) {
 			$email = $m[2] . '@' . $m[3] . '.' . $m[4];
 			$key = md5(mt_rand(0,9999) . microtime());
 			$search_replace[$key] = '<a href="mailto:' . $email . '" '.$attr.'>' . htmlspecialchars($email, \ENT_QUOTES, 'UTF-8') . '</a>';
 			return $key;
 		}, $text);
 
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+([a-zA-Z0-9\?_\-]))#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+([a-zA-Z0-9\?_\-]))#iu',function($m) use (&$search_replace, $attr) {
 			$url = $m[2];
 			$key = md5(mt_rand(0,9999) . microtime());
 			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2], \ENT_QUOTES, 'UTF-8') . '</a>';
 			return $key;
 		}, $text);
 
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)[^\s<>]*)#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)[^\s<>]*)#iu',function($m) use (&$search_replace, $attr) {
 			if ($m[2]) return $m[0];
 
 			$url = ($m[2] ? $m[2] : 'http://') . $m[3];
@@ -1310,7 +1310,8 @@ class Strings
 			}
 
 			$origText = $text->nodeValue;
-			$newText  = self::linkify($origText, '');
+			$newText  = self::linkify(self::postDomDocument($origText), '');
+			$newText  = self::preDomDocument($newText);
 
 			if ($origText != $newText) {
 				$frag = new DOMDocument('1.0', 'UTF-8');
