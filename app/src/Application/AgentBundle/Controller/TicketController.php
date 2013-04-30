@@ -3036,15 +3036,62 @@ class TicketController extends AbstractController
 		return $res;
 	}
 
-	public function viewMessageWindowAction($message_id)
+	public function viewMessageWindowAction($message_id, $type = 'normal')
 	{
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
 		$ticket = $message->ticket;
 
-		return $this->render('AgentBundle:Ticket:ticket-message-window.html.twig', array(
+		$vars = array(
 			'message' => $message,
-			'ticket' => $ticket
-		));
+			'ticket' => $ticket,
+			'type' => $type
+		);
+
+		$message_raw = $message->message_raw ?: '';
+		if (!$message_raw) {
+			$message_raw = $message->message_full;
+			if (!$message_raw) {
+				$message_raw = $message->message;
+			}
+		}
+
+		switch ($type) {
+			case 'raw':
+				require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+				$purifier = new \HTMLPurifier();
+				$config = \HTMLPurifier_Config::createDefault();
+				$config->set('Cache.DefinitionImpl', null);
+				$config->set('Core.Encoding', 'UTF-8');
+				$config->set('HTML.TidyLevel', 'none');
+				// Everything but script/iframe/applet/object
+				$config->set('HTML.Allowed', 'a,abbr,acronym,address,area,b,base,basefont,bdo,big,blockquote,body,br,button,caption,center,cite,code,col,colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame,frameset,h1,2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,menu,meta,noframes,noscript,ol,optgroup,option,p,pre,q,s,samp,select,small,span,strike,strong,style,su,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,u,ul,var');
+				$config->set('HTML.AllowedAttributes', 'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src');
+				$config->set('URI.DisableExternalResources', true);
+				$message_raw = $purifier->purify($message_raw, $config);
+				break;
+
+			case 'source':
+
+				$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+				if ($message->email_source) {
+					$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+					$r->setRawSource($message->email_source->raw_source);
+					$body_html = $r->getBodyHtml() ? $r->getBodyHtml()->getBodyUtf8() : null;
+					$body_text = $r->getBodyText() ? $r->getBodyText()->getBodyUtf8() : null;
+
+					unset($r);
+
+					$vars['body_html'] = $body_html;
+					$vars['body_text'] = $body_text;
+				}
+
+				break;
+		}
+
+		$vars['message_raw'] = $message_raw;
+
+		return $this->render('AgentBundle:Ticket:ticket-message-window.html.twig', $vars);
 	}
 
 	############################################################################

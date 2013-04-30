@@ -1322,8 +1322,8 @@ $collection->add('agent_ticket_message_raw', new Route(
 ));
 
 $collection->add('agent_ticket_message_window', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/window',
-	array('_controller' => 'AgentBundle:Ticket:viewMessageWindow'),
+	'/tickets/{ticket_id}/message-details/{message_id}/window/{type}',
+	array('_controller' => 'AgentBundle:Ticket:viewMessageWindow', 'type' => 'normal'),
 	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 	array()
 ));

@@ -7925,3 +7925,38 @@ table.data-display-table tr th {
 		}
 	}
 }
+
+nav#popup_top_tabbar {
+	margin-left: -12px;
+	height: 35px;
+	overflow: hidden;
+
+	.gradient(rgba(237,238,239,1), rgba(219,220,221,1));
+
+	border-bottom: 1px solid #ACB2B9;
+	padding-left: 12px;
+}
+nav#popup_top_tabbar ul li {
+	display: block;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+
+	background-color: rgb(255, 255, 255);
+	background-color: rgba(255, 255, 255, 0.5);
+	border-right: 1px solid #ACB2B9;
+	text-align: center;
+	padding: 0 12px 0 12px;
+	cursor: pointer;
+	font-size: 13px;
+}
+nav#popup_top_tabbar ul li.on,
+nav#popup_top_tabbar ul li:hover {
+	background-color: rgba(255, 255, 255, 1);
+	.inner-shadow(1px, 1px, 3px, 0.3);
+	text-decoration: underline;
+}
+
+nav#popup_top_tabbar ul li a {
+	color: #000;
+}

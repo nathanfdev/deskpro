@@ -20,12 +20,14 @@
 		{# {% if app.user.is_admin %} #}
 		var DESKPRO_PERSON_ISADMIN = true;
 		{# {% endif %} #}
-
-		$(document).ready(function() {
-			DeskPRO_Window = window.parent.DeskPRO_Window;
-			DeskPRO_Window.initInterfaceServices($(document));
-		});
 	</script>
+
+	<style type="text/css">
+		html, body {
+			background: #fff;
+		}
+	</style>
+
 	{% block page_head %}{% endblock %}
 </head>
 <body class="popup">
