@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
-class TicketData implements DataInterface
+class TicketPersonData implements DataInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
@@ -52,7 +52,7 @@ class TicketData implements DataInterface
 	public function getData()
 	{
 		$data = array();
-		$data['ticket']   = App::getDb()->fetchAssoc("SELECT * FROM tickets WHERE id = ?", array($this->ticket));
+		$data['person'] = App::getDb()->fetchAssoc("SELECT * FROM people WHERE id = ?", array($this->ticket->person->id));
 		return $data;
 	}
 }

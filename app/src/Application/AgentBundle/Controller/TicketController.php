@@ -38,6 +38,8 @@ use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
+use Application\DeskPRO\Debug\Data\TicketLogsData;
+use Application\DeskPRO\Debug\Data\TicketPersonData;
 use Application\DeskPRO\Debug\Data\TicketTriggerData;
 use Application\DeskPRO\Debug\DataReportGenerator;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
@@ -3617,23 +3619,56 @@ class TicketController extends AbstractController
 
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		$report = new DataReportGenerator();
-		$report->addData(new TicketTriggerData());
-		$report->addData(new TicketFilterData());
-		$report->addData(new TicketData($ticket));
-
-		$report_file = $report->generateReport();
-
-		$ext = 'json';
-		if ($report_file['file_encode'] == 'gzip') {
-			$ext .= '.gz';
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('dpd', true);
+		if (!mkdir($tmpdir, 0777, true)) {
+			echo "Could not create temp dir: " . $tmpdir;
+			exit;
 		}
 
-		$response = new Response($report_file['data'], 200, array(
-			'Content-Type' => "application/octet-stream; filename=ticket-{$ticket->id}-report.$ext",
-			'Content-Disposition' => "attachment; filename=ticket-{$ticket->id}-report.$ext"
-		));
-		return $response;
+		$d = new TicketTriggerData();
+		file_put_contents($tmpdir . '/triggers.json', json_encode($d->getData()));
+
+		$d = new TicketFilterData();
+		file_put_contents($tmpdir . '/filters.json', json_encode($d->getData()));
+
+		$d = new TicketData($ticket);
+		file_put_contents($tmpdir . '/ticket.json', json_encode($d->getData()));
+
+		$d = new TicketPersonData($ticket);
+		file_put_contents($tmpdir . '/person.json', json_encode($d->getData()));
+
+		$d = new TicketLogsData($ticket);
+		file_put_contents($tmpdir . '/ticket-log.json', json_encode($d->getData()));
+
+		foreach ($ticket->messages as $message) {
+			file_put_contents($tmpdir . '/message-'.$message->id.'.json', json_encode($message->toArray()));
+
+			if ($message->email_source && $message->email_source->blob) {
+				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
+			}
+		}
+
+		$outfile = $tmpdir.'/zip';
+		$zip = new \PclZip($outfile);
+		$zip->add(
+			$tmpdir,
+			\PCLZIP_OPT_REMOVE_PATH, dirname($tmpdir)
+		);
+
+		header('Content-Type: application/zip; filename=ticket-debug-' . $ticket->id . '.zip');
+		header('Content-Length: ' . filesize($outfile));
+		header('Content-Disposition: attachment; filename=ticket-debug-' . $ticket->id . '.zip');
+
+		$fp = fopen($outfile, 'r');
+		while (!feof($fp)) {
+			echo fread($fp, 1024);
+		}
+		fclose($fp);
+
+		unlink($outfile);
+		$fs = new \Symfony\Component\HttpKernel\Util\Filesystem();
+		$fs->remove($tmpdir);
+		exit;
 	}
 
 	############################################################################

@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
-class TicketData implements DataInterface
+class TicketLogsData implements DataInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
@@ -52,7 +52,13 @@ class TicketData implements DataInterface
 	public function getData()
 	{
 		$data = array();
-		$data['ticket']   = App::getDb()->fetchAssoc("SELECT * FROM tickets WHERE id = ?", array($this->ticket));
+		$data['logs']     = App::getDb()->fetchAll("SELECT * FROM tickets_logs WHERE ticket_id = ? ORDER BY id ASC", array($this->ticket->id));
+
+		$changetracker_log = App::getDb()->fetchColumn("SELECT log FROM ticket_changetracker_logs WHERE ticket_id = ?", array($this->ticket->id));
+		if ($changetracker_log) {
+			$data['changetracker_log'] = $changetracker_log;
+		}
+
 		return $data;
 	}
 }
