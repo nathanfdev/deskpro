@@ -3167,7 +3167,7 @@ class TicketController extends AbstractController
 					$errors['person_email_address_gateway'] = true;
 				}
 
-				$check_person = $this->em->getRepository('DeskPRO::Person')->findOneByEmail($new_email);
+				$check_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
 				if ($check_person && $check_person->is_disabled) {
 					$errors['person_disabled'] = true;
 				}
