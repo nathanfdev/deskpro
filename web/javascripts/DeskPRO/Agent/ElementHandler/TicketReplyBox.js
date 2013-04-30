@@ -616,11 +616,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			agentSelCheck.prop('checked', true);
 
 			if (agentSel.data('auto-switch-status')) {
-				agentSelCheck.on('change', function(){
+				if (agentSelCheck.get(0).checked) {
 					if (self.getElById('action').val().indexOf('macro') === -1) {
 						self.setReplyAsOptionName('awaiting_agent')
 					}
-				});
+				}
 			}
 		});
 		teamSel.on('change', function() {
@@ -634,9 +634,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		teamSelText.text(teamSel.find(':selected').text());
 
 		if (agentSel.data('auto-switch-status')) {
-			agentSelCheck.on('change', function(){
-				if (self.getElById('action').val().indexOf('macro') === -1) {
-					self.setReplyAsOptionName('awaiting_agent')
+			agentSelCheck.on('change', function() {
+				if (agentSelCheck.get(0).checked) {
+					if (self.getElById('action').val().indexOf('macro') === -1) {
+						self.setReplyAsOptionName('awaiting_agent')
+					}
 				}
 			});
 		}
