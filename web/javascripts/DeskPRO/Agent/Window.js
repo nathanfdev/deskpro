@@ -3316,6 +3316,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				focusNode = $(focus[0]),
 				testText;
 
+			if (!focus || !focus[0]) {
+				return;
+			}
+
 			if (focus[0].nodeType == 3) {
 				testText = focusNode.text().substring(0, focus[1]);
 			} else {
