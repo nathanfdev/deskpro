@@ -162,6 +162,13 @@ class TicketSlasController extends AbstractController
 				array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'fail', 'sla_id' => $sla->id)),
 			);
 
+			$warning_time_err = false;
+			if ($warning_trigger->getOptionSeconds() >= $fail_trigger->getOptionSeconds()) {
+				$warning_time_err = true;
+				$time = ($this->in->getString('sla_fail_time')/2) . ' ' . $this->in->getString('sla_warning_scale');
+				$warning_trigger->setEventTriggerOption('time', $time);
+			}
+
 			$action_rules = RuleBuilder::newActionsBuilder();
 			$actions = $action_rules->readForm($this->in->getCleanValueArray('fail_actions', 'raw' , 'discard'));
 			$actions[] = array('type' => 'recalculate_sla_status', 'options' => array());
@@ -226,6 +233,10 @@ class TicketSlasController extends AbstractController
 
 			$this->sendAgentReloadSignal();
 
+			if ($warning_time_err) {
+				return $this->redirectRoute('admin_tickets_sla_edit', array('sla_id' => $sla->id, 'show_warning_time_err' => 1));
+			}
+
 			return $this->redirectRoute('admin_tickets_slas');
 		}
 
@@ -265,6 +276,7 @@ class TicketSlasController extends AbstractController
 			'priorities' => $this->em->getRepository('DeskPRO:TicketPriority')->getNames(),
 
 			'default_work_hours' => $default_work_hours,
+			'show_warning_time_err' => $this->in->getBool('show_warning_time_err'),
 
 			'years' => $years,
 			'months' => array(

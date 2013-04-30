@@ -78,6 +78,14 @@
 	</ul>
 	{% endif %}
 
+	{% if show_warning_time_err %}
+		<ul id="errors_container">
+			<li>
+				The SLA Warning happens before an SLA fails, so the time for an SLA Warning must be lower than the SLA time.
+			</li>
+		</ul>
+	{% endif %}
+
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>Title</label>
@@ -251,7 +259,7 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row" style="margin-top: 30px">
+	<div class="dp-form-row" style="margin-top: 30px; {% if show_warning_time_err %}border: 2px solid red; padding: 6px;{% endif %}">
 		<div class="dp-form-label">
 			<label>SLA Warning</label>
 		</div>
