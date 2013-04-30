@@ -1,10 +1,10 @@
 /*
-	Redactor v8.2.0
-	Updated: November 8, 2012
+	Redactor v8.2.6
+	Updated: April 6, 2013
 
 	http://redactorjs.com/
 
-	Copyright (c) 2009-2012, Imperavi Inc.
+	Copyright (c) 2009-2013, Imperavi Inc.
 	License: http://redactorjs.com/license/
 
 	Usage: $('#content').redactor();
@@ -170,8 +170,10 @@ var RLANG = {
 			observeImages: true,
 			overlay: true, // modal overlay
 
-			allowedTags: ["form", "code", "span", "div", "label", "a", "br", "p", "b", "i", "del", "strike", "u",
-					"img", "video", "audio", "iframe", "object", "embed", "param", "blockquote",
+			allowedTags: ["form", "input", "button", "select", "option", "datalist", "output", "textarea", "fieldset", "legend",
+					"section", "header", "hgroup", "aside", "footer", "article", "details", "nav", "progress", "time", "canvas",
+					"code", "span", "div", "label", "a", "br", "p", "b", "i", "del", "strike", "u",
+					"img", "video", "source", "track", "audio", "iframe", "object", "embed", "param", "blockquote",
 					"mark", "cite", "small", "ul", "ol", "li", "hr", "dl", "dt", "dd", "sup", "sub",
 					"big", "pre", "code", "figure", "figcaption", "strong", "em", "table", "tr", "td",
 					"th", "tbody", "thead", "tfoot", "h1", "h2", "h3", "h4", "h5", "h6"],
@@ -625,6 +627,7 @@ var RLANG = {
 			// extend buttons
 			if (this.opts.air)
 			{
+				$.extend(this.opts.toolbar, this.opts.buttonsCustom);							
 				this.opts.buttons = this.opts.airButtons;
 			}
 			else if (this.opts.toolbar !== false)
@@ -696,13 +699,13 @@ var RLANG = {
 
 				// paste
 				var oldsafari = false;
-				if ($.browser.webkit && navigator.userAgent.indexOf('Chrome') === -1)
+				if (this.browser('webkit') && navigator.userAgent.indexOf('Chrome') === -1)
 				{
-					var arr = $.browser.version.split('.');
+					var arr = this.browser('version').split('.');
 					if (arr[0] < 536) oldsafari = true;
 				}
 
-				if (this.isMobile(true) === false && oldsafari === false)
+				if (this.isMobile(true) === false && oldsafari === false && this.browser('opera') === false)
 				{
 					this.$editor.bind('paste', $.proxy(function(e)
 					{
@@ -734,6 +737,7 @@ var RLANG = {
 							this.restoreSelection();
 
 							var html = this.getFragmentHtml(pastedFrag);
+
 							this.pasteCleanUp(html);
 							this.pasteRunning = false;
 
@@ -753,11 +757,15 @@ var RLANG = {
 				}
 
 				// observers
-				this.observeImages();
-				this.observeTables();
+				setTimeout($.proxy(function()
+				{
+					this.observeImages();
+					this.observeTables();
+
+				}, this), 1);
 
 				// FF fix
-				if ($.browser.mozilla)
+				if (this.browser('mozilla'))
 				{
 					this.$editor.click($.proxy(function()
 					{
@@ -814,7 +822,7 @@ var RLANG = {
 			{
 				var key = e.keyCode || e.which;
 
-				if ($.browser.mozilla && !this.pasteRunning)
+				if (this.browser('mozilla') && !this.pasteRunning)
 				{
 					this.saveSelection();
 				}
@@ -835,24 +843,15 @@ var RLANG = {
 				// new line p
 				if (key === 13 && !e.shiftKey && !e.ctrlKey && !e.metaKey)
 				{
-					if ($.browser.webkit)
+					if (this.browser('webkit'))
 					{
 						this.formatNewLine(e);
-					}
-
-					if ($.browser.mozilla)
-					{
-						this.execRun('unlink', false);
 					}
 
 					// convert links
 					if (this.opts.convertLinks)
 					{
-						clearTimeout(this.linkifyTimeout);
-						var editor = this.$editor;
-						this.linkifyTimeout = setTimeout(function() {
-							editor.linkify();
-						}, 0);
+						this.$editor.linkify();
 					}
 				}
 
@@ -870,7 +869,7 @@ var RLANG = {
 				var pre = false;
 				var ctrl = e.ctrlKey || e.metaKey;
 
-				if ((parent && $(parent).get(0).tagName === 'PRE') || (current && $(current).get(0).tagName === 'PRE'))
+				if ((parent || current) && ($(parent).get(0).tagName === 'PRE' || $(current).get(0).tagName === 'PRE'))
 				{
 					pre = true;
 				}
@@ -972,7 +971,7 @@ var RLANG = {
 				}
 
 				// safari shift key + enter
-				if ($.browser.webkit && navigator.userAgent.indexOf('Chrome') === -1)
+				if (this.browser('webkit') && navigator.userAgent.indexOf('Chrome') === -1)
 				{
 					return this.safariShiftKeyEnter(e, key);
 				}
@@ -1322,7 +1321,7 @@ var RLANG = {
 
 			this.$editor.find('img').each($.proxy(function(i,s)
 			{
-				if ($.browser.msie)
+				if (this.browser('msie'))
 				{
 					$(s).attr('unselectable', 'on');
 				}
@@ -1376,7 +1375,7 @@ var RLANG = {
 
 			this.$editor.html(this.opts.buffer);
 
-			if (!$.browser.msie)
+			if (!this.browser('msie'))
 			{
 				this.restoreSelection();
 			}
@@ -1402,7 +1401,7 @@ var RLANG = {
 
 				if (cmd === 'inserthtml')
 				{
-					if ($.browser.msie && false)
+					if (this.browser('msie'))
 					{
 						this.$editor.focus();
 						this.document.selection.createRange().pasteHTML(param);
@@ -1474,7 +1473,7 @@ var RLANG = {
 					parent = this.getCurrentNode();
 					if ($(parent).get(0).tagName === 'BLOCKQUOTE')
 					{
-						if ($.browser.msie)
+						if (this.browser('msie'))
 						{
 							var node = $('<p>' + $(parent).html() + '</p>');
 							$(parent).replaceWith(node);
@@ -1495,7 +1494,7 @@ var RLANG = {
 						}
 						else
 						{
-							if ($.browser.msie)
+							if (this.browser('msie'))
 							{
 								var node = $('<blockquote>' + $(parent).html() + '</blockquote>');
 								$(parent).replaceWith(node);
@@ -1526,12 +1525,12 @@ var RLANG = {
 				}
 				else
 				{
-					if (cmd === 'inserthorizontalrule' && $.browser.msie)
+					if (cmd === 'inserthorizontalrule' && this.browser('msie'))
 					{
 						this.$editor.focus();
 					}
 
-					if (cmd === 'formatblock' && $.browser.mozilla)
+					if (cmd === 'formatblock' && this.browser('mozilla'))
 					{
 						this.$editor.focus();
 					}
@@ -1565,7 +1564,7 @@ var RLANG = {
 		},
 		execRun: function(cmd, param)
 		{
-			if (cmd === 'formatblock' && $.browser.msie)
+			if (cmd === 'formatblock' && this.browser('msie'))
 			{
 				param = '<' + param + '>';
 			}
@@ -1578,42 +1577,16 @@ var RLANG = {
 		{
 			var parent = this.getParentNode();
 
-			var isParentRoot = (parent.nodeName === 'DIV' && parent.className.match(/(\s|^)redactor_editor(\s|$)/));
-			var isParentP = (parent.nodeName === 'P');
-
-			if (isParentRoot || isParentP)
+			if (parent.nodeName === 'DIV' && parent.className === 'redactor_editor')
 			{
-				var element = this.getCurrentNode();
-				var html = element.innerHTML || '';
-				var isEmpty = (html === '' || html == '<br>');
+				var element = $(this.getCurrentNode());
 
-				if (element.tagName === 'DIV')
+				if (element.get(0).tagName === 'DIV' && (element.html() === '' || element.html() === '<br>'))
 				{
-					if (element.parentNode.tagName === 'P')
-					{
-						var attachParent = element.parentNode;
-						while (attachParent.parentNode && attachParent.parentNode.tagName === 'P')
-						{
-							attachParent = attachParent.parentNode;
-						}
-						attachParent.parentNode.insertBefore(element, attachParent.nextSibling)
-						this.setSelection(element, 0, element, 0);
-					}
-
-					if (isEmpty)
-					{
-						var $element = $(element);
-						var newElement = $('<p>').append($element.clone().get(0).childNodes);
-						$element.replaceWith(newElement);
-						newElement.html('<br />');
-						this.setSelection(newElement[0], 0, newElement[0], 0);
-					}
-				}
-				else if (element.tagName === 'P' && !isEmpty)
-				{
-					// pressing enter at beginning of a line
-					element.parentNode.insertBefore(this.document.createElement('p'), element);
-					this.setSelection(element, 0, element, 0);
+					var newElement = $('<p>').append(element.clone().get(0).childNodes);
+					element.replaceWith(newElement);
+					newElement.html('<br />');
+					this.setSelection(newElement[0], 0, newElement[0], 0);
 				}
 			}
 		},
@@ -1639,12 +1612,8 @@ var RLANG = {
 		{
 			var html = $.trim(this.$editor.html());
 
-			if ($.browser.mozilla)
-			{
-				html = html.replace(/<br>/i, '');
-			}
-
-			var thtml = html.replace(/<(?:.|\n)*?>/gm, '');
+			html = html.replace(/<br\s?\/?>/i, '');
+			var thtml = html.replace(/<p>\s?<\/p>/gi, '');
 
 			if (html === '' || thtml === '')
 			{
@@ -1767,7 +1736,7 @@ var RLANG = {
 			var parent = this.getParentNode();
 
 			// clean up pre
-			if ($(parent).get(0) && $(parent).get(0).tagName === 'PRE')
+			if ($(parent).get(0).tagName === 'PRE')
 			{
 				html = this.cleanupPre(html);
 				this.pasteCleanUpInsert(html);
@@ -1834,7 +1803,7 @@ var RLANG = {
 			html = html.replace(/<\/p><\/p>/gi, '</p>');
 
 			// FF fix
-			if ($.browser.mozilla)
+			if (this.browser('mozilla'))
 			{
 				html = html.replace(/<br>$/gi, '');
 			}
@@ -1904,12 +1873,7 @@ var RLANG = {
 		},
 		formattingEmptyTags: function(html)
 		{
-			var etags = ["<pre></pre>","<blockquote>\\s*</blockquote>","<em>\\s*</em>","<ul></ul>","<ol></ol>","<li></li>","<table></table>","<tr></tr>","<span>\\s*<span>", "<span>&nbsp;<span>", "<b>\\s*</b>", "<b>&nbsp;</b>"];
-			if (!$.browser.msie) {
-				etags.push("<p>\\s*</p>");
-				etags.push("<p>&nbsp;</p>");
-				etags.push("<div>\\s*</div>");
-			}
+			var etags = ["<pre></pre>","<blockquote>\\s*</blockquote>","<em>\\s*</em>","<ul></ul>","<ol></ol>","<li></li>","<table></table>","<tr></tr>","<span>\\s*<span>", "<span>&nbsp;<span>", "<b>\\s*</b>", "<b>&nbsp;</b>", "<p>\\s*</p>", "<p>&nbsp;</p>",  "<p>\\s*<br>\\s*</p>", "<div>\\s*</div>", "<div>\\s*<br>\\s*</div>"];
 			for (var i = 0; i < etags.length; ++i)
 			{
 				var bbb = etags[i];
@@ -1939,8 +1903,6 @@ var RLANG = {
 				var aaa = atags[i];
 				html = html.replace(new RegExp(aaa,'gi'),aaa+lb);
 			}
-
-			html = html.replace(/<br\s*\/?>\s*<\/p>/gi, '<br /></p>');
 
 			return html;
 		},
@@ -1976,9 +1938,9 @@ var RLANG = {
 				this.$content.hide();
 
 				html = this.$editor.html();
-				html = $.trim(this.formatting(html));
+				//html = $.trim(this.formatting(html));
 
-				this.$el.height(height).val(html).css('display', 'block').show().focus();
+				this.$el.height(height).val(html).show().focus();
 
 				this.setBtnActive('html');
 				this.opts.visual = false;
@@ -1988,10 +1950,10 @@ var RLANG = {
 				this.$el.hide();
 				var html = this.$el.val();
 
-				html = this.savePreCode(html);
+				//html = this.savePreCode(html);
 
 				// clean up
-				html = this.stripTags(html);
+				//html = this.stripTags(html);
 
 				// set code
 				this.$editor.html(html).show();
@@ -2101,7 +2063,7 @@ var RLANG = {
 						this.setBtnActive(key);
 					}
 
-					if ($.browser.mozilla)
+					if (this.browser('mozilla'))
 					{
 						this.$editor.focus();
 						//this.restoreSelection();
@@ -2195,7 +2157,7 @@ var RLANG = {
 			var mode;
 			if (key === 'backcolor')
 			{
-				if ($.browser.msie)
+				if (this.browser('msie'))
 				{
 					mode = 'BackColor';
 				}
@@ -2233,7 +2195,7 @@ var RLANG = {
 						});
 					}
 
-					if ($.browser.msie && mode === 'BackColor')
+					if (_self.browser('msie') && mode === 'BackColor')
 					{
 						_self.$editor.find('font').replaceWith(function() {
 
@@ -2500,14 +2462,14 @@ var RLANG = {
 				}
 				else
 				{
-					if ($.browser.opera)
+					if (this.browser('opera'))
 					{
 						this.$editor.focus();
 					}
 
 					this.setSelection(this.savedSel[0], this.savedSel[1], this.savedSelObj[0], this.savedSelObj[1]);
 
-					if ($.browser.mozilla)
+					if (this.browser('mozilla'))
 					{
 						this.$editor.focus();
 					}
@@ -2639,9 +2601,7 @@ var RLANG = {
 				if (sel.collapse && sel.extend)
 				{
 					sel.collapse(orgn, orgo);
-					try {
-						sel.extend(focn, foco);
-					} catch (e) {}
+					sel.extend(focn, foco);
 				}
 				else // IE9
 				{
@@ -2696,7 +2656,7 @@ var RLANG = {
 				var s = this.window.getSelection();
 				if (s.rangeCount > 0)
 				{
-					return this.getSelection().getRangeAt(0).startContainer;
+					return this.getSelection().getRangeAt(0).commonAncestorContainer;
 				}
 				else
 				{
@@ -2716,14 +2676,12 @@ var RLANG = {
 			var cursor, cursorNode, node, offset, parent;
 
 			cursorNode = doc.createElement('a');
-			var inserted = false;
 			cursor = textRange.duplicate();
 			cursor.collapse(bStart);
 			parent = cursor.parentElement();
 			while (true)
 			{
-				parent.insertBefore(cursorNode, inserted ? cursorNode.previousSibling : null);
-				inserted = true;
+				parent.insertBefore(cursorNode, cursorNode.previousSibling);
 				cursor.moveToElementText(cursorNode);
 				if (!(cursor.compareEndPoints((bStart ? 'StartToStart' : 'StartToEnd'), textRange) > 0 && (cursorNode.previousSibling != null)))
 				{
@@ -2878,6 +2836,7 @@ var RLANG = {
 			$(resize).mouseup($.proxy(function(e)
 			{
 				clicked = false;
+				$(resize).css('cursor','');
 				this.syncCode();
 
 			}, this));
@@ -3142,7 +3101,17 @@ var RLANG = {
 		},
 		imageDelete: function(el)
 		{
-			$(el).remove();
+			var parent = $(el).parent();
+			if (parent.size() != 0 && parent[0].tagName == 'A')
+			{
+				// image's link remove
+				parent.remove();
+			}
+			else
+			{
+				$(el).remove();
+			}
+
 			this.modalClose();
 			this.syncCode();
 		},
@@ -3395,7 +3364,7 @@ var RLANG = {
 				var sel = this.getSelection();
 				var url = '', text = '', target = '';
 
-				if ($.browser.msie)
+				if (this.browser('msie'))
 				{
 					var parent = this.getParentNode();
 					if (parent.nodeName === 'A')
@@ -3480,26 +3449,29 @@ var RLANG = {
 		insertLink: function()
 		{
 			var tab_selected = $('#redactor_tab_selected').val();
-			var link = '', text = '', target = '';
+			var link = '', text = '', targettext = '', target = '';
 
 			if (tab_selected === '1') // url
 			{
 				link = $('#redactor_link_url').val();
 				text = $('#redactor_link_url_text').val();
 
-				if ($('#redactor_link_blank').attr('checked'))
+				if ($('#redactor_link_blank').prop('checked'))
 				{
-					target = ' target="_blank"';
+					targettext = ' target="_blank"';
+					target = '_blank';
 				}
 
 				// test url
-				var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+				var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+				//var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
 				var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
 				var re2 = new RegExp('^' + pattern,'i');
 				if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
 				{
 					link = this.opts.protocol + link;
 				}
+
 			}
 			else if (tab_selected === '2') // mailto
 			{
@@ -3512,7 +3484,7 @@ var RLANG = {
 				text = $('#redactor_link_anchor_text').val();
 			}
 
-			this._insertLink('<a href="' + link + '"' + target + '>' +  text + '</a>', $.trim(text), link, target);
+			this._insertLink('<a href="' + link + '"' + targettext + '>' +  text + '</a>', $.trim(text), link, target);
 
 		},
 		_insertLink: function(a, text, link, target)
@@ -3608,7 +3580,7 @@ var RLANG = {
 				var link = '<a href="' + json.filelink + '">' + text + '</a>';
 
 				// chrome fix
-				if ($.browser.webkit && !!this.window.chrome)
+				if (this.browser('webkit') && !!this.window.chrome)
 				{
 					link = link + '&nbsp;';
 				}
@@ -3822,7 +3794,7 @@ var RLANG = {
 			var d = this.document.createElement('div');
 			var iframe = '<iframe style="display:none" id="'+this.id+'" name="'+this.id+'"></iframe>';
 			d.innerHTML = iframe;
-			this.document.body.appendChild(d);
+			$(d).appendTo("body");
 
 			// Start
 			if (this.uploadOptions.start)
@@ -3852,7 +3824,7 @@ var RLANG = {
 							v = $(v).val();
 						}
 
-						var hidden = $('<input type="hidden" name="' + k + '" value="' + v + '">');
+						var hidden = $('<input/>', {'type': "hidden", 'name': k, 'value': v});
 						$(this.form).append(hidden);
 
 					}, this));
@@ -3883,7 +3855,7 @@ var RLANG = {
 		},
 		uploadLoaded : function()
 		{
-			var i = $('#' + this.id);
+			var i = $('#' + this.id)[0];
 			var d;
 
 			if (i.contentDocument)
@@ -3932,9 +3904,26 @@ var RLANG = {
 		},
 
 		// UTILITY
+		browser: function(browser)
+		{
+			var ua = navigator.userAgent.toLowerCase();
+			var match = /(chrome)[ \/]([\w.]+)/.exec(ua) || /(webkit)[ \/]([\w.]+)/.exec(ua) || /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) || /(msie) ([\w.]+)/.exec(ua) || ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || [];
+
+			if (browser == 'version')
+			{
+				return match[2];
+			}
+
+			if (browser == 'webkit')
+			{
+				return (match[1] == 'chrome' || match[1] == 'webkit');
+			}
+
+			return match[1] == browser;
+		},
 		oldIE: function()
 		{
-			if ($.browser.msie && parseInt($.browser.version, 10) < 9)
+			if (this.browser('msie') && parseInt(this.browser('version'), 10) < 9)
 			{
 				return true;
 			}
@@ -4069,7 +4058,7 @@ var RLANG = {
 	Construct.prototype = {
 		init: function()
 		{
-			if (!$.browser.msie)
+			if (navigator.userAgent.search("MSIE") === -1)
 			{
 				this.droparea = $('<div class="redactor_droparea"></div>');
 				this.dropareabox = $('<div class="redactor_dropareabox">' + this.opts.text + '</div>');
@@ -4203,10 +4192,7 @@ var RLANG = {
 									.replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
 									.replace(url2, '$1<a href="$2">$2</a>$5');
 
-						if (html != n.nodeValue)
-						{
-							$(n).after(html).remove();
-						}
+						$(n).after(html).remove();
 					}
 				}
 				else if (n.nodeType === 1  &&  !/^(a|button|textarea)$/i.test(n.tagName))
@@ -4226,67 +4212,85 @@ var RLANG = {
 
 /* jQuery plugin textselect
  * version: 0.9
- * author: Josef Moravec, josef.moravec@gmail.com
+ * author: Josef Moravec
  * updated: Imperavi Inc.
  *
  */
 (function ($) {
-    $.event.special.textselect = {
-        setup: function (data, namespaces) {
+    $.event.special.textselect =
+    {
+        setup: function (data, namespaces)
+        {
+
             $(this).data("textselected", false);
             $(this).data("ttt", data);
-            $(this).bind('mouseup', $.event.special.textselect.handler)
+            $(this).on('mouseup', $.event.special.textselect.handler)
         },
-        teardown: function (data) {
-            $(this).unbind('mouseup', $.event.special.textselect.handler)
+        teardown: function (data)
+        {
+            $(this).off('mouseup', $.event.special.textselect.handler)
         },
-        handler: function (event) {
+        handler: function (event)
+        {
             var data = $(this).data("ttt");
             var text = $.event.special.textselect.getSelectedText(data).toString();
-            if (text != '') {
+
+            if (text != '')
+            {
                 $(this).data("textselected", true);
                 event.type = "textselect";
                 event.text = text;
-                $.event.handle.apply(this, arguments)
+
+                $.event.dispatch.apply(this, arguments)
             }
         },
-        getSelectedText: function (data) {
+        getSelectedText: function (data)
+        {
             var text = '';
             if (rwindow.getSelection) text = rwindow.getSelection();
-            else if (rdocument.getSelection) text = rdocument.getSelection();
+            else if (rdocument.getSelection) text = rdocument.getSelection();
             else if (rdocument.selection) text = rdocument.selection.createRange().text;
             return text
         }
     };
-    $.event.special.textunselect = {
-        setup: function (data, namespaces) {
+    $.event.special.textunselect =
+    {
+        setup: function (data, namespaces)
+        {
             $(this).data("rttt", data);
             $(this).data("textselected", false);
-            $(this).bind('mouseup', $.event.special.textunselect.handler);
-            $(this).bind('keyup', $.event.special.textunselect.handlerKey)
+            $(this).on('mouseup', $.event.special.textunselect.handler);
+            $(this).on('keyup', $.event.special.textunselect.handlerKey)
         },
-        teardown: function (data) {
+        teardown: function (data)
+        {
             $(this).unbind('mouseup', $.event.special.textunselect.handler)
         },
-        handler: function (event) {
-            if ($(this).data("textselected")) {
+        handler: function (event)
+        {
+            if ($(this).data("textselected"))
+            {
                 var data = $(this).data("rttt");
                 var text = $.event.special.textselect.getSelectedText(data).toString();
-                if (text == '') {
+                if (text == '')
+                {
                     $(this).data("textselected", false);
                     event.type = "textunselect";
-                    $.event.handle.apply(this, arguments)
+                    $.event.dispatch.apply(this, arguments)
                 }
             }
         },
-        handlerKey: function (event) {
-            if ($(this).data("textselected")) {
+        handlerKey: function (event)
+        {
+            if ($(this).data("textselected"))
+            {
                 var data = $(this).data("rttt");
                 var text = $.event.special.textselect.getSelectedText(data).toString();
-                if ((event.keyCode = 27) && (text == '')) {
+                if ((event.keyCode = 27) && (text == ''))
+                {
                     $(this).data("textselected", false);
                     event.type = "textunselect";
-                    $.event.handle.apply(this, arguments)
+                    $.event.dispatch.apply(this, arguments)
                 }
             }
         }
