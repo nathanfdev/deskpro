@@ -107,10 +107,10 @@
 									-
 									<span class="name">{{ holiday.name }}</span>
 									{% if not holiday.year %}<span class="repeat">(repeats annually)</span>{% endif %}
-									<input type="hidden" name="holidays[{{ key }}][name]" value="{{ holiday.name }}" />
-									<input type="hidden" name="holidays[{{ key }}][day]" value="{{ holiday.day }}" />
-									<input type="hidden" name="holidays[{{ key }}][month]" value="{{ holiday.month }}" />
-									<input type="hidden" name="holidays[{{ key }}][year]" value="{{ holiday.year }}" />
+									<input type="hidden" name="work_holidays[{{ key }}][name]" value="{{ holiday.name }}" />
+									<input type="hidden" name="work_holidays[{{ key }}][day]" value="{{ holiday.day }}" />
+									<input type="hidden" name="work_holidays[{{ key }}][month]" value="{{ holiday.month }}" />
+									<input type="hidden" name="work_holidays[{{ key }}][year]" value="{{ holiday.year }}" />
 								</li>
 							{% endfor %}
 							</ul>
