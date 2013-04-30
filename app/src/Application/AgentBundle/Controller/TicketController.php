@@ -3080,10 +3080,12 @@ class TicketController extends AbstractController
 					$body_html = $r->getBodyHtml() ? $r->getBodyHtml()->getBodyUtf8() : null;
 					$body_text = $r->getBodyText() ? $r->getBodyText()->getBodyUtf8() : null;
 
-					unset($r);
-
+					$vars['raw_source'] = $message->email_source->raw_source;
 					$vars['body_html'] = $body_html;
 					$vars['body_text'] = $body_text;
+
+					unset($r);
+					$message->email_source->clearRawSource();
 				}
 
 				break;
