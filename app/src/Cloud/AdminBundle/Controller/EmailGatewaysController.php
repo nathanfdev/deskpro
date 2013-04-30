@@ -304,8 +304,80 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 
 		return $this->render('CloudAdminBundle:EmailGateways:edit-account.html.twig', array(
 			'gateway' => $gateway,
+			'transport' => $transport,
 			'edittrans' => $edittrans,
 			'trans_form' => $trans_form->createView(),
+		));
+	}
+
+	public function cloudEditAccountSaveAction($gateway_id)
+	{
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $gateway_id);
+
+		if (!$gateway) {
+			throw $this->createNotFoundException();
+		}
+
+		$old_transport = $gateway->linked_transport;
+		$transport                   = new EmailTransport();
+		$transport->title            = 'Default (send through DeskPRO)';
+		$transport->match_type       = 'exact';
+		$transport->match_pattern    = $gateway->getPrimaryEmailAddress();
+		$transport->transport_type   = 'mail';
+		$gateway->linked_transport = $transport;
+
+		$edittrans = new EditEmailTransportModel($transport);
+		$trans_form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
+		$trans_form->bindRequest($this->get('request'));
+
+		$transport->transport_type = $edittrans->transport_type;
+		if ($edittrans->transport_type == 'smtp') {
+			$transport->title = $edittrans->smtp_options['host'] . ':' . $edittrans->smtp_options['username'];
+			$transport->transport_options = $edittrans->smtp_options;
+		} elseif ($edittrans->transport_type == 'gmail') {
+			$transport->title = 'Gmail / Google Apps: ' . $edittrans->gmail_options['username'];
+			$transport->transport_options = $edittrans->gmail_options;
+		} else {
+			$transport->title = 'PHP mail()';
+			$transport->transport_options = array();
+		}
+
+		if ($old_transport) {
+			$this->em->remove($old_transport);
+		}
+
+		$this->em->persist($transport);
+		$this->em->persist($gateway);
+		$this->em->flush();
+
+		$email_addresses = $this->in->getCleanValueArray('email_addresses', 'string', 'discard');
+		array_unshift($email_addresses, $this->in->getString('alias_email_address'));
+		$email_addresses = Arrays::removeFalsey($email_addresses);
+		$email_addresses = Arrays::func($email_addresses, 'strtolower');
+		$email_addresses = array_unique($email_addresses);
+
+		$this->db->executeUpdate("
+			DELETE FROM email_gateway_addresses
+			WHERE email_gateway_id = ? AND id != ?
+		", array($gateway->id, $gateway->getPrimaryEmailAddress(true)->id));
+		$this->db->deleteIn('email_gateway_addresses', $email_addresses, 'match_pattern');
+
+		$batch = array();
+		foreach ($email_addresses as $x => $addr) {
+			$batch[] = array(
+				'email_gateway_id' => $gateway->id,
+				'match_type' => 'exact',
+				'match_pattern' => $addr,
+				'run_order' => $x
+			);
+		}
+		if ($batch) {
+			$this->db->batchInsert('email_gateway_addresses', $batch);
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'gateway_id' => $gateway->id
 		));
 	}
 

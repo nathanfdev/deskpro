@@ -2,6 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/CloudEmailGatewayEditAccount.js') }}"></script>
 <style type="text/css">
 	ul.small-detail-list {
 		margin: 0 0 0 20px;
@@ -104,166 +105,6 @@ $(document).ready(function() {
 });
 
 //######################################################################################################################
-// Setting an alias
-//######################################################################################################################
-
-$(document).ready(function() {
-	var gatewayId    = 0;
-	var activeEl     = null;
-	var overlayEl    = $('#setalias_overlay');
-
-	var overlay = new DeskPRO.UI.Overlay({
-		contentElement: overlayEl
-	});
-
-	$('.set-gateway-alias').on('click', function(ev) {
-		ev.preventDefault();
-
-		activeEl     = $(this);
-		gatewayId    = activeEl.data('gateway-id');
-
-		var gatewayTitle = activeEl.data('gateway-title');
-		var existAlais   = activeEl.find('> span').text().trim() || '';
-		if (existAlais == 'No alias set') {
-			existAlais = '';
-		}
-
-		overlayEl.find('.email-account-title').text(gatewayTitle);
-
-		// Reset
-		overlayEl.find('#setalias_err').hide().find('> div').hide();
-		$('#email_alias').val(existAlais);
-
-		overlay.open();
-	});
-
-	$('#setalias_save').on('click', function(ev) {
-		ev.preventDefault();
-
-		var email = $('#email_alias').val();
-
-		overlayEl.find('#setalias_err').hide().find('> div').hide();
-		$('#setalias_save_wrap').hide();
-		$('#setalias_loading_wrap').show();
-
-		$.ajax({
-			url: '{{ path('admin_emailgateways_cloud_alias') }}',
-			data: {
-				email: email,
-				gateway_id: gatewayId
-			},
-			type: 'POST',
-			dataType: 'json',
-			complete: function() {
-				$('#setalias_loading_wrap').hide();
-				$('#setalias_save_wrap').show();
-			},
-			success: function(data) {
-				if (data.error) {
-					$('#setalias_err').show().find('.' + data.error).show();
-					return;
-				}
-
-				var title = 'Default (send through DeskPRO)';
-				if (data.title && data.title != 'mail()') {
-					title = data.title;
-				}
-
-				activeEl.find('span').text(data.email || 'No alias set');
-				DeskPRO_Window.util.showSavePuff(activeEl);
-				overlay.close();
-			}
-		});
-	});
-});
-
-//######################################################################################################################
-// Setting an alias
-//######################################################################################################################
-
-$(document).ready(function() {
-	var gatewayId    = 0;
-	var activeEl     = null;
-	var overlayEl    = $('#setout_overlay');
-
-	var overlay = new DeskPRO.UI.Overlay({
-		contentElement: overlayEl
-	});
-
-	$('.set-outgoing-account').on('click', function(ev) {
-		ev.preventDefault();
-
-		activeEl     = $(this);
-		gatewayId    = activeEl.data('gateway-id');
-
-		var gatewayTitle = activeEl.data('gateway-title');
-		var existAlais   = activeEl.find('> span').text().trim() || '';
-
-		overlay.open();
-
-		$.ajax({
-			url: '{{ path('admin_emailgateways_cloud_setoutgoing_form') }}',
-			data: {
-				gateway_id: gatewayId
-			},
-			type: 'GET',
-			dataType: 'json',
-			error: function() {
-				overlay.close();
-			},
-			success: function(data) {
-				$('#setout_form_container').empty();
-				$('#setout_form_container').html('<div>' + data.form_html + '</div>');
-
-				DeskPRO.ElementHandler_Exec($('#setout_overlay').find('.overlay-content > div'));
-			}
-		});
-	});
-
-	$('#setout_save').on('click', function(ev) {
-		ev.preventDefault();
-
-		var formData = overlayEl.find('input, select').serializeArray();
-		formData.push({
-			name: 'gateway_id',
-			value: gatewayId
-		});
-
-		overlayEl.find('#setalias_err').hide().find('> div').hide();
-		$('#setalias_save_wrap').hide();
-		$('#setalias_loading_wrap').show();
-
-		$.ajax({
-			url: '{{ path('admin_emailgateways_cloud_setoutgoing') }}',
-			data: formData,
-			type: 'POST',
-			dataType: 'json',
-			complete: function() {
-				$('#setalias_loading_wrap').hide();
-				$('#setalias_save_wrap').show();
-			},
-			success: function(data) {
-				if (data.errors) {
-					Array.each(data.errors, function() {
-						$('#setout_err').show().find('.' + data.error).show();
-					})
-					return;
-				}
-
-				if (!data.title || data.title == 'PHP mail()') {
-					data.title =  'Default (send through DeskPRO)';
-				}
-
-				activeEl.find('span').text(data.title);
-				DeskPRO_Window.util.showSavePuff(activeEl);
-				overlay.close();
-			}
-		});
-	});
-});
-
-
-//######################################################################################################################
 // Edit an account
 //######################################################################################################################
 
@@ -277,7 +118,10 @@ $(document).ready(function() {
 				type	: 'GET',
 				dataType: 'html'
 			},
-			destroyOnClose: true
+			destroyOnClose: true,
+			onAjaxDone: function() {
+				DeskPRO.ElementHandler_Exec(overlay.elements.wrapper);
+			}
 		});
 
 		overlay.open();
@@ -311,7 +155,7 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th style="text-align:left" colspan="2">{{ phrase('agent.general.email_address') }}</th>
-				<th style="text-align: left">Custom Alias</th>
+				<th style="text-align: left">Custom Email Address</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -340,45 +184,40 @@ $(document).ready(function() {
 					</td>
 					<td style="vertical-align: top">
 						{% if gateway.getAliasEmailAddress() %}
-							<strong>{{ gateway.getAliasEmailAddress() }}</strong>
+							<strong><span class="open-edit-email editable-link" data-url="{{ path('admin_emailgateways_cloud_editaccount', {gateway_id: gateway.id}) }}"><span>{{ gateway.getAliasEmailAddress() }}</span></strong>
 						{% else %}
-							<strong><span
-								class="open-edit-email editable-link"
-								data-url="{{ path('admin_emailgateways_cloud_editaccount', {gateway_id: gateway.id}) }}"
-								data-gateway-id="{{ gateway.id }}"
-								data-gateway-title="{{ gateway.title }}"
-							><span>Add a custom email alias</span></span></strong>
+							<strong><span class="open-edit-email editable-link" data-url="{{ path('admin_emailgateways_cloud_editaccount', {gateway_id: gateway.id}) }}"><span>Use a custom email address</span></span></strong>
 						{% endif %}
-
-						<br/>
 
 						{% if gateway.addresses|length > 2 %}
-							Additional aliases:<br/>
-							<ul class="small-detail-list">
-								{% for addr in gateway.addresses %}
-									<li>{{ addr.match_pattern }}</li>
-								{% endfor %}
-							</ul>
+							<div style="padding-top: 5px;">
+								Additional custom email addresses:<br/>
+								<ul class="small-detail-list">
+									{% for addr in gateway.addresses %}
+										{% if loop.index > 2 %}
+											<li>{{ addr.match_pattern }}</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
+							</div>
 						{% endif %}
 
-						<div style="padding-top: 5px;">
-							Custom SMTP account:<br/>
-							<ul class="small-detail-list">
-								<li>
-									<span
-										class="set-outgoing-account editable-link"
-										data-gateway-id="{{ gateway.id }}"
-										data-gateway-title="{{ gateway.title }}"
-									><span>
-										{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
-											{{ gateway.linked_transport.title }}
-										{% else %}
-											None
-										{% endif %}
-									</span></span>
-								</li>
-							</ul>
-						</div>
+						{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
+							<div style="padding-top: 5px;">
+								Custom SMTP account:<br/>
+								<ul class="small-detail-list">
+									<li>
+										<span class="open-edit-email editable-link" data-url="{{ path('admin_emailgateways_cloud_editaccount', {gateway_id: gateway.id}) }}"><span>
+											{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
+												{{ gateway.linked_transport.title }}
+											{% else %}
+												None
+											{% endif %}
+										</span></span>
+									</li>
+								</ul>
+							</div>
+						{% endif %}
 					</td>
 				</tr>
 			{% endfor %}

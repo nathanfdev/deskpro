@@ -208,6 +208,13 @@ $collection->add('admin_emailgateways_cloud_editaccount', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_cloud_editaccount_save', new Route(
+	'/email/incoming/cloud-edit-account/{gateway_id}/save',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:cloudEditAccountSave'),
+	array(),
+	array()
+));
+
 ################################################################################
 # Email Transports
 ################################################################################

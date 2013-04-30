@@ -1,90 +1,84 @@
-<div id="edit_email_overlay" style="width: 700px; height: 600px; display: none;">
+<div
+	style="width: 700px; height: 600px; display: none;"
+	data-element-handler="DeskPRO.Admin.ElementHandler.CloudEmailGatewayEditAccount"
+	data-save-url="{{ path('admin_emailgateways_cloud_editaccount_save', {gateway_id: gateway.id}) }}"
+>
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
 		<h4>Custom Email Account</h4>
 	</div>
+
 	<div class="overlay-content">
-		<div class="check-grid item-list" id="email_forward_list">
-			<table width="100%">
-				<thead>
-					<tr>
-						<th style="text-align:left">Custom Email Addresses</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<p style="font-size: 11px; padding-bottom: 8px;">
-								This is the email address that will appear in the "From" field of emails sent by your helpdesk.
-								Make sure you have configured your server to forward messages into your DeskPRO account.
-							</p>
-							<p>
-								Enter your custom email address: <input type="text" value="{{ gateway.getAliasEmailAddress() }}" />
-							</p>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<br/>
-
-		<div class="check-grid item-list" id="email_forward_list">
-			<table width="100%">
-				<thead>
-					<tr>
-						<th style="text-align:left">Custom SMTP account for outgoing email</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							{% include 'AdminBundle:EmailTransports:edit-account-form.html.twig' with {form: trans_form} %}
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<br/>
-
-		<div class="check-grid item-list" id="email_forward_list">
-			<table width="100%">
-				<thead>
-					<tr>
-						<th style="text-align:left">Additional Email Addresses</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for addr in gateway.addresses %}
-						{% if loop.index > 2  %}
+		<div class="dp-form">
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Custom Email Address (for incoming mail)</label>
+				</div>
+				<div class="dp-form-input">
+					<p style="padding-bottom: 8px;">
+						Configure any email address you control to <strong>forward</strong> mail into your DeskPRO mailbox at {{ gateway.getPrimaryEmailAddress() }}.
+						Then anyone can then email your custom email address and DeskPRO will process it into tickets and replies as usual.
+					</p>
+					<p style="padding-bottom: 8px;">
+						The helpdesk will also send emails out with your custom address in the "From" header. This means your end-users will never see the default
+						DeskPRO email address.
+					</p>
+					<table>
 						<tr>
 							<td>
-								<div style="float: right">
-									<button class="clean-white remove-trigger">Remove</button>
+								<div style="padding-top: 3px;">
+									Enter your custom email address:&nbsp;&nbsp;
 								</div>
-								<input type="text" name="helpdesk_emails[]" value="{{ addr.match_pattern }}" placeholder="Email address or a full domain name (Example: my-alias@mydomain.com)" />
+							</td>
+							<td>
+								<input name="alias_email_address" type="text" value="{{ gateway.getAliasEmailAddress() }}" style="width: 265px;" />
+								<div style="font-size:11px; text-align: right" class="reveal-more-addresses-btn subtext" {% if gateway.addresses|length > 2 %}style="display: none;"{% endif %}>
+									<a href="#" class="editable-link"><span>Add more addresses</span></a>
+								</div>
 							</td>
 						</tr>
-						{% endif %}
-					{% endfor %}
+					</table>
+				</div>
+			</div>
 
-					<tr>
-						<td>
-							<button class="clean-white add-trigger">Add New Address</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="dp-form-row more-email-addresses" {% if gateway.addresses|length < 3 %}style="display: none;"{% endif %}>
+				<div class="dp-form-label">
+					<label>Additional custom email addresses</label>
+				</div>
+				<div class="dp-form-input">
+					<p style="padding-bottom: 8px;">
+						Add any number of other email addresses that you have configured to forward into your DeskPRO mailbox.
+					</p>
+					<ul class="small-detail-list">
+						{% for addr in gateway.addresses %}
+							{% if loop.index > 2  %}
+								<li>
+									<input type="hidden" name="email_addresses[]" value="{{ addr.match_pattern }}" />
+									<span>{{ addr.match_pattern }}</span>
+									<i class="icon-remove remove-trigger" style="cursor: pointer; margin-left: 4px; color: #999;"></i>
+								</li>
+							{% endif %}
+						{% endfor %}
+						<li class="add-row">
+							<input type="text" name="email_addresses[]" value="{{ addr.match_pattern }}" placeholder="Enter another email address" style="padding: 1px; margin: 0; font-size: 11px; width: 150px;" />
+							<button class="clean-white add-trigger" style="padding: 0px; margin:0 0 0 4px; font-size: 11px;">Add</button>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
+
+		<br/>
+
+		{% include 'CloudAdminBundle:EmailTransports:edit-account-form.html.twig' with {form: trans_form} %}
 
 		<br/><br/>
 	</div>
 	<div class="overlay-footer">
-		<div id="setout_save_wrap">
-			<button class="clean-white" id="fwd_emails_savebtn">Save Changes</button>
+		<div class="is-not-loading">
+			<button class="clean-white save-trigger">Save Changes</button>
 		</div>
-		<div id="fwd_emails_loading" style="display: none;">
+		<div class="is-loading">
 			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
 		</div>
 	</div>
