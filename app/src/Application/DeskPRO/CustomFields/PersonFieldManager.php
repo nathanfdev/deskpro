@@ -41,6 +41,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\Person;
+use Orb\Util\Arrays;
 
 class PersonFieldManager extends FieldManager
 {
@@ -60,7 +61,9 @@ class PersonFieldManager extends FieldManager
 			$field_name = $field->getOption('field_name');
 			$raw_data   = $identity->getRawData();
 
-			if (!$field_name || !isset($raw_data[$field_name])) {
+			$val = Arrays::keyAsPath($raw_data, $field_name, '/', null);
+
+			if ($val === null) {
 				continue;
 			}
 
