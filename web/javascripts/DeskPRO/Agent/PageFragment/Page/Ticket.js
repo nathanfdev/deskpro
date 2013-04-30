@@ -1355,10 +1355,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				if (data.hidden_html) {
 					self.getEl('page_header').before($(data.hidden_html));
-				} else {
-					DeskPRO_Window.removePage(self);
-					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 				}
+
+				DeskPRO_Window.removePage(self);
 			}
 		});
 	},
@@ -1368,9 +1367,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var prop = this.changeManager.getPropertyManager('status');
 		this.changeManager.setInstantChange(prop, 'awaiting_agent', function() {
 			DeskPRO_Window.removePage(self);
-
-			// Reload the ticket page
-			DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 		});
 	},
 
