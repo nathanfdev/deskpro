@@ -271,7 +271,7 @@ class DownloadsController extends AbstractController
 				$changed_content = false;
 				if ($this->in->getString('content') != $download['content']) {
 					$changed_content = true;
-					$download['content'] = $this->in->getHtml('content');
+					$download['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
 				}
 
 				$data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
