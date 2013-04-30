@@ -158,7 +158,9 @@ class SettingsController extends AbstractController
 			}
 
 			if ($this->in->getString('offline_message')) {
-				@file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->in->getString('offline_message'));
+				if (!@file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->in->getString('offline_message'))) {
+					return $this->renderStandardError("Could not write to the data directory. Tried writing " . dp_get_data_dir() . '/helpdesk-offline-message.txt' . "<br/><br/>Ensure the data directory and all sub-files and sub-directories are writable.");
+				}
 			} else {
 				if (file_exists(dp_get_data_dir() . '/helpdesk-offline-message.txt')) {
 					@unlink(dp_get_data_dir() . '/helpdesk-offline-message.txt');
