@@ -88,7 +88,9 @@ DeskPRO.Agent.PageHelper.PeopleList.ListView = new Orb.Class({
 
 		var page = this.page;
 		window.setTimeout(function() {
-			page.switchViewType('list');
+			if (page && page.switchViewType) {
+				page.switchViewType('list');
+			}
 		}, 50);
 	},
 
