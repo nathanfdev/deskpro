@@ -117,8 +117,6 @@ class SendAgentEmailAction extends AbstractAction
 		}
 
 		if (!$this->tracker) {
-			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo(new \RuntimeException("Tracker not provided"));
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			return;
 		}
 
