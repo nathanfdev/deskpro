@@ -123,6 +123,10 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			var options = $.extend(defaults, options);
 			var oWrapper = $(this);
 			var timeout = null;
+			var touchEvents = 'ontouchstart' in document.documentElement;
+			var msTouchEvents = !!window.navigator.msMaxTouchPoints;
+			var fns = [];
+			var isTouchEvent = false;
 
 			// Handle inserting wrappers etc automatically if the supplied
 			// element is the scroll content
@@ -292,14 +296,29 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			};
 
 			function setEvents(){
-				oThumb.obj.bind('mousedown', start);
-				oThumb.obj[0].ontouchstart = function(oEvent){
-					oEvent.preventDefault();
-					oThumb.obj.unbind('mousedown');
-					start(oEvent.touches[0]);
-					return false;
-				};
-				oTrack.obj.bind('mouseup', drag);
+				if (touchEvents) {
+					oViewport.obj[0].ontouchstart = function( event )
+					{
+						if( 1 === event.touches.length )
+						{
+							start( event.touches[ 0 ] );
+							event.stopPropagation();
+						}
+					};
+				} else if (msTouchEvents) {
+					var fn = function( event )
+					{
+						isTouchEvent = true;
+						start( event );
+						event.stopPropagation();
+					};
+					fns.push(fn);
+					oViewport.obj[0].addEventListener("MSPointerDown", fn,false);
+				} else {
+					oThumb.obj.bind('mousedown', start);
+					oTrack.obj.bind('mouseup', drag);
+				}
+
 				if(options.scroll && this.addEventListener){
 					oWrapper[0].addEventListener('DOMMouseScroll', wheel, false);
 					oWrapper[0].addEventListener('mousewheel', wheel, false );
@@ -310,9 +329,28 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				iMouse.start = sAxis ? oEvent.pageX : oEvent.pageY;
 				var oThumbDir = parseInt(oThumb.obj.css(sDirection));
 				iPosition.start = oThumbDir == 'auto' ? 0 : oThumbDir;
-				$(document).bind('mousemove', drag);
-				$(document).bind('mouseup', end);
-				oThumb.obj.bind('mouseup', end);
+				if (touchEvents) {
+					document.ontouchmove = function( event )
+					{
+						event.preventDefault();
+						drag( event.touches[ 0 ] );
+					};
+					document.ontouchend = end;
+				} else if (msTouchEvents) {
+					var fn = function( event )
+					{
+						isTouchEvent = true;
+						event.preventDefault();
+						drag( event );
+					};
+					fns.push(fn);
+					document.addEventListener("MSPointerMove", fn, false);
+					document.addEventListener("MSPointerUp", end, false);
+				} else {
+					$( document ).bind( 'mousemove', drag );
+					$( document ).bind( 'mouseup', end );
+					oThumb.obj.bind( 'mouseup', end );
+				}
 				return false;
 			};
 			function wheel(oEvent){
@@ -355,11 +393,26 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					oScrollbar.obj.removeClass('stuck-btm');
 				}
 
+				if (fns && fns.length) {
+					for (var i = 0; i < fns.length; i++) {
+						//oViewport.obj[0].removeEventListener("MSPointerDown", fns[i]);
+						document.removeEventListener("MSPointerMove", fns[i]);
+						document.removeEventListener("MSPointerUp", fns[i]);
+					}
+					fns = [];
+				}
+
+				isTouchEvent = false;
+
 				return false;
 			};
 			function drag(oEvent){
 				if(!(oContent.ratio >= 1)){
-					iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start + ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));
+					if(isTouchEvent) {
+						iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start - ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));
+					} else {
+						iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start + ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));
+					}
 					iScroll = iPosition.now * oScrollbar.ratio;
 					oContent.obj.css(sDirection, -iScroll);
 					oThumb.obj.css(sDirection, iPosition.now);
