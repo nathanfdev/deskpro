@@ -58,6 +58,7 @@ return array(
 	'outlook_3'                          => 'lang:font b #%From%:# /b #.*?# br /br b #%Sent%:# /b #.*?# br /br b #%To%:# /b #.*?# br /br b #%Subject%:# /b #.*?# br /br',
 	'outlook_4'                          => 'b span #From:# /span /b span #.*?# br /br b #Sent:# /b #.*?# br /br b #To:# /b #.*?# br /br b #Subject:# /b #.*?# /span',
 	'outlook_5'                          => 'span #From:#i /span #.*# a /a #.*# br /br span #Date:#i /span #.*# br /br span #To:#i /span #.*# a /a #.*# br /br',
+	'outlook_5_replyto'                  => 'span #From:#i /span #.*# a /a #.*# br /br span #Reply\-To:#i /span #.*# a /a #.*# br /br span #Date:#i /span #.*# br /br span #To:#i /span #.*# a /a #.*# br /br',
 	'outlook_6'                          => 'lang:div p #%From%:\s+.*?\s+%Sent%:\s+.*?\s+%To%:\s+.*?\s+%Subject%:\s+.*?# /p /div',
 
 	// X-Mailer: iPhone Mail (9A405)
