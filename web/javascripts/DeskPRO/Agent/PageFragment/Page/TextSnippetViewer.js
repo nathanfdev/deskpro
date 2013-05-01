@@ -336,6 +336,10 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 	},
 
 	openSnippetEditor: function(snippet_id, title, text) {
+		if (!this.snippetEditorOverlayObj) {
+			return;
+		}
+		
 		snippet_id = parseInt(snippet_id, 10);
 
 		this.snippetEditorOverlay.find('textarea[name=snippet]').val(text || '');

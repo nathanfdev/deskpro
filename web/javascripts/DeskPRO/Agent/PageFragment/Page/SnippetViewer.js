@@ -385,6 +385,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	openSnippetEditor: function(snippet_id, title, text, html, shortcut_code) {
 
+		if (!this.snippetEditorOverlayObj) {
+			return;
+		}
+
 		var catId = parseInt(this.getEl('catlist').find('li.on').data('category'));
 		if (catId) {
 			this.getEl('newsnippet_category_select').find('[value="'+catId+'"]').prop('selected', true);
