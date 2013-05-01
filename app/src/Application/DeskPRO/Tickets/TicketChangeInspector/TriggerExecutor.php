@@ -230,6 +230,12 @@ class TriggerExecutor
 					$performer = 'agent';
 				} elseif (strpos($this->ticket->creation_system, 'api') !== false) {
 					$performer = 'api';
+				} elseif (strpos($this->ticket->creation_system, 'gateway') !== false) {
+					if ($this->tracker->hasNewAgentReply() && $this->tracker->getNewAgentReply()->person->id != $this->ticket->person->id) {
+						$performer = 'agent';
+					} else {
+						$performer = 'user';
+					}
 				} else {
 					$performer = 'user';
 				}

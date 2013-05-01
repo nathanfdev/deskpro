@@ -139,6 +139,14 @@ class AgentReplyCodes implements Loggable
 				$code_pos  = null;
 				if (($code_pos = strpos($this->new_body, "#$for_codepos")) !== false && (!$for_parampos || ($param_pos = strpos($this->new_body, $for_parampos, $code_pos)) !== false)) {
 					if ($param_pos) {
+						$a_pos = strpos($this->new_body, '<a', $code_pos);
+						if ($a_pos !== false && $a_pos < $param_pos) {
+							$new_param_pos = strpos($this->new_body, $for_parampos, $param_pos+1);
+							if ($new_param_pos !== false) {
+								$param_pos = $new_param_pos;
+							}
+						}
+
 						$this->new_body = Strings::cut($this->new_body, $code_pos, $param_pos+strlen($for_parampos));
 					} else {
 						$this->new_body = Strings::cut($this->new_body, $code_pos, $code_pos+strlen($for_codepos)+1);
@@ -148,6 +156,8 @@ class AgentReplyCodes implements Loggable
 					$tok = '__' . Strings::random(10, Strings::CHARS_ALPHANUM_IU) . '__';
 					$this->new_body = Strings::inject($this->new_body, $tok, $code_pos);
 					$this->new_body = preg_replace("#\s*$tok\s*#s", '', $this->new_body);
+				} else {
+					$this->getLogger()->logDebug('[AgentReplyCodes] Could not find tokens to clean: '. $m[0]);
 				}
 			} else {
 				$this->new_body = Strings::strReplaceOne($m[0], '', $this->new_body);
@@ -290,7 +300,7 @@ class AgentReplyCodes implements Loggable
 					$email->email = $param;
 					$email->name = '';
 
-					$person = $person_processor->findPerson($param);
+					$person = $person_processor->findPerson($email);
 
 					if ($person) {
 						$this->getLogger()->logDebug('[AgentReplyCodes] Set user to ' . $person->id);

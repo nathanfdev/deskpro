@@ -283,7 +283,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$this->email_body_text = $this->reader->getBodyText()->getBodyUtf8();
 
 		// Get reply actions
-		if ($person['is_agent']) {
+		if ($person) {
+			$check_person = $person;
+		} elseif ($this->reader->getFromAddress()) {
+			$check_person = App::getDataService('Agent')->getByEmail($this->reader->getFromAddress()->getEmail());
+		} else {
+			$check_person = null;
+		}
+		if ($check_person && $check_person['is_agent']) {
 			if ($this->email_body_html) {
 				$rc = new AgentReplyCodes($this->email_body_html, true);
 				$rc->setLogger($this->logger);
@@ -1475,6 +1482,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$fwd_info = $fwd_cutter->getData();
 		if (!empty($fwd_info['fwd_cc_unknown'])) {
 			$tracker_extras['fwd_cc_unknown'] = $fwd_info['fwd_cc_unknown'];
+		}
+
+		if (isset($this->reply_actions['user'])) {
+			$newticket->creation_system = 'gateway.agent';
 		}
 
 		App::getOrm()->beginTransaction();
