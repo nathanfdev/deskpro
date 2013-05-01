@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\TicketGateway\AgentReplyCodes;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EmailGateway\AbstractGatewayProcessor;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -93,6 +94,21 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $detected_tac_person;
+
+	/**
+	 * @var string
+	 */
+	protected $reply_actions;
+
+	/**
+	 * @var string
+	 */
+	protected $email_body_html;
+
+	/**
+	 * @var string
+	 */
+	protected $email_body_text;
 
 	protected $error;
 	protected $source_info;
@@ -263,6 +279,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		$this->email_body_html = $this->reader->getBodyHtml()->getBodyUtf8();
+		$this->email_body_text = $this->reader->getBodyText()->getBodyUtf8();
+
+		// Get reply actions
+		if ($person['is_agent']) {
+			if ($this->email_body_html) {
+				$rc = new AgentReplyCodes($this->email_body_html, true);
+				$this->reply_actions = $rc->getProperties();
+				if ($this->reply_actions) {
+					$this->email_body_html = $rc->getNewBody();
+				}
+			} else {
+				$rc = new AgentReplyCodes($this->email_body_text, false);
+				$this->reply_actions = $rc->getProperties();
+				if ($this->reply_actions) {
+					$this->email_body_html = $rc->getNewBody();
+				}
+			}
+		}
+
 		$reply_as_new = false;
 		if ($ticket AND $person AND $ticket->status == 'resolved' AND !$person->hasPerm('tickets.reopen_resolved')) {
 
@@ -338,7 +374,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			// If the agent is replying to an email that is not a notification, then this check doesnt
 			// need to run (e.g., they replied to an email they were CCd on).
 			$is_reply_to_dpmail = false;
-			if ($body_html = $this->reader->getBodyHtml()->getBody()) {
+			if ($body_html = $this->email_body_html) {
 				if (
 					strpos($body_html, 'DP_BOTTOM_MARK') !== false
 					|| strpos($body_html, 'DP_TOP_MARK') !== false
@@ -360,7 +396,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$person['is_agent']
 				&& (
 					// Is not a user email
-					(strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false && $is_reply_to_dpmail)
+					(strpos($this->email_body_html, 'DP_USER_EMAIL') === false && $is_reply_to_dpmail)
 					||
 					// Or is a text email where user email markers wouldnt be detected
 					($this->detected_tac_person && $this->detected_tac_person->getId() == $person->getId() && !$is_reply_to_dpmail)
@@ -595,6 +631,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
+		$this->applyChangesArray($ticket);
+
 		$charset_error = $this->charset_error;
 		App::getDb()->beginTransaction();
 
@@ -634,7 +672,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$inline_images = new InlineImageTokens($this->reader);
 		$inline_images2 = new InlineImageTokens($this->reader);
 
-		$orig_text = $this->reader->getBodyText()->getBodyUtf8();
+		$orig_text = $this->email_body_text;
 		$did_html_trim = false;
 		$is_text = false;
 		$has_text_cut = false;
@@ -642,11 +680,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$precut_do_plaintext = false;
 
-		if ($this->reader->getBodyHtml()->getBody()) {
+		if ($this->email_body_html) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
-			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			$email_info['body'] = $this->email_body_html;
 			if (!$email_info['body']) {
-				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+				$email_info['body'] = $this->email_body_html;
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
@@ -679,11 +717,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				if ($email_info['body'] == $generic_cut || substr_count($email_info['body'], '>') > 15000) {
 					$this->logMessage('[TicketGatewayProcessor] Cut document still too complex, using plaintext');
 
-					$email_info['body'] = $this->reader->getBodyText()->getBodyUtf8();
+					$email_info['body'] = $this->email_body_text;
 					if ($email_info['body']) {
 						$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
 					} else {
-						$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBodyUtf8());
+						$email_info['body'] = strip_tags($this->email_body_html);
 						$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
 					}
 					$email_info['body_is_html'] = false;
@@ -701,13 +739,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
-		if ($precut_do_plaintext || !$this->reader->getBodyHtml()->getBody()) {
+		if ($precut_do_plaintext || !$this->email_body_html) {
 			$is_text = true;
 
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
-			$txt = $this->reader->getBodyText()->getBodyUtf8();
-			if (!$txt && $this->reader->getBodyText()->getBody()) {
-				$txt = $this->reader->getBodyText()->getBody();
+			$txt = $this->email_body_text;
+			if (!$txt && $this->email_body_text) {
+				$txt = $this->email_body_text;
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
@@ -899,20 +937,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$this->logMessage('[TicketGatewayProcessor] Processing DP3 reply text');
 
-		if ($this->reader->getBodyText()->getBodyUtf8()) {
+		if ($this->email_body_text) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
-			$txt = $this->reader->getBodyText()->getBodyUtf8();
-			if (!$txt && $this->reader->getBodyText()->getBody()) {
-				$txt = $this->reader->getBodyText()->getBody();
+			$txt = $this->email_body_text;
+			if (!$txt && $this->email_body_text) {
+				$txt = $this->email_body_text;
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
 			$email_info['body'] = $txt;
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
-			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			$email_info['body'] = $this->email_body_html;
 			if (!$email_info['body']) {
-				$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBody());
+				$email_info['body'] = strip_tags($this->email_body_html);
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 
@@ -1085,11 +1123,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] runNewTicket running reply cutter (new ticket from reply)');
 			$email_info = array_merge($email_info, $this->getEmailBodyInfo());
 		} else {
-			if ($this->reader->getBodyHtml()->getBody()) {
+			if ($this->email_body_html) {
 				$this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
-				$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+				$email_info['body'] = $this->email_body_html;
 				if (!$email_info['body']) {
-					$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+					$email_info['body'] = $this->email_body_html;
 					$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 				}
 
@@ -1109,9 +1147,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$email_info['body_is_html'] = true;
 			} else {
 				$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
-				$txt = $this->reader->getBodyText()->getBodyUtf8();
-				if (!$txt && $this->reader->getBodyText()->getBody()) {
-					$txt = $this->reader->getBodyText()->getBody();
+				$txt = $this->email_body_text;
+				if (!$txt && $this->email_body_text) {
+					$txt = $this->email_body_text;
 					$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 				}
 
@@ -1244,7 +1282,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				}
 			}
 
-			$ticket = $newticket->save();
+			$self = $this;
+			$ticket = $newticket->save(array(
+				'pre_persist_callback' => function(Entity\Ticket $ticket) use ($self) {
+					$self->applyChangesArray($ticket);
+				}
+			));
 
 			$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
 
@@ -1321,10 +1364,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info = array();
 		$email_info['subject'] = $this->reader->getSubject()->subject;
-		if ($email_info['body'] = $this->reader->getBodyText()->getBodyUtf8()) {
+		if ($email_info['body'] = $this->email_body_text) {
 			$email_info['body_is_html'] = false;
 		} else {
-			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			$email_info['body'] = $this->email_body_html;
 			$email_info['body_is_html'] = false;
 			$email_info['body'] = \Orb\Util\Strings::html2Text($email_info['body']);
 		}
@@ -1600,5 +1643,65 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		return $text;
+	}
+
+	public function applyChangesArray(Entity\Ticket $ticket)
+	{
+		foreach ($this->reply_actions as $type => $value) {
+			switch ($type) {
+				case 'user':
+					$ticket->person = $value;
+					break;
+
+				case 'status':
+					$ticket->status = $value;
+					break;
+
+				case 'is_hold':
+					$ticket->is_hold = $value;
+					break;
+
+				case 'agent':
+					$ticket->agent = $value;
+					break;
+
+				case 'assign_agent':
+					$ticket->agent = $value;
+					break;
+
+				case 'assign_agent_team':
+					$ticket->agent = $value;
+					break;
+
+				case 'product':
+					$ticket->product = $value;
+					break;
+
+				case 'category':
+					$ticket->category = $value;
+					break;
+
+				case 'priority':
+					$ticket->priority = $value;
+					break;
+
+				case 'workflow':
+					$ticket->workflow = $value;
+					break;
+
+				case 'labels':
+					$ticket->getLabelManager()->setLabelsArray($value);
+					break;
+
+				case 'ticket_fields':
+					$form_data = array();
+					foreach ($values as $field_id => $data) {
+						$form_data["field_{$field_id}"] = $data;
+					}
+
+					$field_manager->saveFormToObject($form_data, $ticket);
+					break;
+			}
+		}
 	}
 }

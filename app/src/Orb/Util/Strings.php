@@ -843,6 +843,87 @@ class Strings
 
 
 	/**
+	 * Like str_replace but lets you specify the max number of times
+	 * to replace the string.
+	 *
+	 * If $search/$replace are arrays, then each string will be tried once.
+	 * So the total number of actual replacements may be the number of items in the arrays.
+	 *
+	 * @param string $search   The string to search for
+	 * @param string $replace  The string to replace with
+	 * @param string $subject  The string to apply changes to
+	 * @param int    $limit    How many replacements to make
+	 * @param bool   $reverse  Replace from end of the string instead
+	 * @return string
+	 */
+	static public function strReplaceLimit($search, $replace, $subject, $limit = 1, $reverse = false)
+	{
+		if (is_array($search)) {
+			foreach ($search as $k => $s) {
+				if (is_array($replace)) {
+					$r = $replace[$k];
+				} else {
+					$r = $replace;
+				}
+
+				$subject = self::strReplaceLimit($s, $r, $subject, $limit, $reverse);
+			}
+		} else {
+			$x = 0;
+			while ($x++ < $limit) {
+				if ($reverse) {
+					$pos = strrpos($subject, $search);
+				} else {
+					$pos = strpos($subject, $search);
+				}
+				if ($pos === false) break;
+				$subject = substr_replace($subject, $replace, $pos, strlen($search));
+			}
+		}
+
+		return $subject;
+	}
+
+
+	/**
+	 * Cuts a section of a string out
+	 *
+	 * @param string $string  The string to work on
+	 * @param int $cut_start  The index to start cutting (inclusive)
+	 * @param int $cut_end    The index to stop the cut (exclusive)
+	 * @return string
+	 */
+	static public function cut($string, $cut_start, $cut_end)
+	{
+		if ($cut_start == 0) {
+			return substr($string, $cut_end);
+		}
+
+		return substr($string, 0, $cut_start) . substr($string, $cut_end);
+	}
+
+
+	/**
+	 * Injects a string into the position at $inject_at
+	 *
+	 * @param string $string
+	 * @param string $inject_string
+	 * @param string $inject_at
+	 */
+	static public function inject($string, $inject_string, $inject_at)
+	{
+		if ($inject_at == 0) {
+			return $inject_string . $string;
+		} elseif ($inject_at > 0 && !isset($string[$inject_at])) {
+			return $string . $inject_string;
+		}
+
+		return substr($string, 0, $inject_at) . $inject_string . substr($string, $inject_at);
+	}
+
+
+
+	/**
 	 * Tries to verify and fix a regular expression, usually used to turn a regex inputted into a
 	 * form into a real regex with delims.
 	 *
@@ -1071,24 +1152,6 @@ class Strings
 		$pattern = "#^$pattern$#";
 
 		return preg_match($pattern, $test, $matches);
-	}
-
-
-	/**
-	 * Inject a string into another string at a certain position
-	 *
-	 * @return string
-	 */
-	public static function inject($add_string, $to_string, $at_pos)
-	{
-		if ($at_pos >= strlen($to_string)) {
-			return $to_string . $add_string;
-		}
-
-		$str1 = substr($to_string, 0, $at_pos);
-		$str2 = substr($to_string, $at_pos);
-
-		return $str1 . $add_string . $str2;
 	}
 
 
@@ -1659,20 +1722,19 @@ class Strings
 
 
 	/**
-	 * Like str_replace() except it only does the first
+	 * Like str_replace() except it only does the first.
+	 *
+	 * @see Strings::strReplaceLimit
 	 *
 	 * @param string $find
 	 * @param string $replace
 	 * @param string $string
+	 * @param bool   $reverse
+	 * @return string
 	 */
-	public static function strReplaceOne($find, $replace, $string)
+	public static function strReplaceOne($find, $replace, $string, $reverse = false)
 	{
-		$pos = strpos($string, $find);
-		if ($pos !== false){
-			return substr_replace($string, $replace, $pos, strlen($find));
-		}
-
-		return $string;
+		return self::strReplaceLimit($find, $replace, $string, 1, $reverse);
 	}
 
 

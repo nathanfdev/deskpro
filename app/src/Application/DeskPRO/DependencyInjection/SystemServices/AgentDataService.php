@@ -153,6 +153,22 @@ class AgentDataService
 
 
 	/**
+	 * @param string $email
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getByEmail($email)
+	{
+		foreach ($this->getAgents() as $agent) {
+			if ($agent->hasEmailAddress($email)) {
+				return $agent;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * Get an array of agents who are online now (have active sessions).
 	 *
 	 * @return int[]

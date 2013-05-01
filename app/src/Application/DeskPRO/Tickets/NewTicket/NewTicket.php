@@ -404,6 +404,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				}
 			}
 
+			if (isset($set_extra['pre_persist_callback'])) {
+				call_user_func($set_extra['pre_persist_callback'], $ticket);
+			}
+
 			App::getOrm()->persist($ticket);
 
 			$field_manager = App::getSystemService('ticket_fields_manager');
