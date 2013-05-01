@@ -93,7 +93,7 @@ class Generic implements ForwardDef, QuoteDef
 				}
 
 				if (preg_match($pattern, $l)) {
-					if (!$start_line) {
+					if ($start_line === null) {
 						$start_line = $ln;
 					}
 					$found++;
