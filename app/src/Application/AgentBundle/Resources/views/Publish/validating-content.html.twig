@@ -14,7 +14,9 @@
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
 
-	{% include 'AgentBundle:Publish:validating-content-massactions-bar.html.twig' %}
+	{% if app.user.hasPerm('agent_publish.validate') %}
+		{% include 'AgentBundle:Publish:validating-content-massactions-bar.html.twig' %}
+	{% endif %}
 
 	<section class="comments-list list-listing">
 		{% include 'AgentBundle:Publish:validating-content-page.html.twig' %}

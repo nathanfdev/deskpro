@@ -71,6 +71,11 @@ class NewArticle
 		$article = new Article();
 		$article->person = $this->_person_context;
 		$article->setStatusCode($this->status);
+
+		if ($article->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
+			$article->setStatusCode('hidden.validating');
+		}
+
 		$article->title = $this->title;
 		$article->content = $this->content ?: '';
 

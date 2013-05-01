@@ -8,7 +8,9 @@
 			data-route-title="@selector(a.row-title)"
 			data-route-openclass="open"
 		>
-			<input class="item-select" type="checkbox" value="{{ info.content_type }}.{{content.id}}" data-content-type="{{ info.content_type }}" data-content-id="{{ content.id }}" />
+			{% if app.user.hasPerm('agent_publish.validate') %}
+				<input class="item-select" type="checkbox" value="{{ info.content_type }}.{{content.id}}" data-content-type="{{ info.content_type }}" data-content-id="{{ content.id }}" />
+			{% endif %}
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>

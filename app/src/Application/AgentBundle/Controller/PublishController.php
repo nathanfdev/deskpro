@@ -176,6 +176,10 @@ class PublishController extends AbstractController
 
 	public function approveCommentAction($typename, $comment_id)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$entity = $this->_getCommentEntityName($typename);
 
 		$comment = $this->em->find($entity, $comment_id);
@@ -194,6 +198,10 @@ class PublishController extends AbstractController
 
 	public function deleteCommentAction($typename, $comment_id)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$entity = $this->_getCommentEntityName($typename);
 
 		$comment = $this->em->find($entity, $comment_id);
@@ -210,6 +218,10 @@ class PublishController extends AbstractController
 
 	public function validatingCommentsMassActionsAction($action)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$data = $this->in->getCleanValueArray('content', 'array', 'string');
 
 		$this->em->beginTransaction();
@@ -445,6 +457,10 @@ class PublishController extends AbstractController
 
 	public function approveContentAction($type, $content_id)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
 
 		$entity =  $this->publish_helper->getEntityNameFor($type);
@@ -477,18 +493,30 @@ class PublishController extends AbstractController
 
 	public function approveFeedback(\Application\DeskPRO\Entity\Feedback $feedback)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$feedback_moderate = new \Application\DeskPRO\Feedback\FeedbackModerate($this->container, $this->person);
 		$feedback_moderate->approveFeedback($feedback);
 	}
 
 	public function disapproveFeedback(\Application\DeskPRO\Entity\Feedback $feedback, $reason)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$feedback_moderate = new \Application\DeskPRO\Feedback\FeedbackModerate($this->container, $this->person);
 		$feedback_moderate->disapproveFeedback($feedback, $reason);
 	}
 
 	public function disapproveContentAction($type, $content_id)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
+
 		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
 
 		$entity = $this->publish_helper->getEntityNameFor($type);
@@ -576,6 +604,9 @@ class PublishController extends AbstractController
 
 	public function validatingMassActionsAction($action)
 	{
+		if (!$this->person->hasPerm('agent_publish.validate')) {
+			throw $this->createNotFoundException();
+		}
 		$data = $this->in->getCleanValueArray('content', 'array', 'string');
 
 		$this->em->beginTransaction();

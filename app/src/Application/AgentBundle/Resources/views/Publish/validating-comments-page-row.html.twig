@@ -1,4 +1,5 @@
 <article class="row-item comment {{ info.content_type }}-{{comment.id}} {{ get_type(comment.object)|lower }}">
+	{% if app.user.hasPerm('agent_publish.validate') %}
 	<input
 		class="item-select"
 		type="checkbox"
@@ -6,6 +7,7 @@
 		data-content-type="{{ info.content_type }}"
 		data-comment-id="{{ comment.id }}"
 	/>
+	{% endif %}
 	<div class="top-row">
 		<div class="top-row-left">
 			<div class="by-line">

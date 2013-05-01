@@ -39,12 +39,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
 			<select name="newdownload[status]">
-				<option value="published">{{ phrase('agent.publish.status_published') }}</option>
+				{% if app.user.hasPerm('agent_publish.validate') %}
+					<option value="published">{{ phrase('agent.publish.status_published') }}</option>
+				{% endif %}
+				{% if constant('DP_DEBUG') or not app.user.hasPerm('agent_publish.validate') %}
+					<option value="hidden.validating" selected="selected">Publish (will require validation)</option>
+				{% endif %}
 				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
-				{% if constant('DP_DEBUG') %}
-					<option value="hidden.validating" selected="selected">{{ phrase('agent.general.dev_validating') }}</option>
-				{% endif %}
 			</select>
 		</div>
 		<br class="clear" />

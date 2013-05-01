@@ -175,6 +175,9 @@ class NewsController extends AbstractController
 		switch ($action) {
 			case 'status':
 				$news['status_code'] = $this->in->getString('status');
+				if ($news['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
+					$news['status_code'] = 'hidden.validating';
+				}
 				break;
 
 			case 'title':

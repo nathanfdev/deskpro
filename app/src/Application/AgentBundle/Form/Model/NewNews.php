@@ -74,6 +74,10 @@ class NewNews
 		$news->content = $this->content ?: '';
 		$news->setStatusCode($this->status);
 
+		if ($news->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
+			$news->setStatusCode('hidden.validating');
+		}
+
 		$cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
 		$news->category = $cat;
 
