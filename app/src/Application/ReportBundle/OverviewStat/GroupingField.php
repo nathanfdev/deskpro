@@ -142,10 +142,6 @@ class GroupingField
 				return array('select' => 'tickets.person_id', 'group_by' => 'tickets.person_id', 'join' => '', 'where' => '');
 				break;
 
-			case self::ORGANIZATION:
-				return array('select' => 'COALESCE(tickets.organization_id, 0) AS org_id', 'group_by' => 'org_id', 'join' => '', 'where' => '');
-				break;
-
 			case self::TICKET_FIELD:
 				$field_def = App::getSystemService('ticket_fields_manager')->getFieldFromId($this->field_id);
 
@@ -163,9 +159,12 @@ class GroupingField
 					$ids = implode(',', array_keys($children));
 
 					return array(
-						'select' => 'COALESCE(custom_data_ticket.id, 0) AS group_field',
+						'select' => 'COALESCE(custom_def_ticket.title, 0) AS group_field',
 						'group_by' => 'group_field',
-						'join' => 'LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id IN('.$ids.'))',
+						'join' => "
+							LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id IN($ids))
+							LEFT JOIN custom_def_ticket ON (custom_def_ticket.id = custom_data_ticket.field_id)
+						",
 						'where' => ''
 					);
 				} else {
@@ -195,9 +194,12 @@ class GroupingField
 					$ids = implode(',', array_keys($children));
 
 					return array(
-						'select' => 'COALESCE(custom_data_person.id, 0) AS group_field',
+						'select' => 'COALESCE(custom_def_ticket.title, 0) AS group_field',
 						'group_by' => 'group_field',
-						'join' => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN('.$ids.'))',
+						'join' => "
+							LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN('.$ids.'))
+							LEFT JOIN custom_def_person ON (custom_def_person.id = custom_data_person.field_id)
+						",
 						'where' => ''
 					);
 				} else {
@@ -301,20 +303,8 @@ class GroupingField
 			case self::TICKET_FIELD:
 
 				if ($values) {
-
-					$field_def = App::getSystemService('ticket_fields_manager')->getFieldFromId($this->field_id);
-
-					if ($field_def->isChoiceType()) {
-						$children = App::getSystemService('ticket_fields_manager')->getFieldChildren($field_def);
-						$names = array();
-						foreach ($children as $child) {
-							$names[$child->getId()] = $child->getTitle();
-						}
-					} else {
-						$names = array_combine(array_keys($values), array_keys($values));
-						unset($names[0]);
-					}
-
+					$names = array_combine(array_keys($values), array_keys($values));
+					unset($names[0]);
 					$this->titles = $names;
 				} else {
 					$this->titles = array();
@@ -324,19 +314,8 @@ class GroupingField
 			case self::USER_FIELD:
 
 				if ($values) {
-					$field_def = App::getSystemService('person_fields_manager')->getFieldFromId($this->field_id);
-
-					if ($field_def->isChoiceType()) {
-						$children = App::getSystemService('person_fields_manager')->getFieldChildren($field_def);
-						$names = array();
-						foreach ($children as $child) {
-							$names[$child->getId()] = $child->getTitle();
-						}
-					} else {
-						$names = array_combine(array_keys($values), array_keys($values));
-						unset($names[0]);
-					}
-
+					$names = array_combine(array_keys($values), array_keys($values));
+					unset($names[0]);
 					$this->titles = $names;
 				} else {
 					$this->titles = array();
