@@ -67,7 +67,7 @@ class PersonFieldManager extends FieldManager
 				continue;
 			}
 
-			$save_data['field_' . $field->getId()] = $raw_data[$field_name];
+			$save_data['field_' . $field->getId()] = $val;
 		}
 
 		if ($save_data) {

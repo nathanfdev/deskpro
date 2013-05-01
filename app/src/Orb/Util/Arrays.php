@@ -591,7 +591,7 @@ class Arrays
 			return $default;
 		}
 
-		while ($key = array_shift($parts)) {
+		while (($key = array_shift($parts)) !== null) {
 			if (!isset($array[$key])) {
 				return $default;
 			}
