@@ -60,63 +60,44 @@ class BlobStorageService
 		$logger->addWriter($wr);
 
 		#------------------------------
-		# Create the storage and adapters
+		# Filesystem adapter
 		#------------------------------
 
-		$bs = new DeskproBlobStorage($container->getEm());
-		$bs->setLogger($logger);
+		$opts = array('base_path' => $container->getBlobDir());
+		if ($container->getSetting('core.filestorage_file_mode')) {
+			$opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
+		}
+		if ($container->getSetting('core.filestorage_dir_mode')) {
+			$opts['dir_mode'] = $container->getSetting('core.filestorage_dir_mode');
+		}
 
-		if ($container->getSetting('core.filestorage_method') == 's3') {
+		$fs_adapter = new FilesystemStorage($opts);
+		$fs_adapter->setLogger($logger);
+
+		#------------------------------
+		# S3 Adapter
+		#------------------------------
+
+		$s3_adapter = null;
+		if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
 			$client = S3Client::factory(array(
 				'key'    => $container->getSetting('core.filestorage_s3_key'),
 				'secret' => $container->getSetting('core.filestorage_s3_secret')
 			));
-			$adapter = new AmazonS3Storage(array(
+			$s3_adapter = new AmazonS3Storage(array(
 				's3_client'       => $client,
 				'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
 				'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
 				'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
 			));
-			$adapter->setLogger($logger);
-
-			$bs->addAdapter('s3', $adapter);
-
-			// Cloud always has fs enabled (legacy while blobs are moved)
-			if (defined('DPC_IS_CLOUD')) {
-				$adapter = new FilesystemStorage(array(
-					'base_path' => $container->getBlobDir(),
-				));
-				$adapter->setLogger($logger);
-
-				$bs->addAdapter('fs', $adapter);
-
-				// Disable it so its not used for *new* blobs
-				$bs->disableAdapter('fs');
-			}
-		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
-			$opts = array(
-				'base_path' => $container->getBlobDir(),
-			);
-
-			if ($container->getSetting('core.filestorage_file_mode')) {
-				$opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
-			}
-			if ($container->getSetting('core.filestorage_dir_mode')) {
-				$opts['dir_mode'] = $container->getSetting('core.filestorage_dir_mode');
-			}
-
-			$adapter = new FilesystemStorage($opts);
-			$adapter->setLogger($logger);
-
-			$bs->addAdapter('fs', $adapter);
+			$s3_adapter->setLogger($logger);
 		}
 
-		if (defined('DP_BLOBSTORAGE_SAVECOPY_PATH')) {
-			$bs->setSaveCopyPath(DP_BLOBSTORAGE_SAVECOPY_PATH);
-		}
+		#------------------------------
+		# Database adapter
+		#------------------------------
 
-		// Always fallback on DB
-		$adapter = new DatabaseStorage(array(
+		$db_adapter = new DatabaseStorage(array(
 			'db'                   => $container->getDb(),
 			'table'                => 'blobs_storage',
 			'field_name.data'      => 'data',
@@ -124,8 +105,40 @@ class BlobStorageService
 			'field_name.order'     => 'id',
 			'metadata_id_property' => 'blob_id'
 		));
-		$adapter->setLogger($logger);
-		$bs->addAdapter('db', $adapter);
+		$db_adapter->setLogger($logger);
+
+		#------------------------------
+		# Create the storage
+		#------------------------------
+
+		$bs = new DeskproBlobStorage($container->getEm());
+		$bs->setLogger($logger);
+
+		if ($s3_adapter && $container->getSetting('core.filestorage_method') == 's3') {
+			$bs->addAdapter('s3', $s3_adapter);
+			$bs->addAdapter('fs', $fs_adapter);
+			$bs->disableAdapter('fs');
+		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
+			$bs->addAdapter('fs', $fs_adapter);
+			if ($s3_adapter) {
+				$bs->addAdapter('s3', $s3_adapter);
+				$bs->disableAdapter('fs');
+			}
+		} else {
+			$bs->addAdapter('fs', $fs_adapter);
+			$bs->disableAdapter('fs', $fs_adapter);
+			if ($s3_adapter) {
+				$bs->addAdapter('s3', $s3_adapter);
+				$bs->disableAdapter('fs');
+			}
+		}
+
+		// Always have db as fallback
+		$bs->addAdapter('db', $db_adapter);
+
+		if (defined('DP_BLOBSTORAGE_SAVECOPY_PATH')) {
+			$bs->setSaveCopyPath(DP_BLOBSTORAGE_SAVECOPY_PATH);
+		}
 
 		return $bs;
 	}
