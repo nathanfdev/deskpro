@@ -378,7 +378,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var messagesWrap = this.getEl('messages_wrap');
 
 		// No page means reload current page
+		var reload = false;
 		if (!page) {
+			reload = true;
 			page = parseInt(messagesWrap.data('page'));
 		}
 
@@ -401,7 +403,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if (loadDiv) {
 					loadDiv.remove();
 				}
-				if (this.meta.ticket_reverse_order) {
+				if (this.meta.ticket_reverse_order && !reload) {
 					var div = $('<div></div>');
 					div.html(html);
 					this._initMessage(messagePageWrap);
