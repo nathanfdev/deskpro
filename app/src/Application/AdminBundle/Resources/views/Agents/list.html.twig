@@ -53,7 +53,7 @@
 					{% for usergroup in all_usergroups %}
 						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{usergroup.id}}">
 							<a class="title" href="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id}) }}">{{usergroup.title}}</a>
-							<div class="icon-list">
+							<div class="dp-icon-list">
 								<ul>
 									{% for id in usergroup_member_ids[usergroup.id] if all_agents[id] %}
 										{% set agent = all_agents[id] %}
@@ -72,7 +72,7 @@
 	</div>
 
 	<div class="dp-page-box">
-		<div class="resource-item-list icon-group">
+		<div class="resource-item-list dp-icon-group">
 			<header>
 				<div class="controls">
 					<a class="clean-white small" href="{{ path('admin_agents_teams_new') }}">{{ phrase('agent.feedback.status_new') }}</a>
@@ -85,7 +85,7 @@
 					{% for team in all_teams %}
 						<li class="agent-team team-{{team.id}}" data-team-id="{{team.id}}">
 							<a class="title" href="{{ path('admin_agents_teams_edit', {'team_id': team.id}) }}">{{team.name}}</a>
-							<div class="icon-list">
+							<div class="dp-icon-list">
 								<ul>
 									{% for id in team_member_ids[team.id] if all_agents[id] %}
 										{% set agent = all_agents[id] %}
