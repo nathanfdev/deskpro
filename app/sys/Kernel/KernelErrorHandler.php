@@ -207,7 +207,7 @@ class KernelErrorHandler
 	{
 		static $got_unique_ids = array();
 
-		if ($unique_id) {
+		if ($unique_id && defined('DP_BUILD_TIME') && !defined('DP_BUILDING')) {
 			if (isset($got_unique_ids[$unique_id])) return;
 			$got_unique_ids[$unique_id] = true;
 
