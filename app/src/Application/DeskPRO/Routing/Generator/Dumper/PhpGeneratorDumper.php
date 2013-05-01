@@ -51,11 +51,11 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 
 		// First opening brace, as in class {
 		$pos = strpos($class, '{') + 1;
-		$class = Strings::inject("\n" . $var_code . "\n", $class, $pos);
+		$class = Strings::inject($class, "\n" . $var_code . "\n", $pos);
 
 		// Last closing brace, as in } at the end of the class
 		$pos = strrpos($class, '}');
-		$class = Strings::inject("\n" . $method_code . "\n", $class, $pos);
+		$class = Strings::inject($class, "\n" . $method_code . "\n", $pos);
 
 		$class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
 
