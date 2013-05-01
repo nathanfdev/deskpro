@@ -258,6 +258,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 			$message = \Application\DeskPRO\Mail\Message::newInstance();
 			$message->setEncoder(\Swift_Encoding::get8BitEncoding());
 			$message->setTemplateEngine($this->templating);
+			$message->enableQueueHint();
 			return $message;
 		}
 

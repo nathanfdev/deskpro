@@ -86,6 +86,17 @@ class QueueTransport implements \Swift_Transport
 		$sendmail = new \Application\DeskPRO\Entity\SendmailQueue();
 		$sendmail->blob = $blob;
 		$sendmail->subject = $message->getSubject();
+		$sendmail->date_next_attempt = new \DateTime();
+
+		$tos = array();
+		foreach ($message->getTo() as $addr => $name) {
+			$tos[] = $addr;
+		}
+		$sendmail->to_address = implode(',', $tos);
+		foreach ($message->getTo() as $addr => $name) {
+			$sendmail->from_address = $addr;
+		}
+
 		App::getOrm()->persist($sendmail);
 		App::getOrm()->flush();
 
