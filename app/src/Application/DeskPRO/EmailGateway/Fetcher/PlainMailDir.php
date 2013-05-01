@@ -125,7 +125,7 @@ class PlainMailDir extends AbstractFetcher
 	/**
 	 * @return \Directory
 	 */
-	public function getStorage()
+	public function getStorage($reconnect = false)
 	{
 		if ($this->storage === null) {
 			$this->storage = $this->_initConnection();
