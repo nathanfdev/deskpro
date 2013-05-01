@@ -40,6 +40,7 @@ use Application\DeskPRO\Mail\Transport\DeskproQueueTransport;
 use Cloud\Mail\Transport\DelegatingTransport;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
+use Orb\Mail\Message;
 use Orb\Util\Strings;
 
 class SendmailQueueRunner implements Loggable
@@ -211,6 +212,9 @@ class SendmailQueueRunner implements Loggable
 			$this->mailer->getTransport()->disableQueue();
 		}
 
+		if ($message instanceof Message) {
+			$message->disableQueueHint();
+		}
 		$success = $this->mailer->sendNow($message);
 
 		if (!$success) {
