@@ -566,7 +566,7 @@ class KernelErrorHandler
 			'errline'           => $errline,
 			'last_error'        => $last_e,
 			'display'           => $display,
-			'build'             => DP_BUILD_TIME,
+			'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
 			'process_log'       => implode("\n", self::$process_log),
 			'context_data'      => $context_data,
 			'error_time'        => microtime(true),

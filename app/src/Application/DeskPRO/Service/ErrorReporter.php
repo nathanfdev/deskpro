@@ -39,6 +39,10 @@ class ErrorReporter
 {
 	public static function getBasicData($send_all_stats = false)
 	{
+		if (!defined('DP_BUILD_NUM')) {
+			return array();
+		}
+
 		$reduced_lic_reports = false;
 		if (class_exists('Application\\DeskPRO\\App')) {
 			try {
@@ -190,6 +194,10 @@ class ErrorReporter
 	 */
 	public static function reportPhpError(array $errinfo)
 	{
+		if (!defined('DP_BUILD_NUM')) {
+			return array();
+		}
+
 		$info = self::getBasicData();
 
 		if ($errinfo['type'] == 'exception') {
