@@ -356,6 +356,28 @@ class AgentReplyCodes implements Loggable
 				}
 				break;
 
+			case 'dep':
+			case 'department':
+				$deps = array();
+				foreach (App::getOrm()->getRepository('DeskPRO:Department')->findAll() as $dep) {
+					if ($dep->is_tickets_enabled) {
+						$deps[$dep->id] = $dep;
+					}
+				}
+				$obj = $this->_findObjFromCollection(
+					$deps,
+					'title',
+					$param
+				);
+
+				if ($obj) {
+					$this->getLogger()->logDebug('[AgentReplyCodes] Set department: ' . $obj->id);
+					$this->props['department'] = $obj;
+				} else {
+					$this->getLogger()->logDebug('[AgentReplyCodes] Unknown department: ' . $param);
+				}
+				break;
+
 			case 'cat':
 			case 'category':
 				$obj = $this->_findObjFromCollection(

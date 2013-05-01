@@ -43,6 +43,7 @@ use Application\DeskPRO\EntityRepository\TicketLog;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
 use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\CategoryAction;
+use Application\DeskPRO\Tickets\TicketActions\DepartmentAction;
 use Application\DeskPRO\Tickets\TicketActions\PriorityAction;
 use Application\DeskPRO\Tickets\TicketActions\ProductAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
@@ -440,6 +441,9 @@ class TriggerExecutor
 							continue;
 						}
 						if ($action instanceof AgentTeamAction && isset($override_actions['assign_agent_team'])) {
+							continue;
+						}
+						if ($action instanceof DepartmentAction && isset($override_actions['department'])) {
 							continue;
 						}
 						if ($action instanceof ProductAction && isset($override_actions['product'])) {

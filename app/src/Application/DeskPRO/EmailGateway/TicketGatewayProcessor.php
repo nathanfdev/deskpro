@@ -1696,6 +1696,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$ticket->agent = $value;
 					break;
 
+				case 'department':
+					$ticket->department = $value;
+					break;
+
 				case 'product':
 					$ticket->product = $value;
 					break;
