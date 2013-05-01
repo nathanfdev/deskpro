@@ -140,8 +140,10 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
 			$header_end = strpos($raw_source, "\n\n");
 			if ($header_end === false) {
-				$output->writeln("<error>Invalid email source -- could not split headers</error>");
-				return 1;
+				// Means an empty body (eg message with only subject)
+				// But we trimmed above so the \n\n sep would be trimmed off
+				$raw_source .= "\n\n";
+				$header_end = strpos($raw_source, "\n\n");
 			}
 
 			$raw_headers = trim(substr($raw_source,0, $header_end));
