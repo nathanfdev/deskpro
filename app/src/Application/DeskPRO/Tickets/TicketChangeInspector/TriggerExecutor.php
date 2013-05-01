@@ -38,7 +38,15 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketTrigger;
 
+use Application\DeskPRO\EntityRepository\AgentTeam;
 use Application\DeskPRO\EntityRepository\TicketLog;
+use Application\DeskPRO\Tickets\TicketActions\AgentAction;
+use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
+use Application\DeskPRO\Tickets\TicketActions\CategoryAction;
+use Application\DeskPRO\Tickets\TicketActions\PriorityAction;
+use Application\DeskPRO\Tickets\TicketActions\ProductAction;
+use Application\DeskPRO\Tickets\TicketActions\StatusAction;
+use Application\DeskPRO\Tickets\TicketActions\WorkflowAction;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
@@ -396,6 +404,9 @@ class TriggerExecutor
 		$set_modifiers = array();
 
 		$stop_actions = false;
+
+		$override_actions = $this->tracker->getExtra('reply_actions_override');
+
 		foreach ($all_triggers as $trigger) {
 
 			// Doing a check on ID because some system triggers like notifications are always run,
@@ -416,6 +427,27 @@ class TriggerExecutor
 
 					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
 						$action->setExecutionContext('trigger');
+					}
+
+					if ($override_actions) {
+						if ($action instanceof AgentAction && isset($override_actions['assign_agent'])) {
+							continue;
+						}
+						if ($action instanceof AgentTeamAction && isset($override_actions['assign_agent_team'])) {
+							continue;
+						}
+						if ($action instanceof ProductAction && isset($override_actions['product'])) {
+							continue;
+						}
+						if ($action instanceof CategoryAction && isset($override_actions['category'])) {
+							continue;
+						}
+						if ($action instanceof WorkflowAction && isset($override_actions['workflow'])) {
+							continue;
+						}
+						if ($action instanceof PriorityAction && isset($override_actions['priority'])) {
+							continue;
+						}
 					}
 
 					// Saving a copy of the modifiers set so we can apply them to the secondary

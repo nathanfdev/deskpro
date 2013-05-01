@@ -1754,9 +1754,25 @@ class Strings
 		if ($chars !== null) {
 			foreach ($string as &$l) $l = $mode($l, $chars);
 		} else {
-			foreach ($string as &$l) $l = $mode($l);
+			foreach ($string as &$l) {
+				$l = $mode($l);
+				$l = $mode($l, "\x7f..\xff\x0..\x1f");
+			}
 		}
 		return implode("\n", $string);
+	}
+
+
+	/**
+	 * Does a "real" trim, triming other whitespace like non-breaking spaces.
+	 *
+	 * @param $string
+	 */
+	public static function trimWhitespace($string)
+	{
+		$string = trim($string);
+		$string = trim($string, "\x7f..\xff\x0..\x1f");
+		return $string;
 	}
 
 

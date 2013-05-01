@@ -286,12 +286,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($person['is_agent']) {
 			if ($this->email_body_html) {
 				$rc = new AgentReplyCodes($this->email_body_html, true);
+				$rc->setLogger($this->logger);
 				$this->reply_actions = $rc->getProperties();
 				if ($this->reply_actions) {
 					$this->email_body_html = $rc->getNewBody();
 				}
 			} else {
 				$rc = new AgentReplyCodes($this->email_body_text, false);
+				$rc->setLogger($this->logger);
 				$this->reply_actions = $rc->getProperties();
 				if ($this->reply_actions) {
 					$this->email_body_html = $rc->getNewBody();
@@ -479,6 +481,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket->getTicketLogger()->recordExtra('is_agent_reply', true);
 		}
 
+		$ticket->getTicketLogger()->recordExtra('reply_actions_override', $this->reply_actions);
+
 		// If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
 		// should be the sames. Otherwise, *probably* means the agent used a different email address.
 		if ($this->detected_tac_person && $this->detected_tac_person->is_agent && $this->detected_tac_person->getId() != $person->getId()) {
@@ -575,6 +579,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($inline_reply_detector->hasDifferentMessage() && $message['message_full']) {
 			$message['show_full_hint'] = true;
+		}
+
+		if (isset($this->reply_actions['is_note'])) {
+			$message['is_agent_note'] = true;
 		}
 
 		$ticket_attach = array();
@@ -1647,6 +1655,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function applyChangesArray(Entity\Ticket $ticket)
 	{
+		if (!$this->reply_actions) {
+			return;
+		}
+
 		foreach ($this->reply_actions as $type => $value) {
 			switch ($type) {
 				case 'user':
@@ -1695,10 +1707,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 				case 'ticket_fields':
 					$form_data = array();
-					foreach ($values as $field_id => $data) {
+					foreach ($value as $field_id => $data) {
 						$form_data["field_{$field_id}"] = $data;
 					}
 
+					$field_manager = App::getSystemService('ticket_fields_manager');
 					$field_manager->saveFormToObject($form_data, $ticket);
 					break;
 			}

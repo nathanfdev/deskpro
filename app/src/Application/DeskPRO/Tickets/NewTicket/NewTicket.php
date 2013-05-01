@@ -117,6 +117,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public function save(array $set_extra = array(), array $tracker_extra = array())
 	{
+		$pre_persist_callback = null;
+		if (isset($set_extra['pre_persist_callback'])) {
+			$pre_persist_callback = $set_extra['pre_persist_callback'];
+			unset($set_extra['pre_persist_callback']);
+		}
+
 		// If we got all the way here without a subject
 		// (means an email where no validation), then give a default
 		if (!$this->ticket->subject) {
@@ -404,8 +410,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				}
 			}
 
-			if (isset($set_extra['pre_persist_callback'])) {
-				call_user_func($set_extra['pre_persist_callback'], $ticket);
+			if ($pre_persist_callback) {
+				call_user_func($pre_persist_callback, $ticket);
 			}
 
 			App::getOrm()->persist($ticket);
