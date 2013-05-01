@@ -3649,6 +3649,8 @@ class TicketController extends AbstractController
 		}
 
 		$outfile = $tmpdir.'/zip';
+
+		require_once(DP_ROOT . '/vendor/pclzip/pclzip.lib.php');
 		$zip = new \PclZip($outfile);
 		$zip->add(
 			$tmpdir,

@@ -1567,6 +1567,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				window.open(url, 'msgwin', "status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height="+height+",width="+width);
 				break;
+
+			case 'debug':
+				var url = itemEl.data('url');
+				url = url.replace(/00000/g, this.meta.ticket_id);
+				var width  = 200;
+				var height = 200;
+
+				window.open(url, 'debugwin', "status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height="+height+",width="+width);
+				break;
 		}
 	},
 
