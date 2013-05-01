@@ -800,6 +800,11 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		// Ignore range() warning caused by PHP bug https://bugs.php.net/bug.php?id=51894 (fixed in PHP >= 5.3.6)
+		if (strpos($errstr, 'step exceeds the specified range') !== false) {
+			$no_send_error = true;
+		}
+
 		// Socket/network errors
 		if (
 			strpos($errstr, 'stream_socket_enable_crypto():') !== false
