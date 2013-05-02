@@ -148,24 +148,39 @@ class Generic implements ForwardDef, QuoteDef
 			'fwd_cc_unknown'       => null,
 		);
 
-		$parts = null;
+		$parts_pattern = null;
 		foreach ($this->fwd_patterns as $pattern) {
-			$parts = preg_split($pattern, $body, 2);
-			if ($parts && count($parts) == 2) {
+			$parts_pattern = preg_split($pattern, $body, 2);
+			if ($parts_pattern && count($parts_pattern) == 2) {
 				break;
 			}
 
-			$parts = null;
+			$parts_pattern = null;
 		}
 
-		if (!$parts) {
-			// Fallback on cutting based on standard message headers (From etc)
-			$parts = $this->splitFromFirstHeaderText($body);
+		// Fallback on cutting based on standard message headers (From etc)
+		$parts_generic = $this->splitFromFirstHeaderText($body);
 
-			// No suitable cutline
-			if (!$parts || count($parts) != 2) {
-				return $forward_data;
+		// No suitable cutline
+		if (!$parts_generic || count($parts_generic) != 2) {
+			$parts_generic = null;
+		}
+
+		if ($parts_pattern && $parts_generic) {
+			// If both the pattern cut and the generic cut
+			// matched a pattern, we'll take the one "furthest up"
+			if (strlen($parts_pattern[0]) < strlen($parts_generic[0])) {
+				$parts = $parts_pattern;
+			} else {
+				$parts = $parts_generic;
 			}
+		} elseif ($parts_pattern) {
+			$parts = $parts_pattern;
+		} elseif ($parts_generic) {
+			$parts = $parts_generic;
+		} else {
+			// Could not cut
+			return $forward_data;
 		}
 
 		$forward_data['message_body'] = trim($parts[0]);
