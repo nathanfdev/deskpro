@@ -108,7 +108,7 @@ class SettingsController extends BaseSettingsController
 					$client = new \Zend\Http\Client(null, array('timeout' => 10));
 					$client->setMethod(\Zend\Http\Request::METHOD_GET);
 					$client->setUri($url);
-					//$r = $client->send();
+					$r = $client->send();
 				} catch (\Exception $e) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 				}
