@@ -113,10 +113,13 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	public function getAllPermissions()
 	{
 		if ($this->perms === null) {
-			if (!$this->usergroup_ids) {
+			if (!$this->usergroup_ids && !$this->person_id) {
 				$this->perms = array();
 			} else {
 				$ids_string = implode(',', $this->usergroup_ids);
+				if (!$ids_string) {
+					$ids_string = '0';
+				}
 				if ($this->person_id) {
 					$perms = App::getOrm()->createQuery("
 						SELECT p
