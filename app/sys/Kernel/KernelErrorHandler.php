@@ -521,8 +521,10 @@ class KernelErrorHandler
 		if (isset($exception->_dp_query)) {
 			$errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
 
+			$context_data .= 'Query: ' . substr($exception->_dp_query, 0, 2000);
+
 			if (!empty($exception->_dp_query_params)) {
-				$context_data = self::varToString($exception->_dp_query_params);
+				$context_data .= "\n\n" . self::varToString($exception->_dp_query_params);
 			}
 		}
 
