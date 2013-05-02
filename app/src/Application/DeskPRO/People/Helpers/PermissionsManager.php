@@ -148,7 +148,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
 		if ($this->person->is_agent) {
-			$this->usergroups_key .= '.agent-' . $this->person->id;
+			$this->usergroups_key = md5($this->usergroups_key . 'agent-' . $this->person->id);
 		}
 
 		\DpShutdown::add(array($this, 'flushCache'));
