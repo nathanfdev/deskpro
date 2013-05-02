@@ -816,6 +816,7 @@ class PersonController extends AbstractController
 
 					if (App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
 						$errors[] = "\"$email\" was not saved because it belongs to a ticket account";
+						continue;
 					}
 
 					$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
