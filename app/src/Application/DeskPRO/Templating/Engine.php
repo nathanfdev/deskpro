@@ -204,8 +204,13 @@ class Engine extends BaseEngine
 	public function exists($name)
 	{
 		try {
-			return parent::exists($name);
+			$GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = true;
+			$ret = parent::exists($name);
+			$GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = false;
+
+			return $ret;
 		} catch (\Exception $e) {
+			$GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = false;
 			return false;
 		}
 	}

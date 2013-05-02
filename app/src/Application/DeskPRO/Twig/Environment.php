@@ -130,15 +130,18 @@ class Environment extends \Twig_Environment
 						}
 
 						if ($fallback) {
-							// Fallback on just evalling the template so everything
-							$prev = null;
-							if ($e) {
-								$prev = $e;
-							}
 
-							if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
-								$e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
-								KernelErrorHandler::logException($e, false, 'twig_write_failed');
+							if (!isset($GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) || !$GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) {
+								// Fallback on just evalling the template so everything
+								$prev = null;
+								if ($e) {
+									$prev = $e;
+								}
+
+								if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
+									$e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
+									KernelErrorHandler::logException($e, false, 'twig_write_failed');
+								}
 							}
 
 							$source = $this->compileSource($this->loader->getSource($name), $name);
