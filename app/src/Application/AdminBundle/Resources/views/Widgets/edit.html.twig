@@ -1,3 +1,4 @@
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('vendor/jquery/jquery.textarea-expander.js') }}"></script>
@@ -14,6 +15,15 @@
 <ul>
 	<li>{% if widget.id %}Edit Widget{% else %}New Widget{% endif %}</li>
 </ul>
+{% endblock %}
+{% block prepage %}
+<div style="padding: 10px 10px 0 10px;">
+	{{ design.helpbox() }}
+	<p>
+		Refer to the <a href="https://support.deskpro.com/kb/articles/84">widget documentation</a> for more information about widgets and how they work.
+	</p>
+	{{ design.helpbox_end() }}
+</div>
 {% endblock %}
 {% block page %}
 <form action="{{ path('admin_widgets_edit', {'widget_id': widget.id|default(0)}) }}" method="post" class="dp-form">
