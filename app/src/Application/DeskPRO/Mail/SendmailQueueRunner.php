@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\SendmailQueue;
 use Application\DeskPRO\Mail\Transport\DeskproQueueTransport;
 use Cloud\Mail\Transport\DelegatingTransport;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
@@ -214,7 +215,13 @@ class SendmailQueueRunner implements Loggable
 		if ($message instanceof \Orb\Mail\Message) {
 			$message->disableQueueHint();
 		}
-		$success = $this->mailer->sendNow($message);
+
+		try {
+			$success = $this->mailer->sendNow($message);
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e, false);
+			$success = false;
+		}
 
 		if (!$success) {
 			$this->logger->logDebug("Send failed");
