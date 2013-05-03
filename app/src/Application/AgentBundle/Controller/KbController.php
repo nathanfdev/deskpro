@@ -147,8 +147,13 @@ class KbController extends AbstractController
         {
             $content_html = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
 
-            $mpdf = new \mPDF_mPDF
-            (
+			if (!defined('_MPDF_TEMP_PATH')) {
+				define('_MPDF_TEMP_PATH', dp_get_tmp_dir() . '/pdf');
+				if (!is_dir(_MPDF_TEMP_PATH)) {
+					@mkdir(_MPDF_TEMP_PATH, 0777, true);
+				}
+			}
+            $mpdf = new \mPDF_mPDF(
                 'utf-8', // Language/Character set
                 'A4', // Size
                 '8', // Default Font Size
@@ -163,24 +168,15 @@ class KbController extends AbstractController
             );
 
             $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url') . '/');
-
-            $mpdf->WriteHTML($content_html);
-
-            $pdf = $mpdf->Output('', 'S');
-
-            $response = new Response();
+			$mpdf->WriteHTML($content_html);
 
             if($this->in->getBool('html')) {
+				$response = new Response();
                 $response->setContent($content_html);
+            } else {
+				$mpdf->Output($article->title . '.pdf', 'D');
+				exit;
             }
-            else
-            {
-                $response->setContent($pdf);
-                $response->headers->set('Content-Type', 'application/pdf');
-                $response->headers->set('Content-Disposition', 'attachment; filename=KnowledgeBase-'.$article->id.'.pdf');
-            }
-
-            return $response;
         }
 
 		return $this->render($tpl, $vars);
