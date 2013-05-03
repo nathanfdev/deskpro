@@ -1,4 +1,4 @@
-{% set agent_notification_footer = 'notify' %}
+{{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
 	{% if success %}
 		{{ phrase('agent.emails.alert_successful_login') }}

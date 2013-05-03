@@ -133,6 +133,7 @@ class TemplatingExtension extends \Twig_Extension
 			'min'                              => new \Twig_Function_Method($this, 'min'),
 			'max'                              => new \Twig_Function_Method($this, 'max'),
 			'match'                            => new \Twig_Function_Method($this, 'match'),
+			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1379,6 +1380,16 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return preg_match($regex, $str);
+	}
+
+	public function set_tplvar($context, $k, $v)
+	{
+		if (!isset($context['tplvars'])) {
+			$context['tplvars'] = new \stdClass();
+		}
+
+		$context['tplvars']->$k = $v;
+		return;
 	}
 }
 

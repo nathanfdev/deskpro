@@ -74,6 +74,15 @@ class EmailPreProcessor extends AbstractPreProcessor
 
 		$source = $this->processTagAsTpl($source, 'ticket-properties-table', 'DeskPRO:emails_common:ticket-props-table.html.twig');
 
+		$sets = array();
+		$source = preg_replace_callback('#\s*\{\{\s*set_tplvar\((.*?),\s*(.*?)\)\s*\}\}\s*#', function ($m) use (&$sets) {
+			$sets[] = trim($m[0]);
+		}, $source);
+
+		if ($sets) {
+			$source = '{% block email_pre %}'.implode("\n", $sets).'{% endblock %}' . $source;
+		}
+
 		return $source;
 	}
 

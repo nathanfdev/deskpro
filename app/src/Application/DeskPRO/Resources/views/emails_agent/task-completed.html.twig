@@ -1,4 +1,4 @@
-{% set agent_notification_footer = 'notify' %}
+{{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>Task {{ task.title }} completed</dp:subject>
 {{ performer.getDisplayContact() }} has completed the task {{ task.title }} created by you.
 <br /><br />

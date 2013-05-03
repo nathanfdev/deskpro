@@ -38,6 +38,12 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
 {
 	public function render($name, array $parameters = array())
     {
+		// An object so that sets against it are
+		// persisted across blocks in the same template
+		if (!isset($parameters['tplvars'])) {
+			$parameters['tplvars'] = new \stdClass();
+		}
+
 		$is_custom_template = $this->environment->isCustomTemplate($name);
 		if (!$is_custom_template) {
 			$code = parent::render($name, $parameters);

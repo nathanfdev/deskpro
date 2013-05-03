@@ -1,4 +1,4 @@
-{% set agent_notification_footer = 'notify' %}
+{{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
 	New feedback: {{ feedback.title }} {% if feedback.getStatusCode() == 'hidden.validating' %}(requires validation){% endif %}
 </dp:subject>

@@ -1,5 +1,5 @@
-{% set agent_notification_footer = 'ticket-notify' %}
-{% set agent_reply_above_line = true %}
+{{ set_tplvar('agent_notification_footer', 'ticket-notify') }}
+{{ set_tplvar('agent_reply_above_line', true) }}
 <dp:subject>
 	{% if is_my_mention %}
 		{{ phrase('agent.emails.new_mention_ticket_subject') }}
