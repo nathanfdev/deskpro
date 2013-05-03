@@ -51,10 +51,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						});
 
 						self.addEvent('destroy', function() {
-							clip.unglue(btnEl);
+							try {
+								clip.unglue(btnEl);
+							} catch (e) {}
 						});
 						self.addEvent('activate', function() {
-							clip.reposition();
+							try {
+								clip.reposition();
+							} catch (e) {}
 						});
 					} catch (e) {}
 				});
