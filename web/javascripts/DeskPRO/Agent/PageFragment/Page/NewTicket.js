@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.addEvent('activate', function() {
 			window.setTimeout(function() {
-				self.focusOnReply();
+				self.getEl('userselect').focus();
 			}, 50);
 		});
 
