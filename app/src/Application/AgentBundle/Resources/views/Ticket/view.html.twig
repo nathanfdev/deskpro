@@ -280,6 +280,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	</ul>
 </nav>
 
+{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
 {{ dp_widgets(baseId, 'ticket', 'properties', 'above', ticket_api) }}
 
 <div class="header-profile-box">
