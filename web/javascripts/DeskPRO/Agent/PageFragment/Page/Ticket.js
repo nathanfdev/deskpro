@@ -744,7 +744,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (data.active_drafts.length) {
 				var insertPos = this.wrapper.find('.ticket-messages .messages-wrap');
 				for (var i = 0; i < data.active_drafts.length; i++) {
-					insertPos.append(data.active_drafts[i]);
+					if (this.meta.ticket_reverse_order) {
+						insertPos.prepend(data.active_drafts[i]);
+					} else {
+						insertPos.append(data.active_drafts[i]);
+					}
 				}
 			}
 		}
