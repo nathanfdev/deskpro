@@ -375,7 +375,13 @@ class ArticlesController extends AbstractController
 		$validator->setPersonContext($this->person);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			if (!$this->consumeRequest('newcomment_articles')) {
+
+			$trap_fail = false;
+			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+				$trap_fail = true;
+			}
+
+			if (!$this->consumeRequest('newcomment_articles') || $trap_fail) {
 				return $this->redirectRoute('user_articles_article', array(
 					'slug' => $article->getUrlSlug()
 				));

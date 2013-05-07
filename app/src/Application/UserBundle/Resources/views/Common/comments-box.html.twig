@@ -44,6 +44,14 @@
 							{% endif %}
 							<form action="{{ form_action }}" method="post" class="with-form-validator">
 								{{ form_token() }}
+
+								<div class="dp-its-a-trap">
+									{# Spam trap: If these fields contain values when submitted, the system knows a bot submitted the form #}
+									<input type="text" name="first_name" value="" />
+									<input type="text" name="last_name" value="" />
+									<input type="text" name="email" value="" />
+								</div>
+
 								<div class="login-area">
 									<div class="inner-wrap">
 										<div>

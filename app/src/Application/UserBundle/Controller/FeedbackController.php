@@ -236,7 +236,12 @@ class FeedbackController extends AbstractController
 
 			$newfeedback->setAttachBlobs($this->in->getCleanValueArray('attach_ids', 'str_simple', 'discard'));
 
-			if ($validator->isValid($newfeedback)) {
+			$trap_fail = false;
+			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+				$trap_fail = true;
+			}
+
+			if ($validator->isValid($newfeedback) && !$trap_fail) {
 				$feedback = $newfeedback->save();
 
 				$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
@@ -529,7 +534,13 @@ class FeedbackController extends AbstractController
 		$validator->setPersonContext($this->person);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			if (!$this->consumeRequest('newcomment_feedback')) {
+
+			$trap_fail = false;
+			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+				$trap_fail = true;
+			}
+
+			if (!$this->consumeRequest('newcomment_feedback') || $trap_fail) {
 				return $this->redirectRoute('user_feedback_view', array(
 					'slug' => $feedback->getUrlSlug(),
 				));

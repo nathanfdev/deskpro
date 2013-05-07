@@ -88,6 +88,12 @@ DeskPRO.User.Window = new Orb.Class({
 		window.setTimeout(function() {
 			self.sessionPing();
 		}, 600000);
+
+		// Erase content from the trap fields
+		// (a precaution against if someone uses a browser extention to fill in fields etc)
+		$('.dp-its-a-trap').find('input').on('change keypress', function() {
+			$(this).val('');
+		}).val('');
 	},
 
 	sessionPing: function() {

@@ -294,10 +294,15 @@ class DownloadsController extends AbstractController
 
 		if ($this->get('request')->getMethod() == 'POST') {
 
-			if (!$this->consumeRequest('newcomment_downloads')) {
+			$trap_fail = false;
+			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+				$trap_fail = true;
+			}
+
+			if (!$this->consumeRequest('newcomment_downloads') || $trap_fail) {
 				return $this->redirectRoute('user_downloads_file', array(
-			'slug' => $download->getUrlSlug(),
-		));
+					'slug' => $download->getUrlSlug(),
+				));
 			}
 
 			$form->bindRequest($this->get('request'));

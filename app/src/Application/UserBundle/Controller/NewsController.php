@@ -281,7 +281,12 @@ class NewsController extends AbstractController
 
 		if ($this->get('request')->getMethod() == 'POST') {
 
-			if (!$this->consumeRequest('newcomment_news')) {
+			$trap_fail = false;
+			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+				$trap_fail = true;
+			}
+
+			if (!$this->consumeRequest('newcomment_news') || $trap_fail) {
 				return $this->redirectRoute('user_news_view', array(
 					'slug' => $post->getUrlSlug()
 				));

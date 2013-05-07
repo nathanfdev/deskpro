@@ -19,6 +19,14 @@
 		id="new_suggest_form"
 	>
 	{{ form_token() }}
+
+	<div class="dp-its-a-trap">
+		{# Spam trap: If these fields contain values when submitted, the system knows a bot submitted the form #}
+		<input type="text" name="first_name" value="" />
+		<input type="text" name="last_name" value="" />
+		<input type="text" name="email" value="" />
+	</div>
+
 	<div class="dp-search-bar">
 		<table class="dp-layout" width="100%"><tr>
 			<td style="vertical-align: top; white-space: nowrap;" width="100%" class="{% if error_fields['title'] %}dp-error{% endif %}">
