@@ -279,15 +279,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				if (type == 'messages') {
 					self.getEl('messages_wrap').find('.log-batch').hide();
-					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
+					self.getEl('messages_wrap').removeClass('show-log');
 					self.getEl('messages_wrap').find('article.content-message').show();
 				} else if (type == 'feedback') {
-					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
-					self.getEl('messages_wrap').find('article.content-message').not('article.with-feedback').hide();
+					self.getEl('messages_wrap').removeClass('show-log');
+					self.getEl('messages_wrap').find('article.content-message').show().not('article.with-feedback').hide();
 				} else {
-					self.getEl('messages_wrap').find('article.message-expanded').removeClass('message-expanded');
-					self.getEl('messages_wrap').addClass('show-log show-collapsed-messages');
-					self.getEl('messages_wrap').find('article.content-message').show();
+					self.getEl('messages_wrap').addClass('show-log');
+					self.getEl('messages_wrap').find('article.content-message').hide();
 				}
 			});
 		}
@@ -298,10 +297,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.refreshLogTypes();
 			});
 		}
-
-		self.getEl('messages_wrap').on('click', 'article.message', function(ev) {
-			$(this).toggleClass('message-expanded');
-		});
 
 		this.getEl('people_box_agent').find('.select2-container-multi').css('width', '90%').find('input.select2-input').css('width', '90%');
 
@@ -498,7 +493,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		if (showType == 'all') {
-			this.getEl('messages_wrap').find('.content-message').show();
 			logs.show().addClass('is-vis');
 		} else if (showType == 'other') {
 			sel = [];
