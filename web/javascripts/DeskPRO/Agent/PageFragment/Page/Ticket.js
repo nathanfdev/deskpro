@@ -610,6 +610,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var result = ajaxHit;
 
+			// If the agent cant see the ticket anymore, they dont have permission to
+			// view it anymore.
+			if (!result.can_view) {
+				self.closeSelf();
+				return;
+			}
+
 			if (result.refresh_tab) {
 				// Reload the ticket page
 				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});

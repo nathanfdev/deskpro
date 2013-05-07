@@ -1611,6 +1611,7 @@ class TicketController extends AbstractController
 			'cc_list'                          => $cc_list,
 			'error_messages'                   => $error_messages ?: false,
 			'notified_agents'                  => $notify_agent_ids,
+			'can_view'                         => $this->person->PermissionsManager->TicketChecker->canView($ticket),
 		));
 
 		return $this->createJsonResponse($data);
