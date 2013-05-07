@@ -669,6 +669,10 @@ class KernelErrorHandler
 			if (strpos($exception->getMessage(), 'General error: 1114 The table') !== false) {
 				return true;
 			}
+
+			if (strpos($exception->getMessage(), 'MySQL server has gone away') !== false) {
+				return true;
+			}
 		}
 
 		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
@@ -811,9 +815,10 @@ class KernelErrorHandler
 		if (
 			strpos($errstr, 'stream_socket_enable_crypto():') !== false
 			|| strpos($errstr, 'SSL: Broken pipe') !== false
+			|| strpos($errstr, 'SSL operation failed') !== false
 			|| strpos($errstr, 'errno=32 Broken pipe')
 			|| strpos($errstr, 'SSL: An established connection was aborted') !== false
-			|| strpos($errstr, 'fsockopen():') !== false
+			|| strpos($errstr, 'fsockopen()') !== false
 		) {
 			$no_send_error = true;
 		}
