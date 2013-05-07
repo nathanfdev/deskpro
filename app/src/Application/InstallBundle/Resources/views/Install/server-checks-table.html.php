@@ -295,6 +295,21 @@
 		<div class="alert-message block-message error">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_data_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 			The data directory <?php if (isset($data_dir)): ?>(<?php echo $data_dir ?>)<?php endif ?> and all sub-directories must be writable.
+			<br/>
+			<?php foreach (array('', 'backups', 'debug', 'files', 'logs', 'tmp') as $dir) {
+				$path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $dir;
+
+				if (!is_dir($path)) {
+					@mkdir($path, 0777, true);
+					@chmod($path, 0777);
+				}
+
+				if (!is_dir($path)) {
+					echo "&bull; $path does not exist<br/>";
+				} elseif (!is_writable($path)) {
+					echo "&bull; $path is not writable<br/>";
+				}
+			} ?>
 		</div>
 			<?php if (strpos(strtoupper(PHP_OS), 'WIN') === 0): ?>
 			<?php else: ?>

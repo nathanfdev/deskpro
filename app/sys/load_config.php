@@ -196,6 +196,11 @@ function dp_get_data_dir()
 		$dir_data = DP_WEB_ROOT . DIRECTORY_SEPARATOR . 'data';
 	}
 
+	if (!is_dir($dir_data)) {
+		@mkdir($dir_data, 0777, true);
+		@chmod($dir_data, 0777);
+	}
+
 	return $dir_data;
 }
 
@@ -205,7 +210,14 @@ function dp_get_data_dir()
  */
 function dp_get_debug_dir()
 {
-	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'debug';
+	$dir = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'debug';
+
+	if (!is_dir($dir)) {
+		@mkdir($dir, 0777, true);
+		@chmod($dir, 0777);
+	}
+
+	return $dir;
 }
 
 
@@ -214,7 +226,14 @@ function dp_get_debug_dir()
  */
 function dp_get_log_dir()
 {
-	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'logs';
+	$dir = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'logs';
+
+	if (!is_dir($dir)) {
+		@mkdir($dir, 0777, true);
+		@chmod($dir, 0777);
+	}
+
+	return $dir;
 }
 
 
@@ -223,7 +242,14 @@ function dp_get_log_dir()
  */
 function dp_get_backup_dir()
 {
-	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'backups';
+	$dir = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'backups';
+
+	if (!is_dir($dir)) {
+		@mkdir($dir, 0777, true);
+		@chmod($dir, 0777);
+	}
+
+	return $dir;
 }
 
 
@@ -232,7 +258,14 @@ function dp_get_backup_dir()
  */
 function dp_get_blob_dir()
 {
-	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'files';
+	$dir = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'files';
+
+	if (!is_dir($dir)) {
+		@mkdir($dir, 0777, true);
+		@chmod($dir, 0777);
+	}
+
+	return $dir;
 }
 
 
@@ -241,7 +274,14 @@ function dp_get_blob_dir()
  */
 function dp_get_tmp_dir()
 {
-	return dp_get_data_dir() . DIRECTORY_SEPARATOR . 'tmp';
+	$dir = dp_get_data_dir() . DIRECTORY_SEPARATOR . 'tmp';
+
+	if (!is_dir($dir)) {
+		@mkdir($dir, 0777, true);
+		@chmod($dir, 0777);
+	}
+
+	return $dir;
 }
 
 
