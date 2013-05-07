@@ -80,9 +80,16 @@ class BlobStorageService
 
 		$s3_adapter = null;
 		if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
+			if (!defined('CURLOPT_CONNECTTIMEOUT')) define(CURLOPT_CONNECTTIMEOUT, 78);
+			if (!defined('CURLOPT_TIMEOUT')) define(CURLOPT_TIMEOUT, 13);
+
 			$client = S3Client::factory(array(
-				'key'    => $container->getSetting('core.filestorage_s3_key'),
-				'secret' => $container->getSetting('core.filestorage_s3_secret')
+				'key'          => $container->getSetting('core.filestorage_s3_key'),
+				'secret'       => $container->getSetting('core.filestorage_s3_secret'),
+				'curl.options' => array(
+					CURLOPT_CONNECTTIMEOUT => 40,
+					CURLOPT_TIMEOUT        => 120,
+				)
 			));
 			$s3_adapter = new AmazonS3Storage(array(
 				's3_client'       => $client,
