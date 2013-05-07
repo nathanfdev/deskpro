@@ -299,7 +299,9 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 		try {
 			$r = $ldap->search($filter, $this->options['baseDn']);
 		} catch (\Exception $e) {
-			$this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+			if ($this->logger) {
+				$this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+			}
 			return null;
 		}
 
