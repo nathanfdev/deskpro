@@ -62,6 +62,10 @@ class FeedbackController extends AbstractController
 	 */
 	public function filterAction($status = 'open', $slug = 'all-categories', $order_by = 'popular', $just_form = false)
 	{
+		if ($just_form && !$this->person->hasPerm('feedback.submit')) {
+			return $this->redirectRoute('user_feedback_home');
+		}
+
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
 
@@ -220,7 +224,7 @@ class FeedbackController extends AbstractController
 
 		$errors = $error_fields = null;
 		$is_submitted = false;
-		if ($this->in->getBool('process_new')) {
+		if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit')) {
 
 			$this->ensureStandardRequestToken();
 

@@ -116,7 +116,9 @@
 	{% include 'UserBundle:Feedback:section-header.html.twig' %}
 {% endif %}
 
-{% include 'UserBundle:Feedback:filter-new-feedback.html.twig' %}
+{% if app.user.hasPerm('feedback.submit') %}
+	{% include 'UserBundle:Feedback:filter-new-feedback.html.twig' %}
+{% endif %}
 
 {% if not just_form %}
 	<section class="dp-portal-section dp-feedback-section">
