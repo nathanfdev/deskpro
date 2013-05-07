@@ -93,47 +93,49 @@ class MainController extends AbstractController
 		$apc_graph_html = null;
 		if (!defined('DPC_IS_CLOUD') && function_exists('apc_cache_info')) {
 			$cacheinfo = @apc_cache_info('opcode');
-			$mem = apc_sma_info();
-			if (!$cacheinfo['num_hits'] && !$cacheinfo['num_misses']) {
-				// Prevents division by 0
-				$cacheinfo['num_misses']++;
-			}
-			$apc_miss_perc = sprintf("%.2f", $cacheinfo['num_misses']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']));
-			$mem_size = $mem['num_seg']*$mem['seg_size'];
-			$mem_avail= $mem['avail_mem'];
-			$mem_used = $mem_size-$mem_avail;
+			$mem = @apc_sma_info();
+			if ($mem && isset($mem['seg_size']) && isset($cacheinfo['num_hits']) && isset($cacheinfo['num_hits'])) {
+				if (!$cacheinfo['num_hits'] && !$cacheinfo['num_misses']) {
+					// Prevents division by 0
+					$cacheinfo['num_misses']++;
+				}
+				$apc_miss_perc = sprintf("%.2f", $cacheinfo['num_misses']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']));
+				$mem_size = $mem['num_seg']*$mem['seg_size'];
+				$mem_avail= $mem['avail_mem'];
+				$mem_used = $mem_size-$mem_avail;
 
-			if ($apc_miss_perc > 30) {
-				$apc_misses_warn = true;
+				if ($apc_miss_perc > 30) {
+					$apc_misses_warn = true;
 
-				if (extension_loaded('gd')) {
-					$apc_graph_html = <<<HTML
-						<table cellspacing=0><tbody>
+					if (extension_loaded('gd')) {
+						$apc_graph_html = <<<HTML
+							<table cellspacing=0><tbody>
 HTML;
-					$size='width='.(250).' height='.(210);
-					$apc_graph_html .= <<<HTML
-						<tr>
-						<td class=td-0>Memory Usage</td>
-						<td class=td-1>Hits &amp; Misses</td>
-						</tr>
-HTML;
-
-					$config_hash = md5_file(DP_CONFIG_FILE);
-					$script_url = App::getSetting('core.deskpro_url') . '?_sys=apc&_=' . Util::generateStaticSecurityToken($config_hash.'apc', 86400);
-					$time = time();
-					$apc_graph_html .= '<tr>'."<td class=td-0><img alt=\"\" $size src=\"$script_url&IMG=1&$time\"></td>"."<td class=td-1><img alt=\"\" $size src=\"$script_url&IMG=2&$time\"></td></tr>\n";
-					$apc_graph_html .= '<tr>';
-					$apc_graph_html .= '<td class=td-0><span class="green box">&nbsp;</span>Free: '.Numbers::filesizeDisplay($mem_avail).sprintf(" (%.1f%%)", $mem_avail*100/$mem_size)."</td>\n";
-					$apc_graph_html .= '<td class=td-1><span class="green box">&nbsp;</span>Hits: '.$cacheinfo['num_hits'].sprintf(" (%.1f%%)", $cacheinfo['num_hits']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']))."</td>\n";
-					$apc_graph_html .= '</tr>';
-					$apc_graph_html .= '<tr>';
-					$apc_graph_html .= '<td class=td-0><span class="red box">&nbsp;</span>Used: '.Numbers::filesizeDisplay($mem_used ).sprintf(" (%.1f%%)",$mem_used *100/$mem_size)."</td>\n";
-					$apc_graph_html .=  '<td class=td-1><span class="red box">&nbsp;</span>Misses: '.$cacheinfo['num_misses'].sprintf(" (%.1f%%)",$cacheinfo['num_misses']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']))."</td>\n";
-					$apc_graph_html .= <<< HTML
-						</tr>
-						</tbody></table>
+						$size='width='.(250).' height='.(210);
+						$apc_graph_html .= <<<HTML
+							<tr>
+							<td class=td-0>Memory Usage</td>
+							<td class=td-1>Hits &amp; Misses</td>
+							</tr>
 HTML;
 
+						$config_hash = md5_file(DP_CONFIG_FILE);
+						$script_url = App::getSetting('core.deskpro_url') . '?_sys=apc&_=' . Util::generateStaticSecurityToken($config_hash.'apc', 86400);
+						$time = time();
+						$apc_graph_html .= '<tr>'."<td class=td-0><img alt=\"\" $size src=\"$script_url&IMG=1&$time\"></td>"."<td class=td-1><img alt=\"\" $size src=\"$script_url&IMG=2&$time\"></td></tr>\n";
+						$apc_graph_html .= '<tr>';
+						$apc_graph_html .= '<td class=td-0><span class="green box">&nbsp;</span>Free: '.Numbers::filesizeDisplay($mem_avail).sprintf(" (%.1f%%)", $mem_avail*100/$mem_size)."</td>\n";
+						$apc_graph_html .= '<td class=td-1><span class="green box">&nbsp;</span>Hits: '.$cacheinfo['num_hits'].sprintf(" (%.1f%%)", $cacheinfo['num_hits']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']))."</td>\n";
+						$apc_graph_html .= '</tr>';
+						$apc_graph_html .= '<tr>';
+						$apc_graph_html .= '<td class=td-0><span class="red box">&nbsp;</span>Used: '.Numbers::filesizeDisplay($mem_used ).sprintf(" (%.1f%%)",$mem_used *100/$mem_size)."</td>\n";
+						$apc_graph_html .=  '<td class=td-1><span class="red box">&nbsp;</span>Misses: '.$cacheinfo['num_misses'].sprintf(" (%.1f%%)",$cacheinfo['num_misses']*100/($cacheinfo['num_hits']+$cacheinfo['num_misses']))."</td>\n";
+						$apc_graph_html .= <<< HTML
+							</tr>
+							</tbody></table>
+HTML;
+
+					}
 				}
 			}
 		}
