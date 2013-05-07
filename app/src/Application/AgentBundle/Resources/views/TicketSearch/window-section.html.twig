@@ -112,7 +112,9 @@
 						<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'fail'}) }}" class="list-counter fail {% if sla_counts[sla.id].fail > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_fail">{{ sla_counts[sla.id].fail|default(0) }}</a>
 						<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'warning'}) }}" class="list-counter warning {% if sla_counts[sla.id].warning > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_warning">{{ sla_counts[sla.id].warning|default(0) }}</a>
 						<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'ok'}) }}" class="list-counter ok {% if sla_counts[sla.id].ok > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_ok">{{ sla_counts[sla.id].ok|default(0) }}</a>
-						<label>{{ sla.title }}</label>
+						<div style="display: block;">
+							<label style="display: block; text-overflow: ellipsis; overflow: hidden; width: 130px;">{{ sla.title }}</label>
+						</div>
 					</h3>
 				</li>
 			{% endfor %}
