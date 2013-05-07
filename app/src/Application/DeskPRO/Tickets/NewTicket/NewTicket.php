@@ -125,8 +125,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 		// If we got all the way here without a subject
 		// (means an email where no validation), then give a default
+		$this->ticket->subject = trim($this->ticket->subject);
 		if (!$this->ticket->subject) {
-			$this->ticket->subject = App::getTranslator()->getPhraseText('user.tickets.no_subject');
+			$this->ticket->subject = trim(App::getTranslator()->getPhraseText('user.tickets.no_subject'));
+
+			if (!$this->ticket->subject) {
+				// Fallback for missing/blanked out phrase
+				$this->ticket->subject = '(no subject)';
+			}
 		}
 
 		App::getOrm()->beginTransaction();
