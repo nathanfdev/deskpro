@@ -462,7 +462,7 @@ class AgentReplyCodes implements Loggable
 				}
 
 				// Dunno what $code is, so failed
-				if (!$fields) {
+				if (!$field) {
 					return false;
 				}
 
