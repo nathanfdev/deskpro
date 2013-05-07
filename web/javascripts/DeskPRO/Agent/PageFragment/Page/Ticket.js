@@ -410,13 +410,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if (this.meta.ticket_reverse_order && !reload) {
 					var div = $('<div></div>');
 					div.html(html);
-					this._initMessage(messagePageWrap);
+					this._initMessage(div.find('article.content-message'));
 
 					messagePageWrap.append(div);
 				} else {
 					messagePageWrap.empty();
 					messagePageWrap.html(html);
-					this._initMessage(messagePageWrap);
+					this._initMessage(messagePageWrap.find('article.content-message'));
 				}
 				this.updateUi();
 
