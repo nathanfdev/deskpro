@@ -88,12 +88,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		if (
 			($set_lang_id = $this->in->getString('language_id'))
-			&& (
-				$this->person->isGuest()
-				|| !$this->person->getRealLanguage()
-				|| $this->checkRequestToken('lang_chooser', '_dp_security_token')
-				|| $this->checkRequestToken('lang_chooser', 'lang_chooser_token')
-			)
 			&& ($set_lang = $this->container->getDataService('Language')->get($set_lang_id))
 		) {
 			// Set cookie too so it lasts after session expires
