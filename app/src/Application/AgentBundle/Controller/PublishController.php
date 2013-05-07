@@ -258,6 +258,10 @@ class PublishController extends AbstractController
 
 		$comment = $this->em->find($entity, $comment_id);
 
+		if (!$comment) {
+			throw $this->createNotFoundException();
+		}
+
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
 			'content_type'   => $typename,
@@ -271,6 +275,10 @@ class PublishController extends AbstractController
 
 		$comment = $this->em->find($entity, $comment_id);
 		$comment->content = $this->in->getString('comment');
+
+		if (!$comment) {
+			throw $this->createNotFoundException();
+		}
 
 		$this->em->persist($comment);
 		$this->em->flush();
