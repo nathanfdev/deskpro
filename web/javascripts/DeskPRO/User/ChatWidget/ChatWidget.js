@@ -794,11 +794,19 @@ var DpChatWidget = new (function() {
 		document.getElementById('dpchat_btn_label_open_chat2').style.width = tmp + 'px';
 		document.getElementById('dpchat_btn_label_offline2').style.width = tmp + 'px';
 
-		// Correct width if the phrase is long
-		tmp = util.getElWidth(document.getElementById('dpchat_border_table'));
-		if (tmp > 225) {
-			document.getElementById('dpchat_wrap').style.width = (tmp+30) + 'px';
-		}
+		// This correction is in a timeout because in some cases Chrome
+		// seems to stretch the table if this is run immediately,
+		// Setting this small timeout seems to fix that.
+		window.setTimeout(function() {
+			// Correct width if the phrase is long
+			tmp = util.getElWidth(document.getElementById('dpchat_border_table'));
+			if (tmp > 300) {
+				tmp = 300;
+			}
+			if (tmp > 225) {
+				document.getElementById('dpchat_wrap').style.width = (tmp+30) + 'px';
+			}
+		}, 200);
 	};
 
 	var confirmGoingAway = function() {
