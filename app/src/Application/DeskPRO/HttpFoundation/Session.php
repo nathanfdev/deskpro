@@ -646,10 +646,23 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	}
 
 
+	/**
+	 * @param string $k
+	 * @param mixed $v
+	 */
+	public function set($k, $v)
+	{
+		if ($k == 'language_id') {
+			$this->language = null;
+			$this->getLanguage();
+		}
+
+		return parent::set($k, $v);
+	}
 
 	public function getIterator()
 	{
-		return \ArrayIterator($this->attributes);
+		return new \ArrayIterator($this->attributes);
 	}
 
 	public function offsetUnset($offset)
