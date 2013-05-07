@@ -240,7 +240,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				}
 			}
 
-			$ticket->addParticipantPerson($person);
+			if ($person && !$person->is_agent) {
+				$ticket->addParticipantPerson($person);
+			}
 		}
 
 		$ev = $this->createGatewayEvent(array(
@@ -687,7 +689,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		try {
 			App::getOrm()->persist($person);
 			App::getOrm()->persist($ticket);
-			App::getOrm()->persist($message);
+			if ($did_add_message) {
+				App::getOrm()->persist($message);
+			}
 			App::getOrm()->flush();
 
 			if ($charset_error) {
