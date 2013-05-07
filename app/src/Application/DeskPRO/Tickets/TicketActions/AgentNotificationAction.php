@@ -227,7 +227,7 @@ class AgentNotificationAction extends AbstractAction
 		}
 
 		if ($this->tracker->isExtraSet('force_notify_email')) {
-			$this->notify_agents = array_merge($this->notify_agents, (array)$this->tracker->getExtra('force_notify_email'));
+			$this->notify_agents = array_merge($this->notify_agents, (array)$this->tracker->getExtra('action_performer'));
 			$this->notify_agents = array_unique($this->notify_agents);
 		}
 
@@ -382,6 +382,10 @@ class AgentNotificationAction extends AbstractAction
 			$performer = App::getCurrentPerson();
 			$sla = null;
 			$sla_status = null;
+
+			if ($this->tracker->getExtra('by_agent')) {
+				$performer = $this->tracker->getExtra('by_agent');
+			}
 
 			if ($this->tracker->getExtra('sla')) {
 				$performer = null;

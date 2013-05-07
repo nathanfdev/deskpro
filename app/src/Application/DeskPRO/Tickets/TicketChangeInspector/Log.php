@@ -610,6 +610,10 @@ class Log
 			$this->person_context = null;
 		}
 
+		if ($this->tracker->getExtra('by_agent')) {
+			$this->person_context = $this->tracker->getExtra('by_agent');
+		}
+
 		return $this->person_context;
 	}
 }

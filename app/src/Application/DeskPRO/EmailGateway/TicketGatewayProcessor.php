@@ -558,6 +558,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($this->is_bounce) {
 			$ticket->getTicketLogger()->recordExtra('is_bounce_message', true);
 		}
+
 		$message = new Entity\TicketMessage();
 		$message->email_reader = $this->reader;
 		if ($this->reader->hasProperty('email_source')) {
@@ -611,25 +612,51 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket_attach[] = $attach;
 		}
 
-		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
-			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
-			$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
-
-			// Reset some objects so they dont get flushed during next loop
-			$ticket->resetTicketLogger();
-			App::getOrm()->detach($ticket);
-			App::getOrm()->detach($message);
-
-			foreach ($ticket_attach as $a) {
-				$a->ticket = null;
-				$a->message = null;
-				App::getOrm()->detach($a);
-			}
-
-			return $dupe_message;
+		$has_message = true;
+		if (!$ticket_attach && !trim(strip_tags($email_info['body']))) {
+			$has_message = false;
 		}
 
-		$ticket->addMessage($message);
+		$has_reply_codes = false;
+		if ($this->reply_actions) {
+			$has_reply_codes = true;
+		}
+
+		$ticket->getTicketLogger()->recordExtra('by_agent', $person);
+		$ticket->getTicketLogger()->recordExtra('action_performer', $person->id);
+
+		// - Only add the message if we have an actual message
+		// This allows email replies with action codes but no reply,
+		// so the "empty reply" isnt processed as a reply
+		$did_add_message = false;
+		if (!isset($this->reply_actions['no_reply']) && ($has_message || ($has_reply_codes && !$has_message))) {
+			$did_add_message = true;
+			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
+				$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
+
+				// Reset some objects so they dont get flushed during next loop
+				$ticket->resetTicketLogger();
+				App::getOrm()->detach($ticket);
+				App::getOrm()->detach($message);
+
+				foreach ($ticket_attach as $a) {
+					$a->ticket = null;
+					$a->message = null;
+					App::getOrm()->detach($a);
+				}
+
+				return $dupe_message;
+			}
+
+			$ticket->addMessage($message);
+		} else {
+			if (isset($this->reply_actions['no_reply'])) {
+				$this->logMessage('No reply because of #noreply tag');
+			} else {
+				$this->logMessage('No reply because empty reply');
+			}
+		}
 
 		if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
 			$this->logMessage('[TicketGatewayProcessor] Has CC');
@@ -647,6 +674,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		$this->applyChangesArray($ticket);
+
+		// If we didnt add a message, then it was an actions-only message
+		// So we should reply with the standard 'updated' email which lists actions
+		if (!$did_add_message) {
+			$ticket->getTicketLogger()->recordExtra('force_notify_email', $person->id);
+		}
 
 		$charset_error = $this->charset_error;
 		App::getDb()->beginTransaction();

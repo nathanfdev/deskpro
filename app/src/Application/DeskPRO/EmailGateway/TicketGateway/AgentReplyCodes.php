@@ -442,6 +442,10 @@ class AgentReplyCodes implements Loggable
 				}
 				break;
 
+			case 'noreply':
+				$this->props['no_reply'] = true;
+				break;
+
 			default:
 				// check if its a ticket field
 				$fields = App::getSystemService('ticket_fields_manager');

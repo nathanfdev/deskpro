@@ -35,6 +35,7 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\Entity;
 
+use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
@@ -157,6 +158,9 @@ class App
 	 */
 	public static function setCurrentPerson(Entity\Person $person = null)
 	{
+		if (!$person) {
+			$person = new PersonGuest();
+		}
 		self::$_current_person = $person;
 	}
 
