@@ -384,7 +384,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		Array.each(this.onlineAgentIds, function(agentId) {
 			var li = this.onlineAgentsList.find('li.agent-' + agentId);
-			var depIds = li.data('department-ids') || '';
+			var depIds = (li.data('department-ids') || '') + '';
 			depIds = depIds.split(',');
 
 			if (depIds.length) {
