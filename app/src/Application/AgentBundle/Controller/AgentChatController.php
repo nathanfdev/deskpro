@@ -172,7 +172,7 @@ class AgentChatController extends AbstractController
 		foreach ($messages as $message) {
 			$data['messages'][] = array(
 				'id'       => $message->id,
-				'agent_id' => $message->author->id,
+				'agent_id' => $message->author ? $message->author->id : 0,
 				'message'  => $message->content,
 				'time'     => $message->date_created->getTimestamp()
 			);
