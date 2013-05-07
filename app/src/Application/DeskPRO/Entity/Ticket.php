@@ -485,6 +485,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $email_reader;
 
+	/**
+	 * To get around scoping issues with TicketSla event callbacks, we set the
+	 * parent ticket log during TriggerExecutor.
+	 */
+	public $inserted_log_row_batch;
+
 	public function __construct($tracker = true)
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
