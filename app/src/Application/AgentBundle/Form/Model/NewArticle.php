@@ -91,14 +91,14 @@ class NewArticle
 
 		// Message Attachments
 		foreach ($this->attach as $blob_id) {
-
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new ArticleAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$article->addAttachment($attach);
+			if ($blob) {
+				$attach = new ArticleAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $this->_person_context;
+				$this->_em->persist($attach);
+				$article->addAttachment($attach);
+			}
 		}
 
 		$this->_em->flush();

@@ -274,6 +274,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			}
 		});
 
-		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			page: this
+		});
 	}
 });
