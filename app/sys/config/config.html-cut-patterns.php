@@ -19,9 +19,13 @@ return array(
 
 	// mail from gmail.com
 	'gmail_1'                            => 'div #^on\s.*\sat\s.*#i span /span #wrote:#i br /br blockquote /blockquote /div',
+	'gmail_1_2'                          => 'div #^on\s+.+,\s+.+#i span a /a /span br /br blockquote /blockquote /div',
 	'gmail_2'                            => 'div #^on\s.*$#i a /a #^.*wrote:$#i br /br blockquote /blockquote /div',
 	'gmail_3'                            => 'br /br #^on\s.*\swrote:$#i br /br blockquote /blockquote',
 	'gmail_4'                            => 'div #^on [a-z]+, [a-z]+ [0-9]+, [0-9]{4} at [a-zA-Z0-9: ]+, .*? wrote:#i br /br blockquote /blockquote /div',
+
+	// Android
+	'android_1'                          => 'div #^on\s+.+,\s+.+#i a /a br /br blockquote /blockquote /div',
 
 	// mail from hotmail.com
 	'hotmail_1'                          => 'hr /hr #^date:\s#i br /br #^subject:\s#i br /br #^from:\s#i br /br #^to:\s#i br /br',
