@@ -241,7 +241,16 @@ DeskPRO.User.Window = new Orb.Class({
 						&& boundBottom > (elementPosition.top + actualHeight)
 					};
 
-					var position = above ? 'top' : below ? 'bottom' : left ? 'left' : right ? 'right' : 'top';
+					var position;
+					if (above) {
+						position = 'top';
+					} else if (below) {
+						position = 'bottom';
+					} else if (left) {
+						position = 'left';
+					} else {
+						position = 'right';
+					}
 
 					if ($('html').attr('dir') == 'rtl') {
 						setTimeout(function() {

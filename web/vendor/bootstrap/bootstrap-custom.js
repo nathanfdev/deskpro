@@ -146,6 +146,22 @@
             break
         }
 
+		  var noArrow = false;
+		  if (tp.top < 0) {
+			  tp.top = 8;
+			  noArrow = true;
+		  }
+		  if (tp.left < 0) {
+			  tp.left = 8;
+			  noArrow = true;
+		  }
+
+		  if (noArrow) {
+			  $tip.find('.dp-arrow').hide();
+		  } else {
+			  $tip.find('.dp-arrow').show();
+		  }
+
         $tip
           .css(tp)
           .addClass('dp-' + placement)
