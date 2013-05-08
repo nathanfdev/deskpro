@@ -152,7 +152,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						window.setTimeout(function() {
 							if (self.page) {
 								var sEl = self.page.wrapper.find('.layout-content').first().find('.scroll-viewport').first();
-								if (sEl) {
+								if (sEl && sEl[0]) {
 									sEl.get(0).scrollTop = 0;
 								}
 								self.page.updateUi();
