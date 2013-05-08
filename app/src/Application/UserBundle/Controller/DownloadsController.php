@@ -58,7 +58,7 @@ class DownloadsController extends AbstractController
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
 
-		$page = $this->in->getUint('page');
+		$page = $this->in->getUint('p');
 		if (!$page) $page = 1;
 
 		$search_options = array();
@@ -101,7 +101,7 @@ class DownloadsController extends AbstractController
 				$per_page = 5;
 			}
 
-			$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
+			$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 5);
 			$limit = array(
 				'offset' => ($pageinfo['curpage']-1) * $per_page,
 				'max' => $per_page
