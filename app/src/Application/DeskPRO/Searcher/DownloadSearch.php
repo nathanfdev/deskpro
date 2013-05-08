@@ -53,6 +53,7 @@ class DownloadSearch extends SearcherAbstract
 	const TERM_AGENT_LIST      = 'agent_list';
 
 	const ORDER_ID       = 'id';
+	const ORDER_TITLE    = 'title';
 	const ORDER_DATE     = 'id';
 	const ORDER_DOWNLOAD = 'num_downloads';
 
@@ -281,6 +282,10 @@ class DownloadSearch extends SearcherAbstract
 
 			case 'num_downloads':
 				$order_by = "ORDER BY downloads.num_downloads $dir";
+				break;
+
+			case 'title':
+				$order_by = "ORDER BY downloads.title $dir";
 				break;
 		}
 

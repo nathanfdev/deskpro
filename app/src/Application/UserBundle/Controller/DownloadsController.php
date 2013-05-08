@@ -91,7 +91,7 @@ class DownloadsController extends AbstractController
 			if ($search_options['order_by']) {
 				$searcher->setOrderByCode($search_options['order_by']);
 			} else {
-				$searcher->setOrderBy('id', 'desc');
+				$searcher->setOrderBy('title', 'asc');
 			}
 
 			$total = $searcher->getCount();
