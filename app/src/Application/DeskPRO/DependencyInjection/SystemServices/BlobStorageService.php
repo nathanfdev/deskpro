@@ -124,24 +124,24 @@ class BlobStorageService
 		if ($s3_adapter && $container->getSetting('core.filestorage_method') == 's3') {
 			$bs->addAdapter('s3', $s3_adapter);
 			$bs->addAdapter('fs', $fs_adapter);
+			$bs->addAdapter('db', $db_adapter);
 			$bs->disableAdapter('fs');
 		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
 			$bs->addAdapter('fs', $fs_adapter);
 			if ($s3_adapter) {
 				$bs->addAdapter('s3', $s3_adapter);
-				$bs->disableAdapter('fs');
+				$bs->disableAdapter('s3');
 			}
+			$bs->addAdapter('db', $db_adapter);
 		} else {
+			$bs->addAdapter('db', $db_adapter);
 			$bs->addAdapter('fs', $fs_adapter);
 			$bs->disableAdapter('fs', $fs_adapter);
 			if ($s3_adapter) {
 				$bs->addAdapter('s3', $s3_adapter);
-				$bs->disableAdapter('fs');
+				$bs->disableAdapter('s3');
 			}
 		}
-
-		// Always have db as fallback
-		$bs->addAdapter('db', $db_adapter);
 
 		if (defined('DP_BLOBSTORAGE_SAVECOPY_PATH')) {
 			$bs->setSaveCopyPath(DP_BLOBSTORAGE_SAVECOPY_PATH);
