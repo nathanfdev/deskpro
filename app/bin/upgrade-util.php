@@ -1441,13 +1441,20 @@ class Upgrade
 		try {
 			\DeskPRO_LowUtil_RemoteRequester::create()->download($version_info['download'], $save_path);
 		} catch (\Exception $e) {
+			if (file_exists($save_path)) {
+				unlink($save_path);
+			}
 			throw new DownloadException("Download failed: " . $e->getMessage());
 		}
 
 		$this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
 
 		if (filesize($save_path) < 15728640) {
-			//throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
+			$size = filesize($save_path);
+			if (file_exists($save_path)) {
+				unlink($save_path);
+			}
+			throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", $size), DownloadException::BAD_FILE);
 		}
 
 		return $save_path;
