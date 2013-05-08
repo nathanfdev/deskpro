@@ -253,13 +253,11 @@ class TicketTerms
 		$info = $tracker->getChangedProperty($term);
 
 		if (strpos($op, '_to') !== false) {
-			$val = $info['new'];
+			// Changed to is the same as testing the current value!
+			$ticket2 = $ticket;
 		} else {
-			$val = $info['old'];
+			$ticket2 = $tracker->getOriginalTicket();
 		}
-
-		$ticket2 = clone $ticket;
-		$ticket2[$term] = $val;
 
 		$rangeop = Strings::extractRegexMatch('#_(gte|lte|gt|lt)$#', $op, 1);
 
