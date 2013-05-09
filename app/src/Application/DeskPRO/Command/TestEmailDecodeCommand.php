@@ -63,10 +63,13 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
 		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
+		$this->addOption('save-attach', null, InputOption::VALUE_NONE, 'This will save attachments from the email in the same directory as the file');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$save_attach = $input->getOption('save-attach');
+
 		$file = $input->getArgument('file');
 		if ($file && !is_file($file)) {
 			if (is_file(getcwd() . '/' . $file)) {
@@ -115,7 +118,10 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		echo "\n";
 
 		if ($attaches = $r->getAttachments()) {
-			foreach ($attaches as $attach) {
+			foreach ($attaches as $k => $attach) {
+				if ($save_attach) {
+					file_put_contents(dirname($file) . '/' . $k . '-' . $attach->getFileName(), $attach->getFileContents());
+				}
 				echo "Attachment: " . $attach->getFileName() . "\n";
 			}
 			echo "\n";
