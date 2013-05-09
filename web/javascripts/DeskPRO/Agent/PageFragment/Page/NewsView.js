@@ -167,30 +167,33 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		var self = this;
 
-		// Status
-		var trigger = $('.the-status:first', this.wrapper);
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: trigger,
-			menuElement: $('.status-menu:first', this.wrapper),
-			onItemClicked: function(info) {
-				var status = $(info.itemEl).data('option-value');
+		var statusSel = this.getEl('status');
+		DP.select(statusSel);
 
-				$('.news-status', trigger).attr('title', status);
-				$('.news-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+		statusSel.on('change', function() {
+			var status = $(this).val();
 
-				$.ajax({
-					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
-					type: 'POST',
-					data: {action: 'status', status: status},
-					context: self,
-					dataType: 'json',
-					success: function() {
-						DeskPRO_Window.sections.publish_section.reload();
-					}
-				});
+			self.getEl('auto_unpub').hide();
+			self.getEl('auto_pub').hide();
+
+			if (status == 'published') {
+				self.getEl('auto_unpub').show();
+			} else if (status == 'hidden.unpublished') {
+				self.getEl('auto_pub').show();
 			}
+
+			$.ajax({
+				url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+				type: 'POST',
+				data: {action: 'status', status: status},
+				context: self,
+				dataType: 'json',
+				success: function() {
+					DeskPRO_Window.sections.publish_section.reload();
+				}
+			});
+
 		});
-		this.ownObject(this.statusMenu);
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
 			ajaxSaveUrl: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
@@ -198,27 +201,19 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 		this.ownObject(this.deleteHelper);
 
-		// Change category menu
-		var catOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: this.getEl('cat_trigger'),
-			element: this.getEl('cat_ob'),
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('category');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
+		var catSel = this.getEl('cat');
+		DP.select(catSel);
 
-				self.getEl('cat_label').text(title);
-
-				$.ajax({
-					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
-					type: 'POST',
-					data: { action: 'category', category_id: catId },
-					dataType: 'json',
-					success: function() {
-						DeskPRO_Window.sections.publish_section.reload();
-					}
-				});
-			}
+		catSel.on('change', function() {
+			$.ajax({
+				url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+				type: 'POST',
+				data: { action: 'category', category_id: $(this).val() },
+				dataType: 'json',
+				success: function() {
+					DeskPRO_Window.sections.publish_section.reload();
+				}
+			});
 		});
 	},
 
