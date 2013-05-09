@@ -179,10 +179,14 @@ class SendmailQueueRunner implements Loggable
 			switch ($sendmail['attempts']) {
 				case 0:
 				case 1:
-					$next_attempt = strtotime('+5 minutes');
+					$next_attempt = strtotime('+1 minutes');
 					break;
 
 				case 2:
+					$next_attempt = strtotime('+5 minutes');
+					break;
+
+				case 3:
 					$next_attempt = strtotime('+10 minutes');
 					break;
 
@@ -234,9 +238,9 @@ class SendmailQueueRunner implements Loggable
 		}
 
 		if ($success) {
-			$this->logger->logDebug("Send failed");
-		} else {
 			$this->logger->logDebug("Send success");
+		} else {
+			$this->logger->logDebug("Send failed");
 		}
 
 		return $success;

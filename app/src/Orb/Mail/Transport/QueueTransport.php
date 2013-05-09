@@ -93,7 +93,7 @@ class QueueTransport implements \Swift_Transport
 			$tos[] = $addr;
 		}
 		$sendmail->to_address = implode(',', $tos);
-		foreach ($message->getTo() as $addr => $name) {
+		foreach ($message->getFrom() as $addr => $name) {
 			$sendmail->from_address = $addr;
 		}
 
