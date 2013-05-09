@@ -341,6 +341,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			return true;
 		}
 
+		if ($name == 'agent_tickets.create') {
+			if (!App::getDataService('Department')->getPersonDepartments($this->person, 'tickets', array(), 'assign')) {
+				return false;
+			}
+		}
+
 		if ($name == 'articles.use' && !App::getSetting('core.apps_kb')) {
 			return false;
 		}
