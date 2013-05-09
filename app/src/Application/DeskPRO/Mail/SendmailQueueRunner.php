@@ -103,6 +103,11 @@ class SendmailQueueRunner implements Loggable
 	 */
 	public function run($limit = 0, $time_limit = 0)
 	{
+		App::getContainer()->getSettingsHandler()->setTemporarySettingValues(array('core.use_mail_queue' => 'never'));
+		if ($this->mailer->getTransport() instanceof DelegatingTransport) {
+			$this->mailer->getTransport()->disableQueue();
+		}
+
 		$count = 0;
 		$mtime = microtime(true);
 		$time_start = time();
@@ -122,6 +127,9 @@ class SendmailQueueRunner implements Loggable
 				break;
 			}
 
+			$blob = $this->em->find('DeskPRO:Blob', $sendmail['blob_id']);
+			$sendmail['blob'] = $blob;
+
 			$this->sendQueuedMessage($sendmail);
 		}
 
@@ -136,34 +144,39 @@ class SendmailQueueRunner implements Loggable
 	 *
 	 * @param SendmailQueue $sendmail
 	 */
-	public function sendQueuedMessage(SendmailQueue $sendmail)
+	public function sendQueuedMessage($sendmail)
 	{
 		$mtime = microtime(true);
-		$this->logger->logInfo("Start #{$sendmail->id}: " . $sendmail->subject);
+		$this->logger->logInfo("Start #{$sendmail['id']}: " . $sendmail['subject']);
 
 		// Update next time so if we happen to crash, it doesnt constantly rerun
 		$this->db->update(
 			'sendmail_queue',
 			array('date_next_attempt' => null),
-			array('id' => $sendmail->id)
+			array('id' => $sendmail['id'])
 		);
 
-		$type = Strings::getExtension($sendmail->blob->filename);
-		if ($type == 'obj') {
-			$success = $this->sendObjectBlob($sendmail->blob);
-		} elseif ($type == 'job') {
-			$success = $this->sendJobBlob($sendmail->blob);
-		} else {
-			$this->logger->logInfo("Unknown message blob!");
-			return;
+		$type = Strings::getExtension($sendmail['blob']->filename);
+		try {
+			if ($type == 'obj') {
+				$success = $this->sendObjectBlob($sendmail['blob']);
+			} elseif ($type == 'job') {
+				$success = $this->sendJobBlob($sendmail['blob']);
+			} else {
+				$this->logger->logInfo("Unknown message blob!");
+				return;
+			}
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e, false);
+			$success = false;
 		}
 
 		if ($success) {
-			$this->blob_storage->deleteBlobRecord($sendmail->blob);
-			$this->db->delete('sendmail_queue', array('id' => $sendmail->id));
+			$this->blob_storage->deleteBlobRecord($sendmail['blob']);
+			$this->db->delete('sendmail_queue', array('id' => $sendmail['id']));
 		} else {
 
-			switch ($sendmail->attempts) {
+			switch ($sendmail['attempts']) {
 				case 0:
 				case 1:
 					$next_attempt = strtotime('+5 minutes');
@@ -180,8 +193,8 @@ class SendmailQueueRunner implements Loggable
 
 			$this->db->update(
 				'sendmail_queue',
-				array('date_next_attempt' => $next_attempt, 'attempts' => $sendmail->attempts+1),
-				array('id' => $sendmail->id)
+				array('date_next_attempt' => $next_attempt, 'attempts' => $sendmail['attempts']+1),
+				array('id' => $sendmail['id'])
 			);
 		}
 
@@ -206,14 +219,11 @@ class SendmailQueueRunner implements Loggable
 			return false;
 		}
 
-		$default_queue_status = null;
-		if ($this->mailer->getTransport() instanceof DelegatingTransport) {
-			$default_queue_status = $this->mailer->getTransport()->isQueueEnabled();
-			$this->mailer->getTransport()->disableQueue();
-		}
-
 		if ($message instanceof \Orb\Mail\Message) {
 			$message->disableQueueHint();
+		}
+		if ($message instanceof \Application\DeskPRO\Mail\Message) {
+			$message->setIsRetrying();
 		}
 
 		try {
@@ -223,16 +233,10 @@ class SendmailQueueRunner implements Loggable
 			$success = false;
 		}
 
-		if (!$success) {
+		if ($success) {
 			$this->logger->logDebug("Send failed");
-		}
-
-		if ($this->mailer->getTransport() instanceof DelegatingTransport) {
-			if ($default_queue_status) {
-				$this->mailer->getTransport()->enableQueue();
-			} else {
-				$this->mailer->getTransport()->disableQueue();
-			}
+		} else {
+			$this->logger->logDebug("Send success");
 		}
 
 		return $success;
@@ -268,16 +272,15 @@ class SendmailQueueRunner implements Loggable
 		$date = date('Y-m-d H:i:s');
 		$this->logger->logDebug("Getting next send with date < $date");
 
-		$next = $this->em->createQuery("
-			SELECT s, b
-			FROM DeskPRO:SendmailQueue s
-			LEFT JOIN s.blob b
-			WHERE s.date_next_attempt < ?0 AND b IS NOT NULL
-			ORDER BY s.date_next_attempt ASC
-		")->setMaxResults(1)->setParameters(array($date))->getOneOrNullResult();
+		$next = $this->db->fetchAssoc("
+			SELECT * FROM sendmail_queue
+			WHERE date_next_attempt < ? AND blob_id IS NOT NULL
+			ORDER BY date_next_attempt ASC
+			LIMIT 1
+		", array($date));
 
 		if ($next) {
-			$this->logger->logDebug("Got next: {$next->id}");
+			$this->logger->logDebug("Got next: {$next['id']}");
 			return $next;
 		}
 
