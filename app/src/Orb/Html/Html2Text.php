@@ -69,6 +69,10 @@ class Html2Text
 	{
 		$html = Strings::standardEol($html);
 
+		// nbsp's
+		$html = str_replace('&nbsp;', ' ', $html);
+		$html = preg_replace('#\x{00a0}#u', ' ', $html);
+
 		$doc = new DOMDocument();
         if (!@$doc->loadHTML($html)) {
 			throw new \InvalidArgumentException("Error loading HTML into DOMDocument");
