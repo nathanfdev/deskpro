@@ -372,7 +372,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						wrapper.find('.agent-draft-message.agent-' + data.via_person).remove();
 					}
 					if (data.draft_html) {
-						wrapper.find('.ticket-messages .messages-wrap').append(data.draft_html);
+						if (tab.page.meta.ticket_reverse_order) {
+							wrapper.find('.ticket-messages .messages-wrap').prepend(data.draft_html);
+						} else {
+							wrapper.find('.ticket-messages .messages-wrap').append(data.draft_html);
+						}
 					}
 				}
 			}

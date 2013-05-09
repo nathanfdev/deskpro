@@ -557,10 +557,17 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<div class="message-page-prev" {% if message_page == message_page_count or app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_prev_page">
 			<strong>{% if not app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
 		</div>
+		{% if active_drafts and app.user.getPref('agent.ticket_reverse_order') %}
+			{% for active_draft in active_drafts %}
+				{% if active_draft.message_html %}
+					{% include 'AgentBundle:Ticket:ticket-message-draft.html.twig' with {draft: active_draft} %}
+				{% endif %}
+			{% endfor %}
+		{% endif %}
 		<div id="{{ baseId }}_message_page_wrap">
 			{{ ticket_messages_block|raw }}
 		</div>
-		{% if active_drafts %}
+		{% if active_drafts and not app.user.getPref('agent.ticket_reverse_order') %}
 			{% for active_draft in active_drafts %}
 				{% if active_draft.message_html %}
 					{% include 'AgentBundle:Ticket:ticket-message-draft.html.twig' with {draft: active_draft} %}
