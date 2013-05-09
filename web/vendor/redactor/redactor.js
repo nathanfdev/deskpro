@@ -627,7 +627,7 @@ var RLANG = {
 			// extend buttons
 			if (this.opts.air)
 			{
-				$.extend(this.opts.toolbar, this.opts.buttonsCustom);							
+				$.extend(this.opts.toolbar, this.opts.buttonsCustom);
 				this.opts.buttons = this.opts.airButtons;
 			}
 			else if (this.opts.toolbar !== false)
@@ -4183,16 +4183,18 @@ var RLANG = {
 				var n = childNodes[i];
 				if (n.nodeType === 3)
 				{
-					var html = n.nodeValue;
+					var html = n.nodeValue, newHtml;
 					if (html)
 					{
-						html = html.replace(/&/g, '&amp;')
+						newHtml = html.replace(/&/g, '&amp;')
 									.replace(/</g, '&lt;')
 									.replace(/>/g, '&gt;')
 									.replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
 									.replace(url2, '$1<a href="$2">$2</a>$5');
 
-						$(n).after(html).remove();
+						if (newHtml != html) {
+							$(n).after(newHtml).remove();
+						}
 					}
 				}
 				else if (n.nodeType === 1  &&  !/^(a|button|textarea)$/i.test(n.tagName))
