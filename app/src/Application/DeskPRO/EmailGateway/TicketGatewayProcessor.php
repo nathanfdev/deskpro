@@ -431,7 +431,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
 					$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
 
-					if (!$this->is_bounce && !$this->reader->isFromRobot()) {
+					$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
+					$user_email = $this->reader->getFromAddress()->getEmail();
+
+					if (!$this->is_bounce && !$this->reader->isFromRobot() && !$gateway_address_matcher->getMatchingAddress($user_email) && !$gateway_address_matcher->isHelpdeskAddress($user_email)) {
 						$message = App::getMailer()->createMessage();
 						$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
 							'subject' => $this->reader->getSubject()->getSubjectUtf8(),
