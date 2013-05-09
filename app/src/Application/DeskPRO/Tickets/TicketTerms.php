@@ -861,6 +861,7 @@ class TicketTerms
 			case TicketSearch::TERM_URGENCY:
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
+
 				switch ($op) {
 					case self::OP_BETWEEN:
 						if (!\Orb\Util\Numbers::inRange($ticket['urgency'], $choice['min'], $choice['max'])) return false;
@@ -883,11 +884,11 @@ class TicketTerms
 						break;
 
 					case self::OP_GT:
-						if (!($ticket['urgency'] < $choice['num'])) return false;
+						if (!($ticket['urgency'] > $choice['num'])) return false;
 						break;
 
 					case self::OP_GTE:
-						if (!($ticket['urgency'] <= $choice['num'])) return false;
+						if (!($ticket['urgency'] >= $choice['num'])) return false;
 						break;
 				}
 				break;
