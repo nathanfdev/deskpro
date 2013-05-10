@@ -673,6 +673,10 @@ class KernelErrorHandler
 			if (strpos($exception->getMessage(), 'MySQL server has gone away') !== false) {
 				return true;
 			}
+
+			if (strpos($exception->getMessage(), 'has more than \'max_user_connections\' active connections') !== false) {
+				return true;
+			}
 		}
 
 		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
