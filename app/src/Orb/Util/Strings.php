@@ -1756,7 +1756,15 @@ class Strings
 		} else {
 			foreach ($string as &$l) {
 				$l = $mode($l);
-				$l = $mode($l, "\x7f..\xff\x0..\x1f");
+
+				// Other unicode whitespace chars
+				if ($mode == 'trim') {
+					$l = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u', '$1', $l);
+				} elseif ($mode == 'ltrim') {
+					$l = preg_replace('/^[\pZ\pC]+/u', '$1', $l);
+				} elseif ($mode == 'rtrim') {
+					$l = preg_replace('/[\pZ\pC]+$/u', '$1', $l);
+				}
 			}
 		}
 		return implode("\n", $string);
