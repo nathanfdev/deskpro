@@ -335,6 +335,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		}
 
 		var results = $(html);
+		DeskPRO_Window.initInterfaceServices(results);
 
 		if (this.options.infiniteScroll) {
 			if (this.options.infiniteScrollLoadFilter) {
