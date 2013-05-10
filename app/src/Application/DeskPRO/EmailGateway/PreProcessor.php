@@ -83,6 +83,13 @@ class PreProcessor extends AbstractGatewayProcessor
 			return;
 		}
 
+		if ($gateway_matcher->isManagedAddress($from)) {
+			$this->error = EmailSource::ERR_FROM_GATEWAY;
+			$this->source_info[] = "Read from address: " . $from;
+			$this->source_info[] = "Is a registered helpdesk address";
+			return;
+		}
+
 		#------------------------------
 		# From is a banned address
 		#------------------------------
