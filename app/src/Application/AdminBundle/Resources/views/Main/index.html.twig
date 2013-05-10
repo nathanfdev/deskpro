@@ -51,9 +51,8 @@
 {% block page %}
 
 {% include 'AdminBundle:Main:welcome-box.html.twig' %}
-{% include 'AdminBundle:Main:onboarding.html.twig' %}
 
-{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or gateway_error_count or app.getSetting('core.error_unable_allocate_memory') or apc_misses_warn %}
+{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or gateway_error_count or sendmail_error_count or app.getSetting('core.error_unable_allocate_memory') or apc_misses_warn %}
 <div class="content-table" style="border: 1px solid #A31612;">
 	<table width="100%">
 		<thead>
@@ -68,6 +67,14 @@
 				<tr>
 					<td>
 						There are <a href="{{ path('admin_emailgateway_errors') }}">{{ gateway_error_count }} logged email gateway errors</a>. You should investigate these errors and try to re-process the failed emails.
+					</td>
+				</tr>
+			{% endif %}
+			{% if sendmail_error_count %}
+				<tr>
+					<td>
+						There are <a href="{{ path('admin_sendmail_queue_index') }}">{{ sendmail_error_count }} logged sendmail errors</a>. These are outgoing email messages that failed to send. You should check these
+						to ensure your SMTP connections are working.
 					</td>
 				</tr>
 			{% endif %}
@@ -131,6 +138,8 @@
 
 <br />
 {% endif %}
+
+{% include 'AdminBundle:Main:onboarding.html.twig' %}
 
 {% if show_task_status %}
 	<div class="alert-message block-message success">

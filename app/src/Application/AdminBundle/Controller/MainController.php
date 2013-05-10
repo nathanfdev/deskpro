@@ -87,6 +87,7 @@ class MainController extends AbstractController
 		$onboard = new \Application\AdminBundle\OnboardNotices();
 
 		$gateway_error_count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
+		$sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_queue WHERE date_next_attempt IS NULL");
 
 		$apc_misses_warn = false;
 		$apc_miss_perc = null;
@@ -152,6 +153,7 @@ HTML;
 			'last_login'          => $last_login,
 			'show_task_status'    => $show_task_status,
 			'gateway_error_count' => $gateway_error_count,
+			'sendmail_error_count' => $sendmail_error_count,
 			'apc_misses_warn'     => $apc_misses_warn,
 			'apc_miss_perc'       => $apc_miss_perc,
 			'apc_graph_html'      => $apc_graph_html,

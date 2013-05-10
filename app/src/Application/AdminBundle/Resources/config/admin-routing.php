@@ -2343,6 +2343,31 @@ $collection->add('admin_emailgateway_reprocess', new Route(
 ));
 
 ################################################################################
+# Sendmail Queue
+################################################################################
+
+$collection->add('admin_sendmail_queue_index', new Route(
+	'/email/sendmail-queue',
+	array('_controller' => 'AdminBundle:SendmailQueue:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_sendmail_queue_massactions', new Route(
+	'/email/sendmail-queue/mass-actions',
+	array('_controller' => 'AdminBundle:SendmailQueue:massActions'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_sendmail_queue_view', new Route(
+	'/email/sendmail-queue/{id}',
+	array('_controller' => 'AdminBundle:SendmailQueue:view'),
+	array('id' => '\d+'),
+	array()
+));
+
+################################################################################
 # Widgets
 ################################################################################
 

@@ -180,7 +180,7 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 						'smtp_options' => array(
 							'host'     => $options['host'],
 							'port'     => $options['port'],
-							'secure'   => $options['secure'] ? true : false,
+							'secure'   => $options['secure'] == 'ssl' ? true : false,
 							'username' => !empty($options['username']) ? $options['username'] : null,
 							'password' => !empty($options['password']) ? $options['password'] : null
 						)
@@ -235,6 +235,37 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $tr;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getSmtpOptions()
+	{
+		$options = $this->transport_options;
+
+		switch ($this->transport_type) {
+			case 'gmail':
+				return array(
+					'host'     => 'smtp.gmail.com',
+					'port'     => 465,
+					'secure'   => true,
+					'username' => !empty($options['username']) ? $options['username'] : null,
+					'password' => !empty($options['password']) ? $options['password'] : null
+				);
+
+			case 'smtp':
+				return array(
+					'host'     => $options['host'],
+					'port'     => $options['port'],
+					'secure'   => $options['secure'] == 'ssl' ? true : false,
+					'username' => !empty($options['username']) ? $options['username'] : null,
+					'password' => !empty($options['password']) ? $options['password'] : null
+				);
+		}
+
+		return array();
 	}
 
 

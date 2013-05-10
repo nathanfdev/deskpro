@@ -8,7 +8,7 @@
 {% endblock %}
 {% block sidebar_right %}
 	{% include 'AdminBundle:Main:agents-box.html.twig' %}
-	
+
 	<div class="dp-page-box">
 		<div class="resource-item-list">
 			<header>
@@ -36,6 +36,33 @@
 {% block page %}
 
 {% include 'AdminBundle:Main:welcome-box.html.twig' %}
+
+{% if sendmail_error_count %}
+<div class="content-table" style="border: 1px solid #A31612;">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="2">
+					<div style="background: url({{ asset('images/agent/icons/flag-red.png') }}) no-repeat 0 50%; line-height: 18px; padding-left: 18px;">Problems</div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if sendmail_error_count %}
+				<tr>
+					<td>
+						There are <a href="{{ path('admin_sendmail_queue_index') }}">{{ sendmail_error_count }} logged sendmail errors</a>. These are outgoing email messages that failed to send. You should check these
+						to ensure your SMTP connections are working.
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+
+<br />
+{% endif %}
+
 {% include 'CloudAdminBundle:Main:onboarding.html.twig' %}
 
 <div class="content-table">

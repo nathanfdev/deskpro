@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -122,6 +123,48 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->setModelField('to_address', $addr);
+	}
+
+
+	/**
+	 * Get the message blob as a raw email string
+	 *
+	 * @return string
+	 */
+	public function getMessageAsString()
+	{
+		if (!$this->blob) {
+			return '';
+		}
+
+		$raw_source = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
+
+		// A DeskPRO queue job means we should parse out the headers
+		if ($this->blob->filename == 'sendmail.job') {
+			$pos = strpos($raw_source, "\n");
+			if ($pos !== false) {
+				$pos2 = strpos($raw_source, "\n", $pos+2);
+				if ($pos2 !== false) {
+					$pos = $pos2;
+				}
+			}
+
+			if ($pos !== false) {
+				$raw_source = substr($raw_source, $pos+2);
+			}
+
+		// Its an object, we can unserialise and get the value
+		} else {
+			$message = @unserialize($raw_source);
+			$raw_source = '';
+
+			if ($message) {
+				$raw_source = (string)$message;
+				$message = null;
+			}
+		}
+
+		return $raw_source;
 	}
 
 	############################################################################

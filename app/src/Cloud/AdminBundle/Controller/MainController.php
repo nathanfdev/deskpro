@@ -75,6 +75,8 @@ class MainController extends BaseMainController
 			$data_init->newDefaultTicket($this->person);
 		}
 
+		$sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_queue WHERE date_next_attempt IS NULL");
+
 		return $this->render('@index.html.twig', array(
 			'lic'                => License::getLicense(),
 			'online_agents'      => $online_agents,
@@ -82,6 +84,7 @@ class MainController extends BaseMainController
 			'stats'              => $stats,
 			'last_login'         => $last_login,
 			'onboard'            => $onboard,
+			'sendmail_error_count' => $sendmail_error_count,
 		));
 	}
 }
