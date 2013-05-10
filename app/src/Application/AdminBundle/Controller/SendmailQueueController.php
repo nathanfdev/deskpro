@@ -229,6 +229,9 @@ class SendmailQueueController extends AbstractController
 							continue;
 						}
 
+						$sendmail->date_next_attempt = new \DateTime();
+						$this->em->persist($sendmail);
+
 						SendmailUtil::rewriteFromAddress($sendmail, $from_email);
 
 						$this->em->flush();
