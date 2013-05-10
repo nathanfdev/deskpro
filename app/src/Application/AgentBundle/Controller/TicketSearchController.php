@@ -262,7 +262,7 @@ class TicketSearchController extends AbstractController
 		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids, $this->person);
 		$tickets = Arrays::orderIdArray($ticket_ids, $tickets);
 
-		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
+		$display_fields = $this->in->getCleanValueArray('display_fields', 'string', 'discard');
 		if (!$display_fields) {
 			$display_fields = array('department', 'agent', 'agent_team');
 		}
