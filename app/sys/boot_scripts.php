@@ -117,4 +117,8 @@ switch ($_GET['_sys']) {
 	case 'licinfo':
 		require DP_ROOT . '/sys/scripts/licinfo.php';
 		break;
+
+	case 'smtp_event':
+		require DP_ROOT.'/sys/scripts/smtp_event.php';
+		break;
 }

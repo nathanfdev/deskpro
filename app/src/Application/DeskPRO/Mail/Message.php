@@ -34,7 +34,9 @@
 
 namespace Application\DeskPRO\Mail;
 
+use Application\DeskPRO\Entity;
 use Orb\Html\Html2Text;
+use Orb\Util\Arrays;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Blob;
@@ -42,6 +44,11 @@ use Application\DeskPRO\App;
 
 class Message extends \Orb\Mail\Message
 {
+	/**
+	 * @var string
+	 */
+	protected $track_code;
+
 	/**
 	 * @var string
 	 */
@@ -102,7 +109,6 @@ class Message extends \Orb\Mail\Message
 		return $this->context_id;
 	}
 
-
 	public function doPrepare()
 	{
 		if ($this->template) {
@@ -137,6 +143,40 @@ class Message extends \Orb\Mail\Message
 
 			if ($subject) {
 				$this->setSubject($subject);
+			}
+
+			if (isset($this->template_vars['tracking_object']) && dp_get_config('enable_smtp_tracking')) {
+				$obj = $this->template_vars['tracking_object'];
+				$tos = array();
+
+				if ($this->getTo()) {
+					foreach ($this->getTo() as $addr => $x) {
+						$tos[] = $addr;
+					}
+				}
+				if ($this->getCc()) {
+					foreach ($this->getCc() as $addr => $x) {
+						$tos[] = $addr;
+					}
+				}
+				if ($this->getBcc()) {
+					foreach ($this->getBcc() as $addr => $x) {
+						$tos[] = $addr;
+					}
+				}
+
+				$from = $this->getFrom();
+				$from = Arrays::getFirstKey($from);
+
+				if ($tos && $from) {
+					if ($obj instanceof Entity\TicketMessage) {
+						$this->track_code = Entity\SendmailLog::insertTicketMessageLog($obj, $tos, $subject, $from);
+					} elseif ($obj instanceof Entity\Ticket) {
+						$this->track_code = Entity\SendmailLog::insertTicketLog($obj, $tos, $subject, $from);
+					} else {
+						$this->track_code = Entity\SendmailLog::insertLog($tos, $subject, $from);
+					}
+				}
 			}
 
 			$body = $this->replaceEmbeds($body);
@@ -176,6 +216,18 @@ class Message extends \Orb\Mail\Message
 		$this->embed_only = true;
 
 		$this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
+
+		if ($this->track_code) {
+			$data = array(
+				'unique_args' => array(
+					'dp_code' => $this->track_code
+				)
+			);
+			if (defined('DPC_SITE_ID')) {
+				$data['unique_args']['dpc_site_id'] = DPC_SITE_ID;
+			}
+			$this->getHeaders()->addTextHeader('X-SMTPAPI', json_encode($data));
+		}
 	}
 
 	/**
@@ -342,5 +394,23 @@ class Message extends \Orb\Mail\Message
 	public function setIsRetrying()
 	{
 		$this->is_retrying = true;
+	}
+
+
+	/**
+	 * @param string $track_code
+	 */
+	public function setTrackCode($track_code)
+	{
+		$this->track_code = $this->track_code;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getTrackCode()
+	{
+		return $this->track_code;
 	}
 }

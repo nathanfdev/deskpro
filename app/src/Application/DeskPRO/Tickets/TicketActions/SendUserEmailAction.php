@@ -121,6 +121,7 @@ class SendUserEmailAction extends AbstractAction
 		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
 		$vars['ticketdisplay'] = $ticketdisplay;
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
+		$vars['tracking_object'] = $ticket;
 
 		$template_name = $this->template;
 

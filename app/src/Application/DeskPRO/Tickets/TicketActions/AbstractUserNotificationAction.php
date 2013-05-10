@@ -143,6 +143,10 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			if (!$has) {
 				array_unshift($vars['messages'], $this->via_message);
 			}
+
+			$vars['tracking_object'] = $this->via_message;
+		} else {
+			$vars['tracking_object'] = $ticket;
 		}
 
 		$attach_attachments = array();
