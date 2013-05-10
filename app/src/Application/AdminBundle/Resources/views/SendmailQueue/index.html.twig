@@ -17,9 +17,9 @@
 	<div style="border-top: 1px solid #ccc; padding: 5px 8px 8px 8px;">
 		<strong>Display Options</strong><br/>
 
-		<label><input type="checkbox" name="show_failed" value="1" {% if view_options.show_failed %}checked="checked"{% endif %} /> Show failed</label>
+		<label><input type="checkbox" name="show_failed" value="1" {% if view_options.show_failed %}checked="checked"{% endif %} /> Show failed ({{ count_failed }})</label>
 		&nbsp;&nbsp;
-		<label><input type="checkbox" name="show_queued" value="1" {% if view_options.show_queued %}checked="checked"{% endif %} /> Show queued</label>
+		<label><input type="checkbox" name="show_queued" value="1" {% if view_options.show_queued %}checked="checked"{% endif %} /> Show queued ({{ count_queued }})</label>
 		&nbsp;&nbsp;
 		Filter To: <input type="text" name="filter_to" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_to }}" />
 		&nbsp;&nbsp;
@@ -27,7 +27,7 @@
 		&nbsp;&nbsp;
 		Filter Subject: <input type="text" name="filter_subject" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_subject }}" />
 		&nbsp;&nbsp;
-		<button class="dp-btn dp-btn-small" style="padding-top: 3px; padding-bottom: 3px; line-height: 100%; position: relative; top: -1px;" type="submit">Update</button>
+		<button class="dp-btn dp-btn-small" style="padding: 3px; line-height: 100%; position: relative; top: -1px;" type="submit">Update</button>
 	</div>
 {{ design.helpbox_end() }}
 
@@ -97,7 +97,7 @@
 							With Selected:
 							<button class="dp-btn dp-btn-small tipped" name="action" value="resend" data-tipped-options="maxWidth: 250" title="Queues messages for resend immediately.">Resend</button>
 							<button class="dp-btn dp-btn-small tipped" name="action" value="resend_from" data-tipped-options="maxWidth: 250" title="Queues messages for resend immediately and changes their 'From' address/account">Resend From...</button>
-							<button class="dp-btn dp-btn-small" name="action" value="delete" data-tipped-options="maxWidth: 250" title="Deletes messages from the queue. Messages will NOT be sent.">Delete</button>
+							<button class="dp-btn dp-btn-small tipped" name="action" value="delete" data-tipped-options="maxWidth: 250" title="Deletes messages from the queue. Messages will NOT be sent.">Delete</button>
 						</td>
 					</tr>
 				</tbody>
