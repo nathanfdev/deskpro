@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -51,6 +52,59 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SearchExtension());
+    }
+
+	/**
+     * @param Application $application An Application instance
+     */
+    public function registerCommands(Application $application)
+    {
+		$commands = array(
+			'Application\\DeskPRO\\Command\\AgentsCommand',
+			'Application\\DeskPRO\\Command\\AsseticCommand',
+			'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
+			'Application\\DeskPRO\\Command\\DecodeTacCommand',
+			'Application\\DeskPRO\\Command\\DevBuildLangCommand',
+			'Application\\DeskPRO\\Command\\DevCheckReservedWordsCommand',
+			'Application\\DeskPRO\\Command\\DevCommand',
+			'Application\\DeskPRO\\Command\\DevDoMigrationCommand',
+			'Application\\DeskPRO\\Command\\DevExportLangCommand',
+			'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
+			'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
+			'Application\\DeskPRO\\Command\\DevLoadDataCommand',
+			'Application\\DeskPRO\\Command\\DevPagelogCommand',
+			'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
+			'Application\\DeskPRO\\Command\\ElasticInitializerCommand',
+			'Application\\DeskPRO\\Command\\GenBuildClassCommand',
+			'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
+			'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
+			'Application\\DeskPRO\\Command\\ImportCommand',
+			'Application\\DeskPRO\\Command\\ImportRestoreUnknownAgentsCommand',
+			'Application\\DeskPRO\\Command\\ImportZendeskCommand',
+			'Application\\DeskPRO\\Command\\InstallCommand',
+			'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
+			'Application\\DeskPRO\\Command\\LanguageToPOCommand',
+			'Application\\DeskPRO\\Command\\LicenseInfoCommand',
+			'Application\\DeskPRO\\Command\\LoginTokenCommand',
+			'Application\\DeskPRO\\Command\\MoveBlobsCommand',
+			'Application\\DeskPRO\\Command\\PluginCommand',
+			'Application\\DeskPRO\\Command\\ProcessEmailCommand',
+			'Application\\DeskPRO\\Command\\RecountRatingsCommand',
+			'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
+			'Application\\DeskPRO\\Command\\SchemaCommand',
+			'Application\\DeskPRO\\Command\\SchemaCorrectionCommand',
+			'Application\\DeskPRO\\Command\\SearchReindexCommand',
+			'Application\\DeskPRO\\Command\\SyncDataCommand',
+			'Application\\DeskPRO\\Command\\TestCommand',
+			'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
+			'Application\\DeskPRO\\Command\\UpgradeCommand',
+			'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
+			'Application\\DeskPRO\\Command\\WorkerJobCommand',
+		);
+
+		foreach ($commands as $cmd) {
+			$application->add(new $cmd);
+		}
     }
 
 	public function getNamespace()

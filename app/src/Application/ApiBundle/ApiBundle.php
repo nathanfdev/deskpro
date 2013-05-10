@@ -33,12 +33,18 @@
 
 namespace Application\ApiBundle;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
+	public function registerCommands(Application $application)
+	{
+
+	}
+
 	public function build(ContainerBuilder $container)
 	{
 		parent::build($container);

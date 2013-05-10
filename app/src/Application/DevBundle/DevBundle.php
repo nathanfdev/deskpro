@@ -33,8 +33,15 @@
 
 namespace Application\DevBundle;
 
+use Symfony\Component\Console\Application;
+
 class DevBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
+	public function registerCommands(Application $application)
+	{
+
+	}
+
 	public function getAlias()
     {
         return 'dpdev';

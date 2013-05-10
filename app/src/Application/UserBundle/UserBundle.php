@@ -33,10 +33,16 @@
 
 namespace Application\UserBundle;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class UserBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
+	public function registerCommands(Application $application)
+	{
+
+	}
+
 	public function getNamespace()
 	{
 		return __NAMESPACE__;
