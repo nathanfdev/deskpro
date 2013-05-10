@@ -99,7 +99,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$this->_wordlist_file = $input->getOption('wordlist');
-		if (!is_file($this->_wordlist_file)) {
+		if ($this->_wordlist_file && !is_file($this->_wordlist_file)) {
 			echo "--wordlist is not a valid file\n";
 			return 1;
 		}
