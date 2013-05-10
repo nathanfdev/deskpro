@@ -72,21 +72,27 @@ class GlobalVariables extends BaseGlobalVariables
 		$group_vars = App::get('deskpro.core.settings')->getGroup($group);
 
 		if ($group == 'user_style') {
-			if (preg_match('#^https?://#', App::getConfig('static_path'))) {
-				$group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
+			if (defined('DPC_IS_CLOUD')) {
+				// Always use https URLs on cloud
+				$group_vars['static_path'] = 'https://' . DPC_SITE_DOMAIN . '/web';
 			} else {
-				$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
-			}
+				// External blob storage means we need ot use a full URL for assets
+				if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
+					$url = App::getSetting('core.deskpro_url');
+					$url = str_replace('index.php', '', $url);
+					$url = trim($url, '/');
 
-			// If static path isnt an absolute URL and the storage adapter is
-			// a remote adapter, then we need to rewrite the static path to be
-			// absolute for images in CSS to work properly
-			if (!preg_match('#^https?://#', $group_vars['static_path']) && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
-				$url = App::getSetting('core.deskpro_url');
-				$url = str_replace('index.php', '', $url);
-				$url = trim($url, '/');
+					$group_vars['static_path'] = $url . '/web';
+				} else {
+					// A custom defined static URL
+					if (App::getConfig('static_path')) {
+						$group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
 
-				$group_vars['static_path'] = $url . '/' . $group_vars['static_path'];
+					// Default static path relative to current
+					} else {
+						$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+					}
+				}
 			}
 		}
 
