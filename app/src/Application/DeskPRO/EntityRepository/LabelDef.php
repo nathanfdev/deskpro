@@ -99,7 +99,7 @@ class LabelDef extends AbstractEntityRepository
 				break;
 
 			case 'people':
-				$label_type = 'persons';
+				$label_type = 'people';
 				break;
 
 			case 'feedback':

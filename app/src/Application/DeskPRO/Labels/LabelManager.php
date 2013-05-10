@@ -112,6 +112,11 @@ class LabelManager
 		if ($type_name == 'chatconversations') {
 			$type_name = 'chat_conversations';
 		}
+
+		if ($type_name == 'persons') {
+			$type_name = 'people';
+		}
+
 		App::getDb()->executeUpdate("
 			INSERT INTO label_defs (label_type, label, total)
 			VALUES (?, ?, 1)
