@@ -54,7 +54,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 */
-	protected $uid = null;
+	protected $id;
 
 	/**
 	 * @var Person
@@ -74,7 +74,12 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $auth;
+	protected $to_address;
+
+	/**
+	 * @var string
+	 */
+	protected $code;
 
 	/**
 	 * @var string
@@ -85,11 +90,6 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $from_address;
-
-	/**
-	 * @var string
-	 */
-	protected $to_address;
 
 	/**
 	 * @var \DateTime
@@ -191,7 +191,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
-		$this->auth = Strings::random(8, Strings::CHARS_ALPHANUM_IU);
+		$this->code = self::genCode();
 	}
 
 	/**
@@ -228,6 +228,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($to_addresses as $to) {
 			$tos_in[] = App::getDb()->quote($to);
 		}
+		$tos_in = implode(',', $tos_in);
 
 		$now = date('Y-m-d H:i:s');
 
@@ -377,7 +378,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'code', 'type' => 'string', 'length' => 30, 'nullable' => false, 'columnName' => 'code', ));
 		$metadata->mapField(array( 'fieldName' => 'to_address', 'type' => 'string', 'length' => 255,  'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', 'uid' => true, ));
