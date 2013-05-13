@@ -942,8 +942,23 @@ class Strings
 			return false;
 		}
 
-		// Make sure there is no 'e' modifier
-		$modifiers = self::extractRegexMatch('#[^\d\w\s](.*?)$#', $input);
+		$delim = $input[0];
+		if (($pos = strrpos($input, $delim)) === false) {
+			// Handle special delims that could
+			switch ($delim) {
+				case '{': $delim = '}'; break;
+				case '<': $delim = '>'; break;
+				case '[': $delim = ']'; break;
+				case '(': $delim = ')'; break;
+			}
+			$pos = strrpos($input, $delim);
+		}
+
+		if ($pos === false) {
+			return false;
+		}
+
+		$modifiers = substr($input, $pos+1);
 		if (strpos($modifiers, 'e') !== false) {
 			return false;
 		}
