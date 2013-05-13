@@ -471,6 +471,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		var data = $('input, textarea, select', row).serializeArray();
 		var snippetId = parseInt(row.find('input[name=snippet_id]').val(), 10);
 
+		var newCatId = parseInt(row.find('[name="category_id"]').val());
+
 		if (this.meta.ticket_id) {
 			data.push({
 				name: 'ticket_id',
@@ -483,6 +485,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				name: 'category_id',
 				value: this.catTabs.getActiveTab().data('category')
 			});
+			newCatId = parseInt(this.catTabs.getActiveTab().data('category'));
 		}
 
 		row.addClass('loading');
@@ -499,13 +502,34 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				var new_row = $(data.snippet_row_html);
 				new_row.hide();
 
+				var new_row2 = $(data.snippet_row_html);
+				new_row2.hide();
+
 				if (!snippetId) {
 					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).before(new_row);
 					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).hide();
+
+					$('.alt-cat-' + data.category_id + ' .no-snippets', this.wrapper).before(new_row2);
+					$('.alt-cat-' + data.category_id + ' .no-snippets', this.wrapper).hide();
 				} else {
-					$('.snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
+					var snippetEls = $('.snippet-' + data.snippet_id, this.wrapper);
+					var oldCatId = parseInt(snippetEls.closest('.cat-el').data('category-id'));
+
+					if (newCatId && oldCatId != newCatId) {
+						snippetEls.remove();
+
+						$('.cat-' + newCatId + ' .no-snippets', this.wrapper).before(new_row);
+						$('.cat-' + newCatId + ' .no-snippets', this.wrapper).hide();
+
+						$('.alt-cat-' + newCatId + ' .no-snippets', this.wrapper).before(new_row2);
+						$('.alt-cat-' + newCatId + ' .no-snippets', this.wrapper).hide();
+					} else {
+						$('.cat-' + newCatId + ' .snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
+						$('.alt-cat-' + newCatId + ' .snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row2);
+					}
 				}
 				new_row.show();
+				new_row2.show();
 				this.processSnippetRow(new_row);
 
 				var catList = this.wrapper.find('.cat-'+data.category_id).find('ul').html();

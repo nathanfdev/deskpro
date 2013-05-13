@@ -5,7 +5,7 @@
 	</div>
 
 	{% for category in ticket_snippet_cats %}
-		<div class="cat-group catgroup-{{ category.id }}">
+		<div class="cat-group cat-el catgroup-{{ category.id }}" data-category="{{ category.id }}">
 			<header class="cat-title {% if loop.index == 1 %}first{% endif %}">{{ category.title }}</header>
 
 			<div class="alt-cat-{{ category.id }}">
