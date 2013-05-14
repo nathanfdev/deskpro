@@ -379,7 +379,6 @@ class TicketSearch extends SearcherAbstract
 		if ($this->person AND $this->person['is_agent']) {
 
 			$where_perm = array();
-			$where = '((';
 
 			if ($this->person->getDisallowedDepartments()) {
 				$where_perm[] = "tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ")";
@@ -394,6 +393,9 @@ class TicketSearch extends SearcherAbstract
 				$part[] = "tickets.agent_id = {$this->person['id']}";
 				if ($this->person->getAgentTeamIds()) {
 					$part[] = "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ")";
+				}
+				if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
+					$part[] = 'tickets.agent_id IS NULL';
 				}
 
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
@@ -568,6 +570,9 @@ class TicketSearch extends SearcherAbstract
 				if ($this->person->getAgentTeamIds()) {
 					$part[] = "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ")";
 				}
+				if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
+					$part[] = 'tickets.agent_id IS NULL';
+				}
 
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
 			}
@@ -583,13 +588,11 @@ class TicketSearch extends SearcherAbstract
 			if ($this->person->getAgentTeamIds()) {
 				$where .= "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ") OR ";
 			}
-
 			$where .= "tickets_participants_perm.person_id = {$this->person->id}))";
 		} else {
 			// all where parts below add starting with AND
 			$where = '1';
 		}
-
 
 		#------------------------------
 		# Add joins
