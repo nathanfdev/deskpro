@@ -172,6 +172,10 @@ class ProcessEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
 			$source->blob = $blob;
 
+			// Set the copied raw source or else $source->getRawSource() will
+			// attempt to load it from the blob storage which is wasteful (eg could read back from s3 what we just wrote)
+			$source->_raw = $raw_source;
+
 			App::getOrm()->persist($source);
 			App::getOrm()->flush();
 
