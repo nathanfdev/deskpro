@@ -596,7 +596,7 @@
 	</div>
 {% endif %}
 
-<div class="builder-type" title="{{ phrase('agent.general.date_created') }}" data-rule-group="Person" data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+<div class="builder-type" title="Person Created Date" data-rule-group="Person" data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 	<div class="builder-op">
 		<select name="op" class="builder-op">
 			<option value="lte">{{ phrase('agent.general.before') }}</option>
@@ -909,6 +909,19 @@
 				<option value="{{id}}">{{title}}</option>
 			{% endfor %}
 		</select>
+	</div>
+</div>
+
+<div class="builder-type" title="Ticket Created Date" data-rule-group="Ticket" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="builder-op">
+		<select name="op" class="builder-op">
+			<option value="lte">{{ phrase('agent.general.before') }}</option>
+			<option value="gte">{{ phrase('agent.general.after') }}</option>
+			<option value="between">{{ phrase('agent.general.between') }}</option>
+		</select>
+	</div>
+	<div class="builder-options">
+		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 	</div>
 </div>
 

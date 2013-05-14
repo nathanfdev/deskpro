@@ -303,6 +303,10 @@ class TicketTerms
 
 		switch ($term) {
 
+			case 'date_created':
+				if (!$this->_testDateMatch($ticket['date_created'], $op, $choice)) return false;
+				break;
+
 			case 'is_new_user':
 				return $ticket->person->isNewPerson();
 				break;
@@ -1425,6 +1429,97 @@ class TicketTerms
 			} else {
 				return (!$found);
 			}
+		}
+	}
+
+
+	/**
+	 * @param string $value
+	 * @param string $op
+	 * @param string $choice
+	 * @return bool
+	 */
+	protected function _testDateMatch($value, $op, $choice)
+	{
+		$choice = (array)$choice;
+
+		$date1 = null;
+		if (isset($choice['date1'])) {
+			$date1 = $choice['date1'];
+		} else if (isset($choice[0])) {
+			$date1 = $choice[0];
+		}
+
+		$date2 = null;
+		if (isset($choice['date2'])) {
+			$date2 = $choice['date2'];
+		} else if (isset($choice[1])) {
+			$date2 = $choice[1];
+		}
+
+		if ($date1) {
+			if ($date1 instanceof \DateTime) {
+				$date1 = $date1->getTimestamp();
+			} elseif (!Numbers::isInteger($date1)) {
+				$date1 = strtotime($date1);
+			}
+		}
+
+		if ($date2) {
+			if ($date2 instanceof \DateTime) {
+				$date2 = $date1->getTimestamp();
+			} elseif (!Numbers::isInteger($date1)) {
+				$date2 = strtotime($date2);
+			}
+		}
+
+		// There should always be at least one date
+		if ($date1 === null AND $date2 === null) {
+			return false;
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		// Between with only one date is invalid, so
+		// we'll decide which op we really want to do
+		if ($op == self::OP_BETWEEN && ($date1 === null or $date2 === null)) {
+			if ($date1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if (!$date1) $date1 = 0;
+		if (!$date2) $date2 = 0;
+
+		if ($value instanceof \DateTime) {
+			$value = $value->getTimestamp();
+		} elseif (is_string($value) AND !ctype_digit($value)) {
+			$value = strtotime($value);
+		}
+
+		if ($op == self::OP_BETWEEN) {
+
+			// Make date2 'end of day'
+			$date2 = mktime(
+				23,
+				59,
+				59,
+				date('m', $date2),
+				date('d', $date2),
+				date('Y', $date2)
+			);
+
+			return ($value >= $date1 AND $value <= $date2);
+		} elseif ($op == self::OP_GTE) {
+			$date = $date1 ? $date1 : $date2;
+			return ($value >= $date);
+		} else {
+			$date = $date1 ? $date1 : $date2;
+			return ($value <= $date);
 		}
 	}
 
