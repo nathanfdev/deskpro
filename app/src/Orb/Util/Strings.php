@@ -1432,6 +1432,10 @@ class Strings
 	 */
 	public static function preDomDocument($string)
 	{
+		// Convert any existing entities into their real chars
+		// so we can then convert those to our special placeholders.
+		$string = self::decodeUnicodeEntities($string);
+
 		$string = str_replace(array('&lt;', '&gt;', '&amp;', '&nbsp;'), array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), $string);
 		$string = self::htmlEntityEncodeUtf8($string, '__DPUNI_%s_DPUNI__');
 		$string = str_replace('__DPUNI_194_DPUNI____DPUNI_160_DPUNI__', '__DP_AMP_NBSP__', $string);
