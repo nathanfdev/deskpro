@@ -73,7 +73,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 			$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 			foreach ($field_manager->getFields() as $field) {
-				$errors = $field->getHandler()->validateFormData($custom_fields ?	: array());
+				$errors = $field->getHandler()->validateFormData($custom_fields ?: array());
 				foreach ($errors as $code) {
 					$invalid_custom_fields['field_' . $field->getId()] = true;
 					$invalid_custom_fields[$code] = true;

@@ -195,7 +195,11 @@ class NewTicketValidator extends AbstractValidator
 					if ($field->getOption('agent_validation_resolve') && !$this->is_resolved) {
 						// no validation, its only on resolve
 					} else {
-						$errors = $field->getHandler()->validateFormData($this->newticket->ticket_fields, HandlerAbstract::CONTEXT_AGENT);
+						if ($this->newticket->exist_ticket) {
+							$errors = $field->getHandler()->validateFormData($this->newticket->ticket_fields, HandlerAbstract::CONTEXT_AGENT, array('exist_ticket' => $this->newticket->exist_ticket));
+						} else {
+							$errors = $field->getHandler()->validateFormData($this->newticket->ticket_fields, HandlerAbstract::CONTEXT_AGENT);
+						}
 						foreach ($errors as $code) {
 							$title = $field->getTitle();
 							$str = "Please correct $title";

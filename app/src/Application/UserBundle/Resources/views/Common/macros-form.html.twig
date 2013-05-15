@@ -23,6 +23,8 @@
 		{{ phrase('user.error.form_required') }}
 	{% elseif field.getTypeName() == 'date' %}
 		{% if error_fields[prefix ~ '.invalid_input'] %}{{ phrase('user.error.form_date_invalid') }}{% endif %}
+		{% if error_fields[prefix ~ '.invalid_date_dow'] %}{{ phrase('user.error.form_date_invalid_dow') }}{% endif %}
+		{% if error_fields[prefix ~ '.invalid_date_range'] %}{{ phrase('user.error.form_date_invalid_range') }}{% endif %}
 	{% elseif field.getTypeName() == 'choice' %}
 		{% if error_fields[prefix ~ '.invalid_choice'] %}{{ phrase('user.error.form_choice_invalid') }}{% endif %}
 		{% if error_fields[prefix ~ '.min_length'] %}{{ phrase('user.error.form_choice_min', {count: field.getOption('min_length')}) }}{% endif %}

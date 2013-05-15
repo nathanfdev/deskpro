@@ -373,7 +373,7 @@ abstract class HandlerAbstract
 	 * @param array $form_data
 	 * @return array
 	 */
-	public function validateFormData(array $form_data, $context = self::CONTEXT_USER)
+	public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
 	{
 		return array();
 	}

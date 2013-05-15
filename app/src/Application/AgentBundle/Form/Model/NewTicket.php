@@ -92,6 +92,11 @@ class NewTicket
 	 */
 	protected $_person_context;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	public $exist_ticket;
+
 	protected $_blob_inline_ids = array();
 	public $suppress_user_notify = false;
 
@@ -105,6 +110,7 @@ class NewTicket
 
 	public function setValuesFromTicket(Ticket $ticket)
 	{
+		$this->exist_ticket  = $ticket;
 		$this->department_id = $ticket->getDepartmentId();
 		$this->workflow_id   = $ticket->getWorkflowId();
 		$this->product_id    = $ticket->getProductId();

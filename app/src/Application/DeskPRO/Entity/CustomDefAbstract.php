@@ -390,6 +390,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
 
 	/**
+	 * @return array
+	 */
+	public function getAllOptions()
+	{
+		return $this->options;
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function getHtmlOption()

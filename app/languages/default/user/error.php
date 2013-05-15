@@ -12,6 +12,8 @@
 	'user.error.form_choice_max'         => 'Please select at most 1 option|Please select at most {{count}} options',
 	'user.error.form_choice_min'         => 'Please select at least 1 option|Please select at least {{count}} options',
 	'user.error.form_date_invalid'       => 'Please enter a valid date',
+	'user.error.form_date_invalid_dow'   => 'The week day you selected is not allowed',
+	'user.error.form_date_invalid_range' => 'The date you selected is not within the allowed range',
 	'user.error.form_required'           => 'This field is required',
 	'user.error.form_text_max'           => 'Please enter at most 1 character|Please enter at most {{count}} characters',
 	'user.error.form_text_min'           => 'Please enter at least 1 character|Please enter at least {{count}} characters',

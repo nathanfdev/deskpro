@@ -192,7 +192,7 @@ class Choice extends HandlerAbstract
 		return array();
 	}
 
-	public function validateFormData(array $form_data, $context = self::CONTEXT_USER)
+	public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
 	{
 		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : array();
 
