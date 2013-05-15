@@ -78,9 +78,6 @@ class TicketController extends AbstractController
 		if ($id = $this->in->getUint('department_id')) {
 			$ticket->setDepartmentId($id);
 		}
-		if ($id = $this->in->getUint('language_id')) {
-			$ticket->setLanguageId($id);
-		}
 		if ($id = $this->in->getUint('category_id')) {
 			$ticket->setCategoryId($id);
 		}
@@ -161,7 +158,11 @@ class TicketController extends AbstractController
 			return $this->createApiMultipleErrorResponse($errors);
 		}
 
-		$ticket->language = $person->getRealLanguage();
+		if ($id = $this->in->getUint('language_id')) {
+			$ticket->setLanguageId($id);
+		} else {
+			$ticket->language = $person->getRealLanguage();
+		}
 		$ticket->person = $person;
 		if (!$person->id) {
 			$ticket->person_email = $person->getPrimaryEmail();
