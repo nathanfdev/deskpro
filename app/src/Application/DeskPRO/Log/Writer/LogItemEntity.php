@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Log\Writer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -44,15 +45,19 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 {
 	public function _write(\Orb\Log\LogItem $log_item)
 	{
-		App::getDb()->insert('log_items', array(
-			'log_name'         => $log_item->getLogName(),
-			'session_name'     => $log_item->getSessionName(),
-			'message'          => $log_item->getMessage(),
-			'priority'         => $log_item->getPriority(),
-			'priority_name'    => $log_item->getPriorityName(),
-			'date_created'     => $log_item->getDatetime()->format('Y-m-d H:i:s'),
-			'flag'             => $log_item->getFlag() ?: null,
-			'data'             => $log_item->getExtra() ? serialize($log_item->getExtra()) : null,
-		));
+		try {
+			App::getDb()->insert('log_items', array(
+				'log_name'         => $log_item->getLogName(),
+				'session_name'     => $log_item->getSessionName(),
+				'message'          => $log_item->getMessage(),
+				'priority'         => $log_item->getPriority(),
+				'priority_name'    => $log_item->getPriorityName(),
+				'date_created'     => $log_item->getDatetime()->format('Y-m-d H:i:s'),
+				'flag'             => $log_item->getFlag() ?: null,
+				'data'             => $log_item->getExtra() ? serialize($log_item->getExtra()) : null,
+			));
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e, false);
+		}
 	}
 }
