@@ -961,20 +961,16 @@ abstract class SearcherAbstract implements PersonContextInterface
 				break;
 			} elseif ($c == -1) {
 				if ($agent) {
-					$team_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
-				} else {
-					$team_ids = array();
+					$team_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
 				}
 				$team_ids[] = -1;
 			} elseif ($c == -2) {
 				if ($agent) {
-					$not_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
-				} else {
-					$not_ids = array();
+					$not_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
 				}
 				$not_ids[] = -1;
 			} else {
-				$team_ids = $c;
+				$team_ids[] = $c;
 			}
 		}
 
