@@ -498,10 +498,22 @@ class UserRegController extends AbstractController
 
 			$log = implode("\n", $arr_wr->getMessages());
 
+			if ($result && $result->getIdentity()) {
+				$result_raw = "DATA RECORD:\n=======================================================\n";
+				$result_raw .= var_export($result->getIdentity()->getRawData(), true);
+				$result_raw .= "\n\n\n\n";
+				$result_raw .= "RAW RESULT:\n=======================================================\n";
+				$result_raw .= print_r($result, true);
+			} else {
+				$result_raw = "No Identity\n\n\n";
+				$result_raw .= print_r($result, true);
+			}
+
+
 			return $this->render('AdminBundle:UserReg:usersource-test-result.html.twig', array(
 				'usersource' => $usersource,
 				'log' => $log,
-				'result' => print_r($result, 1),
+				'result' => $result_raw,
 				'is_valid' => $result->isValid()
 			));
 		}
