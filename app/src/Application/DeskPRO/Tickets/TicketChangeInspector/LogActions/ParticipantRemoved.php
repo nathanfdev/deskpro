@@ -41,9 +41,12 @@ class ParticipantRemoved extends AbstractLogAction
 {
 	protected $person;
 
-	public function __construct($part)
+	public function __construct($person)
 	{
-		$this->person = $part;
+		if ($person instanceof Entity\TicketParticipant) {
+			$person = $person->person;
+		}
+		$this->person = $person;
 	}
 
 	public function getLogName()

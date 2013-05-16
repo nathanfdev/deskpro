@@ -43,6 +43,9 @@ class ParticipantAdded extends AbstractLogAction
 
 	public function __construct($person)
 	{
+		if ($person instanceof Entity\TicketParticipant) {
+			$person = $person->person;
+		}
 		$this->person = $person;
 	}
 
