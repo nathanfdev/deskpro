@@ -1203,6 +1203,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('actions_menu_trigger'),
 			menuElement: this.getEl('actions_menu'),
+			onBeforeMenuOpened: function(info) {
+				var status = self.getEl('status_code').val();
+				if (status == 'awaiting_agent') {
+					if (self.getEl('value_form').find('.is_hold').val()) {
+						self.getEl('menu_unset_hold').show();
+					} else {
+						self.getEl('menu_set_hold').show();
+					}
+				} else {
+					self.getEl('menu_set_hold').hide();
+					self.getEl('menu_unset_hold').hide();
+				}
+			},
 			onItemClicked: function(info) {
 
 				var it = $(info.itemEl);

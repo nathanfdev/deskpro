@@ -2110,6 +2110,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->status . ($this->hidden_status ? ".{$this->hidden_status}" : '');
 	}
 
+	public function setIsHold($is_hold)
+	{
+		if ($is_hold) {
+			$this->setStatus(self::STATUS_AWAITING_AGENT);
+			$this->setModelField('is_hold', true);
+		} else {
+			$this->setModelField('is_hold', false);
+		}
+	}
+
 	public function recalculateSlaDates()
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
