@@ -1,201 +1,278 @@
-@import "lib.less";
-
-#dp_nav{
-    background-color: #363c42;
-    background-position: repeat-y;
-	background-image: url("../../images/agent/app-nav/nav-back.png") /** sprite-ref: ui-h; sprite-alignment: right; sprite-alignment: repeat; */;
-	width: 54px;
+/** sprite: flag-icons; sprite-image: url('../../build/images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-v; sprite-image: url('../../build/images/sprite-ui-v.png'); sprite-layout: vertical */
+/** sprite: ui-h; sprite-image: url('../../build/images/sprite-ui-h.png'); sprite-layout: horizontal */
+.less-rule {
+  color: #000;
 }
-#dp_nav_sections{
-	background: #383B40;
-	bottom: 0;
-	box-shadow: -2px -5px 4px #222222 inset;
-	font-size: 10px;
-	left: 0;
-	overflow: hidden;
-	position: absolute;
-	top: 41px;
-	width: 55px;
+/**
+* Set a 1px border of color on each side
+*/
+/**
+* Set a black drop shadow
+*/
+/**
+* Set rounded corners
+*/
+/**
+* Set a radius on each corner
+*/
+/**
+* Set an inner black shadow
+*/
+/**
+* Set an inner shadow with your own oclor
+*/
+/**
+* Full box shadow
+*/
+/**
+* Transition effect
+*/
+.noselect {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
-
-#dp_nav_sections ul{
-	position: relative;
-	margin: 0;
-	padding: 0;
+.boxmodel-border-box {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
 }
-
-#dp_nav_sections li{
-    background-color: #363c42;
-    background-position: repeat-y;
-	background-image: url("../../images/agent/app-nav/nav-pane-back.png") /** sprite-ref: ui-h; sprite-alignment: repeat; */;
-	border-bottom: 1px solid #272A2E;
-	box-shadow: 0 1px 0 #303439 inset;
-	float: left;
-	width: 100%;
-	cursor: pointer;
-	padding: 1px 0 0 1px;
-	position: relative;
+.imgel {
+  overflow: hidden;
+  text-indent: -1000px;
 }
-#dp_nav_sections li:first-child{
-	margin-top:-1px;
-	border-top: 1px solid #272A2E;
-	box-shadow: 0 1px 0 #3C3F44 inset;
+.status.urgency-10,
+.marker-urgency-data.urgency-10 {
+  -khtml-opacity: 1;
+  -moz-opacity: 1;
+  opacity: 1;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  -o-transition: opacity 0.5s linear;
+  -ms-transition: opacity 0.5s linear;
+  transition: opacity 0.5s linear;
 }
-#dp_nav_sections li.dpNavActive{
-    background-color: #1f2225;
-    background-position: 44px 18px;
-    background-repeat: no-repeat;
-	background-image: url("../../images/agent/app-nav/pointer.png") /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 18px; sprite-margin-bottom: 18px; sprite-margin-left: 55px; */;
-	padding: 0;
-	z-index: 999;
-	box-shadow: none;
-	border: 1px solid #17191B;
-	box-shadow: 0 -1px 0 #17191B;
+body.timer-mark .status.urgency-10,
+body.timer-mark .marker-urgency-data.urgency-10 {
+  -khtml-opacity: 0.6;
+  -moz-opacity: 0.6;
+  opacity: 0.6;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  -o-transition: opacity 0.5s linear;
+  -ms-transition: opacity 0.5s linear;
+  transition: opacity 0.5s linear;
 }
-#dp_nav_sections li.dpNavActive:first-child{
-	margin-top: 0;
-	border-top: 1px solid #17191B;
-	box-shadow: 0 -1px 0 #17191B;
+#dp_nav {
+  width: 54px;
 }
-
-#dp_nav_sections li .navCounterRed, #DP-chatOnlineCount .navCounterRed{
-	.border-radius(7px, 7px, 7px, 7px);
-	.gradient(#bf4d4e, #943232);
-	box-shadow: 0 1px 5px rgba(0,0,0,0.25), inset 0 1px 0 #d58181;
-	border: 1px solid #592d2d;
-	display: block;
-	right: 5px;
-	padding: 0px 2px;
-	position: absolute;
-	text-align: center;
-	top: 0;
-	z-index: 99;
-	line-height: 13px;
-	font-family: @count-badge-font;
-	font-size:  9px !important;
+#dp_nav_sections {
+  background: #2b2f33;
+  bottom: 0;
+  font-size: 10px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 51px;
+  width: 55px;
 }
-
+#dp_nav_sections ul {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+#dp_nav_sections li {
+  float: left;
+  width: 100%;
+  cursor: pointer;
+  padding: 1px 0 0 1px;
+  position: relative;
+}
+#dp_nav_sections li:first-child {
+  margin-top: -1px;
+  border-top: 1px solid #272A2E;
+  box-shadow: 0 1px 0 #3C3F44 inset;
+}
+#dp_nav_sections li.dpNavActive {
+  background-color: #1f2225;
+  padding: 0;
+  z-index: 999;
+  box-shadow: none;
+  border: 1px solid #17191B;
+  box-shadow: 0 -1px 0 #17191b;
+}
+#dp_nav_sections li.dpNavActive:first-child {
+  margin-top: 0;
+  border-top: 1px solid #17191B;
+  box-shadow: 0 -1px 0 #17191b;
+}
+#dp_nav_sections li .navCounterRed,
+#DP-chatOnlineCount .navCounterRed {
+  -webkit-border-top-left-radius: 7px;
+  -webkit-border-top-right-radius: 7px;
+  -webkit-border-bottom-right-radius: 7px;
+  -webkit-border-bottom-left-radius: 7px;
+  -moz-border-radius-topleft: 7px;
+  -moz-border-radius-topright: 7px;
+  -moz-border-radius-bottomright: 7px;
+  -moz-border-radius-bottomleft: 7px;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
+  border-bottom-left-radius: 7px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background: #bf4d4e url("../../../file.php/gradient?size=20&start_color=bf4d4e&end_color=943232") repeat-x bottom left /*gradient_v:20:bf4d4e:943232*/;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 #d58181;
+  border: 1px solid #592d2d;
+  display: block;
+  right: 5px;
+  padding: 0px 2px;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  z-index: 99;
+  line-height: 13px;
+  font-size: 9px !important;
+}
 .count-badge.first {
-	top: 0px !important;
-	position: absolute;
+  top: 0px !important;
+  position: absolute;
 }
-.count-badge{
-	top: 3px  !important;
-	position: absolute;
-	font-family: @count-badge-font;
+.count-badge {
+  top: 3px  !important;
+  position: absolute;
 }
-
 #dp_nav_sections li.dpNavActive .count-badge {
-	margin-top: -1px;
+  margin-top: -1px;
+}
+#dp_nav_sections li span,
+#DP-chatOnlineCount span {
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 0 1px 0 #000000;
+  padding: 1px 2px 0 1px;
+}
+#dp_nav_sections li a span,
+#DP-chatOnlineCount a span {
+  font-size: 11px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+#dp_nav_sections li a {
+  color: #FFFFFF;
+  float: left;
+  padding: 10px 0 5px;
+  text-align: center;
+}
+#dp_nav_sections li a span,
+#dp_nav_sections li.dpNavActive a span {
+  color: #C0C2CA;
+  float: left;
+  font-weight: normal;
+  height: 50px;
+  width: 54px;
+  margin: 0;
+  padding: 0;
+  background-image: url('../../images/agent/app-nav/navigation-icons.png');
+  background-repeat: no-repeat;
+}
+#dp_nav_sections li a span.ticketNavIcon {
+  background-position: -1px 0;
+}
+#dp_nav_sections li:hover a span.ticketNavIcon,
+#dp_nav_sections li.dpNavActive a span.ticketNavIcon {
+  background-position: -1px -100px;
+}
+#dp_nav_sections li a span.chatNavIcon {
+	background-position: -80px 0;
+}
+#dp_nav_sections li:hover a span.chatNavIcon,
+#dp_nav_sections li.dpNavActive a span.chatNavIcon {
+  background-position: -80px -100px;
+}
+#dp_nav_sections li a span.peopleNavIcon {
+  background-position: -161px 0;
+}
+#dp_nav_sections li:hover a span.peopleNavIcon,
+#dp_nav_sections li.dpNavActive a span.peopleNavIcon {
+  background-position: -161px -100px;
+}
+#dp_nav_sections li a span.feedbackNavIcon {
+  background-position: -239px 0;
+}
+#dp_nav_sections li:hover a span.feedbackNavIcon,
+#dp_nav_sections li.dpNavActive a span.feedbackNavIcon {
+  background-position: -239px -100px;
+}
+#dp_nav_sections li a span.publishNavIcon {
+  background-position: -317px 0;
+}
+#dp_nav_sections li:hover a span.publishNavIcon,
+#dp_nav_sections li.dpNavActive a span.publishNavIcon {
+  background-position: -317px -100px;
+}
+#dp_nav_sections li a span.tasksNavIcon {
+  background-position: -399px 0;
+}
+#dp_nav_sections li:hover a span.tasksNavIcon,
+#dp_nav_sections li.dpNavActive a span.tasksNavIcon {
+  background-position: -399px -100px;
+}
+#dp_nav_sections li a span.twitterNavIcon {
+  background-position: -478px 0;
+}
+#dp_nav_sections li:hover a span.twitterNavIcon,
+#dp_nav_sections li.dpNavActive a span.twitterNavIcon {
+  background-position: -478px -100px;
+}
+#dp_nav_sections li a span.settingsNavIcon {
+  background-position: -551px 0;
+}
+#dp_nav_sections li:hover a span.settingsNavIcon,
+#dp_nav_sections li.dpNavActive a span.settingsNavIcon {
+  background-position: -551px -100px;
+}
+#dp_nav_sections li a span.agentchatNavIcon {
+  background-position: -629px 0;
+}
+#dp_nav_sections li:hover a span.agentchatNavIcon,
+#dp_nav_sections li.dpNavActive a span.agentchatNavIcon {
+  background-position: -629px -100px;
 }
 
-#dp_nav_sections li span, #DP-chatOnlineCount span{
-	color: #fff;
-	font-weight: bold;
-	text-shadow: 0 1px 0 #000000;
-	padding: 1px 2px 0 1px;
+#dp_nav_sections li#settings_section{
+	position: absolute;
+	left: 0;
+	bottom: 66px;
 }
-#dp_nav_sections li a span, #DP-chatOnlineCount a span{
-	font-size: 11px;
-	font-family: @toolbar-font;
-}
-
-#dp_nav_sections li a{
-	color: #FFFFFF;
-	float: left;
-	padding: 7px 0 9px;
-	text-align: center;
-}
-#dp_nav_sections li a span, #dp_nav_sections li.dpNavActive a span {
- 	color: #C0C2CA;
-    float: left;
-    font-weight: normal;
-    height: 7px;
-    margin: 0 10px;
-    padding: 28px 0 0;
-    width: 33px;
+#dp_nav_sections li#chat_agent_section {
+	position: absolute;
+	left: 0;
+	bottom: 0;
 }
 
-#dp_nav_sections li a span.ticketNavIcon{
-	background-repeat: no-repeat;
-	background-position: 6px 6px;
-    background-image: url(../../images/agent/app-nav/app-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.ticketNavIcon {
-	background-repeat: no-repeat;
-	background-position: 6px 6px;
-    background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li a span.chatNavIcon{
-	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-chat.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.chatNavIcon {
-	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-chat-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li a span.twitterNavIcon{
-	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-twitter.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.twitterNavIcon {
-	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-twitter-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li a span.peopleNavIcon{
-	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-people.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.peopleNavIcon {
-	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-people-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li a span.feedbackNavIcon{
-    margin-left: 4px;
-	background-repeat: no-repeat;
-	background-position: 15px 0;
-    background-image: url(../../images/agent/app-nav/app-feedback.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 15px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.feedbackNavIcon {
-	background-repeat: no-repeat;
-	background-position: 15px 0;
-    background-image: url(../../images/agent/app-nav/app-feedback-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 15px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li a span.publishNavIcon{
-	background-repeat: no-repeat;
-	background-position: 6px 0;
-    background-image: url(../../images/agent/app-nav/app-publish.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.publishNavIcon {
-	background-repeat: no-repeat;
-	background-position: 6px 0;
-    background-image: url(../../images/agent/app-nav/app-publish-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
-}
 
-#dp_nav_sections li a span.tasksNavIcon{
-	background-repeat: no-repeat;
-	background-position: 5px 0;
-    background-image: url(../../images/agent/app-nav/app-tasks.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
-}
-#dp_nav_sections li:hover a span.tasksNavIcon {
-	background-repeat: no-repeat;
-	background-position: 5px 0;
-    background-image: url(../../images/agent/app-nav/app-tasks-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
-}
 
-#dp_nav_sections li a span.dealsNavIcon{
-	background-repeat: no-repeat;
-	background-position: 6px 0;
-    background-image: url(../../images/agent/app-nav/app-deals.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+
+
+
+#dp_nav_sections li a span.dealsNavIcon {
+  background-repeat: no-repeat;
+  background-position: 6px 0;
+  background-image: url(../../images/agent/app-nav/app-deals.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.dealsNavIcon {
-	background-repeat: no-repeat;
-	background-position: 6px 0;
-    background-image: url(../../images/agent/app-nav/app-deals-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+  background-repeat: no-repeat;
+  background-position: 6px 0;
+  background-image: url(../../images/agent/app-nav/app-deals-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }

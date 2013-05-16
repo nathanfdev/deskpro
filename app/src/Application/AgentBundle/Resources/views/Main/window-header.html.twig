@@ -1,367 +1,202 @@
-<!-- BEGIN HEADER BAR -->
 <div id="dp_header">
-	{# User Logo #}
-	<div id="dp_header_user">
-		<div class="button-wrap" id="userSetting_trigger">
-			<h1>
-				<cite style="background-image: url({{ app.user.getPictureUrl(24) }});"></cite>
-				<span class="drop"></span>
-			</h1>
-		</div>
-	</div>
-	<!-- Header - User Control Dropdown -->
-	<div id="userSetting" style="display:none;">
-		<div class="userProfileDropdown" >
-			<div class="userProfileDropdownHeader">
-				<a><em style="background-image: url({{ app.user.getPictureUrl(24) }});"></em></a>
-				<span class="drop"></span>
-			</div>
-			<ul>
-				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-				<li class="setting with-sub" id="user_settings_link"><a>{{ phrase('agent.general.settings') }}</a></li>
-				<li class="sub" id="user_settings_link_profile"><a>Profile</a></li>
-				{% if app.user.getPermissionsManager().get('GeneralChecker').canSetSignature() %}<li class="sub" id="user_settings_link_signature"><a>{{ phrase('agent.settings.signature') }}</a></li>{% endif %}
-				{% if not app.getSetting('core_tickets.disable_agent_notifications') %}
-					<li class="sub" id="user_settings_link_ticketnotify"><a>Ticket Notifications</a></li>
-					<li class="sub" id="user_settings_link_othernotify"><a>Other Notifications</a></li>
-				{% endif %}
-				<li class="sub" id="user_settings_link_macros"><a>Macros</a></li>
-				<li class="sub" id="user_settings_link_filters"><a>Filters</a></li>
-				<li class="sub last" id="user_settings_link_snippets" data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': 0}) }}"><a>Snippets</a></li>
-				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.general.help') }}</a></li>
-				<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent">{{ phrase('agent.general.log_out') }}</a></li>
-			</ul>
-		</div>
-	</div>
 
-	<!-- BEGIN NOTIFICATION SECTION -->
-	<div id="DP-NotificationSection">
-		<div id="chatStatusWrap" {% if not app.getSetting('core.apps_chat') or not app.user.hasPerm('agent_chat.use') %}style="display: none;"{% endif %}>
-			<div class="well">
-				<em class="agents"><span id="chatOnlineCount">1</span></em>
-				<em class="users"><span id="userOnlineCount">0</span></em>
-			</div>
-		</div>
-		<div id="agent_status_menu" style="display:none;">
-			<div class="notifDropdown">
-				<div class="notifHead">
-					<em class="agents"><span id="chatOnlineCount2">1</span></em>
-					<em class="users"><span id="userOnlineCount2">0</span></em>
-				</div>
-				<div id="agent_status_menu_body">
-					<table cellspacing="0" cellpadding="0" border="0">
-						<tr>
-							<td valign="top" class="agent-list">
-								<ul class="me" id="agent_status_menu_me_list">
-									<li class="agent" id="agent_status_menu_onlinerow">
-										<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
-										You are currently available for chat.
-										<div style="display: inline-block; width: 108px; text-align: right;">
-											<button class="clean-white toggle-status-trigger is-not-loading">Sign out of chat</button>
-											<span class="is-loading">
-												<span class="flat-spinner" style="display: inline-block;"></span>
-											</span>
-										</div?
-									</li>
-									<li class="agent" id="agent_status_menu_offlinerow" style="display: none;">
-										<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
-										You are currently away from chat.
-										<div style="display: inline-block; width: 108px; text-align: right;">
-											<button class="clean-white toggle-status-trigger is-not-loading">Sign in to chat</button>
-											<span class="is-loading">
-												<span class="flat-spinner" style="display: inline-block;"></span>
-											</span>
-										</div>
-									</li>
-								</ul>
-
-								<div class="online-list" id="agent_status_menu_onlinelist">
-									<header class="list-header">
-										<div class="group-option">
-											<span class="dp-checkbox checkbox group-dep"></span>
-											By department
-										</div>
-										<h6>
-											Agents online for chat
-										</h6>
-									</header>
-									<ul class="list department-grouped" style="display: none;">
-										{% for id,title in app.getDataRepository('Department').getFullNames('chat') %}
-											<li class="dep dep-{{ id }}">
-												<h3>{{ title }}</h3>
-												<ul class="sub-list"></ul>
-											</li>
-										{% endfor %}
-									</ul>
-									<ul class="list normal">
-										{% for agent in agents %}
-											<li
-												data-department-ids="{{ agent_chat_depmap[agent.id]|join(',') }}"
-												class="agent agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"
-											>
-												<div class="avatar" style="background-image: url({{ agent.getPictureUrl(16) }});"></div>
-												{{ agent.display_name }}
-											</li>
-										{% endfor %}
-									</ul>
-								</div>
-							</td>
-							<td class="user-list"><div id="agent_status_online_users">
-								{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
-							</div></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div id="notificationWrap" class="left">
-			<div class="notifications" id="dp_notif_bed">
-				<div class="notifMail notif-item notif-tickets"><span class="counter">0</span></div>
-				{#<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>#}
-				<div class="notifFeedback notif-item notif-feedback"><span class="counter">0</span></div>
-				<div class="notifTask notif-item notif-tasks"><span class="counter">0</span></div>
-			</div>
-		</div>
-	</div>
-	<div id="notificationDropdown" style="display:none;">
-		<div class="notifDropdown">
-			<div class="notifHead">
-				<div class="notifMail notif-item notif-tickets"><span class="counter">0</span></div>
-				{#<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>#}
-				<div class="notifFeedback notif-item notif-feedback"><span class="counter">0</span></div>
-				<div class="notifTask notif-item notif-tasks"><span class="counter">0</span></div>
-			</div>
-			<div id="dp_notify_list_wrap">
-				<ul id="dp_notify_list">
-					<li id="dp_notify_list_none">
-						<article><em>{{ phrase('agent.interface.notifs_appear_here') }}</em></article>
-						<a>{{ phrase('agent.general.change_notif_settings') }}</a>
-					</li>
-					<li class="dismissAll" id="dp_notify_list_dismiss" style="display: none">
-						<a>{{ phrase('agent.interface.dismiss_notifications') }}</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<!-- END NOTIFICATION SECTION -->
-	<!-- BEGIN SEARCH SECTION -->
-	<div id="dp_omnibox_wrap">
-		<div id="dp_omnibox">
-			<div class="searchBoxWrap" id="dp_omniinput_wrap">
-				<div class="type-icon">
-					<span class="icon"></span>
-				</div>
-				<input type="text" id="dp_omniinput" size="4" placeholder="{{ phrase('agent.general.search') }}" data-element-handler="DeskPRO.Agent.ElementHandler.OmniQuickSearch" />
-			</div>
-		</div>
-		<div id="dp_omnibox_adv">
-			<a><span class="plusIcon">
-				<i></i>
-			</span></a>
-		</div>
-	<!-- END SEARCH SECTION -->
-	</div>
-	<!-- BEGIN CREATE SECTION -->
-	<div id="DP-CreateSection">
-		<div class="DP-createTicket">
-			<div id="createContentTrigger" class="newContent">
-				<a><span class="plusIcon">{{ phrase('agent.general.create') }}</span></a>
-			</div>
-		</div>
-		<!-- Header - Create Ticket Dropdown on click -->
-		<div id="createTicketToggle" style="display:none;">
-			<div class="createHeader">
-				<a>{{ phrase('agent.general.create') }}</a>
-			</div>
-			<div class="createDropdown">
-				<ul class="createBtnPopups">
-					{% if app.user.hasPerm('agent_tickets.create') %}
-						<li id="create_ticket_btn"><a><span class="createTicket">{{ phrase('agent.general.new_ticket') }} <kbd>t</kbd></span></a></li>
-					{% endif %}
-					{% if app.user.hasPerm('agent_people.create') %}
-						<li id="create_person_btn"><a><span class="createPerson">{{ phrase('agent.general.new_person') }} <kbd>p</kbd></span></a></li>
-					{% endif %}
-					{% if app.user.hasPerm('agent_org.create') %}
-						<li id="create_organization_btn"><a><span class="createOrg">{{ phrase('agent.general.new_organization') }} <kbd>o</kbd></span></a></li>
-					{% endif %}
-					<li id="create_task_btn"><a><span class="createTask">{{ phrase('agent.general.new_task') }} <kbd>k</kbd></span></a></li>
-					{% if app.user.hasPerm('agent_publish.create') %}
-						<li id="create_article_btn"><a><span class="createArticle">{{ phrase('agent.general.new_article') }} <kbd>a</kbd></span></a></li>
-						<li id="create_news_btn"><a><span class="createNews">{{ phrase('agent.interface.new_news') }} <kbd>n</kbd></span></a></li>
-						<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.general.new_download') }} <kbd>d</kbd></span></a></li>
-						<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.general.new_feedback') }} <kbd>i</kbd></span></a></li>
-					{% endif %}
-					{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
-						<li id="create_tweet_btn"><a><span class="createTweet">Tweet <kbd>w</kbd></span></a></li>
-					{% endif %}
-				</ul>
-			</div>
-		</div>
-	<!-- END CREATE SECTION -->
-	</div>
-
-	{# DeskPRO Logo #}
-	<div id="dp_logo_wrap">
-		<div class="button-wrap">
-			<h1>
-				{{ phrase('agent.general.deskpro') }}
-				<span class="drop"></span>
-			</h1>
-		</div>
-	</div>
-	<div id="dp_logo_expand_wrap">
-		<div class="dropdown-header">
-			<h1>
-				{{ phrase('agent.general.deskpro') }}
-				<span class="drop"></span>
-			</h1>
-		</div>
-		<div class="dropdown-content">
-			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
-		</div>
-	</div>
-
-	<!-- BEGIN INTERFACE SECTION -->
-	{% if app.user.can_admin or app.user.can_billing or app.user.can_reports or app.getSetting('user.portal_enabled') %}
-	<div id="DP-InterfaceSwitcher">
-		<div class="DP-adminSwitch">
-			<div class="adminSwitcher">
-				<a class="agent">{{ phrase('agent.general.agent_interface') }}<span class="dropdownIcon"></span></a>
-			</div>
-		</div>
-		<!-- Header - Switch Button Interfaces- Dropdown -->
-		<div id="interfacesToggle" style="display:none;">
-		<div class="dropdownSwitcherWrap" >
-			<div class="switcherHeader">
-				<a class="agent"><span>{{ phrase('agent.general.agent_interface') }}</span></a>
-			</div>
-			<ul>
-				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.general.admin_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing" style="margin-right: -3px;"><span class="check">{% if app.isCloud() %}{{ phrase('agent.general.billing_interface') }}{% else %}{{ phrase('agent.general.license_interface') }}{% endif %}</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.general.reports_interface') }}</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
-			</ul>
-		</div>
-		</div>
-	</div>
-	{% endif %}
-	<!-- END INTERFACE SECTION -->
-
-	<!-- BEGIN STATUS SECTION -->
-	<div id="DP-StatusSection">
-		<div class="DP-adminStatus">
-			<ul>
-				<li class="networkStatIndicator" id="network_status_indicator">
-					<a class="tipped" data-tipped="network_status_tip_wrap" data-tipped-options="inline:true, hook: 'bottommiddle'"></a>
-					<div id="network_status_tip_wrap" style="display: none;"><div id='network_status_tip'>{{ phrase('agent.interface.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.interface.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.interface.network_status_bad') }}</div></div></div>
-				</li>
-				<li class="keyboardIcon">
-					<a id="keyboard_shortcuts_trigger" class="tipped" title="{{ phrase('agent.interface.keyboard_shortcuts') }}" data-tipped-options="hook: 'bottommiddle'"></a>
-				</li>
-				<li class="soundIcon">
-					<a class="tipped" id="sound_icon" title="{{ phrase('agent.interface.sound_explain') }}" data-tipped-options="hook: 'bottommiddle'"></a>
-				</li>
-			</ul>
-		</div>
-	</div>
-	<!-- END STATUS SECTION -->
-
-	{% if version_notices.count() %}
-		<div class="DP-version-notes">
-			<a title="An update to the helpdesk was installed" data-ids="{{ version_notices.getWaitingIds()|join(',') }}" id="notice_trigger">
-				<i class="icon-info-sign"></i>
-				<em>{{ version_notices.count() }}</em>
-			</a>
-		</div>
-	{% endif %}
-<!-- END HEADER BAR -->
-</div>
-
-<div id="dp_omniresults" style="display: none">
-	<script type="text/x-deskpro-plain" id="dp_omniresults_section">
-		<section class="section {TYPE} section-{TYPE}">
-			<header>
-				{TITLE}
-				<span class="expand-btn"></span>
-			</header>
-			<article>
-				<ul class="result-list"></ul>
-			</article>
-		</section>
-	</script>
-	<script type="text/x-deskpro-plain" id="dp_omniresults_result_row">
-		<li class="result-item {TYPE}-{ID}"><span class="prop-id">{ID}</span> <label>{TITLE}</label></li>
-	</script>
-	<script type="text/x-deskpro-plain" id="dp_omniresults_result_row_twitter">
-		<li class="result-item {TYPE} twitter-user-find" data-name="{TITLE}"><label>Find Twitter user {TITLE}...</label></li>
-	</script>
-</div>
-
-<div id="dp_recent_list" style="display: none">
-	<section class="section {TYPE} section-{TYPE}">
-		<header>
-			RECENTLY VIEWED
-		</header>
-		<article>
-			<ul class="result-list"></ul>
-		</article>
-	</section>
-	<script type="text/x-deskpro-plain" id="dp_recent_list_row">
-		<li class="result-item {TYPE}-{ID}"><span class="prop-id">{ID}</span> <label>{TITLE}</label></li>
-	</script>
-</div>
-
-<div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
-	<div class="header-section">
-		<span id="omnisearch_reset">{{ phrase('agent.interface.reset_form') }}</span>
-		<span class="close close-search-sheet"></span>
-		<em>{{ phrase('agent.general.search') }}:</em>
-		<ul>
-			{% if app.user.hasPerm('agent_tickets.use') %}<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.general.tickets') }}</li>{% endif %}
-			{% if app.user.hasPerm('agent_people.use') %}<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.general.people') }}</li>{% endif %}
-			{% if app.user.hasPerm('agent_people.use') %}<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.general.organizations') }}</li>{% endif %}
-			{% if app.getSetting('core.apps_feedback') or app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
-				<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.general.publish_and_feedback') }}</li>
-			{% endif %}
+	<div class="user-profile pull-left">
+		<img class="gravatar pull-left" src="http://placehold.it/30x30/ffffff/000000">
+		<div class="username">Hello, Your Username</div>
+		<ul class="nav-profile">
+			<li><i class="icon-cog"></i> <a href="">Settings</a></li>
+			<li><i class="icon-question-sign"></i> <a href="">Help</a></li>
+			<li><i class="icon-signout"></i> <a href="">Logout</a></li>
 		</ul>
 	</div>
 
-	{# Ticket Search Form #}
-	{% if app.user.hasPerm('agent_tickets.use') %}
-		<div class="sheet-section" id="dp_searchsheet_tickets" data-type="tickets">
-			{% include 'AgentBundle:Main:search-sheet-tickets.html.twig' %}
-		</div>
-	{% endif %}
-	{# /Ticket Search Form #}
+	<div class="btn-group-chat pull-left">
+	  <a class="btn">
+	  	<div class="chat-big-icon pull-left"></div>
+	  	<span class="status">Logged into chat</span>
+	  	<ul class="info">
+		  	<li><i class="icon-user"></i> 3 Agents</li>
+		  	<li><i class="icon-group"></i> 12 Users</li>
+	  	</ul>
+	  	<div class="arrow">
+	  		<span class="caret"></span>
+	  	</div>
+	  </a>
 
-	{# People Search Form #}
-	{% if app.user.hasPerm('agent_people.use') %}
-		<div class="sheet-section" id="dp_searchsheet_people" data-type="people">
-			{% include 'AgentBundle:Main:search-sheet-people.html.twig' %}
-		</div>
-	{% endif %}
-	{# /People Search Form #}
+		<div class="dropdown-menu">
+			<div class="column1 pull-left">
 
-	{# Orgs Search Form #}
-	{% if app.user.hasPerm('agent_people.use') %}
-		<div class="sheet-section" id="dp_searchsheet_orgs" data-type="orgs">
-			{% include 'AgentBundle:Main:search-sheet-orgs.html.twig' %}
+				<div id="agent_status_menu_me_list">
+					<div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/24259869899da35ec0cf0252887410a6?&amp;s=30&amp;d=mm);"></div>
+					<a class="signin">Sign in to chat &rarr;</a>
+				</div>
+				<ul class="agents list">
+					<li class="header">5 Agents online: <a href="#">by department</a></li>
+					<li><div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/4d50c6ca085f05a2e585ff282d60472e?&amp;s=16&amp;d=mm);"></div>Christopher Nadeau
+					</li>
+					<li><div class="avatar" style="background-image: url(https://support.deskpro.com/file.php/size/16/size-fit/18NKZXYASXZX17721F4CBFA/image1328194980_reasonably_small.jpg);"></div>Christopher Padfield</li>
+				</ul>
+			</div>
+			<div class="column2 pull-left">
+				<table>
+					<caption><div class="pull-left">5 Online Users</div><div class="pull-right"><i class="icon-refresh"></i></div></caption>
+					<thead>
+						<tr>
+							<th width="20%">User</th>
+							<th width="70%">Current Page</th>
+							<th class="last" width="10%">Time</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
+							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
+							<td class="last">3:18 pm</td>
+						</tr>
+						<tr>
+							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
+							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
+							<td class="last">3:18 pm</td>
+						</tr>
+						<tr>
+							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
+							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
+							<td class="last">3:18 pm</td>
+						</tr>
+						<tr>
+							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
+							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
+							<td class="last">3:18 pm</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
-	{% endif %}
-	{# /Orgs Search Form #}
-
-	{# Content Search Form #}
-	{% if app.getSetting('core.apps_feedback') or app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
-		<div class="sheet-section" id="dp_searchsheet_content" data-type="content">
-			{% include 'AgentBundle:Main:search-sheet-content.html.twig' %}
-		</div>
-	{% endif %}
-	{# /Content Search Form #}
-
-	<div class="footer-section">
-		<button id="omnisearch_submit">{{ phrase('agent.general.search') }}</button>
 	</div>
-</div>
 
-{% include 'AgentBundle:Main:keyboard-shortcuts-sheet.html.twig' %}
+	<div class="btn-group-actions pull-left">
+			<div class="create-group pull-left">
+				<a class="btn"><i class="icon-plus"></i> Create</a>
+
+					<ul class="createBtnPopups">
+						<li id="create_ticket_btn"><a><div class="wrap"><i class="icon-envelope"></i></div>New Ticket <kbd>t</kbd></a></li>
+						<li id="create_person_btn"><a><div class="wrap"><i class="icon-user"></i></div>New Person <kbd>p</kbd></a></li>
+						<li id="create_organization_btn"><a><div class="wrap"><i class="icon-group"></i></div>New Organization <kbd>o</kbd></a></li>
+						<li id="create_task_btn"><a><div class="wrap"><i class="icon-edit"></i></div>New Task <kbd>k</kbd></span></a></li>
+						<li id="create_article_btn"><a><div class="wrap"><i class="icon-file-alt"></i></div>New Article <kbd>a</kbd></a></li>
+						<li id="create_news_btn"><a><div class="wrap"><i class="icon-book"></i></div>New News Post <kbd>n</kbd></span></a></li>
+						<li id="create_download_btn"><a><div class="wrap"><i class="icon-download"></i></div>New Download <kbd>d</kbd></a></li>
+						<li id="create_feedback_btn" class="last"><a><div class="wrap"><i class="icon-lightbulb"></i></div>New Feedback <kbd>i</kbd></a></li>
+					</ul>
+
+			</div>
+			<a class="btn"><i class="icon-rotate-left"></i> Recent</a>
+	</div>
+
+	<div class="group pull-right">
+		<a class="logo"></a>
+	</div>
+
+	<div class="searchbox pull-right">
+		<input class="search" type="text" value="Search for ticket, agent or message" onfocus="this.style.color='#000';
+		this.value='';" style="color: #7a7f85;">
+
+			<div class="quick-search-results">
+				<ul>
+					<li class="title">Ticket <a href="#">Show 9 more</a></li>
+					<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
+					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
+					<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
+					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
+					<li class="title">Person <a href="#">Show 21 more</a></li>
+					<li><a href="#"><strong>76454</strong><div class="gravatar"></div>Website Contact Testagain /testagain@test.boom/<i class="icon-caret-down"></i></a></li>
+					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a>
+						<ul>
+							<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
+							<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
+							<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
+						</ul>
+					</li>
+					<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
+					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
+				</ul>
+			</div>
+
+		<div class="extended-search-btn"></div>
+
+		<div class="extended-search-dialog" style="display: none;">
+			<h3>Extended Search</h3>
+				<div class="description">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pellentesque nisl pretium justo pellentesque a cursus enim euismod. Sed fringilla, ipsum in aliquam vestibulum, nulla ligula elementum leo, quis congue ante nunc et dolor.
+				</div>
+				<h4>Choose where to search:</h4>
+				<ul class="list-with-icons">
+					<li class="tickets_section"></li>
+					<li class="chat_section"></li>
+					<li class="people_section"></li>
+					<li class="feedback_section"></li>
+					<li class="publish_section"></li>
+					<li class="tasks_section"></li>
+					<li class="twitter_section"></li>
+				</ul>
+		</div>
+
+	</div>
+
+	<div class="notifications-group pull-right">
+		<ul>
+			<li class="message notification">
+				<span class="badge">17</span>
+				<ul>
+					<div class="arrow-up"></div>
+					<li class="title">17 New Messages</li>
+					<li class="inside">
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time>4:17 pm</time>
+						<big>Website Contact Testagain</big>
+						<small>Issue adding agent from AD</small>
+					</li>
+					<li class="inside">
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time>4:32 pm</time>
+						<big>Website Contact Testagain</big>
+						<small>Issue adding agent from AD</small>
+					</li>
+					<li class="inside">
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time>4:17 pm</time>
+						<big>Website Contact Testagain</big>
+						<small>Issue adding agent from AD</small>
+					</li>
+					<li class="inside">
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time>4:17 pm</time>
+						<big>Website Contact Testagain</big>
+						<small>Issue adding agent from AD</small>
+					</li>
+					<li class="inside">
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time>4:32 pm</time>
+						<big>Website Contact Testagain</big>
+						<small>Issue adding agent from AD</small>
+					</li>
+					<li class="inside">
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time>4:17 pm</time>
+						<big>Website Contact Testagain</big>
+						<small>Issue adding agent from AD</small>
+					</li>
+					<li>
+						<a class="btn"><i class="icon-ban-circle"></i> Dismiss All Notifications</a>
+					</li>
+				</ul>
+			</li>
+			<li class="agent notification"></li>
+			<li class="chat notification"></li>
+			<li class="globe notification"></li>
+			<li class="tick notification"></li>
+			<li class="twitter notification"></li>
+		</ul>
+	</div>
+
+</div>

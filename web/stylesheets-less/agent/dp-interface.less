@@ -4474,6 +4474,74 @@ blockquote {
 	color: #000;
 }
 
+.collapsed-area {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 25px;
+	background: #C9CED7;
+	border: 1px solid #999EA3;
+	border-top: none;
+	border-bottom: none;
+	z-index: 2;
+	line-height: 100%;
+	overflow: hidden;
+
+	ul {
+		padding: 0;
+		margin: 0;
+	}
+
+	ul li {
+		line-height: 100%;
+		width: 25px;
+		height: 66px;
+		margin-right: 10px;
+		display: block;
+		position: relative;
+		top: 90px;
+		padding-top: 2px;
+
+		span {
+			-webkit-transform-origin: 0 0;
+			-moz-transform-origin:    0 0;
+			-ms-transform-origin:     0 0;
+			-o-transform-origin:      0 0;
+
+			-webkit-transform: rotate(-90deg);
+			-moz-transform:    rotate(-90deg);
+			-ms-transform:     rotate(-90deg);
+			-o-transform:      rotate(-90deg);
+
+			position: absolute;
+			top: 0;
+			left: 2px;
+
+			white-space: nowrap;
+			text-wrap: none;
+			line-height: 100%;
+
+			background-color: #CED5E1;
+			border: 1px solid #93999E;
+			padding: 2px;
+			cursor: pointer;
+		}
+	}
+}
+
+#dp_left_collapsed {
+	left: 215px;
+}
+
+#dp_right_collapsed {
+	right: 0;
+
+	ul li {
+		top: 56px;
+	}
+}
+
 .dp-stickytip {
 	position: absolute;
 	background-color: #fff;

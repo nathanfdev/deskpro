@@ -653,6 +653,7 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/navigation.less',
 		'stylesheets-less/agent/header.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
+		'stylesheets-less/agent/agent.less',
 	)
 );
 

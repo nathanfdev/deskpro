@@ -16,6 +16,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
+		this.onloadStack = [];
 		this.routePrefixes = {};
 
 		this.messageChanneler = null;
@@ -40,6 +41,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.activityTime = new Date();
 
 		this.agentNotifyListShown = false;
+
+		this.paneVis = {
+			source: true,
+			list: true,
+			tabs: true
+		};
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -538,6 +545,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
+		var fn;
+		while (fn = this.onloadStack.shift()) {
+			fn();
+		}
+
 		$('#user_settings_link_profile').on('click', function(ev) {
 			ev.preventDefault();
 			$('#settingswin').trigger('dp_open', 'profile');
@@ -631,6 +643,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$('#notice_trigger').toggleClass('bleep');
 			}, 800);
 		}
+
+		$('#toggle_source_pane').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
+		});
+		$('#toggle_list_pane').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
+		});
+		$('#toggle_tabs_pane').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('tabs', !DeskPRO_Window.paneVis.tabs);
+		});
+	},
+
+	addOnloadFunction: function(fn) {
+		this.onloadStack.push(fn);
 	},
 
 	loadHashPath: function(browserHash) {
@@ -3722,5 +3751,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		this.loadNotice(this._noticeIds[this._noticeIndex]);
+	},
+
+	setPaneVis: function(id, vis) {
+		this.paneVis[id] = vis;
+		this.layout.doResize();
 	}
 });

@@ -51,11 +51,29 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	_initSection: function(data) {
+		var self = this;
 		this.setHasInitialLoaded();
 
 		this.contentEl.html(data.section_html);
 
-		var self = this;
+		$('.find-button').on('click', function(ev) {
+			$(this).toggleClass('on');
+			if ($(this).hasClass('on')) {
+				self.contentEl.find('.source-search-area').show();
+				self.contentEl.find('.source-main-area').hide();
+			} else {
+				self.contentEl.find('.source-search-area').hide();
+				self.contentEl.find('.source-main-area').show();
+			}
+		});
+		var searchArea = self.contentEl.find('.source-search-area');
+		DP.select(searchArea.find('select'));
+
+
+		searchArea.find('header').on('click', function() {
+			$(this).closest('.row').toggleClass('on');
+		});
+
 		this.tabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
 			triggerElements: $('#tickets_outline_tabstrip li'),
