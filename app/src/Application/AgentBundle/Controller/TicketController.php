@@ -423,7 +423,9 @@ class TicketController extends AbstractController
 			ORDER BY id DESC
 		", array($ticket->getId()));
 
-		$message_numbers = array_combine(array_values($all_message_ids), array_reverse(array_keys($all_message_ids)));
+		if ($all_message_ids) {
+			$message_numbers = array_combine(array_values($all_message_ids), array_reverse(array_keys($all_message_ids)));
+		}
 
 		$message_count = count($all_message_ids);
 		$num_pages = ceil($message_count / $per_page);
