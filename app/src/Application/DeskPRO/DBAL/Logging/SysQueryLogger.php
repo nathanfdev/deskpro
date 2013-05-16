@@ -371,6 +371,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 
 			file_put_contents($path, $write, \FILE_APPEND | \LOCK_EX);
+
+			// If we just created the file this will make it writable
+			// in case the same file is being writ to by the CLI and web server both
+			@chmod($path, 0777);
 		}
 	}
 
