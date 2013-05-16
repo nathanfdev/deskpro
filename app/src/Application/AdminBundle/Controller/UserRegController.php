@@ -509,12 +509,22 @@ class UserRegController extends AbstractController
 				$result_raw .= print_r($result, true);
 			}
 
+			$clean = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
+			if (!$clean) {
+				$result_raw = Strings::utf8_bad_strip($result_raw);
+				$clean = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
+				if (!$clean) {
+					$clean = "[Data contains invalid characters]";
+				}
+			}
+
+			$result_raw = $clean;
 
 			return $this->render('AdminBundle:UserReg:usersource-test-result.html.twig', array(
-				'usersource' => $usersource,
-				'log' => $log,
-				'result' => $result_raw,
-				'is_valid' => $result->isValid()
+				'usersource'    => $usersource,
+				'log'           => $log,
+				'raw_user_data' => $result_raw,
+				'is_valid'      => $result->isValid()
 			));
 		}
 
