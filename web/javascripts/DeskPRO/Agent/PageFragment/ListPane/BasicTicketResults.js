@@ -351,6 +351,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			this.getEl('no_results').show();
 		} else {
 
+			if (!this.resultsHelper) {
+				return;
+			}
+
 			// If there is no results element, it means the list was loaded with no results
 			// and the various control elements havent been rendered.
 			// So we need to refresh the view
