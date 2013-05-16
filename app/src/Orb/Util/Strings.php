@@ -2037,6 +2037,24 @@ class Strings
 
 
 	/**
+	 * Splits a UTF-8 string into words
+	 *
+	 * @param string $string
+	 * @return array
+	 */
+	public static function splitWords($string)
+	{
+		$split = preg_split('/\b([\(\).,\-\',:!\?;"\{\}\[\]„“»«‘\r\n]*)/u', $string, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+		return array_filter($split, function ($v) {
+			if ($v = trim($v)) {
+				return $v;
+			}
+			return false;
+		});
+	}
+
+
+	/**
 	 * Decodes entities that are whitespace into their UTF-8 characters
 	 *
 	 * @param string $string

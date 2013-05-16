@@ -532,8 +532,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function emphasizeWords($string, $words)
 	{
 		if (!is_array($words)) {
-			$words = explode(' ', $words);
-			array_walk($words, 'trim');
+			$words = Strings::splitWords($words);
+		}
+
+		if (!$words) {
+			return $string;
 		}
 
 		$string = htmlspecialchars($string);
