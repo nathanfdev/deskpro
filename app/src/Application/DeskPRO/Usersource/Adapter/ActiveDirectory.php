@@ -123,12 +123,6 @@ class ActiveDirectory extends AbstractAdapter
 			} elseif (!empty($rec['userprincipalname']) && \Orb\Validator\StringEmail::isValueValid($rec['userprincipalname'][0])) {
 				$raw_info['email_address'] = $rec['userprincipalname'][0];
 			}
-
-			foreach ($raw_info as &$v) {
-				if (is_array($v)) {
-					$v = Arrays::getFirstItem($v);
-				}
-			}
 		}
 
 		if ($raw_info) {
