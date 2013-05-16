@@ -332,10 +332,8 @@ class AgentNotificationAction extends AbstractAction
 			}
 
 			if (!$agent->is_agent) {
+				// This could happen if the agent was turned back into a regular user
 				$this->tracker->logMessage("[AgentNotificationAction] Not an agent: " . $agent_id);
-				$e = new \InvalidArgumentException("[AgentNotificationAction] Not an agent");
-				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 				continue;
 			}
 

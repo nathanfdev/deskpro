@@ -677,6 +677,10 @@ class KernelErrorHandler
 			if (strpos($exception->getMessage(), 'has more than \'max_user_connections\' active connections') !== false) {
 				return true;
 			}
+
+			if (strpos($exception->getMessage(), 'Can\'t connect to MySQL server on') !== false) {
+				return true;
+			}
 		}
 
 		if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
@@ -689,6 +693,10 @@ class KernelErrorHandler
 
 		// For commands run with bad options
 		if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'option does not exist') !== false && strpos($exception->getFile(), 'ArgvInput.php') !== false) {
+			return true;
+		}
+
+		if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Could not open blob for reading') !== false) {
 			return true;
 		}
 
@@ -812,6 +820,14 @@ class KernelErrorHandler
 
 		// Ignore range() warning caused by PHP bug https://bugs.php.net/bug.php?id=51894 (fixed in PHP >= 5.3.6)
 		if (strpos($errstr, 'step exceeds the specified range') !== false) {
+			$no_send_error = true;
+		}
+
+		if (strpos($errstr, 'set_time_limit() has been disabled for security reasons') !== false) {
+			$no_send_error = true;
+		}
+
+		if (strpos($errstr, 'possibly out of disk space') !== false) {
 			$no_send_error = true;
 		}
 
