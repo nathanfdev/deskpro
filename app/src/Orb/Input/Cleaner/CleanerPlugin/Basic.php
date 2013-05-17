@@ -151,29 +151,35 @@ class Basic implements CleanerPlugin
 
 			case 'str':
 			case 'string':
+				if (!is_scalar($value)) $value = '';
 				$value = trim($this->cleanString($value));
 				break;
 
 			case 'str_notrim':
+				if (!is_scalar($value)) $value = '';
 				$value = (string)$this->cleanString($value);
 				break;
 
 			case 'str_nohtml':
 			case 'nohtml':
+				if (!is_scalar($value)) $value = '';
 				$value = htmlspecialchars(trim($this->cleanString($value)));
 				break;
 
 			case 'str_striphtml':
 			case 'striphtml':
+				if (!is_scalar($value)) $value = '';
 				$value = strip_tags(trim($this->cleanString($value)));
 				break;
 
 			case 'str_simple':
 			case 'str_key':
+				if (!is_scalar($value)) $value = '';
 				$value = preg_replace('#[^a-zA-Z0-9 _\-\.:]#', '', trim($this->cleanString($value)));
 				break;
 
 			case 'str_raw':
+				if (!is_scalar($value)) $value = '';
 				$value = (string)$value;
 				break;
 
