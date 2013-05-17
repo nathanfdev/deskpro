@@ -644,18 +644,43 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}, 800);
 		}
 
-		$('#toggle_source_pane').on('click', function(ev) {
+		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
 			ev.preventDefault();
 			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
 		});
-		$('#toggle_list_pane').on('click', function(ev) {
+		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
 			ev.preventDefault();
 			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
 		});
-		$('#toggle_tabs_pane').on('click', function(ev) {
+		$('#tabNavigationPane, #dp_right_collapsed').on('click', '.toggle_tabs_pane', function(ev) {
 			ev.preventDefault();
 			DeskPRO_Window.setPaneVis('tabs', !DeskPRO_Window.paneVis.tabs);
 		});
+		$('#dp_right_collapsed .toggle_tabs_pane').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('tabs', true);
+		});
+
+		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
+			ev.preventDefault();
+
+			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
+				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
+			} else {
+				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
+			}
+		});
+
+		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
+			ev.preventDefault();
+
+			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
+				DeskPRO_Window.setPaneVis('source', true, 'list', true);
+			} else {
+				DeskPRO_Window.setPaneVis('source', false, 'list', false);
+			}
+		});
+
 	},
 
 	addOnloadFunction: function(fn) {

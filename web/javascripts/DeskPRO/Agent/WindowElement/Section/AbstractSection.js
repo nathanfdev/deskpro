@@ -164,28 +164,21 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		if (!contentEl) {
-			contentEl = $('section.content', el);
-			if (!contentEl.length) {
-				var html = [];
-				html.push('<div class="with-scrollbar ' + this.sectionEl.attr('id') + '">');
-				html.push('<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
-				html.push('<div class="scroll-viewport"><div class="scroll-content">');
-				html = html.join('');
+			contentEl = $('.source-pane-instance', el);
+			if (!contentEl[0]) {
+				contentEl = $('section.content', el);
+				if (!contentEl.length) {
+					var html = [];
+					html.push('<div class="source-pane-wrapper"></div>');
+					html = html.join('');
 
-				el = $(html);
-				this.sectionEl.append(el);
-				contentEl = $('div.scroll-content:first', el);
+					el = $(html);
+					this.sectionEl.append(el);
+					contentEl = el;
+				}
 			}
 		}
 		this.contentEl = contentEl;
-
-		var scrollEl = $('.with-scrollbar:first', this.sectionEl);
-		if (scrollEl.length) {
-			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(this, scrollEl, {
-				showEvent: 'show',
-				hideEvent: 'hide'
-			});
-		}
 	},
 
 

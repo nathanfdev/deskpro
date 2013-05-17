@@ -1,0 +1,18 @@
+{% block top %}{% endblock %}
+<div class="source-pane-instance {{ add_classname }}">
+	<div class="source-pane-header">
+		<div class="pane-controls">
+			<span class="toggle_source_pane"><i class="icon-double-angle-left"></i></span>
+		</div>
+		{% block pane_header %}{% endblock %}
+	</div>
+	<div class="source-pane-content">
+		<div class="layout-content with-scrollbar">
+		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport"><div class="scroll-content">
+			{% block pane_content %}{% endblock %}
+		</div>
+		</div>
+		</div>
+	</div>
+</div>
