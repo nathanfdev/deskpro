@@ -1,30 +1,41 @@
 <div id="dp_header">
 
+	{##########################################################################}
+	{# User Profile #}
+	{##########################################################################}
+
 	<div class="user-profile pull-left">
-		<img class="gravatar pull-left" src="http://placehold.it/30x30/ffffff/000000">
-		<div class="username">Hello, Your Username</div>
+		<img class="gravatar pull-left" src="{{ app.user.getPictureUrl(30) }}">
+		<div class="username">Hello, {{ app.user.name }}</div>
 		<ul class="nav-profile">
-			<li><i class="icon-cog"></i> <a href="">Settings</a></li>
-			<li><i class="icon-question-sign"></i> <a href="">Help</a></li>
-			<li><i class="icon-signout"></i> <a href="">Logout</a></li>
+			<li id="user_settings_link"><i class="icon-cog"></i> <a>Settings</a></li>
+			<li><i class="icon-question-sign"></i> <a>Help</a></li>
+			<li onclick="window.location='{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent'; return false;"><i class="icon-signout"></i> <a>Logout</a></li>
 		</ul>
 	</div>
+
+	{##########################################################################}
+	{# Chat #}
+	{##########################################################################}
 
 	<div class="btn-group-chat pull-left">
 	  <a class="btn">
 	  	<div class="chat-big-icon pull-left"></div>
 	  	<span class="status">Logged into chat</span>
 	  	<ul class="info">
-		  	<li><i class="icon-user"></i> 3 Agents</li>
-		  	<li><i class="icon-group"></i> 12 Users</li>
+		  	<li><i class="icon-user"></i> <span id="chatOnlineCount">0</span> Agents</li>
+		  	<li><i class="icon-group"></i> <span id="userOnlineCount">0</span> Users</li>
 	  	</ul>
 	  	<div class="arrow">
 	  		<span class="caret"></span>
 	  	</div>
 	  </a>
 
-		<div class="dropdown-menu">
-			<div class="column1 pull-left">
+	  	{####################}
+	  	{# Chat #}
+	  	{####################}
+		<div class="dp-header-group-chat-dropdown">
+			<div class="column1 pull-left" id="agent_status_menu_onlinelist">
 
 				<div id="agent_status_menu_me_list">
 					<div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/24259869899da35ec0cf0252887410a6?&amp;s=30&amp;d=mm);"></div>
@@ -32,12 +43,26 @@
 				</div>
 				<ul class="agents list">
 					<li class="header">5 Agents online: <a href="#">by department</a></li>
-					<li><div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/4d50c6ca085f05a2e585ff282d60472e?&amp;s=16&amp;d=mm);"></div>Christopher Nadeau
-					</li>
-					<li><div class="avatar" style="background-image: url(https://support.deskpro.com/file.php/size/16/size-fit/18NKZXYASXZX17721F4CBFA/image1328194980_reasonably_small.jpg);"></div>Christopher Padfield</li>
+				</ul>
+				<ul class="agents list department-grouped" style="display: none;">
+					{% for id,title in app.getDataRepository('Department').getFullNames('chat') %}
+						<li class="dep dep-{{ id }}">{{ title }}</li>
+					{% endfor %}
+				</ul>
+				<ul class="agents list normal">
+					{% for agent in agents %}
+						<li
+							data-department-ids="{{ agent_chat_depmap[agent.id]|join(',') }}"
+							class="agent agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"
+						>
+							<div class="avatar" style="background-image: url({{ agent.getPictureUrl(16) }});"></div>
+							{{ agent.display_name }}
+						</li>
+					{% endfor %}
 				</ul>
 			</div>
-			<div class="column2 pull-left">
+			<div class="column2 pull-left" id="agent_status_online_users">
+				{#{% include 'AgentBundle:UserTrack:header-table.html.twig' %}#}
 				<table>
 					<caption><div class="pull-left">5 Online Users</div><div class="pull-right"><i class="icon-refresh"></i></div></caption>
 					<thead>
@@ -53,21 +78,6 @@
 							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
 							<td class="last">3:18 pm</td>
 						</tr>
-						<tr>
-							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
-							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
-							<td class="last">3:18 pm</td>
-						</tr>
-						<tr>
-							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
-							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
-							<td class="last">3:18 pm</td>
-						</tr>
-						<tr>
-							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
-							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
-							<td class="last">3:18 pm</td>
-						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -75,22 +85,20 @@
 	</div>
 
 	<div class="btn-group-actions pull-left">
-			<div class="create-group pull-left">
-				<a class="btn"><i class="icon-plus"></i> Create</a>
-
-					<ul class="createBtnPopups">
-						<li id="create_ticket_btn"><a><div class="wrap"><i class="icon-envelope"></i></div>New Ticket <kbd>t</kbd></a></li>
-						<li id="create_person_btn"><a><div class="wrap"><i class="icon-user"></i></div>New Person <kbd>p</kbd></a></li>
-						<li id="create_organization_btn"><a><div class="wrap"><i class="icon-group"></i></div>New Organization <kbd>o</kbd></a></li>
-						<li id="create_task_btn"><a><div class="wrap"><i class="icon-edit"></i></div>New Task <kbd>k</kbd></span></a></li>
-						<li id="create_article_btn"><a><div class="wrap"><i class="icon-file-alt"></i></div>New Article <kbd>a</kbd></a></li>
-						<li id="create_news_btn"><a><div class="wrap"><i class="icon-book"></i></div>New News Post <kbd>n</kbd></span></a></li>
-						<li id="create_download_btn"><a><div class="wrap"><i class="icon-download"></i></div>New Download <kbd>d</kbd></a></li>
-						<li id="create_feedback_btn" class="last"><a><div class="wrap"><i class="icon-lightbulb"></i></div>New Feedback <kbd>i</kbd></a></li>
-					</ul>
-
-			</div>
-			<a class="btn"><i class="icon-rotate-left"></i> Recent</a>
+		<div class="create-group pull-left">
+			<a class="btn"><i class="icon-plus"></i> Create</a>
+				<ul class="createBtnPopups">
+					<li id="create_ticket_btn"><a><div class="wrap"><i class="icon-envelope"></i></div>New Ticket <kbd>t</kbd></a></li>
+					<li id="create_person_btn"><a><div class="wrap"><i class="icon-user"></i></div>New Person <kbd>p</kbd></a></li>
+					<li id="create_organization_btn"><a><div class="wrap"><i class="icon-group"></i></div>New Organization <kbd>o</kbd></a></li>
+					<li id="create_task_btn"><a><div class="wrap"><i class="icon-edit"></i></div>New Task <kbd>k</kbd></span></a></li>
+					<li id="create_article_btn"><a><div class="wrap"><i class="icon-file-alt"></i></div>New Article <kbd>a</kbd></a></li>
+					<li id="create_news_btn"><a><div class="wrap"><i class="icon-book"></i></div>New News Post <kbd>n</kbd></span></a></li>
+					<li id="create_download_btn"><a><div class="wrap"><i class="icon-download"></i></div>New Download <kbd>d</kbd></a></li>
+					<li id="create_feedback_btn" class="last"><a><div class="wrap"><i class="icon-lightbulb"></i></div>New Feedback <kbd>i</kbd></a></li>
+				</ul>
+		</div>
+		<a class="btn"><i class="icon-rotate-left"></i> Recent</a>
 	</div>
 
 	<div class="group pull-right">
