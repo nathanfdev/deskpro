@@ -48,6 +48,40 @@
 	display: block;
 }
 
+.list-pane-instance {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+}
+
+.list-pane-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 37px;
+
+	.gradient(#DADBDE, #F0F1F3);
+	border-bottom: 1px solid #B6BABF;
+
+	h1 {
+		font-size: 15px;
+		line-height: 36px;
+		padding: 0 0 0 9px;
+		color: #78818B;
+	}
+}
+
+.list-pane-content {
+	position: absolute;
+	top: 38px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
 /*****************************************************************************
  * Control Bar
 /*****************************************************************************/
@@ -2357,5 +2391,41 @@ article.twitter-status.archived .title .expand-collapse-icon {
 
 	&:hover {
 		.gradient(#DADBDE, #DADBDE);
+	}
+}
+
+.list-box {
+	margin: 5px;
+	border: 1px solid #A7ABB1;
+	.rounded(3px);
+	overflow: hidden;
+
+	footer.results-nav, .list-grouping-bar {
+		border-bottom: none;
+	}
+}
+
+#dp_list_resizer {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	width: 6px;
+	z-index: 200;
+
+	&:hover {
+		cursor: move;
+	}
+
+	&:hover > div {
+		background: #888;
+	}
+
+	> div {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 2px;
+		right: 2px;
+		width: 2px;
 	}
 }

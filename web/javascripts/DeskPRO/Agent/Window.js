@@ -2741,7 +2741,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initLayout: function() {
 
 		this.layout = new DeskPRO.Agent.Layout.DeskproWindow();
-		this.layout.doResize();
+		this.layout.doResize(true);
 
 		this.TabBar = new DeskPRO.Agent.WindowElement.TabBar({
 			tabPane: $('#tabNavigationPane'),

@@ -14,29 +14,45 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		// Where the center section (where all cols are embedded) starts
 		this.CENTER_START = 55;
 
+		this.listWidthRatio = 0.40;
+
 		window.onresize = function() {
-			self.doResize();
+			self.doResize(true);
 		};
+
+		var listSizer = $('#dp_list_resizer').draggable({
+			axis: 'x'
+		}).on('dragstop', function() {
+			var pos = parseInt(listSizer.css('left').replace(/px/, ''));
+			self.doResize();
+		});
 	},
 
-	doResize: function() {
+	doResize: function(widthCalc) {
 		var leftHide = $('#dp_left_collapsed');
 		var rightHide = $('#dp_right_collapsed');
+		var listSizer = $('#dp_list_resizer');
 		var paneVis = DeskPRO_Window.paneVis;
 
 		var newWidth = $(window).width();
 
 		var totalWidth = newWidth - this.LEFT_START - this.CENTER_START;
-		var listWidth = totalWidth * 0.40;
 
-		if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
-			if (listWidth < 370) {
-				listWidth = 370;
+		var listWidth;
+		if (widthCalc) {
+			listWidth = totalWidth * this.listWidthRatio;
+			if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
+				if (listWidth < 370) {
+					listWidth = 370;
+				}
+			} else {
+				if (listWidth < 370) {
+					listWidth = 370;
+				}
 			}
 		} else {
-			if (listWidth < 370) {
-				listWidth = 370;
-			}
+			listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START;
+			this.listWidthRatio = listWidth / totalWidth;
 		}
 
 		$('#dp_list').width(listWidth);
@@ -75,13 +91,15 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		if (!paneVis.list) {
 			$('#dp_list').hide();
+			listSizer.hide();
 		} else {
 			$('#dp_list').show();
+			listSizer.show();
 			if (!paneVis.source) {
 				$('#dp_list').css('left', 26);
 				left += listWidth;
 			} else {
-				$('#dp_list').css('left', 215);
+				$('#dp_list').css('left', this.LEFT_START);
 				left += listWidth;
 			}
 		}
@@ -96,6 +114,8 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_content').css('left', 26);
 		}
 
+		listSizer.css('left', left-2);
+
 		if (!paneVis.source || !paneVis.list) {
 			leftHide.show();
 			leftHide.find('li').hide();
@@ -104,7 +124,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				leftHide.find('.source_pane').show();
 				leftHide.css('left', 0);
 			} else {
-				leftHide.css('left', 215);
+				leftHide.css('left', this.LEFT_START);
 			}
 			if (!paneVis.list) {
 				leftHide.find('.list_pane').show();
