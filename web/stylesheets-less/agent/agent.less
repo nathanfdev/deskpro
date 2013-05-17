@@ -174,8 +174,8 @@ body {
 	}
 }
 
-// Chat Button: Pressed State
-#dp_header .btn-group-chat.pressed {
+// Chat Button: Active State
+#dp_header .btn-group-chat.active {
 	.btn {
 		border-radius: 3px 3px 0 0;
 		.arrow {
@@ -186,12 +186,16 @@ body {
 	.dropdown-menu {
 		display: block;
 	}
+
+	.dp-header-group-chat-dropdown {
+		display: block;
+	}
 }
 
 // Chat dropdown
 .dp-header-group-chat-dropdown {
 	display: none;
-	z-index: 2;
+	.zindex-chrome;
 	position: absolute;
 	left: 7px;
 	top: 43px;
@@ -361,7 +365,7 @@ body {
 		ul.btn-menu {
 			display: none;
 			background-color: #fff;
-			z-index: 2;
+			.zindex-chrome;
 			position: absolute;
 			left: 11px;
 			top: 28px;

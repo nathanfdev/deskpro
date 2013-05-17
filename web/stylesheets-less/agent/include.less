@@ -5,6 +5,8 @@
 // HEADER
 //----------------------------------------------------------------------------------------------------------------------
 
+@zindex_lvl_chrome: 10000000;
+
 @agent_header_bg_color: #1d7ab2;
 
 @agent_header_height: 49px;
@@ -199,3 +201,11 @@
 	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
 }
+
+/**
+ * Standard zindex levels
+ */
+.zindex-chrome0 { z-index: (@zindex_lvl_chrome - 1) }
+.zindex-chrome { z-index: (@zindex_lvl_chrome) }
+.zindex-chrome2 { z-index: (@zindex_lvl_chrome + 1) }
+.zindex-chrome3 { z-index: (@zindex_lvl_chrome + 1) }

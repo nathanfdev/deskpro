@@ -401,6 +401,59 @@ Orb.cancelEvent = function(ev) {
 };
 
 
+Orb.shimClickCallback_shim  = null;
+Orb.shimClickCallback_stack = [];
+/**
+ * This inserts a transparent shim at zIndex that is meant to capture click events.
+ *
+ * @param callback
+ * @param zIndex
+ */
+Orb.shimClickCallback = function(callback, zIndex) {
+	if (!Orb.shimClickCallback_shim) {
+		Orb.shimClickCallback_shim = $('<div/>').hide();
+		Orb.shimClickCallback_shim.css({
+			position: 'absolute',
+			top: 0,
+			right: 0,
+			left: 0,
+			bottom: 0,
+			background: 'transparent'
+		});
+		Orb.shimClickCallback_shim.appendTo('body');
+
+		Orb.shimClickCallback_shim.on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			Orb.shimClickCallbackPop(false, [ev]);
+		});
+	}
+
+	Orb.shimClickCallback_stack.push([callback, zIndex]);
+
+	if (Orb.shimClickCallback_shim.data('zindex-class')) {
+		Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'));
+	}
+	Orb.shimClickCallback_shim.show();
+};
+
+Orb.shimClickCallbackPop = function(no_callback, args) {
+	var lvl = Orb.shimClickCallback_stack.pop();
+
+	if (lvl && !no_callback) {
+		lvl[0].call(args);
+	}
+
+	if (Orb.shimClickCallback_stack.length) {
+		if (Orb.shimClickCallback_shim.data('zindex-class')) {
+			Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'))
+				.addClass(Orb.shimClickCallback_stack[Orb.shimClickCallback_stack.length][1]);
+		}
+		Orb.shimClickCallback_shim.addClass();
+	} else {
+		Orb.shimClickCallback_shim.hide();
+	}
+};
+
 /**
  * Simple way to load Javascript and CSS files on-demand.
  *
