@@ -650,7 +650,6 @@ $CONFIG['agent_interface_css1'] = array(
 	'files' => array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
-		'stylesheets-less/agent/navigation.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
 		'stylesheets-less/agent/agent.less',
 	)

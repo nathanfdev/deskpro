@@ -2800,8 +2800,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.openSection.fireEvent('hide');
 		}
 
-		$('#dp_nav li.dpNavActive').removeClass('dpNavActive');
-		btn.addClass('dpNavActive');
+		$('#dp_nav li.active').removeClass('active');
+		btn.addClass('active');
 
 		$('#dp_source > section.on').removeClass('on');
 		$('#dp_list > section.on').removeClass('on');

@@ -62,24 +62,7 @@
 				</ul>
 			</div>
 			<div class="column2 pull-left" id="agent_status_online_users">
-				{#{% include 'AgentBundle:UserTrack:header-table.html.twig' %}#}
-				<table>
-					<caption><div class="pull-left">5 Online Users</div><div class="pull-right"><i class="icon-refresh"></i></div></caption>
-					<thead>
-						<tr>
-							<th width="20%">User</th>
-							<th width="70%">Current Page</th>
-							<th class="last" width="10%">Time</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><span class="with-country" style="background-image: url(https://support.deskpro.com/web/images/flags/us.png);" title="GB"><a href="#">94.228.34.214</a></span></td>
-							<td><a href="https://support.deskpro.com/portal/save-rating/news/207" target="_blank">support.deskpro.com/portal/save-rating/news/207</a></td>
-							<td class="last">3:18 pm</td>
-						</tr>
-					</tbody>
-				</table>
+				{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
 			</div>
 		</div>
 	</div>
