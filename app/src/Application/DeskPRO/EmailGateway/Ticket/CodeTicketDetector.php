@@ -156,9 +156,16 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 
+		$already_checked = array();
+
 		$matches = null;
 		if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $m) {
+
+				if (isset($already_checked[$m[1]])) {
+					continue;
+				}
+				$already_checked[$m[1]] = true;
 
 				$this->getLogger()->logDebug("[CodeTicketDetector] Checking code that looks like TAC: {$m[1]}");
 
@@ -200,6 +207,11 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		$matches = null;
 		if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $m) {
+
+				if (isset($already_checked[$m[1]])) {
+					continue;
+				}
+				$already_checked[$m[1]] = true;
 
 				$this->getLogger()->logDebug("[CodeTicketDetector] Checking code that looks like PTAC: {$m[1]}");
 
