@@ -159,7 +159,11 @@ class Date extends HandlerAbstract
 		#------------------------------
 
 		if ($data) {
-			$admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+			try {
+				$admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+			} catch (\Exception $e) {
+				$admin_tz = App::getCurrentPerson()->getDateTimezone();
+			}
 			$date = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
 			$date_admin = clone $date;
 			$date_admin->setTimezone($admin_tz);
