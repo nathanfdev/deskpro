@@ -5,9 +5,8 @@
 // HEADER
 //----------------------------------------------------------------------------------------------------------------------
 
-@zindex_lvl_chrome: 10000000;
-
 @agent_header_bg_color: #1d7ab2;
+@agent_header_btn_bg_color: #2c85c6;
 
 @agent_header_height: 49px;
 @agent_header_border_color: #273036;
@@ -18,7 +17,14 @@
 
 @agent_header_userchat_bg_color: #00a98e;
 
-@agent_header_btn_bg_color: #2c85c6;
+@agent_header_badge_bg_color: #FB0016;
+
+@agent_link_color: #1B6CA7;
+
+@agent_menu_bg_color: #fff;
+@agent_menu_text_color: #67686A;
+@agent_menu_highlight_bg_color: #1abc9c;
+@agent_menu_highlight_text_color: #fff;
 
 //----------------------------------------------------------------------------------------------------------------------
 // MIXINS
@@ -86,6 +92,15 @@
 
 	background-repeat: no-repeat;
 	background-position: 0 0;
+}
+
+/**
+ * Clearfix
+ */
+.clearfix() {
+	zoom: 1;
+	&:before { content: ''; display: block; }
+	&:after { content: ''; display: table; clear: both; }
 }
 
 /**
@@ -205,6 +220,7 @@
 /**
  * Standard zindex levels
  */
+@zindex_lvl_chrome: 10000000;
 .zindex-chrome0 { z-index: (@zindex_lvl_chrome - 1) }
 .zindex-chrome { z-index: (@zindex_lvl_chrome) }
 .zindex-chrome2 { z-index: (@zindex_lvl_chrome + 1) }

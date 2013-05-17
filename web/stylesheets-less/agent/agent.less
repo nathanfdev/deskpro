@@ -327,9 +327,9 @@ body {
 	position: relative;
 	margin: 8px 0 0 10px;
 	padding: 0 10px;
-	width: 300px;
 	height: (@agent_header_height - 10);
 	background: url('@{img_path}/header-delimiter.png') no-repeat left top;
+	display: block;
 
 	.btn-wrap {
 		a.btn {
@@ -364,7 +364,7 @@ body {
 
 		ul.btn-menu {
 			display: none;
-			background-color: #fff;
+			background: @agent_menu_bg_color;
 			.zindex-chrome;
 			position: absolute;
 			left: 11px;
@@ -373,19 +373,19 @@ body {
 			box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
 			li {
 				width: 200px;
-				border-bottom: 1px solid #dadcdf;
+				border-bottom: 1px solid darken(@agent_menu_bg_color, 5%);
 				a {
 					display: block;
-					color: #67686a;
+					color: @agent_menu_text_color;
 					line-height: 35px;
 					padding: 0 10px;
 
 					&:hover {
-						background-color: #1abc9c;
-						color: #fff;
+						background-color: @agent_menu_highlight_bg_color;
+						color: @agent_menu_highlight_text_color;
 
 						kbd {
-							color: #fff;
+							color: @agent_menu_highlight_text_color;
 						}
 					}
 
@@ -396,13 +396,11 @@ body {
 						margin-right: 7px;
 						text-align: center;
 					}
-						i {
-						}
-						kbd {
-							float: right;
-							text-transform: uppercase;
-							color: #d1d2d4;
-						}
+					kbd {
+						float: right;
+						text-transform: uppercase;
+						color: lighten(@agent_menu_text_color, 35%);
+					}
 				}
 			}
 			li.last {
@@ -525,126 +523,141 @@ body {
 	margin-top: 9px;
 	margin-right: 9px;
 	padding-right: 9px;
-	background: url('@{img_path}/header-delimiter.png') no-repeat right top;
-	ul li {
-		background: url('@{img_path}/header-notification-icons.png') no-repeat;
-		width: 30px;
-		height: 30px;
-		margin-left: 10px;
-		float: left;
-		position: relative;
+	background: url('@{img_path}/header-delimiter.png') no-repeat left top;
+
+	> ul {
+		> li {
+			background: url('@{img_path}/header-notification-icons.png') no-repeat;
+			width: 30px;
+			height: 30px;
+			margin-left: 10px;
+			float: left;
+			position: relative;
+			cursor: pointer;
+		}
+		> li.message { background-position: 4px 8px; }
+		> li.message:hover, > li.message.active { background-position: 4px -32px;	}
+		> li.agent { background-position: -54px 8px; }
+		> li.agent:hover, > li.agent.active { background-position: -54px -32px; }
+		> li.chat { background-position: -114px 8px; }
+		> li.chat:hover, > li.chat.active { background-position: -114px -32px; }
+		> li.globe { background-position: -173px 8px; }
+		> li.globe:hover, > li.globe.active { background-position: -173px -32px; }
+		> li.tick { background-position: -234px 8px; }
+		> li.tick:hover, > li.tick.active { background-position: -234px -32px; }
+		> li.twitter { background-position: -295px 8px; }
+		> li.twitter:hover, > li.twitter.active { background-position: -295px -32px; }
+
+		> li span.badge {
+			display: inline-block;
+			padding: 0 3px;
+			font-size: 10px;
+			font-weight: bold;
+			line-height: 14px;
+			color: #ffffff;
+			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+			white-space: nowrap;
+			vertical-align: baseline;
+			.gradient-v(@agent_header_badge_bg_color, darken(@agent_header_badge_bg_color, 10%), 15px);
+			.rounded(3px);
+			position: absolute;
+			right: -3px;
+			top: -2px;
+		}
 	}
-	ul li:hover {
-		cursor: pointer;
-	}
-	ul li.message {
-		background-position: 4px 8px;
-	}
-	ul li.message:hover,
-	ul li.message.active {
-		background-position: 4px -32px;
-	}
-	ul li.agent {
-		background-position: -54px 8px;
-	}
-	ul li.agent:hover {
-		background-position: -54px -32px;
-	}
-	ul li.chat {
-		background-position: -114px 8px;
-	}
-	ul li.chat:hover {
-		background-position: -114px -32px;
-	}
-	ul li.globe {
-		background-position: -173px 8px;
-	}
-	ul li.globe:hover {
-		background-position: -173px -32px;
-	}
-	ul li.tick {
-		background-position: -234px 8px;
-	}
-	ul li.tick:hover {
-		background-position: -234px -32px;
-	}
-	ul li.twitter {
-		background-position: -295px 8px;
-	}
-	ul li.twitter:hover {
-		background-position: -295px -32px;
-	}
-	ul li span.badge {
-		display: inline-block;
-		padding: 0 3px;
-		font-size: 10px;
-		font-weight: bold;
-		line-height: 14px;
-		color: #ffffff;
-		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-		white-space: nowrap;
-		vertical-align: baseline;
-		background-color: #1abc9c;
-		border-radius: 2px;
+}
+
+.active .dp-header-notify-menu {
+	display: block;
+}
+
+.dp-header-notify-menu {
+	display: none;
+	position: absolute;
+	top: 35px;
+	left: -8px;
+	z-index: 3;
+	width: 360px;
+	background: @agent_menu_bg_color;
+	border: 1px solid darken(@agent_menu_bg_color, 20%);
+	border-top: none;
+	border-radius: 3px;
+	cursor: default;
+	box-shadow:  0px 1px 3px rgba(0, 0, 0, 0.3);
+	.zindex-chrome;
+
+	.arrow-up {
+		width: 0;
+		height: 0;
+		border-left: 8px solid transparent;
+		border-right: 8px solid transparent;
+		border-bottom: 8px solid #fff;
 		position: absolute;
-		right: -3px;
-		top: -2px;
+		left: 14px;
+		top: -8px;
 	}
-	ul li.active ul {
-		display: block;
+
+	header {
+		border-bottom: 1px solid darken(@agent_menu_bg_color, 20%);
+		line-height: 30px;
+		padding: 0 10px;
+		color: @agent_menu_text_color;
+		text-transform: uppercase;
+		font-size: 12px;
 	}
-	ul li ul {
-		display: none;
-		position: absolute;
-		top: 35px;
-		left: -8px;
-		z-index: 3;
-		width: 360px;
-		height: 353px;
-		background: #fff;
-		border: 1px solid #ced1d3;
-		border-top: none;
-		border-radius: 3px;
-		cursor: default;
-		box-shadow:  0px 1px 3px rgba(0, 0, 0, 0.3);
+
+	footer {
+		a.btn {
+			float: left;
+			display: block;
+			margin: 10px 9px;
+			height: auto;
+			padding: 6px 8px;
+			border: 1px solid darken(@agent_menu_bg_color, 20%);
+			color: @agent_link_color;
+			border-radius: 3px;
+		}
+		a.btn:hover {
+			background-color: @agent_menu_highlight_bg_color;
+			color: @agent_menu_highlight_text_color;
+		}
+	}
+
+	ul {
 		li {
 			background: none;
 			width: auto;
 			margin: 0;
 			float: none;
-		}
-		.arrow-up {
-			width: 0;
-			height: 0;
-			border-left: 8px solid transparent;
-			border-right: 8px solid transparent;
-			border-bottom: 8px solid #fff;
-			position: absolute;
-			left: 14px;
-			top: -8px;
-		}
-		li.title {
-			border-bottom: 1px solid #ced1d3;
-			line-height: 30px;
-			padding: 0 10px;
-			color: #818285;
-			text-transform: uppercase;
-			font-size: 12px;
-		}
-		li.inside {
+			cursor: pointer;
 			padding: 5px 8px 9px;
-			border-bottom: 1px solid #ced1d3;
+			border-bottom: 1px solid darken(@agent_menu_bg_color, 20%);
+			.clearfix;
+
+			&:hover {
+				background-color: @agent_menu_highlight_bg_color;
+				color: @agent_menu_highlight_text_color;
+				cursor: pointer;
+
+				.dismiss {
+					border-color: @agent_menu_highlight_text_color;
+					i {
+						color: @agent_menu_highlight_text_color;
+					}
+				}
+			}
+
 			.dismiss {
 				float: left;
 				height: 12px;
 				width: 12px;
 				margin-right: 8px;
 				margin-top: 3px;
-				border: 1px solid #c5c8cb;
+				border: 1px solid darken(@agent_menu_bg_color, 20%);
 				border-radius: 3px;
 				padding: 4px 7px 9px 8px;
 				i {
-					color: #1b6ca7;
+					color: @agent_link_color;
 				}
 			}
 			big {
@@ -664,37 +677,6 @@ body {
 				font-size: 11px;
 				margin-top: 6px;
 			}
-		}
-		li.inside:hover {
-			background-color: #1abc9c;
-			color: #fff;
-			cursor: pointer;
-			dismiss {
-			}
-		}
-		li.inside:hover .dismiss {
-			border-color: #fff;
-		}
-		li.inside:hover .dismiss i {
-			color: #fff;
-		}
-		a.btn {
-			float: left;
-			display: block;
-			margin: 10px 9px;
-			height: auto;
-			padding: 6px 8px;
-			border: 1px solid #c5c8cb;
-			color: #1b6ca7;
-			border-radius: 3px;
-		}
-		a.btn:hover {
-			background-color: #2f88c8;
-			border-color: #2f88c8;
-			color: #fff;
-		}
-		li:hover {
-			cursor: default;
 		}
 	}
 }

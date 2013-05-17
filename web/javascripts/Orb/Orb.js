@@ -433,6 +433,7 @@ Orb.shimClickCallback = function(callback, zIndex) {
 	if (Orb.shimClickCallback_shim.data('zindex-class')) {
 		Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'));
 	}
+	Orb.shimClickCallback_shim.addClass(zIndex).data('zindex-class', zIndex);
 	Orb.shimClickCallback_shim.show();
 };
 
@@ -445,10 +446,11 @@ Orb.shimClickCallbackPop = function(no_callback, args) {
 
 	if (Orb.shimClickCallback_stack.length) {
 		if (Orb.shimClickCallback_shim.data('zindex-class')) {
-			Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'))
-				.addClass(Orb.shimClickCallback_stack[Orb.shimClickCallback_stack.length][1]);
+			Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'));
 		}
-		Orb.shimClickCallback_shim.addClass();
+		Orb.shimClickCallback_shim.addClass(Orb.shimClickCallback_stack[Orb.shimClickCallback_stack.length-1][1])
+			.data('zindex-class', Orb.shimClickCallback_stack[Orb.shimClickCallback_stack.length-1][1]);
+		Orb.shimClickCallback_shim.show();
 	} else {
 		Orb.shimClickCallback_shim.hide();
 	}
