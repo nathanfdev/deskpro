@@ -4192,7 +4192,8 @@ var RLANG = {
 									.replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
 									.replace(url2, '$1<a href="$2">$2</a>$5');
 
-						if (newHtml != html) {
+						if (newHtml != html && newHtml != html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) {
+							var nodeNode = $(newHtml);
 							$(n).after(newHtml).remove();
 						}
 					}
