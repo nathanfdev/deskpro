@@ -1,0 +1,201 @@
+@static_path: '../..';
+@img_path: "@{static_path}/images";
+
+//----------------------------------------------------------------------------------------------------------------------
+// HEADER
+//----------------------------------------------------------------------------------------------------------------------
+
+@agent_header_bg_color: #1d7ab2;
+
+@agent_header_height: 49px;
+@agent_header_border_color: #273036;
+
+@agent_header_userprofile_bg_color: #1a6299;
+@agent_header_userprofile_border_color: #2d85c4;
+@agent_header_userprofile_text_color: #bcd6e8;
+
+@agent_header_userchat_bg_color: #00a98e;
+
+@agent_header_btn_bg_color: #2c85c6;
+
+//----------------------------------------------------------------------------------------------------------------------
+// MIXINS
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Sets the width and height
+ */
+.size(@width: 5px, @height: 5px) {
+	height: @height;
+	width: @width;
+}
+
+/**
+ * Sets the absolute width and height (overflow is hidden)
+ */
+.size-absolute(@width: 5px, @height: 5px) {
+	height: @height;
+	width: @width;
+	overflow: hidden;
+}
+
+/**
+ * Sets width and height to @size
+ */
+.size-square(@size: 5px) {
+	height: @size;
+	width: @size;
+}
+
+/**
+ * Sets the absolute position
+ */
+.pos-absolute(@top, @right, @bottom, @left) {
+	position: absolute;
+	top: @top;
+	right: @right;
+	bottom: @bottom;
+	left: @left;
+}
+
+/**
+ * Adds styling that prevents cursor selection in the browser
+ */
+.noselect {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+/**
+ * Adds basic CSS suitable for an inline icon image
+ */
+.iconbase(@w: 16px, @h: 16px) {
+    display: inline-block;
+	width: @w;
+	height: @h;
+	overflow: hidden;
+	text-indent: -100px;
+	line-height: 100%;
+	margin: 0;
+	padding: 0;
+
+	background-repeat: no-repeat;
+	background-position: 0 0;
+}
+
+/**
+ * Generates a horizontal gradient
+ */
+.gradient-h(@startColor: #555, @endColor: #333, @size: 20) {
+	@startSend: `"@{startColor}".replace(/#/, '').replace(/rgba\((.*?),(.*?),(.*?),(.*?)\)/, 'rgb($1,$2,$3)')`;
+	@startSend_esc: `encodeURI(@{startSend})`;
+	@endSend: `"@{endColor}".replace(/#/, '').replace(/rgba\((.*?),(.*?),(.*?),(.*?)\)/, 'rgb($1,$2,$3)')`;
+	@endSend_esc: `encodeURI(@{endSend})`;
+	background: @startColor url("../../../file.php/gradient?size=@{size}&start_color=@{startSend_esc}&end_color=@{endSend_esc}&direction=horizontal") repeat-y top right ~"/*gradient_h:@{size}:@{startSend}:@{endSend}*/";
+}
+
+/**
+ * Generates a vertical gradient
+ */
+.gradient-v(@startColor: #555, @endColor: #333, @size: 20) {
+	@startSend: `"@{startColor}".replace(/#/, '').replace(/rgba\((.*?),(.*?),(.*?),(.*?)\)/, 'rgb($1,$2,$3)')`;
+	@startSend_esc: `encodeURI(@{startSend})`;
+	@endSend: `"@{endColor}".replace(/#/, '').replace(/rgba\((.*?),(.*?),(.*?),(.*?)\)/, 'rgb($1,$2,$3)')`;
+	@endSend_esc: `encodeURI(@{endSend})`;
+	background: @startColor url("../../../file.php/gradient?size=@{size}&start_color=@{startSend_esc}&end_color=@{endSend_esc}") repeat-x bottom left ~"/*gradient_v:@{size}:@{startSend}:@{endSend}*/";
+}
+
+/**
+ * Changes opacity
+ */
+.opacity(@opacity: 100) {
+	-khtml-opacity: (@opacity / 100);
+	-moz-opacity: (@opacity / 100);
+	opacity: (@opacity / 100);
+	-ms-filter: e(%('"progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)"', @opacity));
+    filter: e(%("progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)", @opacity));
+}
+
+/**
+ * Adds rounded corners
+ */
+.rounded(@radius: 2px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+/**
+* Set a radius on each corner
+*/
+.border-radius(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-top-left-radius: @topleft;
+	-webkit-border-top-right-radius: @topright;
+	-webkit-border-bottom-right-radius: @bottomright;
+	-webkit-border-bottom-left-radius: @bottomleft;
+	-moz-border-radius-topleft: @topleft;
+	-moz-border-radius-topright: @topright;
+	-moz-border-radius-bottomright: @bottomright;
+	-moz-border-radius-bottomleft: @bottomleft;
+	border-top-left-radius: @topleft;
+	border-top-right-radius: @topright;
+	border-bottom-right-radius: @bottomright;
+	border-bottom-left-radius: @bottomleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+/**
+ * Sets border radius on top-left corner
+ */
+.border-radius-tl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-top-left-radius: @topleft;
+	-moz-border-radius-topleft: @topleft;
+	border-top-left-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+/**
+ * Sets border radius on top-right corner
+ */
+.border-radius-tr(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-top-right-radius: @topleft;
+	-moz-border-radius-topright: @topleft;
+	border-top-right-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+/**
+ * Sets border radius on bottom-right corner
+ */
+.border-radius-br(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-bottom-right-radius: @topleft;
+	-moz-border-radius-bottomright: @topleft;
+	border-bottom-right-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+/**
+ * Sets border radius on bottom -left corner
+ */
+.border-radius-bl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-bottom-left-radius: @topleft;
+	-moz-border-radius-bottomleft: @topleft;
+	border-bottom-left-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
