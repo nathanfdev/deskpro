@@ -701,6 +701,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				wrap.removeClass('active');
 			};
 
+			if (!wrap.data('has-init')) {
+				wrap.find('.btn-menu').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 	},
