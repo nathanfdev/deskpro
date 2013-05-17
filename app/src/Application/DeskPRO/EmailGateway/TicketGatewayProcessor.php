@@ -804,6 +804,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
+			if (strlen($txt) > 25000) {
+				$this->logMessage('[TicketGatewayProcessor] Message too long, trimming');
+				$did_html_trim = true;
+				$txt = substr($txt, 0, 25000);
+			}
+
 			$body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
 
 			$has_text_cut = true;
@@ -979,6 +985,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_postclean');
 		$email_info['body_raw'] = $this->cleaner->clean($email_info['body_raw'], 'html_email_postclean');
 		$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email_postclean');
+
+		if ($is_text && $did_html_trim) {
+			$email_info['body_full'] = nl2br(htmlspecialchars($this->email_body_text));
+		}
 
 		return $email_info;
 	}
@@ -1206,6 +1216,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				if (!$txt && $this->email_body_text) {
 					$txt = $this->email_body_text;
 					$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+				}
+
+				if (strlen($txt) > 25000) {
+					$this->logMessage('[TicketGatewayProcessor] Message too long, trimming');
+					$txt = substr($txt, 0, 25000);
 				}
 
 				$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
