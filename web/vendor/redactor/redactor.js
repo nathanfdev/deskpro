@@ -4193,7 +4193,6 @@ var RLANG = {
 									.replace(url2, '$1<a href="$2">$2</a>$5');
 
 						if (newHtml != html && newHtml != html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) {
-							var nodeNode = $(newHtml);
 							$(n).after(newHtml).remove();
 						}
 					}
