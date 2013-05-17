@@ -530,6 +530,7 @@ class AgentsController extends AbstractController
 			$agent->is_user = true;
 			$agent->is_confirmed = true;
 			$agent->is_agent = true;
+			$agent->can_agent = true;
 			$agent->setPassword(Strings::random(20));
 
 			$email = $agent->addEmailAddressString($email);
