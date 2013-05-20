@@ -2370,7 +2370,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.notifications.addEvent('modCount', function(data) {
 			var count = 0;
-			$('#notificationWrap .notif-item .counter').each(function() {
+			$('#dp_header_notify_wrap').find('.badge').each(function() {
 				count += parseInt($(this).text().trim());
 			});
 

@@ -655,16 +655,16 @@ table.layout-table {
 			position: relative;
 			cursor: pointer;
 		}
-		> li.message { background-position: 4px 8px; }
-		> li.message:hover, > li.message.active { background-position: 4px -32px;	}
-		> li.agent { background-position: -54px 8px; }
-		> li.agent:hover, > li.agent.active { background-position: -54px -32px; }
+		> li.tickets { background-position: 4px 8px; }
+		> li.tickets:hover, > li.tickets.active { background-position: 4px -32px;	}
+		> li.people { background-position: -54px 8px; }
+		> li.people:hover, > li.people.active { background-position: -54px -32px; }
 		> li.chat { background-position: -114px 8px; }
 		> li.chat:hover, > li.chat.active { background-position: -114px -32px; }
-		> li.globe { background-position: -173px 8px; }
-		> li.globe:hover, > li.globe.active { background-position: -173px -32px; }
-		> li.tick { background-position: -234px 8px; }
-		> li.tick:hover, > li.tick.active { background-position: -234px -32px; }
+		> li.publish { background-position: -173px 8px; }
+		> li.publish:hover, > li.publish.active { background-position: -173px -32px; }
+		> li.tasks { background-position: -234px 8px; }
+		> li.tasks:hover, > li.tasks.active { background-position: -234px -32px; }
 		> li.twitter { background-position: -295px 8px; }
 		> li.twitter:hover, > li.twitter.active { background-position: -295px -32px; }
 
@@ -718,15 +718,28 @@ table.layout-table {
 	}
 
 	header {
-		border-bottom: 1px solid darken(@agent_menu_bg_color, 20%);
+		border-bottom: none;
 		line-height: 30px;
-		padding: 0 10px;
+		padding: 0 9px;
 		color: @agent_menu_text_color;
 		text-transform: uppercase;
 		font-size: 12px;
+
+		a.pref-link {
+			float: right;
+			font-size: 11px;
+			line-height: 100%;
+			margin: 9px 0 0 0;
+			color: lighten(@agent_menu_text_color, 20%);
+
+			&:hover {
+				color: @agent_menu_text_color;
+			}
+		}
 	}
 
 	footer {
+		display: none;
 		a.btn {
 			float: left;
 			display: block;
@@ -744,15 +757,17 @@ table.layout-table {
 	}
 
 	ul {
+		display: none;
 		li {
 			background: none;
 			width: auto;
 			margin: 0;
 			float: none;
 			cursor: pointer;
-			padding: 5px 8px 9px;
+			padding: 5px 8px 5px 9px;
 			border-bottom: 1px solid darken(@agent_menu_bg_color, 20%);
 			.clearfix;
+			line-height: 100%;
 
 			&:hover {
 				background-color: @agent_menu_highlight_bg_color;
@@ -764,18 +779,23 @@ table.layout-table {
 					i {
 						color: @agent_menu_highlight_text_color;
 					}
+
+					&:hover {
+						i { color: #000; }
+						border-color: #000;
+					}
 				}
 			}
 
 			.dismiss {
 				float: left;
+				display: block;
 				height: 12px;
 				width: 12px;
 				margin-right: 8px;
-				margin-top: 3px;
 				border: 1px solid darken(@agent_menu_bg_color, 20%);
 				border-radius: 3px;
-				padding: 4px 7px 9px 8px;
+				padding: 5px 6px 8px 9px;
 				i {
 					color: @agent_link_color;
 				}
@@ -784,19 +804,49 @@ table.layout-table {
 				float: left;
 				font-size: 12px;
 				font-weight: bold;
-				width: 260px;
+				max-width: 215px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				margin: 2px 0 2px 0;
+				padding: 0;
+				line-height: 100%;
 			}
 			small {
 				float: left;
+				display: block;
 				font-size: 11px;
 				font-weight: normal;
-				width: 260px;
+				width: 215px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				margin: 0;
+				padding: 0;
+				line-height: 100%;
 			}
 			time {
 				float: right;
 				font-size: 11px;
-				margin-top: 6px;
+				margin-top: 8px;
+				line-height: 100%;
 			}
+		}
+	}
+}
+
+.dp-notifications-on {
+	.dp-header-notify-menu {
+		header {
+			border-bottom: 1px solid darken(@agent_menu_bg_color, 20%);
+		}
+
+		ul {
+			display: block;
+		}
+
+		footer {
+			display: block;
 		}
 	}
 }

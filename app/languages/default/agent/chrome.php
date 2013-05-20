@@ -34,4 +34,7 @@
 	'agent.chrome.nav_feedback' => 'Feedback',
 	'agent.chrome.nav_publish' => 'Articles, News and Downloads',
 	'agent.chrome.nav_settings' => 'Settings',
+	'agent.chrome.notify_list-new-messages' => '<span class="notify-count">0</span> New Notifications',
+	'agent.chrome.notify_list-dismiss-all' => 'Dismiss All Notifications',
+	'agent.chrome.notify_list-edit-preferences' => 'Edit Preferences',
 );

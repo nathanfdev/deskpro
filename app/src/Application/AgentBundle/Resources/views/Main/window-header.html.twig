@@ -105,64 +105,43 @@
 
 	<div class="notifications-group pull-left" id="dp_header_notify_wrap">
 		<ul>
-			<li class="message notification">
-				<span class="badge">17</span>
-				<div class="dp-header-notify-menu">
-					<div class="arrow-up"></div>
-					<header>
-						17 New Messages
-					</header>
-					<article>
-						<ul>
-							<li class="inside">
-								<div class="dismiss"><i class="icon-ban-circle"></i></div>
-								<time>4:17 pm</time>
-								<big>Website Contact Testagain</big>
-								<small>Issue adding agent from AD</small>
-							</li>
-							<li class="inside">
-								<div class="dismiss"><i class="icon-ban-circle"></i></div>
-								<time>4:32 pm</time>
-								<big>Website Contact Testagain</big>
-								<small>Issue adding agent from AD</small>
-							</li>
-							<li class="inside">
-								<div class="dismiss"><i class="icon-ban-circle"></i></div>
-								<time>4:17 pm</time>
-								<big>Website Contact Testagain</big>
-								<small>Issue adding agent from AD</small>
-							</li>
-							<li class="inside">
-								<div class="dismiss"><i class="icon-ban-circle"></i></div>
-								<time>4:17 pm</time>
-								<big>Website Contact Testagain</big>
-								<small>Issue adding agent from AD</small>
-							</li>
-							<li class="inside">
-								<div class="dismiss"><i class="icon-ban-circle"></i></div>
-								<time>4:32 pm</time>
-								<big>Website Contact Testagain</big>
-								<small>Issue adding agent from AD</small>
-							</li>
-							<li class="inside">
-								<div class="dismiss"><i class="icon-ban-circle"></i></div>
-								<time>4:17 pm</time>
-								<big>Website Contact Testagain</big>
-								<small>Issue adding agent from AD</small>
-							</li>
-						</ul>
-					</article>
-					<footer>
-						<a class="btn"><i class="icon-ban-circle"></i> Dismiss All Notifications</a>
-					</footer>
-				</div>
-			</li>
-			<li class="agent notification"></li>
-			<li class="chat notification"></li>
-			<li class="globe notification"></li>
-			<li class="tick notification"></li>
-			<li class="twitter notification"></li>
+			{% for type in ['tickets', 'people', 'chat', 'publish', 'tasks', 'twitter'] %}
+				{% set show = true %}
+				{% if type == 'tickets' and not app.user.hasPerm('agent_tickets.use') %}{% set show = false %}{% endif %}
+				{% if type == 'chat' and not (app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use')) %}{% set show = false %}{% endif %}
+				{% if type == 'people' and not app.user.hasPerm('agent_people.use') %}{% set show = false %}{% endif %}
+				{% if type == 'publish' and not (app.user.hasPerm('apps_feedback.use') or app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads')) %}{% set show = false %}{% endif %}
+				{% if type == 'tasks' and not app.getSetting('core.apps_tasks') %}{% set show = false %}{% endif %}
+				{% if type == 'twitter' and not (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}{% set show = false %}{% endif %}
+				{% if show %}
+					<li class="{{ type }} notification type-row">
+						<span class="badge" style="display: none;">0</span>
+						<div class="dp-header-notify-menu">
+							<div class="arrow-up"></div>
+							<header>
+								<a class="pref-link trigger-notify-prefs" data-type="{{ type }}"><i class="icon-cog"></i> Notification Preferences</a>
+								{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}
+							</header>
+							<article>
+								<ul class="notify-list"></ul>
+							</article>
+							<footer>
+								<a class="btn trigger-dismiss"><i class="icon-ban-circle"></i> {{ phrase('agent.chrome.notify_list-dismiss-all') }}</a>
+							</footer>
+						</div>
+					</li>
+				{% endif %}
+			{% endfor %}
 		</ul>
+
+		<script type="text/x-deskpro-plain" id="dp_header_notify_row_tpl">
+			<li class="inside">
+				<div class="dismiss"><i class="icon-remove"></i></div>
+				<time></time>
+				<big></big>
+				<small></small>
+			</li>
+		</script>
 	</div>
 
 	<div class="group pull-right" id="dp_header_logo_wrap">
