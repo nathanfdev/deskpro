@@ -352,9 +352,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (hasme) {
 			$('#agent_status_menu_me_list').data('is-online', true);
 			Orb.enablePhraseEl('agent.chrome.chat_sign-out', $('#agent_status_menu_me_list'));
+			Orb.enablePhraseEl('agent.chrome.chat_logged-in', $('#dp_header_userchat_btn').find('.status'));
 		} else {
 			$('#agent_status_menu_me_list').data('is-online', false);
 			Orb.enablePhraseEl('agent.chrome.chat_sign-in', $('#agent_status_menu_me_list'));
+			Orb.enablePhraseEl('agent.chrome.chat_logged-out', $('#dp_header_userchat_btn').find('.status'));
 		}
 
 		DeskPRO_Window.util.modCountEl($('.userchat-online-agents-count'), '=', count);

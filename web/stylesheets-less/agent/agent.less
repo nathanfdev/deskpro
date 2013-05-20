@@ -157,12 +157,41 @@ table.layout-table {
 		text-align: left;
 		vertical-align: middle;
 		cursor: pointer;
-		border: 1px solid #0a4066;
+		border: 1px solid darken(@agent_header_userchat_bg_color, 15%);
 		border-radius: 3px;
 		box-shadow: inset 0px 1px 0px 0px lighten(@agent_header_userchat_bg_color, 5%), 0px 1px 2px 0px darken(@agent_header_userchat_bg_color, 20%);
 		.gradient-v(@agent_header_userchat_bg_color, darken(@agent_header_userchat_bg_color, 3%), @agent_header_height);
+
 		&:hover {
 			background: darken(@agent_header_userchat_bg_color, 1%);
+		}
+
+		&.all-offline {
+			box-shadow: inset 0px 1px 0px 0px lighten(@agent_header_userchat_alloff_bg_color, 5%), 0px 1px 2px 0px darken(@agent_header_userchat_alloff_bg_color, 20%);
+			.gradient-v(@agent_header_userchat_alloff_bg_color, darken(@agent_header_userchat_alloff_bg_color, 3%), @agent_header_height);
+			border: 1px solid darken(@agent_header_userchat_alloff_bg_color, 15%);
+
+			&:hover {
+				background: darken(@agent_header_userchat_alloff_bg_color, 1%);
+			}
+
+			.arrow {
+				border-left: 1px solid darken(@agent_header_userchat_alloff_bg_color, 5%);
+			}
+		}
+
+		&.me-offline {
+			box-shadow: inset 0px 1px 0px 0px lighten(@agent_header_userchat_off_bg_color, 5%), 0px 1px 2px 0px darken(@agent_header_userchat_off_bg_color, 20%);
+			.gradient-v(@agent_header_userchat_off_bg_color, darken(@agent_header_userchat_off_bg_color, 3%), @agent_header_height);
+			border: 1px solid darken(@agent_header_userchat_off_bg_color, 15%);
+
+			&:hover {
+				background: darken(@agent_header_userchat_off_bg_color, 1%);
+			}
+
+			.arrow {
+				border-left: 1px solid darken(@agent_header_userchat_off_bg_color, 5%);
+			}
 		}
 
 		.chat-big-icon {
@@ -193,7 +222,7 @@ table.layout-table {
 			top: 0;
 			width: 25px;
 			height: 36px;
-			background: url('@{img_path}/header-btn-delimiter.png') no-repeat left center;
+			border-left: 1px solid darken(@agent_header_userchat_bg_color, 5%);
 		}
 
 		.caret {
