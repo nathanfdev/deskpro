@@ -262,8 +262,6 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/OmniSearchSheet.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/OmniQuickSearch.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/DeskproSubmitFeedback.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
@@ -324,19 +322,6 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
-
-		// Omnisearch
-		'javascripts/DeskPRO/UI/OmniSearch/SearchBox.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Context/ContextAbstract.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/SearchBox.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/EverythingContext.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/OrganizationsContext.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/PeopleContext.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/TicketsContext.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericInputTerm.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericMenuTerm.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericDateTerm.js',
 	)
 );
 
@@ -559,7 +544,6 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
 		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
 		'javascripts/DeskPRO/User/ElementHandler/FormUploadHandler.js',
-		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
 		'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
