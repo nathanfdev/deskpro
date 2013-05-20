@@ -1,5 +1,5 @@
 <li
-	class="task task-row-{{ task.id }}"
+	class="task task-row-{{ task.id }} inside"
 	data-class-id="task-row-{{ task.id }}"
 	data-type="tasks"
 	{% if task.assigned_agent %}
@@ -8,12 +8,11 @@
 		data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'total'}) }}"
 	{% endif %}
 	data-route-notabreload="1"
-	data-icon="images/agent/app-nav/app-tasks.png"
 >
-	<em class="dismiss"></em>
-	<time class="timeago"></time>
-	<a><i class="row-icon"></i> {{ task.title }}</a>
-	<div class="info">
+	<div class="dismiss"><i class="icon-ban-circle"></i></div>
+	<time></time>
+	<big>{{ task.title }}</big>
+	<small>
 		This task is due today.
-	</div>
+	</small>
 </li>

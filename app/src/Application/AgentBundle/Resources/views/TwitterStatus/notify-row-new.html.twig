@@ -1,14 +1,14 @@
-<li class="ticket"
-	data-type="tickets"
+<li
+	class="twitter inside"
+	data-type="twitter"
 	data-related="tweet:{{ account_status.id }}"
 	data-route="listpane:{{ path('agent_twitter_all_list', {'account_id': account_status.account.id}) }}"
 	data-route-notabreload="1"
-	data-icon="images/agent/app-nav/app-twitter.png"
 >
-	<em class="dismiss"></em>
-	<time class="timeago"></time>
-	<a><i class="row-icon"></i> Tweet</a>
-	<div class="info">
+	<div class="dismiss"><i class="icon-ban-circle"></i></div>
+	<time></time>
+	<big>Tweet</big>
+	<small>
 		{% if account_status.status_type == 'direct' %}
 			@{{ account_status.account.user.screen_name }} received a new direct message from @{{ account_status.status.user.screen_name }}.
 		{% elseif account_status.status_type == 'retweet' %}
@@ -17,5 +17,5 @@
 			@{{ account_status.account.user.screen_name }} received a new tweet from @{{ account_status.status.user.screen_name }}.
 		{% endif %}
 		<div>{{ account_status.status.text|raw }}</div>
-	</div>
+	</small>
 </li>

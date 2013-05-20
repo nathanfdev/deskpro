@@ -2,13 +2,12 @@
 	data-type="feedback"
 	data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}"
 	data-route-notabreload="1"
-	data-icon="images/agent/app-nav/app-feedback.png"
 >
-	<em class="dismiss"></em>
-	<time class="timeago"></time>
-	<a>{{ feedback.title }}</a>
-	<div class="info">
+	<div class="dismiss"><i class="icon-ban-circle"></i></div>
+	<time></time>
+	<big>{{ feedback.title }}</big>
+	<small>
 		New feedback by {{ feedback.person.getDisplayContact() }}
 		{% if feedback.getStatusCode() == 'hidden.user_validating' %}requires validation{% endif %}
-	</div>
+	</small>
 </li>
