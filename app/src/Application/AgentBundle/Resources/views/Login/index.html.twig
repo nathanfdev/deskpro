@@ -2,8 +2,6 @@
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//$('<iframe id="preload_iframe" src="{{ path(route_prefix ~ '_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
-
 			$('#lost_link').on('click', function(ev) {
 				ev.preventDefault();
 
@@ -68,72 +66,42 @@
 	</script>
 {% endblock %}
 {% block content %}
-<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
-	<input type="hidden" name="agent_login" value="1" />
-	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
+<div class="title">
+	Login
+</div>
+<div class="content">
+	<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
+		<div id="normal_view">
+			<input type="hidden" name="agent_login" value="1" />
+			{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
-	<h1 id="login_title">{{ phrase('agent.general.log_in') }}</h1>
-	<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.general.lost_password') }}</h1>
-	{% if timeout %}<p class="error" style="display: block">Your session has timed out, you must log in again.</p>{% endif %}
-	{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
-	{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.password_was_reset') }}</p>{% endif %}
-	{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
+			<h1 id="login_title">{{ phrase('agent.general.log_in') }}</h1>
+			<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.general.lost_password') }}</h1>
+			{% if timeout %}<p class="error" style="display: block">Your session has timed out, you must log in again.</p>{% endif %}
+			{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
+			{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.password_was_reset') }}</p>{% endif %}
+			{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
 
-	<div id="normal_view">
-		<dl>
-			<dt>
-                {{ phrase('agent.general.email') }}
-				{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}
-			</dt>
-			<dd><input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></dd>
-		</dl>
-
-		<div id="login_fields">
-			<dl>
-				<dt>{{ phrase('agent.general.password') }}</dt>
-				<dd class="password">
-					<a href="#" id="lost_link">{{ phrase('agent.general.lost_qm') }}</a>
-					<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" />
-					<div style="text-align: left">
-						<label style="margin: 0; padding: 0; font-weight: normal; font-size: 12px;">
-							<input type="checkbox" name="remember_me" value="1" tabindex="3" /> Remember Me
-						</label>
-					</div>
-				</dd>
-			</dl>
-
-			<dl>
-				<dt></dt>
-				<dd class="btn"><button tabindex="4">{{ phrase('agent.general.log_in') }}</button></dd>
-			</dl>
+			<fieldset>
+				<p>
+					<i class="icon-envelope-alt"></i>
+					<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="Email" tabindex="1" />
+				</p>
+				<p>
+					<i class="icon-lock"></i>
+					<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="Password" />
+				</p>
+			</fieldset>
+			<p>
+				<label class="checkbox">
+					<input type="checkbox" name="remember_me" value="1" tabindex="3" /> Remember me
+				</label>
+			</p>
+			<p><input class="full-width" type="submit" value="Log In" /></p>
+			<p class="text-right"><a href="#">Forgot your password?</a></p>
 		</div>
-
-		<div id="lost_fields" style="display: none">
-			<dl>
-				<dt></dt>
-				<dd class="password-reset">
-					Enter your email address and then click the button below to receieve instructions
-					on how to reset your password.
-				</dd>
-			</dl>
-
-			<dl>
-				<dt></dt>
-				<dd class="btn lost">
-					<button id="do_send_lost">{{ phrase('agent.login.email_instructions') }}</button>
-					<a href="{{ path(route_prefix~'_login') }}" id="login_link">{{ phrase('agent.login.back_to_login') }}</a>
-				</dd>
-			</dl>
-		</div>
-	</div>
-	<div id="lost_message_view" style="display: none">
-		{{ phrase('agent.login.sent_pw_reset_instructions') }}
-	</div>
-	<div id="loading_view" style="display: none">
-		<i>{{ phrase('agent.general.loading') }}</i>
-	</div>
-
-</form>
+	</form>
+</div>
 
 <script type="text/javascript">
 	document.getElementById('email').focus();

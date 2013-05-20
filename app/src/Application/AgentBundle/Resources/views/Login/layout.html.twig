@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en">
+<html lang="en" id="dp_login_page">
 <head>
 <meta charset="utf-8" />
 <meta name="robots" content="NOINDEX" />
@@ -9,61 +9,49 @@
 <script type="text/javascript">
 	if (typeof pageMeta !== 'undefined') pageMeta.goToLogin = true;
 </script>
-<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-
-<style type="text/css">
-body {
-	background: #DEE4EA !important;
-}
-
-{% include 'DeskPRO:Common:admin-login.css.twig' %}
-
-#loading_view i {
-	display: block;
-	margin: 10px;
-	padding: 10px;
-	padding-top: 38px;
-	background: url({{ asset('images/spinners/loading-big-circle.gif') }}) no-repeat 50% 0;
-	font-style: normal;
-	text-align: center;
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-
-#lost_message_view {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-
-{% if is_popup %}
-#dp_login {
-	position: static;
-	margin: 0;
-	width: auto;
-}
-#dp_login .msg-outer {
-	position: static;
-	margin: 15px;
-	width: auto;
-}
-{% endif %}
-
-{% if app.usersourceManager.getWithCapability('form_login') %}
-#dp_login dt { width: 120px; }
-{% endif %}
-</style>
 {% block head %}{% endblock %}
 </head>
 <body>
 
 <div id="dp_login">
-	<div class="msg-outer">
-		<div class="msg">
+	<div id="wrapper">
+		<div class="dialog-box">
 			{% block content %}{% endblock %}
-			<br class="clear" />
 		</div>
+		<div class="deskpro-logo">
 	</div>
-	{% if not is_popup %}
-		<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
-	{% endif %}
 </div>
+
+{% if app.isDebug() %}
+	{{ dp_asset_html('agent_vendors_css') }}
+	{{ dp_asset_html('agent_interface_css1') }}
+	{{ dp_asset_html('agent_interface_css2') }}
+	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
+
+	{{ dp_asset_html('agent_vendors') }}
+	{{ dp_asset_html('agent_common') }}
+	{{ dp_asset_html('agent_deskpro_ui') }}
+	{{ dp_asset_html('agent_misc') }}
+	{{ dp_asset_html('agent_agent_ui') }}
+	{{ dp_asset_html('agent_window_sections') }}
+	{{ dp_asset_html('agent_settingswin') }}
+	{{ dp_asset_html('agent_pages') }}
+	{{ dp_asset_html('agent_pages_lists') }}
+	{{ dp_asset_html('agent_element_handlers') }}
+
+	{% if app.getBrowserSniffer().getBrowser() == 'Internet Explorer' %}{{ dp_asset_html('agent_interface_ie_css') }}{% endif %}
+
+	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+{% else %}
+	{{ dp_asset_html('agent') }}
+	{{ dp_asset_html('agent_vendor_out_css') }}
+	{{ dp_asset_html('agent_css1') }}
+	{{ dp_asset_html('agent_css2') }}
+	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
+
+	<!--[if IE]>{{ dp_asset_html('agent_interface_ie_css') }}<![endif]-->
+{% endif %}
+
+<link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}" type="text/css" />
 </body>
 </html>
