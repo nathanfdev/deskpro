@@ -341,7 +341,7 @@ table.layout-table {
 		margin-right: -4px;
 		padding: 2px;
 		border: 1px solid #c3c8cd;
-		color: #686a6f;
+		color: @agent_bigmenu_text_color;
 		.rounded(2px);
 
 		&.toggle-on {
@@ -354,22 +354,23 @@ table.layout-table {
 			width: 100%;
 
 			caption, thead tr {
-				border-bottom: 1px solid #c3c8cd;
+				border-bottom: 1px solid @agent_bigmenu_border_color;
 				text-align: left;
-				background-color: #f7f9fa;
+				background-color: lighten(@agent_bigmenu_border_color, 15%);
+				color: @agent_bigmenu_text_color;
 			}
 
-			caption, thead tr th {
-				padding: 4px 6px;
+			thead tr th {
+				padding: 5px 6px;
+				line-height: 100%;
 			}
-
 			caption {
-				font-size: 12px;
-				padding-top: 5px;
+				padding: 0 6px;
+				line-height: 30px;
 			}
 
 			tr {
-				border-bottom: 1px solid #e6e8ea;
+				border-bottom: 1px solid @agent_bigmenu_border_color;
 			}
 
 			td {
@@ -381,6 +382,40 @@ table.layout-table {
 				background-repeat: no-repeat;
 				background-position: 0 2px;
 			}
+		}
+
+		.reload-table-btn {
+			float: right;
+			display: block;
+			height: 17px;
+			line-height: 17px;
+			margin-top:6px;
+
+			background: url(../../images/spinners/spinner-btn-light-frame.gif) no-repeat 100% 50%;
+			padding-right: 18px;
+			color: transparent;
+			font-size: 9px;
+			font-style: normal;
+			font-weight: normal;
+			text-transform: uppercase;
+			cursor: pointer;
+		}
+
+		.reload-table-btn:hover {
+			background: url(../../images/spinners/spinner-btn-frame.gif) no-repeat 100% 50%;
+			color: #000;
+		}
+	}
+
+	.refreshing .user-listing {
+		.reload-table-btn {
+			background-image: url(../../images/spinners/spinner-btn-light.gif);
+			color: transparent;
+		}
+
+		.refreshing-clicked .reload-table-btn {
+			background-image: url(../../images/spinners/spinner-btn.gif);
+			color: transparent;
 		}
 	}
 }

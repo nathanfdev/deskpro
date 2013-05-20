@@ -2,12 +2,8 @@
 	<div style="height: 365px; overflow: auto;">
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<caption>
-				<div class="pull-left">
-					{{ phrase('agent.chrome.chat_list_online-users', {count: visitors|length}, true) }}
-				</div>
-				<div class="pul-right">
-					<em class="reload-table-btn">{{ phrase('agent.chrome.chat_list_refresh-list') }}</em>
-				</div>
+				<em class="reload-table-btn">{{ phrase('agent.chrome.chat_list_refresh-list') }}</em>
+				{{ phrase('agent.chrome.chat_list_online-users', {count: visitors|length}, true) }}
 			</caption>
 			<thead>
 				<tr>
@@ -24,9 +20,7 @@
 								<span class="link" data-route="page:{{ path('agent_usertrack_view', {visitor_id: vis.id}) }}">
 									<span {% if vis.visit_track.geo_country %}class="with-country" style="background-image: url({{ asset('images/flags/' ~ vis.visit_track.geo_country|lower ~ '.png') }});" title="{{ vis.visit_track.geo_country|country_name }}" {% endif %}>
 										{% if vis.person %}
-											<span class="user-link" style="background-image: url('{{ vis.person.getPictureUrl(20) }}');">
-												{{ vis.person.display_name }}
-											</span>
+											{{ vis.person.display_name }}
 										{% else %}
 											{{ vis.name }}
 										{% endif %}
