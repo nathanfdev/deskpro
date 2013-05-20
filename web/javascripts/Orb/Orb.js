@@ -332,6 +332,30 @@ Orb.strIsEmail = function(email) {
 
 
 /**
+ * Enables a phrase element by phraseId.
+ *
+ * This .show()'s a phrase element and .hide()'s any other
+ * phrases in the same element.
+ *
+ * @param phraseId
+ * @param parentEl
+ */
+Orb.enablePhraseEl = function(phraseId, parentEl) {
+	var phraseEl, phraseClass = phraseId.replace(/\./g, '_');
+	if (parentEl) {
+		$(parentEl).find('.phrase-text').removeClass('phrase-on');
+		$(parentEl).find(phraseId).addClass('phrase-on');
+	} else {
+		phraseEl = $('.' + phraseClass);
+		if (phraseEl[0]) {
+			$(phraseEl.parent()).find('.phrase-text').removeClass('phrase-on');
+			phraseEl.addClass('phrase-on');
+		}
+	}
+};
+
+
+/**
  * Take elements of array and chunk them into subarrays of size
  *
  * @param {Array}   array
