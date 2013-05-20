@@ -456,6 +456,95 @@ table.layout-table {
 }
 
 //-------------------------
+// Recent dropdown
+//-------------------------
+
+.dp-recent-list-dropdown {
+	display: none;
+	.zindex-chrome;
+	position: absolute;
+	left: 100px;
+	top: 31px;
+	width: 300px;
+	overflow: hidden;
+	background: @agent_bigmenu_bg_color;
+	border-radius: 0 3px 3px 3px;
+	box-shadow:  0px 1px 3px rgba(0, 0, 0, 0.3);
+	overflow: hidden;
+
+	header {
+		background: darken(@agent_bigmenu_bg_color, 10%);
+
+		input {
+			border: none;
+			background: transparent;
+			padding: 5px 5px;
+			margin: 0;
+			border-bottom: 1px solid darken(@agent_bigmenu_bg_color, 20%);
+			width: 300px;
+			.rounded(0);
+
+			&:focus {
+				border: none;
+				border-bottom: 1px solid darken(@agent_bigmenu_bg_color, 20%);
+			}
+		}
+	}
+
+	article {
+		max-height: 400px;
+		width: 300px;
+		overflow: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		li {
+			a {
+				display: block;
+				padding: 6px;
+				color: @agent_menu_text_color;
+			}
+			font-size: 11px;
+
+			span {
+				background-position: 0 50%;
+				background-repeat: no-repeat;
+				background-image: url('@{img_path}/agent/tabs/tabtype-content.png');
+				padding-left: 18px;
+			}
+			&.tickets span { background-image: url('@{img_path}/agent/tabs/tabtype-ticket.png'); }
+			&.people span { background-image: url('@{img_path}/agent/tabs/tabtype-person.png'); }
+			&.org span { background-image: url('@{img_path}/agent/tabs/tabtype-org.png'); }
+			&.news span { background-image: url('@{img_path}/agent/tabs/tabtype-news.png'); }
+			&.tasks span { background-image: url('@{img_path}/agent/tabs/tabtype-task.png'); }
+			&.feedback span { background-image: url('@{img_path}/agent/tabs/tabtype-feedback.png'); }
+			&.downloads span { background-image: url('@{img_path}/agent/tabs/tabtype-download.png'); }
+			&.articles span { background-image: url('@{img_path}/agent/tabs/tabtype-articles.png'); }
+
+			&.dp-cursor, &:hover {
+				a {
+					background-color: @agent_menu_highlight_bg_color;
+					color: @agent_menu_highlight_text_color;
+				}
+
+				&.tickets span { background-image: url('@{img_path}/agent/tabs/tabtype-ticket-white.png'); }
+				&.people span { background-image: url('@{img_path}/agent/tabs/tabtype-person-white.png'); }
+				&.org span { background-image: url('@{img_path}/agent/tabs/tabtype-org-white.png'); }
+				&.news span { background-image: url('@{img_path}/agent/tabs/tabtype-news-white.png'); }
+				&.tasks span { background-image: url('@{img_path}/agent/tabs/tabtype-task-white.png'); }
+				&.feedback span { background-image: url('@{img_path}/agent/tabs/tabtype-feedback-white.png'); }
+				&.downloads span { background-image: url('@{img_path}/agent/tabs/tabtype-download-white.png'); }
+				&.articles span { background-image: url('@{img_path}/agent/tabs/tabtype-articles-white.png'); }
+			}
+		}
+	}
+}
+
+.active .dp-recent-list-dropdown {
+	display: block;
+}
+
+//-------------------------
 // Actions
 //-------------------------
 

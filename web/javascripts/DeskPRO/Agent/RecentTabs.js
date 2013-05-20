@@ -3,31 +3,70 @@ Orb.createNamespace('DeskPRO.Agent');
 DeskPRO.Agent.RecentTabs = new Orb.Class({
 	initialize: function() {
 		var self = this;
-		this.maxSize = 20;
 		this.recentTabIds = {};
 		this.recent  = [];
 		this.recentPendingSync = [];
-		this.length  = 0;
-		this.isOpen  = false;
+		this.list = $('#recent_tabs_list');
 
-		this.inputBound = $('#dp_omniinput');
-		this.inputBound.on('focus keyup', function(ev) {
+		var eatNext = false;
+		$('#recent_tabs_list_filter').on('keydown', function(ev) {
+			if (ev.keyCode == 13 /* enter key */) {
+				var current = self.list.find('.dp-cursor');
+				eatNext = true;
+				if (current[0]) {
+					DeskPRO_Window.runPageRouteFromElement(current.find('a'));
+					Orb.shimClickCallbackPop();
+				}
+
+			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+				eatNext = true;
+				var current = self.list.find('.dp-cursor');
+				current.removeClass('dp-cursor');
+				var dir = ev.keyCode == 40 ? 'down' : 'up';
+				var next;
+
+				if (!current.length) {
+					if (dir == 'down') {
+						self.list.find('.dp-vis').first().addClass('dp-cursor');
+					} else {
+						self.list.find('.dp-vis').last().addClass('dp-cursor');
+					}
+				} else {
+					if (dir == 'down') {
+						next = current.next('li.dp-vis');
+						if (!next.length) {
+							next = self.list.find('.dp-vis').first().addClass('dp-cursor');
+						}
+					} else {
+						next = current.prev('li.dp-vis');
+						if (!next.length) {
+							next = self.list.find('.dp-vis').last().addClass('dp-cursor');
+						}
+					}
+
+					next.addClass('dp-cursor');
+				}
+			}
+		}).on('keyup', function(ev) {
+			if (eatNext) {
+				return;
+			}
 			var val = $.trim($(this).val());
 
 			if (!val) {
-				ev.stopImmediatePropagation();
-				ev.preventDefault();
-				ev.stopPropagation();
-				if (window.DP_OMNI_QUICK_SEARCH) {
-					window.DP_OMNI_QUICK_SEARCH.clearAll();
-				}
-				self.open();
-			} else {
-				self.close();
+				self.list.find('li').show().addClass('dp-vis');
+				return;
 			}
-		});
-		this.inputBound.on('blur', function(ev) {
-			window.setTimeout(function() {self.close();}, 150);
+
+			val = val.toLowerCase();
+
+			self.list.find('li').each(function() {
+				if ($(this).data('string-match').indexOf(val) !== -1) {
+					$(this).show().addClass('dp-vis');
+				} else {
+					$(this).hide().removeClass('dp-vis');;
+				}
+			});
 		});
 
 		this.reloadRecentTabs();
@@ -46,12 +85,17 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 					readd = this.recent;
 				}
 
-				this.recent = data;
+				var pending = this.recentPendingSync;
+
+				this.recent = [];
 
 				// Regen tab IDs lookup map
 				Array.each(data, function(item) {
-					this.recentTabIds[item[0] + '-' + item[1]] = true;
+					this.add(item[0], item[1], item[2], item[3]);
 				}, this);
+
+				// Reset the proper pending list (dont re-sync the ones we just loaded)
+				this.recentPendingSync = pending;
 
 				if (readd) {
 					Array.each(readd, function(item) {
@@ -62,60 +106,26 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		});
 	},
 
-	_initUi: function() {
-		if (this._hasInitUi) return;
-		this._hasInitUi = true;
-
-		this.wrapperEl = $('#dp_recent_list');
-		this.wrapperEl.detach().appendTo('body');
-
-		this.rowTpl = DeskPRO_Window.util.getPlainTpl('#dp_recent_list_row');
-
-		DeskPRO_Window.initInterfaceLayerEvents(this.wrapperEl);
-	},
-
 	open: function() {
-		if (!this.length) return;
-		if (this.isOpen) return;
-		this._initUi();
-
-		var off = 22;
-		this.wrapperEl.css({
-			left: parseInt(this.inputBound.offset().left) - off,
-			width: this.inputBound.outerWidth() + off
-		});
-		var list = this.wrapperEl.find('ul.result-list');
-		list.empty();
-
-		Array.each(this.recent, function(item) {
-			var row = this.rowTpl;
-			row = row.replace(/\{TYPE\}/g, item[0]);
-			row = row.replace(/\{ID\}/g, item[1]);
-			row = row.replace(/\{TITLE\}/g, Orb.escapeHtml(item[2]));
-
-			var row = $(row);
-			row.data('route', 'page:' + item[3]);
-			row.attr('data-route', 'page:' + item[3]);
-
-			list.append(row);
-		}, this);
-
-		this.wrapperEl.show();
-		this.isOpen = true;
+		// Backwards compat
 	},
 
 	close: function() {
-		if (!this.isOpen) return;
-
-		this.wrapperEl.hide();
-		this.isOpen = false;
+		// Backwards compat
 	},
 
-	setMaxSize: function(maxSize) {
-		this.maxSize = maxSize;
-	},
 
+	/**
+	 * Add a new item to the list
+	 *
+	 * @param {String} type
+	 * @param {Integer} id
+	 * @param {String} title
+	 * @param {String} url
+	 */
 	add: function(type, id, title, url) {
+
+		$('#recent_tabs_list_li_none').remove();
 
 		var ts = (new Date()).getTime() / 1000;
 		var idString = type + '-' + id, idx = null;
@@ -133,41 +143,96 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
 			if (idx !== null) {
 				this.recent.splice(idx, 1);
+				this.list.find('li.' + idString).remove();
 			}
 		}
 
 		this.recent.unshift([type, id, title, url, ts]);
 		this.recentTabIds[idString] = true;
 
-		while (this.recent.length > this.maxSize) {
-			this.recent.pop();
+		while (this.recent.length > 500) {
+			var last = this.recent.pop();
+			this.list.find('li.' + last[0] + '-' + last[1]).remove();
 		}
 
-		this.recentPendingSync.unshift([type, id, title, url, ts]);
+		var itm = [type, id, title, url, ts];
+		this.recentPendingSync.unshift(itm);
+		this.renderRow(itm);
 
 		this.length = this.recent.length;
 	},
 
+
+	/**
+	 * Render an item onto the beginning of the list
+	 *
+	 * @param {Array} item
+	 * @returns {jQuery}
+	 */
+	renderRow: function(item) {
+		var row = $(DeskPRO_Window.util.getPlainTpl('#recent_tabs_list_tpl'));
+		var stringMatch = item[2].toLowerCase();
+
+		row.addClass(item[0] + '-' + item[1] + ' ' + item[0]);
+		row.data('string-match', stringMatch);
+		row.find('a')
+			.data('route', 'page:'+item[3])
+			.attr('data-route', 'page:'+item[3])
+			.find('span').text(item[2]);
+
+		var filterVal = $.trim($('#recent_tabs_list_filter').val());
+		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {
+			row.addClass('dp-vis');
+		} else {
+			row.hide();
+		}
+
+		this.list.prepend(row);
+		return row;
+	},
+
+
+	/**
+	 * @return {Array}
+	 */
 	getAll: function() {
 		return this.recent;
 	},
 
+
+	/**
+	 * Clears recent list
+	 */
 	clear: function() {
 		this.recent = [];
+		this.recentPendingSync = [];
+		this.list.clear();
 		this.length = 0;
 	},
 
+
+	/**
+	 * Gets info for the last (oldest) item in the list
+	 *
+	 * @returns {Array}
+	 */
 	getLast: function() {
 		if (this.recent.length) {
-			return this.recent[0];
+			return this.recent[this.recent.length-1];
 		}
 
 		return null;
 	},
 
+
+	/**
+	 * Gets info for the first (latest) item in the list
+	 *
+	 * @returns {Array}
+	 */
 	getFirst: function() {
 		if (this.recent.length) {
-			return this.recent[this.recent.length-1];
+			return this.recent[0];
 		}
 
 		return null;

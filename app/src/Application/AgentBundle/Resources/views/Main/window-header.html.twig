@@ -99,8 +99,27 @@
 					<li id="create_feedback_btn" class="last"><a><div class="wrap"><i class="icon-lightbulb"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
 				</ul>
 		</div>
-		<div class="btn-wrap pull-left"><a class="btn"><i class="icon-time"></i> {{ phrase('agent.chrome.btn_recent') }}</a></div>
+		<div class="btn-wrap pull-left">
+			<a class="btn dp-recent-btn"><i class="icon-time"></i> {{ phrase('agent.chrome.btn_recent') }}</a>
+			<div class="dp-recent-list-dropdown">
+				<header>
+					<input type="text" name="filter" class="filter" placeholder="Filter" id="recent_tabs_list_filter" />
+				</header>
+				<article>
+					<ul id="recent_tabs_list">
+						<li id="recent_tabs_list_li_none">You have not opened any tabs yet</li>
+					</ul>
+				</article>
+			</div>
+		</div>
 	</div>
+
+	<script type="text/x-deskpro-plain" id="recent_tabs_list_tpl">
+		<li>
+			<time></time>
+			<a><span></span></a>
+		</li>
+	</script>
 
 	<div class="notifications-group pull-left" id="dp_header_notify_wrap">
 		<ul>

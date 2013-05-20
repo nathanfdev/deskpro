@@ -711,6 +711,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
+		$('#dp_header').find('.dp-recent-btn').find('.btn').on('click', function() {
+			var wrap = $(this).parent();
+			wrap.addClass('active');
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+			};
+
+			if (!wrap.data('has-init')) {
+				wrap.find('.dp-recent-list-dropdown').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+
+			$('#recent_tabs_list_filter').focus();
+		});
+
 		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
 			var wrap = $(this);
 			wrap.addClass('active');
