@@ -149,8 +149,8 @@ table.layout-table {
 		position: relative;
 		margin: 4px 0 0 6px;
 		height: (@agent_header_height - 15);
-		width: 170px;
-		padding: 2px 12px 1px 0;
+		width: 180px;
+		padding: 4px 12px 0px 0;
 		font-size: 14px;
 		line-height: 16px;
 		color: #fff;
@@ -206,13 +206,17 @@ table.layout-table {
 		}
 
 		ul.info {
-			line-height: 12px;
+			line-height: 11px;
 			margin: 0 12px 0 36px;
 
 			li {
 				display: inline-block;
-				font-size: 10px;
+				font-size: 11px;
 				line-height: 12px;
+
+				&:first-child {
+					padding-right: 6px;
+				}
 			}
 		}
 
@@ -458,7 +462,7 @@ table.layout-table {
 #dp_header .btn-group-actions {
 	position: relative;
 	margin: 8px 0 0 10px;
-	padding: 0 10px;
+	padding: 0px 4px 0 10px;
 	height: (@agent_header_height - 10);
 	background: url('@{img_path}/header-delimiter.png') no-repeat left top;
 	display: block;
@@ -645,6 +649,7 @@ table.layout-table {
 	margin-top: 9px;
 	margin-right: 9px;
 	padding-right: 9px;
+	padding-left: 5px;
 	background: url('@{img_path}/header-delimiter.png') no-repeat left top;
 
 	> ul {
@@ -652,7 +657,7 @@ table.layout-table {
 			background: url('@{img_path}/header-notification-icons.png') no-repeat;
 			width: 30px;
 			height: 30px;
-			margin-left: 10px;
+			margin-right: 6px;
 			float: left;
 			position: relative;
 			cursor: pointer;
@@ -1062,7 +1067,7 @@ table.layout-table {
 				color: #C0C2CA;
 				display: block;
 				font-weight: normal;
-				height: 50px;
+				height: 40px;
 				width: 54px;
 				margin: 0;
 				padding: 0;
