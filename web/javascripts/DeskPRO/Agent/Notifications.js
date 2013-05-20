@@ -41,6 +41,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			if (!ul.find('li')[0]) {
 				Orb.shimClickCallbackPop();
 			}
+		}).on('click', '.trigger-notify-prefs', function(ev) {
+			Orb.cancelEvent(ev);
+			ev.stopImmediatePropagation();
+			Orb.shimClickCallbackPop();
+			$('#settingswin').trigger('dp_open', 'notify');
 		});
 
 		this.fireEvent('init');
