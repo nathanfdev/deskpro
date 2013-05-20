@@ -751,15 +751,21 @@ table.layout-table {
 			float: left;
 			display: block;
 			margin: 10px 9px;
-			height: auto;
-			padding: 6px 8px;
-			border: 1px solid darken(@agent_menu_bg_color, 20%);
-			color: @agent_link_color;
+			padding: 8px 12px 6px 12px;
+			font-size: 14px;
+			line-height: 100%;
+			color: #fff;
+			text-align: left;
+			vertical-align: middle;
+			cursor: pointer;
+			.gradient-v(@agent_header_btn_bg_color, darken(@agent_header_btn_bg_color, 5%));
 			border-radius: 3px;
-		}
-		a.btn:hover {
-			background-color: @agent_menu_highlight_bg_color;
-			color: @agent_menu_highlight_text_color;
+			border: 1px solid darken(@agent_header_btn_bg_color, 25%);
+			box-shadow: inset 0px 1px 0px lighten(@agent_header_btn_bg_color, 10%), 0px 1px 2px fade(darken(@agent_header_btn_bg_color, 30%), 60%);
+
+			i {
+				margin-right: 5px;
+			}
 		}
 	}
 
@@ -1067,7 +1073,7 @@ table.layout-table {
 				color: #C0C2CA;
 				display: block;
 				font-weight: normal;
-				height: 40px;
+				height: 0px;
 				width: 54px;
 				margin: 0;
 				padding: 0;
