@@ -127,15 +127,15 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		};
 		statusMenuHandler.init();
 
-		$('#agent_status_menu').find('button.toggle-status-trigger').on('click', function(ev) {
+		$('#agent_status_menu_me_list').find('.trigger-toggle-status').on('click', function(ev) {
 
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			$('#agent_status_menu_me_list').addClass('loading');
+			$('#agent_status_menu_me_list').addClass('dp-loading-on');
 
 			var is_available;
-			if ($('#chatStatusWrap').hasClass('offline')) {
+			if (!$('#agent_status_menu_me_list').data('is-online')) {
 				// Toggle on
 				is_available = true;
 			} else {
@@ -143,8 +143,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				is_available = false;
 			}
 
+			$('#agent_status_menu_me_list').data('is-online', is_available);
+
 			self.sendUpdateAgentStatus(is_available, function() {
-				$('#agent_status_menu_me_list').removeClass('loading');
+				$('#agent_status_menu_me_list').removeClass('dp-loading-on');
 
 				if (!is_available) {
 					self.onlineAgentIds.erase(DESKPRO_PERSON_ID);
@@ -161,16 +163,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	_initStatusMenuAgents: function() {
 		var self = this;
 		var status_menu_el = $('#agent_status_menu_onlinelist');
-		this.onlineAgentsGroupDepCheck = status_menu_el.find('.group-dep');
+		this.onlineAgentsGroupDepCheck = status_menu_el.find('.agents-list-groupdep');
 		this.onlineAgentsList = status_menu_el.find('ul.list.normal');
 		this.onlineAgentsListGrouped = status_menu_el.find('ul.list.department-grouped');
 
-		status_menu_el.find('.group-option').on('click', function(ev) {
+		status_menu_el.find('.agents-list-groupdep').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			self.onlineAgentsGroupDepCheck.toggleClass('checked');
+			self.onlineAgentsGroupDepCheck.toggleClass('toggle-on');
 
-			if (self.onlineAgentsGroupDepCheck.hasClass('checked')) {
+			if (self.onlineAgentsGroupDepCheck.hasClass('toggle-on')) {
 				self.refreshOnlineAgentDepGroups();
 				self.onlineAgentsListGrouped.show();
 				self.onlineAgentsList.hide();
@@ -316,8 +318,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			success: function(html) {
 				$('#agent_status_online_users').empty().html(html);
 				var count = parseInt($.trim($('#agent_status_online_users').find('.count-online-users').text()));
-				$('#userOnlineCount').text(count);
-				$('#userOnlineCount2').text(count);
+
+				$('.userchat-online-users-count').text(count);
 				this.lastOnlineUserLoad = new Date();
 			}
 		});
@@ -330,7 +332,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	refreshOnlineAgentsList: function() {
 		var self = this;
-		var list = $('#agent_status_menu_onlinelist');
+		var list = this.onlineAgentsList;
 		var count;
 		var hasme = false;
 		list.find('li').hide().removeClass('on last');
@@ -347,35 +349,30 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		count = self.onlineAgentIds.length;
 
-		if (count) {
-			list.show();
-		} else {
-			list.hide();
-		}
-
 		if (hasme) {
-			$('#chatStatusWrap').removeClass('offline');
-			$('#agent_status_menu_onlinerow').show();
-			$('#agent_status_menu_offlinerow').hide();
+			$('#agent_status_menu_me_list').data('is-online', true);
+			Orb.enablePhraseEl('agent.chrome.chat_sign-out', $('#agent_status_menu_me_list'));
 		} else {
-			$('#chatStatusWrap').addClass('offline');
-			$('#agent_status_menu_onlinerow').hide();
-			$('#agent_status_menu_offlinerow').show();
+			$('#agent_status_menu_me_list').data('is-online', false);
+			Orb.enablePhraseEl('agent.chrome.chat_sign-in', $('#agent_status_menu_me_list'));
 		}
 
-		DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
-		DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
+		DeskPRO_Window.util.modCountEl($('.userchat-online-agents-count'), '=', count);
 
+		var userchatBtn = $('#dp_header_userchat_btn');
+		userchatBtn.removeClass('me-offline all-offline');
 		if (count) {
-			$('#chatStatusWrap').removeClass('red');
+			if (!hasme) {
+				$('#dp_header_userchat_btn').addClass('me-offline');
+			}
 		} else {
-			$('#chatStatusWrap').addClass('red');
+			$('#dp_header_userchat_btn').addClass('all-offline');
 		}
 	},
 
 	refreshOnlineAgentDepGroups: function() {
 		var self = this;
-		if (!this.onlineAgentsGroupDepCheck.hasClass('checked')) {
+		if (!this.onlineAgentsGroupDepCheck.hasClass('toggle-on')) {
 			return;
 		}
 

@@ -6,7 +6,7 @@
 
 	<div class="user-profile pull-left">
 		<img class="gravatar pull-left" src="{{ app.user.getPictureUrl(30) }}">
-		<div class="username">{{ phrase('agent.chrome.hello-user', app.user.name) }}</div>
+		<div class="username">{{ phrase('agent.chrome.hello-user', {name: app.user.name}) }}</div>
 		<ul class="nav-profile">
 			<li id="user_settings_link"><i class="icon-cog"></i> <a>{{ phrase('agent.chrome.link_settings') }}</a></li>
 			<li><i class="icon-question-sign"></i> <a>{{ phrase('agent.chrome.link_help') }}</a></li>
@@ -19,61 +19,70 @@
 	{##########################################################################}
 
 	<div class="btn-group-chat pull-left">
-	  <a class="btn" id="dp_header_userchat_btn">
-	  	<div class="chat-big-icon pull-left"></div>
-	  	<span class="status">
-			<span class="phrase-text phrase-on agent_chrome_chat_logged_in">{{ phrase('agent.chrome.chat_logged_in') }}</span>
-			<span class="phrase-text agent_chrome_chat_logged_out">{{ phrase('agent.chrome.chat_logged_out') }}</span>
-	  	</span>
-	  	<ul class="info">
-		  	<li><i class="icon-user"></i> {{ phrase('agent.chrome.chat_online-agents', {}, true) }}</li>
-		  	<li><i class="icon-group"></i> {{ phrase('agent.chrome.chat_online-users', {}, true) }}</li>
-	  	</ul>
-	  	<div class="arrow">
-	  		<span class="caret"></span>
-	  	</div>
-	  </a>
+		<a class="btn" id="dp_header_userchat_btn">
+			<div class="chat-big-icon pull-left"></div>
+				<span class="status">
+					<span class="dp-phrase dp-phrase-on agent_chrome_chat_logged_in">{{ phrase('agent.chrome.chat_logged_in') }}</span>
+					<span class="dp-phrase agent_chrome_chat_logged_out">{{ phrase('agent.chrome.chat_logged_out') }}</span>
+				</span>
+			<ul class="info">
+				<li><i class="icon-user"></i> {{ phrase('agent.chrome.chat_online-agents', {}, true) }}</li>
+				<li><i class="icon-group"></i> {{ phrase('agent.chrome.chat_online-users', {}, true) }}</li>
+			</ul>
+			<div class="arrow">
+				<span class="caret"></span>
+			</div>
+		</a>
 
-	  	{####################}
-	  	{# Chat #}
-	  	{####################}
+		{####################}
+		{# Chat #}
+		{####################}
 		<div class="dp-header-group-chat-dropdown" id="dp_header_userchat_dropdown">
-			<div class="column1 pull-left" id="agent_status_menu_onlinelist">
-
-				<div id="agent_status_menu_me_list">
-					<div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/24259869899da35ec0cf0252887410a6?&amp;s=30&amp;d=mm);"></div>
-					<a class="signin">
-						<span class="phrase-text phrase-on agent_chrome_chat_sign-in">{{ phrase('agent.chrome.chat_sign-in') }}</span>
-						<span class="phrase-text agent_chrome_chat_sign_out">{{ phrase('agent.chrome.chat_sign-out') }}</span>
-						&rarr;
-					</a>
+			<table class="layout-table" width="100%"><tbody><tr>
+				<td class="column1" id="agent_status_menu_onlinelist">
+					<div id="agent_status_menu_me_list">
+					<div class="dp-not-loading">
+						<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
+						<a class="signin trigger-toggle-status">
+							<span class="dp-phrase dp-phrase-on agent_chrome_chat_sign-in">{{ phrase('agent.chrome.chat_sign-in') }}</span>
+							<span class="dp-phrase agent_chrome_chat_sign-out">{{ phrase('agent.chrome.chat_sign-out') }}</span>
+							&rarr;
+						</a>
+					</div>
+					<div class="dp-is-loading pull-center">
+						<i class="spinner-flat"></i>
+					</div>
 				</div>
 				<ul class="agents list">
 					<li class="header">
+						<a href="#" class="agents-list-groupdep">{{ phrase('agent.chrome.chat_list_by-department') }}</a>
 						{{ phrase('agent.chrome.chat_list_agents-online', {}, true) }}
-						<a href="#">{{ phrase('agent.chrome.chat_list_by-department') }}</a>
 					</li>
 				</ul>
 				<ul class="agents list department-grouped" style="display: none;">
 					{% for id,title in app.getDataRepository('Department').getFullNames('chat') %}
-						<li class="dep dep-{{ id }}">{{ title }}</li>
-					{% endfor %}
-				</ul>
-				<ul class="agents list normal">
-					{% for agent in agents %}
-						<li
-							data-department-ids="{{ agent_chat_depmap[agent.id]|join(',') }}"
-							class="agent agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"
-						>
-							<div class="avatar" style="background-image: url({{ agent.getPictureUrl(16) }});"></div>
-							{{ agent.display_name }}
+						<li class="dep dep-{{ id }}">
+							<h4>{{ title }}</h4>
+							<ul class="sub-list"></ul>
 						</li>
 					{% endfor %}
 				</ul>
-			</div>
-			<div class="column2 pull-left" id="agent_status_online_users">
-				{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
-			</div>
+					<ul class="agents list normal">
+						{% for agent in agents %}
+							<li
+								data-department-ids="{{ agent_chat_depmap[agent.id]|join(',') }}"
+								class="agent agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"
+							>
+								<div class="avatar" style="background-image: url({{ agent.getPictureUrl(16) }});"></div>
+								{{ agent.display_name }}
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+				<td class="column2" id="agent_status_online_users">
+					{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
+				</td>
+			</tr></tbody></table>
 		</div>
 	</div>
 

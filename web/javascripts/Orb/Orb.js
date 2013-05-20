@@ -343,13 +343,13 @@ Orb.strIsEmail = function(email) {
 Orb.enablePhraseEl = function(phraseId, parentEl) {
 	var phraseEl, phraseClass = phraseId.replace(/\./g, '_');
 	if (parentEl) {
-		$(parentEl).find('.phrase-text').removeClass('phrase-on');
-		$(parentEl).find(phraseId).addClass('phrase-on');
+		$(parentEl).find('.dp-phrase').removeClass('dp-phrase-on');
+		$(parentEl).find('.'+phraseClass).addClass('dp-phrase-on');
 	} else {
 		phraseEl = $('.' + phraseClass);
 		if (phraseEl[0]) {
-			$(phraseEl.parent()).find('.phrase-text').removeClass('phrase-on');
-			phraseEl.addClass('phrase-on');
+			$(phraseEl.parent()).find('.dp-phrase-text').removeClass('dp-phrase-on');
+			phraseEl.addClass('dp-phrase-on');
 		}
 	}
 };

@@ -8,15 +8,13 @@ body {
 	font-family: Helvetica, Arial, Geneva, sans-serif;
 }
 
-.pull-left {
-	float: left;
-}
+.pull-left { float: left; }
+.pull-right { float: right; }
+.pull-center { text-align: center; }
 
-.pull-right {
-	float: right;
-}
-
-.phrase-text {
+// Phrase texts are spans that are hidden unless they have 'phrase-on' added
+// See JS Orb.enablePhraseEl()
+.dp-phrase {
 	display: none;
 	padding: 0;
 	margin: 0;
@@ -24,8 +22,34 @@ body {
 	color: inherit;
 	font: inherit;
 
-	&.phrase-on {
+	&.dp-phrase-on {
 		display: inline;
+	}
+}
+
+// Simple toggle used mainly to show/hide loading messages or spinners
+.dp-is-loading  { display: none; }
+.dp-not-loading { display: block; }
+.dp-loading-on {
+	.dp-is-loading  { display: block; }
+	.dp-not-loading { display: none; }
+}
+
+table.layout-table {
+	border: none;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+
+	> tbody > tr > td, > tr > td {
+		background: transparent;
+		padding: 0;
+		margin: 0;
+		border: none;
+		font-size: 100%;
+		line-height: 100%;
+		vertical-align: top;
+		text-align: left;
 	}
 }
 
@@ -214,25 +238,25 @@ body {
 	min-height: 178px;
 	width: 790px;
 	overflow: hidden;
-	background: #fff;
+	background: @agent_bigmenu_bg_color;
 	border-radius: 0 3px 3px 3px;
 	box-shadow:  0px 1px 3px rgba(0, 0, 0, 0.3);
 
 	.column1 {
 		width: 182px;
 		height: 100%;
-		border-right: 1px solid #c3c8cd;
-		color: #535456;
+		border-right: 1px solid @agent_bigmenu_border_color;
+		color: @agent_bigmenu_text_color;
 	}
 
 	.column2 {
 		width: 607px;
 		height: 100%;
-		color: #535456;
+		color: @agent_bigmenu_border_color;
 	}
 
 	#agent_status_menu_me_list {
-		border-bottom: 1px solid #c3c8cd;
+		border-bottom: 1px solid @agent_bigmenu_border_color;
 		padding: 12px;
 		height: 30px;
 
@@ -295,38 +319,68 @@ body {
 				padding-right: 5px;
 			}
 		}
+
+		&.department-grouped > li {
+			padding: 0 0 10px 0;
+			margin: 0;
+			h4 {
+				background-color: lighten(@agent_bigmenu_border_color, 15%);
+				margin: 0;
+				padding: 3px 0;
+				line-height: 100%;
+				text-align: center;
+				font-size: 95%;
+			}
+		}
 	}
 
-	table#agent_status_online_users {
-		width: 100%;
+	.agents-list-groupdep {
+		float: right;
+		line-height: 100%;
+		margin-top: 6px;
+		margin-right: -4px;
+		padding: 2px;
+		border: 1px solid #c3c8cd;
+		color: #686a6f;
+		.rounded(2px);
 
-		caption, thead tr {
-			border-bottom: 1px solid #c3c8cd;
-			text-align: left;
-			background-color: #f7f9fa;
+		&.toggle-on {
+			background-color: @agent_highlight_text_bg_color;
 		}
+	}
 
-		caption, thead tr th {
-			padding: 4px 6px;
-		}
+	.user-listing {
+		table {
+			width: 100%;
 
-		caption {
-			font-size: 12px;
-			padding-top: 5px;
-		}
+			caption, thead tr {
+				border-bottom: 1px solid #c3c8cd;
+				text-align: left;
+				background-color: #f7f9fa;
+			}
 
-		tr {
-			border-bottom: 1px solid #e6e8ea;
-		}
+			caption, thead tr th {
+				padding: 4px 6px;
+			}
 
-		td {
-			padding: 6px;
-		}
+			caption {
+				font-size: 12px;
+				padding-top: 5px;
+			}
 
-		.with-country {
-			padding-left: 20px;
-			background-repeat: no-repeat;
-			background-position: 0 2px;
+			tr {
+				border-bottom: 1px solid #e6e8ea;
+			}
+
+			td {
+				padding: 6px;
+			}
+
+			.with-country {
+				padding-left: 20px;
+				background-repeat: no-repeat;
+				background-position: 0 2px;
+			}
 		}
 	}
 }
@@ -939,4 +993,14 @@ body {
 		left: 0;
 		bottom: 0;
 	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// Spinner icons
+//----------------------------------------------------------------------------------------------------------------------
+
+i.spinner-flat {
+	.iconbase(16px, 11px);
+	display: inline-block;
+	background-image: url(../../images/spinners/loading-small-flat.gif);
 }

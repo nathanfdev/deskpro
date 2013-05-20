@@ -1,16 +1,22 @@
-<div class="data-display-table-wrap">
-	<div class="table-head">
-		<em class="reload-table-btn">Refresh list</em>
-		<span class="count-online-users">{{ visitors|length }}</span> Online Users
-	</div>
+<div class="user-listing">
 	<div style="height: 365px; overflow: auto;">
-		<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table with-head">
-			<tbody>
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<caption>
+				<div class="pull-left">
+					{{ phrase('agent.chrome.chat_list_online-users', {count: visitors|length}, true) }}
+				</div>
+				<div class="pul-right">
+					<em class="reload-table-btn">{{ phrase('agent.chrome.chat_list_refresh-list') }}</em>
+				</div>
+			</caption>
+			<thead>
 				<tr>
-					<th class="col-head">User</th>
-					<th class="col-head">Current Page</th>
-					<th class="col-head" width="10">Time</th>
+					<th class="col-head">{{ phrase('agent.chrome.chat_list_heading_user') }}</th>
+					<th class="col-head">{{ phrase('agent.chrome.chat_list_heading_current-page') }}</th>
+					<th class="col-head" width="10">{{ phrase('agent.chrome.chat_list_heading_time') }}</th>
 				</tr>
+			</thead>
+			<tbody>
 				{% for vis in visitors %}
 					<tr>
 						<td>
@@ -40,7 +46,7 @@
 				{% else %}
 					<tr>
 						<td colspan="100" style="text-align: center">
-							There are no online users.
+							{{ phrase('agent.chrome.chat_list_no-online-users') }}
 						</td>
 					</tr>
 				{% endfor %}
