@@ -37,6 +37,13 @@ $collection->add('agent_load_search_sheet', new Route(
 	array()
 ));
 
+$collection->add('agent_load_recent_tabs', new Route(
+	'/ui/load-recent-tabs.json',
+	array('_controller' => 'AgentBundle:Main:loadRecentTabs'),
+	array(),
+	array()
+));
+
 $collection->add('agent_accept_upload', new Route(
 	'/misc/accept-upload',
 	array('_controller' => 'AgentBundle:Misc:acceptTempUpload'),

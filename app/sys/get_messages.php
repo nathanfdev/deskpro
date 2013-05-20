@@ -200,6 +200,55 @@ class AgentMessagesLoader extends LoaderAbstract
 			");
 			$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 
+			if (!empty($_REQUEST['recent_tabs']) && is_array($_REQUEST['recent_tabs'])) {
+				$q = $db->prepare("
+					SELECT value_array
+					FROM people_prefs
+					WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+				");
+				$q->execute(array($this->_person_id));
+
+				$recent_tabs = $q->fetchColumn();
+				if ($recent_tabs) {
+					$recent_tabs = @unserialize($recent_tabs);
+				}
+
+				if (!$recent_tabs) {
+					$recent_tabs = array();
+				}
+
+				foreach ($_REQUEST['recent_tabs'] as $item) {
+					if (empty($item[0]) || empty($item[1]) || empty($item[2]) || empty($item[3]) || empty($item[4]) || count($item) != 5) {
+						continue;
+					}
+
+					$id_string = $item[0] . '-' . $item[1];
+					if (isset($recent_tabs[$id_string])) {
+						unset($recent_tabs[$id_string]);
+					}
+
+					$recent_tabs[$id_string] = $item;
+				}
+
+				while (count($recent_tabs) > 1000) {
+					array_pop($recent_tabs);
+				}
+
+				$recent_tabs = serialize($recent_tabs);
+				$db->prepare("
+					REPLACE INTO people_prefs
+					SET
+						person_id = ?,
+						name = 'agent.ui.recent_tabs_collection',
+						value_str = NULL,
+						value_array = ?,
+						date_expire = NULL
+				")->execute(array(
+					$this->_person_id,
+					$recent_tabs
+				));
+			}
+
 			header('Content-Type: application/json');
 			echo json_encode($data);
 		} catch (\Exception $exception) {

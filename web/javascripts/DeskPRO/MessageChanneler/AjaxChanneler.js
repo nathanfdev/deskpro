@@ -25,6 +25,49 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			return { 'count': ++this.count };
 		}).bind(this), 'since', { recurring: true });
 
+		this.poller.addData((function () {
+			if (!(DeskPRO_Window.recentTabs && DeskPRO_Window.recentTabs.recentPendingSync && DeskPRO_Window.recentTabs.recentPendingSync.length)) {
+				return null;
+			}
+
+			var recent = [];
+			Array.each(DeskPRO_Window.recentTabs.recentPendingSync, function(item, idx) {
+				// Type
+				recent.push({
+					name: 'recent_tabs['+idx+'][0]',
+					value: item[0]
+				});
+
+				// ID
+				recent.push({
+					name: 'recent_tabs['+idx+'][1]',
+					value: item[1]
+				});
+
+				// Title
+				recent.push({
+					name: 'recent_tabs['+idx+'][2]',
+					value: item[2]
+				});
+
+				// URL
+				recent.push({
+					name: 'recent_tabs['+idx+'][3]',
+					value: item[3]
+				});
+
+				// Time
+				recent.push({
+					name: 'recent_tabs['+idx+'][4]',
+					value: item[4]
+				});
+			});
+
+			DeskPRO_Window.recentTabs.recentPendingSync = [];
+
+			return recent;
+		}).bind(this), 'recent_tabs', { recurring: true });
+
 		this.poller.addData({is_initial_poll:1}, 'is_initial_poll');
 
 		this.poller.addEvent('ajaxSuccess', this.handleMessageAjax.bind(this));

@@ -4,7 +4,9 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	initialize: function() {
 		var self = this;
 		this.maxSize = 20;
+		this.recentTabIds = {};
 		this.recent  = [];
+		this.recentPendingSync = [];
 		this.length  = 0;
 		this.isOpen  = false;
 
@@ -26,6 +28,37 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		});
 		this.inputBound.on('blur', function(ev) {
 			window.setTimeout(function() {self.close();}, 150);
+		});
+
+		this.reloadRecentTabs();
+	},
+
+	reloadRecentTabs: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/ui/load-recent-tabs.json',
+			type: 'GET',
+			dataType: 'JSON',
+			context: this,
+			success: function(data) {
+				// Any tabs opened before the last list was re-loaded
+				var readd = false;
+				if (this.recent.length) {
+					readd = this.recent;
+				}
+
+				this.recent = data;
+
+				// Regen tab IDs lookup map
+				Array.each(data, function(item) {
+					this.recentTabIds[item[0] + '-' + item[1]] = true;
+				}, this);
+
+				if (readd) {
+					Array.each(readd, function(item) {
+						this.add(item[0], item[1], item[2], item[3], item[4]);
+					}, this);
+				}
+			}
 		});
 	},
 
@@ -58,7 +91,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			var row = this.rowTpl;
 			row = row.replace(/\{TYPE\}/g, item[0]);
 			row = row.replace(/\{ID\}/g, item[1]);
-			row =row.replace(/\{TITLE\}/g, Orb.escapeHtml(item[2]));
+			row = row.replace(/\{TITLE\}/g, Orb.escapeHtml(item[2]));
 
 			var row = $(row);
 			row.data('route', 'page:' + item[3]);
@@ -84,24 +117,33 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
 	add: function(type, id, title, url) {
 
-		// Make sure its not already added
-		var found = false;
-		Array.each(this.recent, function(item) {
-			if (type == item[0] && id == item[1]) {
-				found = true;
-				return true;
-			}
-		});
+		var ts = (new Date()).getTime() / 1000;
+		var idString = type + '-' + id, idx = null;
 
-		if (found) {
-			return;
+		// If we already have the tab, remove it so it will be
+		// re-added to the front of the array
+		if (this.recentTabIds[idString]) {
+			delete this.recentTabIds[idString];
+			Array.each(this.recent, function(item, i) {
+				if ((item[0] + '-' + item[1]) == idString) {
+					idx = i;
+					return false;
+				}
+			});
+
+			if (idx !== null) {
+				this.recent.splice(idx, 1);
+			}
 		}
 
-		this.recent.unshift([type, id, title, url]);
+		this.recent.unshift([type, id, title, url, ts]);
+		this.recentTabIds[idString] = true;
 
 		while (this.recent.length > this.maxSize) {
 			this.recent.pop();
 		}
+
+		this.recentPendingSync.unshift([type, id, title, url, ts]);
 
 		this.length = this.recent.length;
 	},

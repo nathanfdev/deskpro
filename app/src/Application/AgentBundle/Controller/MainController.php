@@ -362,6 +362,25 @@ class MainController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function loadRecentTabsAction()
+	{
+		$recent_tabs = $this->db->fetchColumn("
+			SELECT value_array
+			FROM people_prefs
+			WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+		", array($this->person->getId()));
+
+		if ($recent_tabs) {
+			$recent_tabs = @unserialize($recent_tabs);
+		}
+
+		if (!$recent_tabs) {
+			$recent_tabs = array();
+		}
+
+		return $this->createJsonResponse(array_values($recent_tabs));
+	}
+
 	public function quickSearchAction()
 	{
 		$q = $this->in->getString('q');
