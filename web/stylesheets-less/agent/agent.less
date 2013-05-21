@@ -50,6 +50,117 @@ table.layout-table {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+// LAYOUT
+//----------------------------------------------------------------------------------------------------------------------
+
+#dp_left_collapsed {
+	left: 215px;
+}
+
+#dp_right_collapsed {
+	right: 0;
+
+	ul li {
+		top: 56px;
+	}
+}
+
+.collapsed-area {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 25px;
+	background: #dadcdc;
+	border-top: none;
+	border-bottom: none;
+	z-index: 2;
+	line-height: 100%;
+	overflow: hidden;
+}
+
+#dp_right_collapsed {
+	background-color: @agent_sidetabs_bg;
+	border-left: 1px solid darken(@agent_sidetabs_bg, 15%);
+	width: 25px;
+
+	ul {
+		padding: 0;
+		margin: 0;
+	}
+
+	ul li {
+		line-height: 100%;
+		width: 25px;
+		height: 66px;
+		margin-right: 10px;
+		display: block;
+		position: relative;
+		top: 10px;
+		padding-top: 2px;
+		margin-bottom: 62px;
+
+		span {
+			display: block;
+			-webkit-transform-origin: 0 0;
+			-moz-transform-origin:    0 0;
+			-ms-transform-origin:     0 0;
+			-o-transform-origin:      0 0;
+
+			-webkit-transform: rotate(90deg);
+			-moz-transform:    rotate(90deg);
+			-ms-transform:     rotate(90deg);
+			-o-transform:      rotate(90deg);
+
+			position: absolute;
+			top: 0;
+			left: 22px;
+
+			white-space: nowrap;
+			text-wrap: none;
+			line-height: 100%;
+
+			color: #b3b6bb;
+			background-color: #606770;
+			border: 1px solid #373c41;
+			border-bottom: none;
+			padding: 4px 10px;
+			cursor: pointer;
+			.border-radius(3px, 3px, 0, 0);
+			box-shadow: 0 0 2px rgba(0,0,0, 0.3);
+			width: 98px;
+			overflow: hidden;
+
+			&:hover {
+				background-color: lighten(#606770, 10%);
+				color: #fff;
+			}
+
+			label {
+				margin: 0;
+				padding: 0;
+				width: 91px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				display: block;
+				font-size: 11px;
+			}
+
+			i.close {
+				position: absolute;
+				right: 6px;
+				top: 2px;
+
+				&:hover {
+					color: #940300;
+				}
+			}
+		}
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 // HEADER
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -25,6 +25,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabPane = $(this.options.tabPane);
 		this.tabList = this.tabPane.find('ul.dp-tab-list').first();
+		this.tabList2 = $('#dp_collapsed_tabs');
 		this.bodyPane = $(this.options.bodyPane);
 		this.menuBtn = $(this.options.menuBtn);
 
@@ -34,8 +35,20 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.currentTabId = null;
 
 		this.tabPane.on('mouseup', this._tabStripClick.bind(this));
+		$('#dp_collapsed_tabs').on('mouseup', this._tabStripClick.bind(this));
 
 		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
+
+		var self = this;
+		this.tabList2.on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('tabs', true);
+
+			var el = $(ev.target);
+			if (el.data('tab')) {
+				self.activateTab(el.data('tab'));
+			}
+		});
 	},
 
 
@@ -225,8 +238,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			html += '<span class="close"></span>';
 		html += '</li>';
 
+		var html2 = '<li id="'+data.tabBtnId+'_2" data-tab-id="'+data.id+'" class="' + tabIdClass;
+			html2 += '">';
+			html2 += '<span class="tab-title"><label>'+Orb.escapeHtml(data.title)+'</label> <i class="icon-remove-sign close trigger-close-tab"></i></span>';
+		html2 += '</li>';
+
 		data.tabBtn = $(html);
 		data.tabBtn.data('tab', data);
+
+		data.tabBtn2 = $(html2);
+		data.tabBtn2.data('tab', data);
 
 		var wasActive = false;
 		var otherTab = null;
@@ -243,6 +264,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.tabBtn.insertAfter(otherTab.tabBtn);
 			otherTab.tabBtn.remove();
 
+			data.tabBtn2.insertAfter(otherTab.tabBtn2);
+			otherTab.tabBtn2.remove();
+
 			if (this.currentTabId == otherTab.id) {
 				wasActive = true;
 				this.currentTabId = null;
@@ -252,6 +276,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		} else {
 			data.tabBtn.prependTo(this.tabList);
+			data.tabBtn2.appendTo(this.tabList2);
 		}
 
 		//----------
@@ -472,6 +497,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			}
 
 			data.tabBtn.remove();
+			data.tabBtn2.remove();
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
