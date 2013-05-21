@@ -37,4 +37,5 @@
 	'agent.chrome.notify_list-new-messages' => '<span class="notify-count">0</span> New Notifications',
 	'agent.chrome.notify_list-dismiss-all' => 'Dismiss All Notifications',
 	'agent.chrome.notify_list-edit-preferences' => 'Edit Preferences',
+	'agent.chrome.notify_list-no-notifications' => 'There are no new notifications'
 );

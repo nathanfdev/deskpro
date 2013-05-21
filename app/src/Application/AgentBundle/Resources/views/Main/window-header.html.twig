@@ -42,7 +42,7 @@
 				<td class="column1" id="agent_status_menu_onlinelist">
 					<div id="agent_status_menu_me_list">
 					<div class="dp-not-loading">
-						<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
+						<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(31) }});"></div>
 						<a class="signin trigger-toggle-status">
 							<span class="dp-phrase dp-phrase-on agent_chrome_chat_sign-in"><i class="icon-comments-alt"></i> {{ phrase('agent.chrome.chat_sign-in') }}</span>
 							<span class="dp-phrase agent_chrome_chat_sign-out"><i class="icon-comments"></i> {{ phrase('agent.chrome.chat_sign-out') }}</span>
@@ -87,7 +87,7 @@
 
 	<div class="btn-group-actions pull-left">
 		<div class="btn-wrap create-group pull-left">
-			<a class="btn"><i class="icon-plus"></i> {{ phrase('agent.chrome.btn_create') }}</a>
+			<a class="btn"><i class="icon-plus"></i><span class="btn-text">{{ phrase('agent.chrome.btn_create') }}</span></a>
 				<ul class="btn-menu">
 					<li id="create_ticket_btn"><a><div class="wrap"><i class="icon-envelope"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>
 					<li id="create_person_btn"><a><div class="wrap"><i class="icon-user"></i></div>{{ phrase('agent.chrome.create_new-person') }} <kbd>p</kbd></a></li>
@@ -100,7 +100,7 @@
 				</ul>
 		</div>
 		<div class="btn-wrap pull-left">
-			<a class="btn dp-recent-btn"><i class="icon-time"></i> {{ phrase('agent.chrome.btn_recent') }}</a>
+			<a class="btn dp-recent-btn"><i class="icon-time"></i><span class="btn-text">{{ phrase('agent.chrome.btn_recent') }}</span></a>
 			<div class="dp-recent-list-dropdown">
 				<header>
 					<input type="text" name="filter" class="filter" placeholder="Filter" id="recent_tabs_list_filter" />
@@ -117,7 +117,7 @@
 	<script type="text/x-deskpro-plain" id="recent_tabs_list_tpl">
 		<li>
 			<time></time>
-			<a><span></span></a>
+			<a><i class="icon-envelope dp-icon-placeholder"></i> <span></span></a>
 		</li>
 	</script>
 
@@ -137,10 +137,13 @@
 						<div class="dp-header-notify-menu">
 							<div class="arrow-up"></div>
 							<header>
-								<a class="pref-link trigger-notify-prefs" data-type="{{ type }}"><i class="icon-cog"></i> Notification Preferences</a>
+								<a class="pref-link trigger-notify-prefs" data-type="{{ type }}"><i class="icon-cog"></i></a>
 								{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}
 							</header>
 							<article>
+								<div class="no-notifications">
+									<h4>{{ phrase('agent.chrome.notify_list-no-notifications') }}</h4>
+								</div>
 								<ul class="notify-list"></ul>
 							</article>
 							<footer>
