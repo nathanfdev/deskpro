@@ -767,42 +767,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
-
-		$('#dp_search_box').on('focus', function() {
-
-			if ($(this).hasClass('expanded')) {
-				return;
-			}
-
-			var txt, wrap, w;
-			$('#dp_header_logo_wrap').hide();
-
-			wrap = $('#dp_header_search_wrap');
-			w = wrap.width();
-			wrap.data('orig-width', w);
-			wrap.width(w + 125);
-			wrap.css('margin-right', '8px');
-
-			txt = $(this);
-			w = txt.width();
-			txt.data('orig-width', w).addClass('expanded');
-			txt.animate({ width: w+125 }, 300);
-		}).on('blur', function() {
-			if ($(this).val().length) {
-				return;
-			}
-
-			var txt, wrap, w;
-
-			wrap = $('#dp_header_search_wrap');
-			wrap.width(wrap.data('orig-width'));
-			wrap.css('margin-right', '0');
-
-			txt = $(this);
-			txt.width(txt.data('orig-width')).removeClass('expanded');
-
-			$('#dp_header_logo_wrap').show();
-		});
 	},
 
 	addOnloadFunction: function(fn) {

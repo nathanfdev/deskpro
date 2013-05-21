@@ -177,9 +177,9 @@ table.layout-table {
 		display: inline-block;
 		position: relative;
 		margin: 4px 0 0 15px;
-		height: (@agent_header_height - 15);
+		height: (@agent_header_height - 13);
 		width: 180px;
-		padding: 4px 12px 0px 0;
+		padding: 2px 12px 0px 0;
 		font-size: 14px;
 		line-height: 16px;
 		color: #fff;
@@ -692,11 +692,30 @@ table.layout-table {
 	input {
 		width: 100px;
 		height: 30px;
-		padding: 0px 10px 0px 30px;
+		padding: 0px 30px 0px 30px;
 		border: 1px solid #0a4066;
-		color: #7a7f85;
+		color: @agent_text_color;
 		border-radius: 5px;
 		background: #e6eaed url('@{img_path}/header-search-icon.png') no-repeat 8px 8px;
+	}
+	.help {
+		display: none;
+		position: absolute;
+		right: 9px;
+		top: 6px;
+		font-size: 14px;
+		color: lighten(@agent_text_color, 30%);
+		cursor: pointer;
+
+		&:hover {
+			color: @agent_text_color;
+		}
+	}
+	.loading-indicator {
+		display: none;
+		position: absolute;
+		right: 9px;
+		top: 7px;
 	}
 	input.active {
 		border-radius: 5px 5px 0 0;
@@ -707,14 +726,18 @@ table.layout-table {
 	.quick-search-results {
 		display: none;
 		position: absolute;
-		top: 31px;
-		left: 1px;
+		top: 29px;
+		right: 1px;
 		z-index: 3;
-		width: 360px;
+		width: 400px;
 		height: 410px;
 		background: #fff;
 		border: 1px solid #ced1d3;
 		border-top: none;
+		box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
+		.border-radius(4px, 0, 4px, 4px);
+		overflow: hidden;
+
 		ul li.title {
 			background-color: #f7f9fa;
 			height: 30px;
@@ -747,7 +770,7 @@ table.layout-table {
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
-		ul li a:hover {
+		ul li a:hover, ul li.dp-cursor a {
 			background-color: #1abc9c;
 			color: #fff;
 		}
@@ -761,6 +784,23 @@ table.layout-table {
 			margin-right: 5px;
 			float: left;
 			line-height: 15px;
+		}
+		ul li .sublist-toggle {
+			.iconbase(11px, 11px);
+			display: inline-block;
+			background-image: url('@{img_path}/agent/expand.png');
+			cursor: pointer;
+			margin-right: 4px;
+			position: relative;
+			top: 1px;
+
+			&:hover {
+				.opacity(60);
+			}
+
+			&.expanded {
+				background-image: url('@{img_path}/agent/collapse.png');
+			}
 		}
 		ul li a .gravatar {
 			float: left;
@@ -1037,7 +1077,7 @@ table.layout-table {
 
 #dp_header .extended-search-dialog {
 	position: absolute;
-	right: -74px;
+	right: 0;
 	top: 50px;
 	z-index: 3;
 	width: 400px;
@@ -1048,6 +1088,13 @@ table.layout-table {
 	padding: 0 20px 15px;
 	color: #dde3e9;
 	font-size: 12px;
+	display: none;
+	.zindex-chrome;
+
+	&.active {
+		display: block;
+	}
+
 	h3, h4 {
 		text-transform: uppercase;
 		font-size: 13px;
@@ -1255,9 +1302,9 @@ table.layout-table {
 		box-shadow: 0 -1px 1px darken(@agent_nav_bg_color, 15%);
 	}
 
-	li a span.ticketNavIcon { background-position: -1px 0; }
+	li a span.ticketNavIcon { background-position: -1px 3px; }
 
-	li:hover a span.ticketNavIcon, li.active a span.ticketNavIcon { background-position: -1px -100px; }
+	li:hover a span.ticketNavIcon, li.active a span.ticketNavIcon { background-position: -1px -97	px; }
 	li a span.chatNavIcon { background-position: -80px 0; }
 	li:hover a span.chatNavIcon, li.active a span.chatNavIcon { background-position: -80px -100px; }
 	li a span.peopleNavIcon { background-position: -161px 0; }
@@ -1294,5 +1341,11 @@ table.layout-table {
 i.spinner-flat {
 	.iconbase(16px, 11px);
 	display: inline-block;
-	background-image: url(../../images/spinners/loading-small-flat.gif);
+	background-image: url('@{img_path}/spinners/loading-small-flat.gif');
+}
+
+i.spinner-xsmall {
+	.iconbase(11px, 11px);
+	display: inline-block;
+	background: url('@{img_path}/spinners/loading-arrows-xsmall-whitebg.gif');
 }

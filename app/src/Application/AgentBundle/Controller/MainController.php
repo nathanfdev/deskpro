@@ -397,14 +397,16 @@ class MainController extends AbstractController
 		);
 
 		$results = array(
-			'article'      => array(),
-			'download'     => array(),
-			'feedback'     => array(),
-			'news'         => array(),
-			'ticket'       => array(),
-			'person'       => array(),
-			'organization' => array(),
-			'chat'         => array()
+			'article'                => array(),
+			'download'               => array(),
+			'feedback'               => array(),
+			'news'                   => array(),
+			'ticket'                 => array(),
+			'person'                 => array(),
+			'person_related'         => array(),
+			'organization'           => array(),
+			'organization_related'   => array(),
+			'chat'                   => array()
 		);
 
 		$result_meta = array();
@@ -542,7 +544,10 @@ class MainController extends AbstractController
 					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
 					foreach ($tickets as $t) {
 						if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
-							$results['ticket'][] = $t;
+							if (!isset($results['person_related'][$t->person->getId()])) {
+								$results['person_related'][$t->person->getId()] = array();
+							}
+							$results['person_related'][$t->person->getId()][] = $t;
 						}
 					}
 				}

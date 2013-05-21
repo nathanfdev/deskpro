@@ -169,38 +169,51 @@
 		<a class="logo"></a>
 	</div>
 
-	<div class="searchbox pull-right" id="dp_header_search_wrap">
+	<div
+		class="searchbox pull-right"
+		id="dp_header_search_wrap"
+		data-element-handler="DeskPRO.Agent.ElementHandler.QuickSearch"
+		data-search-url="{{ path('agent_quicksearch') }}"
+	>
 		<input class="search" type="text" id="dp_search_box" placeholder="Search" />
+		<span class="help" id="dp_search_box_help_trigger"><i class="icon-question-sign"></i></span>
+		<span class="loading-indicator" id="dp_search_box_loading"><i class="spinner-xsmall"></i></span>
 
-			<div class="quick-search-results">
-				<ul>
-					<li class="title">Ticket <a href="#">Show 9 more</a></li>
-					<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
-					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
-					<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
-					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
-					<li class="title">Person <a href="#">Show 21 more</a></li>
-					<li><a href="#"><strong>76454</strong><div class="gravatar"></div>Website Contact Testagain /testagain@test.boom/<i class="icon-caret-down"></i></a></li>
-					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a>
-						<ul>
-							<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
-							<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
-							<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
-						</ul>
-					</li>
-					<li><a href="#"><strong>76454</strong>Website Contact Testagain /testagain@test.boom/</a></li>
-					<li><a href="#"><strong>84390</strong>RE: Need some help? Deskpro /sales-test@deskpro.com/</a></li>
-				</ul>
-			</div>
+		<div class="quick-search-results" id="dp_search_box_list_wrap">
+			<ul id="dp_search_box_list"></ul>
+		</div>
 
-		<div class="extended-search-btn"></div>
+		<script
+			type="text/x-deskpro-plain"
+			id="dp_header_search_row_title_tpl"
+			data-title-ticket="{{ phrase('agent.chrome.quicksearch_title-tickets') }}"
+			data-title-person="{{ phrase('agent.chrome.quicksearch_title-people') }}"
+			data-title-organization="{{ phrase('agent.chrome.quicksearch_title-orgs') }}"
+			data-title-news="{{ phrase('agent.chrome.quicksearch_title-news') }}"
+			data-title-download="{{ phrase('agent.chrome.quicksearch_title-downloads') }}"
+			data-title-article="{{ phrase('agent.chrome.quicksearch_title-articles') }}"
+			data-title-feedback="{{ phrase('agent.chrome.quicksearch_title-feedback') }}"
+		>
+			<li class="title">
+				<span class="type-title"></span>
+				<a class="show-more" href="#">Show <span class="show-more-num"></span> more</a>
+			</li>
+		</script>
+		<script type="text/x-deskpro-plain" id="dp_header_search_row_tpl">
+			<li>
+				<a href="#">
+					<strong class="row-id"></strong>
+					<span class="row-title"></span>
+				</a>
+			</li>
+		</script>
 
-		<div class="extended-search-dialog" style="display: none;">
-			<h3>Extended Search</h3>
+		<div class="extended-search-dialog" id="dp_header_search_help">
+			<h3>Search</h3>
 				<div class="description">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pellentesque nisl pretium justo pellentesque a cursus enim euismod. Sed fringilla, ipsum in aliquam vestibulum, nulla ligula elementum leo, quis congue ante nunc et dolor.
+					Use this quick search box to find resources based on primary identifiers including: ID's or ref's, labels, ticket subjects, user names and email addresses, organisation names, or the titles of articles, news, downloads or feedback.
 				</div>
-				<h4>Choose where to search:</h4>
+				<h4>Or choose where to advanced search:</h4>
 				<ul class="list-with-icons">
 					<li class="tickets_section"></li>
 					<li class="chat_section"></li>

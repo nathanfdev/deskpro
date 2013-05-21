@@ -38,5 +38,12 @@
 	'agent.chrome.notify_list-new-messages' => '<span class="notify-count">0</span> New Notifications',
 	'agent.chrome.notify_list-dismiss-all' => 'Dismiss All Notifications',
 	'agent.chrome.notify_list-edit-preferences' => 'Edit Preferences',
-	'agent.chrome.notify_list-no-notifications' => 'There are no new notifications'
+	'agent.chrome.notify_list-no-notifications' => 'There are no new notifications',
+	'agent.chrome.quicksearch_title-tickets' => 'Tickets',
+	'agent.chrome.quicksearch_title-people' => 'People',
+	'agent.chrome.quicksearch_title-orgs' => 'Organizations',
+	'agent.chrome.quicksearch_title-news' => 'News',
+	'agent.chrome.quicksearch_title-downloads' => 'Downloads',
+	'agent.chrome.quicksearch_title-articles' => 'Articles',
+	'agent.chrome.quicksearch_title-feedback' => 'Feedback',
 );
