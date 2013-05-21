@@ -2078,7 +2078,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _presavePerson()
 	{
-		$changed_emails = false;
 		if ($this->_person_logger) {
 			$this->_person_logger->preSave();
 		}

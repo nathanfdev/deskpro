@@ -46,7 +46,8 @@ class Bcrypt implements PasswordSchemeInterface
 	public function hashPassword(Person $person, $plain_password)
 	{
 		$hasher = new \PasswordHash(self::ITERATIONS, false);
-		return $hasher->HashPassword($plain_password);
+		$pw_hash = $hasher->HashPassword($plain_password);
+		return $pw_hash;
 	}
 
 	public function checkPassword(Person $person, $hashed_password, $plain_password)
