@@ -103,13 +103,17 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				$('#dp_list').css('left', 26);
 				left += listWidth;
 			} else {
-				$('#dp_list').css('left', this.LEFT_START);
+				if (!paneVis.tabs) {
+					$('#dp_list').css('left', this.LEFT_START + 36);
+				} else {
+					$('#dp_list').css('left', this.LEFT_START);
+				}
 				left += listWidth;
 			}
 		}
 
-		if (!paneVis.list || !paneVis.source) {
-			left += 26;
+		if (!paneVis.tabs) {
+			left += 31;
 		}
 
 		if (left) {
@@ -120,19 +124,8 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		listSizer.css('left', left-2);
 
-		if (!paneVis.source || !paneVis.list) {
+		if (!paneVis.tabs) {
 			leftHide.show();
-			leftHide.find('li').hide();
-
-			if (!paneVis.source) {
-				leftHide.find('.source_pane').css('display', 'inline-block');
-				leftHide.css('left', 0);
-			} else {
-				leftHide.css('left', this.LEFT_START);
-			}
-			if (!paneVis.list) {
-				leftHide.find('.list_pane').css('display', 'inline-block');
-			}
 		} else {
 			leftHide.hide();
 		}

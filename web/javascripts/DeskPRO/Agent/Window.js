@@ -670,15 +670,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			DeskPRO_Window.setPaneVis('tabs', true);
 		});
-		$('#dp_right_collapsed .toggle_tabs_pane').on('click', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', true);
-		});
 
-		$('#tabNavigationPane .toggle_tabs_pane').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			DeskPRO_Window.setPaneVis('tabs', false);
+		$('.panevis-toggle-tableview').on('click', function() {
+			self.paneVis['list'] = true;
+			self.paneVis['tabs'] = false;
+			self.layout.doResize(true);
+		});
+		$('.panevis-toggle-normalview').on('click', function() {
+			self.paneVis['list'] = true;
+			self.paneVis['tabs'] = true;
+			self.layout.doResize(true);
+		});
+		$('.panevis-toggle-tabview').on('click', function() {
+			self.paneVis['list'] = false;
+			self.paneVis['tabs'] = true;
+			self.layout.doResize(true);
 		});
 
 		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {

@@ -1,9 +1,12 @@
 <div id="dp_center">
 	<div class="collapsed-area" id="dp_left_collapsed">
-		<ul>
-			<li class="source_pane toggle_source_pane"><span><i class="icon-dashboard"></i> Navigation</span></li>
-			<li class="list_pane toggle_list_pane"><span><i class="icon-filter"></i> Listing</span></li>
-		</ul>
+		<div class="pane-switchers-vertical">
+			<ul>
+				<li class="view1 panevis-toggle-tableview"></li>
+				<li class="view2 panevis-toggle-normalview"></li>
+				<li class="view3 panevis-toggle-tabview"></li>
+			</ul>
+		</div>
 	</div>
 	<div class="collapsed-area" id="dp_right_collapsed">
 		<ul id="dp_collapsed_tabs"></ul>
@@ -17,8 +20,12 @@
 	<div id="dp_list_resizer"><div></div></div>
 	<div id="dp_content">
 		<div id="tabNavigationPane">
-			<div style="position: absolute; top: 0; right: 10px;z-index:1000000;">
-				<span class="toggle_tabs_pane" style="background-color: #fff; border-radius: 10px; line-height: 100%; padding: 1px; cursor: pointer;"><i class="icon-double-angle-right"></i></span>
+			<div class="pane-switchers-horizontal">
+				<ul>
+					<li class="view1 panevis-toggle-tableview"></li>
+					<li class="view2 panevis-toggle-normalview"></li>
+					<li class="view3 panevis-toggle-tabview"></li>
+				</ul>
 			</div>
 			<div id="tabNavSelectorLeft">
 				<a class="tabSlideLeft"></a>
