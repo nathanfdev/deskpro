@@ -594,6 +594,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
+		$('#dp_nav_sections').find('ul').find('li').find('a').each(function() {
+			$(this).qtip({
+				position: {
+					my: 'left center',
+					at: 'right center',
+					target: $(this)
+				},
+				content: {attr: 'title'},
+				style: {
+					classes: 'qtip-youtube'
+				}
+			});
+		});
+
 		$(document).on('click', '.click-confirm', function(ev) {
 			if (!confirm($(this).data('confirm'))) {
 				ev.preventDefault();

@@ -32,6 +32,7 @@
 	'agent.chrome.nav_agentchat' => 'Agent Chat',
 	'agent.chrome.nav_people' => 'People and Organizations',
 	'agent.chrome.nav_feedback' => 'Feedback',
+	'agent.chrome.nav_tasks' => 'Tasks',
 	'agent.chrome.nav_publish' => 'Articles, News and Downloads',
 	'agent.chrome.nav_settings' => 'Settings',
 	'agent.chrome.notify_list-new-messages' => '<span class="notify-count">0</span> New Notifications',
