@@ -84,8 +84,12 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		var left = 0;
 		if (!paneVis.source) {
 			$('#dp_source').hide();
+			$('#dp_nav').hide();
+			$('#dp_center').css('left', 0);
 		} else {
 			$('#dp_source').show();
+			$('#dp_nav').show();
+			$('#dp_center').css('left', 55);
 			left += 215;
 		}
 
@@ -121,17 +125,27 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			leftHide.find('li').hide();
 
 			if (!paneVis.source) {
-				leftHide.find('.source_pane').show();
+				leftHide.find('.source_pane').css('display', 'inline-block');
 				leftHide.css('left', 0);
 			} else {
 				leftHide.css('left', this.LEFT_START);
 			}
 			if (!paneVis.list) {
-				leftHide.find('.list_pane').show();
+				leftHide.find('.list_pane').css('display', 'inline-block');
 			}
 		} else {
 			leftHide.hide();
 		}
+
+		var body = $('body');
+		if (paneVis.source) body.addClass('panevis-source-on').removeClass('panevis-source-off');
+		else body.removeClass('panevis-source-on').addClass('panevis-source-off');
+
+		if (paneVis.list) body.addClass('panevis-list-on').removeClass('panevis-list-off');
+		else body.removeClass('panevis-list-on').addClass('panevis-list-off');
+
+		if (paneVis.tabs) body.addClass('panevis-tabs-on').removeClass('panevis-tabs-off');
+		else body.removeClass('panevis-tabs-on').addClass('panevis-tabs-off');
 
 		this.fireEvent('resized', [this]);
 	}

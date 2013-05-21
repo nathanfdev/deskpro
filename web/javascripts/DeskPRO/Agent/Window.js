@@ -666,13 +666,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
 		});
-		$('#tabNavigationPane, #dp_right_collapsed').on('click', '.toggle_tabs_pane', function(ev) {
+		$('#dp_right_collapsed').on('click', function(ev) {
 			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', !DeskPRO_Window.paneVis.tabs);
+			DeskPRO_Window.setPaneVis('tabs', true);
 		});
 		$('#dp_right_collapsed .toggle_tabs_pane').on('click', function(ev) {
 			ev.preventDefault();
 			DeskPRO_Window.setPaneVis('tabs', true);
+		});
+
+		$('#tabNavigationPane .toggle_tabs_pane').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			DeskPRO_Window.setPaneVis('tabs', false);
 		});
 
 		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
@@ -3896,6 +3902,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	setPaneVis: function(id, vis) {
 		this.paneVis[id] = vis;
-		this.layout.doResize();
+		this.layout.doResize(true);
 	}
 });

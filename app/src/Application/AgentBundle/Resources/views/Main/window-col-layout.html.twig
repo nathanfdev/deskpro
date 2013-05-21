@@ -1,13 +1,13 @@
 <div id="dp_center">
 	<div class="collapsed-area" id="dp_left_collapsed">
 		<ul>
-			<li class="source_pane"><span><i class="icon-dashboard"></i> Navigation</span></li>
-			<li class="list_pane"><span><i class="icon-filter"></i> Listing</span></li>
+			<li class="source_pane toggle_source_pane"><span><i class="icon-dashboard"></i> Navigation</span></li>
+			<li class="list_pane toggle_list_pane"><span><i class="icon-filter"></i> Listing</span></li>
 		</ul>
 	</div>
 	<div class="collapsed-area" id="dp_right_collapsed">
 		<ul>
-			<li class="tabs_pane"><span><i class="icon-globe"></i> Tabs</span></li>
+			<li class="tabs_pane toggle_tabs_pane"><span><i class="icon-globe"></i> Tabs</span></li>
 		</ul>
 	</div>
 	<div id="dp_source">
@@ -19,6 +19,9 @@
 	<div id="dp_list_resizer"><div></div></div>
 	<div id="dp_content">
 		<div id="tabNavigationPane">
+			<div style="position: absolute; top: 10px; right: 10px;z-index:1000000;">
+				<span class="toggle_tabs_pane" style="background-color: #fff; border-radius: 10px; line-height: 100%; padding: 1px; cursor: pointer;"><i class="icon-double-angle-right"></i></span>
+			</div>
 			<div id="tabNavSelectorLeft">
 				<a class="tabSlideLeft"></a>
 			</div>
