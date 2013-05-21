@@ -19,6 +19,8 @@
 	'agent.chrome.chat_list_heading_time' => 'Time',
 	'agent.chrome.btn_create' => 'Create',
 	'agent.chrome.btn_recent' => 'Recent',
+	'agent.chrome.recent_list-none' => 'You have not opened any tabs yet',
+	'agent.chrome.recent_list-filter-info' => 'Start typing to search',
 	'agent.chrome.create_new-ticket' => 'New Ticket',
 	'agent.chrome.create_new-person' => 'New Person',
 	'agent.chrome.create_new-organization' => 'New Organization',

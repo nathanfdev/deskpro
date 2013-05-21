@@ -103,11 +103,11 @@
 			<a class="btn dp-recent-btn"><i class="icon-time"></i><span class="btn-text">{{ phrase('agent.chrome.btn_recent') }}</span></a>
 			<div class="dp-recent-list-dropdown">
 				<header>
-					<input type="text" name="filter" class="filter" placeholder="Filter" id="recent_tabs_list_filter" />
+					<input type="text" name="filter" class="filter" placeholder="{{ phrase('agent.chrome.recent_list-filter-info') }}" id="recent_tabs_list_filter" />
 				</header>
 				<article>
 					<ul id="recent_tabs_list">
-						<li id="recent_tabs_list_li_none">You have not opened any tabs yet</li>
+						<li id="recent_tabs_list_li_none">{{ phrase('agent.chrome.recent_list-none') }}</li>
 					</ul>
 				</article>
 			</div>
