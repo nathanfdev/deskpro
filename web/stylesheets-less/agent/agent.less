@@ -1425,14 +1425,13 @@ html#dp_login_page {
 #dp_nav_sections {
 	background-color: @agent_nav_bg_color;
 	border-right: 1px solid darken(@agent_nav_bg_color, 15%);
-	bottom: 0;
 	box-shadow: -2px -5px 4px darken(@agent_nav_bg_color, 10%) inset;
 	font-size: 10px;
 	left: 0;
 	overflow: hidden;
 	position: absolute;
 	top: (@agent_header_height + 1);
-	bottom: 0;
+	bottom: -20px; // -20px so the shadow doesnt appear at the bottom
 	width: @agent_nav_width;
 
 	li span.count-badge {
@@ -1476,9 +1475,10 @@ html#dp_login_page {
 				color: #C0C2CA;
 				display: block;
 				font-weight: normal;
-				height: 40px;
+				height: 50px;
 				width: 54px;
 				margin: 0;
+				margin-left: 1px;
 				padding: 0;
 				background-image: url('@{img_path}/agent/app-nav/navigation-icons.png');
 				background-repeat: no-repeat;
@@ -1516,12 +1516,12 @@ html#dp_login_page {
 	li#settings_section{
 		position: absolute;
 		left: 0;
-		bottom: 66px;
+		bottom: 86px;
 	}
 	li#chat_agent_section {
 		position: absolute;
 		left: 0;
-		bottom: 0;
+		bottom: 20px;
 	}
 }
 
