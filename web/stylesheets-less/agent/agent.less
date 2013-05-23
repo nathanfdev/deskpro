@@ -849,6 +849,18 @@ table.layout-table {
 				padding: 6px 6px 6px 11px;
 				color: @agent_menu_text_color;
 
+				strong {
+					background: #717780;
+					color: #fff;
+					padding: 2px 7px;
+					font-size: 11px;
+					font-weight: normal;
+					border-radius: 10px;
+					margin-right: 5px;
+					float: left;
+					line-height: 15px;
+				}
+
 				span {
 					display: inline-block;
 					text-overflow: ellipsis;
@@ -1163,6 +1175,17 @@ table.layout-table {
 		> li.twitter { background-position: -295px 8px; }
 		> li.twitter:hover, > li.twitter.active { background-position: -295px -32px; }
 
+		> li.version-notes {
+			background: transparent;
+			i {
+				position: relative;
+				top: 4px;
+				left: 3px;
+				color: #fff;
+				font-size: 21px;
+			}
+		}
+
 		> li span.badge {
 			display: inline-block;
 			padding: 0 3px;
@@ -1178,6 +1201,7 @@ table.layout-table {
 			position: absolute;
 			right: -3px;
 			top: -2px;
+			z-index: 2;
 		}
 	}
 }

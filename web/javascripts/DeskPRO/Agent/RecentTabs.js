@@ -179,6 +179,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			.data('route', 'page:'+item[3])
 			.attr('data-route', 'page:'+item[3])
 			.find('span').text(item[2]);
+		row.find('a').find('strong').text(item[1]);
 
 		var filterVal = $.trim($('#recent_tabs_list_filter').val());
 		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {

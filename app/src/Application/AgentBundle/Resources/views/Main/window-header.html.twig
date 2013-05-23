@@ -120,7 +120,11 @@
 	<script type="text/x-deskpro-plain" id="recent_tabs_list_tpl">
 		<li>
 			<time></time>
-			<a><i class="icon-envelope dp-icon-placeholder"></i> <span></span></a>
+			<a>
+				<strong></strong>
+				<i class="icon-envelope dp-icon-placeholder"></i>
+				<span></span>
+			</a>
 		</li>
 	</script>
 
@@ -156,6 +160,12 @@
 					</li>
 				{% endif %}
 			{% endfor %}
+			{% if version_notices.count() %}
+				<li class="version-notes notification type-row" data-ids="{{ version_notices.getWaitingIds()|join(',') }}" id="notice_trigger">
+					<span class="badge">{{ version_notices.count() }}</span>
+					<i class="icon-bullhorn"></i>
+				</li>
+			{% endif %}
 		</ul>
 
 		<script type="text/x-deskpro-plain" id="dp_header_notify_row_tpl">
