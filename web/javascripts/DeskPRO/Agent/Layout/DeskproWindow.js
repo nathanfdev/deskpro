@@ -84,8 +84,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		var left = 0;
 		if (!paneVis.source) {
 			$('#dp_source').hide();
-			$('#dp_nav').hide();
-			$('#dp_center').css('left', 0);
+			$('#dp_center').css('left', 55);
 		} else {
 			$('#dp_source').show();
 			$('#dp_nav').show();
@@ -100,32 +99,38 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_list').show();
 			listSizer.show();
 			if (!paneVis.source) {
-				$('#dp_list').css('left', 26);
+				$('#dp_list').css('left', 37);
 				left += listWidth;
 			} else {
-				if (!paneVis.tabs) {
-					$('#dp_list').css('left', this.LEFT_START + 36);
-				} else {
-					$('#dp_list').css('left', this.LEFT_START);
-				}
+				$('#dp_list').css('left', this.LEFT_START);
 				left += listWidth;
 			}
 		}
 
-		if (!paneVis.tabs) {
-			left += 31;
+		if (!paneVis.list || !paneVis.source) {
+			left += 37;
 		}
 
 		if (left) {
 			$('#dp_content').css('left', left);
 		} else {
-			$('#dp_content').css('left', 26);
+			$('#dp_content').css('left', 37);
 		}
 
 		listSizer.css('left', left-2);
 
-		if (!paneVis.tabs) {
+		if (!paneVis.source || !paneVis.list) {
 			leftHide.show();
+
+			if (!paneVis.source) {
+				leftHide.find('.source_pane').css('display', 'inline-block');
+				leftHide.css('left', 0);
+			} else {
+				leftHide.css('left', this.LEFT_START);
+			}
+			if (!paneVis.list) {
+				leftHide.find('.list_pane').css('display', 'inline-block');
+			}
 		} else {
 			leftHide.hide();
 		}

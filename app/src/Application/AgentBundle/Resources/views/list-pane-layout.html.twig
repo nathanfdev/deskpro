@@ -1,6 +1,13 @@
 {% block top %}{% endblock %}
 <div class="list-pane-instance {{ add_classname }}">
 	<div class="list-pane-header">
+		<div class="pane-switchers-horizontal">
+			<ul>
+				<li class="view1 panevis-toggle-tableview"></li>
+				<li class="view2 panevis-toggle-normalview"></li>
+				<li class="view3 panevis-toggle-tabview"></li>
+			</ul>
+		</div>
 		{% block pane_header %}{% endblock %}
 	</div>
 	<div class="list-pane-content">
