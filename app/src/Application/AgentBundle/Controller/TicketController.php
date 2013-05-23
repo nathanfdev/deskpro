@@ -3654,7 +3654,7 @@ class TicketController extends AbstractController
 				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
 			}
 
-			if ($message->email_source->source_info) {
+			if ($message->email_source && $message->email_source->source_info) {
 				file_put_contents($tmpdir . '/message-'.$message->id.'.log', $message->email_source->getSourceInfoAsString());
 			}
 		}
