@@ -91,7 +91,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var self = this;
 
-		$('time.timeago', row).text('').attr('datetime', (new Date()).toISOString());
+		row.find('time').addClass('timeago');
+		row.find('time.timeago').text('').attr('datetime', (new Date()).toISOString());
 		DeskPRO_Window.initInterfaceServices(row);
 
 		var ev = { row: row, type: type };
@@ -220,13 +221,15 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var list = $('#dp_header_notify_wrap').find('li.type-row.' + listType);
 		var el = list.find('.badge').first();
+		var el2 = list.find('.notify-count').first();
 
 		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el };
 		this.fireEvent('beforeModCount', ev);
 
 		if (op == '=') {
 			var newcount = count || 0;
-			$('.counter', el).text(newcount);
+			el.text(newcount);
+			el2.text(newcount);
 		} else {
 			var newcount = parseInt(el.text().trim());
 			if (op == '+') {
@@ -237,7 +240,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			if (newcount < 0) newcount = 0;
 
-			el.text(newcount || 0);
+			el.text(newcount || '0');
+			el2.text(newcount || '0');
 		}
 
 		// <3 because the dismiss button and the help note are li's
