@@ -54,22 +54,23 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 
 		$('#dp_search_box_help_trigger').on('mousedown', function(ev) {
 			Orb.cancelEvent(ev);
-			searchBox.addClass('dp-stick-open');
+			searchBox.addClass('dp-stick-open dp-regaining-focus');
 			searchHelp.addClass('active');
 
 			var closeFn = function() {
-				searchBox.focus();
+				searchBox.addClass('dp-focus');
 				searchBox.removeClass('dp-stick-open');
 				searchHelp.removeClass('active');
+				searchBox.focus();
+
+				window.setTimeout(function() {
+					searchBox.removeClass('dp-regaining-focus');
+				}, 200);
 			};
 
 			if (!searchHelp.data('has-init')) {
 				searchHelp.on('click', function(ev) {
 					ev.stopPropagation();
-				});
-				searchHelp.find('.trigger-close').on('click', function(ev) {
-					Orb.cancelEvent(ev);
-					Orb.shimClickCallbackPop();
 				});
 			}
 
@@ -122,6 +123,10 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 		}).on('blur', function() {
 			$(this).removeClass('dp-focus');
 
+			if ($(this).hasClass('dp-regaining-focus')) {
+				return;
+			}
+
 			window.setTimeout(function() {
 				if (!searchBox.hasClass('dp-focus')) {
 					closeResults();
@@ -142,7 +147,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 				$('#dp_search_box_help_trigger').hide();
 
 				$('#dp_header_logo_wrap').show();
-			}, 100);
+			}, 130);
 		});
 
 		//------------------------------
@@ -181,6 +186,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 
 				sectionEl = $(DeskPRO_Window.util.getPlainTpl('#dp_header_search_row_title_tpl'));
 				sectionEl.data('type', type);
+				sectionEl.find('.type-icon').addClass($('#dp_header_search_row_title_tpl').data('icon-' + type) || 'icon-caret-right');
 				sectionEl.find('.type-title').text($('#dp_header_search_row_title_tpl').data('title-' + type) || type);
 				sectionEl.find('.show-more').hide();
 				sectionEl.appendTo(list);
