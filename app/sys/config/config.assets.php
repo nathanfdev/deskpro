@@ -550,6 +550,7 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
 		'javascripts/DeskPRO/User/ElementHandler/CommentFormLogin.js',
 		'javascripts/DeskPRO/User/ElementHandler/FeedbackAgreeBtn.js',
+		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 		'javascripts/DeskPRO/User/InlineSuggestions.js',
