@@ -239,6 +239,14 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 										el.val(v).change();
 									}
 								}, this);
+							} else if (typeOf(subval) == 'array') {
+								Array.each(subval, function(v) {
+									var k_name = sub_name + "[]";
+									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row);
+									if (el.is('select')) {
+										el.find('[value="' + v + '"]').prop('selected', true);
+									}
+								}, this);
 							} else {
 								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval).change();
 							}
