@@ -124,7 +124,7 @@ class SendAgentEmailAction extends AbstractAction
 		foreach ($this->notify_agents as $a) {
 			if ($a == 'assigned_agent') {
 				if ($ticket->agent) {
-					$agent_id[] = $ticket->agent->getId();
+					$agent_ids[] = $ticket->agent->getId();
 				}
 			} elseif ($a == 'assigned_agent_team') {
 				if ($ticket->agent_team) {
