@@ -314,7 +314,9 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 		}
 
 		if ($r->count() == 1) {
-			return $r->getFirst();
+			$arr = $r->getFirst();
+			$arr['accountDomainName'] = $this->options['accountDomainName'];
+			return $arr;
 		}
 		return null;
 	}
