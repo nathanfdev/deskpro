@@ -630,6 +630,31 @@ table.layout-table {
 		}
 	}
 
+	.sound-row {
+		border-bottom: 1px solid @agent_bigmenu_border_color;
+		line-height: 100%;
+		padding: 5px 10px 6px 10px;
+		font-size: 11px;
+		vertical-align: bottom;
+		text-align: center;
+		cursor: pointer;
+
+		&:hover {
+			color: #3287D0;
+		}
+
+		i {
+			font-size: 13px;
+			position: relative;
+			top: 1px;
+			margin-left: 3px;
+
+			&.icon-volume-off {
+				color: #940F00;
+			}
+		}
+	}
+
 	.agents.list {
 		padding: 0 10px;
 
@@ -761,6 +786,13 @@ table.layout-table {
 			color: transparent;
 		}
 	}
+}
+
+#volume_controls_back {
+	.zindex-chrome2;
+}
+#volume_controls {
+	.zindex-chrome3;
 }
 
 //-------------------------

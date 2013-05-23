@@ -2392,14 +2392,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.volume = 0.8;
+		$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-up');
 
 		var updateVolumeUi = function() {
 			if (self.volume == 0 || self.volume == 0.0) {
 				self.volume = 0;
-				$('#sound_icon').addClass('off');
 				$('#sound_icon_in').addClass('off');
+				$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up').addClass('icon-volume-off');
 			} else {
-				$('#sound_icon').removeClass('off');
+				if (self.volume < 0.6) {
+					$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-down');
+				} else {
+					$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-up');
+				}
+
 				$('#sound_icon_in').removeClass('off');
 			}
 
@@ -2457,9 +2463,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var showSoundMenu = function() {
 			$('#volume_controls_back').show();
+
+			var atEl = $('#sound_icon').find('i');
 			$('#volume_controls').css({
-				'top': 30,
-				'right': 228
+				'top': atEl.offset().top - 1,
+				'left': atEl.offset().left - 2
 			});
 
 			$('#volume_controls').fadeIn();
