@@ -56,7 +56,7 @@
 					<a title="{{ phrase('agent.chrome.nav_settings') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span class="settingsNavIcon"></span></a>
 				</li>
 			{% endif %}
-			<li id="chat_agent_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
+			<li id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
 				{# <span id="chat_online_count">0</span> #}
 				<span class="count-badge" style="display: none"><span></span></span>
 				<a title="{{ phrase('agent.chrome.nav_agentchat') }}"><span class="agentchatNavIcon"></span></a>

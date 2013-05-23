@@ -603,7 +603,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				},
 				content: {attr: 'title'},
 				style: {
-					classes: 'qtip-youtube'
+					classes: 'qtip-dark qtip-rounded'
 				}
 			});
 		});
@@ -709,6 +709,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 
 		$('#dp_header_userchat_btn').on('click', function() {
+			if (DeskPRO_Window.sections.chat_section) {
+				DeskPRO_Window.sections.chat_section.refreshOnlineUsers();
+			}
 			var wrap = $(this).parent();
 			wrap.addClass('active');
 

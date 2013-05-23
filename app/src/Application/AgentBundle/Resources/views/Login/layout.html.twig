@@ -155,28 +155,23 @@
 	#dp_login #wrapper .dialog-box .content form p br {
 		display: none;
 	}
-	#dp_login #wrapper .dialog-box .content form fieldset p input {
+	#dp_login #wrapper .dialog-box .content form fieldset label {
+		margin: 0;
+		padding: 0;
+	}
+	#dp_login #wrapper .dialog-box .content form fieldset p input[type="text"],
+	#dp_login #wrapper .dialog-box .content form fieldset p input[type="password"] {
 		display: block;
 		padding: 0 12px 0 42px;
 		width: 244px;
 		height: 40px;
+		line-height: 40px;
 		margin: 0;
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		-ms-border-radius: 3px;
 		-o-border-radius: 3px;
 		border-radius: 3px;
-	}
-	#dp_login #wrapper .dialog-box .content form fieldset p label {
-		position: absolute;
-		top: 12px;
-		left: 36px;
-		width: 250px;
-		display: block;
-		margin: 0 5px 0 6px;
-		padding: 0;
-	}
-	#dp_login #wrapper .dialog-box .content form fieldset p input {
 		border: solid 1px #c3c4c7;
 		box-shadow: none;
 	}
@@ -186,10 +181,6 @@
 	}
 	#dp_login #wrapper .dialog-box .content form fieldset p input.wrong {
 		border-color: #e74c3c;
-	}
-	#dp_login #wrapper .dialog-box .content form fieldset p label {
-		color: #656c73;
-		font-size: 14px;
 	}
 	#dp_login #wrapper .dialog-box .content form fieldset p .label {
 		cursor: text;
@@ -205,11 +196,6 @@
 	#dp_login #wrapper .dialog-box .content form fieldset i.icon-lock {
 		font-size: 20px;
 		left: 14px;
-	}
-	#dp_login #wrapper .dialog-box .content form label.checkbox {
-		font-size: 11px;
-		color: #656c73;
-		font-weight: bold;
 	}
 	#dp_login #wrapper .dialog-box .content form input[type="submit"] {
 		border: none;

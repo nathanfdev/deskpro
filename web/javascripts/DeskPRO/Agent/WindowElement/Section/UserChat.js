@@ -237,8 +237,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
 			var count = parseInt(info.online_count);
-			DeskPRO_Window.util.modCountEl($('#userOnlineCount'), '=', count);
-			DeskPRO_Window.util.modCountEl($('#userOnlineCount2'), '=', count);
+			DeskPRO_Window.util.modCountEl($('.userchat-online-users-count'), '=', count);
 
 			if (count != self.lastOnlineUserCount) {
 				self.lastOnlineUserLoad = null;

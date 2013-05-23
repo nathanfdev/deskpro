@@ -244,8 +244,8 @@ HTML;
 			return $this->redirectRoute('user_login');
 		}
 
-		if (!$this->consumeRequest('user_login')) {
-			return $this->redirectRoute('user_login');
+		if (!$this->in->getBool('agent_login') && !$this->consumeRequest('user_login')) {
+			return $this->redirectRoute($this->route_prefix . '_login');
 		}
 
 		$return = $this->in->getString('return');
@@ -254,6 +254,13 @@ HTML;
 
 		// Form wasnt inputted (eg direct url)
 		if (!$this->in->getString('email') || !$this->in->getString('password')) {
+
+			if ($this->getRequest()->getMethod() == 'POST') {
+				$this->session->set('failed_login_name', true);
+				$this->session->save();
+				return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+			}
+
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 
