@@ -1175,6 +1175,15 @@ table.layout-table {
 		> li.twitter { background-position: -295px 8px; }
 		> li.twitter:hover, > li.twitter.active { background-position: -295px -32px; }
 
+		> li.none {
+			background: url('@{img_path}/header-notification-bell.png') no-repeat;
+			background-position: 4px 6px;
+
+			&:hover, &.active {
+				background-position: 4px -34px;
+			}
+		}
+
 		> li.version-notes {
 			background: transparent;
 			i {

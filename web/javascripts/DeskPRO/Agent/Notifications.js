@@ -256,11 +256,18 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		if (newcount < 1) {
 			el.hide();
 			list.removeClass('dp-notifications-on');
+			list.hide();
 			this.fireEvent('typeHide', [type, el]);
+
+			if (!$('#dp_header_notify_wrap').find('.dp-notifications-on')[0]) {
+				$('#dp_header_notify_wrap').find('li.none').show();
+			}
 		} else {
 			el.show();
+			list.show();
 			list.addClass('dp-notifications-on');
 			this.fireEvent('typeShow', [type, el]);
+			$('#dp_header_notify_wrap').find('li.none').hide();
 		}
 
 		this.updatePositions();
