@@ -13,7 +13,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
 			interval: this.options.interval,
-			ajaxType: 'GET'
+			ajaxType: 'POST'
 		});
 
 		this.poller.addData((function () {
