@@ -1,10 +1,11 @@
 {% block top %}{% endblock %}
 <div class="source-pane-instance {{ add_classname }}">
 	<div class="source-pane-header">
-		<div class="pane-controls">
-			<span class="toggle_source_pane"><i class="icon-double-angle-left"></i></span>
-		</div>
-		{% block pane_header %}{% endblock %}
+		<ul id="source_top_tabs">
+			{% block pane_main_tab %}{% endblock %}
+			{% block pane_other_tabs %}<li class="tab"><i class="icon-search"></i> Search</li>{% endblock %}
+			<li class="arrow panevis-toggle-sourcepane"></li>
+		</ul>
 	</div>
 	<div class="source-pane-content">
 		<div class="layout-content with-scrollbar">

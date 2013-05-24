@@ -1661,6 +1661,271 @@ table.layout-table {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+// Source Pane
+//----------------------------------------------------------------------------------------------------------------------
+
+#dp_source {
+	background: #eff1f4;
+	overflow: visible;
+
+	#source_top_tabs {
+		position: relative;
+		border-bottom: 3px solid #2273af;
+		height: 29px;
+		padding: 6px 6px 0;
+		background: #d5d6da;
+		margin-bottom: 6px;
+		font-size: 12px;
+		li {
+			cursor: pointer;
+		}
+		li.tab {
+			float: left;
+			width: 94px;
+			height: 29px;
+			color: #5a606a;
+			text-transform: uppercase;
+			line-height: 29px;
+			text-align: center;
+		}
+		li.active {
+			background-color: #2273af;
+			border-radius: 3px 3px 0 0;
+			color: #fff;
+			line-height: 31px;
+			cursor: default;
+		}
+		li.arrow {
+			position: absolute;
+			right: 10px;
+			top: 14px;
+			width: 12px;
+			height: 12px;
+			background: url('@{img_path}/source-arrow-hide.png') no-repeat;
+		}
+	}
+	.row {
+		margin: 0 20px 0 10px;
+		clear: both;
+		position: relative;
+		label {
+			display: block;
+			color: #404448;
+			font-size: 12px;
+			font-weight: bold;
+			margin: 10px 0 5px 2px;
+		}
+		button {
+			display: inline-block;
+			position: relative;
+			margin-top: 10px;
+			height: 30px;
+			padding: 0 10px;
+			font-size: 12px;
+			line-height: 30px;
+			color: #fff;
+			text-align: left;
+			vertical-align: middle;
+			cursor: pointer;
+			border: 1px solid #0a4066;
+			border-radius: 3px;
+			background: #2c84c5;
+			box-shadow: inset 0px 1px 0px 0px #6ab8e1;
+		}
+		.btn-group {
+			position: relative;
+			white-space: nowrap;
+			vertical-align: middle;
+			.btn.dropdown-toggle {
+				display: block;
+				padding: 3px 8px;
+				margin-bottom: 0;
+				font-size: 12px;
+				line-height: 20px;
+				color: #616a73;
+				vertical-align: middle;
+				cursor: pointer;
+				background-color: #fff;
+				border: 1px solid #c3c4c7;
+			}
+			.btn.action {
+				display: inline-block;
+				padding: 2px 6px;
+				margin-bottom: 0;
+				font-size: 11px;
+				line-height: 20px;
+				color: #5b646c;
+				vertical-align: middle;
+				cursor: pointer;
+				background-color: #f6f6f7;
+				border: 1px solid #b8bdbd;
+			}
+			.caret {
+				display: inline-block;
+				float: right;
+				width: 0;
+				height: 0;
+				margin-top: 8px;
+				vertical-align: top;
+				border-top: 4px solid #bec0c3;
+				border-right: 4px solid transparent;
+				border-left: 4px solid transparent;
+				content: "";
+			}
+			input {
+				box-shadow: none;
+				display: block;
+				padding: 3px 8px;
+				margin-bottom: 0;
+				font-size: 12px;
+				line-height: 20px;
+				color: #616a73;
+				vertical-align: middle;
+				background-color: #fff;
+				border: 1px solid #c3c4c7;
+			}
+			.dropdown-menu {
+				position: absolute;
+				top: 28px;
+				left: 0;
+				z-index: 2;
+				width: 202px;
+				display: none;
+				background: #fff;
+				border: 1px solid #c3c4c7;
+				border-top: none;
+				li {
+					a {
+						padding: 3px 8px;
+						color: #616a73;
+						display: block;
+						&:hover {
+							background-color: #eff1f4;
+						}
+					}
+				}
+			}
+		}
+		.btn-group.alt {
+			clear: both;
+			.btn {
+				float: left;
+				width: 150px;
+			}
+			.extend {
+				float: right;
+				height: 21px;
+				width: 28px;
+				padding-top: 6px;
+				background: #f5f6f7;
+				border: 1px solid #b8bdbd;
+				text-align: center;
+				cursor: pointer;
+				i {
+					font-size: 14px;
+					color: #8e99a4;
+				}
+			}
+			input {
+				float: left;
+				width: 150px;
+			}
+		}
+		.extended-right-box {
+			position: absolute;
+			left: 224px;
+			top: 0;
+			z-index: 2;
+			height: 340px;
+			width: 500px;
+			background: #eff1f4;
+			border: 1px solid #b0b2b6;
+			border-left: 0;
+			border-radius: 0 3px 3px 0;
+			box-shadow:  2px 2px 3px rgba(0, 0, 0, 0.15);
+			padding: 15px;
+			.row {
+			margin: 0 0 10px 0;
+			color: #5a5f64;
+			position: relative;
+			}
+			input {
+				box-shadow: none;
+				display: inline-block;
+				padding: 3px 8px;
+				margin-bottom: 0;
+				font-size: 12px;
+				line-height: 20px;
+				color: #616a73;
+				vertical-align: middle;
+				background-color: #fff;
+				border: 1px solid #c3c4c7;
+			}
+			.btn.dropdown-toggle {
+				display: inline-block;
+				min-width: 120px;
+			}
+			.seperator {
+				position: relative;
+				height: 20px;
+				margin-bottom: 10px;
+				.text {
+					height: 20px;
+					width: 30px;
+					text-align: center;
+					background: #eff1f4;
+					border: 1px solid #b0b2b6;
+					text-transform: uppercase;
+					line-height: 20px;
+					font-size: 10px;
+					position: absolute;
+					left: 234px;
+					top: 0;
+				}
+				.line {
+					height: 9px;
+					border-bottom: 1px solid #b0b2b6;
+				}
+			}
+			.remove {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding-top: 6px;
+				background: #f5f6f7;
+				border: 1px solid #b8bdbd;
+				text-align: center;
+				width: 28px;
+				height: 20px;
+				cursor: pointer;
+				i {
+					color: #8e99a4;
+				}
+			}
+			.add-new {
+				float: left;
+				padding-top: 6px;
+				background: #f5f6f7;
+				border: 1px solid #b8bdbd;
+				text-align: center;
+				width: 28px;
+				height: 20px;
+				cursor: pointer;
+				margin: 12px 10px 0 25px;
+				i {
+					color: #8e99a4;
+				}
+			}
+		}
+		input.left-space {
+			margin-left: 61px;
+		}
+
+
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 // Spinner icons
 //----------------------------------------------------------------------------------------------------------------------
 
