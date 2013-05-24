@@ -62,14 +62,6 @@ table.layout-table {
 // LAYOUT
 //----------------------------------------------------------------------------------------------------------------------
 
-#dp_left_collapsed {
-	left: 215px;
-	width: 36px;
-
-	background: #D1D3D3;
-	border-right: 1px solid darken(#D1D3D3, 10%);
-}
-
 #dp_right_collapsed {
 	right: 0;
 
@@ -169,126 +161,6 @@ table.layout-table {
 	}
 }
 
-.pane-switchers-horizontal ul {
-	float: left;
-	position: relative;
-	display: inline-block;
-	font-size: 0;
-	white-space: nowrap;
-	vertical-align: middle;
-	margin: 5px 0 0 5px;
-	.zindex-chrome;
-
-	li {
-		display: inline-block;
-		float: left;
-	}
-	li:hover {
-		cursor: pointer;
-	}
-	li.view1 {
-		background: url('@{img_path}/switch-buttons-left.png') no-repeat top center;
-		width: 33px;
-		height: 26px;
-	}
-	li.view1:hover {
-		background-position: center center;
-	}
-	li.view1.active {
-		background-position: bottom center;
-	}
-	li.view2 {
-		background: url('@{img_path}/switch-buttons-center.png') no-repeat top center;
-		width: 34px;
-		height: 26px;
-	}
-	li.view2:hover {
-		background-position: center center;
-	}
-	li.view2.active {
-		background-position: bottom center;
-	}
-	li.view3 {
-		background: url('@{img_path}/switch-buttons-right.png') no-repeat top center;
-		width: 32px;
-		height: 26px;
-	}
-	li.view3:hover {
-		background-position: center center;
-	}li.view3.active {
-		background-position: bottom center;
-	}
-}
-
-.pane-switchers-vertical {
-	position: relative;
-	ul {
-		position: absolute;
-		top: 8px;
-		left: 4px;
-		display: block;
-		font-size: 0;
-		white-space: nowrap;
-		vertical-align: middle;
-		margin: 0;
-		padding: 0;
-
-		li {
-			display: block;
-		}
-		li:hover {
-			cursor: pointer;
-		}
-		li.view1 {
-			background: url('@{img_path}/switch-buttons-top.png') no-repeat top center;
-			width: 27px;
-			height: 27px;
-		}
-		li.view1:hover {
-			background-position: center center;
-		}
-		li.view1.active {
-			background-position: bottom center;
-		}
-		li.view2 {
-			background: url('@{img_path}/switch-buttons-middle.png') no-repeat top center;
-			width: 27px;
-			height: 27px;
-		}
-		li.view2:hover {
-			background-position: center center;
-		}
-		li.view2.active {
-			background-position: bottom center;
-		}
-		li.view3 {
-			background: url('@{img_path}/switch-buttons-bottom.png') no-repeat top center;
-			width: 27px;
-			height: 26px;
-		}
-		li.view3:hover {
-			background-position: center center;
-		}li.view3.active {
-			background-position: bottom center;
-		}
-	}
-}
-
-.panevis-list-on.panevis-tabs-off {
-	.pane-switchers-vertical .view1 { background-position: right center; }
-	.pane-switchers-horizontal .view1 { background-position: bottom center; }
-}
-
-.panevis-list-on.panevis-tabs-on {
-	.pane-switchers-vertical .view2 { background-position: right center; }
-	.pane-switchers-horizontal .view2 { background-position: bottom center; }
-}
-
-.panevis-list-off.panevis-tabs-on {
-	.pane-switchers-vertical .view3 { background-position: right center; }
-	.pane-switchers-horizontal .view3 { background-position: bottom center; }
-}
-
 //----------------------------------------------------------------------------------------------------------------------
 // HEADER
 //----------------------------------------------------------------------------------------------------------------------
@@ -302,7 +174,7 @@ table.layout-table {
 
 	.group {
 		position: relative;
-		margin: 10px 0 0 10px;
+		margin: 8px 0 0 10px;
 		padding: 0 10px;
 		height: 40px;
 		background: url('@{img_path}/header-delimiter.png') no-repeat left top;
@@ -314,6 +186,83 @@ table.layout-table {
 		width: 103px;
 		background: url('@{img_path}/header-logo.png') no-repeat left top;
 	}
+
+	.panevis-switcher {
+		display: block;
+		margin: 8px 10px 0 0;
+		padding: 3px 12px;
+		height: 40px;
+		background: url('@{img_path}/header-delimiter.png') no-repeat right top;
+
+		ul {
+			position: relative;
+			display: inline-block;
+			font-size: 0;
+			white-space: nowrap;
+			vertical-align: middle;
+			margin: 0 0 0 8px;
+			.zindex-chrome;
+
+			li.view-source {
+				background: url('@{img_path}/switch-button-source.png') no-repeat top center;
+				height: 26px;
+				width: 28px;
+				margin-right: 6px;
+
+				&:hover {
+
+				}
+			}
+
+			li {
+				display: inline-block;
+				float: left;
+			}
+			li:hover {
+				cursor: pointer;
+			}
+			li.view1 {
+				background: url('@{img_path}/switch-buttons-left.png') no-repeat top center;
+				width: 34px;
+				height: 26px;
+			}
+			li.view1:hover {
+				background-position: center center;
+			}
+			li.view2 {
+				background: url('@{img_path}/switch-buttons-center.png') no-repeat top center;
+				width: 34px;
+				height: 26px;
+			}
+			li.view2:hover {
+				background-position: center center;
+			}
+			li.view3 {
+				background: url('@{img_path}/switch-buttons-right.png') no-repeat top center;
+				width: 32px;
+				height: 26px;
+			}
+			li.view3:hover {
+				background-position: center center;
+			}
+		}
+	}
+}
+
+.panevis-source-on {
+	#dp_header .panevis-switcher .view-source { background-position: bottom center; }
+}
+
+.panevis-list-on.panevis-tabs-off {
+	#dp_header .panevis-switcher .view1 { background-position: bottom center; }
+}
+
+.panevis-list-on.panevis-tabs-on {
+	#dp_header .panevis-switcher .view2 { background-position: bottom center; }
+}
+
+.panevis-list-off.panevis-tabs-on {
+	#dp_header .panevis-switcher .view3 { background-position: bottom center; }
 }
 
 @media all and (max-width: 990px) {
