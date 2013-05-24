@@ -2026,6 +2026,35 @@ ul.pane-tabs {
 	bottom: 0;
 }
 
+#dp_list_resizer {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	width: 6px;
+	z-index: 200;
+
+	&:hover {
+		cursor: move;
+	}
+
+	&:hover > div {
+		background: #888;
+	}
+
+	> div {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 2px;
+		right: 2px;
+		width: 2px;
+	}
+}
+
+.panevis-list-off #dp_list_resizer, .panevis-tabs-off #dp_list_resizer {
+	display: none;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 // CONTENT PANE
 //----------------------------------------------------------------------------------------------------------------------
