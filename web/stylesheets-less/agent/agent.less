@@ -1509,14 +1509,6 @@ table.layout-table {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// CONTENT PANE
-//----------------------------------------------------------------------------------------------------------------------
-
-#dp_center {
-	top: 51px;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 // NAVIGATION
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1664,46 +1656,68 @@ table.layout-table {
 // Source Pane
 //----------------------------------------------------------------------------------------------------------------------
 
-#dp_source {
-	background: #eff1f4;
-	overflow: visible;
-
-	#source_top_tabs {
-		position: relative;
-		border-bottom: 3px solid #2273af;
-		height: 29px;
-		padding: 6px 6px 0;
-		background: #d5d6da;
-		margin-bottom: 6px;
-		font-size: 12px;
-		li {
-			cursor: pointer;
-		}
-		li.tab {
-			float: left;
-			width: 94px;
-			height: 29px;
-			color: #5a606a;
-			text-transform: uppercase;
-			line-height: 29px;
-			text-align: center;
-		}
-		li.active {
-			background-color: #2273af;
-			border-radius: 3px 3px 0 0;
-			color: #fff;
-			line-height: 31px;
-			cursor: default;
-		}
-		li.arrow {
-			position: absolute;
-			right: 10px;
-			top: 14px;
-			width: 12px;
-			height: 12px;
-			background: url('@{img_path}/source-arrow-hide.png') no-repeat;
-		}
+ul.pane-tabs {
+	position: relative;
+	height: 29px;
+	padding: 7px 6px 0;
+	margin-bottom: 6px;
+	font-size: 12px;
+	li {
+		cursor: pointer;
 	}
+	li.tab {
+		float: left;
+		width: 94px;
+		height: 29px;
+		color: @agent_panetabs_text_color;
+		text-transform: uppercase;
+		line-height: 29px;
+		text-align: center;
+	}
+	li.active {
+		background: @agent_panetabs_color;
+		border-radius: 3px 3px 0 0;
+		color: @agent_panetabs_active_text_color;
+		line-height: 31px;
+		cursor: default;
+	}
+	li.arrow {
+		position: absolute;
+		right: 10px;
+		top: 14px;
+		width: 12px;
+		height: 12px;
+		background: url('@{img_path}/source-arrow-hide.png') no-repeat;
+	}
+}
+
+#dp_source .source-pane-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: (@agent_panetabs_height - 3);
+
+	background: @agent_panetabs_bg_color;
+	border-bottom: 3px solid @agent_panetabs_color;
+
+	h1 {
+		float: left;
+		font-size: 15px;
+		line-height: 36px;
+		padding: 0 0 0 9px;
+		color: @agent_panetabs_text_color;
+	}
+}
+
+#dp_source .source-pane-content {
+	top: @agent_panetabs_height;
+}
+
+#dp_source {
+	background: @agent_source_bg_color;
+	overflow: hidden;
+
 	.row {
 		margin: 0 20px 0 10px;
 		clear: both;
@@ -1922,6 +1936,148 @@ table.layout-table {
 		}
 
 
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// List Pane
+//----------------------------------------------------------------------------------------------------------------------
+
+#dp_list{
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 215px;
+	width: 468px;
+	background-color: #F5F7FA;
+	border-right: 1px;
+	border-right-style: solid;
+	border-right-color: #AFAFB4;
+	box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
+	z-index: 1;
+	line-height: 16px;
+}
+
+#dp_list > section {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+}
+
+#dp_list > section.on {
+	display: block;
+}
+
+.ie #dp_list{
+	box-shadow: 2px 0 4px 0 #8c8f93;
+}
+
+#dp_list_loading {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+
+	background: url("../../images/spinners/loading-big-circle.gif") no-repeat 50% 20px;
+}
+
+#dp_list_loading.on {
+	display: block;
+}
+
+#dp_list .list-pane-instance {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+}
+
+#dp_list .list-pane-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: (@agent_panetabs_height - 3);
+
+	background: @agent_panetabs_bg_color;
+	border-bottom: 3px solid @agent_panetabs_color;
+
+	h1 {
+		float: left;
+		font-size: 15px;
+		line-height: 36px;
+		padding: 0 0 0 9px;
+		color: @agent_panetabs_text_color;
+	}
+}
+
+#dp_list .list-pane-content {
+	position: absolute;
+	top: @agent_panetabs_height;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// CONTENT PANE
+//----------------------------------------------------------------------------------------------------------------------
+
+#dp_center {
+	top: 51px;
+}
+
+#dp_content {
+	#tabNavigationPane {
+		background: @agent_panetabs_bg_color;
+		border-bottom: 3px solid @agent_panetabs_color;
+		height: (@agent_panetabs_height - 3);
+	}
+
+	.deskproTabList li {
+		background: #fff;
+		border: none;
+		box-shadow: none;
+
+		.bound-fade {
+			@rgba_start: rgba(255,255,255,0);
+			@rgba_end: rgba(255,255,255,1);
+			background: transparent; /* old browsers just dont have fading */
+			background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+			background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+			background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+		}
+	}
+
+	.deskproTabList li.activeTabList {
+		background: @agent_panetabs_color;
+		color: @agent_panetabs_active_text_color;
+		box-shadow: none;
+
+		a {
+			color: @agent_panetabs_active_text_color;
+			margin-top: 1px;
+		}
+
+		.bound-fade {
+			@rgba_start: rgba(34,115,175,0);
+			@rgba_end: rgba(34,115,175,1);
+			background: transparent; /* old browsers just dont have fading */
+			background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+			background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+			background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+		}
 	}
 }
 
