@@ -2038,12 +2038,27 @@ ul.pane-tabs {
 		background: @agent_panetabs_bg_color;
 		border-bottom: 3px solid @agent_panetabs_color;
 		height: (@agent_panetabs_height - 3);
+		z-index: 1;
+		overflow: visible;
+	}
+
+	.dp-tab-list {
+		position: relative;
+		z-index: 2;
+	}
+
+	.deskproTabList {
+		height: 39px;
 	}
 
 	.deskproTabList li {
+		.border-radius(3px, 3px, 0, 0);
 		background: #fff;
-		border: none;
+		border: 2px solid transparent;
+		border-bottom: none;
 		box-shadow: none;
+		margin: 7px 6px 0 0;
+		width: 125px;
 
 		.bound-fade {
 			@rgba_start: rgba(255,255,255,0);
@@ -2058,18 +2073,14 @@ ul.pane-tabs {
 	}
 
 	.deskproTabList li.activeTabList {
-		background: @agent_panetabs_color;
-		color: @agent_panetabs_active_text_color;
 		box-shadow: none;
-
-		a {
-			color: @agent_panetabs_active_text_color;
-			margin-top: 1px;
-		}
+		border: 2px solid @agent_panetabs_color;
+		border-bottom: 3px solid #fff;
+		position: relative;
 
 		.bound-fade {
-			@rgba_start: rgba(34,115,175,0);
-			@rgba_end: rgba(34,115,175,1);
+			@rgba_start: rgba(255,255,255,0);
+			@rgba_end: rgba(255,255,255,1);
 			background: transparent; /* old browsers just dont have fading */
 			background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
 			background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
@@ -2077,6 +2088,10 @@ ul.pane-tabs {
 			background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
 			background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
 		}
+	}
+
+	.deskproTabList li a {
+		padding: 4px 4px 3px 19px;
 	}
 }
 
