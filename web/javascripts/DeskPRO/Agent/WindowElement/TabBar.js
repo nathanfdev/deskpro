@@ -493,6 +493,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				var last_tab_id = Object.keys(this.tabs).getLast();
 				if (last_tab_id) {
 					this.activateTabById(last_tab_id);
+				} else {
+					if (!DeskPRO_Window.paneVis.list) {
+						DeskPRO_Window.paneVis.list = true;
+						DeskPRO_Window.paneVis.tabs = false;
+						DeskPRO_Window.layout.doResize(true);
+					}
 				}
 			}
 
