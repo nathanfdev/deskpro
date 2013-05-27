@@ -2054,7 +2054,7 @@ ul.pane-tabs {
 	.deskproTabList li {
 		.border-radius(3px, 3px, 0, 0);
 		background: #fff;
-		border: 2px solid transparent;
+		border: 2px solid #99999D;
 		border-bottom: none;
 		box-shadow: none;
 		margin: 7px 6px 0 0;
@@ -2090,8 +2090,29 @@ ul.pane-tabs {
 		}
 	}
 
+	.deskproTabList li {
+		i.dp-icon-placeholder {
+			position: relative;
+			left: -3px;
+			margin-right: 0;
+			width: 14px;
+			text-align: center;
+			display: inline-block;
+			font-size: 12px;
+		}
+		&.ticket i.dp-icon-placeholder:before   { content: "\F003"; }
+		&.person i.dp-icon-placeholder:before    { content: "\F007"; }
+		&.organization i.dp-icon-placeholder:before       { content: "\F0C0"; }
+		&.news i.dp-icon-placeholder:before      { content: "\F02D"; }
+		&.task i.dp-icon-placeholder:before     { content: "\F044"; }
+		&.feedback i.dp-icon-placeholder:before  { content: "\F0EB"; }
+		&.download i.dp-icon-placeholder:before { content: "\F01A"; }
+		&.article i.dp-icon-placeholder:before  { content: "\F0F6"; }
+	}
+
 	.deskproTabList li a {
-		padding: 4px 4px 3px 19px;
+		padding: 5px 4px 2px 4px;
+		background: none;
 	}
 }
 
