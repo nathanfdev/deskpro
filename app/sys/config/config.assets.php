@@ -309,7 +309,6 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/Window.js',
 		'javascripts/DeskPRO/Agent/Layout/DeskproWindow.js',
 		'javascripts/DeskPRO/Agent/TabManager.js',
-		'javascripts/DeskPRO/Agent/TabStrip.js',
 		'javascripts/DeskPRO/Agent/TabWatcher.js',
 		'javascripts/DeskPRO/Agent/ScrollerHandler.js',
 		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
