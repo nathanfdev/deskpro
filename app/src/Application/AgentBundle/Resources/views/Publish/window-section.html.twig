@@ -1,164 +1,171 @@
-<section class="group-section open" id="publish_section_pending">
-	<header><h1>{{ phrase('agent.general.pending') }}</h1></header>
-	<article>
-		<section class="source-section sys-filters-section">
-			<ul class="source-list">
-				{% if counts.validating_comments %}
-					<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_validatingcomments') }}">
-						<h3 class="title">
-							<span class="list-counter" id="publish_validating_comments_count">{{ counts.validating_comments|default(0) }}</span>
-							{{ phrase('agent.publish.comments_to_validate') }}
-						</h3>
-					</li>
-				{% endif %}
-				{% if counts.validating_content %}
-					<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcontent') }}">
-						<h3 class="title">
-							<span class="list-counter" id="publish_validating_count">{{ counts.validating_content|default(0) }}</span>
-							{{ phrase('agent.publish.content_to_validate') }}
-						</h3>
-					</li>
-				{% endif %}
-				<li class="is-nav-item" data-route="listpane:{{ path('agent_kb_pending') }}">
-					<h3 class="title">
-						<span class="list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</span>
-						{{ phrase('agent.publish.pending_articles') }}
-					</h3>
-				</li>
-				{% if counts.drafts %}
-				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
-					<h3 class="title">
-						<span class="list-counter" id="publish_drafts_count">{{ counts.drafts|default(0) }}</span>
-						{{ phrase('agent.publish.draft_content') }}
-					</h3>
-				</li>
-				{% endif %}
-				{% if counts.all_drafts %}
-					<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'all'}) }}">
-						<h3 class="title">
-							<span class="list-counter" id="publish_drafts_count">{{ counts.all_drafts|default(0) }}</span>
-							{{ phrase('agent.publish.all_draft_content') }}
-						</h3>
-					</li>
-				{% endif %}
-			</ul>
-		</section>
-	</article>
-</section>
-
-{% if app.getSetting('core.apps_kb') %}
-	<section class="group-section open" id="publish_section_kb">
-		<header><h1>{{ phrase('agent.general.knowledgebase') }}</h1></header>
+{% extends 'AgentBundle::source-pane-layout.html.twig' %}
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
+{% block pane_main_tab %}
+	<li class="tab active"><i class="icon-user"></i> Publish</li>
+{% endblock %}
+{% block pane_content %}
+	<section class="group-section open" id="publish_section_pending">
+		<header><h1>{{ phrase('agent.general.pending') }}</h1></header>
 		<article>
-			{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
-		</article>
-	</section>
-{% endif%}
-
-{% if app.getSetting('core.apps_news') %}
-	<section class="group-section" id="publish_section_news">
-		<header><h1>{{ phrase('agent.general.news') }}</h1></header>
-		<article style="display: none">
-			{% include 'AgentBundle:Publish:news-tab.html.twig' %}
-		</article>
-	</section>
-{% endif %}
-
-{% if app.getSetting('core.apps_downloads') %}
-	<section class="group-section" id="publish_section_downloads">
-		<header><h1>{{ phrase('agent.general.downloads') }}</h1></header>
-		<article style="display: none">
-			{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
-		</article>
-	</section>
-{% endif %}
-
-<section class="group-section" id="publish_section_comments" {% if not counts.comments.all %}style="display: none;"{% endif %}>
-	<header><h1>Comments</h1></header>
-	<article style="display: none">
-		<ul class="source-list">
-			<li>
-				<h3 class="title" class="is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'all'}) }}">
-					<span class="list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</span>
-					All Comments
-				</h3>
-				<ul class="sub-group" style="display: block">
-					<li {% if not counts.comments.articles  %}style="display: none;"{% endif %}>
-						<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'articles'}) }}">
-							<span class="list-counter" id="publish_articles_comments_count">{{ counts.comments.articles|default(0) }}</span>
-							Article Comments
-						</span>
+			<section class="source-section sys-filters-section">
+				<ul class="source-list">
+					{% if counts.validating_comments %}
+						<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_validatingcomments') }}">
+							<h3 class="title">
+								<span class="list-counter" id="publish_validating_comments_count">{{ counts.validating_comments|default(0) }}</span>
+								{{ phrase('agent.publish.comments_to_validate') }}
+							</h3>
+						</li>
+					{% endif %}
+					{% if counts.validating_content %}
+						<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcontent') }}">
+							<h3 class="title">
+								<span class="list-counter" id="publish_validating_count">{{ counts.validating_content|default(0) }}</span>
+								{{ phrase('agent.publish.content_to_validate') }}
+							</h3>
+						</li>
+					{% endif %}
+					<li class="is-nav-item" data-route="listpane:{{ path('agent_kb_pending') }}">
+						<h3 class="title">
+							<span class="list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</span>
+							{{ phrase('agent.publish.pending_articles') }}
+						</h3>
 					</li>
-					<li {% if not counts.comments.news %}style="display: none;"{% endif %}>
-						<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'news'}) }}">
-							<span class="list-counter" id="publish_news_comments_count">{{ counts.comments.news|default(0) }}</span>
-							News Comments
-						</span>
+					{% if counts.drafts %}
+					<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
+						<h3 class="title">
+							<span class="list-counter" id="publish_drafts_count">{{ counts.drafts|default(0) }}</span>
+							{{ phrase('agent.publish.draft_content') }}
+						</h3>
 					</li>
-					<li {% if not counts.comments.downloads %}style="display: none;"{% endif %}>
-						<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'downloads'}) }}">
-							<span class="list-counter" id="publish_downloads_comments_count">{{ counts.comments.downloads|default(0) }}</span>
-							Download Comments
-						</span>
-					</li>
+					{% endif %}
+					{% if counts.all_drafts %}
+						<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'all'}) }}">
+							<h3 class="title">
+								<span class="list-counter" id="publish_drafts_count">{{ counts.all_drafts|default(0) }}</span>
+								{{ phrase('agent.publish.all_draft_content') }}
+							</h3>
+						</li>
+					{% endif %}
 				</ul>
-			</li>
-		</ul>
-	</article>
-</section>
+			</section>
+		</article>
+	</section>
 
-<section class="group-section" id="publish_section_glossary">
-	<header><h1>{{ phrase('agent.publish.glossary') }}</h1></header>
-	<article style="display: none">
-		{% include 'AgentBundle:Publish:kb-glossary.html.twig' %}
-		<br class="clear" />
-	</article>
-</section>
+	{% if app.getSetting('core.apps_kb') %}
+		<section class="group-section open" id="publish_section_kb">
+			<header><h1>{{ phrase('agent.general.knowledgebase') }}</h1></header>
+			<article>
+				{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
+			</article>
+		</section>
+	{% endif%}
 
-{# Category editor #}
-<div id="publish_cat_editor_backdrop" class="backdrop cat-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;"></div>
-<div id="publish_cat_editor_tab" class="cat-editor-tab" style="display: none">
-	<input type="text" class="title" />
-</div>
-<div id="publish_cat_editor" class="cat-editor" style="display: none">
-	<span class="close-trigger">x</span>
-	<h5>{{ phrase('agent.general.usergroups') }}</h5>
-	<div class="list">
-		{% for ug in usergroups if ug.sys_name == 'everyone' %}
-			<label>
-				<input type="checkbox" class="usergroup usergroup-{{ ug.id }} everyone" value="{{ ug.id }}" onclick="if (this.checked) { $('#publish_cat_editor').find(':checkbox').prop('checked', true); }" />
-				{% if ug.sys_name %}
-					{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
-				{% else %}
-					{{ ug.title }}
-				{% endif %}
-			</label>
-			<hr />
-		{% endfor %}
-		{% for ug in usergroups if ug.sys_name != 'everyone' %}
-			<label>
-				<input type="checkbox" class="usergroup usergroup-{{ ug.id }}" value="{{ ug.id }}" onclick="if (!this.checked) { $('#publish_cat_editor').find(':checkbox.everyone').prop('checked', false); }" />
-				{% if ug.sys_name %}
-					{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
-				{% else %}
-					{{ ug.title }}
-				{% endif %}
-			</label>
-		{% endfor %}
+	{% if app.getSetting('core.apps_news') %}
+		<section class="group-section" id="publish_section_news">
+			<header><h1>{{ phrase('agent.general.news') }}</h1></header>
+			<article style="display: none">
+				{% include 'AgentBundle:Publish:news-tab.html.twig' %}
+			</article>
+		</section>
+	{% endif %}
+
+	{% if app.getSetting('core.apps_downloads') %}
+		<section class="group-section" id="publish_section_downloads">
+			<header><h1>{{ phrase('agent.general.downloads') }}</h1></header>
+			<article style="display: none">
+				{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
+			</article>
+		</section>
+	{% endif %}
+
+	<section class="group-section" id="publish_section_comments" {% if not counts.comments.all %}style="display: none;"{% endif %}>
+		<header><h1>Comments</h1></header>
+		<article style="display: none">
+			<ul class="source-list">
+				<li>
+					<h3 class="title" class="is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'all'}) }}">
+						<span class="list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</span>
+						All Comments
+					</h3>
+					<ul class="sub-group" style="display: block">
+						<li {% if not counts.comments.articles  %}style="display: none;"{% endif %}>
+							<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'articles'}) }}">
+								<span class="list-counter" id="publish_articles_comments_count">{{ counts.comments.articles|default(0) }}</span>
+								Article Comments
+							</span>
+						</li>
+						<li {% if not counts.comments.news %}style="display: none;"{% endif %}>
+							<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'news'}) }}">
+								<span class="list-counter" id="publish_news_comments_count">{{ counts.comments.news|default(0) }}</span>
+								News Comments
+							</span>
+						</li>
+						<li {% if not counts.comments.downloads %}style="display: none;"{% endif %}>
+							<span class="title is-nav-item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'downloads'}) }}">
+								<span class="list-counter" id="publish_downloads_comments_count">{{ counts.comments.downloads|default(0) }}</span>
+								Download Comments
+							</span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="group-section" id="publish_section_glossary">
+		<header><h1>{{ phrase('agent.publish.glossary') }}</h1></header>
+		<article style="display: none">
+			{% include 'AgentBundle:Publish:kb-glossary.html.twig' %}
+			<br class="clear" />
+		</article>
+	</section>
+
+	{# Category editor #}
+	<div id="publish_cat_editor_backdrop" class="backdrop cat-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;"></div>
+	<div id="publish_cat_editor_tab" class="cat-editor-tab" style="display: none">
+		<input type="text" class="title" />
 	</div>
-</div>
-<div id="publish_cat_editor_shadowbreak" class="cat-editor-shadow-breaker" style="display: none" />
+	<div id="publish_cat_editor" class="cat-editor" style="display: none">
+		<span class="close-trigger">x</span>
+		<h5>{{ phrase('agent.general.usergroups') }}</h5>
+		<div class="list">
+			{% for ug in usergroups if ug.sys_name == 'everyone' %}
+				<label>
+					<input type="checkbox" class="usergroup usergroup-{{ ug.id }} everyone" value="{{ ug.id }}" onclick="if (this.checked) { $('#publish_cat_editor').find(':checkbox').prop('checked', true); }" />
+					{% if ug.sys_name %}
+						{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
+					{% else %}
+						{{ ug.title }}
+					{% endif %}
+				</label>
+				<hr />
+			{% endfor %}
+			{% for ug in usergroups if ug.sys_name != 'everyone' %}
+				<label>
+					<input type="checkbox" class="usergroup usergroup-{{ ug.id }}" value="{{ ug.id }}" onclick="if (!this.checked) { $('#publish_cat_editor').find(':checkbox.everyone').prop('checked', false); }" />
+					{% if ug.sys_name %}
+						{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
+					{% else %}
+						{{ ug.title }}
+					{% endif %}
+				</label>
+			{% endfor %}
+		</div>
+	</div>
+	<div id="publish_cat_editor_shadowbreak" class="cat-editor-shadow-breaker" style="display: none" />
 
-<script type="text/x-deskpro-plain" id="publish_outline_cat_list_newitem">
-	<li	>
-		<span class="edit-cat">edit</span>
-		<span class="delete-cat">{{ phrase('agent.general.delete') }}</span>
-		<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
-		<span class="title is-nav-item fitted">
-			<span class="list-counter" data-count="0">0</span>
-			<span class="title-edit">{{ phrase('agent.general.add_category') }}</span>
-			<em class="spacer">&nbsp;</em>
-		</span>
-		<ul class="sub-group"></ul>
-	</li>
-</script>
+	<script type="text/x-deskpro-plain" id="publish_outline_cat_list_newitem">
+		<li	>
+			<span class="edit-cat">edit</span>
+			<span class="delete-cat">{{ phrase('agent.general.delete') }}</span>
+			<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
+			<span class="title is-nav-item fitted">
+				<span class="list-counter" data-count="0">0</span>
+				<span class="title-edit">{{ phrase('agent.general.add_category') }}</span>
+				<em class="spacer">&nbsp;</em>
+			</span>
+			<ul class="sub-group"></ul>
+		</li>
+	</script>
+{% endblock %}

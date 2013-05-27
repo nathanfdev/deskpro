@@ -1,139 +1,147 @@
-{##################################}
-{# People #}
-{##################################}
+{% extends 'AgentBundle::source-pane-layout.html.twig' %}
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
+{% block pane_main_tab %}
+	<li class="tab active"><i class="icon-user"></i> CRM</li>
+{% endblock %}
+{% block pane_content %}
 
-<section class="source-section sys-filters-section">
-	<header>
-		<h1>{{ phrase('agent.general.people') }}</h1>
-	</header>
-	<article>
-		<ul class="source-list" id="people_outline_people_list">
-			<li class="is-nav-item" id="people_nav_awaiting_agent_validation" {% if not validating_count_agent %}style="display: none"{% endif %}>
-				<h3 class="title" data-route="listpane:{{ path('agent_people_validate_list') }}">
-					<span class="list-counter">{{ validating_count_agent|default(0) }}</span>
-					Awaiting Agent Validation
-				</h3>
-			</li>
+	{##################################}
+	{# People #}
+	{##################################}
 
-			<li class="is-nav-item" id="people_nav_awaiting_validation" {% if not validating_count %}style="display: none"{% endif %}>
-				<h3 class="title" data-route="listpane:{{ path('agent_people_validate_list', {email_validating:1}) }}">
-					<span class="list-counter">{{ validating_count|default(0) }}</span>
-					Awaiting Email Validation
-				</h3>
-			</li>
-
-			<li class="people nav-people is-nav-item" id="people_nav_all">
-				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
-					<span class="list-counter">{{ people_count }}</span>
-					Registered
-				</h3>
-			</li>
-
-			{% for id,title in usergroup_names %}
-				<li
-					class="usergroup-{{id}} nav-usergroup-{{id}} is-nav-item"
-					id="people_nav_ug_{{id}}"
-					data-usergroup-id="{{id}}"
-					data-route="listpane:{{ path('agent_peoplesearch_usergroup', {id: id}) }}"
-					{% if not usergroup_counts[id] %}style="display: none"{% endif %}
-				>
-					<h3 class="title">
-						<span class="list-counter">{{ usergroup_counts[id]|default(0) }}</span>
-						{{title}}
+	<section class="source-section sys-filters-section">
+		<header>
+			<h1>{{ phrase('agent.general.people') }}</h1>
+		</header>
+		<article>
+			<ul class="source-list" id="people_outline_people_list">
+				<li class="is-nav-item" id="people_nav_awaiting_agent_validation" {% if not validating_count_agent %}style="display: none"{% endif %}>
+					<h3 class="title" data-route="listpane:{{ path('agent_people_validate_list') }}">
+						<span class="list-counter">{{ validating_count_agent|default(0) }}</span>
+						Awaiting Agent Validation
 					</h3>
 				</li>
-			{% endfor %}
-		</ul>
 
-		<section class="source-tabs" style="margin-top: 8px;">
-			<ul>
-				<li class="labels" ><span>{{ phrase('agent.general.labels') }}</span></li>
+				<li class="is-nav-item" id="people_nav_awaiting_validation" {% if not validating_count %}style="display: none"{% endif %}>
+					<h3 class="title" data-route="listpane:{{ path('agent_people_validate_list', {email_validating:1}) }}">
+						<span class="list-counter">{{ validating_count|default(0) }}</span>
+						Awaiting Email Validation
+					</h3>
+				</li>
+
+				<li class="people nav-people is-nav-item" id="people_nav_all">
+					<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
+						<span class="list-counter">{{ people_count }}</span>
+						Registered
+					</h3>
+				</li>
+
+				{% for id,title in usergroup_names %}
+					<li
+						class="usergroup-{{id}} nav-usergroup-{{id}} is-nav-item"
+						id="people_nav_ug_{{id}}"
+						data-usergroup-id="{{id}}"
+						data-route="listpane:{{ path('agent_peoplesearch_usergroup', {id: id}) }}"
+						{% if not usergroup_counts[id] %}style="display: none"{% endif %}
+					>
+						<h3 class="title">
+							<span class="list-counter">{{ usergroup_counts[id]|default(0) }}</span>
+							{{title}}
+						</h3>
+					</li>
+				{% endfor %}
 			</ul>
-		</section>
 
-		<section class="source-switcher-tabs spaced" id="people_outline_tabstrip" {% if not people_tag_index|length %}style="display:none"{% endif %}>
-			<ul>
-				<li data-tab-for="#people_outline_tagcloud" id="people_outline_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
-				<li data-tab-for="#people_outline_taglist" id="people_outline_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
+			<section class="source-tabs" style="margin-top: 8px;">
+				<ul>
+					<li class="labels" ><span>{{ phrase('agent.general.labels') }}</span></li>
+				</ul>
+			</section>
+
+			<section class="source-switcher-tabs spaced" id="people_outline_tabstrip" {% if not people_tag_index|length %}style="display:none"{% endif %}>
+				<ul>
+					<li data-tab-for="#people_outline_tagcloud" id="people_outline_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
+					<li data-tab-for="#people_outline_taglist" id="people_outline_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
+				</ul>
+			</section>
+
+			<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_tagcloud">
+				{% include 'AgentBundle:PeopleSearch:window-people-label-cloud.html.twig' %}
+			</section>
+
+			<section class="source-labels-list deskpro-tab-item" id="people_outline_taglist">
+				{% include 'AgentBundle:PeopleSearch:window-people-label-list.html.twig' %}
+			</section>
+		</article>
+	</section>
+
+	{##################################}
+	{# Organizations #}
+	{##################################}
+
+	<section class="source-section sys-filters-section">
+		<header>
+			<h1>{{ phrase('agent.general.organizations') }}</h1>
+		</header>
+		<article>
+			<ul class="source-list" id="people_outline_org_list">
+				<li id="org_nav_all" class="people nav-people is-nav-item">
+					<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
+						<span class="list-counter">{{ org_count|default('0') }}</span>
+						{{ phrase('agent.general.organizations') }}
+					</h3>
+				</li>
 			</ul>
-		</section>
 
-		<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_tagcloud">
-			{% include 'AgentBundle:PeopleSearch:window-people-label-cloud.html.twig' %}
-		</section>
+			<section class="source-tabs" style="margin-top: 8px;">
+				<ul>
+					<li class="labels" ><span>{{ phrase('agent.general.labels') }}</span></li>
+				</ul>
+			</section>
 
-		<section class="source-labels-list deskpro-tab-item" id="people_outline_taglist">
-			{% include 'AgentBundle:PeopleSearch:window-people-label-list.html.twig' %}
-		</section>
-	</article>
-</section>
+			<section class="source-switcher-tabs spaced" id="people_outline_org_tabstrip" {% if not org_tag_index|length %}style="display:none"{% endif %}>
+				<ul>
+					<li data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
+					<li data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
+				</ul>
+			</section>
 
-{##################################}
-{# Organizations #}
-{##################################}
+			<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_org_tagcloud">
+				{% include 'AgentBundle:PeopleSearch:window-org-label-cloud.html.twig' %}
+			</section>
 
-<section class="source-section sys-filters-section">
-	<header>
-		<h1>{{ phrase('agent.general.organizations') }}</h1>
-	</header>
-	<article>
-		<ul class="source-list" id="people_outline_org_list">
-			<li id="org_nav_all" class="people nav-people is-nav-item">
-				<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
-					<span class="list-counter">{{ org_count|default('0') }}</span>
-					{{ phrase('agent.general.organizations') }}
-				</h3>
-			</li>
-		</ul>
+			<section class="source-labels-list deskpro-tab-item" id="people_outline_org_taglist">
+				{% include 'AgentBundle:PeopleSearch:window-org-label-list.html.twig' %}
+			</section>
+		</article>
+	</section>
 
-		<section class="source-tabs" style="margin-top: 8px;">
-			<ul>
-				<li class="labels" ><span>{{ phrase('agent.general.labels') }}</span></li>
-			</ul>
-		</section>
+	{##################################}
+	{# AGENTS #}
+	{##################################}
 
-		<section class="source-switcher-tabs spaced" id="people_outline_org_tabstrip" {% if not org_tag_index|length %}style="display:none"{% endif %}>
-			<ul>
-				<li data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
-				<li data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
-			</ul>
-		</section>
-
-		<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_org_tagcloud">
-			{% include 'AgentBundle:PeopleSearch:window-org-label-cloud.html.twig' %}
-		</section>
-
-		<section class="source-labels-list deskpro-tab-item" id="people_outline_org_taglist">
-			{% include 'AgentBundle:PeopleSearch:window-org-label-list.html.twig' %}
-		</section>
-	</article>
-</section>
-
-{##################################}
-{# AGENTS #}
-{##################################}
-
-<section class="source-section sys-filters-section">
-	<header>
-		<h1>Agents</h1>
-	</header>
-	<article>
-		<ul class="source-list" id="people_outline_agent_list">
-			<li class="people nav-people is-nav-item" >
-				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=agent_mode&amp;terms[0][op]=is&amp;terms[0][agent_mode]=1">
-					<span class="list-counter">{{ agent_count }}</span>
-					Agents
-				</h3>
-			</li>
-
-			{% for id,title in team_names %}
+	<section class="source-section sys-filters-section">
+		<header>
+			<h1>Agents</h1>
+		</header>
+		<article>
+			<ul class="source-list" id="people_outline_agent_list">
 				<li class="people nav-people is-nav-item" >
-					<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_agent_team&amp;terms[0][op]=is&amp;terms[0][team_id]={{ id }}">
-						<span class="list-counter">{{ team_counts[id]|default(0) }}</span>
-						{{ title }}
+					<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=agent_mode&amp;terms[0][op]=is&amp;terms[0][agent_mode]=1">
+						<span class="list-counter">{{ agent_count }}</span>
+						Agents
 					</h3>
 				</li>
-			{% endfor %}
-		</ul>
-	</article>
-</section>
+
+				{% for id,title in team_names %}
+					<li class="people nav-people is-nav-item" >
+						<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_agent_team&amp;terms[0][op]=is&amp;terms[0][team_id]={{ id }}">
+							<span class="list-counter">{{ team_counts[id]|default(0) }}</span>
+							{{ title }}
+						</h3>
+					</li>
+				{% endfor %}
+			</ul>
+		</article>
+	</section>
+{% endblock %}
