@@ -24,6 +24,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		return 'ticket-row-' + this.meta.ticket_id;
 	},
 
+	initMetaData: function() {
+		DeskPRO_Window.recentTabs.add(
+			'tickets',
+			this.meta.ticket_id,
+			this.meta.title,
+			BASE_URL + 'agent/tickets/' + this.meta.ticket_id
+		);
+	},
+
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;
@@ -69,13 +78,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		} else {
 			this.wrapper.find('.copy-btn').remove();
 		}
-
-		DeskPRO_Window.recentTabs.add(
-			'tickets',
-			this.meta.ticket_id,
-			this.meta.title,
-			BASE_URL + 'agent/tickets/' + this.meta.ticket_id
-		);
 
 		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.on('submit', function(ev) {

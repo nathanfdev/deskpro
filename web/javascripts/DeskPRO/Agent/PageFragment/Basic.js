@@ -198,12 +198,15 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		// Assigning multiple values from a hash
 		if (value === undefined && typeOf(name) == 'object') {
 			this.meta = Object.merge(this.meta, name);
+			this.initMetaData();
 		} else {
 			this.meta[name] = value;
 		}
 	},
 
+	initMetaData: function() {
 
+	},
 
 	/**
 	 * Get a hash of all the metadata.

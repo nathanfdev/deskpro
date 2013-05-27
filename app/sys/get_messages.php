@@ -230,7 +230,7 @@ class AgentMessagesLoader extends LoaderAbstract
 					$recent_tabs[$id_string] = $item;
 				}
 
-				while (count($recent_tabs) > 1000) {
+				while (count($recent_tabs) > 350) {
 					array_pop($recent_tabs);
 				}
 

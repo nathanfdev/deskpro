@@ -767,7 +767,7 @@ table.layout-table {
 			padding: 5px 5px 5px 31px;
 			margin: 0;
 			border-bottom: 1px dotted darken(@agent_bigmenu_bg_color, 20%);
-			width: 375px;
+			width: 460px;
 			.rounded(0);
 			box-shadow: none;
 
@@ -790,7 +790,12 @@ table.layout-table {
 			text-overflow: ellipsis;
 
 			time {
-				display: none;
+				float: right;
+				font-size: 10px;
+				color: ligthen(@agent_menu_text_color, 10%);
+				line-height: 100%;
+				margin-top: 10px;
+				margin-right: 5px;
 			}
 
 			a {
@@ -799,22 +804,23 @@ table.layout-table {
 				color: @agent_menu_text_color;
 
 				strong {
-					background: #717780;
-					color: #fff;
-					padding: 2px 7px;
+					border: 1px solid #717780;
+					.rounded(3px);
+					padding: 0 5px;
 					font-size: 11px;
 					font-weight: normal;
 					border-radius: 10px;
 					margin-right: 5px;
-					float: left;
+					display: inline-block;
 					line-height: 15px;
+					text-align: center;
 				}
 
 				span {
 					display: inline-block;
 					text-overflow: ellipsis;
 					overflow: hidden;
-					width: 375px;
+					width: 325px;
 					vertical-align: bottom;
 				}
 			}

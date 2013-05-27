@@ -7,8 +7,12 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		this.recent  = [];
 		this.recentPendingSync = [];
 		this.list = $('#recent_tabs_list');
+		this.idW = 0;
 
 		var eatNext = false;
+		$('#recent_tabs_list').on('click', function(ev) {
+			Orb.shimClickCallbackPop();
+		});
 		$('#recent_tabs_list_filter').on('keydown', function(ev) {
 			if (ev.keyCode == 13 /* enter key */) {
 				var current = self.list.find('.dp-cursor');
@@ -91,7 +95,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
 				// Regen tab IDs lookup map
 				Array.each(data, function(item) {
-					this.add(item[0], item[1], item[2], item[3]);
+					this.add(item[0], item[1], item[2], item[3], item[4]);
 				}, this);
 
 				// Reset the proper pending list (dont re-sync the ones we just loaded)
@@ -122,12 +126,16 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	 * @param {Integer} id
 	 * @param {String} title
 	 * @param {String} url
+	 * @param {Integer} ts
 	 */
-	add: function(type, id, title, url) {
+	add: function(type, id, title, url, ts) {
 
 		$('#recent_tabs_list_li_none').remove();
 
-		var ts = (new Date()).getTime() / 1000;
+		if (!ts) {
+			ts = (new Date()).getTime() / 1000;
+		}
+
 		var idString = type + '-' + id, idx = null;
 
 		// If we already have the tab, remove it so it will be
@@ -150,7 +158,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		this.recent.unshift([type, id, title, url, ts]);
 		this.recentTabIds[idString] = true;
 
-		while (this.recent.length > 500) {
+		while (this.recent.length > 350) {
 			var last = this.recent.pop();
 			this.list.find('li.' + last[0] + '-' + last[1]).remove();
 		}
@@ -181,6 +189,13 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			.find('span').text(item[2]);
 		row.find('a').find('strong').text(item[1]);
 
+		var d = new Date(item[4]*1000);
+		row.find('time').attr('datetime', d.toISOString()).timeago();
+
+		if (this.idW) {
+			row.find('strong').css('min-width', this.idW);
+		}
+
 		var filterVal = $.trim($('#recent_tabs_list_filter').val());
 		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {
 			row.addClass('dp-vis');
@@ -189,6 +204,13 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		}
 
 		this.list.prepend(row);
+
+		var w = row.find('strong').width();
+		if (w > this.idW) {
+			this.idW = w;
+			this.list.find('strong').css('min-width', w);
+		}
+
 		return row;
 	},
 

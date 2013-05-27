@@ -8,17 +8,19 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.TYPENAME = 'download';
 	},
 
-	initPage: function(el) {
-
-		var self = this;
-		this.wrapper = el;
-
+	initMetaData: function() {
 		DeskPRO_Window.recentTabs.add(
 			'download',
 			this.meta.download_id,
 			this.meta.title,
 			BASE_URL + 'agent/downloads/file/' + this.meta.download_id
 		);
+	},
+
+	initPage: function(el) {
+
+		var self = this;
+		this.wrapper = el;
 
 		this.download_id = this.getMetaData('download_id');
 

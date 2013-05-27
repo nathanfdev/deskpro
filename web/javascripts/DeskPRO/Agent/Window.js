@@ -748,6 +748,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 
 			if ($(this).hasClass('dp-recent-btn')) {
+
+				DeskPRO_Window.recentTabs.idW = 0;
+				var maxw = 0;
+				DeskPRO_Window.recentTabs.list.find('strong').each(function() {
+					var w = $(this).width();
+					if (w > maxw) {
+						maxw = w;
+					}
+				});
+
+				DeskPRO_Window.recentTabs.idW = maxw;
+				DeskPRO_Window.recentTabs.list.find('strong').css('min-width', maxw);
+
 				$('#recent_tabs_list_filter').focus();
 				$('#recent_tabs_list').parent().scrollTop(0);
 			}

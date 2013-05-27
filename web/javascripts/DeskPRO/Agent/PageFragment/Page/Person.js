@@ -16,6 +16,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 	},
 
+	initMetaData: function() {
+		DeskPRO_Window.recentTabs.add(
+			'person',
+			this.meta.person_id,
+			this.meta.title,
+			BASE_URL + 'agent/people/' + this.meta.person_id
+		);
+	},
+
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
@@ -68,13 +77,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		}
 
 		this.zIndex = 30001;
-
-		DeskPRO_Window.recentTabs.add(
-			'person',
-			this.meta.person_id,
-			this.meta.title,
-			BASE_URL + 'agent/people/' + this.meta.person_id
-		);
 
 		var cw = this.contentWrapper;
 
