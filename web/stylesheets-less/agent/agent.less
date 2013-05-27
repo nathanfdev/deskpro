@@ -1622,6 +1622,10 @@ ul.pane-tabs {
 	font-size: 12px;
 	li {
 		cursor: pointer;
+
+		i {
+			margin-right: 4px;
+		}
 	}
 	li.tab {
 		float: left;
@@ -1969,10 +1973,18 @@ ul.pane-tabs {
 
 	h1 {
 		float: left;
-		font-size: 15px;
-		line-height: 36px;
-		padding: 0 0 0 9px;
-		color: @agent_panetabs_text_color;
+		font-size: 12px;
+		font-weight: normal;
+		background: @agent_panetabs_color;
+		border-radius: 3px 3px 0 0;
+		color: @agent_panetabs_active_text_color;
+		line-height: 31px;
+		height: 29px;
+		margin: 7px 0 0 6px;
+		padding: 0 8px;
+		text-transform: uppercase;
+		min-width: 94px;
+		text-align: center;
 	}
 }
 
