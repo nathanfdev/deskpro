@@ -181,11 +181,17 @@ class TicketsStep extends AbstractZendeskStep
 		$insert_ticket['total_to_first_reply']   = 0;
 
 		if ($ticket_metrics->get('reply_time_in_minutes')) {
+			if (is_array($ticket_metrics['reply_time_in_minutes'])) {
+				$ticket_metrics['reply_time_in_minutes'] = array_pop($ticket_metrics['reply_time_in_minutes']);
+			}
 			$insert_ticket['total_to_first_reply'] = $ticket_metrics['reply_time_in_minutes'] * 60;
 			$insert_ticket['date_first_agent_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['assignee_updated_at']) + $insert_ticket['total_to_first_reply']);
 		}
 
 		if ($ticket_metrics->get('requester_wait_time_in_minutes')) {
+			if (is_array($ticket_metrics['requester_wait_time_in_minutes'])) {
+				$ticket_metrics['requester_wait_time_in_minutes'] = array_pop($ticket_metrics['requester_wait_time_in_minutes']);
+			}
 			$insert_ticket['total_user_waiting'] = $ticket_metrics['requester_wait_time_in_minutes'] * 60;
 		}
 
