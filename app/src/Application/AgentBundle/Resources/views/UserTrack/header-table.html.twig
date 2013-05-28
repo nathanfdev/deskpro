@@ -2,14 +2,13 @@
 	<div style="height: 365px; overflow: auto;">
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<caption>
-				<em class="reload-table-btn">{{ phrase('agent.chrome.chat_list_refresh-list') }}</em>
 				{{ phrase('agent.chrome.chat_list_online-users', {count: visitors|length}, true) }}
 			</caption>
 			<thead>
 				<tr>
 					<th class="col-head">{{ phrase('agent.chrome.chat_list_heading_user') }}</th>
 					<th class="col-head">{{ phrase('agent.chrome.chat_list_heading_current-page') }}</th>
-					<th class="col-head" width="10">{{ phrase('agent.chrome.chat_list_heading_time') }}</th>
+					<th class="col-head" width="10">{{ phrase('agent.chrome.chat_list_heading_time') }} <em class="reload-table-btn"></em></th>
 				</tr>
 			</thead>
 			<tbody>

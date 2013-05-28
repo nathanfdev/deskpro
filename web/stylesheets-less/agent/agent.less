@@ -291,7 +291,7 @@ table.layout-table {
 #dp_header .user-profile {
 	background-color: @agent_header_userprofile_bg_color;
 	height: (@agent_header_height - 16);
-	width: 230px;
+	width: 202px;
 	margin: 4px 0 0 6px;
 	padding: 3px 5px 3px 3px;
 	border: 1px solid @agent_header_userprofile_border_color;
@@ -299,6 +299,8 @@ table.layout-table {
 	box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
 	color: @agent_header_userprofile_text_color;
 	line-height: 100%;
+	white-space: nowrap;
+	overflow: hidden;
 
 	.gravatar {
 		border: 1px solid darken(@agent_header_userprofile_border_color, 30%);
@@ -315,7 +317,7 @@ table.layout-table {
 		font-size: 11px;
 		padding: 3px 0 2px 0;
 		line-height: 100%;
-		width: 188px;
+		width: 158px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
@@ -332,6 +334,10 @@ table.layout-table {
 		font-size: 11px;
 		line-height: 100%;
 		color: lighten(@agent_header_userprofile_text_color, 25%);
+	}
+
+	ul li:last-child {
+		margin-right: 0;
 	}
 
 	ul li:hover {
@@ -352,7 +358,7 @@ table.layout-table {
 
 @media all and (max-width: 1172px) {
 	#dp_header .user-profile {
-		width: 180px;
+		width: 166px;
 	}
 
 	#dp_header .user-profile .gravatar {
@@ -360,7 +366,7 @@ table.layout-table {
 	}
 
 	#dp_header .user-profile .username {
-		margin-left: 0;
+		margin-left: 3px;
 	}
 }
 
@@ -481,19 +487,33 @@ table.layout-table {
 #dp_header .btn-group-chat.active {
 	.btn {
 		border-radius: 3px 3px 0 0;
-		box-shadow: inset 0px 1px 0px 0px lighten(@agent_header_userchat_bg_color, 2%), 0px 1px 2px 0px darken(@agent_header_userchat_bg_color, 20%);
-		background: darken(@agent_header_userchat_bg_color, 3%);
+		border: 1px solid #555555;
+		box-shadow: none;
+		background: #fff;
+		color: #000;
+
+		.arrow {
+			border-left-color: #D0D0D0;
+		}
+
+		.caret {
+			border-top-color: #000;
+		}
+
+		.chat-big-icon {
+			background-image: url('@{img_path}/header-btn-chat-icon-active.png');
+		}
 
 		&.all-offline {
-			box-shadow: inset 0px 1px 0px 0px lighten(@agent_header_userchat_alloff_bg_color, 5%), 0px 1px 2px 0px darken(@agent_header_userchat_alloff_bg_color, 20%);
-			.gradient-v(@agent_header_userchat_alloff_bg_color, darken(@agent_header_userchat_alloff_bg_color, 3%), @agent_header_height);
-			border: 1px solid darken(@agent_header_userchat_alloff_bg_color, 15%);
+			box-shadow: none;
+			background: #fff;
+			border: 1px solid #555555;
 		}
 
 		&.me-offline {
-			box-shadow: inset 0px 1px 0px 0px lighten(@agent_header_userchat_off_bg_color, 5%), 0px 1px 2px 0px darken(@agent_header_userchat_off_bg_color, 20%);
-			.gradient-v(@agent_header_userchat_off_bg_color, darken(@agent_header_userchat_off_bg_color, 3%), @agent_header_height);
-			border: 1px solid darken(@agent_header_userchat_off_bg_color, 15%);
+			box-shadow: none;
+			background: #fff;
+			border: 1px solid #555555;
 		}
 	}
 
@@ -671,6 +691,10 @@ table.layout-table {
 		table {
 			width: 100%;
 
+			caption {
+				display: none;
+			}
+
 			caption, thead tr {
 				border-bottom: 1px solid @agent_bigmenu_border_color;
 				text-align: left;
@@ -679,8 +703,9 @@ table.layout-table {
 			}
 
 			thead tr th {
-				padding: 5px 6px;
+				padding: 6px 6px 6px 6px;
 				line-height: 100%;
+				vertical-align: middle;
 			}
 			caption {
 				padding: 0 6px;
@@ -705,20 +730,17 @@ table.layout-table {
 		}
 
 		.reload-table-btn {
-			float: right;
-			display: block;
-			height: 17px;
-			line-height: 17px;
-			margin-top:6px;
+			display: inline-block;
+			height: 16px;
+			width: 16px;
+			margin-left:3px;
+			position: relative;
+			top: -1px;
 
 			background: url(../../images/spinners/spinner-btn-light-frame.gif) no-repeat 100% 50%;
-			padding-right: 18px;
 			color: transparent;
-			font-size: 9px;
-			font-style: normal;
-			font-weight: normal;
-			text-transform: uppercase;
 			cursor: pointer;
+			vertical-align: middle;
 		}
 
 		.reload-table-btn:hover {
