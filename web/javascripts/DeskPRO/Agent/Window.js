@@ -770,6 +770,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
+		$('#dp_header_help_trigger').on('click', function(ev) {
+			ev.preventDefault();
+
+			var wrap = $('#dp_header_help');
+			wrap.addClass('active');
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+			};
+
+			if (!wrap.data('has-init')) {
+				wrap.find('.btn-menu').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+
 		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
 			var wrap = $(this);
 			wrap.addClass('active');

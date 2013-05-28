@@ -9,9 +9,130 @@
 		<div class="username">{{ phrase('agent.chrome.hello-user', {name: app.user.name}) }}</div>
 		<ul class="nav-profile">
 			<li id="user_settings_link"><i class="icon-cog"></i> <a>{{ phrase('agent.chrome.link_settings') }}</a></li>
-			<li><i class="icon-question-sign"></i> <a>{{ phrase('agent.chrome.link_help') }}</a></li>
+			<li id="dp_header_help_trigger"><i class="icon-question-sign"></i> <a>{{ phrase('agent.chrome.link_help') }}</a></li>
 			<li onclick="window.location='{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent'; return false;"><i class="icon-signout"></i> <a>{{ phrase('agent.chrome.link_logout') }}</a></li>
 		</ul>
+	</div>
+
+	<div class="extended-search-dialog" id="dp_header_help">
+		<h3>Contact Us</h3>
+		<div class="description">
+			Contact us on our helpdesk at <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a>
+			or directly via email at <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
+		</div>
+
+		<h3>Keyboard Shortcuts</h3>
+		<div class="description">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr>
+				<td width="28%">
+					<h3>{{ phrase('agent.interface.creation') }}</h3>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_ticket') }}</kbd> {{ phrase('agent.interface.open_new_ticket_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_person') }}</kbd> {{ phrase('agent.interface.open_new_person_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_organisation') }}</kbd> {{ phrase('agent.interface.open_new_organization_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_task') }}</kbd> {{ phrase('agent.interface.open_new_task_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_article') }}</kbd> {{ phrase('agent.interface.open_new_article_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_feedback') }}</kbd> {{ phrase('agent.interface.open_new_feedback_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_news') }}</kbd> {{ phrase('agent.interface.open_new_news_form') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_new_download') }}</kbd> {{ phrase('agent.interface.open_new_download_form') }}
+					</div>
+				</td>
+				<td width="37%" style="padding-right: 6px;">
+					<h3>{{ phrase('agent.general.tickets') }}</h3>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_shift_r') }}</kbd> {{ phrase('agent.general.focus_reply_box') }}
+					</div>
+					<div class="row">
+						<kbd>shift+p</kbd> Open user profile
+					</div>
+					<div class="row">
+						<kbd>shift+o</kbd> Open organization profile
+					</div>
+
+					<h3>Ticket Replying</h3>
+					<div class="showmac">
+						<div class="row">
+							<kbd>ctrl+r</kbd> Send reply
+						</div>
+						<div class="row">
+							<kbd>ctrl+s</kbd> Open snippets
+						</div>
+						<div class="row">
+							<kbd>ctrl+o</kbd> Open send action options
+						</div>
+						<div class="row">
+							<kbd>ctrl+u</kbd> Change status to Awaiting User
+						</div>
+						<div class="row">
+							<kbd>ctrl+a</kbd> Change status to Awaiting Agent
+						</div>
+						<div class="row">
+							<kbd>ctrl+d</kbd> Change status to Resolved
+						</div>
+					</div>
+					<div class="noshowmac">
+						<div class="row">
+							<kbd>alt+r</kbd> Send reply
+						</div>
+						<div class="row">
+							<kbd>alt+s</kbd> Open snippets
+						</div>
+						<div class="row">
+							<kbd>alt+o</kbd> Open send action options
+						</div>
+						<div class="row">
+							<kbd>alt+u</kbd> Change status to Awaiting User
+						</div>
+						<div class="row">
+							<kbd>alt+a</kbd> Change status to Awaiting Agent
+						</div>
+						<div class="row">
+							<kbd>alt+d</kbd> Change status to Resolved
+						</div>
+					</div>
+
+				</td><td width="35%">
+					<h3>{{ phrase('agent.general.window_navigation') }}</h3>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_ctrl_shift_left') }}</kbd> {{ phrase('agent.interface.go_to_previous_tab') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_ctrl_shift_right') }}</kbd> {{ phrase('agent.interface.go_to_next_tab') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_ctrl_shift_c') }}</kbd> {{ phrase('agent.interface.close_current_tab') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_up_or_down') }}</kbd> {{ phrase('agent.general.filter_moves_cursor') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_enter') }}</kbd> {{ phrase('agent.general.filter_opens_selected') }}
+					</div>
+					<div class="row">
+						<kbd>{{ phrase('agent.interface.kbd_space') }}</kbd> {{ phrase('agent.general.filter_checks_selected') }}
+					</div>
+
+					<h3>People</h3>
+					<div class="row">
+						<kbd>shift+o</kbd> Open organization profile
+					</div>
+				</td>
+			</tr></table>
+		</div>
 	</div>
 
 	{##########################################################################}
