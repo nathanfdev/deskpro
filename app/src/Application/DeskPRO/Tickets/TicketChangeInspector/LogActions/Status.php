@@ -44,6 +44,10 @@ class Status extends AbstractLogAction
 
 	public function __construct($old_status, $new_status)
 	{
+		if ($old_status == 'hidden.') {
+			$old_status = null;
+		}
+
 		$this->old_status = $old_status;
 		$this->new_status = $new_status;
 	}
