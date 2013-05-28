@@ -274,6 +274,12 @@ table.layout-table {
 		display: none !important;
 	}
 
+	#dp_search_box_help_trigger {
+		i {
+			margin-right: 5px;
+		}
+	}
+
 	#dp_header_search_wrap {
 		padding-right: 10px;
 	}
@@ -282,6 +288,12 @@ table.layout-table {
 @media all and (max-width: 875px) {
 	#dp_header {
 		width: 875px;
+	}
+}
+
+@media all and (max-width: 1026px) {
+	#dp_header .panevis-switcher {
+		display: none;
 	}
 }
 
@@ -527,7 +539,7 @@ table.layout-table {
 	}
 }
 
-@media all and (max-width: 1172px) {
+@media all and (max-width: 1176px) {
 	#dp_header .btn-group-chat .btn .chat-big-icon {
 		display: none;
 	}
@@ -2215,6 +2227,22 @@ ul.pane-tabs {
 			text-align: center;
 			display: inline-block;
 			font-size: 12px;
+		}
+		i.image-icon {
+			position: relative;
+			left: -3px;
+			margin-right: 0;
+			height: 14px;
+			width: 14px;
+			overflow: hidden;
+			.rounded(2px);
+			text-align: center;
+			display: inline-block;
+			font-size: 12px;
+			background-color: #fff;
+			background-position: 2px 50%;
+			background-repeat: no-repeat;
+			top: 3px;
 		}
 		&.ticket i.dp-icon-placeholder:before   { content: "\F003"; }
 		&.person i.dp-icon-placeholder:before    { content: "\F007"; }

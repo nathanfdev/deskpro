@@ -82,13 +82,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		if (this.tabBtn) {
 			if (this.getMetaData('personPicIcon')) {
-				this.tabBtn.find('a').css('background-image', 'url("' + this.getMetaData('personPicIcon') + '")').css('background-position', '2px 50%');
+				this.tabBtn.find('a').find('i').attr('class', '').addClass('image-icon').css('background-image', 'url("' + this.getMetaData('personPicIcon') + '")').css('background-position', '2px 50%');
 			} else if (this.getMetaData('personGravatarIcon')) {
 				var defaultIcon = ASSETS_BASE_URL_FULL + 'images/agent/tabs/tabtype-person.png';
 				var url = this.getMetaData('personGravatarIcon');
 				url = Orb.appendQueryData(url, 'd', defaultIcon);
 
-				var a = this.tabBtn.find('a');
+				var a = this.tabBtn.find('a').find('i');
+				a.attr('class', '').addClass('image-icon');
 				a.css('background-image', 'url("' + url + '")').css('background-position', '2px 50%');
 			}
 		}

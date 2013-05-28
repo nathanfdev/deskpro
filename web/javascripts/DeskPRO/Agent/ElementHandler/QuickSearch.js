@@ -81,8 +81,10 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 		// Expanding the search box
 		//------------------------------
 
+		var lastWinW = 0;
 		searchBox.on('focus', function() {
 
+			var winW = $(window).width();
 			$(this).addClass('dp-focus');
 			if ($(this).hasClass('expanded')) {
 
@@ -93,32 +95,48 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 				return;
 			}
 
-			var txt, wrap, w;
+			var txt, wrap, w, addToW;
+
+			addToW = 125;
+			if (!$('#dp_header_logo_wrap').is(':visible')) {
+				addToW = 0;
+			}
+
 			$('#dp_header_logo_wrap').hide();
 
 			wrap = $('#dp_header_search_wrap');
-			if (wrap.data('orig-width')) {
+			if (wrap.data('orig-width') && winW == lastWinW) {
 				w = wrap.data('orig-width');
 			} else {
 				w = wrap.width();
 				wrap.data('orig-width', w);
 			}
-			wrap.width(w + 125);
-			wrap.css('margin-right', '8px');
+			wrap.width(w + addToW);
+
+			if (addToW) {
+				wrap.css('margin-right', '8px');
+			}
 
 			txt = $(this);
-			if (txt.data('orig-width')) {
+			if (txt.data('orig-width') && winW == lastWinW) {
 				w = txt.data('orig-width');
 			} else {
 				w = txt.width();
 				txt.data('orig-width', w);
 			}
 			txt.addClass('expanded');
-			txt.animate({ width: w+125 }, 300, function() {
+
+			if (addToW) {
+				txt.animate({ width: w+addToW }, 300, function() {
+					$('#dp_search_box_help_trigger').show();
+					$('#dp_search_box_help_trigger').css('opacity', 0);
+					$('#dp_search_box_help_trigger').animate({opacity: 100}, 1500);
+				});
+			} else {
 				$('#dp_search_box_help_trigger').show();
 				$('#dp_search_box_help_trigger').css('opacity', 0);
 				$('#dp_search_box_help_trigger').animate({opacity: 100}, 1500);
-			});
+			}
 
 		}).on('blur', function() {
 			$(this).removeClass('dp-focus');
