@@ -75,6 +75,11 @@ class Message extends \Orb\Mail\Message
 	protected $set_to = null;
 
 	/**
+	 * @var Person
+	 */
+	protected $set_to_person = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Blob[]
 	 */
 	protected $attach_blobs = array();
@@ -117,6 +122,12 @@ class Message extends \Orb\Mail\Message
 				$this->template_vars['to_name']    = !empty($this->set_to['name']) ? $this->set_to['name'] : $this->set_to['email'];
 				$this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'] . ' <' . $this->set_to['email'] . '>' : $this->set_to['email'];
 			}
+
+			if (!$this->set_to_person && $this->template_vars['to_email']) {
+				$this->set_to_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->template_vars['to_email']);
+			}
+
+			$this->template_vars['to_person'] = $this->set_to_person;
 
 			$this->template_vars['site_url']    = App::getSetting('core.site_url');
 			$this->template_vars['site_name']   = App::getSetting('core.site_name');
@@ -199,6 +210,7 @@ class Message extends \Orb\Mail\Message
 		$this->template        = null;
 		$this->template_vars   = null;
 		$this->template_engine = null;
+		$this->set_to_person   = null;
 
 		// Attach blobs
 		foreach ($this->attach_blobs as $src => $blob) {
@@ -335,6 +347,7 @@ class Message extends \Orb\Mail\Message
 	public function setToPerson(Person $person)
 	{
 		$this->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+		$this->set_to_person = $person;
 	}
 
 
