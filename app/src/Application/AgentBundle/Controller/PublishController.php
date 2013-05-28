@@ -741,9 +741,11 @@ class PublishController extends AbstractController
 		$entity_name = null;
 		switch ($type) {
 			case 'articles':   $entity_name = 'DeskPRO:Article';   break;
+			case 'article':    $entity_name = 'DeskPRO:Article';   break;
 			case 'downloads':  $entity_name = 'DeskPRO:Download';  break;
+			case 'download':   $entity_name = 'DeskPRO:Download';  break;
 			case 'news':       $entity_name = 'DeskPRO:News';      break;
-			case 'feedback':      $entity_name = 'DeskPRO:Feedback';      break;
+			case 'feedback':   $entity_name = 'DeskPRO:Feedback';  break;
 		}
 
 		$this->db->beginTransaction();
@@ -757,6 +759,10 @@ class PublishController extends AbstractController
 		foreach ($this->in->getCleanValueArray('words', 'string', 'discard') as $word) {
 			$word = Strings::utf8_strtolower($word);
 			$word = Strings::utf8_accents_to_ascii($word);
+
+			if (!$word || !$entity_name || !$content_id) {
+				continue;
+			}
 
 			$this->db->replace('search_sticky_result', array(
 				'word'        => $word,
