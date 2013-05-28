@@ -511,6 +511,7 @@ class LanguagesController extends AbstractController
 		$phrase_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
 
 		foreach ($phrases as $phrase_id => $lang_phrase) {
+			$lang_phrase = (array)$lang_phrase;
 			foreach ($lang_phrase as $lang_id => $phrase_text) {
 				$language = App::getDataService('Language')->get($lang_id);
 				if (!$language) {
