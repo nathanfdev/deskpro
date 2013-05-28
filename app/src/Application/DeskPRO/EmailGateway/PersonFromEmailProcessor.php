@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * This finds a user based on the email sent, or creates a new user
@@ -60,7 +61,7 @@ class PersonFromEmailProcessor
 	}
 
 
-
+	
 	/**
 	 * Finds a person based on the From in the email address.
 	 *
@@ -74,23 +75,27 @@ class PersonFromEmailProcessor
 			return $person;
 		} else {
 			foreach (App::getDataService('Usersource')->getAllUsersources() as $us) {
-				/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
-				$adapter = $us->getAdapter();
+				try {
+					/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
+					$adapter = $us->getAdapter();
 
-				if (!$adapter->isCapable('find_identity')) {
-					continue;
+					if (!$adapter->isCapable('find_identity')) {
+						continue;
+					}
+
+					$identity = $adapter->findIdentityByInput($from->getEmail());
+					if (!$identity) {
+						continue;
+					}
+
+					$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($us, $identity);
+					$person = $login_processor->getPerson();
+
+					$this->passPerson($from, $person);
+					return $person;
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e, false, 'gateway_usersource_error');
 				}
-
-				$identity = $adapter->findIdentityByInput($from->getEmail());
-				if (!$identity) {
-					continue;
-				}
-
-				$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($us, $identity);
-				$person = $login_processor->getPerson();
-
-				$this->passPerson($from, $person);
-				return $person;
 			}
 		}
 
