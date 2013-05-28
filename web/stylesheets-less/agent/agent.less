@@ -187,6 +187,7 @@ table.layout-table {
 		height: 28px;
 		width: 103px;
 		background: url('@{img_path}/header-logo.png') no-repeat left top;
+		margin-top: 2px;
 	}
 
 	.panevis-switcher {
@@ -1133,11 +1134,31 @@ table.layout-table {
 		> li.twitter:hover, > li.twitter.active { background-position: -295px -32px; }
 
 		> li.none {
-			background: url('@{img_path}/header-notification-bell.png') no-repeat;
-			background-position: 4px 6px;
+			background-position: -359px 5px;
+			width: 25px;
+			position: relative;
+			top: 2px;
+
+			span.badge {
+				background: #113D62;
+				color: darken(#7EB7E4, 10%);
+				width: 9px;
+				text-align: center;
+				line-height: 15px;
+				margin-right: 0;
+				border-top: 1px solid #0D2E4A;
+				border-bottom: 1px solid #3176AB;
+				top: 0;
+			}
 
 			&:hover, &.active {
-				background-position: 4px -34px;
+				background-position: -359px -35px;
+
+				span.badge {
+					background: #fff;
+					border-top: 1px solid #fff;
+					border-bottom: 1px solid #fff;
+				}
 			}
 		}
 

@@ -140,7 +140,7 @@
 				{% if type == 'twitter' and not (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}{% set show = false %}{% endif %}
 				{% if show %}
 					<li class="{{ type }} notification type-row" {% if type != 'none' %}style="display: none;"{% endif %}>
-						<span class="badge" style="display: none;">0</span>
+						<span class="badge" {% if type != 'none' %}style="display: none;"{% endif %}>0</span>
 						<div class="dp-header-notify-menu">
 							<div class="arrow-up"></div>
 							<header>
