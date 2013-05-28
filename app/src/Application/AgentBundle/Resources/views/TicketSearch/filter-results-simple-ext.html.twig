@@ -1,4 +1,7 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% block dp_declare %}
+	{{ set_tplvar('baseId', el_uid()) }}
+{% endblock %}
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 {######################################################################################################################}
 {# METADATA #}
@@ -59,8 +62,7 @@
 		pageMeta.groupByOption = '{{ grouping_option }}';
 	{% endif %}
 
-	{% set baseId = el_uid() %}
-	pageMeta.baseId = '{{ baseId }}';
+	pageMeta.baseId = '{{ tplvars.baseId }}';
 	</script>
 {% endblock %}
 
@@ -79,7 +81,7 @@
 {% block pane_content %}
 
 	{% if ticket_ids|length %}
-		<div id="{{baseId}}_is_results">
+		<div id="{{tplvars.baseId}}_is_results">
 			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 
 			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
@@ -90,17 +92,17 @@
 				{% include 'AgentBundle:TicketSearch:filter-terms-bar.html.twig' %}
 			{% endif %}
 
-			<section class="list-listing" id="{{baseId}}_results_wrap">
+			<section class="list-listing" id="{{tplvars.baseId}}_results_wrap">
 				{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
 			</section>
 
 			<footer class="results-nav">
 				<div class="cursor">
                     {% set phrase_part1 %}
-                    <span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+                    <span class="results-showing-count" id="{{tplvars.baseId}}_showing_count"></span>
                     {% endset %}
                     {% set phrase_part2 %}
-                    <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
+                    <span class="results-total-count" id="{{tplvars.baseId}}_total_count">{{ ticket_ids|length }}</span>
                     {% endset %}
                     {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 				</div>
@@ -117,7 +119,7 @@
 		</div>
 	{% endif %}
 
-	<section class="list-listing no-results" id="{{baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
+	<section class="list-listing no-results" id="{{tplvars.baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
 		<article class="row-item no-results">
 			<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
 		</article>
