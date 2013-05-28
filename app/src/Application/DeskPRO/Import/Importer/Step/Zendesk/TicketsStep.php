@@ -117,6 +117,7 @@ class TicketsStep extends AbstractZendeskStep
 
 		$insert_ticket = array();
 		$insert_ticket['id']            = $ticket_id;
+		$insert_ticket['auth']          = \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY);
 		$insert_ticket['date_created']  = date('Y-m-d H:i:s', strtotime($ticket_info['created_at']));
 		$insert_ticket['person_id']     = $this->getMappedNewId('zd_user_id', $ticket_info['requester_id']);
 		$insert_ticket['subject']       = $ticket_info['subject'];
