@@ -343,7 +343,7 @@ Orb.strIsEmail = function(email) {
 Orb.enablePhraseEl = function(phraseId, parentEl) {
 	var phraseEl, phraseClass = phraseId.replace(/\./g, '_');
 	if (parentEl) {
-		$(parentEl).find('.dp-phrase').removeClass('dp-phrase-on');
+		$(parentEl).find('.dp-phrase-switch').removeClass('dp-phrase-on');
 		$(parentEl).find('.'+phraseClass).addClass('dp-phrase-on');
 	} else {
 		phraseEl = $('.' + phraseClass);
@@ -352,6 +352,30 @@ Orb.enablePhraseEl = function(phraseId, parentEl) {
 			phraseEl.addClass('dp-phrase-on');
 		}
 	}
+};
+
+
+/**
+ * Re-executes a phrase and modifies the text of the element with the new value.
+ *
+ * @param {jQuery} el
+ * @param {Object} vars
+ */
+Orb.phraseTextEl = function(el, vars) {
+	if (!DeskPRO_Window.translate) {
+		return;
+	}
+
+	var phraseText = el.data('phrase-text');
+	phraseText = DeskPRO_Window.translate.phraseWithString(phraseText, vars, true);
+
+	if (el.data('phrase-html')) {
+		el.html(phraseText);
+	} else {
+		el.text(phraseText);
+	}
+
+	return el;
 };
 
 

@@ -68,6 +68,7 @@ class TemplatingExtension extends \Twig_Extension
         return array(
 			'constant'                         => new \Twig_Function_Method($this, 'getConstant', array()),
 			'phrase'                           => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'), 'needs_context' => true)),
+			'phrase_code'                      => new \Twig_Function_Method($this, 'getPhraseText', array()),
 			'has_phrase'                       => new \Twig_Function_Method($this, 'hasPhrase', array('is_safe' => array('html'))),
 			'phrase_object'                    => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'phrase_dev'                       => new \Twig_Function_Method($this, 'getPhraseDev'),
@@ -945,6 +946,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function hasPhrase($phrase_name)
 	{
 		return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
+	}
+
+	public function getPhraseText($phrase_name)
+	{
+		return $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
 	}
 
 	public function getPhrase($context, $phrase_name, $vars = null, $raw = false)

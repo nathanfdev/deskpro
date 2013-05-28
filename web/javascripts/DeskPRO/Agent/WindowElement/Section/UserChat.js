@@ -237,6 +237,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
 			var count = parseInt(info.online_count);
+
+			Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
 			DeskPRO_Window.util.modCountEl($('.userchat-online-users-count'), '=', count);
 
 			if (count != self.lastOnlineUserCount) {
@@ -318,6 +320,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				$('#agent_status_online_users').empty().html(html);
 				var count = parseInt($.trim($('#agent_status_online_users').find('.count-online-users').text()));
 
+				Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
 				$('.userchat-online-users-count').text(count);
 				this.lastOnlineUserLoad = new Date();
 			}
@@ -358,6 +361,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			Orb.enablePhraseEl('agent.chrome.chat_logged-out', $('#dp_header_userchat_btn').find('.status'));
 		}
 
+
+		Orb.phraseTextEl($('.agent_chrome_chat_online_agents'), {count: count});
 		DeskPRO_Window.util.modCountEl($('.userchat-online-agents-count'), '=', count);
 
 		var userchatBtn = $('#dp_header_userchat_btn');

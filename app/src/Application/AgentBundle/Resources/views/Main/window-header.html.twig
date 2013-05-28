@@ -22,12 +22,12 @@
 		<a class="btn" id="dp_header_userchat_btn">
 			<div class="chat-big-icon pull-left"></div>
 				<span class="status">
-					<span class="dp-phrase dp-phrase-on agent_chrome_chat_logged-in">{{ phrase('agent.chrome.chat_logged-in') }}</span>
-					<span class="dp-phrase agent_chrome_chat_logged-out">{{ phrase('agent.chrome.chat_logged-out') }}</span>
+					<span class="dp-phrase-switch dp-phrase-on agent_chrome_chat_logged-in">{{ phrase('agent.chrome.chat_logged-in') }}</span>
+					<span class="dp-phrase-switch agent_chrome_chat_logged-out">{{ phrase('agent.chrome.chat_logged-out') }}</span>
 				</span>
 			<ul class="info">
-				<li><i class="icon-user"></i> {{ phrase('agent.chrome.chat_online-agents', {}, true) }}</li>
-				<li><i class="icon-globe"></i> {{ phrase('agent.chrome.chat_online-users', {}, true) }}</li>
+				<li><i class="icon-user"></i> <span class="dp-phrase agent_chrome_chat_online_agents" data-phrase-text="{{ phrase_code('agent.chrome.chat_online-agents') }}" data-phrase-html="1">{{ phrase('agent.chrome.chat_online-agents', {count:0}, true) }}</span></li>
+				<li><i class="icon-globe"></i> <span class="dp-phrase agent_chrome_chat_online_users" data-phrase-text="{{ phrase_code('agent.chrome.chat_online-users') }}" data-phrase-html="1">{{ phrase('agent.chrome.chat_online-users', {count:0}, true) }}</span></li>
 			</ul>
 			<div class="arrow">
 				<span class="caret"></span>
@@ -44,8 +44,8 @@
 					<div class="dp-not-loading">
 						<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(31) }});"></div>
 						<a class="signin trigger-toggle-status">
-							<span class="dp-phrase dp-phrase-on agent_chrome_chat_sign-in"><i class="icon-comments-alt"></i> {{ phrase('agent.chrome.chat_sign-in') }}</span>
-							<span class="dp-phrase agent_chrome_chat_sign-out"><i class="icon-comments"></i> {{ phrase('agent.chrome.chat_sign-out') }}</span>
+							<span class="dp-phrase-switch dp-phrase-on agent_chrome_chat_sign-in"><i class="icon-comments-alt"></i> {{ phrase('agent.chrome.chat_sign-in') }}</span>
+							<span class="dp-phrase-switch agent_chrome_chat_sign-out"><i class="icon-comments"></i> {{ phrase('agent.chrome.chat_sign-out') }}</span>
 						</a>
 					</div>
 					<div class="dp-is-loading pull-center">
