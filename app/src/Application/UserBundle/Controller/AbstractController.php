@@ -154,7 +154,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (
-			!($this instanceof LoginController)
+			!($this instanceof LoginController || $this instanceof MainController)
 			AND !$this->person->HelpdeskUser->canDoAnything()
 			AND !$tpl_globals->getVariable('admin_portal_controls')
 			AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
