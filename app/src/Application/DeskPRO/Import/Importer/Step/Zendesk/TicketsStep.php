@@ -172,9 +172,10 @@ class TicketsStep extends AbstractZendeskStep
 			}
 		}
 
+		$insert_ticket['date_status']            = $insert_ticket['date_created'];
 		$insert_ticket['date_first_agent_reply'] = null;
 		$insert_ticket['date_last_agent_reply']  = null;
-		$insert_ticket['date_last_user_reply']   = null;
+		$insert_ticket['date_last_user_reply']   = $insert_ticket['date_created'];
 		$insert_ticket['date_agent_waiting']     = null;
 		$insert_ticket['date_user_waiting']      = null;
 		$insert_ticket['total_user_waiting']     = 0;
@@ -217,6 +218,12 @@ class TicketsStep extends AbstractZendeskStep
 
 		$this->db->insert('tickets', $insert_ticket);
 		$this->saveMappedId('zd_ticekt_id', $insert_ticket['id'], $ticket_id);
+
+		$first_agent_time  = null;
+		$last_agent_time   = null;
+		$last_user_time    = null;
+		$total_user_time   = 0;
+		$total_first_reply = 0;
 
 		#------------------------------
 		# Insert labels
@@ -364,6 +371,15 @@ class TicketsStep extends AbstractZendeskStep
 						'message'         => $line['html_body'],
 					);
 
+					if ($add_message['person_id'] != $insert_ticket['person_id']) {
+						if (!$first_agent_time) {
+							$first_agent_time = $add_message['date_created'];
+						}
+						$last_agent_time = $add_message['date_created'];
+					} else {
+						$last_user_time = $add_message['date_created'];;
+					}
+
 					$this->db->insert('tickets_messages', $add_message);
 					$message_id =  $this->db->lastInsertId();
 
@@ -397,6 +413,41 @@ class TicketsStep extends AbstractZendeskStep
 		}
 		if ($add_datastore) {
 			$this->db->batchInsert('import_datastore', $add_datastore);
+		}
+
+
+
+		$update = array();
+		if ($first_agent_time) {
+			$update['date_first_agent_assign'] = $first_agent_time;
+			$update['date_first_agent_reply'] = $first_agent_time;
+
+			if (!$insert_ticket['total_to_first_reply']) {
+				$total_first_reply = strtotime($first_agent_time) - strtotime($insert_ticket['date_created']);
+				if ($total_first_reply) {
+					$update['total_to_first_reply'] = $total_first_reply;
+				}
+				if (!$insert_ticket['total_user_waiting']) {
+					$update['total_user_waiting'] = $total_first_reply;
+				}
+			}
+		}
+		if ($last_agent_time) {
+			$update['date_last_agent_reply'] = $last_agent_time;
+			if ($insert_ticket['status'] == 'awaiting_agent') {
+				$update['date_agent_waiting'] = $last_agent_time;
+			}
+		}
+		if ($last_user_time) {
+			$update['date_last_user_reply'] = $last_user_time;
+
+			if ($insert_ticket['status'] == 'awaiting_user') {
+				$update['date_user_waiting'] = $last_user_time;
+			}
+		}
+
+		if ($update) {
+			$this->db->update('tickets', $update, array('id' => $ticket_id));
 		}
 
 		#------------------------------
