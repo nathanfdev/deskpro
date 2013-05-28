@@ -486,6 +486,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $email_reader;
 
 	/**
+	 * @var null
+	 */
+	public $_old_status = null;
+
+	/**
 	 * To get around scoping issues with TicketSla event callbacks, we set the
 	 * parent ticket log during TriggerExecutor.
 	 */
@@ -534,6 +539,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _initTicketLogger()
 	{
+		$this->_old_status = $this->getStatusCode();
 		if ($this->_ticket_logger) {
 			$this->removePropertyChangedListener($this->_ticket_logger);
 		}
@@ -2561,8 +2567,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_recalculate_slas = false;
 	}
 
-	protected function _applySlas()
+	public function _applySlas()
 	{
+		if ($this->status == 'hidden') {
+			return;
+		}
+
 		$slas = App::getEntityRepository('DeskPRO:Sla')->getAllSlas();
 		foreach ($slas AS $sla) {
 			if ($sla->apply_type == 'all') {

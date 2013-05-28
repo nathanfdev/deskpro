@@ -122,6 +122,8 @@ class AccountValidator
 						$ticket->setStatus('awaiting_agent');
 					}
 
+					$ticket->_applySlas();
+
 					$this->em->persist($ticket);
 					$this->em->flush();
 				}
