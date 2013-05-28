@@ -828,8 +828,16 @@ JS;
 	{
 		$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
 
+		if (!$snippet) {
+			throw $this->createNotFoundException();
+		}
+
 		$snippet_id = $snippet['id'];
-		$category_id = $snippet->category['id'];
+		if ($snippet->category) {
+			$category_id = $snippet->category['id'];
+		} else {
+			$category_id = 0;
+		}
 
 		$this->em->transactional(function($em) use ($snippet) {
 			$em->remove($snippet);
