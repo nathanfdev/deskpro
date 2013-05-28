@@ -483,6 +483,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initInterfaceServices();
 
+		if (window.devicePixelRatio && window.devicePixelRatio >= 2) {
+			$('body').addClass('dp-is-retina');
+		}
+
 		$('#dp_loading').remove();
 		$('#page_loading').remove();
 		$('#loading_css').remove();

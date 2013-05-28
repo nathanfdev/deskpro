@@ -37,6 +37,7 @@
 	'agent.chrome.nav_tasks' => 'Tasks',
 	'agent.chrome.nav_publish' => 'Publish',
 	'agent.chrome.nav_settings' => 'Settings',
+	'agent.chrome.nav_reports'  => 'Reports',
 	'agent.chrome.notify_list-new-messages' => '<span class="notify-count">0</span> New Notifications',
 	'agent.chrome.notify_list-dismiss-all' => 'Dismiss All Notifications',
 	'agent.chrome.notify_list-edit-preferences' => 'Edit Preferences',
