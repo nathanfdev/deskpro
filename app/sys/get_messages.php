@@ -90,16 +90,16 @@ class AgentMessagesLoader extends LoaderAbstract
 			$this->_person_id = $agent_session['person_id'];
 			$this->_session_id = $agent_session['id'];
 
-			$new_since = isset($_GET['since']) ? intval($_GET['since']) : 0;
+			$new_since = isset($_REQUEST['since']) ? intval($_REQUEST['since']) : 0;
 			if ($new_since < 0) {
 				$new_since = 0;
 			}
 			$last_since = intval($agent_session['last_message_id']);
-			$activity_time = isset($_GET['at']) ? intval($_GET['at']) : 0;
+			$activity_time = isset($_REQUEST['at']) ? intval($_REQUEST['at']) : 0;
 			if ($activity_time < 0) {
 				$activity_time = 0;
 			}
-			$is_initial_pool = !empty($_GET['is_initial_poll']);
+			$is_initial_pool = !empty($_REQUEST['is_initial_poll']);
 
 			#------------------------------
 			# Standard client messages
@@ -126,14 +126,14 @@ class AgentMessagesLoader extends LoaderAbstract
 			# Poll requests
 			#------------------------------
 
-			$dos = (isset($_GET['do']) ? (array)$_GET['do'] : array());
+			$dos = (isset($_REQUEST['do']) ? (array)$_REQUEST['do'] : array());
 
 			// Every second poll, update online agents list
-			$count = isset($_GET['count']) ? intval($_GET['count']) : 0;
+			$count = isset($_REQUEST['count']) ? intval($_REQUEST['count']) : 0;
 			if ($count < 0) {
 				$count = 0;
 			}
-			if ($count && $count % 2 === 0) {
+			if ($count && $count % 2 === 0 || 1) {
 				$dos[] = 'get-online-agents';
 			} elseif ($count && $count % 3 === 0) {
 				$dos[] = 'get-online-visitors';
@@ -532,7 +532,7 @@ class AgentMessagesLoader extends LoaderAbstract
 
 	public function checkTicketsMessage()
 	{
-		$ticket_ids = isset($_GET['check-ticket-ids']) ? (array)$_GET['check-ticket-ids'] : array();
+		$ticket_ids = isset($_REQUEST['check-ticket-ids']) ? (array)$_REQUEST['check-ticket-ids'] : array();
 		$ticket_ids = array_map('intval', $ticket_ids);
 
 		$tickets = $this->_getContainer()->getEm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
