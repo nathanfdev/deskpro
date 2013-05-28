@@ -376,6 +376,13 @@ class MainController extends AbstractController
 
 		if (!$recent_tabs) {
 			$recent_tabs = array();
+		} else {
+			uasort($recent_tabs, function($a, $b) {
+				if ($a[4] == $b[4]) {
+					return 0;
+				}
+				return ($a[4] < $b[4]) ? -1 : 1;
+			});
 		}
 
 		return $this->createJsonResponse(array_values($recent_tabs));

@@ -230,6 +230,13 @@ class AgentMessagesLoader extends LoaderAbstract
 					$recent_tabs[$id_string] = $item;
 				}
 
+				uasort($recent_tabs, function($a, $b) {
+					if ($a[4] == $b[4]) {
+						return 0;
+					}
+					return ($a[4] < $b[4]) ? -1 : 1;
+				});
+
 				while (count($recent_tabs) > 350) {
 					array_pop($recent_tabs);
 				}
