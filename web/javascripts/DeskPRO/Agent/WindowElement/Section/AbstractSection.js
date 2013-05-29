@@ -179,6 +179,15 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			}
 		}
 		this.contentEl = contentEl;
+
+		contentEl.on('click', '.pane-tabs li', function(ev) {
+			ev.preventDefault();
+
+			contentEl.find('.pane-tabs').find('li').removeClass('active');
+			$(this).addClass('active');
+
+			contentEl.find('.pane-content').hide().filter('.'+$(this).data('tab-id')).show();
+		});
 	},
 
 

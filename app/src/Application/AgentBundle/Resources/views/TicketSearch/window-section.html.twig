@@ -1,146 +1,213 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active"><i class="icon-envelope"></i> Tickets</li>
+	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-envelope"></i> Tickets</li>
 {% endblock %}
 {% block pane_content %}
-	<section class="source-section sys-filters-section">
-		<header>
-			<div class="hold-ticket-count">
-				<span class="dp-checkbox checkbox show-hold-check"></span>
-				<span class="count"></span>
-				{{ phrase('agent.tickets.tickets_on_hold') }}
-			</div>
-			<h1>{{ phrase('agent.tickets.status_awaiting_agent') }}</h1>
-			<span id="ticket_filter_launch_editor" class="settings"></span>
-		</header>
-		<article id="system_filters_wrap">
-			<ul id="tickets_outline_sys_filters" class="source-list">
-				{% for filter in sys_filters %}
-					{% if filter.sys_name != 'unassigned' or app.user.hasPerm('agent_tickets.view_unassigned') %}
-					<li
-						class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
-						data-filter-id="{{filter.id}}"
-						data-filter-name="{{filter.sys_name}}"
-						{% if initial_inbox_grouping[filter.id] %}data-initial-grouping="{{ initial_inbox_grouping[filter.id] }}"{% endif %}
-						{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
-						{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
-					>
-						<h3 class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-							<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-							{{ filter.title }}
-						</h3>
-						<ul class="sub-group" style="display: none;"></ul>
-					</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-
-			<ul id="tickets_outline_sys_hold_filters" class="source-list" style="display: none;">
-				{% for filter in sys_filters_hold %}
-					{% if filter.sys_name != 'unassigned_w_hold' or app.user.hasPerm('agent_tickets.view_unassigned') %}
-					<li
-						class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
-						data-filter-id="{{filter.id}}"
-						data-filter-name="{{filter.sys_name}}"
-					>
-						<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-							<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-							{{ filter.title }}
-						</h3>
-						<ul class="sub-group" style="display: none;"></ul>
-					</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</article>
-	</section>
-
-	<section class="source-section custom-filters-section">
-		<header>
-			<h1>{{ phrase('agent.general.filters') }}</h1>
-			<span id="ticket_customfilters_launch_editor" class="add launch-customfilters-settings {% if not custom_filters|length %}solo{% endif %}"></span>
-			{% if custom_filters|length %}<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor"></span>{% endif %}
-		</header>
-		<article id="custom_filters_wrap">
-			<ul id="tickets_outline_custom_filters" class="source-list">
-				{% set has_any_showing = false %}
-				{% if custom_filters|length %}
-					{% for filter in custom_filters %}
+	<div class="pane-content pane-content-main">
+		<section class="source-section sys-filters-section">
+			<header>
+				<div class="hold-ticket-count">
+					<span class="dp-checkbox checkbox show-hold-check"></span>
+					<span class="count"></span>
+					{{ phrase('agent.tickets.tickets_on_hold') }}
+				</div>
+				<h1>{{ phrase('agent.tickets.status_awaiting_agent') }}</h1>
+				<span id="ticket_filter_launch_editor" class="settings"></span>
+			</header>
+			<article id="system_filters_wrap">
+				<ul id="tickets_outline_sys_filters" class="source-list">
+					{% for filter in sys_filters %}
+						{% if filter.sys_name != 'unassigned' or app.user.hasPerm('agent_tickets.view_unassigned') %}
 						<li
-							class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %}"
+							class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
+							data-filter-id="{{filter.id}}"
+							data-filter-name="{{filter.sys_name}}"
+							{% if initial_inbox_grouping[filter.id] %}data-initial-grouping="{{ initial_inbox_grouping[filter.id] }}"{% endif %}
+							{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
+							{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
+						>
+							<h3 class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+								<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
+								{{ filter.title }}
+							</h3>
+							<ul class="sub-group" style="display: none;"></ul>
+						</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+
+				<ul id="tickets_outline_sys_hold_filters" class="source-list" style="display: none;">
+					{% for filter in sys_filters_hold %}
+						{% if filter.sys_name != 'unassigned_w_hold' or app.user.hasPerm('agent_tickets.view_unassigned') %}
+						<li
+							class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 							data-filter-id="{{filter.id}}"
 							data-filter-name="{{filter.sys_name}}"
 						>
-							<h3
-								class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}"
-								data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
-							>
+							<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 								<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-								<label>{{ filter.title }}</label>
+								{{ filter.title }}
+							</h3>
+							<ul class="sub-group" style="display: none;"></ul>
+						</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</article>
+		</section>
+
+		<section class="source-section custom-filters-section">
+			<header>
+				<h1>{{ phrase('agent.general.filters') }}</h1>
+				<span id="ticket_customfilters_launch_editor" class="add launch-customfilters-settings {% if not custom_filters|length %}solo{% endif %}"></span>
+				{% if custom_filters|length %}<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor"></span>{% endif %}
+			</header>
+			<article id="custom_filters_wrap">
+				<ul id="tickets_outline_custom_filters" class="source-list">
+					{% set has_any_showing = false %}
+					{% if custom_filters|length %}
+						{% for filter in custom_filters %}
+							<li
+								class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %}"
+								data-filter-id="{{filter.id}}"
+								data-filter-name="{{filter.sys_name}}"
+							>
+								<h3
+									class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}"
+									data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+								>
+									<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
+									<label>{{ filter.title }}</label>
+								</h3>
+							</li>
+						{% endfor %}
+						<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
+							{{ phrase('agent.interface.click_icon_to_show_filters') }}
+						</li>
+					{% else %}
+						<li class="no-data">
+							{% set phrase_link %}<span class="add-icon"></span>{% endset %}
+							{{ phrase('agent.interface.click_icon_to_add_filter', {'link':phrase_link}, true) }}
+						</li>
+					{% endif %}
+				</ul>
+			</article>
+		</section>
+
+		{% if slas %}
+			<section class="source-section sla-section">
+				<header id="ticket_slas_header" data-sla-filter="{{ sla_filter }}">
+					<h1>
+						<span style="text-transform: none">SLAs</span><span class="sla-filter-type" id="ticket_sla_filter_agent" {% if sla_filter != 'agent' %}style="display:none"{% endif %}>: My Tickets</span><span class="sla-filter-type" id="ticket_sla_filter_team" {% if sla_filter != 'team' %}style="display:none"{% endif %}>: My Teams' Tickets</span>
+					</h1>
+					<span id="ticket_sla_launch_editor" class="settings launch-sla-editor"></span>
+				</header>
+				<article id="sla_list_wrap">
+					<ul id="tickets_outline_slas" class="source-list">
+					{% set has_any_showing = false %}
+					{% for sla in slas %}
+						<li
+							class="sla sla-{{sla.id}} {% if filter_show_options['agent.ui.sla.filter-visibility.' ~ sla.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %}"
+							data-sla-id="{{sla.id}}"
+						>
+							<h3
+								class="is-nav-item title "
+								data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id}) }}"
+							>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'fail'}) }}" class="list-counter fail {% if sla_counts[sla.id].fail > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_fail">{{ sla_counts[sla.id].fail|default(0) }}</a>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'warning'}) }}" class="list-counter warning {% if sla_counts[sla.id].warning > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_warning">{{ sla_counts[sla.id].warning|default(0) }}</a>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'ok'}) }}" class="list-counter ok {% if sla_counts[sla.id].ok > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_ok">{{ sla_counts[sla.id].ok|default(0) }}</a>
+								<div style="display: block;">
+									<label style="display: block; text-overflow: ellipsis; overflow: hidden; width: 130px;">{{ sla.title }}</label>
+								</div>
 							</h3>
 						</li>
 					{% endfor %}
-					<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
-						{{ phrase('agent.interface.click_icon_to_show_filters') }}
-					</li>
-				{% else %}
-					<li class="no-data">
-						{% set phrase_link %}<span class="add-icon"></span>{% endset %}
-						{{ phrase('agent.interface.click_icon_to_add_filter', {'link':phrase_link}, true) }}
-					</li>
-				{% endif %}
-			</ul>
-		</article>
-	</section>
-
-	{% if slas %}
-		<section class="source-section sla-section">
-			<header id="ticket_slas_header" data-sla-filter="{{ sla_filter }}">
-				<h1>
-					<span style="text-transform: none">SLAs</span><span class="sla-filter-type" id="ticket_sla_filter_agent" {% if sla_filter != 'agent' %}style="display:none"{% endif %}>: My Tickets</span><span class="sla-filter-type" id="ticket_sla_filter_team" {% if sla_filter != 'team' %}style="display:none"{% endif %}>: My Teams' Tickets</span>
-				</h1>
-				<span id="ticket_sla_launch_editor" class="settings launch-sla-editor"></span>
-			</header>
-			<article id="sla_list_wrap">
-				<ul id="tickets_outline_slas" class="source-list">
-				{% set has_any_showing = false %}
-				{% for sla in slas %}
-					<li
-						class="sla sla-{{sla.id}} {% if filter_show_options['agent.ui.sla.filter-visibility.' ~ sla.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %}"
-						data-sla-id="{{sla.id}}"
-					>
-						<h3
-							class="is-nav-item title "
-							data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id}) }}"
-						>
-							<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'fail'}) }}" class="list-counter fail {% if sla_counts[sla.id].fail > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_fail">{{ sla_counts[sla.id].fail|default(0) }}</a>
-							<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'warning'}) }}" class="list-counter warning {% if sla_counts[sla.id].warning > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_warning">{{ sla_counts[sla.id].warning|default(0) }}</a>
-							<a data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'ok'}) }}" class="list-counter ok {% if sla_counts[sla.id].ok > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_ok">{{ sla_counts[sla.id].ok|default(0) }}</a>
-							<div style="display: block;">
-								<label style="display: block; text-overflow: ellipsis; overflow: hidden; width: 130px;">{{ sla.title }}</label>
-							</div>
-						</h3>
-					</li>
-				{% endfor %}
-					<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
-						Click <span class="gear-icon"></span> to show SLAs
-					</li>
-				</ul>
-			</article>
-			<div id="ticket_sla_group_editor" style="display:none">
-				<div class="sla-group-editor filter-group-editor">
-					<span class="close"></span>
-					<div class="ticket-filter-wrap">
-						<select class="ticket-filter">
-							<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All Tickets</option>
-							<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My Tickets</option>
-							{% if app.user.getAgentTeamIds()|length %}
-								<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My Team's Tickets</option>
-							{% endif %}
-						</select>
+						<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
+							Click <span class="gear-icon"></span> to show SLAs
+						</li>
+					</ul>
+				</article>
+				<div id="ticket_sla_group_editor" style="display:none">
+					<div class="sla-group-editor filter-group-editor">
+						<span class="close"></span>
+						<div class="ticket-filter-wrap">
+							<select class="ticket-filter">
+								<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All Tickets</option>
+								<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My Tickets</option>
+								{% if app.user.getAgentTeamIds()|length %}
+									<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My Team's Tickets</option>
+								{% endif %}
+							</select>
+						</div>
 					</div>
+					<script type="text/x-deskpro-plain" class="editor-row-tpl">
+						<div class="filter-row">
+							<div class="field-wrap"></div>
+						</div>
+					</script>
+					<script type="text/x-deskpro-plain" class="editor-fields-tpl">
+						<div>
+							<label><input type="checkbox" checked="checked" class="dp-checkbox" /> {{ phrase('agent.general.show') }}</label>
+						</div>
+					</script>
 				</div>
+			</section>
+		{% endif %}
+
+		<section class="source-tabs" id="tickets_outline_tabstrip">
+			<ul>
+				<li class="archive" data-tab-for="#tickets_outline_archive"><span>Tickets</span></li>
+				<li class="labels"  data-tab-for="#tickets_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
+				<li class="flagged fill-out" data-tab-for="#tickets_outline_flagged"><span>{{ phrase('agent.general.flagged') }}</span></li>
+			</ul>
+		</section>
+
+		<section id="tickets_outline_labels"  class="deskpro-tab-item">
+			{% include 'AgentBundle:TicketSearch:pane-labels-index.html.twig' %}
+		</section>
+		<section id="tickets_outline_flagged" class="deskpro-tab-item">
+			{% include 'AgentBundle:TicketSearch:window-flagged.html.twig' %}
+		</section>
+		<section id="tickets_outline_archive" class="deskpro-tab-item">
+			{% include 'AgentBundle:TicketSearch:window-section-archive.html.twig' %}
+		</section>
+
+		<section id="ticket_filter_group_editor">
+			<section class="filter-group-editor">
+				<span class="close"></span>
+				<script type="text/x-deskpro-plain" class="editor-row-tpl">
+					<div class="filter-row">
+						<div class="field-wrap"></div>
+					</div>
+				</script>
+				<script type="text/x-deskpro-plain" class="editor-fields-tpl">
+					<select>
+						<option value="">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.none') }}</option>
+						<option value="department">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.department') }}</option>
+						{% if app.getSetting('core.use_ticket_category') %}<option value="category">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.category') }}</option>{% endif %}
+						{% if app.getSetting('core.use_ticket_priority') %}<option value="priority">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.priority') }}</option>{% endif %}
+						{% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.product') }}</option>{% endif %}
+						{% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.workflow') }}</option>{% endif %}
+						<option value="organization">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.organization') }}</option>
+						{% if app.getDataRepository('Language').isMultiLang() %}
+							<option value="language">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.language') }}</option>
+						{% endif %}
+						<option value="urgency">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.urgency') }}</option>
+						<option value="agent">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent') }}</option>
+						{% if app.getSetting('core.use_agent_team') %}<option value="agent_team">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent_team') }}</option>{% endif %}
+						<option value="user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.time_waiting') }}</option>
+						<option value="total_user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.total_time_waiting') }}</option>
+						<option value="date_created">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.time_open') }}</option>
+					</select>
+				</script>
+			</section>
+		</section>
+
+		<section id="ticket_customfilter_group_editor">
+			<section class="filter-group-editor filter-showhide-editor">
+				<span class="close"></span>
 				<script type="text/x-deskpro-plain" class="editor-row-tpl">
 					<div class="filter-row">
 						<div class="field-wrap"></div>
@@ -148,76 +215,14 @@
 				</script>
 				<script type="text/x-deskpro-plain" class="editor-fields-tpl">
 					<div>
+						<span class="edit"></span>
 						<label><input type="checkbox" checked="checked" class="dp-checkbox" /> {{ phrase('agent.general.show') }}</label>
 					</div>
 				</script>
-			</div>
+			</section>
 		</section>
-	{% endif %}
-
-	<section class="source-tabs" id="tickets_outline_tabstrip">
-		<ul>
-			<li class="archive" data-tab-for="#tickets_outline_archive"><span>Tickets</span></li>
-			<li class="labels"  data-tab-for="#tickets_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
-			<li class="flagged fill-out" data-tab-for="#tickets_outline_flagged"><span>{{ phrase('agent.general.flagged') }}</span></li>
-		</ul>
-	</section>
-
-	<section id="tickets_outline_labels"  class="deskpro-tab-item">
-		{% include 'AgentBundle:TicketSearch:pane-labels-index.html.twig' %}
-	</section>
-	<section id="tickets_outline_flagged" class="deskpro-tab-item">
-		{% include 'AgentBundle:TicketSearch:window-flagged.html.twig' %}
-	</section>
-	<section id="tickets_outline_archive" class="deskpro-tab-item">
-		{% include 'AgentBundle:TicketSearch:window-section-archive.html.twig' %}
-	</section>
-
-	<section id="ticket_filter_group_editor">
-		<section class="filter-group-editor">
-			<span class="close"></span>
-			<script type="text/x-deskpro-plain" class="editor-row-tpl">
-				<div class="filter-row">
-					<div class="field-wrap"></div>
-				</div>
-			</script>
-			<script type="text/x-deskpro-plain" class="editor-fields-tpl">
-				<select>
-					<option value="">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.none') }}</option>
-					<option value="department">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.department') }}</option>
-					{% if app.getSetting('core.use_ticket_category') %}<option value="category">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.category') }}</option>{% endif %}
-					{% if app.getSetting('core.use_ticket_priority') %}<option value="priority">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.priority') }}</option>{% endif %}
-					{% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.product') }}</option>{% endif %}
-					{% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.workflow') }}</option>{% endif %}
-					<option value="organization">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.organization') }}</option>
-					{% if app.getDataRepository('Language').isMultiLang() %}
-						<option value="language">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.language') }}</option>
-					{% endif %}
-					<option value="urgency">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.urgency') }}</option>
-					<option value="agent">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent') }}</option>
-					{% if app.getSetting('core.use_agent_team') %}<option value="agent_team">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent_team') }}</option>{% endif %}
-					<option value="user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.time_waiting') }}</option>
-					<option value="total_user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.total_time_waiting') }}</option>
-					<option value="date_created">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.time_open') }}</option>
-				</select>
-			</script>
-		</section>
-	</section>
-
-	<section id="ticket_customfilter_group_editor">
-		<section class="filter-group-editor filter-showhide-editor">
-			<span class="close"></span>
-			<script type="text/x-deskpro-plain" class="editor-row-tpl">
-				<div class="filter-row">
-					<div class="field-wrap"></div>
-				</div>
-			</script>
-			<script type="text/x-deskpro-plain" class="editor-fields-tpl">
-				<div>
-					<span class="edit"></span>
-					<label><input type="checkbox" checked="checked" class="dp-checkbox" /> {{ phrase('agent.general.show') }}</label>
-				</div>
-			</script>
-		</section>
-	</section>
+	</div>
+	<div class="pane-content pane-content-search" style="display: none;">
+		{% include 'AgentBundle:TicketSearch:window-section-search.html.twig' %}
+	</div>
 {% endblock %}

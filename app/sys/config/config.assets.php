@@ -267,6 +267,8 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/DeskproSubmitFeedback.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
+
+		'javascripts/DeskPRO/SourcePane/SearchForm.js',
 	)
 );
 

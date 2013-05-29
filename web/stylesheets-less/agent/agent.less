@@ -2059,6 +2059,89 @@ ul.pane-tabs {
 	}
 }
 
+.source-pane-search {
+	.input-row {
+		margin: 8px;
+	}
+
+	.input-row-title {
+		strong {
+			font-weight: bold;
+			padding: 0 4px;
+		}
+	}
+
+	.input-row-body {
+
+	}
+
+	.text-value, .selection-value {
+		background-color: #fff;
+		padding: 4px;
+		border: 1px solid #B0B2B6;
+		min-height: 16px;
+		.rounded(2px);
+	}
+
+	.btn-value, .adv-btn {
+		display: block;
+		background-color: #F2F3F4;
+		border: 1px solid #B0B2B6;
+		padding: 4px;
+		line-height: 16px;
+		cursor: pointer;
+		.rounded(2px);
+
+		&:hover {
+			border: 1px solid darken(#B0B2B6, 20%);
+		}
+	}
+
+	.with-adv {
+		margin-right: 34px;
+	}
+	.adv-btn {
+		float: right;
+		width: 16px;
+		text-align: center;
+
+		i {
+			color: #8E99A4;
+		}
+	}
+
+	.input-row-body:hover {
+		.icon-caret-down {
+			color: #000;
+		}
+
+		.text-value, .selection-value {
+			border: 1px solid darken(#B0B2B6, 20%);
+			cursor: pointer;
+		}
+	}
+
+	.icon-caret-down {
+		float: right;
+		font-size: 11px;
+		color: #BEC0C3;
+		margin-top: 2px;
+		margin-right: 2px;
+		cursor: pointer;
+	}
+
+	.selection-value {
+		.val {
+			margin-right: 10px;
+		}
+	}
+
+	footer {
+		margin-top: 30px;
+		text-align: center;
+	}
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 // List Pane
 //----------------------------------------------------------------------------------------------------------------------
