@@ -1,0 +1,166 @@
+<section class="source-pane-search">
+
+	{##################################################################################################################}
+	{# Status #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Status</strong>
+		</div>
+		<div class="input-row-body">
+			{% set elid = el_uid() %}
+			<select class="dp-select-widget-simple" name="status" multiple="multiple" data-target-menu="#{{ elid }}_menu">
+				<option selected="selected" value="awaiting_agent">Awaiting Agent</option>
+				<option selected="selected" value="awaiting_user">Awaiting User</option>
+				<option value="resolved">Resolved</option>
+				<option value="closed">Archived</option>
+				<option value="hidden.awaiting_validation">Awaiting Validation</option>
+				<option value="hidden.spam">Spam</option>
+				<option value="hidden.deleted">Deleted</option>
+			</select>
+			<div class="source-pane-select-menu" id="{{ elid }}_menu">
+				<i class="icon-caret-up"></i>
+				<ul class="checkbox-list">
+					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> Awaiting Agent</label></li>
+					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> Awaiting User</label></li>
+					<li><label><input class="widget-val" type="checkbox" value="resolved" /> Resolved</label></li>
+					<li><label><input class="widget-val" type="checkbox" value="closed" /> Closed</label></li>
+				</ul>
+
+				<div class="alt-options">
+					<strong>Hidden Tickets:</strong>
+					<ul class="checkbox-list">
+						<li><label><input class="widget-val" type="checkbox" value="hidden.awaiting_validation" /> Awaiting Validation</label></li>
+						<li><label><input class="widget-val" type="checkbox" value="hidden.spam" /> Spam</label></li>
+						<li><label><input class="widget-val" type="checkbox" value="hidden.deleted" /> Deleted</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Agent #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Agent</strong>
+		</div>
+		<div class="input-row-body">
+			{% set elid = el_uid() %}
+			<select class="dp-select-widget-simple" name="status" multiple="multiple" data-target-menu="auto">
+				<optgroup label="Agents">
+					<option selected="selected" value="agent.{{ app.user.id }}">Me</option>
+					{% for agent in app.getDataRepository('Agent').getAgents() if agent.id != app.user.id %}
+						<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+					{% endfor %}
+				</optgroup>
+				<optgroup label="Agent Teams">
+					{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+						<option value="team.{{ team.id }}">{{ team.name }}</option>
+					{% endfor %}
+				</optgroup>
+			</select>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Ticket Field #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Ticket Field</strong>
+		</div>
+		<div class="input-row-body">
+			<button class="btn-value trigger-open-panel" data-panel-id="panel-ticket-fields">Choose</button>
+		</div>
+	</div>
+
+	<div class="source-pane-search-panel panel-ticket-fields">
+		XXXXXXXXXXXXXXXXXXXXXX
+	</div>
+
+	{##################################################################################################################}
+	{# Subject #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Subject</strong>
+		</div>
+		<div class="adv-btn"><i class="icon-cog"></i></div>
+		<div class="input-row-body with-adv">
+			<div class="text-value">
+				<div class="value"></div>
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Message #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Message</strong>
+		</div>
+		<div class="adv-btn"><i class="icon-cog"></i></div>
+		<div class="input-row-body with-adv">
+			<div class="text-value">
+				<div class="value"></div>
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# User #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>User</strong>
+		</div>
+		<div class="adv-btn"><i class="icon-cog"></i></div>
+		<div class="input-row-body with-adv">
+			<div class="text-value">
+				<div class="value"></div>
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Organization #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Organization</strong>
+		</div>
+		<div class="adv-btn"><i class="icon-cog"></i></div>
+		<div class="input-row-body with-adv">
+			<div class="text-value">
+				<div class="value"></div>
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Dates and Times #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title with-adv">
+			<strong>Dates and Times</strong>
+		</div>
+		<div class="input-row-body">
+			<button class="btn-value">Choose</button>
+		</div>
+	</div>
+
+	<footer>
+		<button class="dp-btn"> Search</button>
+	</footer>
+</section>

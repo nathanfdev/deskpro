@@ -56,6 +56,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.contentEl.html(data.section_html);
 
+		var searchPane = this.contentEl.find('.source-pane-search');
+		if (searchPane[0]) {
+			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+		}
+
 		$('.find-button').on('click', function(ev) {
 			$(this).toggleClass('on');
 			if ($(this).hasClass('on')) {

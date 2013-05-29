@@ -268,7 +268,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 
-		'javascripts/DeskPRO/SourcePane/SearchForm.js',
+		'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
 	)
 );
 
@@ -338,6 +338,10 @@ $CONFIG['agent_deskpro_ui'] = array(
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/DateChooser.js',
 		'javascripts/DeskPRO/UI/CatListEditor.js',
+		'javascripts/DeskPRO/UI/Select/Widget.js',
+		'javascripts/DeskPRO/UI/Select/Menu.js',
+		'javascripts/DeskPRO/UI/Select/WidgetSimple.js',
+		'javascripts/DeskPRO/UI/Select/MenuHtml.js',
 	)
 );
 
