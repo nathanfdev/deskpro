@@ -255,6 +255,38 @@ Orb.appendQueryData = function(url, k, v) {
 	return url;
 };
 
+/**
+ * Serialize form elements wihtin context
+ */
+Orb.serializeFormElements = function(context) {
+	var postData = [];
+
+	context.each(function() {
+		$(this).find('input, select, textarea').each(function() {
+			var el = $(this);
+			var name = el.attr('name');
+
+			if (!name) {
+				return;
+			}
+
+			if (el.is(':checkbox, :radio')) {
+				if (el.is(':checked')) {
+					postData.push({name: name, value: el.val() });
+				}
+			} else if (el.is('input, textarea')) {
+				postData.push({name: name, value: el.val() });
+			} else if (el.is('select')) {
+				el.find('option').filter(':selected').each(function() {
+					postData.push({name: name, value: $(this).val() });
+				});
+			}
+		});
+	});
+
+	return postData;
+};
+
 
 /**
  * Repeat a string `str` `count` times
