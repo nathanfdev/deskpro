@@ -91,6 +91,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (data.data && !data.data.can_view) {
 				self.closeSelf();
 			}
+
+			if (data.data && data.data.refresh) {
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+				self.closeSelf();
+			}
 		});
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
