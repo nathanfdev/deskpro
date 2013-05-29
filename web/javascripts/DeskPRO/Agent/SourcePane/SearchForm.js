@@ -33,7 +33,10 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 		this.el.find('.trigger-open-panel').each(function() {
 			var panelTrigger = $(this);
 			var panelEl      = self.el.find('.' + panelTrigger.data('panel-id')).first();
+			var panelSummary = self.el.find(panelTrigger.data('target-summary')).first();
 			var panel        = new DeskPRO.Agent.SourcePane.SearchFormPanel(panelEl);
+
+			panel.targetSummaryEl = panelSummary;
 
 			panelTrigger.on('click', function(ev) {
 				Orb.cancelEvent(ev);
@@ -110,6 +113,9 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		this._isOpen    = false;
 		this.hasInit    = false;
 		this.shim       = null;
+		this.updateTypesTimer = null;
+		this.searchBuilderLists = [];
+		this.targetSummaryEl = null;
 	},
 
 	initPanel: function() {
@@ -124,6 +130,8 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		this.el.find('.with-search-builder').each(function() {
 			var critTpl = $(this).find('.criteria_tpl');
 			var critList = $(this).find('.criteria_list');
+
+			self.searchBuilderLists.push(critList.get(0));
 
 			var editor = new DeskPRO.Form.RuleBuilder(critTpl);
 			editor.addEvent('newRow', function(new_row) {
@@ -141,6 +149,16 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			});
 		});
 
+		if (this.el.data('target-summary')) {
+			this.targetSummaryEl = this.el.data('target-summary');
+		}
+
+		if (this.targetSummaryEl) {
+			this.el.find('.search-string').on('keyup keydown change', function() {
+				self.targetSummaryEl.val(($(this).val()));
+			});
+		}
+
 		this.shim = $('<div class="dp-shim"></div>');
 		this.shim.appendTo('body');
 
@@ -148,6 +166,25 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			Orb.cancelEvent(ev);
 			self.close();
 		});
+	},
+
+	updateTypes: function() {
+		if (this.searchBuilderLists.length) {
+			var self = this;
+
+			this.targetSummaryEl.empty();
+			var texts = [];
+			Array.each(this.searchBuilderLists, function(o_el) {
+				$.trim($(o_el).find('.builder-type-choice').each(function() {
+					var el = $(this);
+					var type = $.trim($(el).find('select').find('option').filter(':selected').text());
+					if (type) {
+						texts.push(type);
+					}
+				}));
+			});
+			self.targetSummaryEl.text(texts.join(', '));
+		}
 	},
 
 
@@ -178,6 +215,8 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		if (this._isOpen) return;
 		this._isOpen = true;
 
+		var self = this;
+
 		// Actual panel events are lazy inited on first open
 		this.initPanel();
 
@@ -194,9 +233,9 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		var winH = $(window).height();
 		var maxH = winH - top - 80;
 
-		if (maxH < 500) {
-			if (winH > 500) {
-				top -= (500 - maxH);
+		if (maxH < 250) {
+			if (winH > 250) {
+				top -= (250 - maxH);
 			} else {
 				top = 60;
 			}
@@ -213,6 +252,12 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			top: top,
 			'max-height': maxH
 		});
+
+		if (this.targetSummaryEl) {
+			this.updateTypesTimer = window.setInterval(function() {
+				self.updateTypes();
+			}, 300);
+		}
 	},
 
 
@@ -222,6 +267,11 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 	close: function() {
 		if (!this._isOpen) return;
 		this._isOpen = false;
+
+		if (this.updateTypesTimer) {
+			window.clearTimeout(this.updateTypesTimer);
+			this.updateTypesTimer = null;
+		}
 
 		this.el.hide();
 		this.shim.hide();

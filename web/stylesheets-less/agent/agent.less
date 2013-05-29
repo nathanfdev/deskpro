@@ -2089,15 +2089,25 @@ ul.pane-tabs {
 	}
 
 	.input-row-body {
-
+		min-height: 16px;
 	}
 
-	.text-value, .selection-value, .body-value {
+	.text-value, .selection-value, .body-value, input[type="text"] {
 		background-color: #fff;
 		padding: 4px;
 		border: 1px solid #B0B2B6;
 		min-height: 16px;
 		.rounded(2px);
+		cursor: pointer;
+		box-shadow: none;
+
+		&:hover {
+			border: 1px solid darken(#B0B2B6, 20%);
+		}
+	}
+
+	.input-row-body input[type="text"] {
+		width: 154px;
 	}
 
 	.body-value {
@@ -2222,7 +2232,7 @@ ul.pane-tabs {
 
 		.remove-row-btn {
 			position: absolute;
-			top: 6px;
+			top: 16px;
 			right: 10px;
 		}
 
@@ -2268,6 +2278,11 @@ ul.pane-tabs {
 	.search-form {
 		padding-bottom: 15px;
 
+		.remove-row-btn {
+			top: 6px;
+			right: 10px;
+		}
+
 		.add-term-row {
 			display: inline-block;
 			background-color: #F2F3F4;
@@ -2305,6 +2320,12 @@ ul.pane-tabs {
 				right: 6px;
 				z-index: 1;
 			}
+		}
+
+		.search-terms .term:first-of-type {
+			padding-top: 15px;
+			.remove-row-btn { display: none;}
+			.sep-row { display: none; }
 		}
 	}
 }

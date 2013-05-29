@@ -70,12 +70,14 @@
 	{# Ticket Field #}
 	{##################################################################################################################}
 
+	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
 			<strong>Ticket Field</strong>
 		</div>
-		<div class="input-row-body">
-			<button class="btn-value trigger-open-panel" data-panel-id="panel-ticket-fields">Choose</button>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-ticket-fields" id="{{ elid }}_termlist">
+
 		</div>
 	</div>
 
@@ -87,19 +89,17 @@
 	{# Subject #}
 	{##################################################################################################################}
 
+	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
 			<strong>Subject</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-subject"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-subject" data-target-summary="#{{ elid }}_text_val"><i class="icon-cog"></i></div>
 		<div class="input-row-body with-adv">
-			<div class="text-value">
-				<div class="value"></div>
-			</div>
+			<input type="text" name="search_subject_simple" value="" id="{{ elid }}_text_val" />
 		</div>
 	</div>
 
-	{% set elid = el_uid() %}
 	<div class="source-pane-search-panel panel-ticket-subject">
 		<div class="pane-rows-wrap" id="{{ elid }}_pane_rows">
 			<div class="pane-row row-orig" id="{{ elid }}_orig_row">
@@ -112,7 +112,7 @@
 					<tr>
 						<td width="80">Subject</td>
 						<td>
-							<input class="full-width" type="text" name="search_subject_string[]" placeholder="Enter search words" />
+							<input class="full-width search-string" type="text" name="search_subject_string[]" placeholder="Enter search words" />
 						</td>
 					</tr>
 					<tr>
@@ -141,19 +141,17 @@
 	{# Message #}
 	{##################################################################################################################}
 
+	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
 			<strong>Message</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-message"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-message" data-target-summary="#{{ elid }}_text_val"><i class="icon-cog"></i></div>
 		<div class="input-row-body with-adv">
-			<div class="text-value">
-				<div class="value"></div>
-			</div>
+			<input type="text" name="search_message_simple" value="" id="{{ elid }}_text_val" />
 		</div>
 	</div>
 
-	{% set elid = el_uid() %}
 	<div class="source-pane-search-panel panel-ticket-message">
 		<div class="pane-rows-wrap" id="{{ elid }}_pane_rows">
 			<div class="pane-row row-orig" id="{{ elid }}_orig_row">
@@ -166,7 +164,7 @@
 					<tr>
 						<td width="80">Message</td>
 						<td>
-							<input class="full-width" type="text" name="search_message_string[]" placeholder="Enter search words" />
+							<input class="full-width search-string" type="text" name="search_message_string[]" placeholder="Enter search words" />
 						</td>
 					</tr>
 					<tr>
@@ -206,12 +204,14 @@
 	{# User #}
 	{##################################################################################################################}
 
+	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
 			<strong>User</strong>
 		</div>
-		<div class="input-row-body">
-			<button class="btn-value trigger-open-panel" data-panel-id="panel-user-fields">Choose</button>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-user-fields" id="{{ elid }}_termlist">
+
 		</div>
 	</div>
 
@@ -223,12 +223,14 @@
 	{# Organization #}
 	{##################################################################################################################}
 
+	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
 			<strong>Organization</strong>
 		</div>
-		<div class="input-row-body">
-			<button class="btn-value trigger-open-panel" data-panel-id="panel-org-fields">Choose</button>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-org-fields" id="{{ elid }}_termlist">
+
 		</div>
 	</div>
 
@@ -240,12 +242,14 @@
 	{# Dates and Times #}
 	{##################################################################################################################}
 
+	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
 			<strong>Dates &amp; Times</strong>
 		</div>
-		<div class="input-row-body">
-			<button class="btn-value trigger-open-panel" data-panel-id="panel-date-fields">Choose</button>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-date-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-date-fields" id="{{ elid }}_termlist">
+
 		</div>
 	</div>
 
