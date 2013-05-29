@@ -1,0 +1,308 @@
+<div class="with-search-builder">
+	<div class="search-form criteria_list">
+		{% if app.getSetting('core_tickets.use_archive') %}
+			<div class="term">
+				{{ phrase('agent.tickets.active_tickets_term') }}
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.active_tickets_term_explain') }}"></span>
+			</div>
+		{% endif %}
+		<div class="search-terms"></div>
+		<div class="add-term-row"><span class="add-term"><i class="icon-plus-sign"></i></span></div>
+	</div>
+
+	<div class="search-builder-tpl criteria_tpl" style="display:none">
+		<div class="row">
+			<div class="term">
+				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
+				<div class="sep-row">
+					<div class="line"></div>
+					<strong>and</strong>
+				</div>
+				<table cellpadding="0" cellspacing="0" width="100%" border="0" class="term-table"><tbody><tr>
+					<td class="builder-controls" style="vertical-align: middle;">
+						<table cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr>
+							<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-type-choice"></div></td>
+							<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-op"></div></td>
+							<td style="vertical-align: middle;"><div class="builder-options"></div></td>
+						</tr></tbody></table>
+					</td>
+				</tr></tbody></table>
+			</div>
+		</div>
+		<div class="builder-type-choice" title="{{ phrase('agent.general.choose_criteria') }}" data-rule-type=""></div>
+
+
+		{% if app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+			<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+						{% if with_change_terms %}
+							<option value="changed">{{ phrase('agent.general.changed') }}</option>
+							<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+							<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+							<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+						{% endif %}
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="department">
+						{% for dep in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+							{% if dep.children|length %}
+								<optgroup label="{{ dep.title }}">
+									{% for subdep in dep.children %}
+										<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">{{subdep.title}}</option>
+									{% endfor %}
+								</optgroup>
+							{% else %}
+								<option value="{{dep.id}}">{{dep.title}}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if term_options.products %}
+			<div class="builder-type" title="{{ phrase('agent.general.product') }}" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+						{% if with_change_terms %}
+							<option value="changed">{{ phrase('agent.general.changed') }}</option>
+							<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+							<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+							<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+						{% endif %}
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="product">
+						<option value="0">None</option>
+						{% for id,label in term_options.products %}
+							<option value="{{id}}">{{label}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if term_options.ticket_categories %}
+			<div class="builder-type" title="{{ phrase('agent.general.category') }}" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+						{% if with_change_terms %}
+							<option value="changed">{{ phrase('agent.general.changed') }}</option>
+							<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+							<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+							<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+						{% endif %}
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="category">
+						<option value="0">None</option>
+						{% for id,label in term_options.ticket_categories %}
+							<option value="{{id}}">{{label}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		<div class="builder-type" title="{{ phrase('agent.general.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="gte">&gt;=</option>
+					<option value="lte">&lt;=</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+					{% if with_change_terms %}
+						<optgroup label="{{ phrase('agent.general.changed') }}">
+							<option value="changed">{{ phrase('agent.general.changed') }}</option>
+							<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+							<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+							<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+						</optgroup>
+						<optgroup label="Changed (ranged)">
+							<option value="changed_to_gte">Changed to &gt;=</option>
+							<option value="changed_to_lte">Changed to &lt;=</option>
+							<option value="changed_from_gte">Changed from &gt;=</option>
+							<option value="changed_from_lte">Changed from &lt;=</option>
+							<option value="not_changed_to_gte">Not changed to &gt;=</option>
+							<option value="not_changed_from_lte">Not changed from &lt;=</option>
+						</optgroup>
+					{% endif %}
+				</select>
+			</div>
+			<div class="builder-options">
+				<input type="text" size="4" value="" name="num" />
+			</div>
+		</div>
+
+		{% if term_options.priorities %}
+			<div class="builder-type" title="{{ phrase('agent.general.priority') }}" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+						<option value="lte">{{ phrase('agent.general.is_less_than') }}</option>
+						<option value="gte">{{ phrase('agent.general.is_greater_than') }}</option>
+						{% if with_change_terms %}
+							<option value="changed">{{ phrase('agent.general.changed') }}</option>
+							<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+							<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+							<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+						{% endif %}
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="priority">
+						<option value="0">None</option>
+						{% for id,label in term_options.priorities %}
+							<option value="{{id}}">{{label}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if term_options.ticket_workflows %}
+			<div class="builder-type" title="{{ phrase('agent.general.workflow') }}" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+						{% if with_change_terms %}
+							<option value="changed">{{ phrase('agent.general.changed') }}</option>
+							<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+							<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+							<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+						{% endif %}
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="workflow[]" multiple="multiple">
+						<option value="0">None</option>
+						{% for id,label in term_options.ticket_workflows %}
+							<option value="{{id}}">{{label}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if term_options.languages %}
+		<div class="builder-type" title="{{ phrase('agent.general.language') }}" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
+			<div class="builder-op">
+				<select name="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="language">
+					<option value="0">None</option>
+					{% for id,title in term_options.languages %}
+					<option value="{{id}}">{{title}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if term_options.slas %}
+			<div class="builder-type" title="SLA" data-rule-type="sla" data-term-type="GenericMenuTerm" data-term-triggers="sla">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="sla_id">
+						{% for id,title in term_options.slas %}
+							<option value="{{ id }}">{{ title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+
+			<div class="builder-type" title="SLA Status" data-rule-type="sla_status" data-term-type="GenericMenuTerm" data-term-triggers="sla_status,slastatus">
+				<div class="builder-op">
+					<select name="op" class="op">
+						<option value="is">{{ phrase('agent.general.is') }}</option>
+						<option value="not">{{ phrase('agent.general.is_not') }}</option>
+					</select>
+				</div>
+				<div class="builder-options">
+					<select name="sla_status">
+						<option value="ok">OK</option>
+						<option value="warn">Warning</option>
+						<option value="fail">Fail</option>
+					</select>
+					for SLA
+					<select name="sla_id">
+						<option value="0">Any</option>
+					{% for id,title in term_options.slas %}
+						<option value="{{id}}">{{title}}</option>
+					{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if app.getTicketFieldManager().getFields() %}
+			{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than') } %}
+			{% for field in app.getTicketFieldManager().getDisplayArray() %}
+				{% if field.field_def.getFilterCapabilities(search_context) %}
+				<div class="builder-type" title="{{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+					<div class="builder-op">
+						<select name="op" class="op">
+							{% if search_context == 'filter' %}
+								{% for op in field.field_def.getFilterCapabilities(search_context) %}
+									<option value="{{op}}">{{op_lang[op]}}</option>
+								{% endfor %}
+							{% else %}
+								{% for op in field.field_def.getSearchCapabilities(search_context) %}
+									<option value="{{op}}">{{op_lang[op]}}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+					</div>
+					<div class="builder-options">
+						{{ form_widget(field.formView) }}
+					</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+
+		<div class="builder-type" title="{{ phrase('agent.general.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+					{% if with_change_terms %}
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to_include') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_to_remove') }}</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="builder-options">
+				{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
+			</div>
+		</div>
+	</div>
+</div>

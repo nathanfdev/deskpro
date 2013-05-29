@@ -114,12 +114,32 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 
 	initPanel: function() {
 		if (this.hasInit) return;
-		this.hasInit = false;
+		this.hasInit = true;
 
 		var self = this;
 
 		// For absolute positioning over things
 		this.el.detach().appendTo('body');
+
+		this.el.find('.with-search-builder').each(function() {
+			var critTpl = $(this).find('.criteria_tpl');
+			var critList = $(this).find('.criteria_list');
+
+			var editor = new DeskPRO.Form.RuleBuilder(critTpl);
+			editor.addEvent('newRow', function(new_row) {
+				$('.trigger-remove-row', new_row).on('click', function() {
+					new_row.remove();
+				});
+			});
+			$('.add-term', critList).data('add-count', 0).on('click', function() {
+				var count = parseInt($(this).data('add-count'));
+				var basename = 'terms['+count+']';
+
+				$(this).data('add-count', count+1);
+
+				editor.addNewRow($('.search-terms', critList), basename);
+			});
+		});
 
 		this.shim = $('<div class="dp-shim"></div>');
 		this.shim.appendTo('body');

@@ -2179,6 +2179,30 @@ ul.pane-tabs {
 	overflow: auto;
 	box-shadow: 2px 1px 3px 0px rgba(0, 0, 0, 0.3);
 
+	.sep-row {
+		position: relative;
+		height: 20px;
+		margin-bottom: 10px;
+		margin-top: 10px;
+		strong {
+			height: 20px;
+			width: 30px;
+			text-align: center;
+			background: #eff1f4;
+			border: 1px solid #b0b2b6;
+			text-transform: uppercase;
+			line-height: 20px;
+			font-size: 10px;
+			position: absolute;
+			left: 20px;
+			top: 0;
+		}
+		.line {
+			height: 9px;
+			border-bottom: 1px solid #b0b2b6;
+		}
+	}
+
 	.pane-row {
 		padding: 10px;
 		position: relative;
@@ -2218,29 +2242,6 @@ ul.pane-tabs {
 		input[type="text"].dp-date-input {
 			width: 100px;
 		}
-
-		.sep-row {
-			position: relative;
-			height: 20px;
-			margin-bottom: 10px;
-			strong {
-				height: 20px;
-				width: 30px;
-				text-align: center;
-				background: #eff1f4;
-				border: 1px solid #b0b2b6;
-				text-transform: uppercase;
-				line-height: 20px;
-				font-size: 10px;
-				position: absolute;
-				left: 20px;
-				top: 0;
-			}
-			.line {
-				height: 9px;
-				border-bottom: 1px solid #b0b2b6;
-			}
-		}
 	}
 
 	.add-row {
@@ -2261,6 +2262,49 @@ ul.pane-tabs {
 
 		&:hover {
 			border: 1px solid darken(#B0B2B6, 20%);
+		}
+	}
+
+	.search-form {
+		padding-bottom: 15px;
+
+		.add-term-row {
+			display: inline-block;
+			background-color: #F2F3F4;
+			border: 1px solid #B0B2B6;
+			padding: 4px;
+			margin-top: 15px;
+			margin-left: 15px;
+			line-height: 16px;
+			cursor: pointer;
+			.rounded(2px);
+			width: 16px;
+			text-align: center;
+			color: #8E99A4;
+
+			.add-term {
+				background: transparent;
+				width: 16px;
+				line-height: 100%;
+				margin: 0;
+				padding: 0;
+				float: none;
+				text-indent: 0;
+			}
+		}
+
+		.term, .term:hover {
+			position: relative;
+			background: transparent;
+			box-shadow: none;
+			border: none;
+
+			.remove-row-btn {
+				position: absolute;
+				top: 12px;
+				right: 6px;
+				z-index: 1;
+			}
 		}
 	}
 }

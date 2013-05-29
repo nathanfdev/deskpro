@@ -113,6 +113,12 @@ class TicketSearchController extends AbstractController
 
 		$initial_inbox_grouping = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.ticket-source-grouping', $this->person->id);
 
+		$term_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$term_options['custom_ticket_fields'] = $custom_fields;
+
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
@@ -130,7 +136,9 @@ class TicketSearchController extends AbstractController
 
 			'slas' => $slas,
 			'sla_counts' => $sla_counts,
-			'sla_filter' => $sla_filter
+			'sla_filter' => $sla_filter,
+
+			'term_options' => $term_options,
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;
