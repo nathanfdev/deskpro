@@ -47,7 +47,13 @@ DeskPRO.UI.Select.WidgetSimple = new Orb.Class({
 		var lastIdx = opts.length-1;
 		opts.each(function(idx) {
 			var span = $('<span class="val"></span>');
-			span.text($.trim($(this).text()));
+
+			var title = $.trim($(this).text());
+			if (title) {
+				span.text(title);
+			} else {
+				span.html('&nbsp;');
+			}
 			span.appendTo(valList);
 
 			if (idx != lastIdx) {

@@ -91,11 +91,49 @@
 		<div class="input-row-title">
 			<strong>Subject</strong>
 		</div>
-		<div class="adv-btn"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-subject"><i class="icon-cog"></i></div>
 		<div class="input-row-body with-adv">
 			<div class="text-value">
 				<div class="value"></div>
 			</div>
+		</div>
+	</div>
+
+	{% set elid = el_uid() %}
+	<div class="source-pane-search-panel panel-ticket-subject">
+		<div class="pane-rows-wrap" id="{{ elid }}_pane_rows">
+			<div class="pane-row row-orig" id="{{ elid }}_orig_row">
+				<div class="sep-row">
+					<div class="line"></div>
+					<strong>and</strong>
+				</div>
+				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
+				<table class="layout-table v-middle" width="100%">
+					<tr>
+						<td width="80">Subject</td>
+						<td>
+							<input class="full-width" type="text" name="search_subject_string[]" placeholder="Enter search words" />
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<select class="dp-select-widget-simple" name="search_subject_op[]" data-target-menu="auto" data-menu-addclass="no-caret">
+								<option selected="selected" value="is">contains</option>
+								<option value="not">does not contain</option>
+							</select>
+							<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret">
+								<option value="and">all words</option>
+								<option value="or">any word</option>
+								<option value="phrase">phrase</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="add-row">
+			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="icon-plus-sign"></i></div>
 		</div>
 	</div>
 
@@ -107,11 +145,60 @@
 		<div class="input-row-title">
 			<strong>Message</strong>
 		</div>
-		<div class="adv-btn"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-message"><i class="icon-cog"></i></div>
 		<div class="input-row-body with-adv">
 			<div class="text-value">
 				<div class="value"></div>
 			</div>
+		</div>
+	</div>
+
+	{% set elid = el_uid() %}
+	<div class="source-pane-search-panel panel-ticket-message">
+		<div class="pane-rows-wrap" id="{{ elid }}_pane_rows">
+			<div class="pane-row row-orig" id="{{ elid }}_orig_row">
+				<div class="sep-row">
+					<div class="line"></div>
+					<strong>and</strong>
+				</div>
+				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
+				<table class="layout-table v-middle" width="100%">
+					<tr>
+						<td width="80">Message</td>
+						<td>
+							<input class="full-width" type="text" name="search_message_string[]" placeholder="Enter search words" />
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<select class="dp-select-widget-simple" name="search_message_op[]" data-target-menu="auto" data-menu-addclass="no-caret">
+								<option selected="selected" value="is">contains</option>
+								<option value="not">does not contain</option>
+							</select>
+							<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret">
+								<option value="and">all words</option>
+								<option value="or">any word</option>
+								<option value="phrase">phrase</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>By</td>
+						<td>
+							<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret">
+								<option selected="selected" value="0" data-title="An agent or user"></option>
+								<option value="agent">An agent</option>
+								<option value="user">A user</option>
+							</select>
+							<input type="text" class="dp-date-input" name="search_message_date[]" placeholder="on dd/mm/yy" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="add-row">
+			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="icon-plus-sign"></i></div>
 		</div>
 	</div>
 
@@ -123,11 +210,8 @@
 		<div class="input-row-title">
 			<strong>User</strong>
 		</div>
-		<div class="adv-btn"><i class="icon-cog"></i></div>
-		<div class="input-row-body with-adv">
-			<div class="text-value">
-				<div class="value"></div>
-			</div>
+		<div class="input-row-body">
+			<button class="btn-value trigger-open-panel" data-panel-id="panel-ticket-fields">Choose</button>
 		</div>
 	</div>
 
@@ -139,11 +223,8 @@
 		<div class="input-row-title">
 			<strong>Organization</strong>
 		</div>
-		<div class="adv-btn"><i class="icon-cog"></i></div>
-		<div class="input-row-body with-adv">
-			<div class="text-value">
-				<div class="value"></div>
-			</div>
+		<div class="input-row-body">
+			<button class="btn-value trigger-open-panel" data-panel-id="panel-ticket-fields">Choose</button>
 		</div>
 	</div>
 

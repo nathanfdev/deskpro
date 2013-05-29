@@ -60,6 +60,12 @@ table.layout-table {
 	}
 }
 
+table.layout-table.v-middle {
+	> tbody > tr > td, > tr > td {
+		vertical-align: middle;
+	}
+}
+
 .qtip-dark{
 	background-color: #000000;
 	border-color: #000000;
@@ -2155,6 +2161,10 @@ ul.pane-tabs {
 		margin-top: 30px;
 		text-align: center;
 	}
+
+	.dp-ui-select-widget {
+		display: block;
+	}
 }
 
 .source-pane-search-panel {
@@ -2164,9 +2174,95 @@ ul.pane-tabs {
 	border: 1px solid #A7ABB1;
 	border-left: none;
 	width: 600px;
-	.zindex-chrome2;
+	.zindex-chrome;
 	.border-radius(0, 4px, 4px, 0);
+	overflow: auto;
 	box-shadow: 2px 1px 3px 0px rgba(0, 0, 0, 0.3);
+
+	.pane-row {
+		padding: 10px;
+		position: relative;
+
+		.add-row-btn {
+			display: block;
+		}
+
+		&.row-orig {
+			.remove-row-btn {
+				display: none;
+			}
+			.sep-row {
+				display: none;
+			}
+		}
+
+		.remove-row-btn {
+			position: absolute;
+			top: 6px;
+			right: 10px;
+		}
+
+		input[type="text"] {
+			width: 200px;
+			vertical-align: middle;
+		}
+
+		input[type="text"].full-width {
+			width: 90%;
+		}
+
+		.dp-ui-select-widget {
+			margin: 6px 6px 6px 0;
+		}
+
+		input[type="text"].dp-date-input {
+			width: 100px;
+		}
+
+		.sep-row {
+			position: relative;
+			height: 20px;
+			margin-bottom: 10px;
+			strong {
+				height: 20px;
+				width: 30px;
+				text-align: center;
+				background: #eff1f4;
+				border: 1px solid #b0b2b6;
+				text-transform: uppercase;
+				line-height: 20px;
+				font-size: 10px;
+				position: absolute;
+				left: 20px;
+				top: 0;
+			}
+			.line {
+				height: 9px;
+				border-bottom: 1px solid #b0b2b6;
+			}
+		}
+	}
+
+	.add-row {
+		padding: 10px;
+	}
+
+	.add-row-btn, .remove-row-btn {
+		display: inline-block;
+		background-color: #F2F3F4;
+		border: 1px solid #B0B2B6;
+		padding: 4px;
+		line-height: 16px;
+		cursor: pointer;
+		.rounded(2px);
+		width: 16px;
+		text-align: center;
+		color: #8E99A4;
+
+		&:hover {
+			border: 1px solid darken(#B0B2B6, 20%);
+		}
+	}
 }
 
 .dp-ui-select-widget {
@@ -2176,6 +2272,17 @@ ul.pane-tabs {
 	min-height: 16px;
 	.rounded(2px);
 	cursor: pointer;
+	display: inline-block;
+	min-width: 100px;
+
+	.icon-caret-down {
+		float: right;
+		font-size: 11px;
+		color: #BEC0C3;
+		margin-top: 2px;
+		margin-right: 2px;
+		cursor: pointer;
+	}
 
 	&:hover {
 		border: 1px solid darken(#B0B2B6, 20%);
@@ -2184,6 +2291,7 @@ ul.pane-tabs {
 	.val-list {
 		font-size: 11px;
 		margin-right: 10px;
+		line-height: 16px;
 
 		.sep {
 			margin-right: 4px;
@@ -2198,14 +2306,24 @@ ul.pane-tabs {
 	border: 1px solid darken(#B0B2B6, 20%);
 	padding: 4px;
 	.rounded(2px);
-	.zindex-chrome2;
+	.zindex-chrome5;
 	box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
+
+	&.no-caret {
+		i.icon-caret-up {
+			display: none;
+		}
+	}
 
 	i.icon-caret-up {
 		position: absolute;
 		top: 5px;
 		right: 6px;
 		font-size: 11px;
+	}
+
+	> ul.checkbox-list {
+		margin-right: 10px;
 	}
 
 	ul.checkbox-list {

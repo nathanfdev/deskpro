@@ -16,6 +16,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 		this.hasInit = false;
 
 		this.formPanels = [];
+		this.widgets = [];
 
 		this.el.addClass('dp-with-activate-listener');
 		this.el.on('dp_activated', function() {
@@ -40,8 +41,46 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 			})
 		});
 
-		this.el.find('.dp-select-widget-simple').each(function() {
+		this.initStandardFormElements(this.el);
+	},
+
+
+	/**
+	 * Inits standard form elements and controls
+	 *
+	 * @param context
+	 */
+	initStandardFormElements: function(context) {
+		var self = this;
+
+		context.find('.trigger-clone-row').each(function(ev) {
+			var btn    = $(this);
+			var target = $(btn.data('target'));
+			btn.data('tpl', target.html());
+		});
+
+		context.find('.trigger-clone-row').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			var btn        = $(this);
+			var target     = $(btn.data('target'));
+			var targetList = $(btn.data('target-list'));
+			var clone      = $('<div/>').html(btn.data('tpl')).addClass('pane-row');
+
+			clone.removeClass('row-orig');
+
+			self.initStandardFormElements(clone);
+			clone.insertAfter(targetList);
+		});
+
+		context.find('.trigger-remove-row').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			$(this).closest('.pane-row').remove();
+		});
+
+		context.find('.dp-select-widget-simple').each(function() {
 			var widget = new DeskPRO.UI.Select.WidgetSimple($(this));
+			self.widgets.push(widget);
 		});
 	},
 
@@ -129,7 +168,7 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		var top  = 200;
 
 		if (nearEl) {
-			top = $(nearEl).offset().top;
+			top = $(nearEl).offset().top - 10;
 		}
 
 		var winH = $(window).height();
@@ -178,6 +217,10 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		if (this.hasInit) {
 			this.el.detach();
 			this.shim.detach();
+
+			Array.each(this.widgets, function(w) {
+				w.destroy();
+			});
 		}
 	}
 });

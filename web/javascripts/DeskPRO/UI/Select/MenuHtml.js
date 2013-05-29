@@ -17,12 +17,15 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 	_doInitMenu: function() {
 		var self = this;
 		var select = this.getWidget().getSelect();
+		var isMulti = select.is('[multiple]');
 
 		if (select.data('target-menu') == 'auto') {
+			var name = Orb.uuid();
+			var inputType = isMulti ? 'checkbox' : 'radio';
 			this.$menu = $('<div class="source-pane-select-menu"></div>');
 			this.$menu.append('<i class="icon-caret-up"></i>');
 
-			if (select.find('optgroup')) {
+			if (select.find('optgroup')[0]) {
 				select.find('optgroup').each(function() {
 					var group = $('<div class="group"></div>');
 
@@ -32,9 +35,9 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 
 					var checkList = $('<ul class="checkbox-list"></ul>');
 					$(this).find('option').each(function() {
-						var li = $('<li><label><input type="checkbox" class="widget-val" /> <span></span></label></li>');
-						li.find('input').val($(this).val());
-						li.find('span').text($.trim($(this).text()));
+						var li = $('<li><label><input type="'+inputType+'" class="widget-val" /> <span></span></label></li>');
+						li.find('input').val($(this).val()).attr('name', name);
+						li.find('span').text($.trim($(this).data('title') || $(this).text()));
 						li.appendTo(checkList);
 					});
 
@@ -43,10 +46,10 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 				});
 			} else {
 				var checkList = $('<ul class="checkbox-list"></ul>');
-				$(this).find('option').each(function() {
-					var li = $('<li><label><input type="checkbox" class="widget-val" /> <span></span></label></li>');
-					li.find('input').val($(this).val());
-					li.find('span').text($.trim($(this).text()));
+				select.find('option').each(function() {
+					var li = $('<li><label><input type="'+inputType+'" class="widget-val" /> <span></span></label></li>');
+					li.find('input').val($(this).val()).attr('name', name);
+					li.find('span').text($.trim($(this).data('title') || $(this).text()));
 					li.appendTo(checkList);
 				});
 
@@ -57,6 +60,10 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 			this.$menu = $(select.data('target-menu'));
 		}
 
+		if (select.data('menu-addclass')) {
+			this.$menu.addClass(select.data('menu-addclass'));
+		}
+
 		this.$menu.find('trigger-close-menu').on('click', function(ev) {
 			Orb.cancelEvent(ev);
 			self.close();
@@ -65,7 +72,7 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 
 		this.$positionOver = this.getWidget().getEl();
 
-		this.$shim = $('<div class="dp-shim"></div>');
+		this.$shim = $('<div class="dp-shim zindex-chrome4"></div>');
 		this.$shim.appendTo('body');
 		this.$shim.on('click', function(ev) {
 			Orb.cancelEvent(ev);
