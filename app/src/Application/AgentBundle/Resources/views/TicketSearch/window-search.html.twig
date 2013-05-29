@@ -211,8 +211,12 @@
 			<strong>User</strong>
 		</div>
 		<div class="input-row-body">
-			<button class="btn-value trigger-open-panel" data-panel-id="panel-ticket-fields">Choose</button>
+			<button class="btn-value trigger-open-panel" data-panel-id="panel-user-fields">Choose</button>
 		</div>
+	</div>
+
+	<div class="source-pane-search-panel panel-user-fields">
+		{% include 'AgentBundle:TicketSearch:window-search-user.html.twig' %}
 	</div>
 
 	{##################################################################################################################}
@@ -224,8 +228,12 @@
 			<strong>Organization</strong>
 		</div>
 		<div class="input-row-body">
-			<button class="btn-value trigger-open-panel" data-panel-id="panel-ticket-fields">Choose</button>
+			<button class="btn-value trigger-open-panel" data-panel-id="panel-org-fields">Choose</button>
 		</div>
+	</div>
+
+	<div class="source-pane-search-panel panel-org-fields">
+		{% include 'AgentBundle:TicketSearch:window-search-org.html.twig' %}
 	</div>
 
 	{##################################################################################################################}
@@ -233,12 +241,16 @@
 	{##################################################################################################################}
 
 	<div class="input-row">
-		<div class="input-row-title with-adv">
-			<strong>Dates and Times</strong>
+		<div class="input-row-title">
+			<strong>Dates &amp; Times</strong>
 		</div>
 		<div class="input-row-body">
-			<button class="btn-value">Choose</button>
+			<button class="btn-value trigger-open-panel" data-panel-id="panel-date-fields">Choose</button>
 		</div>
+	</div>
+
+	<div class="source-pane-search-panel panel-date-fields">
+		{% include 'AgentBundle:TicketSearch:window-search-dates.html.twig' %}
 	</div>
 
 	<footer>
