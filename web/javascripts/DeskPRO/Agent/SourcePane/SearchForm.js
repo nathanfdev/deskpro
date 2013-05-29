@@ -85,6 +85,34 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 			var widget = new DeskPRO.UI.Select.WidgetSimple($(this));
 			self.widgets.push(widget);
 		});
+
+		context.find('.date-term-wrap').each(function() {
+			var el = $(this);
+			var status = el.find('.status-value-outer').hide();;
+			var dateTerm = new DeskPRO.Agent.RuleBuilder.DateTerm({
+				ruleBuilder: null,
+				rowEl: el,
+				rowId: null,
+				opMenu: null
+			});
+			dateTerm.initRow();
+
+			el.find('select.op').on('change', function() {
+				if ($(this).val() != "0") {
+					dateTerm.updateStatus();
+					status.show();
+				} else {
+					status.hide();
+				}
+			});
+
+			if (el.data('base-name')) {
+				var baseName = el.data('base-name');
+				el.find('input').each(function() {
+					$(this).attr('name', baseName + '[' + $(this).attr('name') + '][]');
+				});
+			}
+		});
 	},
 
 

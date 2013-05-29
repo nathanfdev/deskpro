@@ -2099,6 +2099,8 @@ ul.pane-tabs {
 		min-height: 16px;
 		.rounded(2px);
 		cursor: pointer;
+		font-size: 11px;
+		line-height: 16px;
 		box-shadow: none;
 
 		&:hover {
@@ -2326,6 +2328,35 @@ ul.pane-tabs {
 			padding-top: 15px;
 			.remove-row-btn { display: none;}
 			.sep-row { display: none; }
+		}
+	}
+
+	.status-value-outer {
+		background-color: #fff;
+		padding: 4px;
+		border: 1px solid #B0B2B6;
+		min-height: 16px;
+		.rounded(2px);
+		cursor: pointer;
+		display: inline-block;
+		min-width: 100px;
+		color: #404040;
+		font-size: 11px;
+		line-height: 16px;
+		position: relative;
+		padding-right: 18px;
+
+		i {
+			color: #BEC0C3;
+			position: absolute;
+			top: 5px;
+			right: 6px;
+		}
+
+		.status-value {
+			color: #404040;
+			font-size: 11px;
+			line-height: 16px;
 		}
 	}
 }
@@ -2687,4 +2718,11 @@ i.spinner-xsmall {
 	.iconbase(11px, 11px);
 	display: inline-block;
 	background: url('@{img_path}/spinners/loading-arrows-xsmall-whitebg.gif');
+}
+
+.backdrop {
+	z-index: @zindex_lvl_chrome+9 !important;
+}
+.field-overlay {
+	z-index: @zindex_lvl_chrome+10 !important;
 }
