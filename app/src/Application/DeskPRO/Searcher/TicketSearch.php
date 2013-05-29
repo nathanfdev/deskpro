@@ -1659,6 +1659,9 @@ class TicketSearch extends SearcherAbstract
 								if (isset($choice["field_{$field->getId()}"])) {
 									$choice = $choice["field_{$field->getId()}"];
 								}
+								if (!is_array($choice)) {
+									$choice = array($choice);
+								}
 								foreach ($choice as $c) {
 									$choices_in[] = (int)$c;
 								}
