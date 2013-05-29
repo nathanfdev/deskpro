@@ -24,6 +24,17 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 		});
 	},
 
+	getFormData: function() {
+		var postData = [];
+
+		postData = Orb.serializeFormElements(this.el.find('.add-to-search'));
+		Array.each(this.formPanels, function(panel) {
+			postData = postData.append(Orb.serializeFormElements(panel.el.find('.add-to-search')));
+		});
+
+		return postData;
+	},
+
 	initPanel: function() {
 		if (this.hasInit) return;
 		this.hasInit = true;
@@ -42,6 +53,16 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 				Orb.cancelEvent(ev);
 				panel.open(this);
 			})
+		});
+
+		this.el.find('.trigger-submit-search').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			var postData = self.getFormData();
+
+			DeskPRO_Window.loadListPane(
+				$(this).data('search-url'),
+				{postData: postData}
+			);
 		});
 
 		this.initStandardFormElements(this.el);

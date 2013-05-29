@@ -8,7 +8,7 @@
 		<div class="input-row-title">
 			<strong>Status</strong>
 		</div>
-		<div class="input-row-body">
+		<div class="input-row-body add-to-search">
 			{% set elid = el_uid() %}
 			<select class="dp-select-widget-simple" name="status" multiple="multiple" data-target-menu="#{{ elid }}_menu">
 				<option selected="selected" value="awaiting_agent">Awaiting Agent</option>
@@ -48,11 +48,11 @@
 		<div class="input-row-title">
 			<strong>Agent</strong>
 		</div>
-		<div class="input-row-body">
+		<div class="input-row-body add-to-search">
 			{% set elid = el_uid() %}
-			<select class="dp-select-widget-simple" name="status" multiple="multiple" data-target-menu="auto">
+			<select class="dp-select-widget-simple" name="assigned_agent" multiple="multiple" data-target-menu="auto">
 				<optgroup label="Agents">
-					<option selected="selected" value="agent.{{ app.user.id }}">Me</option>
+					<option selected="selected" value="{{ app.user.id }}">Me</option>
 					{% for agent in app.getDataRepository('Agent').getAgents() if agent.id != app.user.id %}
 						<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 					{% endfor %}
@@ -153,7 +153,7 @@
 	</div>
 
 	<div class="source-pane-search-panel panel-ticket-message">
-		<div class="pane-rows-wrap" id="{{ elid }}_pane_rows">
+		<div class="pane-rows-wrap add-to-search" id="{{ elid }}_pane_rows">
 			<div class="pane-row row-orig" id="{{ elid }}_orig_row">
 				<div class="sep-row">
 					<div class="line"></div>
@@ -274,6 +274,6 @@
 	</div>
 
 	<footer>
-		<button class="dp-btn"> Search</button>
+		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_ticketsearch_runcustomfilter') }}">Search</button>
 	</footer>
 </section>
