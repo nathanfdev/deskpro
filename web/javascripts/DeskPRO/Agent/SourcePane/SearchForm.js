@@ -52,7 +52,9 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 			panelTrigger.on('click', function(ev) {
 				Orb.cancelEvent(ev);
 				panel.open(this);
-			})
+			});
+
+			self.formPanels.push(panel);
 		});
 
 		this.el.find('.trigger-submit-search').on('click', function(ev) {
@@ -89,7 +91,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 			var btn        = $(this);
 			var target     = $(btn.data('target'));
 			var targetList = $(btn.data('target-list'));
-			var clone      = $('<div/>').html(btn.data('tpl')).addClass('pane-row');
+			var clone      = $('<div/>').html(btn.data('tpl')).addClass('pane-row add-to-search');
 
 			clone.removeClass('row-orig');
 

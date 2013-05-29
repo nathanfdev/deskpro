@@ -526,6 +526,80 @@ class TicketSearchController extends AbstractController
 				$terms[] = array('type' => 'text', 'op' => 'is', 'options' => array('query' => $this->in->getString('query')));
 			}
 
+			// Search form: status
+			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
+				$terms[] = array('type' => 'status', 'op' =>'is', 'options' => array('status' => $search_term));
+			}
+
+			// Search form: assigned agent or team
+			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
+				$agent_ids = array();
+				$team_ids  = array();
+
+				foreach ($search_term as $id) {
+					if (strpos($id, 'team.') === 0) {
+						$team_ids[] = Strings::extractRegexMatch('#(\d+)$#', $id);
+					} else {
+						$agent_ids[] = $id;
+					}
+				}
+
+				if ($agent_ids) {
+					$terms[] = array('type' => 'agent', 'op' =>'is', 'options' => array('agent_ids' => $agent_ids));
+				}
+				if ($team_ids) {
+					$terms[] = array('type' => 'agent_team', 'op' =>'is', 'options' => array('team_ids' => $team_ids));
+				}
+			}
+
+			// Search form: subject
+			$search_term = $this->in->getCleanValueArray('search_subject_string', 'string', 'discard');
+			if ($search_term && $search_term[0]) {
+				foreach ($search_term as $k => $string) {
+					$op   = $this->in->getString("search_subject_op.$k");
+					$type = $this->in->getString("search_subject_type.$k");
+
+					$terms[] = array('type' => 'subject_adv', 'op' => $op, 'options' => array('query' => $string, 'type' => $type));
+				}
+			} else if ($search_term = $this->in->getCleanValueArray('search_subject_simple', 'string', 'discard')) {
+				$terms[] = array('type' => 'subject', 'op' => 'contains', 'options' => array('query' => $search_term));
+			}
+
+			// Search form: message
+			$search_term = $this->in->getCleanValueArray('search_message_string', 'string', 'discard');
+			if ($search_term && $search_term[0]) {
+				foreach ($search_term as $k => $string) {
+					$op   = $this->in->getString("search_message_op.$k");
+					$type = $this->in->getString("search_message_type.$k");
+					$who  = $this->in->getString("search_message_who.$k");
+
+					$date = null;
+					if ($date_op = $this->in->getString("search_message_when_op.$k")) {
+						$date = array(
+							'date1'               => $this->in->getString("search_message_when.date1.$k"),
+							'date2'               => $this->in->getString("search_message_when.date2.$k"),
+							'date1_relative'      => $this->in->getString("search_message_when.date1_relative.$k"),
+							'date2_relative'      => $this->in->getString("search_message_when.date2_relative.$k"),
+							'date1_relative_type' => $this->in->getString("search_message_when.date1_relative_type.$k"),
+							'date2_relative_type' => $this->in->getString("search_message_when.date2_relative_type.$k"),
+						);
+					}
+
+					$terms[] = array(
+						'type'    => 'ticket_message_adv',
+						'op'      => $op,
+						'options' => array(
+							'query'   => $string,
+							'type'    => $type,
+							'who'     => $who,
+							'date'    => $date,
+							'date_op' => $date_op,
+					));
+				}
+			} else if ($search_term = $this->in->getCleanValueArray('search_message_simple', 'string', 'discard')) {
+				$terms[] = array('type' => 'ticket_message', 'op' => 'contains', 'options' => array('query' => $search_term));
+			}
+
 			$do_run = true;
 		}
 

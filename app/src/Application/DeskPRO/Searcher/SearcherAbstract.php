@@ -509,6 +509,48 @@ abstract class SearcherAbstract implements PersonContextInterface
 	}
 
 
+	/**
+	 * Does a string search.
+	 *
+	 * @param $field
+	 * @param $op
+	 * @param $string
+	 * @param string $type
+	 */
+	protected function _stringSearch($field, $op, $string, $type = 'or')
+	{
+		$string = Strings::utf8_strtolower($string);
+		$db = App::getDbRead();
+
+		if ($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) {
+			$op_like = 'NOT LIKE';
+		} else {
+			$op_like = 'LIKE';
+		}
+
+		if ($type == 'or' || $type == 'and') {
+			$words = explode(' ', $string);
+			$words = Arrays::removeFalsey($words);
+			$words = array_unique($words);
+
+			$where = array();
+			foreach ($words as $w) {
+				$where[] = "($field $op_like " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
+			}
+
+			if ($type == 'or') {
+				$where = '(' . implode(' OR ', $where) . ')';
+			} else {
+				$where = '(' . implode(' AND ', $where) . ')';
+			}
+
+			return $where;
+		} else {
+			return "($field $op_like " . $db->quote('%' . str_replace(array('%', '_'), array('%%', '__'), $string) . '%') . ")";
+		}
+	}
+
+
 
 	/**
 	 * Get a summary string for a term
