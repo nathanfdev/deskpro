@@ -38,9 +38,13 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			Orb.cancelEvent(ev);
 			var type = $(this).closest('.title').data('type');
 			if (type) {
-				list.find('li.type-' + type).show().addClasS('dp-vis');
+				list.find('li.type-' + type).show().addClass('dp-vis');
 			}
 			$(this).hide();
+
+			searchBox.addClass('dp-focus');
+			searchBox.removeClass('dp-stick-open');
+			searchBox.focus();
 		});
 
 		listWrap.on('click', function() {

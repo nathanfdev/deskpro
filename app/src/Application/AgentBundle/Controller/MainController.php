@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\People\PrefNoticeSet;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -444,6 +445,45 @@ class MainController extends AbstractController
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($info['ticket_id']);
 			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 				$results['ticket'][] = $ticket;
+			}
+		}
+
+		// Subject search against tickets
+		$words = Strings::utf8_strtolower($q);
+		$words = explode(' ', $words);
+		$words = Arrays::removeFalsey($words);
+		$words = array_unique($words);
+		$words = array_filter($words, function($s) {
+			if (strlen($s) >= 3) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+
+		if ($words) {
+			$db = App::getDbRead();
+			$where = array();
+			foreach ($words as $w) {
+				$where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
+			}
+			$where = implode(' AND ', $where);
+
+			$ticket_ids = App::getDbRead()->fetchAllCol("
+				SELECT id
+				FROM tickets_search_subject
+				WHERE $where
+				ORDER BY id DESC
+				LIMIT 100
+			");
+
+			if ($ticket_ids) {
+				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
+				foreach ($tickets as $ticket) {
+					if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+						$results['ticket'][] = $ticket;
+					}
+				}
 			}
 		}
 
