@@ -49,6 +49,11 @@
 		'repos'   => 'git://github.com/guzzle/guzzle.git',
 		'version' => 'v3.4.1',
 	),
+	'idbstore' => array(
+		'into'    => DP_WEB_ROOT.'/web/vendor/idbstore',
+		'repos'   => 'git://github.com/jensarps/IDBWrapper.git',
+		'version' => 'v1.1.0',
+	),
 	'imagine' => array(
 		'into'    => DP_ROOT.'/vendor/imagine',
 		'repos'   => 'git://github.com/avalanche123/Imagine.git',
