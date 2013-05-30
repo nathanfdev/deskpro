@@ -275,7 +275,7 @@ class FieldManager
 			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
-				'rendered'        => $rendered,
+				'rendered'        => trim($rendered),
 				'elId'            => \Orb\Util\Util::requestUniqueIdString(),
 				'hasValue'        => ($value !== null),
 				'id'              => $f_def['id'],
