@@ -81,15 +81,25 @@ class ObjectTranslatable
 	 * @param string $prop
 	 * @return null
 	 */
-	public function getObjectProp($prop)
+	public function getObjectProp($prop, $lang = null)
 	{
+		if ($lang === null) {
+			$lang = $this->lang;
+		}
+		if (!is_object($lang)) {
+			$lang = App::getContainer()->getLanguageData()->get($lang);
+			if (!$lang) {
+				throw new \InvalidArgumentException();
+			}
+		}
+
 		if (!$this->entity->getId()) {
 			$prop = strtolower($prop);
-			$lang_id = $this->lang->getId();
+			$lang_id = $lang->getId();
 			return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
 		}
 
-		return $this->obj_lang_repos->get($this->lang, $this->entity, $prop);
+		return $this->obj_lang_repos->get($lang, $this->entity, $prop);
 	}
 
 
@@ -97,11 +107,21 @@ class ObjectTranslatable
 	 * @param string $prop
 	 * @param string $value
 	 */
-	public function setObjectProp($prop, $value)
+	public function setObjectProp($prop, $value, $lang = null)
 	{
+		if ($lang === null) {
+			$lang = $this->lang;
+		}
+		if (!is_object($lang)) {
+			$lang = App::getContainer()->getLanguageData()->get($lang);
+			if (!$lang) {
+				throw new \InvalidArgumentException();
+			}
+		}
+
 		if (!$this->entity->getId()) {
 			$prop = strtolower($prop);
-			$lang_id = $this->lang->getId();
+			$lang_id = $lang->getId();
 
 			$rec = isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop] : null;
 			if (!$rec) {
@@ -116,7 +136,7 @@ class ObjectTranslatable
 			return $rec;
 		}
 
-		return $this->obj_lang_repos->setRec($this->lang, $this->entity, $prop, $value);
+		return $this->obj_lang_repos->setRec($lang, $this->entity, $prop, $value);
 	}
 
 

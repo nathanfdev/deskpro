@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -93,6 +94,20 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			return 'me';
 		}
+	}
+
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['title'] = array();
+
+		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+			$title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
+			$data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+		}
+
+		return $data;
 	}
 
 

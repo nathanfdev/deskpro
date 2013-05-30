@@ -2806,6 +2806,24 @@ $collection->add('agent_mediamanager_browse', new Route(
 ));
 
 ################################################################################
+# Text Snippets
+################################################################################
+
+$collection->add('agent_textsnippets_reloadclient', new Route(
+	'/text-snippets/{typename}/reload-client.json',
+	array('_controller' => 'AgentBundle:TextSnippets:reloadClient'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_reloadclient_batch', new Route(
+	'/text-snippets/{typename}/reload-client/{batch}.json',
+	array('_controller' => 'AgentBundle:TextSnippets:reloadClientBatch'),
+	array(),
+	array()
+));
+
+################################################################################
 # Plugins
 ################################################################################
 

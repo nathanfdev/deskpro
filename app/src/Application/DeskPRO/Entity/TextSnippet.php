@@ -104,6 +104,24 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['title'] = array();
+		$data['snippet'] = array();
+
+		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+			$title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
+			$snippet = $this->getObjectTranslatable()->getObjectProp('snippet', $lang);
+
+			$data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+			$data['snippet'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $snippet);
+		}
+
+		return $data;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata

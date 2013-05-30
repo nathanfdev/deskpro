@@ -29,88 +29,55 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
-
-use Application\DeskPRO\Entity\Person as PersonEntity;
-
-use Orb\Util\Arrays;
-
-class TextSnippet extends AbstractEntityRepository
+class TextSnippetsController extends AbstractController
 {
-	public function getSnippetsForAgent($typename, PersonEntity $agent)
+	public function requireRequestToken($action, $arguments = null)
 	{
-		$agent->loadHelper('AgentTeam');
-		$agent_teams = $agent->getAgentTeamIds();
-
-		$dql = "
-			SELECT s, c
-			FROM DeskPRO:TextSnippet s
-			LEFT JOIN s.category c
-			WHERE
-				c.typename = ?1
-				AND (c.person = ?2 OR c.is_global = true)
-		";
-
-		$coll = $this->getEntityManager()->createQuery($dql)
-			->setParameter(1, $typename)
-			->setParameter(2, $agent)
-			->execute();
-
-		if (!$coll) return array();
-
-		return $this->groupSnippetCollection($coll);
+		return false;
 	}
 
-	public function getAllSnippetsForAgent($typename, PersonEntity $agent, $page = 1, $per_page = 250)
+	public function reloadClientAction($typename)
 	{
-		$dql = "
-			SELECT s, c
-			FROM DeskPRO:TextSnippet s
-			LEFT JOIN s.category c
-			WHERE
-				c.typename = ?1
-				AND (c.person = ?2 OR c.is_global = true)
-		";
+		$snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
 
-		$coll = $this->getEntityManager()->createQuery($dql)
-			->setMaxResults($per_page)
-			->setFirstResult(($page-1) * $per_page)
-			->setParameter(1, $typename)
-			->setParameter(2, $agent)
-			->execute();
-
-		return $coll;
-	}
-
-	public function countSnippetsForAgent($typename, PersonEntity $agent)
-	{
-		return App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM text_snippets
-			LEFT JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
-			WHERE
-				text_snippet_categories.typename = ?
-				AND (text_snippets.person_id = ? OR text_snippet_categories.is_global = 1)
-		", array($typename, $agent->getId()));
-	}
-
-	public function groupSnippetCollection($collection)
-	{
-		$ret = array();
-
-		foreach ($collection as $snippet) {
-			if (!isset($ret[$snippet->category['id']])) {
-				$ret[$snippet->category['id']] = array('category' => $snippet->category, 'snippets' => array());
-			}
-
-			$ret[$snippet->category['id']]['snippets'][] = $snippet;
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippet_cats);
 		}
 
-		return $ret;
+		$snippets_count = $this->em->getRepository('DeskPRO:TextSnippet')->countSnippetsForAgent($typename, $this->person);
+		$per_page       = 250;
+		$num_pages      = ceil($snippets_count / $per_page);
+
+		$data = array(
+			'typename'       => $typename,
+			'snippets_count' => $snippets_count,
+			'num_pages'      => $num_pages,
+			'snippet_cats'   => array(),
+		);
+
+		foreach ($snippet_cats as $cat) {
+			$data['snippet_cats'][] = $cat->toApiData();
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+	public function reloadClientBatchAction($typename, $batch = 1)
+	{
+		$snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, $batch, 250);
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippets);
+		}
+
+		$data = array('snippets' => array());
+		foreach ($snippets as $snippet) {
+			$data['snippets'][] = $snippet->toApiData();
+		}
+
+		return $this->createJsonResponse($data);
 	}
 }

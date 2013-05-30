@@ -486,6 +486,24 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService
+	 */
+	public function getLanguageData()
+	{
+		return $this->getDataService('Language');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Translate\ObjectLangRepository
+	 */
+	public function getObjectLangRepository()
+	{
+		return $this->getSystemService('object_lang_repository');
+	}
+
+
+	/**
 	 * @return \Orb\GeoIp\AbstractGeoIp
 	 */
 	public function getGeoIp()
