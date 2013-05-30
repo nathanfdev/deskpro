@@ -13,83 +13,36 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	initPage: function(el) {
-		var self = this;
+		var driver = DeskPRO_Window.ticketSnippetDriver;
 
-		this.noIgnoreForm = true;
-		this.wrapper = el;
+		var catList = this.getEl('catlist');
+		var snippetList = this.getEl('snippet_list');
 
-		// Set up the tabs
-		this.catTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('nav ul > li', this.wrapper),
-			context: this.wrapper,
-			onTabSwitch: function(info) {
-				$('li.snippet', info.tabContent).each(function() {
-					self.processSnippetRow($(this));
+		var rowTpl = twig({
+			data: DeskPRO_Window.util.getPlainTpl($('#tickets_snippet_row_tpl'))
+		});
+
+		catList.on('click', 'li', function(ev) {
+			Orb.cancelEvent(ev);
+			var categoryId = $(this).data('category-id');
+
+			driver.loadSnippets({
+				categoryId: categoryId
+			}, function(snippets) {
+				var newList = $('<ul></ul>');
+
+				Array.each(snippets, function(snippet) {
+					var row = rowTpl.render({
+						snippet: snippet
+					});
+
+					row = $(row);
+					row.appendTo(newList);
 				});
 
-				window.setTimeout(function() {
-					self.activeSection = $(info.tabContent);
-					$(info.tabContent).find('.filter-input').first().focus();
-					self.updateUi();
-				}, 10);
-			}
+				snippetList.empty().append(newList);
+			});
 		});
-		this.ownObject(this.catTabs);
-
-		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: this.wrapper,
-			destroyOnClose: false
-		});
-		this.ownObject(this.overlay);
-
-		this.wrapper.on('click', '.snippet-content', function(ev) {
-
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var evData = {
-				cancelClose: false
-			};
-			self.insertSnippetEl($(this), ev, evData);
-
-			if (!evData.cancelClose) {
-				self.closeSelf();
-			}
-		});
-
-		this.wrapper.on('click', '.expand-trigger', function(ev) {
-			ev.stopPropagation();
-
-			var contentShow = $(this).closest('.snippet').find('.content.show');
-			contentShow.toggleClass('expanded');
-			$(this).toggleClass('expanded');
-			self.updateUi();
-		});
-
-		this._initEditing();
-
-		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this, {
-			itemSelector: 'li.snippet',
-			listSelector: '.snippet-sections > .on'
-		});
-		this.listNav.enter = function() {
-			var current = self.listNav.getCurrentSelection();
-			if (current) {
-				current.find('.snippet-content').trigger('click');
-			}
-		};
-
-		this._initFiltering();
-
-		this.addEvent('activate', function() {
-			if (this.activeSection) {
-				window.setTimeout(function() {
-					self.activeSection.find('.filter-input').first().focus();
-				}, 10);
-			}
-		});
-
-		DeskPRO_Window.activeListNav = this.listNav;
 	},
 
 	closeSelf: function() {

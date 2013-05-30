@@ -454,6 +454,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: this.el.data('snippet-viewer-url'),
+			driver: DeskPRO_Window.ticketSnippetDriver,
 			triggerElement: snippetBtn,
 			onBeforeOpen: function() {
 				if (isWysiwyg && textarea.data('redactor')) {

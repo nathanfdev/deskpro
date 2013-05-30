@@ -281,4 +281,10 @@
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
 
+<script type="text/x-deskpro-plain" id="tickets_snippet_shell_tpl">
+{% include 'AgentBundle:TextSnippets:ticket-widget-shell.html.twig' %}
+</script>
+
+{{ tpl_source('tickets_snippet_row_tpl', 'AgentBundle:TextSnippets:ticket-snippets-row.html.twig') }}
+
 </div>

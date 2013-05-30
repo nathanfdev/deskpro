@@ -1,12 +1,9 @@
-<script>
+%startScript%
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.SnippetViewer';
 pageMeta.title = 'Ticket Snippets';
-pageMeta.ticket_id = {{ ticket.id|default(0) }};
-
-{% set baseId = el_uid() %}
-pageMeta.baseId = '{{ baseId }}';
-</script>
-<div class="ticket-snippets-overlay snippets-overlay" {% if ticket %}data-ticket-id="{{ ticket.id }}"{% endif %}>
+pageMeta.baseId = '%baseId%';
+%endScript%
+<div class="ticket-snippets-overlay snippets-overlay">
 	<nav>
 		<header>
 			<span class="new-category"></span>
@@ -17,15 +14,18 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 		<div class="scroll-viewport"><div class="scroll-content" data-extra-height="21">
 		{# /Page Containers #}
-			<ul id="{{ baseId }}_catlist">
-				<li class="cat-title-0 category" data-category="0" data-tab-for="article.cat-0" {% if not ticket_snippet_cats|length %}style="display: none;"{% endif %}>
+			<ul id="%baseId%_catlist">
+				<li class="category" data-category="0">
 					<a>
 						<span class="label">All Snippets</span>
 					</a>
 				</li>
-
 				{% for category in ticket_snippet_cats %}
-					{% include 'AgentBundle:Ticket:ticket-snippets-catrow.html.twig' %}
+					<li class="category" data-category-id="{{ category.id }}">
+						<a>
+							<span class="label">{{ category.title }}</span>
+						</a>
+					</li>
 				{% endfor %}
 			</ul>
 	 	{# Page Containers #}
@@ -37,18 +37,9 @@ pageMeta.baseId = '{{ baseId }}';
 		{# Page Containers #}
 		<div class="layout-content with-scrollbar">
 		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-		<div class="scroll-viewport"><div class="scroll-content snippet-sections">
+		<div class="scroll-viewport"><div class="scroll-content snippet-sections" id="%baseId%_snippet_list">
 		{# /Page Containers #}
-			{% include 'AgentBundle:Ticket:ticket-snippets-allcatsection.html.twig' with {'ticket_snippet_cats': ticket_snippet_cats, 'ticket_snippets': ticket_snippets} %}
 
-			{% for category in ticket_snippet_cats %}
-				{% set group = ticket_snippets[category.id] %}
-				{% include 'AgentBundle:Ticket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
-			{% endfor %}
-
-			<div class="no-cats-message" {% if ticket_snippet_cats|length %}style="display: none"{% endif %}>
-				{{ phrase('agent.general.snippets_none_explain') }}
-			</div>
         {# Page Containers #}
         </div></div>
         </div>
@@ -64,7 +55,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="overlay-content">
 
 			<div style="padding-bottom: 4px; vertical-align: middle;">
-				Category: <select name="category_id" id="{{ baseId }}_newsnippet_category_select">
+				Category: <select name="category_id" id="%baseId%_newsnippet_category_select">
 					{% for category in ticket_snippet_cats %}
 						<option value="{{ category.id }}">{{ category.title }}</option>
 					{% endfor %}

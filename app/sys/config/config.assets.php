@@ -96,7 +96,9 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/tinycon/tinycon.min.js',
 
 		'vendor/select2/select2.js',
-		'vendor/ZeroClipboard/ZeroClipboard.min.js'
+		'vendor/ZeroClipboard/ZeroClipboard.min.js',
+		'vendor/idbstore/idbstore.min.js',
+		'vendor/twig/twig.min.js',
 	)
 );
 
@@ -323,6 +325,7 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
+		'javascripts/DeskPRO/Agent/TextSnippetDriver.js',
 	)
 );
 

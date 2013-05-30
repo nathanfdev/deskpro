@@ -153,6 +153,8 @@ class MainController extends AbstractController
 			DP_ROOT.'/docs/changelog/docs.php'
 		);
 
+		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
@@ -177,6 +179,7 @@ class MainController extends AbstractController
 			'is_first_login_name' => $is_first_login_name,
 			'timezones'           => \DateTimeZone::listIdentifiers(),
 			'version_notices'     => $version_notices,
+			'ticket_snippet_cats' => $ticket_snippet_cats,
 		));
 	}
 

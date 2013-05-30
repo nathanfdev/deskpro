@@ -135,6 +135,7 @@ class TemplatingExtension extends \Twig_Extension
 			'max'                              => new \Twig_Function_Method($this, 'max'),
 			'match'                            => new \Twig_Function_Method($this, 'match'),
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
+			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1399,6 +1400,15 @@ class TemplatingExtension extends \Twig_Extension
 
 		$context['tplvars']->$k = $v;
 		return;
+	}
+
+	public function getTplSourceTemplate($id, $name)
+	{
+		$source = App::getContainer()->getTemplating()->getSource($name);
+		$source = str_replace('<script>',  '%startScript%', $source);
+		$source = str_replace('</script>',  '%endScript%', $source);
+		$source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
+		return $source;
 	}
 }
 

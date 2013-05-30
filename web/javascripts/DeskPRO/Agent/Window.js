@@ -101,6 +101,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				html = html.replace(/%startScript%/g, '<script>');
 				html = html.replace(/%endScript%/g, '</script>');
 
+				var uid = Orb.uuid();
+				html = html.replace(/%baseId%/g, uid);
+
 				var baseId = Orb.uuid();
 				html = html.replace(/%baseId%/g, baseId);
 
@@ -482,6 +485,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initRoutes();
 		this._initSections();
 		this._initInterfaceServices();
+
+		this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetsDriver('tickets');
 
 		if (window.devicePixelRatio && window.devicePixelRatio >= 2) {
 			$('body').addClass('dp-is-retina');

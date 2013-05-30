@@ -29,6 +29,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			positionMode: this.options.positionMode,
 			sidePosition: this.options.sidePosition,
 			pageUrl: this.options.viewUrl,
+			pageSource: DeskPRO_Window.util.getPlainTpl($('#tickets_snippet_shell_tpl')),
 			destroyOnClose: false,
 			onPageInit: function(pop, page) {
 				page.addEvent('closeSelf', function(ev) {

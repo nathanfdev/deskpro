@@ -59,6 +59,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		 */
 		this.pageSource = null;
 
+		if (this.options.pageSource) {
+			this.pageSource = this.options.pageSource;
+			delete this.options.pageSource;
+		}
+
 		/**
 		 * The page fragment once its initialized
 		 */
