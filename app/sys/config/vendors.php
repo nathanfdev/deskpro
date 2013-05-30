@@ -114,6 +114,11 @@
 		'repos'   => 'git://github.com/fabpot/Twig.git',
 		'version' => 'v1.12.3',
 	),
+	'twig_js' => array(
+		'into'    => DP_WEB_ROOT.'/web/vendor/twig',
+		'repos'   => 'git://github.com/justjohn/twig.js.git',
+		'version' => '0.5.8',
+	),
 	'zend' => array(
 		'into'    => DP_ROOT.'/vendor/zend',
 		'repos'   => 'git://github.com/zendframework/zf2.git',
