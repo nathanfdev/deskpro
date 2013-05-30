@@ -59,7 +59,8 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo __FILE__;
+		$snippet = App::getOrm()->find('DeskPRO:TextSnippet',7);
+
 		echo "\n";
 		exit;
 	}

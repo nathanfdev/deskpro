@@ -321,7 +321,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 				$offset = substr($offset, 0, -3);
 			}
 
-			if (method_exists($this, $func)) {
+			if (method_exists($this, $func) || isset($this->_custom_callables['get'.strtolower($offset)])) {
 				return true;
 			} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
 				return true;
@@ -338,7 +338,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 		$old_value = isset($this[$offset]) ? $this[$offset] : null;
 
 		$func = "set" . str_replace('_', '', $offset);
-		if (method_exists($this, $func)) {
+		if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
 			$this->$func($value);
 		} else {
 			$this->$offset = $value;
@@ -355,7 +355,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 		} else {
 			$func = "get" . str_replace('_', '', $offset);
 		}
-		if (method_exists($this, $func)) {
+		if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
 			return $this->$func();
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
 			return $this->$offset;

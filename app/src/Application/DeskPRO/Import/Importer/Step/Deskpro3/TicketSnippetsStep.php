@@ -59,8 +59,9 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 		foreach ($cats as $c) {
 			$agent_id = $this->getMappedNewId('tech', $c['techid']);
 			if (!$agent_id) continue;
-			$this->getDb()->insert('ticket_snippet_categories', array(
+			$this->getDb()->insert('text_snippet_categories', array(
 				'person_id' => $agent_id,
+				'typename' => 'tickets',
 				'is_global' => $c['global'],
 				'title' => $c['name']
 			));
@@ -91,7 +92,7 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 
 			$qr['response'] = str_replace(array_keys($replace), array_values($replace), $qr['response']);
 
-			$this->getDb()->insert('ticket_snippets', array(
+			$this->getDb()->insert('text_snippets', array(
 				'person_id' => $agent_id,
 				'category_id' => $this->cat_map[$qr['category']],
 				'title' => $qr['name'],

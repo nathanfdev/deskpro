@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Twig;
 
+use Application\DeskPRO\Twig\Loader\HybridLoader;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 class Environment extends \Twig_Environment
@@ -190,7 +191,7 @@ class Environment extends \Twig_Environment
 
 	public function getCacheFilename($name)
 	{
-		if (!$this->loader->dbHasTemplate($name)) {
+		if (!($this->loader instanceof HybridLoader) || !$this->loader->dbHasTemplate($name)) {
 			return parent::getCacheFilename($name);
 		}
 
@@ -204,5 +205,42 @@ class Environment extends \Twig_Environment
 		}
 
 		return $this->loader->isFresh($name, $time);
+	}
+
+
+	/**
+	 * @param $template_code
+	 * @param array $vars
+	 * @return null|string
+	 * @throws \Exception|null
+	 */
+	public function renderStringTemplate($template_code, array $vars = array())
+	{
+		$old_loader = $this->getLoader();
+		$old_cache  = $this->getCache();
+
+		$arr_loader = new \Twig_Loader_Array(array(
+			'template' => $template_code
+		));
+
+		$this->setLoader($arr_loader);
+		$this->setCache(false);
+
+		$result = null;
+		$exception = null;
+		try {
+			$result = $this->render('template', $vars);
+		} catch (\Exception $e) {
+			$exception = $e;
+		}
+
+		$this->setLoader($old_loader);
+		$this->setCache($old_cache);
+
+		if ($exception) {
+			throw $exception;
+		}
+
+		return $result;
 	}
 }

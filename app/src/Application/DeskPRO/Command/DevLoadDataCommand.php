@@ -841,10 +841,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _loadTicketSnippetCategory()
 	{
-		$category = new Entity\TicketSnippetCategory();
+		$category = new Entity\TextSnippetCategory();
 		$category->is_global = true;
 		$category->title = $this->_getRandomText(mt_rand(1, 4));
 		$category->person = $this->_getRandomAgent();
+		$category->typename = 'tickets';
 
 		App::getOrm()->persist($category);
 	}
@@ -852,16 +853,15 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketSnippet()
 	{
 		if (!isset($this->_data_cache['ticket_snippet_categories'])) {
-			$this->_data_cache['ticket_snippet_categories'] = App::getEntityRepository('DeskPRO:TicketSnippetCategory')->findAll();
+			$this->_data_cache['ticket_snippet_categories'] = App::getEntityRepository('DeskPRO:TextSnippetCategory')->findAll();
 		}
 
-		$snippet = new Entity\TicketSnippet();
+		$snippet = new Entity\TextSnippet();
 		$snippet->title = $this->_getRandomText(mt_rand(2, 5));
 		$text = $this->_getRandomText(mt_rand(10, 200));
-		$snippet->snippet = $text;
 		$snippet->snippet_html = '<p>' . $text . '</p>';
 
-		$snippet->category = $this->_getRandomFromCache('ticket_snippet_categories');
+		$snippet->category = $this->_getRandomFromCache('text_snippet_categories');
 		$snippet->person = $this->_getRandomAgent();
 
 		App::getOrm()->persist($snippet);

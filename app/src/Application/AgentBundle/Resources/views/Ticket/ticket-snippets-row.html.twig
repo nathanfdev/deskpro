@@ -11,14 +11,14 @@
 				<div class="main-content">
 					{% if no_formatting %}
 						<div class="content raw text">{{ snippet.snippet }}</div>
-						<div class="content raw html" display="none">{{ snippet.snippet_html }}</div>
+						<div class="content raw html" display="none">{{ snippet.snippet }}</div>
 					{% else %}
 						<div class="content formatted">
-							<div class="real">{{ snippet.snippetFormattedHtmlPreview(ticket, person)|raw }}</div>
-							<div class="nobreak">{{ snippet.snippetFormattedHtmlPreview(ticket, person)|strip_linebreaks|raw }}</div>
+							<div class="real">{{ snippet_formatter.formatSnippet(snippet, ticket)|raw }}</div>
+							<div class="nobreak">{{ snippet_formatter.formatSnippet(snippet, ticket)|strip_linebreaks|raw }}</div>
 						</div>
-						<textarea class="value formatted text" style="display: none;">{{ snippet.snippetFormatted(ticket, person) }}</textarea>
-						<textarea class="value formatted html" style="display: none;">{{ snippet.snippetFormattedHtml(ticket, person) }}</textarea>
+						<textarea class="value formatted text" style="display: none;">{{ snippet_formatter.formatSnippet(snippet, ticket) }}</textarea>
+						<textarea class="value formatted html" style="display: none;">{{ snippet_formatter.formatSnippet(snippet, ticket) }}</textarea>
 					{% endif %}
 				</div>
 				<div class="fadeaway"></div>
@@ -30,6 +30,6 @@
 		<input type="text" name="title" value="{{ snippet.title }}" />
 		<input type="text" name="shortcut_code" value="{{ snippet.shortcut_code }}" />
 		<textarea name="snippet">{{ snippet.snippet }}</textarea>
-		<textarea name="snippet_html" style="display:none">{{ snippet.snippet_html }}</textarea>
+		<textarea name="snippet_html" style="display:none">{{ snippet.snippet }}</textarea>
 	</form>
 </li>

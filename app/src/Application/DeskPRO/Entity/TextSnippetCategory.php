@@ -44,7 +44,7 @@ use Orb\Util\Arrays;
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
-	const TPYE_TICKET  = 'ticket';
+	const TPYE_TICKET  = 'tickets';
 	const TPYE_CHAT    = 'chat';
 
 	/**

@@ -29,55 +29,69 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Twig\Environment as Twig_Environment;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
-use Application\DeskPRO\Entity\Person as PersonEntity;
-
-use Orb\Util\Arrays;
-
-class TicketSnippet extends AbstractEntityRepository
+class SnippetFormatter implements PersonContextInterface
 {
-	public function getSnippetsForAgent(PersonEntity $agent)
+	/**
+	 * @var \Application\DeskPRO\Twig\Environment
+	 */
+	protected $twig;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	public function __construct(Twig_Environment $twig)
 	{
-		$agent->loadHelper('AgentTeam');
-		$agent_teams = $agent->getAgentTeamIds();
-
-		$dql = "
-			SELECT s, c
-			FROM DeskPRO:TicketSnippet s
-			LEFT JOIN s.category c
-			WHERE
-				c.person = ?1
-				OR c.is_global = true
-			ORDER BY s.title
-		";
-
-		$coll = $this->getEntityManager()->createQuery($dql)
-			->setParameter(1, $agent)
-			->execute();
-
-		if (!$coll) return array();
-
-		return $this->groupSnippetCollection($coll);
+		$this->twig = $twig;
 	}
 
-	public function groupSnippetCollection($collection)
+	public function setPersonContext(Person $person)
 	{
-		$ret = array();
+		$this->person_context = $person;
+	}
 
-		foreach ($collection as $snippet) {
-			if (!isset($ret[$snippet->category['id']])) {
-				$ret[$snippet->category['id']] = array('category' => $snippet->category, 'snippets' => array());
-			}
+	public function getVars(Ticket $ticket)
+	{
+		$data = array();
+		$data['ticket'] = $ticket->toApiData();
 
-			$ret[$snippet->category['id']]['snippets'][] = $snippet;
+		if (isset($data['ticket']['person'])) {
+			$data['user'] = $data['ticket']['person'];
 		}
 
-		return $ret;
+		if (isset($data['ticket']['agent'])) {
+			$data['agent'] = $data['ticket']['agent'];
+		}
+
+		if (isset($data['ticket']['agent_team'])) {
+			$data['agent_team'] = $data['ticket']['agent_team'];
+		}
+
+		if ($this->person_context) {
+			$data['me'] = $this->person_context->toApiData();
+		}
+
+		return $data;
+	}
+
+	public function formatSnippet($snippet, Ticket $ticket)
+	{
+		$data = $this->getVars($ticket);
+
+		try {
+			return $this->twig->renderStringTemplate($snippet->snippet, $data);
+		} catch (\Exception $e) {
+			return $snippet->snippet;
+		}
 	}
 }

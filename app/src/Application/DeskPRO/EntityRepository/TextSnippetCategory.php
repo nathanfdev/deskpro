@@ -53,7 +53,6 @@ class TextSnippetCategory extends AbstractEntityRepository
 			WHERE
 				c.typename = ?1
 				AND (c.person = ?2 OR c.is_global = true)
-			ORDER BY c.title ASC
 		";
 
 		$coll = $this->getEntityManager()->createQuery($dql)
@@ -70,7 +69,7 @@ class TextSnippetCategory extends AbstractEntityRepository
 			SELECT c
 			FROM DeskPRO:TextSnippetCategory c INDEX BY c.id
 			WHERE c.typename = ?0
-			ORDER BY c.title
+
 		")->execute(array($typename));
 	}
 }

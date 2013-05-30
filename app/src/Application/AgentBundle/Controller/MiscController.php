@@ -141,7 +141,7 @@ class MiscController extends AbstractController
 		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
 
 		// Snippet short codes
-		$ticket_snippets = $this->em->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+		$ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
 		$snippet_short_codes = array();
 		foreach ($ticket_snippets as $snippet_cat) {
 			if ($snippet_cat['snippets']) {

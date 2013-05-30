@@ -283,7 +283,7 @@ class NewTicket
 		$message->setVisitorFromRequest();
 
 		$message_text = $this->message;
-		$snip = new \Application\DeskPRO\Entity\TicketSnippet();
+		$snip = new \Application\DeskPRO\Entity\ TicketSnippet();
 		$snip->snippet = $message_text;
 		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
 

@@ -146,6 +146,8 @@ class ObjectLangRepository
 			$this->registerRec($rec);
 		}
 
+		$rec->setValue($text);
+
 		return $rec;
 	}
 

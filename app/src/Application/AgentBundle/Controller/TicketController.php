@@ -43,6 +43,7 @@ use Application\DeskPRO\Debug\Data\TicketPersonData;
 use Application\DeskPRO\Debug\Data\TicketTriggerData;
 use Application\DeskPRO\Debug\DataReportGenerator;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -600,6 +601,13 @@ class TicketController extends AbstractController
 	# snippets-viewer
 	############################################################################
 
+	protected function _getSnippetFormatter()
+	{
+		$formatter = new SnippetFormatter($this->container->get('twig'));
+		$formatter->setPersonContext($this->person);
+		return $formatter;
+	}
+
 	public function snippetsViewerAction($ticket_id = 0)
 	{
 		if ($ticket_id) {
@@ -614,8 +622,8 @@ class TicketController extends AbstractController
 			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 		}
 
-		$ticket_snippets = $this->em->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
-		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TicketSnippetCategory')->getCatsForAgent($this->person);
+		$ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
+		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
 
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
@@ -625,12 +633,14 @@ class TicketController extends AbstractController
 			'ticket_snippets' => $ticket_snippets,
 			'ticket_snippet_cats' => $ticket_snippet_cats,
 			'agent_teams' => $agent_teams,
+			'snippet_formatter' => $this->_getSnippetFormatter(),
 		));
 	}
 
 	public function newSnippetCatAction()
 	{
-		$cat = new \Application\DeskPRO\Entity\TicketSnippetCategory();
+		$cat = new \Application\DeskPRO\Entity\TextSnippetCategory();
+		$cat->typename = 'tickets';
 		$cat['title'] = $this->in->getString('title');
 		$cat->person = $this->person;
 
@@ -663,7 +673,7 @@ class TicketController extends AbstractController
 
 	public function editSnippetCatAction()
 	{
-		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 
 		return $this->render('AgentBundle:Ticket:ticket-snippets-editcat.html.twig', array(
 			'category' => $cat,
@@ -672,8 +682,9 @@ class TicketController extends AbstractController
 
 	public function saveSnippetCatAction()
 	{
-		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
+		$cat['typename'] = 'tickets';
 
 		if ($cat->person && $cat->person->getId() == $this->person->getId()) {
 			if ($this->in->getString('perm_type') == 'global') {
@@ -702,7 +713,7 @@ class TicketController extends AbstractController
 
 	public function deleteSnippetCatAction()
 	{
-		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 
 		$cat_id = $cat['id'];
 
@@ -719,24 +730,20 @@ class TicketController extends AbstractController
 	public function saveSnippetAction()
 	{
 		if ($this->in->getUint('snippet_id')) {
-			$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
-			$category = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+			$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
+			$category = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('category_id'));
 
 			if ($category) {
 				$snippet->category = $category;
 			}
 		} else {
-			$category = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
-			$snippet = new \Application\DeskPRO\Entity\TicketSnippet();
+			$category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+			$snippet = new \Application\DeskPRO\Entity\TextSnippet();
 			$snippet->category = $category;
 		}
 
 		$snippet['title'] = $this->in->getString('title');
-		if ($this->in->getBool('is_html')) {
-			$snippet['snippet_html'] = $this->in->getHtmlCore('snippet');
-		} else {
-			$snippet['snippet'] = $this->in->getString('snippet');
-		}
+		$snippet->setSnippet($this->in->getHtmlCore('snippet'));
 		$snippet->person = $this->person;
 
 		$snippet->shortcut_code = $this->in->getString('shortcut_code');
@@ -744,10 +751,8 @@ class TicketController extends AbstractController
 			$snippet->shortcut_code = null;
 		}
 
-		$this->em->transactional(function($em) use ($snippet) {
-			$em->persist($snippet);
-			$em->flush();
-		});
+		$this->em->persist($snippet);
+		$this->em->flush();
 
 		if ($this->in->getUint('ticket_id')) {
 			$ticket = $this->getTicketOr404($this->in->getUint('ticket_id'));
@@ -777,6 +782,7 @@ class TicketController extends AbstractController
 				'snippet' => $snippet,
 				'ticket' => $ticket,
 				'person' => $person,
+				'snippet_formatter' => $this->_getSnippetFormatter(),
 			)),
 			'snippet_id' => $snippet['id'],
 			'shortcut_code' => $snippet['shortcut_code'],
@@ -786,7 +792,7 @@ class TicketController extends AbstractController
 
 	public function deleteSnippetAction()
 	{
-		$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
+		$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
 
 		if (!$snippet) {
 			throw $this->createNotFoundException();
@@ -808,7 +814,7 @@ class TicketController extends AbstractController
 
 	public function getSnippetAction($ticket_id, $snippet_id)
 	{
-		$snippet = $this->em->find('DeskPRO:TicketSnippet', $snippet_id);
+		$snippet = $this->em->find('DeskPRO:TextSnippet', $snippet_id);
 		if (!$snippet) {
 			throw $this->createNotFoundException();
 		}
@@ -824,9 +830,13 @@ class TicketController extends AbstractController
 			$person = $ticket->person;
 		} elseif ($person_id = $this->in->getUint('person_id')) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
+			$ticket = new Entity\Ticket(false);
+			$ticket->person = $person;
 		}
 
-		$res = new Response($snippet->snippetFormattedHtml($ticket, $person));
+		$snippet_formatter = $this->_getSnippetFormatter();
+
+		$res = new Response($snippet_formatter->formatSnippet($snippet, $ticket));
 		return $res;
 	}
 
