@@ -58,6 +58,7 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	private $_no_persist = false;
 
+
 	/**
 	 * @return \Doctrine\ORM\EntityRepository
 	 */
@@ -72,6 +73,7 @@ abstract class DomainObject extends BasicDomainObject
 		return $em->getRepository("DeskPRO:$entity");
 	}
 
+
 	/**
 	 * Get the table name for this entity
 	 *
@@ -82,6 +84,10 @@ abstract class DomainObject extends BasicDomainObject
 		return App::getOrm()->getClassMetadata(get_called_class())->getTableName();
 	}
 
+
+	/**
+	 * @return string
+	 */
 	public static function getEntityName()
 	{
 		$name = Util::getBaseClassname(get_called_class());
@@ -92,6 +98,25 @@ abstract class DomainObject extends BasicDomainObject
 		$name = 'DeskPRO:' . $name;
 
 		return $name;
+	}
+
+
+	/**
+	 * Get an object ref for this entity. This is the table name and the entity ID.
+	 * For example, "tickets.1234"
+	 *
+	 * @return string
+	 * @throws \RuntimeException
+	 */
+	public function getObjectRef()
+	{
+		if (method_exists($this, 'getId')) {
+			return $this->getTableName() . '.' . $this->getId();
+		} elseif (method_exists($this, 'getRef')) {
+			return $this->getTableName() . '.' . $this->getRef();
+		} else {
+			throw new \RuntimeException("Object does not implement getObjectRef");
+		}
 	}
 
 
@@ -141,6 +166,12 @@ abstract class DomainObject extends BasicDomainObject
 	}
 
 
+	/**
+	 * @param bool $primary
+	 * @param bool $deep
+	 * @param array $visited
+	 * @return array
+	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$repository = static::getRepository();
@@ -207,6 +238,10 @@ abstract class DomainObject extends BasicDomainObject
 		return $values;
 	}
 
+
+	/**
+	 * @return array
+	 */
 	public function getScalarData()
 	{
 		$repository = static::getRepository();
@@ -231,15 +266,29 @@ abstract class DomainObject extends BasicDomainObject
 		return $values;
 	}
 
+
+	/**
+	 * Sets the special no persist flag that causes an error if this object is persisted
+	 */
 	public function _setNoPersist()
 	{
 		$this->_no_persist = true;
 	}
+
+
+	/**
+	 * Check the current status of the no persist flag
+	 * @return bool
+	 */
 	public function _isNoPersist()
 	{
 		return $this->_no_persist;
 	}
 
+
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		$me = get_class($this);

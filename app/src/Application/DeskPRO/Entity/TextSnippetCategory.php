@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -99,6 +100,16 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
+	public function getObjectTranslatable()
+	{
+		return ObjectTranslatable::loadObjectTranslatable($this);
+	}
+
+	public static function loadObjectTranslatableMetadata()
+	{
+		return array('fields' => array('title'));
+	}
+
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
@@ -108,8 +119,9 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', ));
 		$metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+
+		ObjectTranslatable::loadEntityMetadata($metadata);
 	}
 }

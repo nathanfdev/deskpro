@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -42,8 +43,6 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-/**
- */
 class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
@@ -77,6 +76,11 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $snippet;
+
+	public function __construct()
+	{
+		$this->getObjectTranslatable();
+	}
 
 	/**
 	 * @return int
@@ -174,6 +178,16 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
+	public function getObjectTranslatable()
+	{
+		return ObjectTranslatable::loadObjectTranslatable($this);
+	}
+
+	public static function loadObjectTranslatableMetadata()
+	{
+		return array('fields' => array('title', 'snippet'));
+	}
+
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
@@ -182,10 +196,10 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'snippet', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippetCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+
+		ObjectTranslatable::loadEntityMetadata($metadata);
 	}
 }

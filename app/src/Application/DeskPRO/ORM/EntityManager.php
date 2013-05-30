@@ -93,6 +93,10 @@ class EntityManager extends UnprivateEntityManager
 			}
 		}
 
+		if (isset($entity->_dp_object_translatable)) {
+			$entity->_dp_object_translatable->_dpTranslatePersistChanges();
+		}
+
 		parent::persist($entity);
 	}
 

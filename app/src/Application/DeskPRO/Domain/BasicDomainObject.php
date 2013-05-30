@@ -59,6 +59,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	private $_listeners = array();
 
+	/**
+	 * @var array
+	 */
+	private $_custom_callables = array();
+
 
 	/**
 	 * Set values from an array
@@ -245,6 +250,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	public function __call($name, $arguments)
 	{
+		$name_l = strtolower($name);
+		if (isset($this->_custom_callables[$name_l])) {
+			return call_user_func($this->_custom_callables[$name_l][0], $this->_custom_callables[$name_l][1], $arguments);
+		}
+
 		$orig_name = $name;
 		$name = preg_replace('#([A-Z])#', '_$1', $name);
 
@@ -413,6 +423,15 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 			}
 		}
     }
+
+	/**
+	 * @param string $name
+	 * @param callable $fn
+	 */
+	public function addCustomCallable($name, $fn, $args = null)
+	{
+		$this->_custom_callables[$name] = array($fn, $args);
+	}
 
 	public function ensureDefaultPropertyChangedListener()
 	{
