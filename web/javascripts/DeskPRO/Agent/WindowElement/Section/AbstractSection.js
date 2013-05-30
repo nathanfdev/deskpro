@@ -211,9 +211,6 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.listEl = el;
-		if (!el.parent().is('#dp_list')) {
-			this.listEl.detach().appendTo('#dp_list');
-		}
 
 		if (!contentEl) {
 			contentEl = $('<section class="content"></section>');
@@ -258,7 +255,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		$('#dp_list_loading').removeClass('on');
 
 		if (!noswitch) {
-			this.getListElement().addClass('on');
+			this.getListElement().addClass('on').appendTo('#dp_list');
 			page.fireEvent('activate');
 		}
 	},

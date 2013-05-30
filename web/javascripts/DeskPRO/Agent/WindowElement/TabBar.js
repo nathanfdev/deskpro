@@ -204,7 +204,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.wrapper.attr('id', data.wrapperId);
 			data.wrapper.attr('class', 'tabViewDetailContent test');
 			data.wrapper.css('display', 'none');
-			data.wrapper.appendTo(this.bodyPane);
 		} else {
 			var preparedOutput = DeskPRO_Window.prepareWidgetedHtml(page.getHtml());
 
@@ -363,7 +362,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (!data || !data.wrapper) {
 			this.removeTab(tab, true);
 		}
-		var wrapper = data.wrapper.show();
+		var wrapper = data.wrapper;
+		wrapper.show();
+		wrapper.appendTo(this.bodyPane);
 
 		if (!data.isInited) {
 			data.isInited = true;
@@ -414,7 +415,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		DP.console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
-		$('#' + data.wrapperId).hide();
+		var wrapper = $('#' + data.wrapperId);
+		wrapper.hide().detach();
 
 		if (data.callback_hide_content !== undefined) {
 			data.callback_hide_content(data, $('#' + data.wrapperId), this);
