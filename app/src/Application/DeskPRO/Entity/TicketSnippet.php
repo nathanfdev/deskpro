@@ -314,6 +314,13 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['person_id'] = $this->person->getId();
+		$data['category'] = $this->category->toApiData();
+		return $data;
+	}
 
 	############################################################################
 	# Doctrine Metadata

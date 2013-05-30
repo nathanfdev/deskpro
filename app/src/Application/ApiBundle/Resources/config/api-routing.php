@@ -378,6 +378,66 @@ $collection->add('api_tickets_sla_organizations', new Route(
 ));
 
 ################################################################################
+# Ticket Snippets
+################################################################################
+
+$collection->add('api_ticketsnippets_list', new Route(
+	'/ticket-snippets',
+	array('_controller' => 'ApiBundle:TicketSnippet:getSnippets'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_new', new Route(
+	'/ticket-snippets',
+	array('_controller' => 'ApiBundle:TicketSnippet:editSnippet', 'snippet_id' => '0'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_edit', new Route(
+	'/ticket-snippets/{snippet_id}',
+	array('_controller' => 'ApiBundle:TicketSnippet:editSnippet'),
+	array('_method' => 'POST', 'snippet_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_get', new Route(
+	'/ticket-snippets/{snippet_id}',
+	array('_controller' => 'ApiBundle:TicketSnippet:getSnippet'),
+	array('_method' => 'GET', 'snippet_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_cats_list', new Route(
+	'/ticket-snippets/categories',
+	array('_controller' => 'ApiBundle:TicketSnippet:getCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_cats_new', new Route(
+	'/ticket-snippets/categories',
+	array('_controller' => 'ApiBundle:TicketSnippet:editCategory', 'category_id' => '0'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_cats_edit', new Route(
+	'/ticket-snippets/categories/{category_id}',
+	array('_controller' => 'ApiBundle:TicketSnippet:editCategory'),
+	array('_method' => 'POST', 'category_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_ticketsnippets_cats_get', new Route(
+	'/ticket-snippets/categories/{category_id}',
+	array('_controller' => 'ApiBundle:TicketSnippet:category_id'),
+	array('_method' => 'GET', 'category_id' => '\d+'),
+	array()
+));
+
+################################################################################
 # Open Ticket Controller
 ################################################################################
 
