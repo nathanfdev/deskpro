@@ -27,7 +27,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 			onStoreReady: function() {
 				ticketSnippets.clear(function() {
 					tick++;
-					if (tick >= 2) {
+					if (tick >= 1) {
 						startLoad();
 					}
 				});
@@ -76,6 +76,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 	loadSnippets: function(filter, callback) {
 		var snippets = [];
 
+		filter = filter || {};
 		var categoryId   = filter.categoryId || null;
 		var filterString = filter.filterString || null;
 		var page         = filter.page || 1;
@@ -104,6 +105,43 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		}, {
 			onEnd: function() {
 				callback(snippets);
+			}
+		});
+	},
+
+	getSnippet: function(id, callback) {
+		this.snippetsDb.get(id, callback);
+	},
+
+	saveSnippet: function(snippet, callback, error_callback) {
+		// Encode for form
+		var postData = [];
+		postData.push({name: 'snippet_id', value: snippet.id || 0});
+		postData.push({name: 'category_id', value: snippet.category_id || 0});
+		for (var i = 0; i < snippet.title.length; i++) {
+			postData.push({name: 'title['+snippet.title[i].language_id+']', value: snippet.title[i].value || ''});
+		}
+		for (var i = 0; i < snippet.snippet.length; i++) {
+			postData.push({name: 'snippet['+snippet.snippet[i].language_id+']', value: snippet.snippet[i].value || ''});
+		}
+
+		var snippetsDb = this.snippetsDb;
+
+		$.ajax({
+			url: BASE_URL+'agent/text-snippets/'+(snippet.id||0)+'/save-snippet.json',
+			type: 'POST',
+			dataType: 'json',
+			data: postData,
+			content: this,
+			error: function() {
+				if (error_callback) error_callback();
+			},
+			success: function(data) {
+				snippetsDb.put(data.snippet.id, data.snippet, function() {
+					if (callback) callback();
+				}, function() {
+					if (error_callback) error_callback();
+				});
 			}
 		});
 	}

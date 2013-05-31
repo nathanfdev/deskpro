@@ -2823,6 +2823,13 @@ $collection->add('agent_textsnippets_reloadclient_batch', new Route(
 	array()
 ));
 
+$collection->add('agent_textsnippets_savesnippet', new Route(
+	'/text-snippets/{id}/save-snippet.json',
+	array('_controller' => 'AgentBundle:TextSnippets:saveSnippet'),
+	array(),
+	array()
+));
+
 ################################################################################
 # Plugins
 ################################################################################

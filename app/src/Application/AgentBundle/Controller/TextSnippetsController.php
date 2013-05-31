@@ -33,6 +33,8 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\Entity\TextSnippet;
+
 class TextSnippetsController extends AbstractController
 {
 	public function requireRequestToken($action, $arguments = null)
@@ -79,5 +81,48 @@ class TextSnippetsController extends AbstractController
 		}
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function saveSnippetAction($id)
+	{
+		if ($id) {
+			$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+			if (!$snippet) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$snippet = new TextSnippet();
+		}
+
+		$category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+		if (!$category) {
+			throw $this->createNotFoundException();
+		}
+
+		$snippet->category = $category;
+
+		$this->em->persist($snippet);
+		$this->em->flush();
+
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
+		}
+
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$lang_id = $lang->getId();
+
+			$title   = $this->in->getString("title.$lang_id");
+			$snippet_val = $this->in->getString("snippet.$lang_id");
+
+			$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
+			$this->em->persist($rec);
+
+			$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'snippet', $snippet_val);
+			$this->em->persist($rec);
+		}
+
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true, 'snippet' => $snippet->toApiData()));
 	}
 }

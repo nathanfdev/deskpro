@@ -46,31 +46,41 @@ pageMeta.baseId = '%baseId%';
         {# /Page Containers #}
 	</div>
 
-	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 720px; height: 420px; display: none;">
+	<div id="%baseId%_edit_snippet" class="snippet-editor-overlay" style="width: 720px; height: 420px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4 class="is-new-snippet">New Snippet</h4>
 			<h4 class="is-edit-snippet">Edit Snippet</h4>
 		</div>
 		<div class="overlay-content">
 
+			{% for lang in app.getDataRepository('Language').getAll() %}
+				<input class="lang-bound-title lang-{{ lang.id }} title" type="hidden" name="title[{{ lang.id }}" value="" data-plang-id="{{ lang.id }}" />
+				<input class="lang-bound-snippet lang-{{ lang.id }} snippet" type="hidden" name="snippet[{{ lang.id }}" value="" data-plang-id="{{ lang.id }}" />
+			{% endfor %}
+
 			<div style="padding-bottom: 4px; vertical-align: middle;">
-				Category: <select name="category_id" id="%baseId%_newsnippet_category_select">
+				Category: <select name="category_id" class="category_id" id="%baseId%_edutsnippet_category_select">
 					{% for category in ticket_snippet_cats %}
 						<option value="{{ category.id }}">{{ category.title }}</option>
+					{% endfor %}
+				</select>
+
+				Language: <select name="language_id" class="language_id" id="%baseId%_editsnippet_category_select">
+					{% for lang in app.getDataRepository('Language').getAll() %}
+						<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
 					{% endfor %}
 				</select>
 			</div>
 
 			<input type="hidden" name="snippet_id" value="0" />
-			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box" />
+			<input id="%baseId%_title_input" type="text" name="title_input" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box" />
 
 			<div style="width: 100%">
-				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
+				<textarea id="%baseId%_snippet_input" name="snippet_input" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
 			</div>
 			<div style="float:left; font-size: 11px;">
 				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Type this code into the ticket reply box and the snippet will be inserted automatically. For example, with shortcut code of 'standard-response' you simply type in '%standard-response%' to insert the snippet without opening the snippet manager."></span>
-				Shortcut code: <span class="snippet-code-wrap">%<input type="text" name="shortcut_code" class="shortcut-code-input" value="" placeholder="Enter a shortcut" />%</span>
+				Shortcut code: <span class="snippet-code-wrap">%<input type="text" name="shortcut_code" class="shortcut_code" value="" placeholder="Enter a shortcut" />%</span>
 			</div>
 			<div style="float:right; text-align: right; font-size:  11px;">
 				<select class="variables-select">
@@ -109,7 +119,6 @@ pageMeta.baseId = '%baseId%';
 		</div>
 		<div class="overlay-footer">
 			<div class="is-not-loading">
-				<button class="clean-white small save-snippet-trigger is-new-snippet">{{ phrase('agent.general.add') }}</button>
 				<button class="clean-white small save-snippet-trigger is-edit-snippet">{{ phrase('agent.general.save') }}</button>
 				<div class="overlay-content-block is-edit-snippet" style="text-align: center; display: inline-block; font-size: 11px;">
 					<div class="is-not-loading">
@@ -127,7 +136,7 @@ pageMeta.baseId = '%baseId%';
 		</div>
 	</div>
 
-	<div id="{{baseId}}_new_snippet_cat" style="width: 420px; height: 350px; display: none;">
+	<div id="%baseId%_new_snippet_cat" style="width: 420px; height: 350px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4>{{ phrase('agent.tickets.new_snippet_category') }}</h4>
