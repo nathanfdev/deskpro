@@ -441,6 +441,12 @@ class TicketController extends AbstractController
 
 		$ticket_messages_translated = $this->em->getRepository('DeskPRO:TicketMessageTranslated')->getForMessages($ticket_messages, $this->person->getLanguage()->getLocale());
 
+		foreach ($ticket_messages as $message) {
+			if (!isset($ticket_messages_translated[$message->id]) && $message->primary_translation) {
+				$ticket_messages_translated[$message->id] = $message->primary_translation;
+			}
+		}
+
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
@@ -1375,6 +1381,18 @@ class TicketController extends AbstractController
 			$charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
 		} else {
 			$charge = false;
+		}
+
+		// Translated version
+		if ($this->in->getString('translate_to') && $this->in->getString('translate_value')) {
+			$message_translated = new Entity\TicketMessageTranslated();
+			$message_translated->setTicketMessage($message);
+			$message_translated->message = $this->in->getString('translate_value');
+			$message_translated->from_lang_code = $this->person->getLanguage()->getLocale();
+			$message_translated->lang_code = $this->in->getString('translate_to');
+			$this->em->persist($message_translated);
+
+			$message->primary_translation = $message_translated;
 		}
 
 		#------------------------------

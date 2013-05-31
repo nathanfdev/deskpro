@@ -80,9 +80,9 @@
 				</table>
 			</div>
 		</header>
+		{% set message_translated = ticket_messages_translated[message.id] %}
 		<div class="body-text {% if message_translated %}with-translated{% endif %}">
-			{% set message_translated = ticket_messages_translated[message.id] %}
-			<div class="body-message-translated" {% if message_translated %}style="display: none;"{% endif %} data-from-lang-code="{{ message_translated.from_lang_code }}" data-to-lang-code="{{ message_translated.lang_code }}">
+			<div class="body-message-translated" {% if not message_translated %}style="display: none;"{% endif %} data-from-lang-code="{{ message_translated.from_lang_code }}" data-to-lang-code="{{ message_translated.lang_code }}">
 				{% if message_translated %}{{ message_translated.message|raw }}{% endif %}
 			</div>
 			<div class="body-message-translate-original">

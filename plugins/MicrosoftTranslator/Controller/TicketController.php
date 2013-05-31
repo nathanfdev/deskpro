@@ -154,7 +154,9 @@ class TicketController extends AbstractController
 		/** @var \Orb\Service\Microsoft\Translate\Translate $api */
 		$api = $this->plugins->getPluginService('MicrosoftTranslator.tr_api');
 
-		if ($from == 'auto') {
+		if ($from == 'me') {
+			$from = $this->person->getLanguage()->getLocale();
+		} else if ($from == 'auto') {
 			try {
 				$from = $api->detect($message_text);
 			} catch (\Exception $e) {

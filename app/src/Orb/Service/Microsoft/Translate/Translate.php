@@ -141,6 +141,9 @@ class Translate
 	 */
 	public function translate($text, $from, $to, $content_type = self::TYPE_TEXT, $category = self::CAT_GENERAL)
 	{
+		$from = $this->getNearestTranslateLocale($from);
+		$to = $this->getNearestTranslateLocale($to);
+
 		if (is_array($text)) {
 
 			$post_body = array();
@@ -442,5 +445,39 @@ class Translate
 			array("&amp;", "&lt;", "&gt;", "&quot;", "&apos;"),
 			$str
 		);
+	}
+
+
+	/**
+	 * Checks locale to see if its supported and gets the nearest if its not. For example, 'en_US' is not supported
+	 * specifically but 'en' is.
+	 *
+	 * @param string $locale The locale to check
+	 * @return string The locale replaced
+	 */
+	public function getNearestTranslateLocale($locale)
+	{
+		$avail = $this->getLanguagesForTranslate();
+
+		if (in_array($locale, $avail)) {
+			return $locale;
+		}
+
+		if (strpos($locale, '_')) {
+			list ($top, ) = explode('_', $locale, 2);
+			// Try again with just the first part
+			return $this->getNearestTranslateLocale($top);
+		}
+
+		// Try to a case-i match
+		$locale_i = strtolower($locale);
+		foreach ($avail as $test) {
+			if (strtolower($test) == $locale_i) {
+				return $test;
+			}
+		}
+
+		// No matches, return original which will probably fail
+		return $locale;
 	}
 }

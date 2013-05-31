@@ -75,7 +75,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
 					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
 					obj.addBtnSeparatorAfter('dp_attach');
-					obj.addBtnSeparatorAfter('dp_snippets');
 
 					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
 					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
@@ -83,6 +82,30 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
 					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+
+					if (self.el.find('.translate-row')[0]) {
+						obj.addBtnAfter('dp_snippets', 'dp_translate', 'Translate', function(){});
+						obj.addBtnSeparatorAfter('dp_translate');
+
+						var sel = $('<select><option value="">Translate Message</option></select>');
+						Object.each(window.DESKPRO_TRANSLATE_SERVICE.lang_names, function(name, code) {
+							var opt = $('<option/>');
+							opt.val(code);
+							opt.text(name);
+							sel.append(opt);
+						});
+
+						var transBtn = obj.$toolbar.find('.redactor_btn_dp_translate').closest('li');
+						transBtn.addClass('with-select');
+						transBtn.append(sel);
+						transBtn.find('a').remove();
+
+						sel.on('change', function() {
+							self.refreshMessageTranslation(sel.val());
+						});
+					}
+
+					obj.addBtnSeparatorAfter('dp_snippets');
 				}
 			});
 			this.getElById('is_html_reply').val(1);
@@ -1101,6 +1124,42 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		} else {
 			textarea.val(val);
 		}
+	},
+
+	refreshMessageTranslation: function(to) {
+		var editRow    = this.el.find('.input-wrap.editor-row');
+		var previewRow = this.el.find('.translate-row');
+
+		if (!to) {
+			editRow.show();
+			previewRow.hide().empty();
+			return;
+		}
+
+		var formData = {
+			from: 'me',
+			to: to,
+			message_text: this.getElById('replybox_txt').val()
+		};
+
+		$.ajax({
+			url: window.DESKPRO_TRANSLATE_SERVICE.translate_text_url,
+			data: formData,
+			type: 'POST',
+			dataType: 'json',
+			success: function(data) {
+				editRow.hide();
+				previewRow.show().html(data.message);
+
+				var txtValue = $('<input name="translate_value" type="hidden"/>');
+				txtValue.val(data.message);
+				txtValue.appendTo(previewRow);
+
+				txtValue = $('<input name="translate_to" type="hidden"/>');
+				txtValue.val(to);
+				txtValue.appendTo(previewRow);
+			}
+		});
 	},
 
 	destroy: function() {
