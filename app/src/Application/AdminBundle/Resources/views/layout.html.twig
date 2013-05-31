@@ -119,6 +119,31 @@
 	{% else %}
 		<script src="{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/dp.php/agent-lang-{{ app.language.id }}.js?v={{ app.getSetting('core.deskpro_build') }}"></script>
 	{% endif %}
+
+	<style type="text/css">
+		.backdrop {
+			z-index: 100000 !important;
+		}
+
+		#dp_logo_expand_wrap {
+			display: none;;
+		}
+
+		#DP-InterfaceSwitcher {
+			display: none;;
+		}
+
+		#dp_logo_wrap {
+
+		}
+
+		#dp_logo_wrap h1 {
+			color: #FFFFFF;
+			font-size: 18px;
+			line-height: 18px;
+			padding: 15px;
+		}
+	</style>
 </head>
 <body class="dp {% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %} {{ body_class }}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 <div id="please_wait_overlay" style="display: none;">
