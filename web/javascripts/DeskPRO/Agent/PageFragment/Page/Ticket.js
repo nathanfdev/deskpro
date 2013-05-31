@@ -1008,6 +1008,35 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			self._initTicketMessageClipped(article);
+
+			var trans = article.find('.message-translate-controls');
+			if (trans[0]) {
+				var transShow     = article.find('.body-message-translated');
+				var existTo       = transShow.data('to-lang-code');
+				var existFrom     = transShow.data('from-lang-code');
+
+				trans.find('select').each(function(i) {
+					var sel = $(this);
+					sel.on('change', function() {
+						self.refreshMessageTranslation(article);
+					});
+					Object.each(window.DESKPRO_TRANSLATE_SERVICE.lang_names, function(name, code) {
+						var opt = $('<option/>');
+						opt.val(code);
+						opt.text(name);
+
+						if (i == 2 && existTo && code == existTo) {
+							opt.prop('selected', true);
+							sel.parent().find('em').text(name);
+						} else if (i == 1 && existFrom && code == existFrom) {
+							opt.prop('selected', true);
+							sel.parent().find('em').text(name);
+						}
+
+						sel.append(opt);
+					});
+				});
+			}
 		});
 		this.lastMessageCount = lastCount;
 
@@ -1022,6 +1051,48 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var counterText = wr.find(findclass).text().trim();
 			if (counterText.length) {
 				$(this).attr('title', $(this).text()).text(counterText).removeClass('message-id-txt');
+			}
+		});
+	},
+
+	refreshMessageTranslation: function(messageEl) {
+		var trans     = messageEl.find('.message-translate-controls');
+		var transShow = messageEl.find('.body-message-translated');
+
+		var selFrom = trans.find('select.from');
+		var selTo   = trans.find('select.to');
+
+		var formData = {
+			message_id: messageEl.data('message-id'),
+			from: selFrom.val(),
+			to: selTo.val()
+		};
+
+		selFrom.parent().find('em').text(selFrom.find(':selected').text());
+		selTo.parent().find('em').text(selTo.find(':selected').text());
+
+		$.ajax({
+			url: window.DESKPRO_TRANSLATE_SERVICE.translate_ticket_message_url,
+			data: formData,
+			type: 'POST',
+			dataType: 'json',
+			success: function(data) {
+				if (data.error_code) {
+					DeskPRO_Window.showAlert("Could not translate message: " + data.message);
+					return;
+				}
+
+				if (data.from_lang_code) {
+					selFrom.find('option[value="' + data.from_lang_code + '"]').prop('selected', true);
+					selFrom.parent().find('em').text(selFrom.find(':selected').text());
+				}
+
+				transShow.data('to-lang-code', data.to_lang_code);
+				transShow.data('from-lang-code', data.from_lang_code);
+				transShow.empty().html(data.message);
+				transShow.show();
+
+				transShow.parent().addClass('with-translated');
 			}
 		});
 	},

@@ -439,6 +439,8 @@ class TicketController extends AbstractController
 			$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
 		}
 
+		$ticket_messages_translated = $this->em->getRepository('DeskPRO:TicketMessageTranslated')->getForMessages($ticket_messages, $this->person->getLanguage()->getLocale());
+
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
@@ -531,6 +533,7 @@ class TicketController extends AbstractController
 			$ticket_messages_block = $this->renderView($tpl, array(
 				'ticket'                     => $ticket,
 				'ticket_messages'            => $ticket_messages,
+				'ticket_messages_translated' => $ticket_messages_translated,
 				'ticket_messages_num'        => $ticket_messages_num,
 				'ticket_message_attachments' => $ticket_message_attachments,
 				'ticket_attachments'         => $ticket_attachments,
@@ -560,6 +563,7 @@ class TicketController extends AbstractController
 
 			'ticket_messages_block'      => $ticket_messages_block,
 			'ticket_messages'            => $ticket_messages,
+			'ticket_messages_translated' => $ticket_messages_translated,
 			'ticket_messages_num'        => $ticket_messages_num,
 			'ticket_attachments'         => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,

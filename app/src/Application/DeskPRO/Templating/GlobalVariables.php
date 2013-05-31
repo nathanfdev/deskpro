@@ -253,6 +253,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return defined('DPC_IS_CLOUD');
 	}
 
+	public function isPluginInstalled($id)
+	{
+		return App::getContainer()->getPlugins()->isPluginInstalled($id);
+	}
+
 	public function __toString()
 	{
 		return '[app]';

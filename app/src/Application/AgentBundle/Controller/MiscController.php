@@ -191,6 +191,30 @@ class MiscController extends AbstractController
 
 		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 
+		if ($this->plugins->isPluginInstalled('MicrosoftTranslator')) {
+			$lang_codes = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate();
+			try {
+				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
+					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+					$this->person->getLanguage()->getLocale()
+				);
+			} catch (\Exception $e) {
+				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
+					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+					'en'
+				);
+			}
+
+			$info = array(
+				'lang_codes' => $lang_codes,
+				'lang_names' => $lang_names,
+				'translate_ticket_message_url' => $this->generateUrl('agent_plugins_run', array('plugin_id' => 'MicrosoftTranslator', 'action' => 'translate-ticket-message')),
+				'translate_message_url'        => $this->generateUrl('agent_plugins_run', array('plugin_id' => 'MicrosoftTranslator', 'action' => 'translate-ticket-message')),
+			);
+
+			$js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
+		}
+
 		$tr = $this->container->getTranslator();
 
 		$js[] = <<<JS

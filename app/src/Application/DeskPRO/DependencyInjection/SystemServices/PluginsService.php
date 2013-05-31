@@ -29,23 +29,24 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category DependencyInjection
  */
 
-namespace MicrosoftTranslator\DependencyInjection;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Plugin;
-use Orb\Service\Microsoft\Translate\Translate;
+use Application\DeskPRO\Plugin\PluginRepository;
 
-class TrApiService
+class PluginsService
 {
-	public static function create(DeskproContainer $container, Plugin $plugin)
+	public static function create(DeskproContainer $container)
 	{
-		$api = new Translate(
-			$container->getSetting('MicrosoftTranslator.client_id'),
-			$container->getSetting('MicrosoftTranslator.client_secret')
+		$plugins = $container->getEm()->getRepository('DeskPRO:Plugin')->getInstalled();
+
+		$m = new PluginRepository(
+			$plugins
 		);
 
-		return $api;
+		return $m;
 	}
 }

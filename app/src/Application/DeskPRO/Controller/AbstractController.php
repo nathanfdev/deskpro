@@ -48,6 +48,7 @@ use Application\DeskPRO\App;
  * @property \Application\DeskPRO\Templating\Engine $tpl
  * @property \Application\DeskPRO\Settings\Settings $settings
  * @property \Application\DeskPRO\HttpFoundation\Session $session
+ * @property \Application\DeskPRO\Plugin\PluginRepository $plugins
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
@@ -61,6 +62,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			case 'settings': return $this->get('deskpro.core.settings');
 			case 'session': return $this->get('session');
 			case 'tpl': return $this->get('templating');
+			case 'plugins': return $this->getContainer()->getSystemService('plugins');
 			default:
 				throw new \InvalidArgumentException("Unknown property {$prop}");
 		}

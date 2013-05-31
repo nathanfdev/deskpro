@@ -1332,6 +1332,32 @@ article.content-message .content .body-text {
 	max-height: 600px;
 	overflow: hidden;
 	position: relative;
+
+	.body-message-translate-original-caption {
+		display: none;
+		margin-top: -6px;
+		margin-left: -6px;
+		margin-right: -6px;
+		background-color: #CCCCCC;
+		padding: 0 4px;
+		.rounded(3px);
+	}
+
+	&.with-translated {
+		max-height: none;
+
+		.body-message-translate-original {
+			.body-message-translate-original-caption {
+				display: block;
+			}
+			background: #fff;
+			font-size: 11px;
+			border: 1px solid #CCCCCC;
+			padding: 10px;
+			margin: 15px 8px 8px 8px;
+			.rounded(3px);
+		}
+	}
 }
 
 article.content-message .content .body-text .fade-bar-longmsg {
@@ -1401,6 +1427,53 @@ article.content-message .content .body-text .message-counter {
 
 	text-shadow: 1px 0px 1px #ffffff;
 	filter: ~"dropshadow(color=#ffffff, offx=1, offy=0)";
+}
+
+article.content-message .content .message-header-extra-controls {
+	float: right;
+
+	font-size: 11px;
+	height: 25px;
+	line-height: 26px;
+	vertical-align: middle;
+	margin-right: 8px;
+
+	.lang-select {
+		position: relative;
+		display: inline-block;
+		overflow: hidden;
+		font-size: 11px;
+		height: 26px;
+		line-height: 25px;
+		vertical-align: middle;
+		color: #60728B;
+
+		i {
+			font-size: 9px;
+			color: #60728B;
+		}
+
+		em {
+			font-style: normal;
+			color: #60728B;
+		}
+
+		select {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100px;
+			z-index: 1;
+			height: 26px;
+			overflow: hidden;
+			.opacity(0);
+			font-size: 11px;
+			vertical-align: middle;
+			margin: 0;
+			padding: 0;
+			cursor: pointer;
+		}
+	}
 }
 
 article.content-message .content .footer-text {

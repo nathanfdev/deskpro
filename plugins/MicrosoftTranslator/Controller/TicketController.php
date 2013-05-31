@@ -82,9 +82,10 @@ class TicketController extends AbstractController
 		# Translate it
 		#------------------------------
 
-		$message_translated = $this->em->getRepository('DeskPRO:ticketMessageTranslated')->getForMessage($message, $to);
+		$message_translated = $this->em->getRepository('DeskPRO:TicketMessageTranslated')->getForMessage($message, $to);
 
 		if ($message_translated) {
+
 			// The translated text is only good if it matches the 'from' or if the user chose 'auto'
 			if ($from == 'auto' || $from == $message_translated->from_lang_code) {
 				return $this->createJsonResponse(array(
@@ -93,13 +94,13 @@ class TicketController extends AbstractController
 					'message_translated_id' => $message_translated->getId(),
 					'message'               => $message_translated->message,
 					'from_lang_code'        => $message_translated->from_lang_code,
-					'to_lang_code'          => $message_translated->to_lang_code,
+					'to_lang_code'          => $message_translated->lang_code,
 				));
 			}
 		}
 
 		/** @var \Orb\Service\Microsoft\Translate\Translate $api */
-		$api = $this->plugin->getPluginService('tr_api');
+		$api = $this->plugins->getPluginService('MicrosoftTranslator.tr_api');
 
 		if ($from == 'auto') {
 			try {
@@ -135,7 +136,7 @@ class TicketController extends AbstractController
 			'message_translated_id' => $message_translated->getId(),
 			'message'               => $message_translated->message,
 			'from_lang_code'        => $message_translated->from_lang_code,
-			'to_lang_code'          => $message_translated->to_lang_code,
+			'to_lang_code'          => $message_translated->lang_code,
 		));
 	}
 
@@ -151,7 +152,7 @@ class TicketController extends AbstractController
 	public function translateTextAction($message_text, $from, $to)
 	{
 		/** @var \Orb\Service\Microsoft\Translate\Translate $api */
-		$api = $this->plugin->getPluginService('tr_api');
+		$api = $this->plugins->getPluginService('MicrosoftTranslator.tr_api');
 
 		if ($from == 'auto') {
 			try {

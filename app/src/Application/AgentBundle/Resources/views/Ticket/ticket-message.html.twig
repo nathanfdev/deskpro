@@ -14,6 +14,20 @@
 	<div class="content">
 		<header>
 			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"></span>
+			<div class="message-header-extra-controls">
+				{% if app.isPluginInstalled('MicrosoftTranslator') %}
+					<div class="message-translate-controls">
+						<div class="lang-select">
+							<select class="from"><option value="auto">Auto</option></select>
+							<span class="show">Translate from <em>Auto</em> <i class="icon-caret-down"></i>&nbsp;</span>
+						</div>
+						<div class="lang-select">
+							<select class="to"><option></option></select>
+							<span class="show">to <em>Choose...</em> <i class="icon-caret-down"></i></span>
+						</div>
+					</div>
+				{% endif %}
+			</div>
 			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
 			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
@@ -66,33 +80,42 @@
 				</table>
 			</div>
 		</header>
-		<div class="body-text">
-			<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
-				{% if message.getMessageLength() > 1100000 %}
-					{{message.getMessageHtmlClipped(1100000)|raw }}
-					<br/><br/><br/>
-					<div style="text-align: center;">
-						This message has been clipped because it is very long. <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">View the entire message in a new window &rarr;</a>
-					</div>
-				{% else %}
-					{{message.message_html|safe_link_urls_html }}
-					{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
-				{% endif %}
+		<div class="body-text {% if message_translated %}with-translated{% endif %}">
+			{% set message_translated = ticket_messages_translated[message.id] %}
+			<div class="body-message-translated" {% if message_translated %}style="display: none;"{% endif %} data-from-lang-code="{{ message_translated.from_lang_code }}" data-to-lang-code="{{ message_translated.lang_code }}">
+				{% if message_translated %}{{ message_translated.message|raw }}{% endif %}
 			</div>
-			{% if message.message_full %}
-				<div class="body-text-full-message {% if message.show_full_hint %}loaded{% endif %}" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
-					<div class="full-message-content">{% if message.show_full_hint %}{{message.message_full|raw }}{% else %}<span class="flat-spinner"></span>{% endif %}</div>
-					<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
+			<div class="body-message-translate-original">
+				<div class="body-message-translate-original-caption">
+					Original Message
 				</div>
-			{% endif %}
-			<div class="fade-bar-longmsg">
-				<em>
-					<strong>
-						<i></i>
-						View Full Message
-						<i class="last"></i>
-					</strong>
-				</em>
+				<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
+					{% if message.getMessageLength() > 1100000 %}
+						{{message.getMessageHtmlClipped(1100000)|raw }}
+						<br/><br/><br/>
+						<div style="text-align: center;">
+							This message has been clipped because it is very long. <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">View the entire message in a new window &rarr;</a>
+						</div>
+					{% else %}
+						{{message.message_html|safe_link_urls_html }}
+						{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
+					{% endif %}
+				</div>
+				{% if message.message_full %}
+					<div class="body-text-full-message {% if message.show_full_hint %}loaded{% endif %}" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
+						<div class="full-message-content">{% if message.show_full_hint %}{{message.message_full|raw }}{% else %}<span class="flat-spinner"></span>{% endif %}</div>
+						<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
+					</div>
+				{% endif %}
+				<div class="fade-bar-longmsg">
+					<em>
+						<strong>
+							<i></i>
+							View Full Message
+							<i class="last"></i>
+						</strong>
+					</em>
+				</div>
 			</div>
 		</div>
 		{% if ticket_message_attachments[message.id] %}

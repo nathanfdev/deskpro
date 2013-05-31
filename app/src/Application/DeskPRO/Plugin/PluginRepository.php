@@ -31,21 +31,67 @@
  * @package DeskPRO
  */
 
-namespace MicrosoftTranslator\DependencyInjection;
+namespace Application\DeskPRO\Plugin;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Plugin;
-use Orb\Service\Microsoft\Translate\Translate;
-
-class TrApiService
+class PluginRepository
 {
-	public static function create(DeskproContainer $container, Plugin $plugin)
-	{
-		$api = new Translate(
-			$container->getSetting('MicrosoftTranslator.client_id'),
-			$container->getSetting('MicrosoftTranslator.client_secret')
-		);
+	/**
+	 * @var array
+	 */
+	protected $plugins;
 
-		return $api;
+	/**
+	 * @param \Application\DeskPRO\Entity\Plugin[] $plugins
+	 */
+	public function __construct(array $plugins)
+	{
+		$this->plugins = array();
+
+		foreach ($plugins as $plugin) {
+			if ($plugin->enabled) {
+				$this->plugins[strtolower($plugin->getId())] = $plugin;
+			}
+		}
+	}
+
+
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function isPluginInstalled($plugin_id)
+	{
+		$plugin_id = strtolower($plugin_id);
+		return isset($this->plugins[$plugin_id]);
+	}
+
+
+	/**
+	 * @param $id
+	 * @return \Application\DeskPRO\Entity\Plugin
+	 * @throws \InvalidArgumentException
+	 */
+	public function getPlugin($plugin_id)
+	{
+		$plugin_id = strtolower($plugin_id);
+
+		if (!isset($this->plugins[$plugin_id])) {
+			throw new \InvalidArgumentException("Unknown plugin $plugin_id");
+		}
+
+		return $this->plugins[$plugin_id];
+	}
+
+
+	/**
+	 * Get a plugin service. Prefix the id with the plugin name and it'll be looked up on that plugin.
+	 *
+	 * @param string $id
+	 */
+	public function getPluginService($id)
+	{
+		list ($plugin_id, $id) = explode('.', $id, 2);
+
+		return $this->getPlugin($plugin_id)->getPluginService($id);
 	}
 }
