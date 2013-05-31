@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,41 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class Build1370005590 extends AbstractBuild
 {
-	protected function configure()
+	public function run()
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
-	}
+		$this->out("Add tickets_messages_translated table");
+		$this->execMutateSql("CREATE TABLE tickets_messages_translated (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, message_id INT DEFAULT NULL, date_created DATETIME NOT NULL, from_lang_code VARCHAR(80) NOT NULL, lang_code VARCHAR(80) NOT NULL, message LONGTEXT NOT NULL, INDEX IDX_EDCD3BB3700047D2 (ticket_id), INDEX IDX_EDCD3BB3537A1329 (message_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo __FILE__;
-		echo "\n";
-		exit;
+		$this->out("Add tickets_messages.lang_code field");
+		$this->execMutateSql("ALTER TABLE tickets_messages ADD lang_code VARCHAR(80) DEFAULT NULL");
 	}
 }

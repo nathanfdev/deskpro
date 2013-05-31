@@ -119,6 +119,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $message_hash;
 
 	/**
+	 * The primary translation is the one sent to the user.
+	 *
+	 * @var TicketMessageTranslated
+	 */
+	protected $primary_translation;
+
+	/**
 	 * The message, will be in HTML!
 	 * @var string
 	 */
@@ -148,6 +155,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 */
 	protected $show_full_hint = false;
+
+	/**
+	 * The set/detected lang code
+	 *
+	 * @var string
+	 */
+	protected $lang_code = null;
 
 	/**
 	 * If the message was created from an email just now, then this is the reader
@@ -514,6 +528,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));
 		$metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_full', ));
 		$metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_raw', ));
+		$metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'lang_code', ));
 		$metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'show_full_hint', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));

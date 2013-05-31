@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,41 +25,27 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace MicrosoftTranslator\DependencyInjection;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Plugin;
+use Orb\Service\Microsoft\Translate\Translate;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TrApiService
 {
-	protected function configure()
+	public function create(DeskproContainer $container, Plugin $plugin)
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
-	}
+		$api = new Translate(
+			$container->getSetting('MicrosoftTranslator.client_id'),
+			$container->getSetting('MicrosoftTranslator.client_secret')
+		);
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo __FILE__;
-		echo "\n";
-		exit;
+		return $api;
 	}
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,41 +25,45 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
 
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
+use Orb\Util\Numbers;
 
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
 
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TicketMessageTranslated extends AbstractEntityRepository
 {
-	protected function configure()
+	/**
+	 * Finds all translated messages on a message
+	 *
+	 * @param TicketMessageEntity $ticket_message
+	 * @param string|null         $lang           Optionally only get this one
+	 * @return array|TicketMessageEntity|Null
+	 */
+	public function getForMessage(TicketMessageEntity $ticket_message, $lang_code = null)
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo __FILE__;
-		echo "\n";
-		exit;
+		if ($lang_code) {
+			return $this->_em->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessageTranslated m
+				WHERE m.ticket_message = ?0 AND m.lang_code = ?1
+			")->setParameters(array($ticket_message, $lang_code))->getOneOrNullResult();
+		} else {
+			return $this->_em->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessageTranslated m INDEX BY m.lang_code
+				WHERE m.ticket_message = ?0 AND m.lang_code = ?1
+			")->setParameters(array($ticket_message))->getOneOrNullResult();
+		}
 	}
 }

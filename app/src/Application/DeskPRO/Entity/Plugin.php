@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -100,7 +101,16 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
+	/**
+	 * @var bool
+	 */
 	protected $enabled = true;
+
+	/**
+	 * @var array
+	 * @see getService
+	 */
+	protected $_services = array();
 
 
 	public function __construct()
@@ -108,6 +118,7 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		$this->listeners = new \Doctrine\Common\Collections\ArrayCollection();
 		$this['date_created'] = new \DateTime();
 	}
+
 
 	/**
 	 * @return int
@@ -117,27 +128,44 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
+
+	/**
+	 * @param PluginListener $plugin_listener
+	 */
 	public function addPluginListener(PluginListener $plugin_listener)
 	{
 		$this->listeners->add($plugin_listener);
 		$plugin_listener->plugin = $this;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public function getPackageClass()
 	{
 		return $this->package_class;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getCanonicalPackageClassFile()
 	{
 		return str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $this->package_class_file);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getCanonicalResourcesPath()
 	{
 		return str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $this->resources_path);
 	}
 
+
+	/**
+	 * @return void
+	 */
 	public function importSyncData()
 	{
 		$resourcePath = $this->getCanonicalResourcesPath();
@@ -158,6 +186,10 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * @return void
+	 */
 	public function exportSyncData()
 	{
 		$resourcePath = $this->getCanonicalResourcesPath();
@@ -177,6 +209,32 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 			$sync = new $class("$resourcePath/sync/$handler.json", $this);
 			$sync->writeToBase();
 		}
+	}
+
+
+	/**
+	 * Gets a plugin service
+	 *
+	 * @param string $id
+	 */
+	public function getPluginService($id)
+	{
+		$id = preg_replace_callback('/(^|_|\.)+(.)/', function ($match) { return ('.' === $match[1] ? '_' : '').strtoupper($match[2]); }, $id);
+		if (isset($this->_services[$id])) {
+			return $this->_services[$id];
+		}
+
+		$class = $this->id . '\\DependencyInjection\\' . $id . 'Service';
+
+		if (!class_exists($class, false)) {
+			$dir = dirname($this->getCanonicalPackageClassFile()) . DIRECTORY_SEPARATOR . 'DependencyInjection' . DIRECTORY_SEPARATOR . $id . 'Service.php';
+			require_once($dir);
+		}
+
+		$obj = $class::create(App::getContainer(), $this);
+		$this->_services[$id] = $obj;
+
+		return $obj;
 	}
 
 

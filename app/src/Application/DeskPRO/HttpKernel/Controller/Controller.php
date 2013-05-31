@@ -96,6 +96,14 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
 
 	/**
 	 * An empty callback function
