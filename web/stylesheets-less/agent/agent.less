@@ -1647,14 +1647,14 @@ table.layout-table.v-middle {
 		a {
 			color: #FFFFFF;
 			display: block;
-			padding: 7px 0 9px;
+			padding: 5px 0 9px 0;
 			text-align: center;
 
 			span {
 				color: #C0C2CA;
 				display: block;
 				font-weight: normal;
-				height: 50px;
+				height: 45px;
 				width: 54px;
 				margin: 0;
 				margin-left: 1px;
@@ -1696,28 +1696,28 @@ table.layout-table.v-middle {
 	li#settings_section{
 		position: absolute;
 		left: 0;
-		bottom: 86px;
+		bottom: 76px;
 	}
 
 	li#reports_section{
 		position: absolute;
 		left: 0;
-		bottom: 86px;
+		bottom: 81px;
 
 		&.with-can-admin {
-			bottom: 150px;
+			bottom: 135px;
 		}
 	}
 	li#agent_chat_section {
 		position: absolute;
 		left: 0;
-		bottom: 20px;
+		bottom: 15px;
 	}
 }
 
-@media all and (max-height: 670px) {
+@media all and (max-height: 685px) {
 	#dp_nav_sections li a span {
-		height: 40px;
+		height: 35px;
 	}
 
 	#dp_nav_sections {
@@ -1741,24 +1741,36 @@ table.layout-table.v-middle {
 		li:hover a span.agentchatNavIcon, li.active a span.agentchatNavIcon { background-position: -629px -104px; }
 
 		li#reports_section{
-			bottom: 75px;
+			bottom: 70px;
 
 			&.with-can-admin {
-				bottom: 135px;
+				bottom: 115px;
 			}
 		}
 
 		li#settings_section{
 			position: absolute;
 			left: 0;
-			bottom: 75px;
+			bottom: 65px;
 		}
 		li#agent_chat_section {
 			position: absolute;
 			left: 0;
-			bottom: 20px;
+			bottom: 15px;
 		}
 	}
+}
+
+@media all and (max-height: 545px) {
+	li#reports_section { display: none; }
+}
+
+@media all and (max-height: 470px) {
+	li#settings_section { display: none; }
+}
+
+@media all and (max-height: 408px) {
+	li#agent_chat_section { display: none; }
 }
 
 .dp-is-retina {
