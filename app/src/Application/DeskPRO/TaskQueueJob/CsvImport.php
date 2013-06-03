@@ -79,7 +79,7 @@ class CsvImport extends AbstractJob
 		$csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
 
 		if (!file_exists($csv_file) || !is_readable($csv_file)) {
-			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_file, $blob);
+			file_put_contents($csv_file, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
 		}
 
 		if (!file_exists($csv_file) || !is_readable($csv_file)) {

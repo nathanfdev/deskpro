@@ -76,6 +76,9 @@ class ImportController extends AbstractController
 			'text/csv'
 		);
 
+		$csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+		copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
+
 		$filename = $blob->getId();
 
 		return $this->_renderCsvConfigureForm($filename, $file->getClientOriginalName());
@@ -142,7 +145,9 @@ class ImportController extends AbstractController
 			return $this->redirectRoute('admin_import', array('error' => 'no_move'));
 		}
 
-		App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
+		if (!is_file($csv_path)) {
+			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
+		}
 
 		$fp = fopen($csv_path, 'r');
 		$columns = fgetcsv($fp);
