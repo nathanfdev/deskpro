@@ -18,30 +18,63 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		var catList = this.getEl('catlist');
 		var snippetList = this.getEl('snippet_list');
 
-		var rowTpl = twig({
-			data: DeskPRO_Window.util.getPlainTpl($('#tickets_snippet_row_tpl'))
+		var rowsTpl = twig({
+			data: DeskPRO_Window.util.getPlainTpl($('#tickets_snippet_rows_tpl'))
 		});
 
 		catList.on('click', 'li', function(ev) {
 			Orb.cancelEvent(ev);
 			var categoryId = $(this).data('category-id');
 
-			driver.loadSnippets({
-				categoryId: categoryId
-			}, function(snippets) {
-				var newList = $('<ul></ul>');
+			if (categoryId) {
+				driver.loadSnippets({
+					categoryId: categoryId
+				}, function(snippets) {
+					var newList = $('<ul></ul>');
 
-				Array.each(snippets, function(snippet) {
-					var row = rowTpl.render({
-						snippet: snippet
-					});
+					newList.html(rowsTpl.render({
+						snippets: snippets
+					}));
 
-					row = $(row);
-					row.appendTo(newList);
+					snippetList.empty().append(newList);
+				});
+			} else {
+				var catIds = [];
+				catList.find('li').each(function() {
+					var id = parseInt($(this).data('category-id'));
+					if (id) {
+						catIds.push(id);
+					}
 				});
 
-				snippetList.empty().append(newList);
-			});
+				snippetList.empty();
+				if (!catIds.length) {
+					return;
+				}
+
+				var tick = 0;
+
+				Array.each(catIds, function(cid) {
+					driver.loadSnippets({
+						categoryId: cid
+					}, function(snippets) {
+						if (!snippets.length) {
+							return;
+						}
+
+						var newListWrap = $('<div/>');
+						var newList = $('<ul></ul>');
+
+						newList.html(rowsTpl.render({
+							snippets: snippets
+						}));
+
+						newListWrap.append(newList);
+
+						snippetList.append(newListWrap);
+					});
+				});
+			}
 		});
 
 		this._initEditingSnippets();

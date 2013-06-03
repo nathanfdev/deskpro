@@ -75,7 +75,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		};
 	},
 
-	loadSnippets: function(filter, callback) {
+	loadSnippets: function(filter, callback, mutator) {
 		var snippets = [];
 
 		filter = filter || {};
@@ -109,7 +109,11 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 			}
 
 			if (add) {
-				snippets.push(item);
+				if (mutator) {
+					snippets.push(mutator(item));
+				} else {
+					snippets.push(item);
+				}
 			}
 		}, {
 			index: keyIndex,
