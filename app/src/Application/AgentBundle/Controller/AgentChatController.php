@@ -174,7 +174,7 @@ class AgentChatController extends AbstractController
 				'id'       => $message->id,
 				'agent_id' => $message->author ? $message->author->id : 0,
 				'message'  => $message->content,
-				'time'     => $message->date_created->getTimestamp()
+				'time'     => $message->date_created->format($this->settings->get('core.date_time'))
 			);
 		}
 
