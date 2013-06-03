@@ -725,7 +725,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		//------------------------------
 
 		var leftEnd = 269; // Where the left ends (aka where listpane starts)
-		var topEnd = 41; // Where the top ends (aka header height)
+		var topEnd = 50; // Where the top ends (aka header height)
 		var contentStart = pos.left;
 
 		if (!this.options.isListView) {
