@@ -167,7 +167,7 @@ class AgentChatController extends AbstractController
 		")->setParameters(array($conversation))->execute();
 
 		$data = array();
-		$data['conversation_id'] = $conversation;
+		$data['conversation_id'] = $conversation->getId();
 		$data['messages'] = array();
 		foreach ($messages as $message) {
 			$data['messages'][] = array(
