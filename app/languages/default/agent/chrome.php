@@ -1,6 +1,6 @@
 <?php return array(
 	'agent.chrome.hello-user' => 'Hello, {{name}}',
-	'agent.chrome.link_settings' => 'Settings',
+	'agent.chrome.link_preferences' => 'Preferences',
 	'agent.chrome.link_help' => 'Help',
 	'agent.chrome.link_logout' => 'Log Out',
 	'agent.chrome.chat_logged-in' => 'Logged in to chat',
