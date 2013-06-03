@@ -83,6 +83,10 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		var filterString = filter.filterString || null;
 		var page         = filter.page || 1;
 
+		if (filterString) {
+			filterString = filterString.toLowerCase();
+		}
+
 		var keyRange = null;
 		var keyIndex = null
 		if (categoryId && this.snippetsDb.keyRange.only) {
@@ -97,11 +101,9 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 			}
 
 			if (filterString && add) {
-				filterString = filterString.toLowerCase();
-
 				add = false;
 				Array.each(item.title, function(v) {
-					if (v && v.toLowerCase().indexOf(filterString) !== -1) {
+					if (v.value && v.value.toLowerCase().indexOf(filterString) !== -1) {
 						add = true;
 						return false;
 					}

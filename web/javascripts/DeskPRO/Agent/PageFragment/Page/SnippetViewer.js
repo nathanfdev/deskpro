@@ -17,18 +17,17 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		var catList = this.getEl('catlist');
 		var snippetList = this.getEl('snippet_list');
+		var filterInput = this.getEl('filter');
 
 		var rowsTpl = twig({
 			data: DeskPRO_Window.util.getPlainTpl($('#tickets_snippet_rows_tpl'))
 		});
 
-		catList.on('click', 'li', function(ev) {
-			Orb.cancelEvent(ev);
-			var categoryId = $(this).data('category-id');
-
+		var updateCatList = function(categoryId, filterString) {
 			if (categoryId) {
 				driver.loadSnippets({
-					categoryId: categoryId
+					categoryId: categoryId,
+					filterString: filterString || null
 				}, function(snippets) {
 					var newList = $('<ul></ul>');
 
@@ -56,7 +55,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 				Array.each(catIds, function(cid) {
 					driver.loadSnippets({
-						categoryId: cid
+						categoryId: cid,
+						filterString: filterString || null
 					}, function(snippets) {
 						if (!snippets.length) {
 							return;
@@ -75,6 +75,34 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					});
 				});
 			}
+		};
+
+		catList.on('click', 'li', function(ev) {
+			Orb.cancelEvent(ev);
+			catList.find('.on').removeClass('on');
+			var categoryId = $(this).addClass('on').data('category-id');
+
+			updateCatList(categoryId);
+		});
+
+		var filterTimer = null;
+		var sendUpdate = function() {
+			filterTimer = null;
+			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
+			var filterString = $.trim(filterInput.val());
+
+			updateCatList(categoryId, filterString);
+		};
+
+		filterInput.on('change keydown keyup', function() {
+			if (filterTimer) {
+				window.clearTimeout(filterTimer);
+				filterTimer = null;
+			}
+
+			filterTimer = window.setTimeout(function() {
+				sendUpdate();
+			}, 140);
 		});
 
 		this._initEditingSnippets();
