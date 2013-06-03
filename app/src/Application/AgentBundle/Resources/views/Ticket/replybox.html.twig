@@ -231,7 +231,7 @@
 						{% endif %}
 						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
 							<input type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<span style="position: relative; top: 2px;">Agent:&nbsp;</span>
+							<span style="position: relative; top: 2px;"><label for="{{replyBaseId}}_agent_sel_check" style="line-height: 100%;">Agent:&nbsp;</label></span>
 						</td><td style="height: 30px;vertical-align: middle;">
 							<div style="position: relative; overflow: hidden; top: 1px;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%; line-height: 15px;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
@@ -254,7 +254,7 @@
 								{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
 							{% endif %}
 							<input type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<span style="position: relative; top: 2px;">Team:&nbsp;</span>
+							<span style="position: relative; top: 2px;"><label for="{{ replyBaseId }}_agent_team_sel_check" style="line-height: 100%;">Team:&nbsp;</label></span>
 						</td><td style="height: 30px; vertical-align: middle;">
 							<div style="position: relative; overflow: hidden; top: 1px;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
@@ -281,7 +281,7 @@
 							<label>
 								<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
 								<span class="opt-label-text">
-									Close Tab
+									<label for="{{ replyBaseId }}_close_tab_opt" style="line-height: 100%;">Close Tab</label>
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span>
 								</span>
 							</label>
@@ -290,9 +290,9 @@
 					<div style="display: inline-block; margin-left: 10px;">
 						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
 							<label class="hide-note">
-								<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
+								<input type="checkbox" id="{{ replyBaseId }}_email_user" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
 								<span class="opt-label-text">
-									Email User
+									<label for="{{ replyBaseId }}_email_user" style="line-height: 100%;">Email User</label>
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span>
 								</span>
 							</label>
