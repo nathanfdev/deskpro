@@ -100,23 +100,36 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			self.massActions.open();
 		};
 
+		var viewType = this.meta.viewType;
 		var opt = {
 			saveSelectionId: self.meta.filter_id ? ('filter_'+self.meta.filter_id) : null,
 			onButtonClick: function() {
-				openMassActions();
+				if (viewType != 'list') {
+					openMassActions();
+				}
 			},
 			onCountChange: function(count) {
-				var isOpen = self.massActions && self.massActions.isOpen();
+				if (viewType != 'list') {
+					var isOpen = self.massActions && self.massActions.isOpen();
 
-				if (count > 0 && !isOpen) {
-					openMassActions();
-				} else if (count <= 0 && isOpen) {
-					if (self.massActions) {
-						self.massActions.close();
+					if (count > 0 && !isOpen) {
+						openMassActions();
+					} else if (count <= 0 && isOpen) {
+						if (self.massActions) {
+							self.massActions.close();
+						}
 					}
 				}
 			}
 		};
+
+		if (viewType == 'list') {
+			this.wrapper.find('.perform-actions-trigger').on('click', function(ev) {
+				Orb.cancelEvent(ev);
+				openMassActions();
+			});
+		}
+
 		if (this.meta.viewType == 'list') {
 			opt.selectionBar = $('thead, .selection-bar', el);
 		}

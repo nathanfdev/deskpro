@@ -346,15 +346,15 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 					'height': height
 				});
 			} else {
-				width = $('#dp_content_info').width() / 2;
+				width = $(window).width() / 2;
 				this.popoverOuter.css({
 					'position': 'absolute',
 					'z-index': 30001,
 					'width': width+2+6, //2px for thi sborder, 6px for the popover border
 					'overflow': 'auto',
 					'top': top ? top-3 : '',
-					'right': 9,
-					'bottom': bottom,
+					'left': 9,
+					'bottom': 10,
 					'height': height
 				});
 			}

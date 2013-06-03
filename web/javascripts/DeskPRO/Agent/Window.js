@@ -2335,7 +2335,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
-		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('listpane', (function(routeData) {
+
+			if (!this.paneVis.list) {
+				this.setPaneVis('list', true);
+			}
+
+			this.loadRoute(routeData);
+		}).bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
 		this.addPageRouteLoader('article', this.loadRoute.bind(this));
 		this.addPageRouteLoader('download', this.loadRoute.bind(this));
