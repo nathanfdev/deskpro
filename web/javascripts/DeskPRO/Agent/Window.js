@@ -1692,7 +1692,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (routeData && !routeData.isBackgroundLoad) {
-			$('#dp_list > section').removeClass('on').detach();
+			$('#dp_list > section').removeClass('on');
 			$('#dp_list_loading').addClass('on');
 		}
 
@@ -2881,7 +2881,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		btn.addClass('active');
 
 		$('#dp_source > section.on').removeClass('on');
-		$('#dp_list > section.on').removeClass('on').detach();
+		$('#dp_list > section.on').removeClass('on');
 
 
 		$('#dp_list_loading, #dp_source_loading').addClass('on');
@@ -2899,7 +2899,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 		var listEl = handler.getListElement();
 		if (listEl) {
-			listEl.addClass('on').appendTo('#dp_list');
+			listEl.addClass('on');
 		}
 		handler.fireEvent('aftershow', [no_load_list]);
 
