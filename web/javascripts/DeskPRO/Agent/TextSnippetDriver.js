@@ -57,6 +57,8 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 
 					var batchData = [];
 					Array.each(data.snippets, function(itm) {
+						itm.category_id = parseInt(itm.category_id || 0) || 0;
+
 						batchData.push({
 							type: 'put',
 							key:   itm.id,
@@ -81,6 +83,13 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		var filterString = filter.filterString || null;
 		var page         = filter.page || 1;
 
+		var keyRange = null;
+		var keyIndex = null
+		if (categoryId && this.snippetsDb.keyRange.only) {
+			keyRange = this.snippetsDb.keyRange.only(parseInt(categoryId));
+			keyIndex = 'category_id';
+		}
+
 		this.snippetsDb.iterate(function(item) {
 			var add = true;
 			if (categoryId && item.category_id != categoryId) {
@@ -103,6 +112,8 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 				snippets.push(item);
 			}
 		}, {
+			index: keyIndex,
+			keyRange: keyRange,
 			onEnd: function() {
 				callback(snippets);
 			}
@@ -117,7 +128,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		// Encode for form
 		var postData = [];
 		postData.push({name: 'snippet_id', value: snippet.id || 0});
-		postData.push({name: 'category_id', value: snippet.category_id || 0});
+		postData.push({name: 'category_id', value: parseInt(snippet.category_id) || 0});
 		for (var i = 0; i < snippet.title.length; i++) {
 			postData.push({name: 'title['+snippet.title[i].language_id+']', value: snippet.title[i].value || ''});
 		}
