@@ -121,6 +121,8 @@ class AgentMessagesLoader extends LoaderAbstract
 					$item[2]['html'] = $this->renderChatAlert($cid);
 				}
 			}
+			// unset ref to $item so it isnt overwritten
+			unset($item);
 
 			#------------------------------
 			# Poll requests
