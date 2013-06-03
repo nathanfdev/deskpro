@@ -287,7 +287,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 <div class="profile-box-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
-			<div class="controls" id="{{baseId}}_field_edit_controls" {% if ticket.isLocked(app.user) %}style="display: none"{% endif %}>
+			<div class="controls {% if ticket.isLocked(app.user) %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
 				<div class="is-not-loading">
 					<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
 					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>

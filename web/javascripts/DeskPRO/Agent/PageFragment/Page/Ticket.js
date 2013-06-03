@@ -1135,6 +1135,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initTicketLocking: function() {
 		var self = this;
 		$([this.getEl('unlock_ticket').get(0), this.getEl('unlock_ticket2').get(0)]).on('click', function() {
+			self.wrapper.find('.hide-locked').removeClass('hide-locked');
 			self.wrapper.find('.lock-overlay').remove();
 			self.getEl('locked_message').hide();
 			self.getEl('locked_message').data('locked-self', false);
