@@ -93,7 +93,7 @@
 	</footer>
 </section>
 
-{% if app.user.hasPerm('feedback.comment') %}
+{% if app.getSetting('user.publish_comments') %}
 	{% include 'UserBundle:Common:comments-box.html.twig' with {
 		'type': 'feedback',
 		'comments': comments,

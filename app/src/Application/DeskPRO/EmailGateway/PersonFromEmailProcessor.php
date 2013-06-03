@@ -61,7 +61,7 @@ class PersonFromEmailProcessor
 	}
 
 
-	
+
 	/**
 	 * Finds a person based on the From in the email address.
 	 *
@@ -100,6 +100,21 @@ class PersonFromEmailProcessor
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Finds a person based on the From in the email address.
+	 *
+	 * @param string $email_address The email address as a string
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function findPersonByEmailAddress($email_address)
+	{
+		$email = new EmailAddress();
+		$email->email = $email_address;
+
+		return $this->findPerson($email);
 	}
 
 

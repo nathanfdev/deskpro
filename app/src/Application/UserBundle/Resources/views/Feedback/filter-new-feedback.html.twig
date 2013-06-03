@@ -138,22 +138,7 @@
 							<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-{% if is_rtl() %}left{% else %}right{% endif %}: 10px;">
 								{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'feedback[person_email]', 'mode': 'identity' } %}
 							</td><td valign="top" width="50%" style="padding-{% if is_rtl() %}right{% else %}left{% endif %}: 10px;">
-								<div class="dp-control-group {% if error_fields['person_name'] %}dp-error{% endif %}">
-									<label class="dp-control-label">
-										<strong>{{ phrase('user.general.your_name') }} *</strong>
-									</label>
-									<div class="dp-controls dp-fill">
-										{{ form_widget(form.person_name, {
-											'attr': {
-												'data-field-validators': 'DeskPRO.Form.LengthValidator',
-												'data-min-len': 2
-											}
-										}) }}
-										<div class="dp-help-inline dp-error-explain">
-											{{ phrase('user.general.please_enter_your_name') }}
-										</div>
-									</div>
-								</div>
+
 							</td></tr></table>
 						</div>
 					{% endif %}

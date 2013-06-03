@@ -148,11 +148,11 @@
 					<td class="title">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
 					<!-- PERMISSION:feedback.rate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['feedback.rate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['feedback.rate'] or permissions_everyone['feedback.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.rate]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
 					<!-- PERMISSION:feedback.comment --><td class="prop"><input class="onoff-slider {% if permissions_everyone['feedback.comment'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['feedback.comment'] or permissions_everyone['feedback.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.comment]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<!-- PERMISSION:feedback.no_comment_validate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['feedback.no_comment_validate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['feedback.no_comment_validate'] or permissions_everyone['feedback.no_comment_validate'] %}checked="checked"{% endif %} name="permissions[feedback.no_comment_validate]" value="1" /></td>
 				</tr>
@@ -176,11 +176,11 @@
 					<td class="title">{{ phrase('admin.user_groups.can_rate_articles') }}</td>
 					<!-- PERMISSION:articles.rate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['articles.rate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['articles.rate'] or permissions_everyone['articles.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.rate]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
 					<!-- PERMISSION:articles.comment --><td class="prop"><input class="onoff-slider {% if permissions_everyone['articles.comment'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['articles.comment'] or permissions_everyone['articles.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.comment]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<!-- PERMISSION:articles.no_comment_validate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['articles.no_comment_validate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['articles.no_comment_validate'] or permissions_everyone['articles.no_comment_validate'] %}checked="checked"{% endif %} name="permissions[articles.no_comment_validate]" value="1" /></td>
 				</tr>
@@ -205,11 +205,11 @@
 					<td class="title">{{ phrase('admin.user_groups.can_rate_downloads') }}</td>
 					<!-- PERMISSION:downloads.rate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['downloads.rate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['downloads.rate'] or permissions_everyone['downloads.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.rate]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
 					<!-- PERMISSION:downloads.comment --><td class="prop"><input class="onoff-slider {% if permissions_everyone['downloads.comment'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['downloads.comment'] or permissions_everyone['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.comment]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<!-- PERMISSION:downloads.no_comment_validate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['articles.no_comment_validate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['downloads.no_comment_validate'] or permissions_everyone['articles.no_comment_validate'] %}checked="checked"{% endif %} name="permissions[downloads.no_comment_validate]" value="1" /></td>
 				</tr>
@@ -234,11 +234,11 @@
 					<td class="title">{{ phrase('admin.user_groups.can_rate_news_posts') }}</td>
 					<!-- PERMISSION:news.rate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['news.rate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['news.rate'] or permissions_everyone['news.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.rate]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">{{ phrase('admin.user_groups.submit_new_post_comments') }}</td>
 					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider {% if permissions_everyone['news.comment'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['news.comment'] or permissions_everyone['news.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
 				</tr>
-				<tr>
+				<tr {% if not app.getSetting('user.publish_comments') %}style="display: none;"{% endif %}>
 					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
 					<!-- PERMISSION:news.no_comment_validate --><td class="prop"><input class="onoff-slider {% if permissions_everyone['articles.no_comment_validate'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['news.no_comment_validate'] or permissions_everyone['news.no_comment_validate'] %}checked="checked"{% endif %} name="permissions[news.no_comment_validate]" value="1" /></td>
 				</tr>

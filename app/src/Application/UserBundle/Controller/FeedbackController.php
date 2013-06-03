@@ -35,6 +35,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity;
 
 use Orb\Util\Arrays;
@@ -237,6 +238,16 @@ class FeedbackController extends AbstractController
 
 			$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
 			$form->bindRequest($this->get('request'));
+
+			// Try to set a default name from usersource
+			// This allows sites that user usersources to edit the template to remove the 'name' field
+			if (!$newfeedback->person_name && $newfeedback->person_email) {
+				$person_processor = new PersonFromEmailProcessor();
+				$person = $person_processor->findPersonByEmailAddress($newfeedback->person_email);
+				if ($person) {
+					$newfeedback->person_name = $person->getDisplayName();
+				}
+			}
 
 			$newfeedback->setAttachBlobs($this->in->getCleanValueArray('attach_ids', 'str_simple', 'discard'));
 
