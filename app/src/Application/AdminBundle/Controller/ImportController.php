@@ -99,8 +99,14 @@ class ImportController extends AbstractController
 
 		$welcome_email = $this->in->getBool('welcome_email') && !defined('DPC_IS_CLOUD');
 
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+			dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $filename,
+			$user_filename,
+			'text/csv'
+		);
+
 		$task_data = array(
-			'filename' => $filename,
+			'blob_id' => $blob->getId(),
 			'field_maps' => $field_maps,
 			'skip_first' => $skip_first,
 			'welcome_email' => $welcome_email,

@@ -56,7 +56,7 @@ class CsvImport extends AbstractJob
 	protected function _getDefaultData()
 	{
 		return array(
-			'filename' => false,
+			'blob_id' => false,
 			'field_maps' => false,
 			'new_custom_map' => false,
 			'skip_first' => true,
@@ -74,9 +74,13 @@ class CsvImport extends AbstractJob
 
 	public function run($max_time)
 	{
-		$filename = $this->_data['filename'];
+		$blob = App::getOrm()->find('DeskPRO:Blob', $this->_data['blob_id']);
 
-		$csv_file = dp_get_tmp_dir() . '/' . $filename;
+		$csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+
+		if (!file_exists($csv_file) || !is_readable($csv_file)) {
+			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_file, $blob);
+		}
 
 		if (!file_exists($csv_file) || !is_readable($csv_file)) {
 			throw new \Exception("CSV file $csv_file does not exist or is not readable");
@@ -134,6 +138,9 @@ class CsvImport extends AbstractJob
 
 		if ($complete) {
 			@unlink($csv_file);
+			try {
+				App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+			} catch (\Exception $e) {}
 			return self::TASK_COMPLETED;
 		} else {
 			return self::TASK_CONTINUING;
