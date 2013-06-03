@@ -29,6 +29,7 @@
 	'agent.chrome.create_new-news' => 'New News Post',
 	'agent.chrome.create_new-download' => 'New Download',
 	'agent.chrome.create_new-feedback' => 'New Feedback',
+	'agent.chrome.create_new-tweet' => 'New Tweet',
 	'agent.chrome.nav_tickets' => 'Tickets',
 	'agent.chrome.nav_userchat' => 'User Chat',
 	'agent.chrome.nav_agentchat' => 'Agent IM',
