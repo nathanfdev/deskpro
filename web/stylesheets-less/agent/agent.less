@@ -894,14 +894,14 @@ table.layout-table.v-middle {
 				display: inline-block;
 			}
 
-			&.tickets i.dp-icon-placeholder:before   { content: "\F003"; }
-			&.person i.dp-icon-placeholder:before    { content: "\F007"; }
-			&.org i.dp-icon-placeholder:before       { content: "\F0C0"; }
-			&.news i.dp-icon-placeholder:before      { content: "\F02D"; }
-			&.tasks i.dp-icon-placeholder:before     { content: "\F044"; }
-			&.feedback i.dp-icon-placeholder:before  { content: "\F0EB"; }
-			&.downloads i.dp-icon-placeholder:before { content: "\F01A"; }
-			&.articles i.dp-icon-placeholder:before  { content: "\F0F6"; }
+			&.tickets i.dp-icon-placeholder:before   { content: @icn_ticket_content; }
+			&.person i.dp-icon-placeholder:before    { content: @icn_person_content; }
+			&.org i.dp-icon-placeholder:before       { content: @icn_organization_content; }
+			&.tasks i.dp-icon-placeholder:before     { content: @icn_task_content; }
+			&.articles i.dp-icon-placeholder:before  { content: @icn_article_content; }
+			&.news i.dp-icon-placeholder:before      { content: @icn_news_content; }
+			&.downloads i.dp-icon-placeholder:before { content: @icn_download_content; }
+			&.feedback i.dp-icon-placeholder:before  { content: @icn_feedback_content; }
 
 			&.dp-cursor, &:hover {
 				a {
@@ -2691,14 +2691,14 @@ ul.pane-tabs {
 			background-repeat: no-repeat;
 			top: 3px;
 		}
-		&.ticket i.dp-icon-placeholder:before   { content: "\F003"; }
-		&.person i.dp-icon-placeholder:before    { content: "\F007"; }
-		&.organization i.dp-icon-placeholder:before       { content: "\F0C0"; }
-		&.news i.dp-icon-placeholder:before      { content: "\F02D"; }
-		&.task i.dp-icon-placeholder:before     { content: "\F044"; }
-		&.feedback i.dp-icon-placeholder:before  { content: "\F0EB"; }
-		&.download i.dp-icon-placeholder:before { content: "\F01A"; }
-		&.article i.dp-icon-placeholder:before  { content: "\F0F6"; }
+		&.ticket i.dp-icon-placeholder:before             { content: "\f0e0"; }
+		&.person i.dp-icon-placeholder:before             { content: "\f007"; }
+		&.organization i.dp-icon-placeholder:before       { content: "\f0c0"; }
+		&.news i.dp-icon-placeholder:before               { content: "\f02d"; }
+		&.task i.dp-icon-placeholder:before               { content: "\f046"; }
+		&.feedback i.dp-icon-placeholder:before           { content: "\f087"; }
+		&.download i.dp-icon-placeholder:before           { content: "\f01a"; }
+		&.article i.dp-icon-placeholder:before            { content: "\f0f6"; }
 	}
 
 	.deskproTabList li a {

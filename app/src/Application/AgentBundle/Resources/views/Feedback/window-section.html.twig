@@ -1,7 +1,7 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active"><i class="icon-lightbulb"></i> Feedback</li>
+	<li class="tab active"><i class="icon-dp-feedback"></i> Feedback</li>
 {% endblock %}
 {% block pane_content %}
 	{% if app.user.hasPerm('agent_publish.validate') %}
