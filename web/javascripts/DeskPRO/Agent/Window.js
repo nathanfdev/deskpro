@@ -617,6 +617,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		});
 
+		$('.panevis-switcher').find('li').each(function() {
+			$(this).qtip({
+				position: {
+					my: 'top center',
+					at: 'bottom center',
+					target: $(this)
+				},
+				content: {attr: 'title'},
+				style: {
+					classes: 'qtip-dark qtip-rounded'
+				}
+			});
+		});
+
 		$(document).on('click', '.click-confirm', function(ev) {
 			if (!confirm($(this).data('confirm'))) {
 				ev.preventDefault();
