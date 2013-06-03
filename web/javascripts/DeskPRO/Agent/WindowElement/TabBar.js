@@ -278,6 +278,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.tabBtn2.appendTo(this.tabList2);
 		}
 
+		// If tabs are collapsed, then we need to re-calc
+		// the layout when adding a new tab in case the side navstrip is hidden (it was empty and now is not)
+		if (!DeskPRO_Window.paneVis.tabs) {
+			DeskPRO_Window.layout.doResize(true);
+		}
+
 		//----------
 		// Just about done
 		//----------
@@ -510,6 +516,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		DeskPRO_Window.updateWindowUrlFragment();
 		this.tabBarOverflow.update();
+
+		// Trigger a resize so the sidebar tabs can be hidden
+		// if there are now no tabs
+		if (!DeskPRO_Window.paneVis.tabs) {
+			DeskPRO_Window.layout.doResize(true);
+		}
 	},
 
 

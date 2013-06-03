@@ -66,11 +66,19 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		});
 
 		if (!paneVis.tabs) {
-			rightHide.show();
+			var rightEdge = 0;
+
+			if (rightHide.find('li')[0]) {
+				rightEdge = 26;
+				rightHide.show();
+			} else {
+				rightHide.hide();
+			}
+
 			$('#dp_content').hide();
 			$('#dp_list').css({
 				width: 'auto',
-				right: 26
+				right: rightEdge
 			});
 		} else {
 			rightHide.hide();
