@@ -73,6 +73,7 @@
 						<tr>
 							<th>IP Address:</th>
 							<td>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="icon-search" title="Find other tickets submitted from this IP address"></i></a>
 								{{ message.ip_address }}
 							</td>
 						</tr>

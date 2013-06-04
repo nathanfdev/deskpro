@@ -1524,6 +1524,27 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = $this->_choiceMatch("$tickets_table.person_id", $op, $choice, true);
 						break;
 
+					case self::TERM_IP_ADDRESS:
+						$choice = is_array($choice) ? array_pop($choice) : $choice;
+						$choice = preg_replace('#[^0-9\.]#', '', $choice);
+
+						$this->summary[] = "IP address is $choice";
+
+						$joins[] = array(
+							'tickets_messages',
+							"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.ip_address != '')"
+						);
+						$field = "$join_name.ip_address";
+
+						// If last char is a dot, then do a wildcard suffix search
+						if (substr($choice, -1, 1) == '.') {
+							$wheres[] = $this->_stringMatch($field, $op, $choice, true, true);
+						} else {
+							$wheres[] = $this->_stringMatch($field, $op, $choice);
+						}
+
+						break;
+
 					case self::TERM_SUBJECT:
 						$this->affected_fields[] = 'ticket.subject';
 						$field = 'tickets.subject';
