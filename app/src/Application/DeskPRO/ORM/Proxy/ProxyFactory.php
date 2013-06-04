@@ -72,7 +72,7 @@ class ProxyFactory extends UnprivateProxyFactory
 		$methods = '';
 		$methodNames = array();
 		foreach ($class->reflClass->getMethods() as $method) {
-			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__", '__hasrunload__')) || isset($methodNames[$method->getName()])) {
+			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__", '__hasrunload__', 'addcustomcallable', 'getobjecttranslatable', 'ensuredefaultpropertychangedlistener', 'addpropertychangedlistener', 'removepropertychangedlistener')) || isset($methodNames[$method->getName()])) {
 				continue;
 			}
 			$methodNames[$method->getName()] = true;
