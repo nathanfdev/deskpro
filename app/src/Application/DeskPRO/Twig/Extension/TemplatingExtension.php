@@ -1075,7 +1075,7 @@ class TemplatingExtension extends \Twig_Extension
 
 		if (!file_exists($path)) {
 			$e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: " . $path);
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+			\DeskPRO\Kernel\KernelErrorHandler::logException($e, false, 'tpl_include_php_file');
 			return '';
 		}
 
