@@ -100,7 +100,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
-			contentAjax: { url: this._getOverlayUrl(this.options.metaId, 0) },
+			contentAjax: { url: this._getOverlayUrl(this.options.metaId, otherId) },
 			zIndex: 40000 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
@@ -156,6 +156,12 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 
 		var rows = wrapper.find('.merge-data .merge-data-rows tr:not(.mergeable)');
 
+		var getCmpVal = function(el) {
+			var val = $.trim(el.text());
+			val = val.toLowerCase();
+			val = val.replace(/\s/g, val);
+			return val;
+		};
 		var setMergeDataLostClasses = function() {
 			var keepCol = 0, mergeCol = 0;
 
@@ -173,15 +179,18 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 					keep = tds.eq(keepCol),
 					merge = tds.eq(mergeCol);
 
-				keep.removeClass('merge-data-lost');
+				keep.removeClass('merge-data-lost merge-data-keep');
+				merge.removeClass('merge-data-lost merge-data-keep');
+
 				if ($row.hasClass('always-keep')) {
 					// always lose the merge data
 					merge.addClass('merge-data-lost');
-				} else if (!$.trim(keep.text()).length) {
-					// no value in keep, so we will keep the merge value
-					merge.removeClass('merge-data-lost');
+					keep.addClass('merge-data-keep');
 				} else {
-					merge.addClass('merge-data-lost');
+					if (getCmpVal(keep) != getCmpVal(merge)) {
+						merge.addClass('merge-data-lost');
+						keep.addClass('merge-data-keep');
+					}
 				}
 			});
 		};
