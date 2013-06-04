@@ -496,17 +496,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
 </ul>
 
-<ul id="{{baseId}}_merge_menu" style="display: none;">
-	{% if tickets_by_user %}
-		<li class="section-title">Other Tickets from User</li>
-		{% for ticket_by_user in tickets_by_user %}
-			<li data-merge-id="{{ ticket_by_user.id }}" style="max-width: 200px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ ticket_by_user.subject }}</li>
-		{% endfor %}
-	{% endif %}
-	<li class="tab-insert always-show section-title">Other Tickets</li>
-	<li>Find ticket...</li>
-</ul>
-
 <div class="pagecontent">
 
 {{ dp_widgets(baseId, 'ticket', 'properties', 'below', ticket_api) }}

@@ -97,10 +97,10 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 	 */
 	getSnippet: function(id, callback) {
 		$.ajax({
-			url: BASE_URL + 'agent/text-snippets/' + id + '.json',
+			url: BASE_URL + 'agent/text-snippets/'+  this.typename + '/' + id + '.json',
 			dataType: 'json',
 			success: function(snippet) {
-				callback(snippet);
+				callback(snippet.snippet);
 			}
 		});
 	},
@@ -128,7 +128,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 		var snippetsDb = this.snippetsDb;
 
 		$.ajax({
-			url: BASE_URL+'agent/text-snippets/'+(snippet.id||0)+'/save-snippet.json',
+			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippet.id||0)+'/save.json',
 			type: 'POST',
 			dataType: 'json',
 			data: postData,

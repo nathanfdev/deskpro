@@ -281,9 +281,8 @@
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
 
-<script type="text/x-deskpro-plain" id="tickets_snippet_shell_tpl">
-{% include 'AgentBundle:TextSnippets:tickets-widget-shell.html.twig' %}
-</script>
+<script type="text/x-deskpro-plain" id="tickets_snippet_shell_tpl">{% include 'AgentBundle:TextSnippets:tickets-widget-shell.html.twig' %}</script>
+<script type="text/x-deskpro-plain" id="chat_snippet_shell_tpl">{% include 'AgentBundle:TextSnippets:chat-widget-shell.html.twig' %}</script>
 
 {{ tpl_source('snippet_rows_tpl', 'AgentBundle:TextSnippets:snippet-rows.html.twig') }}
 

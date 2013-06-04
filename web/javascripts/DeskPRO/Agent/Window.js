@@ -487,11 +487,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initInterfaceServices();
 
 		if (window.DESKPRO_SNIPPETS_USE_CLIENT_DB) {
-			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetAjaxDriver('tickets');
-			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetAjaxDriver('chat');
-		} else {
 			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetClientDbDriver('tickets');
 			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetClientDbDriver('chat');
+		} else {
+			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetAjaxDriver('tickets');
+			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetAjaxDriver('chat');
 		}
 
 		if (window.devicePixelRatio && window.devicePixelRatio >= 2) {

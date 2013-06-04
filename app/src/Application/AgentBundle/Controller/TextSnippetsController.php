@@ -34,6 +34,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\TextSnippet;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use Orb\Util\Strings;
 
 class TextSnippetsController extends AbstractController
@@ -174,7 +175,7 @@ class TextSnippetsController extends AbstractController
 	# get-snippet
 	####################################################################################################################
 
-	public function getSnippetAction($id)
+	public function getSnippetAction($typename, $id)
 	{
 		$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
 		if (!$snippet) {
@@ -193,7 +194,7 @@ class TextSnippetsController extends AbstractController
 	# save-snippet
 	####################################################################################################################
 
-	public function saveSnippetAction($id)
+	public function saveSnippetAction($typename, $id)
 	{
 		if ($id) {
 			$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
@@ -204,12 +205,9 @@ class TextSnippetsController extends AbstractController
 			$snippet = new TextSnippet();
 		}
 
-		$category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
-		if (!$category) {
-			throw $this->createNotFoundException();
+		if ($category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'))) {
+			$snippet->category = $category;
 		}
-
-		$snippet->category = $category;
 
 		$this->em->persist($snippet);
 		$this->em->flush();
@@ -234,5 +232,91 @@ class TextSnippetsController extends AbstractController
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true, 'snippet' => $snippet->toApiData()));
+	}
+
+	####################################################################################################################
+	# delete-snippet
+	####################################################################################################################
+
+	public function deleteSnippetAction($typename, $id)
+	{
+		$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+		if (!$snippet) {
+			throw $this->createNotFoundException();
+		}
+
+		$this->em->remove($snippet);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true, 'snippet_id' => $id));
+	}
+
+	####################################################################################################################
+	# save-category
+	####################################################################################################################
+
+	public function saveCategoryAction($typename, $id)
+	{
+		if ($id) {
+			$cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
+			if (!$cat) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$cat = new TextSnippetCategory();
+			$cat->typename = $typename;
+			$cat->person = $this->person;
+		}
+
+		$cat->is_global = ($this->in->getString('perm_type') == 'global');
+
+		$this->em->persist($cat);
+		$this->em->flush();
+
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$lang_id = $lang->getId();
+
+			$title   = $this->in->getString("title.$lang_id");
+
+			$rec = $this->container->getObjectLangRepository()->setRec($lang, $cat, 'title', $title);
+			$this->em->persist($rec);
+		}
+
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true, 'category' => $cat->toApiData()));
+	}
+
+	####################################################################################################################
+	# delete-category
+	####################################################################################################################
+
+	public function deleteCategoryAction($typename, $id)
+	{
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
+		if (!$cat) {
+			throw $this->createNotFoundException();
+		}
+
+		$is_empty = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM text_snippets
+			WHERE category_id = ?
+		", array($cat->getId()));
+
+		if (!$is_empty) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => 'not_empty'
+			));
+		}
+
+		$this->em->remove($cat);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'category_id' => $id
+		));
 	}
 }

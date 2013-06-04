@@ -2838,15 +2838,36 @@ $collection->add('agent_textsnippets_filtersnippets', new Route(
 ));
 
 $collection->add('agent_textsnippets_getsnippet', new Route(
-	'/text-snippets/{id}.json',
+	'/text-snippets/{typename}/{id}.json',
 	array('_controller' => 'AgentBundle:TextSnippets:getSnippet'),
 	array(),
 	array()
 ));
 
 $collection->add('agent_textsnippets_savesnippet', new Route(
-	'/text-snippets/{id}/save.json',
+	'/text-snippets/{typename}/{id}/save.json',
 	array('_controller' => 'AgentBundle:TextSnippets:saveSnippet'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_delsnippet', new Route(
+	'/text-snippets/{typename}/{id}/delete.json',
+	array('_controller' => 'AgentBundle:TextSnippets:deleteSnippet'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_savecat', new Route(
+	'/text-snippets/{typename}/categories/{id}/save.json',
+	array('_controller' => 'AgentBundle:TextSnippets:saveCategory'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_delcat', new Route(
+	'/text-snippets/{typename}/categories/{id}/delete.json',
+	array('_controller' => 'AgentBundle:TextSnippets:deleteCategory'),
 	array(),
 	array()
 ));
