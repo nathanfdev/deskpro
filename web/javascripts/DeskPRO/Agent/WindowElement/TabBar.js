@@ -230,7 +230,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				html += ' ' + data.page.LOADING_TYPENAME;
 			}
 
-			html += '">';
+			html += '"><div class="item-hover-over-indicator"></div>';
 			html += '<a>';
 				html += '<i class="icon-globe dp-icon-placeholder"></i>'+Orb.escapeHtml(data.title)+'';
 			html += '</a>';
@@ -245,6 +245,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		data.tabBtn = $(html);
 		data.tabBtn.data('tab', data);
+
+		if (data.page && data.page.meta.alert_id) {
+			data.tabBtn.addClass(data.page.meta.alert_id);
+		}
 
 		data.tabBtn2 = $(html2);
 		data.tabBtn2.data('tab', data);

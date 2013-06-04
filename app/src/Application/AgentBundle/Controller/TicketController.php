@@ -110,13 +110,6 @@ class TicketController extends AbstractController
 		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
 		if (!$ticket_attachments) $ticket_attachments = array();
 
-		$tickets_by_user = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($ticket->person, 10);
-		foreach ($tickets_by_user AS $key => $ticket_by_user) {
-			if ($ticket->id == $ticket_by_user->id) {
-				unset($tickets_by_user[$key]);
-			}
-		}
-
 		#------------------------------
 		# Custom fields
 		#------------------------------
@@ -160,8 +153,8 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->container->getAgentData()->getAgents();
+		$agent_teams = $this->container->getDataService('AgentTeam')->getTeams();
 
 		#------------------------------
 		# Linked tasks
@@ -335,8 +328,6 @@ class TicketController extends AbstractController
 			'ticket_options'             => $ticket_options,
 			'ticket_flagged'             => $ticket_flagged,
 			'macros'                     => $macros,
-
-			'tickets_by_user'            => $tickets_by_user,
 
 			'agent_signature'            => $this->person->getSignature(),
 			'agent_signature_html'       => $this->person->getSignatureHtml(),

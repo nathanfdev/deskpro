@@ -16,12 +16,15 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		};
 		this.setOptions(options);
 
-		this.mergeMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.options.trigger,
-			menuElement: this.options.menu,
-			onBeforeMenuOpened: this._menuPopulate.bind(this),
-			onItemClicked: this._menuItemClick.bind(this)
-		});
+		this.mergeMenu = null;
+		if (this.options.menu) {
+			this.mergeMenu = new DeskPRO.UI.Menu({
+				triggerElement: this.options.trigger,
+				menuElement: this.options.menu,
+				onBeforeMenuOpened: this._menuPopulate.bind(this),
+				onItemClicked: this._menuItemClick.bind(this)
+			});
+		}
 	},
 
 	_getOverlayUrl: function(id, otherId) {
@@ -84,6 +87,34 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, otherId) },
+			zIndex: 40000 // Above floating people windows
+		});
+		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
+		this.overlay.open();
+	},
+
+	openWithId: function(otherId) {
+		if (this.overlay) {
+			this.overlay.destroy();
+		}
+
+		this.overlay = new DeskPRO.UI.Overlay({
+			contentMethod: 'ajax',
+			contentAjax: { url: this._getOverlayUrl(this.options.metaId, 0) },
+			zIndex: 40000 // Above floating people windows
+		});
+		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
+		this.overlay.open();
+	},
+
+	open: function() {
+		if (this.overlay) {
+			this.overlay.destroy();
+		}
+
+		this.overlay = new DeskPRO.UI.Overlay({
+			contentMethod: 'ajax',
+			contentAjax: { url: this._getOverlayUrl(this.options.metaId, 0) },
 			zIndex: 40000 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));

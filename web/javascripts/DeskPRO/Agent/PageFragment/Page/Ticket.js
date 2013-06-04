@@ -202,7 +202,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				tabType: 'ticket',
 				metaId: self.meta.ticket_id,
 				metaIdName: 'ticket_id',
-				menu: this.getEl('merge_menu'),
 				trigger: $('.merge-menu-trigger', this.wrapper),
 				overlayUrl: BASE_URL + 'agent/tickets/{id}/merge-overlay/{other}',
 				mergeUrl: BASE_URL + 'agent/tickets/{id}/merge/{other}',
@@ -223,6 +222,226 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			});
 			this.ownObject(this.merge);
+
+			this.mergeMenu = new (function() {
+				var menuEl = null;
+				var menuElInner = null;
+				var backEl = null;
+				var hasInitUserTickets = false;
+				var lastOvers = null;
+				var lastOverId = null;
+
+				var updateOverHighlight = function(ticketId) {
+					removeLastOverHighlight();
+
+					if (!DeskPRO_Window.sections.tickets_section || !DeskPRO_Window.sections.tickets_section.isVisible()) {
+						return;
+					}
+
+					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
+					lastOverId = ticketId;
+					lastOvers = searchListEl.find('.ticket-' + ticketId);
+					lastOvers = lastOvers.add($('#tabNavigationPane').find('.ticket-' + ticketId));
+					lastOvers.addClass('item-hover-over');
+				};
+
+				var removeLastOverHighlight = function() {
+					if (lastOvers) {
+						lastOvers.removeClass('item-hover-over');
+					}
+					lastOvers = null;
+					lastOverId = null;
+				}
+
+				var renderTicketOption = function(ticket) {
+					var row = $('<li><time></time><a><strong></strong><span></span></a></li>');
+					row.data('ticket-id', ticket.id);
+					row.addClass('ticket-' + ticket.id + ' ticket');
+
+					row.find('strong').text(ticket.id);
+					row.find('span').text(ticket.subject);
+
+					var d = new Date(ticket.last_activity*1000);
+					row.find('time').attr('datetime', d.toISOString()).timeago();
+
+					row.on('mouseover', function() {
+						updateOverHighlight(ticket.id);
+					}).on('mouseout', function() {
+						if (lastOverId && lastOverId == ticket.id) {
+							removeLastOverHighlight();
+						}
+					});
+
+					return row.get(0);
+				};
+
+				var refreshOpenTickets = function() {
+					var append = [];
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+						var id = tab.page.getMetaData('ticket_id');
+						if (id && id != self.meta.ticket_id) {
+							var row = renderTicketOption({
+								id: id,
+								subject: tab.title,
+								last_activity: tab.page.getMetaData('last_activity')
+							});
+
+							append.push(row);
+						}
+					});
+
+					if (append.length) {
+						menuEl.find('.open-tickets').show().find('ul').empty().append($(append));
+					} else {
+						menuEl.find('.open-tickets').hide().find('ul').empty();
+					}
+				};
+
+				var refreshUserTickets = function() {
+					$.ajax({
+						url: BASE_URL + 'agent/ticket-search/quick-search',
+						data: {
+							person_id: self.meta.person_id
+						},
+						dataType: 'json',
+						success: function(data) {
+							var append = [];
+							Array.each(data, function(t) {
+								var row = renderTicketOption(t);
+								append.push(row);
+							});
+
+							if (append.length) {
+								menuEl.find('.users-tickets').show().find('ul').empty().append($(append));
+							} else {
+								menuEl.find('.users-tickets').hide().find('ul').empty();
+							}
+						}
+					});
+				};
+
+				var refreshFilterResults = function() {
+					if (!DeskPRO_Window.sections.tickets_section || !DeskPRO_Window.sections.tickets_section.isVisible()) {
+						menuEl.find('.filter-tickets').hide().find('ul').empty();
+						return;
+					}
+
+					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
+					var append = [];
+
+					searchListEl.find('.row-item').each(function() {
+						var el = $(this);
+						var t = {
+							id: el.data('ticket-id'),
+							subject: $.trim(el.find('.subject').text()),
+							last_activity: parseInt(el.data('ticket-lastactivity'))
+						};
+						if (!t.id) {
+							return;
+						}
+
+						var row = renderTicketOption(t);
+						append.push(row);
+					});
+
+					if (append.length) {
+						menuEl.find('.filter-tickets').show().find('ul').empty().append($(append));
+					} else {
+						menuEl.find('.filter-tickets').hide().find('ul').empty();
+					}
+				};
+
+				var openMenu = function(atEl) {
+					var tmp;
+					if (!menuEl) {
+						menuEl = $('<div/>');
+						menuEl.addClass('dp-popover');
+						menuEl.css('width', 500);
+
+						menuElInner = $('<div/>').addClass('dp-popover-inner');
+						menuElInner.appendTo(menuEl);
+
+						backEl = $('<div/>');
+						backEl.addClass('dp-popover-backdrop');
+
+						tmp = $('<div/>').html('<section><header><strong>Find a ticket...</strong></header><article style="padding: 6px;"><button class="trigger-search dp-btn dp-btn-small">Search</button></article></section>');
+						tmp.addClass('search-tickets');
+						tmp.appendTo(menuElInner);
+
+						tmp = $('<div/>').html('<section><header><strong>Open Tickets</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('open-tickets').hide();
+						tmp.appendTo(menuElInner);
+
+						tmp = $('<div/>').html('<section><header><strong>Filter Results</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('filter-tickets').hide();
+						tmp.appendTo(menuElInner);
+
+						tmp = $('<div/>').html('<section><header><strong>User\'s Tickets</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('users-tickets').hide();
+						tmp.appendTo(menuElInner);
+
+						menuEl.find('.trigger-search').on('click', function(ev) {
+							Orb.cancelEvent(ev);
+							self.merge.open();
+							closeMenu();
+						});
+
+						menuEl.on('click', 'li', function(ev) {
+							Orb.cancelEvent(ev);
+							closeMenu();
+							self.merge.openWithId($(this).data('ticket-id'));
+						});
+
+						backEl.on('click', function(ev) {
+							Orb.cancelEvent(ev);
+							closeMenu();
+						});
+
+						menuEl.appendTo('body');
+						backEl.appendTo('body')
+					}
+
+					if (!hasInitUserTickets) {
+						hasInitUserTickets = true;
+						refreshUserTickets();
+					}
+					window.setTimeout(function() { refreshOpenTickets(); }, 1);
+					window.setTimeout(function() { refreshFilterResults(); }, 1);
+
+					var maxH = parseInt(($(window).height() / 2) - 40);
+					menuEl.find('.dp-popover-inner').css('max-height', maxH);
+
+					menuEl.show();
+					menuEl.position({
+						of: atEl,
+						my: 'center top',
+						at: 'center bottom',
+						collision: 'flipfit'
+					});
+					backEl.show();
+				};
+
+				var closeMenu = function() {
+					menuEl.hide();
+					backEl.hide();
+
+					removeLastOverHighlight();
+				};
+
+				self.wrapper.find('.merge-menu-trigger').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					openMenu($(this));
+				});
+
+				this.destroy = function() {
+					if (menuEl) {
+						menuEl.detach();
+					}
+					if (backEl) {
+						backEl.detach();
+					}
+				};
+			})();
 		}
 
 		if (this.meta.ticket_perms.reply) {

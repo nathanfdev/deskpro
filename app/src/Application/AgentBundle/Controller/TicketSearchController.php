@@ -216,27 +216,32 @@ class TicketSearchController extends AbstractController
 
 	public function quickSearchAction()
 	{
-		$q = $this->in->getString('q');
-		if (!$q) {
-			$q = $this->in->getString('term');
-		}
-
 		$limit = $this->in->getUint('limit');
 		if (!$limit) $limit = 10;
 		$limit = min($limit, 100);
 
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 		$searcher->setPerson($this->person);
-		$searcher->setOrderByCode('ticket.date_created:desc');
-		$searcher->addTerm('text', 'is', array('query' => $q));
 		$searcher->setOrderBy('ticket.status');
 
-		$results = $searcher->getMatches();
-		$results = Arrays::castToType($results, 'integer');
+		if ($person_id = $this->in->getUint('person_id')) {
+			$searcher->addTerm('person', 'is', array('person_id' => $person_id));
+			$results = $searcher->getMatches();
+			$results = Arrays::castToType($results, 'integer');
+		} else {
+			$q = $this->in->getString('q');
+			if (!$q) {
+				$q = $this->in->getString('term');
+			}
 
-		if (ctype_digit($q) || preg_match('/#^([0-9]+)$/', $q)) {
-			if ($q[0] == '#') $q = substr($q, 1);
-			array_unshift($results, $q);
+			$searcher->addTerm('text', 'is', array('query' => $q));
+			$results = $searcher->getMatches();
+			$results = Arrays::castToType($results, 'integer');
+
+			if (ctype_digit($q) || preg_match('/#^([0-9]+)$/', $q)) {
+				if ($q[0] == '#') $q = substr($q, 1);
+				array_unshift($results, $q);
+			}
 		}
 
 		$results = array_slice($results, 0, $limit);

@@ -330,6 +330,23 @@
 	position: relative;
 }
 
+.item-hover-over-indicator {
+	display: none;
+}
+.list-listing .row-item.item-hover-over {
+	.item-hover-over-indicator {
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 10000;
+
+		border: 2px solid #000;
+	}
+}
+
 .list-listing .row-item.open {
 	position:relative;
 	background-color: #D4E7FC !important;

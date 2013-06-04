@@ -20,6 +20,8 @@ pageMeta.lastMessageId = {{ last_message_id|default(0) }};
 pageMeta.lastLogId = {{ last_log_id|default(0) }};
 pageMeta.ticket_reverse_order = {% if app.user.getPref('agent.ticket_reverse_order') %}true{% else %}false{% endif %};
 
+pageMeta.last_activity = {{ ticket.getLastActivityDate().getTimestamp() }};
+
 pageMeta.person_id    = {{ ticket.person.id }};
 pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
 pageMeta.person_name  = {{ ticket.person.display_name|json_encode|raw }};

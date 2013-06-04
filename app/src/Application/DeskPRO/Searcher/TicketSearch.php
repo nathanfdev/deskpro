@@ -89,6 +89,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_SLA                       = 'sla';
 	const TERM_SLA_STATUS                = 'sla_status';
 	const TERM_SLA_COMPLETED             = 'sla_completed';
+	const TERM_IP_ADDRESS                = 'ip_address';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
