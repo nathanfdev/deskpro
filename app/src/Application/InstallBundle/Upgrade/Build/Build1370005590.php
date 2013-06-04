@@ -44,6 +44,6 @@ class Build1370005590 extends AbstractBuild
 		$this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
 
 		$this->out("Add tickets_messages.message_translated_id and tickets_messages.lang_code");
-		$this->execMutateSql("ALTER TABLE tickets_messages ADD message_translated_id INT DEFAULT NULL, ADD lang_code VARCHAR(80) DEFAULT NULL, ADD CONSTRAINT FK_3A9962E2251FB291 FOREIGN KEY (message_translated_id) REFERENCES tickets_messages_translated (id) ON DELETE SET NULL, ADD INDEX IDX_3A9962E2251FB291 (message_translated_id)");
+		$this->execMutateSql("ALTER TABLE tickets_messages ADD message_translated_id INT DEFAULT NULL, ADD lang_code VARCHAR(80) DEFAULT NULL, ADD geo_country VARCHAR(10) DEFAULT NULL, ADD CONSTRAINT FK_3A9962E2251FB291 FOREIGN KEY (message_translated_id) REFERENCES tickets_messages_translated (id) ON DELETE SET NULL, ADD INDEX IDX_3A9962E2251FB291 (message_translated_id)");
 	}
 }

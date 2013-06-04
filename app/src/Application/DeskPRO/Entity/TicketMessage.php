@@ -105,6 +105,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $ip_address = '';
 
 	/**
+	 * @var string
+	 */
+	protected $geo_country = null;
+
+	/**
 	 * The email address the user sent the email from (gateway messages only).
 	 * This is a perm record and doesnt change even if the user changes/deletes their email
 	 * address.
@@ -419,7 +424,36 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->ip_address && $visitor->getIpAddress()) {
 			$this['ip_address'] = $visitor->getIpAddress();
 		}
+
+		if ($visitor && $visitor->last_track && $visitor->last_track->geo_country) {
+			$this['geo_country'] = $visitor->last_track->geo_country;
+		}
+
+		if ($this->ip_address && !$this->geo_country) {
+			$geoip = App::getSystemService('geo_ip');
+			$geo = $geoip->lookup($this->ip_address);
+			$this['geo_country'] = !empty($geo['country']) ? $geo['country'] : '';
+		}
 	}
+
+
+	/**
+	 * @param string $geo_country Two-letter country code or null
+	 */
+	public function setGeoCountry($geo_country)
+	{
+		$this->setModelField('geo_country', $geo_country ?: null);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getGeoCountry()
+	{
+		return $this->geo_country;
+	}
+
 
 	public function setVisitorFromRequest()
 	{
@@ -523,6 +557,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_note', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));

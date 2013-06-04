@@ -29,6 +29,9 @@
 				{% endif %}
 			</div>
 			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
+			{% if message.getGeoCountry() %}
+				<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+			{% endif %}
 			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% endif %}
@@ -75,6 +78,9 @@
 							<td>
 								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="icon-search" title="Find other tickets submitted from this IP address"></i></a>
 								{{ message.ip_address }}
+								{% if message.getGeoCountry() %}
+									<span class="dp-flag-{{ message.getGeoCountry()|lower }}"></span>
+								{% endif %}
 							</td>
 						</tr>
 					{% endif %}
