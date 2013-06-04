@@ -40,8 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 class ObjectTranslatable
 {
-	protected $em;
-
 	/**
 	 * @var DomainObject
 	 */
@@ -53,29 +51,54 @@ class ObjectTranslatable
 	protected $config;
 
 	/**
-	 * @var \Application\DeskPRO\Translate\ObjectLangRepository
+	 * @var array
 	 */
-	protected $obj_lang_repos;
+	protected $unsaved = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Language
 	 */
-	protected $lang = null;
-
-	/**
-	 * @var array
-	 */
-	protected $unsaved = array();
+	protected $lang;
 
 	public function __construct(DomainObject $entity, $config)
 	{
 		$this->entity = $entity;
 		$this->config = $config;
 
-		$this->em = App::getOrm();
-		$this->obj_lang_repos = App::getSystemService('object_lang_repository');
-		$this->lang = App::getContainer()->getDataService('Language')->getDefault();
+		// Warning: This object should not do any ORM loading in construct
+		// because it is called during postLoad which causes problems in Doctrine
 	}
+
+
+	/**
+	 * @return \Application\DeskPRO\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return App::getOrm();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Translate\ObjectLangRepository
+	 */
+	public function getObjLangRepos()
+	{
+		return App::getSystemService('object_lang_repository');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Language
+	 */
+	public function getLang()
+	{
+		if (!$this->lang) {
+			$this->lang = App::getContainer()->getDataService('Language')->getDefault();
+		}
+		return $this->lang;
+	}
+
 
 	/**
 	 * @param string $prop
@@ -84,7 +107,7 @@ class ObjectTranslatable
 	public function getObjectProp($prop, $lang = null)
 	{
 		if ($lang === null) {
-			$lang = $this->lang;
+			$lang = $this->getLang();
 		}
 		if (!is_object($lang)) {
 			$lang = App::getContainer()->getLanguageData()->get($lang);
@@ -99,7 +122,7 @@ class ObjectTranslatable
 			return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
 		}
 
-		return $this->obj_lang_repos->get($lang, $this->entity, $prop);
+		return $this->getObjLangRepos()->get($lang, $this->entity, $prop);
 	}
 
 
@@ -110,7 +133,7 @@ class ObjectTranslatable
 	public function setObjectProp($prop, $value, $lang = null)
 	{
 		if ($lang === null) {
-			$lang = $this->lang;
+			$lang = $this->getLang();
 		}
 		if (!is_object($lang)) {
 			$lang = App::getContainer()->getLanguageData()->get($lang);
@@ -125,7 +148,7 @@ class ObjectTranslatable
 
 			$rec = isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop] : null;
 			if (!$rec) {
-				$rec = ObjectLang::createObjectLang($this->lang, $this->entity, $prop, $value);
+				$rec = ObjectLang::createObjectLang($this->getLang(), $this->entity, $prop, $value);
 			}
 			$rec->text = $value;
 
@@ -136,7 +159,7 @@ class ObjectTranslatable
 			return $rec;
 		}
 
-		return $this->obj_lang_repos->setRec($lang, $this->entity, $prop, $value);
+		return $this->getObjLangRepos()->setRec($lang, $this->entity, $prop, $value);
 	}
 
 
@@ -171,15 +194,15 @@ class ObjectTranslatable
 		if ($this->unsaved) {
 			foreach ($this->unsaved as $group) {
 				foreach ($group as $rec) {
-					$this->em->delayedInsert($rec);
+					$this->getEm()->delayedInsert($rec);
 				}
 			}
 			$this->unsaved = array();
 		}
 
 		if ($this->entity->getId()) {
-			foreach ($this->obj_lang_repos->getLoadedRecs($this->entity) as $rec) {
-				$this->em->persist($rec);
+			foreach ($this->getObjLangRepos()->getLoadedRecs($this->entity) as $rec) {
+				$this->getEm()->persist($rec);
 			}
 		}
 	}

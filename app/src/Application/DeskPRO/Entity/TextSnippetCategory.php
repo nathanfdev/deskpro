@@ -75,11 +75,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_global = false;
 
 	/**
-	 * @var string
-	 */
-	protected $title;
-
-	/**
 	 * @return int
 	 */
 	public function getId()

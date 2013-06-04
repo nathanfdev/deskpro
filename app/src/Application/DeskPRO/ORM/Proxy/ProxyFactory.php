@@ -62,6 +62,12 @@ class ProxyFactory extends UnprivateProxyFactory
 				'$this->__entityPersister__',
 				'$this->__identifier__'
 			), self::$_proxyClassTemplate);
+
+			self::$_proxyClassTemplate = str_replace(
+				'protected $__entityPersister__;',
+				'protected $__entityPersister__;' . "\n\t" . 'public $_dp_object_translatable;',
+				self::$_proxyClassTemplate
+			);
 		}
 
 		parent::generateProxyClasses($classes, $toDir);

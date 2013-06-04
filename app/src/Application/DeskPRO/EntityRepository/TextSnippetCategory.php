@@ -45,7 +45,6 @@ class TextSnippetCategory extends AbstractEntityRepository
 	public function getCatsForAgent($typename, PersonEntity $agent)
 	{
 		$agent->loadHelper('AgentTeam');
-		$agent_teams = $agent->getAgentTeamIds();
 
 		$dql = "
 			SELECT c
