@@ -3273,6 +3273,39 @@ z-index: 2;
 	overflow: hidden;
 	.drop-shadow(0, 0, 5px, 0.2);
 	z-index: 40001;
+
+	.right {
+		float: none;
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 1;
+		text-shadow: none;
+		background-color: #fff;
+		padding-left: 45px;
+	}
+	.status-pill {
+		float: right;
+		top: 4px;
+		right: 0;
+		text-shadow: none !important;
+		margin: 0 6px 0 6px;
+
+		&.awaiting_agent {
+			padding-right: 4px;
+		}
+		label {
+			text-shadow: none !important;
+		}
+	}
+
+	time {
+		font-size: 10px;
+		color: #A4A5A5;
+		line-height: 100%;
+		position: relative;
+		top: 1px;
+	}
 }
 
 .person-search-box section {
@@ -3302,6 +3335,10 @@ z-index: 2;
 	background-color: #2F7FD0;
 	color: #fff;
 	text-decoration: none;
+
+	.right {
+		background-color: #2F7FD0;
+	}
 }
 
 .person-search-box ul li:hover a span,

@@ -229,6 +229,7 @@ class TicketSearchController extends AbstractController
 		$searcher->setPerson($this->person);
 		$searcher->setOrderByCode('ticket.date_created:desc');
 		$searcher->addTerm('text', 'is', array('query' => $q));
+		$searcher->setOrderBy('ticket.status');
 
 		$results = $searcher->getMatches();
 		$results = Arrays::castToType($results, 'integer');
@@ -243,9 +244,11 @@ class TicketSearchController extends AbstractController
 		$output = array();
 		foreach (App::getEntityRepository('DeskPRO:Ticket')->getByIds($results, true) AS $ticket) {
 			$output[] = array(
-				'id' => $ticket->id,
-				'value' => $ticket->id,
-				'subject' => $ticket->subject
+				'id'            => $ticket->id,
+				'value'         => $ticket->id,
+				'subject'       => $ticket->subject,
+				'status'        => $ticket->getStatusCode(),
+				'last_activity' => $ticket->getLastActivityDate()->getTimestamp()
 			);
 		}
 

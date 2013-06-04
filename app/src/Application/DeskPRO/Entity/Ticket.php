@@ -2002,6 +2002,34 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return \DateTime
+	 */
+	public function getLastActivityDate()
+	{
+		$dates = array();
+		if ($this->date_last_agent_reply) {
+			$dates[] = $this->date_last_agent_reply;
+		}
+		if ($this->date_last_user_reply) {
+			$dates[] = $this->date_last_user_reply;
+		}
+
+		if (!$dates) {
+			return $this->date_created;
+		}
+
+		$use_date = $this->date_created;
+		foreach ($dates as $d) {
+			if ($d > $use_date) {
+				$use_date = $d;
+			}
+		}
+
+		return $use_date;
+	}
+
+
 	public function setStatus($status)
 	{
 		$this['date_status'] = new \DateTime();

@@ -227,6 +227,21 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 					row.attr('ticket-id', ticket.id);
 					row.addClass('ticket-' + ticket.id);
 
+					if (ticket.status == 'awaiting_agent') {
+						row.find('.ticket-status').addClass('awaiting_agent').text('Awaiting Agent');
+					} else if (ticket.status == 'awaiting_user') {
+						row.find('.ticket-status').addClass('awaiting_user').text('Awaiting User');
+					} else if (ticket.status == 'resolved') {
+						row.find('.ticket-status').addClass('resolved').text('Resolved');
+					} else if (ticket.status == 'closed') {
+						row.find('.ticket-status').addClass('closed').text('Closed');
+					} else {
+						row.find('.ticket-status').remove();
+					}
+
+					var d = new Date(ticket.last_activity*1000);
+					row.find('.ticket-time').attr('datetime', d.toISOString()).timeago();
+
 					if (currentTicketId && currentTicketId == parseInt(ticket.id)) {
 						row.addClass('on');
 						currentTicketId = false;

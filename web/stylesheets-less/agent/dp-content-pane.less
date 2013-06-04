@@ -718,6 +718,7 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 .ticket_urgency_style_pill(@color, @borderColor, @textColor) {
 	.gradient(lighten(@color, 10%), @color);
 	border: 1px solid @borderColor;
+	color: @textColor;
 	label, i { color: @textColor; text-shadow: none; }
 	i { border-left: 1px solid fade(@borderColor, 80%) }
 }
