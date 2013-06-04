@@ -217,19 +217,19 @@
 						<li id="create_ticket_btn"><a><div class="wrap"><i class="icon-dp-ticket"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>
 					{% endif %}
 					{% if app.user.hasPerm('agent_people.create') %}
-						<li id="create_person_btn"><a><div class="wrap"><i class="icon-user"></i></div>{{ phrase('agent.chrome.create_new-person') }} <kbd>p</kbd></a></li>
+						<li id="create_person_btn"><a><div class="wrap"><i class="icon-dp-person"></i></div>{{ phrase('agent.chrome.create_new-person') }} <kbd>p</kbd></a></li>
 					{% endif %}
 					{% if app.user.hasPerm('agent_org.create') %}
-						<li id="create_organization_btn"><a><div class="wrap"><i class="icon-group"></i></div>{{ phrase('agent.chrome.create_new-organization') }} <kbd>o</kbd></a></li>
+						<li id="create_organization_btn"><a><div class="wrap"><i class="icon-dp-organization"></i></div>{{ phrase('agent.chrome.create_new-organization') }} <kbd>o</kbd></a></li>
 					{% endif %}
 					{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
 						<li id="create_tweet_btn" class="last"><a><div class="wrap"><i class="icon-dp-twitter"></i></div>{{ phrase('agent.chrome.create_new-tweet') }} <kbd>w</kbd></a></li>
 					{% endif %}
 					{% if app.user.hasPerm('agent_publish.create') %}
-						<li id="create_article_btn"><a><div class="wrap"><i class="icon-file-alt"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
-						<li id="create_news_btn"><a><div class="wrap"><i class="icon-book"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></span></a></li>
-						<li id="create_download_btn"><a><div class="wrap"><i class="icon-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
-						<li id="create_feedback_btn"><a><div class="wrap"><i class="icon-lightbulb"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
+						<li id="create_article_btn"><a><div class="wrap"><i class="icon-dp-article"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
+						<li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></span></a></li>
+						<li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
+						<li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
 					{% endif %}
 					<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-edit"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></span></a></li>
 				</ul>
