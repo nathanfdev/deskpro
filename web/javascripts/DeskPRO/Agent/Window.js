@@ -486,7 +486,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initInterfaceServices();
 
-		this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetsDriver('tickets');
+		if (window.DESKPRO_SNIPPETS_USE_CLIENT_DB) {
+			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetAjaxDriver('tickets');
+			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetAjaxDriver('chat');
+		} else {
+			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetClientDbDriver('tickets');
+			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetClientDbDriver('chat');
+		}
 
 		if (window.devicePixelRatio && window.devicePixelRatio >= 2) {
 			$('body').addClass('dp-is-retina');

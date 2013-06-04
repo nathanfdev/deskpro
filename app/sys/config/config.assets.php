@@ -325,7 +325,8 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
-		'javascripts/DeskPRO/Agent/TextSnippetDriver.js',
+		'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
+		'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
 	)
 );
 

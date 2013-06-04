@@ -34,6 +34,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\TextSnippet;
+use Orb\Util\Strings;
 
 class TextSnippetsController extends AbstractController
 {
@@ -41,6 +42,27 @@ class TextSnippetsController extends AbstractController
 	{
 		return false;
 	}
+
+	####################################################################################################################
+	# get-widget-shell
+	####################################################################################################################
+
+	public function getWidgetShellAction($typename)
+	{
+		$snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
+
+		if ($typename != 'tickets' && $typename != 'chat') {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->render("AgentBundle:TextSnippets:$typename-widget-shell.html.twig", array(
+			'ticket_snippet_cats' => $snippet_cats
+		));
+	}
+
+	####################################################################################################################
+	# reload-client
+	####################################################################################################################
 
 	public function reloadClientAction($typename)
 	{
@@ -68,6 +90,10 @@ class TextSnippetsController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	####################################################################################################################
+	# reload-client-batch
+	####################################################################################################################
+
 	public function reloadClientBatchAction($typename, $batch = 1)
 	{
 		$snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, $batch, 250);
@@ -82,6 +108,90 @@ class TextSnippetsController extends AbstractController
 
 		return $this->createJsonResponse($data);
 	}
+
+	####################################################################################################################
+	# filter-snippets
+	####################################################################################################################
+
+	public function filterSnippetsAction($typename)
+	{
+		$category_id   = $this->in->getUint('category_id') ?: null;
+		$filter_string = $this->in->getString('filter_string');
+
+		$lang_repos = $this->container->getObjectLangRepository();
+
+		$snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, 1, 500, $category_id);
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$lang_repos->preloadObjectCollection($lang, $snippets);
+		}
+
+		if ($filter_string) {
+			$snippets_all = $snippets;
+			$snippets = array();
+
+			$filter_string = Strings::utf8_strtolower($filter_string);
+
+
+			foreach ($snippets_all as $snippet) {
+				$recs = $lang_repos->getLoadedRecs($snippet);
+				$match = false;
+
+				foreach ($this->container->getLanguageData()->getAll() as $lang) {
+					$test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
+					$test = Strings::utf8_strtolower($test);
+					if (strpos($test, $filter_string) !== false) {
+						$match = true;
+						break;
+					}
+				}
+
+				if (!$match) {
+					foreach ($this->container->getLanguageData()->getAll() as $lang) {
+						$test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
+						$test = Strings::utf8_strtolower($test);
+						if (strpos($test, $filter_string) !== false) {
+							$match = true;
+							break;
+						}
+					}
+				}
+
+				if ($match) {
+					$snippets[] = $snippet;
+				}
+			}
+		}
+
+		$data = array('snippets' => array());
+		foreach ($snippets as $snippet) {
+			$data['snippets'][] = $snippet->toApiData();
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+	####################################################################################################################
+	# get-snippet
+	####################################################################################################################
+
+	public function getSnippetAction($id)
+	{
+		$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+		if (!$snippet) {
+			throw $this->createNotFoundException();
+		}
+
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
+		}
+
+		$data = array('snippet' => $snippet->toApiData());
+		return $this->createJsonResponse($data);
+	}
+
+	####################################################################################################################
+	# save-snippet
+	####################################################################################################################
 
 	public function saveSnippetAction($id)
 	{

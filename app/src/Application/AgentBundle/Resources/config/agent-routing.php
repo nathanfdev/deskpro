@@ -2809,6 +2809,13 @@ $collection->add('agent_mediamanager_browse', new Route(
 # Text Snippets
 ################################################################################
 
+$collection->add('agent_textsnippets_widget_shell', new Route(
+	'/text-snippets/{typename}/widget-shell.txt',
+	array('_controller' => 'AgentBundle:TextSnippets:getWidgetShell'),
+	array(),
+	array()
+));
+
 $collection->add('agent_textsnippets_reloadclient', new Route(
 	'/text-snippets/{typename}/reload-client.json',
 	array('_controller' => 'AgentBundle:TextSnippets:reloadClient'),
@@ -2823,8 +2830,22 @@ $collection->add('agent_textsnippets_reloadclient_batch', new Route(
 	array()
 ));
 
+$collection->add('agent_textsnippets_filtersnippets', new Route(
+	'/text-snippets/{typename}/filter.json',
+	array('_controller' => 'AgentBundle:TextSnippets:filterSnippets'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_getsnippet', new Route(
+	'/text-snippets/{id}.json',
+	array('_controller' => 'AgentBundle:TextSnippets:getSnippet'),
+	array(),
+	array()
+));
+
 $collection->add('agent_textsnippets_savesnippet', new Route(
-	'/text-snippets/{id}/save-snippet.json',
+	'/text-snippets/{id}/save.json',
 	array('_controller' => 'AgentBundle:TextSnippets:saveSnippet'),
 	array(),
 	array()

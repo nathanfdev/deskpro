@@ -22,6 +22,8 @@
 		]
 	};
 
+	{% if app.getSetting('agent.ui_snippets_use_client_db') %}var DESKPRO_SNIPPETS_USE_CLIENT_DB = true;{% endif %}
+
 	var DESKPRO_TIME_OUT_OF_SYNC = false;
 	var DESKPRO_TIME_OUT_OF_SYNC_IGNORE = parseInt({{ app.user.getPref('agent.ui.tz_detect_dismiss')|json_encode|raw }}) + 100;
 

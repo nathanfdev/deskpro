@@ -1,22 +1,53 @@
 Orb.createNamespace('DeskPRO.Agent');
 
-DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
+DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 
 	Extends: DeskPRO.BasicWindow,
 
 	initialize: function(typename) {
-		this.mode = 'idb';
 		this.typename = typename;
-
+		this.driverName = 'client_db';
 		this.loadData();
 	},
 
+	/**
+	 * Gets (or reloads) the plain template used to construct a new shell
+	 *
+	 * @param reload
+	 */
+	getWidgetShellTemplate: function(reload) {
+		var id = this.typename + '_snippet_shell_tpl';
+		var el = document.getElementById(id);
+		if (reload || !el) {
+			$.ajax({
+				url: BASE_URL + 'agent/text-snippets/' + this.typename + '/widget-shell.txt',
+				type: 'GET',
+				dataType: 'text',
+				success: function(txt) {
+					if (el) {
+						el.parentNode.removeChild(el);
+					}
+
+					var $el = $('<script type="text/x-deskpro-plain" id="'+id+'"/>');
+					$el.html(txt);
+
+					el = $el.get(0);
+				}
+			});
+		}
+
+		return DeskPRO_Window.util.getPlainTpl(el);
+	},
+
+	/**
+	 * Preload data
+	 */
 	loadData: function() {
 		var self = this;
 		var tick = 0;
 		var numPages = null;
 
-		var ticketSnippets = new IDBStore({
+		var snippetsDb = new IDBStore({
 			dbVersion: 2,
 			storeName: 'dp_text_snippets.'+self.typename,
 			keyPath: 'id',
@@ -25,7 +56,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 				{ name: 'category_id', keyPath: 'category_id', unique: false, multiEntry: false }
 			],
 			onStoreReady: function() {
-				ticketSnippets.clear(function() {
+				snippetsDb.clear(function() {
 					tick++;
 					if (tick >= 1) {
 						startLoad();
@@ -33,7 +64,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 				});
 			}
 		});
-		this.snippetsDb = ticketSnippets;
+		this.snippetsDb = snippetsDb;
 
 		var startLoad = function() {
 			$.ajax({
@@ -66,7 +97,7 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 						});
 					});
 
-					ticketSnippets.batch(batchData);
+					snippetsDb.batch(batchData);
 					if (++num < numPages) {
 						startBatch(num);
 					}
@@ -75,6 +106,14 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		};
 	},
 
+
+	/**
+	 * Load snippets that match a certain criteria
+	 *
+	 * @param filter
+	 * @param callback
+	 * @param mutator
+	 */
 	loadSnippets: function(filter, callback, mutator) {
 		var snippets = [];
 
@@ -126,10 +165,25 @@ DeskPRO.Agent.TextSnippetsDriver = new Orb.Class({
 		});
 	},
 
+
+	/**
+	 * Fetches a specific snippet from the db
+	 *
+	 * @param id
+	 * @param callback
+	 */
 	getSnippet: function(id, callback) {
 		this.snippetsDb.get(id, callback);
 	},
 
+
+	/**
+	 * Saves a snippet to the db.
+	 *
+	 * @param snippet
+	 * @param callback
+	 * @param error_callback
+	 */
 	saveSnippet: function(snippet, callback, error_callback) {
 		// Encode for form
 		var postData = [];

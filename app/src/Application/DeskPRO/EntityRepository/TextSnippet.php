@@ -42,10 +42,16 @@ use Orb\Util\Arrays;
 
 class TextSnippet extends AbstractEntityRepository
 {
+	/**
+	 * Get snippets for agent grouped by category (@see groupSnippetCollection)
+	 *
+	 * @param $typename
+	 * @param PersonEntity $agent
+	 * @return array
+	 */
 	public function getSnippetsForAgent($typename, PersonEntity $agent)
 	{
 		$agent->loadHelper('AgentTeam');
-		$agent_teams = $agent->getAgentTeamIds();
 
 		$dql = "
 			SELECT s, c
@@ -66,7 +72,18 @@ class TextSnippet extends AbstractEntityRepository
 		return $this->groupSnippetCollection($coll);
 	}
 
-	public function getAllSnippetsForAgent($typename, PersonEntity $agent, $page = 1, $per_page = 250)
+
+	/**
+	 * Get all snippets for an agent with limits
+	 *
+	 * @param $typename
+	 * @param PersonEntity $agent
+	 * @param int $page
+	 * @param int $per_page
+	 * @param int $in_category
+	 * @return mixed
+	 */
+	public function getAllSnippetsForAgent($typename, PersonEntity $agent, $page = 1, $per_page = 250, $in_category = null)
 	{
 		$dql = "
 			SELECT s, c
@@ -77,16 +94,33 @@ class TextSnippet extends AbstractEntityRepository
 				AND (c.person = ?2 OR c.is_global = true)
 		";
 
-		$coll = $this->getEntityManager()->createQuery($dql)
+		if ($in_category) {
+			$dql .= ' AND c = ?3 ';
+		}
+
+		$q = $this->getEntityManager()->createQuery($dql)
 			->setMaxResults($per_page)
 			->setFirstResult(($page-1) * $per_page)
 			->setParameter(1, $typename)
-			->setParameter(2, $agent)
-			->execute();
+			->setParameter(2, $agent);
+
+		if ($in_category) {
+			$q->setParameter(3, $in_category);
+		}
+
+		$coll = $q->execute();
 
 		return $coll;
 	}
 
+
+	/**
+	 * Count all of an agents snippets
+	 *
+	 * @param $typename
+	 * @param PersonEntity $agent
+	 * @return mixed
+	 */
 	public function countSnippetsForAgent($typename, PersonEntity $agent)
 	{
 		return App::getDb()->fetchColumn("
@@ -99,6 +133,13 @@ class TextSnippet extends AbstractEntityRepository
 		", array($typename, $agent->getId()));
 	}
 
+
+	/**
+	 * Group a collection of snippets
+	 *
+	 * @param $collection
+	 * @return array
+	 */
 	public function groupSnippetCollection($collection)
 	{
 		$ret = array();
