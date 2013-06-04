@@ -199,7 +199,9 @@ class TicketController extends AbstractController
 				$ticket_api[$key] = array('id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field);
 			}
 		}
-		$ticket_api['product'] = $ticket->product->toApiData();
+		if ($ticket->product) {
+			$ticket_api['product'] = $ticket->product->toApiData();
+		}
 		if (count($ticket->labels)) {
 			$ticket_api['labels'] = array();
 			foreach ($ticket->labels AS $label) {
