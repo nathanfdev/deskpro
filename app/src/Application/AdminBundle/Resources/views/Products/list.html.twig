@@ -8,6 +8,9 @@
 	<nav>
 		<ul>
 			<li class="add"><a id="newcat_open">{{ phrase('admin.products.add_new_product') }}</a></li>
+			{% if app.getSetting('core.use_product_fields') %}
+				<li><a href="{{ path('admin_customdefproducts') }}">Manage Product Fields</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 	<ul>

@@ -29,23 +29,37 @@
 			<label>{{ phrase('agent.general.title') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ form_widget(form.title) }}
+			<input type="text" name="title" value="{{ product.title }}" />
 		</div>
 	</div>
 
-	{% if form.parent %}
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.products.parent_product') }}</label>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.parent) }}
-			</div>
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>{{ phrase('admin.products.parent_product') }}</label>
 		</div>
-	{% endif %}
-</div>
+		<div class="dp-form-input">
+			<select name="parent_id">
+				<option value="0">No parent</option>
+				{% for p in all_products if p.id != product.id %}
+					<option value="{{ p.id }}">{{ p.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
 
-{{ form_rest(form) }}
+	{% for f in custom_fields %}
+		{% if f.field_def.isFormField() %}
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>{{ f.title }}</label>
+				</div>
+				<div class="dp-form-input">
+					{{ render_custom_field_form(f) }}
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>
 
 <button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>

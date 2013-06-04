@@ -116,6 +116,11 @@ class FieldManager
 	public function getFields()
 	{
 		if ($this->fields === null) {
+			if ($this->options->get('disabled')) {
+				$this->fields = array();
+				return $this->fields;
+			}
+
 			$this->fields = array();
 			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledUserFields();

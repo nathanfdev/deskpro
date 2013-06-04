@@ -18,10 +18,14 @@
 
 {{ design.dpgrid_col({ class: 'l r', style: "width: 890px; cursor: move;"}) }}
 	<span class="field-id" style="float:right">ID: {{ product.id }}</span>
-	<h2><a class="edit-trigger">{{product.getRealTitle()}}</a></h2>
+	{% if app.getSetting('core.use_product_fields') %}
+		<h2><a href="{{ path('admin_products_edit', {product_id: product.id}) }}">{{product.getRealTitle()}}</a></h2>
+	{% else %}
+		<h2><a class="edit-trigger">{{product.getRealTitle()}}</a></h2>
+	{% endif %}
 {{ design.dpgrid_col_end() }}
 
-{{ design.dpgrid_col({ class: 'l r l-margin alt icon-only', style: "width: 16px"}) }}
+{{ design.dpgrid_col({ class: 'l r l-margin alt with-icon-only', style: "width: 16px"}) }}
 	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}" class="delete"></a>
 {{ design.dpgrid_col_end() }}
 

@@ -193,13 +193,13 @@ class TicketController extends AbstractController
 			'category' => 'title',
 			'priority' => 'title',
 			'workflow' => 'title',
-			'product' => 'title',
 			'organization' => 'name'
 		) AS $key => $title_field) {
 			if ($ticket->$key) {
 				$ticket_api[$key] = array('id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field);
 			}
 		}
+		$ticket_api['product'] = $ticket->product->toApiData();
 		if (count($ticket->labels)) {
 			$ticket_api['labels'] = array();
 			foreach ($ticket->labels AS $label) {

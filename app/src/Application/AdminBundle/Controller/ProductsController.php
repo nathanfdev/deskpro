@@ -68,7 +68,7 @@ class ProductsController extends AbstractController
 
 
 	############################################################################
-	# edit
+	# save-title
 	############################################################################
 
 	public function saveTitleAction()
@@ -113,6 +113,10 @@ class ProductsController extends AbstractController
 		return $this->redirectRoute('admin_products');
 	}
 
+	############################################################################
+	# save-new
+	############################################################################
+
 	public function saveNewAction()
 	{
 		$product = new \Application\DeskPRO\Entity\Product();
@@ -152,6 +156,64 @@ class ProductsController extends AbstractController
 		$this->sendAgentReloadSignal();
 
 		return $this->redirectRoute('admin_products');
+	}
+
+	############################################################################
+	# edit
+	############################################################################
+
+	public function editAction($product_id)
+	{
+		$product = $this->em->find('DeskPRO:Product', $product_id);
+
+		if (!$product) {
+			throw $this->createNotFoundException();
+		}
+
+		$all_products = $this->em->createQuery("
+			SELECT p
+			FROM DeskPRO:Product p
+			WHERE p.parent IS NULL
+			ORDER BY p.display_order ASC
+		")->getResult();
+
+		$field_manager = $this->container->getSystemService('product_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($product);
+
+		if ($this->in->getBool('process')) {
+			if ($this->in->getString('title')) {
+				$product->title = $this->in->getString('title');
+			}
+
+			$parent_id = $this->in->getUint('parent_id');
+			if (!count($product->getChildren())) {
+				if (!$parent_id || $parent_id == $product->getId()) {
+					$product->parent = null;
+				} else {
+					$parent_prod = $this->em->find('DeskPRO:Product', $parent_id);
+					if ($parent_prod && !count($parent_prod->parent)) {
+						$product->parent = $parent_prod;
+					}
+				}
+			}
+
+			$this->em->persist($product);
+			$this->em->flush();
+
+			$post_custom_fields = isset($_POST['custom_fields']) ? $_POST['custom_fields'] : array();
+			$field_manager->saveFormToObject($post_custom_fields, $product);
+
+			$this->em->persist($product);
+			$this->em->flush();
+
+			return $this->redirectRoute('admin_products');
+		}
+
+		return $this->render('AdminBundle:Products:edit.html.twig', array(
+			'product'       => $product,
+			'all_products'  => $all_products,
+			'custom_fields' => $custom_fields,
+		));
 	}
 
 	############################################################################

@@ -106,7 +106,7 @@
 		{{ design.dpgrid_col_end() }}
 	{% endif %}
 
-	{{ design.dpgrid_col({ class: 'l r alt icon-only', style: "width: 16px"}) }}
+	{{ design.dpgrid_col({ class: 'l r alt with-icon-only', style: "width: 16px"}) }}
 		<a href="{{ path('admin_departments_del', {'department_id': department.id}) }}" class="delete"></a>
 	{{ design.dpgrid_col_end() }}
 {{ design.dpgrid_content_end() }}

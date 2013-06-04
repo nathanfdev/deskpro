@@ -47,18 +47,6 @@
 	{% block form_extra_top %}{% endblock %}
 	{% block form_extra %}{% endblock %}
 	{% block form_extra2 %}{% endblock %}
-
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>
-				{{ phrase('admin.custom_fields.custom_css_class') }}
-				<span class="small-light-icon tipped" title="This adds a custom CSS class to the HTML markup of the field. This makes it easier to style this specific field by adding custom CSS in Portal &gt; Portal Editor &gt; Custom CSS."></span>
-			</label>
-		</div>
-		<div class="dp-form-input">
-			{{ form_widget(form.custom_css_classname, { 'attr': { 'class': 'small', 'size': '40', 'style': 'width:506px' }}) }}
-		</div>
-	</div>
 </div>
 
 <button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>

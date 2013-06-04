@@ -67,6 +67,15 @@
 				<span class="prop-val product">{{ticket.product.full_title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
+		{% if ticket.product and app.getSetting('core.use_product_fields') and ticket.product.custom_data|length %}
+			{% set product_field_data = ticket.product.getFieldDisplayArray() %}
+			{% for f in product_field_data if ticket.product.hasCustomField(f.id) %}
+				<tr class="mode-display">
+					<th width="80">{{ f.title }}</th>
+					<td>{{ render_custom_field(f) }}</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
 		<tr class="mode-edit">
 			<th width="80">{{ phrase('agent.general.product') }}:</th>
 			<td>
