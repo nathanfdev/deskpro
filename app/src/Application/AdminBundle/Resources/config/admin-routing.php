@@ -848,6 +848,13 @@ $collection->add('admin_agents_new', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_newpre', new Route(
+	'/agents/new-pre',
+	array('_controller' => 'AdminBundle:Agents:newAgentPre'),
+	array(),
+	array()
+));
+
 $collection->add('admin_agents_remove', new Route(
 	'/agents/{agent_id}/remove',
 	array('_controller' => 'AdminBundle:Agents:removeAgent'),

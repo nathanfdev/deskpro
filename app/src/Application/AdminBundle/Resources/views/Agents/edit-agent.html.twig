@@ -55,6 +55,14 @@
 	data-validate-url="{{ path('admin_agents_edit_formvalidate', {person_id: agent.id|default('0')}) }}"
 >
 
+{% if agent_base %}
+	<div class="alert-message block-message info">
+		You are creating a new agent based off of <strong>{{ agent_base.display_name }}</strong>. Permissions and notification settings
+		will be copied.
+		<input type="hidden" name="base_agent_id" value="{{ agent_base.id }}" />
+	</div>
+{% endif %}
+
 <div id="errors_container" style="display: none;">
 	<h3>Please correct the following errors:</h3>
 	<ul></ul>
