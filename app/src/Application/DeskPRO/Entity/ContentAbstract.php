@@ -225,10 +225,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function getContent()
+	public function contentModifier($content)
 	{
-		$content = $this->content;
-
 		// Find attach replacements: ![attach:{$blob['authcode']}:{$blob['filename']}]
 		$fn = function($m) {
 			return App::getSetting('core.deskpro_url') . 'file.php/' . $m[1] . '/' . urlencode($m[2]);
@@ -240,12 +238,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getContentHtml()
 	{
-		return $this->getContent();
+		return $this['content'];
 	}
 
 	public function getContentPlainHtml()
 	{
-		$content = htmlspecialchars($this->getContent());
+		$content = htmlspecialchars($this['content']);
 		$content = nl2br($content);
 
 		return $content;
@@ -253,10 +251,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getContentPlain()
 	{
-		if (!$this->content) {
+		$content = $this['content'];
+		if (!$content) {
 			return '';
 		}
-		$content = Strings::standardEol($this->getContent());
+		$content = Strings::standardEol($this['content']);
 		$content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
 		$content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
 		$content = preg_replace("#</p><br\s*/?>#", "</p>", $content);

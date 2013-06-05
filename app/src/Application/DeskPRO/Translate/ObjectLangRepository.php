@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Translate;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\ORM\EntityManager;
 
@@ -55,6 +56,11 @@ class ObjectLangRepository
 	 */
 	protected $queued_objects;
 
+	/**
+	 * @var array
+	 */
+	protected $try_langs = array();
+
 
 	/**
 	 * @param EntityManager $em
@@ -62,6 +68,42 @@ class ObjectLangRepository
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
+	}
+
+
+	/**
+	 * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
+	 *
+	 * @param \Application\DeskPRO\Entity\Language[] $try_langs
+	 */
+	public function setTryLangs(array $try_langs)
+	{
+		$this->try_langs = $try_langs;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Language[]
+	 */
+	public function getTryLangs()
+	{
+		if (!$this->try_langs) {
+			$try_langs = array();
+			if (App::getCurrentPerson()) {
+				$l = App::getCurrentPerson()->getRealLanguage();
+				if ($l) {
+					$try_langs[$l->id] = $l;
+				}
+			}
+			if ($l = App::getTranslator()->getLanguage()) {
+				$try_langs[$l->id] = $l;
+			}
+			$l = App::getContainer()->getLanguageData()->getDefault();
+			$try_langs[$l->id] = $l;
+
+			return $try_langs;
+		}
+		return $this->try_langs;
 	}
 
 
@@ -111,27 +153,43 @@ class ObjectLangRepository
 	/**
 	 * Get the ObjectLang record for a given property. Returns null if no such record exists.
 	 *
-	 * @param int|\Application\DeskPRO\Entity\Language $lang
-	 * @param object|string $object
-	 * @param string $prop_name
+	 * @param int|\Application\DeskPRO\Entity\Language $lang     A language or array of languages. If an array, the first existing will be returned.
+	 * @param object|string $object                              The object to get the property on
+	 * @param string $prop_name                                  The property to get
+	 * @param string $fallback                                   True to the 'try langs' if $lang is not found
 	 * @return \Application\DeskPRO\Entity\ObjectLang
 	 */
-	public function getRec($lang, $object, $prop_name)
+	public function getRec($lang, $object, $prop_name, $fallback = false)
 	{
 		$prop_name = strtolower($prop_name);
-		$lang_id = is_object($lang) ? $lang->getId() : $lang;
-		$obj_ref = is_object($object) ? $object->getObjectRef() : $object;
 
-		if (!$this->isLoaded($lang_id, $obj_ref)) {
-			$this->preloadObject($lang_id, $obj_ref);
-			$this->runPreload();
+		$try_langs = is_array($lang) ? $lang : array($lang);
+		$done = array();
+		if ($fallback) {
+			$try_langs = array_merge($try_langs, $this->getTryLangs());
 		}
 
-		if (!isset($this->loaded[$obj_ref][$lang_id][$prop_name])) {
-			return null;
+		foreach ($try_langs as $lang) {
+			$lang_id = is_object($lang) ? $lang->getId() : $lang;
+
+			if (isset($done[$lang_id])) {
+				continue;
+			}
+			$done[$lang_id] = true;
+
+			$obj_ref = is_object($object) ? $object->getObjectRef() : $object;
+
+			if (!$this->isLoaded($lang_id, $obj_ref)) {
+				$this->preloadObject($lang_id, $obj_ref);
+				$this->runPreload();
+			}
+
+			if (isset($this->loaded[$obj_ref][$lang_id][$prop_name])) {
+				return $this->loaded[$obj_ref][$lang_id][$prop_name];
+			}
 		}
 
-		return $this->loaded[$obj_ref][$lang_id][$prop_name];
+		return null;
 	}
 
 
@@ -161,14 +219,15 @@ class ObjectLangRepository
 	/**
 	 * Get the value of a given property. This is the actual translated text.
 	 *
-	 * @param int|\Application\DeskPRO\Entity\Language $lang
-	 * @param object|string $object
-	 * @param string $prop_name
+	 * @param int|\Application\DeskPRO\Entity\Language $lang     A language or array of languages. If an array, the first existing will be returned.
+	 * @param object|string $object                              The object to get the property on
+	 * @param string $prop_name                                  The property to get
+	 * @param string $fallback                                   True to the 'try langs' if $lang is not found
 	 * @return string
 	 */
-	public function get($lang, $object, $prop_name)
+	public function get($lang, $object, $prop_name, $fallback = false)
 	{
-		$rec = $this->getRec($lang, $object, $prop_name);
+		$rec = $this->getRec($lang, $object, $prop_name, $fallback);
 		if (!$rec) {
 			return null;
 		}
@@ -218,7 +277,7 @@ class ObjectLangRepository
 		$lang_id = is_object($lang) ? $lang->getId() : $lang;
 		$obj_ref = is_object($object) ? $object->getObjectRef() : $object;
 
-		if (isset($this->loaded[$obj_ref])) {
+		if (isset($this->loaded[$obj_ref][$lang_id])) {
 			return;
 		}
 
@@ -227,6 +286,21 @@ class ObjectLangRepository
 		}
 
 		$this->queued_objects[$lang_id][$obj_ref] = $obj_ref;
+
+		// Automatically queue up try langs as well
+		foreach ($this->getTryLangs() as $try_lang) {
+			$try_lang_id = $try_lang->getId();
+
+			if (isset($this->loaded[$obj_ref][$try_lang_id])) {
+				continue;
+			}
+
+			if (!isset($this->queued_objects[$try_lang_id])) {
+				$this->queued_objects[$try_lang_id] = array();
+			}
+
+			$this->queued_objects[$try_lang_id][$obj_ref] = $obj_ref;
+		}
 	}
 
 

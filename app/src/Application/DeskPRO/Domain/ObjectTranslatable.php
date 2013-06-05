@@ -66,6 +66,11 @@ class ObjectTranslatable
 	protected $with_lang_prop = null;
 
 	/**
+	 * @var null
+	 */
+	protected $try_langs = null;
+
+	/**
 	 * Config:
 	 *
 	 * - with_lang_prop: When true, we consider the object itself defines default translation
@@ -91,6 +96,40 @@ class ObjectTranslatable
 
 
 	/**
+	 * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
+	 */
+	public function setTryLangs(array $try_langs = null)
+	{
+		$this->try_langs = $try_langs;
+	}
+
+
+	/**
+	 * Gets the try langs
+	 *
+	 * If no try langs have been set explicity with setTryLangs(), we will try langs based on the try langs
+	 * set by the ObjectLangRepository. If this object has a with_lang_prop, that will always be tried
+	 * last if it doesnt appear in the array.
+	 *
+	 * @return array
+	 */
+	public function getTryLangs()
+	{
+		if ($this->try_langs) {
+			return $this->try_langs;
+		}
+
+		$try = $this->getObjLangRepos()->getTryLangs();
+
+		if ($this->with_lang_prop) {
+			$try[] = $this->entity[$this->with_lang_prop];
+		}
+
+		return $try;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\ORM\EntityManager
 	 */
 	public function getEm()
@@ -109,45 +148,43 @@ class ObjectTranslatable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Language
-	 */
-	public function getLang()
-	{
-		if (!$this->lang) {
-			$this->lang = App::getContainer()->getDataService('Language')->getDefault();
-		}
-		return $this->lang;
-	}
-
-
-	/**
 	 * @param string $prop
 	 * @return null
 	 */
 	public function getObjectProp($prop, $lang = null)
 	{
-		if ($lang === null) {
-			$lang = $this->getLang();
+		if (!$lang) {
+			$lang = $this->getTryLangs();
 		}
-		if (!is_object($lang)) {
-			$lang = App::getContainer()->getLanguageData()->get($lang);
-			if (!$lang) {
-				throw new \InvalidArgumentException();
+
+		$langs = is_array($lang) ? $lang : array($lang);
+
+		foreach ($langs as $lang) {
+			if (!is_object($lang)) {
+				$lang = App::getContainer()->getLanguageData()->get($lang);
+				if (!$lang) {
+					throw new \InvalidArgumentException();
+				}
+			}
+
+			if ($this->with_lang_prop && $this->entity[$this->with_lang_prop]->getId() == $lang->getId()) {
+				$method = "getReal$prop";
+				return $this->entity->$method();
+			}
+
+			if (!$this->entity->getId()) {
+				$prop = strtolower($prop);
+				$lang_id = $lang->getId();
+				return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
+			}
+
+			$ret = $this->getObjLangRepos()->get($lang, $this->entity, $prop);
+			if ($ret) {
+				return $ret;
 			}
 		}
 
-		if ($this->with_lang_prop && $this->entity[$this->with_lang_prop]->getId() == $lang->getId()) {
-			$method = "getReal$prop";
-			return $this->entity->$method();
-		}
-
-		if (!$this->entity->getId()) {
-			$prop = strtolower($prop);
-			$lang_id = $lang->getId();
-			return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
-		}
-
-		return $this->getObjLangRepos()->get($lang, $this->entity, $prop);
+		return null;
 	}
 
 
@@ -159,7 +196,9 @@ class ObjectTranslatable
 	public function setObjectProp($prop, $value, $lang = null)
 	{
 		if ($lang === null) {
-			$lang = $this->getLang();
+			if ($this->with_lang_prop) {
+				$lang = $this->entity[$this->with_lang_prop];
+			}
 		}
 		if (!is_object($lang)) {
 			$lang = App::getContainer()->getLanguageData()->get($lang);
@@ -195,12 +234,20 @@ class ObjectTranslatable
 		return null;
 	}
 
-
 	####################################################################################################################
 
 	public function _dynGetObjectProp($flags, $call_args)
 	{
-		return $this->getObjectProp($flags['property']);
+		$ret = $this->getObjectProp($flags['property']);
+		if ($ret) {
+			$mod = $flags['property'].'Modifier';
+			error_log($mod);
+			if (method_exists($this->entity, $mod)) {
+				$ret = $this->entity->$mod($ret);
+			}
+		}
+
+		return $ret;
 	}
 
 	public function _dynSetObjectProp($flags, $call_args)
