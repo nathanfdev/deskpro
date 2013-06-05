@@ -37,7 +37,7 @@
 		<form action="{{ path('admin_agents_new') }}" method="post">
 			Base the new agent off of <select name="base_agent_id">
 				<option value="0"></option>
-				{% for agent in app.getDataRepository('Agent').getAgents() %}
+				{% for agent in app.agents.getAgents() %}
 					<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 				{% endfor %}
 			</select>

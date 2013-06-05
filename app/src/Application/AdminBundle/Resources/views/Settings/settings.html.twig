@@ -99,10 +99,10 @@
 	<h4>Languages</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			{% if app.getDataRepository('Language').isMultiLang() %}
-				There are {{ app.getDataRepository('Language').getTitles()|length }} languages installed:
+			{% if app.languages.isMultiLang() %}
+				There are {{ app.languages.getTitles()|length }} languages installed:
 				<ul class="small-detail-list">
-					{% for id,title in app.getDataRepository('Language').getTitles() %}
+					{% for id,title in app.languages.getTitles() %}
 						<li>
 							<a class="editable-link" href="{{ path('admin_langs_editlang', {language_id: id}) }}"><span>
 								{{ title }}

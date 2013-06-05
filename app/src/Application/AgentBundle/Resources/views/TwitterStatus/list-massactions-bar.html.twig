@@ -135,15 +135,15 @@
 											<select name="assign" class="agents_sel dpe_select" style="min-width: 170px" >
 												<option value="">None</option>
 												<optgroup label="Agents">
-													{% for agent in app.getDataRepository('Agent').getAgents() %}
+													{% for agent in app.agents.getAgents() %}
 														{% if not account or account.hasPerson(agent) %}
 															<option data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
 														{% endif %}
 													{% endfor %}
 												</optgroup>
-												{% if app.getDataRepository('AgentTeam').getTeams()|length %}
+												{% if app.agent_teams.getTeams()|length %}
 													<optgroup label="Teams">
-														{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+														{% for team in app.agent_teams.getTeams() %}
 															<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
 														{% endfor %}
 													</optgroup>

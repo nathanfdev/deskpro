@@ -11,7 +11,7 @@
 	var DESKPRO_PERSON_NOTIFICATION_DISMISS = parseInt('{{ app.user.getPref('agent.ui.auto_dismiss_notification', 60) }}', 10);
 
 	var DESKPRO_PERSON_LANG_ID  = {{ app.user.language.id }};
-	var DESKPRO_DEFAULT_LANG_ID = {{ app.getDataRepository('Language').getDefaultId() }};
+	var DESKPRO_DEFAULT_LANG_ID = {{ app.languages.getDefaultId() }};
 
 	{# {% if app.user.is_admin %} #}
 	var DESKPRO_PERSON_ISADMIN = true;

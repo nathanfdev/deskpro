@@ -11,10 +11,10 @@
 				</li>
 				{% endfor %}
 			</ul>
-			{% if online_agents|length != app.getDataRepository('Agent').getAgents()|length %}
+			{% if online_agents|length != app.agents.getAgents()|length %}
 				<div class="dp-icon-list" style="padding: 3px; padding-bottom: 0;">
 					<ul>
-						{% for agent in app.getDataRepository('Agent').getAgents() if not online_agents[agent.id] %}
+						{% for agent in app.agents.getAgents() if not online_agents[agent.id] %}
 							<li><img src="{{ agent.getPictureUrl(16) }}" class="tipped" title="{{ agent.display_name }}" /></li>
 						{% endfor %}
 					</ul>

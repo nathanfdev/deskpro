@@ -204,7 +204,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+									{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 										<tr>
 											{% if dep.children|length %}
 												<td class="title title-group">{{ dep.title }}</td>
@@ -250,7 +250,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
+										{% for dep in app.departments.getRootNodes() if dep.is_chat_enabled %}
 											<tr>
 												{% if dep.children|length %}
 													<td class="title title-group">{{ dep.title }}</td>

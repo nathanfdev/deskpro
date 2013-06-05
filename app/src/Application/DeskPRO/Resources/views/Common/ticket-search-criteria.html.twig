@@ -162,7 +162,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'department' not in no_show_fields and app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+	{% if 'department' not in no_show_fields and app.departments.getPersonDepartments(app.user, 'tickets') %}
 		<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="builder-op">
 				<select name="op" class="op">
@@ -179,7 +179,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="department">
-					{% for dep in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+					{% for dep in app.departments.getPersonDepartments(app.user, 'tickets') %}
 						{% if dep.children|length %}
 							<optgroup label="{{ dep.title }}">
 								{% for subdep in dep.children %}
@@ -224,7 +224,7 @@
 	</div>
 	{% endif %}
 
-	{% if app.getDataRepository('AgentTeam').getTeamNames() and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+	{% if app.agent_teams.getTeamNames() and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 		<div class="builder-type" title="{{ phrase('agent.general.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="builder-op">
 				<select name="op" class="op">
@@ -244,7 +244,7 @@
 					<option value="0">{{ phrase('agent.general.no_team') }}</option>
 					<option value="-1">Any of my teams</option>
 					<optgroup label="Teams">
-						{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
+						{% for id,title in app.agent_teams.getTeamNames() %}
 							<option value="{{id}}">{{title}}</option>
 						{% endfor %}
 					</optgroup>
@@ -330,7 +330,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'organization' not in no_show_fields and app.getDataRepository('Organization').getOrganizationNames() %}
+	{% if 'organization' not in no_show_fields and app.getDataService('Organization').getOrganizationNames() %}
 	<div class="builder-type" title="{{ phrase('agent.general.organization') }}" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
 		<div class="builder-op">
 			<select name="op">

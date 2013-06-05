@@ -53,12 +53,12 @@
 			<select class="dp-select-widget-simple" name="search_assigned[]" multiple="multiple" data-target-menu="auto">
 				<optgroup label="Agents">
 					<option selected="selected" value="{{ app.user.id }}">Me</option>
-					{% for agent in app.getDataRepository('Agent').getAgents() if agent.id != app.user.id %}
+					{% for agent in app.agents.getAgents() if agent.id != app.user.id %}
 						<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 					{% endfor %}
 				</optgroup>
 				<optgroup label="Agent Teams">
-					{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+					{% for team in app.agent_teams.getTeams() %}
 						<option value="team.{{ team.id }}">{{ team.name }}</option>
 					{% endfor %}
 				</optgroup>

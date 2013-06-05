@@ -68,7 +68,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
 	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
-	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(app.getDataRepository('Language').getDefaultId()) }}" />
+	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(app.languages.getDefaultId()) }}" />
 	<input type="hidden" name="is_hold" class="is_hold" value="{{ticket.is_hold|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />
@@ -208,7 +208,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				'selected': ticket.department.id|default(0),
 				'id': baseId ~ '_department_id',
 				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header"',
-				'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
+				'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 
 			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default('None') }}</span>

@@ -69,7 +69,7 @@
 {##############################################################}
 
 <ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
-	{% for cat in app.getDataRepository('FeedbackCategory').getRootNodes() %}
+	{% for cat in app.getDataService('FeedbackCategory').getRootNodes() %}
 		{% if last_with_child %}
 			<li class="sep">-</li>
 		{% endif %}
@@ -97,7 +97,7 @@
 		data-status-type="active"
 		data-option-value="active"
 	>{{ phrase('agent.feedback.status_active') }}</li>
-	{% for cat in app.getDataRepository('FeedbackStatusCategory').getActiveCategories() %}
+	{% for cat in app.getDataService('FeedbackStatusCategory').getActiveCategories() %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="active"
@@ -109,7 +109,7 @@
 		data-status-type="closed"
 		data-option-value="closed"
 	>{{ phrase('agent.tickets.status_closed') }}</li>
-	{% for cat in app.getDataRepository('FeedbackStatusCategory').getClosedCategories() %}
+	{% for cat in app.getDataService('FeedbackStatusCategory').getClosedCategories() %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="closed"

@@ -187,7 +187,7 @@ $(document).ready(function() {
 					<td>
 						<select class="change-linked-dep" data-gateway-id="{{ gateway.id }}">
 							<option value="0" {% if not gateway.department %}selected="selected"{% endif %}>None</option>
-							{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+							{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 								{% if dep.children|length %}
 									<optgroup label="{{ dep.title }}">
 										{% for subdep in dep.children %}

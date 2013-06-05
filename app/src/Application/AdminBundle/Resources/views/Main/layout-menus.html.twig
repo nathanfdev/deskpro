@@ -147,7 +147,7 @@
 		<ul>
 			<li><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
 			<li><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
-			<li><a href="{{ path('admin_langs_editlang', {language_id: app.getDataRepository('Language').getDefault().getId()}) }}">Phrases</a></li>
+			<li><a href="{{ path('admin_langs_editlang', {language_id: app.languages.getDefault().getId()}) }}">Phrases</a></li>
 		</ul>
 	</div>
 

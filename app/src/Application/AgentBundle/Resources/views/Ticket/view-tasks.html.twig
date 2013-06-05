@@ -17,13 +17,13 @@
 						<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>
 						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
 							<optgroup label="Agents">
-								{% for agent in app.getDataRepository('Agent').getAgents() %}
+								{% for agent in app.agents.getAgents() %}
 									<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</optgroup>
-							{% if app.getDataRepository('AgentTeam').getTeams()|length %}
+							{% if app.agent_teams.getTeams()|length %}
 								<optgroup label="Teams">
-									{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+									{% for team in app.agent_teams.getTeams() %}
 										<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
 									{% endfor %}
 								</optgroup>

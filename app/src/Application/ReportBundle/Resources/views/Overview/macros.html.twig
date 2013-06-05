@@ -11,25 +11,25 @@
 			<option {% if grouping_field == 'department' %}selected="selected"{% endif %} value="department">Department</option>
 			<option {% if grouping_field == 'agent' %}selected="selected"{% endif %} value="agent">Agent</option>
 
-			{% if app.getDataRepository('AgentTeam').getTeamNames() %}
+			{% if app.agent_teams.getTeamNames() %}
 				<option {% if grouping_field == 'agent_team' %}selected="selected"{% endif %} value="agent_team">Agent Team</option>
 			{% endif %}
-			{% if app.getDataRepository('TicketCategory').getNames() %}
+			{% if app.getDataService('TicketCategory').getNames() %}
 				<option {% if grouping_field == 'ticket_category' %}selected="selected"{% endif %} value="ticket_category">Category</option>
 			{% endif %}
-			{% if app.getDataRepository('TicketWorkflow').getNames() %}
+			{% if app.getDataService('TicketWorkflow').getNames() %}
 				<option {% if grouping_field == 'ticket_workflow' %}selected="selected"{% endif %} value="ticket_workflow">Workflow</option>
 			{% endif %}
-			{% if app.getDataRepository('TicketPriority').getNames() %}
+			{% if app.getDataService('TicketPriority').getNames() %}
 				<option {% if grouping_field == 'ticket_priority' %}selected="selected"{% endif %} value="ticket_priority">Priority</option>
 			{% endif %}
 
 			<option {% if grouping_field == 'ticket_urgency' %}selected="selected"{% endif %} value="ticket_urgency">Urgency</option>
 
-			{% if app.getDataRepository('Product').getNames() %}
+			{% if app.products.getNames() %}
 				<option {% if grouping_field == 'product' %}selected="selected"{% endif %} value="product">Product</option>
 			{% endif %}
-			{% if app.getDataRepository('Language').getTitles() %}
+			{% if app.languages.getTitles() %}
 				<option {% if grouping_field == 'language' %}selected="selected"{% endif %} value="language">Language</option>
 			{% endif %}
 

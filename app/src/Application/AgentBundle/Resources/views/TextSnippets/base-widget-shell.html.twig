@@ -38,11 +38,11 @@
 				<button class="dp-btn dp-btn-small trigger-new-snippet">Add Snippet</button>
 			</div>
 			<input type="text" id="%baseId%_filter" placeholder="Filter" />
-			{% if app.getDataRepository('Language').getAll()|length > 1 %}
+			{% if app.languages.getAll()|length > 1 %}
 				Show snippets with translations in
 				<select name="show_language_id" id="%baseId%_show_language_id">
 					<option value="0">any language</option>
-					{% for lang in app.getDataRepository('Language').getAll() %}
+					{% for lang in app.languages.getAll() %}
 						<option value="{{ lang.id }}">{{ lang.title }}</option>
 					{% endfor %}
 				</select>
@@ -67,7 +67,7 @@
 		</div>
 		<div class="overlay-content">
 
-			{% for lang in app.getDataRepository('Language').getAll() %}
+			{% for lang in app.languages.getAll() %}
 				<input class="lang-bound-title lang-{{ lang.id }} title" type="hidden" name="title[{{ lang.id }}]" value="" data-language-id="{{ lang.id }}" />
 				<input class="lang-bound-snippet lang-{{ lang.id }} snippet" type="hidden" name="snippet[{{ lang.id }}]" value="" data-language-id="{{ lang.id }}" />
 			{% endfor %}
@@ -79,9 +79,9 @@
 					{% endfor %}
 				</select>
 
-				<div style="{% if app.getDataRepository('Language').getAll()|length == 1 %}display: none;{% else %}display: inline;{% endif %}">
+				<div style="{% if app.languages.getAll()|length == 1 %}display: none;{% else %}display: inline;{% endif %}">
 					Language: <select name="language_id" class="language_id" id="%baseId%_editsnippet_category_select">
-						{% for lang in app.getDataRepository('Language').getAll() %}
+						{% for lang in app.languages.getAll() %}
 							<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
 						{% endfor %}
 					</select>

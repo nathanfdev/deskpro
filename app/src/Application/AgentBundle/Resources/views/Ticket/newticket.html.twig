@@ -151,7 +151,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% include 'AgentBundle:Common:select-department.html.twig' with {
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
-							'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [], 'assign'),
+							'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
 							'selected': app.getSetting('core.default_ticket_dep'),
 							with_blank: true
 						} %}
@@ -317,7 +317,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</optgroup>
 									{% endif %}
 
-									{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
+									{% for id,name in app.agent_teams.getTeamNames() %}
 										{% if id not in app.user.getAgent().getTeamIds() %}
 											<option value="{{ id }}">{{ name }}</option>
 										{% endif %}
@@ -329,7 +329,7 @@ pageMeta.baseId = '{{ baseId }}';
 							<label style="padding-top: 6px;">Followers:</label>
 							<div style="margin-left: 65px;">
 								<select name="add_followers[]" id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
-									{% for agent in app.getDataRepository('Agent').getAgents() %}
+									{% for agent in app.agents.getAgents() %}
 										{% if agent.id != app.user.id %}
 											<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 										{% endif %}
@@ -342,21 +342,21 @@ pageMeta.baseId = '{{ baseId }}';
 							<ul></ul>
 							<br class="clear"/>
 						</li>
-						{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
+						{% if app.getDataService('TicketMessageTemplate').getTitles() %}
 						<li class="with-select2" id="{{ baseId }}_message_template_holder_row">
 							<label>Template:</label>
 							<div id="{{baseId}}_message_template_holder" style="visibility: hidden;">
 								<div style="display: none">
 									<select id="{{baseId}}_message_template_orig">
 										<option value="0">Blank Message</option>
-										{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
+										{% for tpl in app.getDataService('TicketMessageTemplate').getAll() %}
 											<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
 										{% endfor %}
 									</select>
 								</div>
 								<select id="{{baseId}}_message_template" name="using_template">
 									<option value="0">Blank Message</option>
-									{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
+									{% for tpl in app.getDataService('TicketMessageTemplate').getAll() %}
 										<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
 									{% endfor %}
 								</select>

@@ -1,5 +1,5 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
-{% if app.getDataRepository('Language').isMultiLang() %}
+{% if app.languages.isMultiLang() %}
 	<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
 		<tr class="mode-display">
 			<th width="80">
@@ -16,7 +16,7 @@
 					'name': 'ticket[language_id]',
 					'id': baseId ~ '_ticket_language_id',
 					'selected': ticket.language.id,
-					'languages': app.getDataRepository('Language').getAll(),
+					'languages': app.languages.getAll(),
 					'add_classname': 'prop-input-language_id',
 					'add_attr': 'data-prop-id="language_id"'
 				} %}

@@ -32,7 +32,7 @@
 		<div class="builder-type-choice" title="{{ phrase('agent.general.choose_criteria') }}" data-rule-type=""></div>
 
 
-		{% if app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+		{% if app.departments.getPersonDepartments(app.user, 'tickets') %}
 			<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 				<div class="builder-op">
 					<select name="op" class="op">
@@ -49,7 +49,7 @@
 				</div>
 				<div class="builder-options">
 					<select name="department">
-						{% for dep in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+						{% for dep in app.departments.getPersonDepartments(app.user, 'tickets') %}
 							{% if dep.children|length %}
 								<optgroup label="{{ dep.title }}">
 									{% for subdep in dep.children %}

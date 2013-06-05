@@ -48,7 +48,7 @@
 		{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.general.product') }}</li>{% endif %}
 		{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.general.workflow') }}</li>{% endif %}
 		<li data-group-by="organization">{{ phrase('agent.general.organization') }}</li>
-		{% if app.getDataRepository('Language').isMultiLang() %}
+		{% if app.languages.isMultiLang() %}
 			<li data-group-by="language">{{ phrase('agent.general.language') }}</li>
 		{% endif %}
         {% if needs_urgency %}

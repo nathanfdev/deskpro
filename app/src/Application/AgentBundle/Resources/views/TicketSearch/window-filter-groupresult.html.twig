@@ -31,7 +31,7 @@
 						<i>{{ cat.title }}</i>
 					</span>
 				{% elseif grouping_var == 'agent' %}
-					{% set agent = app.getDataRepository('Agent').get(cat.id) %}
+					{% set agent = app.agents.get(cat.id) %}
 					{% if agent %}
 						<span
 							style="background: url('{{ agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
@@ -40,7 +40,7 @@
 						{{ cat.title }}
 					{% endif %}
 				{% elseif grouping_var == 'language' %}
-					{% set language = app.getDataRepository('Language').get(cat.id) %}
+					{% set language = app.languages.get(cat.id) %}
 					{% if language and language.flag_image %}
 						<span
 							style="background: url('{{ asset('images/flags/' ~ language.flag_image) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"

@@ -29,7 +29,7 @@
 	<br />
 
 	<select class="lang-langs-nav" style="display: none;">
-		{% for id,title in app.getDataRepository('Language').getTitles() %}
+		{% for id,title in app.languages.getTitles() %}
 			<option value="{{ id }}" {% if id == language.id %}selected="selected"{% endif %}>{{ title }}</option>
 		{% endfor %}
 	</select>

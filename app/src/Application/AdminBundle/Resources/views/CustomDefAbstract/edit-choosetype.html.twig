@@ -40,7 +40,7 @@
 		<p>{{ phrase('admin.custom_fields.explain_hidden_field') }}</p>
 	{{ design.block_sections_item_end() }}
 
-	{% if def_type == 'people' and app.getDataRepository('Usersource').getAllUsersources()|length %}
+	{% if def_type == 'people' and app.usersources.getAllUsersources()|length %}
 		{{ design.block_sections_item() }}
 			<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Data" /> Usersource Data</label></h3></header>
 			<p>This is a non-editable field that will copy data from a usersource into DeskPRO. This allows you to view and search usersource data from within DeskPRO.</p>

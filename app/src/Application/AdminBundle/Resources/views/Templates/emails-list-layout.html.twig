@@ -36,7 +36,7 @@
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpCodeHints.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpEmailEditor.js') }}"></script>
 	<script type="text/javascript">
-	var DP_DEFAULT_LANG_ID = {{ app.getDataRepository('Language').getDefaultId()|default(1) }};
+	var DP_DEFAULT_LANG_ID = {{ app.languages.getDefaultId()|default(1) }};
 	$(document).ready(function() {
 		$('.template-editor-row').each(function() {
 			var row       = $(this);

@@ -183,7 +183,7 @@
 					</li>
 				</ul>
 				<ul class="agents list department-grouped" style="display: none;">
-					{% for id,title in app.getDataRepository('Department').getFullNames('chat') %}
+					{% for id,title in app.departments.getFullNames('chat') %}
 						<li class="dep dep-{{ id }}">
 							<h4>{{ title }}</h4>
 							<ul class="sub-list"></ul>

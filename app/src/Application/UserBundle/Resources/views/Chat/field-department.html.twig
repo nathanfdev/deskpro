@@ -1,5 +1,5 @@
-{% set online_chat_deps = app.getDataRepository('Department').getOnlineChatDepartments(app.user) %}
-{% if app.getDataRepository('Department').getPersonDepartments(app.user, 'chat').length == 1 %}
+{% set online_chat_deps = app.departments.getOnlineChatDepartments(app.user) %}
+{% if app.departments.getPersonDepartments(app.user, 'chat').length == 1 %}
 	{% for cat in online_chat_deps %}
 		<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
 	{% endfor %}

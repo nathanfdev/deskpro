@@ -191,7 +191,7 @@
 						{% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.product') }}</option>{% endif %}
 						{% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.workflow') }}</option>{% endif %}
 						<option value="organization">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.organization') }}</option>
-						{% if app.getDataRepository('Language').isMultiLang() %}
+						{% if app.languages.isMultiLang() %}
 							<option value="language">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.language') }}</option>
 						{% endif %}
 						<option value="urgency">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.urgency') }}</option>

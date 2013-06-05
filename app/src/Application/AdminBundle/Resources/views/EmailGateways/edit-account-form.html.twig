@@ -264,7 +264,7 @@
 		<div class="dp-form-input">
 			<select name="department_id" id="linked_department_id">
 				<option value="0" {% if not gateway.department and not selected_department_id %}selected="selected"{% endif %}>Do not link a department</option>
-				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+				{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in dep.children %}

@@ -154,9 +154,48 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('OrgFieldsManager');
 	}
 
-	public function getDataRepository($ent)
+	public function getDataService($ent)
 	{
-		return App::getSystemService("{$ent}Data");
+		return App::getDataService($ent);
+	}
+
+	public function getDepartments()
+	{
+		return App::getDataService('Department');
+	}
+
+	public function getAgents()
+	{
+		return App::getDataService('Agent');
+	}
+
+	public function agent_teams()
+	{
+		return App::getDataService('AgentTeam');
+	}
+	public function getAgentTeams()
+	{
+		return App::getDataService('AgentTeam');
+	}
+
+	public function getUsersources()
+	{
+		return App::getDataService('Usersource');
+	}
+
+	public function getUsergroups()
+	{
+		return App::getDataService('Usergroup');
+	}
+
+	public function getLanguages()
+	{
+		return App::getDataService('Language');
+	}
+
+	public function getProducts()
+	{
+		return App::getDataService('Product');
 	}
 
 	public function getCustomFieldManager($type)

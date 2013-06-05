@@ -23,7 +23,7 @@
 		<select name="agent">
 			<option value="-1">Me</option>
 			<optgroup label="Agents">
-				{% for agent in app.getDataRepository('Agent').getAgents() %}
+				{% for agent in app.agents.getAgents() %}
 					<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 				{% endfor %}
 			</optgroup>
@@ -31,13 +31,13 @@
 	</div>
 </div>
 
-{% if app.getDataRepository('AgentTeam').getTeamNames()|length %}
+{% if app.agent_teams.getTeamNames()|length %}
 	<div class="builder-type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="agent_team">
 				<option value="-1">My Team</option>
 				<optgroup label="Teams">
-					{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
+					{% for id,title in app.agent_teams.getTeamNames() %}
 						<option value="{{id}}">{{title}}</option>
 					{% endfor %}
 				</optgroup>
@@ -77,7 +77,7 @@
 	<div class="builder-options">
 		<select name="department">
 			<option value="email_account">Linked department for email account</option>
-			{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+			{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 				{% if dep.children|length %}
 					<optgroup label="{{ dep.title }}">
 						{% for subdep in dep.children %}
@@ -97,7 +97,7 @@
 		<div class="builder-options">
 			<select name="category">
 				<option value="0">None</option>
-				{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+				{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
 					{% if cat.children|length %}
 						<optgroup label="{{ cat.title }}">
 							{% for subcat in cat.children %}
@@ -118,7 +118,7 @@
 		<div class="builder-options">
 			<select name="product">
 				<option value="0">None</option>
-				{% for id,title in app.getDataRepository('Product').getNames() %}
+				{% for id,title in app.products.getNames() %}
 					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
 			</select>
@@ -131,7 +131,7 @@
 		<div class="builder-options">
 			<select name="priority">
 				<option value="0">None</option>
-				{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
+				{% for id,name in app.getDataService('TicketPriority').getNames() %}
 					<option value="{{ id }}">{{ name }}</option>
 				{% endfor %}
 			</select>
@@ -144,7 +144,7 @@
 		<div class="builder-options">
 			<select name="workflow">
 				<option value="0">None</option>
-				{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+				{% for work in app.getDataService('TicketWorkflow').getAll() %}
 					<option value="{{ work.id }}">{{ work.title }}</option>
 				{% endfor %}
 			</select>
