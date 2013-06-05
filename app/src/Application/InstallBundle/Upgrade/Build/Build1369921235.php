@@ -81,12 +81,30 @@ class Build1369921235 extends AbstractBuild
 			FROM ticket_snippets
 		");
 
+		$find_replace = array(
+			'{{ ticket.department }}'           => '{{ ticket.department.title }}',
+			'{{ ticket.product }}'              => '{{ ticket.product.title }}',
+			'{{ ticket.category }}'             => '{{ ticket.category.title }}',
+			'{{ ticket.workflow }}'             => '{{ ticket.workflow.title }}',
+			'{{ ticket.priority }}'             => '{{ ticket.priority.title }}',
+			'{{ ticket.agent }}'                => '{{ ticket.agent.display_name }}',
+			'{{ ticket.agent_email }}'          => '{{ ticket.agent.primary_email }}',
+			'{{ ticket.agent_team }}'           => '{{ ticket.agent_team.name }}',
+			'{{ user.name }}'                   => '{{ ticket.person.display_name }}',
+			'{{ user.email }}'                  => '{{ ticket.person.primary_email }}',
+			'{{ org.name }}'                    => '{{ ticket.person.organization.name }}',
+			'{{ user.organization_position }}'  => '{{ ticket.person.organization.name }}',
+		);
+
 		foreach ($raw as $r) {
+			$snippet = $r['snippet_html'] ? $r['snippet_html'] : htmlspecialchars(nl2br($r['snippet']));
+			$snippet = str_replace(array_keys($find_replace), array_values($find_replace), $snippet);
+
 			$this->container->getDb()->insert('text_snippets', array(
 				'person_id'   => $r['person_id'],
 				'category_id' => $cat_map[$r['category_id']],
 				'title'       => $r['title'],
-				'snippet'     => $r['snippet_html'] ? $r['snippet_html'] : htmlspecialchars(nl2br($r['snippet']))
+				'snippet'     => $snippet
 			));
 		}
 
