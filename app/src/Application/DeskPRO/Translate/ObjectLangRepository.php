@@ -269,43 +269,46 @@ class ObjectLangRepository
 	/**
 	 * Mark an object for preloading
 	 *
-	 * @param int|\Application\DeskPRO\Entity\Language $lang
+	 * @param int|\Application\DeskPRO\Entity\Language $lang Lang, array of langs or null for getTryLangs
 	 * @param object $object
 	 */
 	public function preloadObject($lang, $object)
 	{
-		$lang_id = is_object($lang) ? $lang->getId() : $lang;
-		$obj_ref = is_object($object) ? $object->getObjectRef() : $object;
-
-		if (isset($this->loaded[$obj_ref][$lang_id])) {
-			return;
+		if ($lang === null) {
+			$lang = $this->getTryLangs();
 		}
 
-		if (!isset($this->queued_objects[$lang_id])) {
-			$this->queued_objects[$lang_id] = array();
-		}
-
-		$this->queued_objects[$lang_id][$obj_ref] = $obj_ref;
+		$langs = is_array($lang) ? $lang : array($lang);
 
 		// Automatically queue up try langs as well
-		foreach ($this->getTryLangs() as $try_lang) {
-			$try_lang_id = $try_lang->getId();
+		$langs = array_merge($langs, $this->getTryLangs());
+		$done = array();
 
-			if (isset($this->loaded[$obj_ref][$try_lang_id])) {
+		foreach ($langs as $lang) {
+			$lang_id = is_object($lang) ? $lang->getId() : $lang;
+
+			if (isset($done[$lang_id])) {
 				continue;
 			}
+			$done[$lang_id] = true;
 
-			if (!isset($this->queued_objects[$try_lang_id])) {
-				$this->queued_objects[$try_lang_id] = array();
+			$obj_ref = is_object($object) ? $object->getObjectRef() : $object;
+
+			if (isset($this->loaded[$obj_ref][$lang_id])) {
+				return;
 			}
 
-			$this->queued_objects[$try_lang_id][$obj_ref] = $obj_ref;
+			if (!isset($this->queued_objects[$lang_id])) {
+				$this->queued_objects[$lang_id] = array();
+			}
+
+			$this->queued_objects[$lang_id][$obj_ref] = $obj_ref;
 		}
 	}
 
 
 	/**
-	 * @param int|\Application\DeskPRO\Entity\Language $lang
+	 * @param int|\Application\DeskPRO\Entity\Language $lang Lang, array of langs or null for getTryLangs
 	 * @param array $collection
 	 */
 	public function preloadObjectCollection($lang, $collection)
