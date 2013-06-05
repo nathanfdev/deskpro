@@ -27,6 +27,7 @@ pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }
 pageMeta.person_name  = {{ ticket.person.display_name|json_encode|raw }};
 
 pageMeta.ticket = {{ ticket_api|json_encode|raw }};
+pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
 
 pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
 {% if ticket.isLocked(app.user) %}
@@ -67,6 +68,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
 	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
+	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(app.getDataRepository('Language').getDefaultId()) }}" />
 	<input type="hidden" name="is_hold" class="is_hold" value="{{ticket.is_hold|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />

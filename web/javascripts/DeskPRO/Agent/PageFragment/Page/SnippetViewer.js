@@ -152,6 +152,16 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		// Inserting snippets
 		//----------------------------------------
 
+		snippetList.on('click', 'li', function(ev) {
+			if ($(ev.target).hasClass('edit-trigger')) {
+				return;
+			}
+
+			Orb.cancelEvent(ev);
+
+			self.insertSnippetEl($(this), ev);
+		});
+
 		//----------------------------------------
 		// Editing categories
 		//----------------------------------------
@@ -179,14 +189,19 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						closeCatEditor();
 					});
 
-					editCatEl.find('.trigger-close', function(ev) {
+					editCatEl.find('.trigger-close').on('click', function(ev) {
 						Orb.cancelEvent(ev);
 						closeCatEditor();
 					});
 
-					editCatEl.find('.trigger-save', function(ev) {
+					editCatEl.find('.trigger-save').on('click', function(ev) {
 						Orb.cancelEvent(ev);
 						saveCategory();
+					});
+
+					editCatEl.find('.delete-cat-trigger').on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						delCategory();
 					});
 				}
 
@@ -208,9 +223,16 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				shareOpt = shareOpt || 'me';
 				editCatEl.find('.perm-type-opt').prop('checked', false).filter('[value="'+shareOpt+'"]').prop('checked', true);
 
+				if (catId && catId != "0") {
+					editCatEl.find('.delete-link-wrap').show();
+				} else {
+					editCatEl.find('.delete-link-wrap').hide();
+				}
+
 				editCatEl.show();
 				editCatBack.show();
 			};
+			this.openCatEditor = openCatEditor;
 
 			var closeCatEditor = function() {
 				editCatEl.hide();
@@ -227,6 +249,16 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					return;
 				}
 
+				var postData = [];
+				postData.push({
+					name: 'title',
+					value: catTitle
+				});
+				postData.push({
+					name: 'perm_type',
+					value: shareOpt
+				});
+
 				editCatEl.addClass('dp-loading-on');
 				$.ajax({
 					url: BASE_URL + 'agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/save.json',
@@ -236,23 +268,78 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					complete: function() {
 						editCatEl.removeClass('dp-loading-on');
 					},
-					success: function(cat) {
+					success: function(data) {
 						closeCatEditor();
 
+						var cat = data.category;
+
 						var catEl = catList.find('.category-' + cat.id);
-						if (!catEl) {
-							catEl = $('<li><a><span class="label"></span></a></li>');
+						if (catEl[0]) {
+							catEl.find('.label').text(catTitle);
+							if (shareOpt == 'global') {
+								catEl.data('is-global', 1);
+							} else {
+								catEl.data('is-global', null);
+							}
+
+							self.getEl('editsnippet_category_select').find('option[value="' + catId + '"]').text(catTitle);
+						} else {
+							catEl = $('<li><a><span class="label"></span></a><span class="trigger-edit-cat"><i class="icon-cog"></i></span></li>');
 							catEl.addClass('category category-' + cat.id);
-							catEl.find('span').text(cat.title[0]);
+							catEl.data('category-id', cat.id);
+							if (shareOpt == 'global') {
+								catEl.data('is-global', 1);
+							} else {
+								catEl.data('is-global', null);
+							}
+							catEl.find('.label').text(cat.title[0].value);
 							catEl.insertAfter(catList.find('.category-0'));
+
+							// Also add cat option
+							var catOpt = $('<option/>');
+							catOpt.val(cat.id);
+							catOpt.text(cat.title[0].value);
+
+							self.getEl('editsnippet_category_select').prepend(catOpt);
 						}
 
 						catEl.click();
 
-						// reload the shell for other tickets
+						// reload the shell
 						driver.getWidgetShellTemplate(true);
 					}
 				});
+			};
+
+			var delCategory = function() {
+				if (confirm('Are you sure?')) {
+					var catId = editCatEl.find('.input_id').val();
+					editCatEl.addClass('dp-loading-on');
+					$.ajax({
+						url: BASE_URL + 'agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/delete.json',
+						dataType: 'json',
+						type: 'POST',
+						complete: function() {
+							editCatEl.removeClass('dp-loading-on');
+						},
+						success: function(data) {
+
+							editCatEl.removeClass('dp-loading-on');
+							closeCatEditor();
+
+							if (data.error) {
+								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.");
+								return;
+							}
+
+							var catEl = catList.find('.category-' + catId);
+							catEl.remove();
+
+							// reload the shell
+							driver.getWidgetShellTemplate(true);
+						}
+					});
+				};
 			};
 
 			this.destroy = function() {
@@ -264,6 +351,22 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		})();
 
 		this.ownObject(catEditor);
+
+		catList.on('click', '.trigger-edit-cat', function(ev) {
+			Orb.cancelEvent(ev);
+			var row = $(this).closest('li');
+			var catId = row.data('category-id');
+			var catTitle = $.trim(row.find('.label').text());
+			var shareOpt = row.data('is-global') ? 'global' : 'me';
+			var openPos = {
+				of: $(this),
+				my: 'left top',
+				at: 'center right',
+				collision: 'flipfit'
+			};
+
+			catEditor.openCatEditor(catId, catTitle, shareOpt, openPos);
+		});
 
 		//----------------------------------------
 		// Editing snippets
@@ -289,28 +392,22 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	insertSnippetEl: function(el, event, evData) {
-		var snippetId = el.data('snippet-id');
-		var snippetEl = $('.snippet-' + snippetId, this.wrapper).first();
-		var snippetValEl = $('textarea.value.formatted.text', snippetEl);
-		var snippetValHtmlEl = $('textarea.value.formatted.html', snippetEl);
 
-		var snippet, snippetHtml;
+		var snippetId = $(el).data('snippet-id');
+		var snippetCode = [];
 
-		if (!snippetValEl.length) {
-			snippet = $('.content.raw.text', snippetEl).text().trim();
-			snippetHtml = $('.content.raw.html', snippetEl).html().trim();
-		} else {
-			snippet = snippetValEl.val().trim();
-			snippetHtml = snippetValHtmlEl.val().trim();
-		}
+		el.find('.snippet-value').each(function(ev) {
+			snippetCode.push({
+				language_id: $(this).data('language-id'),
+				value: $(this).val()
+			});
+		});
 
 		evData = evData || {};
 		evData = $.extend(evData, {
 			event: event || null,
 			snippetId: snippetId,
-			snippetEl: snippetEl,
-			snippet: snippet,
-			snippetHtml: snippetHtml
+			snippetCode: snippetCode
 		});
 
 		this.fireEvent('snippetClick', [evData]);
@@ -363,7 +460,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			// so we're just setting the defaults but not syncing an empty value back to the lang-x elements
 			if ($(this).hasClass('initial')) {
 				inputTitleEl.val(langTitleEl.val());
-				inputSnippetEl.redactor('set', langSnippetEl.val());
+				textarea.data('redactor').setCode(langSnippetEl.val());
 
 				$(this).removeClass('initial');
 
@@ -486,6 +583,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 
 		editSnippetEl.find('.language_id').addClass('initial').trigger('change');
+
+		if (snippet.id) {
+			editSnippetEl.find('.delete-link-wrap').show();
+		} else {
+			editSnippetEl.find('.delete-link-wrap').hide();
+		}
 
 		this.snippetEditOverlay.open();
 	}

@@ -9,6 +9,10 @@
 	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 	var DESKPRO_PERSON_TZ = '{{ app.user.timezone }}';
 	var DESKPRO_PERSON_NOTIFICATION_DISMISS = parseInt('{{ app.user.getPref('agent.ui.auto_dismiss_notification', 60) }}', 10);
+
+	var DESKPRO_PERSON_LANG_ID  = {{ app.user.language.id }};
+	var DESKPRO_DEFAULT_LANG_ID = {{ app.getDataRepository('Language').getDefaultId() }};
+
 	{# {% if app.user.is_admin %} #}
 	var DESKPRO_PERSON_ISADMIN = true;
 	{# {% endif %} #}

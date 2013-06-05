@@ -273,10 +273,15 @@ class TextSnippetsController extends AbstractController
 		$this->em->persist($cat);
 		$this->em->flush();
 
+		$global_title = $this->in->getString('title');
+
 		foreach ($this->container->getLanguageData()->getAll() as $lang) {
 			$lang_id = $lang->getId();
 
-			$title   = $this->in->getString("title.$lang_id");
+			$title = $this->in->getString("title.$lang_id");
+			if (!$title) {
+				$title = $global_title;
+			}
 
 			$rec = $this->container->getObjectLangRepository()->setRec($lang, $cat, 'title', $title);
 			$this->em->persist($rec);
@@ -298,13 +303,13 @@ class TextSnippetsController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$is_empty = $this->db->fetchColumn("
+		$has_snippets = $this->db->fetchColumn("
 			SELECT COUNT(*)
 			FROM text_snippets
 			WHERE category_id = ?
 		", array($cat->getId()));
 
-		if (!$is_empty) {
+		if ($has_snippets) {
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'error_code' => 'not_empty'

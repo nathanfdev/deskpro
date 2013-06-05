@@ -489,18 +489,65 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					return;
 				}
 
+				var ticketLangId = self.page.getEl('value_form').find('.language_id').val();
+				var snippetId    = info.snippetId;
+				var snippetCode  = info.snippetCode;
+
+				var agentText;
+				var defaultText;
+				var wantText;
+				var useText;
+				var result;
+
+				Array.each(snippetCode, function(info) {
+					if (info.language_id == ticketLangId) {
+						wantText = info.value;
+					}
+					if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+						agentText = info.value;
+					}
+					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+						defaultText = info.value;
+					}
+					useText = info.value;
+				});
+
+				if (wantText) {
+					useText = wantText;
+				} else if (agentText) {
+					useText = agentText;
+				} else if (defaultText) {
+					useText = defaultText;
+				}
+
+				try {
+					var tpl = twig({
+						data: useText,
+						strict_variables: true
+					});
+					result = tpl.render({
+						ticket: self.page.meta.api_data
+					}, {
+						strict_variables: true
+					});
+				} catch(e) {
+					console.log("Snippet render failed: %o", e);
+					result = useText;
+				}
+
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {
 						textarea.data('redactor').restoreSelection();
 					} catch (e) {}
 					textarea.data('redactor').setBuffer();
-					var html = info.snippetHtml;
+
+					var html = result;
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 					html = html.replace(/^<p>/, '');
 					html = html.replace(/<\/p>$/, '');
 					textarea.data('redactor').insertHtml(html);
 				} else {
-					self.page.insertTextInReply(info.snippet);
+					self.page.insertTextInReply(result);
 				}
 			}
 		});

@@ -19,10 +19,11 @@
 					</a>
 				</li>
 				{% for category in ticket_snippet_cats %}
-					<li class="category category-{{ category.id }}" data-category-id="{{ category.id }}">
+					<li class="category category-{{ category.id }}" data-category-id="{{ category.id }}" {% if category.is_global %}data-is-global="1"{% endif %}>
 						<a>
 							<span class="label">{{ category.title }}</span>
 						</a>
+						<span class="trigger-edit-cat"><i class="icon-cog"></i></span>
 					</li>
 				{% endfor %}
 			</ul>
@@ -60,17 +61,19 @@
 			{% endfor %}
 
 			<div style="padding-bottom: 4px; vertical-align: middle;">
-				Category: <select name="category_id" class="category_id" id="%baseId%_edutsnippet_category_select">
+				Category: <select name="category_id" class="category_id" id="%baseId%_editsnippet_category_select">
 					{% for category in ticket_snippet_cats %}
 						<option value="{{ category.id }}">{{ category.title }}</option>
 					{% endfor %}
 				</select>
 
-				Language: <select name="language_id" class="language_id" id="%baseId%_editsnippet_category_select">
-					{% for lang in app.getDataRepository('Language').getAll() %}
-						<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
-					{% endfor %}
-				</select>
+				<div style="{% if app.getDataRepository('Language').getAll()|length == 1 %}display: none;{% else %}display: inline;{% endif %}">
+					Language: <select name="language_id" class="language_id" id="%baseId%_editsnippet_category_select">
+						{% for lang in app.getDataRepository('Language').getAll() %}
+							<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
+						{% endfor %}
+					</select>
+				</div>
 			</div>
 
 			<input type="hidden" name="snippet_id" value="0" />
@@ -92,15 +95,10 @@
 		<div class="overlay-footer">
 			<div class="is-not-loading">
 				<button class="clean-white small save-snippet-trigger is-edit-snippet">{{ phrase('agent.general.save') }}</button>
-				<div class="overlay-content-block is-edit-snippet" style="text-align: center; display: inline-block; font-size: 11px;">
-					<div class="is-not-loading">
-						or
-						<span class="faux-link delete-snippet-trigger" data-confirm="Are you sure you want to delete this snippet?">{{ phrase('agent.general.ucfirst_delete') }}</span>
-					</div>
-					<div class="is-loading">
-						<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
-					</div>
-				</div>
+				<span class="delete-link-wrap">
+					or
+					<span class="faux-link delete-snippet-trigger">{{ phrase('agent.general.ucfirst_delete') }}</span>
+				</span>
 			</div>
 			<div class="is-loading">
 				<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
@@ -126,6 +124,10 @@
 				<footer>
 					<div class="dp-not-loading">
 						<button class="dp-btn dp-btn-small trigger-save">Save</button>
+						<span class="delete-link-wrap">
+							or
+							<span class="faux-link delete-cat-trigger">{{ phrase('agent.general.ucfirst_delete') }}</span>
+						</span>
 					</div>
 					<div class="dp-is-loading">
 						<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />

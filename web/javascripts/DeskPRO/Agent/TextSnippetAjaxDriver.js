@@ -30,6 +30,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 
 					var $el = $('<script type="text/x-deskpro-plain" id="'+id+'"/>');
 					$el.html(txt);
+					$el.appendTo('body');
 
 					el = $el.get(0);
 				}
@@ -137,7 +138,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 				if (error_callback) error_callback();
 			},
 			success: function(data) {
-				if (callback) callback();
+				if (callback) callback(data.snippet);
 			}
 		});
 	}

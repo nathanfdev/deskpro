@@ -30,6 +30,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 
 					var $el = $('<script type="text/x-deskpro-plain" id="'+id+'"/>');
 					$el.html(txt);
+					$el.appendTo('body');
 
 					el = $el.get(0);
 				}
@@ -209,7 +210,7 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 			},
 			success: function(data) {
 				snippetsDb.put(data.snippet.id, data.snippet, function() {
-					if (callback) callback();
+					if (callback) callback(data.snippet);
 				}, function() {
 					if (error_callback) error_callback();
 				});

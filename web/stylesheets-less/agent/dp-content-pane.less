@@ -3403,14 +3403,38 @@ article.content-message .content .body-text .fade-bar {
 	display: block;
 	font-size: 11px;
 	font-weight: bold;
-	line-height: 14px;
+	line-height: 100%;
 	position: relative;
 	text-shadow: 0 1px 0 #FFFFFF;
-	padding: 6px 0 6px 11px;
+	padding: 6px 21px 6px 11px;
 	cursor: pointer;
 	border-bottom: 1px solid transparent;
 	border-top: 1px solid transparent;
 	font-family: @heading-font;
+}
+
+.snippets-overlay > nav li .trigger-edit-cat {
+	position: absolute;
+	right: 8px;
+	top: 4px;
+	z-index: 5;
+	display: none;
+	cursor: pointer;
+
+	color: #324C66;
+	.opacity(60);
+
+	&:hover {
+		.opacity(100);
+	}
+}
+
+.snippets-overlay > nav li:hover,
+.snippets-overlay > nav li.on {
+	.trigger-edit-cat {
+		display: block;
+		color: #fff;
+	}
 }
 
 .snippets-overlay > nav li:hover a,
@@ -3652,7 +3676,7 @@ article.content-message .content .body-text .fade-bar {
 	margin-bottom: 4px;
 }
 
-.snippet-editor-overlay .faux-link {
+.faux-link {
 	text-decoration: underline;
 	cursor: pointer;
 }

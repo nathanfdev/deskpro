@@ -122,7 +122,7 @@
 	'twig_js' => array(
 		'into'    => DP_WEB_ROOT.'/web/vendor/twig',
 		'repos'   => 'git://github.com/justjohn/twig.js.git',
-		'version' => '0.5.8',
+		'version' => 'HEAD',
 	),
 	'zend' => array(
 		'into'    => DP_ROOT.'/vendor/zend',

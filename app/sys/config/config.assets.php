@@ -98,7 +98,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/select2/select2.js',
 		'vendor/ZeroClipboard/ZeroClipboard.min.js',
 		'vendor/idbstore/idbstore.min.js',
-		'vendor/twig/twig.min.js',
+		'vendor/twig/twig.js',
 	)
 );
 
