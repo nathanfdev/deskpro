@@ -141,5 +141,28 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 				if (callback) callback(data.snippet);
 			}
 		});
+	},
+
+
+	/**
+	 * Delete a snippet
+	 *
+	 * @param snippetId
+	 * @param callback
+	 * @param error_callback
+	 */
+	deleteSnippet: function(snippetId, callback, error_callback) {
+		$.ajax({
+			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippetId||0)+'/delete.json',
+			type: 'POST',
+			dataType: 'json',
+			content: this,
+			error: function() {
+				if (error_callback) error_callback(snippetId);
+			},
+			success: function(data) {
+				if (callback) callback(snippetId);
+			}
+		});
 	}
 });

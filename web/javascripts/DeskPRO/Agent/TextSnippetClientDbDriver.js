@@ -216,5 +216,35 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 				});
 			}
 		});
+	},
+
+
+	/**
+	 * Delete a snippet
+	 *
+	 * @param snippetId
+	 * @param callback
+	 * @param error_callback
+	 */
+	deleteSnippet: function(snippetId, callback, error_callback) {
+		var snippetsDb = this.snippetsDb;
+		snippetId = parseInt(snippetId);
+
+		$.ajax({
+			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippetId||0)+'/delete.json',
+			type: 'POST',
+			dataType: 'json',
+			content: this,
+			error: function() {
+				if (error_callback) error_callback(snippetId);
+			},
+			success: function(data) {
+				snippetsDb.remove(snippetId, function() {
+					if (callback) callback(snippetId);
+				}, function() {
+					if (error_callback) error_callback(snippetId);
+				});
+			}
+		});
 	}
 });

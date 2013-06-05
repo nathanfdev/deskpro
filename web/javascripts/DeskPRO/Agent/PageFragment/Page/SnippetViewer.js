@@ -442,6 +442,11 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			});
 		});
 
+		self.wrapper.find('.trigger-new-snippet').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			self.editSnippet();
+		});
+
 		//------------------------------
 		// Switching between langs
 		//------------------------------
@@ -548,13 +553,31 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					if (exist[0]) {
 						exist.replaceWith(row);
 					} else {
-						self.getEl('snippet_list').prepend(exist);
+						self.getEl('snippet_list').prepend(row);
 					}
 				}
 			}, function() {
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 			});
 
+		});
+
+		//------------------------------
+		// Deleting snippet
+		//------------------------------
+
+		editSnippetEl.find('.delete-snippet-trigger').on('click', function(ev) {
+			var snippet = self.editingSnippet;
+			editSnippetEl.find('.overlay-footer').addClass('loading');
+			self.snippetDriver.deleteSnippet(snippet.id, function(snippet_id) {
+				editSnippetEl.find('.overlay-footer').removeClass('loading');
+				self.snippetEditOverlay.close();
+
+				var exist = self.getEl('snippet_list').find('.snippet-' + snippet_id);
+				exist.remove();
+			}, function() {
+				editSnippetEl.find('.overlay-footer').removeClass('loading');
+			});
 		});
 
 		//------------------------------
@@ -568,6 +591,17 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	editSnippet: function(snippet) {
+
+		if (!snippet) {
+			snippet = {
+				id: 0,
+				category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(1).data('category-id'),
+				shortcut_code: '',
+				title: [],
+				snippet: []
+			};
+		}
+
 		this.editingSnippet = snippet;
 		var editSnippetEl = this.getEl('edit_snippet');
 		editSnippetEl.find('input, textarea').val('');
