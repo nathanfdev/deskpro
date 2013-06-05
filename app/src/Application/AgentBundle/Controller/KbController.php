@@ -131,8 +131,6 @@ class KbController extends AbstractController
 		$trans_langs[] = $article->language->getId();
 		$trans_langs = array_combine($trans_langs,$trans_langs);
 
-		error_log(print_r($trans_langs,1));
-
 		foreach ($this->container->getLanguageData()->getAll() as $lang) {
 			$this->container->getObjectLangRepository()->preloadObject($lang, $article);
 		}
