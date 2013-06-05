@@ -1313,17 +1313,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.snippetsViewer.destroy();
 		}
 
-		var url = BASE_URL + 'agent/tickets/0/snippet-viewer';
-
-		var person_id = parseInt(this.getEl('person_id').val());
-		if (person_id) {
-			url += '?person_id=' + person_id;
-		}
-
 		var self = this;
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			viewUrl: url,
 			positionMode: this.meta.isPopover ? 'over' : 'side',
 			onBeforeOpen: function() {
 				var redactor = self.getEl('message').data('redactor');

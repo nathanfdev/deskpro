@@ -40,10 +40,6 @@ pageMeta.unlockOnClose = {{ app.getSetting('core_tickets.unlock_on_close') ? 'tr
 	pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
 {% endif %}
 
-pageMeta.urls = {
-	'snippetviewer': '{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}'
-};
-
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 

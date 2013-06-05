@@ -280,7 +280,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		//------------------------------
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
 			triggerElement: snippetBtn,
 			onSnippetClick: function(info) {
 				var val = info.snippet;

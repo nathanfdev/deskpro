@@ -8,7 +8,6 @@
 
 	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
 	data-upload-url="{{ path('agent_accept_upload') }}"
-	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
 	data-base-id="{{replyBaseId}}"
     {% if app.user.getPref('agent.ticket_close_reply') %}data-close-reply="1"{% endif %}
     {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}

@@ -300,7 +300,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			sidePosition: 'top',
-			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
 			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: this._onSnippetClick.bind(this)
 		});
