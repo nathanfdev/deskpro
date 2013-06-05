@@ -3,10 +3,10 @@
 	<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
 		<tr class="mode-display">
 			<th width="80">
-				<span class="category_id label">Language:</span>
+				<span class="language_id label">Language:</span>
 			</th>
 			<td>
-				<span class="prop-val category_id">{{ticket.language.title|default('None')}}</span>
+				<span class="prop-val language_id">{{ticket.language.title|default('None')}}</span>
 			</td>
 		</tr>
 		<tr class="mode-edit">

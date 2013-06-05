@@ -297,6 +297,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getContainer()->getPlugins()->isPluginInstalled($id);
 	}
 
+	public function getPluginService($id)
+	{
+		return App::getContainer()->getPlugins()->getPluginService($id);
+	}
+
 	public function __toString()
 	{
 		return '[app]';

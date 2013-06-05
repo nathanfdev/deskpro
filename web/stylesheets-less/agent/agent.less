@@ -2966,3 +2966,35 @@ i.spinner-xsmall {
 .field-overlay {
 	z-index: @zindex_lvl_chrome+10 !important;
 }
+
+.translate-controls {
+	float: right;
+	font-size: 11px;
+	padding: 2px 2px 0 0;
+	.dp-btn-group {
+		.dp-btn {
+			line-height: 16px;
+			font-size: 12px;
+			text-shadow: none;
+			padding: 0px 5px;
+		}
+
+		.dp-caret {
+			margin-top: 6px;
+		}
+
+		.dp-dropdown-toggle {
+			width: 8px;
+			overflow: hidden;
+			position: relative;
+
+			select {
+				position: absolute;
+				top: 0;
+				right: 0;
+				.opacity(0);
+				z-index: 2;
+			}
+		}
+	}
+}

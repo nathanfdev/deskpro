@@ -380,6 +380,20 @@ class Translate
 		return $data;
 	}
 
+	/**
+	 * Just like getLanguageNames except returns just a string for a single lang code.
+	 *
+	 * @param string[] $lang_codes An array of lang codes
+	 * @param string   $locale     The locale to get names for
+	 * @param bool     $use_local  True to use the local cache of names (dont do a service request)
+	 * @return array
+	 */
+	public function getSingleLanguageName($lang_code, $locale = 'en', $use_local = true)
+	{
+		$names = $this->getLanguageNames(array($lang_code), $locale, $use_local);
+		return array_pop($names);
+	}
+
 
 	/**
 	 * @return Client

@@ -83,28 +83,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					attachBtn.addClass('attach');
 					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
 
-					if (self.el.find('.translate-row')[0]) {
-						obj.addBtnAfter('dp_snippets', 'dp_translate', 'Translate', function(){});
-						obj.addBtnSeparatorAfter('dp_translate');
-
-						var sel = $('<select><option value="">Translate Message</option></select>');
-						Object.each(window.DESKPRO_TRANSLATE_SERVICE.lang_names, function(name, code) {
-							var opt = $('<option/>');
-							opt.val(code);
-							opt.text(name);
-							sel.append(opt);
-						});
-
-						var transBtn = obj.$toolbar.find('.redactor_btn_dp_translate').closest('li');
-						transBtn.addClass('with-select');
-						transBtn.append(sel);
-						transBtn.find('a').remove();
-
-						sel.on('change', function() {
-							self.refreshMessageTranslation(sel.val());
-						});
-					}
-
 					obj.addBtnSeparatorAfter('dp_snippets');
 				}
 			});
@@ -211,6 +189,27 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			textarea.on('keypress change', function() {
 				$(this).addClass('touched');
+			});
+		}
+
+		var translateControls = this.el.find('.translate-controls');
+		if (translateControls[0]) {
+			var transTrigger = translateControls.find('.trans-trigger');
+			translateControls.find('select').on('change', function(ev) {
+				var langId = $(this).val();
+				var langTitle = $.trim($(this).find(':selected').text());
+				transTrigger.find('.translate-lang').data('locale', langId).text(langTitle);
+			});
+
+			transTrigger.on('click', function(ev) {
+				Orb.cancelEvent(ev);
+				self.refreshMessageTranslation(transTrigger.find('.translate-lang').data('locale'));
+			});
+
+			var textarea2 = self.getElById('replybox_txt2');
+			DeskPRO_Window.initRteAgentReply(textarea2, {
+				defaultIsHtml: true,
+				minHeight: 120
 			});
 		}
 
@@ -1173,6 +1172,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	refreshMessageTranslation: function(to) {
+		var self       = this;
 		var editRow    = this.el.find('.input-wrap.editor-row');
 		var previewRow = this.el.find('.translate-row');
 
@@ -1194,16 +1194,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			type: 'POST',
 			dataType: 'json',
 			success: function(data) {
-				editRow.hide();
-				previewRow.show().html(data.message);
+				previewRow.show();
 
-				var txtValue = $('<input name="translate_value" type="hidden"/>');
-				txtValue.val(data.message);
-				txtValue.appendTo(previewRow);
-
-				txtValue = $('<input name="translate_to" type="hidden"/>');
-				txtValue.val(to);
-				txtValue.appendTo(previewRow);
+				self.getElById('replybox_txt2').data('redactor').setCode(formData.message_text);
+				self.getElById('replybox_txt').data('redactor').setCode(data.message);
 			}
 		});
 	},
