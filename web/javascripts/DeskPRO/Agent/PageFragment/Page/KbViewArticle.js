@@ -136,6 +136,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		this.scanGlossaryWords();
+		this._initTrans();
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -846,6 +847,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				name: 'content',
 				value: $('.article-editor-wrap textarea:first', wrap).val()
 			});
+			data.push({
+				name: 'language_id',
+				value: wrap.find('.article-editor.wrap').find('.language_id').val()
+			});
 
 			$('input.edit-content-attach:checked', wrap).each(function() {
 				data.push({
@@ -1026,6 +1031,66 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 					DeskPRO_Window.sections.publish_section.modCommentCount('articles', '+');
 				}
 			}
+		});
+	},
+
+	//#################################################################
+	//# Translations
+	//#################################################################
+
+	_initTrans: function() {
+		var self = this;
+		var transGroup = this.wrapper.find('.trans-input-form');
+		if (!transGroup[0]) {
+			return;
+		}
+
+		transGroup.find('.language_id_switcher').on('click change', function() {
+			transGroup.find('.dp-group').removeClass('on');
+			$(this).closest('.dp-group').addClass('on');
+		});
+
+		transGroup.find('textarea').each(function() {
+			var rte = DP.rteTextarea($(this));
+			$(this).data('rte', rte);
+		});
+
+		transGroup.find('.copy-trigger').on('click', function() {
+			var row = $(this).closest('.dp-group');
+			var titleInput   = row.find('.title-row').find('input');
+			var contentInput = row.find('.editor-row').find('textarea');
+
+			var defaultTitleInput = self.getEl('editname').find('input');
+			var defaultContentInput = self.wrapper.find('.article-editor-wrap').find('.edit-content-field-default');
+
+			titleInput.val(defaultTitleInput.val());
+			contentInput.tinymce().setContent(defaultContentInput.val());
+		});
+
+		transGroup.find('.save-trigger').on('click', function() {
+			var row = $(this).closest('.dp-group');
+			var titleInput   = row.find('.title-row').find('input');
+			var contentInput = row.find('.editor-row').find('textarea');
+
+			var postData = [];
+			postData.push({name: titleInput.attr('name'), value: titleInput.val() });
+			postData.push({name: contentInput.attr('name'), value: contentInput.val() });
+			postData.push({name: 'action', value: 'trans' });
+
+			row.addClass('dp-loading-on');
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+				type: 'POST',
+				data: postData,
+				context: this,
+				dataType: 'json',
+				complete: function() {
+					row.removeClass('dp-loading-on');
+				},
+				success: function(data) {
+					row.removeClass('is-status-neg').addClass('is-status-pos');
+				}
+			});
 		});
 	}
 });

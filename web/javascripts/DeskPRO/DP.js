@@ -25,6 +25,8 @@ var DP = {
 
 	rteTextarea: function(field, options) {
 
+		options = options || {};
+
 		if (!field) {
 			return;
 		}

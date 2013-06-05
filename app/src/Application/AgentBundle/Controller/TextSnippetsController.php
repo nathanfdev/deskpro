@@ -135,7 +135,6 @@ class TextSnippetsController extends AbstractController
 
 
 			foreach ($snippets_all as $snippet) {
-				$recs = $lang_repos->getLoadedRecs($snippet);
 				$match_lang   = false;
 				$match_filter = false;
 

@@ -264,7 +264,7 @@ class Article extends ContentAbstract
 	{
 		return array(
 			'with_lang_prop' => 'language',
-			'fields' => array('title', 'snippet')
+			'fields' => array('title', 'content')
 		);
 	}
 

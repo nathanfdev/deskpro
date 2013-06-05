@@ -898,7 +898,7 @@ table.layout-table.v-middle {
 			&.person i.dp-icon-placeholder:before    { content: @icn_person_content; }
 			&.org i.dp-icon-placeholder:before       { content: @icn_organization_content; }
 			&.tasks i.dp-icon-placeholder:before     { content: @icn_task_content; }
-			&.articles i.dp-icon-placeholder:before  { content: @icn_article_content; }
+			&.article i.dp-icon-placeholder:before  { content: @icn_article_content; }
 			&.news i.dp-icon-placeholder:before      { content: @icn_news_content; }
 			&.downloads i.dp-icon-placeholder:before { content: @icn_download_content; }
 			&.feedback i.dp-icon-placeholder:before  { content: @icn_feedback_content; }
@@ -2854,6 +2854,95 @@ ul.pane-tabs {
 
 		input[type="text"] {
 			margin: 4px 0 0 4px;
+		}
+	}
+}
+
+
+//-------------------------
+// Option group
+//-------------------------
+
+.dp-optiongrouper {
+	.dp-group {
+		margin: 0 0 10px 0;
+		background-color: #F1F3F8;
+		border: 2px solid #CADCE9;
+		.rounded(3px);
+
+		.dp-status-pos, .dp-status-neg {
+			display: none;
+		}
+		&.is-status-pos .dp-status-pos { display: block; }
+		&.is-status-neg .dp-status-neg { display: block; }
+
+		.dp-status-pos {
+			color: #444;
+		}
+		.dp-status-neg {
+			color: #C7000F;
+			font-weight: bold;
+			font-size: 10px;
+			text-transform: uppercase;
+		}
+
+		header {
+			display: block;
+			padding: 8px;
+
+			.dp-group-status {
+				float: right;
+				font-size: 16px;
+			}
+
+			label {
+				display: block;
+				cursor: pointer;
+
+				input {
+					margin-right: 3px;
+				}
+			}
+			strong {
+				font-size: 115%;
+				font-weight: normal;
+			}
+		}
+
+		article.article-form {
+			padding: 10px;
+
+			.title-row {
+				padding-bottom: 3px;
+				input {
+					font-size: 105%;
+					width: 60%;
+				}
+			}
+
+			.save-row {
+				text-align: center;
+				padding-top: 10px;
+			}
+		}
+	}
+
+	.dp-group.with-activation {
+
+		.dp-group-hideoff { display: none; }
+
+		article {
+			display: none;
+		}
+
+		&.on {
+			border-color: darken(#CADCE9, 20%);
+
+			div.dp-group-hideoff { display: block; }
+			span.dp-group-hideoff { display: inline; }
+			article {
+				display: block;
+			}
 		}
 	}
 }

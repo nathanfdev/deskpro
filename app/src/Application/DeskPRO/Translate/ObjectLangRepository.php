@@ -94,8 +94,14 @@ class ObjectLangRepository
 		}
 
 		$recs = array();
-		foreach ($this->loaded[$obj_ref] as $lang => $lang_recs) {
-			$recs = array_merge($recs, $lang_recs);
+		foreach ($this->loaded[$obj_ref] as $lang_id => $lang_recs) {
+			foreach ($lang_recs as $rec) {
+				$prop = $rec->prop_name;
+				if (!isset($recs[$prop])) {
+					$recs[$prop] = array();
+				}
+				$recs[$prop][$lang_id] = $rec;
+			}
 		}
 
 		return $recs;

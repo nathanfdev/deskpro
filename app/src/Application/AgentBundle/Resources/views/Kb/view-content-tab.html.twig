@@ -26,20 +26,33 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.content) }}</textarea>
-			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
-			<h6>{{ phrase('agent.general.attachments') }}</h6>
-			<div class="file-input">
-				<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
+			{% if app.languages.isMultiLang() %}
+				<div style="float: right; padding-right: 18px; padding-top: 4px;">
+					<span class="small-light-icon tipped" title="The primary language for this article. Create translations from the 'Translate' tab."></span>
+					Language: <select name="article[language_id]" class="language_id">
+						{% for lang in app.languages.getAll() %}
+							<option value="{{ lang.id }}" {% if lang.id == article.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			{% endif %}
+			<div style="float: left;">
+				{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
+				<h6>{{ phrase('agent.general.attachments') }}</h6>
+				<div class="file-input">
+					<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
+				</div>
+				<ul class="dp-hide-empty attachment-list files file-list" {% if not article.attachments|length %}style="display: none;"{% endif %}>
+					{% for attach in article.attachments %}
+						<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+							<em class="remove-attach-trigger delete" data-blob-id="{{ attach.blob.id }}"></em>
+							<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
+							<span class="size">({{ attach.blob.readable_filesize }})</span>
+						</li>
+					{% endfor %}
+				</ul>
 			</div>
-			<ul class="dp-hide-empty attachment-list files file-list" {% if not article.attachments|length %}style="display: none;"{% endif %}>
-				{% for attach in article.attachments %}
-					<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
-						<em class="remove-attach-trigger delete" data-blob-id="{{ attach.blob.id }}"></em>
-						<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
-						<span class="size">({{ attach.blob.readable_filesize }})</span>
-					</li>
-				{% endfor %}
-			</ul>
+			<br class="clear" />
 			<textarea class="edit-content-field-default" style="display: none;">{{article.content}}</textarea>
 		</div>
 	</div>

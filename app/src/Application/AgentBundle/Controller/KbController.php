@@ -126,8 +126,24 @@ class KbController extends AbstractController
 			WHERE object_type = 1 AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
 		", array($article->id));
 
+		// Existing translations
+		$trans_langs = $this->db->fetchAllCol("SELECT language_id FROM object_lang WHERE ref = 'articles.{$article->getId()}'");
+		$trans_langs[] = $article->language->getId();
+		$trans_langs = array_combine($trans_langs,$trans_langs);
+
+		error_log(print_r($trans_langs,1));
+
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$this->container->getObjectLangRepository()->preloadObject($lang, $article);
+		}
+		$this->container->getObjectLangRepository()->runPreload();
+
+		$trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
+
         $vars = array(
             'article'              => $article,
+			'trans_langs'          => $trans_langs,
+			'trans_data'           => $trans_data,
             'custom_fields'        => $custom_fields,
             'sticky_search_words'  => $sticky_search_words,
             'rated_searches'       => $rated_searches,
@@ -461,10 +477,42 @@ class KbController extends AbstractController
 				$content = $article->content;
 				$content = $glossary->processText($content);
 
+				if ($lang_id = $this->in->getUint('language_id')) {
+					$lang = $this->container->getLanguageData()->get($lang_id);
+					if ($lang) {
+						$article->language = $lang;
+					}
+				}
+
 				$data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
 					'article' => $article,
 					'content' => $content
 				));
+				break;
+
+			case 'trans':
+
+				foreach ($this->container->getLanguageData()->getAll() as $lang) {
+					$this->container->getObjectLangRepository()->preloadObject($lang, $article);
+				}
+
+				foreach ($this->container->getLanguageData()->getAll() as $lang) {
+					$lang_id = $lang->getId();
+
+					$title       = $this->in->getString("title.$lang_id");
+					$content_val = (string)$this->in->getRaw("content.$lang_id");
+
+					if (!$title && !$content_val) {
+						continue;
+					}
+
+					$rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'title', $title);
+					$this->em->persist($rec);
+
+					$rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $content_val);
+					$this->em->persist($rec);
+				}
+
 				break;
 		}
 
