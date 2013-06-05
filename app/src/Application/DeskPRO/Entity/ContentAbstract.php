@@ -444,4 +444,39 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 		return $name;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealContent()
+	{
+		return $this->content;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function setRealTitle($title)
+	{
+		$this->setModelField('title', $title);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function setRealContent($content)
+	{
+		$this->setModelField('content', $content);
+	}
 }

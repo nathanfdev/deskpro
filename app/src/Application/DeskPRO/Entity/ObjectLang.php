@@ -51,6 +51,16 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 	protected $ref;
 
 	/**
+	 * @var string
+	 */
+	protected $ref_type;
+
+	/**
+	 * @var string
+	 */
+	protected $ref_id;
+
+	/**
 	 * @var Language
 	 */
 	protected $language;
@@ -113,7 +123,25 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 	public function setObject($object)
 	{
 		$this->_set_object = $object;
-		$this->setModelField('ref', $object->getObjectRef());
+		$this->setRef($object->getObjectRef());
+	}
+
+
+	/**
+	 * @param string $ref
+	 */
+	public function setRef($ref)
+	{
+		$this->setModelField('ref', $ref);
+
+		if (strpos($ref, '.') !== false) {
+			list ($type, $id) = explode('.', $ref, 2);
+			$this->setModelField('ref_type', $type);
+			$this->setModelField('ref_id', $id);
+		} else {
+			$this->setModelField('ref_type', null);
+			$this->setModelField('ref_id', null);
+		}
 	}
 
 
@@ -143,6 +171,9 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array(
 			'name' => 'object_lang',
+			'indexes' => array(
+				'prop_ref_type' => array('columns' => array('ref_type', 'ref_id'))
+			),
 			'uniqueConstraints' => array(
 				'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id'))
 			)
@@ -151,6 +182,8 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
+		$metadata->mapField(array( 'fieldName' => 'ref_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_type', ));
+		$metadata->mapField(array( 'fieldName' => 'ref_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'ref_id', ));
 		$metadata->mapField(array( 'fieldName' => 'prop_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'prop_name', ));
 		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

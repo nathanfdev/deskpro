@@ -41,17 +41,18 @@ use Orb\Util\Arrays;
 
 class ArticleSearch extends SearcherAbstract
 {
-	const TERM_ID              = 'id';
-	const TERM_STATUS          = 'status';
-	const TERM_HIDDEN_STATUS   = 'hidden_status';
-	const TERM_CATEGORY        = 'category';
-	const TERM_CATEGORY_SPECIFIC = 'category_specific';
-	const TERM_DATE_CREATED    = 'date_created';
-	const TERM_VIEW_COUNT      = 'view_count';
-	const TERM_POPULAR         = 'popular';
-	const TERM_NEW             = 'new';
-	const TERM_LABEL           = 'label';
-	const TERM_AGENT_LIST      = 'agent_list';
+	const TERM_ID                  = 'id';
+	const TERM_STATUS              = 'status';
+	const TERM_HIDDEN_STATUS       = 'hidden_status';
+	const TERM_CATEGORY            = 'category';
+	const TERM_CATEGORY_SPECIFIC   = 'category_specific';
+	const TERM_DATE_CREATED        = 'date_created';
+	const TERM_VIEW_COUNT          = 'view_count';
+	const TERM_POPULAR             = 'popular';
+	const TERM_NEW                 = 'new';
+	const TERM_LABEL               = 'label';
+	const TERM_AGENT_LIST          = 'agent_list';
+	const TERM_PENDING_TRANSLATE   = 'pending_translate';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
@@ -416,6 +417,34 @@ class ArticleSearch extends SearcherAbstract
 
 				case self::TERM_AGENT_LIST:
 					$wheres[] = "(articles.status IN ('published', 'archived') OR articles.hidden_status IN('unpublished'))";
+					break;
+
+				case self::TERM_PENDING_TRANSLATE:
+
+					$w = array();
+
+					$langs = App::getContainer()->getLanguageData()->getAll();
+
+					if (isset($choice['language_id']) && $choice['language_id'] && isset($langs[$choice['language_id']])) {
+						$langs = array($langs[$choice['language_id']]);
+					}
+
+					foreach ($langs as $lang) {
+
+						$lang_id   = $lang->getId();
+						$join_id   = Util::requestUniqueId();
+						$join_name = "j_$join_id";
+
+						$joins[] = array(
+							'object_lang',
+							"LEFT JOIN object_lang AS $join_name ON ($join_name.ref_type = 'articles' AND $join_name.ref_id = articles.id AND $join_name.language_id = $lang_id)"
+						);
+
+						$w[] = "(articles.language_id != $lang_id AND $join_name.id IS NULL)";
+					}
+
+					$wheres[] = implode(' OR ', $w);
+
 					break;
 
 				case self::TERM_LABEL:

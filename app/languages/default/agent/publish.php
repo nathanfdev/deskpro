@@ -94,4 +94,5 @@
 	'agent.publish.word_def'                      => 'Word definition',
 	'agent.publish.word_title'                    => 'Word title',
 	'agent.publish.words'                         => 'Words',
+	'agent.publish.untranslated_articles'         => '1 untranslated article|{{count}} untranslated articles'
 );

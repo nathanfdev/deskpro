@@ -716,10 +716,17 @@ class KbController extends AbstractController
 			$show_all = $this->in->getBool('all');
 		}
 
-		$result_helper = ArticleResults::newFromRequest($this, array(
-			'category' => $category,
-			'show_all' => $show_all
-		));
+		if ($this->in->getBool('pending_translate')) {
+			$result_helper = ArticleResults::newFromRequest($this, array(
+				'pending_translate'      => true,
+				'pending_translate_lang' => $this->in->getUint('language_id')
+			));
+		} else {
+			$result_helper = ArticleResults::newFromRequest($this, array(
+				'category' => $category,
+				'show_all' => $show_all
+			));
+		}
 
 		$page = $this->in->getUint('p');
 		if (!$page) $page = 1;

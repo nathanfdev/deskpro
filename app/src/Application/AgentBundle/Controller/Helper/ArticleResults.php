@@ -99,6 +99,15 @@ class ArticleResults
 					array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
 				);
 
+			} elseif (isset($options['pending_translate'])) {
+
+				$terms = array(
+					array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
+					array('type' => 'pending_translate', 'op' => 'id', 'options' => array(
+						'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0
+					))
+				);
+
 			// "all" is published but no category term
 			} elseif (isset($options['show_all'])) {
 				$terms = array(

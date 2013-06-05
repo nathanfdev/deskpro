@@ -86,18 +86,51 @@ class PublishController extends AbstractController
 		$kb_cats_counts       = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 		$kb_cats_usergroups   = $this->publish_helper->getCategoryUsergroups(PublishHelper::ARTICLES);
 
+		$kb_translate_queue = array(0 => 0);
+
+		$langs = $this->container->getLanguageData()->getAll();
+		foreach ($langs as $lang) {
+			$c = $this->db->fetchColumn("
+				SELECT COUNT(*) FROM articles
+				LEFT JOIN object_lang ON (object_lang.ref_type = 'articles' AND object_lang.ref_id = articles.id AND object_lang.language_id = ?)
+				WHERE
+					articles.status = 'published'
+					AND (articles.language_id IS NULL OR articles.language_id != ?)
+					AND object_lang.id IS NULL
+			", array($lang->getId(), $lang->getId()));
+
+			$kb_translate_queue[$lang->getId()] = $c;
+			$kb_translate_queue[0] += $c;
+		}
+
+		#------------------------------
+		# News
+		#------------------------------
+
 		$news_cats            = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS);
 		$news_repo            = $this->em->getRepository('DeskPRO:NewsCategory');
 		$news_cats_counts     = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
 		$news_cats_usergroups = $this->publish_helper->getCategoryUsergroups(PublishHelper::NEWS);
+
+		#------------------------------
+		# Downloads
+		#------------------------------
 
 		$download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
 		$download_repo        = $this->em->getRepository('DeskPRO:DownloadCategory');
 		$download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 		$download_cats_usergroups = $this->publish_helper->getCategoryUsergroups(PublishHelper::DOWNLOADS);
 
+		#------------------------------
+		# Glossary
+		#------------------------------
+
 		$glossary_words     = $this->publish_helper->getGlossaryWordsIndex();
 		$glossary_count     = Arrays::countMulti($glossary_words);
+
+		#------------------------------
+		# Comments and counts
+		#------------------------------
 
 		$counts = array();
 		$counts['validating_comments']   = $this->publish_helper->getValidatingCommentsCount();
@@ -118,6 +151,7 @@ class PublishController extends AbstractController
 			'kb_repo'               => $kb_repo,
 			'kb_cats_counts'        => $kb_cats_counts,
 			'kb_cats_usergroups'    => $kb_cats_usergroups,
+			'kb_translate_queue'    => $kb_translate_queue,
 
 			'news_cats'             => $news_cats,
 			'news_repo'             => $news_repo,

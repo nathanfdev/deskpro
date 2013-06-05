@@ -60,10 +60,30 @@ class ObjectTranslatable
 	 */
 	protected $lang;
 
+	/**
+	 * @var null
+	 */
+	protected $with_lang_prop = null;
+
+	/**
+	 * Config:
+	 *
+	 * - with_lang_prop: When true, we consider the object itself defines default translation
+	 * data. For example, Article has $title and with_lang_prop as 'language'. Getting the 'title' property in $language therefore just results in
+	 * $title being returned, rather than using the ObjectLangRepository.
+	 * When getting a primary string like this, the getRealX method is called upon (e.g., 'getRealTitle' in this example).
+	 *
+	 * @param DomainObject $entity
+	 * @param array $config
+	 */
 	public function __construct(DomainObject $entity, $config)
 	{
 		$this->entity = $entity;
 		$this->config = $config;
+
+		if (!empty($config['with_lang_prop'])) {
+			$this->with_lang_prop = $config['with_lang_prop'];
+		}
 
 		// Warning: This object should not do any ORM loading in construct
 		// because it is called during postLoad which causes problems in Doctrine
@@ -116,6 +136,11 @@ class ObjectTranslatable
 			}
 		}
 
+		if ($this->with_lang_prop && $this->entity[$this->with_lang_prop]->getId() == $lang->getId()) {
+			$method = "getReal$prop";
+			return $this->entity->$method();
+		}
+
 		if (!$this->entity->getId()) {
 			$prop = strtolower($prop);
 			$lang_id = $lang->getId();
@@ -129,6 +154,7 @@ class ObjectTranslatable
 	/**
 	 * @param string $prop
 	 * @param string $value
+	 * @return void
 	 */
 	public function setObjectProp($prop, $value, $lang = null)
 	{
@@ -140,6 +166,12 @@ class ObjectTranslatable
 			if (!$lang) {
 				throw new \InvalidArgumentException();
 			}
+		}
+
+		if ($this->with_lang_prop && $this->entity[$this->with_lang_prop]->getId() == $lang->getId()) {
+			$method = "setReal$prop";
+			$this->entity->$method($value);
+			return null;
 		}
 
 		if (!$this->entity->getId()) {
@@ -159,7 +191,8 @@ class ObjectTranslatable
 			return $rec;
 		}
 
-		return $this->getObjLangRepos()->setRec($lang, $this->entity, $prop, $value);
+		$this->getObjLangRepos()->setRec($lang, $this->entity, $prop, $value);
+		return null;
 	}
 
 
