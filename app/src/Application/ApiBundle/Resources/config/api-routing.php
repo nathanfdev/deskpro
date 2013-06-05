@@ -402,6 +402,13 @@ $collection->add('api_textsnippets_edit', new Route(
 	array()
 ));
 
+$collection->add('api_textsnippets_del', new Route(
+	'/text-snippets/{typename}/{snippet_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:deleteSnippet'),
+	array('_method' => 'DELETE', 'snippet_id' => '\d+'),
+	array()
+));
+
 $collection->add('api_textsnippets_get', new Route(
 	'/text-snippets/{typename}/{snippet_id}',
 	array('_controller' => 'ApiBundle:TextSnippets:getSnippet'),
@@ -434,6 +441,13 @@ $collection->add('api_textsnippets_cats_get', new Route(
 	'/text-snippets/{typename}/categories/{category_id}',
 	array('_controller' => 'ApiBundle:TextSnippets:getCategory'),
 	array('_method' => 'GET', 'category_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_textsnippets_cats_del', new Route(
+	'/text-snippets/{typename}/categories/{category_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:deleteCategory'),
+	array('_method' => 'DELETE', 'category_id' => '\d+'),
 	array()
 ));
 

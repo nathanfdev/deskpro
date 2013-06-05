@@ -305,10 +305,7 @@ class TextSnippetsController extends AbstractController
 		", array($cat->getId()));
 
 		if ($has_snippets) {
-			return $this->createJsonResponse(array(
-				'error' => true,
-				'error_code' => 'not_empty'
-			));
+			return $this->createApiErrorResponse(409, 'The category is not empty. Delete existing snippets and try again.', 409);
 		}
 
 		$this->em->remove($cat);
