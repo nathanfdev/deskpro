@@ -499,6 +499,10 @@ class KbController extends AbstractController
 				foreach ($this->container->getLanguageData()->getAll() as $lang) {
 					$lang_id = $lang->getId();
 
+					if ($lang_id == $article->language->getId()) {
+						continue;
+					}
+
 					$title       = $this->in->getString("title.$lang_id");
 					$content_val = (string)$this->in->getRaw("content.$lang_id");
 

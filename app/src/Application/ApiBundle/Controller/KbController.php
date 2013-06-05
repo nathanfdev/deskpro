@@ -121,16 +121,55 @@ class KbController extends AbstractController
 		$errors = array();
 		$article = new Article();
 
-		$title = $this->in->getString('title');
-		if ($title) {
-			$article->title = $title;
+		$lang_id = $this->in->getUint('language_id');
+		$lang = null;
+		if ($lang_id) {
+			$lang = $this->container->getLanguageData()->get($lang_id);
+		}
+		if (!$lang) {
+			$lang = $this->container->getLanguageData()->getDefault();
+		}
+
+		$set_title    = null;
+		$set_content  = null;
+		$title_lang   = array();
+		$content_lang = array();
+
+		if (is_array($_POST['title']) && is_array($_POST['content'])) {
+
+			foreach ($this->container->getLanguageData()->getAll() as $lang) {
+				$lang_id = $lang->getId();
+
+				$title       = $this->in->getString("title.$lang_id");
+				$content_val = (string)$this->in->getRaw("content.$lang_id");
+
+				if ($lang_id == $article->language->getId()) {
+					$set_title   = $title;
+					$set_content = $content_val;
+					continue;
+				}
+
+				if (!$title && !$content_val) {
+					continue;
+				}
+
+				$title_lang[$lang->getId()] = $title;
+				$content_lang[$lang->getId()] = $content_val;
+			}
+
+		} else {
+			$set_title   = $this->in->getString('title');
+			$set_content = (string)$this->in->getRaw('content');
+		}
+
+		if ($set_title) {
+			$article->title = $set_title;
 		} else {
 			$errors['title'] = array('required_field.title', 'title is required');
 		}
 
-		$content = $this->in->getHtml('content');
-		if ($content) {
-			$article->content = $content;
+		if ($set_content) {
+			$article->content = $set_content;
 		} else {
 			$errors['content'] = array('required_field.content', 'content is required');
 		}
@@ -198,6 +237,20 @@ class KbController extends AbstractController
 
 		$this->em->flush();
 
+		// Set other langs
+		foreach ($title_lang as $lang_id => $title) {
+			$lang = $this->container->getLanguageData()->get($lang_id);
+			$content_val = $content_lang[$lang_id];
+
+			$rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'title', $title);
+			$this->em->persist($rec);
+
+			$rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $content_val);
+			$this->em->persist($rec);
+		}
+
+		$this->em->flush();
+
 		return $this->createApiCreateResponse(
 			array('id' => $article->id),
 			$this->generateUrl('api_kb_article', array('article_id' => $article->id), true)
@@ -215,11 +268,51 @@ class KbController extends AbstractController
 	{
 		$article = $this->_getArticleOr404($article_id, 'edit');
 
+		$lang_id = $this->in->getUint('language_id');
+		$lang = null;
+		if ($lang_id) {
+			$lang = $this->container->getLanguageData()->get($lang_id);
+		}
+		if ($lang) {
+			$article->language = $lang;
+		}
+
 		$revs = array();
 
-		$title = $this->in->getString('title');
-		if ($title) {
-			$article->title = $title;
+		if (is_array($_POST['title']) && is_array($_POST['content'])) {
+
+			$set_title   = null;
+			$set_content = null;
+
+			foreach ($this->container->getLanguageData()->getAll() as $lang) {
+				$lang_id = $lang->getId();
+
+				$title       = $this->in->getString("title.$lang_id");
+				$content_val = (string)$this->in->getRaw("content.$lang_id");
+
+				if ($lang_id == $article->language->getId()) {
+					$set_title   = $title;
+					$set_content = $content_val;
+					continue;
+				}
+
+				if (!$title && !$content_val) {
+					continue;
+				}
+
+				$rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'title', $title);
+				$this->em->persist($rec);
+
+				$rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $content_val);
+				$this->em->persist($rec);
+			}
+		} else {
+			$set_title   = $this->in->getString('title');
+			$set_content = (string)$this->in->getRaw('content');
+		}
+
+		if ($set_title && $set_title != $article->title) {
+			$article->title = $set_title;
 
 			$rev = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
 			$rev->title = $article->title;
@@ -227,19 +320,18 @@ class KbController extends AbstractController
 			$revs['title'] = $rev;
 		}
 
-		$status = $this->in->getString('status');
-		if ($status) {
-			$article->setStatusCode($status);
-		}
-
-		$content = $this->in->getString('content');
-		if ($content && $content != $article->content) {
-			$article->content = $this->in->getHtml('content');
+		if ($set_content && $set_content != $article->content) {
+			$article->content = $set_content;
 
 			$rev = ContentRevisionUtil::findOrCreate($article, array('content'), $this->person);
 			$rev->content = $article->content;
 
 			$revs['content'] = $rev;
+		}
+
+		$status = $this->in->getString('status');
+		if ($status) {
+			$article->setStatusCode($status);
 		}
 
 		$cat_ids = $this->in->getCleanValueArray('category_id', 'uint', 'discard');
