@@ -297,6 +297,30 @@ class LanguagesController extends AbstractController
 	}
 
 	############################################################################
+	# kb-cats
+	############################################################################
+
+	public function kbCatsAction($language_id)
+	{
+		$vars = $this->getLangInfo($language_id);
+
+		$all_categories = $this->em->createQuery("
+			SELECT cat
+			FROM DeskPRO:ArticleCategory cat INDEX BY cat.id
+			ORDER BY cat.display_order ASC
+		")->getResult();
+
+		$vars['all_categories'] = $all_categories;
+
+		$vars['flat_hierarchy'] = $this->em->getRepository('DeskPRO:ArticleCategory')->getFlatHierarchy();
+
+		$group = 'obj_articlecategory';
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-kbcats.html.twig', $vars);
+	}
+
+	############################################################################
 	# edit-language
 	############################################################################
 

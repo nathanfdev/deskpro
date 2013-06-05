@@ -16,7 +16,7 @@
 				<li>
 					<div class="dp-fadeaway-container">
 						<i class="dp-icon-folder-close"></i>
-						<a class="dp-fadetitle" href="{{ path('user_articles', {slug: cat.url_slug}) }}">{{ cat.title }}</a>
+						<a class="dp-fadetitle" href="{{ path('user_articles', {slug: cat.url_slug}) }}">{{ phrase_object(cat) }}</a>
 						<div class="dp-fadeaway"></div>
 						<a href="{{ path('user_articles', {slug: cat.url_slug}) }}" class="dp-badge dp-small">{{ counts[cat.id ~ '_total']|default(0) }}</a>
 					</div>

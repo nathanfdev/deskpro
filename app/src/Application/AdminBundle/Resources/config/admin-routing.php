@@ -1185,6 +1185,13 @@ $collection->add('admin_langs_feedback', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_kbcats', new Route(
+	'/languages/{language_id}/phrases/kb-cats',
+	array('_controller' => 'AdminBundle:Languages:kbCats'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_langs_customfields', new Route(
 	'/languages/{language_id}/phrases/fields/{field_type}',
 	array('_controller' => 'AdminBundle:Languages:customFields'),
