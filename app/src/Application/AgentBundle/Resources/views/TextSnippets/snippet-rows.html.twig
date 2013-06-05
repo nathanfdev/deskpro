@@ -7,15 +7,16 @@
 			</div>
 			<div class="snippet-content" data-snippet-id="{{ snippet.id }}">
 				<label>
-					{% for title_info in snippet.title %}
-						<span class="lang-{{ title_info.language_id }} title">{{ title_info.value }}</span>
-					{% endfor %}
+					{{ snippet.title_use.my }}
 				</label>
 				{% if snippet.shortcut_code %}<span class="snippet-code">%{{ snippet.shortcut_code }}%</span>{% endif %}
 				<div class="content show">
 					<div class="main-content">
+						{% if snippet.title_use.myId != snippet.title_use.showId %}
+							<strong>{{ snippet.title_use.show }}:</strong>
+						{% endif %}
+						{{ snippet.snippet_use.show }}
 						{% for snippet_info in snippet.snippet %}
-							<span class="lang-{{ snippet_info.language_id }} snippet">{{ snippet_info.value }}</span>
 							<textarea style="display: none;" class="lang-{{ snippet_info.language_id }} snippet-value" data-language-id="{{ snippet_info.language_id }}">{{ snippet_info.value }}</textarea>
 						{% endfor %}
 					</div>

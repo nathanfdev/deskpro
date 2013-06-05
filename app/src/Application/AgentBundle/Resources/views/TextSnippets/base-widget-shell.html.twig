@@ -38,6 +38,15 @@
 				<button class="dp-btn dp-btn-small trigger-new-snippet">Add Snippet</button>
 			</div>
 			<input type="text" id="%baseId%_filter" placeholder="Filter" />
+			{% if app.getDataRepository('Language').getAll()|length > 1 %}
+				Show snippets with translations in
+				<select name="show_language_id" id="%baseId%_show_language_id">
+					<option value="0">any language</option>
+					{% for lang in app.getDataRepository('Language').getAll() %}
+						<option value="{{ lang.id }}">{{ lang.title }}</option>
+					{% endfor %}
+				</select>
+			{% endif %}
 		</div>
 		{# Page Containers #}
 		<div class="layout-content with-scrollbar">

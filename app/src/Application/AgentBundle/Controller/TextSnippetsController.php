@@ -118,6 +118,7 @@ class TextSnippetsController extends AbstractController
 	{
 		$category_id   = $this->in->getUint('category_id') ?: null;
 		$filter_string = $this->in->getString('filter_string');
+		$language_id   = $this->in->getUint('language_id');
 
 		$lang_repos = $this->container->getObjectLangRepository();
 
@@ -126,7 +127,7 @@ class TextSnippetsController extends AbstractController
 			$lang_repos->preloadObjectCollection($lang, $snippets);
 		}
 
-		if ($filter_string) {
+		if ($filter_string || $language_id) {
 			$snippets_all = $snippets;
 			$snippets = array();
 
@@ -135,29 +136,47 @@ class TextSnippetsController extends AbstractController
 
 			foreach ($snippets_all as $snippet) {
 				$recs = $lang_repos->getLoadedRecs($snippet);
-				$match = false;
+				$match_lang   = false;
+				$match_filter = false;
 
-				foreach ($this->container->getLanguageData()->getAll() as $lang) {
-					$test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
-					$test = Strings::utf8_strtolower($test);
-					if (strpos($test, $filter_string) !== false) {
-						$match = true;
-						break;
-					}
-				}
-
-				if (!$match) {
+				if ($language_id) {
 					foreach ($this->container->getLanguageData()->getAll() as $lang) {
-						$test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
-						$test = Strings::utf8_strtolower($test);
-						if (strpos($test, $filter_string) !== false) {
-							$match = true;
+						if ($lang->getId() == $language_id) {
+							if ($snippet->getObjectTranslatable()->getObjectProp('title', $lang)) {
+								$match_lang = true;
+							}
 							break;
 						}
 					}
+				} else {
+					$match_lang = true;
 				}
 
-				if ($match) {
+				if ($filter_string) {
+					foreach ($this->container->getLanguageData()->getAll() as $lang) {
+						$test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
+						$test = Strings::utf8_strtolower($test);
+						if (strpos($test, $filter_string) !== false) {
+							$match_filter = true;
+							break;
+						}
+					}
+
+					if (!$match_filter) {
+						foreach ($this->container->getLanguageData()->getAll() as $lang) {
+							$test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
+							$test = Strings::utf8_strtolower($test);
+							if (strpos($test, $filter_string) !== false) {
+								$match_filter = true;
+								break;
+							}
+						}
+					}
+				} else {
+					$match_filter = true;
+				}
+
+				if ($match_lang && $match_filter) {
 					$snippets[] = $snippet;
 				}
 			}

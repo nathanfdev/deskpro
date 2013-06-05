@@ -31,6 +31,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		var catList = this.getEl('catlist');
 		var snippetList = this.getEl('snippet_list');
 		var filterInput = this.getEl('filter');
+		var langSelect  = this.getEl('show_language_id');
 
 		var rowsTpl = twig({
 			data: DeskPRO_Window.util.getPlainTpl($('#snippet_rows_tpl'))
@@ -38,13 +39,83 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		this.rowsTpl = rowsTpl;
 
-		var updateCatList = function(categoryId, filterString) {
+		var pickLangText = function(lang_vals, myLangId, showLangId) {
+			if (!showLangId || showLangId == "0") {
+				showLangId = DESKPRO_DEFAULT_LANG_ID;
+			}
+
+			var ret = { my: '', myId: 0, show: '', showId: 0 };
+			var hasShow = false;
+			Array.each(lang_vals, function(l) {
+				if (l.language_id == myLangId) {
+					ret.my = l.value;
+					ret.myId = l.language_id;
+				}
+				if (l.language_id == showLangId) {
+					ret.show = l.value;
+					ret.showId = l.language_id;
+				}
+				if (!ret.show) {
+					ret.show = l.value;
+					ret.showId = l.language_id;
+				}
+			});
+
+			if (!ret.show || ret.showId != showLangId) {
+				ret.show = ret.my;
+				ret.showId = ret.myId;
+			}
+
+			return ret;
+		};
+
+		var useLocalCompare  = (typeof String.localeCompare != "undefined");
+
+		var sortSnippets = function(snippets) {
+			return snippets.sort(function(a, b) {
+				var a_string, b_string;
+				a_string = a.title_use.show || '';
+				b_string = b.title_use.show || '';
+
+				if (useLocalCompare) {
+					var cmp = a_string.localeCompare(b_string, null, {
+						usage: 'sort',
+						ignorePunctuation: true,
+						caseFirst: false
+					});
+					return cmp;
+				} else {
+					a_string = a_string.toLowerCase();
+					b_string = b_string.toLowerCase();
+
+					if (a_string == b_string) {
+						return 0;
+					}
+
+					return (a_string < b_string) ? -1 : 1;
+				}
+			});
+		};
+
+		var updateCatList = function(categoryId, filterString, languageId) {
+
+			var myLangId   = DESKPRO_PERSON_LANG_ID;
+			var showLangId = langSelect.val();
+
 			if (categoryId) {
 				driver.loadSnippets({
 					categoryId: categoryId,
-					filterString: filterString || null
+					filterString: filterString || null,
+					languageId: languageId || null
 				}, function(snippets) {
 					var newList = $('<ul></ul>');
+
+					Array.each(snippets, function(s) {
+						s.title_use   = pickLangText(s.title, myLangId, showLangId);
+						s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
+					});
+
+					snippets = sortSnippets(snippets);
 
 					newList.html(rowsTpl.render({
 						snippets: snippets
@@ -72,10 +143,24 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					Array.each(catIds, function(cid) {
 						driver.loadSnippets({
 							categoryId: cid,
-							filterString: filterString || null
+							filterString: filterString || null,
+							languageId: languageId || null
 						}, function(snippets) {
 							if (!snippets.length) {
 								return;
+							}
+
+							Array.each(snippets, function(s) {
+								s.title_use   = pickLangText(s.title, myLangId, showLangId);
+								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
+							});
+
+							snippets = sortSnippets(snippets);
+
+							var hasMore = false;
+							if (snippets.length > 15) {
+								var hasMore = true;
+								snippets = snippets.slice(0, 15);
 							}
 
 							var newListWrap = $('<div/>');
@@ -105,7 +190,24 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 								return;
 							}
 
+							Array.each(catSnippets, function(s) {
+								s.title_use   = pickLangText(s.title, myLangId, showLangId);
+								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
+							});
+
+							catSnippets = sortSnippets(catSnippets);
+
+							var hasMore = false;
+							if (catSnippets.length > 15) {
+								var hasMore = true;
+								catSnippets = catSnippets.slice(0, 15);
+							}
+
 							var newListWrap = $('<div/>');
+							var catTitle = $('<div class="cat-title"/>');
+							catTitle.text(catList.find('.category-' + cid).text());
+							catTitle.appendTo(newListWrap);
+
 							var newList = $('<ul></ul>');
 
 							newList.html(rowsTpl.render({
@@ -120,12 +222,22 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			}
 		};
 
+		langSelect.on('change', function(ev) {
+			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
+
+			updateCatList(categoryId, filterString, languageId);
+		});
+
 		catList.on('click', 'li', function(ev) {
 			Orb.cancelEvent(ev);
 			catList.find('.on').removeClass('on');
-			var categoryId = $(this).addClass('on').data('category-id');
+			var categoryId   = $(this).addClass('on').data('category-id');
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
 
-			updateCatList(categoryId);
+			updateCatList(categoryId, filterString, languageId);
 		});
 
 		var filterTimer = null;
@@ -133,8 +245,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			filterTimer = null;
 			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
 			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
 
-			updateCatList(categoryId, filterString);
+			updateCatList(categoryId, filterString, languageId);
 		};
 
 		filterInput.on('change keydown keyup', function() {
@@ -373,6 +486,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		//----------------------------------------
 
 		this._initEditingSnippets();
+
+		if (!catList.find('.on')[0]) {
+			catList.find('li').first().click();
+		}
 	},
 
 	closeSelf: function() {
@@ -471,12 +588,11 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			// Else make sure theyre both the same
 			} else {
+				inputTitleEl.val(langTitleEl.val());
+				textarea.data('redactor').setCode(langSnippetEl.val());
 
 				langTitleEl.val(inputTitleEl.val());
 				langSnippetEl.val(inputSnippetEl.val());
-
-				inputTitleEl.val(langTitleEl.val());
-				inputSnippetEl.redactor('set', langSnippetEl.val());
 			}
 		});
 

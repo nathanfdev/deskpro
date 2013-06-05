@@ -144,7 +144,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'object_lang',
 			'uniqueConstraints' => array(
-				'prop_ref' => array('columns' => array('ref', 'prop_name'))
+				'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id'))
 			)
 		));
 		$metadata->addLifecycleCallback('_resetRefCode', 'prePersist');
