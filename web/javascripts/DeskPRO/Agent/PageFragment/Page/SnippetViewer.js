@@ -69,6 +69,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			return ret;
 		};
 
+		this.pickLangText = pickLangText;
+
 		var useLocalCompare  = (typeof String.localeCompare != "undefined");
 
 		var sortSnippets = function(snippets) {
@@ -164,6 +166,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							}
 
 							var newListWrap = $('<div/>');
+							var catTitle = $('<div class="cat-title"/>');
+							catTitle.text(catList.find('.category-' + cid).text());
+							catTitle.appendTo(newListWrap);
+
 							var newList = $('<ul></ul>');
 
 							newList.html(rowsTpl.render({
@@ -584,7 +590,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				inputTitleEl.val(langTitleEl.val());
 				textarea.data('redactor').setCode(langSnippetEl.val());
 
-				$(this).removeClass('initial');
+			} else if ($(this).hasClass('set-bound')) {
+				langTitleEl.val(inputTitleEl.val());
+				langSnippetEl.val(inputSnippetEl.val());
 
 			// Else make sure theyre both the same
 			} else {
@@ -594,6 +602,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				langTitleEl.val(inputTitleEl.val());
 				langSnippetEl.val(inputSnippetEl.val());
 			}
+
+			$(this).removeClass('initial set-bound');
 		});
 
 		//------------------------------
@@ -601,7 +611,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		//------------------------------
 
 		editSnippetEl.find('.save-snippet-trigger').on('click', function(ev) {
-			editSnippetEl.find('.language_id').trigger('change');
+			editSnippetEl.find('.language_id').addClass('set-bound').trigger('change');
 
 			Orb.cancelEvent(ev);
 			var snippet = self.editingSnippet;
@@ -652,6 +662,13 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			editSnippetEl.find('.overlay-footer').addClass('loading');
 			self.snippetDriver.saveSnippet(snippet, function(snippet) {
+
+				var myLangId   = DESKPRO_PERSON_LANG_ID;
+				var showLangId = self.getEl('show_language_id').val();
+
+				snippet.title_use   = self.pickLangText(snippet.title, myLangId, showLangId);
+				snippet.snippet_use = self.pickLangText(snippet.snippet, myLangId, showLangId);
+
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 				self.snippetEditOverlay.close();
 
@@ -699,6 +716,22 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		//------------------------------
 		// Init overlay
 		//------------------------------
+
+		var varSel = editSnippetEl.find('.variables-select');
+		editSnippetEl.find('.variables-insert-btn').on('click', function() {
+			var text = '{{ ' + varSel.val() + ' }}';
+
+			if (textarea.data('redactor')) {
+				textarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text, false));
+			} else {
+				var pos = textarea.getCaretPosition();
+				if (!pos) {
+					textarea.setCaretPosition(0);
+				}
+
+				textarea.insertAtCaret(text);
+			}
+		});
 
 		this.snippetEditOverlay = new DeskPRO.UI.Overlay({
 			contentElement: editSnippetEl,

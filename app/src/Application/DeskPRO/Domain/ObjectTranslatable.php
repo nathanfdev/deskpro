@@ -241,7 +241,6 @@ class ObjectTranslatable
 		$ret = $this->getObjectProp($flags['property']);
 		if ($ret) {
 			$mod = $flags['property'].'Modifier';
-			error_log($mod);
 			if (method_exists($this->entity, $mod)) {
 				$ret = $this->entity->$mod($ret);
 			}

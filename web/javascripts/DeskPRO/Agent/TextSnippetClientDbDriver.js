@@ -209,8 +209,11 @@ DeskPRO.Agent.TextSnippetClientDbDriver = new Orb.Class({
 				if (error_callback) error_callback();
 			},
 			success: function(data) {
-				snippetsDb.put(data.snippet.id, data.snippet, function() {
-					if (callback) callback(data.snippet);
+				snippet.id          = parseInt(data.snippet.id);
+				snippet.category_id = parseInt(data.snippet.category_id);
+
+				snippetsDb.put(snippet, function() {
+					if (callback) callback(snippet);
 				}, function() {
 					if (error_callback) error_callback();
 				});
