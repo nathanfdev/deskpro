@@ -6,7 +6,7 @@
 				<span class="language_id label">Language:</span>
 			</th>
 			<td>
-				<span class="prop-val language_id">{{ticket.language.title|default('None')}}</span>
+				<span class="prop-val language_id">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}None{% endif %}</span>
 			</td>
 		</tr>
 		<tr class="mode-edit">

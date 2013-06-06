@@ -970,7 +970,16 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveReplyAction($ticket_id)
 	{
-		if (!$this->in->getString('message') || $this->in->getString('message') == trim($this->person->getPref('agent.ticket_signature'))) {
+		if ($this->in->getBool('reply_is_trans')) {
+			$request_message_orig  = $this->in->getHtmlCore('message_original');
+			$request_message_trans = $this->in->getHtmlCore('message');
+		} else {
+			$request_message_orig  = $this->in->getHtmlCore('message');
+			$request_message_trans = '';
+		}
+
+
+		if (!$request_message_orig || $request_message_orig == trim($this->person->getPref('agent.ticket_signature'))) {
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
 
@@ -1030,7 +1039,7 @@ class TicketController extends AbstractController
 		$message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
 		if ($this->in->getBool('is_html_reply')) {
-			$message_text = Strings::trimHtml($this->in->getHtmlCore('message'));
+			$message_text = $request_message_orig;
 
 			$message_test = $message_text;
 			$message_test = Strings::trimHtml($message_test);
@@ -1042,12 +1051,12 @@ class TicketController extends AbstractController
 			$message->message = $message_text;
 
 			$notify_agent_ids = array();
-			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
+			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $request_message_orig, $matches, PREG_SET_ORDER);
 			foreach ($matches AS $match) {
 				$notify_agent_ids[] = $match[1];
 			}
 		} else {
-			$message->setMessageText($this->in->getString('message'));
+			$message->setMessageText($request_message_orig);
 			$notify_agent_ids = array();
 		}
 
@@ -1133,12 +1142,12 @@ class TicketController extends AbstractController
 		}
 
 		// Translated version
-		if ($this->in->getString('translate_to') && $this->in->getString('translate_value')) {
+		if ($this->in->getString('reply_is_trans') && $request_message_trans) {
 			$message_translated = new Entity\TicketMessageTranslated();
 			$message_translated->setTicketMessage($message);
-			$message_translated->message = $this->in->getString('translate_value');
+			$message_translated->message = $request_message_trans;
 			$message_translated->from_lang_code = $this->person->getLanguage()->getLocale();
-			$message_translated->lang_code = $this->in->getString('translate_to');
+			$message_translated->lang_code = $this->in->getString('reply_is_trans');
 			$this->em->persist($message_translated);
 
 			$message->primary_translation = $message_translated;

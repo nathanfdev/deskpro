@@ -76,7 +76,10 @@
 					<div class="dp-btn-group dp-dropdown">
 						<a class="dp-btn dp-btn-primary trans-trigger">
 							<i class="icon-globe"></i>&nbsp;
-							Translate message into <span class="translate-lang" data-locale="{{ ticket.language.locale }}">{{ ticket.language.title }}</span>
+							Translate message into
+							<span class="translate-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
+								{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
+							</span>
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle">
 							<select class="language_id">
@@ -89,8 +92,8 @@
 						</a>
 					</div>
 				</div>
-				<div class="dp-is-loading">
-
+				<div class="dp-is-loading" style="padding: 2px 4px 0 0;">
+					<i class="spinner-flat"></i>
 				</div>
 			</div>
 		{% endif %}
@@ -214,6 +217,7 @@
 				</div>
 				{% if app.isPluginInstalled('MicrosoftTranslator') %}
 					<div class="input-wrap unreset translate-row" style="display: none;">
+						<input type="hidden" name="reply_is_trans" id="{{ replyBaseId }}_reply_is_trans" value="" />
 						<textarea placeholder="" id="{{replyBaseId}}_replybox_txt2" name="message_original" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
 					</div>
 				{% endif %}

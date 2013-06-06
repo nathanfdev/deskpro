@@ -96,9 +96,10 @@ class MiscController extends AbstractController
 		$lang_data = array();
 		foreach ($this->container->getLanguageData()->getAll() as $lang) {
 			$lang_data[$lang->id] = array(
-				'id'     => $lang->id,
-				'title'  => $lang->title,
-				'locale' => $lang->locale
+				'id'         => $lang->id,
+				'title'      => $this->container->getTranslator()->getPhraseObject($lang),
+				'title_real' => $lang->title,
+				'locale'     => $lang->locale
 			);
 		}
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.lang_data = ' . json_encode($lang_data) . ';';

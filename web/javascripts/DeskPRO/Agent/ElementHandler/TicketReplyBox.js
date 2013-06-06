@@ -50,6 +50,18 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				minHeight: 120,
 				autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
 				preAutosaveCallback: function(textarea, data) {
+
+					if (self.getElById('reply_is_trans').val() != "") {
+						var newContent = textarea.data('redactor').getCode(),
+						name = textarea.attr('name');
+
+						data = [];
+						data.push({
+							name: name,
+							value: newContent
+						});
+					}
+
 					data.push({
 						name: 'extras[is_note]',
 						value: self.isNote ? 1 : 0
@@ -209,7 +221,29 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var textarea2 = self.getElById('replybox_txt2');
 			DeskPRO_Window.initRteAgentReply(textarea2, {
 				defaultIsHtml: true,
-				minHeight: 120
+				minHeight: 120,
+				callback: function(obj) {
+					obj.addBtn('dp_cancel_trans', 'Cancel message translation', function(){
+						self.closeMessageTranslation();
+					});
+					obj.setBtnRight('dp_cancel_trans');
+
+					var cancelTransBtn = obj.$toolbar.find('.redactor_btn_dp_cancel_trans').closest('li');
+					cancelTransBtn.addClass('cancel_trans');
+					cancelTransBtn.find('a').text('Cancel Translation');
+				}
+			});
+
+			self.page.getEl('value_form').find('.language_id').on('change', function() {
+				var langId     = $(this).val();
+				if (!langId) {
+					langId = DESKPRO_DEFAULT_LANG_ID;
+				}
+
+				var langLocale = DESKPRO_NAME_REGISTRY.lang_data[langId].locale;
+				var langTitle  = $.trim(DESKPRO_NAME_REGISTRY.lang_data[langId].title);
+
+				transTrigger.find('.translate-lang').data('locale', langLocale).text(langTitle);
 			});
 		}
 
@@ -1173,12 +1207,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 	refreshMessageTranslation: function(to) {
 		var self       = this;
-		var editRow    = this.el.find('.input-wrap.editor-row');
 		var previewRow = this.el.find('.translate-row');
 
 		if (!to) {
-			editRow.show();
-			previewRow.hide().empty();
+			this.closeMessageTranslation();
 			return;
 		}
 
@@ -1188,18 +1220,33 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			message_text: this.getElById('replybox_txt').val()
 		};
 
+		var translateControls = this.el.find('.translate-controls');
+		translateControls.addClass('dp-loading-on');
 		$.ajax({
 			url: window.DESKPRO_TRANSLATE_SERVICE.translate_text_url,
 			data: formData,
 			type: 'POST',
 			dataType: 'json',
+			complete: function() {
+				translateControls.removeClass('dp-loading-on');
+			},
 			success: function(data) {
 				previewRow.show();
 
 				self.getElById('replybox_txt2').data('redactor').setCode(formData.message_text);
 				self.getElById('replybox_txt').data('redactor').setCode(data.message);
+				self.getElById('reply_is_trans').val(to);
 			}
 		});
+	},
+
+	closeMessageTranslation: function() {
+		var previewRow = this.el.find('.translate-row');
+		previewRow.hide();
+
+		this.getElById('replybox_txt').data('redactor').setCode(this.getElById('replybox_txt2').data('redactor').getCode());
+		this.getElById('replybox_txt2').data('redactor').setCode('');
+		this.getElById('reply_is_trans').val('');
 	},
 
 	destroy: function() {
