@@ -73,7 +73,9 @@ class Html2Text
 		$html = str_replace('&nbsp;', ' ', $html);
 		$html = preg_replace('#\x{00a0}#u', ' ', $html);
 
-		$doc = new DOMDocument();
+		$html = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . $html;
+
+		$doc = new DOMDocument('1.0', 'UTF-8');
         if (!@$doc->loadHTML($html)) {
 			throw new \InvalidArgumentException("Error loading HTML into DOMDocument");
 		}

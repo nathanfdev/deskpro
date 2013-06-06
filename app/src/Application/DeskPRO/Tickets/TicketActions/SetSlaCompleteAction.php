@@ -158,13 +158,13 @@ class SetSlaCompleteAction extends AbstractAction
 
 			if ($complete) {
 				if ($titles !== null) {
-					$parts[] = 'Set SLA requirements to complete for SLA ' . ($titles ? $titles : '[unknown]');
+					$parts[] = 'Set SLA requirements to complete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
 				} else {
 					$parts[] = 'Set SLA requirements to complete';
 				}
 			} else {
 				if ($titles !== null) {
-					$parts[] = 'Set SLA requirements to incomplete for SLA ' . ($titles ? $titles : '[unknown]');
+					$parts[] = 'Set SLA requirements to incomplete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
 				} else {
 					$parts[] = 'Set SLA requirements to incomplete';
 				}

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
@@ -138,15 +139,26 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 			if ($this->person_context->isGuest()) {
 
-				$email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
-				$email_validating = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
+				$person_processor = new PersonFromEmailProcessor();
+				$person = $person_processor->findPersonByEmailAddress($this->person_email);
+
+				if ($person) {
+					$email = $person->getPrimaryEmail();
+					$email_validating = null;
+				} else {
+					$person = null;
+					$email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
+					$email_validating = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
+				}
 
 				// Email already exists on an account
 				// Means use the same person, but depending on the setting we
 				// might require the user to log in (in which case the ticket is a temp ticket for a bit)
 				if ($email) {
 					$person = $email->person;
-					$person->name = $this->person_name;
+					if ($this->person_name) {
+						$person->name = $this->person_name;
+					}
 					$this->require_login = true;
 					$email_validating = null;
 
@@ -156,7 +168,9 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					$validating = 'new';
 					if (!$email_validating) {
 						$person = Person::newContactPerson();
-						$person->name = $this->person_name;
+						if ($this->person_name) {
+							$person->name = $this->person_name;
+						}
 						$this->em->persist($person);
 
 						$email_validating = new PersonEmailValidating();
@@ -173,7 +187,9 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 				// no validation just means they dont need to validate to get their ticket reads
 				} else {
 					$person = Person::newContactPerson();
-					$person->name = $this->person_name;
+					if ($this->person_name) {
+						$person->name = $this->person_name;
+					}
 					$this->em->persist($person);
 
 					$email = new PersonEmail();

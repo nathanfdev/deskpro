@@ -79,7 +79,7 @@ class DeleteSpamTickets extends AbstractJob
 				$this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket['id']), 'DEBUG');
 
 				App::getDb()->delete('tickets_deleted', array('ticket_id' => $ticket['id']));
-				App::getDb()->insert('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));
+				App::getDb()->replace('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));
 
 				App::getDb()->delete('tickets', array('id' => $ticket['id']));
 				App::getDb()->delete('tickets_search_active', array('id' => $ticket['id']));

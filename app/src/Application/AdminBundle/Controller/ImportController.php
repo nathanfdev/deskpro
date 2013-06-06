@@ -66,12 +66,20 @@ class ImportController extends AbstractController
 			return $this->redirectRoute('admin_import', array('error' => 'no_file'));
 		}
 
-		$filename = 'csv-import-' . microtime(true) . '.csv';
-		$csv_path = dp_get_tmp_dir() . '/' . $filename;
-
-		if (!move_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path)) {
+		if (!is_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename())) {
 			return $this->redirectRoute('admin_import', array('error' => 'no_move'));
 		}
+
+		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+			$file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
+			$file->getClientOriginalName(),
+			'text/csv'
+		);
+
+		$csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+		copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
+
+		$filename = $blob->getId();
 
 		return $this->_renderCsvConfigureForm($filename, $file->getClientOriginalName());
 	}
@@ -81,7 +89,7 @@ class ImportController extends AbstractController
 		$this->ensureRequestToken();
 
 		$field_maps = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
-		$filename = $this->in->getString('filename');
+		$filename = $this->in->getUint('filename');
 		$user_filename = $this->in->getString('user_filename');
 		$skip_first = $this->in->getBool('skip_first');
 
@@ -99,8 +107,13 @@ class ImportController extends AbstractController
 
 		$welcome_email = $this->in->getBool('welcome_email') && !defined('DPC_IS_CLOUD');
 
+		$blob = App::getOrm()->find('DeskPRO:Blob', $filename);
+		if (!$blob) {
+			return $this->redirectRoute('admin_import', array('error' => 'no_move'));
+		}
+
 		$task_data = array(
-			'filename' => $filename,
+			'blob_id' => $blob->getId(),
 			'field_maps' => $field_maps,
 			'skip_first' => $skip_first,
 			'welcome_email' => $welcome_email,
@@ -125,7 +138,16 @@ class ImportController extends AbstractController
 
 	protected function _renderCsvConfigureForm($filename, $user_filename)
 	{
-		$csv_path = dp_get_tmp_dir() . '/' . $filename;
+		$csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
+
+		$blob = App::getOrm()->find('DeskPRO:Blob', $filename);
+		if (!$blob) {
+			return $this->redirectRoute('admin_import', array('error' => 'no_move'));
+		}
+
+		if (!is_file($csv_path)) {
+			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
+		}
 
 		$fp = fopen($csv_path, 'r');
 		$columns = fgetcsv($fp);

@@ -286,7 +286,7 @@ class TwitterStream extends AbstractJob
 			$account_status->status = $status;
 			$account_status->account = $account;
 		}
-		
+
 		$account_status->status_type = 'direct';
 
 		$this->em->persist($account_status);
@@ -341,7 +341,7 @@ class TwitterStream extends AbstractJob
 			if (!$status) {
 				$this->processStatus($account, $targetObject);
 				$this->em->flush();
-				$status = $this->findAccountStatus($targetObject, $account);
+				$status = $this->findAccountStatus($targetObject->id_str, $account);
 			}
 
 			if (!$status) {

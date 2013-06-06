@@ -175,6 +175,8 @@ class UsergroupsController extends AbstractController
 					$cache->invalidateAll();
 				}
 
+				$this->container->getSystemService('publish_structure_cache')->flush();
+
 				$this->sendAgentReloadSignal();
 				return $this->redirectRoute('admin_usergroups');
 			} catch (\Exception $e) {

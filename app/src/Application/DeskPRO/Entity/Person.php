@@ -631,6 +631,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		if (strpos($name, 'getfield') === 0 && $field_id = Strings::extractRegexMatch('#^getfield(\d+)$#', $name)) {
+			return $this->renderCustomField($field_id, 'text');
+		}
+
 		return parent::_onNotCallable($name, $arguments);
 	}
 
@@ -1379,7 +1383,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
 		$rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
 
-		return $rendered;
+		return trim($rendered);
 	}
 
 

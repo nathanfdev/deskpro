@@ -117,6 +117,7 @@ class TicketsStep extends AbstractZendeskStep
 
 		$insert_ticket = array();
 		$insert_ticket['id']            = $ticket_id;
+		$insert_ticket['auth']          = \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY);
 		$insert_ticket['date_created']  = date('Y-m-d H:i:s', strtotime($ticket_info['created_at']));
 		$insert_ticket['person_id']     = $this->getMappedNewId('zd_user_id', $ticket_info['requester_id']);
 		$insert_ticket['subject']       = $ticket_info['subject'];
@@ -171,20 +172,27 @@ class TicketsStep extends AbstractZendeskStep
 			}
 		}
 
+		$insert_ticket['date_status']            = $insert_ticket['date_created'];
 		$insert_ticket['date_first_agent_reply'] = null;
 		$insert_ticket['date_last_agent_reply']  = null;
-		$insert_ticket['date_last_user_reply']   = null;
+		$insert_ticket['date_last_user_reply']   = $insert_ticket['date_created'];
 		$insert_ticket['date_agent_waiting']     = null;
 		$insert_ticket['date_user_waiting']      = null;
 		$insert_ticket['total_user_waiting']     = 0;
 		$insert_ticket['total_to_first_reply']   = 0;
 
 		if ($ticket_metrics->get('reply_time_in_minutes')) {
+			if (is_array($ticket_metrics['reply_time_in_minutes'])) {
+				$ticket_metrics['reply_time_in_minutes'] = array_pop($ticket_metrics['reply_time_in_minutes']);
+			}
 			$insert_ticket['total_to_first_reply'] = $ticket_metrics['reply_time_in_minutes'] * 60;
 			$insert_ticket['date_first_agent_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['assignee_updated_at']) + $insert_ticket['total_to_first_reply']);
 		}
 
 		if ($ticket_metrics->get('requester_wait_time_in_minutes')) {
+			if (is_array($ticket_metrics['requester_wait_time_in_minutes'])) {
+				$ticket_metrics['requester_wait_time_in_minutes'] = array_pop($ticket_metrics['requester_wait_time_in_minutes']);
+			}
 			$insert_ticket['total_user_waiting'] = $ticket_metrics['requester_wait_time_in_minutes'] * 60;
 		}
 
@@ -210,6 +218,12 @@ class TicketsStep extends AbstractZendeskStep
 
 		$this->db->insert('tickets', $insert_ticket);
 		$this->saveMappedId('zd_ticekt_id', $insert_ticket['id'], $ticket_id);
+
+		$first_agent_time  = null;
+		$last_agent_time   = null;
+		$last_user_time    = null;
+		$total_user_time   = 0;
+		$total_first_reply = 0;
 
 		#------------------------------
 		# Insert labels
@@ -357,6 +371,15 @@ class TicketsStep extends AbstractZendeskStep
 						'message'         => $line['html_body'],
 					);
 
+					if ($add_message['person_id'] != $insert_ticket['person_id']) {
+						if (!$first_agent_time) {
+							$first_agent_time = $add_message['date_created'];
+						}
+						$last_agent_time = $add_message['date_created'];
+					} else {
+						$last_user_time = $add_message['date_created'];;
+					}
+
 					$this->db->insert('tickets_messages', $add_message);
 					$message_id =  $this->db->lastInsertId();
 
@@ -390,6 +413,41 @@ class TicketsStep extends AbstractZendeskStep
 		}
 		if ($add_datastore) {
 			$this->db->batchInsert('import_datastore', $add_datastore);
+		}
+
+
+
+		$update = array();
+		if ($first_agent_time) {
+			$update['date_first_agent_assign'] = $first_agent_time;
+			$update['date_first_agent_reply'] = $first_agent_time;
+
+			if (!$insert_ticket['total_to_first_reply']) {
+				$total_first_reply = strtotime($first_agent_time) - strtotime($insert_ticket['date_created']);
+				if ($total_first_reply) {
+					$update['total_to_first_reply'] = $total_first_reply;
+				}
+				if (!$insert_ticket['total_user_waiting']) {
+					$update['total_user_waiting'] = $total_first_reply;
+				}
+			}
+		}
+		if ($last_agent_time) {
+			$update['date_last_agent_reply'] = $last_agent_time;
+			if ($insert_ticket['status'] == 'awaiting_agent') {
+				$update['date_agent_waiting'] = $last_agent_time;
+			}
+		}
+		if ($last_user_time) {
+			$update['date_last_user_reply'] = $last_user_time;
+
+			if ($insert_ticket['status'] == 'awaiting_user') {
+				$update['date_user_waiting'] = $last_user_time;
+			}
+		}
+
+		if ($update) {
+			$this->db->update('tickets', $update, array('id' => $ticket_id));
 		}
 
 		#------------------------------

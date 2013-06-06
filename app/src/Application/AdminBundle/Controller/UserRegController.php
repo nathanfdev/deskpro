@@ -498,7 +498,7 @@ class UserRegController extends AbstractController
 
 			$log = implode("\n", $arr_wr->getMessages());
 
-			if ($result && $result->getIdentity()) {
+			if ($result && $result->isValid() && $result->getIdentity()) {
 				$result_raw = "DATA RECORD:\n=======================================================\n";
 				$result_raw .= var_export($result->getIdentity()->getRawData(), true);
 				$result_raw .= "\n\n\n\n";

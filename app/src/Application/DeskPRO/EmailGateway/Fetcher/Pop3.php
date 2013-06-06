@@ -84,14 +84,7 @@ class Pop3 extends AbstractFetcher
 
 	public function init()
 	{
-		$m_limit = @ini_get('memory_limit');
-		if ($m_limit && $m_limit != '-1' && $m_limit != '0') {
-			$m_limit = Numbers::parseIniSize($m_limit);
-			$m_limit /= 2.5;
-
-			$m_limit = max(20, $m_limit);
-			$this->memory_protection_size = $m_limit;
-		}
+		$this->memory_protection_size = 3670016;
 	}
 
 	/**

@@ -179,71 +179,61 @@ class PersonEditManager implements PersonContextInterface
 
 		$filter_info = App::getApi('tickets.filters')->getGroupedFiltersForPerson($person);
 
-		$this->em->beginTransaction();
-
 		$new_subs = array();
 
-		try {
+		// First delete all the ones the user has now, we're just gonna rebuild
+		$this->db->delete('ticket_filter_subscriptions', array('person_id' => $person->id));
 
-			$current = $this->db->fetchAllKeyed("SELECT * FROM ticket_filter_subscriptions WHERE person_id = ?", array($person->id), 'filter_id');
+		$current = $this->db->fetchAllKeyed("SELECT * FROM ticket_filter_subscriptions WHERE person_id = ?", array($person->id), 'filter_id');
 
-			// First delete all the ones the user has now, we're just gonna rebuild
-			$this->db->delete('ticket_filter_subscriptions', array('person_id' => $person->id));
+		foreach ($filter_info['all_filters'] as $filter) {
+			if (!isset($subs[$filter->id])) $subs[$filter->id] = array();
 
-			foreach ($filter_info['all_filters'] as $filter) {
-				if (!isset($subs[$filter->id])) $subs[$filter->id] = array();
-
-				$props = array();
-				foreach ($valid_names as $k) {
-					if (isset($subs[$filter->id][$k]) && $subs[$filter->id][$k]) {
-						$props[$k] = true;
-					}
-				}
-
-				if (DP_INTERFACE != 'admin') {
-					if ($person->getPref('agent_notif.no_allow_set_email')) {
-						foreach ($valid_names as $k) {
-							if (strpos($k, 'email_') !== 0) continue;
-							if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
-								$props[$k] = true;
-							} else {
-								unset($props[$k]);
-							}
-						}
-					} elseif ($person->getPref('agent_notif.no_allow_set_browser')) {
-						foreach ($valid_names as $k) {
-							if (strpos($k, 'alert_') !== 0) continue;
-							if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
-								$props[$k] = true;
-							} else {
-								unset($props[$k]);
-							}
-						}
-					}
-				}
-
-				if ($props) {
-					$sub = new \Application\DeskPRO\Entity\TicketFilterSubscription();
-					$sub->filter = $filter;
-					$sub->person = $person;
-
-					foreach ($props as $k => $v) {
-						$sub->$k = $v;
-					}
-
-					$new_subs[] = $sub;
-
-					$this->em->persist($sub);
+			$props = array();
+			foreach ($valid_names as $k) {
+				if (isset($subs[$filter->id][$k]) && $subs[$filter->id][$k]) {
+					$props[$k] = true;
 				}
 			}
 
-			$this->em->flush();
-			$this->em->commit();
+			if (DP_INTERFACE != 'admin') {
+				if ($person->getPref('agent_notif.no_allow_set_email')) {
+					foreach ($valid_names as $k) {
+						if (strpos($k, 'email_') !== 0) continue;
+						if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
+							$props[$k] = true;
+						} else {
+							unset($props[$k]);
+						}
+					}
+				} elseif ($person->getPref('agent_notif.no_allow_set_browser')) {
+					foreach ($valid_names as $k) {
+						if (strpos($k, 'alert_') !== 0) continue;
+						if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
+							$props[$k] = true;
+						} else {
+							unset($props[$k]);
+						}
+					}
+				}
+			}
 
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+			if ($props) {
+				$sub = new \Application\DeskPRO\Entity\TicketFilterSubscription();
+				$sub->filter = $filter;
+				$sub->person = $person;
+
+				foreach ($props as $k => $v) {
+					$sub->$k = $v;
+				}
+
+				$new_subs[] = $sub;
+
+				$this->em->persist($sub);
+			}
 		}
+
+		$this->em->flush();
 
 		return $new_subs;
 	}

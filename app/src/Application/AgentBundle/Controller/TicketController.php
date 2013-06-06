@@ -1741,6 +1741,8 @@ class TicketController extends AbstractController
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 		$error_messages = array();
 
+		$perms_before = $this->_getTicketPerms($ticket);
+
 		$macro_id = $this->in->getUint('macro_id');
 		if ($macro_id) {
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
@@ -1876,6 +1878,12 @@ class TicketController extends AbstractController
 		}
 
 		$data['data']['can_view'] = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+
+		$perms_after = $this->_getTicketPerms($ticket);
+
+		if ($perms_before['reply'] != $perms_after['reply']) {
+			$data['data']['refresh'] = true;
+		}
 
 		return $this->createJsonResponse($data);
 	}
@@ -3444,7 +3452,7 @@ class TicketController extends AbstractController
 				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
 			}
 
-			if ($message->email_source->source_info) {
+			if ($message->email_source && $message->email_source->source_info) {
 				file_put_contents($tmpdir . '/message-'.$message->id.'.log', $message->email_source->getSourceInfoAsString());
 			}
 		}

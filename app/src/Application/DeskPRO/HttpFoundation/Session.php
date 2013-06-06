@@ -360,15 +360,21 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				App::getDb()->insert('visitor_tracks', $track_dupe);
 				$soft_track_id = App::getDb()->lastInsertId();
 
-				App::getDb()->executeUpdate("
-					UPDATE visitors
-					SET date_last = ?, last_track_id_soft = ?
-					WHERE id = ?
-				", array(
-					date('Y-m-d H:i:s'),
-					$soft_track_id,
-					$soft_visitor_id
-				));
+				try {
+					App::getDb()->executeUpdate("
+						UPDATE visitors
+						SET date_last = ?, last_track_id_soft = ?
+						WHERE id = ?
+					", array(
+						date('Y-m-d H:i:s'),
+						$soft_track_id,
+						$soft_visitor_id
+					));
+				} catch (\Exception $e) {
+					// This could potentially fail with a FK failure
+					// if the soft track we just inserted is deleted
+					// in another request (theyre deleted once we "know" a user isnt using soft tracks)
+				}
 			}
 
 			if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
