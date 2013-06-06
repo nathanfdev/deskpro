@@ -486,6 +486,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $email_reader;
 
 	/**
+	 * The action the email reader was used for (reply/note/action)
+	 * @var string
+	 */
+	public $email_reader_action;
+
+	/**
 	 * @var null
 	 */
 	public $_old_status = null;

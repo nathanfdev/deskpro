@@ -869,7 +869,7 @@ VALUES
 $em->getConnection()->exec("
 INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `event_trigger_options`, `is_enabled`, `terms`, `terms_any`, `actions`, `sys_name`, `run_order`, `date_created`)
 VALUES
-	(33, '', 'update.agent', 'a:0:{}', 1, 'a:2:{i:0;a:3:{s:4:\"type\";s:12:\"is_via_email\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:2:\"do\";s:1:\"1\";}}i:1;a:3:{s:4:\"type\";s:5:\"agent\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:5:\"agent\";s:1:\"0\";}}}', 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:5:\"agent\";s:7:\"options\";a:1:{s:5:\"agent\";s:2:\"-1\";}}}', 'agent_email_reply_assignment', 30, '2012-11-28 10:44:17')
+	(33, '', 'update.agent', 'a:0:{}', 1, 'a:2:{i:0;a:3:{s:4:\"type\";s:18:\"is_via_email_reply\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:2:\"do\";s:1:\"1\";}}i:1;a:3:{s:4:\"type\";s:5:\"agent\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:5:\"agent\";s:1:\"0\";}}}', 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:5:\"agent\";s:7:\"options\";a:1:{s:5:\"agent\";s:2:\"-1\";}}}', 'agent_email_reply_assignment', 30, '2012-11-28 10:44:17')
 ");
 
 ##BEGIN:create_style.master##

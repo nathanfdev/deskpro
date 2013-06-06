@@ -106,6 +106,10 @@ class TermSummary
 				break;
 
 			case 'is_via_email':
+				return 'Update is triggered by an email';
+				break;
+
+			case 'is_via_email_reply':
 				return 'Update is triggered by an email reply';
 				break;
 
