@@ -72,7 +72,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
 				SELECT m
 				FROM DeskPRO:TicketMessageTranslated m INDEX BY m.lang_code
 				WHERE m.ticket_message = ?0 AND m.lang_code IN (?1)
-			")->setParameters(array(array_values($ticket_message), $lang_code))->execute();
+			")->setParameters(array($ticket_message, array_values($lang_code)))->execute();
 
 			if (!$got) {
 				return null;

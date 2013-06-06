@@ -106,6 +106,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this._initMessage(this.wrapper.find('.messages-wrap'));
 
+		this.getEl('value_form').find('.language_id').on('change', function() {
+			var langId     = $(this).val();
+			if (!langId) {
+				langId = DESKPRO_DEFAULT_LANG_ID;
+			}
+
+			var langLocale = DESKPRO_NAME_REGISTRY.lang_data[langId].locale;
+			var langTitle  = $.trim(DESKPRO_NAME_REGISTRY.lang_data[langId].title);
+
+			self.getEl('message_page_wrap').find('.translate-from-lang').each(function() {
+				$(this).text(langTitle).data(langLocale);
+			});
+		});
+
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
 		this._initLabels();
@@ -1233,27 +1247,60 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var transShow     = article.find('.body-message-translated');
 				var existTo       = transShow.data('to-lang-code');
 				var existFrom     = transShow.data('from-lang-code');
+				var transMenu     = trans.find('.dp-lang-choose');
+				var transMenuBack = null;
+				var transFromEl   = trans.find('.translate-from-lang');
+				var transToEl     = trans.find('.translate-to-lang');
 
-				trans.find('select').each(function(i) {
-					var sel = $(this);
-					sel.on('change', function() {
-						self.refreshMessageTranslation(article);
-					});
-					Object.each(window.DESKPRO_TRANSLATE_SERVICE.lang_names, function(name, code) {
-						var opt = $('<option/>');
-						opt.val(code);
-						opt.text(name);
+				trans.on('click', '.translate-controls-off', function(ev) {
+					Orb.cancelEvent(ev);
+					trans.addClass('on');
+				});
 
-						if (i == 2 && existTo && code == existTo) {
-							opt.prop('selected', true);
-							sel.parent().find('em').text(name);
-						} else if (i == 1 && existFrom && code == existFrom) {
-							opt.prop('selected', true);
-							sel.parent().find('em').text(name);
-						}
+				trans.find('.dp-dropdown-toggle').on('click', function(ev) {
+					Orb.cancelEvent(ev);
 
-						sel.append(opt);
-					});
+					if (!transMenu.hasClass('has-init')) {
+						transMenu.detach().appendTo('body');
+
+						transMenu.addClass('has-init');
+						transMenuBack = $('<div/>').addClass('dp-popover-backdrop').hide().appendTo('body');
+
+						self.addEvent('destroy', function() {
+							transMenu.detach();
+							transMenuBack.detach();
+						});
+
+						transMenuBack.on('click', function(ev) {
+							Orb.cancelEvent(ev);
+							transMenu.hide();
+							transMenuBack.hide();
+						});
+
+						transMenu.find('select').on('change', function(){
+							var locale = $(this).val();
+							var title = $(this).find(':selected').text();
+
+							if ($(this).attr('name') == 'from') {
+								transFromEl.data('locale', locale).text(title);
+							} else {
+								transToEl.data('locale', locale).text(title);
+							}
+						});
+					}
+
+					transMenu.css({top:0, left:0}).position({
+						of: $(this),
+						my: 'right top',
+						at: 'right bottom',
+						collision: 'flipfit'
+					}).show();
+					transMenuBack.show();
+				});
+
+				trans.find('.trans-trigger').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					self.refreshMessageTranslation(article);
 				});
 			}
 		});
@@ -1278,33 +1325,34 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var trans     = messageEl.find('.message-translate-controls');
 		var transShow = messageEl.find('.body-message-translated');
 
-		var selFrom = trans.find('select.from');
-		var selTo   = trans.find('select.to');
+		var selFrom = trans.find('.translate-from-lang');
+		var selTo   = trans.find('.translate-to-lang');
 
 		var formData = {
 			message_id: messageEl.data('message-id'),
-			from: selFrom.val(),
-			to: selTo.val()
+			from: selFrom.data('locale'),
+			to: selTo.data('locale')
 		};
 
 		selFrom.parent().find('em').text(selFrom.find(':selected').text());
 		selTo.parent().find('em').text(selTo.find(':selected').text());
 
+		trans.addClass('dp-loading-on');
 		$.ajax({
 			url: window.DESKPRO_TRANSLATE_SERVICE.translate_ticket_message_url,
 			data: formData,
 			type: 'POST',
 			dataType: 'json',
+			complete: function() {
+				trans.removeClass('dp-loading-on');
+			},
 			success: function(data) {
 				if (data.error_code) {
 					DeskPRO_Window.showAlert("Could not translate message: " + data.message);
 					return;
 				}
 
-				if (data.from_lang_code) {
-					selFrom.find('option[value="' + data.from_lang_code + '"]').prop('selected', true);
-					selFrom.parent().find('em').text(selFrom.find(':selected').text());
-				}
+				trans.removeClass('on');
 
 				transShow.data('to-lang-code', data.to_lang_code);
 				transShow.data('from-lang-code', data.from_lang_code);

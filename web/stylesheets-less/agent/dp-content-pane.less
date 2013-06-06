@@ -1295,6 +1295,24 @@ article.content-message .content header .edit-gear {
 	top: 7px;
 }
 
+.page-ticket article.content-message .content header .edit-gear {
+	background: transparent;
+	line-height: 100%;
+	color: #2F4359;
+	cursor: pointer;
+	position: relative;
+	height: auto;
+	width: auto;
+	top: 6px;
+	padding-right: 6px;
+	padding-left: 4px;
+
+	i {
+		line-height: 100%;
+		font-size: 12px;
+	}
+}
+
 article.content-message.gear-loading .content header .edit-gear {
 	background: url(../../images/spinners/loading-arrows-xsmall-whitebg.gif) no-repeat 50% 50%;
 	right: 4px;
@@ -1437,44 +1455,7 @@ article.content-message .content .message-header-extra-controls {
 	height: 25px;
 	line-height: 26px;
 	vertical-align: middle;
-	margin-right: 8px;
-
-	.lang-select {
-		position: relative;
-		display: inline-block;
-		overflow: hidden;
-		font-size: 11px;
-		height: 26px;
-		line-height: 25px;
-		vertical-align: middle;
-		color: #60728B;
-
-		i {
-			font-size: 9px;
-			color: #60728B;
-		}
-
-		em {
-			font-style: normal;
-			color: #60728B;
-		}
-
-		select {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100px;
-			z-index: 1;
-			height: 26px;
-			overflow: hidden;
-			.opacity(0);
-			font-size: 11px;
-			vertical-align: middle;
-			margin: 0;
-			padding: 0;
-			cursor: pointer;
-		}
-	}
+	margin-right: 4px;
 }
 
 article.content-message .content .footer-text {

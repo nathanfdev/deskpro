@@ -13,20 +13,56 @@
 		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
 		<header>
-			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"></span>
+			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
 			<div class="message-header-extra-controls">
-				{% if app.isPluginInstalled('MicrosoftTranslator') %}
-					<div class="message-translate-controls">
-						<div class="lang-select">
-							<select class="from"><option value="auto">Auto</option></select>
-							<span class="show">Translate from <em>Auto</em> <i class="icon-caret-down"></i>&nbsp;</span>
-						</div>
-						<div class="lang-select">
-							<select class="to"><option></option></select>
-							<span class="show">to <em>Choose...</em> <i class="icon-caret-down"></i></span>
-						</div>
+				<div class="message-translate-controls">
+					<div class="translate-controls-off">
+						<span>Translation</span>
+						<i class="icon-globe"></i>
 					</div>
-				{% endif %}
+					<div class="translate-controls-on">
+						{% if app.isPluginInstalled('MicrosoftTranslator') %}
+							<div class="dp-is-loading">
+								<i class="flat-spinner"></i>
+							</div>
+							<div class="dp-btn-group dp-dropdown dp-not-loading">
+								<a class="dp-btn trans-trigger">
+									Translate from
+									<span class="translate-from-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
+										{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
+									</span>
+									to
+									<span class="translate-to-lang" data-locale="{{ app.user.language.locale }}">
+										{{ phrase_object(app.user.language) }}
+									</span>
+								</a>
+								<a class="dp-btn dp-dropdown-toggle">
+									<span class="dp-caret dp-caret-down"></span>
+									<div class="dp-lang-choose dp-popover" style="display: none;">
+										<div style="padding: 6px;">
+											<select name="from">
+												<option value="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}</option>
+												<option value="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}"></option>
+												{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
+													{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+													<option value="{{ code }}">{{ name }}</option>
+												{% endfor %}
+											</select>
+											to <select name="to">
+												<option value="{{ app.user.language.locale }}">{{ phrase_object(app.user.language) }}</option>
+												<option value="{{ app.user.language.locale }}"></option>
+												{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
+													{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+													<option value="{{ code }}">{{ name }}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+								</a>
+							</div>
+						{% endif %}
+					</div>
+				</div>
 			</div>
 			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
 			{% if message.getGeoCountry() %}
