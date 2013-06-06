@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		this.allowDupe = true;
 		this.activeSection = null;
 		this.activeSnippets = $([]);
+		this.noIgnoreForm = true;
 	},
 
 	initPage: function(el) {

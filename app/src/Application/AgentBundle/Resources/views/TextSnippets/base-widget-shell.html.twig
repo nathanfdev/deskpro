@@ -39,11 +39,10 @@
 			</div>
 			<input type="text" id="%baseId%_filter" placeholder="Filter" />
 			{% if app.languages.getAll()|length > 1 %}
-				Show snippets with translations in
 				<select name="show_language_id" id="%baseId%_show_language_id">
-					<option value="0">any language</option>
+					<option value="0">Any Language</option>
 					{% for lang in app.languages.getAll() %}
-						<option value="{{ lang.id }}">{{ lang.title }}</option>
+						<option value="{{ lang.id }}">{{ phrase_object(lang) }}</option>
 					{% endfor %}
 				</select>
 			{% endif %}
