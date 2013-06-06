@@ -100,16 +100,21 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			self.massActions.open();
 		};
 
+		self.getEl('perform_actions_btn').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			openMassActions();
+		});
+
 		var viewType = this.meta.viewType;
 		var opt = {
 			saveSelectionId: self.meta.filter_id ? ('filter_'+self.meta.filter_id) : null,
 			onButtonClick: function() {
-				if (viewType != 'list') {
+				if (viewType != 'list' && DeskPRO_Window.paneVis.tabs) {
 					openMassActions();
 				}
 			},
 			onCountChange: function(count) {
-				if (viewType != 'list') {
+				if (viewType != 'list' && DeskPRO_Window.paneVis.tabs) {
 					var isOpen = self.massActions && self.massActions.isOpen();
 
 					if (count > 0 && !isOpen) {
@@ -118,6 +123,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 						if (self.massActions) {
 							self.massActions.close();
 						}
+					}
+				} else {
+					if (count > 0) {
+						self.getEl('perform_actions_btn').show();
+					} else {
+						self.getEl('perform_actions_btn').hide();
 					}
 				}
 			}
