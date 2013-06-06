@@ -280,6 +280,8 @@ class TriggerExecutor
 				$ticket_log['person'] = App::getCurrentPerson();
 			} elseif ($this->tracker->hasNewReply()) {
 				$ticket_log['person'] = $this->tracker->getNewReply()->person;
+			} else if ($this->tracker->getExtra('person_performer')) {
+				$ticket_log['person'] = $this->tracker->getExtra('person_performer');
 			}
 
 			$ticket_log['ticket'] = $this->ticket;

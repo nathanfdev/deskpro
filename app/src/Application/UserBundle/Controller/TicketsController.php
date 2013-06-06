@@ -518,7 +518,7 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		if (!$ticket->getTicketLogger()->getPersonPerformer()) {
+		if (!$this->person->getId()) {
 			$ticket->getTicketLogger()->recordExtra('person_performer', $ticket->person);
 		}
 

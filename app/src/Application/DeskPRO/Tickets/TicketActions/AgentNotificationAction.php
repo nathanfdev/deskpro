@@ -383,6 +383,8 @@ class AgentNotificationAction extends AbstractAction
 
 			if ($this->tracker->getExtra('by_agent')) {
 				$performer = $this->tracker->getExtra('by_agent');
+			} else if ($this->tracker->getExtra('person_performer')) {
+				$performer = $this->tracker->getExtra('person_performer');
 			}
 
 			if ($this->tracker->getExtra('sla')) {
