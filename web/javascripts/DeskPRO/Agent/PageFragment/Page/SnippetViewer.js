@@ -464,7 +464,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			this.destroy = function() {
 				if (hasInit) {
-					editCalEl.detach();
+					editCatEl.detach();
 					editCatBack.detach();
 				}
 			};
