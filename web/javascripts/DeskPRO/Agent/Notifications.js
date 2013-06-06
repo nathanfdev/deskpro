@@ -45,7 +45,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
 			Orb.shimClickCallbackPop();
-			$('#settingswin').trigger('dp_open', 'notify');
+			$('#settingswin').trigger('dp_open', 'ticket-notify');
 		});
 
 		this.fireEvent('init');
