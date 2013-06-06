@@ -60,33 +60,28 @@ class AgentModeTicketReassign extends AbstractJob
 		#------------------------------
 
 		$agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
+		$agent_ids_c = implode(',', $agent_ids);
 
 		if ($max && $agent_ids) {
 
-			$tickets = App::getOrm()->createQuery("
-				SELECT t
-				FROM DeskPRO:Ticket t
-				WHERE t.status IN ('awaiting_agent', 'awaiting_user') AND t.agent IN (?0)
-				ORDER BY t.id DESC
-			")->setParameters(array($agent_ids))->setMaxResults($max)->execute();
+			$ticket_ids = App::getDb()->fetchColumn("
+				SELECT id
+				FROM tickets
+				WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN ($agent_ids_c)
+			");
 
-			foreach ($tickets as $t) {
-				/** @var $t \Application\DeskPRO\Entity\Ticket */
-
-				$t->getTicketLogger()->recordMultiPropertyChanged('log_actions', null, array('type' => 'free', 'message' => 'Unassigning deactivated agent'));
-				$t->agent = null;
-
-				App::getDb()->beginTransaction();
-
-				try {
-					$t->getTicketLogger();
-					App::getOrm()->persist($t);
-					App::getOrm()->flush();
-					App::getDb()->commit();
-				} catch (\Exception $e) {
-					App::getDb()->rollback();
-					throw $e;
-				}
+			foreach ($ticket_ids as $t) {
+				App::getDb()->update(
+					'tickets',
+					array('agent_id' => null),
+					array('id' => $t)
+				);
+				App::getDb()->insert('tickets_logs', array(
+					'ticket_id'    => $t,
+					'action_type'  => 'free',
+					'details'      => serialize(array('message' => 'Unassigning deactivated agent')),
+					'date_created' => date('Y-m-d H:i:s')
+				));
 			}
 		}
 	}
