@@ -382,16 +382,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						tmp.addClass('search-tickets');
 						tmp.appendTo(menuElInner);
 
+						tmp = $('<div/>').html('<section><header><strong>User\'s Tickets</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('users-tickets').hide();
+						tmp.appendTo(menuElInner);
+
 						tmp = $('<div/>').html('<section><header><strong>Open Tickets</strong></header><article><ul></ul></article></section>');
 						tmp.addClass('open-tickets').hide();
 						tmp.appendTo(menuElInner);
 
 						tmp = $('<div/>').html('<section><header><strong>Filter Results</strong></header><article><ul></ul></article></section>');
 						tmp.addClass('filter-tickets').hide();
-						tmp.appendTo(menuElInner);
-
-						tmp = $('<div/>').html('<section><header><strong>User\'s Tickets</strong></header><article><ul></ul></article></section>');
-						tmp.addClass('users-tickets').hide();
 						tmp.appendTo(menuElInner);
 
 						menuEl.find('.trigger-search').on('click', function(ev) {
