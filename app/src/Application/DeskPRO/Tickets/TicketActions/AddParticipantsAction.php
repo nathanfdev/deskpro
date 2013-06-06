@@ -117,21 +117,34 @@ class AddParticipantsAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
+		$agents = array();
+		$users = array();
+
         $tr = App::getTranslator();
 		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
 
-		$names = array();
 		foreach ($people as $p) {
 			$n = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
-			$names[$p->id] = $n;
-		}
-
-		foreach ($this->add_people_ids as $id) {
-			if (!isset($names[$id])) {
-				$names[$id] = "<error>Unknown #$id</error>";
+			if ($p->is_agent) {
+				$agents[$p->id] = $n;
+			} else {
+				$users[$p->id] = $n;
 			}
 		}
 
-		return $tr->phrase('agent.tickets.add_parts_action', array('parts' => implode(', ', $names)));
+		$parts = array();
+		if ($agents) {
+			$parts[] = "Add agent followers: " . implode(', ', $agents);
+		}
+		if ($users) {
+			$parts[] = "CC users " . implode(', ', $users);
+		}
+
+		if (!$parts) {
+			return '';
+		}
+
+		$parts = implode(' and ', $parts);
+		return $parts;
 	}
 }
