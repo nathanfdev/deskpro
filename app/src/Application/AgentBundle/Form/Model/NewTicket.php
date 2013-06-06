@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Form\Model;
 
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -283,9 +284,8 @@ class NewTicket
 		$message->setVisitorFromRequest();
 
 		$message_text = $this->message;
-		$snip = new \Application\DeskPRO\Entity\ TicketSnippet();
-		$snip->snippet = $message_text;
-		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
+		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+		$message_text = $formatter->formatText($message_text, $ticket);
 
 		if ($this->is_html_reply) {
 			$message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');

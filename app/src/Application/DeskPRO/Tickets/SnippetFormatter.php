@@ -94,4 +94,15 @@ class SnippetFormatter implements PersonContextInterface
 			return $snippet->snippet;
 		}
 	}
+
+	public function formatText($text, Ticket $ticket)
+	{
+		$data = $this->getVars($ticket);
+
+		try {
+			return $this->twig->renderStringTemplate($text, $data);
+		} catch (\Exception $e) {
+			return $text;
+		}
+	}
 }
