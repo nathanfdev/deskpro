@@ -821,11 +821,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var closeFn = function() {
 				wrap.removeClass('active');
+				Orb.shimClickCallbackPop();
 			};
 
 			if (!wrap.data('has-init')) {
 				wrap.find('ul').on('click', function(ev) {
-					Orb.shimClickCallbackPop();
+					closeFn();
 				});
 			}
 
@@ -2410,24 +2411,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.notifications = new DeskPRO.Agent.Notifications();
-
-		// DeskPRO logo menu
-		$('#dp_logo_wrap .button-wrap').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			$('#dp_logo_expand_wrap').detach().appendTo('body').show();
-		});
-		$('#dp_logo_expand_wrap').on('click', function(ev) {
-			ev.stopPropagation();
-			$('#dp_logo_expand_wrap').hide();
-		});
-
-		$('#dp_notify_list_none').find('a').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			DeskPRO_Window.notifications.close();
-			$('#settingswin').trigger('dp_open', 'notify');
-		});
 
 		// Settings is a window
 		$('#user_settings_link').on('click', function() {
