@@ -147,6 +147,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 			DeskPRO_Window.getMessageBroker().removeTaggedListeners(self.OBJ_ID);
 			if (self.wrapper) {
+				self.wrapper.find('.with-handler').each(function() {
+					var h = $(this).data('handler');
+					if (h) {
+						h.destroy();
+					}
+				});
 				self.wrapper.empty();
 			}
 		});
