@@ -94,9 +94,11 @@ class FeedbackController extends AbstractController
 	{
 		$cat = $this->getStatusOr404($category_id);
 
-		$cat->title = $this->in->getString('cat.title');
-		$this->em->persist($cat);
-		$this->em->flush();
+		if ($this->getRequest()->getMethod() == 'POST') {
+			$cat->title = $this->in->getString('cat.title');
+			$this->em->persist($cat);
+			$this->em->flush();
+		}
 
 		return $this->render('AdminBundle:Feedback:status-edit.html.twig', array(
 			'cat' => $cat,
