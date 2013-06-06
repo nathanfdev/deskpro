@@ -35,11 +35,22 @@ if (!defined('DPC_IS_CLOUD') && file_exists(dp_get_tmp_dir() . '/apc-clear.trigg
 
 define('DP_REAL_MEMSIZE', deskpro_install_check_parseinisize(@ini_get('memory_limit')));
 $mem_size = DP_REAL_MEMSIZE;
-if ($mem_size && $mem_size != '-1' && $mem_size < 134217728/* 128 MB */) {
-	@ini_set('memory_limit', 134217728);
+if ($mem_size && $mem_size != '-1') {
+	if ($mem_size < 134217728/* 128 MB */) {
+		define('DP_SET_MEMSIZE', 134217728);
+		@ini_set('memory_limit', 134217728);
+	} else {
+		define('DP_SET_MEMSIZE', $mem_size);
+	}
+} else {
+	define('DP_SET_MEMSIZE', -1);
 }
-unset($mem_size);
 
+if (dp_get_config('use_max_memory')) {
+	define('DP_MAX_MEMSIZE', dp_get_config('use_max_memory'));
+} else {
+	define('DP_MAX_MEMSIZE', ($mem_size && $mem_size != -1) ? DP_SET_MEMSIZE+134217728 : -1);
+}
 
 #------------------------------
 # Attempt to set max_execution_time to at least 40s
