@@ -10,6 +10,9 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 {% endif %}
 
 {% endblock pagemeta %}
+{% block pane_header %}
+	<h1><i class="icon-dp-chat"></i> {{ total|default(0) }} Chats</h1>
+{% endblock %}
 {% block listing %}
 {% if convos|length %}
 <section class="search-reuslts page-set" data-page="{{ page }}">

@@ -1,16 +1,34 @@
-<script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbList';
-pageMeta.resultId = {{ result_id }};
-pageMeta.refreshUrl = '{{ path('agent_kb_list', {'category_id': category.id}) }}';
-pageMeta.url_fragment = '{{ url_fragment('agent_kb_list', {'category_id': category.id}) }}';
-{% set baseId = el_uid() %}
-pageMeta.baseId = '{{ baseId }}';
-</script>
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-listing page-kb-filter">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% block dp_declare %}
+	{{ set_tplvar('baseId', el_uid()) }}
+{% endblock %}
+
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+	<script>
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbList';
+		pageMeta.resultId = {{ result_id }};
+		pageMeta.refreshUrl = '{{ path('agent_kb_list', {'category_id': category.id}) }}';
+		pageMeta.url_fragment = '{{ url_fragment('agent_kb_list', {'category_id': category.id}) }}';
+		pageMeta.baseId = '{{ tplvars.baseId }}';
+	</script>
+{% endblock top %}
+
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
+
+{% block pane_header %}
+	<h1><i class="icon-dp-chat"></i> {{ total_results|default(0) }} Articles</h1>
+{% endblock pane_header %}
+
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
 
 	{% include 'AgentBundle:Kb:filter-display-options.html.twig' %}
 	{% include 'AgentBundle:Kb:filter-control-bar.html.twig' %}
@@ -29,8 +47,8 @@ pageMeta.baseId = '{{ baseId }}';
 	{% if results|length %}
 		<footer class="results-nav">
 			<div class="cursor">
-				{% set phrase_part1 %}<span class="results-showing-count" id="{{baseId}}_showing_count">{{ ((cur_page - 1) * 50) + 1 }} - {{ showing_to }}</span>{% endset %}
-				{% set phrase_part2 %}<span class="results-total-count" id="{{baseId}}_total_count">{{ total_results }}</span>{% endset %}
+				{% set phrase_part1 %}<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count">{{ ((cur_page - 1) * 50) + 1 }} - {{ showing_to }}</span>{% endset %}
+				{% set phrase_part2 %}<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ total_results }}</span>{% endset %}
 				{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 			</div>
 			{% if total_results > 50 %}
@@ -53,6 +71,5 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 		</footer>
 	{% endif %}
-{# scroll containers #}
-</div></div></div>
-{# /scroll containers #}
+
+{% endblock pane_content %}

@@ -1,49 +1,64 @@
-<script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterSearch';
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% block dp_declare %}
+	{{ set_tplvar('baseId', el_uid()) }}
+{% endblock %}
 
-pageMeta.url_fragment = '{{ url_fragment('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}';
-pageMeta.accountId = '{{ account.id|escape }}';
-pageMeta.currentPage = {{ page }};
-pageMeta.perPage = {{ per_page }};
-pageMeta.totalCount = {{ total_count }};
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+	<script>
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterSearch';
 
-pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';
-pageMeta.statusListUrl = '{{ path('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}?partial=1';
-pageMeta.listRoute = 'agent_twitter_run_search';
-{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
-</script>
+		pageMeta.url_fragment = '{{ url_fragment('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}';
+		pageMeta.accountId = '{{ account.id|escape }}';
+		pageMeta.currentPage = {{ page }};
+		pageMeta.perPage = {{ per_page }};
+		pageMeta.totalCount = {{ total_count }};
 
+		pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';
+		pageMeta.statusListUrl = '{{ path('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}?partial=1';
+		pageMeta.listRoute = 'agent_twitter_run_search';
+		{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
+	</script>
+{% endblock top %}
 
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-listing">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
 
-<div class="layout-content twitter">
-	<header class="header">
-		<div class="list-control-bar">
-			<ul class="btn-controls">
-				<li class="display-options display-options-trigger"><a></a></li>
-				<li class="right"><span class="sep"></span></li>
-			</ul>
+{% block pane_header %}
+	<h1><i class="icon-dp-chat"></i> {{ total_count|default(0) }} Tweets</h1>
+{% endblock pane_header %}
 
-			<ul style="display:none" class="display-options-menu">
-				<li><label><input name="archived" type="checkbox" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
-			</ul>
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
+
+	<div class="layout-content twitter">
+		<header class="header">
+			<div class="list-control-bar">
+				<ul class="btn-controls">
+					<li class="display-options display-options-trigger"><a></a></li>
+					<li class="right"><span class="sep"></span></li>
+				</ul>
+
+				<ul style="display:none" class="display-options-menu">
+					<li><label><input name="archived" type="checkbox" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
+				</ul>
+			</div>
+		</header>
+		{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
+
+		<div class="new-tweet-list-indicator"></div>
+
+		<div class="content">
+			{% include 'AgentBundle:Twitter:part-search.html.twig' %}
 		</div>
-	</header>
-	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
 
-	<div class="new-tweet-list-indicator"></div>
-
-    <div class="content">
-		{% include 'AgentBundle:Twitter:part-search.html.twig' %}
+		{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
 	</div>
 
-	{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
-</div>
-
-{# scroll containers #}
-</div></div></div>
-{# /scroll containers #}
+{% endblock pane_content %}

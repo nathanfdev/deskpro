@@ -1,43 +1,58 @@
-<script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% block dp_declare %}
+	{{ set_tplvar('baseId', el_uid()) }}
+{% endblock %}
 
-pageMeta.accountId = '{{ account.id|escape }}';
-pageMeta.url_fragment = '{{ url_fragment(twitter_list_route, {'account_id': account.id, 'group': group, 'group_value': group_value}) }}';
-pageMeta.currentPage = {{ page }};
-pageMeta.perPage = {{ per_page }};
-pageMeta.totalCount = {{ total_count }};
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+	<script>
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
-pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id, 'group': group, 'group_value': group_value}) }}?partial=1';
-pageMeta.listRoute = '{{ twitter_list_route }}';
-pageMeta.group = {{ group|json_encode|raw }};
-pageMeta.groupValue = {{ group_value|json_encode|raw }};
-{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
+		pageMeta.accountId = '{{ account.id|escape }}';
+		pageMeta.url_fragment = '{{ url_fragment(twitter_list_route, {'account_id': account.id, 'group': group, 'group_value': group_value}) }}';
+		pageMeta.currentPage = {{ page }};
+		pageMeta.perPage = {{ per_page }};
+		pageMeta.totalCount = {{ total_count }};
 
-{% set baseId = el_uid() %}
-pageMeta.baseId = '{{ baseId }}';
-</script>
+		pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id, 'group': group, 'group_value': group_value}) }}?partial=1';
+		pageMeta.listRoute = '{{ twitter_list_route }}';
+		pageMeta.group = {{ group|json_encode|raw }};
+		pageMeta.groupValue = {{ group_value|json_encode|raw }};
+		{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-listing">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+		pageMeta.baseId = '{{ tplvars.baseId }}';
+	</script>
+{% endblock top %}
 
-<div class="layout-content twitter">
-	{% if twitter_list_route != 'agent_twitter_sent_list' %}
-		{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' with { 'twitter_list_route': twitter_list_route } %}
-		{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
-	{% endif %}
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
 
-	<div class="new-tweet-list-indicator"></div>
+{% block pane_header %}
+	<h1><i class="icon-dp-chat"></i> {{ total_count|default(0) }} Tweets</h1>
+{% endblock pane_header %}
 
-	<div class="content">
-		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
+
+	<div class="layout-content twitter">
+		{% if twitter_list_route != 'agent_twitter_sent_list' %}
+			{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' with { 'twitter_list_route': twitter_list_route } %}
+			{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
+		{% endif %}
+
+		<div class="new-tweet-list-indicator"></div>
+
+		<div class="content">
+			{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
+		</div>
+
+		{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
 	</div>
 
-	{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
-</div>
-
-{# scroll containers #}
-</div></div></div>
-{# /scroll containers #}
+{% endblock pane_content %}

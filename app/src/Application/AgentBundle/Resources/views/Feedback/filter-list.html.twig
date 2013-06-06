@@ -1,45 +1,65 @@
-<script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter';
-{% if list_type == 'category' %}
-	pageMeta.refreshUrl = '{{ path('agent_feedback_category', {'category_id': category_id}) }}';
-	{% set subgroup_url = path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID' %}
-    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category': category}) }}';
-{% elseif list_type == 'status' %}
-	pageMeta.refreshUrl = '{{ path('agent_feedback_status', {'status': status}) }}?';
-    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
-	{% set subgroup_url = path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID' %}
-{% elseif list_type == 'label' %}
-	pageMeta.refreshUrl = '{{ path('agent_feedback_label', {'label': label}) }}?';
-    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'label': label}) }}';
-{% elseif list_type == 'validating' %}
-	pageMeta.refreshUrl = '{{ path('agent_feedback_validating') }}?';
-{% else %}
-	pageMeta.refreshUrl = '{{ path('agent_feedback_filter') }}?cache_id={{cache_id}}';
-{% endif %}
-{% if cache_id %}
-	pageMeta.cache_id = {{cache_id}};
-{% endif %}
-{% if not feedback %}
-	pageMeta.noResults = true;
-{% endif %}
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% block dp_declare %}
+	{{ set_tplvar('baseId', el_uid()) }}
+{% endblock %}
 
-{% if list_type == 'status '%}
-    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
-{% elseif list_type == 'label' %}
-    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_label', {'label': label.id}) }}';
-{% elseif list_type == 'category' %}
-    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category_id': category_id}) }}';
-{% endif %}
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+	<script>
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter';
+		{% if list_type == 'category' %}
+			pageMeta.refreshUrl = '{{ path('agent_feedback_category', {'category_id': category_id}) }}';
+			{% set subgroup_url = path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID' %}
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category': category}) }}';
+		{% elseif list_type == 'status' %}
+			pageMeta.refreshUrl = '{{ path('agent_feedback_status', {'status': status}) }}?';
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
+			{% set subgroup_url = path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID' %}
+		{% elseif list_type == 'label' %}
+			pageMeta.refreshUrl = '{{ path('agent_feedback_label', {'label': label}) }}?';
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'label': label}) }}';
+		{% elseif list_type == 'validating' %}
+			pageMeta.refreshUrl = '{{ path('agent_feedback_validating') }}?';
+		{% else %}
+			pageMeta.refreshUrl = '{{ path('agent_feedback_filter') }}?cache_id={{cache_id}}';
+		{% endif %}
+		{% if cache_id %}
+			pageMeta.cache_id = {{cache_id}};
+		{% endif %}
+		{% if not feedback %}
+			pageMeta.noResults = true;
+		{% endif %}
 
-pageMeta.perPage = 50;
-pageMeta.currentPage = {{ cur_page }};
-pageMeta.resultIds = {{ result_ids|json_encode|raw }};
-</script>
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-listing page-validating-comments">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+		{% if list_type == 'status '%}
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
+		{% elseif list_type == 'label' %}
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_label', {'label': label.id}) }}';
+		{% elseif list_type == 'category' %}
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category_id': category_id}) }}';
+		{% endif %}
+
+		pageMeta.perPage = 50;
+		pageMeta.currentPage = {{ cur_page }};
+		pageMeta.resultIds = {{ result_ids|json_encode|raw }};
+	</script>
+
+{% endblock top %}
+
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
+
+{% block pane_header %}
+	<h1><i class="icon-dp-chat"></i> {{ result_ids|length|default(0) }} Submissions</h1>
+{% endblock pane_header %}
+
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
 
 	{% include 'AgentBundle:Feedback:filter-display-options.html.twig' %}
 	{% include 'AgentBundle:Feedback:filter-control-bar.html.twig' %}
@@ -60,9 +80,9 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 		<footer class="results-nav">
 			<div class="cursor">
 				{{ phrase('agent.feedback.showing_results') }}
-				<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+				<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count"></span>
 				{{ phrase('agent.general.of') }}
-				<span class="results-total-count" id="{{baseId}}_total_count">{{ result_ids|length }}</span>
+				<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ result_ids|length }}</span>
 			</div>
 			{% if result_ids|length > per_page %}
 				<ul class="pagenav no-prev">
@@ -76,6 +96,4 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 		</footer>
 	{% endif %}
 
-{# scroll containers #}
-</div></div></div>
-{# /scroll containers #}
+{% endblock pane_content %}
