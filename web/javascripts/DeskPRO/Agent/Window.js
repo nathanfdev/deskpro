@@ -969,6 +969,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'status':
 				case 'label':
 				case 'ended':
+				case 'vis':
 					argRequired = true;
 					break;
 			}
@@ -980,7 +981,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var url = this.fragmentRouter.getUrl(fragmentName, args);
 			var type = this.fragmentRouter.getFragmentType(fragmentName);
 
-			if (type == 'list') {
+			if (type == 'vis') {
+				this.setPaneVisNum(args[0]);
+			} else if (type == 'list') {
 				this.loadingListFragment = hash;
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
@@ -1062,6 +1065,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 					segments.push(hash);
 				}
 			});
+		}
+
+		var paneVisNum = this.getPaneVisNum();
+		if (paneVisNum) {
+			segments.push('vis:'+paneVisNum)
 		}
 
 		var browserHash = segments.join(',');
@@ -3943,5 +3951,53 @@ DeskPRO.Agent.Window = new Orb.Class({
 	setPaneVis: function(id, vis) {
 		this.paneVis[id] = vis;
 		this.layout.doResize(true);
+	},
+
+	setPaneVisNum: function(num) {
+		switch (num) {
+			case 0:
+				this.paneVis.source = true;
+				this.paneVis.list = true;
+				this.paneVis.tabs = true;
+
+			case 1:
+				this.paneVis.source = true;
+				this.paneVis.list = true;
+				this.paneVis.tabs = false;
+
+			case 2:
+				this.paneVis.source = true;
+				this.paneVis.list = false;
+				this.paneVis.tabs = true;
+
+			case 3:
+				this.paneVis.source = false;
+				this.paneVis.list = true;
+				this.paneVis.tabs = false;
+
+			case 4:
+				this.paneVis.source = false;
+				this.paneVis.list = false;
+				this.paneVis.tabs = true;
+
+			case 5:
+				this.paneVis.source = false;
+				this.paneVis.list = true;
+				this.paneVis.tabs = true;
+		}
+
+		this.layout.doResize(true);
+	},
+
+	getPaneVisNum: function() {
+		var source = this.paneVis.source, list = this.paneVis.list, tabs = this.paneVis.tabs;
+
+		if (source && list && tabs)   return 0;
+		if (source && list && !tabs)  return 1;
+		if (source && !list && tabs)  return 2;
+		if (!source && list && !tabs) return 3;
+		if (!source && !list && tabs) return 4;
+		if (!source && list && tabs)  return 5;
+		return 0;
 	}
 });
