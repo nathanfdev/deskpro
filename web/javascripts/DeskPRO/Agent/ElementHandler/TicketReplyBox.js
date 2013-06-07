@@ -49,6 +49,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				autosaveContent: 'ticket',
 				minHeight: 120,
 				autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
+				focusCallback: function() {
+					if (!self.page.hasReplyFocused) {
+						self.wrapper.find('div.layout-content').trigger('goscrolltop');
+					}
+
+					self.page.hasReplyFocused = true;
+				},
 				preAutosaveCallback: function(textarea, data) {
 
 					if (self.getElById('reply_is_trans').val() != "") {

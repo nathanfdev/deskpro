@@ -37,6 +37,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.wrapper = el;
 		var self = this;
 		this.getEl('replybox_wrap').data('page', this);
+		this.hasReplyFocused = false;
 
 		var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 		if (flashEnabled) {
