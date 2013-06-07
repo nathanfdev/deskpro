@@ -928,8 +928,14 @@ table.layout-table.v-middle {
 	}
 }
 
-.osmac .dp-recent-list-dropdown {
+.osmac .dp-recent-list-dropdown, .browser-ie .dp-recent-list-dropdown {
 	left: 106px;
+}
+
+.browser-ie .dp-recent-list-dropdown {
+	box-shadow: none;
+	border: 1px solid #CBCBCB;
+	border-top: none;
 }
 
 .active .dp-recent-list-dropdown {
@@ -1119,9 +1125,16 @@ table.layout-table.v-middle {
 			top: 31px;
 			border-radius: 0 3px 3px 3px;
 			box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+
 			li {
+				margin: 0;
+				padding: 0;
 				width: 200px;
 				border-bottom: 1px solid darken(@agent_menu_bg_color, 5%);
+				list-style-type: none;
 				a {
 					display: block;
 					color: @agent_menu_text_color;

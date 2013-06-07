@@ -64,7 +64,7 @@ class AgentModeTicketReassign extends AbstractJob
 
 		if ($max && $agent_ids) {
 
-			$ticket_ids = App::getDb()->fetchColumn("
+			$ticket_ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN ($agent_ids_c)

@@ -759,16 +759,36 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
+		var isIe = $('html').hasClass('browser-ie');
+
 		$('#dp_header').find('.btn-group-actions').find('.btn').on('click', function() {
 			var wrap = $(this).parent();
+			var btnMenu = wrap.find('.btn-menu');
+
+			// Bug in IE10 means the li's dont render properly
+			// until you force a repaint somehow while they are displayed
+			// So we show with no opacity, toggle the display on li's
+			// which does the trick of repainting them, then set the opacity
+			// back to 1. The user doesnt see anything amiss and we solve the bug :)
+			if (isIe) {
+				btnMenu.css('opacity', 0);
+			}
+
 			wrap.addClass('active');
+
+			if (isIe) {
+				window.setTimeout(function() {
+					btnMenu.find('li').css('display', 'block');
+					btnMenu.css('opacity', 1);
+				}, 10);
+			}
 
 			var closeFn = function() {
 				wrap.removeClass('active');
 			};
 
 			if (!wrap.data('has-init')) {
-				wrap.find('.btn-menu').on('click', function(ev) {
+				btnMenu.on('click', function(ev) {
 					Orb.cancelEvent(ev);
 					Orb.shimClickCallbackPop();
 				});

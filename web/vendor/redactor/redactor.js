@@ -2623,9 +2623,22 @@ var RLANG = {
 				var node = this.$editor.get(0);
 				var range = node.document.body.createTextRange();
 
+				if (!range || !range.select) {
+					return;
+				}
+
 				this._moveBoundary(node.document, range, false, focn, foco);
 				this._moveBoundary(node.document, range, true, orgn, orgo);
-				return range.select();
+
+				if (!range || !range.select) {
+					return;
+				}
+
+				try {
+					return range.select();
+				} catch (e) {
+					return;
+				}
 			}
 		},
 
