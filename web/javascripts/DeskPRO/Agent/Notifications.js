@@ -227,7 +227,6 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			$('#dp_header_notify_wrap').find('li.none').hide();
 		}
 
-		this.updatePositions();
 		this.fireEvent('modCount', ev);
 	}
 });
