@@ -455,6 +455,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initPage: function() {
+
+		var loadNewTicket = false;
+		if (loadNewTicket = window.location.hash.match(/#newticket:(\d+)/)) {
+			loadNewTicket = loadNewTicket[1];
+		}
+
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -522,8 +528,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$.history.init(function(hash){
 			self.loadHashPath(hash);
-		},
-		{ unescape: ",/:" });
+		},{ unescape: ",/:" });
 
 		if (!this.openSection) {
 			this.switchToSection($('#dp_nav [data-section-handler]').first().attr('id'));
@@ -852,6 +857,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
+
+		if (loadNewTicket) {
+			DeskPRO_Window.newTicketLoader.open(function(page) {
+				var data = {
+					person_id: loadNewTicket
+				};
+				page.setNewByPerson(data);
+			});
+		}
 	},
 
 	addOnloadFunction: function(fn) {
@@ -865,12 +879,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// This is sometimes set to prevent any of the below loading
 		// to happen when the hash is updated to reflect an already-set
 		// URL state
+		var isCancelLoad = false;
 		if (this.cancelHashLoad > 0) {
+			isCancelLoad = true;
 			this.cancelHashLoad--;
 			if (this.cancelHashLoad < 0) {
 				this.cancelHashLoad = 0;
 			}
-			return;
 		}
 
 		if (!browserHash.length) {
@@ -930,10 +945,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 
-			var listPage = this.getCurrentListPage();
-			if (listPage && listPage.getMetaData('url_fragment') == hash) {
-				return;
-			}
+			try {
+				var listPage = this.getCurrentListPage();
+				if (listPage && listPage.getMetaData('url_fragment') == hash) {
+					return;
+				}
+			} catch (e) {}
 
 			var parts = hash.match(/^(.*?)(\.(.*?))?:(.*?)$/);
 
@@ -956,10 +973,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				args = args.split(':');
 			}
 
-			if (!this.fragmentRouter.hasFragment(fragmentName)) {
-				return;
-			}
-
 			var argRequired = false;
 			switch (fragmentName) {
 				case 'knowledgebase':
@@ -969,7 +982,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'status':
 				case 'label':
 				case 'ended':
-				case 'vis':
 					argRequired = true;
 					break;
 			}
@@ -978,19 +990,31 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 
-			var url = this.fragmentRouter.getUrl(fragmentName, args);
-			var type = this.fragmentRouter.getFragmentType(fragmentName);
+			var url = null, type = null;
 
-			if (type == 'vis') {
+			if (this.fragmentRouter.hasFragment(fragmentName)) {
+				url = this.fragmentRouter.getUrl(fragmentName, args);
+				type = this.fragmentRouter.getFragmentType(fragmentName);
+			}
+
+			if (fragmentName == 'vis') {
 				this.setPaneVisNum(args[0]);
 			} else if (type == 'list') {
-				this.loadingListFragment = hash;
-				this.loadListPane(url, { url_fragment: hash });
+				if (!isCancelLoad && url) {
+					this.loadingListFragment = hash;
+					this.loadListPane(url, { url_fragment: hash });
+				}
 			} else {
-				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash, noToggle: true });
+				if (!isCancelLoad && url) {
+					this.loadingPageFragment = hash;
+					this.loadPage(url, { url_fragment: hash, noToggle: true });
+				}
 			}
 		}, this);
+
+		if (isCancelLoad) {
+			return;
+		}
 
 		this.cancelHashLoad++;
 		if (activateTabId) {
