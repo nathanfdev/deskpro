@@ -81,6 +81,14 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
+		$('#search_icons_nav').find('li').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			var section = $(this).data('target-section');
+			DeskPRO_Window.switchToSection(section);
+			DeskPRO_Window.sections[section].getSectionElement().find('.pane-tabs').find('[data-tab-id="pane-content-search"]').click();
+			Orb.shimClickCallbackPop();
+		});
+
 		//------------------------------
 		// Expanding the search box
 		//------------------------------

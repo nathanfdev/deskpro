@@ -122,6 +122,8 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 		this.contentEl.empty().html(data.section_html);
 
+		this._initSectionSearch();
+
 		var self = this;
 		this.peopleTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
@@ -138,5 +140,12 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 			}
 		});
+	},
+
+	_initSectionSearch: function() {
+		var searchPane = this.contentEl.find('.source-pane-search');
+		if (searchPane[0]) {
+			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+		}
 	}
 });

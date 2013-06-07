@@ -51,6 +51,7 @@ class DownloadSearch extends SearcherAbstract
 	const TERM_LABEL           = 'label';
 	const TERM_STATUS          = 'status';
 	const TERM_AGENT_LIST      = 'agent_list';
+	const TERM_QUERY           = 'query';
 
 	const ORDER_ID       = 'id';
 	const ORDER_TITLE    = 'title';
@@ -373,6 +374,18 @@ class DownloadSearch extends SearcherAbstract
 						$titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getNames((array)$choice);
 						return $titles;
 					});
+					break;
+
+				case self::TERM_QUERY:
+
+					$string = $choice['query'];
+					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+
+					$w = array();
+					$w[] = '(' . $this->_stringSearch("downloads.title", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("downloads.content", $op, $string, $type) . ')';
+
+					$wheres[] = implode(' OR ' , $w);
 					break;
 
 				case self::TERM_DOWNLOADS:

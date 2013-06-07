@@ -187,6 +187,11 @@ class NewsResults
 		return $this->_getPageFromNewsIds($this->getNewsIds(), $page, $per_page);
 	}
 
+	public function getForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromNewsIds($this->getNewsIds(), $page, $per_page);
+	}
+
 
 	protected function _getPageFromNewsIds(array $news_ids, $page, $per_page)
 	{

@@ -204,6 +204,11 @@ class FeedbackResults
 		return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
 	}
 
+	public function getForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
+	}
+
 
 	protected function _getPageFromFeedbackIds(array $feedback_ids, $page, $per_page)
 	{

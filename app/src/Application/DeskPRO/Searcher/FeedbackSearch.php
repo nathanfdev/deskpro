@@ -50,6 +50,7 @@ class FeedbackSearch extends SearcherAbstract
 	const TERM_NUM_RATINGS       = 'num_ratings';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_LABEL           = 'label';
+	const TERM_QUERY           = 'query';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
@@ -383,6 +384,18 @@ class FeedbackSearch extends SearcherAbstract
 
 					$wheres[] = $part_where;
 
+					break;
+
+				case self::TERM_QUERY:
+
+					$string = $choice['query'];
+					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+
+					$w = array();
+					$w[] = '(' . $this->_stringSearch("feedback.title", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("feedback.content", $op, $string, $type) . ')';
+
+					$wheres[] = implode(' OR ' , $w);
 					break;
 
 				case self::TERM_CATEGORY:

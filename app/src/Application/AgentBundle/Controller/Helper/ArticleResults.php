@@ -200,6 +200,11 @@ class ArticleResults
 		return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
 	}
 
+	public function getForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
+	}
+
 
 	protected function _getPageFromArticleIds(array $article_ids, $page, $per_page)
 	{

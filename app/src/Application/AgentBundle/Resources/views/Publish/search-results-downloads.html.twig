@@ -1,0 +1,31 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishSearch';
+</script>
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-listing">
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
+
+<section class="feedback-simple-list list-listing">
+	<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for download in results %}
+		<article class="download download-{{download.id}}">
+			<div class="title">
+				<a class="with-route" data-route="page:{{ path('agent_downloads_view', {'download_id': download.id}) }}">{{ download.title }}</a>
+			</div>
+			<div class="info">
+				<ul>
+					<li>{{ download.category.full_title }}</li>
+					{% if download.person %}<li>{{ download.person.display_name }}</li>{% endif %}
+					<li>{{ download.filename }}</li>
+				</ul>
+			</div>
+		</article>
+	{% endfor %}
+	</section>
+</section>
+
+{# scroll containers #}
+</div></div></div>
+{# /scroll containers #}

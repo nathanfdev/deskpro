@@ -36,11 +36,16 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
 
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 
+use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\DownloadSearch;
+use Application\DeskPRO\Searcher\FeedbackSearch;
+use Application\DeskPRO\Searcher\NewsSearch;
 use Orb\Util\Strings;
 use Orb\Util\Numbers;
 use Orb\Util\Arrays;
@@ -981,15 +986,86 @@ class PublishController extends AbstractController
 
 	public function searchAction()
 	{
+		$type = $this->in->getString('content_type');
+		switch ($type) {
+			case 'articles':
+				$searcher = new ArticleSearch();
+				$helper = 'ArticleResults';
+				$cats = $this->in->getCleanValueArray('article_categories', 'uint', 'discard');
+				break;
+
+			case 'news':
+				$searcher = new NewsSearch();
+				$helper = 'NewsResults';
+				$cats = $this->in->getCleanValueArray('news_categories', 'uint', 'discard');
+				break;
+
+			case 'downloads':
+				$searcher = new DownloadSearch();
+				$helper = 'DownloadResults';
+				$cats = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
+				break;
+
+			case 'feedback':
+				$searcher = new FeedbackSearch();
+				$helper = 'FeedbackResults';
+				$cats = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		$result_cache = false;
+		if ($this->in->getUint('cache_id')) {
+			$result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			if (!$result_cache OR $result_cache['person_id'] != $this->person['id']) {
+				$result_cache = false;
+			}
+		}
+
+		$query_type = $this->in->getString('query_type') ?: 'and';
 		$query = $this->in->getString('query');
-		$types = $this->container->getIn()->getCleanValueArray('types');
 
-		$result_set = $this->container->getSearchAdapter()->getContentSearcher()->query($query, 250, 1, $types);
-		$results    = $this->container->getSearchAdapter()->getResultSetObjects($result_set, true);
+		if (!$result_cache) {
+			$cats = Arrays::removeFalsey($cats);
+			if ($cats) {
+				$searcher->addTerm('category', 'is', $cats);
+			}
 
-		return $this->render('AgentBundle:Publish:search-results.html.twig', array(
-			'results'           => $results,
-		));
+			$searcher->addTerm('query', 'is', array(
+				'query' => $query,
+				'type' => $query_type
+			));
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new ResultCache();
+			$result_cache['person'] = $this->person;
+			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'type' => $type, 'cats' => $cats, 'query' => $query, 'query_type' => $query_type);
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
+
+			$this->em->persist($result_cache);
+			$this->em->flush();
+		} else {
+			$results = $result_cache['results'];
+		}
+
+		$helper = "\\Application\\AgentBundle\\Controller\\Helper\\$helper";
+		$helper::newFromResultCache($this, $result_cache);
+
+		$vars = array(
+			'cache'       => $result_cache,
+			'cache_id'    => $result_cache['id'],
+			'result_ids'  => $result_cache['results'],
+			'num_results' => count($result_cache['results']),
+			'results'     => $helper->getForPage($this->in->getUint('page')),
+			'type'        => $result_cache['criteria']['type']
+		);
+
+		return $this->render('AgentBundle:Publish:search-results-'.$type.'.html.twig', $vars);
 	}
 
 	############################################################################

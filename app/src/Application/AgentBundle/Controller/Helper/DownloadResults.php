@@ -191,6 +191,11 @@ class DownloadResults
 		return $this->_getPageFromDownloadIds($this->getDownloadIds(), $page, $per_page);
 	}
 
+	public function getForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromDownloadIds($this->getDownloadIds(), $page, $per_page);
+	}
+
 
 	protected function _getPageFromDownloadIds(array $download_ids, $page, $per_page)
 	{

@@ -53,6 +53,7 @@ class ArticleSearch extends SearcherAbstract
 	const TERM_LABEL               = 'label';
 	const TERM_AGENT_LIST          = 'agent_list';
 	const TERM_PENDING_TRANSLATE   = 'pending_translate';
+	const TERM_QUERY               = 'query';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
@@ -356,6 +357,31 @@ class ArticleSearch extends SearcherAbstract
     					$this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
                     }
 
+					break;
+
+				case self::TERM_QUERY:
+
+					$j1 = $join_name . '_t';
+					$j2 = $join_name . '_c';
+
+					$joins[] = array(
+						'object_lang',
+						"LEFT JOIN object_lang AS $j1 ON ($j1.ref_type = 'article' AND $j1.ref_id = articles.id AND $j1.prop_name = 'title')"
+					);
+
+					$joins[] = array(
+						'object_lang',
+						"LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'title')"
+					);
+
+					$string = $choice['query'];
+					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+
+					$w = array();
+					$w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
+
+					$wheres[] = implode(' OR ' , $w);
 					break;
 
 				case self::TERM_CATEGORY:
