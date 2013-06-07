@@ -216,7 +216,7 @@
 													<input class="onoff-slider departments" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" />
 												</td>
 												<td class="prop ticket-assign-choice">
-													<input class="onoff-slider departments_assign" type="checkbox" {% if agent_deps_assign[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ dep.id }}][tickets]" value="1" />
+													<input class="onoff-slider departments_assign" type="checkbox" {% if agent_deps[dep.id].tickets or agent_deps_assign[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ dep.id }}][tickets]" value="1" />
 												</td>
 											{% endif %}
 										</tr>
@@ -228,7 +228,7 @@
 														<input class="onoff-slider departments" type="checkbox" {% if agent_deps[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" />
 													</td>
 													<td class="prop ticket-assign-choice">
-														<input class="onoff-slide departments_assignr" type="checkbox" {% if agent_deps_assign[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ subdep.id }}][tickets]" value="1" />
+														<input class="onoff-slide departments_assignr" type="checkbox" {% if agent_deps[subdep.id].tickets or agent_deps_assign[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ subdep.id }}][tickets]" value="1" />
 													</td>
 												</tr>
 											{% endfor %}
