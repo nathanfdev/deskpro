@@ -33,7 +33,7 @@
 
 					<li class="people nav-people is-nav-item" id="people_nav_all">
 						<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
-							<span class="list-counter">{{ people_count }}</span>
+							<span class="list-counter">{% if people_count > 10000 %}10000+{% else %}{{ people_count }}{% endif %}</span>
 							Registered
 						</h3>
 					</li>
@@ -47,7 +47,7 @@
 							{% if not usergroup_counts[id] %}style="display: none"{% endif %}
 						>
 							<h3 class="title">
-								<span class="list-counter">{{ usergroup_counts[id]|default(0) }}</span>
+								<span class="list-counter">{% if usergroup_counts[id] %}10000+{% else %}{{ usergroup_counts[id]|default(0) }}{% endif %}</span>
 								{{title}}
 							</h3>
 						</li>

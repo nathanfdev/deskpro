@@ -170,7 +170,7 @@ class PersonSearch extends SearcherAbstract
 		if ($order_by) {
 			$sql .= " ORDER BY $order_by ";
 		}
-		$sql .= " LIMIT 1000";
+		$sql .= " LIMIT 10000";
 
 		return $sql;
 	}

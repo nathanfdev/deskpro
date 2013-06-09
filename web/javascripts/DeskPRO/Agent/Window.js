@@ -879,13 +879,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// This is sometimes set to prevent any of the below loading
 		// to happen when the hash is updated to reflect an already-set
 		// URL state
-		var isCancelLoad = false;
 		if (this.cancelHashLoad > 0) {
-			isCancelLoad = true;
 			this.cancelHashLoad--;
 			if (this.cancelHashLoad < 0) {
 				this.cancelHashLoad = 0;
 			}
+			return;
 		}
 
 		if (!browserHash.length) {
@@ -945,12 +944,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 
-			try {
-				var listPage = this.getCurrentListPage();
-				if (listPage && listPage.getMetaData('url_fragment') == hash) {
-					return;
-				}
-			} catch (e) {}
+			var listPage = this.getCurrentListPage();
+			if (listPage && listPage.getMetaData('url_fragment') == hash) {
+				return;
+			}
 
 			var parts = hash.match(/^(.*?)(\.(.*?))?:(.*?)$/);
 
@@ -973,6 +970,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				args = args.split(':');
 			}
 
+			if (!this.fragmentRouter.hasFragment(fragmentName)) {
+				return;
+			}
+
 			var argRequired = false;
 			switch (fragmentName) {
 				case 'knowledgebase':
@@ -982,6 +983,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'status':
 				case 'label':
 				case 'ended':
+				case 'vis':
 					argRequired = true;
 					break;
 			}
@@ -990,31 +992,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 
-			var url = null, type = null;
+			var url = this.fragmentRouter.getUrl(fragmentName, args);
+			var type = this.fragmentRouter.getFragmentType(fragmentName);
 
-			if (this.fragmentRouter.hasFragment(fragmentName)) {
-				url = this.fragmentRouter.getUrl(fragmentName, args);
-				type = this.fragmentRouter.getFragmentType(fragmentName);
-			}
-
-			if (fragmentName == 'vis') {
+			if (type == 'vis') {
 				this.setPaneVisNum(args[0]);
 			} else if (type == 'list') {
-				if (!isCancelLoad && url) {
-					this.loadingListFragment = hash;
-					this.loadListPane(url, { url_fragment: hash });
-				}
+				this.loadingListFragment = hash;
+				this.loadListPane(url, { url_fragment: hash });
 			} else {
-				if (!isCancelLoad && url) {
-					this.loadingPageFragment = hash;
-					this.loadPage(url, { url_fragment: hash, noToggle: true });
-				}
+				this.loadingPageFragment = hash;
+				this.loadPage(url, { url_fragment: hash, noToggle: true });
 			}
 		}, this);
-
-		if (isCancelLoad) {
-			return;
-		}
 
 		this.cancelHashLoad++;
 		if (activateTabId) {

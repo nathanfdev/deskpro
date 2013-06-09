@@ -21,7 +21,11 @@
 {######################################################################################################################}
 
 {% block pane_header %}
-	<h1><i class="icon-dp-article"></i> {{ total_results|default(0) }} Articles</h1>
+	{% if is_trans_view and not trans_lang_id %}
+		<h1><i class="icon-dp-article"></i> {{ total_results|default(0) }} Unique Articles</h1>
+	{% else %}
+		<h1><i class="icon-dp-article"></i> {{ total_results|default(0) }} Articles</h1>
+	{% endif %}
 {% endblock pane_header %}
 
 {######################################################################################################################}

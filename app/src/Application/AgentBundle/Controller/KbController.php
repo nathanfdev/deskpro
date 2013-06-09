@@ -766,7 +766,14 @@ class KbController extends AbstractController
 			$show_all = $this->in->getBool('all');
 		}
 
+		$is_trans_view = false;
+		$trans_lang_id = null;
+
 		if ($this->in->getBool('pending_translate')) {
+
+			$is_trans_view = true;
+			$trans_lang_id = $this->in->getUint('language_id');
+
 			$result_helper = ArticleResults::newFromRequest($this, array(
 				'pending_translate'      => true,
 				'pending_translate_lang' => $this->in->getUint('language_id')
@@ -815,6 +822,9 @@ class KbController extends AbstractController
 			'result_id'          => $result_cache['id'],
 			'display_fields'     => $display_fields,
 			'comment_counts'     => $comment_counts,
+
+			'is_trans_view'      => $is_trans_view,
+			'trans_lang_id'      => $trans_lang_id,
 
 			'total_results' => $total_results,
 			'num_pages' => $num_pages,
