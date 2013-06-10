@@ -193,6 +193,20 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getLanguage()
+	{
+		if ($this->language) {
+			return $this->language;
+		}
+
+		return App::getContainer()->getLanguageData()->getDefault();
+	}
+
+	public function getRealLanguage()
+	{
+		return $this->language;
+	}
+
 	public function setStatus($status)
 	{
 		$this->setStatusCode($status);

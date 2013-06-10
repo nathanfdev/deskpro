@@ -466,15 +466,26 @@ class MainController extends AbstractController
 
 		if ($words) {
 			$db = App::getDbRead();
+
+			#------------------------------
+			# Ticket Subject
+			#------------------------------
+
 			$where = array();
 			foreach ($words as $w) {
 				$where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
 			}
+
+			$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
+			$after_id = $after_id - 10000;
+
+			$where[] = "(id > $after_id)";
+
 			$where = implode(' AND ', $where);
 
 			$ticket_ids = App::getDbRead()->fetchAllCol("
 				SELECT id
-				FROM tickets_search_subject
+				FROM tickets
 				WHERE $where
 				ORDER BY id DESC
 				LIMIT 100
@@ -486,6 +497,35 @@ class MainController extends AbstractController
 					if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 						$results['ticket'][] = $ticket;
 					}
+				}
+			}
+
+			#------------------------------
+			# Titles
+			#------------------------------
+
+			$where = array();
+			foreach ($words as $w) {
+				$where[] = "(title LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
+			}
+			$where[] = "(status != 'hidden')";
+			$where = implode(' AND ', $where);
+
+			foreach (array(
+				'article'      => 'articles',
+				'download'     => 'downloads',
+				'feedback'     => 'feedback',
+				'news'         => 'news',
+			) as $type => $table) {
+				$ids = App::getDbRead()->fetchAllCol("
+					SELECT id
+					FROM $table
+					WHERE $where
+					ORDER BY id DESC
+				");
+
+				if ($ids) {
+					$results[$type] = $this->em->getRepository($type_to_ent[$type])->getByIds($ids, true);
 				}
 			}
 		}
