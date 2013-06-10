@@ -52,16 +52,20 @@
 			{% set elid = el_uid() %}
 			<select class="dp-select-widget-simple" name="search_assigned[]" multiple="multiple" data-target-menu="auto">
 				<optgroup label="Agents">
+					<option value="0">Unassigned</option>
 					<option selected="selected" value="{{ app.user.id }}">Me</option>
 					{% for agent in app.agents.getAgents() if agent.id != app.user.id %}
 						<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 					{% endfor %}
 				</optgroup>
-				<optgroup label="Agent Teams">
-					{% for team in app.agent_teams.getTeams() %}
-						<option value="team.{{ team.id }}">{{ team.name }}</option>
-					{% endfor %}
-				</optgroup>
+				{% if app.agent_teams.getTeams()|length %}
+					<optgroup label="Agent Teams">
+						<option value="team.0">No team</option>
+						{% for team in app.agent_teams.getTeams() %}
+							<option value="team.{{ team.id }}">{{ team.name }}</option>
+						{% endfor %}
+					</optgroup>
+				{% endif %}
 			</select>
 		</div>
 	</div>
@@ -112,17 +116,17 @@
 					<tr>
 						<td width="80">Subject</td>
 						<td>
-							<input class="full-width search-string" type="text" name="search_subject_string[]" placeholder="Enter search words" />
+							<input class="full-width search-string" type="text" name="search_subject_string[]" placeholder="Enter search words" style="margin-bottom: 6px;" />
 						</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
 						<td>
-							<select class="dp-select-widget-simple" name="search_subject_op[]" data-target-menu="auto" data-menu-addclass="no-caret">
+							<select class="dp-select-widget-simple" name="search_subject_op[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
 								<option selected="selected" value="is">contains</option>
 								<option value="not">does not contain</option>
 							</select>
-							<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret">
+							<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
 								<option value="and">all words</option>
 								<option value="or">any word</option>
 								<option value="phrase">phrase</option>
@@ -164,17 +168,17 @@
 					<tr>
 						<td width="80">Message</td>
 						<td>
-							<input class="full-width search-string" type="text" name="search_message_string[]" placeholder="Enter search words" />
+							<input class="full-width search-string" type="text" name="search_message_string[]" placeholder="Enter search words" style="margin-bottom: 6px;" />
 						</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
 						<td>
-							<select class="dp-select-widget-simple" name="search_message_op[]" data-target-menu="auto" data-menu-addclass="no-caret">
+							<select class="dp-select-widget-simple" name="search_message_op[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
 								<option selected="selected" value="is">contains</option>
 								<option value="not">does not contain</option>
 							</select>
-							<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret">
+							<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
 								<option value="and">all words</option>
 								<option value="or">any word</option>
 								<option value="phrase">phrase</option>
@@ -187,7 +191,7 @@
 							<table class="layout-table v-middle" width="100%">
 								<tr>
 									<td width="100" style="padding-right: 4px;">
-										<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret">
+										<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
 											<option selected="selected" value="0">By anyone</option>
 											<option value="agent">By an agent</option>
 											<option value="user">By a user</option>
@@ -195,7 +199,7 @@
 									</td>
 									<td>
 										<div class="date-term-wrap" data-base-name="search_message_when">
-											<select name="search_message_when_op[]" class="op dp-select-widget-simple" data-target-menu="auto" data-menu-addclass="no-caret">
+											<select name="search_message_when_op[]" class="op dp-select-widget-simple" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
 												<option selected="selected" value="0">Written any time</option>
 												<option value="lte">Written before</option>
 												<option value="gte">Written after</option>

@@ -42,6 +42,10 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 		var self = this;
 
 		this.el.find('.trigger-open-panel').each(function() {
+			if ($(this).hasClass('has-init-trigger-open-panel')) {
+				return;
+			}
+			$(this).addClass('has-init-trigger-open-panel');
 			var panelTrigger = $(this);
 			var panelEl      = self.el.find('.' + panelTrigger.data('panel-id')).first();
 			var panelSummary = self.el.find(panelTrigger.data('target-summary')).first();
@@ -179,6 +183,11 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		this.el.detach().appendTo('body');
 
 		this.el.find('.with-search-builder').each(function() {
+			if ($(this).hasClass('has-init-search-builder')) {
+				return;
+			}
+			$(this).addClass('has-init-search-builder');
+
 			var critTpl = $(this).find('.criteria_tpl');
 			var critList = $(this).find('.criteria_list');
 
@@ -206,7 +215,7 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 
 		if (this.targetSummaryEl) {
 			this.el.find('.search-string').on('keyup keydown change', function() {
-				self.targetSummaryEl.val(($(this).val()));
+				self.targetSummaryEl.text(($(this).val()));
 			});
 		}
 
@@ -263,10 +272,17 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 	 * @param {HTMLElement} nearEl The element to open the panel near
 	 */
 	open: function(nearEl) {
-		if (this._isOpen) return;
-		this._isOpen = true;
 
 		var self = this;
+
+		if (!this.updateTypesTimer) {
+			this.updateTypesTimer = window.setInterval(function() {
+				self.updateTypes();
+			}, 300);
+		}
+
+		if (this._isOpen) return;
+		this._isOpen = true;
 
 		// Actual panel events are lazy inited on first open
 		this.initPanel();
@@ -303,12 +319,6 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			top: top,
 			'max-height': maxH
 		});
-
-		if (this.targetSummaryEl) {
-			this.updateTypesTimer = window.setInterval(function() {
-				self.updateTypes();
-			}, 300);
-		}
 	},
 
 

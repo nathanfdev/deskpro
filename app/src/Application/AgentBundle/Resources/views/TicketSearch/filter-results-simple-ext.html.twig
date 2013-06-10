@@ -88,10 +88,6 @@
 			{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 			{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 
-			{% if not filter or not filter.sys_name %}
-				{% include 'AgentBundle:TicketSearch:filter-terms-bar.html.twig' %}
-			{% endif %}
-
 			<section class="list-listing" id="{{tplvars.baseId}}_results_wrap">
 				{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
 			</section>

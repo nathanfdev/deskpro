@@ -539,6 +539,35 @@ class TicketSearchController extends AbstractController
 				$terms[] = array('type' => 'status', 'op' =>'is', 'options' => array('status' => $search_term));
 			}
 
+			// Search form: search_assigned
+			if ($search_term = $this->in->getCleanValueArray('search_assigned', 'raw', 'discard')) {
+				$agent_ids = array();
+				$team_ids = array();
+
+				foreach ($search_term as $t) {
+					if (strpos($t, 'team.') === 0) {
+						$t = Strings::extractRegexMatch('#^team\.(\d+)$#', $t);
+						if ($t !== "") {
+							$t = (int)$t;
+							$team_ids[] = $t;
+						}
+					} else {
+						$t = (int)$t;
+						$agent_ids[] = $t;
+					}
+				}
+
+				$agent_ids = array_unique($agent_ids);
+				$team_ids = array_unique($team_ids);
+
+				if ($agent_ids) {
+					$terms[] = array('type' => 'agent', 'is', array('agent_ids' => $agent_ids));
+				}
+				if ($team_ids) {
+					$terms[] = array('type' => 'agent_team', 'is', array('team_ids' => $team_ids));
+				}
+			}
+
 			// Search form: assigned agent or team
 			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
 				$agent_ids = array();

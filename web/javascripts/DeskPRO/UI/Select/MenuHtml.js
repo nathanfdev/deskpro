@@ -18,6 +18,8 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 		var self = this;
 		var select = this.getWidget().getSelect();
 		var isMulti = select.is('[multiple]');
+		var zindex = select.data('zindex');
+		var closeOnSelect = select.data('select-close');
 
 		if (select.data('target-menu') == 'auto') {
 			var name = Orb.uuid();
@@ -73,6 +75,10 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 		this.$positionOver = this.getWidget().getEl();
 
 		this.$shim = $('<div class="dp-shim zindex-chrome4"></div>');
+		if (zindex) {
+			this.$shim.css('z-index', zindex);
+			this.$menu.css('z-index', zindex+1);
+		}
 		this.$shim.appendTo('body');
 		this.$shim.on('click', function(ev) {
 			Orb.cancelEvent(ev);
@@ -85,6 +91,10 @@ DeskPRO.UI.Select.MenuHtml = new Orb.Class({
 			if (el.is(':checkbox, :radio')) {
 				if (self.getWidget().isValueSelected(el.val())) {
 					el.prop('checked', true);
+
+					if (closeOnSelect) {
+						el.on('click', function() { self.close(); });
+					}
 				}
 			} else if (el.is('select')) {
 				el.find('option').each(function() {
