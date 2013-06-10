@@ -391,6 +391,10 @@ class FeedbackSearch extends SearcherAbstract
 					$string = $choice['query'];
 					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
+					if (!$string) {
+						break;
+					}
+
 					$w = array();
 					$w[] = '(' . $this->_stringSearch("feedback.title", $op, $string, $type) . ')';
 					$w[] = '(' . $this->_stringSearch("feedback.content", $op, $string, $type) . ')';

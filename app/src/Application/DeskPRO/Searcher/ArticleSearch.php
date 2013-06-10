@@ -371,15 +371,21 @@ class ArticleSearch extends SearcherAbstract
 
 					$joins[] = array(
 						'object_lang',
-						"LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'title')"
+						"LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'content')"
 					);
 
 					$string = $choice['query'];
 					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
+					if (!$string) {
+						break;
+					}
+
 					$w = array();
+					$w[] = '(' . $this->_stringSearch("articles.title", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("articles.content", $op, $string, $type) . ')';
 					$w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
-					$w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("$j2.value", $op, $string, $type) . ')';
 
 					$wheres[] = implode(' OR ' , $w);
 					break;

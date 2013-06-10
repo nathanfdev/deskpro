@@ -66,7 +66,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		if (allNum) {
 			$('#publish_section_comments').show();
 		} else {
-			$('#publish_section_comments').hide();
+			$('#publish_section_comments').hide();lastLoad
 		}
 	},
 

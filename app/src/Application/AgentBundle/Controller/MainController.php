@@ -477,7 +477,7 @@ class MainController extends AbstractController
 			}
 
 			$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
-			$after_id = $after_id - 10000;
+			$after_id = $after_id - 6000;
 
 			$where[] = "(id > $after_id)";
 

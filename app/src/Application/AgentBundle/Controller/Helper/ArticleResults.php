@@ -153,6 +153,17 @@ class ArticleResults
 		return new self($controller, $result_cache);
 	}
 
+	/**
+	 * @return \Application\AgentBundle\Controller\Helper\ArticleResults
+	 */
+	public static function newFromResultCache($controller, ResultCache $result_cache)
+	{
+		$helper = new self($controller);
+		$helper->setArticleIds($result_cache['results']);
+
+		return $helper;
+	}
+
 
 	public function __construct($controller, ResultCache $result_cache = null)
 	{

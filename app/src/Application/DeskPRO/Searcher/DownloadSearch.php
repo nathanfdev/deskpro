@@ -381,6 +381,10 @@ class DownloadSearch extends SearcherAbstract
 					$string = $choice['query'];
 					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
+					if (!$string) {
+						break;
+					}
+
 					$w = array();
 					$w[] = '(' . $this->_stringSearch("downloads.title", $op, $string, $type) . ')';
 					$w[] = '(' . $this->_stringSearch("downloads.content", $op, $string, $type) . ')';

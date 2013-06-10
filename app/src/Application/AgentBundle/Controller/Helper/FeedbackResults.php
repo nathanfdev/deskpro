@@ -152,6 +152,16 @@ class FeedbackResults
 		return new self($controller, $result_cache);
 	}
 
+	/**
+	 * @return \Application\AgentBundle\Controller\Helper\FeedbackResults
+	 */
+	public static function newFromResultCache($controller, ResultCache $result_cache)
+	{
+		$helper = new self($controller);
+		$helper->setFeedbackIds($result_cache['results']);
+
+		return $helper;
+	}
 
 	public function __construct($controller, ResultCache $result_cache = null)
 	{

@@ -1469,7 +1469,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			sectionId = 'agent_chat_section';
 		} else if (testcl('.OpenChats') || testcl('.UserChatFilter')) {
 			sectionId = 'chat_section';
-		} else if (testcl('.Feedback')) {
+		} else if (testcl('.Feedback') || testcl('.FeedbackSearch')) {
 			sectionId = 'feedback_section';
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			sectionId = 'tickets_section';
@@ -2897,6 +2897,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 			return;
 		}
+
+		// Already active
+		if (this.openSection == handler) {
+			return;
+		}
+
 		var btn = $('#' + section_id);
 
 		// Already on

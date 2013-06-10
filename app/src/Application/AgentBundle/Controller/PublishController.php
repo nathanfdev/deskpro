@@ -1045,7 +1045,6 @@ class PublishController extends AbstractController
 			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'type' => $type, 'cats' => $cats, 'query' => $query, 'query_type' => $query_type);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
-			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
 			$this->em->persist($result_cache);
 			$this->em->flush();
@@ -1054,7 +1053,7 @@ class PublishController extends AbstractController
 		}
 
 		$helper = "\\Application\\AgentBundle\\Controller\\Helper\\$helper";
-		$helper::newFromResultCache($this, $result_cache);
+		$helper = $helper::newFromResultCache($this, $result_cache);
 
 		$vars = array(
 			'cache'       => $result_cache,

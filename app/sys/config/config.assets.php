@@ -167,6 +167,7 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishDraftsList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearch.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackSearch.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
