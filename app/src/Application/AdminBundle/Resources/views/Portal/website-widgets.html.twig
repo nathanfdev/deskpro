@@ -113,21 +113,21 @@ $(document).ready(function() {
 						{% if articles %}
 							<div style="width:295px; float: left; overflow: auto;">
 								<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px; margin-bottom: 5px;">Articles</h3>
-								{{ _self.build_list('articles', app.getDataRepository('ArticleCategory').getRootNodes(), articles, article_cat_map, selections.articles, 0) }}
+								{{ _self.build_list('articles', app.getDataService('ArticleCategory').getRootNodes(), articles, article_cat_map, selections.articles, 0) }}
 							</div>
 						{% endif %}
 
 						{% if downloads %}
 							<div style="width:295px; float: left; overflow: auto;">
 								<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">Downloads</h3>
-								{{ _self.build_list('downloads', app.getDataRepository('DownloadCategory').getRootNodes(), downloads, download_cat_map, selections.downloads, 0) }}
+								{{ _self.build_list('downloads', app.getDataService('DownloadCategory').getRootNodes(), downloads, download_cat_map, selections.downloads, 0) }}
 							</div>
 						{% endif %}
 
 						{% if news %}
 							<div style="width:295px; float: left; overflow: auto;">
 								<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">News</h3>
-								{{ _self.build_list('news', app.getDataRepository('NewsCategory').getRootNodes(), news, news_cat_map, selections.news, 0) }}
+								{{ _self.build_list('news', app.getDataService('NewsCategory').getRootNodes(), news, news_cat_map, selections.news, 0) }}
 							</div>
 						{% endif %}
 
@@ -208,7 +208,7 @@ $(document).ready(function() {
 							<td valign="middle" style="vertical-align: middle; padding-right: 7px;">
 								<select name="department">
 									<option value=""></option>
-									{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+									{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 										{% if dep.children|length %}
 											<optgroup label="{{ dep.title }}">
 												{% for subdep in dep.children %}

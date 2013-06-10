@@ -20,11 +20,14 @@ pageMeta.lastMessageId = {{ last_message_id|default(0) }};
 pageMeta.lastLogId = {{ last_log_id|default(0) }};
 pageMeta.ticket_reverse_order = {% if app.user.getPref('agent.ticket_reverse_order') %}true{% else %}false{% endif %};
 
+pageMeta.last_activity = {{ ticket.getLastActivityDate().getTimestamp() }};
+
 pageMeta.person_id    = {{ ticket.person.id }};
 pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
 pageMeta.person_name  = {{ ticket.person.display_name|json_encode|raw }};
 
 pageMeta.ticket = {{ ticket_api|json_encode|raw }};
+pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
 
 pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
 {% if ticket.isLocked(app.user) %}
@@ -37,10 +40,6 @@ pageMeta.unlockOnClose = {{ app.getSetting('core_tickets.unlock_on_close') ? 'tr
 {% if ticket.person.organization %}
 	pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
 {% endif %}
-
-pageMeta.urls = {
-	'snippetviewer': '{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}'
-};
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -69,6 +68,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
 	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
+	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(app.languages.getDefaultId()) }}" />
 	<input type="hidden" name="is_hold" class="is_hold" value="{{ticket.is_hold|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />
@@ -208,7 +208,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				'selected': ticket.department.id|default(0),
 				'id': baseId ~ '_department_id',
 				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header"',
-				'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
+				'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 
 			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default('None') }}</span>
@@ -492,17 +492,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<li data-action="kb-pending">Create a new pending article</li>
 	<li data-action="print">{{ phrase('agent.general.print') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
-</ul>
-
-<ul id="{{baseId}}_merge_menu" style="display: none;">
-	{% if tickets_by_user %}
-		<li class="section-title">Other Tickets from User</li>
-		{% for ticket_by_user in tickets_by_user %}
-			<li data-merge-id="{{ ticket_by_user.id }}" style="max-width: 200px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ ticket_by_user.subject }}</li>
-		{% endfor %}
-	{% endif %}
-	<li class="tab-insert always-show section-title">Other Tickets</li>
-	<li>Find ticket...</li>
 </ul>
 
 <div class="pagecontent">

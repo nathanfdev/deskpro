@@ -46,7 +46,7 @@ use Application\DeskPRO\Entity\Person;
 class ReplySnippetAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketSnippet
+	 * @var \Application\DeskPRO\Entity\TextSnippet
 	 */
 	protected $snippet;
 
@@ -71,7 +71,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 		$this->snippet_id = $snippet_id;
 		$this->reply_pos  = $reply_pos;
 
-		$this->snippet = App::getOrm()->find('DeskPRO:TicketSnippet', $snippet_id);
+		$this->snippet = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
 	}
 
 
@@ -164,7 +164,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\TicketSnippet
+	 * @return \Application\DeskPRO\Entity\TextSnippet
 	 */
 	public function getSnippet()
 	{

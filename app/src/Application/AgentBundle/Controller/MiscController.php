@@ -93,6 +93,19 @@ class MiscController extends AbstractController
 		}
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.language = ' . json_encode($this->container->getDataService('Language')->getTitles()) . ';';
 
+		$lang_data = array();
+		foreach ($this->container->getLanguageData()->getAll() as $lang) {
+			$lang_data[$lang->id] = array(
+				'id'         => $lang->id,
+				'title'      => $this->container->getTranslator()->getPhraseObject($lang),
+				'title_real' => $lang->title,
+				'locale'     => $lang->locale
+			);
+		}
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.lang_data = ' . json_encode($lang_data) . ';';
+
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.language = ' . json_encode($this->container->getDataService('Language')->getTitles()) . ';';
+
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
 			'awaiting_agent' => App::getTranslator()->phrase('agent.tickets.status_awaiting_agent'),
 			'awaiting_user' => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
@@ -141,7 +154,7 @@ class MiscController extends AbstractController
 		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
 
 		// Snippet short codes
-		$ticket_snippets = $this->em->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+		$ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
 		$snippet_short_codes = array();
 		foreach ($ticket_snippets as $snippet_cat) {
 			if ($snippet_cat['snippets']) {
@@ -190,6 +203,30 @@ class MiscController extends AbstractController
 		$js[] = $fragment_router->compile();
 
 		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
+
+		if ($this->plugins->isPluginInstalled('MicrosoftTranslator')) {
+			$lang_codes = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate();
+			try {
+				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
+					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+					$this->person->getLanguage()->getLocale()
+				);
+			} catch (\Exception $e) {
+				$lang_names = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguageNames(
+					$this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate(),
+					'en'
+				);
+			}
+
+			$info = array(
+				'lang_codes' => $lang_codes,
+				'lang_names' => $lang_names,
+				'translate_ticket_message_url' => $this->generateUrl('agent_plugins_run', array('plugin_id' => 'MicrosoftTranslator', 'action' => 'translate-ticket-message')),
+				'translate_text_url'           => $this->generateUrl('agent_plugins_run', array('plugin_id' => 'MicrosoftTranslator', 'action' => 'translate-text')),
+			);
+
+			$js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
+		}
 
 		$tr = $this->container->getTranslator();
 
@@ -649,205 +686,6 @@ JS;
 
 
 		return $this->createJsonResponse(array('success' =>true, 'status' => $status));
-	}
-
-
-	############################################################################
-	# snippets-viewer
-	############################################################################
-
-	public function snippetsViewerAction($typename)
-	{
-		$text_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent($typename, $this->person);
-		$text_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
-
-		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
-
-		return $this->render('AgentBundle:Common:text-snippets.html.twig', array(
-			'text_snippets'      => $text_snippets,
-			'text_snippet_cats'  => $text_snippet_cats,
-			'agent_teams'        => $agent_teams,
-			'typename'           => $typename,
-		));
-	}
-
-	public function newSnippetCatAction()
-	{
-		$cat = new \Application\DeskPRO\Entity\TextSnippetCategory();
-		$cat['title'] = $this->in->getString('title');
-		$cat['typename'] = $this->in->getString('typename');
-		$cat->person = $this->person;
-
-		if ($this->in->getString('perm_type') == 'global') {
-			$cat['is_global'] = true;
-		} elseif ($this->in->getString('perm_type') == 'team') {
-			$team_ids = $this->in->getArrayValue('teams');
-			$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
-
-			foreach ($teams as $t) {
-				$cat->agent_teams->add($t);
-			}
-		}
-
-		$this->em->transactional(function($em) use ($cat) {
-			$em->persist($cat);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'cat_row_html' => $this->renderView('AgentBundle:Common:text-snippets-catrow.html.twig', array(
-				'category' => $cat
-			)),
-			'cat_section_html' => $this->renderView('AgentBundle:Common:text-snippets-catsection.html.twig', array(
-				'category' => $cat,
-				'snippets' => array()
-			))
-		));
-	}
-
-	public function editSnippetCatAction()
-	{
-		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
-
-		return $this->render('AgentBundle:Common:text-snippets-editcat.html.twig', array(
-			'category' => $cat,
-		));
-	}
-
-	public function saveSnippetCatAction()
-	{
-		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
-		$cat['title'] = $this->in->getString('title');
-
-		if ($cat->person && $cat->person->getId() == $this->person->getId()) {
-			if ($this->in->getString('perm_type') == 'global') {
-				$cat['is_global'] = true;
-			} elseif ($this->in->getString('perm_type') == 'team') {
-				$cat['is_global'] = false;
-				$team_ids = $this->in->getArrayValue('teams');
-				$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
-
-				foreach ($teams as $t) {
-					$cat->agent_teams->add($t);
-				}
-			} else {
-				$cat['is_global'] = false;
-			}
-		}
-
-		$this->em->persist($cat);
-		$this->em->flush();
-
-		return $this->createJsonResponse(array(
-			'category_id' => $cat['id'],
-			'title' => $cat['title']
-		 ));
-	}
-
-	public function deleteSnippetCatAction()
-	{
-		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
-
-		$cat_id = $cat['id'];
-
-		$this->em->transactional(function($em) use ($cat) {
-			$em->remove($cat);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'category_id' => $cat_id,
-		 ));
-	}
-
-	public function saveSnippetAction()
-	{
-		if ($this->in->getUint('snippet_id')) {
-			$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
-
-			if (!$snippet) {
-				throw $this->createNotFoundException();
-			}
-
-			$category = $snippet->category;
-		} else {
-			$category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
-			$snippet = new \Application\DeskPRO\Entity\TextSnippet();
-			$snippet->category = $category;
-		}
-
-		$snippet['title'] = $this->in->getString('title');
-		$snippet['snippet'] = $this->in->getString('snippet');
-		$snippet->person = $this->person;
-
-		$snippet->shortcut_code = $this->in->getString('shortcut_code');
-		if (!$snippet->shortcut_code) {
-			$snippet->shortcut_code = null;
-		}
-
-		$this->em->persist($snippet);
-		$this->em->flush();
-
-		// Check for dupe codes
-		if ($snippet->shortcut_code) {
-			$exists = $this->db->fetchColumn("
-				SELECT id FROM text_snippets
-				WHERE shortcut_code = ?
-				AND id != ?
-			", array($snippet->shortcut_code, $snippet->id));
-
-			if ($exists) {
-				$snippet->shortcut_code = $snippet->shortcut_code . $snippet->id;
-				$this->em->persist($snippet);
-				$this->em->flush();
-			}
-		}
-
-		return $this->createJsonResponse(array(
-			'snippet_row_html' => $this->renderView('AgentBundle:Common:text-snippets-row.html.twig', array(
-				'snippet' => $snippet,
-			)),
-			'snippet_id' => $snippet['id'],
-			'category_id' => $category['id']
-		));
-	}
-
-	public function getSnippetAction($snippet_id)
-	{
-		$snippet = $this->em->find('DeskPRO:TextSnippet', $snippet_id);
-
-		if (!$snippet) {
-			throw $this->createNotFoundException();
-		}
-
-		$res = new Response($snippet->formatHtml());
-		return $res;
-	}
-
-	public function deleteSnippetAction()
-	{
-		$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
-
-		if (!$snippet) {
-			throw $this->createNotFoundException();
-		}
-
-		$snippet_id = $snippet['id'];
-		if ($snippet->category) {
-			$category_id = $snippet->category['id'];
-		} else {
-			$category_id = 0;
-		}
-
-		$this->em->transactional(function($em) use ($snippet) {
-			$em->remove($snippet);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'snippet_id' => $snippet_id,
-			'category_id' => $category_id
-		));
 	}
 
 	public function redirectExternalAction($url)

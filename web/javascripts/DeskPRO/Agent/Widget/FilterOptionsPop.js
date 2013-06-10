@@ -237,7 +237,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 
 		// Update where the position of the container is relative to the outer wrapper
 		// hard-coded value: offset of list from top of pane. aka height of header that says "INBOX"
-		var top = this.listElement.offset().top - 41;
+		var top = this.listElement.offset().top - 86;
 
 		this.controlRealEl.css({
 			'margin-top': top-1 /* so the sync below doesnt need to worry about where it is */

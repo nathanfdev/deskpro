@@ -55,7 +55,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="department">
-				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+				{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in dep.children %}
@@ -129,7 +129,7 @@
 			<div class="builder-options">
 				<select name="category">
 					<option value="0">None</option>
-					{% for id,title in app.getDataRepository('Product').getNames() %}
+					{% for id,title in app.products.getNames() %}
 						<option value="{{ id }}">{{ title }}</option>
 					{% endfor %}
 				</select>
@@ -156,7 +156,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="department">
-				{% for dep in app.getDataRepository('Department').getRootNodes() %}
+				{% for dep in app.departments.getRootNodes() %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in dep.children %}
@@ -173,7 +173,7 @@
 	{% endif %}
 
 	{% if event_trigger == 'update.agent' or event_trigger == 'update.user' %}
-		<div class="builder-type" title="Updated by email reply" data-rule-type="is_via_email" data-term-type="GenericMenuTerm">
+		<div class="builder-type" title="Updated by email reply" data-rule-type="is_via_email_reply" data-term-type="GenericMenuTerm">
 			<div class="builder-op">
 				<input type="hidden" name="op" value="is" />
 			</div>
@@ -221,7 +221,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="agent_ids[]" multiple="multiple">
-				{% for agent in app.getDataRepository('Agent').getAgents() %}
+				{% for agent in app.agents.getAgents() %}
 					<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 				{% endfor %}
 			</select>
@@ -318,7 +318,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="category">
-					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+					{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
 						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
@@ -347,7 +347,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="priority">
-					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
+					{% for id,name in app.getDataService('TicketPriority').getNames() %}
 						<option value="{{ id }}">{{ name }}</option>
 					{% endfor %}
 				</select>
@@ -403,7 +403,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
-					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+					{% for work in app.getDataService('TicketWorkflow').getAll() %}
 						<option value="{{ work.id }}">{{ work.title }}</option>
 					{% endfor %}
 				</select>
@@ -452,7 +452,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="department">
-				{% for dep in app.getDataRepository('Department').getRootNodes() %}
+				{% for dep in app.departments.getRootNodes() %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in dep.children %}
@@ -477,7 +477,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="category">
-					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+					{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
 						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
@@ -524,7 +524,7 @@
 {# People Terms #}
 {##################################################################################################################}
 
-{% if app.getDataRepository('Usergroup').getUserUsergroups() %}
+{% if app.usergroups.getUserUsergroups() %}
 	<div class="builder-type" title="{{ phrase('agent.general.usergroup') }}" data-rule-group="Person" data-term-type="GenericMenuTerm" data-rule-type="person_usergroup">
 		<div class="builder-op">
 			<select name="op">
@@ -534,7 +534,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="usergroup">
-				{% for ug in app.getDataRepository('Usergroup').getUserUsergroups() %}
+				{% for ug in app.usergroups.getUserUsergroups() %}
 					<option value="{{ ug.id }}">{{ ug.title }}</option>
 				{% endfor %}
 			</select>
@@ -542,7 +542,7 @@
 	</div>
 {% endif %}
 
-{% if app.getDataRepository('Language').isMultiLang() %}
+{% if app.languages.isMultiLang() %}
 	<div class="builder-type" title="{{ phrase('agent.general.language') }}" data-rule-group="Person" data-term-type="GenericMenuTerm" data-rule-type="person_language">
 		<div class="builder-op">
 			<select name="op">
@@ -552,7 +552,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="language">
-				{% for lang in app.getDataRepository('Language').getTitles() %}
+				{% for lang in app.languages.getTitles() %}
 				<option value="{{ lang.id }}">{{ lang.title }}</option>
 				{% endfor %}
 			</select>
@@ -869,7 +869,7 @@
 		<select name="agent_team">
 			<option value="0">{{ phrase('agent.general.no_team') }}</option>
 			<option value="-1">Performer's Team</option>
-			{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
+			{% for id,title in app.agent_teams.getTeamNames() %}
 				<option value="{{id}}">{{title}}</option>
 			{% endfor %}
 		</select>

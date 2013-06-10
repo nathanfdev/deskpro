@@ -144,6 +144,17 @@ class DownloadResults
 		return new self($controller, $result_cache);
 	}
 
+	/**
+	 * @return \Application\AgentBundle\Controller\Helper\DownloadResults
+	 */
+	public static function newFromResultCache($controller, ResultCache $result_cache)
+	{
+		$helper = new self($controller);
+		$helper->setDownloadIds($result_cache['results']);
+
+		return $helper;
+	}
+
 
 	public function __construct($controller, ResultCache $result_cache = null)
 	{
@@ -187,6 +198,11 @@ class DownloadResults
 	 * @return array
 	 */
 	public function getDownloadsForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromDownloadIds($this->getDownloadIds(), $page, $per_page);
+	}
+
+	public function getForPage($page, $per_page = 50)
 	{
 		return $this->_getPageFromDownloadIds($this->getDownloadIds(), $page, $per_page);
 	}

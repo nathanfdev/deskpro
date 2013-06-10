@@ -8,7 +8,6 @@
 
 	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
 	data-upload-url="{{ path('agent_accept_upload') }}"
-	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
 	data-base-id="{{replyBaseId}}"
     {% if app.user.getPref('agent.ticket_close_reply') %}data-close-reply="1"{% endif %}
     {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}
@@ -71,6 +70,33 @@
 		<strong><span class="hide-note">Sending your message</span><span class="hide-reply" style="display: none">Adding your note</span></strong>
 	</div>
 	<header>
+		{% if app.isPluginInstalled('MicrosoftTranslator') %}
+			<div class="translate-controls">
+				<div class="dp-not-loading">
+					<div class="dp-btn-group dp-dropdown">
+						<a class="dp-btn dp-btn-primary trans-trigger">
+							<i class="icon-globe"></i>&nbsp;
+							Translate message into
+							<span class="translate-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
+								{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
+							</span>
+						</a>
+						<a class="dp-btn dp-btn-primary dp-dropdown-toggle">
+							<select class="language_id">
+								{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
+									{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+									<option value="{{ code }}">{{ name }}</option>
+								{% endfor %}
+							</select>
+							<span class="dp-caret dp-caret-down"></span>
+						</a>
+					</div>
+				</div>
+				<div class="dp-is-loading" style="padding: 2px 4px 0 0;">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		{% endif %}
 		<nav>
 			<ul>
 				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.general.reply') }}</li>{% endif %}
@@ -174,7 +200,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="input-wrap unreset">
+				<div class="input-wrap unreset editor-row">
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
 					<textarea id="{{replyBaseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
 					<textarea id="{{replyBaseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
@@ -189,6 +215,12 @@
 					{% endif %}
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>
+				{% if app.isPluginInstalled('MicrosoftTranslator') %}
+					<div class="input-wrap unreset translate-row" style="display: none;">
+						<input type="hidden" name="reply_is_trans" id="{{ replyBaseId }}_reply_is_trans" value="" />
+						<textarea placeholder="" id="{{replyBaseId}}_replybox_txt2" name="message_original" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
+					</div>
+				{% endif %}
 			</section>
 		</article>
 	</section>
@@ -228,7 +260,7 @@
 						{% endif %}
 						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
 							<input type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<span style="position: relative; top: 2px;">Agent:&nbsp;</span>
+							<span style="position: relative; top: 2px;"><label for="{{replyBaseId}}_agent_sel_check" style="line-height: 100%;">Agent:&nbsp;</label></span>
 						</td><td style="height: 30px;vertical-align: middle;">
 							<div style="position: relative; overflow: hidden; top: 1px;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%; line-height: 15px;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
@@ -251,7 +283,7 @@
 								{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
 							{% endif %}
 							<input type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<span style="position: relative; top: 2px;">Team:&nbsp;</span>
+							<span style="position: relative; top: 2px;"><label for="{{ replyBaseId }}_agent_team_sel_check" style="line-height: 100%;">Team:&nbsp;</label></span>
 						</td><td style="height: 30px; vertical-align: middle;">
 							<div style="position: relative; overflow: hidden; top: 1px;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
@@ -278,7 +310,7 @@
 							<label>
 								<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
 								<span class="opt-label-text">
-									Close Tab
+									<label for="{{ replyBaseId }}_close_tab_opt" style="line-height: 100%;">Close Tab</label>
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span>
 								</span>
 							</label>
@@ -287,9 +319,9 @@
 					<div style="display: inline-block; margin-left: 10px;">
 						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
 							<label class="hide-note">
-								<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
+								<input type="checkbox" id="{{ replyBaseId }}_email_user" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
 								<span class="opt-label-text">
-									Email User
+									<label for="{{ replyBaseId }}_email_user" style="line-height: 100%;">Email User</label>
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span>
 								</span>
 							</label>

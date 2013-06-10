@@ -45,7 +45,16 @@ DeskPRO.Translate = new Orb.Class({
 	 */
 	phrase: function(phrase_name, vars, raw) {
 		var text = this.getPhraseText(phrase_name) || '[' + phrase_name + ']';
+		return this.phraseWithString(text, vars, raw);
+	},
 
+
+	/**
+	 * @param {String} text
+	 * @param {Object} vars
+	 * @param {Boolean} raw
+	 */
+	phraseWithString: function(text, vars, raw) {
 		if (vars) {
 			if (typeof vars.count != 'undefined') {
 				text = this.choosePlural(text, vars.count);
@@ -92,38 +101,10 @@ DeskPRO.Translate = new Orb.Class({
 	 */
 	choosePlural: function(text, number) {
 		var parts = text.split('|');
-		var explicitRules = [];
-		var standardRules = [];
-
-		var intervalIndex   = 1;
-		var messageIndex    = 6;
-
-		var explicitRe = /^(({\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s*(.*?)$/;
-		var standardRe = /^\w+\:\s*(.*?)$/;
-
-		Array.each(parts, function(part) {
-			part = part.trim();
-
-			var  match = explicitRe.exec(part);
-			if (match) {
-				explicitRules.push([match[intervalIndex], match[messageIndex]]);
-			} else {
-				var match = standardRe.exec(part);
-				if (match) {
-					standardRules.push(match[1]);
-				} else {
-					standardRules.push(part);
-				}
-			}
-		});
-
-		if (explicitRules.length) {
-			Array.each(explicitRules, function(x) {
-				var interval = x[0];
-				var string = x[1];
-
-
-			});
+		if (number == 0 || number != 1) {
+			return parts[1];
+		} else {
+			return parts[0];
 		}
 	},
 

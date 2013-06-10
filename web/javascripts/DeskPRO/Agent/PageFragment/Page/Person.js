@@ -16,6 +16,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 	},
 
+	initMetaData: function() {
+		DeskPRO_Window.recentTabs.add(
+			'person',
+			this.meta.person_id,
+			this.meta.title,
+			BASE_URL + 'agent/people/' + this.meta.person_id
+		);
+	},
+
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
@@ -69,24 +78,18 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this.zIndex = 30001;
 
-		DeskPRO_Window.recentTabs.add(
-			'person',
-			this.meta.person_id,
-			this.meta.title,
-			BASE_URL + 'agent/people/' + this.meta.person_id
-		);
-
 		var cw = this.contentWrapper;
 
 		if (this.tabBtn) {
 			if (this.getMetaData('personPicIcon')) {
-				this.tabBtn.find('a').css('background-image', 'url("' + this.getMetaData('personPicIcon') + '")').css('background-position', '2px 50%');
+				this.tabBtn.find('a').find('i').attr('class', '').addClass('image-icon').css('background-image', 'url("' + this.getMetaData('personPicIcon') + '")').css('background-position', '2px 50%');
 			} else if (this.getMetaData('personGravatarIcon')) {
 				var defaultIcon = ASSETS_BASE_URL_FULL + 'images/agent/tabs/tabtype-person.png';
 				var url = this.getMetaData('personGravatarIcon');
 				url = Orb.appendQueryData(url, 'd', defaultIcon);
 
-				var a = this.tabBtn.find('a');
+				var a = this.tabBtn.find('a').find('i');
+				a.attr('class', '').addClass('image-icon');
 				a.css('background-image', 'url("' + url + '")').css('background-position', '2px 50%');
 			}
 		}

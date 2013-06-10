@@ -76,6 +76,9 @@ class TicketTriggers extends AbstractLogAction
 			return array();
 		}
 
+		$tr = array_unique($tr);
+		$tr_names = array_unique($tr);
+
 		return array(
 			'trigger_ids'    => implode(', ', $tr),
 			'trigger_titles' => implode(', ', $tr_names)

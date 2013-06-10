@@ -848,6 +848,13 @@ $collection->add('admin_agents_new', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_newpre', new Route(
+	'/agents/new-pre',
+	array('_controller' => 'AdminBundle:Agents:newAgentPre'),
+	array(),
+	array()
+));
+
 $collection->add('admin_agents_remove', new Route(
 	'/agents/{agent_id}/remove',
 	array('_controller' => 'AdminBundle:Agents:removeAgent'),
@@ -1174,6 +1181,13 @@ $collection->add('admin_langs_ticketcategories', new Route(
 $collection->add('admin_langs_feedback', new Route(
 	'/languages/{language_id}/phrases/feedback',
 	array('_controller' => 'AdminBundle:Languages:feedback'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_langs_kbcats', new Route(
+	'/languages/{language_id}/phrases/kb-cats',
+	array('_controller' => 'AdminBundle:Languages:kbCats'),
 	array('language_id' => '\\d+'),
 	array()
 ));
@@ -1651,6 +1665,13 @@ $collection->add('admin_products_updateorders', new Route(
 	array()
 ));
 
+$collection->add('admin_products_edit', new Route(
+	'/products/{product_id}/edit',
+	array('_controller' => 'AdminBundle:Products:edit'),
+	array('product_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_products_del', new Route(
 	'/products/{product_id}/delete',
 	array('_controller' => 'AdminBundle:Products:delete'),
@@ -1665,6 +1686,44 @@ $collection->add('admin_products_dodel', new Route(
 	array()
 ));
 
+################################################################################
+# Product Fields
+################################################################################
+
+$collection->add('admin_customdefproducts', new Route(
+	'/product-fields',
+	array('_controller' => 'AdminBundle:CustomDefProducts:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_customdefproducts_new_choosetype', new Route(
+	'/product-fields/new-choose-type',
+	array('_controller' => 'AdminBundle:CustomDefProducts:newChooseType', 'field_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_customdefproducts_edit', new Route(
+	'/product-fields/{field_id}/edit',
+	array('_controller' => 'AdminBundle:CustomDefProducts:edit'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdefproducts_delete', new Route(
+	'/product-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefProducts:delete'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdefproducts_setenabled', new Route(
+	'/product-fields/{field_id}/set-enabled',
+	array('_controller' => 'AdminBundle:CustomDefProducts:setEnabled'),
+	array('field_id' => '\\d+'),
+	array()
+));
 
 ################################################################################
 # Departments

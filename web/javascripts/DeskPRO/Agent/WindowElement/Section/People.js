@@ -122,6 +122,8 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 		this.contentEl.empty().html(data.section_html);
 
+		this._initSectionSearch();
+
 		var self = this;
 		this.peopleTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
@@ -137,6 +139,20 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 			onTabSwitch: function(info) {
 
 			}
+		});
+	},
+
+	_initSectionSearch: function() {
+		var searchPane = this.contentEl.find('.source-pane-search');
+		if (!searchPane[0]) {
+			return;
+		}
+
+		this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+
+		var typeSwitcher = searchPane.find('.content_type');
+		typeSwitcher.on('change', function(ev) {
+			searchPane.find('.content_type_wrap').hide().filter('.content_type-'+$(this).val()).show();
 		});
 	}
 });

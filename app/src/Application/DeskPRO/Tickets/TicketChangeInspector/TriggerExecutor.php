@@ -280,6 +280,8 @@ class TriggerExecutor
 				$ticket_log['person'] = App::getCurrentPerson();
 			} elseif ($this->tracker->hasNewReply()) {
 				$ticket_log['person'] = $this->tracker->getNewReply()->person;
+			} else if ($this->tracker->getExtra('person_performer')) {
+				$ticket_log['person'] = $this->tracker->getExtra('person_performer');
 			}
 
 			$ticket_log['ticket'] = $this->ticket;
@@ -493,7 +495,16 @@ class TriggerExecutor
 		# Flood checks / autoreply checks
 		#------------------------------
 
-		if (!App::getSetting('core.disable_gateway_floodcheck')) {
+		$flood_check = true;
+
+		if (
+			($this->tracker->isNewTicket() && $this->tracker->getTicket()->person->disable_autoresponses)
+			|| ($this->tracker->getNewUserReply() && $this->tracker->getNewUserReply()->person->disable_autoresponses)
+		) {
+			$flood_check = false;
+		}
+
+		if ($flood_check && !App::getSetting('core.disable_gateway_floodcheck')) {
 			$is_autoreply = false;
 
 			if ($is_newticket) {

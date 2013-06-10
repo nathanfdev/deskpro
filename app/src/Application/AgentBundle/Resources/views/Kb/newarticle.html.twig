@@ -81,6 +81,17 @@ pageMeta.baseId = '{{ baseId }}';
 		<div style="width: 98%">
 			<textarea type="text" name="newarticle[content]" id="{{baseId}}_content">{{ state.newarticle.content }}</textarea>
 		</div>
+		{% if app.languages.isMultiLang() %}
+			<div style="float: right; padding-right: 18px; padding-top: 4px;">
+				<span class="small-light-icon tipped" title="The primary language for this article. After the article has been created you will be able to translate it into other languages."></span>
+				Language: <select name="newarticle[language_id]">
+					{% for lang in app.languages.getAll() %}
+						<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<br class="clear" />
+		{% endif %}
 	</div>
 </div>
 

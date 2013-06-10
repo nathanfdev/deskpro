@@ -74,23 +74,30 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 					$has_done_reset = true;
 
 					$person->setPassword($this->in->getString('new_password'));
+					$this->db->executeUpdate("
+						UPDATE people
+						SET
+							is_user = 1,
+							password_scheme = 'bcrypt',
+							`password` = ?
+						WHERE id = ?
+					", array($person->password, $person->getId()));
 
-					$this->db->beginTransaction();
-					try {
-						$this->em->persist($person);
-						$this->em->remove($code_data);
-						$this->em->flush();
-						$this->db->commit();
-					} catch (\Exception $e) {
-						$this->db->rollback();
-						throw $e;
+					$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+					if ($token) {
+						$token->regenerateToken();
+						App::getOrm()->persist($token);
 					}
+
+					$this->db->delete('tmp_data', array('id' => $code_data->getId()));
 				} else {
 					return $this->render('AgentBundle:Login:reset-password.html.twig', array(
 						'reset_code'    => $this->in->getString('reset_code'),
 						'route_prefix'  => $this->route_prefix,
 					));
 				}
+			} else {
+				throw $this->createNotFoundException();
 			}
 		}
 

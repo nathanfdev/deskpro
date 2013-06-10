@@ -50,22 +50,39 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 		// Import categories first
 		$this->getDb()->insert('ticket_snippet_categories', array(
 			'person_id' => $this->getDb()->fetchColumn("SELECT id FROM people WHERE can_admin = 1 ORDER BY id ASC LIMIT 1"),
-			'is_global' => 1,
-			'title' => "General"
+			'is_global' => 1
 		));
 		$this->cat_map[0] = $this->getDb()->lastInsertId();
+
+		$this->getDb()->insert('object_lang', array(
+			'language_id' => 1,
+			'ref'         => 'text_snippet_categories.'.$this->cat_map[0],
+			'prop_name'   => 'title',
+			'value'       => 'General',
+			'ref_type'    => 'text_snippet_categories',
+			'ref_id'      => $this->cat_map[0]
+		));
 
 		$cats = $this->getOldDb()->fetchAll("SELECT * FROM quickreply_cat");
 		foreach ($cats as $c) {
 			$agent_id = $this->getMappedNewId('tech', $c['techid']);
 			if (!$agent_id) continue;
-			$this->getDb()->insert('ticket_snippet_categories', array(
+			$this->getDb()->insert('text_snippet_categories', array(
 				'person_id' => $agent_id,
-				'is_global' => $c['global'],
-				'title' => $c['name']
+				'typename' => 'tickets',
+				'is_global' => $c['global']
 			));
 
 			$this->cat_map[$c['id']] = $this->getDb()->lastInsertId();
+
+			$this->getDb()->insert('object_lang', array(
+				'language_id' => 1,
+				'ref'         => 'text_snippet_categories.'.$this->cat_map[$c['id']],
+				'prop_name'   => 'title',
+				'value'       => $c['name'],
+				'ref_type'    => 'text_snippet_categories',
+				'ref_id'      => $this->cat_map[$c['id']]
+			));
 		}
 		unset($cats);
 
@@ -84,18 +101,34 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 			$agent_id = $this->getMappedNewId('tech', $qr['techid']);
 			if (!$agent_id) continue;
 
-
 			if (!isset($this->cat_map[$qr['category']])) {
 				continue;
 			}
 
 			$qr['response'] = str_replace(array_keys($replace), array_values($replace), $qr['response']);
 
-			$this->getDb()->insert('ticket_snippets', array(
+			$this->getDb()->insert('text_snippets', array(
 				'person_id' => $agent_id,
 				'category_id' => $this->cat_map[$qr['category']],
-				'title' => $qr['name'],
-				'snippet' => $qr['response']
+			));
+
+			$snippet_id = $this->getDb()->lastInsertId();
+
+			$this->getDb()->insert('object_lang', array(
+				'language_id' => 1,
+				'ref'         => 'text_snippets.'.$snippet_id,
+				'prop_name'   => 'title',
+				'value'       => $qr['name'],
+				'ref_type'    => 'text_snippets',
+				'ref_id'      => $snippet_id
+			));
+			$this->getDb()->insert('object_lang', array(
+				'language_id' => 1,
+				'ref'         => 'text_snippets.'.$snippet_id,
+				'prop_name'   => 'snippet',
+				'value'       => $qr['name'],
+				'ref_type'    => 'text_snippets',
+				'ref_id'      => nl2br(htmlspecialchars($qr['response']))
 			));
 		}
 	}

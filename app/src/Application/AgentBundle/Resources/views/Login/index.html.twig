@@ -2,61 +2,46 @@
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//$('<iframe id="preload_iframe" src="{{ path(route_prefix ~ '_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
-
-			$('#lost_link').on('click', function(ev) {
-				ev.preventDefault();
-
-				$('#normal_view').show();
-				$('#lost_message_view').hide();
-				$('#loading_view').hide();
-
-				$('#login_title').hide();
-				$('#login_fields').hide();
-				$('#lost_password_title').show();
-				$('#lost_fields').show();
-			});
-
-			$('#login_link').on('click', function(ev) {
-				ev.preventDefault();
-
-				$('#normal_view').show();
-				$('#lost_message_view').hide();
-				$('#loading_view').hide();
-
-				$('#lost_password_title').hide();
-				$('#lost_fields').hide();
-				$('#login_title').show();
-				$('#login_fields').show();
-			});
-
-			$('#do_send_lost').on('click', function(ev) {
+			$('.show-lost-password-trigger').on('click', function(ev) {
 				ev.preventDefault();
 				$('#normal_view').hide();
-				$('#lost_message_view').hide();
-				$('#loading_view').show();
+				$('#lost_fields').show();
+				$('#lost_fields_sent').hide();
+			});
+
+			$('.show-login-form-trigger').on('click', function(ev) {
+				ev.preventDefault();
+				$('#normal_view').show();
+				$('#lost_fields').hide();
+				$('#lost_fields_sent').hide();
+			});
+
+			$('#do_send_lost').on('submit', function(ev) {
+				ev.preventDefault();
 
 				var postData = {
-					email: $('#email').val().trim()
+					email: $('#lost_email').val().trim()
 				};
 
 				if (!postData.email.length || postData.email.indexOf('@') === -1) {
-					$('#normal_view').show();
-					$('#lost_message_view').hide();
-					$('#loading_view').hide();
-					$('#lost_password_title').hide();
-					$('#lost_fields').hide();
-					$('#login_title').show();
-					$('#login_fields').show();
+					alert('Please enter an email address');
 					return;
 				}
+
+				$('#lost_fields_submit').hide();
+				$('#lost_fields_laoding').show();
 
 				$.ajax({
 					url: '{{ path(route_prefix~'_send_lost') }}',
 					data: postData,
 					complete: function() {
-						$('#loading_view').hide();
-						$('#lost_message_view').show();
+						$('#lost_fields_submit').show();
+						$('#lost_fields_loading').hide();
+					},
+					success: function() {
+						$('#lost_fields_sent').show();
+						$('#normal_view').hide();
+						$('#lost_fields').hide();
 					}
 				});
 			});
@@ -68,72 +53,102 @@
 	</script>
 {% endblock %}
 {% block content %}
-<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
-	<input type="hidden" name="agent_login" value="1" />
-	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
-	<h1 id="login_title">{{ phrase('agent.general.log_in') }}</h1>
-	<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.general.lost_password') }}</h1>
-	{% if timeout %}<p class="error" style="display: block">Your session has timed out, you must log in again.</p>{% endif %}
-	{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
-	{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.password_was_reset') }}</p>{% endif %}
-	{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
+{##############################################################################################################}
+{# LOGIN FORM #}
+{##############################################################################################################}
 
-	<div id="normal_view">
-		<dl>
-			<dt>
-                {{ phrase('agent.general.email') }}
-				{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}
-			</dt>
-			<dd><input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></dd>
-		</dl>
-
-		<div id="login_fields">
-			<dl>
-				<dt>{{ phrase('agent.general.password') }}</dt>
-				<dd class="password">
-					<a href="#" id="lost_link">{{ phrase('agent.general.lost_qm') }}</a>
-					<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" />
-					<div style="text-align: left">
-						<label style="margin: 0; padding: 0; font-weight: normal; font-size: 12px;">
-							<input type="checkbox" name="remember_me" value="1" tabindex="3" /> Remember Me
-						</label>
-					</div>
-				</dd>
-			</dl>
-
-			<dl>
-				<dt></dt>
-				<dd class="btn"><button tabindex="4">{{ phrase('agent.general.log_in') }}</button></dd>
-			</dl>
-		</div>
-
-		<div id="lost_fields" style="display: none">
-			<dl>
-				<dt></dt>
-				<dd class="password-reset">
-					Enter your email address and then click the button below to receieve instructions
-					on how to reset your password.
-				</dd>
-			</dl>
-
-			<dl>
-				<dt></dt>
-				<dd class="btn lost">
-					<button id="do_send_lost">{{ phrase('agent.login.email_instructions') }}</button>
-					<a href="{{ path(route_prefix~'_login') }}" id="login_link">{{ phrase('agent.login.back_to_login') }}</a>
-				</dd>
-			</dl>
-		</div>
+<div id="normal_view">
+	<div class="title">
+		{{ phrase('agent.general.log_in') }}
 	</div>
-	<div id="lost_message_view" style="display: none">
-		{{ phrase('agent.login.sent_pw_reset_instructions') }}
-	</div>
-	<div id="loading_view" style="display: none">
-		<i>{{ phrase('agent.general.loading') }}</i>
-	</div>
+	<div class="content">
+		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
+				<input type="hidden" name="agent_login" value="1" />
+				{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
+				{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
+				{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
+				{% if has_done_reset %}<div class="success">{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
+				{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
 
-</form>
+				{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
+
+				<fieldset>
+					<p>
+						<i class="icon-envelope-alt"></i>
+						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
+					</p>
+					<p>
+						<i class="icon-lock"></i>
+						<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
+					</p>
+					<p>
+						<table cellspacing="0" cellpadding="0" border="0">
+							<tr>
+								<td width="10" valign="middle" style="vertical-align: middle;"><input type="checkbox" name="remember_me" id="rem_cb" value="1" tabindex="3" /></td>
+								<td valign="middle" style="vertical-align: middle;">
+									&nbsp;
+									<label for="rem_cb">
+										{{ phrase('agent.login.remember_me') }}
+									</label>
+								</td>
+							</tr>
+						</table>
+					</p>
+				</fieldset>
+				<p><input class="full-width" type="submit" value="{{ phrase('agent.login.btn_login') }}" /></p>
+				<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
+		</form>
+	</div>
+</div>
+
+{##############################################################################################################}
+{# LOST PASSWORD #}
+{##############################################################################################################}
+
+<div id="lost_fields" style="display: none">
+	<div class="title">
+		{{ phrase('agent.general.lost_password') }}
+	</div>
+	<div class="content">
+		<form id="do_send_lost">
+			<fieldset>
+				<p>{{ phrase('agent.login.reset-password-info') }}</p>
+				<p>
+					<i class="icon-envelope-alt"></i>
+					<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="Email" tabindex="1" />
+				</p>
+			</fieldset>
+			<div id="lost_fields_submit">
+				<p><input class="full-width" type="submit" value="Email Instructions" /></p>
+				<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
+			</div>
+			<div id="lost_fields_laoding" style="display: none;">
+				<center>
+					<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
+				</center>
+			</div>
+		</form>
+	</div>
+</div>
+
+{##############################################################################################################}
+{# LOST PASSWORD:SENT #}
+{##############################################################################################################}
+
+<div id="lost_fields_sent" style="display: none">
+	<div class="title">
+		{{ phrase('agent.general.lost_password') }}
+	</div>
+	<div class="content">
+		<form>
+			<fieldset>
+				<p>{{ phrase('agent.login.reset-password-sent') }}</p>
+			</fieldset>
+			<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
+		</form>
+	</div>
+</div>
 
 <script type="text/javascript">
 	document.getElementById('email').focus();

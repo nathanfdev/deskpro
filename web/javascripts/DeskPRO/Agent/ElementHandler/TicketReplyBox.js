@@ -49,7 +49,26 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				autosaveContent: 'ticket',
 				minHeight: 120,
 				autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
+				focusCallback: function() {
+					if (!self.page.hasReplyFocused) {
+						self.wrapper.find('div.layout-content').trigger('goscrolltop');
+					}
+
+					self.page.hasReplyFocused = true;
+				},
 				preAutosaveCallback: function(textarea, data) {
+
+					if (self.getElById('reply_is_trans').val() != "") {
+						var newContent = textarea.data('redactor').getCode(),
+						name = textarea.attr('name');
+
+						data = [];
+						data.push({
+							name: name,
+							value: newContent
+						});
+					}
+
 					data.push({
 						name: 'extras[is_note]',
 						value: self.isNote ? 1 : 0
@@ -75,7 +94,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
 					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
 					obj.addBtnSeparatorAfter('dp_attach');
-					obj.addBtnSeparatorAfter('dp_snippets');
 
 					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
 					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
@@ -83,6 +101,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
 					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+
+					obj.addBtnSeparatorAfter('dp_snippets');
 				}
 			});
 			this.getElById('is_html_reply').val(1);
@@ -188,6 +208,49 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			textarea.on('keypress change', function() {
 				$(this).addClass('touched');
+			});
+		}
+
+		var translateControls = this.el.find('.translate-controls');
+		if (translateControls[0]) {
+			var transTrigger = translateControls.find('.trans-trigger');
+			translateControls.find('select').on('change', function(ev) {
+				var langId = $(this).val();
+				var langTitle = $.trim($(this).find(':selected').text());
+				transTrigger.find('.translate-lang').data('locale', langId).text(langTitle);
+			});
+
+			transTrigger.on('click', function(ev) {
+				Orb.cancelEvent(ev);
+				self.refreshMessageTranslation(transTrigger.find('.translate-lang').data('locale'));
+			});
+
+			var textarea2 = self.getElById('replybox_txt2');
+			DeskPRO_Window.initRteAgentReply(textarea2, {
+				defaultIsHtml: true,
+				minHeight: 120,
+				callback: function(obj) {
+					obj.addBtn('dp_cancel_trans', 'Cancel message translation', function(){
+						self.closeMessageTranslation();
+					});
+					obj.setBtnRight('dp_cancel_trans');
+
+					var cancelTransBtn = obj.$toolbar.find('.redactor_btn_dp_cancel_trans').closest('li');
+					cancelTransBtn.addClass('cancel_trans');
+					cancelTransBtn.find('a').text('Cancel Translation');
+				}
+			});
+
+			self.page.getEl('value_form').find('.language_id').on('change', function() {
+				var langId     = $(this).val();
+				if (!langId) {
+					langId = DESKPRO_DEFAULT_LANG_ID;
+				}
+
+				var langLocale = DESKPRO_NAME_REGISTRY.lang_data[langId].locale;
+				var langTitle  = $.trim(DESKPRO_NAME_REGISTRY.lang_data[langId].title);
+
+				transTrigger.find('.translate-lang').data('locale', langLocale).text(langTitle);
 			});
 		}
 
@@ -453,7 +516,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//------------------------------
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			viewUrl: this.el.data('snippet-viewer-url'),
+			driver: DeskPRO_Window.ticketSnippetDriver,
 			triggerElement: snippetBtn,
 			onBeforeOpen: function() {
 				if (isWysiwyg && textarea.data('redactor')) {
@@ -466,18 +529,65 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					return;
 				}
 
+				var ticketLangId = self.page.getEl('value_form').find('.language_id').val();
+				var snippetId    = info.snippetId;
+				var snippetCode  = info.snippetCode;
+
+				var agentText;
+				var defaultText;
+				var wantText;
+				var useText;
+				var result;
+
+				Array.each(snippetCode, function(info) {
+					if (info.language_id == ticketLangId) {
+						wantText = info.value;
+					}
+					if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+						agentText = info.value;
+					}
+					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+						defaultText = info.value;
+					}
+					useText = info.value;
+				});
+
+				if (wantText) {
+					useText = wantText;
+				} else if (agentText) {
+					useText = agentText;
+				} else if (defaultText) {
+					useText = defaultText;
+				}
+
+				try {
+					var tpl = twig({
+						data: useText,
+						strict_variables: true
+					});
+					result = tpl.render({
+						ticket: self.page.meta.api_data
+					}, {
+						strict_variables: true
+					});
+				} catch(e) {
+					console.log("Snippet render failed: %o", e);
+					result = useText;
+				}
+
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {
 						textarea.data('redactor').restoreSelection();
 					} catch (e) {}
 					textarea.data('redactor').setBuffer();
-					var html = info.snippetHtml;
+
+					var html = result;
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 					html = html.replace(/^<p>/, '');
 					html = html.replace(/<\/p>$/, '');
 					textarea.data('redactor').insertHtml(html);
 				} else {
-					self.page.insertTextInReply(info.snippet);
+					self.page.insertTextInReply(result);
 				}
 			}
 		});
@@ -1100,6 +1210,50 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		} else {
 			textarea.val(val);
 		}
+	},
+
+	refreshMessageTranslation: function(to) {
+		var self       = this;
+		var previewRow = this.el.find('.translate-row');
+
+		if (!to) {
+			this.closeMessageTranslation();
+			return;
+		}
+
+		var formData = {
+			from: 'me',
+			to: to,
+			message_text: this.getElById('replybox_txt').val()
+		};
+
+		var translateControls = this.el.find('.translate-controls');
+		translateControls.addClass('dp-loading-on');
+		$.ajax({
+			url: window.DESKPRO_TRANSLATE_SERVICE.translate_text_url,
+			data: formData,
+			type: 'POST',
+			dataType: 'json',
+			complete: function() {
+				translateControls.removeClass('dp-loading-on');
+			},
+			success: function(data) {
+				previewRow.show();
+
+				self.getElById('replybox_txt2').data('redactor').setCode(formData.message_text);
+				self.getElById('replybox_txt').data('redactor').setCode(data.message);
+				self.getElById('reply_is_trans').val(to);
+			}
+		});
+	},
+
+	closeMessageTranslation: function() {
+		var previewRow = this.el.find('.translate-row');
+		previewRow.hide();
+
+		this.getElById('replybox_txt').data('redactor').setCode(this.getElById('replybox_txt2').data('redactor').getCode());
+		this.getElById('replybox_txt2').data('redactor').setCode('');
+		this.getElById('reply_is_trans').val('');
 	},
 
 	destroy: function() {

@@ -53,6 +53,7 @@ class PersonSearch extends SearcherAbstract
 
 	const TERM_ID                 = 'person_id';
 	const TERM_ORGANIZATION       = 'person_organization';
+	const TERM_ORGANIZATION_NAME  = 'person_organization_name';
 	const TERM_LANGUAGE           = 'person_language';
 	const TERM_USERGROUP          = 'person_usergroup';
 	const TERM_EMAIL              = 'person_email';
@@ -71,6 +72,7 @@ class PersonSearch extends SearcherAbstract
 	const TERM_IS_CONFIRMED       = 'is_confirmed';
 	const TERM_AGENT_TEAM         = 'person_agent_team';
 	const TERM_AGENT_MODE         = 'agent_mode';
+	const TERM_IP_ADDRESS         = 'person_ip';
 
 	/**
 	 * From getSqlParts()
@@ -170,7 +172,7 @@ class PersonSearch extends SearcherAbstract
 		if ($order_by) {
 			$sql .= " ORDER BY $order_by ";
 		}
-		$sql .= " LIMIT 1000";
+		$sql .= " LIMIT 10000";
 
 		return $sql;
 	}
@@ -316,6 +318,13 @@ class PersonSearch extends SearcherAbstract
 					});
 					$wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
 					break;
+				case self::TERM_ORGANIZATION_NAME:
+					$joins[] = array(
+						'organizations',
+						"LEFT JOIN organizations AS $join_name ON ($join_name.id = people.organization_id)"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
+					break;
                 case self::TERM_USERGROUP:
                     $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.usergroup'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
@@ -327,7 +336,7 @@ class PersonSearch extends SearcherAbstract
 						SELECT person_id
 						FROM person2usergroups
 						WHERE usergroup_id IN (" . implode(',', $choice) . ")
-						LIMIT 5001
+						LIMIT 1001
 					");
 					if (!$person_ids) {
 						$person_ids = array(0);
@@ -637,6 +646,25 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_AGENT_MODE:
 					$this->setMode(self::MODE_AGENT);
+					break;
+
+				case self::TERM_IP_ADDRESS:
+					$joins[] = array(
+						'tickets_messages',
+						"LEFT JOIN tickets_messages AS $join_name ON ($join_name.person_id = people.id)"
+					);
+
+					$field = "$join_name.ip_address";
+
+					$choice = is_array($choice) ? array_pop($choice) : $choice;
+					$choice = preg_replace('#[^0-9\.]#', '', $choice);
+
+					// If last char is a dot, then do a wildcard suffix search
+					if (substr($choice, -1, 1) == '.') {
+						$wheres[] = $this->_stringMatch($field, $op, $choice, true, true);
+					} else {
+						$wheres[] = $this->_stringMatch($field, $op, $choice);
+					}
 					break;
 
 				default:

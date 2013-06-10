@@ -38,6 +38,8 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\ArticleComment;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class KbStep extends AbstractDeskpro3Step
 {
@@ -330,13 +332,18 @@ class KbStep extends AbstractDeskpro3Step
 			WHERE a.articleid = ? AND w.word IS NOT NULL
 		", array($article['id']));
 
+		foreach ($words as &$_w) {
+			$_w = Strings::utf8_strtolower($_w);
+		}
+
+		$words = Arrays::removeFalsey($words);
 		$words = array_unique($words);
 
 		foreach ($words as $w) {
-			$this->getDb()->insert('search_sticky_result', array(
-				'word' => $w,
+			$this->getDb()->replace('search_sticky_result', array(
+				'word'        => $w,
 				'object_type' => 'DeskPRO:Article',
-				'object_id' => $new_article->id
+				'object_id'   => $new_article->id
 			));
 		}
 

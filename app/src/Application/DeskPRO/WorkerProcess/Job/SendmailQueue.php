@@ -54,9 +54,11 @@ class SendmailQueue extends AbstractJob
 
 	public function run()
 	{
+		@ini_set('memory_limit', DP_MAX_MEMSIZE);
 		$runner = new SendmailQueueRunner();
 		$runner->setLogger($this->logger);
 		$count = $runner->run(0, 30);
+		@ini_set('memory_limit', DP_SET_MEMSIZE);
 
 		if ($count) {
 			$this->logStatus("Processed {$count} emails in queue.");

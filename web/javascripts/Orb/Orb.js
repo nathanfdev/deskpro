@@ -255,6 +255,38 @@ Orb.appendQueryData = function(url, k, v) {
 	return url;
 };
 
+/**
+ * Serialize form elements wihtin context
+ */
+Orb.serializeFormElements = function(context) {
+	var postData = [];
+
+	context.each(function() {
+		$(this).find('input, select, textarea').each(function() {
+			var el = $(this);
+			var name = el.attr('name');
+
+			if (!name) {
+				return;
+			}
+
+			if (el.is(':checkbox, :radio')) {
+				if (el.is(':checked')) {
+					postData.push({name: name, value: el.val() });
+				}
+			} else if (el.is('input, textarea')) {
+				postData.push({name: name, value: el.val() });
+			} else if (el.is('select')) {
+				el.find('option').filter(':selected').each(function() {
+					postData.push({name: name, value: $(this).val() });
+				});
+			}
+		});
+	});
+
+	return postData;
+};
+
 
 /**
  * Repeat a string `str` `count` times
@@ -332,6 +364,54 @@ Orb.strIsEmail = function(email) {
 
 
 /**
+ * Enables a phrase element by phraseId.
+ *
+ * This .show()'s a phrase element and .hide()'s any other
+ * phrases in the same element.
+ *
+ * @param phraseId
+ * @param parentEl
+ */
+Orb.enablePhraseEl = function(phraseId, parentEl) {
+	var phraseEl, phraseClass = phraseId.replace(/\./g, '_');
+	if (parentEl) {
+		$(parentEl).find('.dp-phrase-switch').removeClass('dp-phrase-on');
+		$(parentEl).find('.'+phraseClass).addClass('dp-phrase-on');
+	} else {
+		phraseEl = $('.' + phraseClass);
+		if (phraseEl[0]) {
+			$(phraseEl.parent()).find('.dp-phrase-text').removeClass('dp-phrase-on');
+			phraseEl.addClass('dp-phrase-on');
+		}
+	}
+};
+
+
+/**
+ * Re-executes a phrase and modifies the text of the element with the new value.
+ *
+ * @param {jQuery} el
+ * @param {Object} vars
+ */
+Orb.phraseTextEl = function(el, vars) {
+	if (!DeskPRO_Window.translate) {
+		return;
+	}
+
+	var phraseText = el.data('phrase-text');
+	phraseText = DeskPRO_Window.translate.phraseWithString(phraseText, vars, true);
+
+	if (el.data('phrase-html')) {
+		el.html(phraseText);
+	} else {
+		el.text(phraseText);
+	}
+
+	return el;
+};
+
+
+/**
  * Take elements of array and chunk them into subarrays of size
  *
  * @param {Array}   array
@@ -400,6 +480,61 @@ Orb.cancelEvent = function(ev) {
 	ev.preventDefault();
 };
 
+
+Orb.shimClickCallback_shim  = null;
+Orb.shimClickCallback_stack = [];
+/**
+ * This inserts a transparent shim at zIndex that is meant to capture click events.
+ *
+ * @param callback
+ * @param zIndex
+ */
+Orb.shimClickCallback = function(callback, zIndex) {
+	if (!Orb.shimClickCallback_shim) {
+		Orb.shimClickCallback_shim = $('<div/>').hide();
+		Orb.shimClickCallback_shim.css({
+			position: 'absolute',
+			top: 0,
+			right: 0,
+			left: 0,
+			bottom: 0,
+			background: 'transparent'
+		});
+		Orb.shimClickCallback_shim.appendTo('body');
+
+		Orb.shimClickCallback_shim.on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			Orb.shimClickCallbackPop(false, [ev]);
+		});
+	}
+
+	Orb.shimClickCallback_stack.push([callback, zIndex]);
+
+	if (Orb.shimClickCallback_shim.data('zindex-class')) {
+		Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'));
+	}
+	Orb.shimClickCallback_shim.addClass(zIndex).data('zindex-class', zIndex);
+	Orb.shimClickCallback_shim.show();
+};
+
+Orb.shimClickCallbackPop = function(no_callback, args) {
+	var lvl = Orb.shimClickCallback_stack.pop();
+
+	if (lvl && !no_callback) {
+		lvl[0].call(args);
+	}
+
+	if (Orb.shimClickCallback_stack.length) {
+		if (Orb.shimClickCallback_shim.data('zindex-class')) {
+			Orb.shimClickCallback_shim.removeClass(Orb.shimClickCallback_shim.data('zindex-class'));
+		}
+		Orb.shimClickCallback_shim.addClass(Orb.shimClickCallback_stack[Orb.shimClickCallback_stack.length-1][1])
+			.data('zindex-class', Orb.shimClickCallback_stack[Orb.shimClickCallback_stack.length-1][1]);
+		Orb.shimClickCallback_shim.show();
+	} else {
+		Orb.shimClickCallback_shim.hide();
+	}
+};
 
 /**
  * Simple way to load Javascript and CSS files on-demand.

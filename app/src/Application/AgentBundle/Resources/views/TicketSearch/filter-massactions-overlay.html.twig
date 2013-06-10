@@ -120,7 +120,7 @@
 									'with_blank': true,
 									'with_blank2': true,
 									'blank_title': '',
-									'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign'),
+									'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign'),
 									'add_classname': 'dpe_select',
 									'with_blank_value': '-1'
 								} %}
@@ -199,7 +199,7 @@
 						</dl>
 					</td>
 					{% endif %}
-					{% if app.getDataRepository('Language').isMultiLang() %}
+					{% if app.languages.isMultiLang() %}
 					<td style="padding-left: 10px;">
 						<dl>
 							<dt>Language</dt>
@@ -209,7 +209,7 @@
 									'with_blank': true,
 									'with_blank2': true,
 									'blank_title': '',
-									'languages': app.getDataRepository('Language').getAll(),
+									'languages': app.languages.getAll(),
 									'add_classname': 'dpe_select',
 									'with_blank_value': '-1'
 								} %}

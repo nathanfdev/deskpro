@@ -55,6 +55,10 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
+		if ($count > 45000) {
+			return 1;
+		}
+
 		return ceil($count / 1000);
 	}
 
@@ -72,6 +76,13 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM faq_searchlog");
+
+		if ($count > 45000) {
+			$this->logMessage('Too many records, skipping');
+			return;
+		}
+
 		if ($page == 1) {
 			$this->preRunAll();
 		}

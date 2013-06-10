@@ -29,14 +29,24 @@
 			{% if event_trigger == 'new.email.agent' %}<option value="-1">The agent who forwarded the email</option>{% endif %}
 			{% if event_trigger == 'new.web.agent.portal' %}<option value="-1">The agent who created the ticket</option>{% endif %}
 			{% if event_trigger == 'update.agent' %}<option value="-1">The agent who made the change</option>{% endif %}
-			{% for agent in app.getDataRepository('Agent').getAgents() %}
+			{% for agent in app.agents.getAgents() %}
 				<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 			{% endfor %}
 		</select>
 	</div>
 </div>
 
-{% if app.getDataRepository('AgentTeam').getTeamNames()|length %}
+<div class="builder-type" title="Add followers" data-rule-type="add_participants" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="add_participants[]" multiple="multiple">
+			{% for agent in app.agents.getAgents() %}
+				<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+{% if app.agent_teams.getTeamNames()|length %}
 	<div class="builder-type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="agent_team">
@@ -44,7 +54,7 @@
 				{% if event_trigger == 'new.email.agent' %}<option value="-1">The team of the agent who forwarded the email</option>{% endif %}
 				{% if event_trigger == 'new.web.agent.portal' %}<option value="-1">The team of the agent who created the ticket</option>{% endif %}
 				{% if event_trigger == 'update.agent' %}<option value="-1">The team of the agent who made the change</option>{% endif %}
-				{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
+				{% for id,title in app.agent_teams.getTeamNames() %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
 			</select>
@@ -81,7 +91,7 @@
 	<div class="builder-options">
 		<select name="department">
 			{% if event_trigger_master != 'sla' %}<option value="email_account">Linked department for email account</option>{% endif %}
-			{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+			{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 				{% if dep.children|length %}
 					<optgroup label="{{ dep.title }}">
 						{% for subdep in dep.children %}
@@ -101,7 +111,7 @@
 		<div class="builder-options">
 			<select name="category">
 				<option value="0">None</option>
-				{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+				{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
 					{% if cat.children|length %}
 						<optgroup label="{{ cat.title }}">
 							{% for subcat in cat.children %}
@@ -122,7 +132,7 @@
 		<div class="builder-options">
 			<select name="product">
 				<option value="0">None</option>
-				{% for id,title in app.getDataRepository('Product').getNames() %}
+				{% for id,title in app.products.getNames() %}
 					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
 			</select>
@@ -135,7 +145,7 @@
 		<div class="builder-options">
 			<select name="priority">
 				<option value="0">None</option>
-				{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
+				{% for id,name in app.getDataService('TicketPriority').getNames() %}
 					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
 			</select>
@@ -148,7 +158,7 @@
 		<div class="builder-options">
 			<select name="workflow">
 				<option value="0">None</option>
-				{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+				{% for work in app.getDataService('TicketWorkflow').getAll() %}
 					<option value="{{ work.id }}">{{ work.title }}</option>
 				{% endfor %}
 			</select>
@@ -252,7 +262,7 @@
 	<div class="builder-options">
 		<select class="template_name" name="template_name">
 			<option value="NEW">Create a new template</option>
-			{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
+			{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
 				<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 			{% endfor %}
 		</select>
@@ -263,7 +273,7 @@
 	<div class="builder-options">
 		<select class="template_name" name="template_name">
 			<option value="NEW">Create a new template</option>
-			{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
+			{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
 				<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 			{% endfor %}
 		</select>
@@ -382,7 +392,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -394,7 +404,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-validate.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-validate.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -406,7 +416,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -420,7 +430,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-agent.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-agent.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -432,7 +442,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -446,7 +456,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-agent.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-agent.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -458,7 +468,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-agent.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-agent.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -472,7 +482,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-user.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-user.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -484,7 +494,7 @@
 		<div class="builder-options">
 			<select class="template_name" name="template_name">
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-user.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-user.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>
@@ -497,12 +507,12 @@
 {# Email Notification Options #}
 {##################################################################################################################}
 
-{% if app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
+{% if app.getDataService('EmailGatewayAddress').getEmailAddresses() %}
 	<div class="builder-type" title="Send notifications from email account" data-rule-type="set_gateway_address" data-rule-group="Email Notification Options">
 		<div class="builder-options">
 			<select name="gateway_address_id">
 				<option value="department">Linked account for department</option>
-				{% for addr in app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
+				{% for addr in app.getDataService('EmailGatewayAddress').getEmailAddresses() %}
 					<option value="{{ addr.id }}">{{ addr.match_pattern }}</option>
 				{% endfor %}
 			</select>
@@ -637,7 +647,7 @@
 			<select class="template_name" name="template_name">
 				<option value="DeskPRO:emails_user:ticket-autoclose-warn.html.twig">Default Template</option>
 				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:ticket-autoclose-warn.html.twig') %}
+				{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:ticket-autoclose-warn.html.twig') %}
 					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 				{% endfor %}
 			</select>

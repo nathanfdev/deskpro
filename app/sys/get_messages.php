@@ -90,16 +90,16 @@ class AgentMessagesLoader extends LoaderAbstract
 			$this->_person_id = $agent_session['person_id'];
 			$this->_session_id = $agent_session['id'];
 
-			$new_since = isset($_GET['since']) ? intval($_GET['since']) : 0;
+			$new_since = isset($_REQUEST['since']) ? intval($_REQUEST['since']) : 0;
 			if ($new_since < 0) {
 				$new_since = 0;
 			}
 			$last_since = intval($agent_session['last_message_id']);
-			$activity_time = isset($_GET['at']) ? intval($_GET['at']) : 0;
+			$activity_time = isset($_REQUEST['at']) ? intval($_REQUEST['at']) : 0;
 			if ($activity_time < 0) {
 				$activity_time = 0;
 			}
-			$is_initial_pool = !empty($_GET['is_initial_poll']);
+			$is_initial_pool = !empty($_REQUEST['is_initial_poll']);
 
 			#------------------------------
 			# Standard client messages
@@ -121,19 +121,21 @@ class AgentMessagesLoader extends LoaderAbstract
 					$item[2]['html'] = $this->renderChatAlert($cid);
 				}
 			}
+			// unset ref to $item so it isnt overwritten
+			unset($item);
 
 			#------------------------------
 			# Poll requests
 			#------------------------------
 
-			$dos = (isset($_GET['do']) ? (array)$_GET['do'] : array());
+			$dos = (isset($_REQUEST['do']) ? (array)$_REQUEST['do'] : array());
 
 			// Every second poll, update online agents list
-			$count = isset($_GET['count']) ? intval($_GET['count']) : 0;
+			$count = isset($_REQUEST['count']) ? intval($_REQUEST['count']) : 0;
 			if ($count < 0) {
 				$count = 0;
 			}
-			if ($count && $count % 2 === 0) {
+			if ($count && $count % 2 === 0 || 1) {
 				$dos[] = 'get-online-agents';
 			} elseif ($count && $count % 3 === 0) {
 				$dos[] = 'get-online-visitors';
@@ -199,6 +201,62 @@ class AgentMessagesLoader extends LoaderAbstract
 				WHERE id = ?
 			");
 			$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
+
+			if (!empty($_REQUEST['recent_tabs']) && is_array($_REQUEST['recent_tabs'])) {
+				$q = $db->prepare("
+					SELECT value_array
+					FROM people_prefs
+					WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+				");
+				$q->execute(array($this->_person_id));
+
+				$recent_tabs = $q->fetchColumn();
+				if ($recent_tabs) {
+					$recent_tabs = @unserialize($recent_tabs);
+				}
+
+				if (!$recent_tabs) {
+					$recent_tabs = array();
+				}
+
+				foreach ($_REQUEST['recent_tabs'] as $item) {
+					if (empty($item[0]) || empty($item[1]) || empty($item[2]) || empty($item[3]) || empty($item[4]) || count($item) != 5) {
+						continue;
+					}
+
+					$id_string = $item[0] . '-' . $item[1];
+					if (isset($recent_tabs[$id_string])) {
+						unset($recent_tabs[$id_string]);
+					}
+
+					$recent_tabs[$id_string] = $item;
+				}
+
+				uasort($recent_tabs, function($a, $b) {
+					if ($a[4] == $b[4]) {
+						return 0;
+					}
+					return ($a[4] < $b[4]) ? -1 : 1;
+				});
+
+				while (count($recent_tabs) > 350) {
+					array_pop($recent_tabs);
+				}
+
+				$recent_tabs = serialize($recent_tabs);
+				$db->prepare("
+					REPLACE INTO people_prefs
+					SET
+						person_id = ?,
+						name = 'agent.ui.recent_tabs_collection',
+						value_str = NULL,
+						value_array = ?,
+						date_expire = NULL
+				")->execute(array(
+					$this->_person_id,
+					$recent_tabs
+				));
+			}
 
 			header('Content-Type: application/json');
 			echo json_encode($data);
@@ -483,7 +541,7 @@ class AgentMessagesLoader extends LoaderAbstract
 
 	public function checkTicketsMessage()
 	{
-		$ticket_ids = isset($_GET['check-ticket-ids']) ? (array)$_GET['check-ticket-ids'] : array();
+		$ticket_ids = isset($_REQUEST['check-ticket-ids']) ? (array)$_REQUEST['check-ticket-ids'] : array();
 		$ticket_ids = array_map('intval', $ticket_ids);
 
 		$tickets = $this->_getContainer()->getEm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);

@@ -21,11 +21,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			pageUrl: '',
 
 			/**
-			 * Optionally an ID on the page with the prelaoded content
-			 */
-			preloadId: null,
-
-			/**
 			 * Callback method for loading the page instead of using default ajax loader.
 			 */
 			pageCallback: null,
@@ -63,6 +58,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		 * see the page and the source is loaded in the bg
 		 */
 		this.pageSource = null;
+
+		if (this.options.pageSource) {
+			this.pageSource = this.options.pageSource;
+			delete this.options.pageSource;
+		}
 
 		/**
 		 * The page fragment once its initialized
@@ -105,19 +105,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this.autoloadTimeout) {
 			window.clearTimeout(this.autoloadTimeout);
 			this.autoloadTimeout = null;
-		}
-
-		if (this.options.preloadId) {
-			preloadEl = document.getElementById(this.options.preloadId);
-			if (preloadEl) {
-				var content = preloadEl.innerHTML;
-				preloadEl.parentNode.removeChild(preloadEl);
-				content = content.replace(/<deskpro_script/g, '<script');
-				content = content.replace(/<\/deskpro_script/g, '</script');
-				this._isLoading = false;
-				this.setHtml(content);
-				return;
-			}
 		}
 
 		this.loadingAjax = $.ajax({
@@ -339,25 +326,38 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		// Beside
 		if (this.options.positionMode == 'side') {
-
-			if (this.options.sidePosition == 'bottom') {
-				// Only calc if we dont have a bottom calculated, else it means the thing is full height
-				if (!bottom) {
-					top = '';
-					bottom = 10;
+			if (DeskPRO_Window.paneVis.source && DeskPRO_Window.paneVis.list) {
+				if (this.options.sidePosition == 'bottom') {
+					// Only calc if we dont have a bottom calculated, else it means the thing is full height
+					if (!bottom) {
+						top = '';
+						bottom = 10;
+					}
 				}
-			}
 
-			this.popoverOuter.css({
-				'position': 'absolute',
-				'z-index': 30001,
-				'width': width+2+6, //2px for thi sborder, 6px for the popover border
-				'overflow': 'auto',
-				'top': top ? top-3 : '',
-				'left': 9,
-				'bottom': bottom,
-				'height': height
-			});
+				this.popoverOuter.css({
+					'position': 'absolute',
+					'z-index': 30001,
+					'width': width+2+6, //2px for thi sborder, 6px for the popover border
+					'overflow': 'auto',
+					'top': top ? top-3 : '',
+					'left': 9,
+					'bottom': bottom,
+					'height': height
+				});
+			} else {
+				width = $(window).width() / 2;
+				this.popoverOuter.css({
+					'position': 'absolute',
+					'z-index': 30001,
+					'width': width+2+6, //2px for thi sborder, 6px for the popover border
+					'overflow': 'auto',
+					'top': top ? top-3 : '',
+					'left': 9,
+					'bottom': 10,
+					'height': height
+				});
+			}
 
 		// Over
 		} else {

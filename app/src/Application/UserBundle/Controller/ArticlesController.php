@@ -197,6 +197,7 @@ class ArticlesController extends AbstractController
 
 		if ($article_ids) {
 			$articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
+			$this->container->getObjectLangRepository()->preloadObjectCollection(null, $articles);
 		} else {
 			$articles = array();
 		}
@@ -250,6 +251,8 @@ class ArticlesController extends AbstractController
 
 			$all_categories[$cat['id']] = array_reverse($cats);
 		}
+
+		$this->container->getObjectLangRepository()->preloadObject(null, $article);
 
 		$comments = null;
 		$comments_widget = null;

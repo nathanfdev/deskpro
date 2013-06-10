@@ -21,6 +21,12 @@
 	{% if app.getBrowserSniffer().getBrowser() == 'Internet Explorer' %}{{ dp_asset_html('agent_interface_ie_css') }}{% endif %}
 
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+
+	<style type="text/css">
+		#dp_right_collapsed ul li span {
+			left: 22px;
+		}
+	</style>
 {% else %}
 	{{ dp_asset_html('agent') }}
 	{{ dp_asset_html('agent_vendor_out_css') }}

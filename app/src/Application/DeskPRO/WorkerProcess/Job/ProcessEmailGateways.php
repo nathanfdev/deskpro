@@ -46,6 +46,8 @@ class ProcessEmailGateways extends AbstractJob
 
 	public function run()
 	{
+		@ini_set('memory_limit', DP_MAX_MEMSIZE);
+
 		#------------------------------
 		# Mark error sources
 		#------------------------------
@@ -121,5 +123,6 @@ class ProcessEmailGateways extends AbstractJob
 		// The PHP time limit would've been set above while processing messages,
 		// reset it to disabled so other cron tasks can finish in this same execution
 		@set_time_limit(0);
+		@ini_set('memory_limit', DP_SET_MEMSIZE);
 	}
 }

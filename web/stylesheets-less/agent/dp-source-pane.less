@@ -49,6 +49,132 @@
 	display: block;
 }
 
+.source-pane-instance {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.source-pane-instance .source-pane-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 37px;
+
+	.gradient(#DADBDE, #F0F1F3);
+	border-bottom: 1px solid #B6BABF;
+
+	h1 {
+		font-size: 15px;
+		line-height: 36px;
+		padding: 0 0 0 9px;
+		color: #78818B;
+		float: left;
+	}
+
+	.find-button {
+		float: left;
+		color: #888;
+		cursor: pointer;
+		padding-top: 10px;
+		margin-right: 27px;
+		margin-left: 10px;
+		font-size: 12px;
+
+		div {
+			line-height: 100%;
+			border: 1px solid transparent;
+			padding: 2px;
+			.rounded(3px);
+		}
+	}
+	.find-button:hover {
+		color: #000;
+	}
+	.find-button.on {
+		color: #000;
+		div {
+			background: #fff;
+			border: 1px solid #888;
+		}
+	}
+}
+
+.source-pane-instance .source-pane-content {
+	position: absolute;
+	top: 37px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.pane-controls {
+	position: absolute;
+	top: 12px;
+	right: 5px;
+	font-size: 11px;
+
+	span {
+		display: inline-block;
+		cursor: pointer;
+		background-color: #fff;
+		border: 1px solid #fff;
+		line-height: 100%;
+		padding: 0;
+		width: 11px;
+		text-align: center;
+		.rounded(10px);
+		margin-left: 3px;
+
+		&:hover {
+			border: 1px solid #999;
+		}
+	}
+}
+
+.source-search-area {
+	.row {
+		padding: 5px;
+
+		header {
+			i {
+				font-size: 11px;
+				position: relative;
+				top: -1px;
+			}
+
+			color: #888;
+
+			&:hover {
+				color: #444;
+			}
+		}
+
+		&.on header {
+			color: #444;
+		}
+		label {
+			display: inline;
+		}
+
+		article { display: none; }
+		&.on article { display: block; }
+
+		.icon-plus-sign { display: inline-block; }
+		&.on .icon-plus-sign { display: none; }
+		.icon-minus-sign { display: none; }
+		&.on .icon-minus-sign { display: inline-block; }
+	}
+
+	.footer {
+		margin-top: 15px;
+		text-align: center;
+	}
+}
+
 /*****************************************************************************
  * Section headers
 /*****************************************************************************/

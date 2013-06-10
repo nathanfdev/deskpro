@@ -489,8 +489,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($context == 'user') {
 			$ticket->getTicketLogger()->recordExtra('is_user_reply', true);
+			$ticket->email_reader_action = 'user_reply';
 		} else {
 			$ticket->getTicketLogger()->recordExtra('is_agent_reply', true);
+			$ticket->email_reader_action = 'agent_reply';
 		}
 
 		$ticket->getTicketLogger()->recordExtra('reply_actions_override', $this->reply_actions);
@@ -596,6 +598,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if (isset($this->reply_actions['is_note'])) {
 			$message['is_agent_note'] = true;
+			$ticket->email_reader_action = 'agent_note';
 		}
 
 		$ticket_attach = array();
@@ -668,7 +671,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
 		}
 
-		if (!$this->is_bounce) {
+		if (!$this->is_bounce && !$message->is_agent_note) {
 			if ($person['is_agent'] && $context == 'agent') {
 				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
 				$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
@@ -683,6 +686,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		// If we didnt add a message, then it was an actions-only message
 		// So we should reply with the standard 'updated' email which lists actions
 		if (!$did_add_message) {
+			$ticket->email_reader_action = 'agent_actions';
 			$ticket->getTicketLogger()->recordExtra('force_notify_email', $person->id);
 		}
 

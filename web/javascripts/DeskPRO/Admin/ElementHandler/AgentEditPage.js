@@ -149,12 +149,20 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 					$(this).prop('checked', true);
 					$(this).closest('td').find('.jquery-checkbox').addClass('jquery-checkbox-checked');
 				});
+				ticket_assign_dep_choices.each(function() {
+					$(this).prop('checked', true);
+					$(this).closest('td').find('.jquery-checkbox').addClass('jquery-checkbox-checked');
+				});
 			}
 		});
 		$('#ticketdep_toggle_all_assign').on('click', function(ev) {
 			ev.preventDefault();
 			if (ticket_assign_dep_choices.is(':checked')) {
 				ticket_assign_dep_choices.each(function() {
+					$(this).prop('checked', false);
+					$(this).closest('td').find('.jquery-checkbox').removeClass('jquery-checkbox-checked');
+				});
+				ticket_dep_choices.each(function() {
 					$(this).prop('checked', false);
 					$(this).closest('td').find('.jquery-checkbox').removeClass('jquery-checkbox-checked');
 				});

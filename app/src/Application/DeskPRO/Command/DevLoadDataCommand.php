@@ -841,30 +841,51 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _loadTicketSnippetCategory()
 	{
-		$category = new Entity\TicketSnippetCategory();
+		$category = new Entity\TextSnippetCategory();
 		$category->is_global = true;
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
 		$category->person = $this->_getRandomAgent();
+		$category->typename = 'tickets';
 
 		App::getOrm()->persist($category);
+		App::getOrm()->flush();
+
+		App::getDb()->replace('object_lang', array(
+			'language_id' => 1,
+			'ref'         => 'text_snippet_categories.'.$category->getId(),
+			'prop_name'   => 'title',
+			'value'       => $this->_getRandomText(mt_rand(1, 4)),
+		));
 	}
 
 	protected function _loadTicketSnippet()
 	{
 		if (!isset($this->_data_cache['ticket_snippet_categories'])) {
-			$this->_data_cache['ticket_snippet_categories'] = App::getEntityRepository('DeskPRO:TicketSnippetCategory')->findAll();
+			$this->_data_cache['ticket_snippet_categories'] = App::getEntityRepository('DeskPRO:TextSnippetCategory')->findAll();
 		}
 
-		$snippet = new Entity\TicketSnippet();
-		$snippet->title = $this->_getRandomText(mt_rand(2, 5));
-		$text = $this->_getRandomText(mt_rand(10, 200));
-		$snippet->snippet = $text;
-		$snippet->snippet_html = '<p>' . $text . '</p>';
-
-		$snippet->category = $this->_getRandomFromCache('ticket_snippet_categories');
+		$snippet = new Entity\TextSnippet();
+		$snippet->category = $this->_getRandomFromCache('text_snippet_categories');
 		$snippet->person = $this->_getRandomAgent();
 
+		$title = $this->_getRandomText(mt_rand(2, 5));
+		$text = $this->_getRandomText(mt_rand(10, 200));
+
 		App::getOrm()->persist($snippet);
+		App::getOrm()->flush();
+
+		App::getDb()->replace('object_lang', array(
+			'language_id' => 1,
+			'ref'         => 'text_snippets.'.$snippet->getId(),
+			'prop_name'   => 'title',
+			'value'       => $title,
+		));
+
+		App::getDb()->replace('object_lang', array(
+			'language_id' => 1,
+			'ref'         => 'text_snippets.'.$snippet->getId(),
+			'prop_name'   => 'snippet',
+			'value'       => $text,
+		));
 	}
 
 	protected function _loadChatSnippetCategory()

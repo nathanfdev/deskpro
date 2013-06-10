@@ -370,7 +370,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 			return $this->_snippets;
 		}
 
-		$this->_snippets = App::getOrm()->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+		$this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
 
 		return $this->_snippets;
 	}

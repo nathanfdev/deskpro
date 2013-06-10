@@ -3,60 +3,76 @@
 	<div id="dp_nav_sections" class="deskproPane">
 		<ul>
 			{% if app.user.hasPerm('agent_tickets.use') %}
-				<li class="dpNavActive" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="ticketNavIcon">{{ phrase('agent.general.tickets') }}</span></a>
+				<li class="active" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="{{ phrase('agent.chrome.nav_tickets') }}"><span class="ticketNavIcon"></span></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
 				<li  id="chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.UserChat">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="chatNavIcon">{{ phrase('agent.general.chat') }}</span></a>
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="{{ phrase('agent.chrome.nav_userchat') }}"><span class="chatNavIcon"></span></a>
 				</li>
 			{% endif %}
 
 			{% if app.user.hasPerm('agent_people.use') %}
 				<li id="people_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.People">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="peopleNavIcon">{{ phrase('agent.general.people') }}</span></a>
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="{{ phrase('agent.chrome.nav_people') }}"><span class="peopleNavIcon"></span></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_feedback')  %}
 				<li id="feedback_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Feedback">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="feedbackNavIcon">{{ phrase('agent.general.feedback') }}</span></a>
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="{{ phrase('agent.chrome.nav_feedback') }}"><span class="feedbackNavIcon"></span></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
 				<li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="publishNavIcon">{{ phrase('agent.general.publish') }}</span></a>
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="{{ phrase('agent.chrome.nav_publish') }}"><span class="publishNavIcon"></span></a>
 				</li>
 			{% endif %}
 
 			{% if app.getSetting('core.apps_tasks')  %}
 				<li id="tasks_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tasks">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="tasksNavIcon">{{ phrase('agent.general.tasks') }}</span></a>
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="{{ phrase('agent.chrome.nav_tasks') }}"><span class="tasksNavIcon"></span></a>
 				</li>
 			{% endif %}
 
 			{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
 				<li id="twitter_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Twitter">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="twitterNavIcon">Twitter</span></a>
+					<span class="count-badge" style="display: none"><span></span></span>
+					<a title="Twitter"><span class="twitterNavIcon"></span></a>
 				</li>
 			{% endif %}
 		</ul>
-		<div id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
-			<span id="chat_online_count">0</span>
-		</div>
+
+		<ul class="bottom">
+			{% if app.user.can_reports %}
+				<li id="reports_section" class="no-click-switch {% if app.user.can_admin %}with-can-admin{% endif %}">
+					<a title="{{ phrase('agent.chrome.nav_reports') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/reports/"><span class="reportsNavIcon"></span></a>
+				</li>
+			{% endif %}
+
+			{% if app.user.can_admin %}
+				<li id="settings_section" class="no-click-switch">
+					<a title="{{ phrase('agent.chrome.nav_admin_settings') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span class="settingsNavIcon"></span></a>
+				</li>
+			{% endif %}
+			<li id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
+				{# <span id="chat_online_count">0</span> #}
+				<span class="count-badge" style="display: none"><span></span></span>
+				<a title="{{ phrase('agent.chrome.nav_agentchat') }}"><span class="agentchatNavIcon"></span></a>
+			</li>
+		</ul>
 	</div>
 
-	{% if not app.getSetting('core.disable_dpcom_newticket') %}
+	{% if not app.getSetting('core.disable_dpcom_newticket') and false %}
 		<a id="submit_beta_feedback" href="http://helpdesk.deskpro.com/" target="_blank"></a>
 	{% endif %}
 </div>

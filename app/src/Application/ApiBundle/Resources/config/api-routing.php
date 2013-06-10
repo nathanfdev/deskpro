@@ -378,6 +378,80 @@ $collection->add('api_tickets_sla_organizations', new Route(
 ));
 
 ################################################################################
+# Text Snippets
+################################################################################
+
+$collection->add('api_textsnippets_list', new Route(
+	'/text-snippets/{typename}',
+	array('_controller' => 'ApiBundle:TextSnippets:filterSnippets'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_textsnippets_new', new Route(
+	'/text-snippets/{typename}',
+	array('_controller' => 'ApiBundle:TextSnippets:saveSnippet', 'snippet_id' => '0'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_textsnippets_edit', new Route(
+	'/text-snippets/{typename}/{snippet_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:saveSnippet'),
+	array('_method' => 'POST', 'snippet_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_textsnippets_del', new Route(
+	'/text-snippets/{typename}/{snippet_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:deleteSnippet'),
+	array('_method' => 'DELETE', 'snippet_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_textsnippets_get', new Route(
+	'/text-snippets/{typename}/{snippet_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:getSnippet'),
+	array('_method' => 'GET', 'snippet_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_textsnippets_cats_list', new Route(
+	'/text-snippets/{typename}/categories',
+	array('_controller' => 'ApiBundle:TextSnippets:listCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_textsnippets_cats_new', new Route(
+	'/text-snippets/{typename}/categories',
+	array('_controller' => 'ApiBundle:TextSnippets:saveCategory', 'category_id' => '0'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_textsnippets_cats_edit', new Route(
+	'/text-snippets/{typename}/categories/{category_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:saveCategory'),
+	array('_method' => 'POST', 'category_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_textsnippets_cats_get', new Route(
+	'/text-snippets/{typename}/categories/{category_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:getCategory'),
+	array('_method' => 'GET', 'category_id' => '\d+'),
+	array()
+));
+
+$collection->add('api_textsnippets_cats_del', new Route(
+	'/text-snippets/{typename}/categories/{category_id}',
+	array('_controller' => 'ApiBundle:TextSnippets:deleteCategory'),
+	array('_method' => 'DELETE', 'category_id' => '\d+'),
+	array()
+));
+
+################################################################################
 # Open Ticket Controller
 ################################################################################
 

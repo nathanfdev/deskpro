@@ -341,6 +341,11 @@ function deskpro_build_cleanvendors_guzzle($dir)
 	deskpro_build_exec_exit_error("rm -rf phing/ tests/ .gitignore .travis.yml CHANGELOG.md README.md UPGRADING.md build.xml composer.json phar-stub.php phpunit.xml.dist", $dir);
 }
 
+function deskpro_build_cleanvendors_idbstore($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf example/ lib/ .gitignore CHANGELOG LICENSE Makefile README.md component.json idbstore.js package.json", $dir);
+}
+
 function deskpro_build_cleanvendors_imagine($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf docs tests .gitignore .travis.yml composer.json composer.lock Gemfile imagine.phar phpunit.xml.dist Rakefile README.md", $dir);
@@ -404,6 +409,11 @@ function deskpro_build_cleanvendors_spork($dir)
 function deskpro_build_cleanvendors_twig($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf bin doc ext test AUTHORS CHANGELOG composer.json package.xml.tpl phpunit.xml.dist README.markdown .travis.yml .editorconfig .gitignore", $dir);
+}
+
+function deskpro_build_cleanvendors_twig_js($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf twig.min.js package.json README.md Makefile .travis.yml .npmignore .gitmodules .gitignore test/ test-ext/ src/ lib/ docs/ demos/ bin/", $dir);
 }
 
 function deskpro_build_cleanvendors_zend($dir)

@@ -147,6 +147,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 			DeskPRO_Window.getMessageBroker().removeTaggedListeners(self.OBJ_ID);
 			if (self.wrapper) {
+				self.wrapper.find('.with-handler').each(function() {
+					var h = $(this).data('handler');
+					if (h) {
+						h.destroy();
+					}
+				});
 				self.wrapper.empty();
 			}
 		});
@@ -198,12 +204,15 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		// Assigning multiple values from a hash
 		if (value === undefined && typeOf(name) == 'object') {
 			this.meta = Object.merge(this.meta, name);
+			this.initMetaData();
 		} else {
 			this.meta[name] = value;
 		}
 	},
 
+	initMetaData: function() {
 
+	},
 
 	/**
 	 * Get a hash of all the metadata.

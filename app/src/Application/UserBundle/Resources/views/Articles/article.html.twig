@@ -15,7 +15,7 @@
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
-				<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
+				<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{ phrase_object(c) }}</a></li>
 			{% endfor %}
 		{% endif %}
 	{% endfor %}
@@ -28,7 +28,7 @@
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
-				/ {{c.title}}
+				/ {{ phrase_object(c) }}
 			{% endfor %}
 		{% endif %}
 	{% endfor %}

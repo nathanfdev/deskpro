@@ -9,6 +9,10 @@
 	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 	var DESKPRO_PERSON_TZ = '{{ app.user.timezone }}';
 	var DESKPRO_PERSON_NOTIFICATION_DISMISS = parseInt('{{ app.user.getPref('agent.ui.auto_dismiss_notification', 60) }}', 10);
+
+	var DESKPRO_PERSON_LANG_ID  = {{ app.user.language.id }};
+	var DESKPRO_DEFAULT_LANG_ID = {{ app.languages.getDefaultId() }};
+
 	{# {% if app.user.is_admin %} #}
 	var DESKPRO_PERSON_ISADMIN = true;
 	{# {% endif %} #}
@@ -21,6 +25,8 @@
 			0{% for id in chat_dep_ids %},{{id}}{% endfor %}
 		]
 	};
+
+	{% if app.getSetting('agent.ui_snippets_use_client_db') %}var DESKPRO_SNIPPETS_USE_CLIENT_DB = true;{% endif %}
 
 	var DESKPRO_TIME_OUT_OF_SYNC = false;
 	var DESKPRO_TIME_OUT_OF_SYNC_IGNORE = parseInt({{ app.user.getPref('agent.ui.tz_detect_dismiss')|json_encode|raw }}) + 100;

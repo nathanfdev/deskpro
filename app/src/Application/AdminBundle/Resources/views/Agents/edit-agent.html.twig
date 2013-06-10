@@ -55,6 +55,14 @@
 	data-validate-url="{{ path('admin_agents_edit_formvalidate', {person_id: agent.id|default('0')}) }}"
 >
 
+{% if agent_base %}
+	<div class="alert-message block-message info">
+		You are creating a new agent based off of <strong>{{ agent_base.display_name }}</strong>. Permissions and notification settings
+		will be copied.
+		<input type="hidden" name="base_agent_id" value="{{ agent_base.id }}" />
+	</div>
+{% endif %}
+
 <div id="errors_container" style="display: none;">
 	<h3>Please correct the following errors:</h3>
 	<ul></ul>
@@ -196,7 +204,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+									{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 										<tr>
 											{% if dep.children|length %}
 												<td class="title title-group">{{ dep.title }}</td>
@@ -208,7 +216,7 @@
 													<input class="onoff-slider departments" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" />
 												</td>
 												<td class="prop ticket-assign-choice">
-													<input class="onoff-slider departments_assign" type="checkbox" {% if agent_deps_assign[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ dep.id }}][tickets]" value="1" />
+													<input class="onoff-slider departments_assign" type="checkbox" {% if agent_deps[dep.id].tickets or agent_deps_assign[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ dep.id }}][tickets]" value="1" />
 												</td>
 											{% endif %}
 										</tr>
@@ -220,7 +228,7 @@
 														<input class="onoff-slider departments" type="checkbox" {% if agent_deps[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" />
 													</td>
 													<td class="prop ticket-assign-choice">
-														<input class="onoff-slide departments_assignr" type="checkbox" {% if agent_deps_assign[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ subdep.id }}][tickets]" value="1" />
+														<input class="onoff-slide departments_assignr" type="checkbox" {% if agent_deps[subdep.id].tickets or agent_deps_assign[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ subdep.id }}][tickets]" value="1" />
 													</td>
 												</tr>
 											{% endfor %}
@@ -242,7 +250,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
+										{% for dep in app.departments.getRootNodes() if dep.is_chat_enabled %}
 											<tr>
 												{% if dep.children|length %}
 													<td class="title title-group">{{ dep.title }}</td>

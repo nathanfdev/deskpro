@@ -152,6 +152,16 @@ class FeedbackResults
 		return new self($controller, $result_cache);
 	}
 
+	/**
+	 * @return \Application\AgentBundle\Controller\Helper\FeedbackResults
+	 */
+	public static function newFromResultCache($controller, ResultCache $result_cache)
+	{
+		$helper = new self($controller);
+		$helper->setFeedbackIds($result_cache['results']);
+
+		return $helper;
+	}
 
 	public function __construct($controller, ResultCache $result_cache = null)
 	{
@@ -200,6 +210,11 @@ class FeedbackResults
 	 * @return array
 	 */
 	public function getFeedbackForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
+	}
+
+	public function getForPage($page, $per_page = 50)
 	{
 		return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
 	}

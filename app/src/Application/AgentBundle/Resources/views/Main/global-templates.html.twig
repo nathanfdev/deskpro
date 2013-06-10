@@ -6,39 +6,6 @@
 
 <div id="deskpro_window_templates" style="display: none;">
 
-<script type="text/x-deskpro-plain" id="products_ob_tpl">
-	{{ optionbox.start('Products') }}
-		{{ optionbox.section_start('', 'product') }}
-			{% if app.getSetting('core.use_product') %}
-				{% for cat in ticket_options.products_hierarchy %}
-					<li
-						class="top {% if cat.children %}parent-option{% endif %} item-{{ cat.id }}"
-						data-item-id="{{ cat.id }}"
-						data-full-title="{{ cat.title }}"
-					>
-						<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
-						<label>{{ cat.title }}</label>
-					</li>
-					{% if cat.children %}
-						{% for subcat in cat.children %}
-							<li
-								class="child item-{{ cat.id }} child-of-{{ dep.id }}"
-								data-item-id="{{ cat.id }}"
-								data-parent-id="{{ cat.id }}"
-								data-full-title="{{ cat.title }} &gt; {{ cat.title }}"
-							>
-								<span class="elbow-end"></span>
-								<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
-								<label>{{cat.title}}</label>
-							</li>
-						{% endfor %}
-					{% endif %}
-				{% endfor %}
-			{% endif %}
-		{{ optionbox.section_end() }}
-	{{ optionbox.end('Apply') }}
-</script>
-
 {# Comment Menu #}
 <ul id="comment_tools_menu" data-menu-flag="copy-menu">
 	<li data-action="edit">{{ phrase('agent.general.edit_comment') }}</li>
@@ -102,7 +69,7 @@
 {##############################################################}
 
 <ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
-	{% for cat in app.getDataRepository('FeedbackCategory').getRootNodes() %}
+	{% for cat in app.getDataService('FeedbackCategory').getRootNodes() %}
 		{% if last_with_child %}
 			<li class="sep">-</li>
 		{% endif %}
@@ -130,7 +97,7 @@
 		data-status-type="active"
 		data-option-value="active"
 	>{{ phrase('agent.feedback.status_active') }}</li>
-	{% for cat in app.getDataRepository('FeedbackStatusCategory').getActiveCategories() %}
+	{% for cat in app.getDataService('FeedbackStatusCategory').getActiveCategories() %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="active"
@@ -142,7 +109,7 @@
 		data-status-type="closed"
 		data-option-value="closed"
 	>{{ phrase('agent.tickets.status_closed') }}</li>
-	{% for cat in app.getDataRepository('FeedbackStatusCategory').getClosedCategories() %}
+	{% for cat in app.getDataService('FeedbackStatusCategory').getClosedCategories() %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="closed"
@@ -155,36 +122,6 @@
 {# Search related #}
 {##############################################################}
 
-{# Omnisearch Tempaltes #}
-<script type="text/x-deskpro-plain" id="omnisearch_term_tpl">
-	<div class="term">
-		<span class="remove-term-trigger">x</span>
-		<span class="label"></span>
-		<span class="value"></span>
-	</div>
-</script>
-<script type="text/x-deskpro-plain" id="omnisearch_term_input_tpl">
-	<div class="term input-term">
-		<span class="remove-term-trigger">x</span>
-		<div class="label"></div>
-		<div class="value">
-			<span class="display-value"></span>
-			<input type="text" value="" />
-		</div>
-	</div>
-</script>
-<script type="text/x-deskpro-plain" id="omnisearch_term_date_tpl">
-	<div class="term date-term">
-		<span class="remove-term-trigger">x</span>
-		<input type="hidden" class="op" value="is" />
-		<div class="label"></div>
-		<div class="value">
-			<span class="display-value"></span>
-			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-		</div>
-	</div>
-</script>
-
 <script type="text/x-deskpro-plain" id="related_content_newitem">
 	<li>
 		<button class="clean-white small remove">Remove</button>
@@ -192,41 +129,6 @@
 	</li>
 </script>
 
-{# Everything Menus #}
-<div id="everything_search_terms_global">
-	<div class="type" title="{{ phrase('agent.general.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				{% if with_change_terms %}
-					<option value="changed">{{ phrase('agent.general.changed') }}</option>
-					<option value="changed_to">{{ phrase('agent.general.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('agent.general.changed_to_remove') }}</option>
-				{% endif %}
-			</select>
-		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
-		</div>
-	</div>
-</div>
-
-{# Ticket Menus #}
-<div id="ticket_search_terms_global">
-	{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': ticket_options }%}
-</div>
-
-{# People Menus #}
-<div id="people_search_terms_global">
-	{% include 'DeskPRO:Common:people-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': people_options }%}
-</div>
-
-
-{# Org Search #}
-<div id="org_search_terms_global">
-	{% include 'DeskPRO:Common:org-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': org_options }%}
-</div>
 {#
 	This isnt a jQuery template. Its used in TabStrip.js because
 	it needs an html string, and jQuery creates real HTML elements.
@@ -376,20 +278,12 @@
 	</footer>
 </section>
 
-<script type="text/x-deskpro-plain" id="ticketactions_actionsform_tpl">
-	<div class="dp-form-row">
-		<div class="dp-form-input">
-			<div class="search-form actions-list">
-				<div class="search-terms">
-				</div>
-				<div class="term add-term-row" style="display:none"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> {{ phrase('agent.general.add_action_term') }}</div>
-			</div>
-			{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
-		</div>
-	</div>
-</script>
-
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
+
+<script type="text/x-deskpro-plain" id="tickets_snippet_shell_tpl">{% include 'AgentBundle:TextSnippets:tickets-widget-shell.html.twig' %}</script>
+<script type="text/x-deskpro-plain" id="chat_snippet_shell_tpl">{% include 'AgentBundle:TextSnippets:chat-widget-shell.html.twig' %}</script>
+
+{{ tpl_source('snippet_rows_tpl', 'AgentBundle:TextSnippets:snippet-rows.html.twig') }}
 
 </div>

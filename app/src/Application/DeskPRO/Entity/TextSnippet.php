@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -42,8 +43,6 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-/**
- */
 class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
@@ -78,81 +77,17 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $snippet;
 
+	public function __construct()
+	{
+		$this->getObjectTranslatable();
+	}
+
 	/**
 	 * @return int
 	 */
 	public function getId()
 	{
 		return $this->id;
-	}
-
-	protected function process(array $options)
-	{
-		$options = new \Orb\Util\OptionsArray($options);
-		$options->setDefault('wrap_left', '');
-		$options->setDefault('wrap_right', '');
-		$options->setDefault('is_html', false);
-
-		$person_context = $options->get('person_context');
-		if (!$person_context) {
-			$person_context = App::getCurrentPerson();
-		}
-
-		$d = $person_context->getDateTime();
-
-		$repl = array_merge(array(
-			'var.time'      => date('h:ia', $d->getTimestamp()),
-			'var.time24'    => date('H:i', $d->getTimestamp()),
-			'var.date'      => date('F d, Y', $d->getTimestamp()),
-			'me.name'       => $person_context->getDisplayName(),
-			'me.email'      => $person_context->getPrimaryEmailAddress(),
-		), $options->get('replacements', array()));
-
-		$wrap_l = $options->get('wrap_left');
-		$wrap_r = $options->get('wrap_right');
-		$is_html = $options->get('is_html');
-
-		$snippet = $this->snippet;
-		if ($is_html) {
-			$snippet = nl2br(htmlspecialchars($this->snippet));
-		}
-
-		foreach ($repl as $k => $v) {
-			if ($is_html) {
-				$v = nl2br(htmlspecialchars($v));
-			}
-			$snippet = str_replace("{{ $k }}", $wrap_l . $v . $wrap_r, $snippet);
-			$snippet = str_replace("{{{$k}}}", $wrap_l . $v . $wrap_r, $snippet);
-		}
-
-		return $snippet;
-	}
-
-	/**
-	 * @param array $options
-	 * @return string
-	 */
-	public function format(array $options = array())
-	{
-		return $this->process($options);
-	}
-
-	public function formatHtml(array $options = array())
-	{
-		$options = array_merge($options, array('is_html' => true));
-		return $this->format($options);
-	}
-
-	/**
-	 * Format a snippet for displaying as a preview. This is where the terms are highlighed.
-	 *
-	 * @param array $options
-	 * @return string
-	 */
-	public function formatPreviewHtml(array $options = array())
-	{
-		$options = array_merge($options, array('wrap_left' => '<span class="replacement">', 'wrap_right' => '</span>', 'is_html' => true));
-		return $this->format($options);
 	}
 
 
@@ -169,10 +104,39 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['category_id'] = $this->category->getId();
+		$data['title'] = array();
+		$data['snippet'] = array();
+
+		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+			$title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
+			$snippet = $this->getObjectTranslatable()->getObjectProp('snippet', $lang);
+
+			$data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+			$data['snippet'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $snippet);
+		}
+
+		return $data;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
+
+	public function getObjectTranslatable()
+	{
+		return ObjectTranslatable::loadObjectTranslatable($this);
+	}
+
+	public static function loadObjectTranslatableMetadata()
+	{
+		return array('fields' => array('title', 'snippet'));
+	}
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
@@ -182,10 +146,10 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'snippet', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippetCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+
+		ObjectTranslatable::loadEntityMetadata($metadata);
 	}
 }

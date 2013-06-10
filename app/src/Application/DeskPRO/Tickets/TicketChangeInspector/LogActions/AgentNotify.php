@@ -61,6 +61,12 @@ class AgentNotify extends AbstractLogAction
 
 	public function getLogDetails()
 	{
+		// Gateway accounts could be an alias, so we need to look it up
+		if ($this->from_email) {
+			$matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
+			$this->from_email = $matcher->getOutgoingEmailAliasAddress($this->from_email);
+		}
+
 		$details = array();
 		$details['type']         = $this->type;
 		$details['who_emailed']  = array();

@@ -96,7 +96,9 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/tinycon/tinycon.min.js',
 
 		'vendor/select2/select2.js',
-		'vendor/ZeroClipboard/ZeroClipboard.min.js'
+		'vendor/ZeroClipboard/ZeroClipboard.min.js',
+		'vendor/idbstore/idbstore.min.js',
+		'vendor/twig/twig.js',
 	)
 );
 
@@ -165,6 +167,7 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishDraftsList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearch.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackSearch.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
@@ -211,7 +214,6 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/Twitter.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/TextSnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
@@ -260,14 +262,15 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/OmniSearchSheet.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/OmniQuickSearch.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/DeskproSubmitFeedback.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
+
+		'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
 	)
 );
 
@@ -309,8 +312,6 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/Agent/Window.js',
 		'javascripts/DeskPRO/Agent/Layout/DeskproWindow.js',
-		'javascripts/DeskPRO/Agent/TabManager.js',
-		'javascripts/DeskPRO/Agent/TabStrip.js',
 		'javascripts/DeskPRO/Agent/TabWatcher.js',
 		'javascripts/DeskPRO/Agent/ScrollerHandler.js',
 		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
@@ -324,19 +325,8 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
-
-		// Omnisearch
-		'javascripts/DeskPRO/UI/OmniSearch/SearchBox.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Context/ContextAbstract.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/SearchBox.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/EverythingContext.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/OrganizationsContext.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/PeopleContext.js',
-		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/TicketsContext.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericInputTerm.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericMenuTerm.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericDateTerm.js',
+		'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
+		'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
 	)
 );
 
@@ -352,6 +342,10 @@ $CONFIG['agent_deskpro_ui'] = array(
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/DateChooser.js',
 		'javascripts/DeskPRO/UI/CatListEditor.js',
+		'javascripts/DeskPRO/UI/Select/Widget.js',
+		'javascripts/DeskPRO/UI/Select/Menu.js',
+		'javascripts/DeskPRO/UI/Select/WidgetSimple.js',
+		'javascripts/DeskPRO/UI/Select/MenuHtml.js',
 	)
 );
 
@@ -559,12 +553,12 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
 		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
 		'javascripts/DeskPRO/User/ElementHandler/FormUploadHandler.js',
-		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
 		'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
 		'javascripts/DeskPRO/User/ElementHandler/CommentFormLogin.js',
 		'javascripts/DeskPRO/User/ElementHandler/FeedbackAgreeBtn.js',
+		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 		'javascripts/DeskPRO/User/InlineSuggestions.js',
@@ -650,9 +644,8 @@ $CONFIG['agent_interface_css1'] = array(
 	'files' => array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
-		'stylesheets-less/agent/navigation.less',
-		'stylesheets-less/agent/header.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
+		'stylesheets-less/agent/agent.less',
 	)
 );
 

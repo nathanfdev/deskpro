@@ -696,16 +696,35 @@ class AgentsController extends AbstractController
 	}
 
 	############################################################################
+	# new-agent-pre
+	############################################################################
+
+	public function newAgentPreAction()
+	{
+		return $this->render('AdminBundle:Agents:new-pre.html.twig');
+	}
+
+	############################################################################
 	# edit-agent
 	############################################################################
 
 	public function editAgentAction($person_id)
 	{
+		$agent_base = null;
+
 		if ($person_id) {
 			$agent = $this->getAgentOr404($person_id);
 		} else {
 			if (!$this->canAddAgent('view')) return $this->showLicenseError();
 			$agent = new \Application\DeskPRO\Entity\Person();
+
+			if ($agent_base_id = $this->in->getUint('base_agent_id')) {
+				$agent_base = $this->getAgentOr404($agent_base_id);
+
+				$agent->can_admin   = $agent_base->can_admin;
+				$agent->can_billing = $agent_base->can_billing;
+				$agent->can_reports = $agent_base->can_reports;
+			}
 		}
 
 		$all_teams = $this->em->createQuery("
@@ -736,22 +755,24 @@ class AgentsController extends AbstractController
 
 		$departments = $this->container->getDataService('Department')->getAll();
 
-		$agent_usergroups = $this->db->fetchAllCol("SELECT usergroup_id FROM person2usergroups WHERE person_id = ?", array($agent->id));
-		$agent_teams = $this->db->fetchAllCol("SELECT team_id FROM agent_team_members WHERE person_id = ?", array($agent->id));
+		$load_agent = $agent_base ?: $agent;
+
+		$agent_usergroups = $this->db->fetchAllCol("SELECT usergroup_id FROM person2usergroups WHERE person_id = ?", array($load_agent->id));
+		$agent_teams = $this->db->fetchAllCol("SELECT team_id FROM agent_team_members WHERE person_id = ?", array($load_agent->id));
 
 		$agent_deps = $this->db->fetchAllGrouped("
 			SELECT department_id, app
 			FROM department_permissions
 			WHERE person_id = ?
 				AND name = 'full' AND value = 1
-		", array($agent->id), 'department_id', 'app', 'app');
+		", array($load_agent->id), 'department_id', 'app', 'app');
 
 		$agent_deps_assign = $this->db->fetchAllGrouped("
 			SELECT department_id, app
 			FROM department_permissions
 			WHERE person_id = ?
 				AND name = 'assign' AND value = 1
-		", array($agent->id), 'department_id', 'app', 'app');
+		", array($load_agent->id), 'department_id', 'app', 'app');
 
 		$all = $this->db->fetchAll("
 			SELECT usergroup_id, name, value
@@ -770,10 +791,11 @@ class AgentsController extends AbstractController
 			SELECT name, value
 			FROM permissions
 			WHERE person_id = ?
-		", array($agent->id));
+		", array($load_agent->id));
 
 		return $this->render('@Agents:edit-agent.html.twig', array(
 			'agent' => $agent,
+			'agent_base' => $agent_base,
 			'all_usergroups' => $all_usergroups,
 			'all_teams' => $all_teams,
 			'agent_usergroups' => $agent_usergroups,
@@ -1040,10 +1062,47 @@ class AgentsController extends AbstractController
 			}
 
 			// If they're new, enable notifications for them by default
-			if ($is_new) {
+			if ($is_new && !$this->container->getSetting('core_tickets.disable_agent_notifications')) {
 				$agent_id = $agent->getId();
 
-				if (!$this->container->getSetting('core_tickets.disable_agent_notifications')) {
+				$agent_base = null;
+				if ($agent_base_id = $this->in->getUint('base_agent_id')) {
+					$agent_base = $this->getAgentOr404($agent_base_id);
+				}
+
+				// New agent based on someone else, copy their notify settings
+				if ($agent_base) {
+
+					$subs = $this->db->fetchAll("
+						SELECT `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_agent_note`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_agent_note`, `alert_property_change`
+						FROM ticket_filter_subscriptions
+						WHERE person_id = ?
+					", array($agent_base->getId()));
+
+					foreach ($subs as &$_s) {
+						$_s['person_id'] = $agent->getId();
+					}
+					unset($_s);
+
+					$this->db->batchInsert('ticket_filter_subscriptions', $subs, true);
+
+					$sub_prefs = $this->db->fetchAll("
+						SELECT person_id, name, value_str, value_array
+						FROM people_prefs
+						WHERE
+							name IN ('agent_notif.chat_message.email', 'agent_notif.login_attempt_fail.email', 'agent_notif.new_comment.alert', 'agent_notif.new_comment.email', 'agent_notif.new_comment_validate.alert', 'agent_notif.new_comment_validate.email', 'agent_notif.new_feedback.alert', 'agent_notif.new_feedback.email', 'agent_notif.new_feedback_validate.alert', 'agent_notif.new_feedback_validate.email', 'agent_notif.new_user.alert', 'agent_notif.new_user_validate.alert', 'agent_notif.new_user_validate.email')
+							AND person_id = ?
+					", array($agent_base->getId()));
+
+					foreach ($subs as &$_s) {
+						$_s['person_id'] = $agent->getId();
+					}
+					unset($_s);
+
+					$this->db->batchInsert('people_prefs', $sub_prefs, true);
+
+				// Brand new agents, insert some defaults
+				} else {
 					$this->db->executeUpdate("
 						INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_agent_note`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_agent_note`, `alert_property_change`)
 						VALUES

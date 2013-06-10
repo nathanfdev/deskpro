@@ -157,7 +157,7 @@ class ezcMailFileParser extends ezcMailPartParser
     {
         // The filename is now relative, we need to extend it with the absolute path.
         // To provide uniqueness we put the file in a directory based on processID and rand.
-        $dirName = ezcMailParser::getTmpDir() . getmypid() . '-' . self::$counter++ . '/';
+        $dirName = ezcMailParser::getTmpDir() . uniqid('', true) . '-' . self::$counter++ . '/';
         if ( !is_dir( $dirName ) )
         {
             mkdir( $dirName, 0700 );

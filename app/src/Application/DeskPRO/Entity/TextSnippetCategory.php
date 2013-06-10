@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,7 +45,7 @@ use Orb\Util\Arrays;
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
-	const TPYE_TICKET  = 'ticket';
+	const TPYE_TICKET  = 'tickets';
 	const TPYE_CHAT    = 'chat';
 
 	/**
@@ -73,11 +75,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_global = false;
 
 	/**
-	 * @var string
-	 */
-	protected $title;
-
-	/**
 	 * @return int
 	 */
 	public function getId()
@@ -95,9 +92,33 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['title'] = array();
+
+		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+			$title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
+			$data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+		}
+
+		return $data;
+	}
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
+
+	public function getObjectTranslatable()
+	{
+		return ObjectTranslatable::loadObjectTranslatable($this);
+	}
+
+	public static function loadObjectTranslatableMetadata()
+	{
+		return array('fields' => array('title'));
+	}
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
@@ -108,8 +129,9 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', ));
 		$metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+
+		ObjectTranslatable::loadEntityMetadata($metadata);
 	}
 }

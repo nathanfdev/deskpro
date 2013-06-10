@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -46,7 +48,7 @@ use Orb\Util\Arrays;
  * A language groups phrases and defines a locale code.
  *
  */
-class Language extends \Application\DeskPRO\Domain\DomainObject
+class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * The unique ID.
@@ -137,6 +139,30 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 				$cache->invalidateLanguageCache();
 			});
 		}
+	}
+
+	/**
+	 * Return a unique ID that we can use to look up translations for this object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @param Translate $translate The translate object requesting
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
+	{
+		return 'user.lang.lang_title_' . $this->sys_name;
+	}
+
+	/**
+	 * Get the default value phrase for the object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @param Translate $translate The translate object requesting
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
+	{
+		return $this->title;
 	}
 
 

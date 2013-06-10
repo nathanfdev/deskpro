@@ -486,6 +486,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $email_reader;
 
 	/**
+	 * The action the email reader was used for (reply/note/action)
+	 * @var string
+	 */
+	public $email_reader_action;
+
+	/**
 	 * @var null
 	 */
 	public $_old_status = null;
@@ -2008,6 +2014,34 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return \DateTime
+	 */
+	public function getLastActivityDate()
+	{
+		$dates = array();
+		if ($this->date_last_agent_reply) {
+			$dates[] = $this->date_last_agent_reply;
+		}
+		if ($this->date_last_user_reply) {
+			$dates[] = $this->date_last_user_reply;
+		}
+
+		if (!$dates) {
+			return $this->date_created;
+		}
+
+		$use_date = $this->date_created;
+		foreach ($dates as $d) {
+			if ($d > $use_date) {
+				$use_date = $d;
+			}
+		}
+
+		return $use_date;
+	}
+
+
 	public function setStatus($status)
 	{
 		$this['date_status'] = new \DateTime();
@@ -2751,6 +2785,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$data['total_to_resolution'] = $this->getTimeUntilResolution();
 		$data['total_to_resolution_work'] = $this->getWorkTimeUntilResolution();
 
+		// Render custom fields to text values
+		$field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
+
+		$values = $field_manager->getRenderedToTextForObject($this);
+		foreach ($values as $fid => $v) {
+			$data["field{$fid}"] = $v['rendered'];
+		}
+
 		return $data;
 	}
 
@@ -3077,7 +3119,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'access_codes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array('persist', 'merge'), 'mappedBy' => 'ticket', 'onDelete' => 'cascade' ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket',  'orderBy' => array( 'date_created' => 'ASC', ), ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true,  'dpApi' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true,  'dpApi' => false));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelTicket', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway_address', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_address_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

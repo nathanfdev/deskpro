@@ -140,6 +140,17 @@ class NewsResults
 		return new self($controller, $result_cache);
 	}
 
+	/**
+	 * @return \Application\AgentBundle\Controller\Helper\NewsResults
+	 */
+	public static function newFromResultCache($controller, ResultCache $result_cache)
+	{
+		$helper = new self($controller);
+		$helper->setNewsIds($result_cache['results']);
+
+		return $helper;
+	}
+
 
 	public function __construct($controller, ResultCache $result_cache = null)
 	{
@@ -183,6 +194,11 @@ class NewsResults
 	 * @return array
 	 */
 	public function getNewsForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromNewsIds($this->getNewsIds(), $page, $per_page);
+	}
+
+	public function getForPage($page, $per_page = 50)
 	{
 		return $this->_getPageFromNewsIds($this->getNewsIds(), $page, $per_page);
 	}

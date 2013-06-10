@@ -68,6 +68,7 @@ class TemplatingExtension extends \Twig_Extension
         return array(
 			'constant'                         => new \Twig_Function_Method($this, 'getConstant', array()),
 			'phrase'                           => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'), 'needs_context' => true)),
+			'phrase_code'                      => new \Twig_Function_Method($this, 'getPhraseText', array()),
 			'has_phrase'                       => new \Twig_Function_Method($this, 'hasPhrase', array('is_safe' => array('html'))),
 			'phrase_object'                    => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'phrase_dev'                       => new \Twig_Function_Method($this, 'getPhraseDev'),
@@ -134,6 +135,7 @@ class TemplatingExtension extends \Twig_Extension
 			'max'                              => new \Twig_Function_Method($this, 'max'),
 			'match'                            => new \Twig_Function_Method($this, 'match'),
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
+			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -947,6 +949,11 @@ class TemplatingExtension extends \Twig_Extension
 		return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
 	}
 
+	public function getPhraseText($phrase_name)
+	{
+		return $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
+	}
+
 	public function getPhrase($context, $phrase_name, $vars = null, $raw = false)
 	{
 		if (!$vars || !is_array($vars)) {
@@ -1068,7 +1075,7 @@ class TemplatingExtension extends \Twig_Extension
 
 		if (!file_exists($path)) {
 			$e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: " . $path);
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+			\DeskPRO\Kernel\KernelErrorHandler::logException($e, false, 'tpl_include_php_file');
 			return '';
 		}
 
@@ -1393,6 +1400,15 @@ class TemplatingExtension extends \Twig_Extension
 
 		$context['tplvars']->$k = $v;
 		return;
+	}
+
+	public function getTplSourceTemplate($id, $name)
+	{
+		$source = App::getContainer()->getTemplating()->getSource($name);
+		$source = str_replace('<script>',  '%startScript%', $source);
+		$source = str_replace('</script>',  '%endScript%', $source);
+		$source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
+		return $source;
 	}
 }
 

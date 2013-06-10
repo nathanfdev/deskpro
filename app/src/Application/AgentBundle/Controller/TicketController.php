@@ -109,13 +109,6 @@ class TicketController extends AbstractController
 		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
 		if (!$ticket_attachments) $ticket_attachments = array();
 
-		$tickets_by_user = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($ticket->person, 10);
-		foreach ($tickets_by_user AS $key => $ticket_by_user) {
-			if ($ticket->id == $ticket_by_user->id) {
-				unset($tickets_by_user[$key]);
-			}
-		}
-
 		#------------------------------
 		# Custom fields
 		#------------------------------
@@ -159,8 +152,8 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->container->getAgentData()->getAgents();
+		$agent_teams = $this->container->getDataService('AgentTeam')->getTeams();
 
 		#------------------------------
 		# Linked tasks
@@ -199,12 +192,14 @@ class TicketController extends AbstractController
 			'category' => 'title',
 			'priority' => 'title',
 			'workflow' => 'title',
-			'product' => 'title',
 			'organization' => 'name'
 		) AS $key => $title_field) {
 			if ($ticket->$key) {
 				$ticket_api[$key] = array('id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field);
 			}
+		}
+		if ($ticket->product) {
+			$ticket_api['product'] = $ticket->product->toApiData();
 		}
 		if (count($ticket->labels)) {
 			$ticket_api['labels'] = array();
@@ -335,8 +330,6 @@ class TicketController extends AbstractController
 			'ticket_flagged'             => $ticket_flagged,
 			'macros'                     => $macros,
 
-			'tickets_by_user'            => $tickets_by_user,
-
 			'agent_signature'            => $this->person->getSignature(),
 			'agent_signature_html'       => $this->person->getSignatureHtml(),
 
@@ -438,6 +431,14 @@ class TicketController extends AbstractController
 			$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
 		}
 
+		$ticket_messages_translated = $this->em->getRepository('DeskPRO:TicketMessageTranslated')->getForMessages($ticket_messages, $this->person->getLanguage()->getLocale());
+
+		foreach ($ticket_messages as $message) {
+			if (!isset($ticket_messages_translated[$message->id]) && $message->primary_translation) {
+				$ticket_messages_translated[$message->id] = $message->primary_translation;
+			}
+		}
+
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
@@ -530,6 +531,7 @@ class TicketController extends AbstractController
 			$ticket_messages_block = $this->renderView($tpl, array(
 				'ticket'                     => $ticket,
 				'ticket_messages'            => $ticket_messages,
+				'ticket_messages_translated' => $ticket_messages_translated,
 				'ticket_messages_num'        => $ticket_messages_num,
 				'ticket_message_attachments' => $ticket_message_attachments,
 				'ticket_attachments'         => $ticket_attachments,
@@ -559,6 +561,7 @@ class TicketController extends AbstractController
 
 			'ticket_messages_block'      => $ticket_messages_block,
 			'ticket_messages'            => $ticket_messages,
+			'ticket_messages_translated' => $ticket_messages_translated,
 			'ticket_messages_num'        => $ticket_messages_num,
 			'ticket_attachments'         => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
@@ -594,240 +597,6 @@ class TicketController extends AbstractController
 			'ticket' => $ticket,
 			'message' => $message
 		));
-	}
-
-	############################################################################
-	# snippets-viewer
-	############################################################################
-
-	public function snippetsViewerAction($ticket_id = 0)
-	{
-		if ($ticket_id) {
-			$ticket = $this->getTicketOr404($ticket_id);
-			$person = $ticket->person;
-		} else {
-			$ticket = null;
-			$person = null;
-		}
-
-		if (!$person && $this->in->getUint('person_id')) {
-			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
-		}
-
-		$ticket_snippets = $this->em->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
-		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TicketSnippetCategory')->getCatsForAgent($this->person);
-
-		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
-
-		return $this->render('AgentBundle:Ticket:ticket-snippets.html.twig', array(
-			'ticket' => $ticket,
-			'person' => $person,
-			'ticket_snippets' => $ticket_snippets,
-			'ticket_snippet_cats' => $ticket_snippet_cats,
-			'agent_teams' => $agent_teams,
-		));
-	}
-
-	public function newSnippetCatAction()
-	{
-		$cat = new \Application\DeskPRO\Entity\TicketSnippetCategory();
-		$cat['title'] = $this->in->getString('title');
-		$cat->person = $this->person;
-
-		if ($this->in->getString('perm_type') == 'global') {
-			$cat['is_global'] = true;
-		} elseif ($this->in->getString('perm_type') == 'team') {
-			$team_ids = $this->in->getArrayValue('teams');
-			$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
-
-			foreach ($teams as $t) {
-				$cat->agent_teams->add($t);
-			}
-		}
-
-		$this->em->transactional(function($em) use ($cat) {
-			$em->persist($cat);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'cat_row_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-catrow.html.twig', array(
-				'category' => $cat
-			)),
-			'cat_section_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-catsection.html.twig', array(
-				'category' => $cat,
-				'snippets' => array()
-			))
-		));
-	}
-
-	public function editSnippetCatAction()
-	{
-		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
-
-		return $this->render('AgentBundle:Ticket:ticket-snippets-editcat.html.twig', array(
-			'category' => $cat,
-		));
-	}
-
-	public function saveSnippetCatAction()
-	{
-		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
-		$cat['title'] = $this->in->getString('title');
-
-		if ($cat->person && $cat->person->getId() == $this->person->getId()) {
-			if ($this->in->getString('perm_type') == 'global') {
-				$cat['is_global'] = true;
-			} elseif ($this->in->getString('perm_type') == 'team') {
-				$cat['is_global'] = false;
-				$team_ids = $this->in->getArrayValue('teams');
-				$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
-
-				foreach ($teams as $t) {
-					$cat->agent_teams->add($t);
-				}
-			} else {
-				$cat['is_global'] = false;
-			}
-		}
-
-		$this->em->persist($cat);
-		$this->em->flush();
-
-		return $this->createJsonResponse(array(
-			'category_id' => $cat['id'],
-			'title' => $cat['title']
-		 ));
-	}
-
-	public function deleteSnippetCatAction()
-	{
-		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
-
-		$cat_id = $cat['id'];
-
-		$this->em->transactional(function($em) use ($cat) {
-			$em->remove($cat);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'category_id' => $cat_id,
-		 ));
-	}
-
-	public function saveSnippetAction()
-	{
-		if ($this->in->getUint('snippet_id')) {
-			$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
-			$category = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
-
-			if ($category) {
-				$snippet->category = $category;
-			}
-		} else {
-			$category = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
-			$snippet = new \Application\DeskPRO\Entity\TicketSnippet();
-			$snippet->category = $category;
-		}
-
-		$snippet['title'] = $this->in->getString('title');
-		if ($this->in->getBool('is_html')) {
-			$snippet['snippet_html'] = $this->in->getHtmlCore('snippet');
-		} else {
-			$snippet['snippet'] = $this->in->getString('snippet');
-		}
-		$snippet->person = $this->person;
-
-		$snippet->shortcut_code = $this->in->getString('shortcut_code');
-		if (!$snippet->shortcut_code) {
-			$snippet->shortcut_code = null;
-		}
-
-		$this->em->transactional(function($em) use ($snippet) {
-			$em->persist($snippet);
-			$em->flush();
-		});
-
-		if ($this->in->getUint('ticket_id')) {
-			$ticket = $this->getTicketOr404($this->in->getUint('ticket_id'));
-			$person = $ticket->person;
-		} else {
-			$ticket = null;
-			$person = null;
-		}
-
-		// Check for dupe codes
-		if ($snippet->shortcut_code) {
-			$exists = $this->db->fetchColumn("
-				SELECT id FROM ticket_snippets
-				WHERE shortcut_code = ?
-				AND id != ?
-			", array($snippet->shortcut_code, $snippet->id));
-
-			if ($exists) {
-				$snippet->shortcut_code = $snippet->shortcut_code . $snippet->id;
-				$this->em->persist($snippet);
-				$this->em->flush();
-			}
-		}
-
-		return $this->createJsonResponse(array(
-			'snippet_row_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-row.html.twig', array(
-				'snippet' => $snippet,
-				'ticket' => $ticket,
-				'person' => $person,
-			)),
-			'snippet_id' => $snippet['id'],
-			'shortcut_code' => $snippet['shortcut_code'],
-			'category_id' => $category['id']
-		));
-	}
-
-	public function deleteSnippetAction()
-	{
-		$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
-
-		if (!$snippet) {
-			throw $this->createNotFoundException();
-		}
-
-		$snippet_id = $snippet['id'];
-		$category_id = $snippet->category ? $snippet->category->getId() : 0;
-
-		$this->em->transactional(function($em) use ($snippet) {
-			$em->remove($snippet);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'snippet_id' => $snippet_id,
-			'category_id' => $category_id
-		));
-	}
-
-	public function getSnippetAction($ticket_id, $snippet_id)
-	{
-		$snippet = $this->em->find('DeskPRO:TicketSnippet', $snippet_id);
-		if (!$snippet) {
-			throw $this->createNotFoundException();
-		}
-
-		$ticket = null;
-		$person = null;
-		if ($ticket_id) {
-			$ticket = $this->getTicketOr404($ticket_id);
-			if (!$ticket) {
-				throw $this->createNotFoundException();
-			}
-
-			$person = $ticket->person;
-		} elseif ($person_id = $this->in->getUint('person_id')) {
-			$person = $this->em->find('DeskPRO:Person', $person_id);
-		}
-
-		$res = new Response($snippet->snippetFormattedHtml($ticket, $person));
-		return $res;
 	}
 
 	############################################################################
@@ -1201,7 +970,16 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveReplyAction($ticket_id)
 	{
-		if (!$this->in->getString('message') || $this->in->getString('message') == trim($this->person->getPref('agent.ticket_signature'))) {
+		if ($this->in->getBool('reply_is_trans')) {
+			$request_message_orig  = $this->in->getHtmlCore('message_original');
+			$request_message_trans = $this->in->getHtmlCore('message');
+		} else {
+			$request_message_orig  = $this->in->getHtmlCore('message');
+			$request_message_trans = '';
+		}
+
+
+		if (!$request_message_orig || $request_message_orig == trim($this->person->getPref('agent.ticket_signature'))) {
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
 
@@ -1261,7 +1039,7 @@ class TicketController extends AbstractController
 		$message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
 		if ($this->in->getBool('is_html_reply')) {
-			$message_text = Strings::trimHtml($this->in->getHtmlCore('message'));
+			$message_text = $request_message_orig;
 
 			$message_test = $message_text;
 			$message_test = Strings::trimHtml($message_test);
@@ -1273,12 +1051,12 @@ class TicketController extends AbstractController
 			$message->message = $message_text;
 
 			$notify_agent_ids = array();
-			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
+			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $request_message_orig, $matches, PREG_SET_ORDER);
 			foreach ($matches AS $match) {
 				$notify_agent_ids[] = $match[1];
 			}
 		} else {
-			$message->setMessageText($this->in->getString('message'));
+			$message->setMessageText($request_message_orig);
 			$notify_agent_ids = array();
 		}
 
@@ -1361,6 +1139,18 @@ class TicketController extends AbstractController
 			$charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
 		} else {
 			$charge = false;
+		}
+
+		// Translated version
+		if ($this->in->getString('reply_is_trans') && $request_message_trans) {
+			$message_translated = new Entity\TicketMessageTranslated();
+			$message_translated->setTicketMessage($message);
+			$message_translated->message = $request_message_trans;
+			$message_translated->from_lang_code = $this->person->getLanguage()->getLocale();
+			$message_translated->lang_code = $this->in->getString('reply_is_trans');
+			$this->em->persist($message_translated);
+
+			$message->primary_translation = $message_translated;
 		}
 
 		#------------------------------

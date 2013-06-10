@@ -105,6 +105,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $ip_address = '';
 
 	/**
+	 * @var string
+	 */
+	protected $geo_country = null;
+
+	/**
 	 * The email address the user sent the email from (gateway messages only).
 	 * This is a perm record and doesnt change even if the user changes/deletes their email
 	 * address.
@@ -117,6 +122,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $message_hash;
+
+	/**
+	 * The primary translation is the one sent to the user.
+	 *
+	 * @var TicketMessageTranslated
+	 */
+	protected $primary_translation;
 
 	/**
 	 * The message, will be in HTML!
@@ -148,6 +160,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 */
 	protected $show_full_hint = false;
+
+	/**
+	 * The set/detected lang code
+	 *
+	 * @var string
+	 */
+	protected $lang_code = null;
 
 	/**
 	 * If the message was created from an email just now, then this is the reader
@@ -405,7 +424,36 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->ip_address && $visitor->getIpAddress()) {
 			$this['ip_address'] = $visitor->getIpAddress();
 		}
+
+		if ($visitor && $visitor->last_track && $visitor->last_track->geo_country) {
+			$this['geo_country'] = $visitor->last_track->geo_country;
+		}
+
+		if ($this->ip_address && !$this->geo_country) {
+			$geoip = App::getSystemService('geo_ip');
+			$geo = $geoip->lookup($this->ip_address);
+			$this['geo_country'] = !empty($geo['country']) ? $geo['country'] : '';
+		}
 	}
+
+
+	/**
+	 * @param string $geo_country Two-letter country code or null
+	 */
+	public function setGeoCountry($geo_country)
+	{
+		$this->setModelField('geo_country', $geo_country ?: null);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getGeoCountry()
+	{
+		return $this->geo_country;
+	}
+
 
 	public function setVisitorFromRequest()
 	{
@@ -509,16 +557,19 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_note', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+		$metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));
 		$metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_full', ));
 		$metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_raw', ));
+		$metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'lang_code', ));
 		$metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'show_full_hint', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'email_source', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailSource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_source_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
 	}

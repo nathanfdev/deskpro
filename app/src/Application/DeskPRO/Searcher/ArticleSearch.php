@@ -41,17 +41,19 @@ use Orb\Util\Arrays;
 
 class ArticleSearch extends SearcherAbstract
 {
-	const TERM_ID              = 'id';
-	const TERM_STATUS          = 'status';
-	const TERM_HIDDEN_STATUS   = 'hidden_status';
-	const TERM_CATEGORY        = 'category';
-	const TERM_CATEGORY_SPECIFIC = 'category_specific';
-	const TERM_DATE_CREATED    = 'date_created';
-	const TERM_VIEW_COUNT      = 'view_count';
-	const TERM_POPULAR         = 'popular';
-	const TERM_NEW             = 'new';
-	const TERM_LABEL           = 'label';
-	const TERM_AGENT_LIST      = 'agent_list';
+	const TERM_ID                  = 'id';
+	const TERM_STATUS              = 'status';
+	const TERM_HIDDEN_STATUS       = 'hidden_status';
+	const TERM_CATEGORY            = 'category';
+	const TERM_CATEGORY_SPECIFIC   = 'category_specific';
+	const TERM_DATE_CREATED        = 'date_created';
+	const TERM_VIEW_COUNT          = 'view_count';
+	const TERM_POPULAR             = 'popular';
+	const TERM_NEW                 = 'new';
+	const TERM_LABEL               = 'label';
+	const TERM_AGENT_LIST          = 'agent_list';
+	const TERM_PENDING_TRANSLATE   = 'pending_translate';
+	const TERM_QUERY               = 'query';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
@@ -357,6 +359,37 @@ class ArticleSearch extends SearcherAbstract
 
 					break;
 
+				case self::TERM_QUERY:
+
+					$j1 = $join_name . '_t';
+					$j2 = $join_name . '_c';
+
+					$joins[] = array(
+						'object_lang',
+						"LEFT JOIN object_lang AS $j1 ON ($j1.ref_type = 'article' AND $j1.ref_id = articles.id AND $j1.prop_name = 'title')"
+					);
+
+					$joins[] = array(
+						'object_lang',
+						"LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'content')"
+					);
+
+					$string = $choice['query'];
+					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+
+					if (!$string) {
+						break;
+					}
+
+					$w = array();
+					$w[] = '(' . $this->_stringSearch("articles.title", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("articles.content", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
+					$w[] = '(' . $this->_stringSearch("$j2.value", $op, $string, $type) . ')';
+
+					$wheres[] = implode(' OR ' , $w);
+					break;
+
 				case self::TERM_CATEGORY:
 				case self::TERM_CATEGORY_SPECIFIC:
 					$base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
@@ -416,6 +449,34 @@ class ArticleSearch extends SearcherAbstract
 
 				case self::TERM_AGENT_LIST:
 					$wheres[] = "(articles.status IN ('published', 'archived') OR articles.hidden_status IN('unpublished'))";
+					break;
+
+				case self::TERM_PENDING_TRANSLATE:
+
+					$w = array();
+
+					$langs = App::getContainer()->getLanguageData()->getAll();
+
+					if (isset($choice['language_id']) && $choice['language_id'] && isset($langs[$choice['language_id']])) {
+						$langs = array($langs[$choice['language_id']]);
+					}
+
+					foreach ($langs as $lang) {
+
+						$lang_id   = $lang->getId();
+						$join_id   = Util::requestUniqueId();
+						$join_name = "j_$join_id";
+
+						$joins[] = array(
+							'object_lang',
+							"LEFT JOIN object_lang AS $join_name ON ($join_name.ref_type = 'articles' AND $join_name.ref_id = articles.id AND $join_name.language_id = $lang_id)"
+						);
+
+						$w[] = "(articles.language_id != $lang_id AND $join_name.id IS NULL)";
+					}
+
+					$wheres[] = implode(' OR ', $w);
+
 					break;
 
 				case self::TERM_LABEL:

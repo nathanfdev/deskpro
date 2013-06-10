@@ -274,4 +274,29 @@ class AddressMatcher
 		// Cant find one still, maybe no accounts enabled anymore
 		return null;
 	}
+
+
+	/**
+	 * Try to match a From email address against a gateway account to see if we want to use
+	 * an outgoing alias. E.g., support@someaccount.deskpro.com to send from support@mydomain.com.
+	 *
+	 * @param string $from_email
+	 * @return string
+	 */
+	public function getOutgoingEmailAliasAddress($from_email)
+	{
+		if ($gateway_address = $this->getMatchingAddress($from_email)) {
+			$gateway = $gateway_address->gateway;
+			if ($gateway && $gateway->linked_transport) {
+				$new_address = $gateway->getPrimaryEmailAddress();
+				if ($gateway->getAliasEmailAddress()) {
+					$new_address = $gateway->getAliasEmailAddress();
+				}
+
+				return $new_address;
+			}
+		}
+
+		return $from_email;
+	}
 }

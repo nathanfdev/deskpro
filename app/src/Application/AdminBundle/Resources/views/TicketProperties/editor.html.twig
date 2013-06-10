@@ -98,7 +98,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<div class="sub">
 			<select id="department_switcher">
 				<option value="0" {% if 0 in dep_ids_custom %}class="custom"{% endif %} {% if not department %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.tickets.default_layout') }}</option>
-				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+				{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in dep.children %}
@@ -308,7 +308,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<div class="subject">
 		<select>
 			<option>Choose a department...</option>
-			{% for dep in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+			{% for dep in app.departments.getPersonDepartments(app.user, 'tickets') %}
 				{% if dep.children|length %}
 					<optgroup label="{{ dep.title }}">
 						{% for sub in dep.children %}
@@ -362,12 +362,12 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
  # Workflow field
  ############################}
 
-{% if app.getDataRepository('TicketWorkflow').getAll()|length %}
+{% if app.getDataService('TicketWorkflow').getAll()|length %}
 	<script type="text/x-deskpro-plain" id="rendered_field_ticket_workflow">
 		<div class="ticket-workflow">
 			<select class="ticket-workflow-input field-value">
 				<option>Workflow</option>
-				{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+				{% for work in app.getDataService('TicketWorkflow').getAll() %}
 					<option value="{{ work.id }}">{{ work.title }}</option>
 				{% endfor %}
 			</select>
@@ -462,7 +462,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="product">
-					{% for cat in app.getDataRepository('Product').getRootNodes() %}
+					{% for cat in app.products.getRootNodes() %}
 						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
@@ -487,7 +487,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="category">
-					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+					{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
 						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
@@ -516,7 +516,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="priority">
-					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
+					{% for id,name in app.getDataService('TicketPriority').getNames() %}
 						<option value="{{ id }}">{{ name }}</option>
 					{% endfor %}
 				</select>
@@ -533,7 +533,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
-					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+					{% for work in app.getDataService('TicketWorkflow').getAll() %}
 						<option value="{{ work.id }}">{{ work.title }}</option>
 					{% endfor %}
 				</select>

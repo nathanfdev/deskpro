@@ -300,7 +300,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			sidePosition: 'top',
-			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
 			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: this._onSnippetClick.bind(this)
 		});
@@ -725,7 +724,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		//------------------------------
 
 		var leftEnd = 269; // Where the left ends (aka where listpane starts)
-		var topEnd = 41; // Where the top ends (aka header height)
+		var topEnd = 50; // Where the top ends (aka header height)
 		var contentStart = pos.left;
 
 		if (!this.options.isListView) {

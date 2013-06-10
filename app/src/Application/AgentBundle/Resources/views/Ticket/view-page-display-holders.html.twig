@@ -1,12 +1,12 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
-{% if app.getDataRepository('Language').isMultiLang() %}
+{% if app.languages.isMultiLang() %}
 	<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
 		<tr class="mode-display">
 			<th width="80">
-				<span class="category_id label">Language:</span>
+				<span class="language_id label">Language:</span>
 			</th>
 			<td>
-				<span class="prop-val category_id">{{ticket.language.title|default('None')}}</span>
+				<span class="prop-val language_id">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}None{% endif %}</span>
 			</td>
 		</tr>
 		<tr class="mode-edit">
@@ -16,8 +16,9 @@
 					'name': 'ticket[language_id]',
 					'id': baseId ~ '_ticket_language_id',
 					'selected': ticket.language.id,
-					'languages': app.getDataRepository('Language').getAll(),
+					'languages': app.languages.getAll(),
 					'add_classname': 'prop-input-language_id',
+					'with_blank': true,
 					'add_attr': 'data-prop-id="language_id"'
 				} %}
 			</td>
@@ -67,6 +68,15 @@
 				<span class="prop-val product">{{ticket.product.full_title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
+		{% if ticket.product and app.getSetting('core.use_product_fields') and ticket.product.custom_data|length %}
+			{% set product_field_data = ticket.product.getFieldDisplayArray() %}
+			{% for f in product_field_data if ticket.product.hasCustomField(f.id) %}
+				<tr class="mode-display">
+					<th width="80">{{ f.title }}</th>
+					<td>{{ render_custom_field(f) }}</td>
+				</tr>
+			{% endfor %}
+		{% endif %}
 		<tr class="mode-edit">
 			<th width="80">{{ phrase('agent.general.product') }}:</th>
 			<td>

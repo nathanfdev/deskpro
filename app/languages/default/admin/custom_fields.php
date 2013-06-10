@@ -33,4 +33,5 @@
 	'admin.custom_fields.text'                       => 'Text',
 	'admin.custom_fields.textarea'                   => 'Textarea',
 	'admin.custom_fields.user_validation'            => 'User Validation',
+	'admin.custom_fields.product_fields'             => 'Product Fields',
 );

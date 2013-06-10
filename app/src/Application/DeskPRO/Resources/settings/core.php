@@ -57,6 +57,11 @@
 	'core.use_product' => false,
 
 	/**
+	 * Are custom fields on products enabled?
+	 */
+	'core.use_product_fields' => false,
+
+	/**
 	 * Is the helpdesk disabled? A disabled helpdesk doesn't fully boot and shows a maintanance message.
 	 */
 	'core.helpdesk_disabled' => false,

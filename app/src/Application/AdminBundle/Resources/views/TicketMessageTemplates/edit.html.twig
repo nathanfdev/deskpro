@@ -43,8 +43,8 @@
 		<div class="dp-form-input">
 			<select name="ticket_message_template[department_id]">
 				<option value="">All departments</option>
-				{% for dep in app.getDataRepository('Department').getRootNodes() %}
-					{% set children = app.getDataRepository('Department').getChildren(dep) %}
+				{% for dep in app.departments.getRootNodes() %}
+					{% set children = app.departments.getChildren(dep) %}
 					{% if children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in children %}

@@ -675,7 +675,10 @@ class TicketChangeTracker extends ChangeTracker
 
 	public function recordPropertyChanged($prop, $old_val, $new_val)
 	{
-		$this->has_non_ignored = true;
+		if (!in_array($prop, self::$ignored_fields)) {
+			$this->has_non_ignored = true;
+		}
+
 		parent::recordPropertyChanged($prop, $old_val, $new_val);
 
 		if ($this->applying_trigger) {

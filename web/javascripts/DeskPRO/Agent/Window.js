@@ -16,6 +16,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
+		this.onloadStack = [];
 		this.routePrefixes = {};
 
 		this.messageChanneler = null;
@@ -40,6 +41,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.activityTime = new Date();
 
 		this.agentNotifyListShown = false;
+
+		this.paneVis = {
+			source: true,
+			list: true,
+			tabs: true
+		};
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -93,6 +100,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				html = html.replace(/%startScript%/g, '<script>');
 				html = html.replace(/%endScript%/g, '</script>');
+
+				var uid = Orb.uuid();
+				html = html.replace(/%baseId%/g, uid);
 
 				var baseId = Orb.uuid();
 				html = html.replace(/%baseId%/g, baseId);
@@ -445,6 +455,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initPage: function() {
+
+		var loadNewTicket = false;
+		if (loadNewTicket = window.location.hash.match(/#newticket:(\d+)/)) {
+			loadNewTicket = loadNewTicket[1];
+		}
+
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -476,6 +492,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initInterfaceServices();
 
+		if (window.DESKPRO_SNIPPETS_USE_CLIENT_DB) {
+			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetClientDbDriver('tickets');
+			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetClientDbDriver('chat');
+		} else {
+			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetAjaxDriver('tickets');
+			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetAjaxDriver('chat');
+		}
+
+		if (window.devicePixelRatio && window.devicePixelRatio >= 2) {
+			$('body').addClass('dp-is-retina');
+		}
+
 		$('#dp_loading').remove();
 		$('#page_loading').remove();
 		$('#loading_css').remove();
@@ -500,8 +528,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$.history.init(function(hash){
 			self.loadHashPath(hash);
-		},
-		{ unescape: ",/:" });
+		},{ unescape: ",/:" });
 
 		if (!this.openSection) {
 			this.switchToSection($('#dp_nav [data-section-handler]').first().attr('id'));
@@ -536,6 +563,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 					}
 				}
 			});
+		}
+
+		var fn;
+		while (fn = this.onloadStack.shift()) {
+			fn();
 		}
 
 		$('#user_settings_link_profile').on('click', function(ev) {
@@ -582,6 +614,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
+		$('#dp_nav_sections').find('ul').find('li').find('a').each(function() {
+			$(this).qtip({
+				position: {
+					my: 'left center',
+					at: 'right center',
+					target: $(this)
+				},
+				content: {attr: 'title'},
+				style: {
+					classes: 'qtip-dark qtip-rounded'
+				}
+			});
+		});
+
+		$('.panevis-switcher').find('li').each(function() {
+			$(this).qtip({
+				position: {
+					my: 'top center',
+					at: 'bottom center',
+					target: $(this)
+				},
+				content: {attr: 'title'},
+				style: {
+					classes: 'qtip-dark qtip-rounded'
+				}
+			});
+		});
+
 		$(document).on('click', '.click-confirm', function(ev) {
 			if (!confirm($(this).data('confirm'))) {
 				ev.preventDefault();
@@ -626,11 +686,190 @@ DeskPRO.Agent.Window = new Orb.Class({
 				ev.stopPropagation();
 				self.openNotices();
 			});
-
-			self._noticeBleepInterval = window.setInterval(function() {
-				$('#notice_trigger').toggleClass('bleep');
-			}, 800);
 		}
+
+		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
+		});
+		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
+		});
+		$('#dp_right_collapsed').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.setPaneVis('tabs', true);
+		});
+
+		$('#dp_nav_sections').on('click', function() {
+			if (!self.paneVis['source']) {
+				self.paneVis['source'] = true;
+				self.layout.doResize(true);
+			}
+		});
+
+		$(document).on('click', '.panevis-toggle-sourcepane', function() {
+			self.paneVis['source'] = !self.paneVis['source'];
+			self.layout.doResize(true);
+		});
+
+		$(document).on('click', '.panevis-toggle-tableview', function() {
+			self.paneVis['list'] = true;
+			self.paneVis['tabs'] = false;
+			self.layout.doResize(true);
+		});
+		$(document).on('click', '.panevis-toggle-normalview', function() {
+			self.paneVis['list'] = true;
+			self.paneVis['tabs'] = true;
+			self.layout.doResize(true);
+		});
+		$(document).on('click', '.panevis-toggle-tabview', function() {
+			self.paneVis['list'] = false;
+			self.paneVis['tabs'] = true;
+			self.layout.doResize(true);
+		});
+
+		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
+			ev.preventDefault();
+
+			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
+				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
+			} else {
+				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
+			}
+		});
+
+		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
+			ev.preventDefault();
+
+			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
+				DeskPRO_Window.setPaneVis('source', true, 'list', true);
+			} else {
+				DeskPRO_Window.setPaneVis('source', false, 'list', false);
+			}
+		});
+
+
+		$('#dp_header_userchat_btn').on('click', function() {
+			if (DeskPRO_Window.sections.chat_section) {
+				DeskPRO_Window.sections.chat_section.refreshOnlineUsers();
+			}
+			var wrap = $(this).parent();
+			wrap.addClass('active');
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+			};
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+
+		var isIe = $('html').hasClass('browser-ie');
+
+		$('#dp_header').find('.btn-group-actions').find('.btn').on('click', function() {
+			var wrap = $(this).parent();
+			var btnMenu = wrap.find('.btn-menu');
+
+			// Bug in IE10 means the li's dont render properly
+			// until you force a repaint somehow while they are displayed
+			// So we show with no opacity, toggle the display on li's
+			// which does the trick of repainting them, then set the opacity
+			// back to 1. The user doesnt see anything amiss and we solve the bug :)
+			if (isIe) {
+				btnMenu.css('opacity', 0);
+			}
+
+			wrap.addClass('active');
+
+			if (isIe) {
+				window.setTimeout(function() {
+					btnMenu.find('li').css('display', 'block');
+					btnMenu.css('opacity', 1);
+				}, 10);
+			}
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+			};
+
+			if (!wrap.data('has-init')) {
+				btnMenu.on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+
+			if ($(this).hasClass('dp-recent-btn')) {
+
+				DeskPRO_Window.recentTabs.idW = 0;
+				var maxw = 0;
+				DeskPRO_Window.recentTabs.list.find('strong').each(function() {
+					var w = $(this).width();
+					if (w > maxw) {
+						maxw = w;
+					}
+				});
+
+				DeskPRO_Window.recentTabs.idW = maxw;
+				DeskPRO_Window.recentTabs.list.find('strong').css('min-width', maxw);
+
+				$('#recent_tabs_list_filter').focus();
+				$('#recent_tabs_list').parent().scrollTop(0);
+			}
+		});
+
+		$('#dp_header_help_trigger').on('click', function(ev) {
+			ev.preventDefault();
+
+			var wrap = $('#dp_header_help');
+			wrap.addClass('active');
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+			};
+
+			if (!wrap.data('has-init')) {
+				wrap.find('.btn-menu').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+
+		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
+			var wrap = $(this);
+			wrap.addClass('active');
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+				Orb.shimClickCallbackPop();
+			};
+
+			if (!wrap.data('has-init')) {
+				wrap.find('ul').on('click', function(ev) {
+					closeFn();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+
+		if (loadNewTicket) {
+			DeskPRO_Window.newTicketLoader.open(function(page) {
+				var data = {
+					person_id: loadNewTicket
+				};
+				page.setNewByPerson(data);
+			});
+		}
+	},
+
+	addOnloadFunction: function(fn) {
+		this.onloadStack.push(fn);
 	},
 
 	loadHashPath: function(browserHash) {
@@ -744,6 +983,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'status':
 				case 'label':
 				case 'ended':
+				case 'vis':
 					argRequired = true;
 					break;
 			}
@@ -755,7 +995,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var url = this.fragmentRouter.getUrl(fragmentName, args);
 			var type = this.fragmentRouter.getFragmentType(fragmentName);
 
-			if (type == 'list') {
+			if (type == 'vis') {
+				this.setPaneVisNum(args[0]);
+			} else if (type == 'list') {
 				this.loadingListFragment = hash;
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
@@ -837,6 +1079,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 					segments.push(hash);
 				}
 			});
+		}
+
+		var paneVisNum = this.getPaneVisNum();
+		if (paneVisNum) {
+			segments.push('vis:'+paneVisNum)
 		}
 
 		var browserHash = segments.join(',');
@@ -1222,7 +1469,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			sectionId = 'agent_chat_section';
 		} else if (testcl('.OpenChats') || testcl('.UserChatFilter')) {
 			sectionId = 'chat_section';
-		} else if (testcl('.Feedback')) {
+		} else if (testcl('.Feedback') || testcl('.FeedbackSearch')) {
 			sectionId = 'feedback_section';
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			sectionId = 'tickets_section';
@@ -2151,7 +2398,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
-		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('listpane', (function(routeData) {
+
+			if (!this.paneVis.list) {
+				this.setPaneVis('list', true);
+			}
+
+			this.loadRoute(routeData);
+		}).bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
 		this.addPageRouteLoader('article', this.loadRoute.bind(this));
 		this.addPageRouteLoader('download', this.loadRoute.bind(this));
@@ -2200,24 +2454,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.notifications = new DeskPRO.Agent.Notifications();
 
-		// DeskPRO logo menu
-		$('#dp_logo_wrap .button-wrap').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			$('#dp_logo_expand_wrap').detach().appendTo('body').show();
-		});
-		$('#dp_logo_expand_wrap').on('click', function(ev) {
-			ev.stopPropagation();
-			$('#dp_logo_expand_wrap').hide();
-		});
-
-		$('#dp_notify_list_none').find('a').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			DeskPRO_Window.notifications.close();
-			$('#settingswin').trigger('dp_open', 'notify');
-		});
-
 		// Settings is a window
 		$('#user_settings_link').on('click', function() {
 			$('#settingswin').trigger('dp_open');
@@ -2234,7 +2470,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.notifications.addEvent('modCount', function(data) {
 			var count = 0;
-			$('#notificationWrap .notif-item .counter').each(function() {
+			$('#dp_header_notify_wrap').find('.badge').each(function() {
 				count += parseInt($(this).text().trim());
 			});
 
@@ -2247,14 +2483,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.volume = 0.8;
+		$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-up');
 
 		var updateVolumeUi = function() {
 			if (self.volume == 0 || self.volume == 0.0) {
 				self.volume = 0;
-				$('#sound_icon').addClass('off');
 				$('#sound_icon_in').addClass('off');
+				$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up').addClass('icon-volume-off');
 			} else {
-				$('#sound_icon').removeClass('off');
+				if (self.volume < 0.6) {
+					$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-down');
+				} else {
+					$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-up');
+				}
+
 				$('#sound_icon_in').removeClass('off');
 			}
 
@@ -2312,9 +2554,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var showSoundMenu = function() {
 			$('#volume_controls_back').show();
+
+			var atEl = $('#sound_icon').find('i');
 			$('#volume_controls').css({
-				'top': 30,
-				'right': 228
+				'top': atEl.offset().top - 1,
+				'left': atEl.offset().left - 2
 			});
 
 			$('#volume_controls').fadeIn();
@@ -2653,6 +2897,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 			return;
 		}
+
+		// Already active
+		if (this.openSection == handler) {
+			return;
+		}
+
 		var btn = $('#' + section_id);
 
 		// Already on
@@ -2664,8 +2914,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.openSection.fireEvent('hide');
 		}
 
-		$('#dp_nav li.dpNavActive').removeClass('dpNavActive');
-		btn.addClass('dpNavActive');
+		$('#dp_nav li.active').removeClass('active');
+		btn.addClass('active');
 
 		$('#dp_source > section.on').removeClass('on');
 		$('#dp_list > section.on').removeClass('on');
@@ -2712,7 +2962,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initLayout: function() {
 
 		this.layout = new DeskPRO.Agent.Layout.DeskproWindow();
-		this.layout.doResize();
+		this.layout.doResize(true);
 
 		this.TabBar = new DeskPRO.Agent.WindowElement.TabBar({
 			tabPane: $('#tabNavigationPane'),
@@ -3584,12 +3834,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (first) {
 			this.loadNextNotice();
 		}
-
-		if (this._noticeBleepInterval) {
-			$('#notice_trigger').removeClass('bleep');
-			window.clearInterval(this._noticeBleepInterval);
-			this._noticeBleepInterval = null;
-		}
 	},
 
 	_updateNoticeEl: function() {
@@ -3681,12 +3925,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (!this._noticeIds.length) {
 			this._noticeEl.hide();
-			$('.DP-version-notes').hide();
+			$('#notice_trigger').hide();
 			return;
 		}
 
 		this._updateNoticeEl();
-		$('.DP-version-notes').find('em').text(this._noticeIds.length);
+		$('.DP-version-notes').find('.badge').text(this._noticeIds.length);
 	},
 
 	loadNotice: function(id) {
@@ -3722,5 +3966,58 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		this.loadNotice(this._noticeIds[this._noticeIndex]);
+	},
+
+	setPaneVis: function(id, vis) {
+		this.paneVis[id] = vis;
+		this.layout.doResize(true);
+	},
+
+	setPaneVisNum: function(num) {
+		switch (num) {
+			case 0:
+				this.paneVis.source = true;
+				this.paneVis.list = true;
+				this.paneVis.tabs = true;
+
+			case 1:
+				this.paneVis.source = true;
+				this.paneVis.list = true;
+				this.paneVis.tabs = false;
+
+			case 2:
+				this.paneVis.source = true;
+				this.paneVis.list = false;
+				this.paneVis.tabs = true;
+
+			case 3:
+				this.paneVis.source = false;
+				this.paneVis.list = true;
+				this.paneVis.tabs = false;
+
+			case 4:
+				this.paneVis.source = false;
+				this.paneVis.list = false;
+				this.paneVis.tabs = true;
+
+			case 5:
+				this.paneVis.source = false;
+				this.paneVis.list = true;
+				this.paneVis.tabs = true;
+		}
+
+		this.layout.doResize(true);
+	},
+
+	getPaneVisNum: function() {
+		var source = this.paneVis.source, list = this.paneVis.list, tabs = this.paneVis.tabs;
+
+		if (source && list && tabs)   return 0;
+		if (source && list && !tabs)  return 1;
+		if (source && !list && tabs)  return 2;
+		if (!source && list && !tabs) return 3;
+		if (!source && !list && tabs) return 4;
+		if (!source && list && tabs)  return 5;
+		return 0;
 	}
 });

@@ -64,83 +64,15 @@
 <body class="billing-interface {{ body_class }}">
 
 {% block header %}
-<!-- BEGIN HEADER BAR -->
-<div id="dp_header">
-	{# User Logo #}
-	<div id="dp_header_user">
-		<div class="button-wrap" id="userSetting_trigger">
-			<h1>
-				<cite style="background-image: url({{ app.user.getPictureUrl(24) }});"></cite>
-				<span class="drop"></span>
-			</h1>
-		</div>
-	</div>
-	<!-- Header - User Control Dropdown -->
-	<div id="userSetting" style="display:none;">
-		<div class="userProfileDropdown" >
-			<div class="userProfileDropdownHeader">
-				<a><em style="background-image: url({{ app.user.getPictureUrl(24) }});"></em></a>
-				<span class="drop"></span>
-			</div>
-			<ul>
-				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.general.help') }}</a></li>
-				<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=admin">{{ phrase('agent.general.log_out') }}</a></li>
-			</ul>
-		</div>
-	</div>
-
-
-	{# DeskPRO Logo #}
-	<div id="dp_logo_wrap">
-		<div class="button-wrap">
-			<h1>
-				{{ phrase('agent.general.deskpro') }}
-				<span class="drop"></span>
-			</h1>
-		</div>
-	</div>
-	<div id="dp_logo_expand_wrap">
-		<div class="dropdown-header">
-			<h1>
-				{{ phrase('agent.general.deskpro') }}
-				<span class="drop"></span>
-			</h1>
-		</div>
-		<div class="dropdown-content">
-			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
-		</div>
-	</div>
-
-	<!-- BEGIN INTERFACE SECTION -->
-	<div id="DP-InterfaceSwitcher">
-		<div class="DP-adminSwitch">
-			<div class="adminSwitcher">
-				<a class="billing">{% if app.isCloud() %}{{ phrase('agent.general.billing_interface') }}{% else %}{{ phrase('agent.general.license_interface') }}{% endif %}<span class="dropdownIcon"></span></a>
-			</div>
-		</div>
-		<!-- Header - Switch Button Interfaces- Dropdown -->
-		<div id="interfacesToggle" style="display:none;">
-			<div class="dropdownSwitcherWrap">
-				<div class="switcherHeader">
-					<a class="billing"><span>{% if app.isCloud() %}{{ phrase('agent.general.billing_interface') }}{% else %}{{ phrase('agent.general.license_interface') }}{% endif %}</span></a>
-				</div>
-				<ul>
-					{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">{{ phrase('agent.general.admin_interface') }}</span></a></li>{% endif %}
-					{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.general.agent_interface') }}</span></a></li>{% endif %}
-					{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.reports_interface') }}</span></a></li>{% endif %}
-					{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
-				</ul>
-			</div>
-		</div>
-	</div>
-	<!-- END INTERFACE SECTION -->
-</div>
-<!-- /BEGIN HEADER BAR -->
 
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav" class="billing">
 	<div id="dp_admin_nav_sections" class="deskproPane">
+		<div style="float:right">
+			{% if app.user.can_admin %}
+				<a href="{{ app.request.getBaseUrl() }}/admin/" style="color: #fff; text-decoration: underline; font-size: 135%; padding-top: 9px; display: block;">Back to Admin Interface</a>
+			{% endif %}
+		</div>
 		<h1>{% if app.isCloud() %}Billing{% else %}Licensing{% endif %}</h1>
 	</div>
 </div>

@@ -154,9 +154,57 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('OrgFieldsManager');
 	}
 
+	/**
+	 * Used only for backwards comptat
+	 * @deprecated
+	 */
 	public function getDataRepository($ent)
 	{
 		return App::getSystemService("{$ent}Data");
+	}
+
+	public function getDataService($ent)
+	{
+		return App::getDataService($ent);
+	}
+
+	public function getDepartments()
+	{
+		return App::getDataService('Department');
+	}
+
+	public function getAgents()
+	{
+		return App::getDataService('Agent');
+	}
+
+	public function agent_teams()
+	{
+		return App::getDataService('AgentTeam');
+	}
+	public function getAgentTeams()
+	{
+		return App::getDataService('AgentTeam');
+	}
+
+	public function getUsersources()
+	{
+		return App::getDataService('Usersource');
+	}
+
+	public function getUsergroups()
+	{
+		return App::getDataService('Usergroup');
+	}
+
+	public function getLanguages()
+	{
+		return App::getDataService('Language');
+	}
+
+	public function getProducts()
+	{
+		return App::getDataService('Product');
 	}
 
 	public function getCustomFieldManager($type)
@@ -251,6 +299,16 @@ class GlobalVariables extends BaseGlobalVariables
 	public function isCloud()
 	{
 		return defined('DPC_IS_CLOUD');
+	}
+
+	public function isPluginInstalled($id)
+	{
+		return App::getContainer()->getPlugins()->isPluginInstalled($id);
+	}
+
+	public function getPluginService($id)
+	{
+		return App::getContainer()->getPlugins()->getPluginService($id);
 	}
 
 	public function __toString()

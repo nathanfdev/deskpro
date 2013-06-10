@@ -116,6 +116,11 @@ class FieldManager
 	public function getFields()
 	{
 		if ($this->fields === null) {
+			if ($this->options->get('disabled')) {
+				$this->fields = array();
+				return $this->fields;
+			}
+
 			$this->fields = array();
 			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledUserFields();
@@ -275,7 +280,7 @@ class FieldManager
 			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
-				'rendered'        => $rendered,
+				'rendered'        => trim($rendered),
 				'elId'            => \Orb\Util\Util::requestUniqueIdString(),
 				'hasValue'        => ($value !== null),
 				'id'              => $f_def['id'],

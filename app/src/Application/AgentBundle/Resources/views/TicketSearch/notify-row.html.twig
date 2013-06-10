@@ -1,15 +1,14 @@
 <li
-	class="ticket {% if is_new_ticket %}new-ticket{% elseif is_new_agent_reply or is_new_user_reply %}new-reply{% else %}update{% endif %} ticket-row-{{ ticket.id }}"
+	class="inside ticket {% if is_new_ticket %}new-ticket{% elseif is_new_agent_reply or is_new_user_reply %}new-reply{% else %}update{% endif %} ticket-row-{{ ticket.id }}"
 	data-class-id="ticket-row-{{ ticket.id }}"
 	data-type="tickets"
 	data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
 	data-route-notabreload="1"
-	data-icon="images/agent/app-nav/app-tickets.png"
 >
-	<em class="dismiss"></em>
-	<time class="timeago"></time>
-	<a><i class="row-icon"></i> {{ ticket.subject }}</a>
-	<div class="info">
+	<div class="dismiss"><i class="icon-ban-circle"></i></div>
+	<time></time>
+	<big>{{ ticket.subject }}</big>
+	<small>
 		{% if is_new_ticket %}
 			{% if ticket.person.id != performer.id %}
 				{{ performer.name }} created a new ticket for {{ ticket.person.name }} ({{ ticket.person.email_address }})
@@ -26,14 +25,12 @@
             {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 		{% else %}
 			{% if performer %}({{ performer.display_name }}){% endif %}
-			<ul class="log-list">
 			{% for log in log_items %}
 				{% set notify_html %}{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}{% endset %}
 				{% if notify_html %}
-					<li>{{ notify_html|raw }}</li>
+					{{ notify_html|raw }}{% if not loop.last %},{% endif %}
 				{% endif %}
 			{% endfor %}
-			</ul>
 		{% endif %}
-	</div>
+	</small>
 </li>

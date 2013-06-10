@@ -91,7 +91,7 @@
 							<div class="fields-row">
 								<select name="newticket[ticket][department_id]">
 									<option value=""></option>
-									{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+									{% for cat in app.departments.getPersonDepartments(app.user, 'tickets') %}
 										{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
 									{% endfor %}
 								</select>

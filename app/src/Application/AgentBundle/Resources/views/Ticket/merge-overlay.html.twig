@@ -20,7 +20,10 @@
 						<li><a>
 							<span class="ticket-id pill">1234</span>
 							<span class="ticket-subject"></span>
-							<div class="bound-fade"></div>
+							<div class="right">
+								<div class="status-pill ticket-status"></div>
+								<time class="ticket-time"></time>
+							</div>
 						</a></li>
 					</script>
 					<div class="input-wrapper">
@@ -89,78 +92,94 @@
 								<td width="50%">{{ phrase('agent.tickets.status_' ~ ticket.status) }}</td>
 								{% if other_ticket %}<td width="50%">{{ phrase('agent.tickets.status_' ~ other_ticket.status) }}</td>{% endif %}
 							</tr>
-							<tr class="always-keep">
-								<th nowrap="nowrap"><div>Urgency</div></th>
-								<td width="50%">{{ ticket.urgency }}</td>
-								{% if other_ticket %}<td width="50%">{{ other_ticket.urgency }}</td>{% endif %}
-							</tr>
-							<tr>
-								<th nowrap="nowrap"><div>Language</div></th>
-								<td width="50%">{{ ticket.language ? ticket.language.title : '' }}</td>
-								{% if other_ticket %}
-									<td width="50%">{{ other_ticket.language ? other_ticket.language.title : '' }}</td>
-								{% endif %}
-							</tr>
-							<tr>
-								<th nowrap="nowrap"><div>Category</div></th>
-								<td width="50%">{{ ticket.category ? ticket.category.title : '' }}</td>
-								{% if other_ticket %}
-									<td width="50%">{{ other_ticket.category ? other_ticket.category.title : '' }}</td>
-								{% endif %}
-							</tr>
-							<tr>
-								<th nowrap="nowrap"><div>Priority</div></th>
-								<td width="50%">{{ ticket.priority ? ticket.priority.title : '' }}</td>
-								{% if other_ticket %}
-									<td width="50%">{{ other_ticket.priority ? other_ticket.priority.title : '' }}</td>
-								{% endif %}
-							</tr>
-							<tr>
-								<th nowrap="nowrap"><div>Product</div></th>
-								<td width="50%">{{ ticket.product ? ticket.product.title : '' }}</td>
-								{% if other_ticket %}
-									<td width="50%">{{ other_ticket.product ? other_ticket.product.title : '' }}</td>
-								{% endif %}
-							</tr>
-							<tr>
-								<th nowrap="nowrap"><div>Workflow</div></th>
-								<td width="50%">{{ ticket.workflow ? ticket.workflow.title : '' }}</td>
-								{% if other_ticket %}
-									<td width="50%">{{ other_ticket.workflow ? other_ticket.workflow.title : '' }}</td>
-								{% endif %}
-							</tr>
-							{% for k,f in custom_fields %}
+							{% if ticket.urgency and other_ticket.urgency and ticket.urgency != other_ticket.urgency %}
+								<tr class="always-keep">
+									<th nowrap="nowrap"><div>Urgency</div></th>
+									<td width="50%">{{ ticket.urgency }}</td>
+									{% if other_ticket %}<td width="50%">{{ other_ticket.urgency }}</td>{% endif %}
+								</tr>
+							{% endif %}
+							{% if ticket.language or other_ticket.language %}
 								<tr>
-									<th nowrap="nowrap"><div>{{ f.title }}</div></th>
-									<td width="50%">{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+									<th nowrap="nowrap"><div>Language</div></th>
+									<td width="50%">{{ ticket.language ? ticket.language.title : '' }}</td>
 									{% if other_ticket %}
-										<td width="50%">{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+										<td width="50%">{{ other_ticket.language ? other_ticket.language.title : '' }}</td>
 									{% endif %}
 								</tr>
-							{% endfor %}
-							<tr class="mergeable">
-								<th nowrap="nowrap"><div>Labels</div></th>
-								<td width="50%">
-									{% if ticket.labels is not empty %}
-										<ul>
-											{% for label in ticket.labels %}
-												<li>{{ label.label }}</li>
-											{% endfor %}
-										</ul>
+							{% endif %}
+							{% if ticket.category or other_ticket_category %}
+								<tr>
+									<th nowrap="nowrap"><div>Category</div></th>
+									<td width="50%">{{ ticket.category ? ticket.category.title : '' }}</td>
+									{% if other_ticket %}
+										<td width="50%">{{ other_ticket.category ? other_ticket.category.title : '' }}</td>
 									{% endif %}
-								</td>
-								{% if other_ticket %}
+								</tr>
+							{% endif %}
+							{% if ticket.priority or other_ticket.priority%}
+								<tr>
+									<th nowrap="nowrap"><div>Priority</div></th>
+									<td width="50%">{{ ticket.priority ? ticket.priority.title : '' }}</td>
+									{% if other_ticket %}
+										<td width="50%">{{ other_ticket.priority ? other_ticket.priority.title : '' }}</td>
+									{% endif %}
+								</tr>
+							{% endif %}
+							{% if ticket.product or other_ticket.product %}
+								<tr>
+									<th nowrap="nowrap"><div>Product</div></th>
+									<td width="50%">{{ ticket.product ? ticket.product.title : '' }}</td>
+									{% if other_ticket %}
+										<td width="50%">{{ other_ticket.product ? other_ticket.product.title : '' }}</td>
+									{% endif %}
+								</tr>
+							{% endif %}
+							{% if ticket.workflow or other_ticket.workflow %}
+								<tr>
+									<th nowrap="nowrap"><div>Workflow</div></th>
+									<td width="50%">{{ ticket.workflow ? ticket.workflow.title : '' }}</td>
+									{% if other_ticket %}
+										<td width="50%">{{ other_ticket.workflow ? other_ticket.workflow.title : '' }}</td>
+									{% endif %}
+								</tr>
+							{% endif %}
+							{% for k,f in custom_fields %}
+								{% if f.hasValue or other_custom_fields[k].hasValue %}
+									<tr>
+										<th nowrap="nowrap"><div>{{ f.title }}</div></th>
+										<td width="50%">{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+										{% if other_ticket %}
+											<td width="50%">{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+										{% endif %}
+									</tr>
+								{% endif %}
+							{% endfor %}
+							{% if ticket.labels is not empty or other_ticket.labels is not empty %}
+								<tr class="mergeable">
+									<th nowrap="nowrap"><div>Labels</div></th>
 									<td width="50%">
-										{% if other_ticket.labels is not empty %}
+										{% if ticket.labels is not empty %}
 											<ul>
-												{% for label in other_ticket.labels %}
+												{% for label in ticket.labels %}
 													<li>{{ label.label }}</li>
 												{% endfor %}
 											</ul>
 										{% endif %}
 									</td>
-								{% endif %}
-							</tr>
+									{% if other_ticket %}
+										<td width="50%">
+											{% if other_ticket.labels is not empty %}
+												<ul>
+													{% for label in other_ticket.labels %}
+														<li>{{ label.label }}</li>
+													{% endfor %}
+												</ul>
+											{% endif %}
+										</td>
+									{% endif %}
+								</tr>
+							{% endif %}
 						</tbody>
 					</table>
 				</div>

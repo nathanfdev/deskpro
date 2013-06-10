@@ -152,6 +152,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Plugin\PluginRepository
+	 */
+	public function getPlugins()
+	{
+		return $this->getSystemService('plugins');
+	}
+
+
+	/**
 	 * @param string $id
 	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
 	 */
@@ -482,6 +491,24 @@ class DeskproContainer extends Container
 	public function getAgentData()
 	{
 		return $this->getDataService('Agent');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService
+	 */
+	public function getLanguageData()
+	{
+		return $this->getDataService('Language');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Translate\ObjectLangRepository
+	 */
+	public function getObjectLangRepository()
+	{
+		return $this->getSystemService('object_lang_repository');
 	}
 
 

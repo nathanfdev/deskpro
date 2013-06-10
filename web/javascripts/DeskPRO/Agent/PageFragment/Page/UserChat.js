@@ -7,18 +7,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.TYPENAME = 'userchat';
 	},
 
-	initPage: function(el) {
-		var self = this;
-
-		var OBJ_ID = this.OBJ_ID;
-		this.el = el;
-
+	initMetaData: function() {
 		DeskPRO_Window.recentTabs.add(
 			'userchat',
 			this.meta.conversation_id,
 			this.meta.title,
 			BASE_URL + 'agent/chat/view/' + this.meta.conversation_id
 		);
+	},
+
+	initPage: function(el) {
+		var self = this;
+
+		var OBJ_ID = this.OBJ_ID;
+		this.el = el;
 
 		this.chatStatus  = this.meta.status;
 		this.chatEndedBy = this.meta.ended_by;
@@ -278,7 +280,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		//------------------------------
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
 			triggerElement: snippetBtn,
 			onSnippetClick: function(info) {
 				var val = info.snippet;

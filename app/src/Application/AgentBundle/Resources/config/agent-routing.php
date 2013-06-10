@@ -37,6 +37,13 @@ $collection->add('agent_load_search_sheet', new Route(
 	array()
 ));
 
+$collection->add('agent_load_recent_tabs', new Route(
+	'/ui/load-recent-tabs.json',
+	array('_controller' => 'AgentBundle:Main:loadRecentTabs'),
+	array(),
+	array()
+));
+
 $collection->add('agent_accept_upload', new Route(
 	'/misc/accept-upload',
 	array('_controller' => 'AgentBundle:Misc:acceptTempUpload'),
@@ -173,66 +180,6 @@ $collection->add('agent_search', new Route(
 $collection->add('agent_search_json', new Route(
 	'/search/search.json',
 	array('_controller' => 'AgentBundle:Search:searchResults'),
-	array(),
-	array()
-));
-
-################################################################################
-# Snippets
-################################################################################
-
-$collection->add('agent_snippetviewer', new Route(
-	'/misc/snippet-viewer/view/{typename}',
-	array('_controller' => 'AgentBundle:Misc:snippetsViewer'),
-	array(),
-	array()
-));
-
-$collection->add('agent_snippetviewer_newcat', new Route(
-	'/misc/snippet-viewer/new-cat',
-	array('_controller' => 'AgentBundle:Misc:newSnippetCat'),
-	array(),
-	array()
-));
-
-$collection->add('agent_snippetviewer_savesnippet', new Route(
-	'/misc/snippet-viewer/save-snippet',
-	array('_controller' => 'AgentBundle:Misc:saveSnippet'),
-	array(),
-	array()
-));
-
-$collection->add('agent_snippetviewer_getsnippet', new Route(
-	'/misc/snippet-viewer/get-snippet/{snippet_id}',
-	array('_controller' => 'AgentBundle:Misc:getSnippet'),
-	array('snippet_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_snippetviewer_delsnippet', new Route(
-	'/misc/snippet-viewer/delete-snippet',
-	array('_controller' => 'AgentBundle:Misc:deleteSnippet'),
-	array(),
-	array()
-));
-
-$collection->add('agent_snippetviewer_savecat', new Route(
-	'/misc/snippet-viewer/save-category',
-	array('_controller' => 'AgentBundle:Misc:saveSnippetCat'),
-	array(),
-	array()
-));
-
-$collection->add('agent_snippetviewer_editcat', new Route(
-	'/misc/snippet-viewer/edit-category',
-	array('_controller' => 'AgentBundle:Misc:editSnippetCat'),
-	array(),
-	array()
-));
-
-$collection->add('agent_snippetviewer_delcat', new Route(
-	'/misc/snippet-viewer/delete-category',
-	array('_controller' => 'AgentBundle:Misc:deleteSnippetCat'),
 	array(),
 	array()
 ));
@@ -1150,62 +1097,6 @@ $collection->add('agent_ticket_changeuser', new Route(
 	'/tickets/{ticket_id}/change-user',
 	array('_controller' => 'AgentBundle:Ticket:changeUser'),
 	array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer', new Route(
-	'/tickets/{ticket_id}/snippet-viewer',
-	array('_controller' => 'AgentBundle:Ticket:snippetsViewer'),
-	array('ticket_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_getsnippet', new Route(
-	'/tickets/{ticket_id}/get-snippet/{snippet_id}',
-	array('_controller' => 'AgentBundle:Ticket:getSnippet'),
-	array('ticket_id' => '\\d+', 'snippet_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer_newcat', new Route(
-	'/tickets/snippet-viewer/new-cat',
-	array('_controller' => 'AgentBundle:Ticket:newSnippetCat'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer_savesnippet', new Route(
-	'/tickets/snippet-viewer/save-snippet',
-	array('_controller' => 'AgentBundle:Ticket:saveSnippet'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer_delsnippet', new Route(
-	'/tickets/snippet-viewer/delete-snippet',
-	array('_controller' => 'AgentBundle:Ticket:deleteSnippet'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer_savecat', new Route(
-	'/tickets/snippet-viewer/save-category',
-	array('_controller' => 'AgentBundle:Ticket:saveSnippetCat'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer_editcat', new Route(
-	'/tickets/snippet-viewer/edit-category',
-	array('_controller' => 'AgentBundle:Ticket:editSnippetCat'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticket_snippetviewer_delcat', new Route(
-	'/tickets/snippet-viewer/delete-category',
-	array('_controller' => 'AgentBundle:Ticket:deleteSnippetCat'),
-	array(),
 	array()
 ));
 
@@ -2794,6 +2685,73 @@ $collection->add('agent_mediamanager_upload', new Route(
 $collection->add('agent_mediamanager_browse', new Route(
 	'/media-manager/browse',
 	array('_controller' => 'AgentBundle:MediaManager:browse'),
+	array(),
+	array()
+));
+
+################################################################################
+# Text Snippets
+################################################################################
+
+$collection->add('agent_textsnippets_widget_shell', new Route(
+	'/text-snippets/{typename}/widget-shell.txt',
+	array('_controller' => 'AgentBundle:TextSnippets:getWidgetShell'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_reloadclient', new Route(
+	'/text-snippets/{typename}/reload-client.json',
+	array('_controller' => 'AgentBundle:TextSnippets:reloadClient'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_reloadclient_batch', new Route(
+	'/text-snippets/{typename}/reload-client/{batch}.json',
+	array('_controller' => 'AgentBundle:TextSnippets:reloadClientBatch'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_filtersnippets', new Route(
+	'/text-snippets/{typename}/filter.json',
+	array('_controller' => 'AgentBundle:TextSnippets:filterSnippets'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_getsnippet', new Route(
+	'/text-snippets/{typename}/{id}.json',
+	array('_controller' => 'AgentBundle:TextSnippets:getSnippet'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_savesnippet', new Route(
+	'/text-snippets/{typename}/{id}/save.json',
+	array('_controller' => 'AgentBundle:TextSnippets:saveSnippet'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_delsnippet', new Route(
+	'/text-snippets/{typename}/{id}/delete.json',
+	array('_controller' => 'AgentBundle:TextSnippets:deleteSnippet'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_savecat', new Route(
+	'/text-snippets/{typename}/categories/{id}/save.json',
+	array('_controller' => 'AgentBundle:TextSnippets:saveCategory'),
+	array(),
+	array()
+));
+
+$collection->add('agent_textsnippets_delcat', new Route(
+	'/text-snippets/{typename}/categories/{id}/delete.json',
+	array('_controller' => 'AgentBundle:TextSnippets:deleteCategory'),
 	array(),
 	array()
 ));

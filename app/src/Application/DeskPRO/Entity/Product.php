@@ -47,6 +47,11 @@ use Application\DeskPRO\Translate\Translate;
 class Product extends CategoryAbstract implements HasPhraseName
 {
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $custom_data;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Product
 	 */
 	protected $parent;
@@ -55,6 +60,11 @@ class Product extends CategoryAbstract implements HasPhraseName
 	 * @var \Application\DeskPRO\Entity\Product
 	 */
 	protected $children;
+
+	public function __construct()
+	{
+		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 
 
 	/**
@@ -124,6 +134,173 @@ class Product extends CategoryAbstract implements HasPhraseName
 	}
 
 
+	/**
+	 * Find an existing data record for a field id.
+	 *
+	 * @param int $field_id
+	 * @return CustomDataProduct
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		if ($field_id instanceof CustomDefProduct) {
+			$field_id = $field_id['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Set custom field data for a particular field.
+	 *
+	 * @param int $field_id
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function setCustomData($field_id, $value_type, $value)
+	{
+		$custom_data = $this->getCustomDataForField($field_id);
+		$is_new = false;
+
+		if (!$custom_data) {
+			if ($value === null) return null;
+
+			$is_new = true;
+
+			$field = App::getEntityRepository('DeskPRO:CustomDefProduct')->find($field_id);
+			if (!$field) {
+				throw new \Exception("Invalid field_id `$field_id`");
+			}
+			$custom_data = new CustomDataProduct();
+			$custom_data['field'] = $field;
+		}
+
+		$field = $custom_data->field;
+		if ($field->parent) {
+			foreach ($this->custom_data as $d) {
+				if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+					$this->custom_data->removeElement($d);
+				}
+			}
+		}
+
+		$this->custom_data->removeElement($custom_data);
+
+		if ($value === null) {
+			$this->custom_data->removeElement($custom_data);
+			return null;
+		}
+
+		if ($field->getTypeName() == 'choice') {
+
+		}
+
+		$custom_data[$value_type] = $value;
+
+		if ($is_new) {
+			$this->addCustomData($custom_data);
+		}
+
+		if ($this->id) {
+			App::getEntityRepository('DeskPRO:Cache')->delete("product_custom_fields.{$this->id}");
+		}
+
+		return $custom_data;
+	}
+
+	public function removeCustomDataForField($field)
+	{
+		$parent_id = null;
+		$field_id = $field['id'];
+		if ($field->parent) {
+			$parent_id = $field->parent['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+				$this->custom_data->removeElement($data);
+			}
+		}
+	}
+
+	/**
+	 * Add a custom data item to this product
+	 *
+	 * @param CustomDataProduct $data
+	 */
+	public function addCustomData(CustomDataProduct $data)
+	{
+		$this->custom_data->add($data);
+		$data['product'] = $this;
+	}
+
+
+	/**
+	 * Check if this product has a custom field.
+	 *
+	 * @param $field_id
+	 * @return bool
+	 */
+	public function hasCustomField($field_id)
+	{
+		foreach ($this->custom_data as $data) {
+			if ($data->field['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getFieldDisplayArray()
+	{
+		$field_manager = App::getContainer()->getSystemService('product_fields_manager');
+		return $field_manager->getDisplayArrayForObject($this);
+	}
+
+
+
+	/**
+	 * @param bool $primary
+	 * @param bool $deep
+	 * @param array $visited
+	 * @return array
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		// Render custom fields to text values
+		$field_manager = App::getContainer()->getSystemService('product_fields_manager');
+
+		$values = $field_manager->getRenderedToTextForObject($this);
+		foreach ($values as $fid => $v) {
+			$data["field{$fid}"] = $v['rendered'];
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return $this->getFullTitle();
@@ -149,5 +326,6 @@ class Product extends CategoryAbstract implements HasPhraseName
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'product', 'orphanRemoval' => true,  'dpApi' => false));
 	}
 }

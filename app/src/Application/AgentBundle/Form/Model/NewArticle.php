@@ -45,6 +45,7 @@ class NewArticle
 	public $category_id;
 	public $status;
 	public $content;
+	public $language_id;
 
 	public $slug;
 	public $labels = array();
@@ -78,6 +79,15 @@ class NewArticle
 
 		$article->title = $this->title;
 		$article->content = $this->content ?: '';
+
+		$lang = null;
+		if ($this->language_id) {
+			$lang = App::getContainer()->getLanguageData()->get($this->language_id);
+		}
+		if (!$lang) {
+			$lang = App::getContainer()->getLanguageData()->getDefault();
+		}
+		$article->language = $lang;
 
 		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
 		$article->addToCategory($cat);

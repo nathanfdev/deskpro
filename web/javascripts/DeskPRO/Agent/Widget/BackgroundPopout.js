@@ -161,6 +161,11 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	 */
 	open: function(callback) {
 
+		if (this.options.tabRoute && !DeskPRO_Window.paneVis.list) {
+			DeskPRO_Window.runPageRoute(this.options.tabRoute);
+			return;
+		}
+
 		if (this.pop) {
 			if (this.doReset) {
 				this.pop.setHtml(this.getTemplate());

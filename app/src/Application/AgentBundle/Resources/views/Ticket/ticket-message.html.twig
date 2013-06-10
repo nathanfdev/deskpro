@@ -13,8 +13,61 @@
 		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
 		<header>
-			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"></span>
+			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
+			<div class="message-header-extra-controls">
+				<div class="message-translate-controls">
+					<div class="translate-controls-off">
+						<span>Translation</span>
+						<i class="icon-globe"></i>
+					</div>
+					<div class="translate-controls-on">
+						{% if app.isPluginInstalled('MicrosoftTranslator') %}
+							<div class="dp-is-loading">
+								<i class="flat-spinner"></i>
+							</div>
+							<div class="dp-btn-group dp-dropdown dp-not-loading">
+								<a class="dp-btn trans-trigger">
+									Translate from
+									<span class="translate-from-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
+										{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
+									</span>
+									to
+									<span class="translate-to-lang" data-locale="{{ app.user.language.locale }}">
+										{{ phrase_object(app.user.language) }}
+									</span>
+								</a>
+								<a class="dp-btn dp-dropdown-toggle">
+									<span class="dp-caret dp-caret-down"></span>
+									<div class="dp-lang-choose dp-popover" style="display: none;">
+										<div style="padding: 6px;">
+											<select name="from">
+												<option value="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}</option>
+												<option value="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}"></option>
+												{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
+													{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+													<option value="{{ code }}">{{ name }}</option>
+												{% endfor %}
+											</select>
+											to <select name="to">
+												<option value="{{ app.user.language.locale }}">{{ phrase_object(app.user.language) }}</option>
+												<option value="{{ app.user.language.locale }}"></option>
+												{% for code in app.getPluginService('MicrosoftTranslator.tr_api').getLanguagesForTranslate() %}
+													{% set name = app.getPluginService('MicrosoftTranslator.tr_api').getSingleLanguageName(code) %}
+													<option value="{{ code }}">{{ name }}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+								</a>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
 			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
+			{% if message.getGeoCountry() %}
+				<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+			{% endif %}
 			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% endif %}
@@ -59,40 +112,53 @@
 						<tr>
 							<th>IP Address:</th>
 							<td>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="icon-search" title="Find other tickets submitted from this IP address"></i></a>
 								{{ message.ip_address }}
+								{% if message.getGeoCountry() %}
+									<span class="dp-flag-{{ message.getGeoCountry()|lower }}"></span>
+								{% endif %}
 							</td>
 						</tr>
 					{% endif %}
 				</table>
 			</div>
 		</header>
-		<div class="body-text">
-			<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
-				{% if message.getMessageLength() > 1100000 %}
-					{{message.getMessageHtmlClipped(1100000)|raw }}
-					<br/><br/><br/>
-					<div style="text-align: center;">
-						This message has been clipped because it is very long. <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">View the entire message in a new window &rarr;</a>
-					</div>
-				{% else %}
-					{{message.message_html|safe_link_urls_html }}
-					{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
-				{% endif %}
+		{% set message_translated = ticket_messages_translated[message.id] %}
+		<div class="body-text {% if message_translated %}with-translated{% endif %}">
+			<div class="body-message-translated" {% if not message_translated %}style="display: none;"{% endif %} data-from-lang-code="{{ message_translated.from_lang_code }}" data-to-lang-code="{{ message_translated.lang_code }}">
+				{% if message_translated %}{{ message_translated.message|raw }}{% endif %}
 			</div>
-			{% if message.message_full %}
-				<div class="body-text-full-message {% if message.show_full_hint %}loaded{% endif %}" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
-					<div class="full-message-content">{% if message.show_full_hint %}{{message.message_full|raw }}{% else %}<span class="flat-spinner"></span>{% endif %}</div>
-					<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
+			<div class="body-message-translate-original">
+				<div class="body-message-translate-original-caption">
+					Original Message
 				</div>
-			{% endif %}
-			<div class="fade-bar-longmsg">
-				<em>
-					<strong>
-						<i></i>
-						View Full Message
-						<i class="last"></i>
-					</strong>
-				</em>
+				<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
+					{% if message.getMessageLength() > 1100000 %}
+						{{message.getMessageHtmlClipped(1100000)|raw }}
+						<br/><br/><br/>
+						<div style="text-align: center;">
+							This message has been clipped because it is very long. <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">View the entire message in a new window &rarr;</a>
+						</div>
+					{% else %}
+						{{message.message_html|safe_link_urls_html }}
+						{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
+					{% endif %}
+				</div>
+				{% if message.message_full %}
+					<div class="body-text-full-message {% if message.show_full_hint %}loaded{% endif %}" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
+						<div class="full-message-content">{% if message.show_full_hint %}{{message.message_full|raw }}{% else %}<span class="flat-spinner"></span>{% endif %}</div>
+						<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
+					</div>
+				{% endif %}
+				<div class="fade-bar-longmsg">
+					<em>
+						<strong>
+							<i></i>
+							View Full Message
+							<i class="last"></i>
+						</strong>
+					</em>
+				</div>
 			</div>
 		</div>
 		{% if ticket_message_attachments[message.id] %}

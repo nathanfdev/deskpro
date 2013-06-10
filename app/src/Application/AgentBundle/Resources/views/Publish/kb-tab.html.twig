@@ -17,6 +17,28 @@
 			</li>
 			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
 		</ul>
+
+		{% if kb_translate_queue[0] %}
+			<ul class="source-list with-tree" style="margin-top: 15px;">
+				<li class="has-children">
+					<span class="sub-toggle" style="left:3px;" onclick="$(this).parent().find('.sub-group').toggle(); $(this).parent().toggleClass('sub-expanded');"></span>
+					<span data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1}) }}" class="is-nav-item title" style="padding-left: 16px;">
+						<span class="list-counter">{{ kb_translate_queue[0] }}</span>
+						{{ phrase('agent.publish.untranslated_articles') }}
+					</span>
+					<ul class="sub-group">
+						{% for lang_id, count in kb_translate_queue if lang_id > 0 and count > 0 %}
+							<li data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1, language_id: lang_id}) }}">
+								<span class="title is-nav-item fitted" style="padding-left: 20px;">
+									<span class="list-counter">{{ count }}</span>
+									{{ app.languages.get(lang_id).title }}
+								</span>
+							</li>
+						{% endfor %}
+					</ul>
+				</li>
+			</ul>
+		{% endif %}
 	</section>
 
 	<br class="clear" />

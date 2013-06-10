@@ -3,7 +3,9 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory';
 pageMeta.agentId = {{ agent.id|default(0) }};
 {% endblock pagemeta %}
-
+{% block pane_header %}
+	<h1><i class="icon-dp-chat"></i> {{ conversations|length }} Conversations</h1>
+{% endblock %}
 {% block listing %}
 	{% include 'AgentBundle:AgentChat:list-part.html.twig' %}
 {% endblock listing %}

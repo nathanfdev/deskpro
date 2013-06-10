@@ -18,9 +18,9 @@
 	{% if category %}
 		/
 		{% for cat in category_path %}
-			{{cat.title}} /
+			{{ phrase_object(cat) }} /
 		{% endfor %}
-		{{category.title}}
+		{{ phrase_object(category) }}
 	{% endif %}
 {% endblock %}
 {% block content %}

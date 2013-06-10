@@ -99,6 +99,15 @@ class ArticleResults
 					array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
 				);
 
+			} elseif (isset($options['pending_translate'])) {
+
+				$terms = array(
+					array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
+					array('type' => 'pending_translate', 'op' => 'id', 'options' => array(
+						'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0
+					))
+				);
+
 			// "all" is published but no category term
 			} elseif (isset($options['show_all'])) {
 				$terms = array(
@@ -144,6 +153,17 @@ class ArticleResults
 		return new self($controller, $result_cache);
 	}
 
+	/**
+	 * @return \Application\AgentBundle\Controller\Helper\ArticleResults
+	 */
+	public static function newFromResultCache($controller, ResultCache $result_cache)
+	{
+		$helper = new self($controller);
+		$helper->setArticleIds($result_cache['results']);
+
+		return $helper;
+	}
+
 
 	public function __construct($controller, ResultCache $result_cache = null)
 	{
@@ -187,6 +207,11 @@ class ArticleResults
 	 * @return array
 	 */
 	public function getArticlesForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
+	}
+
+	public function getForPage($page, $per_page = 50)
 	{
 		return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
 	}

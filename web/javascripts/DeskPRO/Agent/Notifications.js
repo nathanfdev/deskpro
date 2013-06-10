@@ -6,15 +6,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	initialize: function() {
 		var self = this;
 
-		$('#dp_notif_bed, #notificationDropdown .notifHead').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self.toggle();
-		});
-
 		this.fireEvent('init');
-		this._isOpen = false;
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tasks', function(info) { this.addRow(info.row); }, this);
@@ -22,6 +14,23 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_feedback', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_registration', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.twitter', function(info) { this.addRow(info.row); }, this);
+	},
+
+	getListTypeByType: function(type) {
+		var listType = null;
+		if (type == 'tickets') {
+			listType = 'tickets';
+		} else if (type == 'new_registration') {
+			listType = 'people';
+		} else if (type == 'chat') {
+			listType = 'chat';
+		} else if (type == 'tasks') {
+			listType = 'tasks';
+		} else if (type == 'new_comment' || type == 'new_feedback') {
+			listType = 'publish';
+		}
+
+		return listType;
 	},
 
 	addRow: function(html_or_el) {
@@ -34,15 +43,19 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			return;
 		}
 
+		var listType = this.getListTypeByType(type);
+		var list = $('#dp_header_notify_wrap').find('li.type-row.' + listType).find('ul.notify-list');
+
 		var self = this;
 
-		$('time.timeago', row).text('').attr('datetime', (new Date()).toISOString());
+		row.find('time').addClass('timeago');
+		row.find('time.timeago').text('').attr('datetime', (new Date()).toISOString());
 		DeskPRO_Window.initInterfaceServices(row);
 
 		var ev = { row: row, type: type };
 		this.fireEvent('addRow');
 
-		$('#dp_notify_list').prepend(row);
+		list.prepend(row);
 
 		this.modCount(type, '+');
 
@@ -80,14 +93,14 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	addMessage: function(type, message, route, id) {
-		var row = $('<li />');
+		var row = $(DeskPRO_Window.util.getPlainTpl('#dp_header_notify_row_tpl'));
 		row.data('type', type);
 		row.addClass(type);
-		row.data('data-route', route || '').attr('data-route', route || '');
+		row.data('data-route', route || '').attr('data-route', route || '')
+			.data('route-notabreload', 1).attr('data-route-notabreload', 1);
 
-		$('<em />').addClass('dismiss').appendTo(row);
-		$('<time />').addClass('timeago').appendTo(row);
-		$('<a />').text(message).appendTo(row).data('route-notabreload', 1).attr('data-route-notabreload', 1).prepend('<i class="row-icon"></i>');
+		row.find('time').addClass('timeago').text('');
+		row.find('big').text(message);
 
 		if (id) {
 			row.addClass('id-' + id);
@@ -97,7 +110,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	findRow: function(id_class) {
-		var row = $('#dp_notify_list').find('> li.' + id_class);
+		var row = $('#dp_header_notify_wrap').find('li.' + id_class);
 
 		if (!row[0]) {
 			return null;
@@ -129,17 +142,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			}
 		}
 
-		if (!$('#dp_notify_list').find('> li.msg-row').length) {
-			this.close();
-		}
-
 		this._isRemoving = false;
 	},
 
 	removeRelated: function(related) {
 		var self = this;
 
-		$('#dp_notify_list').find('li').each(function() {
+		$('#dp_header_notify_wrap').find('li').each(function() {
 			var row = $(this);
 			if (row.data('related') === related) {
 				self.removeRow(row);
@@ -149,7 +158,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 	removeRowById: function(id) {
 		var self = this;
-		var row = $('#dp_notify_list').find('li.id-' + id);
+		var row = $('#dp_header_notify_wrap').find('li.id-' + id);
 		row.each(function() {
 			self.removeRow($(this));
 		});
@@ -157,23 +166,27 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 	removeRowByClass: function(id) {
 		var self = this;
-		var row = $('#dp_notify_list').find('li.' + id);
+		var row = $('#dp_header_notify_wrap').find('li.' + id);
 		row.each(function() {
 			self.removeRow($(this));
 		})
 	},
 
 	modCount: function(type, op, count) {
-		var el   = $('#dp_notif_bed .notif-' + type);
-		var el2  = $('#notificationDropdown .notif-' + type);
+		var listType = this.getListTypeByType(type);
+		if (!listType) return;
 
-		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el2 };
+		var list = $('#dp_header_notify_wrap').find('li.type-row.' + listType);
+		var el = list.find('.badge').first();
+		var el2 = list.find('.notify-count').first();
+
+		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el };
 		this.fireEvent('beforeModCount', ev);
 
 		if (op == '=') {
 			var newcount = count || 0;
-			$('.counter', el).text(newcount);
-			$('.counter', el2).text(newcount);
+			el.text(newcount);
+			el2.text(newcount);
 		} else {
 			var newcount = parseInt(el.text().trim());
 			if (op == '+') {
@@ -184,8 +197,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			if (newcount < 0) newcount = 0;
 
-			$('.counter', el).text(newcount || 0);
-			$('.counter', el2).text(newcount || 0);
+			el.text(newcount || '0');
+			el2.text(newcount || '0');
 		}
 
 		// <3 because the dismiss button and the help note are li's
@@ -198,121 +211,22 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		if (newcount < 1) {
-			el.removeClass('with-count');
-			el2.removeClass('with-count');
+			el.hide();
+			list.removeClass('dp-notifications-on');
+			list.hide();
 			this.fireEvent('typeHide', [type, el]);
+
+			if (!$('#dp_header_notify_wrap').find('.dp-notifications-on')[0]) {
+				$('#dp_header_notify_wrap').find('li.none').show();
+			}
 		} else {
-			el.addClass('with-count');
-			el2.addClass('with-count');
+			el.show();
+			list.show();
+			list.addClass('dp-notifications-on');
 			this.fireEvent('typeShow', [type, el]);
+			$('#dp_header_notify_wrap').find('li.none').hide();
 		}
 
-		this.updatePositions();
 		this.fireEvent('modCount', ev);
-	},
-
-	_lazyInitMenu: function() {
-		if (this._hasInitMenu) return;
-		this._hasInitMenu = true;
-
-		var self = this;
-
-		this.menu = $('#notificationDropdown').detach().appendTo('body');
-		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
-		this.backdrop.on('click', function() {
-			self.close();
-		});
-
-		this.menu.on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-		});
-
-		this.menu.on('click', '.dismiss', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			ev.stopImmediatePropagation();
-			var row = $(this).closest('li');
-			self.removeRow(row);
-		});
-
-		$('#dp_notify_list_dismiss').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self._isRemoving = true;
-
-			var rows = $('#dp_notify_list li.msg-row').not('.dismissAll');
-
-			rows.each(function() {
-				var row = $(this);
-				if (row.data('notification')) {
-					row.data('notification').close();
-					row.data('notification', false);
-				}
-			});
-
-			rows.remove();
-
-			self.modCount('tickets', '=', 0);
-			self.modCount('chat', '=', 0);
-			self.modCount('feedback', '=', 0);
-			self.modCount('tasks', '=', 0);
-			self.close();
-
-			self._isRemoving = false;
-		});
-
-		this.menu.on('click', '[data-route]', function(ev) {
-			ev.stopPropagation();
-			ev.preventDefault();
-
-			DeskPRO_Window.runPageRouteFromElement($(this));
-			self.removeRow($(this));
-		});
-	},
-
-	open: function() {
-		if (this._isOpen) return;
-		this._isOpen = true;
-		this._lazyInitMenu();
-		this.menu.show();
-		this.backdrop.show();
-		this.updatePositions();
-	},
-
-	updatePositions: function() {
-		if (!this._hasInitMenu) return;
-
-		var pos = $('#dp_notif_bed').offset();
-		this.menu.css({
-			left: pos.left
-		});
-	},
-
-	isOpen: function() {
-		return this._isOpen;
-	},
-
-	close: function() {
-		if (!this._isOpen) return;
-		this._isOpen = false;
-		this.menu.hide();
-		this.backdrop.hide();
-	},
-
-	toggle: function() {
-		if (this._isOpen) {
-			this.close();
-		} else {
-			this.open();
-		}
-	},
-
-	destroy: function() {
-		if (this._hasInitMenu) {
-			this.menu.remove();
-			this.backdrop.remove();
-		}
 	}
 });

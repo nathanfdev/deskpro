@@ -62,7 +62,7 @@ $(document).ready(function() {
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
 					{{ phrase('admin.tickets.select_team_filter_access') }}: <select name="filter[agent_team_id]">
-						{% for k,v in app.getDataRepository('AgentTeam').getTeamNames() %}
+						{% for k,v in app.agent_teams.getTeamNames() %}
 							<option {% if filter.agent_team.id == k %}selected="selected"{% endif %} value="{{k}}">{{v}}</option>
 						{% endfor %}
 					</select>
@@ -76,7 +76,7 @@ $(document).ready(function() {
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
 					{{ phrase('admin.tickets.select_agent_filter_access') }}: <select name="filter[person_id]">
-						{% for k,v in app.getDataRepository('Person').getAgentNames() %}
+						{% for k,v in app.getDataService('Person').getAgentNames() %}
 							<option {% if filter.person.id == k %}selected="selected"{% endif %} value="{{k}}">{{v}}</option>
 						{% endfor %}
 					</select>

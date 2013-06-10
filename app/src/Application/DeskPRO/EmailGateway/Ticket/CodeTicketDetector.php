@@ -148,14 +148,51 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		$search_text = array_unique($search_text);
 		$search_text = implode(' ', $search_text);
 
-		#------------------------------
-		# TAC
-		#------------------------------
-
 		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
 		$authcode_min_len = $auth_len + 1;
 		$authcode_max_len = $auth_len + 7;
 
+		#------------------------------
+		# PTAC
+		#------------------------------
+
+		$already_checked = array();
+
+		$matches = null;
+		if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $m) {
+
+				if (isset($already_checked[$m[1]])) {
+					continue;
+				}
+				$already_checked[$m[1]] = true;
+
+				$this->getLogger()->logDebug("[CodeTicketDetector] Checking code that looks like PTAC: {$m[1]}");
+
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
+
+				if ($ticket && !$ticket->isArchived()) {
+					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+					if ($this->_found_person) {
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
+					} else {
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with new person");
+					}
+
+					return $ticket;
+				}
+
+				$this->getLogger()->logDebug("[CodeTicketDetector] -- Invalid code");
+			}
+		}
+
+		#------------------------------
+		# TAC
+		#------------------------------
+
+		// Reset the already checked array we build during tac checking,
+		// we check the codes again for ptacs now
 		$already_checked = array();
 
 		$matches = null;
@@ -197,43 +234,6 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 					return $ticket;
 				}
-			}
-		}
-
-		#------------------------------
-		# PTAC
-		#------------------------------
-
-		// Reset the already checked array we build during tac checking,
-		// we check the codes again for ptacs now
-		$already_checked = array();
-
-		$matches = null;
-		if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $m) {
-
-				if (isset($already_checked[$m[1]])) {
-					continue;
-				}
-				$already_checked[$m[1]] = true;
-
-				$this->getLogger()->logDebug("[CodeTicketDetector] Checking code that looks like PTAC: {$m[1]}");
-
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
-
-				if ($ticket && !$ticket->isArchived()) {
-					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
-
-					if ($this->_found_person) {
-						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
-					} else {
-						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with new person");
-					}
-
-					return $ticket;
-				}
-
-				$this->getLogger()->logDebug("[CodeTicketDetector] -- Invalid code");
 			}
 		}
 

@@ -24,10 +24,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		return 'ticket-row-' + this.meta.ticket_id;
 	},
 
+	initMetaData: function() {
+		DeskPRO_Window.recentTabs.add(
+			'tickets',
+			this.meta.ticket_id,
+			this.meta.title,
+			BASE_URL + 'agent/tickets/' + this.meta.ticket_id
+		);
+	},
+
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;
 		this.getEl('replybox_wrap').data('page', this);
+		this.hasReplyFocused = false;
 
 		var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 		if (flashEnabled) {
@@ -70,13 +80,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.wrapper.find('.copy-btn').remove();
 		}
 
-		DeskPRO_Window.recentTabs.add(
-			'tickets',
-			this.meta.ticket_id,
-			this.meta.title,
-			BASE_URL + 'agent/tickets/' + this.meta.ticket_id
-		);
-
 		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.on('submit', function(ev) {
 			// Never actually submit the form (would load a new page)
@@ -108,6 +111,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.ownObject(this.ticketFields);
 
 		this._initMessage(this.wrapper.find('.messages-wrap'));
+
+		this.getEl('value_form').find('.language_id').on('change', function() {
+			var langId     = $(this).val();
+			if (!langId) {
+				langId = DESKPRO_DEFAULT_LANG_ID;
+			}
+
+			var langLocale = DESKPRO_NAME_REGISTRY.lang_data[langId].locale;
+			var langTitle  = $.trim(DESKPRO_NAME_REGISTRY.lang_data[langId].title);
+
+			self.getEl('message_page_wrap').find('.translate-from-lang').each(function() {
+				$(this).text(langTitle).data(langLocale);
+			});
+		});
 
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
@@ -205,7 +222,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				tabType: 'ticket',
 				metaId: self.meta.ticket_id,
 				metaIdName: 'ticket_id',
-				menu: this.getEl('merge_menu'),
 				trigger: $('.merge-menu-trigger', this.wrapper),
 				overlayUrl: BASE_URL + 'agent/tickets/{id}/merge-overlay/{other}',
 				mergeUrl: BASE_URL + 'agent/tickets/{id}/merge/{other}',
@@ -226,6 +242,226 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			});
 			this.ownObject(this.merge);
+
+			this.mergeMenu = new (function() {
+				var menuEl = null;
+				var menuElInner = null;
+				var backEl = null;
+				var hasInitUserTickets = false;
+				var lastOvers = null;
+				var lastOverId = null;
+
+				var updateOverHighlight = function(ticketId) {
+					removeLastOverHighlight();
+
+					if (!DeskPRO_Window.sections.tickets_section || !DeskPRO_Window.sections.tickets_section.isVisible()) {
+						return;
+					}
+
+					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
+					lastOverId = ticketId;
+					lastOvers = searchListEl.find('.ticket-' + ticketId);
+					lastOvers = lastOvers.add($('#tabNavigationPane').find('.ticket-' + ticketId));
+					lastOvers.addClass('item-hover-over');
+				};
+
+				var removeLastOverHighlight = function() {
+					if (lastOvers) {
+						lastOvers.removeClass('item-hover-over');
+					}
+					lastOvers = null;
+					lastOverId = null;
+				}
+
+				var renderTicketOption = function(ticket) {
+					var row = $('<li><time></time><a><strong></strong><span></span></a></li>');
+					row.data('ticket-id', ticket.id);
+					row.addClass('ticket-' + ticket.id + ' ticket');
+
+					row.find('strong').text(ticket.id);
+					row.find('span').text(ticket.subject);
+
+					var d = new Date(ticket.last_activity*1000);
+					row.find('time').attr('datetime', d.toISOString()).timeago();
+
+					row.on('mouseover', function() {
+						updateOverHighlight(ticket.id);
+					}).on('mouseout', function() {
+						if (lastOverId && lastOverId == ticket.id) {
+							removeLastOverHighlight();
+						}
+					});
+
+					return row.get(0);
+				};
+
+				var refreshOpenTickets = function() {
+					var append = [];
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+						var id = tab.page.getMetaData('ticket_id');
+						if (id && id != self.meta.ticket_id) {
+							var row = renderTicketOption({
+								id: id,
+								subject: tab.title,
+								last_activity: tab.page.getMetaData('last_activity')
+							});
+
+							append.push(row);
+						}
+					});
+
+					if (append.length) {
+						menuEl.find('.open-tickets').show().find('ul').empty().append($(append));
+					} else {
+						menuEl.find('.open-tickets').hide().find('ul').empty();
+					}
+				};
+
+				var refreshUserTickets = function() {
+					$.ajax({
+						url: BASE_URL + 'agent/ticket-search/quick-search',
+						data: {
+							person_id: self.meta.person_id
+						},
+						dataType: 'json',
+						success: function(data) {
+							var append = [];
+							Array.each(data, function(t) {
+								var row = renderTicketOption(t);
+								append.push(row);
+							});
+
+							if (append.length) {
+								menuEl.find('.users-tickets').show().find('ul').empty().append($(append));
+							} else {
+								menuEl.find('.users-tickets').hide().find('ul').empty();
+							}
+						}
+					});
+				};
+
+				var refreshFilterResults = function() {
+					if (!DeskPRO_Window.sections.tickets_section || !DeskPRO_Window.sections.tickets_section.isVisible()) {
+						menuEl.find('.filter-tickets').hide().find('ul').empty();
+						return;
+					}
+
+					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
+					var append = [];
+
+					searchListEl.find('.row-item').each(function() {
+						var el = $(this);
+						var t = {
+							id: el.data('ticket-id'),
+							subject: $.trim(el.find('.subject').text()),
+							last_activity: parseInt(el.data('ticket-lastactivity'))
+						};
+						if (!t.id) {
+							return;
+						}
+
+						var row = renderTicketOption(t);
+						append.push(row);
+					});
+
+					if (append.length) {
+						menuEl.find('.filter-tickets').show().find('ul').empty().append($(append));
+					} else {
+						menuEl.find('.filter-tickets').hide().find('ul').empty();
+					}
+				};
+
+				var openMenu = function(atEl) {
+					var tmp;
+					if (!menuEl) {
+						menuEl = $('<div/>');
+						menuEl.addClass('dp-popover');
+						menuEl.css('width', 500);
+
+						menuElInner = $('<div/>').addClass('dp-popover-inner');
+						menuElInner.appendTo(menuEl);
+
+						backEl = $('<div/>');
+						backEl.addClass('dp-popover-backdrop');
+
+						tmp = $('<div/>').html('<section><header><strong>Find a ticket...</strong></header><article style="padding: 6px;"><button class="trigger-search dp-btn dp-btn-small">Search</button></article></section>');
+						tmp.addClass('search-tickets');
+						tmp.appendTo(menuElInner);
+
+						tmp = $('<div/>').html('<section><header><strong>User\'s Tickets</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('users-tickets').hide();
+						tmp.appendTo(menuElInner);
+
+						tmp = $('<div/>').html('<section><header><strong>Open Tickets</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('open-tickets').hide();
+						tmp.appendTo(menuElInner);
+
+						tmp = $('<div/>').html('<section><header><strong>Filter Results</strong></header><article><ul></ul></article></section>');
+						tmp.addClass('filter-tickets').hide();
+						tmp.appendTo(menuElInner);
+
+						menuEl.find('.trigger-search').on('click', function(ev) {
+							Orb.cancelEvent(ev);
+							self.merge.open();
+							closeMenu();
+						});
+
+						menuEl.on('click', 'li', function(ev) {
+							Orb.cancelEvent(ev);
+							closeMenu();
+							self.merge.openWithId($(this).data('ticket-id'));
+						});
+
+						backEl.on('click', function(ev) {
+							Orb.cancelEvent(ev);
+							closeMenu();
+						});
+
+						menuEl.appendTo('body');
+						backEl.appendTo('body')
+					}
+
+					if (!hasInitUserTickets) {
+						hasInitUserTickets = true;
+						refreshUserTickets();
+					}
+					window.setTimeout(function() { refreshOpenTickets(); }, 1);
+					window.setTimeout(function() { refreshFilterResults(); }, 1);
+
+					var maxH = parseInt(($(window).height() / 2) - 40);
+					menuEl.find('.dp-popover-inner').css('max-height', maxH);
+
+					menuEl.show();
+					menuEl.position({
+						of: atEl,
+						my: 'center top',
+						at: 'center bottom',
+						collision: 'flipfit'
+					});
+					backEl.show();
+				};
+
+				var closeMenu = function() {
+					menuEl.hide();
+					backEl.hide();
+
+					removeLastOverHighlight();
+				};
+
+				self.wrapper.find('.merge-menu-trigger').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					openMenu($(this));
+				});
+
+				this.destroy = function() {
+					if (menuEl) {
+						menuEl.detach();
+					}
+					if (backEl) {
+						backEl.detach();
+					}
+				};
+			})();
 		}
 
 		if (this.meta.ticket_perms.reply) {
@@ -1011,6 +1247,68 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			self._initTicketMessageClipped(article);
+
+			var trans = article.find('.message-translate-controls');
+			if (trans[0]) {
+				var transShow     = article.find('.body-message-translated');
+				var existTo       = transShow.data('to-lang-code');
+				var existFrom     = transShow.data('from-lang-code');
+				var transMenu     = trans.find('.dp-lang-choose');
+				var transMenuBack = null;
+				var transFromEl   = trans.find('.translate-from-lang');
+				var transToEl     = trans.find('.translate-to-lang');
+
+				trans.on('click', '.translate-controls-off', function(ev) {
+					Orb.cancelEvent(ev);
+					trans.addClass('on');
+				});
+
+				trans.find('.dp-dropdown-toggle').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+
+					if (!transMenu.hasClass('has-init')) {
+						transMenu.detach().appendTo('body');
+
+						transMenu.addClass('has-init');
+						transMenuBack = $('<div/>').addClass('dp-popover-backdrop').hide().appendTo('body');
+
+						self.addEvent('destroy', function() {
+							transMenu.detach();
+							transMenuBack.detach();
+						});
+
+						transMenuBack.on('click', function(ev) {
+							Orb.cancelEvent(ev);
+							transMenu.hide();
+							transMenuBack.hide();
+						});
+
+						transMenu.find('select').on('change', function(){
+							var locale = $(this).val();
+							var title = $(this).find(':selected').text();
+
+							if ($(this).attr('name') == 'from') {
+								transFromEl.data('locale', locale).text(title);
+							} else {
+								transToEl.data('locale', locale).text(title);
+							}
+						});
+					}
+
+					transMenu.css({top:0, left:0}).position({
+						of: $(this),
+						my: 'right top',
+						at: 'right bottom',
+						collision: 'flipfit'
+					}).show();
+					transMenuBack.show();
+				});
+
+				trans.find('.trans-trigger').on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					self.refreshMessageTranslation(article);
+				});
+			}
 		});
 		this.lastMessageCount = lastCount;
 
@@ -1025,6 +1323,49 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var counterText = wr.find(findclass).text().trim();
 			if (counterText.length) {
 				$(this).attr('title', $(this).text()).text(counterText).removeClass('message-id-txt');
+			}
+		});
+	},
+
+	refreshMessageTranslation: function(messageEl) {
+		var trans     = messageEl.find('.message-translate-controls');
+		var transShow = messageEl.find('.body-message-translated');
+
+		var selFrom = trans.find('.translate-from-lang');
+		var selTo   = trans.find('.translate-to-lang');
+
+		var formData = {
+			message_id: messageEl.data('message-id'),
+			from: selFrom.data('locale'),
+			to: selTo.data('locale')
+		};
+
+		selFrom.parent().find('em').text(selFrom.find(':selected').text());
+		selTo.parent().find('em').text(selTo.find(':selected').text());
+
+		trans.addClass('dp-loading-on');
+		$.ajax({
+			url: window.DESKPRO_TRANSLATE_SERVICE.translate_ticket_message_url,
+			data: formData,
+			type: 'POST',
+			dataType: 'json',
+			complete: function() {
+				trans.removeClass('dp-loading-on');
+			},
+			success: function(data) {
+				if (data.error_code) {
+					DeskPRO_Window.showAlert("Could not translate message: " + data.message);
+					return;
+				}
+
+				trans.removeClass('on');
+
+				transShow.data('to-lang-code', data.to_lang_code);
+				transShow.data('from-lang-code', data.from_lang_code);
+				transShow.empty().html(data.message);
+				transShow.show();
+
+				transShow.parent().addClass('with-translated');
 			}
 		});
 	},

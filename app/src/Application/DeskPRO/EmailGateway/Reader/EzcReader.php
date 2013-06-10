@@ -63,7 +63,7 @@ class EzcReader extends AbstractReader
 		$opt = new \ezcMailParserOptions();
 
 		$this->parser = new \ezcMailParser($opt);
-		\ezcMailParser::setTmpDir(null);
+		\ezcMailParser::setTmpDir(dp_get_tmp_dir() . DIRECTORY_SEPARATOR);
 
 		// Dont have ezc try and convert charsets, we'll handle that ourselves tyvm
 		static $has_set_convert = false;

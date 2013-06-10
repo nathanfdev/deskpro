@@ -6,7 +6,7 @@
 				{% include 'AgentBundle:Common:select-department.html.twig' with {
 					'name': 'set_term[department][]',
 					'blank_title': phrase('agent.general.department'),
-					'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets'),
+					'departments': app.departments.getPersonDepartments(app.user, 'tickets'),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -31,7 +31,7 @@
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[agent][]',
 					'blank_title': phrase('agent.general.agent'),
-					'agents': app.getDataRepository('Agent').getAgents(),
+					'agents': app.agents.getAgents(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -43,7 +43,7 @@
 					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
 						'name': 'set_term[agent_team][]',
 						'blank_title': phrase('agent.general.agent_team'),
-						'agent_teams': app.getDataRepository('AgentTeam').getTeams(),
+						'agent_teams': app.agent_teams.getTeams(),
 						'add_attr': 'multiple="multiple"'
 					} %}
 				</div>
@@ -55,7 +55,7 @@
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[participant][]',
 					'blank_title': phrase('agent.general.agent'),
-					'agents': app.getDataRepository('Agent').getAgents(),
+					'agents': app.agents.getAgents(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -93,7 +93,7 @@
 				{% include 'AgentBundle:Common:select-priority.html.twig' with {
 					'name': 'set_term[priority][]',
 					'blank_title': phrase('agent.general.priority'),
-					'priorities': app.getDataRepository('TicketPriority').getNames(),
+					'priorities': app.getDataService('TicketPriority').getNames(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
@@ -106,19 +106,19 @@
 				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 					'name': 'set_term[workflow][]',
 					'blank_title': phrase('agent.general.workflow'),
-					'workflows': app.getDataRepository('TicketWorkflow').getNames(),
+					'workflows': app.getDataService('TicketWorkflow').getNames(),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
 		</li>
 		{% endif %}
 
-		{% if app.getDataRepository('Sla').hasSlas() %}
+		{% if app.getDataService('Sla').hasSlas() %}
 		<li class="ob">
 			<label>SLA</label>
 			<div class="values">
 				<select name="set_term[sla][]" multiple="multiple">
-					{% for sla in app.getDataRepository('Sla').getAllSlas %}
+					{% for sla in app.getDataService('Sla').getAllSlas %}
 						<option value="{{ sla.id }}">{{ sla.title }}</option>
 					{% endfor %}
 				</select>
@@ -126,12 +126,12 @@
 		</li>
 		{% endif %}
 
-		{% if app.getDataRepository('Organization').getOrganizationNames()|length %}
+		{% if app.getDataService('Organization').getOrganizationNames()|length %}
 		<li class="ob">
 			<label>{{ phrase('agent.general.organization') }}</label>
 			<div class="values">
 				<select name="set_term[organization][]" multiple="multiple">
-					{% for id,title in app.getDataRepository('Organization').getOrganizationNames() %}
+					{% for id,title in app.getDataService('Organization').getOrganizationNames() %}
 						<option value="{{ id }}">{{ title }}</option>
 					{% endfor %}
 				</select>
@@ -139,12 +139,12 @@
 		</li>
 		{% endif %}
 
-		{% if app.getDataRepository('Language').isMultiLang() %}
+		{% if app.languages.isMultiLang() %}
 			<li class="ob">
 				<label>{{ phrase('agent.general.language') }}</label>
 				<div class="values">
 					<select name="language">
-						{% for id,title in app.getDataRepository('Language').getTitles() %}
+						{% for id,title in app.languages.getTitles() %}
 						<option value="{{id}}">{{title}}</option>
 						{% endfor %}
 					</select>

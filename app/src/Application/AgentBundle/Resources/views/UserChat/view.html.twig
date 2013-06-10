@@ -55,7 +55,7 @@ pageMeta.baseId = '{{ baseId }}';
 						'blank_title': 'None',
 						'selected': convo.department.id|default(0),
 						'id': baseId ~ '_department_id',
-						'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'chat', [convo.department.id|default(0)])
+						'departments': app.departments.getPersonDepartments(app.user, 'chat', [convo.department.id|default(0)])
 					} %}
 			</td>
 			<td style="vertical-align: middle; padding-left: 8px;">

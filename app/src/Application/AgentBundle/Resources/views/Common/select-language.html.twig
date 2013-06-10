@@ -8,6 +8,6 @@
 		{% if not title %}
 			{% set title = language.title %}
 		{% endif %}
-		<option value="{{ language.id }}" data-icon="{{ asset('images/flags/' ~ language.flag_image) }}" {% if language.id == selected %}selected="selected"{% endif %}>{{ language.title }}</option>
+		<option value="{{ language.id }}" data-icon="{{ asset('images/flags/' ~ language.flag_image) }}" {% if language.id == selected %}selected="selected"{% endif %}>{{ phrase_object(language) }}</option>
 	{% endfor %}
 </select>

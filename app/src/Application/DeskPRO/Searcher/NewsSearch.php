@@ -49,6 +49,7 @@ class NewsSearch extends SearcherAbstract
 	const TERM_STATUS          = 'status';
 	const TERM_PUBLISHED          = 'published';
 	const TERM_AGENT_LIST      = 'agent_list';
+	const TERM_QUERY           = 'query';
 
 	const ORDER_ID       = 'id';
 	const ORDER_DATE     = 'id';
@@ -339,6 +340,22 @@ class NewsSearch extends SearcherAbstract
 					    $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
                     }
 
+					break;
+
+				case self::TERM_QUERY:
+
+					$string = $choice['query'];
+					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+
+					if (!$string) {
+						break;
+					}
+
+					$w = array();
+					$w[] = "(" . $this->_stringSearch("news.title", $op, $string, $type) . ")";
+					$w[] = "(" . $this->_stringSearch("news.content", $op, $string, $type) . ")";
+
+					$wheres[] = implode(' OR ' , $w);
 					break;
 
 				case self::TERM_PUBLISHED:

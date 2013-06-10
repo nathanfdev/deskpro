@@ -42,6 +42,8 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 
 		this.contentEl.html(data.section_html);
 
+		this._initSectionSearch();
+
 		var self = this;
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
@@ -70,6 +72,13 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		this.currentNavSelectionOldCount = null;
 
 		this.fireEvent('sectionInit');
+	},
+
+	_initSectionSearch: function() {
+		var searchPane = this.contentEl.find('.source-pane-search');
+		if (searchPane[0]) {
+			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+		}
 	},
 
 	recountBadge: function() {

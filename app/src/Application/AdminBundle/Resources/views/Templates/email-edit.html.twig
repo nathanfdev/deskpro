@@ -73,7 +73,7 @@
 </style>
 
 <script type="text/javascript">
-var DP_DEFAULT_LANG_ID = {{ app.getDataRepository('Language').getDefaultId()|default(1) }};
+var DP_DEFAULT_LANG_ID = {{ app.languages.getDefaultId()|default(1) }};
 $(document).ready(function() {
 	var editor = new DpEmailEditor('{{ name }}');
 });

@@ -62,6 +62,12 @@ class ProxyFactory extends UnprivateProxyFactory
 				'$this->__entityPersister__',
 				'$this->__identifier__'
 			), self::$_proxyClassTemplate);
+
+			self::$_proxyClassTemplate = str_replace(
+				'protected $__entityPersister__;',
+				'protected $__entityPersister__;' . "\n\t" . 'public $_dp_object_translatable;',
+				self::$_proxyClassTemplate
+			);
 		}
 
 		parent::generateProxyClasses($classes, $toDir);
@@ -72,7 +78,7 @@ class ProxyFactory extends UnprivateProxyFactory
 		$methods = '';
 		$methodNames = array();
 		foreach ($class->reflClass->getMethods() as $method) {
-			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__", '__hasrunload__')) || isset($methodNames[$method->getName()])) {
+			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__", '__hasrunload__', 'addcustomcallable', 'getobjecttranslatable', 'ensuredefaultpropertychangedlistener', 'addpropertychangedlistener', 'removepropertychangedlistener')) || isset($methodNames[$method->getName()])) {
 				continue;
 			}
 			$methodNames[$method->getName()] = true;

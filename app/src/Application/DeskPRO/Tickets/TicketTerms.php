@@ -348,6 +348,12 @@ class TicketTerms
 				}
 				break;
 
+			case 'is_via_email_reply':
+				if (!$ticket->email_reader_action || strpos($ticket->email_reader_action, 'reply') === false) {
+					return false;
+				}
+				break;
+
 			case 'is_via_interface':
 				if (!defined('DP_INTERFACE') || !in_array(DP_INTERFACE, array('user', 'agent'))) {
 					return false;

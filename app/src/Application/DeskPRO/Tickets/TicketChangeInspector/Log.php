@@ -594,6 +594,11 @@ class Log
 			return $this->person_context;
 		}
 
+		if ($this->tracker->getExtra('person_performer')) {
+			$this->person_context = $this->tracker->getExtra('person_performer');
+			return $this->person_context;
+		}
+
 		$this->person_context = App::getCurrentPerson();
 		if (!$this->person_context || !$this->person_context->getId()) {
 			// If we're in a gateway, see if we've added a reply, and the person who added the reply will be our context.

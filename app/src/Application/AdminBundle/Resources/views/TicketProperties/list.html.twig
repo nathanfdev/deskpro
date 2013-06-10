@@ -33,7 +33,7 @@
 				<span>{% if context.field_to_dep[name]|length == context.dep_names|length %}All Departments{% else %}{{ context.field_to_dep[name]|length }} Departments{% endif %}</span>
 				<div class="list">
 					{% for id in context.field_to_dep[name] %}
-						&bull; {{ app.getDataRepository('Department').get(id).getFullTitle() }}<br/>
+						&bull; {{ app.departments.get(id).getFullTitle() }}<br/>
 					{% endfor %}
 				</div>
 			</div>

@@ -83,7 +83,7 @@
 <div id="dp">
 	<div id="dp_main">
 
-		{% if app.getDataRepository('Language').isMultiLang() %}
+		{% if app.languages.isMultiLang() %}
 			<!--DP_OFFLINE_CACHE_REMOVE_START-->
 			<div id="dp_lang_chooser">
 				<form id="dp_lang_chooser_form" action="{{ path('user_profile_setlang') }}" method="POST">
@@ -91,7 +91,7 @@
 					{{ form_token('lang_chooser') }}
 					<label>{{ phrase('user.portal.language_chooser') }}</label>
 					<select name="language_id" onchange="$('#dp_lang_chooser_form').submit();">
-						{% for lang in app.getDataRepository('Language').getAll() %}
+						{% for lang in app.languages.getAll() %}
 							<option value="{{ lang.id }}" data-flag="{{ lang.flag_image }}" {% if lang.id == app.session.getLanguage().getId() %}selected="selected"{% endif %}>{{ lang.title }}</option>
 						{% endfor %}
 					</select>

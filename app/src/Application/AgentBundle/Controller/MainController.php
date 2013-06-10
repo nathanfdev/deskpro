@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\People\PrefNoticeSet;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -152,6 +153,8 @@ class MainController extends AbstractController
 			DP_ROOT.'/docs/changelog/docs.php'
 		);
 
+		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
@@ -176,6 +179,7 @@ class MainController extends AbstractController
 			'is_first_login_name' => $is_first_login_name,
 			'timezones'           => \DateTimeZone::listIdentifiers(),
 			'version_notices'     => $version_notices,
+			'ticket_snippet_cats' => $ticket_snippet_cats,
 		));
 	}
 
@@ -362,6 +366,32 @@ class MainController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function loadRecentTabsAction()
+	{
+		$recent_tabs = $this->db->fetchColumn("
+			SELECT value_array
+			FROM people_prefs
+			WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+		", array($this->person->getId()));
+
+		if ($recent_tabs) {
+			$recent_tabs = @unserialize($recent_tabs);
+		}
+
+		if (!$recent_tabs) {
+			$recent_tabs = array();
+		} else {
+			uasort($recent_tabs, function($a, $b) {
+				if ($a[4] == $b[4]) {
+					return 0;
+				}
+				return ($a[4] < $b[4]) ? -1 : 1;
+			});
+		}
+
+		return $this->createJsonResponse(array_values($recent_tabs));
+	}
+
 	public function quickSearchAction()
 	{
 		$q = $this->in->getString('q');
@@ -378,14 +408,16 @@ class MainController extends AbstractController
 		);
 
 		$results = array(
-			'article'      => array(),
-			'download'     => array(),
-			'feedback'     => array(),
-			'news'         => array(),
-			'ticket'       => array(),
-			'person'       => array(),
-			'organization' => array(),
-			'chat'         => array()
+			'article'                => array(),
+			'download'               => array(),
+			'feedback'               => array(),
+			'news'                   => array(),
+			'ticket'                 => array(),
+			'person'                 => array(),
+			'person_related'         => array(),
+			'organization'           => array(),
+			'organization_related'   => array(),
+			'chat'                   => array()
 		);
 
 		$result_meta = array();
@@ -416,6 +448,85 @@ class MainController extends AbstractController
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($info['ticket_id']);
 			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 				$results['ticket'][] = $ticket;
+			}
+		}
+
+		// Subject search against tickets
+		$words = Strings::utf8_strtolower($q);
+		$words = explode(' ', $words);
+		$words = Arrays::removeFalsey($words);
+		$words = array_unique($words);
+		$words = array_filter($words, function($s) {
+			if (strlen($s) >= 3) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+
+		if ($words) {
+			$db = App::getDbRead();
+
+			#------------------------------
+			# Ticket Subject
+			#------------------------------
+
+			$where = array();
+			foreach ($words as $w) {
+				$where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
+			}
+
+			$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
+			$after_id = $after_id - 6000;
+
+			$where[] = "(id > $after_id)";
+
+			$where = implode(' AND ', $where);
+
+			$ticket_ids = App::getDbRead()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE $where
+				ORDER BY id DESC
+				LIMIT 100
+			");
+
+			if ($ticket_ids) {
+				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
+				foreach ($tickets as $ticket) {
+					if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+						$results['ticket'][] = $ticket;
+					}
+				}
+			}
+
+			#------------------------------
+			# Titles
+			#------------------------------
+
+			$where = array();
+			foreach ($words as $w) {
+				$where[] = "(title LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
+			}
+			$where[] = "(status != 'hidden')";
+			$where = implode(' AND ', $where);
+
+			foreach (array(
+				'article'      => 'articles',
+				'download'     => 'downloads',
+				'feedback'     => 'feedback',
+				'news'         => 'news',
+			) as $type => $table) {
+				$ids = App::getDbRead()->fetchAllCol("
+					SELECT id
+					FROM $table
+					WHERE $where
+					ORDER BY id DESC
+				");
+
+				if ($ids) {
+					$results[$type] = $this->em->getRepository($type_to_ent[$type])->getByIds($ids, true);
+				}
 			}
 		}
 
@@ -523,7 +634,10 @@ class MainController extends AbstractController
 					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
 					foreach ($tickets as $t) {
 						if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
-							$results['ticket'][] = $t;
+							if (!isset($results['person_related'][$t->person->getId()])) {
+								$results['person_related'][$t->person->getId()] = array();
+							}
+							$results['person_related'][$t->person->getId()][] = $t;
 						}
 					}
 				}

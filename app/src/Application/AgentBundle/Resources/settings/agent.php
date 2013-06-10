@@ -12,4 +12,5 @@
 	'agent_notify_list_adminlogin' => false,
 	'agent_notify_list_failed_adminlogin' => true,
 
+	'agent.ui_snippets_use_client_db' => false,
 );

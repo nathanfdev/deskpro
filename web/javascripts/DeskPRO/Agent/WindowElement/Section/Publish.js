@@ -66,7 +66,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		if (allNum) {
 			$('#publish_section_comments').show();
 		} else {
-			$('#publish_section_comments').hide();
+			$('#publish_section_comments').hide();lastLoad
 		}
 	},
 
@@ -137,6 +137,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		this.setHasInitialLoaded();
 
 		this.contentEl.html(data.section_html);
+
+		this._initSectionSearch();
 
 		var self = this;
 
@@ -486,6 +488,19 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		this.fireEvent('sectionInit');
 		this.updateUi();
+	},
+
+	_initSectionSearch: function() {
+		var searchPane = this.contentEl.find('.source-pane-search');
+		if (searchPane[0]) {
+			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+		}
+
+		var catSelectTypes = searchPane.find('.cat-select-type');
+		searchPane.find('.content_type').on('change', function() {
+			catSelectTypes.hide();
+			catSelectTypes.filter('.cat-select-'+$(this).val()).show();
+		});
 	},
 
 	recountBadge: function() {

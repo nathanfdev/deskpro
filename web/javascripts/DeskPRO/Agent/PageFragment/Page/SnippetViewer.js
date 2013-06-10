@@ -6,90 +6,497 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	initializeProperties: function() {
 		this.parent();
-		this.TYPENAME = 'ticket_snippets';
+		this.TYPENAME = 'snippets';
 		this.allowDupe = true;
 		this.activeSection = null;
 		this.activeSnippets = $([]);
+		this.noIgnoreForm = true;
 	},
 
 	initPage: function(el) {
 		var self = this;
+		this.snippet_typename = this.meta.snippet_typename;
 
-		this.noIgnoreForm = true;
-		this.wrapper = el;
+		if (this.snippet_typename == 'tickets') {
+			var driver = DeskPRO_Window.ticketSnippetDriver;
+		} else {
+			var driver = DeskPRO_Window.chatSnippetDriver;
+		}
 
-		// Set up the tabs
-		this.catTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('nav ul > li', this.wrapper),
-			context: this.wrapper,
-			onTabSwitch: function(info) {
-				$('li.snippet', info.tabContent).each(function() {
-					self.processSnippetRow($(this));
+		this.snippetDriver = driver;
+
+		//----------------------------------------
+		// Browsing snippets
+		//----------------------------------------
+
+		var catList = this.getEl('catlist');
+		var snippetList = this.getEl('snippet_list');
+		var filterInput = this.getEl('filter');
+		var langSelect  = this.getEl('show_language_id');
+
+		var rowsTpl = twig({
+			data: DeskPRO_Window.util.getPlainTpl($('#snippet_rows_tpl'))
+		});
+
+		this.rowsTpl = rowsTpl;
+
+		var pickLangText = function(lang_vals, myLangId, showLangId) {
+			if (!showLangId || showLangId == "0") {
+				showLangId = DESKPRO_DEFAULT_LANG_ID;
+			}
+
+			var ret = { my: '', myId: 0, show: '', showId: 0 };
+			var hasShow = false;
+			Array.each(lang_vals, function(l) {
+				if (l.language_id == myLangId) {
+					ret.my = l.value;
+					ret.myId = l.language_id;
+				}
+				if (l.language_id == showLangId) {
+					ret.show = l.value;
+					ret.showId = l.language_id;
+				}
+				if (!ret.show) {
+					ret.show = l.value;
+					ret.showId = l.language_id;
+				}
+			});
+
+			if (!ret.show || ret.showId != showLangId) {
+				ret.show = ret.my;
+				ret.showId = ret.myId;
+			}
+
+			return ret;
+		};
+
+		this.pickLangText = pickLangText;
+
+		var useLocalCompare  = (typeof String.localeCompare != "undefined");
+
+		var sortSnippets = function(snippets) {
+			return snippets.sort(function(a, b) {
+				var a_string, b_string;
+				a_string = a.title_use.show || '';
+				b_string = b.title_use.show || '';
+
+				if (useLocalCompare) {
+					var cmp = a_string.localeCompare(b_string, null, {
+						usage: 'sort',
+						ignorePunctuation: true,
+						caseFirst: false
+					});
+					return cmp;
+				} else {
+					a_string = a_string.toLowerCase();
+					b_string = b_string.toLowerCase();
+
+					if (a_string == b_string) {
+						return 0;
+					}
+
+					return (a_string < b_string) ? -1 : 1;
+				}
+			});
+		};
+
+		var updateCatList = function(categoryId, filterString, languageId) {
+
+			var myLangId   = DESKPRO_PERSON_LANG_ID;
+			var showLangId = langSelect.val();
+
+			if (categoryId) {
+				driver.loadSnippets({
+					categoryId: categoryId,
+					filterString: filterString || null,
+					languageId: languageId || null
+				}, function(snippets) {
+					var newList = $('<ul></ul>');
+
+					Array.each(snippets, function(s) {
+						s.title_use   = pickLangText(s.title, myLangId, showLangId);
+						s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
+					});
+
+					snippets = sortSnippets(snippets);
+
+					newList.html(rowsTpl.render({
+						snippets: snippets
+					}));
+
+					snippetList.empty().append(newList);
+				});
+			} else {
+				var catIds = [];
+				catList.find('li').each(function() {
+					var id = parseInt($(this).data('category-id'));
+					if (id) {
+						catIds.push(id);
+					}
 				});
 
-				window.setTimeout(function() {
-					self.activeSection = $(info.tabContent);
-					$(info.tabContent).find('.filter-input').first().focus();
-					self.updateUi();
-				}, 10);
-			}
-		});
-		this.ownObject(this.catTabs);
+				snippetList.empty();
+				if (!catIds.length) {
+					return;
+				}
 
-		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: this.wrapper,
-			destroyOnClose: false
-		});
-		this.ownObject(this.overlay);
+				var tick = 0;
 
-		this.wrapper.on('click', '.snippet-content', function(ev) {
+				if (driver.driverName == 'client_db') {
+					Array.each(catIds, function(cid) {
+						driver.loadSnippets({
+							categoryId: cid,
+							filterString: filterString || null,
+							languageId: languageId || null
+						}, function(snippets) {
+							if (!snippets.length) {
+								return;
+							}
 
-			ev.preventDefault();
-			ev.stopPropagation();
+							Array.each(snippets, function(s) {
+								s.title_use   = pickLangText(s.title, myLangId, showLangId);
+								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
+							});
 
-			var evData = {
-				cancelClose: false
-			};
-			self.insertSnippetEl($(this), ev, evData);
+							snippets = sortSnippets(snippets);
 
-			if (!evData.cancelClose) {
-				self.closeSelf();
-			}
-		});
+							var hasMore = false;
+							if (snippets.length > 15) {
+								var hasMore = true;
+								snippets = snippets.slice(0, 15);
+							}
 
-		this.wrapper.on('click', '.expand-trigger', function(ev) {
-			ev.stopPropagation();
+							var newListWrap = $('<div/>');
+							var catTitle = $('<div class="cat-title"/>');
+							catTitle.text(catList.find('.category-' + cid).text());
+							catTitle.appendTo(newListWrap);
 
-			var contentShow = $(this).closest('.snippet').find('.content.show');
-			contentShow.toggleClass('expanded');
-			$(this).toggleClass('expanded');
-			self.updateUi();
-		});
+							var newList = $('<ul></ul>');
 
-		this._initEditing();
+							newList.html(rowsTpl.render({
+								snippets: snippets
+							}));
 
-		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this, {
-			itemSelector: 'li.snippet',
-			listSelector: '.snippet-sections > .on'
-		});
-		this.listNav.enter = function() {
-			var current = self.listNav.getCurrentSelection();
-			if (current) {
-				current.find('.snippet-content').trigger('click');
+							newListWrap.append(newList);
+
+							snippetList.append(newListWrap);
+						});
+					});
+				} else {
+					driver.loadSnippets({
+						filterString: filterString || null
+					}, function(snippets) {
+						if (!snippets.length) {
+							return;
+						}
+
+						Array.each(catIds, function(cid) {
+
+							var catSnippets = snippets.filter(function(s) { return s.category_id == cid; });
+							if (!catSnippets.length) {
+								return;
+							}
+
+							Array.each(catSnippets, function(s) {
+								s.title_use   = pickLangText(s.title, myLangId, showLangId);
+								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
+							});
+
+							catSnippets = sortSnippets(catSnippets);
+
+							var hasMore = false;
+							if (catSnippets.length > 15) {
+								var hasMore = true;
+								catSnippets = catSnippets.slice(0, 15);
+							}
+
+							var newListWrap = $('<div/>');
+							var catTitle = $('<div class="cat-title"/>');
+							catTitle.text(catList.find('.category-' + cid).text());
+							catTitle.appendTo(newListWrap);
+
+							var newList = $('<ul></ul>');
+
+							newList.html(rowsTpl.render({
+								snippets: catSnippets
+							}));
+
+							newListWrap.append(newList);
+							snippetList.append(newListWrap);
+						});
+					});
+				}
 			}
 		};
 
-		this._initFiltering();
+		langSelect.on('change', function(ev) {
+			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
 
-		this.addEvent('activate', function() {
-			if (this.activeSection) {
-				window.setTimeout(function() {
-					self.activeSection.find('.filter-input').first().focus();
-				}, 10);
-			}
+			updateCatList(categoryId, filterString, languageId);
 		});
 
-		DeskPRO_Window.activeListNav = this.listNav;
+		catList.on('click', 'li', function(ev) {
+			Orb.cancelEvent(ev);
+			catList.find('.on').removeClass('on');
+			var categoryId   = $(this).addClass('on').data('category-id');
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
+
+			updateCatList(categoryId, filterString, languageId);
+		});
+
+		var filterTimer = null;
+		var sendUpdate = function() {
+			filterTimer = null;
+			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
+
+			updateCatList(categoryId, filterString, languageId);
+		};
+
+		filterInput.on('change keydown keyup', function() {
+			if (filterTimer) {
+				window.clearTimeout(filterTimer);
+				filterTimer = null;
+			}
+
+			filterTimer = window.setTimeout(function() {
+				sendUpdate();
+			}, 140);
+		});
+
+		//----------------------------------------
+		// Inserting snippets
+		//----------------------------------------
+
+		snippetList.on('click', 'li', function(ev) {
+			if ($(ev.target).hasClass('edit-trigger')) {
+				return;
+			}
+
+			Orb.cancelEvent(ev);
+
+			self.insertSnippetEl($(this), ev);
+		});
+
+		//----------------------------------------
+		// Editing categories
+		//----------------------------------------
+
+		var catEditor = new (function() {
+			var editCatEl = self.getEl('edit_snippet_cat');
+			var editCatBack = null;
+			var hasInit = false;
+
+			self.wrapper.find('.trigger-newcat').on('click', function(ev) {
+				Orb.cancelEvent(ev);
+				openCatEditor(0, '');
+			});
+
+			var openCatEditor = function(catId, catTitle, shareOpt, openPos) {
+				if (!hasInit) {
+					hasInit = true;
+
+					editCatEl.detach().appendTo('body');
+					editCatBack = $('<div class="dp-popover-backdrop" />').hide();
+					editCatBack.appendTo('body');
+
+					editCatBack.on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						closeCatEditor();
+					});
+
+					editCatEl.find('.trigger-close').on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						closeCatEditor();
+					});
+
+					editCatEl.find('.trigger-save').on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						saveCategory();
+					});
+
+					editCatEl.find('.delete-cat-trigger').on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						delCategory();
+					});
+				}
+
+				if (!openPos) {
+					openPos = {
+						of: self.wrapper.find('.trigger-newcat').first(),
+						my: 'left top',
+						at: 'center right',
+						collision: 'flipfit'
+					};
+				}
+
+				editCatEl.css({left: 0, top: 0});
+				editCatEl.position(openPos);
+
+				editCatEl.find('.input_id').val(catId || '0');
+				editCatEl.find('.input_title').val(catTitle || '');
+
+				shareOpt = shareOpt || 'me';
+				editCatEl.find('.perm-type-opt').prop('checked', false).filter('[value="'+shareOpt+'"]').prop('checked', true);
+
+				if (catId && catId != "0") {
+					editCatEl.find('.delete-link-wrap').show();
+				} else {
+					editCatEl.find('.delete-link-wrap').hide();
+				}
+
+				editCatEl.show();
+				editCatBack.show();
+			};
+			this.openCatEditor = openCatEditor;
+
+			var closeCatEditor = function() {
+				editCatEl.hide();
+				editCatBack.hide();
+			};
+
+			var saveCategory = function() {
+				var catId    = editCatEl.find('.input_id').val();
+				var catTitle = $.trim(editCatEl.find('.input_title').val());
+				var shareOpt = editCatEl.find('.perm-type-opt').filter(':checked').val();
+
+				if (!catTitle) {
+					closeCatEditor();
+					return;
+				}
+
+				var postData = [];
+				postData.push({
+					name: 'title',
+					value: catTitle
+				});
+				postData.push({
+					name: 'perm_type',
+					value: shareOpt
+				});
+
+				editCatEl.addClass('dp-loading-on');
+				$.ajax({
+					url: BASE_URL + 'agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/save.json',
+					data: postData,
+					dataType: 'json',
+					type: 'POST',
+					complete: function() {
+						editCatEl.removeClass('dp-loading-on');
+					},
+					success: function(data) {
+						closeCatEditor();
+
+						var cat = data.category;
+
+						var catEl = catList.find('.category-' + cat.id);
+						if (catEl[0]) {
+							catEl.find('.label').text(catTitle);
+							if (shareOpt == 'global') {
+								catEl.data('is-global', 1);
+							} else {
+								catEl.data('is-global', null);
+							}
+
+							self.getEl('editsnippet_category_select').find('option[value="' + catId + '"]').text(catTitle);
+						} else {
+							catEl = $('<li><a><span class="label"></span></a><span class="trigger-edit-cat"><i class="icon-cog"></i></span></li>');
+							catEl.addClass('category category-' + cat.id);
+							catEl.data('category-id', cat.id);
+							if (shareOpt == 'global') {
+								catEl.data('is-global', 1);
+							} else {
+								catEl.data('is-global', null);
+							}
+							catEl.find('.label').text(cat.title[0].value);
+							catEl.insertAfter(catList.find('.category-0'));
+
+							// Also add cat option
+							var catOpt = $('<option/>');
+							catOpt.val(cat.id);
+							catOpt.text(cat.title[0].value);
+
+							self.getEl('editsnippet_category_select').prepend(catOpt);
+						}
+
+						catEl.click();
+
+						// reload the shell
+						driver.getWidgetShellTemplate(true);
+					}
+				});
+			};
+
+			var delCategory = function() {
+				if (confirm('Are you sure?')) {
+					var catId = editCatEl.find('.input_id').val();
+					editCatEl.addClass('dp-loading-on');
+					$.ajax({
+						url: BASE_URL + 'agent/text-snippets/'+self.snippet_typename+'/categories/'+catId+'/delete.json',
+						dataType: 'json',
+						type: 'POST',
+						complete: function() {
+							editCatEl.removeClass('dp-loading-on');
+						},
+						success: function(data) {
+
+							editCatEl.removeClass('dp-loading-on');
+							closeCatEditor();
+
+							if (data.error) {
+								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.");
+								return;
+							}
+
+							var catEl = catList.find('.category-' + catId);
+							catEl.remove();
+
+							// reload the shell
+							driver.getWidgetShellTemplate(true);
+						}
+					});
+				};
+			};
+
+			this.destroy = function() {
+				if (hasInit) {
+					editCatEl.detach();
+					editCatBack.detach();
+				}
+			};
+		})();
+
+		this.ownObject(catEditor);
+
+		catList.on('click', '.trigger-edit-cat', function(ev) {
+			Orb.cancelEvent(ev);
+			var row = $(this).closest('li');
+			var catId = row.data('category-id');
+			var catTitle = $.trim(row.find('.label').text());
+			var shareOpt = row.data('is-global') ? 'global' : 'me';
+			var openPos = {
+				of: $(this),
+				my: 'left top',
+				at: 'center right',
+				collision: 'flipfit'
+			};
+
+			catEditor.openCatEditor(catId, catTitle, shareOpt, openPos);
+		});
+
+		//----------------------------------------
+		// Editing snippets
+		//----------------------------------------
+
+		this._initEditingSnippets();
+
+		if (!catList.find('.on')[0]) {
+			catList.find('li').first().click();
+		}
 	},
 
 	closeSelf: function() {
@@ -109,108 +516,210 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	insertSnippetEl: function(el, event, evData) {
-		var snippetId = el.data('snippet-id');
-		var snippetEl = $('.snippet-' + snippetId, this.wrapper).first();
-		var snippetValEl = $('textarea.value.formatted.text', snippetEl);
-		var snippetValHtmlEl = $('textarea.value.formatted.html', snippetEl);
 
-		var snippet, snippetHtml;
+		var snippetId = $(el).data('snippet-id');
+		var snippetCode = [];
 
-		if (!snippetValEl.length) {
-			snippet = $('.content.raw.text', snippetEl).text().trim();
-			snippetHtml = $('.content.raw.html', snippetEl).html().trim();
-		} else {
-			snippet = snippetValEl.val().trim();
-			snippetHtml = snippetValHtmlEl.val().trim();
-		}
+		el.find('.snippet-value').each(function(ev) {
+			snippetCode.push({
+				language_id: $(this).data('language-id'),
+				value: $(this).val()
+			});
+		});
 
 		evData = evData || {};
 		evData = $.extend(evData, {
 			event: event || null,
 			snippetId: snippetId,
-			snippetEl: snippetEl,
-			snippet: snippet,
-			snippetHtml: snippetHtml
+			snippetCode: snippetCode
 		});
 
 		this.fireEvent('snippetClick', [evData]);
 	},
 
 	//#########################################################################
-	// Editing features
+	// Editing snippets
 	//#########################################################################
 
-	_initEditing: function() {
+	_initEditingSnippets: function() {
 		var self = this;
+		var snippetList = this.getEl('snippet_list');
+		var editSnippetEl = this.getEl('edit_snippet');
+		var textarea = this.getEl('snippet_input');
 
-		// categories
-		this.newCategoryBtn = $('.new-category', this.wrapper);
-		this.newCategoryBtn.on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self.newCategory();
-		});
-
-		this.newCatOverlay = this.getEl('new_snippet_cat');
-		$('.perm-type-opt', this.newCatOverlay).on('click', function() {
-			if ($(this).val() == 'team') {
-				$('.perm-teams', self.newCatOverlay).show();
-			} else {
-				$('.perm-teams', self.newCatOverlay).hide();
-			}
-			self.updateUi();
-		});
-
-		this.newCatOverlayObj = new DeskPRO.UI.Overlay({
-			contentElement: this.newCatOverlay,
-			zIndex: 30010,
-			onPosition: function(ev) {
-				var pos = self.newCategoryBtn.offset();
-
-				ev.setLeft(pos.left);
-				if (ev.h + pos.top >= ev.pageH - 20) {
-					ev.setTop(Math.max(0, ev.pageH - ev.h - 20));
-				} else {
-					ev.setTop(pos.top);
-				}
-			}
-		});
-
-		$('.new-cat-trigger', this.newCatOverlay).on('click', function() {
-			self.saveNewCat();
-		});
-
-		this.wrapper.on('click', '.edit-cat-trigger', function(ev) {
-			ev.stopPropagation();
-			ev.preventDefault();
-
-			var row = $(this).closest('li');
-			self.editCategory(row);
-		});
-
-		// snippets
-		this.wrapper.on('click', '.add-snippet-trigger', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self.openSnippetEditor(0, '', '', '');
-		});
-
-		this.snippetEditorOverlay = this.getEl('new_snippet');
-		var textarea = this.snippetEditorOverlay.find('textarea[name=snippet]');
-		if (DeskPRO_Window.canUseAgentReplyRte()) {
-			if (!textarea.data('redactor')) {
-				DeskPRO_Window.initRteAgentReply(textarea, {
-					defaultIsHtml: true,
-					autoresize: false
-				});
-				this.snippetEditorOverlay.find('input[name=is_html]').val(1);
-			}
+		if (!textarea.data('redactor')) {
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				autoresize: false
+			});
 		}
 
-		var varSel = this.snippetEditorOverlay.find('.variables-select');
-		this.snippetEditorOverlay.find('.variables-insert-btn').on('click', function() {
+		//------------------------------
+		// Starting edit
+		//------------------------------
+
+		snippetList.on('click', '.edit-trigger', function(ev) {
+			Orb.cancelEvent(ev);
+			var snippetId = $(this).closest('li').data('snippet-id');
+			self.snippetDriver.getSnippet(snippetId, function(snippet) {
+				self.editSnippet(snippet);
+			});
+		});
+
+		self.wrapper.find('.trigger-new-snippet').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			self.editSnippet();
+		});
+
+		//------------------------------
+		// Switching between langs
+		//------------------------------
+
+		editSnippetEl.find('.language_id').on('change', function(ev) {
+			var langId         = $(this).val();
+			var inputTitleEl   = self.getEl('title_input');
+			var inputSnippetEl = self.getEl('snippet_input');
+
+			var langTitleEl   = editSnippetEl.find('.lang-bound-title.lang-' + langId);
+			var langSnippetEl = editSnippetEl.find('.lang-bound-snippet.lang-' + langId);
+
+			textarea.data('redactor').syncCode();
+
+			// The initial fire of this is after opening a new edit window,
+			// so we're just setting the defaults but not syncing an empty value back to the lang-x elements
+			if ($(this).hasClass('initial')) {
+				inputTitleEl.val(langTitleEl.val());
+				textarea.data('redactor').setCode(langSnippetEl.val());
+
+			} else if ($(this).hasClass('set-bound')) {
+				langTitleEl.val(inputTitleEl.val());
+				langSnippetEl.val(inputSnippetEl.val());
+
+			// Else make sure theyre both the same
+			} else {
+				inputTitleEl.val(langTitleEl.val());
+				textarea.data('redactor').setCode(langSnippetEl.val());
+
+				langTitleEl.val(inputTitleEl.val());
+				langSnippetEl.val(inputSnippetEl.val());
+			}
+
+			$(this).removeClass('initial set-bound');
+		});
+
+		//------------------------------
+		// Saving snippet
+		//------------------------------
+
+		editSnippetEl.find('.save-snippet-trigger').on('click', function(ev) {
+			editSnippetEl.find('.language_id').addClass('set-bound').trigger('change');
+
+			Orb.cancelEvent(ev);
+			var snippet = self.editingSnippet;
+
+			snippet.category_id = editSnippetEl.find('select.category_id').val();
+
+			editSnippetEl.find('.lang-bound-title').each(function() {
+				var langId = $(this).data('language-id');
+				var value = $(this).val();
+				var found = false;
+
+				for (var i = 0; i < snippet.title.length; i++) {
+					if (snippet.title[i].language_id == langId) {
+						snippet.title[i].value = value;
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					snippet.title.push({
+						language_id: langId,
+						value: value
+					})
+				}
+			});
+
+			editSnippetEl.find('.lang-bound-snippet').each(function() {
+				var langId = $(this).data('language-id');
+				var value = $(this).val();
+				var found = false;
+
+				for (var i = 0; i < snippet.snippet.length; i++) {
+					if (snippet.snippet[i].language_id == langId) {
+						snippet.snippet[i].value = value;
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					snippet.snippet.push({
+						language_id: langId,
+						value: value
+					});
+				}
+			});
+
+			editSnippetEl.find('.overlay-footer').addClass('loading');
+			self.snippetDriver.saveSnippet(snippet, function(snippet) {
+
+				var myLangId   = DESKPRO_PERSON_LANG_ID;
+				var showLangId = self.getEl('show_language_id').val();
+
+				snippet.title_use   = self.pickLangText(snippet.title, myLangId, showLangId);
+				snippet.snippet_use = self.pickLangText(snippet.snippet, myLangId, showLangId);
+
+				editSnippetEl.find('.overlay-footer').removeClass('loading');
+				self.snippetEditOverlay.close();
+
+				var currentCatId = self.getEl('catlist').find('.on').data('category-id') || 0;
+
+				var newList = $('<ul></ul>');
+				newList.html(self.rowsTpl.render({
+					snippets: [snippet]
+				}));
+
+				var row = newList.find('li').first();
+
+				if (!currentCatId || snippet.category_id == currentCatId) {
+					var exist = self.getEl('snippet_list').find('.snippet-' + snippet.id);
+					if (exist[0]) {
+						exist.replaceWith(row);
+					} else {
+						self.getEl('snippet_list').prepend(row);
+					}
+				}
+			}, function() {
+				editSnippetEl.find('.overlay-footer').removeClass('loading');
+			});
+
+		});
+
+		//------------------------------
+		// Deleting snippet
+		//------------------------------
+
+		editSnippetEl.find('.delete-snippet-trigger').on('click', function(ev) {
+			var snippet = self.editingSnippet;
+			editSnippetEl.find('.overlay-footer').addClass('loading');
+			self.snippetDriver.deleteSnippet(snippet.id, function(snippet_id) {
+				editSnippetEl.find('.overlay-footer').removeClass('loading');
+				self.snippetEditOverlay.close();
+
+				var exist = self.getEl('snippet_list').find('.snippet-' + snippet_id);
+				exist.remove();
+			}, function() {
+				editSnippetEl.find('.overlay-footer').removeClass('loading');
+			});
+		});
+
+		//------------------------------
+		// Init overlay
+		//------------------------------
+
+		var varSel = editSnippetEl.find('.variables-select');
+		editSnippetEl.find('.variables-insert-btn').on('click', function() {
 			var text = '{{ ' + varSel.val() + ' }}';
 
 			if (textarea.data('redactor')) {
@@ -225,441 +734,46 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			}
 		});
 
-		this.snippetEditorOverlayObj = new DeskPRO.UI.Overlay({
-			contentElement: this.snippetEditorOverlay,
+		this.snippetEditOverlay = new DeskPRO.UI.Overlay({
+			contentElement: editSnippetEl,
 			zIndex: 30010
 		});
-
-		this.snippetEditorOverlay.on('click', '.save-snippet-trigger', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self.saveSnippet(self.snippetEditorOverlay);
-		});
-
-		this.snippetEditorOverlay.on('click', '.delete-snippet-trigger', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			if (confirm($(this).data('confirm'))) {
-				var snippetId = parseInt(self.snippetEditorOverlay.find('input[name=snippet_id]').val(), 10);
-
-				self.snippetEditorOverlay.addClass('loading');
-
-				$.ajax({
-					url: BASE_URL + 'agent/tickets/snippet-viewer/delete-snippet',
-					type: 'POST',
-					data: {snippet_id: snippetId},
-					dataType: 'json',
-					context: this,
-					success: function(data) {
-						self.snippetEditorOverlayObj.close();
-
-						var el = $('.snippet-' + data.snippet_id, this.wrapper);
-						el.fadeOut('fast', function() {
-							var catSection = el.closest('.cat-section');
-							el.remove();
-							if (catSection.find('.snippet').length == 0) {
-								catSection.find('.no-snippets').show();
-							}
-							self.updateUi();
-						});
-					}
-				}).always(function() {
-					self.snippetEditorOverlay.removeClass('loading');
-				});
-			}
-		});
-
-		this.wrapper.on('click', '.snippet .edit-trigger', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var row = $(this).closest('li.snippet');
-			var editRow = $('.edit', row);
-
-			self.openSnippetEditor(
-				row.data('snippet-id'),
-				editRow.find('input[name=title]').val(),
-				editRow.find('textarea[name=snippet]').val(),
-				editRow.find('textarea[name=snippet_html]').val(),
-				editRow.find('input[name=shortcut_code]').val()
-			);
-		});
-
-		this.wrapper.on('click', '.snippet .controls', function(ev) {
-			ev.stopPropagation();
-		});
 	},
 
-	editCategory: function(catRow) {
+	editSnippet: function(snippet) {
 
-		var self = this;
-		var category_id = catRow.data('category');
+		if (!snippet) {
+			snippet = {
+				id: 0,
+				category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(1).data('category-id'),
+				shortcut_code: '',
+				title: [],
+				snippet: []
+			};
+		}
 
-		catRow.addClass('loading-ed');
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/snippet-viewer/edit-category',
-			type: 'GET',
-			data: {category_id: category_id},
-			dataType: 'html',
-			context: this,
-			complete: function() {
-				catRow.removeClass('loading-ed');
-			},
-			success: function(html) {
-				var overlay = $(html);
+		this.editingSnippet = snippet;
+		var editSnippetEl = this.getEl('edit_snippet');
+		editSnippetEl.find('input, textarea').val('');
+		editSnippetEl.find('input.snippet_id').val(snippet.id);
+		editSnippetEl.find('select.category_id').val(snippet.category_id);
+		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
 
-				var pos = catRow.offset();
-				var overlayObj = new DeskPRO.UI.Overlay({
-					contentElement: overlay,
-					zIndex: 30020,
-					onPosition: function(ev) {
-						ev.setLeft(pos.left);
-						if (ev.h + pos.top >= ev.pageH - 20) {
-							ev.setTop(Math.max(0, ev.pageH - ev.h - 20));
-						} else {
-							ev.setTop(pos.top);
-						}
-					}
-				});
-
-				overlayObj.open();
-				function hideOverlay() {
-					overlayObj.close();
-				}
-
-				$('.save-trigger', overlay).on('click', function(ev) {
-					ev.preventDefault();
-					ev.stopPropagation();
-
-					var data = $('input', overlay).serializeArray();
-
-					overlay.addClass('loading');
-					$.ajax({
-						url: BASE_URL + 'agent/tickets/snippet-viewer/save-category',
-						type: 'POST',
-						data: data,
-						dataType: 'json',
-						context: this,
-						success: function(data) {
-							$('.cat-title-' + data.category_id, self.wrapper).find('.label').text(data.title);
-							hideOverlay();
-						}
-					});
-				});
-
-				$('.delete-trigger', overlay).on('click', function(ev) {
-					ev.preventDefault();
-					ev.stopPropagation();
-
-					if (confirm($(this).data('confirm'))) {
-						overlay.addClass('loading');
-						$.ajax({
-							url: BASE_URL + 'agent/tickets/snippet-viewer/delete-category',
-							type: 'POST',
-							data: {category_id: category_id},
-							dataType: 'json',
-							context: this,
-							success: function(data) {
-								var el = $('.cat-title-' + data.category_id, self.wrapper);
-								el.remove();
-								$('.cat-section.cat-' + data.category_id, self.wrapper).remove();
-
-								var prev = self.getEl('catlist').find('li.category')[0];
-
-								if (prev) {
-									self.catTabs.activateTab(prev);
-								} else {
-									$('.no-cats-message', this.wrapper).show();
-								}
-
-								hideOverlay();
-							}
-						});
-					}
-				});
-			}
+		Array.each(snippet.title, function(trans) {
+			editSnippetEl.find('input.title.lang-' + trans.language_id).val(trans.value);
 		});
-	},
+		Array.each(snippet.snippet, function(trans) {
+			editSnippetEl.find('input.snippet.lang-' + trans.language_id).val(trans.value);
+		});
 
-	openSnippetEditor: function(snippet_id, title, text, html, shortcut_code) {
+		editSnippetEl.find('.language_id').addClass('initial').trigger('change');
 
-		if (!this.snippetEditorOverlayObj) {
-			return;
-		}
-
-		var catId = parseInt(this.getEl('catlist').find('li.on').data('category'));
-		if (catId) {
-			this.getEl('newsnippet_category_select').find('[value="'+catId+'"]').prop('selected', true);
-		}
-
-		snippet_id = parseInt(snippet_id, 10);
-
-		var textarea = this.snippetEditorOverlay.find('textarea[name=snippet]');
-
-		if (textarea.data('redactor')) {
-			textarea.data('redactor').setCode(html || '');
-		}
-		textarea.val(text || '');
-
-		this.snippetEditorOverlay.find('input[name=snippet_id]').val(snippet_id);
-		this.snippetEditorOverlay.find('input[name=title]').val(title || '');
-
-		if (snippet_id) {
-			this.snippetEditorOverlay.find('.is-new-snippet').hide();
-			this.snippetEditorOverlay.find('.is-edit-snippet').show();
+		if (snippet.id) {
+			editSnippetEl.find('.delete-link-wrap').show();
 		} else {
-			this.snippetEditorOverlay.find('.is-new-snippet').show();
-			this.snippetEditorOverlay.find('.is-edit-snippet').hide();
+			editSnippetEl.find('.delete-link-wrap').hide();
 		}
 
-		if (shortcut_code) {
-			this.snippetEditorOverlay.find('.shortcut-code-input').val(shortcut_code);
-		} else {
-			this.snippetEditorOverlay.find('.shortcut-code-input').val('');
-		}
-
-		this.snippetEditorOverlayObj.open();
-	},
-
-	newCategory: function() {
-		this.newCatOverlayObj.open();
-	},
-
-	saveNewCat: function() {
-		var data = $('input', this.newCatOverlay).serializeArray();
-
-		this.newCatOverlay.addClass('loading');
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/snippet-viewer/new-cat',
-			type: 'POST',
-			data: data,
-			dataType: 'json',
-			context: this,
-			success: function(data) {
-				$('.no-cats-message', this.wrapper).hide();
-
-				var li = $(data.cat_row_html);
-
-				this.newCatOverlay.removeClass('loading');
-				this.newCatOverlayObj.close();
-
-				$('nav ul', this.wrapper).append(li);
-
-				var section = $(data.cat_section_html);
-				section.appendTo($('.snippet-sections', this.wrapper));
-
-				this.catTabs.addTriggerElement(li);
-				this.catTabs.activateTab(li);
-
-				var opt = $('<option />');
-				opt.val(li.data('category'));
-				opt.text(li.find('.label').text());
-				this.getEl('newsnippet_category_select').append(opt);
-			}
-		});
-	},
-
-	saveSnippet: function(row) {
-		var textarea = row.find('textarea[name=snippet]');
-		if (textarea.data('redactor')) {
-			textarea.data('redactor').syncCode();
-		}
-
-		var self = this;
-		var data = $('input, textarea, select', row).serializeArray();
-		var snippetId = parseInt(row.find('input[name=snippet_id]').val(), 10);
-
-		var newCatId = parseInt(row.find('[name="category_id"]').val());
-
-		if (this.meta.ticket_id) {
-			data.push({
-				name: 'ticket_id',
-				value: this.meta.ticket_id
-			});
-		}
-
-		if (!row.find('[name="category_id"]')[0]) {
-			data.push({
-				name: 'category_id',
-				value: this.catTabs.getActiveTab().data('category')
-			});
-			newCatId = parseInt(this.catTabs.getActiveTab().data('category'));
-		}
-
-		row.addClass('loading');
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/snippet-viewer/save-snippet',
-			type: 'POST',
-			data: data,
-			dataType: 'json',
-			context: this,
-			success: function(data) {
-				self.snippetEditorOverlayObj.close();
-
-				var new_row = $(data.snippet_row_html);
-				new_row.hide();
-
-				var new_row2 = $(data.snippet_row_html);
-				new_row2.hide();
-
-				if (!snippetId) {
-					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).before(new_row);
-					$('.cat-' + data.category_id + ' .no-snippets', this.wrapper).hide();
-
-					$('.alt-cat-' + data.category_id + ' .no-snippets', this.wrapper).before(new_row2);
-					$('.alt-cat-' + data.category_id + ' .no-snippets', this.wrapper).hide();
-				} else {
-					var snippetEls = $('.snippet-' + data.snippet_id, this.wrapper);
-					var oldCatId = parseInt(snippetEls.closest('.cat-el').data('category-id'));
-
-					if (newCatId && oldCatId != newCatId) {
-						snippetEls.remove();
-
-						$('.cat-' + newCatId + ' .no-snippets', this.wrapper).before(new_row);
-						$('.cat-' + newCatId + ' .no-snippets', this.wrapper).hide();
-
-						$('.alt-cat-' + newCatId + ' .no-snippets', this.wrapper).before(new_row2);
-						$('.alt-cat-' + newCatId + ' .no-snippets', this.wrapper).hide();
-					} else {
-						$('.cat-' + newCatId + ' .snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
-						$('.alt-cat-' + newCatId + ' .snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row2);
-					}
-				}
-				new_row.show();
-				new_row2.show();
-				this.processSnippetRow(new_row);
-
-				var catList = this.wrapper.find('.cat-'+data.category_id).find('ul').html();
-				this.wrapper.find('.alt-cat-'+data.category_id).html(catList);
-
-				if (data.shortcut_code) {
-					if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES) {
-						window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};
-					}
-
-					window.DESKPRO_TICKET_SNIPPET_SHORTCODES[data.shortcut_code] = data.snippet_id;
-				}
-
-				self.updateUi();
-			}
-		}).always(function() {
-			row.removeClass('loading');
-		});
-	},
-
-	processSnippetRow: function(row) {
-		var show = $('.content.show', row);
-		if (show.height() >= 30) {
-			show.addClass('show-nobreak');
-			show.css('max-height', '30').addClass('long');
-			show.closest('.snippet').addClass('long');
-		}
-	},
-
-	//#########################################################################
-	// Filtering
-	//#########################################################################
-
-	refreshKbNavList: function() {
-		if (this.activeSection) {
-			this.activeSnippets = this.activeSection.find('li.snippet').not('.filter-hide');
-			if (!this.activeSnippets.filter('.cursor')) {
-				this.el.find('li.snippet.cursor').removeClass('cursor');
-			}
-		}
-	},
-
-	_initFiltering: function() {
-		var self = this;
-		this.wrapper.find('.filter-input').on('keydown', function(ev) {
-			var activeSnippets = self.activeSnippets;
-
-			if (ev.keyCode == 13 /* enter key */) {
-				ev.preventDefault();
-				var current = activeSnippets.filter('.cursor');
-				if (!current[0]) {
-					if (activeSnippets.length == 1) {
-						current = activeSnippets;
-					}
-				}
-
-				if (current[0]) {
-					current.click();
-					self.insertSnippetEl(current);
-					window.setTimeout(function() {
-						self.activeSection.find('.filter-input').first().focus();
-					}, 20);
-				}
-			} else if (ev.keyCode == 27 /* escape key */) {
-				ev.preventDefault();
-				self.closeSelf();
-			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
-				ev.preventDefault();
-				var dir = ev.keyCode == 40 ? 'down' : 'up';
-
-				var current = activeSnippets.filter('.cursor');
-				if (!current.length) {
-					if (dir == 'down') {
-						activeSnippets.first().addClass('cursor');
-					} else {
-						activeSnippets.last().addClass('cursor');
-					}
-				} else {
-					var nextIndex = activeSnippets.index(current);
-					if (dir == 'down') {
-						nextIndex++;
-					} else {
-						nextIndex--;
-					}
-
-					if (nextIndex < 0) {
-						nextIndex = activeSnippets.length-1;
-					} else if (nextIndex > (activeSnippets.length-1)) {
-						nextIndex = 0;
-					}
-
-					current.removeClass('cursor');
-					activeSnippets.eq(nextIndex).addClass('cursor');
-				}
-			}
-		});
-		this.wrapper.find('.filter-input').on('keyup', function(ev) {
-			var input = $.trim($(this).val());
-			var section = $(this).closest('.cat-section');
-
-			if (!input) {
-				section.find('li.snippet').show();
-
-				if (section.hasClass('cat-0')) {
-					section.find('.cat-group').show();
-				}
-
-			} else {
-				input = input.toLowerCase();
-				section.find('li.snippet').each(function() {
-					if ($(this).find('label').text().toLowerCase().indexOf(input) !== -1) {
-						$(this).show().removeClass('filter-hide');
-					} else {
-						$(this).hide().addClass('filter-hide');
-					}
-				});
-
-				if (section.hasClass('cat-0')) {
-					section.find('.cat-group').each(function() {
-						if ($(this).find('li').not('.filter-hide')[0]) {
-							$(this).show();
-						} else {
-							$(this).hide();
-						}
-					});
-				}
-			}
-
-			self.refreshKbNavList();
-			self.updateUi();
-		});
+		this.snippetEditOverlay.open();
 	}
 });

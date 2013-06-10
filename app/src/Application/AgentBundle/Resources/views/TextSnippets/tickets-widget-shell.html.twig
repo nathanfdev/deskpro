@@ -1,0 +1,37 @@
+{% extends 'AgentBundle:TextSnippets:base-widget-shell.html.twig' %}
+{% block pagemeta %}
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.SnippetViewer';
+	pageMeta.title = 'Ticket Snippets';
+	pageMeta.snippet_typename = 'tickets';
+	pageMeta.baseId = '%baseId%';
+{% endblock %}
+{% block edit_snippet_bottomright %}
+	<select class="variables-select">
+		<optgroup label="Ticket">
+			<option value="ticket.subject">Subject</option>
+			<option value="ticket.department.title">Department</option>
+			<option value="ticket.product.title">Product</option>
+			<option value="ticket.category.title">Category</option>
+			<option value="ticket.workflow.title">Workflow</option>
+			<option value="ticket.priority.title">Priority</option>
+			<option value="ticket.agent.display_name">Agent Name</option>
+			<option value="ticket.agent.primary_email">Agent Email Address</option>
+			<option value="ticket.agent_team.name">Agent Team</option>
+			{% for field in app.getCustomFieldManager('tickets').getFields() %}
+				<option value="ticket.field{{ field.id }}">{{ field.title }}</option>
+			{% endfor %}
+		</optgroup>
+		<optgroup label="User">
+			<option value="ticket.person.display_name">Name</option>
+			<option value="ticket.person.primary_email">Email Address</option>
+			<option value="ticket.person.organization.name">Organisation name</option>
+			<option value="ticket.person.organization_position">Position in Organisation</option>
+			{% for field in app.getCustomFieldManager('people').getFields() %}
+				<option value="ticket.person.field{{ field.id }}">{{ field.title }}</option>
+			{% endfor %}
+		</optgroup>
+	</select>
+	<button class="variables-insert-btn clean-white" style="vertical-align: top; position:relative; top: 3px;">Insert Variable</button>
+	<br />
+	<a href="http://support.deskpro.com/kb/articles/133-using-variables-in-snippets" target="_blank">Learn more about variables</a>
+{% endblock %}

@@ -21,7 +21,7 @@
 		<li data-field="person_username"><label><input type="checkbox" name="person_username" {% if not show_all or 'person_username' in display_fields %}checked="checked"{% endif %} /> Username</label></li>
 	{% endif %}
 
-	{% if app.getDataRepository('Language').isMultiLang() %}
+	{% if app.languages.isMultiLang() %}
 		<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.language') }}</li>
 	{% endif %}
 

@@ -363,6 +363,35 @@ class PeopleSearchController extends AbstractController
 
 			$selected_letter = $this->applyLetterToSearcher($user_letter, $searcher);
 
+			if ($search_val = $this->in->getString('person_name')) {
+				$searcher->addTerm('person_name', 'contains', $search_val);
+			}
+			if ($search_val = $this->in->getString('person_email')) {
+				$searcher->addTerm('person_email', 'contains', $search_val);
+			}
+			if ($search_val = $this->in->getString('person_organization_name')) {
+				$searcher->addTerm('person_organization_name', 'contains', $search_val);
+			}
+			if ($search_val = $this->in->getString('person_ip')) {
+				$searcher->addTerm('person_ip', 'contains', $search_val);
+			}
+			if ($search_val = $this->in->getString('person_label')) {
+				$search_val = explode(',', $search_val);
+				$search_val = Arrays::func($search_val, 'trim');
+				$search_val = Arrays::removeFalsey($search_val);
+
+				if ($search_val) {
+					$searcher->addTerm('person_label', 'contains', $search_val);
+				}
+			}
+			if ($search_val = $this->in->getCleanValueArray('person_usergroup', 'uint', 'discard')) {
+				$search_val = Arrays::removeFalsey($search_val);
+
+				if ($search_val) {
+					$searcher->addTerm('person_usergroup', 'is', $search_val);
+				}
+			}
+
 			foreach ($terms as $term) {
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}

@@ -116,6 +116,9 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<ul>
 				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.general.article') }}</span></li>
+				{% if app.languages.isMultiLang() %}
+					<li data-tab-for="#{{baseId}}_tab_contents .kb-trans"><span>Translations</span></li>
+				{% endif %}
 				<li data-tab-for="#{{baseId}}_tab_contents .kb-props"><span>Properties</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{article.revisions|length|default(0)}}</span>)</span></li>
@@ -142,6 +145,12 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			{# /Tab: Content #}
+
+			{% if app.languages.isMultiLang() %}
+				<div class="deskpro-tab-item kb-trans" style="display: none;">
+					{% include 'AgentBundle:Kb:view-content-trans.html.twig' %}
+				</div>
+			{% endif %}
 
 			{# Tab: Properties #}
 			<div class="deskpro-tab-item kb-props" style="display: none;">

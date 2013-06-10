@@ -43,7 +43,7 @@ class TmpData extends AbstractEntityRepository
 	public function getByCode($code, $type = null)
 	{
 		$info = TmpDataEntity::getPartsFromCode($code);
-		if (!$info) return null;
+		if (!$info || empty($info['id']) || !$info['id']) return null;
 
 		$tmpdata = $this->find($info['id']);
 		if ($tmpdata['auth'] != $info['auth']) return null;

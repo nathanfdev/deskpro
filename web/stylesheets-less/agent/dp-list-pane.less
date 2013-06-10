@@ -1,53 +1,5 @@
 @import "lib.less";
 
-#dp_list{
-	overflow: hidden;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 215px;
-	width: 468px;
-	background-color: #F5F7FA;
-	border-right: 1px;
-	border-right-style: solid;
-	border-right-color: #AFAFB4;
-	box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
-	z-index: 1;
-	line-height: 16px;
-}
-
-#dp_list > section {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	display: none;
-}
-
-#dp_list > section.on {
-	display: block;
-}
-
-.ie #dp_list{
-	box-shadow: 2px 0 4px 0 #8c8f93;
-}
-
-#dp_list_loading {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	display: none;
-
-	background: url("../../images/spinners/loading-big-circle.gif") no-repeat 50% 20px;
-}
-
-#dp_list_loading.on {
-	display: block;
-}
-
 /*****************************************************************************
  * Control Bar
 /*****************************************************************************/
@@ -376,6 +328,23 @@
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	position: relative;
+}
+
+.item-hover-over-indicator {
+	display: none;
+}
+.list-listing .row-item.item-hover-over {
+	.item-hover-over-indicator {
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 10000;
+
+		border: 2px solid #000;
+	}
 }
 
 .list-listing .row-item.open {
@@ -2357,5 +2326,16 @@ article.twitter-status.archived .title .expand-collapse-icon {
 
 	&:hover {
 		.gradient(#DADBDE, #DADBDE);
+	}
+}
+
+.list-box {
+	margin: 5px;
+	border: 1px solid #A7ABB1;
+	.rounded(3px);
+	overflow: hidden;
+
+	footer.results-nav, .list-grouping-bar {
+		border-bottom: none;
 	}
 }
