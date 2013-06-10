@@ -144,8 +144,15 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 	_initSectionSearch: function() {
 		var searchPane = this.contentEl.find('.source-pane-search');
-		if (searchPane[0]) {
-			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+		if (!searchPane[0]) {
+			return;
 		}
+
+		this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
+
+		var typeSwitcher = searchPane.find('.content_type');
+		typeSwitcher.on('change', function(ev) {
+			searchPane.find('.content_type_wrap').hide().filter('.content_type-'+$(this).val()).show();
+		});
 	}
 });

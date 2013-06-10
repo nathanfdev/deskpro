@@ -1,7 +1,217 @@
 <section class="source-pane-search">
 
-	<footer>
-		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_peoplesearch_customfilter') }}">Search</button>
-	</footer>
+	{##################################################################################################################}
+	{# Type #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>Type</strong>
+		</div>
+		<div class="input-row-body add-to-search">
+			<select class="dp-select-widget-simple content_type" name="content_type" data-target-menu="auto">
+				<option selected="selected" value="people">People</option>
+				<option value="organizations">Organizations</option>
+			</select>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# People #}
+	{##################################################################################################################}
+
+	<div class="content_type-people content_type_wrap">
+		{####################}
+		{# Name #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Name</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="person_name" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Email #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Email Address</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="person_email" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Org #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Organization Name</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="person_organization_name" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Phone #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Phone Number</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="person_contact_phone" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# IP #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>IP Address</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="person_ip" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Usergroup #}
+		{####################}
+
+		{% if app.getDataService('Usergroup').getUserUsergroups()|length > 2 %}
+			<div class="input-row">
+				<div class="input-row-title">
+					<strong>Usergroup</strong>
+				</div>
+				<div class="input-row-body add-to-search">
+					<select class="dp-select-widget-simple" name="person_usergroup[]" multiple="multiple" data-target-menu="auto">
+						{% for ug in app.getDataService('Usergroup').getUserUsergroups() if ug.id != 1 and ug.id != 2 %}
+							<option value="{{ ug.id }}">{{ ug.title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}
+
+		{####################}
+		{# Label #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Label</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="person_label" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Fields #}
+		{####################}
+
+		{% if app.getPersonFieldManager().getFields()|length %}
+			{% set elid = el_uid() %}
+			<div class="input-row">
+				<div class="input-row-title">
+					<strong>Fields</strong>
+				</div>
+				<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+				<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-user-fields" id="{{ elid }}_termlist">
+
+				</div>
+			</div>
+
+			<div class="source-pane-search-panel panel-user-fields">
+				{% include 'AgentBundle:PeopleSearch:window-search-user-fields.html.twig' %}
+			</div>
+		{% endif %}
+
+		<footer>
+			<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_peoplesearch_customfilter') }}">Search</button>
+		</footer>
+	</div>
+
+	{##################################################################################################################}
+	{# Orgs #}
+	{##################################################################################################################}
+
+	<div class="content_type-organizations content_type_wrap" style="display: none;">
+		{####################}
+		{# Name #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Name</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="org_name" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Email Domain #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Email Domain</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="org_email_domain" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Labels #}
+		{####################}
+
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Label</strong>
+			</div>
+			<div class="input-row-body add-to-search">
+				<input class="full" type="text" name="org_label" value="" />
+			</div>
+		</div>
+
+		{####################}
+		{# Fields #}
+		{####################}
+
+		{% if app.getOrgFieldManager().getFields()|length %}
+			{% set elid = el_uid() %}
+			<div class="input-row">
+				<div class="input-row-title">
+					<strong>Fields</strong>
+				</div>
+				<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+				<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-org-fields" id="{{ elid }}_termlist">
+
+				</div>
+			</div>
+
+			<div class="source-pane-search-panel panel-org-fields">
+				{% include 'AgentBundle:PeopleSearch:window-search-org-fields.html.twig' %}
+			</div>
+		{% endif %}
+
+		<footer>
+			<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_orgsearch_customfilter') }}">Search</button>
+		</footer>
+	</div>
 
 </section>

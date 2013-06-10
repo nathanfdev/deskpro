@@ -185,6 +185,22 @@ class OrganizationSearchController extends AbstractController
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}
 
+			if ($search_val = $this->in->getString('org_name')) {
+				$searcher->addTerm('org_name', 'contains', $search_val);
+			}
+			if ($search_val = $this->in->getString('org_email_domain')) {
+				$searcher->addTerm('org_email_domain', 'contains', $search_val);
+			}
+			if ($search_val = $this->in->getString('org_label')) {
+				$search_val = explode(',', $search_val);
+				$search_val = Arrays::func($search_val, 'trim');
+				$search_val = Arrays::removeFalsey($search_val);
+
+				if ($search_val) {
+					$searcher->addTerm('org_label', 'contains', $search_val);
+				}
+			}
+
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			}

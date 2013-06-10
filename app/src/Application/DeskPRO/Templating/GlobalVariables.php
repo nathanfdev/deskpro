@@ -154,6 +154,15 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('OrgFieldsManager');
 	}
 
+	/**
+	 * Used only for backwards comptat
+	 * @deprecated
+	 */
+	public function getDataRepository($ent)
+	{
+		return App::getSystemService("{$ent}Data");
+	}
+
 	public function getDataService($ent)
 	{
 		return App::getDataService($ent);
