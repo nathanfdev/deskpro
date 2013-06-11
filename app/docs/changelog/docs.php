@@ -1,27 +1,37 @@
 <?php return array (
-  '20130320-keyboard-shortcuts' =>
+  '20130320-keyboard-shortcuts' => 
   array (
     'date' => '2013-03-20 00:00:00',
     'target' => 'agent',
   ),
-  '20130320-layout' =>
+  '20130320-layout' => 
   array (
     'date' => '2013-03-20 00:00:00',
     'target' => 'agent',
   ),
-  '20130320-replybox' =>
+  '20130320-replybox' => 
   array (
     'date' => '2013-03-20 00:00:00',
     'target' => 'agent',
   ),
-  '20130320-snippets' =>
+  '20130320-snippets' => 
   array (
     'date' => '2013-03-20 00:00:00',
     'target' => 'agent',
   ),
-  '20130320-ticket-reverse-order' =>
+  '20130320-ticket-reverse-order' => 
   array (
     'date' => '2013-03-20 00:00:00',
+    'target' => 'agent',
+  ),
+  '20130611-freshui' => 
+  array (
+    'date' => '2013-06-11 10:25:52',
+    'target' => 'agent',
+  ),
+  '20130611-search' => 
+  array (
+    'date' => '2013-06-11 10:35:48',
     'target' => 'agent',
   ),
 );
