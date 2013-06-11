@@ -1334,7 +1334,7 @@ class TicketSearch extends SearcherAbstract
 
 						if ($unassigned) {
 							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.unassigned'));
-							if ($op == self::OP_IS) {
+							if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 								$wheres[] = "$tickets_table.agent_id IS NULL";
 							} else {
 								$wheres[] = "$tickets_table.agent_id IS NOT NULL";
@@ -1370,7 +1370,7 @@ class TicketSearch extends SearcherAbstract
 						if ($no_team) {
 							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.unassigned'));
 
-							if ($op == self::OP_IS) {
+							if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 								$wheres[] = "$tickets_table.agent_team_id IS NULL";
 							} else {
 								$wheres[] = "$tickets_table.agent_team_id IS NOT NULL";
