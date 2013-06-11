@@ -16,6 +16,14 @@
 				<td class="subject">
 					<a class="subject-link"><span>{{ticket.subject}}</span></a>
 				</td>
+			{% elseif field == 'id' %}
+				<td class="subject">
+					{{ticket.id}}
+				</td>
+			{% elseif field == 'status' %}
+				<td class="subject">
+					{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}
+				</td>
 			{% elseif field == 'user' %}
 				<td>
 					<a data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@text">
@@ -107,6 +115,14 @@
 				<td class="{{field}}">
 					{% if ticket.date_last_user_reply %}
 						<time class="timestamp timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}">{{ticket.date_last_user_reply|date('day')}}</time>
+					{% else %}
+						{{ phrase('agent.tickets.na') }}
+					{% endif %}
+				</td>
+			{% elseif field == 'date_resolved' %}
+				<td class="{{field}}">
+					{% if ticket.date_resolved %}
+						<time class="timestamp timeago" datetime="{{ ticket.date_resolved|date('c', 'UTC') }}">{{ticket.date_resolved|date('day')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}

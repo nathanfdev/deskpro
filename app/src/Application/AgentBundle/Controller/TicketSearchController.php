@@ -1175,7 +1175,7 @@ class TicketSearchController extends AbstractController
     protected function _outputCsv($vars, $results_helper) {
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment');
+        $response->headers->set('Content-Disposition', 'attachment; filename=tickets.csv');
         $response->sendHeaders();
 
         $display_fields = array(
@@ -1229,6 +1229,8 @@ class TicketSearchController extends AbstractController
 
         foreach($display_fields as $display_field) {
             switch($display_field) {
+				case 'id':
+					$row[] = 'ticket_id';
                 case 'language_id':
                 case 'department_id':
                 case 'priority_id':
