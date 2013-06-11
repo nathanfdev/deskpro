@@ -132,7 +132,7 @@ Orb.Util.TimeAgo = {
 
 			// Could be removed, just skip it
 			// might be reinserted later
-			if (!el.parentNode) {
+			if (!el || !el.parentNode) {
 				return;
 			}
 
