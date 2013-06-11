@@ -77,6 +77,16 @@
 					{% endif %}
 					</span>
 				</td>
+			{% elseif field == 'priority' %}
+				<td class="{{field}}">
+					<span class="prop-val priority_id" data-prop-value="{{ticket.priority.id}}">
+					{% if ticket.priority %}
+						{{ticket.priority.title}}
+					{% else %}
+						{{ phrase('agent.general.none') }}
+					{% endif %}
+					</span>
+				</td>
 			{% elseif field == 'organization' %}
 				<td class="{{field}}">
 					<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
