@@ -659,7 +659,7 @@ class SettingsController extends AbstractController
 				'is_zendserver' => $is_zendserver,
 				'web_ini_path'  => $web_ini_path,
 				'data_dir'      => dp_get_data_dir(),
-				'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log')
+				'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log') . "\n\n\n" . @file_get_contents(dp_get_log_dir() . '/cli-phperr.log')
 			));
 		}
 
