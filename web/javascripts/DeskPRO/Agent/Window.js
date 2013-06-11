@@ -3709,7 +3709,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			var focus = api.getFocus(),
-				origin = api.getOrigin();
+				origin = api.getOrigin(),
+				selection = api.getSelection();
 
 			if (focus[0] != origin[0] || focus[1] != origin[1]) {
 				// selected multiple points, don't show
@@ -3758,6 +3759,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 					containingNode = containingNode.closest('div, p, li, ul, ol, blockquote, table, body');
 				}
 				var offset = containingNode.offset();
+
+				if (selection) {
+					var selOffset = Orb.getSelectionCoords(selection);
+					if (selOffset) {
+						offset = selOffset;
+					}
+				}
+
 				obj.agentNotifyList.css({
 					top: offset.top - obj.agentNotifyList.outerHeight() - 1,
 					left: offset.left

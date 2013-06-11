@@ -438,6 +438,40 @@ Orb.arrayChunk = function(array, size) {
 	return newArray;
 };
 
+
+/**
+ * Get selection from a range object
+ *
+ * @param sel
+ */
+Orb.getSelectionCoords = function(sel) {
+	var range, rect;
+	if (sel.rangeCount) {
+		range = sel.getRangeAt(0).cloneRange();
+		if (range.getClientRects) {
+			range.collapse(true);
+			rect = range.getClientRects()[0];
+
+			return {
+				left: rect.left,
+				top: rect.top
+			};
+		}
+	} else if (sel.type && sel.type != "Control" && sel.createRange) {
+		range = sel.createRange();
+		range.collapse(true);
+
+		if (range.boundingLeft && range.boundingTop) {
+			return {
+				left: range.boundingLeft,
+				top: range.boundingTop
+			}
+		}
+	}
+
+	return null;
+};
+
 (function() {
 	var cleanupCallbacks = [];
 	var origRemove = jQuery.fn.remove;
