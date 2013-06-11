@@ -530,8 +530,13 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		if ($type == 'or' || $type == 'and') {
 			$words = explode(' ', $string);
+			$words = Arrays::func($words, 'trim');
 			$words = Arrays::removeFalsey($words);
 			$words = array_unique($words);
+
+			if (!$words) {
+				return '1';
+			}
 
 			$where = array();
 			foreach ($words as $w) {
@@ -546,6 +551,10 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 			return $where;
 		} else {
+			if (!$string) {
+				return '1';
+			}
+
 			return "($field $op_like " . $db->quote('%' . str_replace(array('%', '_'), array('%%', '__'), $string) . '%') . ")";
 		}
 	}
