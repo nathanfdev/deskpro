@@ -667,6 +667,9 @@ class TicketSearchController extends AbstractController
 			$has_org_terms  = false;
 
 			foreach ($terms as $term) {
+				if (empty($term['op'])) {
+					continue;
+				}
 				if (!isset($term['options'])) $term['options'] = array();
 				if (strpos($term['type'], 'person_') === 0) {
 					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
