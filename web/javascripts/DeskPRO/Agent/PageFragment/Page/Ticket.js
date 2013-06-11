@@ -1784,6 +1784,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			},
 			onItemClicked: function(info) {
 				var itemEl = $(info.itemEl);
+				var triggerEl = $(info.menu.getOpenTriggerElement());
+				if (triggerEl.hasClass('ticket-message-edit-btn')) {
+					triggerEl.closest('.ticket-message-edit-btn');
+				}
 				self._doMessageAction(itemEl.data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'), itemEl);
 			}
 		});
@@ -1809,6 +1813,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_doMessageAction: function(optionId, messageId, itemEl) {
+		if (!messageId) {
+			return;
+		}
+
 		switch (optionId) {
 			case 'view-details':
 				var overlay = new DeskPRO.UI.Overlay({
