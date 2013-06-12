@@ -76,7 +76,7 @@
 				<fieldset>
 					<p>
 						<i class="icon-envelope-alt"></i>
-						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
+						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}" tabindex="1" />
 					</p>
 					<p>
 						<i class="icon-lock"></i>
