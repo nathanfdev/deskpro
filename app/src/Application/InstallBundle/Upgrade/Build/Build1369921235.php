@@ -97,7 +97,7 @@ class Build1369921235 extends AbstractBuild
 		);
 
 		foreach ($raw as $r) {
-			$snippet = $r['snippet_html'] ? $r['snippet_html'] : htmlspecialchars(nl2br($r['snippet']));
+			$snippet = $r['snippet_html'] ? $r['snippet_html'] : nl2br(htmlspecialchars($r['snippet']));
 			$snippet = str_replace(array_keys($find_replace), array_values($find_replace), $snippet);
 
 			$this->container->getDb()->insert('text_snippets', array(
