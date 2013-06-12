@@ -28,6 +28,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 
+		this.meta.person_api_data = {};
+
 		this.addEvent('activate', function() {
 			window.setTimeout(function() {
 				if (!self.getEl('user_searchbox').find('input.person-id').val()) {
@@ -1025,6 +1027,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		searchbox.hide();
 		userfields.show();
 
+		var apiData = userfields.find('.api_data');
+		this.meta.person_api_data = {};
+		if (apiData[0]) {
+			try {
+				this.meta.person_api_data = $.parseJSON(apiData.val());
+			} catch (e) {}
+		}
+
 		var e = $('input.email', userfields);
 		if (e && e[0]) {
 			var fnCheck = function() {
@@ -1326,12 +1336,66 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			},
 			onSnippetClick: function(info) {
+
+				var ticketLangId = self.getEl('value_form').find('.language_id').val();
+				var snippetId    = info.snippetId;
+				var snippetCode  = info.snippetCode;
+
+				var agentText;
+				var defaultText;
+				var wantText;
+				var useText;
+				var result;
+
+				Array.each(snippetCode, function(info) {
+					if (info.language_id == ticketLangId) {
+						wantText = info.value;
+					}
+					if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+						agentText = info.value;
+					}
+					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+						defaultText = info.value;
+					}
+					useText = info.value;
+				});
+
+				if (wantText) {
+					useText = wantText;
+				} else if (agentText) {
+					useText = agentText;
+				} else if (defaultText) {
+					useText = defaultText;
+				}
+
+				try {
+					var tpl = twig({
+						data: useText,
+						strict_variables: true
+					});
+					result = tpl.render({
+						ticket: {
+							person: self.meta.person_api_data
+						}
+					}, {
+						strict_variables: true
+					});
+				} catch(e) {
+					console.log("Snippet render failed: %o", e);
+					result = useText;
+				}
+
 				var redactor = self.getEl('message').data('redactor');
 				if (redactor) {
+					var html = result;
+					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+					html = html.replace(/^<p>/, '');
+					html = html.replace(/<\/p>$/, '');
+
 					redactor.restoreSelection();
-					redactor.insertHtml(info.snippetHtml);
+					redactor.insertHtml(html);
 				} else {
-					self.insertMessageText(info.snippet);
+					self.insertMessageText(result);
 				}
 			}
 		});

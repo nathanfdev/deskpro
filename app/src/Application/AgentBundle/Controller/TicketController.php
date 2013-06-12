@@ -3276,8 +3276,11 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$api_data = $person->toApiData();
+
 		return $this->render('AgentBundle:Ticket:newticket-person-row.html.twig', array(
-			'person' => $person
+			'person' => $person,
+			'api_data' => $api_data,
 		));
 	}
 

@@ -3,6 +3,7 @@
 		<tr>
 			<th width="100">{{ phrase('agent.general.email_address') }}</th>
 			<td>
+				<input type="hidden" class="api_data" value="{{ api_data|json_encode }}" />
 				{% if person.id and person.primary_email and person.primary_email.email %}
 					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
 					{% if person.emails|length > 1 %}
