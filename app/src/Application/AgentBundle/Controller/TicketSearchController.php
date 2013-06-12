@@ -530,6 +530,34 @@ class TicketSearchController extends AbstractController
 				}
 			}
 
+			foreach ($this->in->getCleanValueArray('terms_expanded', 'raw', 'raw') as $type => $info) {
+
+				if (empty($info['options']) || empty($info['op'])) {
+					continue;
+				}
+
+				$opts = $info['options'];
+
+				foreach ($opts as &$_v) {
+					if (is_array($_v)) {
+						$_v = Arrays::func($_v, 'trim');
+						$_v = Arrays::removeEmptyArray($_v);
+					} else if (trim($_v) === "") {
+						$_v = null;
+					}
+				}
+				unset($_v);
+
+				$opts = Arrays::removeValue($opts, null, true);
+				$opts = Arrays::removeValue($opts, false, true);
+
+				if (!$opts) {
+					continue;
+				}
+
+				$terms[] = array('type' => $type, 'op' => $info['op'], 'options' => $opts);
+			}
+
 			if ($this->in->getString('query')) {
 				$terms[] = array('type' => 'text', 'op' => 'is', 'options' => array('query' => $this->in->getString('query')));
 			}

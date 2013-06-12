@@ -79,13 +79,13 @@
 		<div class="input-row-title">
 			<strong>Ticket Field</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-fields"><i class="icon-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-ticket-fields" id="{{ elid }}_termlist">
 
 		</div>
 	</div>
 
-	<div class="source-pane-search-panel panel-ticket-fields">
+	<div class="source-pane-search-panel panel-ticket-fields" data-target-summary="#{{ elid }}_termlist">
 		{% include 'AgentBundle:TicketSearch:window-search-fields.html.twig' %}
 	</div>
 
@@ -229,13 +229,13 @@
 		<div class="input-row-title">
 			<strong>User</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields"><i class="icon-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-user-fields" id="{{ elid }}_termlist">
 
 		</div>
 	</div>
 
-	<div class="source-pane-search-panel panel-user-fields">
+	<div class="source-pane-search-panel panel-user-fields" data-target-summary="#{{ elid }}_termlist">
 		{% include 'AgentBundle:TicketSearch:window-search-user.html.twig' %}
 	</div>
 
@@ -243,20 +243,22 @@
 	{# Organization #}
 	{##################################################################################################################}
 
-	{% set elid = el_uid() %}
-	<div class="input-row">
-		<div class="input-row-title">
-			<strong>Organization</strong>
-		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
-		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-org-fields" id="{{ elid }}_termlist">
+	{% if app.getDataService('Organization').getOrganizationNames()|length %}
+		{% set elid = el_uid() %}
+		<div class="input-row">
+			<div class="input-row-title">
+				<strong>Organization</strong>
+			</div>
+			<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields"><i class="icon-cog"></i></div>
+			<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-org-fields" id="{{ elid }}_termlist">
 
+			</div>
 		</div>
-	</div>
 
-	<div class="source-pane-search-panel panel-org-fields">
-		{% include 'AgentBundle:TicketSearch:window-search-org.html.twig' %}
-	</div>
+		<div class="source-pane-search-panel panel-org-fields" data-target-summary="#{{ elid }}_termlist">
+			{% include 'AgentBundle:TicketSearch:window-search-org.html.twig' %}
+		</div>
+	{% endif %}
 
 	{##################################################################################################################}
 	{# Dates and Times #}
@@ -267,13 +269,13 @@
 		<div class="input-row-title">
 			<strong>Dates &amp; Times</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-date-fields" data-target-summary="#{{ elid }}_termlist"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-date-fields"><i class="icon-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-date-fields" id="{{ elid }}_termlist">
 
 		</div>
 	</div>
 
-	<div class="source-pane-search-panel panel-date-fields">
+	<div class="source-pane-search-panel panel-date-fields" data-target-summary="#{{ elid }}_termlist">
 		{% include 'AgentBundle:TicketSearch:window-search-dates.html.twig' %}
 	</div>
 

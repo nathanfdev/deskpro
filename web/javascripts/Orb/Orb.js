@@ -258,11 +258,20 @@ Orb.appendQueryData = function(url, k, v) {
 /**
  * Serialize form elements wihtin context
  */
-Orb.serializeFormElements = function(context) {
+Orb.serializeFormElements = function(context, visitedEls) {
 	var postData = [];
+
+	if (!visitedEls) visitedEls = [];
 
 	context.each(function() {
 		$(this).find('input, select, textarea').each(function() {
+
+			if (visitedEls.indexOf(this) !== -1) {
+				return;
+			}
+
+			visitedEls.push(this);
+
 			var el = $(this);
 			var name = el.attr('name');
 

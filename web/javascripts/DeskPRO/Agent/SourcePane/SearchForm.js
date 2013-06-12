@@ -26,10 +26,11 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 
 	getFormData: function() {
 		var postData = [];
+		var visitedEls = [];
 
-		postData = Orb.serializeFormElements(this.el.find('.add-to-search'));
+		postData = Orb.serializeFormElements(this.el.find('.add-to-search'), visitedEls);
 		Array.each(this.formPanels, function(panel) {
-			postData = postData.append(Orb.serializeFormElements(panel.el.find('.add-to-search')));
+			postData = postData.append(Orb.serializeFormElements(panel.el.find('.add-to-search'), visitedEls));
 		});
 
 		return postData;
@@ -170,12 +171,17 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		this.shim       = null;
 		this.updateTypesTimer = null;
 		this.searchBuilderLists = [];
+		this.searchValList = [];
 		this.targetSummaryEl = null;
 	},
 
 	initPanel: function() {
 		if (this.hasInit) return;
 		this.hasInit = true;
+
+		this.el.find('.with-select2').each(function() {
+			DP.select($(this));
+		});
 
 		var self = this;
 
@@ -209,8 +215,10 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			});
 		});
 
+		this.searchValList = self.el.find('.ensure-value');
+
 		if (this.el.data('target-summary')) {
-			this.targetSummaryEl = this.el.data('target-summary');
+			this.targetSummaryEl = $(this.el.data('target-summary'));
 		}
 
 		if (this.targetSummaryEl) {
@@ -229,11 +237,10 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 	},
 
 	updateTypes: function() {
-		if (this.searchBuilderLists.length) {
-			var self = this;
+		var self = this;
+		var texts = [];
 
-			this.targetSummaryEl.empty();
-			var texts = [];
+		if (this.searchBuilderLists.length) {
 			Array.each(this.searchBuilderLists, function(o_el) {
 				$.trim($(o_el).find('.builder-type-choice').each(function() {
 					var el = $(this);
@@ -243,8 +250,18 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 					}
 				}));
 			});
-			self.targetSummaryEl.text(texts.join(', '));
 		}
+
+		if (this.searchValList.length) {
+			this.searchValList.each(function() {
+				var val = $(this).val() || "";
+				if (val.length != 0) {
+					texts.push($(this).closest('.pane-row').find('.row-label').text());
+				}
+			});
+		}
+
+		self.targetSummaryEl.text(texts.join(', '));
 	},
 
 
