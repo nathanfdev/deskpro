@@ -34,6 +34,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Orb\Util\Arrays;
+
 class Build1369921235 extends AbstractBuild
 {
 	public function run()
@@ -102,7 +104,7 @@ class Build1369921235 extends AbstractBuild
 
 			$this->container->getDb()->insert('text_snippets', array(
 				'person_id'   => $r['person_id'],
-				'category_id' => $cat_map[$r['category_id']],
+				'category_id' => isset($cat_map[$r['category_id']]) ? $cat_map[$r['category_id']] : Arrays::getFirstItem($cat_map),
 				'title'       => $r['title'],
 				'snippet'     => $snippet
 			));
