@@ -561,32 +561,16 @@ class TicketSearchController extends AbstractController
 				$team_ids = array_unique($team_ids);
 
 				if ($agent_ids) {
-					$terms[] = array('type' => 'agent', 'is', array('agent_ids' => $agent_ids));
+					$terms[] = array('type' => 'agent', 'op' => 'is', 'options' => array('agent_ids' => $agent_ids));
 				}
 				if ($team_ids) {
-					$terms[] = array('type' => 'agent_team', 'is', array('team_ids' => $team_ids));
+					$terms[] = array('type' => 'agent_team', 'op' => 'is', 'options' => array('team_ids' => $team_ids));
 				}
 			}
 
-			// Search form: assigned agent or team
+			// Search form: status
 			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
-				$agent_ids = array();
-				$team_ids  = array();
-
-				foreach ($search_term as $id) {
-					if (strpos($id, 'team.') === 0) {
-						$team_ids[] = Strings::extractRegexMatch('#(\d+)$#', $id);
-					} else {
-						$agent_ids[] = $id;
-					}
-				}
-
-				if ($agent_ids) {
-					$terms[] = array('type' => 'agent', 'op' =>'is', 'options' => array('agent_ids' => $agent_ids));
-				}
-				if ($team_ids) {
-					$terms[] = array('type' => 'agent_team', 'op' =>'is', 'options' => array('team_ids' => $team_ids));
-				}
+				$terms[] = array('type' => 'status', 'op' =>'contains', 'options' => array('status' => $search_term));
 			}
 
 			// Search form: subject

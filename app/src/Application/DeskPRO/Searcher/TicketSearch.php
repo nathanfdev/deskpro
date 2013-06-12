@@ -2031,11 +2031,16 @@ class TicketSearch extends SearcherAbstract
 					if (!$this->_testChoiceMatch((int)$ticket['is_hold'], $op, $choice)) return false;
 					break;
 				case self::TERM_AGENT:
+					if (isset($choice['agent_ids'])) {
+						$choice = $choice['agent_ids'];
+					}
 					$info = $this->_normalizeAgentChoice($choice);
 
 					$unassigned = $info['unassigned'];
 					$agent_ids = $info['agent_ids'];
 					$not_id = $info['not_id'];
+
+					error_log(print_r($info,1));
 
 					if ($unassigned) {
 						if ($ticket['agent_id'] && $op == self::OP_IS) return false;
@@ -2056,6 +2061,9 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_AGENT_TEAM:
+					if (isset($choice['team_ids'])) {
+						$choice = $choice['team_ids'];
+					}
 					$info = $this->_normalizeAgentTeamChoice($choice);
 					$no_team = $info['no_team'];
 					$team_ids = $info['team_ids'];
