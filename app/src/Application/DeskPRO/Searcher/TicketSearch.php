@@ -2043,8 +2043,6 @@ class TicketSearch extends SearcherAbstract
 					$agent_ids = $info['agent_ids'];
 					$not_id = $info['not_id'];
 
-					error_log(print_r($info,1));
-
 					if ($unassigned) {
 						if ($ticket['agent_id'] && $op == self::OP_IS) return false;
 						if (!$ticket['agent_id'] && $op != self::OP_IS) return false;
