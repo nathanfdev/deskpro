@@ -47,7 +47,7 @@
 							{% if not usergroup_counts[id] %}style="display: none"{% endif %}
 						>
 							<h3 class="title">
-								<span class="list-counter">{% if usergroup_counts[id] %}10000+{% else %}{{ usergroup_counts[id]|default(0) }}{% endif %}</span>
+								<span class="list-counter">{% if usergroup_counts[id] > 10000 %}10000+{% else %}{{ usergroup_counts[id]|default(0) }}{% endif %}</span>
 								{{title}}
 							</h3>
 						</li>
