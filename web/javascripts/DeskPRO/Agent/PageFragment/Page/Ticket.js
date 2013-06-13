@@ -1785,10 +1785,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			onItemClicked: function(info) {
 				var itemEl = $(info.itemEl);
 				var triggerEl = $(info.menu.getOpenTriggerElement());
-				if (triggerEl.hasClass('ticket-message-edit-btn')) {
-					triggerEl.closest('.ticket-message-edit-btn');
+				if (!triggerEl.hasClass('ticket-message-edit-btn')) {
+					triggerEl = triggerEl.closest('.ticket-message-edit-btn');
 				}
-				self._doMessageAction(itemEl.data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'), itemEl);
+				self._doMessageAction(itemEl.data('option-id'), triggerEl.data('message-id'), itemEl);
 			}
 		});
 		this.ownObject(this.messageActionsMenu);
