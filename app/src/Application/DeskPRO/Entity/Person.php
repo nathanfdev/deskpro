@@ -2290,6 +2290,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		$data['display_name'] = $this->getDisplayName();
 		$data['primary_email'] = $this->getPrimaryEmailAddress();
 		$data['picture_url'] = $this->getPictureUrl();
 
