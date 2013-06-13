@@ -88,6 +88,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 
 		new DeskPRO.ElementHandler.SimpleTabs($('#chat_outline_labels_switcher'));
+
+		this.fireEvent('sectionInit');
 	},
 
 	_initStatusMenu: function() {

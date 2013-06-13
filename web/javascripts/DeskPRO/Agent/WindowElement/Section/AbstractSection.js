@@ -20,6 +20,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function() {
+		var self = this;
 		this.addEvent('show', this.onShow);
 		this.addEvent('show', this._onFirstShowFire);
 		this.addEvent('show', this._onShowSetVisible);
@@ -38,12 +39,20 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.addEvent('hide', this._onHideSetVisible);
 		this.addEvent('hide', this._onHideDeactivateList);
 
+		this.addEvent('sectionInit', function() {
+			if (self.contentEl) {
+				var scrollEl = $('.with-scrollbar', self.contentEl).first();
+				if (scrollEl.length && !scrollEl.is('.scroll-setup')) {
+					new DeskPRO.Agent.ScrollerHandler(null, scrollEl);
+				}
+			}
+		});
+
 		this._isVisible = false;
 
 		this.init();
 
 		// Simulate instant switching when clicking nav items
-		var self = this;
 		this.getSectionElement().on('click', '[data-route]', function(ev) {
 			self.highlightNavItem($(this));
 		});
