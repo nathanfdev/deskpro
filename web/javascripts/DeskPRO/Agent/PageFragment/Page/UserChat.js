@@ -281,12 +281,37 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			triggerElement: snippetBtn,
+			snippetType: 'chat',
 			onSnippetClick: function(info) {
-				var val = info.snippet;
+				var snippetId    = info.snippetId;
+				var snippetCode  = info.snippetCode;
+
+				var agentText;
+				var defaultText;
+				var wantText;
+				var useText;
+				var result;
+
+				Array.each(snippetCode, function(info) {
+					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+						defaultText = info.value;
+					}
+					useText = info.value;
+				});
+
+				if (wantText) {
+					useText = wantText;
+				} else if (agentText) {
+					useText = agentText;
+				} else if (defaultText) {
+					useText = defaultText;
+				}
+
+				var val = useText;
 
 				var messageTextarea = self.getEl('replybox_txt')
 				if (messageTextarea.data('redactor')) {
-					messageTextarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(val, true));
+					messageTextarea.data('redactor').insertHtml(val);
 					messageTextarea.change();
 					window.setTimeout(function() {
 						var tmp = ed.height();

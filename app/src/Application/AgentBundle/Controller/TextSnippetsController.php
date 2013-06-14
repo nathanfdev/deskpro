@@ -57,7 +57,7 @@ class TextSnippetsController extends AbstractController
 		}
 
 		return $this->render("AgentBundle:TextSnippets:$typename-widget-shell.html.twig", array(
-			'ticket_snippet_cats' => $snippet_cats
+			'snippet_cats' => $snippet_cats
 		));
 	}
 

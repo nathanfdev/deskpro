@@ -154,6 +154,7 @@ class MainController extends AbstractController
 		);
 
 		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
+		$chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
 
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
@@ -180,6 +181,7 @@ class MainController extends AbstractController
 			'timezones'           => \DateTimeZone::listIdentifiers(),
 			'version_notices'     => $version_notices,
 			'ticket_snippet_cats' => $ticket_snippet_cats,
+			'chat_snippet_cats'   => $chat_snippet_cats,
 		));
 	}
 

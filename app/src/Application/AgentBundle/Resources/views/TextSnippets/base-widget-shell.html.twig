@@ -18,7 +18,7 @@
 						<span class="label">All Snippets</span>
 					</a>
 				</li>
-				{% for category in ticket_snippet_cats %}
+				{% for category in snippet_cats %}
 					<li class="category category-{{ category.id }}" data-category-id="{{ category.id }}" {% if category.is_global %}data-is-global="1"{% endif %}>
 						<a>
 							<span class="label">{{ category.title }}</span>
@@ -73,7 +73,7 @@
 
 			<div style="padding-bottom: 4px; vertical-align: middle;">
 				Category: <select name="category_id" class="category_id" id="%baseId%_editsnippet_category_select">
-					{% for category in ticket_snippet_cats %}
+					{% for category in snippet_cats %}
 						<option value="{{ category.id }}">{{ category.title }}</option>
 					{% endfor %}
 				</select>

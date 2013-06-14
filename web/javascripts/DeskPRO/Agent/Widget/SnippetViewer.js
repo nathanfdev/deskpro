@@ -10,7 +10,8 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			triggerElement: null,
 			positionMode: 'side',
 			sidePosition: 'bottom',
-			destroyOnClose: false
+			destroyOnClose: false,
+			snippetType: 'tickets'
 		};
 
 		var self = this;
@@ -25,11 +26,13 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			});
 		}
 
+		var pageSourceId = this.options.snippetType + '_snippet_shell_tpl';
+
 		this.pop = new DeskPRO.Agent.PageHelper.Popover({
 			positionMode: this.options.positionMode,
 			sidePosition: this.options.sidePosition,
 			pageUrl: this.options.viewUrl,
-			pageSource: DeskPRO_Window.util.getPlainTpl($('#tickets_snippet_shell_tpl')),
+			pageSource: DeskPRO_Window.util.getPlainTpl($('#' + pageSourceId)),
 			destroyOnClose: false,
 			onPageInit: function(pop, page) {
 				page.addEvent('closeSelf', function(ev) {
