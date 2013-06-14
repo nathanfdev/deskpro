@@ -565,11 +565,15 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						data: useText,
 						strict_variables: true
 					});
-					result = tpl.render({
-						ticket: self.page.meta.api_data
-					}, {
-						strict_variables: true
-					});
+					if (tpl) {
+						result = tpl.render({
+							ticket: self.page.meta.api_data
+						}, {
+							strict_variables: true
+						});
+					} else {
+						result = useText;
+					}
 				} catch(e) {
 					console.log("Snippet render failed: %o", e);
 					result = useText;
@@ -642,14 +646,72 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						var editable = $.browser.webkit ? ' contenteditable="false"' : '';
 						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
-						self.page.pauseSend = true;
+						if (!self.page) {
+							self.page = self.el.closest('.with-page-fragment').data('page-fragment');
+						}
+
+						if (self.page) self.page.pauseSend = true;
 						$.ajax({
-							url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/get-snippet/' + snippetId,
-							dataType: 'text',
+							url: BASE_URL + 'agent/text-snippets/tickets/'+snippetId+'.json',
+							dataType: 'json',
 							complete: function() {
-								self.page.pauseSend = false;
+								if (self.page) self.page.pauseSend = false;
 							},
 							success: function(data) {
+
+								var snippet = data.snippet;
+								var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+								var snippetId    = snippet.id;
+								var snippetCode  = snippet.snippet;
+
+								var agentText;
+								var defaultText;
+								var wantText;
+								var useText;
+								var result;
+
+								Array.each(snippetCode, function(info) {
+									if (info.language_id == ticketLangId) {
+										wantText = info.value;
+									}
+									if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+										agentText = info.value;
+									}
+									if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+										defaultText = info.value;
+									}
+									useText = info.value;
+								});
+
+								if (wantText) {
+									useText = wantText;
+								} else if (agentText) {
+									useText = agentText;
+								} else if (defaultText) {
+									useText = defaultText;
+								}
+
+								try {
+									var tpl = twig({
+										data: useText,
+										strict_variables: true
+									});
+									if (tpl) {
+										result = tpl.render({
+											ticket: self.page ? self.page.meta.api_data : {}
+										}, {
+											strict_variables: true
+										});
+									} else {
+										result = useText;
+									}
+								} catch(e) {
+									console.log("Snippet render failed: %o", e);
+									result = useText;
+								}
+
+								var data = result;
+
 								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 								data = $('<div>' + data + '</div>');
 

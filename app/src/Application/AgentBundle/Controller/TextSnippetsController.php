@@ -227,6 +227,18 @@ class TextSnippetsController extends AbstractController
 			$snippet->category = $category;
 		}
 
+		$snippet->setShortcutCode($this->in->getString('shortcut_code'));
+
+		if ($snippet->shortcut_code) {
+			// Prevent dupers
+			$this->db->executeUpdate("
+				UPDATE text_snippets
+				LEFT JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
+				SET text_snippets.shortcut_code = CONCAT(text_snippets.shortcut_code, '_', text_snippets.id)
+				WHERE text_snippets.shortcut_code = ? AND text_snippet_categories.typename = ?
+			", array($snippet->shortcut_code, $typename));
+		}
+
 		$this->em->persist($snippet);
 		$this->em->flush();
 

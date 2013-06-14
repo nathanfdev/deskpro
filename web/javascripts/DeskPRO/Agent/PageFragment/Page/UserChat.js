@@ -234,13 +234,39 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 						api.insertHtml('<span class="editor-inserting-var snippet-'+snippetId+'" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
 						$.ajax({
-							url: BASE_URL + 'agent/misc/snippet-viewer/get-snippet/' + snippetId,
-							dataType: 'text',
+							url: BASE_URL + 'agent/text-snippets/chat/'+snippetId+'.json',
+							dataType: 'json',
 							success: function(data) {
+
+								var snippet = data.snippet;
+								var snippetId    = snippet.id;
+								var snippetCode  = snippet.snippet;
+
+								var agentText;
+								var defaultText;
+								var wantText;
+								var useText;
+								var result;
+
+								Array.each(snippetCode, function(info) {
+									if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+										defaultText = info.value;
+									}
+									useText = info.value;
+								});
+
+								if (wantText) {
+									useText = wantText;
+								} else if (agentText) {
+									useText = agentText;
+								} else if (defaultText) {
+									useText = defaultText;
+								}
+
 								var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 
 								var wrapper = $('<div/>');
-								wrapper.html(data);
+								wrapper.html(useText);
 
 								if (wrapper.find('> *')[0]) {
 									data = wrapper.find('> *');
