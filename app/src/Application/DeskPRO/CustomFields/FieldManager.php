@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\OptionsArray;
 
 /**
  * The custom field manager handles fetching custom fields, rendering them
@@ -121,43 +122,71 @@ class FieldManager
 				return $this->fields;
 			}
 
-			$this->fields = array();
-			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledUserFields();
-			} else {
-				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+			$data = $this->queryFieldData();
+			$this->all_fields        = $data['all_fields'];
+			$this->fields            = $data['fields'];
+			$this->field_to_children = $data['field_to_children'];
+		}
+
+		return $this->fields;
+	}
+
+
+	/**
+	 * Do a query to fetch all fields.
+	 *
+	 * Options:
+	 * - ignore_interface
+	 *
+	 * @return array
+	 */
+	public function queryFieldData(array $options = null)
+	{
+		$fields = array();
+		$field_to_children = array();
+		$set_all = array();
+
+		$options = new OptionsArray($options ?: array());
+
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user' && !$options->get('ignore_interface')) {
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledUserFields();
+		} else {
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+		}
+		foreach ($all_fields as $f) {
+
+			$set_all[$f->getId()] = $f;
+
+			if (!$f->getParentId()) {
+				$fields[$f->getId()] = $f;
 			}
-			foreach ($all_fields as $f) {
 
-				$this->all_fields[$f->getId()] = $f;
-
-				if (!$f->getParentId()) {
-					$this->fields[$f->getId()] = $f;
+			if ($p = $f->getParentId()) {
+				if (!isset($field_to_children[$p])) {
+					$field_to_children[$p] = array();
 				}
-
-				if ($p = $f->getParentId()) {
-					if (!isset($this->field_to_children[$p])) {
-						$this->field_to_children[$p] = array();
-					}
-					$this->field_to_children[$p][$f->getId()] = $f;
-				}
+				$field_to_children[$p][$f->getId()] = $f;
 			}
+		}
 
-			// Choice fields that have no options are considered disabled
-			foreach ($this->fields as $f) {
-				if ($f->isChoiceType()) {
-					if (!$this->getFieldChildren($f)) {
-						unset(
-							$this->all_fields[$f->getId()],
-							$this->fields[$f->getId()],
-							$this->field_to_children[$f->getId()]
-						);
-					}
+		// Choice fields that have no options are considered disabled
+		foreach ($fields as $f) {
+			if ($f->isChoiceType()) {
+				if (!$this->getFieldChildren($f)) {
+					unset(
+						$set_all[$f->getId()],
+						$fields[$f->getId()],
+						$field_to_children[$f->getId()]
+					);
 				}
 			}
 		}
 
-		return $this->fields;
+		return array(
+			'all_fields'        => $set_all,
+			'fields'            => $fields,
+			'field_to_children' => $field_to_children
+		);
 	}
 
 
