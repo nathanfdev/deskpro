@@ -396,7 +396,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 							</tr>
 						</tbody>
 					{% endif %}
-					{% if ticket.linked_chat %}
+					{% if ticket.linked_chat and app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
 						<tbody>
 							<tr>
 								<th>
