@@ -187,6 +187,72 @@ class Zendesk
 
 
 	/**
+	 * @param array $requests Array of array($id, $query_data) to be called async
+	 * @return array Array of results
+	 */
+	public function sendGetMulti(array $requests)
+	{
+		$request_ev = array();
+
+		$mh = curl_multi_init();
+
+		foreach ($requests as $k => $req) {
+			if (!is_array($req)) {
+				$req = array($req, null);
+			}
+
+			$ev = $this->sendRequest($req[0], self::GET, null, $req[1], true);
+			$request_ev[$k] = $ev;
+
+			$ev = $this->_callListeners('preCall', $ev);
+
+			curl_multi_add_handle($mh, $ev['ch']);
+		}
+
+		do {
+			curl_multi_exec($mh, $running);
+			usleep(25000);
+		} while ($running > 0);
+
+		foreach ($request_ev as $k => &$ev) {
+			$ev['output'] = @curl_multi_getcontent($ev['ch']);
+			$ev['http_code'] = @curl_getinfo($ev['ch'], CURLINFO_HTTP_CODE);
+			$ev = $this->_callListeners('postCall', $ev);
+
+			$ev['exception'] = null;
+			$ev['response'] = null;
+
+			if (@curl_errno($ev['ch'])) {
+				$ev['exception'] = new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ev['ch']), curl_error($ev['ch'])));
+			}
+
+			if ($ev['output'] === false || !$ev['http_code']) {
+				$ev['exception'] = new ApiException("Request failed", ApiException::REQUEST_FAILED, null, $ev['output']);
+			}
+
+			if (!$ev['exception']) {
+				try {
+					$response = new ApiResponse($ev['http_code'], $ev['output']);
+					$ev['response'] = $response;
+				} catch (ApiException $e) {
+					$ev['response'] = null;
+					$ev['exception'] = $e;
+				}
+				$ev = $this->_callListeners('postResponse', $ev);
+			}
+
+			curl_multi_remove_handle($mh, $ev['ch']);
+			unset($ev['ch']);
+		}
+		unset($ev);
+
+		curl_multi_close($mh);
+
+		return $request_ev;
+	}
+
+
+	/**
 	 * Just like sendGet except this will attempt to build a complete collection
 	 * by re-calling the 'next_page' and appending results.
 	 *
@@ -284,7 +350,7 @@ class Zendesk
 	 * @throws \RuntimeException
 	 * @throws \Orb\Service\Zendesk\ApiException
 	 */
-	public function sendRequest($id, $action, array $call_data = null, array $query_data = null)
+	public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
 	{
 		$ev_data = array(
 			'id'         => $id,
@@ -364,6 +430,10 @@ class Zendesk
 
 		$ev_data = $this->_callListeners('preCall', $ev_data);
 		extract($ev_data, \EXTR_OVERWRITE);
+
+		if ($no_exec) {
+			return $ev_data;
+		}
 
 		$output    = curl_exec($ch);
 		$http_code = @curl_getinfo($ch, CURLINFO_HTTP_CODE);

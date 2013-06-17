@@ -41,7 +41,7 @@ abstract class AbstractStep
 	/**
 	 * @var Application\DeskPRO\Import\Importer\AbstractImporter
 	 */
-	protected $importer;
+	public $importer;
 
 	/**
 	 * @param \Application\DeskPRO\Import\Importer\AbstractImporter $impoter

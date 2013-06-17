@@ -150,7 +150,7 @@ abstract class AbstractImporter
 	/**
 	 * Called before the first step to initialize anything.
 	 */
-	abstract public function setupImport();
+	abstract public function setupImport($mode = 'run');
 
 
 	/**

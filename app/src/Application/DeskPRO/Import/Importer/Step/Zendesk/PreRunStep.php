@@ -35,113 +35,33 @@
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
 
-class UsersStep extends AbstractZendeskStep
+class PreRunStep extends AbstractZendeskStep
 {
-	const PERPAGE = 100;
-
-	/**
-	 * @var array
-	 */
-	protected $custom_field_info = array();
-
-	/**
-	 * @var array
-	 */
-	protected $checked_org_ids = array();
-
 	public static function getTitle()
 	{
-		return 'Import Users';
-	}
-
-	public function countPages()
-	{
-		if ($this->importer->run_mode == 'rerun') {
-			return 1;
-		}
-
-		$count = $this->db->fetchColumn("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = 'zd_ticket_cache_total'
-		");
-
-		$this->logMessage(sprintf("%d records in %d pages", $count, ceil($count / self::PERPAGE)));
-
-		return ceil($count / self::PERPAGE);
+		return 'PreRun';
 	}
 
 	public function run($page = 1)
 	{
 		if ($this->importer->run_mode == 'rerun') {
-			$this->logMessage("-- Skipping. This step is not run during --rerun.");
-			return;
+			$this->logMessage("-- Initial run");
+			$this->db->delete('import_datastore', array('typename' => 'zd_tickets_cache_time'));
+			$this->db->delete('import_datastore', array('typename' => 'zd_tickets_rerun_time'));
+		} else {
+			$this->logMessage("-- Is ReRun");
+
+			// Clear out attach queue that was processed at the end of the last run
+			$this->db->executeUpdate("
+				DELETE FROM import_datastore
+				WHERE typename LIKE 'attach.person_picture.%'
+			");
+
+			$this->db->executeUpdate("
+				DELETE FROM import_datastore
+				WHERE typename LIKE 'attach.ticket.%'
+			");
 		}
-
-		$sub_start_time = microtime(true);
-		$this->logMessage("-- Processing batch {$page}");
-
-		$users = $this->getBatch($page);
-		$this->db->exec("SET unique_checks = 0");
-		$this->db->exec("SET foreign_key_checks = 0");
-
-		$this->db->beginTransaction();
-		try {
-			foreach ($users as $u) {
-				$this->processUser($u);
-			}
-			$this->importer->flushSaveMappedIdBuffer();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
-
-		$this->db->exec("SET unique_checks = 1");
-		$this->db->exec("SET foreign_key_checks = 1");
-
-		$sub_end_time = microtime(true);
-		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
-	}
-
-
-	/**
-	 * Process a single user
-	 * @param $user_id
-	 */
-	protected function processUser($user_info)
-	{
-		$import_user = new ImportUser();
-		$import_user->importer = $this->importer;
-		$import_user->import($user_info);
-	}
-
-
-	/**
-	 * @param $page
-	 * @return array
-	 */
-	protected function getBatch($page)
-	{
-		$cached = $this->db->fetchColumn("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = 'zd_tickets_cache.p{$page}'
-		");
-
-		$res = null;
-		if ($cached) {
-			$res = @unserialize($cached);
-		}
-
-		if (!$res) {
-			$res = $this->zd->sendGet('users', array('per_page' => self::PERPAGE, 'page' => $page));
-		}
-
-		$batch = $res->get('users');
-
-		return $batch;
 	}
 }

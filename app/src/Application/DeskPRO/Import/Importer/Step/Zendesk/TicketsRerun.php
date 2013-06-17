@@ -34,38 +34,36 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
 use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
+use Orb\Service\Zendesk\ApiException;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 
-class UsersStep extends AbstractZendeskStep
+class TicketsStep extends AbstractZendeskStep
 {
 	const PERPAGE = 100;
 
 	/**
-	 * @var array
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
-	protected $custom_field_info = array();
-
-	/**
-	 * @var array
-	 */
-	protected $checked_org_ids = array();
+	protected $fieldmanager;
 
 	public static function getTitle()
 	{
-		return 'Import Users';
+		return 'ReRun Tickets';
 	}
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode == 'rerun') {
+		if ($this->importer->run_mode != 'rerun') {
 			return 1;
 		}
 
 		$count = $this->db->fetchColumn("
 			SELECT data
 			FROM import_datastore
-			WHERE typename = 'zd_ticket_cache_total'
+			WHERE typename = 'zd_ticket_cache_rerun_total'
 		");
 
 		$this->logMessage(sprintf("%d records in %d pages", $count, ceil($count / self::PERPAGE)));
@@ -75,22 +73,22 @@ class UsersStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			$this->logMessage("-- Skipping. This step is not run during --rerun.");
+		if ($this->importer->run_mode != 'rerun') {
+			$this->logMessage("-- Skipping. This step is only run during --rerun.");
 			return;
 		}
 
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
-		$users = $this->getBatch($page);
-		$this->db->exec("SET unique_checks = 0");
-		$this->db->exec("SET foreign_key_checks = 0");
+		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
+
+		$tickets = $this->getBatch($page);
 
 		$this->db->beginTransaction();
 		try {
-			foreach ($users as $u) {
-				$this->processUser($u);
+			foreach ($tickets as $t) {
+				$this->processTicket($t);
 			}
 			$this->importer->flushSaveMappedIdBuffer();
 			$this->db->commit();
@@ -99,23 +97,18 @@ class UsersStep extends AbstractZendeskStep
 			throw $e;
 		}
 
-		$this->db->exec("SET unique_checks = 1");
-		$this->db->exec("SET foreign_key_checks = 1");
-
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
 
-	/**
-	 * Process a single user
-	 * @param $user_id
-	 */
-	protected function processUser($user_info)
+	protected function processTicket($ticket_info)
 	{
-		$import_user = new ImportUser();
-		$import_user->importer = $this->importer;
-		$import_user->import($user_info);
+		$import_ticket = new ImportTicket();
+		$import_ticket->importer = $this->importer;
+		$import_ticket->fieldmanager = $this->fieldmanager;
+
+		$import_ticket->importOrUpdate($ticket_info);
 	}
 
 
@@ -125,10 +118,13 @@ class UsersStep extends AbstractZendeskStep
 	 */
 	protected function getBatch($page)
 	{
+		$this->logMessage(sprintf("Getting batch of %d (page %d)", self::PERPAGE, $page));
+		$t = microtime(true);
+
 		$cached = $this->db->fetchColumn("
 			SELECT data
 			FROM import_datastore
-			WHERE typename = 'zd_tickets_cache.p{$page}'
+			WHERE typename = 'zd_tickets_cache_rerun.p{$page}'
 		");
 
 		$res = null;
@@ -137,10 +133,10 @@ class UsersStep extends AbstractZendeskStep
 		}
 
 		if (!$res) {
-			$res = $this->zd->sendGet('users', array('per_page' => self::PERPAGE, 'page' => $page));
+			return array();
 		}
 
-		$batch = $res->get('users');
+		$batch = $res->get('tickets');
 
 		return $batch;
 	}

@@ -67,6 +67,7 @@ class ImportZendeskCommand extends ImportCommand
 		$this->setName('dp:import-zendesk');
 		$this->addOption('info', null, InputOption::VALUE_NONE, 'Show information about the importer and config');
 		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the importer from start to finish');
+		$this->addOption('rerun', null, InputOption::VALUE_NONE, 'Set this as a re-run to import new data only');
 		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'With --run, Start from this step');
 		$this->addOption('exec-step', null, InputOption::VALUE_REQUIRED, 'Execute only this step');
 		$this->addOption('exec-step-page', null, InputOption::VALUE_REQUIRED, 'With --exec-step, runs a page of the step. If not specified, page 1 is run.');
@@ -91,6 +92,7 @@ class ImportZendeskCommand extends ImportCommand
 		$mode = null;
 		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
 		elseif ($input->getOption('info')) $mode = 'info';
+		elseif ($input->getOption('rerun')) $mode = 'rerun';
 		elseif ($input->getOption('run')) $mode = 'run';
 
 		$page = 0;
@@ -100,7 +102,7 @@ class ImportZendeskCommand extends ImportCommand
 		}
 
 		if (!$mode) {
-			echo "Choose one of the run modes: --info, --run, --step or --exec-step\n";
+			echo "Choose one of the run modes: --info, --run, --rerun, --step or --exec-step\n";
 			return 1;
 		}
 
@@ -431,7 +433,7 @@ class ImportZendeskCommand extends ImportCommand
 		$importer = new $importer_class($this->getContainer(), $config, $logger);
 		$importer->validateOptions();
 
-		if ($mode == 'run' && !$input->getOption('step')) {
+		if (($mode == 'run' || $mode == 'rerun') && !$input->getOption('step')) {
 			$output->writeln(
 				"\n" .
 				"The import process is about to begin.\n" .

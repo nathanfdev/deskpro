@@ -44,7 +44,7 @@ class ZendeskApi extends Zendesk
 	 * How many times to try an API call before re-throwing an error?
 	 * @var int
 	 */
-	protected $try_count = 3;
+	public $try_count = 3;
 
 	/**
 	 * The number of seconds between try attempts
@@ -52,7 +52,7 @@ class ZendeskApi extends Zendesk
 	 *
 	 * @var int
 	 */
-	protected $try_time_error  = 2;
+	public $try_time_error  = 2;
 
 	/**
 	 * The number of seconds between try attempts
@@ -60,7 +60,7 @@ class ZendeskApi extends Zendesk
 	 *
 	 * @var int
 	 */
-	protected $try_time_ratelimit  = 11;
+	public $try_time_ratelimit  = 11;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -77,8 +77,12 @@ class ZendeskApi extends Zendesk
 	}
 
 
-	public function sendRequest($id, $action, array $call_data = null, array $query_data = null)
+	public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
 	{
+		if ($no_exec) {
+			return parent::sendRequest($id, $action, $call_data, $query_data, $no_exec);
+		}
+
 		$try = $this->try_count;
 		while ($try-- > 0) {
 			$ex  = null;

@@ -47,6 +47,10 @@ class OrgsStep extends AbstractZendeskStep
 
 	public function countPages()
 	{
+		if ($this->importer->run_mode == 'rerun') {
+			return 1;
+		}
+
 		$res = $this->zd->sendGet('organizations', array('per_page' => 1));
 		$count = (int)$res->get('count');
 
@@ -57,6 +61,11 @@ class OrgsStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
+		if ($this->importer->run_mode == 'rerun') {
+			$this->logMessage("-- Skipping. This step is not run during --rerun.");
+			return;
+		}
+
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 

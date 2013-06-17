@@ -34,26 +34,25 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
 use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
+use Orb\Service\Zendesk\ApiException;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 
-class UsersStep extends AbstractZendeskStep
+class TicketsCacheStep extends AbstractZendeskStep
 {
-	const PERPAGE = 100;
+	const PERPAGE  = 100;
+	const PERBATCH = 5;
 
 	/**
-	 * @var array
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
-	protected $custom_field_info = array();
-
-	/**
-	 * @var array
-	 */
-	protected $checked_org_ids = array();
+	protected $fieldmanager;
 
 	public static function getTitle()
 	{
-		return 'Import Users';
+		return 'Download Tickets';
 	}
 
 	public function countPages()
@@ -62,86 +61,87 @@ class UsersStep extends AbstractZendeskStep
 			return 1;
 		}
 
-		$count = $this->db->fetchColumn("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = 'zd_ticket_cache_total'
-		");
+		$this->db->replace('import_datastore', array(
+			'typename' => 'zd_tickets_cache_time',
+			'data' => time()
+		));
+		$this->db->replace('import_datastore', array(
+			'typename' => 'zd_tickets_rerun_lasttime',
+			'data' => time()
+		));
 
-		$this->logMessage(sprintf("%d records in %d pages", $count, ceil($count / self::PERPAGE)));
+		$res = $this->zd->sendGet('tickets', array('per_page' => 1));
+		$count = (int)$res->get('count');
 
-		return ceil($count / self::PERPAGE);
+		$pages = ceil($count / self::PERPAGE);
+		$batches = $pages / 5;
+
+		$this->db->replace('import_datastore', array(
+			'typename' => 'zd_tickets_cache_pages',
+			'data' => $pages
+		));
+
+		$this->db->replace('import_datastore', array(
+			'typename' => 'zd_tickets_cache_total',
+			'data' => $count
+		));
+
+		$this->logMessage(sprintf("%d records in %d pages fetched using %d batches of %d request", $count, $pages, $batches, self::PERBATCH));
+
+		return $batches;
 	}
 
-	public function run($page = 1)
+	public function run($batch = 1)
 	{
 		if ($this->importer->run_mode == 'rerun') {
 			$this->logMessage("-- Skipping. This step is not run during --rerun.");
 			return;
 		}
 
-		$sub_start_time = microtime(true);
-		$this->logMessage("-- Processing batch {$page}");
+		if ($batch == 1) {
+			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_cache.%'");
+		}
 
-		$users = $this->getBatch($page);
-		$this->db->exec("SET unique_checks = 0");
-		$this->db->exec("SET foreign_key_checks = 0");
+		$reqs = array();
 
-		$this->db->beginTransaction();
-		try {
-			foreach ($users as $u) {
-				$this->processUser($u);
+		for ($i = 1; $i <= self::PERBATCH; $i++) {
+			$page = (($batch-1)*self::PERBATCH) + $i;
+
+			$reqs[$page] = array(
+				'tickets',
+				array('per_page' => self::PERPAGE, 'page' => $page)
+			);
+		}
+
+		$results = $this->zd->sendGetMulti($reqs);
+
+		$retry_pages = array();
+
+		foreach ($results as $page => $info) {
+			if ($info['exception'] || !$info['response']) {
+				$retry_pages[$page] = $reqs[$page];
+			} else {
+				$this->db->replace('import_datastore', array(
+					'typename' => 'zd_tickets_cache.p'.$page,
+					'data' => serialize($info['response'])
+				));
 			}
-			$this->importer->flushSaveMappedIdBuffer();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
 		}
 
-		$this->db->exec("SET unique_checks = 1");
-		$this->db->exec("SET foreign_key_checks = 1");
+		if ($retry_pages) {
+			// Sleep to get rid of rate limits
+			sleep(8);
+			$results = $this->zd->sendGetMulti($retry_pages);
 
-		$sub_end_time = microtime(true);
-		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
-	}
-
-
-	/**
-	 * Process a single user
-	 * @param $user_id
-	 */
-	protected function processUser($user_info)
-	{
-		$import_user = new ImportUser();
-		$import_user->importer = $this->importer;
-		$import_user->import($user_info);
-	}
-
-
-	/**
-	 * @param $page
-	 * @return array
-	 */
-	protected function getBatch($page)
-	{
-		$cached = $this->db->fetchColumn("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = 'zd_tickets_cache.p{$page}'
-		");
-
-		$res = null;
-		if ($cached) {
-			$res = @unserialize($cached);
+			foreach ($results as $page => $info) {
+				if ($info['exception'] || !$info['response']) {
+				} else {
+					$this->db->replace('import_datastore', array(
+						'typename' => 'zd_tickets_cache.p'.$page,
+						'data' => serialize($info['response'])
+					));
+				}
+			}
 		}
-
-		if (!$res) {
-			$res = $this->zd->sendGet('users', array('per_page' => self::PERPAGE, 'page' => $page));
-		}
-
-		$batch = $res->get('users');
-
-		return $batch;
 	}
 }

@@ -164,7 +164,7 @@ class Deskpro3Importer extends AbstractImporter
 		return false;
 	}
 
-	public function setupImport()
+	public function setupImport($mode = 'run')
 	{
 		gc_enable();
 		$this->db = $this->container->getDb();

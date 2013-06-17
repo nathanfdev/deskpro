@@ -893,7 +893,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Run full importer
 		#----------------------------------------
 
-		if ($mode == 'run') {
+		if ($mode == 'run' || $mode == 'rerun') {
 
 			$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
 
@@ -905,7 +905,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				return 4;
 			}
 
-			$importer->setupImport();
+			$importer->setupImport($mode);
 			$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
 			echo "\n";
 

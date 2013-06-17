@@ -34,114 +34,97 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
 use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
+use Orb\Service\Zendesk\ApiException;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 
-class UsersStep extends AbstractZendeskStep
+class TicketsRerunListStep extends AbstractZendeskStep
 {
-	const PERPAGE = 100;
-
-	/**
-	 * @var array
-	 */
-	protected $custom_field_info = array();
-
-	/**
-	 * @var array
-	 */
-	protected $checked_org_ids = array();
-
 	public static function getTitle()
 	{
-		return 'Import Users';
+		return 'ReRun Tickets (Download Change List)';
 	}
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode == 'rerun') {
+		if ($this->importer->run_mode != 'rerun') {
 			return 1;
 		}
 
-		$count = $this->db->fetchColumn("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = 'zd_ticket_cache_total'
-		");
-
-		$this->logMessage(sprintf("%d records in %d pages", $count, ceil($count / self::PERPAGE)));
-
-		return ceil($count / self::PERPAGE);
+		// We dont actually know how long it'll take,
+		// but by setting 10 we at least have some paginiation/UI updates on the CLI
+		// and this handles changes to 10,000.
+		return 10;
 	}
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			$this->logMessage("-- Skipping. This step is not run during --rerun.");
+		if ($this->importer->run_mode != 'rerun') {
+			$this->logMessage("-- Skipping. This step is only run during --rerun.");
 			return;
 		}
 
-		$sub_start_time = microtime(true);
-		$this->logMessage("-- Processing batch {$page}");
+		$ticket_ids = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = 'zd_tickets_rerun_ids'");
+		if ($ticket_ids) {
+			$ticket_ids = @unserialize($ticket_ids);
+		}
 
-		$users = $this->getBatch($page);
-		$this->db->exec("SET unique_checks = 0");
-		$this->db->exec("SET foreign_key_checks = 0");
+		if (!$ticket_ids) {
+			$ticket_ids = array();
+		}
 
-		$this->db->beginTransaction();
-		try {
-			foreach ($users as $u) {
-				$this->processUser($u);
+		// Alter the cooldown period because the exports call timeout is 1 minute
+		$this->zd->try_time_ratelimit = 61;
+
+		$last_time = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = 'zd_tickets_rerun_lasttime'");
+
+		while (1) {
+
+			if (!$last_time || $last_time > (time() - 300)) {
+				break;
 			}
-			$this->importer->flushSaveMappedIdBuffer();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
+
+			$res = $this->zd->sendGet('exports/tickets', array(
+				'start_time' => $last_time
+			));
+
+			if ($res->get('results') && count($res->get('results')) > 1) {
+				$last_time = $res->get('end_time');
+
+				foreach ($res->get('results') as $res) {
+					$ticket_ids[] = (int)$res['id'];
+				}
+			} else {
+				$last_time = 0;
+			}
+
+			if (!$last_time) {
+				$last_time = time();
+			}
+
+			$this->db->replace('import_datastore', array(
+				'typename' => 'zd_tickets_rerun_lasttime',
+				'data' => $last_time,
+			));
+
+			// For anything but the last page, we only do one
+			// request per page so we can update the % done indicator in the CLI.
+
+			// If we're on page 10 then it means we might have more pages to fetch,
+			// but no more pages will be request via the CLI steps, so we need to do them
+			// all in this current invocation
+			if ($page < 10) {
+				break;
+			}
 		}
 
-		$this->db->exec("SET unique_checks = 1");
-		$this->db->exec("SET foreign_key_checks = 1");
+		$ticket_ids = array_unique($ticket_ids, SORT_NUMERIC);
 
-		$sub_end_time = microtime(true);
-		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
-	}
-
-
-	/**
-	 * Process a single user
-	 * @param $user_id
-	 */
-	protected function processUser($user_info)
-	{
-		$import_user = new ImportUser();
-		$import_user->importer = $this->importer;
-		$import_user->import($user_info);
-	}
-
-
-	/**
-	 * @param $page
-	 * @return array
-	 */
-	protected function getBatch($page)
-	{
-		$cached = $this->db->fetchColumn("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = 'zd_tickets_cache.p{$page}'
-		");
-
-		$res = null;
-		if ($cached) {
-			$res = @unserialize($cached);
-		}
-
-		if (!$res) {
-			$res = $this->zd->sendGet('users', array('per_page' => self::PERPAGE, 'page' => $page));
-		}
-
-		$batch = $res->get('users');
-
-		return $batch;
+		$this->db->replace('import_datastore', array(
+			'typename' => 'zd_tickets_rerun_ids',
+			'data' => serialize($ticket_ids)
+		));
 	}
 }

@@ -47,6 +47,11 @@ class TicketFieldsStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
+		if ($this->importer->run_mode == 'rerun') {
+			$this->logMessage("-- Skipping. This step is not run during --rerun.");
+			return;
+		}
+
 		$sub_start_time = microtime(true);
 
 		#------------------------------

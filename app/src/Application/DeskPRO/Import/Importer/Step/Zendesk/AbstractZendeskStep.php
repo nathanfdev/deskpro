@@ -41,7 +41,7 @@ abstract class AbstractZendeskStep extends AbstractStep
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\ZendeskImporter
 	 */
-	protected $importer;
+	public $importer;
 
 	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
