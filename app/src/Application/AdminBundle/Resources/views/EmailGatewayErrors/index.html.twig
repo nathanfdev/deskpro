@@ -128,6 +128,8 @@
 	<ul>
 		{% if type == 'errors' %}
 			{% set route = 'admin_emailgateway_errors' %}
+		{% elseif type == 'all' %}
+			{% set route = 'admin_emailgateway_all' %}
 		{% else %}
 			{% set route = 'admin_emailgateway_rejections' %}
 		{% endif %}
