@@ -297,7 +297,7 @@ function dp_should_throttle_action($id, $min_time)
 {
 	$file = dp_get_data_dir() . '/last-' . $id . '.dat';
 	if (!file_exists($file)) {
-		file_put_contents($file, time());
+		@file_put_contents($file, time());
 		return false;
 	}
 
@@ -306,7 +306,7 @@ function dp_should_throttle_action($id, $min_time)
 		return true;
 	}
 
-	file_put_contents($file, time());
+	@file_put_contents($file, time());
 	return false;
 }
 
