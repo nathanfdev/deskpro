@@ -48,7 +48,7 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 	public function run($page = 1)
 	{
 		// Import categories first
-		$this->getDb()->insert('ticket_snippet_categories', array(
+		$this->getDb()->insert('text_snippet_categories', array(
 			'person_id' => $this->getDb()->fetchColumn("SELECT id FROM people WHERE can_admin = 1 ORDER BY id ASC LIMIT 1"),
 			'is_global' => 1
 		));
