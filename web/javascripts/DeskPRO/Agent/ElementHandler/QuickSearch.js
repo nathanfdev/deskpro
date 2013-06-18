@@ -371,13 +371,12 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 
 					next.addClass('dp-cursor');
 				}
+			} else {
+				if (!updateTimeout) {
+					updateTimeout = window.setTimeout(updateSearch, 520);
+				}
 			}
 		}).on('keypress', function(ev) {
-			if (eatNext) {
-				eatNext = null;
-				return;
-			}
-
 			if (!updateTimeout) {
 				updateTimeout = window.setTimeout(updateSearch, 520);
 			}

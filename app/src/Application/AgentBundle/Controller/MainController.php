@@ -558,7 +558,7 @@ class MainController extends AbstractController
 				# Email address: Full or partial
 				#------------------------------
 
-				if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
+				if (preg_match('#^\S*@\S*$#', $q)) {
 
 					$people_top = true;
 
