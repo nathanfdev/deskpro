@@ -190,7 +190,9 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		row.find('a').find('strong').text(item[1]);
 
 		var d = new Date(item[4]*1000);
-		row.find('time').attr('datetime', d.toISOString()).timeago();
+		row.find('time').attr('datetime', d.toISOString());
+
+		Orb.Util.TimeAgo.refreshElements(row.find('time').toArray());
 
 		if (this.idW) {
 			row.find('strong').css('min-width', this.idW);

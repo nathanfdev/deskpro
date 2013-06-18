@@ -117,14 +117,14 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			}
 
 			if (self.wrapper) {
-				self.wrapper.find('div.with-scroll-handler').each(function() {
+				self.wrapper.find('.with-scroll-handler').each(function() {
 					var sh = $(this).data('scroll_handler');
 					if (sh) {
 						sh.destroy();
 						$(this).data('scroll_handler', null);
 					}
 				});
-				self.wrapper.find('select.with-select2, input.with-select2').each(function() {
+				self.wrapper.find('.with-select2').each(function() {
 					$(this).select2('destroy');
 				});
 				self.wrapper.find('textarea.with-redactor').each(function() {
@@ -155,6 +155,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				});
 				self.wrapper.empty();
 			}
+
+			self.wrapper.find('.with-timeago').addClass('cleanup-timeago');
 		});
 		this.addEvent('destroy', this.destroy);
 

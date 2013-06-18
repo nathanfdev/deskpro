@@ -780,6 +780,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			wrap.addClass('active');
+			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 			if (isIe) {
 				window.setTimeout(function() {

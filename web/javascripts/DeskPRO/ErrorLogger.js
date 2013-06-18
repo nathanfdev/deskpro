@@ -1,6 +1,6 @@
 var DpErrorLog = {
 	saveUrl: null,
-	hasSentReport: false,
+	hasSentReport: true,
 	logCount: 0,
 	init: function() {
 		if (!this.saveUrl) {

@@ -104,11 +104,21 @@ Orb.Util.TimeAgo = {
 		});
 
 		els.each(function(el) {
-			self._refreshElements([el]);
+			self.refreshElements([el]);
 		});
 
 		if (this._watchTimer === null) {
-			window.setInterval(this._refreshElements.bind(this), this.refreshPeriod);
+			this._watchTimer = window.setInterval((function() {
+				this.refreshElements(this);
+
+				var newArr = [];
+				$.each(this._watchEls, function() {
+					if (!$(this).hasClass('cleanup-timeago')) {
+						newArr.push(this);
+					}
+				});
+				this._watchEls = $(newArr);
+			}).bind(this), this.refreshPeriod);
 		}
 	},
 
@@ -123,7 +133,7 @@ Orb.Util.TimeAgo = {
 	},
 
 
-	_refreshElements: function(els) {
+	refreshElements: function(els) {
 		if (!els) els = this._watchEls;
 
 		var self = this;
@@ -133,6 +143,7 @@ Orb.Util.TimeAgo = {
 			// Could be removed, just skip it
 			// might be reinserted later
 			if (!el || !el.parentNode) {
+				$(el).addClass('cleanup-timeago');
 				return;
 			}
 

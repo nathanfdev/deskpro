@@ -1321,7 +1321,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	destroy: function() {
 		var textarea = this.getElById('replybox_txt');
 		if (textarea.data('redactor')) {
-			textarea.destroyEditor();
+			try {
+				textarea.destroyEditor();
+			} catch (e) {}
 		}
 		if (this.agentNotifyList) {
 			this.agentNotifyList.remove();
