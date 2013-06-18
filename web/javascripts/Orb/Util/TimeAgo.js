@@ -2,10 +2,7 @@ Orb.createNamespace('Orb.Util');
 
 Orb.Util.TimeAgo = {
 
-	_watchEls: [],
 	_watchTimer: null,
-	_hasInit: false,
-	_cleanupEls: [],
 
 	/**
 	 * How often to update the elements
@@ -51,74 +48,13 @@ Orb.Util.TimeAgo = {
 
 		var self = this;
 
-		if (!this._hasInit) {
-			this._hasInit = true;
-			if ($.addElementCleanupCallback) {
-				$.addElementCleanupCallback(function(coll, mode) {
-					var i, x, tmp, removeColl = [], found;
-					for (i = 0; i < coll.length; i++) {
-						if (!coll[i].className) {
-							// Could be a text node...
-							continue;
-						}
-						if (mode != 'empty' && coll[i].className.indexOf('with-timeago') !== -1) {
-							removeColl.push(coll[i]);
-						} else {
-							if (coll[i].getElementsByClassName) {
-								tmp = coll[i].getElementsByClassName('with-timeago');
-							} else {
-								tmp = coll[i].getElementsByTagName('*');
-							}
-							for (x = 0; x < tmp.length; x++) {
-								if (tmp[x].className.indexOf('with-timeago') !== -1) {
-									removeColl.push(tmp[x]);
-								}
-							}
-						}
-					}
-
-					if (removeColl.length) {
-						tmp = [];
-						for (i = 0; i < self._watchEls.length; i++) {
-							found = false;
-							for (x = 0; x < removeColl.length; x++) {
-								if (removeColl[x] == self._watchEls[i]) {
-									found = true;
-									break;
-								}
-							}
-
-							if (!found) {
-								tmp.push(self._watchEls[i]);
-							}
-						}
-
-						self._watchEls = tmp;
-					}
-				});
-			}
-		}
-
 		els.each(function(el) {
-			self._watchEls.push(el);
-		});
-
-		els.each(function(el) {
+			$(el).addClass('.timeago-auto-update');
 			self.refreshElements([el]);
 		});
 
 		if (this._watchTimer === null) {
-			this._watchTimer = window.setInterval((function() {
-				this.refreshElements(this);
-
-				var newArr = [];
-				$.each(this._watchEls, function() {
-					if (!$(this).hasClass('cleanup-timeago')) {
-						newArr.push(this);
-					}
-				});
-				this._watchEls = $(newArr);
-			}).bind(this), this.refreshPeriod);
+			this._watchTimer = window.setInterval(this.refreshElements.bind(this), this.refreshPeriod);
 		}
 	},
 
@@ -134,7 +70,7 @@ Orb.Util.TimeAgo = {
 
 
 	refreshElements: function(els) {
-		if (!els) els = this._watchEls;
+		if (!els) els = $('.timeago-auto-update');
 
 		var self = this;
 
@@ -143,7 +79,6 @@ Orb.Util.TimeAgo = {
 			// Could be removed, just skip it
 			// might be reinserted later
 			if (!el || !el.parentNode) {
-				$(el).addClass('cleanup-timeago');
 				return;
 			}
 

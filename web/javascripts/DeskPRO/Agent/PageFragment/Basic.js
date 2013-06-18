@@ -155,8 +155,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				});
 				self.wrapper.empty();
 			}
-
-			self.wrapper.find('.with-timeago').addClass('cleanup-timeago');
 		});
 		this.addEvent('destroy', this.destroy);
 
