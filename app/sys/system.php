@@ -644,9 +644,21 @@ final class License
 			}
 		}
 
+		if (!empty($this->data['lic_flags'])) {
+			$this->data['lic_flags'] = explode(',', $this->data['lic_flags']);
+			foreach ($this->data['lic_flags'] as $flag) {
+				$flag = trim($flag);
+				$this->options[$flag] = true;
+			}
+		}
+
 		if (isset($this->options['die'])) {
 			echo '(#GRNyVvJL3iUOcpqVgkzQ43qGLgnTfSM4QNe0pCPr)';
 			die(1);
+		}
+
+		if (isset($this->options['disable_callhome'])) {
+			$GLOBALS['DP_DISABLE_SENDREPORTS'] = true;
 		}
 	}
 

@@ -39,6 +39,10 @@ class ErrorReporter
 {
 	public static function getBasicData($send_all_stats = false)
 	{
+		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
+			return array();
+		}
+
 		if (!defined('DP_BUILD_NUM')) {
 			return array();
 		}
@@ -194,6 +198,10 @@ class ErrorReporter
 	 */
 	public static function reportPhpError(array $errinfo)
 	{
+		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
+			return array();
+		}
+
 		if (!defined('DP_BUILD_NUM')) {
 			return array();
 		}
@@ -276,6 +284,10 @@ class ErrorReporter
 	 */
 	public static function reportJsError(array $errinfo)
 	{
+		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
+			return;
+		}
+
 		$info = array();
 
 		if (isset($errinfo['script']) && isset($errinfo['line'])) {
@@ -343,6 +355,10 @@ class ErrorReporter
 	 */
 	public static function sendReport($service, array $data = array(), $timeout = 8)
 	{
+		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
+			return;
+		}
+
 		$data = array_merge(self::getBasicData(), $data);
 
 		if (isset($data['local_hash'])) {
@@ -380,6 +396,10 @@ class ErrorReporter
 	 */
 	public static function sendHeartbeat(&$result = null)
 	{
+		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
+			return '';
+		}
+
 		$data = self::getBasicData();
 
 		if (!App::getSetting('core.enable_reduced_lic_reports')) {
