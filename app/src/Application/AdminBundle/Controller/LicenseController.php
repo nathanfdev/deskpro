@@ -201,7 +201,17 @@ class LicenseController extends AbstractController
 			return $this->redirectRoute('admin');
 		}
 
-		if (!$lic->isDemo()) {
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->settings->setSetting('core.license', $license_code);
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		if (!$lic->isDemo() && !isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
 			try {
 				$client = new \Zend\Http\Client(null, array('timeout' => 8));
 				$client->setMethod(\Zend\Http\Request::METHOD_GET);
@@ -213,16 +223,6 @@ class LicenseController extends AbstractController
 				));
 				$client->send();
 			} catch (\Exception $e) {}
-		}
-
-		$this->em->getConnection()->beginTransaction();
-
-		try {
-			$this->settings->setSetting('core.license', $license_code);
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
 		}
 
 		if ($this->request->isXmlHttpRequest()) {
