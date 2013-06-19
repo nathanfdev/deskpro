@@ -1138,7 +1138,18 @@ class FilestorageLoader extends LoaderAbstract
 			}
 		}
 
-		$file = $image->get($blob->getImageType());
+		try {
+			$file = $image->get($blob->getImageType());
+
+		// Workaround for potential bug in some Windows servers
+		// where the GD handler tries to save a temp file and the default
+		// temp dir is not writable.
+		} catch (\Imagine\Exception\RuntimeException $e) {
+			$tmp = tempnam(dp_get_tmp_dir(), mt_rand(100000,999999));
+			$image->save($tmp);
+			$file = file_get_contents($tmp);
+			@unlink($tmp);
+		}
 
 		$new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, array(
 			'sys_name'       => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
