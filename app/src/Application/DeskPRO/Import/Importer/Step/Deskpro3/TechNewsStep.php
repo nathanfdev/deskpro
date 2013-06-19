@@ -42,12 +42,12 @@ class TechNewsStep extends AbstractDeskpro3Step
 	/**
 	 * @var array
 	 */
-	protected $agents;
+	public $agents;
 
 	/**
 	 * @var array
 	 */
-	protected $tech_news;
+	public $tech_news;
 
 	public static function getTitle()
 	{
@@ -86,7 +86,7 @@ class TechNewsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function importTechNews($agent)
+	public function importTechNews($agent)
 	{
 		$convo = new ChatConversation();
 		$convo->is_agent = true;

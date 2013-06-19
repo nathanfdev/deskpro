@@ -54,17 +54,17 @@ class ZendeskImporter extends AbstractImporter
 	/**
 	 * @var int
 	 */
-	protected $time_begin = 0;
+	public $time_begin = 0;
 
 	/**
 	 * @var array
 	 */
-	protected $table_exists = array();
+	public $table_exists = array();
 
 	/**
 	 * @var array
 	 */
-	protected $rerun_data = array();
+	public $rerun_data = array();
 
 	/**
 	 * @var string

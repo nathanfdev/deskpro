@@ -40,8 +40,11 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\Ticket\ImportTicket;
 
-class TicketsStep extends AbstractDeskpro3Step
+class TicketsRerunStep extends AbstractDeskpro3Step
 {
+	public $on_rerun = true;
+	public $on_run = false;
+
 	const PERPAGE = 1000;
 
 	/**
@@ -65,6 +68,11 @@ class TicketsStep extends AbstractDeskpro3Step
 	public $personinfo_cache = array();
 
 	/**
+	 * @var int
+	 */
+	public $ticket_ids;
+
+	/**
 	 * @var array
 	 */
 	public $gateway_addresses = array();
@@ -74,79 +82,64 @@ class TicketsStep extends AbstractDeskpro3Step
 	 */
 	public $old_gateway_addresses = array();
 
+	/**
+	 * @var array
+	 */
+	public $user_custom_field_info = array();
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	public $user_fieldmanager;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public $usersources;
+
 	public static function getTitle()
 	{
-		return 'Import Tickets';
+		return 'Import Tickets (ReRun)';
+	}
+
+	public function getTicketIds()
+	{
+		if ($this->ticket_ids !== null) {
+			return $this->ticket_ids;
+		}
+
+		$this->ticket_ids = $this->db->fetchColumn("
+			SELECT data
+			FROM import_datastore
+			WHERE typename = 'dp3_tickets_rerun_ids'
+		");
+
+		if ($this->ticket_ids) {
+			$this->ticket_ids = @unserialize($this->ticket_ids);
+		}
+
+		if (!$this->ticket_ids) {
+			$this->ticket_ids = array();
+		}
+
+		return $this->ticket_ids;
 	}
 
 	public function countPages()
 	{
-		$count = $this->olddb->fetchColumn("SELECT id FROM ticket ORDER BY id DESC LIMIT 1");
-		if (!$count) {
-			return 1;
-		}
-
-		return ceil($count / 1000);
-	}
-
-	public function preRunAll()
-	{
-		if ($this->getMappedNewId('dp3import_ticketsstep_pre', 1)) {
-			return;
-		}
-
-		$this->saveMappedId('dp3import_ticketsstep_pre', 1, 1);
-
-		$this->importer->removeTableIndexes('tickets');
-		$this->importer->removeTableIndexes('tickets_logs');
-		$this->importer->removeTableIndexes('tickets_messages');
-		$this->importer->removeTableIndexes('tickets_attachments');
-		$this->importer->removeTableIndexes('tickets_participant');
-		$this->importer->removeTableIndexes('custom_data_ticket');
-
-		$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
-		$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
-
-		$this->importer->removeTableIndexes('tickets_search_active');
-		$this->importer->removeTableIndexes('tickets_search_message');
-		$this->importer->removeTableIndexes('tickets_search_message_active');
-		$this->importer->removeTableIndexes('tickets_search_subject');
-
-		// Try to fix possible dupe ref's on very old db's
-		$refs = $this->olddb->fetchAllCol("SELECT id FROM ticket GROUP BY ref HAVING COUNT(*) > 1");
-		if ($refs) {
-			$refs = implode(',', $refs);
-			$this->olddb->executeUpdate("
-				UPDATE ticket SET ref = CONCAT(ref, '-D') WHERE id IN ($refs)
-			");
-		}
-	}
-
-	public function postRunAll()
-	{
-		$count = $this->olddb->fetchColumn("SELECT COUNT(*) FROM ticket");
-		if ($count > 1000000) {
-			$this->db->replace('settings', array(
-				'name' => 'core_tickets.use_archive',
-				'value' => 1
-			));
-		}
-		return;
+		$count = count($this->getTicketIds());
+		return ceil($count / self::PERPAGE);
 	}
 
 	public function run($page = 1)
 	{
-		if ($page == 1) {
-			$this->preRunAll();
-
-			$this->db->replace('import_datastore', array(
-				'typename' => 'dp3_tickets_rerun_lasttime',
-				'data' => time()
-			));
-		}
-
 		$this->custom_field_info = $this->olddb->fetchAll("SELECT * FROM ticket_def");
 		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
+
+		$this->user_custom_field_info = $this->olddb->fetchAll("SELECT * FROM user_def");
+		$this->user_fieldmanager = $this->getContainer()->getSystemService('person_fields_manager');
+		$this->user_fieldmanager->getFields();
+		$this->usersources = $this->getEm()->getRepository('DeskPRO:Usersource')->getAllUsersources(false);
 
 		$this->old_gateway_addresses = $this->olddb->fetchAllKeyed("
 			SELECT *
@@ -179,10 +172,6 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
-
-		if ($page >= $this->countPages()) {
-			$this->postRunAll();
-		}
 	}
 
 
@@ -196,7 +185,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$import_ticket->importer = $this->importer;
 		$import_ticket->step     = $this;
 
-		$import_ticket->importTicket($all_ticket_info);
+		$import_ticket->importOrUpdateTicket($all_ticket_info);
 	}
 
 	public function getThingTitle($thing, $id)
@@ -238,16 +227,22 @@ class TicketsStep extends AbstractDeskpro3Step
 	 */
 	public function getBatch($page)
 	{
-		$start = (($page-1) * self::PERPAGE) + 1;
-		$end   = $page * self::PERPAGE;
-
-		$between_where = "BETWEEN $start AND $end";
-
 		$counts = array(
 			'ticket' => 0,
 			'ticket_message' => 0,
 			'ticket_logs' => 0,
 		);
+
+		$ticket_ids_batched = array_chunk($this->getTicketIds(), self::PERPAGE, false);
+
+		if (!isset($ticket_ids_batched[$page-1])) {
+			return array();
+		}
+
+		$ticket_ids_page = $ticket_ids_batched[$page-1];
+		$ticket_ids_page = implode(',', $ticket_ids_page);
+
+		$between_where = " IN($ticket_ids_page) ";
 
 		#------------------------------
 		# Fetch ticket

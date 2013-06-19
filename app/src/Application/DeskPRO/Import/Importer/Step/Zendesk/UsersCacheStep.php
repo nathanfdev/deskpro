@@ -48,7 +48,7 @@ class UsersCacheStep extends AbstractZendeskStep
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
-	protected $fieldmanager;
+	public $fieldmanager;
 
 	public static function getTitle()
 	{

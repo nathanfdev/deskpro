@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\TicketPriority;
 
 class ChatSnippetsStep extends AbstractDeskpro3Step
 {
-	protected $cat_map = array();
+	public $cat_map = array();
 
 	public static function getTitle()
 	{
@@ -71,7 +71,6 @@ class ChatSnippetsStep extends AbstractDeskpro3Step
 				$this->getDb()->insert('text_snippet_categories', array(
 					'person_id' => $agent_id,
 					'is_global' => $is_global,
-					'title' => $c['category'],
 					'typename' => 'chat'
 				));
 
@@ -79,6 +78,15 @@ class ChatSnippetsStep extends AbstractDeskpro3Step
 					$this->cat_map[$agent_id] = array();
 				}
 				$this->cat_map[$agent_id][$c['category']] = $this->getDb()->lastInsertId();
+
+				$this->getDb()->insert('object_lang', array(
+					'language_id' => 1,
+					'ref'         => 'text_snippet_categories.'.$this->cat_map[$agent_id][$c['category']],
+					'prop_name'   => 'title',
+					'value'       => $c['category'],
+					'ref_type'    => 'text_snippet_categories',
+					'ref_id'      => $this->cat_map[$agent_id][$c['category']]
+				));
 			}
 			unset($cats);
 
@@ -98,9 +106,26 @@ class ChatSnippetsStep extends AbstractDeskpro3Step
 
 				$this->getDb()->insert('text_snippets', array(
 					'person_id' => $agent_id,
-					'category_id' => $this->cat_map[$agent_id][$qr['category']],
-					'title' => $qr['name'],
-					'snippet' => $qr['content']
+					'category_id' => $this->cat_map[$agent_id][$qr['category']]
+				));
+
+				$snippet_id = $this->db->lastInsertId();
+
+				$this->getDb()->insert('object_lang', array(
+					'language_id' => 1,
+					'ref'         => 'text_snippets.'.$snippet_id,
+					'prop_name'   => 'title',
+					'value'       => $qr['name'],
+					'ref_type'    => 'text_snippets',
+					'ref_id'      => $snippet_id
+				));
+				$this->getDb()->insert('object_lang', array(
+					'language_id' => 1,
+					'ref'         => 'text_snippets.'.$snippet_id,
+					'prop_name'   => 'snippet',
+					'value'       => nl2br(htmlspecialchars($qr['content'])),
+					'ref_type'    => 'text_snippets',
+					'ref_id'      => $snippet_id
 				));
 			}
 

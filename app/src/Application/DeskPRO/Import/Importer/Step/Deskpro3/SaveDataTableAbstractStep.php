@@ -36,12 +36,14 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 {
+	public $on_fast = false;
+
 	public static function getTable()
 	{
 		return 'override_table_name';
 	}
 
-	protected $does_exist = null;
+	public $does_exist = null;
 
 	public static function getTitle()
 	{

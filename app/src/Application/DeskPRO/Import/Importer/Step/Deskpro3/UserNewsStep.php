@@ -43,7 +43,7 @@ class UserNewsStep extends AbstractDeskpro3Step
 	/**
 	 * @var \Application\DeskPRO\Entity\NewsCategory
 	 */
-	protected $category;
+	public $category;
 
 	public static function getTitle()
 	{
@@ -93,7 +93,7 @@ class UserNewsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processNews($news_id)
+	public function processNews($news_id)
 	{
 		$news = $this->getOldDb()->fetchAssoc("SELECT * FROM news WHERE Id = ?", array($news_id));
 

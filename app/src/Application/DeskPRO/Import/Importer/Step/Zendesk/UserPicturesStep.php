@@ -88,7 +88,7 @@ class UserPicturesStep extends AbstractZendeskStep
 	/**
 	 * @param array $blob_info
 	 */
-	protected function processBlob($blob_info)
+	public function processBlob($blob_info)
 	{
 		$tmpfile = tempnam(sys_get_temp_dir(), 'dp');
 

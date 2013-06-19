@@ -170,7 +170,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processTicketField(array $f)
+	public function processTicketField(array $f)
 	{
 		if ($f['formtype'] == 'custom') {
 			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
@@ -240,7 +240,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processUserField(array $f)
+	public function processUserField(array $f)
 	{
 		#------------------------------
 		# Make sure we havent already done them
@@ -304,7 +304,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processCompanyField(array $f)
+	public function processCompanyField(array $f)
 	{
 		#------------------------------
 		# Make sure we havent already done them
@@ -369,7 +369,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processArticleField(array $f)
+	public function processArticleField(array $f)
 	{
 		if ($f['formtype'] == 'custom') {
 			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
@@ -445,7 +445,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 	 * @param $old_field_id
 	 * @param $choice_data
 	 */
-	protected function saveChoiceFields($map_name, $new_field, $old_field_id, $choice_data)
+	public function saveChoiceFields($map_name, $new_field, $old_field_id, $choice_data)
 	{
 		// For choice options, need to insert choices
 		$x = 0;
@@ -496,7 +496,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 	 * @param array $f
 	 * @return array
 	 */
-	protected function transform2lvToSelect(array $f)
+	public function transform2lvToSelect(array $f)
 	{
 		$f['formtype'] = 'select';
 		$f['data'] = Deskpro3Importer::unserialize_fix_32b_ints($f['data']);

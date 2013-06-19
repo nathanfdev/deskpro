@@ -42,7 +42,7 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 	 * Existing departments read in
 	 * @var array
 	 */
-	protected $departments;
+	public $departments;
 
 	public static function getTitle()
 	{
@@ -77,7 +77,7 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
 	}
 
-	protected function processCategory(array $chat_dep)
+	public function processCategory(array $chat_dep)
 	{
 		#------------------------------
 		# Make sure we havent already done them

@@ -79,7 +79,7 @@ class TicketWorkflowsStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Done all workflows. Took %.3f seconds.", $end_time-$start_time));
 	}
 
-	protected function processWorkflow(array $work)
+	public function processWorkflow(array $work)
 	{
 		#------------------------------
 		# Make sure we havent already done them

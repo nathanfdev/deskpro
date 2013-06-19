@@ -39,7 +39,7 @@ class CleanupDoneStep extends AbstractDeskpro3Step
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
-	protected $importer;
+	public $importer;
 
 	public static function getTitle()
 	{

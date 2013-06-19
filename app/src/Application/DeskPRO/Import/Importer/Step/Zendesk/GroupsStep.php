@@ -108,7 +108,7 @@ class GroupsStep extends AbstractZendeskStep
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
-	protected function processGroup($group_info, $group_members)
+	public function processGroup($group_info, $group_members)
 	{
 		#------------------------------
 		# Insert the group

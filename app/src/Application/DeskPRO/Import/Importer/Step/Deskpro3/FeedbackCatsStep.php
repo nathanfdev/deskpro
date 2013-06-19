@@ -40,8 +40,8 @@ use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackCatsStep extends AbstractDeskpro3Step
 {
-	protected $cat_field;
-	protected $cat_count = 0;
+	public $cat_field;
+	public $cat_count = 0;
 
 	public static function getTitle()
 	{
@@ -105,7 +105,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 	}
 
 
-	protected function processCategories($parent_id, $processing_parent_id = 0, $depth = 0, $prefix = array())
+	public function processCategories($parent_id, $processing_parent_id = 0, $depth = 0, $prefix = array())
 	{
 		if ($parent_id) {
 			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));

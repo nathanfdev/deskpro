@@ -39,9 +39,9 @@ class CreateIndexesStep extends AbstractDeskpro3Step
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
-	protected $importer;
+	public $importer;
 
-	protected $steps = array(
+	public $steps = array(
 		'content_search_fulltext',
 		'content_search_indexes',
 		'content_search_attribute_indexes',

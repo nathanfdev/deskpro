@@ -73,7 +73,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 	/**
 	 * Process a download
 	 */
-	protected function processDownload($download_id)
+	public function processDownload($download_id)
 	{
 		$download = $this->getOldDb()->fetchAssoc("SELECT * FROM files WHERE id = ?", array($download_id));
 

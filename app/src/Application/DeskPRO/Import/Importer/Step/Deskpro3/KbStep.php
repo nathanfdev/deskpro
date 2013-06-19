@@ -46,12 +46,12 @@ class KbStep extends AbstractDeskpro3Step
 	/**
 	 * @var array
 	 */
-	protected $custom_field_info = array();
+	public $custom_field_info = array();
 
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
-	protected $fieldmanager;
+	public $fieldmanager;
 
 	public static function getTitle()
 	{
@@ -72,7 +72,7 @@ class KbStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getIdsBatch($page)
+	public function getIdsBatch($page)
 	{
 		$start = $page * 50;
 		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY timestamp_made ASC LIMIT $start, 50");
@@ -142,7 +142,7 @@ class KbStep extends AbstractDeskpro3Step
 	/**
 	 * Process an article
 	 */
-	protected function processArticle($article)
+	public function processArticle($article)
 	{
 		$article_id = $article['id'];
 

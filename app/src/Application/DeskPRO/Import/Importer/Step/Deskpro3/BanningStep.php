@@ -61,7 +61,7 @@ class BanningStep extends AbstractDeskpro3Step
 	/**
 	 * Imports IP bans from the serialized 'ip_ban' data record.
 	 */
-	protected function importIpBans()
+	public function importIpBans()
 	{
 		$this->logMessage("Processing IP bans");
 		$ip_bans = $this->getOldDb()->fetchColumn("SELECT data FROM data WHERE name = 'ip_ban'");

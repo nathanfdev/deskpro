@@ -87,7 +87,7 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
 	}
 
-	protected function processCategory(array $cat)
+	public function processCategory(array $cat)
 	{
 		#------------------------------
 		# Make sure we havent already done them

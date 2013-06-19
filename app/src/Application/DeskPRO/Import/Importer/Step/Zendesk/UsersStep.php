@@ -44,12 +44,12 @@ class UsersStep extends AbstractZendeskStep
 	/**
 	 * @var array
 	 */
-	protected $custom_field_info = array();
+	public $custom_field_info = array();
 
 	/**
 	 * @var array
 	 */
-	protected $checked_org_ids = array();
+	public $checked_org_ids = array();
 
 	public static function getTitle()
 	{
@@ -111,7 +111,7 @@ class UsersStep extends AbstractZendeskStep
 	 * Process a single user
 	 * @param $user_id
 	 */
-	protected function processUser($user_info)
+	public function processUser($user_info)
 	{
 		$import_user = new ImportUser();
 		$import_user->importer = $this->importer;
@@ -123,7 +123,7 @@ class UsersStep extends AbstractZendeskStep
 	 * @param $page
 	 * @return array
 	 */
-	protected function getBatch($page)
+	public function getBatch($page)
 	{
 		$cached = $this->db->fetchColumn("
 			SELECT data

@@ -100,7 +100,7 @@ class UserBillsStep extends AbstractDeskpro3Step
 	}
 
 
-	protected function processEntry(array $entry)
+	public function processEntry(array $entry)
 	{
 		$new_agent_id = $this->getMappedNewId('tech', $entry['techid']);
 		if (!$new_agent_id) {

@@ -45,8 +45,8 @@ use Application\DeskPRO\Entity\ChatMessage;
 
 class UserChatsStep extends AbstractDeskpro3Step
 {
-	protected $first_dep_id;
-	protected $person_cache;
+	public $first_dep_id;
+	public $person_cache;
 
 	public static function getTitle()
 	{
@@ -391,7 +391,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getBatch($page)
+	public function getBatch($page)
 	{
 		$start = $page * 50;
 		$ids = $this->getOldDb()->fetchAll("SELECT * FROM chat_chat ORDER BY id ASC LIMIT $start, 50");

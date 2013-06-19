@@ -39,6 +39,9 @@ use Orb\Data\ContentTypes;
 
 class TicketBlobsStep extends AbstractBlobsStep
 {
+	public $on_rerun = true;
+	public $on_run = true;
+
 	public static function getTitle()
 	{
 		return 'Import Ticket Blobs';

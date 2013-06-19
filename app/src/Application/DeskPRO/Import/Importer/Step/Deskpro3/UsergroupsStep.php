@@ -41,11 +41,11 @@ class UsergroupsStep extends AbstractDeskpro3Step
 	/**
 	 * @var array
 	 */
-	protected $perms;
-	protected $ticket_cats;
-	protected $faq_cats;
-	protected $files_cats;
-	protected $feedback_types;
+	public $perms;
+	public $ticket_cats;
+	public $faq_cats;
+	public $files_cats;
+	public $feedback_types;
 
 	public static function getTitle()
 	{
@@ -114,7 +114,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Done all usergroups. Took %.3f seconds.", $end_time-$start_time));
 	}
 
-	protected function processUsergroup(array $group_info)
+	public function processUsergroup(array $group_info)
 	{
 		#------------------------------
 		# Make sure we havent already done them
@@ -321,7 +321,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function _insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $ug_id)
+	public function _insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $ug_id)
 	{
 		foreach ($insert_perms as $k => $v) {
 			$this->getDb()->replace('permissions', array(

@@ -75,7 +75,7 @@ class TasksStep extends AbstractDeskpro3Step
 	/**
 	 * @param array $task_info
 	 */
-	protected function processTask($task_info)
+	public function processTask($task_info)
 	{
 		$by_agent_id = $this->getMappedNewId('tech', $task_info['techmaker']);
 		if (!$by_agent_id) {
@@ -113,7 +113,7 @@ class TasksStep extends AbstractDeskpro3Step
 	/**
 	 * @param array $task_info
 	 */
-	protected function processRepeatingTask($task_info)
+	public function processRepeatingTask($task_info)
 	{
 		$by_agent_id = $this->getMappedNewId('tech', $task_info['techmaker']);
 		if (!$by_agent_id) {

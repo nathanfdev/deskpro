@@ -76,7 +76,7 @@ class DownloadCatsStep extends AbstractDeskpro3Step
 	/**
 	 * Process all categories
 	 */
-	protected function processCategories()
+	public function processCategories()
 	{
 		$cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY id ASC");
 		if (!$cats) {

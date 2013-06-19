@@ -38,15 +38,19 @@ use Application\DeskPRO\Import\Importer\Step\AbstractStep;
 
 abstract class AbstractDeskpro3Step extends AbstractStep
 {
+	public $on_fast = true;
+	public $on_rerun = false;
+	public $on_run = true;
+
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
-	protected $importer;
+	public $importer;
 
 	/**
 	 * @var array
 	 */
-	protected $cached_inserts = array();
+	public $cached_inserts = array();
 
 	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
@@ -63,7 +67,7 @@ abstract class AbstractDeskpro3Step extends AbstractStep
 	 */
 	public $em;
 
-	protected function init()
+	public function init()
 	{
 		$this->db     = $this->importer->getDb();
 		$this->olddb  = $this->importer->getOldDb();

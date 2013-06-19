@@ -47,7 +47,7 @@ class TicketsStep extends AbstractZendeskStep
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
-	protected $fieldmanager;
+	public $fieldmanager;
 
 	public static function getTitle()
 	{
@@ -102,7 +102,7 @@ class TicketsStep extends AbstractZendeskStep
 	}
 
 
-	protected function processTicket($ticket_info)
+	public function processTicket($ticket_info)
 	{
 		$import_ticket = new ImportTicket();
 		$import_ticket->importer = $this->importer;
@@ -116,7 +116,7 @@ class TicketsStep extends AbstractZendeskStep
 	 * @param $page
 	 * @return array
 	 */
-	protected function getBatch($page)
+	public function getBatch($page)
 	{
 		$this->logMessage(sprintf("Getting batch of %d (page %d)", self::PERPAGE, $page));
 		$t = microtime(true);

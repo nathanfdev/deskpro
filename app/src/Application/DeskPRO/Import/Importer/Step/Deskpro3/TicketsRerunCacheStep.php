@@ -34,66 +34,81 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class UserRulesStep extends AbstractDeskpro3Step
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketParticipant;
+
+class TicketsRerunCacheStep extends AbstractDeskpro3Step
 {
-	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
-	 */
-	public $importer;
+	public $on_rerun = true;
+	public $on_run = false;
 
 	public static function getTitle()
 	{
-		return 'Import User Rules';
+		return 'Import Tickets (ReRun Cache)';
+	}
+
+	public function countPages()
+	{
+		return 1;
 	}
 
 	public function run($page = 1)
 	{
-		$user_rules = $this->getOldDb()->fetchAll("SELECT * FROM user_rules WHERE link_company = 0");
+		$this->logMessage("Fetching tickets to rerun");
 
-		$this->getDb()->beginTransaction();
-		try {
-			foreach ($user_rules as $rule_info) {
-				$this->processRule($rule_info);
-			}
-			$this->getDb()->commit();
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
+		$days = $this->importer->getConfig('rerun_max_date');
+		if (!$days) {
+			$days = 35;
 		}
-	}
+		$max_time = time() - ($days * 86400);
 
-	public function processRule($rule_info)
-	{
-		$crit    = @unserialize($rule_info['criteria']);
-		$actions = @unserialize($rule_info['actions']);
+		$min_ticket_id = $this->importer->olddb->fetchColumn("
+			SELECT id
+			FROM ticket
+			WHERE timestamp_opened >= $max_time
+			ORDER BY id ASC
+			LIMIT 1
+		");
 
-		if (!$crit || !$actions || empty($crit['email_match'])) {
-			return;
+		if (!$min_ticket_id) {
+			$min_ticket_id = 0;
 		}
 
-		$add_ug = null;
-		if (!empty($rule_info['add_usergroups'])) {
-			$add_ug = $this->getMappedNewId('usergroup', array_pop($rule_info['add_usergroups']));
-			if (!$add_ug) return;
-		}
+		$this->logMessage("-- Oldest ticket: $min_ticket_id ($days days old)");
 
-		$add_org = null;
-		if (!empty($rule_info['add_companies'])) {
-			$add_org = $this->getMappedNewId('company', array_pop($rule_info['add_companies']));
-			if (!$add_org) return;
-		}
+		$time = $this->db->fetchColumn("
+			SELECT data
+			FROM import_datastore
+			WHERE typename = 'dp3_tickets_rerun_lasttime'
+		");
 
-		// No valid actions
-		if (!$add_org && !$add_ug) {
-			return;
-		}
+		$this->logMessage("-- Or change time newer than: $time (". date('Y-m-d H:i:s', $time) . ")");
 
-		$insert_rule = array();
-		$insert_rule['run_order'] = $rule_info['run_order'];
-		$insert_rule['add_organization_id'] = $add_org;
-		$insert_rule['add_usergroup_id'] = $add_ug;
-		$insert_rule['email_patterns'] = serialize($crit['email_match']);
+		$ticket_ids = $this->importer->olddb->fetchAllCol("
+			SELECT id
+			FROM ticket
+			WHERE
+				id >= $min_ticket_id
+				AND (
+					status IN ('awaiting_user', 'awaiting_tech')
+					OR timestamp_closed >= $time
+					OR timestamp_user_waiting >= $time
+					OR timestamp_tech_waiting >= $time
+				)
+		");
 
-		$this->getDb()->insert('user_rules', $insert_rule);
+		$this->db->replace('import_datastore', array(
+			'typename' => 'dp3_tickets_rerun_ids',
+			'data' => serialize($ticket_ids)
+		));
+
+		$this->db->replace('import_datastore', array(
+			'typename' => 'dp3_tickets_rerun_lasttime',
+			'data' => time()
+		));
+
+		$this->logMessage(sprintf("-- %s tickets to rerun: %s", count($ticket_ids), implode(', ', $ticket_ids)));
 	}
 }

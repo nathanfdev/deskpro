@@ -104,7 +104,7 @@ class TicketFieldsStep extends AbstractZendeskStep
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
-	protected function processField($field_info)
+	public function processField($field_info)
 	{
 		$field_id = $field_info['id'];
 

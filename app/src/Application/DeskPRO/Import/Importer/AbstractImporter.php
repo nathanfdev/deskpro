@@ -48,27 +48,27 @@ abstract class AbstractImporter
 	/**
 	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
-	protected $container;
+	public $container;
 
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */
-	protected $config;
+	public $config;
 
 	/**
 	 * @var \Orb\Log\Logger
 	 */
-	protected $logger;
+	public $logger;
 
 	/**
 	 * @var array
 	 */
-	protected $cached_maps = null;
+	public $cached_maps = null;
 
 	/**
 	 * @var callback
 	 */
-	protected $update_status_fn;
+	public $update_status_fn;
 
 	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
@@ -78,9 +78,9 @@ abstract class AbstractImporter
 	/**
 	 * @var array
 	 */
-	protected $schema_file;
+	public $schema_file;
 
-	protected $buffered_save_mapped_ids = array();
+	public $buffered_save_mapped_ids = array();
 
 	/**
 	 * Which maps to cache totally

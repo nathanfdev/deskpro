@@ -79,7 +79,7 @@ class TicketPrioritiesStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Done all priorities. Took %.3f seconds.", $end_time-$start_time));
 	}
 
-	protected function processPriority(array $pri)
+	public function processPriority(array $pri)
 	{
 		#------------------------------
 		# Make sure we havent already done them

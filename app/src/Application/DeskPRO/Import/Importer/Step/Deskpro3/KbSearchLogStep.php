@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity\ArticleComment;
 
 class KbSearchLogStep extends AbstractDeskpro3Step
 {
+	public $on_fast = false;
+
 	const PERPAGE = 1000;
 
 	public static function getTitle()

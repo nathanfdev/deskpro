@@ -66,6 +66,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$this->setName('dp:import');
 		$this->addOption('info', null, InputOption::VALUE_NONE, 'Show information about the importer and config');
 		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the importer from start to finish');
+		$this->addOption('rerun', null, InputOption::VALUE_NONE, 'Set this as a re-run to import new data only');
 		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'With --run, Start from this step');
 		$this->addOption('exec-step', null, InputOption::VALUE_REQUIRED, 'Execute only this step');
 		$this->addOption('exec-step-page', null, InputOption::VALUE_REQUIRED, 'With --exec-step, runs a page of the step. If not specified, page 1 is run.');
@@ -90,6 +91,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$mode = null;
 		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
 		elseif ($input->getOption('info')) $mode = 'info';
+		elseif ($input->getOption('rerun')) $mode = 'rerun';
 		elseif ($input->getOption('run')) $mode = 'run';
 
 		$page = 0;
@@ -927,6 +929,23 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 				$step = $importer->getStep($i);
 				$logger->log(sprintf("### Step %d: %s ###", $i, $step::getTitle(), $start_step_time), 'INFO');
+
+				$skip = false;
+				if ($mode == 'run' && !$step->on_run) {
+					$skip = true;
+				} elseif ($mode == 'rerun' && !$step->on_rerun) {
+					$skip = true;
+				}
+
+				if ($importer->getConfig('fast_import') && !$step->on_fast) {
+					$skip = true;
+				}
+
+				if ($skip) {
+					$logger->log(sprintf("Skipping step (mode: %s, fast: %s)", $mode, $importer->getConfig('fast_import')), 'INFO');
+					$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), 1, 1);
+					continue;
+				}
 
 				$num_pages = $step->countPages();
 				for ($p = 1; $p <= $num_pages; $p++) {

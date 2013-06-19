@@ -36,15 +36,17 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 class TechTimelogStep extends AbstractDeskpro3Step
 {
+	public $on_fast = false;
+
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
-	protected $importer;
+	public $importer;
 
 	/**
 	 * @var array
 	 */
-	protected $batch_insert = array();
+	public $batch_insert = array();
 
 	public static function getTitle()
 	{
@@ -55,6 +57,10 @@ class TechTimelogStep extends AbstractDeskpro3Step
 	{
 		$count = $this->getOldDb()->fetchColumn("SELECT id FROM tech_timelog ORDER BY id DESC LIMIT 1");
 		if (!$count) {
+			return 1;
+		}
+
+		if ($count > 45000) {
 			return 1;
 		}
 
@@ -73,6 +79,12 @@ class TechTimelogStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$count = $this->getOldDb()->fetchColumn("SELECT id FROM tech_timelog ORDER BY id DESC LIMIT 1");
+		if ($count > 45000) {
+			$this->logMessage('Too many records, skipping');
+			return;
+		}
+
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
@@ -112,7 +124,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 	}
 
 
-	protected function processLog(array $log)
+	public function processLog(array $log)
 	{
 		$agent_id = $this->getMappedNewId('tech', $log['techid']);
 		if (!$agent_id) {
@@ -144,7 +156,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 		$this->batch_insert = array();
 	}
 
-	protected function addBatch($agent_id, \DateTime $datetime)
+	public function addBatch($agent_id, \DateTime $datetime)
 	{
 		$this->batch_insert[] = "($agent_id, '" . $datetime->format('Y-m-d H:i:s') . "')";
 

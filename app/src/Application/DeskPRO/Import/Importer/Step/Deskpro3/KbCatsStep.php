@@ -81,7 +81,7 @@ class KbCatsStep extends AbstractDeskpro3Step
 	 *
 	 * @param $parent_id
 	 */
-	protected function processCategories($parent_id)
+	public function processCategories($parent_id)
 	{
 		$cats = $this->getOldDb()->fetchAll("SELECT * FROM faq_cats WHERE parent = ?", array($parent_id));
 		if (!$cats) {

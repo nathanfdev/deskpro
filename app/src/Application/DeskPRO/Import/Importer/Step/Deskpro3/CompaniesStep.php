@@ -42,12 +42,12 @@ class CompaniesStep extends AbstractDeskpro3Step
 	/**
 	 * @var array
 	 */
-	protected $custom_field_info = array();
+	public $custom_field_info = array();
 
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
-	protected $fieldmanager;
+	public $fieldmanager;
 
 	public static function getTitle()
 	{
@@ -207,7 +207,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getIdsBatch($page)
+	public function getIdsBatch($page)
 	{
 		$start = $page * 250;
 		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_company ORDER BY id ASC LIMIT $start, 250");

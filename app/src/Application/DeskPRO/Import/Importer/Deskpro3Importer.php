@@ -52,13 +52,17 @@ class Deskpro3Importer extends AbstractImporter
 	/**
 	 * @var int
 	 */
-	protected $time_begin = 0;
+	public $time_begin = 0;
 
+	/**
+	 * @var string
+	 */
+	public $run_mode;
 
 	/**
 	 * @var array
 	 */
-	protected $table_exists = array();
+	public $table_exists = array();
 
 	protected $steps = array(
 		'Prepare',
@@ -100,6 +104,8 @@ class Deskpro3Importer extends AbstractImporter
 		'Tasks',
 		'TechNews',
 		'Tickets',
+		'TicketsRerunCache',
+		'TicketsRerun',
 		'TicketDeleteLog',
 		'TicketMerge',
 		'TicketSnippets',
@@ -168,6 +174,7 @@ class Deskpro3Importer extends AbstractImporter
 	{
 		gc_enable();
 		$this->db = $this->container->getDb();
+		$this->run_mode = $mode;
 	}
 
 

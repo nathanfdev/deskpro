@@ -41,8 +41,8 @@ use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackStep extends AbstractDeskpro3Step
 {
-	protected $feedback_category;
-	protected $user_cat_field;
+	public $feedback_category;
+	public $user_cat_field;
 
 	public static function getTitle()
 	{
@@ -66,7 +66,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getIdsBatch($page)
+	public function getIdsBatch($page)
 	{
 		$start = $page * 50;
 		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY created_at ASC LIMIT $start, 50");
@@ -111,7 +111,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 	/**
 	 * Process an feedback
 	 */
-	protected function processFeedback($feedback)
+	public function processFeedback($feedback)
 	{
 		$feedback_id = $feedback['id'];
 

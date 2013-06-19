@@ -39,7 +39,7 @@ class SettingsStep extends AbstractDeskpro3Step
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
-	protected $importer;
+	public $importer;
 
 	public static function getTitle()
 	{
@@ -95,7 +95,7 @@ class SettingsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function importTransport($dp3_settings)
+	public function importTransport($dp3_settings)
 	{
 		$settings = new \Orb\Util\OptionsArray($dp3_settings);
 

@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\TicketPriority;
 
 class TicketSnippetsStep extends AbstractDeskpro3Step
 {
-	protected $cat_map = array();
+	public $cat_map = array();
 
 	public static function getTitle()
 	{
@@ -126,9 +126,9 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 				'language_id' => 1,
 				'ref'         => 'text_snippets.'.$snippet_id,
 				'prop_name'   => 'snippet',
-				'value'       => $qr['name'],
+				'value'       => nl2br(htmlspecialchars($qr['response'])),
 				'ref_type'    => 'text_snippets',
-				'ref_id'      => nl2br(htmlspecialchars($qr['response']))
+				'ref_id'      => $snippet_id
 			));
 		}
 	}

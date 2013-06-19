@@ -68,7 +68,7 @@ class TicketsSavedStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processTech(array $tech, array $folder_info)
+	public function processTech(array $tech, array $folder_info)
 	{
 		$agent_id = $this->getMappedNewId('tech', $tech['id']);
 

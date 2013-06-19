@@ -79,9 +79,32 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 
 		$batch = $this->getBatch($table, $page - 1);
 
+		$batch_ids = array();
+		foreach ($batch as $b) {
+			$batch_ids[] = $b['id'];
+		}
+
+		$get_existing = array();
+		if ($batch_ids) {
+			$batch_ids = implode(',', $batch_ids);
+			$get_existing = $this->db->fetchAllCol("
+				SELECT old_id
+				FROM import_map
+				WHERE typename = '$table-blob' AND old_id IN ($batch_ids)
+			");
+
+			if ($get_existing) {
+				$get_existing = array_combine($get_existing, $get_existing);
+			}
+		}
+
 		$this->getDb()->beginTransaction();
 		try {
 			foreach ($batch as $r) {
+				if (isset($get_existing[$r['id']])) {
+					continue;
+				}
+
 				$this->processBlob($table, $r);
 			}
 
@@ -93,7 +116,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processBlob($table, $record)
+	public function processBlob($table, $record)
 	{
 		$record_id = $record['id'];
 		$blob = $this->getOldDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($record['blobid']));
@@ -159,7 +182,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getBatch($table, $page)
+	public function getBatch($table, $page)
 	{
 		$start = $page * 250;
 		$ids = $this->getOldDb()->fetchAll("SELECT * FROM $table ORDER BY id ASC LIMIT $start, 250");

@@ -97,7 +97,7 @@ class OrgsStep extends AbstractZendeskStep
 	 * Process a single user
 	 * @param $user_id
 	 */
-	protected function processOrg($org_info)
+	public function processOrg($org_info)
 	{
 		#------------------------------
 		# Insert the org
@@ -162,7 +162,7 @@ class OrgsStep extends AbstractZendeskStep
 	 * @param $page
 	 * @return array
 	 */
-	protected function getBatch($page)
+	public function getBatch($page)
 	{
 		$res = $this->zd->sendGet('organizations', array('per_page' => self::PERPAGE, 'page' => $page));
 

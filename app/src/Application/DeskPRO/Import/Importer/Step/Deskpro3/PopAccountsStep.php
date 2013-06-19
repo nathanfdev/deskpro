@@ -39,9 +39,9 @@ use Application\DeskPRO\Entity\EmailGatewayAddress;
 
 class PopAccountsStep extends AbstractDeskpro3Step
 {
-	protected $default_email_address = null;
-	protected $email_addresses_map = array();
-	protected $keep_on_server = false;
+	public $default_email_address = null;
+	public $email_addresses_map = array();
+	public $keep_on_server = false;
 
 	public static function getTitle()
 	{
@@ -111,7 +111,7 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Done all accounts. Took %.3f seconds.", $end_time-$start_time));
 	}
 
-	protected function processAccount(array $account)
+	public function processAccount(array $account)
 	{
 		#------------------------------
 		# Make sure we havent already done them

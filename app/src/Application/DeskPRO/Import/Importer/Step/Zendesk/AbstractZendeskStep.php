@@ -61,9 +61,9 @@ abstract class AbstractZendeskStep extends AbstractStep
 	/**
 	 * @var array
 	 */
-	protected $checked_ids = array();
+	public $checked_ids = array();
 
-	protected function init()
+	public function init()
 	{
 		$this->db = $this->importer->getDb();
 		$this->zd = $this->importer->getZd();

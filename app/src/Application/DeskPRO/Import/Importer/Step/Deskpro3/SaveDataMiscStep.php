@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\EmailGatewayAddress;
 
 class SaveDataMiscStep extends AbstractDeskpro3Step
 {
-	protected $tables = array(
+	public $tables = array(
 		'faq_cats_related',
 		'faq_subscriptions',
 		'user_plans',

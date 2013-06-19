@@ -41,9 +41,9 @@ class UsersourcesStep extends AbstractDeskpro3Step
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
-	protected $importer;
+	public $importer;
 
-	protected $order = 0;
+	public $order = 0;
 
 	public static function getTitle()
 	{
@@ -71,7 +71,7 @@ class UsersourcesStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processUsersource(array $usersource)
+	public function processUsersource(array $usersource)
 	{
 		$this->order += 10;
 

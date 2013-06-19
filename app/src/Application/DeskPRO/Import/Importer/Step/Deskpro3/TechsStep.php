@@ -39,7 +39,7 @@ class TechsStep extends AbstractDeskpro3Step
 	/**
 	 * @var int[]
 	 */
-	protected $dep_ids;
+	public $dep_ids;
 
 	public static function getTitle()
 	{

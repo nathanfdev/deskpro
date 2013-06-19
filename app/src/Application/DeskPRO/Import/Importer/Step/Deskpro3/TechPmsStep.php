@@ -59,7 +59,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function importTechMessages($tech_id)
+	public function importTechMessages($tech_id)
 	{
 		$agent_id = $this->getMappedNewId('tech', $tech_id);
 		if (!$agent_id) {
