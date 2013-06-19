@@ -321,12 +321,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
 					<label class="field-label-title">Agent</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-						<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
+						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>{% endif %}
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
 							<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 						{% endif %}
 						{% for agent in agents %}
-							{% if agent.id != app.user.id %}
+							{% if agent.id != app.user.id and (ticket_perms.modify_assign_agent or ticket.agent.id == agent.id) %}
 								<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 							{% endif %}
 						{% endfor %}

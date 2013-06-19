@@ -88,27 +88,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
-		/**
-		this.getEl('followers_sel').on('change', function() {
-			var postData = [{
-				name: 'with_set_agent_parts',
-				value: 1
-			}];
-			$(this).find(':selected').each(function() {
-				postData.push({
-					name: 'set_agent_part_ids[]',
-					value: $(this).val()
-				});
-			});
-
-			callQueue.call(function() {
-				self.changeManager.saveChanges(postData, function() {
-					callQueue.next();
-				});
-			});
-		});
-		 **/
-
 		//------------------------------
 		// Followers
 		//------------------------------

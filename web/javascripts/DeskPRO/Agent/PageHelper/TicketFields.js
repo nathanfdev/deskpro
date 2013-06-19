@@ -291,6 +291,23 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		changeManager.saveChanges(customFieldData, (function(data) {
 			this.closeEditMode();
+
+			if (data.data && data.data.perm_errors) {
+				var div = $('<div/>');
+				div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
+
+				var list = $('<ul />');
+				list.appendTo(div);
+
+				Array.each(data.data.perm_errors, function(err) {
+					var li = $('<li/>');
+					li.text(err.capitalize());
+					li.appendTo(list);
+				});
+
+				DeskPRO_Window.showAlert(div);
+			}
+
 			if (data.data && data.data.reload) {
 				this.page.closeSelf();
 				DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);

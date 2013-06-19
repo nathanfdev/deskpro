@@ -249,6 +249,22 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						return;
 					}
 
+					if (data.data && data.data.perm_errors) {
+						var div = $('<div/>');
+						div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
+
+						var list = $('<ul />');
+						list.appendTo(div);
+
+						Array.each(data.data.perm_errors, function(err) {
+							var li = $('<li/>');
+							li.text(err.capitalize());
+							li.appendTo(list);
+						});
+
+						DeskPRO_Window.showAlert(div);
+					}
+
 					if (callback) {
 						callback(data);
 					}
@@ -345,6 +361,22 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 					if (saveReply) {
 						this.ticketPage.getEl('replybox_wrap').find('.ticket-reply-form').first().data('handler').getElById('send_btn').click();
+					}
+
+					if (data.data && data.data.perm_errors) {
+						var div = $('<div/>');
+						div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
+
+						var list = $('<ul />');
+						list.appendTo(div);
+
+						Array.each(data.data.perm_errors, function(err) {
+							var li = $('<li/>');
+							li.text(err.capitalize());
+							li.appendTo(list);
+						});
+
+						DeskPRO_Window.showAlert(div);
 					}
 
 					if (callback) {

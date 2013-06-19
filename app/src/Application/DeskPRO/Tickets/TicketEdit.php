@@ -50,6 +50,11 @@ class TicketEdit implements PersonContextInterface
 	 */
 	protected $person_context;
 
+	/**
+	 * @var array
+	 */
+	protected $perm_errors = array();
+
 	public function __construct(Entity\Ticket $ticket)
 	{
 		$this->ticket = $ticket;
@@ -70,6 +75,7 @@ class TicketEdit implements PersonContextInterface
 	 */
 	public function applyActions(array $actions)
 	{
+		$this->perm_errors = array();
 		$return = array();
 
 		if ($this->person_context) {
@@ -92,8 +98,13 @@ class TicketEdit implements PersonContextInterface
 
 			switch ($term) {
 				case 'department_id':
+					if ($this->ticket->getDepartmentId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'department')) {
+							$this->perm_errors[] = 'department';
 							break;
 						}
 					}
@@ -101,8 +112,13 @@ class TicketEdit implements PersonContextInterface
 					break;
 
 				case 'language_id':
+					if ($this->ticket->getLanguageId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							$this->perm_errors[] = 'language';
 							break;
 						}
 					}
@@ -110,8 +126,13 @@ class TicketEdit implements PersonContextInterface
 					break;
 
 				case 'category_id':
+					if ($this->ticket->getCategoryId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							$this->perm_errors[] = 'category';
 							break;
 						}
 					}
@@ -121,15 +142,20 @@ class TicketEdit implements PersonContextInterface
 				case 'agent':
 				case 'agent_id':
 
+					if ($this->ticket->getAgentId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
-						$agent = true;
-						if ($agent == $this->person_context->id && !$tcheck->canModify($this->ticket, 'assign_self')) {
-							$agent = null;
+						$can = true;
+						if ($action == $this->person_context->getId() && !$tcheck->canModify($this->ticket, 'assign_self')) {
+							$can = null;
 						} elseif (!$tcheck->canModify($this->ticket, 'assign_agent')) {
-							$agent = null;
+							$can = null;
 						}
 
-						if (!$agent) {
+						if (!$can) {
+							$this->perm_errors[] = 'agent';
 							break;
 						}
 					}
@@ -140,6 +166,10 @@ class TicketEdit implements PersonContextInterface
 				case 'agent_team':
 				case 'agent_team_id':
 
+					if ($this->ticket->getAgentTeamId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						$team = true;
 						if ($this->person_context->Agent->isTeamMember($team) && !$tcheck->canModify($this->ticket, 'assign_self')) {
@@ -149,6 +179,7 @@ class TicketEdit implements PersonContextInterface
 						}
 
 						if (!$team) {
+							$this->perm_errors[] = 'team';
 							break;
 						}
 					}
@@ -157,8 +188,14 @@ class TicketEdit implements PersonContextInterface
 					break;
 
 				case 'product_id':
+
+					if ($this->ticket->getProductId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							$this->perm_errors[] = 'product';
 							break;
 						}
 					}
@@ -166,8 +203,14 @@ class TicketEdit implements PersonContextInterface
 					break;
 
 				case 'priority_id':
+
+					if ($this->ticket->getPriorityId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							$this->perm_errors[] = 'priority';
 							break;
 						}
 					}
@@ -175,8 +218,14 @@ class TicketEdit implements PersonContextInterface
 					break;
 
 				case 'workflow_id':
+
+					if ($this->ticket->getWorkflowId() == $action) {
+						break;
+					}
+
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							$this->perm_errors[] = 'workflow';
 							break;
 						}
 					}
@@ -201,6 +250,7 @@ class TicketEdit implements PersonContextInterface
 							$status = null;
 						}
 						if (!$status) {
+							$this->perm_errors[] = 'status';
 							break;
 						}
 					}
@@ -210,6 +260,7 @@ class TicketEdit implements PersonContextInterface
 				case 'is_hold':
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'set_hold')) {
+							$this->perm_errors[] = 'hold';
 							break;
 						}
 					}
@@ -229,6 +280,7 @@ class TicketEdit implements PersonContextInterface
 				case 'add_labels':
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'labels')) {
+							$this->perm_errors[] = 'label';
 							break;
 						}
 					}
@@ -240,6 +292,7 @@ class TicketEdit implements PersonContextInterface
 				case 'remove_labels':
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'labels')) {
+							$this->perm_errors[] = 'label';
 							break;
 						}
 					}
@@ -251,6 +304,7 @@ class TicketEdit implements PersonContextInterface
 				case 'add_participant':
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'cc')) {
+							$this->perm_errors[] = 'cc';
 							break;
 						}
 					}
@@ -291,6 +345,7 @@ class TicketEdit implements PersonContextInterface
 				case 'ticket_field':
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							$this->perm_errors[] = 'ticket field';
 							break;
 						}
 					}
@@ -313,6 +368,11 @@ class TicketEdit implements PersonContextInterface
 		}
 
 		return $return;
+	}
+
+	public function getPermErrors()
+	{
+		return $this->perm_errors;
 	}
 
 	public function addMessage(Entity\TicketMessage $message)

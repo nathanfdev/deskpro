@@ -1761,6 +1761,7 @@ class TicketController extends AbstractController
 			}
 		} else {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+			$ticket_edit->setPersonContext($this->person);
 
 			// Validate based on department...
 			$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
@@ -1882,6 +1883,11 @@ class TicketController extends AbstractController
 		$perms_after = $this->_getTicketPerms($ticket);
 
 		if ($perms_before['reply'] != $perms_after['reply']) {
+			$data['data']['refresh'] = true;
+		}
+
+		if (isset($ticket_edit) && $ticket_edit->getPermErrors()) {
+			$data['data']['perm_errors'] = $ticket_edit->getPermErrors();
 			$data['data']['refresh'] = true;
 		}
 
