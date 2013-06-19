@@ -3887,7 +3887,7 @@ var RLANG = {
 			// Success
 			if (this.uploadOptions.success)
 			{
-				if (typeof d !== 'undefined')
+				if (typeof d !== 'undefined' && d.body && d.body.innerHTML)
 				{
 					// Remove bizarre <pre> tag wrappers around our json data:
 					var rawString = d.body.innerHTML;
