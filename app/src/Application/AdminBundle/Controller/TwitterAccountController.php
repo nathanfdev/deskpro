@@ -126,17 +126,17 @@ class TwitterAccountController extends AbstractController
 			try {
 				$url = $api->getAuthorizationUrl();
 			} catch (\EpiOAuthException $e) {
-				return $this->redirectRoute('admin_twitter_accounts');
+				return $this->renderStandardError($e->getMessage(), "Error " . $e->getCode());
 			}
 			return $this->redirect($url);
 		}
 
 		if ($this->in->getString('denied')) {
-			return $this->redirectRoute('admin_twitter_accounts');
+			return $this->renderStandardError("Access denied", "Error");
 		}
 
 		if (!$this->in->getString('oauth_token')) {
-			return $this->redirectRoute('admin_twitter_accounts');
+			return $this->renderStandardError("Missing oAuth token", "Error");
 		}
 
 		$api->setToken($this->in->getString('oauth_token'));
