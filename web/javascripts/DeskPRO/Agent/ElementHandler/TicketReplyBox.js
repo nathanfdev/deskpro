@@ -593,6 +593,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				} else {
 					self.page.insertTextInReply(result);
 				}
+
+				self.snippetsViewer.close();
 			}
 		});
 

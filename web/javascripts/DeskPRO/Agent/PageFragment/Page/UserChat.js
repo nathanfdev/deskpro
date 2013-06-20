@@ -355,6 +355,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 					messageTextarea.insertAtCaret(val);
 				}
+
+				self.snippetsViewer.close();
 			}
 		});
 
