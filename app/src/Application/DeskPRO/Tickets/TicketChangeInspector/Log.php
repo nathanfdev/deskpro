@@ -115,6 +115,7 @@ class Log
 
 		if ($this->tracker->getExtra('trigger')) {
 			$actions[] = new LogActions\TicketTriggers($this->tracker->getExtra('trigger'));
+			$actions[] = new LogActions\TicketEscalations($this->tracker->getExtra('trigger'));
 		}
 
 		$status_k = null;
@@ -520,7 +521,7 @@ class Log
 		$ret_logs = array();
 
 		foreach ($ticket_logs as $log) {
-			if ($log->action_type == 'executed_triggers') {
+			if ($log->action_type == 'executed_triggers' || $log->action_type == 'executed_escalations') {
 				continue;
 			}
 

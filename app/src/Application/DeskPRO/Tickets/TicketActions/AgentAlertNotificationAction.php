@@ -283,7 +283,7 @@ class AgentAlertNotificationAction extends AbstractAction
 		$ret_logs = array();
 
 		foreach ($ticket_logs as $log) {
-			if ($log->action_type == 'executed_triggers' || $log->action_type == 'agent_notify') {
+			if ($log->action_type == 'executed_triggers' || $log->action_type == 'executed_escalations' || $log->action_type == 'agent_notify') {
 				continue;
 			}
 

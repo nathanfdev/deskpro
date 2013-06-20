@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class TicketTriggers extends AbstractLogAction
+class TicketEscalations extends AbstractLogAction
 {
 	protected $triggers;
 
@@ -48,7 +48,7 @@ class TicketTriggers extends AbstractLogAction
 
 	public function getLogName()
 	{
-		return 'executed_triggers';
+		return 'executed_escalations';
 	}
 
 	public function getLogDetails()
@@ -57,7 +57,7 @@ class TicketTriggers extends AbstractLogAction
 		$tr_names = array();
 
 		foreach ($this->triggers as $t) {
-			if (strpos($t->event_trigger, 'time.') === 0) {
+			if (strpos($t->event_trigger, 'time.') !== 0) {
 				continue;
 			}
 

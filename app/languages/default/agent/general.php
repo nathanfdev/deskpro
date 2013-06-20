@@ -590,6 +590,7 @@
 	'agent.general.ticket_ref'                              => 'Ticket Ref',
 	'agent.general.ticket_starter'                          => 'Ticket Starter',
 	'agent.general.ticket_triggers'                         => 'Ticket triggers',
+	'agent.general.ticket_escalations'                      => 'Ticket escalations',
 	'agent.general.tickets'                                 => 'Tickets',
 	'agent.general.time_created'                            => 'Time Created',
 	'agent.general.time_created_summary'                    => 'Time created {{op}} {{hour}}:{{minute}}:00',

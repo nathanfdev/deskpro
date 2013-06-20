@@ -395,6 +395,8 @@ class TicketController extends AbstractController
 		{
 			if ($log->action_type == 'executed_triggers') {
 				unset($ticket_logs[$key]);
+			} elseif ($log->action_type == 'executed_escalations') {
+				unset($ticket_logs[$key]);
 			}
 		}
 
