@@ -120,7 +120,6 @@ class Settings implements \ArrayAccess
 		};
 
 		$this->virtual_settings['tickets_enable_like_search'] = function($settings) {
-			error_log($settings['core_tickets.enable_like_search_mode']);
 			if ($settings['core_tickets.enable_like_search_mode'] == 'auto') {
 				if ($settings['core_tickets.enable_like_search_auto']) {
 					return true;
