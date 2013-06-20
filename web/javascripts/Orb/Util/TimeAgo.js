@@ -70,7 +70,7 @@ Orb.Util.TimeAgo = {
 
 
 	refreshElements: function(els) {
-		if (!els) els = $('.timeago-auto-update');
+		if (!els) els = $('.timeago-auto-update').toArray();
 
 		var self = this;
 
