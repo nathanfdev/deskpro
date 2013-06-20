@@ -197,18 +197,20 @@ class TermSummary
 				$agent_ids = $info['agent_ids'];
 				$not_id = $info['not_id'];
 
+				$names = array();
 				if ($unassigned) {
-					$summary = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.unassigned'));
+					$names[] = $tr->phrase('agent.general.unassigned');
+				}
+				if ($agent_ids) {
+					$names[] = array_mergE($names, App::getContainer()->getAgentData()->getNames($agent_ids));
+				}
+				if ($not_id) {
+					$summary = $tr->phrase('agent.general.agent_is_not_me');
 				} else {
-					if ($agent_ids) {
-						$summary = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
-							return $titles;
-						});
-					}
-
-					if ($not_id) {
-						$summary = $tr->phrase('agent.general.agent_is_not_me');
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						$summary = 'Agent is ' . implode(', ', $names);
+					} else {
+						$summary = 'Agent is not ' . implode(', ', $names);
 					}
 				}
 				break;

@@ -1399,14 +1399,25 @@ class TicketSearch extends SearcherAbstract
 						$agent_ids  = $info['agent_ids'];
 						$not_id     = $info['not_id'];
 
-						if ($unassigned) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.unassigned'));
-							if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
-								$wheres[] = "$tickets_table.agent_id IS NULL";
-							} else {
-								$wheres[] = "$tickets_table.agent_id IS NOT NULL";
-							}
+						if ($not_id) {
+							$this->summary[] = $tr->phrase('agent.general.agent_is_not_me');
+							$wheres[] = "$tickets_table.agent_id != " . $not_id;
 						} else {
+							$w = array();
+
+							if (is_array($choice) && in_array('-1', $choice)) {
+								$this->summary[] = "Agent is me";
+							}
+
+							if ($unassigned) {
+								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.unassigned'));
+								if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+									$w[] = "$tickets_table.agent_id IS NULL";
+								} else {
+									$w[] = "$tickets_table.agent_id IS NOT NULL";
+								}
+							}
+
 							if ($agent_ids) {
 								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {
 									$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
@@ -1417,12 +1428,13 @@ class TicketSearch extends SearcherAbstract
 									$this->specific_fields[] = self::TERM_AGENT;
 								}
 
-								$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $agent_ids, true);
+								$w[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $agent_ids, true);
 							}
 
-							if ($not_id) {
-								$this->summary[] = $tr->phrase('agent.general.agent_is_not_me');
-								$wheres[] = "$tickets_table.agent_id != " . $not_id;
+							if (count($w) === 1) {
+								$wheres[] = $w[0];
+							} elseif ($w) {
+								$wheres[] = '((' . implode(') OR (', $w) . '))';
 							}
 						}
 						break;
@@ -1434,16 +1446,25 @@ class TicketSearch extends SearcherAbstract
 						$not_ids = $info['not_ids'];
 						$no_team = $info['no_team'];
 
-						if ($no_team) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.unassigned'));
+						if ($not_ids) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function($choice) {
+								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+								return $titles;
+							});
 
-							if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
-								$wheres[] = "$tickets_table.agent_team_id IS NULL";
-							} else {
-								$wheres[] = "$tickets_table.agent_team_id IS NOT NULL";
+							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
+						} else {
+							$w = array();
+
+							if ($no_team ) {
+								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.unassigned'));
+								if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+									$w[] = "$tickets_table.agent_team_id IS NULL";
+								} else {
+									$w[] = "$tickets_table.agent_team_id IS NOT NULL";
+								}
 							}
 
-						} else {
 							if ($team_ids) {
 								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $team_ids, function($choice) {
 									$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
@@ -1454,16 +1475,13 @@ class TicketSearch extends SearcherAbstract
 									$this->specific_fields[] = self::TERM_AGENT_TEAM;
 								}
 
-								$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
+								$w[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
 							}
 
-							if ($not_ids) {
-								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function($choice) {
-									$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
-									return $titles;
-								});
-
-								$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
+							if (count($w) === 1) {
+								$wheres[] = $w[0];
+							} elseif ($w) {
+								$wheres[] = '((' . implode(') OR (', $w) . '))';
 							}
 						}
 						break;

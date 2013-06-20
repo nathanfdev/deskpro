@@ -972,7 +972,9 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 	protected function _normalizeAgentChoice($choice)
 	{
-		$choice = (array)$choice;
+		 if (!is_array($choice)) {
+			 $choice = array($choice);
+		 }
 
 		$agent_ids = array();
 		$not_id = null;
@@ -982,7 +984,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$c = (int)$c;
 			if ($c === 0) {
 				$unassigned = true;
-				break;
 			} elseif ($c == -1) {
 				if ($this->getPersonContext()) {
 					$agent_ids[] = $this->getPersonContext()->getId();
@@ -1026,7 +1027,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$c = (int)$c;
 			if ($c === 0) {
 				$no_team = true;
-				break;
 			} elseif ($c == -1) {
 				if ($agent) {
 					$team_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));

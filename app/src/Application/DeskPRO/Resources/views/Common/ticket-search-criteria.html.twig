@@ -211,7 +211,7 @@
 			</select>
 		</div>
 		<div class="builder-options">
-			<select name="agent">
+			<select name="agent[]" multiple="multiple">
 				<option value="0">{{ phrase('agent.general.unassigned') }}</option>
 				<option value="-1">Me</option>
 				<optgroup label="Agents">
@@ -240,7 +240,7 @@
 				</select>
 			</div>
 			<div class="builder-options">
-				<select name="agent_team">
+				<select name="agent_team[]" multiple="multiple">
 					<option value="0">{{ phrase('agent.general.no_team') }}</option>
 					<option value="-1">Any of my teams</option>
 					<optgroup label="Teams">
