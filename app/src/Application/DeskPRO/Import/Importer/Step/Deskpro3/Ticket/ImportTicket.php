@@ -193,6 +193,14 @@ class ImportTicket
 			}
 		}
 
+		if ($this->importer->getConfig('days_until_autoresolve') && $ticket_info['status'] == 'awaiting_user' && $ticket_info['timestamp_lastreply_user']) {
+			$days_since = floor((time() - $ticket_info['timestamp_lastreply_user']) / 86400);
+			if ($days_since > $this->importer->getConfig('days_until_autoresolve')) {
+				$insert_ticket['status'] = 'closed';
+				$ticket_info['timestamp_closed'] = $ticket_info['timestamp_lastreply_user'] + ($days_since * 86400);
+			}
+		}
+
 		switch ($ticket_info['status']) {
 			case 'awaiting_tech':
 				$insert_ticket['status'] = Ticket::STATUS_AWAITING_AGENT;

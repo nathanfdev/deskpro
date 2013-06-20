@@ -243,20 +243,8 @@ class TicketSearch extends SearcherAbstract
 	{
 		parent::addTerm($term, $op, $data);
 
-		if (!$this->is_archive && $term == self::TERM_STATUS) {
-			if (is_array($data) AND count($data) == 1) {
-				$data = Arrays::getFirstItem($data);
-			}
-			if (!is_array($data)) {
-				$data = array($data);
-			}
-
-			foreach ($data as $s) {
-				if ($s == 'closed' || strpos('hidden', $s) === 0) {
-					$this->is_archive = true;
-					break;
-				}
-			}
+		if ($this->isArchiveTerm($term, $op, $data)) {
+			$this->is_archive = true;
 		}
 	}
 
@@ -272,6 +260,19 @@ class TicketSearch extends SearcherAbstract
 	{
 		parent::addAnyTerm($term, $op, $data);
 
+		if ($this->isArchiveTerm($term, $op, $data)) {
+			$this->is_archive = true;
+		}
+	}
+
+
+	/**
+	 * @param $term
+	 * @param $data
+	 * @return bool
+	 */
+	public function isArchiveTerm($term, $op, $data)
+	{
 		if (!$this->is_archive && $term == self::TERM_STATUS) {
 			if (is_array($data) AND count($data) == 1) {
 				$data = Arrays::getFirstItem($data);
@@ -281,12 +282,19 @@ class TicketSearch extends SearcherAbstract
 			}
 
 			foreach ($data as $s) {
-				if ($s == 'closed' || strpos('hidden', $s) === 0) {
-					$this->is_archive = true;
-					break;
+				if ($s == 'closed' || strpos($s, 'hidden') === 0) {
+					return true;
 				}
 			}
 		}
+		if (!$this->is_archive && $term == self::TERM_HIDDEN_STATUS) {
+			return true;
+		}
+		if (!$this->is_archive && $term == self::TERM_DELETED) {
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -423,7 +431,7 @@ class TicketSearch extends SearcherAbstract
 
 		$where = '';
 
-		if ($this->isArchiveSearch() && !App::getSetting('core_tickets.use_archive')) {
+		if ($this->isArchiveSearch() || !App::getSetting('core_tickets.use_archive')) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';

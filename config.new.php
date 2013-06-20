@@ -189,6 +189,12 @@ $DP_CONFIG['import'] = array(
 	'store_attachment_files' => true,
 
 	/**
+	 * Tickets that have been 'awaiting user' for this many
+	 * days will be automatically resolved. Set to 0 to disable this.
+	 */
+	'days_until_autoresolve' => 90,
+
+	/**
 	 * archive: 'auto' to enable if you have >250,000 tickets,
 	 *          true to explicitly enable,
 	 *          false to explicitly disable
