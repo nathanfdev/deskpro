@@ -212,6 +212,20 @@ class ImportTicket
 
 			case 'closed':
 				$insert_ticket['status'] = Ticket::STATUS_RESOLVED;
+
+				if ($this->importer->isArchiveEnabled()) {
+					if ($ticket_info['timestamp_closed']) {
+						$time_closed = time() - $ticket_info['timestamp_closed'];
+					} else {
+						// Buggy v3 with no closed date means we can just use the opened date
+						$time_closed = time() - $ticket_info['timestamp_opened'];
+					}
+
+					if ($time_closed > $this->importer->getArchiveTime()) {
+						$insert_ticket['status'] = Ticket::STATUS_CLOSED;
+					}
+				}
+
 				break;
 
 			case 'nodisplay':
@@ -1359,6 +1373,8 @@ class ImportTicket
 		# Make the ticket
 		#------------------------------
 
+		$search_content = array();
+
 		$new_person_id = $this->importer->getMappedNewId('user', $ticket_info['userid']);
 		$new_agent_id = null;
 		if ($ticket_info['tech']) {
@@ -1478,6 +1494,8 @@ class ImportTicket
 
 		$this->importer->db->update('tickets', $insert_ticket, array('id' => $ticket_id));
 		$insert_ticket['id'] = $ticket_id;
+
+		$search_content[] = $ticket_info['subject'];
 
 		#------------------------------
 		# Notes
@@ -1739,6 +1757,50 @@ class ImportTicket
 					}
 					break;
 			}
+		}
+
+		#------------------------------
+		# Search Tables
+		#------------------------------
+
+		$this->importer->db->delete('tickets_search_message', array('id' => $ticket_id));
+		$this->importer->db->delete('tickets_search_subject', array('id' => $ticket_id));
+		$this->importer->db->delete('tickets_search_active', array('id' => $ticket_id));
+		$this->importer->db->delete('tickets_search_message_active', array('id' => $ticket_id));
+
+		$search_content = implode(' ', $search_content);
+
+		$this->importer->db->insert('content_search', array(
+			'object_type' => 'ticket',
+			'object_id' => $insert_ticket['id'],
+			'content' => $search_content,
+		));
+
+		$fields = array(
+			'id', 'language_id', 'department_id', 'category_id', 'priority_id', 'workflow_id', 'product_id', 'person_id', 'agent_id',
+			'agent_team_id', 'organization_id', 'email_gateway_id', 'creation_system', 'status', 'urgency', 'is_hold', 'date_created', 'date_first_agent_reply',
+			'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'total_user_waiting', 'total_to_first_reply',
+		);
+
+		$set_data = array();
+		foreach ($fields as $k) {
+			if (isset($insert_ticket[$k])) {
+				$set_data[$k] = $insert_ticket[$k];
+			}
+		}
+
+		$set_data_content = $set_data;
+		$set_data_content['content'] = $search_content;
+
+		$this->importer->db->replace('tickets_search_message', $set_data_content);
+		$this->importer->db->replace('tickets_search_subject', array(
+			'id' => $insert_ticket['id'],
+			'subject' => $insert_ticket['subject']
+		));
+
+		if ($insert_ticket['status'] != 'closed' && $insert_ticket['status'] != 'hidden') {
+			$this->importer->db->replace('tickets_search_active', $set_data);
+			$this->importer->db->replace('tickets_search_message_active', $set_data_content);
 		}
 
 		return $ticket_id;

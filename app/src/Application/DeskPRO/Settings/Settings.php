@@ -118,6 +118,23 @@ class Settings implements \ArrayAccess
 		$this->virtual_settings['default_timezone'] = function($settings) {
 			return $settings->getDefaultTimezone();
 		};
+
+		$this->virtual_settings['tickets_enable_like_search'] = function($settings) {
+			error_log($settings['core_tickets.enable_like_search_mode']);
+			if ($settings['core_tickets.enable_like_search_mode'] == 'auto') {
+				if ($settings['core_tickets.enable_like_search_auto']) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				if ($settings['core_tickets.enable_like_search_mode'] && $settings['core_tickets.enable_like_search_mode'] != 'off') {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		};
 	}
 
 

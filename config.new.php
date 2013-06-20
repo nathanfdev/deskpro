@@ -175,12 +175,29 @@ $DP_CONFIG['import'] = array(
 	'db_user'     => 'root',
 	'db_password' => '',
 	'db_name'     => 'deskpro',
+
+	/**
+	 * If you are already storing attachments in the filesystem in v3,
+	 * you need to specify the storage path so v4 can read them.
+	 */
 	'existing_attachment_files' => '',
 
 	/**
-	 * General options for all importers
+	 * Set to true to store attachments in the filesystem
+	 * or false to store them in the database (less efficient).
 	 */
 	'store_attachment_files' => true,
+
+	/**
+	 * archive: 'auto' to enable if you have >250,000 tickets,
+	 *          true to explicitly enable,
+	 *          false to explicitly disable
+	 *
+	 * days_until_archive: Number of days a ticket must be closed for
+	 *                     before it is archived.
+	 */
+	'archive' => 'auto',
+	'days_until_archive' => 90,
 );
 
 ######################################################

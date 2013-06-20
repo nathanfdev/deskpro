@@ -466,6 +466,9 @@ class MainController extends AbstractController
 			}
 		});
 
+		$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
+		$after_id = $after_id - 8000;
+
 		if ($words) {
 			$db = App::getDbRead();
 
@@ -477,9 +480,6 @@ class MainController extends AbstractController
 			foreach ($words as $w) {
 				$where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
 			}
-
-			$after_id = App::getDbRead()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC");
-			$after_id = $after_id - 6000;
 
 			$where[] = "(id > $after_id)";
 
@@ -561,6 +561,7 @@ class MainController extends AbstractController
 				if (preg_match('#^\S*@\S*$#', $q)) {
 
 					$people_top = true;
+					$people = array();
 
 					// Complete email address
 					if (\Orb\Validator\StringEmail::isValueValid($q)) {
@@ -574,17 +575,35 @@ class MainController extends AbstractController
 							$email = substr($q, 1);
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-							$people = $this->em->createQuery("
-							SELECT p
-							FROM DeskPRO:Person p
-							LEFT JOIN p.emails e
-							WHERE e.email_domain LIKE ?1
-							ORDER BY p.id ASC
-						")->setParameter(1, $email)->setMaxResults(15)->execute();
-
+							$people_ids = $this->db->fetchAllCol("
+								SELECT people.id
+								FROM people
+								LEFT JOIN tickets ON (tickets.person_id = people.id)
+								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+								WHERE
+									tickets.id > ?
+									AND people_emails.email_domain LIKE ?
+								ORDER BY tickets.id DESC
+								LIMIT 15
+							", array($after_id, $email));
 						} else {
-							// Search an email address
-							$people = $this->em->getRepository('DeskPRO:Person')->searchByEmail($q, 25);
+							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+
+							$people_ids = $this->db->fetchAllCol("
+								SELECT people.id
+								FROM people
+								LEFT JOIN tickets ON (tickets.person_id = people.id)
+								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+								WHERE
+									tickets.id > ?
+									AND people_emails.email LIKE ?
+								ORDER BY tickets.id DESC
+								LIMIT 15
+							", array($after_id, $email));
+						}
+
+						if ($people_ids) {
+							$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
 						}
 					}
 
@@ -601,7 +620,30 @@ class MainController extends AbstractController
 				#------------------------------
 
 				} else {
-					$people = $this->em->getRepository('DeskPRO:Person')->search($q, 25);
+					$people = array();
+
+					$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+					$people_ids = $this->db->fetchAllCol("
+						SELECT people.id
+						FROM people
+						LEFT JOIN tickets ON (tickets.person_id = people.id)
+						LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+						WHERE
+							tickets.id > ?
+							AND (
+								people.name LIKE ?
+								OR people.first_name LIKE ?
+								OR people.last_name LIKE ?
+								OR people_emails.email LIKE ?
+							)
+						ORDER BY tickets.id DESC
+						LIMIT 15
+					", array($after_id, $q_search, $q_search, $q_search, $q_search));
+
+					if ($people_ids) {
+						$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);
+					}
+
 					foreach ($people as $p) {
 						$results['person'][] = $p;
 

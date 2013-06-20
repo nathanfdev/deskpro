@@ -126,11 +126,15 @@
 								<option selected="selected" value="is">contains</option>
 								<option value="not">does not contain</option>
 							</select>
-							<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-								<option value="and">all words</option>
-								<option value="or">any word</option>
-								<option value="phrase">phrase</option>
-							</select>
+							{% if app.getSetting('tickets_enable_like_search') %}
+								<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+									<option value="and">all words</option>
+									<option value="or">any word</option>
+									<option value="phrase">phrase</option>
+								</select>
+							{% else %}
+								<input type="hidden" name="search_subject_type[]" value="fulltext" />
+							{% endif %}
 						</td>
 					</tr>
 				</table>
@@ -178,40 +182,48 @@
 								<option selected="selected" value="is">contains</option>
 								<option value="not">does not contain</option>
 							</select>
-							<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-								<option value="and">all words</option>
-								<option value="or">any word</option>
-								<option value="phrase">phrase</option>
-							</select>
+							{% if app.getSetting('tickets_enable_like_search') %}
+								<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+									<option value="and">all words</option>
+									<option value="or">any word</option>
+									<option value="phrase">phrase</option>
+								</select>
+							{% else %}
+								<input type="hidden" name="search_message_type[]" value="fulltext" />
+								<input type="hidden" name="search_message_who[]" value="0" />
+								<input type="hidden" name="search_message_when_op[]" value="0" />
+							{% endif %}
 						</td>
 					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>
-							<table class="layout-table v-middle" width="100%">
-								<tr>
-									<td width="100" style="padding-right: 4px;">
-										<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-											<option selected="selected" value="0">By anyone</option>
-											<option value="agent">By an agent</option>
-											<option value="user">By a user</option>
-										</select>
-									</td>
-									<td>
-										<div class="date-term-wrap" data-base-name="search_message_when">
-											<select name="search_message_when_op[]" class="op dp-select-widget-simple" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-												<option selected="selected" value="0">Written any time</option>
-												<option value="lte">Written before</option>
-												<option value="gte">Written after</option>
-												<option value="between">Written between</option>
+					{% if app.getSetting('tickets_enable_like_search') %}
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<table class="layout-table v-middle" width="100%">
+									<tr>
+										<td width="100" style="padding-right: 4px;">
+											<select class="dp-select-widget-simple" name="search_message_who[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+												<option selected="selected" value="0">By anyone</option>
+												<option value="agent">By an agent</option>
+												<option value="user">By a user</option>
 											</select>
-											{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-										</div>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+										</td>
+										<td>
+											<div class="date-term-wrap" data-base-name="search_message_when">
+												<select name="search_message_when_op[]" class="op dp-select-widget-simple" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
+													<option selected="selected" value="0">Written any time</option>
+													<option value="lte">Written before</option>
+													<option value="gte">Written after</option>
+													<option value="between">Written between</option>
+												</select>
+												{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					{% endif %}
 				</table>
 			</div>
 		</div>

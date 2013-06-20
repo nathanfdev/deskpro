@@ -49,6 +49,37 @@ class PreRunStep extends AbstractZendeskStep
 			$this->logMessage("-- Initial run");
 			$this->db->delete('import_datastore', array('typename' => 'zd_tickets_cache_time'));
 			$this->db->delete('import_datastore', array('typename' => 'zd_tickets_rerun_time'));
+
+			// Ticket archiving settings
+			$archive = false;
+			if ($this->importer->getConfig('archive')) {
+				if ($this->importer->getConfig('archive') === 'auto') {
+					$res = $this->zd->sendGet('tickets', array('per_page' => 1));
+					$count = (int)$res->get('count');
+
+					if ($count > 250000) {
+						$archive = true;
+					}
+				} else {
+					$archive = true;
+				}
+			}
+
+			if ($archive) {
+				$this->importer->db->replace('settings', array(
+					'name' => 'core_tickets.use_archive',
+					'value' => 1,
+				));
+
+				$days = $this->importer->getConfig('days_until_archive');
+				if (!$days) $days = 90;
+
+				$time = $days * 86400;
+				$this->importer->db->replace('settings', array(
+					'name' => 'core_tickets.auto_archive_time',
+					'value' => $time,
+				));
+			}
 		} else {
 			$this->logMessage("-- Is ReRun");
 

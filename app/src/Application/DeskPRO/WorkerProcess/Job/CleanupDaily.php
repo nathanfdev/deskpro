@@ -255,5 +255,20 @@ class CleanupDaily extends AbstractJob
 		if ($num) {
 			$this->logStatus("Cleaned up $num task queue logs");
 		}
+
+		#------------------------------
+		# Enable/disable like search
+		#------------------------------
+
+		$c_messages = App::getDb()->count('tickets_messages');
+		$like_search = 1;
+		if ($c_messages > 300000) {
+			$like_search = 0;
+		}
+
+		App::getDb()->replace('settings', array(
+			'name' => 'core_tickets.enable_like_search_auto',
+			'value' => $like_search
+		));
 	}
 }

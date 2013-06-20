@@ -52,5 +52,34 @@ class PrepareStep extends AbstractDeskpro3Step
 
 		$this->importer->removeTableIndexes('content_search');
 		$this->importer->removeTableIndexes('content_search_attribute');
+
+		// Ticket archiving settings
+		$archive = false;
+		if ($this->importer->getConfig('archive')) {
+			if ($this->importer->getConfig('archive') === 'auto') {
+				$count = $this->importer->olddb->count('ticket');
+				if ($count > 250000) {
+					$archive = true;
+				}
+			} else {
+				$archive = true;
+			}
+		}
+
+		if ($archive) {
+			$this->importer->db->replace('settings', array(
+				'name' => 'core_tickets.use_archive',
+				'value' => 1,
+			));
+
+			$days = $this->importer->getConfig('days_until_archive');
+			if (!$days) $days = 90;
+
+			$time = $days * 86400;
+			$this->importer->db->replace('settings', array(
+				'name' => 'core_tickets.auto_archive_time',
+				'value' => $time,
+			));
+		}
 	}
 }

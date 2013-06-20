@@ -560,6 +560,23 @@ abstract class SearcherAbstract implements PersonContextInterface
 	}
 
 
+	/**
+	 * @param $field
+	 * @param $op
+	 * @param $string
+	 */
+	protected function _fulltextSearch($field, $op, $string)
+	{
+		$not = '';
+		if ($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) {
+			$not = 'NOT';
+		}
+
+		$string_q = App::getDbRead()->quote($string, \PDO::PARAM_STR);
+		return "( $not MATCH ($field) AGAINST ($string_q IN BOOLEAN MODE) )";
+	}
+
+
 
 	/**
 	 * Get a summary string for a term
