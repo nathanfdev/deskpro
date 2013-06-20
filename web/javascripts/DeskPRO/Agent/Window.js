@@ -2472,7 +2472,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.notifications.addEvent('modCount', function(data) {
 			var count = 0;
-			$('#dp_header_notify_wrap').find('.badge').each(function() {
+			$('#dp_header_notify_wrap').find('.badge').not('.no-count').each(function() {
 				count += parseInt($(this).text().trim());
 			});
 
@@ -3923,7 +3923,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this._noticeEl.hide();
-		$('.DP-version-notes').hide();
+		$('#notice_trigger').hide();
 	},
 
 	dismissNotice: function(id) {
@@ -3941,7 +3941,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		this._updateNoticeEl();
-		$('.DP-version-notes').find('.badge').text(this._noticeIds.length);
+		$('#notice_trigger').find('.badge').text(this._noticeIds.length);
 	},
 
 	loadNotice: function(id) {
