@@ -258,6 +258,66 @@ class AgentMessagesLoader extends LoaderAbstract
 				));
 			}
 
+			#------------------------------
+			# Dismiss messages
+			#------------------------------
+
+			if (!empty($_REQUEST['dismiss_alerts']) && is_array($_REQUEST['dismiss_alerts'])) {
+				$ids = $_REQUEST['dismiss_alerts'];
+				$ids = Arrays::castToType($ids, 'int', 'discard');
+				$ids = Arrays::removeFalsey($ids);
+				$ids = array_unique($ids);
+
+				if ($ids) {
+					$ids_in = implode(',', $ids);
+					$db->exec("
+						UPDATE agent_alerts
+						SET is_dismissed = 1
+						WHERE person_id = {$agent_session['person_id']} AND id IN ($ids_in)
+					");
+				}
+			}
+
+			// First poll, re-load up to the last 100 alerts
+			if ($is_initial_pool) {
+				$q = $db->query("
+					SELECT id, typename, data
+					FROM agent_alerts
+					WHERE person_id = {$agent_session['person_id']} AND is_dismissed = 0 AND typename IN ('tickets')
+					ORDER BY id ASC
+					LIMIT 100
+				");
+				$q->execute();
+
+				$count = 0;
+				$last_alert_id = null;
+				while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+					if ($last_alert_id === null || $r['id'] < $last_alert_id) {
+						$last_alert_id = $r['id'];
+					}
+					$count++;
+
+					$r['data'] = unserialize($r['data']);
+					$data['messages'][] = array(
+						null,
+						'agent-notify.'.$r['typename'],
+						array(
+							'type'     => $r['typename'],
+							'alert_id' => $r['id'],
+							'row'      => $r['data']['browser_rendered']
+						)
+					);
+				}
+
+				if ($count == 100 && $last_alert_id) {
+					$db->exec("
+						UPDATE agent_alerts
+						SET is_dismissed = 1
+						WHERE person_id = {$agent_session['person_id']} AND id < $last_alert_id
+					");
+				}
+			}
+
 			header('Content-Type: application/json');
 			echo json_encode($data);
 		} catch (\Exception $exception) {

@@ -2105,4 +2105,15 @@ $collection->add('api_glossary_definition_delete', new Route(
 	array()
 ));
 
+################################################################################
+# Activity
+################################################################################
+
+$collection->add('api_get_activity', new Route(
+	'/activity/{since}',
+	array('_controller' => 'ApiBundle:Activity:deleteDefinition'),
+	array('_method' => 'DELETE', 'since' => '\\d+'),
+	array()
+));
+
 return $collection;

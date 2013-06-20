@@ -442,6 +442,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\AgentAlert\AlertSender
+	 */
+	public function getAgentAlertSender()
+	{
+		return $this->getSystemService('agent_alert_sender');
+	}
+
+
+	/**
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get

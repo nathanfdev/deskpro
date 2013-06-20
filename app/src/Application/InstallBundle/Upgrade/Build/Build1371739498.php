@@ -29,62 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupQuarterHourly extends AbstractJob
+class Build1371739498 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 900;
-
 	public function run()
 	{
-		#------------------------------
-		# Page cache
-		#------------------------------
-
-		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-		$cache->cleanup();
-
-		#------------------------------
-		# sessions
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale sessions");
-		}
-
-		#------------------------------
-		# ticket locks
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
-		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num ticket locks");
-		}
-
-		#------------------------------
-		# Agent alerts
-		#------------------------------
-
-		if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
-			$datetime = date('Y-m-d H:i:s', time() - $maxage);
-			$num = App::getDb()->executeUpdate("
-				DELETE FROM agent_alerts
-				WHERE date_created < ? OR is_dismissed = 1
-			", array($datetime));
-
-			if ($num) {
-				$this->logStatus("Cleaned up $num agent alerts");
-			}
-		}
+		$this->out("Add agent_alerts table");
+		$this->execMutateSql("CREATE TABLE agent_alerts (id INT AUTO_INCREMENT NOT NULL, person_id INT NOT NULL, typename VARCHAR(255) NOT NULL, data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', date_created DATETIME DEFAULT NULL, is_dismissed TINYINT(1) NOT NULL, INDEX IDX_A99D974D217BBB47 (person_id), INDEX date_created_idx (date_created), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE agent_alerts ADD CONSTRAINT FK_A99D974D217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
 	}
 }

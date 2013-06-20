@@ -13,4 +13,9 @@
 	'agent_notify_list_failed_adminlogin' => true,
 
 	'agent.ui_snippets_use_client_db' => false,
+
+	/**
+	 * How long in seconds before old alerts are cleaned up
+	 */
+	'agent.alerts_cleanup_time' => 129600,
 );

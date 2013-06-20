@@ -8,7 +8,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		this.fireEvent('init');
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) { this.addRow(info.row); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) { this.addRow(info.row, info.alert_id || null); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tasks', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_comment', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_feedback', function(info) { this.addRow(info.row); }, this);
@@ -18,7 +18,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		$('#dp_header_notify_wrap').on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			$(this).closest('.dp-header-notify-menu').find('li').each(function() {
-				self.removeRow($(this));
+				var row = $(this);
+				if (row.data('alert-id')) {
+					DeskPRO_Window.dismissAlertQueue.push(row.data('alert-id'));
+				}
+				self.removeRow(row);
 			});
 			Orb.shimClickCallbackPop();
 		}).on('click', '.dismiss', function(ev) {
@@ -26,7 +30,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.stopImmediatePropagation();
 
 			var ul = $(this).closest('ul');
-			self.removeRow($(this).closest('li'));
+			var row = $(this).closest('li');
+
+			if (row.data('alert-id')) {
+				DeskPRO_Window.dismissAlertQueue.push(row.data('alert-id'));
+			}
+
+			self.removeRow(row);
 
 			if (!ul.find('li')[0]) {
 				Orb.shimClickCallbackPop();
@@ -38,7 +48,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			DeskPRO_Window.runPageRouteFromElement($(this));
 
 			var ul = $(this).closest('ul');
-			self.removeRow($(this).closest('li'));
+			var row = $(this).closest('li');
+
+			if (row.data('alert-id')) {
+				DeskPRO_Window.dismissAlertQueue.push(row.data('alert-id'));
+			}
+
+			self.removeRow(row);
 
 			if (!ul.find('li')[0]) {
 				Orb.shimClickCallbackPop();
@@ -68,10 +84,15 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		return listType;
 	},
 
-	addRow: function(html_or_el) {
+	addRow: function(html_or_el, alert_id) {
 		var row = $(html_or_el);
 		row.addClass('msg-row');
 		row.data('route-notabreload', 1).attr('data-route-notabreload', 1);
+
+		if (alert_id) {
+			row.data('alert-id', alert_id);
+		}
+
 		var type = row.data('type');
 
 		if (type == 'chat') {

@@ -29,62 +29,49 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Searcher\ChatConversationSearch;
+use Application\DeskPRO\Entity\ChatConversation;
 
-class CleanupQuarterHourly extends AbstractJob
+class ActivityController extends AbstractController
 {
-	const DEFAULT_INTERVAL = 900;
-
-	public function run()
+	/**
+	 * @param int $since
+	 */
+	public function getActivityAction($since)
 	{
-		#------------------------------
-		# Page cache
-		#------------------------------
-
-		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-		$cache->cleanup();
-
-		#------------------------------
-		# sessions
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale sessions");
+		if (!$since) {
+			$alert_recs = $this->em->createQuery("
+				SELECT a
+				FROM DeskPRO:AgentAlert a
+				WHERE a.person = ? AND a.id > ? AND a.is_dismissed = 0
+				ORDER BY a.id DESC
+			")->setParameters(array($this->person, $since))->execute();
+		} else {
+			$alert_recs = $this->em->createQuery("
+				SELECT a
+				FROM DeskPRO:AgentAlert a
+				WHERE a.person = ? AND a.date_created >= ? AND a.is_dismissed = 0
+				ORDER BY a.id DESC
+			")->setParameters(array($this->person, date('Y-m-d H:i:s', time() - 300)))->execute();
 		}
 
-		#------------------------------
-		# ticket locks
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
-		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num ticket locks");
+		$alerts = array();
+		foreach ($alert_recs as $alert) {
+			$alerts[] = array(
+				'id'   => $alert->getId(),
+				'type' => $alert->typename,
+				'data' => $this->container->getAgentAlertSender()->getDataArray($alert)
+			);
 		}
 
-		#------------------------------
-		# Agent alerts
-		#------------------------------
+		$last_id = $this->db->fetchColumn("SELECT id FROM agent_alerts ORDER BY id DESC LIMIT 1");
 
-		if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
-			$datetime = date('Y-m-d H:i:s', time() - $maxage);
-			$num = App::getDb()->executeUpdate("
-				DELETE FROM agent_alerts
-				WHERE date_created < ? OR is_dismissed = 1
-			", array($datetime));
-
-			if ($num) {
-				$this->logStatus("Cleaned up $num agent alerts");
-			}
-		}
+		return $this->createApiResponse(array('last_id' => $last_id, 'alerts' => $alerts));
 	}
 }

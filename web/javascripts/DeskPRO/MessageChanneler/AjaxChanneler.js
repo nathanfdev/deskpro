@@ -22,6 +22,23 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		}).bind(this), 'since', { recurring: true });
 
 		this.poller.addData((function () {
+			if (!DeskPRO_Window.dismissAlertQueue.length) return null;
+
+			var q = DeskPRO_Window.dismissAlertQueue;
+			DeskPRO_Window.dismissAlertQueue = [];
+
+			var send = [];
+			Array.each(q, function(item) {
+				send.push({
+					name: 'dismiss_alerts[]',
+					value: item
+				})
+			});
+
+			return send;
+		}).bind(this), 'dismiss_alerts', { recurring: true });
+
+		this.poller.addData((function () {
 			return { 'count': ++this.count };
 		}).bind(this), 'since', { recurring: true });
 

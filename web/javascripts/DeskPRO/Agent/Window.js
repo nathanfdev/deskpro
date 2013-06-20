@@ -17,6 +17,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	init: function() {
 
 		this.onloadStack = [];
+		this.dismissAlertQueue = [];
 		this.routePrefixes = {};
 
 		this.messageChanneler = null;

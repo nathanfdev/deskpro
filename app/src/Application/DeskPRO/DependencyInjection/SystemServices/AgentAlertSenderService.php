@@ -29,62 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\AgentAlert\AlertSender;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class CleanupQuarterHourly extends AbstractJob
+class AgentAlertSenderService
 {
-	const DEFAULT_INTERVAL = 900;
-
-	public function run()
+	public static function create(DeskproContainer $container, array $options = array())
 	{
-		#------------------------------
-		# Page cache
-		#------------------------------
-
-		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-		$cache->cleanup();
-
-		#------------------------------
-		# sessions
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale sessions");
-		}
-
-		#------------------------------
-		# ticket locks
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
-		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num ticket locks");
-		}
-
-		#------------------------------
-		# Agent alerts
-		#------------------------------
-
-		if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
-			$datetime = date('Y-m-d H:i:s', time() - $maxage);
-			$num = App::getDb()->executeUpdate("
-				DELETE FROM agent_alerts
-				WHERE date_created < ? OR is_dismissed = 1
-			", array($datetime));
-
-			if ($num) {
-				$this->logStatus("Cleaned up $num agent alerts");
-			}
-		}
+		$alerter = new AlertSender($container->getEm());
+		return $alerter;
 	}
 }

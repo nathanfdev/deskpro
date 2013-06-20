@@ -150,21 +150,18 @@ class AgentAlertNotificationAction extends AbstractAction
 		}
 		$this->tracker->logMessage("[AgentAlertNotificationAction] Alerting " . count($log_items) . " change(s): " . implode(', ', $log_item_types));
 
-		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
-
 		$this->tracker->logMessage("[AgentAlertNotificationAction] Matching agents: " . implode(', ', $this->notify_agents));
-		$this->tracker->logMessage("[AgentAlertNotificationAction] Online agents: " . implode(', ', $online_agents));
 
 		// Dont send an update notification to the agent for agent replies made by themselves
 		$new_agent_reply = $this->tracker->getNewAgentReply();
 
-		$notify_list = array_filter($this->notify_agents, function($agent_id) use ($online_agents, $new_agent_reply) {
+		$notify_list = array_filter($this->notify_agents, function($agent_id) use ($new_agent_reply) {
 			if ($new_agent_reply) {
 				if ($new_agent_reply->person->getId() == $agent_id && !$new_agent_reply->person->getPref("agent_notify_override.all.email")) {
 					return false;
 				}
 			}
-			return isset($online_agents[$agent_id]);
+			return true;
 		});
 
 		if (!$notify_list) {
@@ -229,19 +226,27 @@ class AgentAlertNotificationAction extends AbstractAction
 					$vars['notify_info'] = $this->notify_info[$agent->id];
 				}
 
+				$log_item_ids = array();
+				foreach ($log_items as $l) {
+					$log_item_ids[] = $l->getId();
+				}
+
 				$tpl_line = App::getTemplating()->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
-				$cm = new ClientMessage();
-				$cm->fromArray(array(
-					'channel' => 'agent-notify.tickets',
-					'data' => array(
-						'type'       => 'tickets',
-						'ticket_id'  => $ticket->id,
-						'row'        => $tpl_line
-					),
-					'for_person'        => $agent,
-					'created_by_client' => 'sys'
-				));
-				$em->persist($cm);
+				App::getContainer()->getAgentAlertSender()->send(
+					$agent,
+					'tickets',
+					array(
+						'@fetch_types'       => array('ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'),
+						'browser_rendered'   => $tpl_line,
+						'ticket'             => $ticket->getId(),
+						'performer'          => $this->tracker->getPersonPerformer() ? $this->tracker->getPersonPerformer()->getId() : 0,
+						'is_new_ticket'      => $is_new_ticket,
+						'is_new_agent_reply' => $is_new_agent_reply,
+						'is_new_agent_note'  => $is_new_agent_note,
+						'is_new_user_reply'  => $is_new_user_reply,
+						'log_items'          => $log_item_ids,
+					)
+				);
 			}
 
 			$em->flush();
