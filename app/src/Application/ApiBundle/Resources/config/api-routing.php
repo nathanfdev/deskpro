@@ -30,6 +30,13 @@ $collection->add('api_deskpro_time', new Route(
 	array()
 ));
 
+$collection->add('api_deskpro_info', new Route(
+	'/deskpro/info',
+	array('_controller' => 'ApiBundle:Misc:helpdeskInfo'),
+	array('_method' => 'GET'),
+	array()
+));
+
 $collection->add('api_token_exchange', new Route(
 	'/token-exchange',
 	array('_controller' => 'ApiBundle:Misc:tokenExchange'),
@@ -476,6 +483,13 @@ $collection->add('api_tickets', new Route(
 $collection->add('api_tickets_filters', new Route(
 	'/tickets/filters',
 	array('_controller' => 'ApiBundle:TicketSearch:getFilters'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_filter_counts', new Route(
+	'/tickets/filters/counts',
+	array('_controller' => 'ApiBundle:TicketSearch:getFilterCounts'),
 	array('_method' => 'GET'),
 	array()
 ));
@@ -2111,8 +2125,8 @@ $collection->add('api_glossary_definition_delete', new Route(
 
 $collection->add('api_get_activity', new Route(
 	'/activity/{since}',
-	array('_controller' => 'ApiBundle:Activity:deleteDefinition'),
-	array('_method' => 'DELETE', 'since' => '\\d+'),
+	array('_controller' => 'ApiBundle:Activity:getActivity'),
+	array('_method' => 'GET', 'since' => '\\d+'),
 	array()
 ));
 

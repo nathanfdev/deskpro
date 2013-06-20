@@ -43,7 +43,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
 	/**
 	 * The API key making this request
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\ApiKey|null
 	 */
 	public $apikey;
@@ -103,7 +103,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public $rate_info = null;
 
 
-	
+
 	protected function init()
 	{
 		$this->em       = $this->get('doctrine.orm.entity_manager');
@@ -111,7 +111,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->in       = $this->get('deskpro.core.input_reader');
 		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
 		$this->settings = $this->get('deskpro.core.settings');
-		
+
 		$this->apikey = $this->get('deskpro.api.request_key');
 		$person = null;
 

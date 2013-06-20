@@ -36,6 +36,8 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 /**
  * Perform searches or get results from filters.
@@ -141,7 +143,10 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = $this->in->getUint('per_page');
+		if (!Numbers::inRange($per_page, 1, 100)) {
+			$per_page = 25;
+		}
 
 		$filter = $this->_getFiltersApi()->getFilterFromId($filter_id);
 		$total = $filter->getResultsCount();
@@ -153,6 +158,19 @@ class TicketSearchController extends AbstractController
 			'per_page' => $per_page,
 			'total' => $total,
 			'tickets' => $this->getApiData($tickets)
+		));
+	}
+
+	/**
+	 * Get array of filters and counts
+	 */
+	public function getFilterCountsAction()
+	{
+		$all_counts = App::getApi('tickets.filters')->getAllCountsCustomFilters($this->person);
+		$all_counts = Arrays::castToType($all_counts, 'int', 'int');
+
+		return $this->createApiResponse(array(
+			'filter_counts' => $all_counts
 		));
 	}
 

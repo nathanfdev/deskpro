@@ -40,7 +40,7 @@ class MiscController extends AbstractController
 {
 	public function preAction($action, $arguments = null)
 	{
-		if ($action == 'tokenExchangeAction') {
+		if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction') {
 			return null;
 		}
 
@@ -63,6 +63,21 @@ class MiscController extends AbstractController
 		}
 
 		parent::_updateRateLimit($action, $arguments);
+	}
+
+	public function helpdeskInfoAction()
+	{
+		$data = array(
+			'helpdesk_url' => $this->settings->get('core.deskpro_url')
+		);
+
+		if ($this->settings->get('core.rewrite_urls')) {
+			$data['api_url'] = $this->settings->get('core.deskpro_url') . '/api/';
+		} else {
+			$data['api_url'] = $this->settings->get('core.deskpro_url') . '/index.php/api/';
+		}
+
+		return $this->createApiResponse($data);
 	}
 
 	public function tokenExchangeAction()
