@@ -454,7 +454,7 @@ class ImportTicket
 
 		$search_content = implode(' ', $search_content);
 
-		$this->importer->db->insert('content_search', array(
+		$this->importer->db->replace('content_search', array(
 			'object_type' => 'ticket',
 			'object_id' => $insert_ticket['id'],
 			'content' => $search_content,
@@ -1770,7 +1770,7 @@ class ImportTicket
 
 		$search_content = implode(' ', $search_content);
 
-		$this->importer->db->insert('content_search', array(
+		$this->importer->db->replace('content_search', array(
 			'object_type' => 'ticket',
 			'object_id' => $insert_ticket['id'],
 			'content' => $search_content,

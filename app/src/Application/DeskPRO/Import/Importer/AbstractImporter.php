@@ -151,7 +151,7 @@ abstract class AbstractImporter
 	public function isArchiveEnabled()
 	{
 		if ($this->archive_days === null) {
-			$settings = $this->db->fetchAllKeyValue("SELECT value FROM settings WHERE name IN ('core_tickets.use_archive', 'core_tickets.auto_archive_time')");
+			$settings = $this->db->fetchAllKeyValue("SELECT name, value FROM settings WHERE name IN ('core_tickets.use_archive', 'core_tickets.auto_archive_time')");
 			if (
 				!empty($settings['core_tickets.use_archive'])
 				&& $settings['core_tickets.use_archive']
@@ -159,6 +159,8 @@ abstract class AbstractImporter
 				&& $settings['core_tickets.auto_archive_time']
 			) {
 				$this->archive_days = $settings['core_tickets.auto_archive_time'];
+			} else {
+				$this->archive_days = 0;
 			}
 		}
 
