@@ -700,7 +700,7 @@ the specific language governing permissions and limitations under the Apache Lic
 
             installKeyUpChangeEvent(search);
             search.on("keyup-change input paste", this.bind(this.updateResults));
-            search.on("focus", function () { search.addClass("select2-focused"); });
+            search.on("focus", function () { search.addClass("select2-focused"); if (search.val() === " ") search.val(""); });
             search.on("blur", function () { search.removeClass("select2-focused");});
 
             this.dropdown.on("mouseup", resultsSelector, this.bind(function (e) {
@@ -805,6 +805,7 @@ the specific language governing permissions and limitations under the Apache Lic
             }
 
             opts = $.extend({}, {
+				addResultClass: '',
                 populateResults: function(container, results, query) {
                     var populate,  data, result, children, id=this.opts.id;
 
@@ -830,6 +831,7 @@ the specific language governing permissions and limitations under the Apache Lic
                             if (disabled) { node.addClass("select2-disabled"); }
                             if (compound) { node.addClass("select2-result-with-children"); }
                             node.addClass(self.opts.formatResultCssClass(result));
+							node.addClass(self.opts.addResultClass);
 
                             label=$(document.createElement("div"));
                             label.addClass("select2-result-label");
@@ -1118,7 +1120,7 @@ the specific language governing permissions and limitations under the Apache Lic
             // fix positioning when body has an offset and is not position: static
 
             if (this.body().css('position') !== 'static') {
-                bodyOffset = this.body().offset();
+                bodyOffset = this.body().offset() || {top: 0, left: 0};
                 dropTop -= bodyOffset.top;
                 dropLeft -= bodyOffset.left;
             }
@@ -1682,6 +1684,10 @@ the specific language governing permissions and limitations under the Apache Lic
 
             var width = resolveContainerWidth.call(this);
             if (width !== null) {
+				if (this.opts.addWidth) {
+					width = parseInt(width) + this.opts.addWidth;
+					width += 'px';
+				}
                 this.container.css("width", width);
             }
         }
@@ -2094,7 +2100,16 @@ the specific language governing permissions and limitations under the Apache Lic
             container.empty();
             formatted=this.opts.formatSelection(data, container);
             if (formatted !== undefined) {
-                container.append(this.opts.escapeMarkup(formatted));
+				if (formatted.type == 'html') {
+					formatted = $(formatted.value);
+				} else if (formatted.type == 'el') {
+					formatted = formatted.value;
+				} else if (typeof formatted.value != "undefined") {
+					formatted = this.opts.escapeMarkup(formatted.value);
+				} else {
+					formatted = this.opts.escapeMarkup(formatted);
+				}
+                container.append(formatted);
             }
 
             this.selection.removeClass("select2-default");
@@ -2432,6 +2447,7 @@ the specific language governing permissions and limitations under the Apache Lic
                 }
                 this.selectChoice(null);
                 this.clearPlaceholder();
+				this.resizeSearch();
                 if (!this.container.hasClass("select2-container-active")) {
                     this.opts.element.trigger($.Event("select2-focus"));
                 }
@@ -2496,7 +2512,7 @@ the specific language governing permissions and limitations under the Apache Lic
                 // stretch the search box to full width of the container so as much of the placeholder is visible as possible
                 // we could call this.resizeSearch(), but we do not because that requires a sizer and we do not want to create one so early because of a firefox bug, see #944
                 this.search.width(maxWidth > 0 ? maxWidth : this.container.css("width"));
-            } else {
+            } else if (!this.isFocused()) {
                 this.search.val("").width(10);
             }
         },
@@ -2636,7 +2652,16 @@ the specific language governing permissions and limitations under the Apache Lic
 
             formatted=this.opts.formatSelection(data, choice.find("div"));
             if (formatted != undefined) {
-                choice.find("div").replaceWith("<div title='"+this.opts.escapeMarkup(formatted)+"'>"+this.opts.escapeMarkup(formatted)+"</div>");
+				if (formatted.type == 'html') {
+					formatted = $(formatted.value);
+				} else if (formatted.type == 'el') {
+					formatted = formatted.value;
+				} else if (typeof formatted.value != "undefined") {
+					formatted = this.opts.escapeMarkup(formatted.value);
+				} else {
+					formatted = this.opts.escapeMarkup(formatted);
+				}
+                choice.find("div").html(formatted);
             }
 
             if(enableChoice){
@@ -2664,6 +2689,7 @@ the specific language governing permissions and limitations under the Apache Lic
 
             val.push(id);
             this.setVal(val);
+			this.search.val('');
         },
 
         // multi

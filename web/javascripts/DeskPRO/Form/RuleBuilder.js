@@ -122,6 +122,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		});
 		this.typeSel.appendTo('body');
 		this.typeSel.css('width', this.typeSel.width() + 35);
+		this.typeSel.hide();
 	},
 
 	destroy: function() {

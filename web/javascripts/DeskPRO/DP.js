@@ -182,7 +182,7 @@ var DP = {
 						}
 						var name = Orb.escapeHtml(opt.text());
 						if (opt.data('icon')) {
-							return '<span class="choice-icon" style="background-image: url(' + opt.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>';
+							return {type: 'html', value: '<span class="choice-icon" style="background-image: url(' + opt.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>' };
 						} else {
 							return name;
 						}
@@ -190,7 +190,7 @@ var DP = {
 					break;
 
 				case 'urgency':
-					var formatter = function(data) {
+					options.formatResult = function(data) {
 						var name = Orb.escapeHtml(data.text);
 						if (data.id <= 0) {
 							return name;
@@ -199,8 +199,14 @@ var DP = {
 						return '<span class="urgency urgency-' + data.id + '"><i>' + name + '</i></span>';
 					};
 
-					options.formatResult = formatter;
-					options.formatSelection = formatter;
+					options.formatSelection = function(data) {
+						var name = Orb.escapeHtml(data.text);
+						if (data.id <= 0) {
+							return name;
+						}
+
+						return {type: 'html', value: '<span class="urgency urgency-' + data.id + '"><i>' + name + '</i></span>'};
+					};
 					break;
 			}
 		} else {
@@ -212,7 +218,8 @@ var DP = {
 				});
 
 				options.formatSelection = function(data) {
-					return $('<span/>').text(data.text);
+					var n = $('<span/>').text(data.text);
+					return {type: 'el', value: n};
 				}
 				options.formatResult = function(result) {
 					var opt = el.find('option[value="' + result.id + '"]');
