@@ -49,7 +49,7 @@ class PersonFieldManager extends FieldManager
 	{
 		$save_data = array();
 
-		foreach ($this->getFields() as $field) {
+		foreach ($this->getDefinedFields() as $field) {
 			if ($field->handler_class != 'Application\\DeskPRO\\CustomFields\\Handler\\Data') {
 				continue;
 			}

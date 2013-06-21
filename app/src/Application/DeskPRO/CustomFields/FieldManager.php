@@ -70,10 +70,16 @@ class FieldManager
 	protected $options;
 
 	/**
-	 * Array of top-level fields
+	 * Array of top-level fields for the current interface
 	 * @var array
 	 */
 	protected $fields = null;
+
+	/**
+	 * Array of top-level fields
+	 * @var array
+	 */
+	protected $real_fields = null;
 
 	/**
 	 * @var array
@@ -81,11 +87,19 @@ class FieldManager
 	protected $field_to_children = array();
 
 	/**
-	 * Array of all fields
+	 * Array of all fields for the current interface.
+	 * E.g., if this is the user interface, then agent-only fields aren't included here.
 	 *
 	 * @var array
 	 */
 	protected $all_fields = null;
+
+	/**
+	 * Array of all enabled fields, including ones disabled for the current interface.
+	 *
+	 * @var array
+	 */
+	protected $real_all_fields = null;
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
@@ -122,17 +136,28 @@ class FieldManager
 			}
 
 			$this->fields = array();
-			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledUserFields();
-			} else {
-				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
-			}
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+
 			foreach ($all_fields as $f) {
 
-				$this->all_fields[$f->getId()] = $f;
+				$this->real_all_fields[$f->getId()] = $f;
 
 				if (!$f->getParentId()) {
-					$this->fields[$f->getId()] = $f;
+					$this->real_fields[$f->getId()] = $f;
+				}
+
+				if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
+					if ($f->is_user_enabled) {
+						$this->all_fields[$f->getId()] = $f;
+						if (!$f->getParentId()) {
+							$this->fields[$f->getId()] = $f;
+						}
+					}
+				} else {
+					$this->all_fields[$f->getId()] = $f;
+					if (!$f->getParentId()) {
+						$this->fields[$f->getId()] = $f;
+					}
 				}
 
 				if ($p = $f->getParentId()) {
@@ -149,7 +174,9 @@ class FieldManager
 					if (!$this->getFieldChildren($f)) {
 						unset(
 							$this->all_fields[$f->getId()],
+							$this->real_all_fields[$f->getId()],
 							$this->fields[$f->getId()],
+							$this->real_fields[$f->getId()],
 							$this->field_to_children[$f->getId()]
 						);
 					}
@@ -158,6 +185,18 @@ class FieldManager
 		}
 
 		return $this->fields;
+	}
+
+
+	/**
+	 * Get all defined fields, even ones that are not enabled for the current interface.
+	 *
+	 * @return array
+	 */
+	public function getDefinedFields()
+	{
+		$this->getFields();
+		return $this->real_fields;
 	}
 
 
