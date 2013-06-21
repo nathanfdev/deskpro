@@ -845,6 +845,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
 			var wrap = $(this);
 			wrap.addClass('active');
+			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 			var closeFn = function() {
 				wrap.removeClass('active');

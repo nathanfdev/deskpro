@@ -104,9 +104,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var self = this;
 
-		row.find('time').addClass('timeago');
-		row.find('time.timeago').text('').attr('datetime', (new Date()).toISOString());
-		DeskPRO_Window.initInterfaceServices(row);
+		var time = row.find('time');
+		if (time[0]) {
+			if (!time.attr('datetime')) {
+				time.attr('datetime', (new Date()).toISOString());
+			}
+			Orb.Util.TimeAgo.refreshElements([time.get(0)]);
+		}
 
 		var ev = { row: row, type: type };
 		this.fireEvent('addRow');

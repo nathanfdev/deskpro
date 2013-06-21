@@ -49,7 +49,7 @@ Orb.Util.TimeAgo = {
 		var self = this;
 
 		els.each(function(el) {
-			$(el).addClass('.timeago-auto-update');
+			$(el).addClass('timeago-auto-update');
 			self.refreshElements([el]);
 		});
 

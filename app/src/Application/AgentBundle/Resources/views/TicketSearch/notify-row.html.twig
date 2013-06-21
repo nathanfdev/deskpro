@@ -6,7 +6,7 @@
 	data-route-notabreload="1"
 >
 	<div class="dismiss"><i class="icon-ban-circle"></i></div>
-	<time></time>
+	<time datetime="{{ 'now'|date('c', 'UTC') }}"></time>
 	<big>{{ ticket.subject }}</big>
 	<small>
 		{% if is_new_ticket %}
