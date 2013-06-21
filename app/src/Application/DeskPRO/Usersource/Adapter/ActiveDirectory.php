@@ -76,10 +76,10 @@ class ActiveDirectory extends AbstractAdapter
 	/**
 	 * Find a user identity just by an email address.
 	 *
-	 * @param $email_address
+	 * @param string $id_input Username or email address
 	 * @return \Orb\Auth\Identity|null
 	 */
-	public function findIdentityByInput($email_address)
+	public function findIdentityByInput($id_input)
 	{
 		$usersource = clone $this->usersource;
 		$usersource->setOption('bindRequiresDn', true);
@@ -87,14 +87,18 @@ class ActiveDirectory extends AbstractAdapter
 		/** @var \Orb\Auth\Adapter\ActiveDirectory $adapter */
 		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
-		if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput: $email_address");
+		if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
 
 		$adapter->setFormData(array(
-			'username' => $email_address,
+			'username' => $id_input,
 			'password' => '',
 		));
-		$rec_arr = $adapter->findRecordViaEmail($email_address);
 		$rec = null;
+		$rec_arr = $adapter->findRecordViaEmail($id_input);
+
+		if (!$rec_arr || !isset($rec_arr['dn'])) {
+			$rec_arr = $adapter->findRecordViaUsername($id_input);
+		}
 
 		$raw_info = array();
 		if ($rec_arr && isset($rec_arr['dn'])) {

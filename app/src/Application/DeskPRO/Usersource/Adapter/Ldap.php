@@ -70,10 +70,10 @@ class Ldap extends AbstractAdapter
 	/**
 	 * Find a user identity just by an email address.
 	 *
-	 * @param $email_address
+	 * @param $id_input
 	 * @return \Orb\Auth\Identity|null
 	 */
-	public function findIdentityByInput($email_address)
+	public function findIdentityByInput($id_input)
 	{
 		$usersource = clone $this->usersource;
 		$usersource->setOption('bindRequiresDn', true);
@@ -97,7 +97,7 @@ class Ldap extends AbstractAdapter
 		$raw_info = null;
 
 		try {
-			$dn = $ldap->getCanonicalAccountName($email_address, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+			$dn = $ldap->getCanonicalAccountName($id_input, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
 			$rec = $ldap->getNode($dn);
 		} catch (\Exception $e) {
 			return null;

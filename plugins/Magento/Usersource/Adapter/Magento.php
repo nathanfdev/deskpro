@@ -68,14 +68,14 @@ class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	/**
 	 * Find a user identity just by an email address.
 	 *
-	 * @param $email_address
+	 * @param $id_input
 	 * @return \Orb\Auth\Identity|null
 	 */
-	public function findIdentityByInput($email_address)
+	public function findIdentityByInput($id_input)
 	{
 		$adapter = $this->getAuthAdapter();
 
-		$userinfo = $adapter->getUserInfoForEmail($email_address);
+		$userinfo = $adapter->getUserInfoForEmail($id_input);
 		if (!$userinfo) {
 			return null;
 		}
