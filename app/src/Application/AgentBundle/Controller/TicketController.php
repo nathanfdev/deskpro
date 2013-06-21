@@ -1051,7 +1051,7 @@ class TicketController extends AbstractController
 			$message->message = $message_text;
 
 			$notify_agent_ids = array();
-			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $request_message_orig, $matches, PREG_SET_ORDER);
+			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getRaw('message'), $matches, PREG_SET_ORDER);
 			foreach ($matches AS $match) {
 				$notify_agent_ids[] = $match[1];
 			}
