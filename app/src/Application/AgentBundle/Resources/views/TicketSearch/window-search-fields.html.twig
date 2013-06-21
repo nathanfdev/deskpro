@@ -137,12 +137,6 @@
 
 <div class="with-search-builder">
 	<div class="search-form criteria_list add-to-search">
-		{% if app.getSetting('core_tickets.use_archive') %}
-			<div class="term">
-				{{ phrase('agent.tickets.active_tickets_term') }}
-				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.active_tickets_term_explain') }}"></span>
-			</div>
-		{% endif %}
 		<div class="search-terms"></div>
 		<div class="add-term-row"><span class="add-term"><i class="icon-plus-sign"></i></span></div>
 	</div>
