@@ -70,6 +70,8 @@ class UserKernel extends AbstractKernel
 			&& !preg_match('#^/tickets/new-simple#', $request->getPathInfo())
 			&& !preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
 			&& !preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
+			&& !preg_match('#^/logout#', $request->getPathInfo())
+			&& !preg_match('#^/login#', $request->getPathInfo())
 		) {
 			try {
 				if (!App::getSetting('user.portal_enabled')) {
