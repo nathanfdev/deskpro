@@ -228,7 +228,7 @@
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
 				<div class="hide-note">
-					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group">
+					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 1000;">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
 							{% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' or (ticket.status == 'awaiting_user' and not app.getSetting('core_tickets.reply_status')) %}
@@ -245,7 +245,7 @@
 					</div>
 				</div>
 				<div class="hide-reply" style="display: none">
-					<a class="dp-btn dp-btn-primary submit-trigger">
+					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 1000;">
 						<i class="icon-share"></i>&nbsp;
 						Add Note
 					</a>
