@@ -127,7 +127,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			}
 
 			var notification = window.webkitNotifications.createNotification(
-				icon, row.find('a:first').text() || 'DeskPRO', row.find('.info').text()
+				icon, row.find('big').first().text() || 'DeskPRO', row.find('small').first().text()
 			);
 			notification.onclick = function() {
 				window.focus();
