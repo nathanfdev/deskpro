@@ -124,8 +124,17 @@ class VendorMutate
 
 		file_put_contents($path, $file);
 	}
+
+	public function mutateSymfony()
+	{
+		$path = DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/File/MimeType/FileBinaryMimeTypeGuesser.php';
+		$file = file_get_contents($path);
+		$file = str_replace('passthru(', '@passthru(', $file);
+		file_put_contents($path, $file);
+	}
 }
 
 $mutate = new VendorMutate();
 $mutate->mutateDoctrine();
 $mutate->mutateGeoipApi();
+$mutate->mutateSymfony();

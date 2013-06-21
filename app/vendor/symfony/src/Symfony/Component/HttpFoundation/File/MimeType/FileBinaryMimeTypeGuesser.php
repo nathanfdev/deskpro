@@ -53,7 +53,7 @@ class FileBinaryMimeTypeGuesser implements MimeTypeGuesserInterface
 
         // need to use --mime instead of -i. see #6641
 		$return = null;
-        passthru(sprintf('file -b --mime %s 2>/dev/null', escapeshellarg($path)), $return);
+        @passthru(sprintf('file -b --mime %s 2>/dev/null', escapeshellarg($path)), $return);
         if ($return > 0) {
             ob_end_clean();
 

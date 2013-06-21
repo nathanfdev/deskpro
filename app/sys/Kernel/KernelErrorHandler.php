@@ -675,6 +675,10 @@ class KernelErrorHandler
 				return true;
 			}
 
+			if (strpos($exception->getMessage(), 'Too many connections') !== false) {
+				return true;
+			}
+
 			if (strpos($exception->getMessage(), 'has more than \'max_user_connections\' active connections') !== false) {
 				return true;
 			}
@@ -825,6 +829,10 @@ class KernelErrorHandler
 		}
 
 		if (strpos($errstr, 'set_time_limit() has been disabled for security reasons') !== false) {
+			$no_send_error = true;
+		}
+
+		if (strpos($errstr, 'passthru() has been disabled for security reasons') !== false) {
 			$no_send_error = true;
 		}
 
