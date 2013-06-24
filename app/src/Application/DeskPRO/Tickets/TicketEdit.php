@@ -237,16 +237,16 @@ class TicketEdit implements PersonContextInterface
 						$status = true;
 
 						// Switching to or from closed
-						if (($status == 'closed' || $this->ticket->status == 'closed') && !$tcheck->canSetClosed($this->ticket)) {
+						if (($action == 'closed' || $this->ticket->status == 'closed') && !$tcheck->canSetClosed($this->ticket)) {
 							$status = null;
 						}
-						if ($status == 'resolved' && !$tcheck->canModify($this->ticket, 'set_resolved')) {
+						if ($action == 'resolved' && !$tcheck->canModify($this->ticket, 'set_resolved')) {
 							$status = null;
 						}
-						if ($status == 'awaiting_agent' && !$tcheck->canModify($this->ticket, 'set_awaiting_agent')) {
+						if ($action == 'awaiting_agent' && !$tcheck->canModify($this->ticket, 'set_awaiting_agent')) {
 							$status = null;
 						}
-						if ($status == 'awaiting_user' && !$tcheck->canModify($this->ticket, 'set_awaiting_user')) {
+						if ($action == 'awaiting_user' && !$tcheck->canModify($this->ticket, 'set_awaiting_user')) {
 							$status = null;
 						}
 						if (!$status) {
