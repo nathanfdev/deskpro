@@ -1767,7 +1767,9 @@ class Upgrade
 	 */
 	public function execCommand($command, $dir = null, &$out = null)
 	{
-		$this->log(sprintf("execCommand: dir(%s)  cmd(%s)", $dir, $command));
+		$command_log = $command;
+		$command_log = preg_replace('#password=.*? #', 'password=xxx ', $command_log);
+		$this->log(sprintf("execCommand: dir(%s)  cmd(%s)", $dir, $command_log));
 
 		if ($dir) {
 			chdir($dir);
