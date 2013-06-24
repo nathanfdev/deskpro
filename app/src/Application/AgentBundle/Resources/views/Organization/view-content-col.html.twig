@@ -158,7 +158,7 @@
 					{% if org_tickets|length < org_tickets_count %}
 						<tr class="more">
 							<td colspan="100">
-								<button class="clean-white" id="{{baseId}}_tickets_viewall">
+								<button class="clean-white" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter', {'set_term[organization]': org.id}) }}">
 									{{ phrase('agent.general.view_all_x_tickets', {'count':org_tickets_count}) }}
 								</button>
 							</td>
