@@ -42,7 +42,7 @@ class Build1369921235 extends AbstractBuild
 	{
 		$this->out("Add object_lang");
 
-		$this->execMutateSql("CREATE TABLE object_lang (id INT AUTO_INCREMENT NOT NULL, language_id INT DEFAULT NULL, ref VARCHAR(200) NOT NULL, prop_name VARCHAR(100) NOT NULL, value LONGTEXT NOT NULL, INDEX IDX_AC1CB87182F1BAF4 (language_id), UNIQUE INDEX prop_ref (ref, prop_name, language_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+		$this->execMutateSql("CREATE TABLE object_lang (id INT AUTO_INCREMENT NOT NULL, language_id INT DEFAULT NULL, ref VARCHAR(200) NOT NULL, prop_name VARCHAR(100) NOT NULL, value LONGTEXT NOT NULL, INDEX IDX_AC1CB87182F1BAF4 (language_id), UNIQUE INDEX prop_ref (ref, prop_name, language_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
 		$this->execMutateSql("ALTER TABLE object_lang ADD CONSTRAINT FK_AC1CB87182F1BAF4 FOREIGN KEY (language_id) REFERENCES languages (id) ON DELETE CASCADE");
 
 		$lang_id = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.default_language_id'");
