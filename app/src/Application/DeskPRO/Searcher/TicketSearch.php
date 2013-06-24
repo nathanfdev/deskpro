@@ -1563,7 +1563,7 @@ class TicketSearch extends SearcherAbstract
 
 						break;
 					case self::TERM_ORGANIZATION:
-						if (is_array($choice['organization_ids']) && isset($choice['organization_ids'])) {
+						if (isset($choice['organization_ids']) && is_array($choice['organization_ids'])) {
 							$choice = $choice['organization_ids'];
 						}
 						if (!is_array($choice)) {
