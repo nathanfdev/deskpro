@@ -363,45 +363,6 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						</li>
 						{% endif %}
-						<li id="{{baseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
-							<label>{{ phrase('agent.tickets.cc') }}:</label>
-							<div>
-								<div id="{{baseId}}_newcc" style="display: none;"></div>
-								<div id="{{baseId}}_delcc" style="display: none;"></div>
-
-								<div class="user-rows" id="{{baseId}}_cc_user_rows">
-									{% for p in user_parts %}
-										<div class="cc-user-row" data-email="{{ p.person_email.email }}"><span class="btn-small-remove remove-row-trigger"></span><span class="user-email">{{ p.person_email.email }}</span></div>
-									{% endfor %}
-								</div>
-								<script class="email-row-tpl" type="text/x-deskpro-tmpl">
-									<div class="cc-user-row">
-										<span class="btn-small-remove remove-row-trigger"></span>
-										<span class="user-email"></span>
-									</div>
-								</script>
-								<div class="addrow noedit-hide">
-									<input type="text" class="user-part cc-people-search-trigger" />
-									<div class="person-search-box" style="display: none">
-										<section>
-											<ul class="results-list">
-
-											</ul>
-										</section>
-									</div>
-									<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
-									<script class="user-row-tpl" type="text/x-deskpro-tmpl">
-										<li>
-											<a>
-												<span class="user-name"></span>
-												<address>&lt;<span class="user-email"></span>&gt;</address>
-												<div class="bound-fade"></div>
-											</a>
-										</li>
-									</script>
-								</div>
-							</div>
-						</li>
 						<li class="subject-row">
 							<label>Subject:</label>
 							<div>
