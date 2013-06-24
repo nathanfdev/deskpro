@@ -229,24 +229,26 @@ class ImportZendeskCommand extends ImportCommand
 		}
 
 		// Check the Zendesk import info
-		try {
-			$zd = new Zendesk(
-				$DP_CONFIG['import']['zendesk_domain'],
-				$DP_CONFIG['import']['zendesk_user_id'],
-				$DP_CONFIG['import']['zendesk_api_token']
-			);
+		if ($mode == 'run' && !$start_step) {
+			try {
+				$zd = new Zendesk(
+					$DP_CONFIG['import']['zendesk_domain'],
+					$DP_CONFIG['import']['zendesk_user_id'],
+					$DP_CONFIG['import']['zendesk_api_token']
+				);
 
-			$res = $zd->sendGet('tickets/recent');
+				$res = $zd->sendGet('tickets/recent');
 
-			if ($res->isError()) {
-				$logger->logDebug($res->getRaw());
-				$logger->log('We detected a problem while testing the Zendesk API: ('.$res->getHttpStatusCode().') ' . $res->getErrorCode() . ': ' . $res->getErrorDescription(), Logger::ERR);
+				if ($res->isError()) {
+					$logger->logDebug($res->getRaw());
+					$logger->log('We detected a problem while testing the Zendesk API: ('.$res->getHttpStatusCode().') ' . $res->getErrorCode() . ': ' . $res->getErrorDescription(), Logger::ERR);
+					return 1;
+				}
+
+			} catch (\Exception $e) {
+				$logger->log('There was a problem detected while testing a connection to the Zendesk API: ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 				return 1;
 			}
-
-		} catch (\Exception $e) {
-			$logger->log('There was a problem detected while testing a connection to the Zendesk API: ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
-			return 1;
 		}
 
 		#----------------------------------------

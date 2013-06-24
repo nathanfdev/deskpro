@@ -112,21 +112,6 @@ class ZendeskImporter extends AbstractImporter
 			$this->config->zendesk_user_id,
 			$this->config->zendesk_api_token
 		);
-
-		if ($mode == 'rerun') {
-			$data = $this->db->fetchColumn("
-				SELECT data
-				WHERE typename = 'import_rerun_data'
-				LIMIT 1
-			");
-
-			if ($data) {
-				$data = unserialize($data);
-				if (!$data) {
-					throw new \RuntimeException("Could not unserialize rerun data");
-				}
-			}
-		}
 	}
 
 
@@ -392,29 +377,5 @@ class ZendeskImporter extends AbstractImporter
 	public function getZd()
 	{
 		return $this->zd;
-	}
-
-	/**
-	 * @param string
-	 * @return mixed
-	 */
-	public function getRerunData($k)
-	{
-		return isset($this->rerun_data[$k]) ? $this->rerun_data[$k] : null;
-	}
-
-
-	/**
-	 * @param string $k
-	 * @param string $v
-	 */
-	public function saveRerunData($k, $v)
-	{
-		$this->rerun_data[$k] = $v;
-
-		$this->getDb()->replace('import_datastore', array(
-			'typename' => 'import_rerun_data',
-			'data' => serialize($this->rerun_data)
-		));
 	}
 }

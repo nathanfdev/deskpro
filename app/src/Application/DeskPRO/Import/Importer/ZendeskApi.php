@@ -103,6 +103,10 @@ class ZendeskApi extends Zendesk
 				}
 			}
 
+			if ($ex && $ex instanceof ApiException && $ex->api_error_code == '429') {
+				$err = 'rate';
+			}
+
 			// Success, return
 			if (!$err) {
 				return $res;
@@ -141,7 +145,11 @@ class ZendeskApi extends Zendesk
 							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed with an error status: %s", $body));
 						}
 
-						throw new ApiException("API call failed with error status", $res->getHttpStatusCode(), $res->getErrorCode(), $res->getRaw());
+						if ($res) {
+							throw new ApiException("API call failed with error status", $res->getHttpStatusCode(), $res->getErrorCode(), $res->getRaw());
+						} else {
+							throw new ApiException("API call failed: {$ex->getCode()} {$ex->getMessage()}", 0, 0, '', $ex);
+						}
 					}
 				}
 			}

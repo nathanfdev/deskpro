@@ -40,6 +40,8 @@ use Orb\Util\Strings;
 
 class TicketFieldsStep extends AbstractZendeskStep
 {
+	public $on_rerun = false;
+
 	public static function getTitle()
 	{
 		return 'Import Ticket Fields';
@@ -47,11 +49,6 @@ class TicketFieldsStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			$this->logMessage("-- Skipping. This step is not run during --rerun.");
-			return;
-		}
-
 		$sub_start_time = microtime(true);
 
 		#------------------------------

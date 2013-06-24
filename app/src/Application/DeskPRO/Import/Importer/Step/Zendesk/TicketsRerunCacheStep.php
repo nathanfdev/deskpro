@@ -34,28 +34,23 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
-use Orb\Service\Zendesk\ApiException;
 use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
 
 class TicketsRerunCacheStep extends AbstractZendeskStep
 {
+	public $on_rerun = true;
+	public $on_run = false;
+
 	const PERPAGE = 100;
 	const PERBATCH = 5;
 
 	public static function getTitle()
 	{
-		return 'ReRun Tickets (Download)';
+		return 'ReRun Tickets (Cache)';
 	}
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			return 1;
-		}
-
 		$ticket_ids = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = 'zd_tickets_rerun_ids'");
 		if ($ticket_ids) {
 			$ticket_ids = @unserialize($ticket_ids);
@@ -66,7 +61,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		$count = count($ticket_ids);
 		$pages = ceil($count / self::PERPAGE);
-		$batches = $pages / 5;
+		$batches = ceil($pages / 5);
 
 		$this->db->replace('import_datastore', array(
 			'typename' => 'zd_tickets_cache_rerun_pages',
@@ -85,11 +80,6 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 	public function run($batch = 1)
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			$this->logMessage("-- Skipping. This step is only run during --rerun.");
-			return;
-		}
-
 		$ticket_ids = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = 'zd_tickets_rerun_ids'");
 		if ($ticket_ids) {
 			$ticket_ids = @unserialize($ticket_ids);
@@ -108,14 +98,15 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		for ($i = 1; $i <= self::PERBATCH; $i++) {
 			$page = (($batch-1)*self::PERBATCH) + $i;
+			$idx = $page-1;
 
-			if (empty($ticket_ids[$page])) {
+			if (empty($ticket_ids[$idx])) {
 				continue;
 			}
 
 			$reqs[$page] = array(
-				'tickets',
-				array('per_page' => self::PERPAGE, 'ids' => implode(',', $ticket_ids[$page]))
+				'tickets/show_many',
+				array('per_page' => self::PERPAGE, 'ids' => implode(',', $ticket_ids[$idx]))
 			);
 		}
 

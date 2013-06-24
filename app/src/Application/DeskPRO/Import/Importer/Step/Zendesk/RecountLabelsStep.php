@@ -45,11 +45,6 @@ class RecountLabelsStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			$this->logMessage("-- Skipping. This step is only run during --rerun.");
-			return;
-		}
-
 		$sub_start_time = microtime(true);
 
 		$this->db->exec("TRUNCATE TABLE label_defs");

@@ -34,14 +34,14 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
-use Orb\Service\Zendesk\ApiException;
+use Application\DeskPRO\Import\Importer\Step\Zendesk\Ticket\ImportTicket;
 use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
 
-class TicketsStep extends AbstractZendeskStep
+class TicketsRerunStep extends AbstractZendeskStep
 {
+	public $on_rerun = true;
+	public $on_run = false;
+
 	const PERPAGE = 100;
 
 	/**
@@ -56,14 +56,10 @@ class TicketsStep extends AbstractZendeskStep
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			return 1;
-		}
-
 		$count = $this->db->fetchColumn("
 			SELECT data
 			FROM import_datastore
-			WHERE typename = 'zd_ticket_cache_rerun_total'
+			WHERE typename = 'zd_tickets_cache_rerun_total'
 		");
 
 		$this->logMessage(sprintf("%d records in %d pages", $count, ceil($count / self::PERPAGE)));
@@ -73,11 +69,6 @@ class TicketsStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			$this->logMessage("-- Skipping. This step is only run during --rerun.");
-			return;
-		}
-
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
@@ -124,7 +115,7 @@ class TicketsStep extends AbstractZendeskStep
 		$cached = $this->db->fetchColumn("
 			SELECT data
 			FROM import_datastore
-			WHERE typename = 'zd_tickets_cache_rerun.p{$page}'
+			WHERE typename = 'zd_tickets_rerun_cache.p{$page}'
 		");
 
 		$res = null;

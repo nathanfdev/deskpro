@@ -38,6 +38,10 @@ use Application\DeskPRO\Import\Importer\Step\AbstractStep;
 
 abstract class AbstractZendeskStep extends AbstractStep
 {
+	public $on_run   = true;
+	public $on_rerun = true;
+	public $on_fast  = true;
+
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\ZendeskImporter
 	 */

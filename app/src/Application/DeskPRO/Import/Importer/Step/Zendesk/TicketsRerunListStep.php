@@ -34,25 +34,20 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
-use Orb\Service\Zendesk\ApiException;
 use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
 
 class TicketsRerunListStep extends AbstractZendeskStep
 {
+	public $on_rerun = true;
+	public $on_run = false;
+
 	public static function getTitle()
 	{
-		return 'ReRun Tickets (Download Change List)';
+		return 'ReRun Tickets (Change List)';
 	}
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			return 1;
-		}
-
 		// We dont actually know how long it'll take,
 		// but by setting 10 we at least have some paginiation/UI updates on the CLI
 		// and this handles changes to 10,000.
@@ -61,8 +56,12 @@ class TicketsRerunListStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode != 'rerun') {
-			$this->logMessage("-- Skipping. This step is only run during --rerun.");
+		if ($page == 1) {
+			$this->db->replace('import_datastore', array('typename' => 'zd_tickets_rerun_list_cont', 'data' => 1));
+		}
+
+		$do_run = (bool)$this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = 'zd_tickets_rerun_list_cont'");
+		if (!$do_run) {
 			return;
 		}
 
@@ -90,24 +89,35 @@ class TicketsRerunListStep extends AbstractZendeskStep
 				'start_time' => $last_time
 			));
 
-			if ($res->get('results') && count($res->get('results')) > 1) {
+			if ($res->get('results') && count($res->get('results')) >= 1) {
 				$last_time = $res->get('end_time');
 
+				$x = 0;
 				foreach ($res->get('results') as $res) {
+					$x++;
 					$ticket_ids[] = (int)$res['id'];
 				}
+
+				if (!$last_time) {
+					$last_time = time();
+				}
+
+				$this->db->replace('import_datastore', array(
+					'typename' => 'zd_tickets_rerun_lasttime',
+					'data' => $last_time,
+				));
+
+				if ($x >= 1000) {
+					$this->db->replace('import_datastore', array('typename' => 'zd_tickets_rerun_list_cont', 'data' => 1));
+				} else {
+					$this->db->replace('import_datastore', array('typename' => 'zd_tickets_rerun_list_cont', 'data' => 0));
+				}
+
+			// No more results
 			} else {
-				$last_time = 0;
+				$this->db->replace('import_datastore', array('typename' => 'zd_tickets_rerun_list_cont', 'data' => 0));
+				break;
 			}
-
-			if (!$last_time) {
-				$last_time = time();
-			}
-
-			$this->db->replace('import_datastore', array(
-				'typename' => 'zd_tickets_rerun_lasttime',
-				'data' => $last_time,
-			));
 
 			// For anything but the last page, we only do one
 			// request per page so we can update the % done indicator in the CLI.

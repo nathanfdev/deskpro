@@ -34,14 +34,12 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportTicket;
-use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
-use Orb\Service\Zendesk\ApiException;
 use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
 
 class UsersCacheStep extends AbstractZendeskStep
 {
+	public $on_rerun = false;
+
 	const PERPAGE  = 100;
 	const PERBATCH = 5;
 
@@ -57,10 +55,6 @@ class UsersCacheStep extends AbstractZendeskStep
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			return 1;
-		}
-
 		$this->db->replace('import_datastore', array(
 			'typename' => 'zd_users_cache_time',
 			'data' => time()
@@ -70,7 +64,7 @@ class UsersCacheStep extends AbstractZendeskStep
 		$count = (int)$res->get('count');
 
 		$pages = ceil($count / self::PERPAGE);
-		$batches = $pages / 5;
+		$batches = ceil($pages / 5);
 
 		$this->db->replace('import_datastore', array(
 			'typename' => 'zd_users_cache_pages',
@@ -89,11 +83,6 @@ class UsersCacheStep extends AbstractZendeskStep
 
 	public function run($batch = 1)
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			$this->logMessage("-- Skipping. This step is not run during --rerun.");
-			return;
-		}
-
 		if ($batch == 1) {
 			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_users_cache.%'");
 		}

@@ -39,6 +39,8 @@ use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
 
 class UsersStep extends AbstractZendeskStep
 {
+	public $on_rerun = false;
+
 	const PERPAGE = 100;
 
 	/**
@@ -58,14 +60,10 @@ class UsersStep extends AbstractZendeskStep
 
 	public function countPages()
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			return 1;
-		}
-
 		$count = $this->db->fetchColumn("
 			SELECT data
 			FROM import_datastore
-			WHERE typename = 'zd_ticket_cache_total'
+			WHERE typename = 'zd_users_cache_total'
 		");
 
 		$this->logMessage(sprintf("%d records in %d pages", $count, ceil($count / self::PERPAGE)));
@@ -75,11 +73,6 @@ class UsersStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
-		if ($this->importer->run_mode == 'rerun') {
-			$this->logMessage("-- Skipping. This step is not run during --rerun.");
-			return;
-		}
-
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
@@ -128,7 +121,7 @@ class UsersStep extends AbstractZendeskStep
 		$cached = $this->db->fetchColumn("
 			SELECT data
 			FROM import_datastore
-			WHERE typename = 'zd_tickets_cache.p{$page}'
+			WHERE typename = 'zd_users_cache.p{$page}'
 		");
 
 		$res = null;

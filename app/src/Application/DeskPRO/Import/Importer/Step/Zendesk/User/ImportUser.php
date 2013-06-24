@@ -57,7 +57,7 @@ class ImportUser
 			return $user_id;
 		}
 
-		$res = $this->importer->zd->sendGet("users/$zd_user_id.json");
+		$res = $this->importer->zd->sendGet("users/$zd_user_id");
 		if (!isset($res['user'])) {
 			return null;
 		}

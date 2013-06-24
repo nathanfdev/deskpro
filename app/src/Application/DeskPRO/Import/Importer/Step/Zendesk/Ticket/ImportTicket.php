@@ -31,8 +31,9 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Import\Importer\Step\Zendesk\User;
+namespace Application\DeskPRO\Import\Importer\Step\Zendesk\Ticket;
 
+use Application\DeskPRO\Import\Importer\Step\Zendesk\User\ImportUser;
 use Orb\Service\Zendesk\ApiException;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
@@ -59,7 +60,7 @@ class ImportTicket
 
 		if ($this->importer->db->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($ticket_id))) {
 			// Already imported (skip)
-			return;
+			return $ticket_id;
 		}
 
 		if (!$this->importer->getMappedNewId('zd_user_id', $ticket_info['requester_id'])) {
@@ -68,7 +69,7 @@ class ImportTicket
 			$import_user->importUserId($ticket_info['requester_id']);
 
 			if (!$this->importer->getMappedNewId('zd_user_id', $ticket_info['requester_id'])) {
-				return;
+				return 0;
 			}
 		}
 
@@ -477,8 +478,10 @@ class ImportTicket
 	{
 		$ticket_id = $ticket_info['id'];
 
+		$have_ticket = $this->importer->db->fetchAssoc("SELECT * FROM tickets WHERE id = ?", array($ticket_id));
+
 		// Doesnt exist, insert it now
-		if (!$this->importer->db->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($ticket_id))) {
+		if (!$have_ticket) {
 			return $this->import($ticket_info);
 		}
 
@@ -489,7 +492,7 @@ class ImportTicket
 			$import_user->importUserId($ticket_info['requester_id']);
 
 			if (!$this->importer->getMappedNewId('zd_user_id', $ticket_info['requester_id'])) {
-				return;
+				return 0;
 			}
 		}
 
@@ -560,10 +563,10 @@ class ImportTicket
 			}
 		}
 
-		$insert_ticket['date_status']            = $insert_ticket['date_created'];
+		$insert_ticket['date_status']            = $have_ticket['date_created'];
 		$insert_ticket['date_first_agent_reply'] = null;
 		$insert_ticket['date_last_agent_reply']  = null;
-		$insert_ticket['date_last_user_reply']   = $insert_ticket['date_created'];
+		$insert_ticket['date_last_user_reply']   = $have_ticket['date_created'];
 		$insert_ticket['date_agent_waiting']     = null;
 		$insert_ticket['date_user_waiting']      = null;
 		$insert_ticket['total_user_waiting']     = 0;
@@ -786,7 +789,7 @@ class ImportTicket
 			$update['date_first_agent_reply'] = $first_agent_time;
 
 			if (!$insert_ticket['total_to_first_reply']) {
-				$total_first_reply = strtotime($first_agent_time) - strtotime($insert_ticket['date_created']);
+				$total_first_reply = strtotime($first_agent_time) - strtotime($have_ticket['date_created']);
 				if ($total_first_reply) {
 					$update['total_to_first_reply'] = $total_first_reply;
 				}
