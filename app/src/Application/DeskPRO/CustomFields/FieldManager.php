@@ -130,12 +130,15 @@ class FieldManager
 	public function getFields()
 	{
 		if ($this->fields === null) {
+			$this->fields          = array();
+			$this->all_fields      = array();
+			$this->real_fields     = array();
+			$this->real_all_fields = array();
+
 			if ($this->options->get('disabled')) {
-				$this->fields = array();
 				return $this->fields;
 			}
 
-			$this->fields = array();
 			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
 			foreach ($all_fields as $f) {
