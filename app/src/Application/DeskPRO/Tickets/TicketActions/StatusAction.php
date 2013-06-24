@@ -90,7 +90,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
 		if ($this->status == 'awaiting_user' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
 			return false;
 		}
-		if ($this->status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
+		if ($this->status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) {
 			return false;
 		}
 
