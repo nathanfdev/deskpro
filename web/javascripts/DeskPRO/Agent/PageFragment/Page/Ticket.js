@@ -331,8 +331,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						success: function(data) {
 							var append = [];
 							Array.each(data, function(t) {
-								var row = renderTicketOption(t);
-								append.push(row);
+								if (t.id && t.id != self.meta.ticket_id) {
+									var row = renderTicketOption(t);
+									append.push(row);
+								}
 							});
 
 							if (append.length) {
@@ -364,8 +366,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							return;
 						}
 
-						var row = renderTicketOption(t);
-						append.push(row);
+						if (t.id && t.id != self.meta.ticket_id) {
+							var row = renderTicketOption(t);
+							append.push(row);
+						}
 					});
 
 					if (append.length) {
