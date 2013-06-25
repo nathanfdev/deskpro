@@ -24,6 +24,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				}
 				self.removeRow(row);
 			});
+
+			DeskPRO_Window.getMessageChanneler().poller.send();
 			Orb.shimClickCallbackPop();
 		}).on('click', '.dismiss', function(ev) {
 			Orb.cancelEvent(ev);
@@ -34,6 +36,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			if (row.data('alert-id')) {
 				DeskPRO_Window.dismissAlertQueue.push(row.data('alert-id'));
+				DeskPRO_Window.getMessageChanneler().poller.send();
 			}
 
 			self.removeRow(row);
@@ -52,6 +55,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			if (row.data('alert-id')) {
 				DeskPRO_Window.dismissAlertQueue.push(row.data('alert-id'));
+				DeskPRO_Window.getMessageChanneler().poller.send();
 			}
 
 			self.removeRow(row);
