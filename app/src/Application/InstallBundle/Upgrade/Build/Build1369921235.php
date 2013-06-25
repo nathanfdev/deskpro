@@ -103,10 +103,11 @@ class Build1369921235 extends AbstractBuild
 			$snippet = str_replace(array_keys($find_replace), array_values($find_replace), $snippet);
 
 			$this->container->getDb()->insert('text_snippets', array(
-				'person_id'   => $r['person_id'],
-				'category_id' => isset($cat_map[$r['category_id']]) ? $cat_map[$r['category_id']] : Arrays::getFirstItem($cat_map),
-				'title'       => $r['title'],
-				'snippet'     => $snippet
+				'person_id'     => $r['person_id'],
+				'category_id'   => isset($cat_map[$r['category_id']]) ? $cat_map[$r['category_id']] : Arrays::getFirstItem($cat_map),
+				'title'         => $r['title'],
+				'snippet'       => $snippet,
+				'shortcut_code' => $r['shortcut_code'] ?: ''
 			));
 		}
 
