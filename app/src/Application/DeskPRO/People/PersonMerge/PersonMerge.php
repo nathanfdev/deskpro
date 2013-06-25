@@ -114,6 +114,12 @@ class PersonMerge implements PersonContextInterface
 				$this->person->date_created = $this->other_person->date_created;
 			}
 
+			foreach (array('is_agent', 'can_agent', 'can_admin', 'can_billing', 'can_reports') as $attr) {
+				if ($this->person[$attr] || $this->other_person[$attr]) {
+					$this->person[$attr] = true;
+				}
+			}
+
 			$this->_mergeCustomFields();
 
 			$this->_mergeContactData();
