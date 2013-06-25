@@ -36,7 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket AS Ticket;
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Tickets\SnippetFormatter;
 
 class TicketController extends AbstractController
 {
@@ -172,9 +172,8 @@ class TicketController extends AbstractController
 		$message->person = ($this->in->getBool('message_as_agent') ? $this->person : $person);
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
-		$snip = new \Application\DeskPRO\Entity\TicketSnippet();
-		$snip->snippet = $message_text;
-		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
+		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+		$message_text = $formatter->formatText($message_text, $ticket);
 
 		if ($this->in->getBool('message_is_html')) {
 			$message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
