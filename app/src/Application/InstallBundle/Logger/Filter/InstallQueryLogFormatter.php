@@ -37,7 +37,7 @@ namespace Application\InstallBundle\Logger\Filter;
 class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 {
 	public $max_time = 0.1;
-	public $log_max_type = 5;
+	public $log_max_type = 100;
 	public $done_log = array();
 
 	public function filter($log_item)

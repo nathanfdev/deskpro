@@ -1129,12 +1129,20 @@ class ImportTicket
 					break;
 
 				case 'email_user':
-
 					$id = $this->importer->getMappedNewId('user', $tlog['id_before']);
 					if (!$id) {
 						break;
 					}
-					$p = $this->step->getPersonInfo($id);
+
+					if ($this->importer->getConfig('fast_import')) {
+						$p = array(
+							'id'           => $id,
+							'person_name'  => 'User #'.$id,
+							'person_email' => 'default'
+						);
+					} else {
+						$p = $this->step->getPersonInfo($id);
+					}
 
 					$insert_tlog['details']['who_emailed'] = array(array(
 						'person_id'    => $p['id'],

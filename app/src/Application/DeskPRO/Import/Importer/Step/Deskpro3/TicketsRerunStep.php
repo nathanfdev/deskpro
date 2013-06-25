@@ -370,7 +370,7 @@ class TicketsRerunStep extends AbstractDeskpro3Step
 		$info = $this->getDb()->fetchAssoc("
 			SELECT p.id, p.first_name, p.last_name, p.name, pe.email AS primary_email_address
 			FROM people p
-			LEFT JOIN people_emails AS pe ON (pe.person_id = p.id)
+			LEFT JOIN people_emails AS pe ON (pe.id = p.primary_email_id)
 			WHERE p.id = ?
 		", array($new_id));
 
