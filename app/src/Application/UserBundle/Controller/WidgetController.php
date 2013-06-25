@@ -158,6 +158,9 @@ class WidgetController extends AbstractController
 		}
 
 		$website_url = $this->in->getString('website_url');
+		if (!$website_url) {
+			$website_url = $this->in->getString('parent_url');
+		}
 
 		$cf_man = $this->container->getSystemService('FeedbackFieldsManager');
 		$newfeedback_cat_field = $cf_man->getSystemField('cat');
