@@ -117,9 +117,11 @@ class AgentDataService
 	{
 		$ret = array();
 
-		foreach ($this->getAgents() as $agent) {
-			if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
-				$ret[$agent->getId()] = $agent->getDisplayName();
+		if ($for_ids) {
+			foreach ($this->getAgents() as $agent) {
+				if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
+					$ret[$agent->getId()] = $agent->getDisplayName();
+				}
 			}
 		}
 

@@ -197,12 +197,16 @@ class TermSummary
 				$agent_ids = $info['agent_ids'];
 				$not_id = $info['not_id'];
 
+				if (!is_array($agent_ids)) {
+					$agent_ids = array($agent_ids);
+				}
+
 				$names = array();
 				if ($unassigned) {
 					$names[] = $tr->phrase('agent.general.unassigned');
 				}
 				if ($agent_ids) {
-					$names[] = array_mergE($names, App::getContainer()->getAgentData()->getNames($agent_ids));
+					$names = array_merge($names, App::getContainer()->getAgentData()->getNames($agent_ids));
 				}
 				if ($not_id) {
 					$summary = $tr->phrase('agent.general.agent_is_not_me');
