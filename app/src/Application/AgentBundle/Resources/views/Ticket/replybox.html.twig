@@ -228,7 +228,7 @@
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
 				<div class="hide-note">
-					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 1000;">
+					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 50;">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
 							{% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' or (ticket.status == 'awaiting_user' and not app.getSetting('core_tickets.reply_status')) %}
@@ -245,7 +245,7 @@
 					</div>
 				</div>
 				<div class="hide-reply" style="display: none">
-					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 1000;">
+					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
 						<i class="icon-share"></i>&nbsp;
 						Add Note
 					</a>
@@ -259,8 +259,8 @@
 							{% set assign_opt = 'core_tickets.reply_assign_unassigned' %}
 						{% endif %}
 						<table cellspacing="0" cellpadding="0" border="0" style="height: 30px;"><tr><td style="height: 30px;vertical-align: middle;">
-							<input style="position: relative; z-index: 1000;" type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<span style="position: relative; top: 2px; position: relative; z-index: 1000"><label for="{{replyBaseId}}_agent_sel_check" style="line-height: 100%;">Agent:&nbsp;</label></span>
+							<input style="position: relative; z-index: 50;" type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
+							<span style="position: relative; top: 2px; position: relative; z-index: 50"><label for="{{replyBaseId}}_agent_sel_check" style="line-height: 100%;">Agent:&nbsp;</label></span>
 						</td><td style="height: 30px;vertical-align: middle;">
 							<div style="position: relative; top: 1px;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%; line-height: 15px;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
@@ -282,8 +282,8 @@
 							{% else %}
 								{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
 							{% endif %}
-							<input style="position: relative; z-index: 1000;" type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<span style="position: relative; top: 2px; position: relative; z-index: 1000"><label for="{{ replyBaseId }}_agent_team_sel_check" style="line-height: 100%;">Team:&nbsp;</label></span>
+							<input style="position: relative; z-index: 50;" type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
+							<span style="position: relative; top: 2px; position: relative; z-index: 50"><label for="{{ replyBaseId }}_agent_team_sel_check" style="line-height: 100%;">Team:&nbsp;</label></span>
 						</td><td style="height: 30px; vertical-align: middle;">
 							<div style="position: relative; top: 1px;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
