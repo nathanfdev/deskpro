@@ -1369,6 +1369,27 @@ HTML;
 
 		\DpShutdown::run();
 
+		if (defined('DP_APC_STATS_KEY')) {
+			if (isset($GLOBALS['DP_QUERY_COUNT'])) {
+				$val = @apc_fetch(DP_APC_STATS_KEY.'.query_count');
+				if (!$val) $val = array();
+
+				$time = intval(date('YmdH'));
+				if (!isset($val[$time])) {
+					$val[$time] = 0;
+				}
+
+				$val[$time] += $GLOBALS['DP_QUERY_COUNT'];
+
+				if (count($val[$time]) > 23) {
+					ksort($val, \SORT_NUMERIC);
+					array_shift($val);
+				}
+
+				@apc_store(DP_APC_STATS_KEY.'.query_count', $val);
+			}
+		}
+
 		if (!defined('DP_DEBUG_TRACE_FILE')) {
 			return;
 		}

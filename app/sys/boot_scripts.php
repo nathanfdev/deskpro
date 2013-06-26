@@ -121,4 +121,8 @@ switch ($_GET['_sys']) {
 	case 'smtp_event':
 		require DP_ROOT.'/sys/scripts/smtp_event.php';
 		break;
+
+	case 'stats':
+		require DP_ROOT.'/sys/scripts/stats.php';
+		break;
 }

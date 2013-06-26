@@ -229,6 +229,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		}
 
 		$this->query_count++;
+		if (!isset($GLOBALS['DP_QUERY_COUNT'])) {
+			$GLOBALS['DP_QUERY_COUNT'] = 0;
+		}
+		$GLOBALS['DP_QUERY_COUNT']++;
 		$this->total_time += $this->last_query['time_taken'];
 	}
 
