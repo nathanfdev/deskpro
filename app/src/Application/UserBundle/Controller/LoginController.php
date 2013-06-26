@@ -266,6 +266,19 @@ HTML;
 
 		if (!$result->isValid()) {
 
+			// If this is an agent or admin and its an ldap error, show them an actual error page
+			if (isset($GLOBALS['DP_AUTH_EXCEPTION']) && isset($GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'])) {
+				$adapter = $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'];
+				if (DP_INTERFACE != 'user' && ($adapter instanceof \Application\DeskPRO\Usersource\Adapter\Ldap || $adapter instanceof \Application\DeskPRO\Usersource\Adapter\ActiveDirectory)) {
+					if (!extension_loaded('ldap')) {
+						return $this->render('UserBundle:Main:error-standard.html.twig', array(
+							'error_message' => 'LDAP Extension Required',
+							'error_title'   => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
+						));
+					}
+				}
+			}
+
 			// Send alert
 			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
 			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
@@ -463,6 +476,9 @@ HTML;
 				$result = $adapter->authenticate();
 			} catch (\Exception $e) {
 				KernelErrorHandler::logException($e, false);
+				$GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
+				$GLOBALS['DP_AUTH_EXCEPTION'] = $e;
+				continue;
 			}
 
 			if ($result->isValid()) {
