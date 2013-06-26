@@ -150,7 +150,7 @@ class FieldManager
 				}
 
 				if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-					if ($f->is_user_enabled) {
+					if (!$f->is_agent_field && $f->is_user_enabled) {
 						$this->all_fields[$f->getId()] = $f;
 						if (!$f->getParentId()) {
 							$this->fields[$f->getId()] = $f;
