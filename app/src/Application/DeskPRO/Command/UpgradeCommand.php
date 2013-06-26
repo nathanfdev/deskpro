@@ -121,6 +121,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			$output->writeln("<info>Build #$next_id</info>");
 
 			$cmd = dp_get_php_command('cmd.php', "dp:upgrade --dobuildrun=$next_id");
+			$ret = null;
 			passthru($cmd, $ret);
 
 			if ($ret) {
