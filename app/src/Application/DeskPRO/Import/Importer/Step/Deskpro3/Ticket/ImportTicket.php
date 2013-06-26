@@ -1136,9 +1136,9 @@ class ImportTicket
 
 					if ($this->importer->getConfig('fast_import')) {
 						$p = array(
-							'id'           => $id,
-							'person_name'  => 'User #'.$id,
-							'person_email' => 'default'
+							'id'                    => $id,
+							'display_name'          => 'User #'.$id,
+							'primary_email_address' => 'default'
 						);
 					} else {
 						$p = $this->step->getPersonInfo($id);
