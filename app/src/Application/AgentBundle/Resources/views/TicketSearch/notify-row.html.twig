@@ -7,7 +7,10 @@
 >
 	<div class="dismiss"><i class="icon-ban-circle"></i></div>
 	<time datetime="{{ 'now'|date('c', 'UTC') }}"></time>
-	<big>{{ ticket.subject }}</big>
+	<big>
+		<span class="row-id">#{{ ticket.id }}</span>
+		{{ ticket.subject }}
+	</big>
 	<small>
 		{% if is_new_ticket %}
 			{% if ticket.person.id != performer.id %}

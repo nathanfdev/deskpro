@@ -1533,6 +1533,13 @@ table.layout-table.v-middle {
 				color: @agent_menu_highlight_text_color;
 				cursor: pointer;
 
+				big {
+					span.row-id {
+						color: @agent_menu_highlight_text_color;
+						border: 1px solid @agent_menu_highlight_text_color;
+					}
+				}
+
 				.dismiss {
 					border-color: @agent_menu_highlight_text_color;
 					i {
@@ -1570,6 +1577,18 @@ table.layout-table.v-middle {
 				margin: 1px 0 3px 0;
 				padding: 0;
 				line-height: 100%;
+
+				span.row-id {
+					font-weight: normal;
+					color: #8B8B8B;
+					font-size: 10px;
+					margin-right: 1px;
+					border: 1px solid #BFBFBF;
+					line-height: 100%;
+					display: inline-block;
+					.rounded(2px);
+					padding: 1px 2px;
+				}
 			}
 			small {
 				display: block;
