@@ -2635,6 +2635,9 @@ the specific language governing permissions and limitations under the Apache Lic
         },
 
         addSelectedChoice: function (data) {
+			if (!data || !data.id || !data.text || (data.id === "" && data.text === "")) {
+				return;
+			}
             var enableChoice = !data.locked,
                 enabledItem = $(
                     "<li class='select2-search-choice'>" +
