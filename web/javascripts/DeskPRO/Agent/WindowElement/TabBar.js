@@ -512,8 +512,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				}
 			}
 
-			data.tabBtn.remove();
-			data.tabBtn2.remove();
+			if (data.tabBtn)  data.tabBtn.remove();
+			if (data.tabBtn2) data.tabBtn2.remove();
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
