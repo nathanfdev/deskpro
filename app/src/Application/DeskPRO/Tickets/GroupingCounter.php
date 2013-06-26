@@ -448,10 +448,12 @@ class GroupingCounter
 
 			case TicketSearch::TERM_CATEGORY:
 				$group_structure = App::getDataService('TicketCategory')->getInHierarchy();
+				$group_structure['0'] = array('id' => 0, 'title' => 'None');
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
 				$group_structure = App::getDataService('Product')->getInHierarchy();
+				$group_structure['0'] = array('id' => 0, 'title' => 'None');
 				break;
 
 			default:
