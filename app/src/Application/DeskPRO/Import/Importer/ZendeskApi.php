@@ -139,7 +139,7 @@ class ZendeskApi extends Zendesk
 
 				// Try again after a sleep
 				} else {
-					if ($ex == 'exception') {
+					if ($err == 'exception') {
 						if ($this->logger) {
 							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed due to an exception: %s %s", $ex->getCode(), $ex->getMessage()));
 						}
