@@ -83,6 +83,10 @@ class ImportUser
 			return $user_id;
 		}
 
+		if (empty($user_info['email'])) {
+			return null;
+		}
+
 		#----------------------------------------
 		# Insert user record
 		#----------------------------------------

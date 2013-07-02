@@ -52,7 +52,7 @@ class ZendeskApi extends Zendesk
 	 *
 	 * @var int
 	 */
-	public $try_time_error  = 2;
+	public $try_time_error  = 6;
 
 	/**
 	 * The number of seconds between try attempts
@@ -61,6 +61,15 @@ class ZendeskApi extends Zendesk
 	 * @var int
 	 */
 	public $try_time_ratelimit  = 11;
+
+	/**
+	 * The number of seconds between try attempts increases
+	 * by this number every time. So try #2 is $try_time_ratelimit,
+	 * try #3 is $try_time_ratelimit+$try_time_inc, etc.
+	 *
+	 * @var int
+	 */
+	public $try_time_inc = 10;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -84,10 +93,16 @@ class ZendeskApi extends Zendesk
 		}
 
 		$try = $this->try_count;
+		$x = 0;
 		while ($try-- > 0) {
+			$x++;
 			$ex  = null;
 			$err = null;
 			$res = null;
+
+			if ($x > 1) {
+				$this->setTimeout(45);
+			}
 
 			try {
 				$res = parent::sendRequest($id, $action, $call_data, $query_data);
@@ -95,6 +110,8 @@ class ZendeskApi extends Zendesk
 				$ex = $e;
 				$err = 'exception';
 			}
+
+			$this->setTimeout(10);
 
 			if (!$err && $res && $res->isError()) {
 				$err = 'exception';
@@ -135,7 +152,7 @@ class ZendeskApi extends Zendesk
 							}
 							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed due to rate limiting: %s", $body));
 						}
-						sleep($this->try_time_ratelimit);
+						sleep($this->try_time_ratelimit + (($x-1) * $this->try_time_inc));
 					} else {
 						if ($this->logger) {
 							$body = '';
