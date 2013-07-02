@@ -1042,14 +1042,14 @@ class ImportTicket
 						if (!$id_before) {
 							break;
 						}
-						$info_before = $this->importer->em->find('DeskPRO:Organization', $id_before);
+						$info_before = $this->importer->getEm()->find('DeskPRO:Organization', $id_before);
 					}
 					if ($tlog['id_after']) {
 						$id_after = $this->importer->getMappedNewId('company', $tlog['id_after']);
 						if (!$id_after) {
 							break;
 						}
-						$info_after = $this->importer->em->find('DeskPRO:Organization', $id_after);
+						$info_after = $this->importer->getEm()->find('DeskPRO:Organization', $id_after);
 					}
 
 					$insert_tlog['id_before'] = $id_before;
