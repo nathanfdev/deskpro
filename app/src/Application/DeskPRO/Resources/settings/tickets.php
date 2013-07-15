@@ -32,6 +32,8 @@
 
 	'core_tickets.use_ref' => false,
 
+	'core_tickets.gateway_enable_subject_match' => true,
+
 	'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
 	'core.allow_arbitrary_gateway_address' => 1,

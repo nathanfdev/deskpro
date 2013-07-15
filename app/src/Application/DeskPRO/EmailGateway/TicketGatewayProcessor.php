@@ -180,7 +180,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] SubjectRefMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 			}
 
-			if (!$ticket) {
+			if (!$ticket && App::getSetting('core_tickets.gateway_enable_subject_match')) {
 				// Finally try subject string match
 				$detector = new SubjectMatchDetector();
 				if ($this->logger) $detector->setLogger($this->logger);

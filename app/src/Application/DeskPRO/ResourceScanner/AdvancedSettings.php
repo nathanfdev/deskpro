@@ -76,7 +76,8 @@ class AdvancedSettings extends SettingFiles
 			'core_misc.cleanup_gateway_sources_onlyclosed',
 			'core_misc.cleanup_task_logs',
 			'core.allow_arbitrary_gateway_address',
-			'core_tickets.gateway_agent_require_marker'
+			'core_tickets.gateway_agent_require_marker',
+			'core_tickets.gateway_enable_subject_match'
 		);
 
 		if (!defined('DPC_IS_CLOUD')) {
