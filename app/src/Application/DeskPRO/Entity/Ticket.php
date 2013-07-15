@@ -2556,6 +2556,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			} catch (\Exception $e) {
 				KernelErrorHandler::logException($e);
 
+				// Using a custom format.
+				// We just ran into a collision which means the pattern is not a good pattern.
+				// We are going to append a random number automatically if it isn't part of the pattern already
+				if (App::getSetting('core.ref_pattern') && strpos(App::getSetting('core.ref_pattern'), '<?>') === -1 && strpos(App::getSetting('core.ref_pattern'), '<A>') === -1) {
+					$set_pattern = App::getSetting('core.ref_pattern');
+					$set_pattern .= '-<A><A><A>';
+					App::getContainer()->getSettingsHandler()->setSetting('core.ref_pattern', $set_pattern);
+				}
+
 				// Log and fallback to a random ref
 				$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
 				$this['ref'] = $ref;
