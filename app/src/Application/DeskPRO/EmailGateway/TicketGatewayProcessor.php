@@ -379,6 +379,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				);
 			}
 
+			if (!$person->disable_autoresponses) {
+				if ($return_path = $this->reader->getHeader('Return-Path')) {
+					if ($return_path->getHeader() == '<>') {
+						$this->logMessage("Null return path, disabling auto-responses for this user");
+						$person->setDisableAutoresponses(
+							true,
+							'Client sent a null Return-Path'
+						);
+					}
+				}
+			}
+
 			App::setCurrentPerson($person);
 
 			// If the agent is replying to an email that is not a notification, then this check doesnt
@@ -454,6 +466,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					true,
 					'User detected as a DeskPRO helpdesk'
 				);
+			}
+
+			if (!$person->disable_autoresponses) {
+				if ($return_path = $this->reader->getHeader('Return-Path')) {
+					if ($return_path->getHeader() == '<>') {
+						$this->logMessage("Null return path, disabling auto-responses for this user");
+						$person->setDisableAutoresponses(
+							true,
+							'Client sent a null Return-Path'
+						);
+					}
+				}
 			}
 
 			App::setCurrentPerson($person);
