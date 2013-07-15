@@ -729,12 +729,80 @@ JS;
 	public function getPasswordConfirmCodeAction()
 	{
 		$password = $this->in->getString('password');
-		if (!$this->person->checkPassword($password)) {
-			return $this->createJsonResponse(array('invalid' => true));
-		}
+
+		$invalid_res = $this->createJsonResponse(array('invalid' => true));
 
 		$code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->secret_string);
-		return $this->createJsonResponse(array('code' => $code));
+		$valid_res = $this->createJsonResponse(array('code' => $code));
+
+		#------------------------------
+		# Auth local
+		#------------------------------
+
+		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+		$adapter->setCredentials($this->person->getPrimaryEmailAddress(), $password);
+		$result = $adapter->authenticate();
+
+		if ($result->isValid()) {
+			return $valid_res;
+		}
+
+		#------------------------------
+		# Auth usersources that accept local input
+		#------------------------------
+
+		$usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+		foreach ($usersources as $us) {
+			foreach ($this->person->getEmailAddresses() as $email) {
+				/** @var $us \Application\DeskPRO\Entity\Usersource */
+				$adapter = $this->_initUserSourceAdapter($us);
+				$adapter->setFormData(array(
+					'username' => $email,
+					'password' => $password
+				));
+
+				try {
+					$result = $adapter->authenticate();
+				} catch (\Exception $e) {
+					continue;
+				}
+
+				if ($result->isValid()) {
+					return $valid_res;
+				}
+			}
+		}
+
+		return $invalid_res;
+	}
+
+	protected function _initUserSourceAdapter($usersource, $context = null)
+	{
+		$adapter = $usersource->getAdapter()->getAuthAdapter();
+
+		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
+			$adapter->setFormData($_POST);
+		}
+
+		if ($context && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
+			$adapter->setDisplayContext($context);
+		}
+
+		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+			$adapter->setCallbackUrl(
+				rtrim($this->container->getSetting('core.deskpro_url'), '/') .
+				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
+			);
+		}
+
+		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
+			$auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
+			$auth_state->setClearStateMethod('clear');
+
+			$adapter->setStateHandler($auth_state);
+		}
+
+		return $adapter;
 	}
 
 	public function submitDeskproFeedbackAction()
