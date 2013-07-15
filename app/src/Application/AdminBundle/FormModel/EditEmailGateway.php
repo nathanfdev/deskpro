@@ -128,6 +128,7 @@ class EditEmailGateway
 
 		$this->gateway->gateway_type = $this->gateway_type;
 		$this->gateway->is_enabled = $this->is_enabled;
+		$this->gateway->keep_read = $this->keep_read;
 	}
 
 
