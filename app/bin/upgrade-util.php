@@ -157,6 +157,8 @@ unset($errors);
 
 class Upgrade
 {
+	const MIN_FILESIZE_CHECK = 36700160;
+
 	/**
 	 * @var array
 	 */
@@ -700,7 +702,7 @@ class Upgrade
 
 			$this->log('Downloaded ZIP filesize: ' . filesize($new_source_zip));
 
-			if (filesize($new_source_zip) < 36700160) {
+			if (filesize($new_source_zip) < Upgrade::MIN_FILESIZE_CHECK) {
 				throw new \InvalidArgumentException("Downloaded zip is smaller than expected, it probably failed to fully download");
 			}
 
@@ -1406,8 +1408,9 @@ class Upgrade
 	 * @param $save_path
 	 * @return string The path it was saved to
 	 */
-	public function downloadLatest($save_path = null)
+	public function downloadLatest($save_path = null, $_attempt = 0)
 	{
+		$save_path_orig = $save_path;
 		$version_info = $this->getLatestVersion();
 
 		$time_start = microtime(true);
@@ -1431,7 +1434,7 @@ class Upgrade
 		}
 
 		// It already exists, just return it
-		if (file_exists($save_path)) {
+		if (file_exists($save_path) && filesize($save_path) >= Upgrade::MIN_FILESIZE_CHECK) {
 			return $save_path;
 		}
 
@@ -1444,16 +1447,26 @@ class Upgrade
 			if (file_exists($save_path)) {
 				unlink($save_path);
 			}
+
+			if ($_attempt < 2) {
+				return $this->downloadLatest($save_path_orig, $_attempt+1);
+			}
+
 			throw new DownloadException("Download failed: " . $e->getMessage());
 		}
 
 		$this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
 
-		if (filesize($save_path) < 15728640) {
-			$size = filesize($save_path);
+		if (filesize($save_path) < Upgrade::MIN_FILESIZE_CHECK) {
 			if (file_exists($save_path)) {
 				unlink($save_path);
 			}
+
+			if ($_attempt < 2) {
+				return $this->downloadLatest($save_path_orig, $_attempt+1);
+			}
+
+			$size = filesize($save_path);
 			throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", $size), DownloadException::BAD_FILE);
 		}
 
