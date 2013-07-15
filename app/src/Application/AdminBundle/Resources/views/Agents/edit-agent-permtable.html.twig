@@ -114,7 +114,7 @@
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_others -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_others -->{{ col.perm_col(phrase('admin.agents.set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_others -->{{ col.perm_col(phrase('admin.agents.set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_messages_others -->{{ col.perm_col('Can edit and delete messages in unassigned tickets', usergroup_values, 'agent_tickets', 'modify_messages_others', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_messages_others -->{{ col.perm_col('Can edit and delete messages in tickets assigned to others', usergroup_values, 'agent_tickets', 'modify_messages_others', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.delete_others -->{{ col.perm_col(phrase('admin.agents.delete_others_tickets'), usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
 			</tbody>
 		</table>
