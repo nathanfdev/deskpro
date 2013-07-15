@@ -1049,17 +1049,9 @@ class TermSummary
 				$unassigned = true;
 				break;
 			} elseif ($c == -1) {
-				if ($this->getPersonContext()) {
-					$agent_ids[] = $this->getPersonContext()->getId();
-				} else {
-					$agent_ids[] = -1;
-				}
+				$agent_ids[] = -1;
 			} elseif ($c == -2) {
-				if ($this->getPersonContext()) {
-					$not_id = $this->getPersonContext()->getId();
-				} else {
-					$not_id = -1;
-				}
+				$not_id = -1;
 			} else {
 				$agent_ids = $c;
 			}
