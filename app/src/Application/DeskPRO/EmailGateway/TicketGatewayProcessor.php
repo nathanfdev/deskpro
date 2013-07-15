@@ -460,6 +460,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 			}
 
+			if ($person && $person->is_agent && $this->is_bounce) {
+				$this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
+				$this->error = 'agent_bounce';
+				return null;
+			}
+
 			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 				$this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
 				$person->setDisableAutoresponses(
