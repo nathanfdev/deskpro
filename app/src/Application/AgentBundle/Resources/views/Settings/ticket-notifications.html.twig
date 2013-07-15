@@ -295,6 +295,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							<th>Assignment</th>
 							<th>User Message</th>
 							<th>Agent Message</th>
+							<th>Agent Note</th>
 							<th>Property Change</th>
 						</tr>
 					</thead>
@@ -317,7 +318,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[1][alert_agent_activity]" value="1" {% if my_subs[1].alert_agent_activity %}checked="checked"{% endif %} />
-								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when another agent replies to or adds a note to a ticket assigned to me"></span>
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when another agent replies to a ticket assigned to me"></span>
+							</td>
+							<td class="prop">
+								<input type="checkbox" name="filter_sub[1][alert_agent_note]" value="1" {% if my_subs[1].alert_agent_note %}checked="checked"{% endif %} />
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when another agent adds a note to a ticket assigned to me"></span>
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[1][alert_property_change]" value="1" {% if my_subs[1].alert_property_change %}checked="checked"{% endif %} />
@@ -343,7 +348,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[3][alert_agent_activity]" value="1" {% if my_subs[3].alert_agent_activity %}checked="checked"{% endif %} />
-								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket I follow"></span>
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket I follow"></span>
+							</td>
+							<td class="prop">
+								<input type="checkbox" name="filter_sub[3][alert_agent_note]" value="1" {% if my_subs[3].alert_agent_note %}checked="checked"{% endif %} />
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket I follow"></span>
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[3][alert_property_change]" value="1" {% if my_subs[3].alert_property_change %}checked="checked"{% endif %} />
@@ -369,7 +378,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[2][alert_agent_activity]" value="1" {% if my_subs[2].alert_agent_activity %}checked="checked"{% endif %} />
-								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket assigned to one of my teams"></span>
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket assigned to one of my teams"></span>
+							</td>
+							<td class="prop">
+								<input type="checkbox" name="filter_sub[2][alert_agent_note]" value="1" {% if my_subs[2].alert_agent_note %}checked="checked"{% endif %} />
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket assigned to one of my teams"></span>
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[2][alert_property_change]" value="1" {% if my_subs[2].alert_property_change %}checked="checked"{% endif %} />
@@ -395,7 +408,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[4][alert_agent_activity]" value="1" {% if my_subs[4].alert_agent_activity %}checked="checked"{% endif %} />
-								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to an unassigned ticket"></span>
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to an unassigned ticket"></span>
+							</td>
+							<td class="prop">
+								<input type="checkbox" name="filter_sub[4][alert_agent_note]" value="1" {% if my_subs[4].alert_agent_note %}checked="checked"{% endif %} />
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent a note to an unassigned ticket"></span>
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[4][alert_property_change]" value="1" {% if my_subs[4].alert_property_change %}checked="checked"{% endif %} />
@@ -418,7 +435,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[5][alert_agent_activity]" value="1" {% if my_subs[5].alert_agent_activity %}checked="checked"{% endif %} />
-								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to any ticket"></span>
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to any ticket"></span>
+							</td>
+							<td class="prop">
+								<input type="checkbox" name="filter_sub[5][alert_agent_note]" value="1" {% if my_subs[5].alert_agent_note %}checked="checked"{% endif %} />
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to any ticket"></span>
 							</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[5][alert_property_change]" value="1" {% if my_subs[5].alert_property_change %}checked="checked"{% endif %} />
