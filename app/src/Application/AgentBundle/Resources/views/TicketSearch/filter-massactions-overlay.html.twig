@@ -223,7 +223,7 @@
 				<div class="profile-box-container reply-box-wrap">
 					<header>
 						<nav>
-							<ul><li>{{ phrase('agent.general.reply') }}</li></ul>
+							<ul><li>Mass Reply</li></ul>
 						</nav>
 					</header>
 					<section class="ticketreply">
@@ -250,7 +250,7 @@
 									{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]'} %}
 								</ul>
 								<div class="input-wrap">
-									<textarea placeholder="{{ phrase('agent.tickets.enter_a_mass_reply') }}" id="{{baseId}}_replybox_txt" name="actions[reply][reply_text]"></textarea>
+									<textarea id="{{baseId}}_replybox_txt" name="actions[reply][reply_text]"></textarea>
 								</div>
 							</section>
 						</article>
