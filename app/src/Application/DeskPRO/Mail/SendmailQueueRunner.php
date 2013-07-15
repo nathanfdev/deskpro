@@ -130,7 +130,12 @@ class SendmailQueueRunner implements Loggable
 			$blob = $this->em->find('DeskPRO:Blob', $sendmail['blob_id']);
 			$sendmail['blob'] = $blob;
 
-			$this->sendQueuedMessage($sendmail);
+			try {
+				$this->sendQueuedMessage($sendmail);
+			} catch (\Exception $e) {
+				$this->logger->logInfo(sprintf("Error processing message %d: %s %s", $sendmail['id'], $e->getCode(), $e->getMessage()));
+				KernelErrorHandler::logException($e, true);
+			}
 		}
 
 		$this->logger->logInfo(sprintf("Processed $count messages in %.4fs", microtime(true) - $mtime));
@@ -218,7 +223,13 @@ class SendmailQueueRunner implements Loggable
 		$message = $this->blob_storage->copyBlobRecordToString($blob);
 		$message = @unserialize($message);
 
-		if (!$message) {
+		// A bug in previous versions has the data being a serialised string of the
+		// serialised string, so we need to double-unserialize it to get the actual obj.
+		if ($message && is_string($message)) {
+			$message = @unserialize($message);
+		}
+
+		if (!$message || !is_object($message)) {
 			$this->logger->logDebug("Failed to unserialize message blob");
 			return false;
 		}

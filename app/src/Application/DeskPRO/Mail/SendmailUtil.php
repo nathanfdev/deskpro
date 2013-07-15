@@ -107,7 +107,7 @@ class SendmailUtil
 		} else {
 			$message = unserialize($data);
 			$message->setFrom($from_address);
-			$data = serialize($data);
+			$data = serialize($message);
 		}
 
 		// Delete old blob
