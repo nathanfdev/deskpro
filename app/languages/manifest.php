@@ -155,6 +155,19 @@
 		'is_managed' => true
 	),
 
+	'portuguese' => array(
+		'id'         => 'portuguese',
+		'lang_code'  => 'por',
+		'title'      => 'Portuguese',
+		'locale'     => 'pt',
+		'flag_image' => 'pt.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'russian' => array(
 		'id'         => 'russian',
 		'lang_code'  => 'rus',
@@ -291,18 +304,6 @@
 		'lang_code'  => 'cmn',
 		'title'      => 'Mandarin',
 		'locale'     => 'cmn',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'portuguese' => array(
-		'id'         => 'portuguese',
-		'lang_code'  => 'por',
-		'title'      => 'Portuguese',
-		'locale'     => 'pt',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
