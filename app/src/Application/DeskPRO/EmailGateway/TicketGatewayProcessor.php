@@ -46,6 +46,7 @@ use Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
 use Application\DeskPRO\EmailGateway\Ticket\Dp3Detector;
 use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Orb\Validator\StringEmail;
 
 class TicketGatewayProcessor extends AbstractGatewayProcessor
 {
@@ -1120,6 +1121,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if ($count >= 10) {
 				$this->logMessage("CC limit reached, break");
 				break;
+			}
+
+			// Make sure its actually valid
+			if (!StringEmail::isValueValid($cc_email)) {
+				$this->logMessage("Invalid email address");
+				continue;
 			}
 
 			$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
