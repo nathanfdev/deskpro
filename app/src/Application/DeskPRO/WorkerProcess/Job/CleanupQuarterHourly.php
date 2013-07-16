@@ -86,5 +86,25 @@ class CleanupQuarterHourly extends AbstractJob
 				$this->logStatus("Cleaned up $num agent alerts");
 			}
 		}
+
+		#------------------------------
+		# Update table counts
+		#------------------------------
+
+		$counts = array();
+		$counts['tickets']            = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets`");
+		$counts['tickets.resolved']   = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
+		$counts['tickets.validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
+		$counts['tickets.spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
+		$counts['tickets.deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
+		$counts['tickets.closed']     = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'closed'");
+		$counts['people']             = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `people`");
+
+		foreach ($counts as $k => $v) {
+			App::getDb()->replace('settings', array(
+				'name'  => "core_tablecounts.$k",
+				'value' => (int)$v
+			));
+		}
 	}
 }

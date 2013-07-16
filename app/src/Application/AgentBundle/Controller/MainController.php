@@ -575,31 +575,53 @@ class MainController extends AbstractController
 							$email = substr($q, 1);
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-							$people_ids = $this->db->fetchAllCol("
-								SELECT people.id
-								FROM people
-								LEFT JOIN tickets ON (tickets.person_id = people.id)
-								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-								WHERE
-									tickets.id > ?
-									AND people_emails.email_domain LIKE ?
-								ORDER BY tickets.id DESC
-								LIMIT 15
-							", array($after_id, $email));
+							if ($this->settings->get('core_tablecounts.people') < 15000) {
+								$people_ids = $this->db->fetchAllCol("
+									SELECT people.id
+									FROM people
+									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+									WHERE people_emails.email_domain LIKE ?
+									ORDER BY people.id DESC
+									LIMIT 15
+								", array($email));
+							} else {
+								$people_ids = $this->db->fetchAllCol("
+									SELECT people.id
+									FROM people
+									LEFT JOIN tickets ON (tickets.person_id = people.id)
+									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+									WHERE
+										tickets.id > ?
+										AND people_emails.email_domain LIKE ?
+									ORDER BY tickets.id DESC
+									LIMIT 15
+								", array($after_id, $email));
+							}
 						} else {
 							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
-							$people_ids = $this->db->fetchAllCol("
-								SELECT people.id
-								FROM people
-								LEFT JOIN tickets ON (tickets.person_id = people.id)
-								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-								WHERE
-									tickets.id > ?
-									AND people_emails.email LIKE ?
-								ORDER BY tickets.id DESC
-								LIMIT 15
-							", array($after_id, $email));
+							if ($this->settings->get('core_tablecounts.people') < 15000) {
+								$people_ids = $this->db->fetchAllCol("
+									SELECT people.id
+									FROM people
+									LEFT JOIN tickets ON (tickets.person_id = people.id)
+									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+									WHERE people_emails.email LIKE ?
+									ORDER BY tickets.id DESC
+									LIMIT 15
+								", array($email));
+							} else {
+								$people_ids = $this->db->fetchAllCol("
+									SELECT people.id
+									FROM people
+									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+									WHERE
+										tickets.id > ?
+										AND people_emails.email LIKE ?
+									ORDER BY people.id DESC
+									LIMIT 15
+								", array($after_id, $email));
+							}
 						}
 
 						if ($people_ids) {
@@ -623,22 +645,39 @@ class MainController extends AbstractController
 					$people = array();
 
 					$q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-					$people_ids = $this->db->fetchAllCol("
-						SELECT people.id
-						FROM people
-						LEFT JOIN tickets ON (tickets.person_id = people.id)
-						LEFT JOIN people_emails ON (people_emails.person_id = people.id)
-						WHERE
-							tickets.id > ?
-							AND (
+
+					if ($this->settings->get('core_tablecounts.people') < 15000) {
+						$people_ids = $this->db->fetchAllCol("
+							SELECT people.id
+							FROM people
+							LEFT JOIN tickets ON (tickets.person_id = people.id)
+							LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+							WHERE
 								people.name LIKE ?
 								OR people.first_name LIKE ?
 								OR people.last_name LIKE ?
 								OR people_emails.email LIKE ?
-							)
-						ORDER BY tickets.id DESC
-						LIMIT 15
-					", array($after_id, $q_search, $q_search, $q_search, $q_search));
+							ORDER BY people.id DESC
+							LIMIT 15
+						", array($q_search, $q_search, $q_search, $q_search));
+					} else {
+						$people_ids = $this->db->fetchAllCol("
+							SELECT people.id
+							FROM people
+							LEFT JOIN tickets ON (tickets.person_id = people.id)
+							LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+							WHERE
+								tickets.id > ?
+								AND (
+									people.name LIKE ?
+									OR people.first_name LIKE ?
+									OR people.last_name LIKE ?
+									OR people_emails.email LIKE ?
+								)
+							ORDER BY tickets.id DESC
+							LIMIT 15
+						", array($after_id, $q_search, $q_search, $q_search, $q_search));
+					}
 
 					if ($people_ids) {
 						$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids, true);

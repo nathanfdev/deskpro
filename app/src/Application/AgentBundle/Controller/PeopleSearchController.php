@@ -60,7 +60,10 @@ class PeopleSearchController extends AbstractController
 		# People labels
 		#------------------------------
 
-		$people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
+		$people_count = $this->settings->get('core_tablecounts.people');
+		if ($people_count < 10000) {
+			$people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
+		}
 		$validating_count = $this->em->getRepository('DeskPRO:Person')->getValidatingCount();
 		$validating_count_agent = $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount();
 
@@ -118,10 +121,15 @@ class PeopleSearchController extends AbstractController
 
 	public function reloadCountsAction()
 	{
+		$people_count = $this->settings->get('core_tablecounts.people');
+		if ($people_count < 10000) {
+			$people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
+		}
+
 		$data = array(
-			'people_count' => $this->em->getRepository('DeskPRO:Person')->getCount(),
-			'usergroup_counts' => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
-			'validating_count' => $this->em->getRepository('DeskPRO:Person')->getValidatingCount(),
+			'people_count'           => $people_count,
+			'usergroup_counts'       => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
+			'validating_count'       => $this->em->getRepository('DeskPRO:Person')->getValidatingCount(),
 			'validating_count_agent' => $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount()
 		);
 

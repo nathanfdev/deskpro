@@ -219,10 +219,38 @@ class Filters
 		$counts = array();
 
 		foreach ($ticket_filters as $ticket_filter) {
-			$searcher = $ticket_filter->getSearcher();
-			$searcher->setPerson(App::getCurrentPerson());
 
-			$counts[$ticket_filter['id']] = $searcher->getCount(null);
+			$count = 0;
+
+			switch ($ticket_filter['sys_name']) {
+				case 'archive_resolved':
+					$count = App::getSetting('core_tablecounts.tickets.resolved');
+					break;
+
+				case 'archive_closed':
+					$count = App::getSetting('core_tablecounts.tickets.closed');
+					break;
+
+				case 'archive_validating':
+					$count = App::getSetting('core_tablecounts.tickets.validating');
+					break;
+
+				case 'archive_spam':
+					$count = App::getSetting('core_tablecounts.tickets.spam');
+					break;
+
+				case 'archive_deleted':
+					$count = App::getSetting('core_tablecounts.tickets.deleted');
+					break;
+			}
+
+			if (!$count || $count < 10000) {
+				$searcher = $ticket_filter->getSearcher();
+				$searcher->setPerson(App::getCurrentPerson());
+				$count = $searcher->getCount(null);
+			}
+
+			$counts[$ticket_filter['id']] = $count;
 		}
 
 		return $counts;
