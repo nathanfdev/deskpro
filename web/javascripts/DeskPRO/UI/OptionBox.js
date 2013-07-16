@@ -176,6 +176,20 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			self.updateFilter($(this));
 		});
 
+		$('header .toggle-btn', this.el).on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			var section = self._findSection($(this));
+			var checks = section.find(':checkbox');
+			if (checks.filter(':checked').length) {
+				checks.attr('checked', false).trigger('change');
+			} else {
+				checks.attr('checked', true).trigger('change');
+			}
+
+			self.updateCountEls(section);
+		});
+
 		var l = this.el.find('div.col').length;
 		if (l == 0 || l == 1) {
 			this.isSingleMode = true;
