@@ -105,7 +105,14 @@ class SendmailUtil
 		// A serialised message
 		// We can just change the from in the object. The SMTP info is selected at the time its sent
 		} else {
-			$message = unserialize($data);
+
+			$message = @unserialize($data);
+
+			// A bug could result in the message being double encoded
+			if ($message && !is_object($message)) {
+				$message = @unserialize($message);
+			}
+
 			$message->setFrom($from_address);
 			$data = serialize($message);
 		}
