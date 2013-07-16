@@ -1052,16 +1052,27 @@ class PublishController extends AbstractController
 			$results = $result_cache['results'];
 		}
 
+		$page = $this->in->getUint('p');
+		if (!$page || $page < 1) $page = 1;
+		$per_page = 50;
+
 		$helper = "\\Application\\AgentBundle\\Controller\\Helper\\$helper";
 		$helper = $helper::newFromResultCache($this, $result_cache);
+
+		$count = count($result_cache['results']);
+
+		$pageinfo = Numbers::getPaginationPages($count, $page, $per_page);
 
 		$vars = array(
 			'cache'       => $result_cache,
 			'cache_id'    => $result_cache['id'],
 			'result_ids'  => $result_cache['results'],
-			'num_results' => count($result_cache['results']),
-			'results'     => $helper->getForPage($this->in->getUint('page')),
-			'type'        => $result_cache['criteria']['type']
+			'num_results' => $count,
+			'results'     => $helper->getForPage($page-1, $per_page),
+			'pageinfo'    => $pageinfo,
+			'type'        => $result_cache['criteria']['type'],
+			'page'        => $page,
+			'per_page'    => $per_page
 		);
 
 		return $this->render('AgentBundle:Publish:search-results-'.$type.'.html.twig', $vars);

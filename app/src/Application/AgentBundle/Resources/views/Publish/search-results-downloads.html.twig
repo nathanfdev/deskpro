@@ -43,6 +43,20 @@
 			</article>
 		{% endfor %}
 		</section>
+
+		{% if num_results %}
+			<footer class="results-nav">
+				<div class="cursor">
+					Page {{ page }} of {{ pageinfo.last }}
+				</div>
+				{% if num_results > per_page %}
+					<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif %} {% if not pageinfo.next %}no-next{% endif %}">
+						<li class="prev" {% if pageinfo.prev %}data-route="listpane:{{ path('agent_publish_search', {content_type: 'downloads', p: pageinfo.prev, cache_id: cache_id}) }}"{% endif %}></li>
+						<li class="next" {% if pageinfo.next %}data-route="listpane:{{ path('agent_publish_search', {content_type: 'downloads', p: pageinfo.next, cache_id: cache_id}) }}"{% endif %}></li>
+					</ul>
+				{% endif %}
+			</footer>
+		{% endif %}
 	</section>
 
 {% endblock pane_content %}
