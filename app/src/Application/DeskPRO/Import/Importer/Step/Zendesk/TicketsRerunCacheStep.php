@@ -42,7 +42,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 	public $on_run = false;
 
 	const PERPAGE = 100;
-	const PERBATCH = 5;
+	const PERBATCH = 200;
 
 	public static function getTitle()
 	{
@@ -92,6 +92,11 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_rerun_cache.p%'");
 		}
 
+		if ($batch != 1) {
+			// Cooldown from older rate limit
+			sleep(60);
+		}
+
 		$ticket_ids = array_chunk($ticket_ids, self::PERPAGE);
 
 		$reqs = array();
@@ -125,13 +130,15 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 			}
 		}
 
-		if ($retry_pages) {
-			// Sleep to get rid of rate limits
-			sleep(15);
+		$try = 0;
+		while ($try++ < 3 and $retry_pages) {
+			sleep(30);
 			$results = $this->zd->sendGetMulti($retry_pages);
 
+			$retry_pages = array();
 			foreach ($results as $page => $info) {
 				if ($info['exception'] || !$info['response']) {
+					$retry_pages[$page] = $reqs[$page];
 				} else {
 					$this->db->replace('import_datastore', array(
 						'typename' => 'zd_tickets_rerun_cache.p'.$page,

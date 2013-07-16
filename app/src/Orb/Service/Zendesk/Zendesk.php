@@ -404,6 +404,11 @@ class Zendesk
 			case self::POST:
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $call_json);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($call_json))
+				);
+
 				break;
 			case self::GET:
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');

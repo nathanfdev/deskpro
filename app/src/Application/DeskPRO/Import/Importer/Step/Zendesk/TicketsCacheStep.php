@@ -41,7 +41,7 @@ class TicketsCacheStep extends AbstractZendeskStep
 	public $on_rerun = false;
 
 	const PERPAGE  = 100;
-	const PERBATCH = 5;
+	const PERBATCH = 200;
 
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
@@ -91,6 +91,11 @@ class TicketsCacheStep extends AbstractZendeskStep
 			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_cache.%'");
 		}
 
+		if ($batch != 1) {
+			// Cooldown from older rate limit
+			sleep(60);
+		}
+
 		$reqs = array();
 
 		for ($i = 1; $i <= self::PERBATCH; $i++) {
@@ -117,13 +122,15 @@ class TicketsCacheStep extends AbstractZendeskStep
 			}
 		}
 
-		if ($retry_pages) {
-			// Sleep to get rid of rate limits
-			sleep(8);
+		$try = 0;
+		while ($try++ < 3 and $retry_pages) {
+			sleep(30);
 			$results = $this->zd->sendGetMulti($retry_pages);
 
+			$retry_pages = array();
 			foreach ($results as $page => $info) {
 				if ($info['exception'] || !$info['response']) {
+					$retry_pages[$page] = $reqs[$page];
 				} else {
 					$this->db->replace('import_datastore', array(
 						'typename' => 'zd_tickets_cache.p'.$page,
