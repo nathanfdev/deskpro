@@ -132,8 +132,8 @@ class HtmlPurifier implements CleanerPlugin
 
 			// Replace Wingdings characters with UTF-8 characters
 			$map = array(
-				'J' => '☺', // Happy face,
-				'L' => '☹', // Sad face,
+				'J' => ':)',
+				'L' => ':(',
 				'K' => ':|',
 				'ß' => '<-',
 				'ç' => '<=',
@@ -143,13 +143,13 @@ class HtmlPurifier implements CleanerPlugin
 			);
 
 			$m = null;
-			if (preg_match_all('#<span style=\'font-family:Wingdings\'>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
+			if (preg_match_all('#<span\s*style=(?:\'|").*?font-family\s*:\s*Wingdings.*?(?:\'|")>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
 				foreach ($m as $match) {
 					$replace = $match[1];
 					foreach ($map as $f => $r) {
 						$replace = str_replace($f, $r, $replace);
 					}
-					$value = str_replace($m[0], $replace, $value);
+					$value = str_replace($match[0], $replace, $value);
 				}
 			}
 
