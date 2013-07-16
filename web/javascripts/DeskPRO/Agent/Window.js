@@ -462,6 +462,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadNewTicket = loadNewTicket[1];
 		}
 
+		var loadSearchTerm = false;
+		if (loadSearchTerm = window.location.hash.match(/#q:(.*?)$/)) {
+			loadSearchTerm = loadSearchTerm[1];
+		}
+
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -868,6 +873,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 				page.setNewByPerson(data);
 			});
+		}
+
+		if (loadSearchTerm) {
+			$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
 		}
 	},
 
