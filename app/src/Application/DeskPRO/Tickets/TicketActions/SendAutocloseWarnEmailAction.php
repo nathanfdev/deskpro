@@ -59,6 +59,23 @@ class SendAutocloseWarnEmailAction extends AbstractAction
 		$this->tracker = $tracker;
 	}
 
+	public function getFromAddress(Ticket $ticket)
+	{
+		if ($ticket->notify_email) {
+			$from_email = $ticket->notify_email;
+		} else {
+			$from_email = App::getSetting('core.default_from_email');
+		}
+
+		if ($ticket->notify_email_name) {
+			$from_name = $ticket->notify_email_name;
+		} else {
+			$from_name = App::getSetting('core.deskpro_name');
+		}
+
+		return array($from_email => $from_name);
+	}
+
 	/**
 	 * Apply the property to the ticket
 	 *
@@ -79,16 +96,33 @@ class SendAutocloseWarnEmailAction extends AbstractAction
 		);
 
 		$person = $ticket->person;
+		$parts  = $ticket->getUserParticipants();
 
 		$change_info['emailed'] = array($person);
 
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
 
-		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person, $tpl) {
+		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
+		$vars['ticketdisplay'] = $ticketdisplay;
+		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
+
+		$from_address = $this->getFromAddress($ticket);
+
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $from_address, $ticket, $person, $parts, $tpl) {
 			$message = App::getMailer()->createMessage();
+			$message->setContextId('ticket_gateway');
 			$message->setTemplate($tpl, $vars);
 			$message->setToPerson($person);
+
+			foreach ($parts as $part) {
+				if ($part['email_address']) {
+					$message->addCc($part['email_address'], $part->person->getDisplayName());
+				}
+			}
+
+			$message->setFrom($from_address);
+			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 
 			App::getMailer()->send($message);
 		});
