@@ -131,8 +131,8 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 				return;
 			}
 			ev.preventDefault();
-			var el = $(this);
-			el.closest('li').slideUp('fast', function() {
+			var el = $(this).closest('li');
+			el.slideUp('fast', function() {
 				el.remove();
 			});
 		});
