@@ -2295,7 +2295,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$data['picture_url'] = $this->getPictureUrl();
 
 		// Render custom fields to text values
-		$field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
+		$field_manager = App::getContainer()->getSystemService('person_fields_manager');
 
 		$values = $field_manager->getRenderedToTextForObject($this);
 		foreach ($values as $fid => $v) {
