@@ -12,7 +12,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
 	<h1>{% if macro.id %}{{ phrase('agent.settings.edit_macro') }}{% else %}{{ phrase('agent.settings.new_macro') }}{% endif %}</h1>
 </header>
-<article class="padded" data-width="1100" data-height="400">
+<article class="padded" data-width="800" data-height="400">
 	<form id="{{baseId}}_form" action="{{ path('agent_settings_ticketmacros_edit_save', { 'macro_id': macro.id|default(0) }) }}" method="post" accept-charset="utf-8">
 
 	<div class="dp-form">
