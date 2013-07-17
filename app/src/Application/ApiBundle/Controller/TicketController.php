@@ -139,7 +139,7 @@ class TicketController extends AbstractController
 					if ($this->in->checkIsset('person_organization')) {
 						$orgName = $this->in->getString('person_organization');
 
-						$org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($orgName);
+						$org = $this->em->getRepository('DeskPRO:Organization')->findOneByName($orgName);
 						if (!$org) {
 							$org = new \Application\DeskPRO\Entity\Organization();
 							$org['name'] = $orgName;
