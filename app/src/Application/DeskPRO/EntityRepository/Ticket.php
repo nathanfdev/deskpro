@@ -677,13 +677,10 @@ class Ticket extends AbstractEntityRepository
 					break;
 
 				case 'ref':
-					$ref_gen = App::getSystemService('RefGenerator');
-					if ($ref_gen->isRefMatch($ticket_ref)) {
-						$ticket = $this->_em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
-						if ($ticket) {
-							$matched_type = 'ref';
-							return $ticket;
-						}
+					$ticket = $this->_em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+					if ($ticket) {
+						$matched_type = 'ref';
+						return $ticket;
 					}
 					break;
 
