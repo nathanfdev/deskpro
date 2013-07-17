@@ -1145,7 +1145,7 @@ class FilestorageLoader extends LoaderAbstract
 		// where the GD handler tries to save a temp file and the default
 		// temp dir is not writable.
 		} catch (\Imagine\Exception\RuntimeException $e) {
-			$tmp = tempnam(dp_get_tmp_dir(), mt_rand(100000,999999));
+			$tmp = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('img', true) . '.' . Strings::getExtension($blob->filename);
 			$image->save($tmp);
 			$file = file_get_contents($tmp);
 			@unlink($tmp);
