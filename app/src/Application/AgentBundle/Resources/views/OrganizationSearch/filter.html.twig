@@ -56,7 +56,7 @@
 				{% endset %}
 				{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 			</div>
-			{% if org_ids|length > per_page %}
+			{% if org_ids|length > 50 %}
 				<ul class="pagenav no-prev">
 					<li class="prev"></li>
 					<li class="next"></li>
