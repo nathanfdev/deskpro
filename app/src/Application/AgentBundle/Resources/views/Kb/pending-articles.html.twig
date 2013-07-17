@@ -10,8 +10,7 @@
 	<script>
 		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles';
 		pageMeta.url_fragment = '{{ url_fragment('agent_kb_pending') }}';
-		{% set baseId = el_uid() %}
-		pageMeta.baseId = '{{ baseId }}';
+		pageMeta.baseId = '{{ tplvars.baseId }}';
 	</script>
 
 {% endblock top %}
@@ -36,8 +35,8 @@
 		</button>
 	</header>
 
-	<div id="{{baseId}}_add_new_overlay" style="display:none;">
-		<div class="prompt-overlay mass-actions-overlay">
+	<div id="{{tplvars.baseId}}_add_new_overlay" style="display:none;">
+		<div class="prompt-overlay add_new_overlay">
 			<div class="overlay-title">
 				<h4>{{ phrase('agent.publish.add_pending') }}</h4>
 			</div>
@@ -67,7 +66,7 @@
 		<footer class="results-nav">
 			<div class="pagecontrols results-nav">
 				<div class="cursor">
-					<span id="{{ baseId }}_count">{{ pending_articles|length }}</span> Pending Articles
+					<span id="{{ tplvars.baseId }}_count">{{ pending_articles|length }}</span> Pending Articles
 				</div>
 			</div>
 		</footer>
