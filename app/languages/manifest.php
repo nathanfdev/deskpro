@@ -168,6 +168,19 @@
 		'is_managed' => true
 	),
 
+	'romanian' => array(
+		'id'         => 'romanian',
+		'lang_code'  => 'rum',
+		'title'      => 'Romanian',
+		'locale'     => 'ro',
+		'flag_image' => 'ro.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'russian' => array(
 		'id'         => 'russian',
 		'lang_code'  => 'rus',
@@ -304,18 +317,6 @@
 		'lang_code'  => 'cmn',
 		'title'      => 'Mandarin',
 		'locale'     => 'cmn',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'romanian' => array(
-		'id'         => 'romanian',
-		'lang_code'  => 'rum',
-		'title'      => 'Romanian',
-		'locale'     => 'ro',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
