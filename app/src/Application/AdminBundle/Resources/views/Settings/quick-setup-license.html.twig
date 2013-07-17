@@ -110,6 +110,9 @@
 			<ul>
 				<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':'<span class="lic-err-code"></span>'}, true) }}</li>
 			</ul>
+			<div style="margin-top: 12px; font-size: 11px; line-height: 135%;">
+				Note for existing DeskPRO v3 Customers: You will need to generate a new license code for use with v4.<br/>Log in to your members area at <a href="https://www.deskpro.com/members/">https://www.deskpro.com/members/</a>
+			</div>
 		</div>
 
 		<form action="{{ path('admin_license_input_save') }}" method="post">

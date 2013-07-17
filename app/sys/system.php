@@ -538,7 +538,7 @@ final class License
 			return;
 		}
 
-		if (strlen($license_code) < 300) {
+		if ($license_code && strlen($license_code) < 300) {
 			$this->error_code = 'invalid_license_code_1';
 			$this->data = array('no_license' => true);
 
