@@ -257,7 +257,69 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			updateCatList(categoryId, filterString, languageId);
 		};
 
-		filterInput.on('change keydown keyup', function() {
+		var cmdEat = false;
+		filterInput.on('change keydown keyup', function(ev) {
+
+			if (ev.keyCode == 13 /* enter key */) {
+				ev.preventDefault();
+
+				if (cmdEat) { cmdEat = false; return; }
+				cmdEat = true;
+
+				var activeSnippets = snippetList.find('li.snippet');
+				var current = activeSnippets.filter('.cursor');
+				if (!current[0]) {
+					if (activeSnippets.length == 1) {
+						current = activeSnippets;
+					}
+				}
+
+				if (current[0]) {
+					current.click();
+				}
+
+				return;
+			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+				ev.preventDefault();
+
+				if (cmdEat) { cmdEat = false; return; }
+				cmdEat = true;
+
+				var activeSnippets = snippetList.find('li.snippet');
+
+
+				var dir = ev.keyCode == 40 ? 'down' : 'up';
+
+				var current = activeSnippets.filter('.cursor');
+				if (!current.length) {
+					if (dir == 'down') {
+						activeSnippets.first().addClass('cursor');
+					} else {
+						activeSnippets.last().addClass('cursor');
+					}
+				} else {
+					var nextIndex = activeSnippets.index(current);
+					if (dir == 'down') {
+						nextIndex++;
+					} else {
+						nextIndex--;
+					}
+
+					if (nextIndex < 0) {
+						nextIndex = activeSnippets.length-1;
+					} else if (nextIndex > (activeSnippets.length-1)) {
+						nextIndex = 0;
+					}
+
+					current.removeClass('cursor');
+					activeSnippets.eq(nextIndex).addClass('cursor');
+				}
+
+				return;
+			}
+
+			cmdEat = false;
+
 			if (filterTimer) {
 				window.clearTimeout(filterTimer);
 				filterTimer = null;
@@ -497,6 +559,13 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (!catList.find('.on')[0]) {
 			catList.find('li').first().click();
 		}
+
+		filterInput.focus();
+		this.addEvent('activate', function() {
+			if (filterInput) {
+				filterInput.focus();
+			}
+		});
 	},
 
 	closeSelf: function() {
