@@ -134,6 +134,19 @@ class Ticket extends AbstractEntityRepository
 		return $this->resolveDeletedTicket($del_ticket);
 	}
 
+	public function searchTicketRef($ref)
+	{
+		$ref = str_replace(array('%', '_'), array('\\%', '\\_'), $ref);
+		$tickets = $this->_em->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t
+			WHERE t.ref LIKE ?0
+			ORDER BY t.id DESC
+		")->setParameters(array($ref."%"))->setMaxResults(10)->execute();
+
+		return $tickets;
+	}
+
 
 	/**
 	 * @param \Application\DeskPRO\Entity\TicketDeleted $del_ticket

@@ -439,8 +439,17 @@ class MainController extends AbstractController
 		// a ref if its a valid form
 		if (preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findTicketRef($q);
-			if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-				$results['ticket'][] = $ticket;
+			if ($ticket) {
+				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+					$results['ticket'][] = $ticket;
+				}
+			} elseif (strlen($q) >= 3) {
+				$tickets = $this->em->getRepository('DeskPRO:Ticket')->searchTicketRef($q);
+				foreach ($tickets as $ticket) {
+					if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+						$results['ticket'][] = $ticket;
+					}
+				}
 			}
 		}
 
