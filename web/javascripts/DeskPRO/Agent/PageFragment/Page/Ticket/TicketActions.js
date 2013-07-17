@@ -58,6 +58,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			if (self.page.ticketReplyBox) {
 				self.page.ticketReplyBox.getElById('agent_sel').select2('val', agent_id);
+				self.page.ticketReplyBox.getElById('agent_sel').trigger('change');
 			}
 
 			callQueue.call(function() {
@@ -79,6 +80,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			if (self.page.ticketReplyBox) {
 				self.page.ticketReplyBox.getElById('agent_team_sel').select2('val', agent_team_id);
+				self.page.ticketReplyBox.getElById('agent_sel').trigger('change');
 			}
 
 			callQueue.call(function() {
