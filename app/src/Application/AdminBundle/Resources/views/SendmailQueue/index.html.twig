@@ -17,17 +17,19 @@
 	<div style="border-top: 1px solid #ccc; padding: 5px 8px 8px 8px;">
 		<strong>Display Options</strong><br/>
 
-		<label><input type="checkbox" name="show_failed" value="1" {% if view_options.show_failed %}checked="checked"{% endif %} /> Show failed ({{ count_failed }})</label>
-		&nbsp;&nbsp;
-		<label><input type="checkbox" name="show_queued" value="1" {% if view_options.show_queued %}checked="checked"{% endif %} /> Show queued ({{ count_queued }})</label>
-		&nbsp;&nbsp;
-		Filter To: <input type="text" name="filter_to" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_to }}" />
-		&nbsp;&nbsp;
-		Filter From: <input type="text" name="filter_from" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_from }}" />
-		&nbsp;&nbsp;
-		Filter Subject: <input type="text" name="filter_subject" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_subject }}" />
-		&nbsp;&nbsp;
-		<button class="dp-btn dp-btn-small" style="padding: 3px; line-height: 100%; position: relative; top: -1px;" type="submit">Update</button>
+		<form action="{{ path('admin_sendmail_queue_index') }}" method="GET">
+			<label><input type="checkbox" name="show_failed" value="1" {% if view_options.show_failed %}checked="checked"{% endif %} /> Show failed ({{ count_failed }})</label>
+			&nbsp;&nbsp;
+			<label><input type="checkbox" name="show_queued" value="1" {% if view_options.show_queued %}checked="checked"{% endif %} /> Show queued ({{ count_queued }})</label>
+			&nbsp;&nbsp;
+			Filter To: <input type="text" name="filter_to" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_to }}" />
+			&nbsp;&nbsp;
+			Filter From: <input type="text" name="filter_from" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_from }}" />
+			&nbsp;&nbsp;
+			Filter Subject: <input type="text" name="filter_subject" style="padding: 1px; margin: 0; line-height: 1px; font-size: 11px; width:100px;" value="{{ view_options.filter_subject }}" />
+			&nbsp;&nbsp;
+			<button class="dp-btn dp-btn-small" style="padding: 3px; line-height: 100%; position: relative; top: -1px;" type="submit">Update</button>
+		</form>
 	</div>
 {{ design.helpbox_end() }}
 

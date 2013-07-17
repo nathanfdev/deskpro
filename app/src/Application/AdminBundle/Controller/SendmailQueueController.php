@@ -81,12 +81,12 @@ class SendmailQueueController extends AbstractController
 		}
 
 		$filter_from = $this->in->getString('filter_from');
-		if ($filter_to) {
+		if ($filter_from) {
 			$view_options['filter_from'] = $filter_from;
 		}
 
 		$filter_subject = $this->in->getString('filter_subject');
-		if ($filter_to) {
+		if ($filter_subject) {
 			$view_options['filter_subject'] = $filter_subject;
 		}
 
@@ -121,7 +121,7 @@ class SendmailQueueController extends AbstractController
 			$wheres[] = "from_address LIKE " . $this->db->quote("%$filter_from%");
 		}
 		if ($filter_subject) {
-			$wheres[] = "filter_subject LIKE " . $this->db->quote("%$filter_subject%");
+			$wheres[] = "subject LIKE " . $this->db->quote("%$filter_subject%");
 		}
 
 		if ($wheres) {

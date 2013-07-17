@@ -52,6 +52,10 @@
 					<p>{{ phrase('admin.menu.view_logged_errors') }}</p>
 				</li>
 				<li class="link-logs">
+					<a href="{{ path('admin_sendmail_queue_index') }}">Sendmail Queue</a>
+					<p>View and manage your outgoing email queue.</p>
+				</li>
+				<li class="link-logs">
 					<a href="{{ path('admin_server_task_queue_logs') }}">Task Queue Logs</a>
 					<p>View the logs for background tasks that have been triggered.</p>
 				</li>
