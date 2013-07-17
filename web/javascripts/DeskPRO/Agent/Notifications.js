@@ -31,6 +31,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				self.removeRow(row);
 			});
 
+			DeskPRO_Window.dismissAlertQueue = [-1];
 			DeskPRO_Window.getMessageChanneler().poller.send();
 			Orb.shimClickCallbackPop();
 		}).on('click', '.dismiss', function(ev) {
@@ -221,13 +222,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var type = row.data('type');
 		var ev = { row: row, type: type };
+		var any_alert_ids = false;
 		this.fireEvent('removeRow');
-
-		this.dismissAlertId(row.data('alert-id'));
-
-		if (!noSendUpdate) {
-			DeskPRO_Window.getMessageChanneler().poller.send();
-		}
 
 		if (row.data('notification')) {
 			row.data('notification').close();
@@ -241,8 +237,23 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			var related = $('#dp_header_notify_wrap').find('li.' + row.data('class-id'));
 			if (related[0]) {
 				related.remove();
+
+				if (related.data('alert-id')) {
+					any_alert_ids = true;
+					this.dismissAlertId(related.data('alert-id'));
+				}
+
 				this.modCount(type, '-', related.length);
 			}
+		}
+
+		if (row.data('alert-id')) {
+			any_alert_ids = true;
+			this.dismissAlertId(row.data('alert-id'));
+		}
+
+		if (!noSendUpdate && any_alert_ids) {
+			DeskPRO_Window.getMessageChanneler().poller.send();
 		}
 
 		this._isRemoving = false;
@@ -250,15 +261,19 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 	removeRelated: function(related) {
 		var self = this;
+		var any = false;
 
 		$('#dp_header_notify_wrap').find('li').each(function() {
 			var row = $(this);
 			if (row.data('related') === related) {
+				any = true;
 				self.removeRow(row, true);
 			}
 		});
 
-		DeskPRO_Window.getMessageChanneler().poller.send();
+		if (any) {
+			DeskPRO_Window.getMessageChanneler().poller.send();
+		}
 	},
 
 	removeRowById: function(id) {
@@ -268,7 +283,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow($(this), true);
 		});
 
-		DeskPRO_Window.getMessageChanneler().poller.send();
+		if (row.length) {
+			DeskPRO_Window.getMessageChanneler().poller.send();
+		}
 	},
 
 	removeRowByClass: function(id) {
@@ -278,7 +295,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow($(this), true);
 		});
 
-		DeskPRO_Window.getMessageChanneler().poller.send();
+		if (row.length) {
+			DeskPRO_Window.getMessageChanneler().poller.send();
+		}
 	},
 
 	modCount: function(type, op, count) {

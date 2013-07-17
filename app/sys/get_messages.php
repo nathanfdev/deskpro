@@ -269,12 +269,20 @@ class AgentMessagesLoader extends LoaderAbstract
 				$ids = array_unique($ids);
 
 				if ($ids) {
-					$ids_in = implode(',', $ids);
-					$db->exec("
-						UPDATE agent_alerts
-						SET is_dismissed = 1
-						WHERE person_id = {$agent_session['person_id']} AND id IN ($ids_in)
-					");
+					if (in_array('-1', $ids)) {
+						$db->exec("
+							UPDATE agent_alerts
+							SET is_dismissed = 1
+							WHERE person_id = {$agent_session['person_id']}
+						");
+					} else {
+						$ids_in = implode(',', $ids);
+						$db->exec("
+							UPDATE agent_alerts
+							SET is_dismissed = 1
+							WHERE person_id = {$agent_session['person_id']} AND id IN ($ids_in)
+						");
+					}
 				}
 			}
 
