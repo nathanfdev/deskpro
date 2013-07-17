@@ -76,13 +76,6 @@ class ImportTicket
 		$search_content = array();
 		$search_content[] = $ticket_info['subject'];
 
-		try {
-			$ticket_metrics = $this->importer->zd->sendGet("tickets/{$ticket_info['id']}/metrics");
-		} catch (ApiException $e) {
-			$ticket_metrics = new OptionsArray();
-			$this->importer->logMessage(sprintf("Ticket %d has no metrics data", $ticket_id));
-		}
-
 		#------------------------------
 		# Create the ticket
 		#------------------------------
@@ -152,41 +145,6 @@ class ImportTicket
 		$insert_ticket['date_user_waiting']      = null;
 		$insert_ticket['total_user_waiting']     = 0;
 		$insert_ticket['total_to_first_reply']   = 0;
-
-		if ($ticket_metrics->get('reply_time_in_minutes')) {
-			if (is_array($ticket_metrics['reply_time_in_minutes'])) {
-				$ticket_metrics['reply_time_in_minutes'] = array_pop($ticket_metrics['reply_time_in_minutes']);
-			}
-			$insert_ticket['total_to_first_reply'] = $ticket_metrics['reply_time_in_minutes'] * 60;
-			$insert_ticket['date_first_agent_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['assignee_updated_at']) + $insert_ticket['total_to_first_reply']);
-		}
-
-		if ($ticket_metrics->get('requester_wait_time_in_minutes')) {
-			if (is_array($ticket_metrics['requester_wait_time_in_minutes'])) {
-				$ticket_metrics['requester_wait_time_in_minutes'] = array_pop($ticket_metrics['requester_wait_time_in_minutes']);
-			}
-			$insert_ticket['total_user_waiting'] = $ticket_metrics['requester_wait_time_in_minutes'] * 60;
-		}
-
-		if ($ticket_metrics->get('assignee_updated_at')) {
-			$insert_ticket['date_last_agent_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['assignee_updated_at']));
-		}
-
-		if ($ticket_metrics->get('requester_updated_at')) {
-			$insert_ticket['date_last_user_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['requester_updated_at']));
-		}
-
-		if ($ticket_metrics->get('status_updated_at')) {
-			$date = date('Y-m-d H:i:s', strtotime($ticket_metrics['status_updated_at']));
-
-			$insert_ticket['date_status'] = $date;
-
-			if ($insert_ticket['status'] == 'awaiting_user') {
-				$insert_ticket['date_agent_waiting'] = $date;
-			} elseif ($insert_ticket['status'] == 'awaiting_agent') {
-				$insert_ticket['date_user_waiting'] = $date;
-			}
-		}
 
 		$this->importer->db->insert('tickets', $insert_ticket);
 		$this->importer->saveMappedId('zd_ticekt_id', $insert_ticket['id'], $ticket_id);
@@ -303,7 +261,7 @@ class ImportTicket
 			))
 		);
 
-		$audits_raw = $this->importer->zd->sendGetAll("tickets/$ticket_id/audits", 'audits', array('per_page' => 100));
+		$audits_raw = $this->importer->zd->getTicketAudits($ticket_id);
 		$audits = array();
 
 		// Format into a "flat" structure
@@ -499,13 +457,6 @@ class ImportTicket
 		$search_content = array();
 		$search_content[] = $ticket_info['subject'];
 
-		try {
-			$ticket_metrics = $this->importer->zd->sendGet("tickets/{$ticket_info['id']}/metrics");
-		} catch (ApiException $e) {
-			$ticket_metrics = new OptionsArray();
-			$this->importer->logMessage(sprintf("Ticket %d has no metrics data", $ticket_id));
-		}
-
 		#------------------------------
 		# Create the ticket
 		#------------------------------
@@ -571,41 +522,6 @@ class ImportTicket
 		$insert_ticket['date_user_waiting']      = null;
 		$insert_ticket['total_user_waiting']     = 0;
 		$insert_ticket['total_to_first_reply']   = 0;
-
-		if ($ticket_metrics->get('reply_time_in_minutes')) {
-			if (is_array($ticket_metrics['reply_time_in_minutes'])) {
-				$ticket_metrics['reply_time_in_minutes'] = array_pop($ticket_metrics['reply_time_in_minutes']);
-			}
-			$insert_ticket['total_to_first_reply'] = $ticket_metrics['reply_time_in_minutes'] * 60;
-			$insert_ticket['date_first_agent_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['assignee_updated_at']) + $insert_ticket['total_to_first_reply']);
-		}
-
-		if ($ticket_metrics->get('requester_wait_time_in_minutes')) {
-			if (is_array($ticket_metrics['requester_wait_time_in_minutes'])) {
-				$ticket_metrics['requester_wait_time_in_minutes'] = array_pop($ticket_metrics['requester_wait_time_in_minutes']);
-			}
-			$insert_ticket['total_user_waiting'] = $ticket_metrics['requester_wait_time_in_minutes'] * 60;
-		}
-
-		if ($ticket_metrics->get('assignee_updated_at')) {
-			$insert_ticket['date_last_agent_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['assignee_updated_at']));
-		}
-
-		if ($ticket_metrics->get('requester_updated_at')) {
-			$insert_ticket['date_last_user_reply'] = date('Y-m-d H:i:s', strtotime($ticket_metrics['requester_updated_at']));
-		}
-
-		if ($ticket_metrics->get('status_updated_at')) {
-			$date = date('Y-m-d H:i:s', strtotime($ticket_metrics['status_updated_at']));
-
-			$insert_ticket['date_status'] = $date;
-
-			if ($insert_ticket['status'] == 'awaiting_user') {
-				$insert_ticket['date_agent_waiting'] = $date;
-			} elseif ($insert_ticket['status'] == 'awaiting_agent') {
-				$insert_ticket['date_user_waiting'] = $date;
-			}
-		}
 
 		$this->importer->db->update('tickets', $insert_ticket, array('id' => $ticket_id));
 

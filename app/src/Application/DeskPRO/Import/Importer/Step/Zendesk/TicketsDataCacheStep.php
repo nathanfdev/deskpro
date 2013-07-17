@@ -36,21 +36,17 @@ namespace Application\DeskPRO\Import\Importer\Step\Zendesk;
 
 use Application\DeskPRO\Import\Importer\Step\Zendesk\Ticket\ImportTicket;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
-class TicketsStep extends AbstractZendeskStep
+class TicketsDataCacheStep extends AbstractZendeskStep
 {
 	public $on_rerun = false;
 
 	const PERPAGE = 100;
 
-	/**
-	 * @var \Application\DeskPRO\CustomFields\FieldManager
-	 */
-	public $fieldmanager;
-
 	public static function getTitle()
 	{
-		return 'Import Tickets';
+		return 'Download Ticket Data';
 	}
 
 	public function countPages()
@@ -71,34 +67,15 @@ class TicketsStep extends AbstractZendeskStep
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
-		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
-
 		$tickets = $this->getBatch($page);
+		$ids = Arrays::flattenToIndex($tickets, 'id');
 
-		$this->db->beginTransaction();
-		try {
-			foreach ($tickets as $t) {
-				$this->processTicket($t);
-			}
-			$this->importer->flushSaveMappedIdBuffer();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
+		if ($ids) {
+			$this->zd->cacheManyTicketAudits($ids);
 		}
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
-	}
-
-
-	public function processTicket($ticket_info)
-	{
-		$import_ticket = new ImportTicket();
-		$import_ticket->importer = $this->importer;
-		$import_ticket->fieldmanager = $this->fieldmanager;
-
-		$import_ticket->import($ticket_info);
 	}
 
 

@@ -68,7 +68,7 @@ class TicketsCacheStep extends AbstractZendeskStep
 		$count = (int)$res->get('count');
 
 		$pages = ceil($count / self::PERPAGE);
-		$batches = ceil($pages / 5);
+		$batches = ceil($pages / self::PERBATCH);
 
 		$this->db->replace('import_datastore', array(
 			'typename' => 'zd_tickets_cache_pages',
@@ -123,7 +123,7 @@ class TicketsCacheStep extends AbstractZendeskStep
 		}
 
 		$try = 0;
-		while ($try++ < 3 and $retry_pages) {
+		while ($try++ < 6 and $retry_pages) {
 			sleep(30);
 			$results = $this->zd->sendGetMulti($retry_pages);
 

@@ -53,7 +53,7 @@ abstract class AbstractZendeskStep extends AbstractStep
 	public $db;
 
 	/**
-	 * @var \Orb\Service\Zendesk\Zendesk
+	 * @var \Application\DeskPRO\Import\Importer\ZendeskApi
 	 */
 	public $zd;
 

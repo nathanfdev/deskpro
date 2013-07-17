@@ -81,6 +81,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 	public function run($batch = 1)
 	{
 		$ticket_ids = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = 'zd_tickets_rerun_ids'");
+
 		if ($ticket_ids) {
 			$ticket_ids = @unserialize($ticket_ids);
 		}
@@ -90,6 +91,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		if ($batch == 1) {
 			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_rerun_cache.p%'");
+			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_audits_cache.t%'");
 		}
 
 		if ($batch != 1) {
@@ -131,7 +133,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 		}
 
 		$try = 0;
-		while ($try++ < 3 and $retry_pages) {
+		while ($try++ < 6 and $retry_pages) {
 			sleep(30);
 			$results = $this->zd->sendGetMulti($retry_pages);
 
@@ -147,5 +149,9 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 				}
 			}
 		}
+
+		// Also get audits
+		sleep(30);
+		$this->zd->cacheManyTicketAudits($ticket_ids);
 	}
 }

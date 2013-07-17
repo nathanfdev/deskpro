@@ -37,14 +37,20 @@ namespace Application\DeskPRO\Import\Importer;
 use Orb\Log\Logger;
 use Orb\Service\Zendesk\ApiException;
 use Orb\Service\Zendesk\Zendesk;
+use Orb\Util\Arrays;
 
 class ZendeskApi extends Zendesk
 {
 	/**
+	 * @var \Application\DeskPRO\Import\Importer\ZendeskImporter
+	 */
+	public $importer;
+
+	/**
 	 * How many times to try an API call before re-throwing an error?
 	 * @var int
 	 */
-	public $try_count = 3;
+	public $try_count = 6;
 
 	/**
 	 * The number of seconds between try attempts
@@ -60,7 +66,7 @@ class ZendeskApi extends Zendesk
 	 *
 	 * @var int
 	 */
-	public $try_time_ratelimit  = 11;
+	public $try_time_ratelimit  = 15;
 
 	/**
 	 * The number of seconds between try attempts increases
@@ -69,7 +75,7 @@ class ZendeskApi extends Zendesk
 	 *
 	 * @var int
 	 */
-	public $try_time_inc = 10;
+	public $try_time_inc = 15;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -86,6 +92,18 @@ class ZendeskApi extends Zendesk
 	}
 
 
+	/**
+	 * Adds some handling of rate limiting
+	 *
+	 * @param string $id
+	 * @param string $action
+	 * @param array $call_data
+	 * @param array $query_data
+	 * @param bool $no_exec
+	 * @return null|\Orb\Service\Zendesk\ApiResponse
+	 * @throws \Exception|null|\Orb\Service\Zendesk\ApiException
+	 * @throws \Orb\Service\Zendesk\ApiException
+	 */
 	public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
 	{
 		if ($no_exec) {
@@ -152,7 +170,7 @@ class ZendeskApi extends Zendesk
 							}
 							$this->logger->logDebug(sprintf("[ZD API] Call to $id failed due to rate limiting: %s", $body));
 						}
-						sleep($this->try_time_ratelimit + (($x-1) * $this->try_time_inc));
+						sleep(min(60, $this->try_time_ratelimit + (($x-1) * $this->try_time_inc)));
 					} else {
 						if ($this->logger) {
 							$body = '';
@@ -173,5 +191,248 @@ class ZendeskApi extends Zendesk
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * @param array $requests
+	 * @return array|void
+	 */
+	public function sendGetMulti(array $requests)
+	{
+		$results = array();
+
+		$batch_requests = array_chunk($requests, 200, true);
+
+		foreach ($batch_requests as $batch) {
+			$do_requests = $batch;
+
+			$try = $this->try_count;
+			$x = 0;
+			while ($do_requests && $try-- > 0) {
+				$x++;
+				$results = Arrays::mergeAssoc($results, parent::sendGetMulti($do_requests));
+				$do_requests = array();
+
+				foreach ($results as $id => $info) {
+					if ($info['exception'] || !$info['response']) {
+						$do_requests[$id] = $requests[$id];
+					}
+				}
+
+				if (!$do_requests) {
+					break;
+				}
+
+				$modifier = count($batch);
+				if ($modifier > 115) {
+					$modifier = 60;
+				} else if ($modifier > 60) {
+					$modifier = 30;
+				}
+
+				sleep(min(60, $this->try_time_ratelimit + (($x-1) * $this->try_time_inc) + $modifier));
+			}
+		}
+
+		return $results;
+	}
+
+
+	/**
+	 * @param int $page
+	 * @param bool $reload
+	 * @return mixed|null|\Orb\Service\Zendesk\ApiResponse
+	 */
+	public function getTicketListPageResponse($page = 1, $reload = false)
+	{
+		$per_page = 100;
+
+		if (!$reload) {
+			$cached = $this->importer->db->fetchColumn("
+				SELECT data
+				FROM import_datastore
+				WHERE typename = 'zd_tickets_cache.p{$page}'
+			");
+		} else {
+			$cached = false;
+		}
+
+		$res = null;
+		if ($cached) {
+			$res = @unserialize($cached);
+		}
+
+		if (!$res) {
+			$res = $this->importer->zd->sendGet('tickets', array('per_page' => $per_page, 'page' => $page));
+
+			$this->importer->db->replace('import_datastore', array(
+				'typename' => "zd_tickets_cache.p{$page}",
+				'data'     => serialize($res)
+			));
+		}
+
+		return $res;
+	}
+
+
+	/**
+	 * Caches many ticket audits
+	 *
+	 * @param array $ticket_ids
+	 */
+	public function cacheManyTicketAudits($ticket_ids)
+	{
+		// Big ticket ids need multiple calls to get all audits (zd only sends in batches of 100)
+		// array(ticket_id => count)
+		$big_ticket_ids = array();
+
+		// All audit data keyed by ticket id
+		// Used with big tickets to merge to get a big resulting array
+		$big_audits = array();
+
+		#------------------------------
+		# Get results for each ticket
+		#------------------------------
+
+		$reqs = array();
+
+		foreach ($ticket_ids as $ticket_id) {
+			$reqs[$ticket_id] = array(
+				"tickets/$ticket_id/audits",
+				array('per_page' => 100)
+			);
+		}
+
+		$results = $this->sendGetMulti($reqs);
+
+		foreach ($results as $ticket_id => $info) {
+			if ($info['exception'] || !$info['response']) {
+				// failed
+			} else {
+				/** @var $r \Orb\Service\Zendesk\ApiResponse */
+				$r = $info['response'];
+
+				if ($r->get('next_page') && $r->get('count')) {
+					// Big ticket with more than one audit
+					$big_audits[$ticket_id] = $r->get('audits', array());
+					$big_ticket_ids[$ticket_id] = $r->get('count');
+				} else {
+					$this->importer->db->replace('import_datastore', array(
+						'typename' => 'zd_tickets_audits_cache.t'.$ticket_id,
+						'data' => serialize($r->get('audits', array()))
+					));
+				}
+			}
+		}
+
+		#------------------------------
+		# Get additional pages for larger tickets
+		#------------------------------
+
+		$reqs = array();
+
+		foreach ($big_ticket_ids as $ticket_id => $count) {
+			$num_pages = ceil($count / 100);
+			$pages = range(1, $num_pages);
+
+			foreach ($pages as $p) {
+				$reqs[$ticket_id. '-' . $p] = array(
+					"tickets/$ticket_id/audits",
+					array('per_page' => 100, 'page' => $p)
+				);
+			}
+		}
+
+		if ($reqs) {
+			$results = $this->sendGetMulti($reqs);
+
+			foreach ($results as $key => $info) {
+				if ($info['exception'] || !$info['response']) {
+					// failed
+				} else {
+					/** @var $r \Orb\Service\Zendesk\ApiResponse */
+					$r = $info['response'];
+
+					list($ticket_id,) = explode('-', $key);
+
+					$big_audits[$ticket_id] = array_merge($big_audits[$ticket_id], $r->get('audits'));
+				}
+			}
+		}
+
+		if ($big_audits) {
+			foreach ($big_audits as $ticket_id => $audits) {
+				$this->importer->db->replace('import_datastore', array(
+					'typename' => 'zd_tickets_audits_cache.t'.$ticket_id,
+					'data' => serialize($audits)
+				));
+			}
+		}
+	}
+
+
+	/**
+	 * @param int $ticket_id
+	 * @param bool $reload
+	 * @return array
+	 */
+	public function getTicketAudits($ticket_id, $reload = false)
+	{
+		$per_page = 100;
+
+		if (!$reload) {
+			$cached = $this->importer->db->fetchColumn("
+				SELECT data
+				FROM import_datastore
+				WHERE typename = 'zd_tickets_audits_cache.t{$ticket_id}'
+			");
+		} else {
+			$cached = false;
+		}
+
+		$res = null;
+		if ($cached) {
+			$res = @unserialize($cached);
+		}
+
+		if (!$res) {
+			$res = $this->importer->zd->sendGet("tickets/$ticket_id/audits", array('per_page' => $per_page));
+
+			$audits = $res->get('audits', array());
+
+			// Many pages of audits
+			if ($res->get('next') && $res->get('count')) {
+				$num_pages = ceil($res->get('count') / 100);
+				$pages = range(1, $num_pages);
+
+				$reqs = array();
+				foreach ($pages as $p) {
+					$reqs[$p] = array(
+						"tickets/$ticket_id/audits",
+						array('per_page' => 100, 'page' => $p)
+					);
+				}
+
+				$results = $this->sendGetMulti($reqs);
+
+				foreach ($results as $info) {
+					if ($info['exception'] || !$info['response']) {
+						// failed
+					} else {
+						/** @var $r \Orb\Service\Zendesk\ApiResponse */
+						$r = $info['response'];
+						$audits = array_merge($audits, $r->get('audits', array()));
+					}
+				}
+			}
+
+			$this->importer->db->replace('import_datastore', array(
+				'typename' => "zd_tickets_audits_cache.t{$ticket_id}",
+				'data'     => serialize($audits)
+			));
+		}
+
+		return $res;
 	}
 }

@@ -85,6 +85,7 @@ class ZendeskImporter extends AbstractImporter
 		'Groups',
 		'TicketFields',
 		'TicketsCache',
+		'TicketsDataCache',
 		'Tickets',
 		'TicketsRerunList',
 		'TicketsRerunCache',
@@ -112,6 +113,7 @@ class ZendeskImporter extends AbstractImporter
 			$this->config->zendesk_user_id,
 			$this->config->zendesk_api_token
 		);
+		$this->zd->importer = $this;
 	}
 
 
