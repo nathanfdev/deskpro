@@ -75,6 +75,8 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			 */
 			currentPage: 1,
 
+			tabResultCountEls: null,
+
 			preFetchCallback: null,
 
 			infiniteScroll: false,
@@ -92,6 +94,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.navEl             = this.options.navEl || $('footer.results-nav', this.wrapper);
 		this.showingCountEl    = this.options.showingCountEl || $('.results-showing-count', this.wrapper);
 		this.totalCountEl      = this.options.totalCountEl || $('.results-total-count', this.wrapper);
+		this.tabResultCountEls = this.options.tabResultCountEls || this.wrapper.find('.results-count-display');
 
 		this.pageNav           = $('ul.pagenav', this.navEl);
 		this.prevBtn           = $('> li.prev', this.pageNav);
@@ -207,6 +210,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		}
 
 		this.totalCountEl.text(this.resultCount);
+		this.tabResultCountEls.text(this.resultCount);
 		this.updateShowingCount();
 	},
 
@@ -414,6 +418,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		}
 
 		this.showingCountEl.empty().text(start + '-' + end);
+		this.tabResultCountEls.text(this.resultCount);
 
 		return showingCount;
 	},
