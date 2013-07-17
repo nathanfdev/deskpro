@@ -8,7 +8,8 @@
 {######################################################################################################################}
 {% block top %}
 	<script>
-		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishSearch';
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbList';
+		pageMeta.baseId = '{{ tplvars.baseId }}';
 	</script>
 {% endblock top %}
 
@@ -26,7 +27,7 @@
 
 {% block pane_content %}
 
-	<section class="feedback-simple-list list-listing">
+	<section class="kb-simple-list list-listing">
 		<section class="search-reuslts page-set" data-page="{{ page }}">
 			{% for article in results %}
 				<article
@@ -40,16 +41,23 @@
 					<div class="top-row">
 						<div class="top-row-left">
 							<h3>
-								<a class="row-title click-through">{{ article.title }}</a>
+								<a class="row-title click-through"><span class="obj-title-article_{{ article.id }}">{{ article.title }}</span></a>
 							</h3>
 						</div>
+						<div class="top-row-right">
+							<div class="bound-fade"></div>
+						</div>
+						<div class="top-row-right visible-content-link-control">
+							<div class="bound-fade"></div>
+							<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.getTitle() }}"></span>
+						</div>
 						<div class="top-row-right visible-ticket-controls">
-							<div class="bound-faded"></div>
+							<div class="bound-fade"></div>
 							<a href="javascript:" class="tipped kb-insert-link" title="{{ phrase('agent.general.insert_link') }}" data-article-id="{{ article.id }}"></a>
 							<a href="javascript:" class="tipped kb-insert-content" title="{{ phrase('agent.general.insert_content') }}" data-article-id="{{ article.id }}"></a>
 						</div>
 						<div class="top-row-right visible-related-content-controls">
-							<div class="bound-faded"></div>
+							<div class="bound-fade"></div>
 							<span class="tipped related-link" title="{{ phrase('agent.general.add_as_related') }}"></span>
 							<span class="tipped related-unlink" title="{{ phrase('agent.general.remove_as_related') }}"></span>
 						</div>
