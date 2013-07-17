@@ -229,7 +229,7 @@
 						<li id="create_article_btn"><a><div class="wrap"><i class="icon-dp-article"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
 						<li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></span></a></li>
 						<li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
-						<li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
+						<li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback" title="Feedback"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
 					{% endif %}
 					{% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></span></a></li>{% endif %}
 				</ul>
@@ -374,7 +374,7 @@
 							{% if app.user.hasPerm('agent_people.use') %}<li><i class="icon-dp-person" title="People"></i></li>{% endif %}
 							{% if app.user.hasPerm('agent_people.use') %}<li><i class="icon-dp-organization" title="Organizations"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_kb') %}<li><i class="icon-dp-article" title="Articles"></i></li>{% endif %}
-							{% if app.getSetting('core.apps_feedback') %}<li><i class="icon-dp-feedback"></i></li>{% endif %}
+							{% if app.getSetting('core.apps_feedback') %}<li><i class="icon-dp-feedback" title="Feedback"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_news') %}<li><i class="icon-dp-news" title="News"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_download') %}<li><i class="icon-dp-download" title="Downloads"></i></li>{% endif %}
 						</ul>
@@ -410,7 +410,7 @@
 						<label>Title</label>
 						<ul class="types">
 							{% if app.getSetting('core.apps_kb') %}<li><i class="icon-dp-article" title="Articles"></i></li>{% endif %}
-							{% if app.getSetting('core.apps_feedback') %}<li><i class="icon-dp-feedback"></i></li>{% endif %}
+							{% if app.getSetting('core.apps_feedback') %}<li><i class="icon-dp-feedback" title="Feedback"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_news') %}<li><i class="icon-dp-news" title="News"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_download') %}<li><i class="icon-dp-download" title="Downloads"></i></li>{% endif %}
 						</ul>
@@ -422,7 +422,7 @@
 							{% if app.user.hasPerm('agent_people.use') %}<li><i class="icon-dp-person" title="People"></i></li>{% endif %}
 							{% if app.user.hasPerm('agent_people.use') %}<li><i class="icon-dp-organization" title="Organizations"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_kb') %}<li><i class="icon-dp-article" title="Articles"></i></li>{% endif %}
-							{% if app.getSetting('core.apps_feedback') %}<li><i class="icon-dp-feedback"></i></li>{% endif %}
+							{% if app.getSetting('core.apps_feedback') %}<li><i class="icon-dp-feedback" title="Feedback"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_news') %}<li><i class="icon-dp-news" title="News"></i></li>{% endif %}
 							{% if app.getSetting('core.apps_download') %}<li><i class="icon-dp-download" title="Downloads"></i></li>{% endif %}
 						</ul>
@@ -431,10 +431,10 @@
 
 				<div class="description" style="text-align: center; padding: 8px 0;">For more advanced search options, select an application:</div>
 				<ul class="list-with-icons" id="search_icons_nav">
-					{% if app.user.hasPerm('agent_tickets.use') %}<li class="tickets_section" data-target-section="tickets_section"></li>{% endif %}
-					{% if app.user.hasPerm('agent_people.use') %}<li class="people_section" data-target-section="people_section"></li>{% endif %}
-					{% if app.getSetting('core.apps_feedback') %}<li class="feedback_section" data-target-section="feedback_section"></li>{% endif %}
-					{% if app.getSetting('core.apps_kb') %}<li class="publish_section" data-target-section="publish_section"></li>{% endif %}
+					{% if app.user.hasPerm('agent_tickets.use') %}<li class="tickets_section" data-target-section="tickets_section" title="Tickets"></li>{% endif %}
+					{% if app.user.hasPerm('agent_people.use') %}<li class="people_section" data-target-section="people_section" title="CRM"></li>{% endif %}
+					{% if app.getSetting('core.apps_feedback') %}<li class="feedback_section" data-target-section="feedback_section" title="Feedback"></li>{% endif %}
+					{% if app.getSetting('core.apps_kb') %}<li class="publish_section" data-target-section="publish_section" title="Publish"></li>{% endif %}
 				</ul>
 		</div>
 	</div>
