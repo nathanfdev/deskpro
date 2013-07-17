@@ -120,13 +120,13 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 			$m = null;
 			if (preg_match_all('#(P?)TAC\-([A-Za-z0-9]+)\.#', $body, $m, \PREG_SET_ORDER)) {
 				foreach ($m as $match) {
-					if ($m[1]) {
-						$this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in body-headers: " . $m[2]);
+					if ($match[1]) {
+						$this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in body-headers: " . $match[2]);
 					} else {
-						$this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in body-headers: " . $m[2]);
+						$this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in body-headers: " . $match[2]);
 					}
 
-					$search_text[] = '(#' . $m[2] . ')';
+					$search_text[] = '(#' . $match[2] . ')';
 				}
 			}
 		}
