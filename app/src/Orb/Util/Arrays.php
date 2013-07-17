@@ -891,15 +891,23 @@ class Arrays
 	 * @param  string|int  $index  The index of the immediate sub-array to use
 	 * @return array
 	 */
-	public static function flattenToIndex($array, $index = 0)
+	public static function flattenToIndex($array, $index = 0, $ignore_keys = false)
 	{
 	    $ret = array();
 
-	    foreach ($array as $k => $sub_array) {
-	        if (isset($sub_array[$index])) {
-	            $ret[$k] = $sub_array[$index];
-	        }
-	    }
+		if ($ignore_keys) {
+			foreach ($array as $sub_array) {
+				if (isset($sub_array[$index])) {
+					$ret[] = $sub_array[$index];
+				}
+			}
+		} else {
+			foreach ($array as $k => $sub_array) {
+				if (isset($sub_array[$index])) {
+					$ret[$k] = $sub_array[$index];
+				}
+			}
+		}
 
 	    return $ret;
 	}
