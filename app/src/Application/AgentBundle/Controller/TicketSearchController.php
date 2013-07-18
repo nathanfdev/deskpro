@@ -610,7 +610,7 @@ class TicketSearchController extends AbstractController
 
 					$terms[] = array('type' => 'subject_adv', 'op' => $op, 'options' => array('query' => $string, 'type' => $type));
 				}
-			} else if ($search_term = $this->in->getCleanValueArray('search_subject_simple', 'string', 'discard')) {
+			} else if ($search_term = $this->in->getString('search_subject_simple')) {
 				$terms[] = array('type' => 'subject', 'op' => 'contains', 'options' => array('query' => $search_term));
 			}
 
@@ -645,7 +645,7 @@ class TicketSearchController extends AbstractController
 							'date_op' => $date_op,
 					));
 				}
-			} else if ($search_term = $this->in->getCleanValueArray('search_message_simple', 'string', 'discard')) {
+			} else if ($search_term = $this->in->getString('search_message_simple')) {
 				$terms[] = array('type' => 'ticket_message', 'op' => 'contains', 'options' => array('query' => $search_term));
 			}
 

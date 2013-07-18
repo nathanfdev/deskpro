@@ -1678,6 +1678,11 @@ class TicketSearch extends SearcherAbstract
 						$this->affected_fields[] = 'ticket.message';
 
 						$string = $choice;
+
+						if (is_array($string)) {
+							$string = array_pop($string);
+						}
+
 						$type = 'and';
 
 						if (!App::getSetting('tickets_enable_like_search')) {
@@ -1694,14 +1699,10 @@ class TicketSearch extends SearcherAbstract
 
 							$wheres[] = $this->_fulltextSearch($field, $op, $string);
 						} else {
-							if ($this->is_archive) {
-								$t = 'tickets_search_message';
-							} else {
-								$t = 'tickets_search_message_active';
-							}
+							$this->affected_fields[] = 'ticket.message';
 							$joins[] = array(
-								$t,
-								"LEFT JOIN $t AS $join_name ON ($join_name.id = tickets.id)"
+								'tickets_messages',
+								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
 							);
 							$field = "$join_name.message";
 							$wheres[] = $this->_stringSearch($field, $op, $string, $type);
@@ -1739,8 +1740,6 @@ class TicketSearch extends SearcherAbstract
 								"LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)"
 							);
 							$field = "$join_name.message";
-
-
 
 							if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 								$this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.message'), 'value' => $string));
