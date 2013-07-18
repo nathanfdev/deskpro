@@ -430,15 +430,14 @@ DeskPRO.Agent.RteEditor = {
 				// since <p> only counts as one line break, we need to fix that
 				html = $.trim(html);
 				html = html.replace(/^<div[^>]* data-redactor-wrapper="1"[^>]*>([\w\W]+)<\/div>$/, '$1');
-				html = html.replace(/<\/p>/gi, '</p><p>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
 				html = html.replace(/(<p[^>]* data-redactor="1"[^>]*>[\w\W]*?<\/p>)<p>(<br>)?<span><span><\/span><\/span><\/p>/ig, '$1');
 				html = html.replace(/<p>(<br>)?<span><span><\/span><\/span><\/p>$/, '');
 
 				// convert divs to p's and keep empty ones
 				html = html.replace(/<div/gi, '<p').replace(/<\/div>/g, '</p>');
-				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<p$1>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<br/>');
 				html = html.replace(/(<p[^>]*) data-redactor="1"/g, '$1');
-				html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+				html = html.replace(/<\/p>\s*<p>/g, '<\/p><p>');
 				html = html.replace(/^<p>/, '');
 				html = html.replace(/<\/p>$/, '');
 
