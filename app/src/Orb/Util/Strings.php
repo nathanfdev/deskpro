@@ -1470,7 +1470,7 @@ class Strings
 	 */
 	public static function extractBodyTag($value)
 	{
-		$value = preg_replace('#(<body[^>]*>)#', '<body>', $value);
+		$value = preg_replace('#(<body[^>]*>)#i', '<body>', $value);
 		$count = substr_count($value, '<body>');
 
 		if (!$count) {

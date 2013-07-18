@@ -85,6 +85,18 @@ class HtmlPurifier implements CleanerPlugin
 			// with two <html>..</html> documents in one message. This screws up the cleaner.
 			// This just moves the tags around so the body wraps the entire document
 
+			$value = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $value);
+			$value = preg_replace('#<html[^>]*>#i', '<html>', $value);
+			if (substr_count($value, '<html>') > 1) {
+				$value = str_replace('<html>', '', $value);
+				$value = str_ireplace('</html>', '', $value);
+				$value = preg_replace('#<body[^>]*>#i', '', $value);
+				$value = str_ireplace('</body>', '', $value);
+			}
+
+			$value = preg_replace('#<(head|body|style|script)[^>]*/>#i', '', $value);
+			$value = preg_replace('#<(head|body|style|script)[^>]*>\s*</\\1>#i', '', $value);
+
 			$value = preg_replace('#<!DOCTYPE.*?>#is', '', $value);
 			if (strpos($value, '<html') !== false) {
 				$value = preg_replace('#<html[^>]*>#i', '', $value);
