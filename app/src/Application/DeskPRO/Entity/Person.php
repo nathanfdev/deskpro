@@ -2288,11 +2288,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			foreach ($this->organization->usergroups AS $group) {
 				$data['organization_usergroups'][] = $group->toApiData(false, false, $visited);
 			}
+
+			if (empty($data['organization'])) {
+				$data['organization'] = $this->organization->toApiData($primary, $deep, $visited);
+			}
 		}
 
 		$data['display_name'] = $this->getDisplayName();
 		$data['primary_email'] = $this->getPrimaryEmailAddress();
 		$data['picture_url'] = $this->getPictureUrl();
+
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('person_fields_manager');
