@@ -235,8 +235,8 @@ class TextSnippetsController extends AbstractController
 				UPDATE text_snippets
 				LEFT JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
 				SET text_snippets.shortcut_code = CONCAT(text_snippets.shortcut_code, '_', text_snippets.id)
-				WHERE text_snippets.shortcut_code = ? AND text_snippet_categories.typename = ?
-			", array($snippet->shortcut_code, $typename));
+				WHERE text_snippets.shortcut_code = ? AND text_snippet_categories.typename = ? AND text_snippets.id != ?
+			", array($snippet->shortcut_code, $typename, $snippet->id));
 		}
 
 		$this->em->persist($snippet);
