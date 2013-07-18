@@ -7,13 +7,13 @@
 			</div>
 			<div class="snippet-content" data-snippet-id="{{ snippet.id }}">
 				<label>
-					{{ snippet.title_use.my }}
+					{{ snippet.title_use.show }}
 				</label>
 				{% if snippet.shortcut_code %}<span class="snippet-code">%{{ snippet.shortcut_code }}%</span>{% endif %}
 				<div class="content show">
 					<div class="main-content">
-						{% if snippet.title_use.myId != snippet.title_use.showId %}
-							<strong>{{ snippet.title_use.show }}:</strong>
+						{% if snippet.title_use.myId and snippet.title_use.myId != snippet.title_use.showId %}
+							<strong>{{ snippet.title_use.my }}:</strong>
 						{% endif %}
 						{{ snippet.snippet_use.show }}
 						{% for snippet_info in snippet.snippet %}

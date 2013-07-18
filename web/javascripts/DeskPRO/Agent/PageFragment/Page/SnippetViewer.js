@@ -48,21 +48,21 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			var ret = { my: '', myId: 0, show: '', showId: 0 };
 			var hasShow = false;
 			Array.each(lang_vals, function(l) {
-				if (l.language_id == myLangId) {
+				if (l.value && l.language_id == myLangId) {
 					ret.my = l.value;
 					ret.myId = l.language_id;
 				}
-				if (l.language_id == showLangId) {
+				if (l.value && l.language_id == showLangId) {
 					ret.show = l.value;
 					ret.showId = l.language_id;
 				}
-				if (!ret.show) {
+				if (!ret.show && l.value) {
 					ret.show = l.value;
 					ret.showId = l.language_id;
 				}
 			});
 
-			if (!ret.show || ret.showId != showLangId) {
+			if ((!ret.show || ret.showId != showLangId) && ret.my && ret.myId) {
 				ret.show = ret.my;
 				ret.showId = ret.myId;
 			}
