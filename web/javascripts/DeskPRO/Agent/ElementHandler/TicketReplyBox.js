@@ -565,13 +565,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				try {
 					var tpl = twig({
 						data: useText,
-						strict_variables: true
+						strict_variables: false
 					});
 					if (tpl) {
 						result = tpl.render({
 							ticket: self.page.meta.api_data
 						}, {
-							strict_variables: true
+							strict_variables: false
 						});
 					} else {
 						result = useText;
