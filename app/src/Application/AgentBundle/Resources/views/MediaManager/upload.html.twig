@@ -32,7 +32,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.MediaManagerPage.Upload';
 			>Insert Into Article</button>
 			<button class="clean-white cancel-trigger">Upload a different file instead</button>
 			<div style="padding-top: 10px;">
-				File URL: <input type="text" style="width: 95%;" value="{{ '{%=file.download_url%}' }}" />
+				File URL: <input type="text" class="file-url" style="width: 95%;" value="{{ '{%=file.download_url%}' }}" />
 			</div>
 			<div style="max-width: 98%; max-height: 400px; overflow:auto; padding-top: 10px;"><img src="{{ '{%=file.download_url%}' }}" /></div>
 		</div>
