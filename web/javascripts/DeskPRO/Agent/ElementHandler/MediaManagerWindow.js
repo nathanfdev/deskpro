@@ -20,6 +20,18 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 		if (this._hasInit) return;
 		this._hasInit = true;
 
+		$('#mediawin_nav > li').removeClass('on')
+		$('#mediawin_pages > section').each(function() {
+			var page = $(this).data('page-fragment');
+			if (page) {
+				page.fireEvent('destroy');
+			}
+			$(this).data('page-fragment', null);
+
+			$(this).empty();
+			$(this).append('<div class="page-loading"></div>');
+		});
+
 		this.el.css({
 			top: 45,
 			bottom: 120,
@@ -119,36 +131,16 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 
 	open: function(ev, tabName, activateView) {
 
-		$('#mediawin_nav > li').removeClass('on')
-		$('#mediawin_pages > section').each(function() {
-			var page = $(this).data('page-fragment');
-			if (page) {
-				page.fireEvent('destroy');
-			}
-			$(this).data('page-fragment', null);
-
-			$(this).empty();
-			$(this).append('<div class="page-loading"></div>');
-		});
-
-		this.el.data('activateView', activateView);
-		if (tabName) {
-			var tabEl = $('#mediawin_nav > li.tab-' + tabName);
-		}
-		if (tabName && !this._hasInit) {
-			$('#mediawin_nav > li').removeClass('on');
-			tabEl.addClass('on');
-		}
-
 		this._lazyInit();
+
+		var tabEl = null;
+		if (tabName) {
+			tabEl = $('#mediawin_nav > li.tab-' + tabName);
+		}
 
 		if (tabName && tabEl) {
 			this.topTabs.activateTab(tabEl);
-		} else {
-			this.topTabs.activateTab($('#mediaswin_upload_trigger'));
 		}
-
-		this.reloadTab('upload');
 
 		this.el.show();
 		this.backdrop.show();
@@ -167,9 +159,6 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 			this.el.hide();
 			this.backdrop.hide();
 		}
-
-		$('#mediaswin_upload').find('.upload-control').show();
-		$('#mediaswin_upload').find('.files').empty();
 
 		this.boundEditor = null;
 	}
