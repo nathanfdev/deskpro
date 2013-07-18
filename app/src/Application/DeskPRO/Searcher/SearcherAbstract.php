@@ -997,7 +997,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 					$not_id = -1;
 				}
 			} else {
-				$agent_ids = $c;
+				$agent_ids[] = $c;
 			}
 		}
 
