@@ -77,6 +77,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				{{ '{% } %}' }}
 			</script>
 		</div>
+		<br class="clear"/>
 		{% endif %}
 
 		<div class="dp-form-row dp-desktop-notifications" style="display:none">
@@ -167,5 +168,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		{% endif %}
 	</div>
 
-	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
+	<div class="button-container">
+		<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
+	</div>
 </form>

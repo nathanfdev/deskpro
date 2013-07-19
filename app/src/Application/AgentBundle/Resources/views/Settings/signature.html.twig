@@ -5,14 +5,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 
 	<div class="dp-form">
 
-		<div class="dp-form-row">
+		<div class="dp-form-row" style="height: auto;">
 			<div class="dp-form-label"><label>{{ phrase('agent.settings.ticket_signature') }}</label></div>
-			<div class="dp-form-input">
-				<div style="width: 70%" class="unreset">
+			<div class="dp-form-input" style="height: auto; margin-left: 250px; width: 590px;">
+				<div style="width: 70%; height: 190px;" class="unreset">
 					<textarea name="ticket_signature" id="agent_settings_signature" data-rte="{% if can_signature_html %}1{% else %}0{% endif %}"></textarea>
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.settings.drop_here_insert_signature') }}</h1></div>
 				</div>
-				<em class="desc">{{ phrase('agent.settings.ticket_signature_desc') }}</em>
+				<em class="desc" style="display: block; float: none;">{{ phrase('agent.settings.ticket_signature_desc') }}</em>
 				<input type="hidden" id="agent_settings_is_html_signature" name="is_html_signature" value="0" />
 				<input type="hidden" value="{{ signature }}" id="agent_settings_signature_text" />
 				<input type="hidden" value="{{ signature_html }}" id="agent_settings_signature_html" />
@@ -20,19 +20,21 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 		</div>
 
 		{% if app.user.getTwitterAccountIds()|length %}
-			<div class="dp-form-row">
-			<div class="dp-form-label"><label>Twitter Signature</label></div>
-			<div class="dp-form-input">
-				<div>
-					<input type="text" name="tweet_signature" value="{{ tweet_signature }}" />
+			<div class="dp-form-row" style="height: auto;">
+				<div class="dp-form-label"><label>Twitter Signature</label></div>
+				<div class="dp-form-input" style="height: auto; margin-left: 250px; width: 550px;">
+					<div>
+						<input type="text" name="tweet_signature" value="{{ tweet_signature }}" />
+					</div>
+					<em class="desc" style="display: block; float: none;">Any tweets you write will be signed off with this. Keep it short.</em>
 				</div>
-				<em class="desc">Any tweets you write will be signed off with this. Keep it short.</em>
 			</div>
-		</div>
-
 		{% endif %}
-
 	</div>
 
-	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
+	<br class="clear" />
+
+	<div class="button-container">
+		<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
+	</div>
 </form>

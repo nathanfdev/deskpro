@@ -1,37 +1,37 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 </script>
+<div style="padding: 10px;">
+	<div style="text-align: right">
+		<a class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_new') }}" data-zindex="32050">{{ phrase('agent.settings.create_filter') }}</a>
+	</div>
 
-<div style="text-align: right">
-	<a class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_new') }}" data-zindex="32050">{{ phrase('agent.settings.create_filter') }}</a>
-</div>
+	<br />
 
-<br />
-
-<div class="check-grid item-list">
-	<table width="100%">
-		<thead>
-			<tr>
-				<th>{{ phrase('agent.general.filters') }}</th>
-				<th width="50"></th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for filter in filters %}
+	<div class="check-grid item-list">
+		<table width="100%">
+			<thead>
 				<tr>
-					<td>{{ filter.title }}</td>
-					<td class="prop" style="text-align: center;">
-						<ul class="controls">
-							<li class="delete delete-filter" data-delete-url="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}" data-filter-id="{{ filter.id }}"></li>
-							<li class="edit" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}" data-zindex="32050"></li>
-						</ul>
-					</td>
+					<th style="text-align:left;">{{ phrase('agent.general.filters') }}</th>
+					<th style="text-align:left;" width="100">Hide <span class="small-light-icon tipped" title="Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time."></span></th>
+					<th style="text-align:left;" width="10">Edit</th>
 				</tr>
-			{% else %}
-				<tr>
-					<td colspan="2">{{ phrase('agent.settings.no_filters') }}</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{% for filter in filters %}
+					<tr>
+						<td>{{ filter.title }}</td>
+						<td nowrap="nowrap">
+							<label><input type="checkbox" name="filters_hidden[]" class="filter-hidden-check filter-{{ filter.id }}" value="{{ filter.id }}" {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}checked="checked"{% endif %} /> Hide</label>
+						</td>
+						<td><button class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}" data-zindex="32050">Edit</button></td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="2">{{ phrase('agent.settings.no_filters') }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>

@@ -50,7 +50,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if(this.hasSectionInitialised) {
 			this._lastLoaded = new Date();
-			this.filterGroupEditor.destroy();
+			//this.filterGroupEditor.destroy();
 			this.contentEl.empty();
 		}
 
@@ -60,9 +60,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.setHasInitialLoaded();
 		this.contentEl.html(data.section_html);
 
-		if('filterGroupEditor' in this)
-			this.filterGroupEditor.destroy();
-
+		/*
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
 			containerElement: '#chat_outline',
 			listElement: '#chats_outline_sys_filters',
@@ -77,6 +75,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 		});
 		this.filterGroupEditor._initControl();
+		*/
 		this.refreshFilterGrouping(data, lastSelectedId);
 		this.updateGroupingVars();
 
@@ -544,7 +543,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				element.hide();
 		}
 
-		self.filterGroupEditor.updatePositions();
+		//self.filterGroupEditor.updatePositions();
 	},
 
 	getGroupingVar: function(filterId) {

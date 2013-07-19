@@ -332,8 +332,16 @@ class SettingsController extends AbstractController
 	{
 		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getPersonalFilters($this->person);
 
+		//agent.ui.filter
+		$filter_show_options = $this->db->fetchAllKeyValue("
+			SELECT name, value_str
+			FROM people_prefs
+			WHERE person_id = ? AND (name LIKE 'agent.ui.filter-visibility.%')
+		", array($this->person->id));
+
 		return $this->render('AgentBundle:Settings:ticket-filters.html.twig', array(
-			'filters' => $filters
+			'filters'             => $filters,
+			'filter_show_options' => $filter_show_options,
 		));
 	}
 
@@ -513,5 +521,31 @@ class SettingsController extends AbstractController
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# Ticket Slas
+	############################################################################
+
+	/**
+	 * Just a list of filters
+	 */
+	public function ticketSlasAction()
+	{
+		$sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter');
+		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+
+		//agent.ui.filter
+		$filter_show_options = $this->db->fetchAllKeyValue("
+			SELECT name, value_str
+			FROM people_prefs
+			WHERE person_id = ? AND (name LIKE 'agent.ui.sla.filter-visibility.%')
+		", array($this->person->id));
+
+		return $this->render('AgentBundle:Settings:ticket-slas.html.twig', array(
+			'slas'       => $slas,
+			'sla_filter' => $sla_filter,
+			'filter_show_options' => $filter_show_options,
+		));
 	}
 }

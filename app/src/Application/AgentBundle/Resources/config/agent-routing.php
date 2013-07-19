@@ -392,6 +392,13 @@ $collection->add('agent_settings_ticketfilters_new', new Route(
 	array()
 ));
 
+$collection->add('agent_settings_ticketslas', new Route(
+	'/settings/ticket-slas',
+	array('_controller' => 'AgentBundle:Settings:ticketSlas'),
+	array(),
+	array()
+));
+
 ################################################################################
 # People and People Search
 ################################################################################

@@ -114,6 +114,7 @@ $CONFIG['agent_settingswin'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/MacroEdit.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketSlas.js',
 
 		'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
 		'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
@@ -364,9 +365,6 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
 		'javascripts/DeskPRO/Agent/Widget/Merge.js',
 		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
-		'javascripts/DeskPRO/Agent/Widget/FilterGroupEditor.js',
-		'javascripts/DeskPRO/Agent/Widget/FilterOptionsPop.js',
-		'javascripts/DeskPRO/Agent/Widget/SlaOptionsPop.js',
 		'javascripts/DeskPRO/Agent/Widget/TwitterGroupEditor.js',
 
 		'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
@@ -645,7 +643,6 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
-		'stylesheets-less/agent/agent.less',
 	)
 );
 
@@ -656,6 +653,7 @@ $CONFIG['agent_interface_css2'] = array(
 		'stylesheets-less/agent/dp-source-pane.less',
 		'stylesheets-less/agent/dp-list-pane.less',
 		'stylesheets-less/agent/dp-content-pane.less',
+		'stylesheets-less/agent/agent.less',
 	)
 );
 

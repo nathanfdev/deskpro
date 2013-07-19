@@ -10,31 +10,64 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 		window.settings_filters_page = this;
 		this.el = el;
 		var self = this;
+		var didChangeFilterVis = false;
 
 		$('#settingswin').bind('dp_settings_filtersupdated', function() {
 			self.settingsWindow.reloadInterface = true;
 			self.settingsWindow.reloadTab('filters');
 		});
 
-		this.el.on('click', '.delete-filter', function() {
-			var row = $(this).closest('tr');
-			var url = $(this).data('delete-url');
-			var filterId = $(this).data('filter-id');
+		var runningAjax = null;
+		var sendUpdate = function() {
 
-			DeskPRO_Window.showConfirm('Are you sure you want to permanantly delete this filter?', function() {
-				$.ajax({
-					url: url,
-					success: function() {
-						row.fadeOut(function() {
-							row.remove();
+			if (runningAjax) {
+				runningAjax.abort();
+				runningAjax = null;
+			}
 
-							if (ticketsSection) {
-								ticketsSection.removeCustomFilter(filterId);
-							}
-						});
-					}
+			var postData = [];
+			self.el.find('.filter-hidden-check').each(function() {
+				var id = parseInt($(this).val());
+				var v;
+
+				if (this.checked) {
+					v = 'hidden';
+				} else {
+					v = '';
+				}
+
+				postData.push({
+					name: 'prefs[agent.ui.filter-visibility.' + id + ']',
+					value: v
 				});
 			});
+
+			runningAjax = $.ajax({
+				type: 'POST',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
+				data: postData
+			});
+		}
+
+		this.el.find('.filter-hidden-check').on('click', function(ev) {
+			if (!DeskPRO_Window || !DeskPRO_Window.sections.tickets_section) {
+				return;
+			}
+
+			var filterId = $(this).val();
+
+			didChangeFilterVis = true;
+			if (this.checked) {
+				$('#tickets_outline_custom_filters').find('.filter-' + filterId).addClass('filter-hidden');
+				if ($('#tickets_outline_custom_filters').find('li').not('.filter-hidden')[0]) {
+					$('#tickets_outline_custom_filters').find('.no-data').show();
+				}
+			} else {
+				$('#tickets_outline_custom_filters').find('.filter-' + filterId).removeClass('filter-hidden');
+				$('#tickets_outline_custom_filters').find('.no-data').hide();
+			}
+
+			sendUpdate();
 		});
 
 		var activateView = $('#settingswin').data('activateView');

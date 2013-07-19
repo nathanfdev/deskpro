@@ -419,6 +419,19 @@ var DP = {
 			options.dropdownCssClass = (options.dropdownCssClass || '') + ' dp-select2-nosearch';
 		}
 
+		if (el.data('label-bound')) {
+			var boundEl = $(el.data('label-bound'));
+			var updateBoundEl = function() {
+				var text = [];
+				el.find(':selected').each(function() {
+					text.push($.trim($(this).text()));
+				});
+				boundEl.text(text.join(', '));
+			};
+			$(el).on('change', updateBoundEl);
+			updateBoundEl();
+		}
+
 		el.addClass('with-select2');
 		el.select2(options);
 	}

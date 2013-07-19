@@ -168,10 +168,11 @@ class SendmailQueueRunner implements Loggable
 			} elseif ($type == 'job') {
 				$success = $this->sendJobBlob($sendmail['blob']);
 			} else {
-				$this->logger->logInfo("Unknown message blob!");
+				$this->logger->logError("Unknown message type for message {$sendmail['id']}");
 				return;
 			}
 		} catch (\Exception $e) {
+			$this->logger->logError("Sending message failed for #{$sendmail['id']}: {$e->getMessage()}");
 			KernelErrorHandler::logException($e, false);
 			$success = false;
 		}
@@ -220,17 +221,22 @@ class SendmailQueueRunner implements Loggable
 	{
 		$this->logger->logDebug("Sending object message");
 
-		$message = $this->blob_storage->copyBlobRecordToString($blob);
-		$message = @unserialize($message);
+		$message_raw = $this->blob_storage->copyBlobRecordToString($blob);
+		$message = unserialize($message_raw);
 
 		// A bug in previous versions has the data being a serialised string of the
 		// serialised string, so we need to double-unserialize it to get the actual obj.
 		if ($message && is_string($message)) {
-			$message = @unserialize($message);
+			$message = unserialize($message);
 		}
 
 		if (!$message || !is_object($message)) {
-			$this->logger->logDebug("Failed to unserialize message blob");
+			$e = new \Exception("SendmailQueue: Failed to unserialize message blob. Blob #{$blob['id']}");
+			$einfo = KernelErrorHandler::getExceptionInfo($e);
+			$einfo['context_data'] = substr($message_raw, 0, 512000);
+			KernelErrorHandler::logToFile($einfo);
+
+			$this->logger->logError("Failed to unserialize message blob #{$blob['id']}");
 			return false;
 		}
 

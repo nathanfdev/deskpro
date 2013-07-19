@@ -1,0 +1,60 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketSlas';
+</script>
+<div style="padding: 10px;">
+	{% if slas|length %}
+
+		Filter SLA results: <select class="grouping-option" data-sla-id="{{ sla.id }}">
+			<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>Show all matching tickets</option>
+			<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>Show only tickets assigned to me</option>
+			{% if app.user.getAgentTeamIds()|length %}
+				<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>Show only tickets assigned to my team</option>
+			{% endif %}
+		</select>
+		<span class="small-light-icon tipped" title="When SLAs are displayed in the agent interface, the counts and listings will be filtered by this option."></span>
+
+		<br/>
+
+		<div class="check-grid item-list">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th style="text-align:left;">SLA</th>
+						<th style="text-align:left;">Type</th>
+						<th style="text-align:left;">Warning Time</th>
+						<th style="text-align:left;">Failure Time</th>
+						<th style="text-align:left;">Hide <span class="small-light-icon tipped" title="Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time."></span></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for sla in slas %}
+						<tr>
+							<td>{{ sla.title }}</td>
+							<td>
+								{% if sla.sla_type == 'first_response' %}Time until first response
+								{% elseif sla.sla_type == 'resolution' %}Time until ticket resolution
+								{% elseif sla.sla_type == 'waiting_time' %}User waiting time until ticket resolution{% endif %}
+								{% if sla.active_time == 'default' %}(default working hours)
+								{% elseif sla.active_time == 'all' %}(24x7)
+								{% elseif sla.active_time == 'work_hours' %}(working hours){% endif %}
+							</td>
+							<td>{{ sla.getWarningTimeText() }}</td>
+							<td>{{ sla.getFailTimeText() }}</td>
+							<td nowrap="nowrap">
+								<label><input type="checkbox" name="slas_hidden[]" class="sla-hidden-check filter-{{ sla.id }}" value="{{ sla.id }}" {% if filter_show_options['agent.ui.sla.filter-visibility.' ~ sla.id] == 'hidden' %}checked="checked"{% endif %} /> Hide</label>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% else %}
+		<p style="padding:10px;">
+			{% if app.user.can_admin %}
+				You have no created any SLAs yet. You can define new SLAs from Admin Interface &gt; Tickets &gt; SLAs.
+			{% else %}
+				Your administrator has not defined any SLAs.
+			{% endif %}
+		</p>
+	{% endif %}
+</div>

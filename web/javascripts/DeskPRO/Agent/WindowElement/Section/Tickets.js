@@ -112,118 +112,17 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			self.toggleHoldDisplay();
 		});
 
-		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
-			containerElement: '#tickets_outline .scroll-content',
-			listElement: '#tickets_outline_sys_filters',
-			boundListElement: '#tickets_outline_sys_hold_filters',
-			triggerElement: '#ticket_filter_launch_editor',
-			controlElement: '#ticket_filter_group_editor',
-			onPreOpen: function(ed) {
-				if (self.customFilterGroupEditor) {
-					self.customFilterGroupEditor.close();
-				}
-				if (self.slaGroupEditor) {
-					self.slaGroupEditor.close();
-				}
-			},
-			onGroupingChanged: function(filterId) {
-				self.refreshFilterGrouping([filterId], true);
-			}
-		});
-
-		var initialGrouped = $('#tickets_outline_sys_filters .filter[data-initial-grouping]');
-		if (initialGrouped.length) {
-			var fids = [];
-			initialGrouped.each(function() {
-				fids.push($(this).data('filter-id'));
-			});
-
-			self.filterGroupEditor._initControl();
-			self.refreshFilterGrouping(fids);
-		}
-
 		if ($('#tickets_outline_custom_filters .filter').not('.filter-hidden').length) {
 			$('#tickets_outline_custom_filters .no-data').hide();
 		} else {
 			$('#tickets_outline_custom_filters .no-data').show();
 		}
 
-		this.customFilterGroupEditor = new DeskPRO.Agent.Widget.FilterOptionsPop({
-			containerElement: '#tickets_outline .scroll-content',
-			listElement: '#tickets_outline_custom_filters',
-			triggerElement: $('.launch-customfilters-editor', this.contentEl),
-			onInit: function(ed) {
-				ed.controlRealEl.on('click', ':checkbox', function() {
-					var row = $(this).closest('.filter-row');
-					var filter_id = parseInt(row.data('filter-id'));
-
-					var filter_row = $('#tickets_outline_custom_filters .filter-' + filter_id);
-					if ($(this).is(':checked')) {
-						filter_row.removeClass('filter-hidden');
-					} else {
-						filter_row.addClass('filter-hidden');
-					}
-				});
-			},
-			onInitRow: function(row, filter_id, ed) {
-				var filter_row = $('#tickets_outline_custom_filters .filter-' + filter_id);
-				if (filter_row.is('.filter-hidden')) {
-					$(':checkbox', row).attr('checked', false);
-				}
-			},
-			onPreOpen: function(ed) {
-				if (self.slaGroupEditor) {
-					self.slaGroupEditor.close();
-				}
-				if (self.filterGroupEditor) {
-					self.filterGroupEditor.close();
-				}
-
-				$('#tickets_outline_custom_filters li.filter-hidden').show();
-				$('#tickets_outline_custom_filters').addClass('ed-open');
-
-				$('#tickets_outline_custom_filters .no-data').hide();
-			},
-			onClose: function(ed) {
-				$('#tickets_outline_custom_filters li.filter-hidden').slideUp(300);
-				window.setTimeout(function() {
-					$('#tickets_outline_custom_filters').removeClass('ed-open');
-
-					if ($('#tickets_outline_custom_filters .filter').not('.filter-hidden').length) {
-						$('#tickets_outline_custom_filters .no-data').hide();
-					} else {
-						$('#tickets_outline_custom_filters .no-data').show();
-					}
-
-				}, 310);
-
-				var postData = [];
-				$('#tickets_outline_custom_filters li.filter').each(function() {
-					var id = parseInt($(this).data('filter-id'));
-					var v;
-
-					if ($(this).is('.filter-hidden')) {
-						v = 'hidden';
-					} else {
-						v = '';
-					}
-
-					postData.push({
-						name: 'prefs[agent.ui.filter-visibility.' + id + ']',
-						value: v
-					});
-				});
-
-				$.ajax({
-					type: 'POST',
-					url: BASE_URL + 'agent/misc/ajax-save-prefs',
-					data: postData
-				});
-			}
-		});
-
-		$('.launch-customfilters-settings', this.contentEl).on('click', function() {
+		$('#ticket_customfilters_launch_editor').on('click', function() {
 			$('#settingswin').trigger('dp_open', 'filters');
+		});
+		$('#ticket_slas_launch_editor').on('click', function() {
+			$('#settingswin').trigger('dp_open', 'ticketslas');
 		});
 
 		if ($('#ticket_slas_header').length) {
@@ -273,108 +172,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			this.updateSlaDescription();
-
-			var slaVal;
-
-			this.slaGroupEditor = new DeskPRO.Agent.Widget.SlaOptionsPop({
-				containerElement: '#tickets_outline .scroll-content',
-				listElement: '#sla_list_wrap',
-				triggerElement: $('.launch-sla-editor', this.contentEl),
-				onInit: function(ed) {
-					ed.controlRealEl.on('click', ':checkbox', function() {
-						var row = $(this).closest('.filter-row');
-						var filter_id = parseInt(row.data('sla-id'));
-
-						var filter_row = $('#tickets_outline_slas .sla-' + filter_id);
-						if ($(this).is(':checked')) {
-							filter_row.removeClass('filter-hidden');
-						} else {
-							filter_row.addClass('filter-hidden');
-						}
-					});
-				},
-				onInitRow: function(row, filter_id, ed) {
-					var filter_row = $('#tickets_outline_slas .sla-' + filter_id);
-					if (filter_row.is('.filter-hidden')) {
-						$(':checkbox', row).attr('checked', false);
-					}
-				},
-
-				onPreOpen: function(ed) {
-					if (self.customFilterGroupEditor) {
-						self.customFilterGroupEditor.close();
-					}
-					if (self.filterGroupEditor) {
-						self.filterGroupEditor.close();
-					}
-
-					var row = ed.controlRealEl;
-					slaVal = row.find('.ticket-filter').val();
-
-					$('#tickets_outline_slas li.filter-hidden').show();
-					$('#tickets_outline_slas').addClass('ed-open');
-
-					$('#tickets_outline_slas .no-data').hide();
-				},
-
-				onClose: function(ed) {
-
-					$('#tickets_outline_slas li.filter-hidden').slideUp(300);
-					window.setTimeout(function() {
-						$('#tickets_outline_custom_filters').removeClass('ed-open');
-
-						if ($('#tickets_outline_slas .sla').not('.filter-hidden').length) {
-							$('#tickets_outline_slas .no-data').hide();
-						} else {
-							$('#tickets_outline_slas .no-data').show();
-						}
-
-					}, 310);
-
-					var postData = [];
-					$('#tickets_outline_slas li.sla').each(function() {
-						var id = parseInt($(this).data('sla-id'));
-						var v;
-
-						if ($(this).is('.filter-hidden')) {
-							v = 'hidden';
-						} else {
-							v = '';
-						}
-
-						postData.push({
-							name: 'prefs[agent.ui.sla.filter-visibility.' + id + ']',
-							value: v
-						});
-					});
-
-
-					var row = ed.controlRealEl;
-					var val = row.find('.ticket-filter').val();
-
-					postData.push({
-						name: 'prefs[agent.ui.sla.ticket-filter]',
-						value: row.find('.ticket-filter').val()
-					});
-
-					var gear = $('#ticket_slas_header .settings');
-
-					gear.addClass('loading');
-
-					$.ajax({
-						type: 'POST',
-						url: BASE_URL + 'agent/misc/ajax-save-prefs',
-						data: postData
-					}).done(function() {
-						self.getUpdatedSlaCounts(function() {
-							gear.removeClass('loading');
-						});
-					}).fail(function() {
-						gear.removeClass('loading');
-					});
-
-				}
-			});
 		}
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-draft-updated', function (data) {
@@ -412,6 +209,65 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			this.highlightFilterNav(this.loadHighlightNavEl[0], this.loadHighlightNavEl[1]);
 		}
 
+		this.sectionEl.find('.dp-toggle-icon').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+
+			var $me    = $(this);
+			var $li    = $me.closest('li');
+			var $group = $li.find('> .item-form');
+			var $groupList = $li.find('> .nav-list-small');
+			var sel = $group.find('select');
+			if ($group[0]) {
+				if ($me.hasClass('icon-caret-right')) {
+					$me.removeClass('icon-caret-right');
+					$me.addClass('icon-caret-down');
+					$group.show();
+					$groupList.show();
+
+					if (!sel.hasClass('with-select2')) {
+						DP.select(sel);
+						sel.on('change', function(ev) {
+							self.refreshFilterGrouping([sel.data('filter-id')], true);
+						});
+					}
+				} else {
+					// Remove grouping
+					sel.select2('val', '');
+					sel.trigger('change');
+					self.refreshFilterGrouping([sel.data('filter-id')], true);
+
+					$me.addClass('icon-caret-right');
+					$me.removeClass('icon-caret-down');
+					$group.hide();
+					$groupList.hide();
+				}
+			}
+		});
+
+		var groupingFilterIds = [];
+		this.sectionEl.find('.filter_grouping_select').each(function() {
+			var sel = $(this);
+			var grouping = $(this).val();
+
+			if (grouping && grouping != "") {
+				sel.closest('li').find('.icon-caret-right').removeClass('icon-caret-right').addClass('icon-caret-down');
+				groupingFilterIds.push($(this).data('filter-id'));
+
+				if (!sel.hasClass('with-select2')) {
+					DP.select(sel);
+					sel.on('change', function(ev) {
+						self.refreshFilterGrouping([sel.data('filter-id')], true);
+					});
+				}
+			}
+		});
+
+		if (groupingFilterIds.length) {
+			this.refreshFilterGrouping(groupingFilterIds, false);
+		}
+
 		this.fireEvent('sectionInit');
 	},
 
@@ -443,7 +299,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (groupingOption !== null) {
 				navLi.find('li.grouping-' + groupingOption).addClass('nav-selected');
 			} else {
-				navLi.find('h3.is-nav-item').addClass('nav-selected');
+				navLi.addClass('nav-selected');
 			}
 		}
 	},
@@ -932,33 +788,41 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	getGroupingVar: function(filterId) {
-		return $('#ticket_filter_group_editor .filter-' + filterId + ' .field-option').val();
+		return $('.filter-' + filterId, this.sectionEl).find('select').val();
 	},
 
 	setFilterGroupingContent: function(filterId, html, grouping) {
 		var filterEl = $('.filter-' + filterId, this.sectionEl);
-		var subgroupEl = $('ul.sub-group', filterEl);
+		var subgroupEl = $('ul.nav-list-small', filterEl);
 
-		var baseRoute = $('.title', filterEl).first().data('route');
+		var baseRoute = $('.item', filterEl).first().data('route');
 
 		subgroupEl.empty();
 		if (html.length) {
 			subgroupEl.html(html);
 		}
 
+		var li = subgroupEl.closest('li');
+
 		var lis = $('> li', subgroupEl);
 		if (lis.length) {
-			subgroupEl.show();
+			if (li.find('.icon-caret-down')[0]) {
+				subgroupEl.show();
+			}
 
 			// Add the proper route to each row
 			lis.each(function() {
 				var setRoute = Orb.appendQueryData(baseRoute, 'set_group_term', grouping);
 				setRoute = Orb.appendQueryData(setRoute, 'set_group_option', $(this).data('grouping-option'));
-				$('.title', this).first().data('route', setRoute);
-				$('.title', this).first().attr('data-route', setRoute);
+				$('.item', this).first().data('route', setRoute);
+				$('.item', this).first().attr('data-route', setRoute);
 			});
 		} else {
 			subgroupEl.hide();
+		}
+
+		if ($(this).data('grouping-option') != '') {
+			li.find('.item-form').hide();
 		}
 
 		this.updateUi();
@@ -1168,26 +1032,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		if (!$('#tickets_outline_custom_filters').find('li.filter')[0]) {
 			$('#tickets_outline_custom_filters').find('li.no-data').show();
 		}
-
-		$('#customfilter_group_editor').find('.filter-' + id).remove();
 	},
 
 	updateCustomFilterTitle: function(id, title) {
-		$('#tickets_outline_custom_filters').find('li.filter-' + id + ' label').text(title);
-	},
-
-	addCustomFilter: function(id, title) {
-		var html = [];
-		html.push('<li class="filter filter-'+id+'">');
-			html.push('<h3 class="is-nav-item title"><label></label></h3>');
-		html.push('</li>');
-		html = html.join('');
-
-		var row = $(html);
-		row.find('label').text(title);
-
-		$('#tickets_outline_custom_filters').append(row);
-		$('#tickets_outline_custom_filters').find('li.no-data').hide();
+		$('#tickets_outline_custom_filters').find('li.filter-' + id).find('h3').text(title);
 	},
 
 	updateSlaDescription: function() {

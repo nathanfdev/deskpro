@@ -1,10 +1,10 @@
-<ul class="source-list" style="margin-top: 4px;">
+<ul class="nav-list nav-list-small">
 	{% set filter = sys_filters['all'] %}
-	<li id="tickets_awaiting_agent_navitem" data-filter-id="{{ filter.id }}" class="filter" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-		<span class="title">
-			<span class="list-counter" id="ticket_filter_{{filter.id}}_count2">{{ filter_counts[filter.id]|default(0) }}</span>
-			{{ phrase('agent.tickets.status_awaiting_agent') }}
-		</span>
+	<li id="tickets_awaiting_agent_navitem" data-filter-id="{{ filter.id }}" class="filter is-nav-item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+		<div class="item">
+			<h3>{{ phrase('agent.tickets.status_awaiting_agent') }}</h3>
+			<em class="counter list-counter" id="ticket_filter_{{filter.id}}_count2">{{ filter_counts[filter.id]|default(0) }}</em>
+		</div>
 	</li>
 	{% for sys_name,title in {
 		'archive_awaiting_user': 'agent.tickets.status_awaiting_user',
@@ -17,10 +17,10 @@
 		{% if (sys_name != 'archive_closed' or app.getSetting('core_tickets.use_archive')) and (sys_name != 'archive_validating' or archive_filter_counts[filter.id]) %}
 			{% set filter = archive_filters[sys_name] %}
 			<li data-filter-id="{{ filter.id }}" class="is-nav-item with-route filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} is-archive-filter" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-				<span class="title">
-					<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ archive_filter_counts[filter.id]|default(0) }}</span>
-					{{ phrase(title) }}
-				</span>
+				<div class="item">
+					<h3>{{ phrase(title) }}</h3>
+					<em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ archive_filter_counts[filter.id]|default(0) }}</em>
+				</div>
 			</li>
 		{% endif %}
 	{% endfor %}
