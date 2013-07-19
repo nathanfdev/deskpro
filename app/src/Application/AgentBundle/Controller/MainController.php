@@ -613,21 +613,21 @@ class MainController extends AbstractController
 								$people_ids = $this->db->fetchAllCol("
 									SELECT people.id
 									FROM people
-									LEFT JOIN tickets ON (tickets.person_id = people.id)
 									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 									WHERE people_emails.email LIKE ?
-									ORDER BY tickets.id DESC
+									ORDER BY people.id DESC
 									LIMIT 15
 								", array($email));
 							} else {
 								$people_ids = $this->db->fetchAllCol("
 									SELECT people.id
 									FROM people
+									LEFT JOIN tickets ON (tickets.person_id = people.id)
 									LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 									WHERE
 										tickets.id > ?
 										AND people_emails.email LIKE ?
-									ORDER BY people.id DESC
+									ORDER BY tickets.id DESC
 									LIMIT 15
 								", array($after_id, $email));
 							}
