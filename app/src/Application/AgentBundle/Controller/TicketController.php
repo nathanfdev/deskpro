@@ -1028,6 +1028,14 @@ class TicketController extends AbstractController
 			$set_status = $action_type;
 		}
 
+		if ($set_status) {
+			switch ($set_status) {
+				case 'resolved':       if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) $set_status = $ticket['status']; break;
+				case 'awaiting_agent': if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) $set_status = $ticket['status']; break;
+				case 'awaiting_user':  if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) $set_status = $ticket['status']; break;
+			}
+		}
+
 		#------------------------------
 		# Handle new message
 		#------------------------------

@@ -50,10 +50,12 @@
 					<div class="on-icon"><i class="icon-ok"></i></div>
 					Awaiting <span class="show-key-shortcut">A</span>gent
 				</li>
-				<li data-type="resolved" data-label="Send Reply as Resolved">
-					<div class="on-icon"><i class="icon-ok"></i></div>
-					Resolve<span class="show-key-shortcut">d</span>
-				</li>
+				{% if ticket_perms.modify_set_resolved %}
+					<li data-type="resolved" data-label="Send Reply as Resolved">
+						<div class="on-icon"><i class="icon-ok"></i></div>
+						Resolve<span class="show-key-shortcut">d</span>
+					</li>
+				{% endif %}
 			</ul>
 		</div>
 	</section>
