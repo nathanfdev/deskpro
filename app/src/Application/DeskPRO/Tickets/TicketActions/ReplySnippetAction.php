@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -130,7 +131,9 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
-		$message->message_text = $this->snippet->snippetFormattedHtml($ticket, $this->person_context);
+
+		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+		$message->setMessageHtml($formatter->formatText($this->snippet->snippet, $ticket));
 		$ticket->addMessage($message);
 	}
 
@@ -213,7 +216,8 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
 			$html = '';
 			if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-				$html = $this->snippet->snippetFormatted($GLOBALS['DP_ACTIVE_TICKET'], App::getCurrentPerson());
+				$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+				$html = $formatter->formatText($this->snippet->snippet, $GLOBALS['DP_ACTIVE_TICKET']);
 			}
 
 			$ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
