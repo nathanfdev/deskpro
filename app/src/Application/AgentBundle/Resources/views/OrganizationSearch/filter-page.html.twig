@@ -23,7 +23,7 @@
 							{% if field == 'members_count' %}
 								<li>
 									<span class="prop-title">{{ phrase('agent.general.members') }}</span>
-									<span class="prop-val"><a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization]={{org.id}}">
+									<span class="prop-val"><a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization]={{org.id}}&amp;terms[1][type]=any_mode&amp;terms[1][op]=is&amp;terms[1][any_mode]=1">
 											{{ result_display.getOrgMemberCount(org) }}
 									</a></span>
 								</li>
