@@ -231,8 +231,10 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			}
 			$success = $tr->send($message, $failedRecipients);
 		} elseif ($use_queue) {
-			$tr= $this->getQueueTransport();
+			$tr = $this->getQueueTransport();
 			if (!$tr->isStarted()) $tr->start();
+
+			$this->attachLoggerOnce($tr);
 
 			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Sending to queue transport: %s", get_class($tr)));
 
@@ -244,6 +246,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			try {
 				$tr = $this->getTransportForMessage($message);
 				if (!$tr->isStarted()) $tr->start();
+
+				$this->attachLoggerOnce($tr);
 
 				$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Using detected transport: %s", get_class($tr)));
 
