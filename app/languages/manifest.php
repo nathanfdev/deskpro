@@ -234,6 +234,7 @@
 	),
 
 	// ensure an appropriate flag_image has been specified when adding a language
+	// ensure that /app/languages/default/user/lang.php includes the language name
 
 	/*
 
