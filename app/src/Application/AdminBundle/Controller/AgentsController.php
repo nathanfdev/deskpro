@@ -983,6 +983,17 @@ class AgentsController extends AbstractController
 
 			$this->em->flush();
 
+			if ($ug_ids) {
+				$all_ug_perms = $this->db->fetchAllKeyValue("
+					SELECT name, value
+					FROM permissions
+					WHERE usergroup_id IN (" . implode(',', $ug_ids) .")
+					ORDER BY value DESC
+				");
+			} else {
+				$all_ug_perms = array();
+			}
+
 			#------------------------------
 			# Departments
 			#------------------------------
@@ -1031,25 +1042,61 @@ class AgentsController extends AbstractController
 
 			$ug_perm_matrix = $this->in->getCleanValueArray('permissions', 'raw', 'raw');
 
+			$grouped_perms = array(
+				 'agent_tickets.modify_own'        => '#^agent_tickets.modify_(.*?)_own$#',
+				 'agent_tickets.modify_followed'   => '#^agent_tickets.modify_(.*?)_followed$#',
+				 'agent_tickets.modify_unassigned' => '#^agent_tickets.modify_(.*?)_unassigned$#',
+				 'agent_tickets.modify_others'     => '#^agent_tickets.modify_(.*?)_others$#',
+			);
+
 			$overrides = array();
 			foreach ($ug_perm_matrix as $group => $ug_perms) {
-				foreach ($ug_perms as $ug_id => $perms) {
+				foreach (array(0, 1) as $run_num) {
+					foreach ($ug_perms as $ug_id => $perms) {
 
-					// Not one we enabled so we dont care
-					if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
-						continue;
-					}
-
-					foreach ($perms as $perm => $v) {
-
-						if (!$v) {
-							continue; //dont care about non 1's
+						// Not one we enabled so we dont care
+						if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
+							continue;
 						}
 
-						$perm_name = "{$group}.{$perm}";
+						foreach ($perms as $perm => $v) {
 
-						if ($ug_id == 'override') {
-							$overrides[$perm_name] = 1;
+							if (!$v) {
+								continue; //dont care about non 1's
+							}
+
+							$perm_name = "{$group}.{$perm}";
+							$is_sub = false;
+
+							// If this is a sub-permission and the ug has the parent on,
+							// then this is on too
+							foreach ($grouped_perms as $parent_perm => $pattern) {
+								if (preg_match($pattern, $perm_name)) {
+									$is_sub = $parent_perm;
+								}
+							}
+
+							if ($is_sub) {
+								// First time around we're just building parents
+								if ($run_num == 0) {
+									continue;
+
+								// Second time around we're doing sub-perms
+								} else {
+									// Granted by usergroup permission
+									if (isset($all_ug_perms[$perm_name]) && $all_ug_perms[$perm_name]) {
+										continue;
+
+									// Granted by parent permission of our own override
+									} elseif (isset($overrides[$perm_name]) && $overrides[$perm_name]) {
+										continue;
+									}
+								}
+							}
+
+							if ($ug_id == 'override') {
+								$overrides[$perm_name] = 1;
+							}
 						}
 					}
 				}
