@@ -183,7 +183,7 @@
 						<li id="{{replyBaseId}}_attach_row" {% if draft_attachments %}class="attach-row"{% else %}class="attach-row is-hidden" style="display: none"{% endif %}>
 							<label><span>{{ phrase('agent.general.attachments') }}</span></label>
 							<div>
-								<ul class="files">
+								<ul class="files" style="margin-left:75px;">
 								{%- for blob in draft_attachments -%}
 									<li>
 										<input type="hidden" name="attach[]" value="{{ blob.id }}" />
