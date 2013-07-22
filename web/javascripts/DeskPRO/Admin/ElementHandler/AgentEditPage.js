@@ -314,9 +314,16 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		}
 
 		$('#permgroup_table tr.parentperm').each(function() {
+			var permName = $(this).data('permname');
 			if (!$(this).hasClass('on')) {
+				$('tr.subperm-' + name).each(function() {
+					$(this).removeClass('effective-override');
+				});
 				return;
 			}
+			$('tr.subperm-' + permName).each(function() {
+				$(this).find('td.prop').addClass('effective-override');
+			});
 
 			var i = $(this).find('i');
 			var tbody = $(this).closest('tbody');
