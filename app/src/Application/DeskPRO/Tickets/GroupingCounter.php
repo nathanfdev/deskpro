@@ -679,8 +679,8 @@ class GroupingCounter
 
 					return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
 				} elseif ($key == (count($times) - 1)) {
-					$date = new \DateTime('-6 months');
-					return array('type' => $groupvar, 'op' => 'gte', 'options' => array('date1' => $date));
+					$date = new \DateTime('@' . (time() - 14515201));
+					return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
 				} else {
 					$date1 = new \DateTime('-' . $times[$key] . ' seconds');
 					$date2 = new \DateTime('-' . $times[$key-1] . ' seconds');
