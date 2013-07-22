@@ -836,6 +836,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				textarea.data('redactor').syncCode();
 			}
 
+			if (isWysiwyg) {
+				var copy = $.trim(self.el.find('.editor-row').find('.redactor_editor').text()).replace(/\s/g, ' ');
+				var tmp = $('<div/>').html(self.el.find('textarea.signature-value-html').val());
+				var sig = $.trim(tmp.text()).replace(/\s/g, ' ');
+
+				if (!copy || copy == sig) {
+					DeskPRO_Window.showAlert('Please enter a message.');
+					return;
+				}
+			}
+
 			self.getElById('action').val(self.getElById('reply_as_type').data('type'));
 
 			var formData = self.el.serializeArray();
