@@ -12,23 +12,10 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 	_lazyInit: function() {
 		var self = this;
 
+		this.updatePos();
+
 		if (this._hasInit) return;
 		this._hasInit = true;
-
-		this.el.css({
-			top: 54,
-			bottom: 10,
-			width: 850,
-			left: ($(window).width() - 700) / 2
-		});
-
-		var overlay = this.el.find('.dp-overlay');
-		var winH = Math.min($(window).height() - 150, 700);
-
-		overlay.css({
-			'max-height': winH,
-			'height': 'auto'
-		});
 
 		$('.close-trigger', this.el).first().on('click', function(ev) {
 			ev.stopPropagation();
@@ -55,6 +42,27 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 
 		this.backdrop = $('<div class="backdrop fade" />').hide().appendTo('body').css('z-index', 32000);
 		this.backdrop.click(this.close.bind(this));
+
+		DeskPRO_Window.layout.addEvent('resized', function() {
+			self.updatePos();
+		});
+	},
+
+	updatePos: function() {
+		this.el.css({
+			top: 54,
+			bottom: 10,
+			width: 850,
+			left: ($(window).width() - 700) / 2
+		});
+
+		var overlay = this.el.find('.dp-overlay');
+		var winH = Math.min($(window).height() - 150, 700);
+
+		overlay.css({
+			'max-height': winH,
+			'height': 'auto'
+		});
 	},
 
 	_loadPageForTabTarget: function(wrapper) {
