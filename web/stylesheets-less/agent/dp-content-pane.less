@@ -7905,14 +7905,12 @@ table.data-display-table tr th {
 }
 
 .contact-data-list {
-	li .copy-btn-outer {
-		display: none;
-	}
-	li:hover .copy-btn-outer, li .copy-btn-outer.over {
+	> li:hover .copy-btn, .copy-btn-outer:hover .copy-btn, .copy-btn.zeroclipboard-is-hover {
 		display: block;
 	}
 
 	.copy-btn-outer {
+		display: block;
 		position: absolute;
 		top: 0px;
 		left: 0;
@@ -7921,7 +7919,7 @@ table.data-display-table tr th {
 	}
 	.copy-btn {
 		cursor: pointer;
-		display: block;
+		display: none;
 		position: absolute;
 		top: 0px;
 		left: 0;

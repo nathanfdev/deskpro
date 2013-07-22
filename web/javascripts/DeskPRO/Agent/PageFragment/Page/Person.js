@@ -30,12 +30,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
 
-		// Got to keep track of our own handlers weirdly until ZeroClip does it properly
-		// https://github.com/jonrohan/ZeroClipboard/issues/90
-		var lastActiveBtn = null;
-		var lastClip = null;
-		var lastLi = null;
-
 		try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
@@ -48,7 +42,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 						try {
 							var clip = new ZeroClipboard(this, {
-								btnEl: this
+								btnEl: this,
+								savePuffEl: self.getEl('idref_switch')
 							});
 							clip.on('mouseover', function(client, args) {
 								$(client.options.btnEl).addClass('over');
@@ -57,7 +52,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								$(client.options.btnEl).removeClass('over');
 							});
 							clip.on('complete', function(client, args) {
-
+								DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
 							});
 
 							self.addEvent('destroy', function() {
