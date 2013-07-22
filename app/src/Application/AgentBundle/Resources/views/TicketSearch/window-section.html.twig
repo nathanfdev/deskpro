@@ -35,7 +35,7 @@
 									<div class="select-value-wrap">
 										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
-											<option value="">View by None</option>
+											<option value="">Select Field to Group Tickets</option>
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">View by Department</option>
 											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">View by Product</option>
 											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">View by Organization</option>
@@ -75,7 +75,7 @@
 									<div class="select-value-wrap">
 										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
-											<option value="">View by None</option>
+											<option value="">Select Field to Group Tickets</option>
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">View by Department</option>
 											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">View by Product</option>
 											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">View by Organization</option>
