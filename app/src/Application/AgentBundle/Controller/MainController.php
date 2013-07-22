@@ -723,7 +723,7 @@ class MainController extends AbstractController
 				}
 
 				if ($results['person']) {
-					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
+					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 250);
 					foreach ($tickets as $t) {
 						if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
 							if (!isset($results['person_related'][$t->person->getId()])) {

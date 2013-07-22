@@ -294,13 +294,28 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
-		$tickets = $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:Ticket t INDEX BY t.id
-			LEFT JOIN t.participants p
-			WHERE t.person IN (".implode(',', $ids).") OR p.person IN (".implode(',', $ids).")
-			ORDER BY t.id DESC
-		")->setMaxResults($limit)->execute();
+		$ids_str = implode(',', $ids);
+
+		$ticket_ids = App::getDb()->fetchAllCol("
+			SELECT
+				tickets.id,
+					CASE WHEN tickets.status =  'awaiting_agent' THEN 1
+					WHEN tickets.status =  'awaiting_user' THEN 2
+					WHEN tickets.status =  'resolved' THEN 3
+					WHEN tickets.status =  'closed' THEN 4
+					ELSE 3
+					END AS status_order
+			FROM tickets
+			LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
+			WHERE tickets.person_id IN ($ids_str) OR tickets_participants.person_id IN ($ids_str)
+			ORDER BY status_order ASC, tickets.date_status DESC
+		");
+
+		if (!$ticket_ids) {
+			return array();
+		}
+
+		$tickets = $this->getByIds($ticket_ids, true);
 
 		return $tickets;
 	}
