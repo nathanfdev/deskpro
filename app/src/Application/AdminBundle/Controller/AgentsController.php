@@ -1128,7 +1128,8 @@ class AgentsController extends AbstractController
 							($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
 							($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
 							($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
-							($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+							($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL),
+							($agent_id, 'agent.hide_claimed_chat', '1', X'4E3B', NULL)
 					");
 				}
 			}
