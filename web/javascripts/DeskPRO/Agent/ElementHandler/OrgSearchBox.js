@@ -247,6 +247,10 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			this.resultsBox.hide();
 		}
 
+		if (!this.idInput) {
+			return;
+		}
+
 		if (!this.wasSet) {
 			if (!this.termInput.val().trim().length) {
 				this.idInput.val('0');
