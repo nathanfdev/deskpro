@@ -1907,12 +1907,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_updated_org = true;
 		if (!$org) {
 			$this->setModelField('organization', $org);
+			$this->setModelField('organization_position', '');
+			$this->setModelField('organization_manager', false);
 			return;
 		}
 
 		$this->setModelField('organization', $org);
 		$this->setModelField('organization_position', $position);
-		$this->setModelField('organization_manager', $manager);
+		$this->setModelField('organization_manager', (bool)$manager);
 	}
 
 	public function getTwitterAccountIds()

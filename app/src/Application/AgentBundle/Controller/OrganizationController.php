@@ -464,13 +464,10 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$person = $this->em->find('DeskPRO:Person', $person_id);
-		if ($person) {
-			$person->organization_manager = $this->in->getBool('organization_manager');
-
-			$this->em->persist($person);
-			$this->em->flush();
-		}
+		$this->db->executeUpdate("
+			UPDATE people SET organization_manager = ?
+			WHERE id = ? AND organization_id = ?
+		", array((int)$this->in->getBool('organization_manager'), $person_id, $organization_id));
 
 		return $this->createJsonResponse(array('success' => true));
 	}

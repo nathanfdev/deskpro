@@ -395,7 +395,6 @@ class PersonController extends AbstractController
 	{
 		$person = $this->getPersonOr404($person_id);
 
-		$this->em->beginTransaction();
 		$data = array(
 			'success' => true
 		);
@@ -518,11 +517,7 @@ class PersonController extends AbstractController
 						$add = 1;
 					}
 
-					$person->organization = $org;
-					$person->organization_position = $this->in->getString('position');
-					$person->organization_manager = $this->in->getBool('manager');
-
-					$this->em->persist($person);
+					$person->setOrganization($org, $this->in->getString('position'), $this->in->getBool('manager'));
 
 					// Org stuff
 					$org_members_count = null;
@@ -551,9 +546,7 @@ class PersonController extends AbstractController
 					$data['html'] = $html;
 				} else {
 
-					$person->organization = null;
-					$person->organization_position = '';
-					$this->em->persist($person);
+					$person->setOrganization(null);
 
 					// Regenerate the HTML block
 					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
@@ -667,8 +660,20 @@ class PersonController extends AbstractController
 				break;
 		}
 
+		$this->em->persist($person);
 		$this->em->flush();
-		$this->em->commit();
+
+		$this->db->executeUpdate("
+			UPDATE people
+			SET
+				organization_id = ?, organization_position = ?, organization_manager = ?
+			WHERE id = ?
+		", array(
+			$person->getOrganizationId() ?: null,
+			$person->organization_position ?: '',
+			$person->organization_manager ?: 0,
+			$person->getId()
+		));
 
 		return $this->createJsonResponse($data);
 	}
