@@ -482,7 +482,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				var item = el.data('item-data');
 
 				if (item.rule_match_type) {
-					data.push({ name: baseKey+'[rule_match_type]', value: 1 });
+					data.push({ name: baseKey+'[rule_match_type]', value: item.rule_match_type });
 				}
 				if (item.agent_only) {
 					data.push({ name: baseKey+'[agent_only]', value: 1 });
