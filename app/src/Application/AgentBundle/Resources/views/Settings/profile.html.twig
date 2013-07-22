@@ -26,7 +26,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-label"><label>Override Name</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.override_display_name) }}
-				<div>If entered, this name will be displayed to users instead of your real name.</div>
+				<em class="desc">If entered, this name will be displayed to users instead of your real name.</em>
 			</div>
 		</div>
 
@@ -104,22 +104,19 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Ticket Tabs</label></div>
+		<div class="dp-form-row" >
+			<div class="dp-form-label"><label>Tickets</label></div>
 			<div class="dp-form-input">
 				Automatically close ticket tabs when:
 					<label>{{ form_widget(form.ticket_close_reply) }} replying</label> &nbsp;&nbsp;
 					<label>{{ form_widget(form.ticket_close_note) }} adding a note</label>
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Ticket Message Ordering</label></div>
-			<div class="dp-form-input">
+				<br/>
 				<label>
 					{{ form_widget(form.ticket_reverse_order) }}
 					Show newest messages first (reverse chronological order) with the replybox at the top
 				</label>
+				<br/>
+				<label>{{ form_widget(form.ticket_go_next_reply) }} Automatically load the next ticket in the list after replying (only if closing the ticket tab)</label>
 			</div>
 		</div>
 
@@ -127,13 +124,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-label"><label>User Chat</label></div>
 			<div class="dp-form-input">
 				<label>{{ form_widget(form.hide_claimed_chat) }} Immediately dismiss "new chat" window when another agent takes a chat</label>
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label"><label>After Replying to a Ticket</label></div>
-			<div class="dp-form-input">
-				<label>{{ form_widget(form.ticket_go_next_reply) }} Automatically load the next ticket in the list (only if closing the ticket tab)</label>
 			</div>
 		</div>
 
