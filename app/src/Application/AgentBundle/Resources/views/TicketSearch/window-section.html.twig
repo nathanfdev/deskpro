@@ -39,6 +39,7 @@
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">View by Department</option>
 											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">View by Product</option>
 											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">View by Organization</option>
+											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">View by Person</option>
 											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">View by Language</option>
 											<option {% if initial_inbox_grouping[filter.id] == "urgency" %}selected="selected"{% endif %} value="urgency">View by Urgency</option>
 											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent" %}selected="selected"{% endif %} value="agent">View by Agent</option>{% endif %}
@@ -79,6 +80,7 @@
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">View by Department</option>
 											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">View by Product</option>
 											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">View by Organization</option>
+											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">View by Person</option>
 											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">View by Language</option>
 											<option {% if initial_inbox_grouping[filter.id] == "urgency" %}selected="selected"{% endif %} value="urgency">View by Urgency</option>
 											<option {% if initial_inbox_grouping[filter.id] == "agent" %}selected="selected"{% endif %} value="agent">View by Agent</option>

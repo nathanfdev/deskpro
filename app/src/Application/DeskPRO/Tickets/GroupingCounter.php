@@ -514,6 +514,34 @@ class GroupingCounter
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
 				break;
 
+			case TicketSearch::TERM_PERSON:
+				$this->grouping_summary = 'Person';
+				$titles = array();
+
+				if ($ids) {
+					$ids_str = implode(',', $ids);
+					$all = App::getDb()->fetchAll("
+						SELECT id, name, first_name, last_name FROM people WHERE id IN ($ids_str)
+					");
+
+					foreach ($all as $r) {
+						if ($r['first_name'] AND $r['last_name']) {
+							$name = $r['first_name'] . ' ' . $r['last_name'];
+						} elseif ($r['name']) {
+							$name = $r['name'];
+						} elseif ($r['last_name']) {
+							$name = $r['last_name'];
+						} elseif ($r['first_name']) {
+							$name = $r['first_name'];
+						} else {
+							$name = 'Person #'.$r['id'];
+						}
+
+						$titles[$r['id']] = $name;
+					}
+				}
+				break;
+
 			case TicketSearch::TERM_URGENCY:
 				$this->grouping_summary = $tr->phrase('agent.general.urgency');
 				$x = range(1, 10);
@@ -706,6 +734,8 @@ class GroupingCounter
 				return $term;
             case TicketSearch::TERM_URGENCY:
                 return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
+			case 'person':
+				return array('type' => 'person_id', 'op' => 'is', 'options' => array('person_id' => $groupchoice));
 			default:
 				return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
 		}

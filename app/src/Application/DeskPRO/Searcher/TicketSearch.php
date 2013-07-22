@@ -46,6 +46,7 @@ use Application\DeskPRO\Entity\Ticket;
 class TicketSearch extends SearcherAbstract
 {
 	const TERM_ID                        = 'id';
+	const TERM_PERSON_ID                 = 'person_id';
 	const TERM_DEPARTMENT                = 'department';
 	const TERM_CATEGORY                  = 'category';
 	const TERM_PRODUCT                   = 'product';
@@ -986,10 +987,30 @@ class TicketSearch extends SearcherAbstract
 				switch ($term) {
 					case self::TERM_ID:
 						$this->enableArchiveSearch();
+
+						$choice = is_array($choice) && isset($choice['ticket_id']) ? $choice['ticket_id'] : $choice;
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+
 						if ($op == self::OP_IS) {
-							$wheres[] = "$tickets_table.id IN (" . implode(',', (array)$choice) . ")";
+							$wheres[] = "$tickets_table.id IN (" . implode(',', $choice) . ")";
 						} else {
 							$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+						}
+						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+						break;
+
+					case self::TERM_PERSON_ID:
+						$choice = is_array($choice) && isset($choice['person_id']) ? $choice['person_id'] : $choice;
+						if (!is_array($choice)) {
+							$choice = array($choice);
+						}
+
+						if ($op == self::OP_IS) {
+							$wheres[] = "$tickets_table.person_id IN (" . implode(',', $choice) . ")";
+						} else {
+							$wheres[] = $this->_rangeMatch("$tickets_table.person_id", $op, $choice, true);
 						}
 						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 						break;
@@ -2440,6 +2461,7 @@ class TicketSearch extends SearcherAbstract
 			case self::TERM_USER_WAITING: return 'date_user_waiting';
 			case self::TERM_TOTAL_USER_WAITING: return 'total_user_waiting';
 			case self::TERM_DATE_CREATED: return 'date_created';
+			case 'person': return 'person_id';
 			default: throw new \InvalidArgumentException("Invalid field: $term_id");
 		}
 	}
