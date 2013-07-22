@@ -42,6 +42,7 @@ use Orb\Util\Util;
 
 class GroupingCounter
 {
+	const LAST_TIME_MARKER   = 1893456000;
 	const MODE_AGENT         = 'agent';
 	const MODE_AGENT_TEAM    = 'agent_team';
 	const MODE_PARTICIPANT   = 'participant';
@@ -317,7 +318,7 @@ class GroupingCounter
 		$times = array_keys($this->getTimeTitles());
 		$fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
 		$times = array_reverse($times);
-		$last_t = 9000000000;
+		$last_t = self::LAST_TIME_MARKER;
 
 		$now = time();
 
@@ -345,7 +346,7 @@ class GroupingCounter
 			$last_t = $t;
 		}
 
-		$sql .= implode('', $parts) . " ELSE 9000000000 END AS $select_name";
+		$sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
 
 		return $sql;
 	}
@@ -614,7 +615,7 @@ class GroupingCounter
 			9676800    => '3 - 4 months',
 			12096000   => '4 - 5 months',
 			14515200   => '5 - 6 months',
-			'9000000000' => '> 6 months'
+			self::LAST_TIME_MARKER => '> 6 months'
 		);
 
 		return $times;

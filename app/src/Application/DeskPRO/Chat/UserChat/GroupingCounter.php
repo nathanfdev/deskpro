@@ -41,6 +41,8 @@ use Orb\Util\Arrays;
 
 class GroupingCounter
 {
+	const LAST_TIME_MARKER   = 1893456000;
+
 	protected $group_by;
 	protected $searcher;
 	protected $groups = array(
@@ -151,7 +153,7 @@ class GroupingCounter
 			$parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
 		}
 
-		$sql .= implode('', $parts) . " ELSE 9000000000 END AS $select_name";
+		$sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
 
 		return $sql;
 	}

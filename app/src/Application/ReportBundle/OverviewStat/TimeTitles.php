@@ -36,6 +36,8 @@ namespace Application\ReportBundle\OverviewStat;
 
 class TimeTitles
 {
+	const LAST_TIME_MARKER   = 1893456000;
+
 	public static $time_phrases = array(
 		300        => '< 5 minutes',
 		900        => '5 - 15 minutes',
@@ -61,7 +63,7 @@ class TimeTitles
 		9676800    => '3 - 4 months',
 		12096000   => '4 - 5 months',
 		14515200   => '5 - 6 months',
-		'9000000000' => '> 6 months'
+		self::LAST_TIME_MARKER => '> 6 months'
 	);
 
 	public static function getValuesArray($values)
@@ -99,7 +101,7 @@ class TimeTitles
 			$parts[] = " WHEN $field <= $t THEN $t ";
 		}
 
-		$sql .= implode('', $parts) . " ELSE 9000000000 END AS time_group";
+		$sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS time_group";
 
 		return $sql;
 	}
