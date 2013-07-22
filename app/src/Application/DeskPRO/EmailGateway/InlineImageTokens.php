@@ -75,26 +75,57 @@ class InlineImageTokens
 			return $body;
 		}
 
+		#------------------------------
+		# HTML
+		#------------------------------
+
 		$m = null;
-		if (!preg_match_all('#<img[^>]*/?>(</img>)?#iu', $body, $m, \PREG_SET_ORDER)) {
-			return $body;
+		if (preg_match_all('#<img[^>]*/?>(</img>)?#iu', $body, $m, \PREG_SET_ORDER)) {
+			foreach ($m as $match) {
+				// Check if it is even an inline image
+				$cid = \Orb\Util\Strings::extractRegexMatch('#src=("|\')cid:(.*?)(\1)#iu', $match[0], 2);
+				if (!$cid || !isset($have_cids[$cid])) {
+					continue;
+				}
+
+				$token = $this->generateToken();
+				$body = str_replace($match[0], $token, $body);
+
+				if (!isset($this->tokens[$cid])) {
+					$this->tokens[$cid] = array();
+				}
+
+				$this->tokens[$cid][] = $token;
+			}
 		}
 
-		foreach ($m as $match) {
-			// Check if it is even an inline image
-			$cid = \Orb\Util\Strings::extractRegexMatch('#src=("|\')cid:(.*?)(\1)#iu', $match[0], 2);
-			if (!$cid || !isset($have_cids[$cid])) {
-				continue;
+		#------------------------------
+		# Text
+		#------------------------------
+
+		// There isn't technically a syntax for inlining images in
+		// text emails, but some clients use this syntax:
+		// [cid:EC8B017D-CAFD-4216-A6E3-EB8CD03AB3EA]
+		// So we can try to handle them anyway
+
+		$m = null;
+		if (preg_match_all('#\[cid:(.*?)\]#iu', $body, $m, \PREG_SET_ORDER)) {
+			foreach ($m as $match) {
+				// Check if it is even an inline image
+				$cid = $match[1];
+				if (!$cid || !isset($have_cids[$cid])) {
+					continue;
+				}
+
+				$token = $this->generateToken();
+				$body = str_replace($match[0], $token, $body);
+
+				if (!isset($this->tokens[$cid])) {
+					$this->tokens[$cid] = array();
+				}
+
+				$this->tokens[$cid][] = $token;
 			}
-
-			$token = $this->generateToken();
-			$body = str_replace($match[0], $token, $body);
-
-			if (!isset($this->tokens[$cid])) {
-				$this->tokens[$cid] = array();
-			}
-
-			$this->tokens[$cid][] = $token;
 		}
 
 		return $body;

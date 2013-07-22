@@ -966,11 +966,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] .= App::getTranslator()->phrase('user.emails.message-clipped');
 		}
 
-		if ($email_info['body_is_html']) {
-			// Replace inline image tags with tokens
-			$email_info['body'] = $inline_images->processTokens($email_info['body']);
-			$email_info['body_full'] = $inline_images2->processTokens($email_info['body_full']);
+		// Replace inline image tags with tokens
+		$email_info['body'] = $inline_images->processTokens($email_info['body']);
+		$email_info['body_full'] = $inline_images2->processTokens($email_info['body_full']);
 
+		if ($email_info['body_is_html']) {
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
