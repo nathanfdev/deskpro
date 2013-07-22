@@ -97,6 +97,10 @@ class PortalController extends AbstractController
 		} while (!$ctrl && $tabs_order);
 
 		if (!$ctrl) {
+			if ($this->session->getFlash('new_ticket')) {
+				return $this->redirectRoute('user_tickets_new_thanks_simple', array('ticket_ref' => $this->session->getFlash('new_ticket')));
+			}
+
 			if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
 				return $this->redirectRoute('user_login');
 			} elseif ($this->person->hasPerm('tickets.use')) {
