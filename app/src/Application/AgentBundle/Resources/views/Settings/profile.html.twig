@@ -49,7 +49,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-label"><label>{{ phrase('agent.general.label_picture') }}</label></div>
 			<div class="dp-form-input">
 				<table cellspacing="0" cellpadding="0"><tr>
-					<td style="padding-right: 15px;"><img src="{{ app.user.getPictureUrl(80) }}" /><br /><em class="desc">{{ phrase('agent.settings.your_current_picture') }}</em></td>
+					<td style="padding-right: 15px;">
+						<img src="{{ app.user.getPictureUrl(80) }}" />
+						<em class="desc" style="display: block;">{{ phrase('agent.settings.your_current_picture') }}</em>
+					</td>
 				<td>
 					<input type="file" name="file-upload" />
 					<div class="files"></div>
@@ -100,7 +103,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-input double-password">
 				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}
 				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.general.repeat_password'), 'class': 'password2' }}) }}
-				<br /><em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
+				<em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
 			</div>
 		</div>
 
@@ -137,7 +140,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 						<option value="{{ team.id }}" {% if form.default_team_id.get('value') == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 					{% endfor %}
 					</select>
-					<br /><em class="desc">This will apply when:
+					<em class="desc" style="display: block;">This will apply when:
 						<ul class="inline-pipe-list">
 						{% if app.getSetting('core_tickets.new_assignteam') == 'assign' %}<li>creating a new ticket</li>{% endif %}
 						{% if app.getSetting('core_tickets.reply_assignteam_unassigned') == 'assign' %}<li>replying to a ticket without a team</li>{% endif %}

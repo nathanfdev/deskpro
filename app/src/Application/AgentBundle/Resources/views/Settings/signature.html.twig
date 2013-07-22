@@ -5,10 +5,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 
 	<div class="dp-form">
 
-		<div class="dp-form-row" style="height: auto;">
+		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.settings.ticket_signature') }}</label></div>
-			<div class="dp-form-input" style="height: auto; margin-left: 250px; width: 590px;">
-				<div style="width: 70%; height: 190px;" class="unreset">
+			<div class="dp-form-input" style="width: 590px;">
+				<div style="width: 70%; padding-bottom: 10px;" class="unreset">
 					<textarea name="ticket_signature" id="agent_settings_signature" data-rte="{% if can_signature_html %}1{% else %}0{% endif %}"></textarea>
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.settings.drop_here_insert_signature') }}</h1></div>
 				</div>
@@ -19,14 +19,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 			</div>
 		</div>
 
+		<br class="clear"/>
+
 		{% if app.user.getTwitterAccountIds()|length %}
-			<div class="dp-form-row" style="height: auto;">
+			<div class="dp-form-row">
 				<div class="dp-form-label"><label>Twitter Signature</label></div>
-				<div class="dp-form-input" style="height: auto; margin-left: 250px; width: 550px;">
-					<div>
-						<input type="text" name="tweet_signature" value="{{ tweet_signature }}" />
-					</div>
-					<em class="desc" style="display: block; float: none;">Any tweets you write will be signed off with this. Keep it short.</em>
+				<div class="dp-form-input">
+					<input type="text" name="tweet_signature" value="{{ tweet_signature }}" />
+					<em class="desc">Any tweets you write will be signed off with this. Keep it short.</em>
 				</div>
 			</div>
 		{% endif %}
