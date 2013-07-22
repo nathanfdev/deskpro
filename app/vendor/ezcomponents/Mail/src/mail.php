@@ -482,11 +482,14 @@ class ezcMail extends ezcMailPart
                 break;
 
             case 'ezcMailMultipartRelated':
-                $this->walkParts( $context, $mail->getMainPart() );
-                foreach ( $mail->getRelatedParts() as $part )
-                {
-                    $this->walkParts( $context, $part );
-                }
+				$main_part = $mail->getMainPart();
+				if ($main_part) {
+					$this->walkParts( $context, $main_part );
+					foreach ( $mail->getRelatedParts() as $part )
+					{
+						$this->walkParts( $context, $part );
+					}
+				}
                 break;
 
             case 'ezcMailRfc822Digest':
