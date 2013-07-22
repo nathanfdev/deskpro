@@ -16,10 +16,18 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		this._hasInit = true;
 
 		this.el.css({
-			top: 42,
+			top: 54,
 			bottom: 10,
 			width: 850,
 			left: ($(window).width() - 700) / 2
+		});
+
+		var overlay = this.el.find('.dp-overlay');
+		var winH = Math.min($(window).height() - 150, 700);
+
+		overlay.css({
+			'max-height': winH,
+			'height': 'auto'
 		});
 
 		$('.close-trigger', this.el).first().on('click', function(ev) {
