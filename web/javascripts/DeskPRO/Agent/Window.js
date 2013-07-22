@@ -3087,10 +3087,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
-				if ($(ev.target).hasClass('click-through')) {
-					return;
-				}
-
 				ev.preventDefault();
 				ev.stopPropagation();
 
