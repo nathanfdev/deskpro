@@ -39,6 +39,15 @@ namespace Application\ApiBundle\Controller;
  */
 class TestController extends AbstractController
 {
+	public function aboutAction()
+	{
+		return $this->createApiResponse(array(
+			'about'         => 'This is the DeskPRO API. Refer to the API Documentation for available endpoints.',
+			'documentation' => 'https://support.deskpro.com/kb/articles/88-api-basics',
+			'libraries'     => array('php' => 'https://support.deskpro.com/kb/articles/97-deskpro-api-wrapper-php')
+		));
+	}
+
 	/**
 	 * This action simply returns a message to indicate that the API is working
 	 */

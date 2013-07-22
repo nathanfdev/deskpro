@@ -9,6 +9,13 @@ $collection = new RouteCollection();
 # Misc
 ################################################################################
 
+$collection->add('api', new Route(
+	'/',
+	array('_controller' => 'ApiBundle:Test:About'),
+	array('_method' => 'GET'),
+	array()
+));
+
 $collection->add('api_test', new Route(
 	'/test',
 	array('_controller' => 'ApiBundle:Test:test'),
