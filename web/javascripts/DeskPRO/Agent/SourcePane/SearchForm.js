@@ -172,6 +172,7 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		this.updateTypesTimer = null;
 		this.searchBuilderLists = [];
 		this.searchValList = [];
+		this.searchStringList = [];
 		this.targetSummaryEl = null;
 	},
 
@@ -225,6 +226,15 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			this.el.find('.search-string').on('keyup keydown change', function() {
 				self.targetSummaryEl.text(($(this).val()));
 			});
+
+			if (this.targetSummaryEl.is('input.is-bound')) {
+				this.targetSummaryEl.on('focus', function(ev) {
+					if (self.el.find('.pane-row').length > 1) {
+						$(this).blur();
+						self.open();
+					}
+				});
+			}
 		}
 
 		this.shim = $('<div class="dp-shim"></div>');
@@ -261,7 +271,21 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			});
 		}
 
-		self.targetSummaryEl.text(texts.join(', '));
+		var searchStringList = self.el.find('.search-string');
+		if (searchStringList.length) {
+			searchStringList.each(function() {
+				var val = $(this).val() || "";
+				if (val.length) {
+					texts.push(val);
+				}
+			});
+		}
+
+		if (self.targetSummaryEl.is('input')) {
+			self.targetSummaryEl.val(texts.join(', '));
+		} else {
+			self.targetSummaryEl.text(texts.join(', '));
+		}
 	},
 
 
