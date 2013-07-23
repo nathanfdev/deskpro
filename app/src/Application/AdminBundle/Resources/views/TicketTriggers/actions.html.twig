@@ -36,13 +36,19 @@
 	</div>
 </div>
 
-<div class="builder-type" title="Add followers" data-rule-type="add_participants" data-rule-group="Ticket">
+<div class="builder-type" title="Add agent followers" data-rule-type="add_participants" data-rule-group="Ticket">
 	<div class="builder-options">
 		<select name="add_participants[]" multiple="multiple">
 			{% for agent in app.agents.getAgents() %}
 				<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 			{% endfor %}
 		</select>
+	</div>
+</div>
+
+<div class="builder-type" title="CC users" data-rule-type="add_cc" data-rule-group="Ticket">
+	<div class="builder-options">
+		<input type="text" name="add_emails" placeholder="Enter email addresses separated by a comma" />
 	</div>
 </div>
 

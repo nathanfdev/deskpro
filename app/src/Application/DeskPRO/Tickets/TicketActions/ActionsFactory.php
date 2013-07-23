@@ -45,6 +45,7 @@ use Application\DeskPRO\Entity\Person;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Validator\StringEmail;
 
 /**
  * Creates action objects
@@ -145,6 +146,9 @@ class ActionsFactory
 				break;
 			case 'add_participants':
 				$options['add_participants'] = !empty($value['add_participants']) && is_array($value['add_participants']) ? $value['add_participants'] : array();
+				break;
+			case 'add_cc':
+				$options['add_emails'] = !empty($value['add_emails']) ? $value['add_emails'] : '';
 				break;
 			case 'remove_participants':
 				$options['remove_participants'] = !empty($value['remove_participants']) && is_array($value['remove_participants']) ? $value['remove_participantsq'] : array();
