@@ -271,7 +271,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		var pageH = $(window).height();
 
 		this.wrapper.css({
-			top: (pageH-elH) / 2,
+			top: 55,
 			left: (pageW-elW) / 2
 		});
 	},
