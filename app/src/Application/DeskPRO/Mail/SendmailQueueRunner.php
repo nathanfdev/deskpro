@@ -161,10 +161,12 @@ class SendmailQueueRunner implements Loggable
 			array('id' => $sendmail['id'])
 		);
 
+		$message = null;
+
 		$type = Strings::getExtension($sendmail['blob']->filename);
 		try {
 			if ($type == 'obj') {
-				$success = $this->sendObjectBlob($sendmail['blob']);
+				$success = $this->sendObjectBlob($sendmail['blob'], $message);
 			} elseif ($type == 'job') {
 				$success = $this->sendJobBlob($sendmail['blob']);
 			} else {
@@ -201,9 +203,23 @@ class SendmailQueueRunner implements Loggable
 					break;
 			}
 
+			if ($message && $message instanceof \Application\DeskPRO\Mail\Message) {
+				$sendmail['log'] = $sendmail['log'] . "\n" . $message->getLogMessages();
+
+				$len = strlen($sendmail['log']);
+				if ($len > 25000) {
+					$trim = $len - 25000;
+					if ($trim > 1000) {
+						$sendmail['log'] = "(Truncated)\n\n" . substr($sendmail['log'], -25000);
+					}
+				}
+
+				$sendmail['log'] = trim($sendmail['log']);
+			}
+
 			$this->db->update(
 				'sendmail_queue',
-				array('date_next_attempt' => $next_attempt, 'attempts' => $sendmail['attempts']+1),
+				array('date_next_attempt' => $next_attempt, 'attempts' => $sendmail['attempts']+1, 'log' => $sendmail['log']),
 				array('id' => $sendmail['id'])
 			);
 		}
@@ -217,7 +233,7 @@ class SendmailQueueRunner implements Loggable
 	 *
 	 * @param Blob $blob
 	 */
-	public function sendObjectBlob(Blob $blob)
+	public function sendObjectBlob(Blob $blob, &$message = null)
 	{
 		$this->logger->logDebug("Sending object message");
 

@@ -36,13 +36,16 @@ namespace Application\DeskPRO\Mail\Transport;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Mail\Loggers\MessageLogWriter;
 use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Orb\Log\Filter\SimpleLineFormatter;
 use Orb\Mail\Transport\QueueTransport;
 use Orb\Mail\Message;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Log\Writer\ArrayWriter as LogArrayWriter;
 
 /**
  * This transport takes care of initializing any other transports based on settings
@@ -81,6 +84,11 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	protected $gateway_address_matcher;
 
 	/**
+	 * @var \Orb\Log\Writer\ArrayWriter
+	 */
+	protected $message_log_writer;
+
+	/**
 	 * @param \Swift_Events_EventDispatcher $event_dispatcher
 	 */
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)
@@ -92,6 +100,9 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		if (defined('DP_SMTP_USE_DESKPRO_QUEUE')) {
 			$this->disableQueue();
 		}
+
+		$this->message_log_writer = new MessageLogWriter();
+		$this->message_log_writer->addFilter(new SimpleLineFormatter());
 	}
 
 
@@ -129,7 +140,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	 * Get the queue transport with the database queue processor.
 	 * The queue will be created if it has not already been.
 	 *
-	 * @return Orb\Mail\Transport\QueueTransport
+	 * @return \Orb\Mail\Transport\QueueTransport
 	 */
 	public function getQueueTransport()
 	{
@@ -142,13 +153,33 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		return $this->queue_transport;
 	}
 
-
 	/**
 	 * @param \Swift_Mime_Message $message
 	 * @param null $failedRecipients
 	 * @return int
 	 */
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
+	{
+		$this->message_log_writer->clearCurrentMessage();
+		$this->message_log_writer->setCurrentMessageIfValid($message);
+
+		try {
+			$ret = $this->_doSend($message, $failedRecipients);
+			$this->message_log_writer->clearCurrentMessage();
+		} catch (\Exception $e) {
+			$this->message_log_writer->clearCurrentMessage();
+			throw $e;
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * @param \Swift_Mime_Message $message
+	 * @param null $failedRecipients
+	 * @return int
+	 */
+	public function _doSend(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		// Reset max exec time when sending a message
 		if (isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
@@ -468,7 +499,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	public function getLogger()
 	{
 		if (!$this->logger) {
-			$this->logger = new Logger();
+			$logger = new Logger();
+			$this->setLogger($logger);
 		}
 
 		return $this->logger;
@@ -476,13 +508,26 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 
 	/**
-	 * Set the logger used
+	 * Set the logger used. NOTE: An array writer is added automatically,
+	 * and the array writer is used to log mail info to failed messages.
 	 *
 	 * @param \Orb\Log\Logger $logger
 	 */
 	public function setLogger(Logger $logger)
 	{
 		$this->logger = $logger;
+		$logger->addWriter($this->message_log_writer);
+	}
+
+
+	/**
+	 * Get the log lines for the last attempt.
+	 *
+	 * @return string[]
+	 */
+	public function getLastLogLines()
+	{
+		return $this->message_log_writer->getMessages();
 	}
 
 

@@ -52,6 +52,15 @@
 			</tr>
 			<tr>
 				<td>
+					Log<br/>
+					<a class="dp-btn dp-btn-small" href="{{ path('admin_sendmail_queue_view', {id: sendmail.id, download_log: 1}) }}">Download</a>
+				</td>
+				<td>
+					<textarea style="width:98%; height:200px; font-size: 11px; font-family:Monaco, 'Courier New', courier, monospace;">{{ sendmail.log }}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					Raw Source<br/>
 					<a class="dp-btn dp-btn-small" href="{{ path('admin_sendmail_queue_view', {id: sendmail.id, download: 1}) }}">Download</a>
 				</td>

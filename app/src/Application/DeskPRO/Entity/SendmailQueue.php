@@ -94,6 +94,11 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $has_sent = false;
 
+	/**
+	 * @var string
+	 */
+	protected $log = '';
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -167,6 +172,24 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 		return $raw_source;
 	}
 
+	/**
+	 * @param string $log
+	 */
+	public function appendLog($log)
+	{
+		$this->log .= "\n" . $log;
+
+		$len = strlen($this->log);
+		if ($len > 25000) {
+			$trim = $len - 25000;
+			if ($trim > 1000) {
+				$this->log = "(Truncated)\n\n" . substr($this->log, -25000);
+			}
+		}
+
+		$this->log = trim($this->log);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -190,6 +213,7 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_sent', ));
 		$metadata->mapField(array( 'fieldName' => 'has_sent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_sent', ));
+		$metadata->mapField(array( 'fieldName' => 'log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'log', ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}

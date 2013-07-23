@@ -180,6 +180,13 @@ class SendmailQueueController extends AbstractController
 			echo $raw_source;
 			exit;
 		}
+		if ($this->in->getBool('download_log')) {
+			header('Content-Type: plain/text; filename=sendmail-log-' . $id . '.txt');
+			header('Content-Disposition: attachment; filename=sendmail-log-' . $id . '.txt');
+			header('Content-Length: ' . strlen($sendmail->log));
+			echo $sendmail->log;
+			exit;
+		}
 
 		return $this->render('AdminBundle:SendmailQueue:view.html.twig', $vars);
 	}

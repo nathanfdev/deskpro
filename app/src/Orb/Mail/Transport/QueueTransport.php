@@ -82,6 +82,12 @@ class QueueTransport implements \Swift_Transport
 			}
 		}
 
+		$log = '';
+		if ($message instanceof \Application\DeskPRO\Mail\Message) {
+			$log = $message->getLogMessages();
+			$message->clearLogMessages();
+		}
+
 		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(serialize($message), 'sendmail.obj', 'plain/text');
 		$sendmail = new \Application\DeskPRO\Entity\SendmailQueue();
 		$sendmail->blob = $blob;
@@ -95,6 +101,10 @@ class QueueTransport implements \Swift_Transport
 		$sendmail->to_address = implode(',', $tos);
 		foreach ($message->getFrom() as $addr => $name) {
 			$sendmail->from_address = $addr;
+		}
+
+		if ($log) {
+			$sendmail->appendLog($log);
 		}
 
 		App::getOrm()->persist($sendmail);

@@ -26,61 +26,19 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @subpackage Log
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace Orb\Log\Writer;
-use \Orb\Log\LogItem;
+namespace Application\InstallBundle\Upgrade\Build;
 
-/**
- * This writer just saves messages to an array
- */
-class ArrayWriter extends AbstractWriter
+class Build1374582892 extends AbstractBuild
 {
-	protected $messages = array();
-	protected $max_size = 10000;
-	protected $max_line_length = 10000;
-
-	public function setMaxMessageLength($max_line_length = 10000)
+	public function run()
 	{
-		$this->max_line_length = $max_line_length;
-	}
-
-	public function setMaxSize($max_size)
-	{
-		$this->max_size = $max_size;
-	}
-
-	public function getMessages()
-	{
-		return $this->messages;
-	}
-
-	public function getMessagesAsString()
-	{
-		return implode("\n", $this->getMessages());
-	}
-
-	public function _write(LogItem $log_item)
-	{
-		$msg = trim($log_item[LogItem::MESSAGE_LINE]);
-
-		if (strlen($msg) > $this->max_line_length) {
-			$msg = substr($msg, 0, $this->max_line_length);
-		}
-
-		$this->messages[] = $msg;
-
-		while(count($this->messages) > $this->max_size) {
-			array_shift($this->messages);
-		}
-	}
-
-	public function clear()
-	{
-		$this->messages = array();
+		$this->out("Add sendmail_queue.log column");
+		$this->execMutateSql("ALTER TABLE sendmail_queue ADD log LONGTEXT NOT NULL");
 	}
 }

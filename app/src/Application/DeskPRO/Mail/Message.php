@@ -96,6 +96,11 @@ class Message extends \Orb\Mail\Message
 	 */
 	protected $is_retrying = false;
 
+	/**
+	 * @var array
+	 */
+	protected $log_messages = array();
+
 
 	/**
 	 * Set a context about this message. The mailer might treat it differently.
@@ -425,5 +430,46 @@ class Message extends \Orb\Mail\Message
 	public function getTrackCode()
 	{
 		return $this->track_code;
+	}
+
+	/**
+	 * Add a log message. These messages are meant to be for the current invocation (eg to track sendmail errors).
+	 *
+	 * @param string $msg
+	 */
+	public function addLogMessage($msg)
+	{
+		$this->log_messages[] = $msg;
+	}
+
+
+	/**
+	 * @param string[] $msgs
+	 */
+	public function addLogMessages(array $msgs)
+	{
+		$this->log_messages = array_merge($this->log_messages, $msgs);
+	}
+
+
+	/**
+	 * @param bool $as_string
+	 * @return string[]|string
+	 */
+	public function getLogMessages($as_string = true)
+	{
+		if ($as_string) {
+			return implode("\n", $this->log_messages);
+		}
+
+		return $this->log_messages;
+	}
+
+	/**
+	 * @return void
+	 */
+	public function clearLogMessages()
+	{
+		$this->log_messages = array();
 	}
 }

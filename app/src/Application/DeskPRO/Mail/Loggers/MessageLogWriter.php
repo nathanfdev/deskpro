@@ -32,55 +32,57 @@
  * @subpackage Log
  */
 
-namespace Orb\Log\Writer;
+namespace Application\DeskPRO\Mail\Loggers;
 use \Orb\Log\LogItem;
 
-/**
- * This writer just saves messages to an array
- */
-class ArrayWriter extends AbstractWriter
+class MessageLogWriter extends \Orb\Log\Writer\AbstractWriter
 {
-	protected $messages = array();
-	protected $max_size = 10000;
+	/**
+	 * @var int
+	 */
 	protected $max_line_length = 10000;
 
-	public function setMaxMessageLength($max_line_length = 10000)
+	/**
+	 * @var \Application\DeskPRO\Mail\Message
+	 */
+	protected $on_message = null;
+
+	public function setMaxMessageLength($max_line_length = 5000)
 	{
 		$this->max_line_length = $max_line_length;
 	}
 
-	public function setMaxSize($max_size)
+	public function clearCurrentMessage()
 	{
-		$this->max_size = $max_size;
+		$this->on_message = null;
 	}
 
-	public function getMessages()
+	public function setCurrentMessageIfValid($on_message)
 	{
-		return $this->messages;
+		$this->clearCurrentMessage();
+
+		if ($on_message instanceof \Application\DeskPRO\Mail\Message) {
+			$this->setCurrentMessage($on_message);
+		}
 	}
 
-	public function getMessagesAsString()
+	public function setCurrentMessage(\Application\DeskPRO\Mail\Message $on_message)
 	{
-		return implode("\n", $this->getMessages());
+		$this->on_message = $on_message;
 	}
 
 	public function _write(LogItem $log_item)
 	{
+		if (!$this->on_message) {
+			return;
+		}
+
 		$msg = trim($log_item[LogItem::MESSAGE_LINE]);
 
 		if (strlen($msg) > $this->max_line_length) {
 			$msg = substr($msg, 0, $this->max_line_length);
 		}
 
-		$this->messages[] = $msg;
-
-		while(count($this->messages) > $this->max_size) {
-			array_shift($this->messages);
-		}
-	}
-
-	public function clear()
-	{
-		$this->messages = array();
+		$this->on_message->addLogMessage($msg);
 	}
 }
