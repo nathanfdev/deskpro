@@ -111,7 +111,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		}
 
 		$return = $this->in->getStringFromGet('return');
-		if ($return AND $return[0] != '/') {
+		if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
 			// Always be a path on the current domain,
 			// or else it might be a trick to go to some other domain etc
 			$return = '';
@@ -249,6 +249,9 @@ HTML;
 		}
 
 		$return = $this->in->getString('return');
+		if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
+			$return = '';
+		}
 
 		$result = $this->authLocalInput();
 

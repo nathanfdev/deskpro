@@ -154,11 +154,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (
-			!($this instanceof LoginController || $this instanceof MainController)
+			!($this instanceof LoginController || $this instanceof MainController || $this instanceof ProfileController || $this instanceof PortalController)
 			AND !$this->person->HelpdeskUser->canDoAnything()
 			AND !$tpl_globals->getVariable('admin_portal_controls')
 			AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
 		) {
+
+			if ($this instanceof PortalController) {
+				return $this->redirectRoute('user_profile');
+			}
+
 			if ($this->isPostRequest()) {
 				$return = $this->get('router')->generate('user');
 			} else {
