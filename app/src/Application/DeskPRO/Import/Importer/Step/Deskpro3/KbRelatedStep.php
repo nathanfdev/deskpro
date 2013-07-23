@@ -60,7 +60,7 @@ class KbRelatedStep extends AbstractDeskpro3Step
 				continue;
 			}
 
-			$this->getDb()->insert('related_content', array(
+			$this->getDb()->replace('related_content', array(
 				'object_type'     => 'articles',
 				'object_id'       => $id1,
 				'rel_object_type' => 'articles',
