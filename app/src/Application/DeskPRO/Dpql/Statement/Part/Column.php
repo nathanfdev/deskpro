@@ -380,14 +380,47 @@ class Column extends AbstractPart
 
 				return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
 			} else if (preg_match('/^custom_data_/', $assocTable)) {
-				$call = new FunctionCall('if', array(
-					new Column(array_merge($this->parts, array('value'))),
-					new Column(array_merge($this->parts, array('field', 'title'))),
-					new Column(array_merge($this->parts, array('input')))
-				));
-				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
-				return new Prepared($prepped->sql(), $this->_prettifyColumnName($name));
+				$custom_def_table = str_replace('_data_', '_def_', $assocTable);
+				switch ($custom_def_table) {
+					case 'custom_def_ticket': $manager = App::getContainer()->getSystemService('TicketFieldsManager'); break;
+					case 'custom_def_person': $manager = App::getContainer()->getSystemService('PersonFieldsManager'); break;
+					case 'custom_def_organizations': $manager = App::getContainer()->getSystemService('OrgFieldsManager'); break;
+					default: $manager = null; break;
+				}
+
+				$field = null;
+				if ($manager) {
+					$field = $manager->getFieldFromId($extraConditionValue);
+				}
+
+				$renderer = null;
+				if ($field && $field->getTypeName() == 'date') {
+					$call = new Column(array_merge($this->parts, array('value')));
+					$prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+					$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
+						if (!$value) {
+							return $valueRenderer->renderValue(null, 'date');
+						}
+
+						$date = new \DateTime('@' . $value);
+						if (!$date) {
+							return $valueRenderer->renderValue(null, 'date');
+						}
+
+						return $valueRenderer->renderValue($date, 'date');
+					};
+				} else {
+					$call = new FunctionCall('if', array(
+						new Column(array_merge($this->parts, array('value'))),
+						new Column(array_merge($this->parts, array('field', 'title'))),
+						new Column(array_merge($this->parts, array('input')))
+					));
+					$prepped = $call->prepare($statement, $section, $stack, $select, $result);
+				}
+
+				return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
 			} else if (preg_match('/^custom_def_/', $assocTable)) {
 				$call = new FunctionCall('if', array(
 					new Column(array_merge($this->parts, array('parent', 'id'))),

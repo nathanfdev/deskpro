@@ -124,7 +124,12 @@ abstract class AbstractValues
 
 				$tz = App::getCurrentPerson()->getTimezone();
 				try {
-					$date = new \DateTime($value, new \DateTimeZone($tz));
+					if ($value instanceof \DateTime) {
+						$date = clone $value;
+						$date->setTimezone(new \DateTimeZone($tz));
+					} else {
+						$date = new \DateTime($value, new \DateTimeZone($tz));
+					}
 					return $this->escapeValue($date->format(App::getSetting($settingMap[$format])));
 				} catch (\Exception $e) {
 					return $this->escapeValue($value);
