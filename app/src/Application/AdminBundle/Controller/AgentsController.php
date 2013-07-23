@@ -793,20 +793,23 @@ class AgentsController extends AbstractController
 			WHERE person_id = ?
 		", array($load_agent->id));
 
+		$associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($agent);
+
 		return $this->render('@Agents:edit-agent.html.twig', array(
-			'agent' => $agent,
-			'agent_base' => $agent_base,
-			'all_usergroups' => $all_usergroups,
-			'all_teams' => $all_teams,
-			'agent_usergroups' => $agent_usergroups,
-			'agent_teams' => $agent_teams,
-			'usergroup_values' => $usergroup_values,
-			'ug_perms' => $ug_perms,
-			'override_perms' => $override_perms,
-			'departments' => $departments,
-			'agent_deps' => $agent_deps,
+			'agent'             => $agent,
+			'agent_base'        => $agent_base,
+			'user_usersources'  => $associations,
+			'all_usergroups'    => $all_usergroups,
+			'all_teams'         => $all_teams,
+			'agent_usergroups'  => $agent_usergroups,
+			'agent_teams'       => $agent_teams,
+			'usergroup_values'  => $usergroup_values,
+			'ug_perms'          => $ug_perms,
+			'override_perms'    => $override_perms,
+			'departments'       => $departments,
+			'agent_deps'        => $agent_deps,
 			'agent_deps_assign' => $agent_deps_assign,
-			'random_password' => Strings::randomPronounceable(10)
+			'random_password'   => Strings::randomPronounceable(10)
 		));
 	}
 

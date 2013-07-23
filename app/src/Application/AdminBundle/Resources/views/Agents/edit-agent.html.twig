@@ -116,14 +116,31 @@
 				</div>
 			</div>
 		{% else %}
-			<div class="dp-form-row">
-				<div class="dp-form-label">
-					<label>Reset Password</label>
+			{% if agent.getPasswordHash() %}
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Reset Password</label>
+					</div>
+					<div class="dp-form-input">
+						<input style="width:422px;" type="text" name="agent[password]" value="" placeholder="Leave blank to not reset password" />
+					</div>
 				</div>
-				<div class="dp-form-input">
-					<input style="width:422px;" type="text" name="agent[password]" value="" placeholder="Leave blank to not reset password" />
+			{% endif %}
+			{% if user_usersources|length %}
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Usersources</label>
+					</div>
+					<div class="dp-form-input">
+						This agent exists through the following <a href="{{ path('admin_userreg_options') }}">usersources</a>:
+						<ul>
+							{% for us in user_usersources %}
+								<li>&bull; {{ us.usersource.title }}</li>
+							{% endfor %}
+						</ul>
+					</div>
 				</div>
-			</div>
+			{% endif %}
 		{% endif %}
 
 		{% if all_teams %}

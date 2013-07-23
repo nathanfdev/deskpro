@@ -98,14 +98,16 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.general.change_password') }}</label></div>
-			<div class="dp-form-input double-password">
-				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}
-				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.general.repeat_password'), 'class': 'password2' }}) }}
-				<em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
+		{% if app.user.getPasswordHash() %}
+			<div class="dp-form-row">
+				<div class="dp-form-label"><label>{{ phrase('agent.general.change_password') }}</label></div>
+				<div class="dp-form-input double-password">
+					{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}
+					{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.general.repeat_password'), 'class': 'password2' }}) }}
+					<em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
+				</div>
 			</div>
-		</div>
+		{% endif %}
 
 		<div class="dp-form-row" >
 			<div class="dp-form-label"><label>Tickets</label></div>

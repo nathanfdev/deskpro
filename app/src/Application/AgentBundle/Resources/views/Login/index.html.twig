@@ -38,7 +38,19 @@
 						$('#lost_fields_submit').show();
 						$('#lost_fields_loading').hide();
 					},
-					success: function() {
+					success: function(data) {
+						if (data && data.status) {
+							$('#normal_view').show();
+							$('#lost_fields').hide();
+							$('#lost_fields_sent').hide();
+
+							if (data.status == 'usersource_redirect') {
+								window.location = data.url;
+							} else if (data.status == 'usersource_no_reset') {
+								alert('You are registered through ' + data.usersource_name + '. You cannot reset your password from this page.');
+							}
+							return;
+						}
 						$('#lost_fields_sent').show();
 						$('#normal_view').hide();
 						$('#lost_fields').hide();
