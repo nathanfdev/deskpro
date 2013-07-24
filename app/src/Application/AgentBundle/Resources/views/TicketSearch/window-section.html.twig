@@ -16,7 +16,7 @@
 				<h1>{{ phrase('agent.tickets.status_awaiting_agent') }}</h1>
 			</header>
 			<article id="system_filters_wrap">
-				<ul id="tickets_outline_sys_filters" class="nav-list nav-list-big">
+				<ul id="tickets_outline_sys_filters" class="nav-list">
 					{% for filter in sys_filters %}
 						{% if filter.sys_name != 'unassigned' or app.user.hasPerm('agent_tickets.view_unassigned') %}
 							<li
