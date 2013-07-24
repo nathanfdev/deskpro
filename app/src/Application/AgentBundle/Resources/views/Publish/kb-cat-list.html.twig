@@ -1,25 +1,25 @@
 {% for cat in cats %}
-	<li
-		id="pub_kbcat_{{ cat.id }}"
-		class="{% if loop.first %}auto-load-route{% endif %} kb-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}"
-		data-category-id="{{ cat.id }}"
-		data-usergroup-ids="{{ kb_cats_usergroups[cat.id]|default([])|join(',') }}"
-	>
-		<span class="edit-cat">{{ phrase('agent.general.edit') }}</span>
-		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}>{{ phrase('agent.general.delete') }}</span>
-		<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
-		<span class="title is-nav-item fitted" data-route="listpane:{{ path('agent_kb_list', {'category_id':cat.id}) }}" data-cat-id="{{ cat.id }}">
-			<span class="list-counter"
+	<li class="is-nav-item cat-{{ id }}">
+		<div class="item" data-route="listpane:{{ path('agent_kb_list', {'category_id':cat.id}) }}">
+			{% if kb_repo.getChildren(cat)|length %}
+				<i class="dp-toggle-icon click-through icon-caret-right"></i>
+			{% elseif not depth %}
+				<i class="dp-toggle-icon click-through icon-caret-right" style="visibility: hidden"></i>
+			{% endif %}
+			<h3>
+				{% if depth and not kb_repo.getChildren(cat)|length %}&mdash;{% endif %}
+				{{ cat.title }}
+			</h3>
+			<div class="dp-fader"></div>
+			<em class="counter list-counter"
 				id="kb_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id]|default(0) }}"
-			>{{ counts[cat.id]|default(0) }}</span>
-			<span class="title-edit">{{ cat.title }}</span>
-			<em class="spacer">&nbsp;</em>
-		</span>
-		<ul class="sub-group">
-			{% if kb_repo.getChildren(cat)|length %}
+			>{{ counts[cat.id]|default(0) }}</em>
+		</div>
+		{% if kb_repo.getChildren(cat)|length %}
+			<ul class="nav-list nav-list-small indented" style="display: none;">
 				{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_repo.getChildren(cat), 'counts': counts, 'depth': depth+1 } %}
-			{% endif %}
-		</ul>
+			</ul>
+		{% endif %}
 	</li>
 {% endfor %}

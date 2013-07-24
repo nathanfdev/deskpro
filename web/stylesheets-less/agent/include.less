@@ -264,6 +264,24 @@ i.icon-dp-chat:before         { content: @icn_chat_content; }
 }
 
 /**
+ * Gradient for a 'fade away' element
+ */
+.fade-away(@rgba_start, @rgba_end, @width: 45px, @fallback: transparent) {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: @width;
+
+	background: @fallback; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+}
+
+/**
  * Changes opacity
  */
 .opacity(@opacity: 100) {

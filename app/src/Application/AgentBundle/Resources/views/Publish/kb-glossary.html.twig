@@ -1,31 +1,27 @@
 <section id="publish_outline_glossary">
-	<ul class="source-list">
-		<li class="all on">
-			<span class="add-new tipped glossary-new-trigger" title="{{ phrase('agent.publish.add_new_glossary') }}"></span>
-			<span class="title">
-				{{ phrase('agent.general.count_words', {'count':glossary_count}) }}
-			</span>
-		</li>
-	</ul>
-
-	<section class="source-labels-list">
-		<dl>
+	<div style="text-align: center; padding: 10px;">
+		<button class="dp-btn dp-btn-small add-new glossary-new-trigger">{{ phrase('agent.publish.add_new_glossary') }}</button>
+	</div>
+	<div class="labels-list" style="border-top: none;">
+		<table>
 			{% for letter,words in glossary_words %}
-				<dt data-letter="{{ letter }}" {% if not words|length %}style="display: none"{% endif %}>{{ letter }}</dt>
-				<dd data-letter="{{ letter }}" {% if not words|length %}style="display: none"{% endif %}>
-					<ul>
-						{% for id,word in words %}
-							<li>
-								<span class="glossary-word-trigger word-{{id}}" data-word-id="{{id}}">
-								{{word}}
-								</span>
-							</li>
-						{% endfor %}
-					</ul>
-				</dd>
+				<tr data-letter="{{ letter }}" {% if not words|length %}style="display: none"{% endif %}>
+					<td class="letter">{{ letter }}</td>
+					<td class="labels">
+						<ul>
+							{% for id,word in words %}
+								<li>
+									<span class="glossary-word-trigger word-{{id}}" data-word-id="{{id}}">
+									{{word}}
+									</span>
+								</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
 			{% endfor %}
-		</dl>
-	</section>
+		</table>
+	</div>
 
 	<div class="glossary-add-dlg dp-overlay" style="display:none;">
 		<div class="overlay-title"><h4>{{ phrase('agent.publish.add_new_glossary') }}</h4></div>

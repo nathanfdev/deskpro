@@ -2048,6 +2048,27 @@ ul.pane-tabs {
 	&.border-bottom { border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%); }
 	&.border-top { border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%); }
 
+	&.dp-collapsible {
+		padding-bottom: 0;
+		border-bottom: none;
+		> article {
+			display: none;
+		}
+	}
+
+	&.dp-collapsible-open {
+		padding-bottom: 20px;
+		border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%);
+
+		.dp-collapsible-toggle-btn {
+			.icon-x:before { content: '\f077'; }
+		}
+
+		> article {
+			display: block;
+		}
+	}
+
 	header {
 		background: darken(desaturate(@agent_source_bg_color, 5%), 9%);
 		border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%);
@@ -2060,6 +2081,34 @@ ul.pane-tabs {
 			font-weight: bold;
 			text-transform: uppercase;
 			color: @agent_text_color;
+		}
+
+		.dp-collapsible-toggle-btn {
+			display: inline-block;
+			margin-top: -3px;
+			margin-right: 2px;
+			background: @agent_source_bubble_bg_color;
+			border: 1px solid @agent_source_bubble_bg_color;
+			color: #fff;
+			line-height: 100%;
+			width: 16px;
+			height: 16px;
+			overflow: hidden;
+			cursor: pointer;
+			text-align: center;
+			vertical-align: middle;
+
+			&:hover {
+				border: 1px solid #000;
+			}
+
+			.icon-x {
+				position: relative;
+				top: 2px;
+				font-size: 11px;
+			}
+
+			.icon-x:before { content: '\f078'; }
 		}
 
 		nav {
@@ -2144,6 +2193,7 @@ ul.pane-tabs {
 		}
 
 		li.nav-selected > .item {
+			color: #fff;
 			background: @agent_source_bubble_bg_color;
 
 			h3 {
@@ -2231,7 +2281,7 @@ ul.pane-tabs {
 				}
 			}
 
-			i.dp-toggle-icon {
+			i.dp-toggle-icon, i.icon-folder-close-alt {
 				display: inline-block;
 				padding-left: 4px;
 				margin-right: -4px;
@@ -2311,10 +2361,63 @@ ul.pane-tabs {
 		li {
 			border: none;
 		}
-		.item h3 {
+		.item {
 			padding-left: 20px;
 		}
 	}
+
+	ul.nav-list {
+		.dp-fader {
+			.fade-away(fade(@agent_source_bg_color, 0), @agent_source_bg_color, 30px, @agent_source_bg_color);
+			border-right: 37px solid @agent_source_bg_color;
+		}
+
+		li.nav-selected > .item .dp-fader {
+			.fade-away(fade(@agent_source_bubble_bg_color, 0), @agent_source_bubble_bg_color, 30px, @agent_source_bubble_bg_color);
+			border-right: 37px solid @agent_source_bubble_bg_color;
+		}
+	}
+
+	ul.nav-list.nav-list-tree {
+		li {
+			width: 214px;
+			overflow: hidden;
+		}
+
+		i { vertical-align: middle; }
+
+		.item {
+			h3 {
+				padding-left: 2px;
+				width: 80px;
+				white-space: nowrap;
+			}
+		}
+
+		.item {
+			i.dp-toggle-icon {
+				margin-right: -9px;
+			}
+		}
+
+		.item { position: relative; }
+		.item .counter {
+			position: absolute;
+			top: 0;
+			right: 2px;
+		}
+	}
+
+	ul.nav-list .indented .indented .item { padding-left: 30px; }
+	ul.nav-list .indented .indented .indented .item { padding-left: 40px; }
+	ul.nav-list .indented .indented .indented .indented .item { padding-left: 50px;	}
+	ul.nav-list .indented .indented .indented .indented .indented .item { padding-left: 60px; }
+	ul.nav-list .indented .indented .indented .indented .indented .indented .item { padding-left: 70px; }
+	ul.nav-list .indented .indented .indented .indented .indented .indented .indented .item { padding-left: 80px; }
+	ul.nav-list .indented .indented .indented .indented .indented .indented .indented .indented .item { padding-left: 90px; }
+	ul.nav-list .indented .indented .indented .indented .indented .indented .indented .indented .indented .item { padding-left: 100px; }
+	ul.nav-list .indented .indented .indented .indented .indented .indented .indented .indented .indented .indented .item { padding-left: 110px; }
+	ul.nav-list .indented .indented .indented .indented .indented .indented .indented .indented .indented .indented .indented .item { padding-left: 120px; }
 }
 
 .dp .select2-drop.filter-list {
@@ -2452,6 +2555,10 @@ ul.pane-tabs {
 
 #dp_source .pane-section-tabs {
 	background: darken(desaturate(@agent_source_bg_color, 5%), 9%);
+
+	&.border-top ul {
+		border-top: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%);
+	}
 
 	ul {
 		height: 27px;
