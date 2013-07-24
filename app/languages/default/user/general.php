@@ -51,4 +51,5 @@
 	'user.general.your_name'                     => 'Your Name',
 	'user.general.can-view-because-agent'        => 'You can see this page because you are an agent. Normal users will not be able to view this page.',
 	'user.general.btn_sort'                      => 'Sort',
+	'user.general.wait_attach_loading'           => 'Waiting for your attachment to finish uploading...',
 );

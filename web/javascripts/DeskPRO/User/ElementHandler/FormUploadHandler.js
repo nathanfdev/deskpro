@@ -61,6 +61,12 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 						}
 					);
 				}
+
+				if (that.options.filesContainer) {
+					if (!that.options.filesContainer.find('.uploading')[0]) {
+						self.el.trigger('dp_upload_all_done');
+					}
+				}
 			}
 		};
 

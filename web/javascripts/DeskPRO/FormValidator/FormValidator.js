@@ -7,6 +7,7 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 		var self = this;
 		this.el = $(el);
 
+		var attachWaitMessage = this.el.find('.attach-is-loading-warn');
 		var submitting = false;
 
 		if (this.el.is('form')) {
@@ -31,11 +32,30 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 					}
 					ev.preventDefault();
 				} else {
-					submitting = true;
+
+					var isUploading = false;
+					self.el.find('.form-upload-section').each(function() {
+						if ($(this).find('.uploading')[0]) {
+							isUploading = true;
+							$(this).one('dp_upload_all_done', function(ev) {
+								attachWaitMessage.hide();
+								self.el.submit();
+							});
+							return false;
+						}
+					});
+
+					if (isUploading) {
+						ev.preventDefault();
+						attachWaitMessage.show();
+
+					} else {
+						submitting = true;
+					}
 				}
 			});
 
-			$('[required]', this.el).each(function() {
+			$('[required]', self.el).each(function() {
 				$(this).attr('required', false);
 			});
 		}

@@ -119,6 +119,10 @@ var ticketReader = {
 				<input type="text" name="email" value="" />
 			</div>
 
+			<div class="dp-alert-error attach-is-loading-warn dp-alert" style="display: none;">
+				{{ phrase('user.general.wait_attach_loading') }}
+			</div>
+
 			<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 		</form>
 	</article>
