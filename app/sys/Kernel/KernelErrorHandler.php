@@ -113,7 +113,12 @@ class KernelErrorHandler
 		self::logErrorInfo($errinfo);
 
 		if ($errinfo['display']) {
-			echo $errinfo['summary'];
+			// Prevent outputting of APC warnings
+			// These are logged and a warning about APC is displayed to the admin,
+			// but until that is fixed these warnings themselves can cause issues (e.g., cause JSON results to become invalid)
+			if (strpos($errinfo['summary'], 'Unable to allocate memory for pool') === false) {
+				echo $errinfo['summary'];
+			}
 
 			if (isset($GLOBALS['DP_IS_IN_CLI'])) {
 				if (self::$wrote_log_file) echo "\n(Refer to " . self::$wrote_log_file . " for details)\n";
