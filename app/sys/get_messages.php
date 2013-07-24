@@ -202,7 +202,17 @@ class AgentMessagesLoader extends LoaderAbstract
 			");
 			$q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
 
-			if (!empty($_REQUEST['recent_tabs']) && is_array($_REQUEST['recent_tabs'])) {
+			if (!empty($_REQUEST['recent_tabs'])) {
+
+				$post_recent_tabs = $_REQUEST['recent_tabs'];
+				if (!is_array($post_recent_tabs)) {
+					$post_recent_tabs = @json_decode($post_recent_tabs, true);
+				}
+
+				if (!$post_recent_tabs) {
+					$post_recent_tabs = array();
+				}
+
 				$q = $db->prepare("
 					SELECT value_array
 					FROM people_prefs
@@ -219,7 +229,7 @@ class AgentMessagesLoader extends LoaderAbstract
 					$recent_tabs = array();
 				}
 
-				foreach ($_REQUEST['recent_tabs'] as $item) {
+				foreach ($post_recent_tabs as $item) {
 					if (empty($item[0]) || empty($item[1]) || empty($item[2]) || empty($item[3]) || empty($item[4]) || count($item) != 5) {
 						continue;
 					}
