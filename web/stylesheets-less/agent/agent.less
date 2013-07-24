@@ -2046,7 +2046,7 @@ ul.pane-tabs {
 	}
 
 	&.border-bottom { border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%); }
-	&.border-top { border-top: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%); }
+	&.border-top { border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%); }
 
 	header {
 		background: darken(desaturate(@agent_source_bg_color, 5%), 9%);
@@ -2441,7 +2441,7 @@ ul.pane-tabs {
 			display: inline-block;
 			background: #fff;
 			border: 1px solid #d3d4d6;
-			.rounded(8px);
+			.rounded(3px);
 			bottom: 5px;
 			line-height: 100%;
 			padding: 3px 5px;
@@ -2481,6 +2481,10 @@ ul.pane-tabs {
 
 			&:first-child {
 				border-left: none;
+			}
+
+			&.invis-last {
+
 			}
 
 			&.on {

@@ -54,13 +54,21 @@
 			</article>
 		</section>
 
-		<section class="pane-section with-tabs sla-section last">
-			<nav class="pane-section-tabs" id="people_outline_tabstrip">
+		<section class="pane-section with-tabs">
+			<nav class="pane-section-tabs">
 				<ul>
-					<li style="width:106px;" data-tab-for="#people_outline_tagcloud" id="people_outline_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
-					<li style="width:107px;" data-tab-for="#people_outline_taglist" id="people_outline_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
+					<li class="on"><span>Labels</span></li>
+					<li class="invis-last"></li>
 				</ul>
 			</nav>
+
+			<nav id="people_outline_tabstrip" class="pill-two-switcher" {% if not people_tag_cloud|length %}style="display: none"{% endif %} data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li data-tab-for="#people_outline_tagcloud" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
+					<li data-tab-for="#people_outline_taglist" class="list">{{ phrase('agent.general.labels_list') }}</li>
+				</ul>
+			</nav>
+
 			<section class="source-labels-cloud deskpro-tab-item on labels-cloud" id="people_outline_tagcloud">
 				{% include 'AgentBundle:PeopleSearch:window-people-label-cloud.html.twig' %}
 			</section>
@@ -90,11 +98,18 @@
 			</article>
 		</section>
 
-		<section class="pane-section with-tabs sla-section last">
-			<nav class="pane-section-tabs" id="people_outline_org_tabstrip">
+		<section class="pane-section with-tabs">
+			<nav class="pane-section-tabs">
 				<ul>
-					<li style="width: 106px;" data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
-					<li style="width: 107px;" data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
+					<li class="on"><span>Labels</span></li>
+					<li class="invis-last"></li>
+				</ul>
+			</nav>
+
+			<nav id="people_outline_org_tabstrip" class="pill-two-switcher" {% if not org_tag_cloud|length %}style="display: none"{% endif %} data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
+					<li data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
 				</ul>
 			</nav>
 			<section class="deskpro-tab-item on labels-cloud" id="people_outline_org_tagcloud">
