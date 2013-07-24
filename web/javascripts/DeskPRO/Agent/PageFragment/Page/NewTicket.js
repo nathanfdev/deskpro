@@ -1469,8 +1469,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			txt.val('');
 		});
 
-		this.getEl('add_cc_txt').tokenField();
-
 		// Attachments
 		var list = $('.file-list', this.wrapper);
 		$('input', list[0]).live('click', function() {
