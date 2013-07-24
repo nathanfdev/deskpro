@@ -3463,7 +3463,19 @@ class TicketController extends AbstractController
 		file_put_contents($tmpdir . '/ticket-log.json', json_encode($d->getData()));
 
 		foreach ($ticket->messages as $message) {
-			file_put_contents($tmpdir . '/message-'.$message->id.'.json', json_encode($message->toArray()));
+			$data = $message->toArray();
+
+			if (count($message->attachments)) {
+				$data['attachments'] = array();
+				foreach ($message->attachments as $attach) {
+					$attach_data = $attach->toArray();
+					unset($attach_data['ticket'], $attach_data['message'], $attach_data['person'], $attach_data['visitor']);
+					$attach_data['blob'] = $attach->blob->toArray();
+					$data['attachments'][] = $attach_data;
+				}
+			}
+
+			file_put_contents($tmpdir . '/message-'.$message->id.'.json', json_encode($data));
 
 			if ($message->email_source && $message->email_source->blob) {
 				$this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir . '/message-' . $message->id . '-source.eml', $message->email_source->blob);
