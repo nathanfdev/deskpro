@@ -2036,7 +2036,7 @@ ul.pane-tabs {
 	top: @agent_panetabs_height;
 }
 
-#dp_source section.pane-section {
+#dp_source section.pane-section, #dp_list section.pane-section {
 	border-bottom: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%);
 	padding-bottom: 20px;
 
@@ -2091,8 +2091,8 @@ ul.pane-tabs {
 			border: 1px solid @agent_source_bubble_bg_color;
 			color: #fff;
 			line-height: 100%;
-			width: 16px;
-			height: 16px;
+			width: 15px;
+			height: 15px;
 			overflow: hidden;
 			cursor: pointer;
 			text-align: center;
@@ -2523,7 +2523,7 @@ ul.pane-tabs {
 					display: inline-block;
 					background: #fff;
 					border: 1px solid #d3d4d6;
-					.rounded(8px);
+					.rounded(3px);
 					bottom: 5px;
 					line-height: 100%;
 					padding: 3px 5px;
@@ -3338,6 +3338,40 @@ ul.pane-tabs {
 
 .panevis-list-off #dp_list_resizer, .panevis-tabs-off #dp_list_resizer {
 	display: none;
+}
+
+#dp_list .pane-form {
+	table.pane-form-table {
+		border: none;
+		width: 100%;
+
+		> tbody > tr.vtop > td, > tbody > tr.vtop > th {
+			vertical-align: top;
+		}
+
+		> tbody > tr > td, > tbody > tr > th {
+			padding: 5px 9px;
+			vertical-align: middle;
+			border-top: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 10%);
+		}
+
+		> tbody > tr:first-child > td, > tbody > tr:first-child > th {
+			border-top: none;
+		}
+
+		> tbody > tr > th {
+			text-align: left;
+		}
+	}
+}
+
+#dp_list footer.pane-footer {
+	margin-top: 20px;
+	padding: 10px;
+	background-color: darken(@agent_source_bg_color, 15%);
+	border: 2px solid darken(@agent_source_bg_color, 30%);
+	border-left: none; border-right: none;
+	text-align: center;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

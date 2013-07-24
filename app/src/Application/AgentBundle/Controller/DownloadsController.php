@@ -384,6 +384,21 @@ class DownloadsController extends AbstractController
 			");
 		}
 
+		$cat_usergroups = array();
+		$cat_structure_data = array();
+		if ($category) {
+			$cat_usergroups = $this->db->fetchAllCol("
+				SELECT usergroup_id
+				FROM download_category2usergroup
+				WHERE category_id = ?
+			", array($category->getId()));
+
+			$cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();;
+			$cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+			$cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
+			$cat_structure_data = Arrays::assocToNumericArary($cat_structure_data, 'children');
+		}
+
 		return $this->render($tpl, array(
 			'results'            => $results,
 			'comment_counts'     => $comment_counts,
@@ -391,6 +406,8 @@ class DownloadsController extends AbstractController
 			'cache'              => $result_cache,
 			'display_fields'     => $display_fields,
 			'category'           => $category,
+			'cat_usergroups'     => $cat_usergroups,
+			'cat_structure_data' => $cat_structure_data,
 			'total_results'      => $total_results,
 			'num_pages'          => $num_pages,
 			'cur_page'           => $page,

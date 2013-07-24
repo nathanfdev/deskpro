@@ -20,7 +20,13 @@
 {######################################################################################################################}
 
 {% block pane_header %}
-	<h1><i class="icon-dp-news"></i> {{ total_results|default(0) }} Posts</h1>
+	<ul class="pane-tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-active-classname="active">
+		<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ total_results|default(0) }} Posts</li>
+
+		{% if category %}
+			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> {{ category.title }}</li>
+		{% endif %}
+	</ul>
 {% endblock pane_header %}
 
 {######################################################################################################################}
@@ -28,6 +34,12 @@
 {######################################################################################################################}
 
 {% block pane_content %}
+
+{##################################}
+{# Posts #}
+{##################################}
+
+<div id="{{ tplvars.baseId }}_tab_main">
 
 	{% include 'AgentBundle:News:filter-display-options.html.twig' %}
 	{% include 'AgentBundle:News:filter-control-bar.html.twig' %}
@@ -70,4 +82,64 @@
 		</footer>
 	{% endif %}
 
+</div>
+
+{##################################}
+{# Category #}
+{##################################}
+
+{% if category %}
+<div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
+	<section class="pane-section">
+		<header><h1>Edit Category</h1></header>
+		<article>
+			<div class="pane-form">
+				<table class="pane-form-table">
+					<tbody>
+						<tr>
+							<th width="100">Title</th>
+							<td>
+								<input type="hidden" name="category[id]" value="{{ category.id }}" />
+								<input type="text" name="category[title]" value="{{ category.title }}" />
+							</td>
+						</tr>
+						<tr class="vtop">
+							<th>Permissions</th>
+							<td>
+								<ul>
+									{% for ug in app.getUsergroups().getUserUsergroups() %}
+										<li>
+											<label>
+												<input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} />
+												{{ ug.title }}
+											</label>
+										</li>
+									{% endfor %}
+								</ul>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</section>
+
+	<section class="pane-section last">
+		<header><h1>Reorder Category (Drag & Drop)</h1></header>
+		<article>
+			<div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
+			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" value="" />
+		</article>
+	</section>
+
+	<footer class="pane-footer" id="{{ tplvars.baseId }}_catfoot">
+		<div class="dp-not-loading">
+			<button class="dp-btn cat-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'news'}) }}">Save Category</button>
+		</div>
+		<div class="dp-is-loading">
+			<i class="spinner-flat"></i>
+		</div>
+	</footer>
+</div>
+{% endif %}
 {% endblock pane_content %}

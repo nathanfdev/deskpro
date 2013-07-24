@@ -187,6 +187,8 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			} else {
 				x.show();
 			}
+
+			x.trigger('dp_simpletabs_show');
 		}).bind(this);
 
 		if (this.lastActiveTab) {
@@ -210,6 +212,8 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 				x.hide();
 				showFn();
 			}
+
+			x.trigger('dp_simpletabs_hide');
 		} else {
 			showFn();
 		}

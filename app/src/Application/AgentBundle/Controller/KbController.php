@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\UI\RuleBuilder;
+use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
@@ -817,6 +818,21 @@ class KbController extends AbstractController
 			");
 		}
 
+		$cat_usergroups = array();
+		$cat_structure_data = array();
+		if ($category) {
+			$cat_usergroups = $this->db->fetchAllCol("
+				SELECT usergroup_id
+				FROM article_category2usergroup
+				WHERE category_id = ?
+			", array($category->getId()));
+
+			$cat_structure_data = $article_categories;
+			$cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+			$cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
+			$cat_structure_data = Arrays::assocToNumericArary($cat_structure_data, 'children');
+		}
+
 		return $this->render($tpl, array(
 			'results'            => $results,
 			'result_id'          => $result_cache['id'],
@@ -835,6 +851,8 @@ class KbController extends AbstractController
 			'cache'              => $result_cache,
 			'terms_summary'      => $result_cache['extra']['summary'],
 			'category'           => $category,
+			'cat_usergroups'     => $cat_usergroups,
+			'cat_structure_data' => $cat_structure_data,
 
 			'article_categories' => $article_categories
 		));

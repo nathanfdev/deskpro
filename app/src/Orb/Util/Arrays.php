@@ -432,6 +432,90 @@ class Arrays
 	}
 
 
+	/**
+	 * Removes all items in $array except for $keys.
+	 *
+	 * @param array $array The array to work on
+	 * @param string|string[] $keys A key or array of keys to keep
+	 * @param bool $recursive To traverse down the array
+	 * @return array
+	 */
+	public static function removeButKey(array $array, $keys, $recursive = false, $ignore_numeric = false)
+	{
+		$new = array();
+
+		if (!is_array($keys)) {
+			$keys = array($keys);
+		}
+
+		$keys = array_combine($keys, $keys);
+
+		foreach ($array as $k => $v) {
+			if (isset($keys[$k]) || ($ignore_numeric && is_numeric($k))) {
+				if ($recursive && is_array($v)) {
+					$v = self::removeButKey($v, $keys, true, $ignore_numeric);
+					if ($v) {
+						$new[$k] = $v;
+					}
+				} else {
+					$new[$k] = $v;
+				}
+			}
+		}
+
+		return $new;
+	}
+
+
+	/**
+	 * Recurse into an array and rename keys
+	 *
+	 * @param array $array     The array to work on
+	 * @param string $old_key  The old key
+	 * @param string $new_key  The new key
+	 * @param int $max_depth   How deep down the array to recurse. -1 for unlimited depth.
+	 * @return array
+	 */
+	public static function multiRenameKey(array $array, $old_key, $new_key, $max_depth = -1, $_cur_depth = 0)
+	{
+		$new = array();
+
+		foreach ($array as $k => $v) {
+			if ($k == $old_key) {
+				$k = $new_key;
+			}
+
+			if (is_array($v) && $max_depth == -1 || $_cur_depth < $max_depth) {
+				$v = self::multiRenameKey($v, $old_key, $new_key, $max_depth, $_cur_depth+1);
+			}
+
+			$new[$k] = $v;
+		}
+
+		return $new;
+	}
+
+
+	/**
+	 * @param array $array
+	 * @param string $recursive_key  A string to recurse down only speciifc keys (eg, only reindex 'children').
+	 * @return array
+	 */
+	public static function assocToNumericArary(array $array, $recursive_key = false)
+	{
+		$new = array();
+
+		foreach ($array as $v) {
+			if ($recursive_key && isset($v[$recursive_key]) && is_array($v[$recursive_key])) {
+				$v[$recursive_key] = self::assocToNumericArary($v[$recursive_key], $recursive_key);
+			}
+
+			$new[] = $v;
+		}
+
+		return $new;
+	}
+
 
 	/**
 	 * Remove all values from an array that are empty strings. This differs
