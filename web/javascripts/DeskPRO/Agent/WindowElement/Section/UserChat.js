@@ -486,7 +486,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 						}
 					});
 
-					$('#userchat_deplist_all').find('> ul.sub-group').each(function() {
+					$('#userchat_deplist_all').find('> ul.nav-list').each(function() {
 						if ($(this).find('> li').filter(':visible')) {
 							$(this).show();
 						} else {
@@ -587,9 +587,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.updateBadge(count);
 
 		if (!count) {
-			$('#userchat_deplist_all').find('.sub-group').removeClass('show');
+			$('#userchat_deplist_all').find('.nav-list').removeClass('show');
 		} else {
-			$('#userchat_deplist_all').find('.sub-group').addClass('show');
+			$('#userchat_deplist_all').find('.nav-list').addClass('show');
 		}
 	},
 
