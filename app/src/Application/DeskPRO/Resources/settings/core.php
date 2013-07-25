@@ -375,4 +375,6 @@
 	 * when they are suspected dupes/bots/unconnected
 	 */
 	'core.visitor_cleanup_bogus_time' => 1800,
+
+	'core.agent_translate_debug' => false,
 );

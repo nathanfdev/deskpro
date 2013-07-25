@@ -642,6 +642,12 @@ class Translate implements PersonContextInterface
 	{
         $debug = App::getConfig('debug.language_test_mode');
 
+		if (!$debug && defined('DP_INTERFACE') && DP_INTERFACE == 'agent' && strpos($phrase_name, 'agent') === 0) {
+			try {
+				$debug = App::getSetting('core.agent_translate_debug');
+			} catch (\Exception $e) {}
+		}
+
 		if ($debug == 'user' AND $phrase_name != 'agent.general.x_is_y') {
 			if (substr($phrase_name, 0, 4) != 'user') {
 				echo $phrase_name;
