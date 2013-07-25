@@ -684,7 +684,6 @@ $CONFIG['agent_vendors_css'] = array(
 		'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
 		'vendor/jquery/qtip/jquery.qtip.min.css',
 		'vendor/jquery/colorbox/colorbox.css',
-		'vendor/jquery/token-field/token-field.css',
 		'vendor/select2/select2.css',
 		'vendor/redactor/redactor.css',
 	)
