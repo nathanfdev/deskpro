@@ -520,7 +520,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			triggerElement: snippetBtn,
 			onBeforeOpen: function() {
 				if (isWysiwyg && textarea.data('redactor')) {
-					textarea.data('redactor').saveSelection();
+					try {
+						textarea.data('redactor').saveSelection();
+					} catch (e) {}
 				}
 			},
 			onSnippetClick: function(info) {
@@ -584,8 +586,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {
 						textarea.data('redactor').restoreSelection();
+						textarea.data('redactor').setBuffer();
 					} catch (e) {}
-					textarea.data('redactor').setBuffer();
 
 					var html = result;
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
