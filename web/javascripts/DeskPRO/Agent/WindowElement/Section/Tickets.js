@@ -969,14 +969,23 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			ev.stopPropagation();
 
 			var li = $(this);
-
-			var inputEl = $('<input type="text" />');
-			inputEl.val($('.title .flag', li).text().trim());
-
-			var enterCloseFn = function(ev) {
-				if (ev.keyCode == 13 && !ev.metaKey) {
+			var inputEl = li.find('.flag-label-input');
+			var labelEl = li.find('.flag-label');
+			if (!inputEl.hasClass('init')) {
+				inputEl.addClass('init');
+				inputEl.on('blur', function() {
 					closeFn();
-				}
+				});
+
+				inputEl.on('click', function(ev) {
+					Orb.cancelEvent(ev);
+				});
+
+				inputEl.on('keypress keydown', function(ev) {
+					if (ev.keyCode == 13) {
+						closeFn();
+					}
+				});
 			}
 			var closeFn = function() {
 
@@ -991,27 +1000,24 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						}]
 					});
 
-					$('.title .flag', li).text(newTitle);
+					labelEl.text(newTitle);
 				}
 
+				inputEl.hide();
+				labelEl.show();
 				backdrop.remove();
-				wrapper.remove();
 			};
 
 			var backdrop = $('<div class="backdrop"></div>');
+			backdrop.css('left', 270);
 			backdrop.appendTo('body');
 			backdrop.on('click', closeFn);
 
-			var wrapper = $('<div class="field-overlay"><div class="close-trigger"></div></div>');
-			inputEl.appendTo(wrapper);
-			wrapper.css({
-				left: li.offset().left,
-				top: li.offset().top
-			});
-			wrapper.appendTo('body').show();
-			inputEl.on('keypress', enterCloseFn).focus();
+			inputEl.val(labelEl.text().trim());
 
-			$('.close-trigger', wrapper).on('click', closeFn);
+			labelEl.hide();
+			inputEl.show();
+			inputEl.focus().val(labelEl.text().trim()).focus();
 		});
 	},
 
