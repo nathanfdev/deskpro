@@ -34,4 +34,29 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 			</tbody>
 		</table>
 	</div>
+
+	{% if filters_shared|length %}
+		<br/>
+
+		<div class="check-grid item-list">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th style="text-align:left;">Filters shared with you <span class="small-light-icon tipped" title="These are filters created by the administrator that you can use."></span></th>
+						<th style="text-align:left;" width="100">Hide <span class="small-light-icon tipped" title="Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time."></span></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for filter in filters_shared %}
+						<tr>
+							<td>{{ filter.title }}</td>
+							<td nowrap="nowrap">
+								<label><input type="checkbox" name="filters_hidden[]" class="filter-hidden-check filter-{{ filter.id }}" value="{{ filter.id }}" {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}checked="checked"{% endif %} /> Hide</label>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
 </div>

@@ -254,12 +254,12 @@ class SettingsController extends AbstractController
 		$admin_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->findTriggersForcingNotificationForAgent($this->person);
 
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
-			'all_filters' => $all_filters,
-			'sys_filters' => $sys_filters,
+			'all_filters'      => $all_filters,
+			'sys_filters'      => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
-			'custom_filters' => $custom_filters,
-			'my_subs' => $my_subs,
-			'admin_triggers' => $admin_triggers,
+			'custom_filters'   => $custom_filters,
+			'my_subs'          => $my_subs,
+			'admin_triggers'   => $admin_triggers,
 		));
 	}
 
@@ -330,7 +330,8 @@ class SettingsController extends AbstractController
 	 */
 	public function ticketFiltersAction()
 	{
-		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getPersonalFilters($this->person);
+		$filters        = $this->em->getRepository('DeskPRO:TicketFilter')->getPersonalFilters($this->person);
+		$filters_shared = $this->em->getRepository('DeskPRO:TicketFilter')->getSharedFilters($this->person);
 
 		//agent.ui.filter
 		$filter_show_options = $this->db->fetchAllKeyValue("
@@ -341,6 +342,7 @@ class SettingsController extends AbstractController
 
 		return $this->render('AgentBundle:Settings:ticket-filters.html.twig', array(
 			'filters'             => $filters,
+			'filters_shared'      => $filters_shared,
 			'filter_show_options' => $filter_show_options,
 		));
 	}

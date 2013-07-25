@@ -59,7 +59,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 			didChangeFilterVis = true;
 			if (this.checked) {
 				$('#tickets_outline_custom_filters').find('.filter-' + filterId).addClass('filter-hidden');
-				if (!$('#tickets_outline_custom_filters').find('li').not('.filter-hidden')[0]) {
+				if (!$('#tickets_outline_custom_filters').find('li.filter').not('.filter-hidden')[0]) {
 					$('#tickets_outline_custom_filters').find('.no-data').show();
 				}
 			} else {

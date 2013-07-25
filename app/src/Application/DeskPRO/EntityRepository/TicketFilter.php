@@ -110,9 +110,34 @@ class TicketFilter extends AbstractEntityRepository
 		$filters = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.person = ?1
+			WHERE q.person = ?0
 			ORDER BY q.title ASC
-		")->execute(array(1=> $agent));
+		")->execute(array($agent));
+
+		return $filters;
+	}
+
+	public function getSharedFilters(Entity\Person $agent)
+	{
+		$agent->loadHelper('Agent');
+		$teams = $agent->getTeams();
+
+		if ($teams) {
+			$teams = array_values($teams);
+			$filters = $this->getEntityManager()->createQuery("
+				SELECT q
+				FROM DeskPRO:TicketFilter q INDEX BY q.id
+				WHERE (q.person IS NULL OR q.person != ?0) AND (q.is_global = true OR q.agent_team IN (?1)) AND q.sys_name IS NULL
+				ORDER BY q.title ASC
+			")->execute(array($agent, $teams));
+		} else {
+			$filters = $this->getEntityManager()->createQuery("
+				SELECT q
+				FROM DeskPRO:TicketFilter q INDEX BY q.id
+				WHERE (q.person IS NULL OR q.person != ?0) AND q.is_global = true AND q.sys_name IS NULL
+				ORDER BY q.title ASC
+			")->execute(array($agent));
+		}
 
 		return $filters;
 	}
