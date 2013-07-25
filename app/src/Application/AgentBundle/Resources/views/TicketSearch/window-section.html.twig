@@ -123,7 +123,7 @@
 					{% if custom_filters|length %}
 						{% for filter in custom_filters %}
 							<li
-								class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %} is-nav-item"
+								class="filter filter-{{filter.id}} {% if filter.sys_name %}filter-{{filter.sys_name}}{% endif %} is-hold-filter nav-filter-{{filter.id}} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% else %}{% if not has_any_showing %}first{% endif %}{% set has_any_showing = true %}{% endif %} is-nav-item"
 								data-filter-id="{{filter.id}}"
 								data-filter-name="{{filter.sys_name}}"
 							>

@@ -59,13 +59,15 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 			didChangeFilterVis = true;
 			if (this.checked) {
 				$('#tickets_outline_custom_filters').find('.filter-' + filterId).addClass('filter-hidden');
-				if ($('#tickets_outline_custom_filters').find('li').not('.filter-hidden')[0]) {
+				if (!$('#tickets_outline_custom_filters').find('li').not('.filter-hidden')[0]) {
 					$('#tickets_outline_custom_filters').find('.no-data').show();
 				}
 			} else {
 				$('#tickets_outline_custom_filters').find('.filter-' + filterId).removeClass('filter-hidden');
 				$('#tickets_outline_custom_filters').find('.no-data').hide();
 			}
+
+			$('#tickets_outline_custom_filters').find('li').removeClass('first').not('.filter-hidden').first().addClass('first');
 
 			sendUpdate();
 		});
