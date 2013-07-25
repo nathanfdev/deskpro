@@ -1,5 +1,5 @@
 {% for cat in cats %}
-	<li class="is-nav-item cat-{{ id }}">
+	<li class="is-nav-item cat-{{ cat.id }}" id="publish_kbcat_{{ cat.id }}">
 		<div class="item" data-route="listpane:{{ path('agent_kb_list', {'category_id':cat.id}) }}">
 			{% if kb_repo.getChildren(cat)|length %}
 				<i class="dp-toggle-icon click-through icon-caret-right"></i>

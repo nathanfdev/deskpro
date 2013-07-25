@@ -6,7 +6,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	init: function() {
 		var self = this;
 		this.expanded_ids = [];
-		this.expanded_cats = [];
+		this.selected_id = null;
 		this.buttonEl = $('#publish_section');
 		this.lastLoad = null;
 
@@ -82,26 +82,32 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 	reload: function() {
 		this.lastLoad = new Date();
-		var expanded_ids = [], expanded_cats = [];
+		var expanded_ids = [];
+
+		this.selected_id = null;
 
 		if (this.contentEl && this.contentEl.length) {
-			this.contentEl.find('section.open.group-section').each(function() {
+			this.contentEl.find('.dp-collapsible-open').each(function() {
 				var id = $(this).attr('id');
 				if (id) {
 					expanded_ids.push(id);
 				}
 			});
 
-			this.contentEl.find('li.sub-expanded').each(function() {
+			this.contentEl.find('li.dp-list-open').each(function() {
 				var id = this.id;
 				if (id) {
-					expanded_cats.push(id);
+					expanded_ids.push(id);
 				}
 			});
+
+			var sel = this.contentEl.find('.nav-selected').first();
+			if (sel[0] && sel.attr('id')) {
+				this.selected_id = sel.attr('id');
+			}
 		}
 
 		this.expanded_ids = expanded_ids;
-		this.expanded_cats = expanded_cats;
 
 		DeskPRO_Window.getSectionData('publish_section', (function(data) {
 			this._initSection(data);
@@ -138,6 +144,28 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		this.contentEl.html(data.section_html);
 
+		if (this.selected_id) {
+			$('#' + this.selected_id).addClass('nav-selected');
+		}
+
+		if (this.expanded_ids) {
+			Array.each(this.expanded_ids, function(id) {
+				var el = $('#' + id);
+				if (el.is('li')) {
+					var $me = el.find('> i');
+					var $li = el;
+					var $groupList = el.find('> .nav-list-small');
+
+					$me.removeClass('icon-caret-right');
+					$me.addClass('icon-caret-down');
+					$groupList.show();
+					$li.addClass('dp-list-open');
+				} else {
+					el.addClass('dp-collapsible-open');
+				}
+			});
+		}
+
 		this._initSectionSearch();
 
 		var self = this;
@@ -164,10 +192,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				$me.removeClass('icon-caret-right');
 				$me.addClass('icon-caret-down');
 				$groupList.show();
+				$li.addClass('dp-list-open');
 			} else {
 				$me.addClass('icon-caret-right');
 				$me.removeClass('icon-caret-down');
 				$groupList.hide();
+				$li.removeClass('dp-list-open');
 			}
 		});
 
