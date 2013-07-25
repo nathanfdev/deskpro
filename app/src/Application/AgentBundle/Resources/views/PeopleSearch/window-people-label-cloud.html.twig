@@ -1,7 +1,7 @@
 {% if people_tag_cloud|length %}
 	<ul>
-		{% for label,css_class in labels_cloud %}
-			<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label|url_encode}}&amp;view_name=label&amp;view_extra={{label|url_encode}}"><span>{{label}}</span></li>
+		{% for label,css_class in people_tag_cloud %}
+			<li id="people_label_cloud_{{label|slugify}}" class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}"><span>{{label}}</span></li>
 		{% endfor %}
 	</ul>
 {% else %}

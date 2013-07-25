@@ -6,6 +6,30 @@
 {% block pane_content %}
 
 	<div class="pane-content pane-content-main">
+
+		<section class="pane-section" id="people_pending_section">
+			<header>
+				<h1>Pending</h1>
+			</header>
+			<article>
+				<ul class="nav-list" id="people_outline_people_list">
+					<li class="is-nav-item" id="people_nav_awaiting_agent_validation">
+						<div class="item" data-route="listpane:{{ path('agent_people_validate_list') }}">
+							<h3>Awaiting Agent Validation</h3>
+							<em class="counter list-counter">{{ validating_count_agent|default(0) }}</em>
+						</div>
+					</li>
+
+					<li class="is-nav-item" id="people_nav_awaiting_validation">
+						<div class="item" data-route="listpane:{{ path('agent_people_validate_list', {email_validating:1}) }}">
+							<h3>Awaiting Email Validation</h3>
+							<em class="counter list-counter">{{ validating_count|default(0) }}</em>
+						</div>
+					</li>
+				</ul>
+			</article>
+		</section>
+
 		{##################################}
 		{# People #}
 		{##################################}
@@ -16,22 +40,8 @@
 			</header>
 			<article>
 				<ul class="nav-list" id="people_outline_people_list">
-					<li class="is-nav-item" id="people_nav_awaiting_agent_validation" {% if not validating_count_agent %}style="display: none"{% endif %}>
-						<div class="item" data-route="listpane:{{ path('agent_people_validate_list') }}">
-							<h3>Awaiting Agent Validation</h3>
-							<em class="counter list-counter">{{ validating_count_agent|default(0) }}</em>
-						</div>
-					</li>
-
-					<li class="is-nav-item" id="people_nav_awaiting_validation" {% if not validating_count %}style="display: none"{% endif %}>
-						<div class="item" data-route="listpane:{{ path('agent_people_validate_list') }}">
-							<h3>Awaiting Email Validation</h3>
-							<em class="counter list-counter">{{ validating_count|default(0) }}</em>
-						</div>
-					</li>
-
 					<li class="people nav-people is-nav-item" id="people_nav_all">
-						<div class="item" data-route="listpane:{{ path('agent_people_validate_list') }}">
+						<div class="item" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
 							<h3>Registered</h3>
 							<em class="counter list-counter">{% if people_count > 10000 %}10000+{% else %}{{ people_count }}{% endif %}</em>
 						</div>
@@ -44,7 +54,7 @@
 							data-usergroup-id="{{id}}"
 							{% if not usergroup_counts[id] %}style="display: none"{% endif %}
 						>
-							<div class="item" data-route="listpane:{{ path('agent_people_validate_list') }}">
+							<div class="item" data-route="listpane:{{ path('agent_peoplesearch_usergroup', {id: id}) }}">
 								<h3>{{title}}</h3>
 								<em class="counter list-counter">{% if usergroup_counts[id] > 10000 %}10000+{% else %}{{ usergroup_counts[id]|default(0) }}{% endif %}</em>
 							</div>
@@ -69,11 +79,11 @@
 				</ul>
 			</nav>
 
-			<section class="source-labels-cloud deskpro-tab-item on labels-cloud" id="people_outline_tagcloud">
+			<section class="deskpro-tab-item on labels-cloud" id="people_outline_tagcloud">
 				{% include 'AgentBundle:PeopleSearch:window-people-label-cloud.html.twig' %}
 			</section>
 
-			<section class="source-labels-list deskpro-tab-item labels-list" id="people_outline_taglist">
+			<section class="deskpro-tab-item labels-list" id="people_outline_taglist">
 				{% include 'AgentBundle:PeopleSearch:window-people-label-list.html.twig' %}
 			</section>
 		</section>

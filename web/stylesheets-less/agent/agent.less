@@ -2409,7 +2409,6 @@ ul.pane-tabs {
 
 		li.new-cat {
 			cursor: pointer;
-			padding-left: 11px;
 
 			h3, i {
 				color: lighten(@agent_text_color, 30%);
@@ -2547,6 +2546,12 @@ ul.pane-tabs {
 					padding: 3px 5px;
 					margin: 1px;
 					font-size: 11px;
+
+					&.nav-selected {
+						background: @agent_source_bubble_bg_color;
+						color: #fff;
+						border: 1px solid @agent_source_bubble_bg_color;
+					}
 				}
 			}
 		}
@@ -2567,6 +2572,12 @@ ul.pane-tabs {
 			padding: 3px 5px;
 			margin: 1px;
 			font-size: 11px;
+
+			&.nav-selected {
+				background: @agent_source_bubble_bg_color;
+				color: #fff;
+				border: 1px solid @agent_source_bubble_bg_color;
+			}
 		}
 	}
 }
@@ -2586,12 +2597,13 @@ ul.pane-tabs {
 			display: block;
 			float: left;
 			margin: 0;
-			font-size: 11px;
 			height: 28px;
 			line-height: 27px;
 			overflow: hidden;
-			color: @agent_text_color;
+			font-size: 11px;
+			font-weight: bold;
 			text-transform: uppercase;
+			color: @agent_text_color;
 			cursor: pointer;
 			border-left: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 20%);
 			border-bottom: 1px solid @agent_source_bg_color;

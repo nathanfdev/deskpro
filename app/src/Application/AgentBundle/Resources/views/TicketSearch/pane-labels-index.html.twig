@@ -5,7 +5,7 @@
 	</ul>
 </nav>
 
-<section class="cloud-list" id="ticket_labels_cloud">
+<section class="labels-cloud" id="ticket_labels_cloud">
 	{% if labels_cloud|length %}
 		<ul>
 			{% for label,css_class in labels_cloud %}
@@ -16,7 +16,7 @@
     <aside class="source-info-explain">{{ phrase('agent.general.no_ticket_labels') }}</aside>
 	{% endif %}
 </section>
-<section class="labels-cloud" id="ticket_labels_list" style="display: none;">
+<section class="labels-list" id="ticket_labels_list" style="display: none;">
 	{% if labels_index|length %}
 		<table>
 			{% for letter,labels in labels_index %}

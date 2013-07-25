@@ -14,7 +14,7 @@
 			</h1>
 		</header>
 		<article>
-			<ul class="nav-list">
+			<ul class="nav-list nav-list-small">
 				{% if counts.validating_comments %}
 					<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_validatingcomments') }}">
 						<div class="item">
@@ -159,13 +159,14 @@
 			</h1>
 		</header>
 		<article>
-			<ul class="nav-list nav-list-small">
+			<ul class="nav-list nav-list-small nav-list-tree">
 				<li class="is-nav-item">
 					<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'all'}) }}">
+						<i class="dp-toggle-icon click-through icon-caret-right"></i>
 						<h3>All Comments</h3>
 						<em class="counter list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</em>
 					</div>
-					<ul class="nav-list nav-list-small indented">
+					<ul class="nav-list nav-list-small indented" style="display: none;">
 						<li class="is-nav-item" {% if not counts.comments.articles  %}style="display: none;"{% endif %}>
 							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'articles'}) }}">
 								<h3>Article Comments</h3>

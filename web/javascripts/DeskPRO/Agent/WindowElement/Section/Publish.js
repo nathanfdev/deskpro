@@ -148,7 +148,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			$('#' + this.selected_id).addClass('nav-selected');
 		}
 
-		if (this.expanded_ids) {
+		if (this.expanded_ids && this.expanded_ids.length) {
 			Array.each(this.expanded_ids, function(id) {
 				var el = $('#' + id);
 				if (el.is('li')) {
@@ -175,7 +175,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			var header  = section.find('> header');
 			var article = section.find('> article');
 
-			header.find('.dp-collapsible-toggle-btn').on('click', function(ev) {
+			header.css('cursor', 'pointer').on('click', function(ev) {
 				Orb.cancelEvent(ev);
 				section.toggleClass('dp-collapsible-open');
 				self.updateUi();
