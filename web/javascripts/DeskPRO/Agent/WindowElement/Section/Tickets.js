@@ -17,6 +17,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.collectedFilterUpdates = [];
 		this.collectedFilterUpdateOps = {};
 		this.queueRefreshFilterGrouping = [];
+		this.changedFilterGrouping = [];
+		this.hasInitialGroupingLoaded = false;
 
 		this.lastArchiveUpdate = new Date();
 		this.loadHighlightNavEl = null;
@@ -257,7 +259,25 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 				if (!sel.hasClass('with-select2')) {
 					DP.select(sel);
+
 					sel.on('change', function(ev) {
+						var filterEl = $(this).closest('li');
+						self.changedFilterGrouping.push(parseInt(sel.data('filter-id')));
+
+						if (self.hasInitialGroupingLoaded && $(this).val()) {
+							var countEl = filterEl.find('.counter').first();
+
+							if (parseInt(countEl.text().trim()) == 0) {
+								var noteEl = filterEl.find('.none-yet');
+								noteEl.show();
+								window.setTimeout(function() {
+									noteEl.fadeOut(2100, function() {
+										noteEl.hide();
+									});
+								}, 2100);
+							}
+						}
+
 						self.refreshFilterGrouping([sel.data('filter-id')], true);
 					});
 				}
@@ -266,6 +286,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		if (groupingFilterIds.length) {
 			this.refreshFilterGrouping(groupingFilterIds, false);
+		} else {
+			this.hasInitialGroupingLoaded = true;
 		}
 
 		this.fireEvent('sectionInit');
@@ -783,6 +805,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					this.rerunRefreshFilterGrouping = [];
 					this.refreshFilterGrouping(refreshIds);
 				}
+
+				this.hasInitialGroupingLoaded = true;
 			}
 		});
 	},
@@ -803,9 +827,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		var li = subgroupEl.closest('li');
+		var note = filterEl.find('.none-yet');
 
 		var lis = $('> li', subgroupEl);
 		if (lis.length) {
+			note.stop().hide();
 			if (li.find('.icon-caret-down')[0]) {
 				subgroupEl.show();
 			}
@@ -820,6 +846,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		} else {
 			subgroupEl.hide();
 		}
+
+		this.changedFilterGrouping.erase(parseInt(filterId));
 
 		if ($(this).data('grouping-option') != '') {
 			li.find('.item-form').hide();

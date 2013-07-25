@@ -51,6 +51,9 @@
 									</div>
 								</div>
 
+								<aside class="none-yet source-info-explain" style="display: none;">
+									Grouped results will appear when this filter has matching tickets.
+								</aside>
 								<ul class="nav-list-small indented" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}></ul>
 							</li>
 						{% endif %}
@@ -92,6 +95,11 @@
 									</div>
 								</div>
 
+								<div class="none-yet" style="display: none;">
+									<p>
+										Grouped results will appear when this filter has matching tickets.
+									</p>
+								</div>
 								<ul class="nav-list-small indented" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}></ul>
 							</li>
 						{% endif %}
