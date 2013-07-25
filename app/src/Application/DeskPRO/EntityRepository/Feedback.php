@@ -57,8 +57,8 @@ class Feedback extends AbstractEntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM feedback
-			WHERE hidden_status = ?
-		", array('validating'));
+			WHERE hidden_status = 'validating'
+		");
 	}
 
 
@@ -73,9 +73,9 @@ class Feedback extends AbstractEntityRepository
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
 			FROM feedback
-			WHERE status = ?
+			WHERE status = 'active'
 			GROUP BY status_category_id WITH ROLLUP
-		", array('active'));
+		");
 	}
 
 	/**
@@ -89,9 +89,9 @@ class Feedback extends AbstractEntityRepository
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
 			FROM feedback
-			WHERE status = ?
+			WHERE status = 'closed'
 			GROUP BY status_category_id WITH ROLLUP
-		", array('closed'));
+		");
 	}
 
 
@@ -125,8 +125,8 @@ class Feedback extends AbstractEntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM feedback
-			WHERE status = ?
-		", array('new'));
+			WHERE status = 'new'
+		");
 	}
 
 	/**
@@ -148,10 +148,10 @@ class Feedback extends AbstractEntityRepository
 		$counts = App::getDb()->fetchAllKeyValue("
 			SELECT category_id, COUNT(*)
 			FROM feedback
-			WHERE status != ?
+			WHERE status != 'hidden'
 			GROUP BY category_id
 			ORDER BY category_id ASC
-		", array('hidden'));
+		");
 
 		foreach ($counts as $cat_id => &$count) {
 			$cat_childs = App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($cat_id, false);

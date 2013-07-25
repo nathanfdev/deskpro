@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,47 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class Build1374763389 extends AbstractBuild
 {
-	protected function configure()
+	public function run()
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
-	}
+		$this->out("Clear out old result caches");
+		$this->execMutateSql("TRUNCATE TABLE result_cache");
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$bad_ids = App::getDb()->fetchAllGrouped("
-			SELECT id, status
-			FROM feedback
-			WHERE status IN ('active', 'closed') AND status_category_id IS NULL
-		", array(), 'status', null, 'id');
+		$this->out("Fix possible invalid feedback statuses");
+		$active_id = $this->container->getDb()->fetchColumn("SELECT id FROM feedback_status_categories WHERE status_type = 'active' ORDER BY display_order DESC LIMIT 1");
+		if ($active_id) {
+			$this->execMutateSql("
+				UPDATE feedback
+				SET status_category_id = $active_id
+				WHERE status = 'active' AND status_category_id IS NULL
+			");
+		}
 
-		print_r($bad_ids);
-		echo "\n";
-		exit;
+		$closed_id = $this->container->getDb()->fetchColumn("SELECT id FROM feedback_status_categories WHERE status_type = 'closed' ORDER BY display_order DESC LIMIT 1");
+		if ($closed_id) {
+			$this->execMutateSql("
+				UPDATE feedback
+				SET status_category_id = $closed_id
+				WHERE status = 'closed' AND status_category_id IS NULL
+			");
+		}
 	}
 }

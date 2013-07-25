@@ -71,7 +71,7 @@ class FeedbackController extends AbstractController
 		$data = array();
 
 		$counts = array();
-		$counts['feedback_awaiting_validation']    = $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
+		$counts['feedback_awaiting_validation'] = $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
 		$counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
 
 		$status_counts = array();
@@ -93,10 +93,10 @@ class FeedbackController extends AbstractController
 			'counts'             => $counts,
 			'status_counts'      => $status_counts,
 			'category_counts'    => $category_counts,
-			'feedback_cats'          => $feedback_cats,
+			'feedback_cats'      => $feedback_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
-			'feedback_tag_index'    => $feedback_tag_index
+			'feedback_tag_index' => $feedback_tag_index
 		));
 
 		return $this->createJsonResponse($data);
@@ -583,27 +583,29 @@ class FeedbackController extends AbstractController
 	 */
 	public function categoryListAction($category_id)
 	{
+		$top_result_helper = FeedbackResults::newFromRequest($this, array(
+			'specific_terms' => array(
+				'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+				'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
+			)
+		));
+
 		if ($this->in->getString('subgroup')) {
 			$result_helper = FeedbackResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
 					'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
-					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
 				)
 			));
 		} else {
-			$result_helper = FeedbackResults::newFromRequest($this, array(
-				'specific_terms' => array(
-					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-				)
-			));
+			$result_helper = $top_result_helper;
 		}
 
 		$cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
 		$grouping = new GroupingCounter();
-		$grouping->setGrouping('category_id', 'status');
+		$grouping->setGrouping('status');
+		$grouping->setIds($top_result_helper->getFeedbackIds());
 		$grouped = $grouping->getDisplayArray();
 
 		if (!$cat->parent) {
