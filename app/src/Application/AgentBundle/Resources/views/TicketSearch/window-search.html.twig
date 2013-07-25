@@ -14,7 +14,7 @@
 				<option selected="selected" value="awaiting_agent">Awaiting Agent</option>
 				<option selected="selected" value="awaiting_user">Awaiting User</option>
 				<option value="resolved">Resolved</option>
-				<option value="closed">Archived</option>
+				{% if app.getSetting('core_tickets.use_archive') %}<option value="closed">Archived</option>{% endif %}
 				<option value="hidden.awaiting_validation">Awaiting Validation</option>
 				<option value="hidden.spam">Spam</option>
 				<option value="hidden.deleted">Deleted</option>
@@ -25,7 +25,7 @@
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> Awaiting Agent</label></li>
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> Awaiting User</label></li>
 					<li><label><input class="widget-val" type="checkbox" value="resolved" /> Resolved</label></li>
-					<li><label><input class="widget-val" type="checkbox" value="closed" /> Closed</label></li>
+					{% if app.getSetting('core_tickets.use_archive') %}<li><label><input class="widget-val" type="checkbox" value="closed" /> Archived</label></li>{% endif %}
 				</ul>
 
 				<div class="alt-options">
