@@ -128,7 +128,7 @@
 								<td class="labels">
 									<ul>
 										{% for label in labels %}
-											<li class="nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label|url_encode}}&amp;view_name=label&amp;view_extra={{label|url_encode}}"><span>{{label}}</span></li>
+											<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
 										{% endfor %}
 									</ul>
 								</td>
@@ -143,7 +143,7 @@
 				{% if labels_cloud|length %}
 					<ul>
 						{% for label,css_class in labels_cloud %}
-							<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
+							<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
 						{% endfor %}
 					</ul>
 				{% else %}
