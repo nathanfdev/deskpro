@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\NewTicket;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 
@@ -176,25 +177,35 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				// as an email address that requires validation. If validation is disabled,
 				// NewticketAction toggles it off
 				} else {
-					$person = Entity\Person::newContactPerson();
-					if ($this->person->name) {
-						$person->name = $this->person->name;
+
+					// They might come from a user source
+					$person_processor = new PersonFromEmailProcessor();
+					$eml = new EmailAddress();
+					$eml->email = $this->person->email;
+					$person = $person_processor->findPerson($eml);
+
+					// Still no, if we're here then we make a new profile
+					if (!$person) {
+						$person = Entity\Person::newContactPerson();
+						if ($this->person->name) {
+							$person->name = $this->person->name;
+						}
+						$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
+						$person->is_confirmed = false;
+
+						if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+							$person->is_agent_confirmed = false;
+						}
+
+						$email = new \Application\DeskPRO\Entity\PersonEmail();
+						$email->setEmail($this->person->email);
+						$email->person = $person;
+						$email->setIsValidated(false);
+						$person->addEmailAddress($email);
+
+						App::getOrm()->persist($person);
+						App::getOrm()->persist($email);
 					}
-					$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
-					$person->is_confirmed = false;
-
-					if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
-						$person->is_agent_confirmed = false;
-					}
-
-					$email = new \Application\DeskPRO\Entity\PersonEmail();
-					$email->setEmail($this->person->email);
-					$email->person = $person;
-					$email->setIsValidated(false);
-					$person->addEmailAddress($email);
-
-					App::getOrm()->persist($person);
-					App::getOrm()->persist($email);
 				}
 
 			// Logged in user
