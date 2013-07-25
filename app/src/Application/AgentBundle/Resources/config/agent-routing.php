@@ -1962,6 +1962,20 @@ $collection->add('agent_publish_cats_updatestructure', new Route(
 	array()
 ));
 
+$collection->add('agent_publish_cats_newform', new Route(
+	'/publish/categories/{type}/new-form',
+	array('_controller' => 'AgentBundle:Publish:addCategoryForm'),
+	array(),
+	array()
+));
+
+$collection->add('agent_publish_cats_newform_save', new Route(
+	'/publish/categories/{type}/new-form/save',
+	array('_controller' => 'AgentBundle:Publish:addCategoryFormSave'),
+	array(),
+	array()
+));
+
 $collection->add('agent_public_drafts', new Route(
 	'/publish/drafts/{type}',
 	array('_controller' => 'AgentBundle:Publish:listDrafts'),

@@ -178,14 +178,15 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			data: treeData,
 			dragAndDrop: true
 		});
-		tree.bind('tree.move', function() {
+		tree.bind('tree.move', function(event) {
+			event.move_info.do_move();
 			treeSave.val(tree.tree('toJson'));
 		});
 
 		this.getEl('catfoot').find('.cat-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);
 
-			var postData = [];
+			var postData = catEl.find('input').serializeArray();
 
 			self.getEl('catfoot').addClass('dp-loading-on');
 			$.ajax({
@@ -198,6 +199,30 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 				},
 				success: function() {
 					DeskPRO_Window.sections.publish_section.reload();
+				}
+			});
+		});
+
+		var delCat = this.getEl('del_cat');
+		delCat.find('.cat-del-trigger').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			delCat.addClass('dp-loading-on');
+
+			$.ajax({
+				url: $(this).data('save-url'),
+				type: 'POST',
+				dataType: 'json',
+				complete: function() {
+					delCat.removeClass('dp-loading-on');
+				},
+				success: function(ret) {
+					if (ret.error_code && ret.error_code == 'not_empty') {
+						DeskPRO_Window.showAlert('The category could not be deleted because it is not empty.');
+						return;
+					}
+
+					DeskPRO_Window.sections.publish_section.reload();
+					DeskPRO_Window.runPageRoute('listpane:' + BASE_URL + 'agent/kb/list/0');
 				}
 			});
 		});

@@ -837,6 +837,10 @@ class PublishController extends AbstractController
 
 	public function saveCategoriesAction($type)
 	{
+		#------------------------------
+		# Figure out which table
+		#------------------------------
+
 		$entity_name = null;
 		switch ($type) {
 			case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
@@ -848,38 +852,87 @@ class PublishController extends AbstractController
 			return $this->createJsonResponse(array('Invalid type'));
 		}
 
-		$class = App::getEntityClass($entity_name);
+		$class      = App::getEntityClass($entity_name);
+		$repos      = $this->em->getRepository($entity_name);
+		$table      = $repos->getTableName();
+		$perm_table = $repos->getPermissionTableName();
 
-		$categories = $this->in->getCleanValueArray('cats');
+		#------------------------------
+		# Read input
+		#------------------------------
 
-		$new_cats = array();
+		$save_category = array(
+			'id'         => $this->in->getUint('category.id'),
+			'title'      => $this->in->getString('category.title'),
+			'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard')
+		);
 
-		$this->em->beginTransaction();
-
-		foreach ($categories as $cat_info) {
-			if ($cat_info['isNew']) {
-				$cat = new $class();
-				if ($cat_info['parentId']) {
-					if (isset($new_cats[$cat_info['parentId']])) {
-						$cat['parent'] = $new_cats[$cat_info['parentId']];
-					} else {
-						$cat['parent'] = $this->em->getRepository($entity_name)->find($cat_info['parentId']);
-					}
-				}
-			} else {
-				$cat = $this->em->getRepository($entity_name)->find($cat_info['id']);
-			}
-
-			$cat['title'] = $cat_info['title'];
-			$cat['display_order'] = $cat_info['displayOrder'];
-
-			$this->em->persist($cat);
+		$save_structure = $this->in->getRaw('category_structure');
+		if ($save_structure) {
+			$save_structure = @json_decode($save_structure, true);
+		}
+		if (!$save_structure) {
+			$save_structure = array();
 		}
 
-		$this->em->transactional(function($em) {
-			$em->flush();
-			$em->commit();
-		});
+		#------------------------------
+		# Save category
+		#------------------------------
+
+		if ($save_category['id'] && $cat = $this->em->getRepository($entity_name)->find($save_category['id'])) {
+			if ($save_category['title']) {
+				$cat->title = $save_category['title'];
+				$this->db->update($table, array('title' => $cat->title), array('id' => $cat->id));
+			}
+
+			$this->db->delete($perm_table, array('category_id' => $cat->id));
+
+			// Everyone implies all groups
+			if (in_array(1, $save_category['usergroups'])) {
+				$this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => 1));
+			} else {
+				$usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
+				foreach ($save_category['usergroups'] as $ug_id) {
+					if (!isset($usergroups[$ug_id])) {
+						continue;
+					}
+
+					$this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => $ug_id));
+				}
+			}
+		}
+
+		#------------------------------
+		# Save structure
+		#------------------------------
+
+		if ($save_structure) {
+			$parent_map = array();
+			$fn_struct_traverse = function($cats, $parent = 0) use (&$parent_map, &$fn_struct_traverse) {
+				foreach ($cats as $cat) {
+					$parent_map[$cat['id']] = $parent;
+					if (!empty($cat['children'])) {
+						$fn_struct_traverse($cat['children'], $cat['id']);
+					}
+				}
+			};
+			$fn_struct_traverse($save_structure);
+
+			$order = 0;
+			foreach ($parent_map as $cat_id => $parent_id) {
+				$order += 10;
+				if ($cat_id == $parent_id) {
+					$parent_id = null;
+				}
+				if (!$parent_id) {
+					$parent_id = null;
+				}
+
+				$this->db->update($table, array('parent_id' => $parent_id, 'display_order' => $order), array('id' => $cat_id));
+			}
+
+			$repos->repair();
+		}
 
 		$this->container->getSystemService('publish_structure_cache')->flush();
 
@@ -933,6 +986,93 @@ class PublishController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true
+		));
+	}
+
+	public function addCategoryFormAction($type)
+	{
+		$entity_name = null;
+		switch ($type) {
+			case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
+			case 'download':  $entity_name = 'DeskPRO:DownloadCategory';  break;
+			case 'news':      $entity_name = 'DeskPRO:NewsCategory';      break;
+		}
+
+		if (!$entity_name) {
+			return $this->createJsonResponse(array('Invalid type'));
+		}
+
+		$all_categories = $this->em->getRepository($entity_name)->getInHierarchy();
+
+		return $this->render('AgentBundle:Publish:new-cat.html.twig', array(
+			'type'           => $type,
+			'all_categories' => $all_categories,
+		));
+	}
+
+	public function addCategoryFormSaveAction($type)
+	{
+		$entity_name = null;
+		switch ($type) {
+			case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
+			case 'download':  $entity_name = 'DeskPRO:DownloadCategory';  break;
+			case 'news':      $entity_name = 'DeskPRO:NewsCategory';      break;
+		}
+
+		if (!$entity_name) {
+			return $this->createJsonResponse(array('Invalid type'));
+		}
+
+		$class      = App::getEntityClass($entity_name);
+		$repos      = $this->em->getRepository($entity_name);
+		$table      = $repos->getTableName();
+		$perm_table = $repos->getPermissionTableName();
+
+		#------------------------------
+		# Save
+		#------------------------------
+
+		$save_category = array(
+			'id'         => 0,
+			'parent_id'  => $this->in->getUint('category.parent_id'),
+			'title'      => $this->in->getString('category.title') ?: 'Untitled',
+			'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard')
+		);
+
+		$parent_cat = null;
+		if ($save_category['parent_id']) {
+			$parent_cat = $repos->find($save_category['parent_id']);
+		}
+
+		$cat = new $class();
+		$cat->title = $save_category['title'];
+		if ($parent_cat) {
+			$cat->parent = $parent_cat;
+		}
+		$this->em->persist($cat);
+		$this->em->flush();
+
+		$save_category['id'] = $cat->id;
+
+		// Everyone implies all groups
+		if (in_array(1, $save_category['usergroups'])) {
+			$this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => 1));
+		} else {
+			$usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
+			foreach ($save_category['usergroups'] as $ug_id) {
+				if (!isset($usergroups[$ug_id])) {
+					continue;
+				}
+
+				$this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => $ug_id));
+			}
+		}
+
+		$repos->repair();
+		$this->container->getSystemService('publish_structure_cache')->flush();
+
+		return $this->createJsonResponse(array(
+			'id' => $cat->id
 		));
 	}
 

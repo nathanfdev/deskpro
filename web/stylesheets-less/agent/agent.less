@@ -2406,6 +2406,24 @@ ul.pane-tabs {
 			top: 0;
 			right: 2px;
 		}
+
+		li.new-cat {
+			cursor: pointer;
+			padding-left: 11px;
+
+			h3, i {
+				color: lighten(@agent_text_color, 30%);
+			}
+
+			&:hover {
+				h3, i {
+					color: @agent_text_color;
+				}
+				h3 {
+					text-decoration: underline;
+				}
+			}
+		}
 	}
 
 	ul.nav-list .indented .indented .item { padding-left: 30px; }
@@ -3745,7 +3763,7 @@ i.spinner-xsmall {
 
 section.dp-overlay {
 	border: 1px solid #fff;
-	height: 639px;
+	min-height: 200px;
 }
 
 section.dp-overlay > header {

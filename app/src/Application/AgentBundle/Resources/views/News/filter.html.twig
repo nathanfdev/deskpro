@@ -90,6 +90,19 @@
 
 {% if category %}
 <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
+
+	<section class="pane-section last" id="{{ tplvars.baseId }}_del_cat">
+		<header><h1>Delete Category</h1></header>
+		<article style="padding: 10px;">
+			<div class="dp-not-loading">
+				<button class="dp-btn cat-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'news', category_id: category.id}) }}">Delete Category</button>
+			</div>
+			<div class="dp-is-loading">
+				<i class="spinner-flat"></i>
+			</div>
+		</article>
+	</section>
+
 	<section class="pane-section">
 		<header><h1>Edit Category</h1></header>
 		<article>
@@ -128,7 +141,7 @@
 		<header><h1>Reorder Category (Drag & Drop)</h1></header>
 		<article>
 			<div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
-			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" value="" />
+			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" value="" name="category_structure" />
 		</article>
 	</section>
 
