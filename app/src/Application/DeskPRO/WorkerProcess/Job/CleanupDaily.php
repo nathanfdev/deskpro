@@ -242,6 +242,20 @@ class CleanupDaily extends AbstractJob
 		}
 
 		#------------------------------
+		# result caches
+		#------------------------------
+
+		$datecut = date('Y-m-d H:i:s', time() - 86400);
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM result_cache
+			WHERE date_created < ?
+		", array($datecut));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num old result caches");
+		}
+
+		#------------------------------
 		# Task queue logs Items
 		#------------------------------
 
