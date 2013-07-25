@@ -368,7 +368,6 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
 		'javascripts/DeskPRO/Agent/Widget/Merge.js',
 		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
-		'javascripts/DeskPRO/Agent/Widget/TwitterGroupEditor.js',
 
 		'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
 

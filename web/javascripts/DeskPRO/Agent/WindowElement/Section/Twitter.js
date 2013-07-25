@@ -284,40 +284,6 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			}
 		});
 
-		this.groupEditors = {};
-		contentEl.find('.twitter-account-section').each(function() {
-			var $this = $(this), accountId = parseInt($this.data('account-id'), 10);
-
-			self.groupEditors[accountId] = new DeskPRO.Agent.Widget.TwitterGroupEditor({
-				containerElement: '#twitter_outline .scroll-content',
-				listElement: $this.find('.source-list'),
-				boundListElement: null,
-				triggerElement: $this.find('.launch-twitter-grouping-editor'),
-				controlElement: '#twitter_group_editor',
-				elements: $this.find('.source-list > li'),
-				accountId: accountId,
-				onGroupingChanged: function(section_type, group_by, field, obj, el) {
-					el.data('initial-grouping', group_by);
-
-					$.ajax({
-						url: BASE_URL + 'agent/twitter/update-grouping.json',
-						data: {account_id: accountId, type: el.data('type'), group: group_by },
-						dataType: 'json',
-						success: function(json) {
-							if (json.group == el.data('initial-grouping')) {
-								var html = $(json.html);
-								if (!html.find('li').filter(function() { return $(this).css('display') !== 'none'; }).length) {
-									html.css('display', 'none');
-								}
-								el.find('.sub-group').replaceWith(html);
-								self.groupEditors[accountId].updatePositions();
-							}
-						}
-					});
-				}
-			});
-		});
-
 		contentEl.on('click', '.twitter-account-add-status', function() {
 			if (DeskPRO_Window.newTweetLoader) {
 				var accountId = $(this).data('account-id');
@@ -390,16 +356,79 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			});
 		});
 
-		contentEl.find('.twitter-section-tab-list').each(function() {
-			var container = $(this).closest('.twitter-tab-container');
+		contentEl.find('.twitter-tab-container').each(function() {
+			var container = $(this);
 
 			new DeskPRO.UI.SimpleTabs({
 				context: container,
-				triggerElements: '.twitter-section-tab-list li',
+				triggerElements: '.pane-section-tabs li',
 				onTabSwitch: function(info) {
 					self.updateUi();
 				}
 			});
+		});
+
+		var onGroupingChanged = function(accountId, group_by, el) {
+			el.data('initial-grouping', group_by);
+
+			$.ajax({
+				url: BASE_URL + 'agent/twitter/update-grouping.json',
+				data: {account_id: accountId, type: el.data('type'), group: group_by },
+				dataType: 'json',
+				success: function(json) {
+					el.find('.item-form').hide();
+
+					if (json.group == el.data('initial-grouping')) {
+						var html = $(json.html);
+						if (!html.find('li').filter(function() { return $(this).css('display') !== 'none'; }).length) {
+							html.css('display', 'none');
+						}
+						el.find('.nav-list').first().replaceWith(html);
+						el.find('.nav-list').show();
+					}
+				}
+			});
+		};
+
+		this.sectionEl.find('.dp-toggle-icon').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+
+			var $me    = $(this);
+			var $li    = $me.closest('li');
+			var $group = $li.find('> .item-form');
+			var $groupList = $li.find('> .nav-list-small');
+			var sel = $group.find('select');
+			var $account = $me.closest('.twitter-account-section');
+			var accountId = parseInt($account.data('account-id'));
+			var $counter  = $account.find('.counter').first();
+
+			if ($group[0]) {
+				if ($me.hasClass('icon-caret-right')) {
+					$me.removeClass('icon-caret-right');
+					$me.addClass('icon-caret-down');
+					$group.show();
+					$groupList.show();
+
+					if (!sel.hasClass('with-select2')) {
+						DP.select(sel);
+						sel.on('change', function(ev) {
+							onGroupingChanged(accountId, sel.val(), $li);
+						});
+					}
+				} else {
+					// Remove grouping
+					sel.select2('val', '');
+					sel.trigger('change');
+
+					$me.addClass('icon-caret-right');
+					$me.removeClass('icon-caret-down');
+					$group.hide();
+					$groupList.hide();
+					onGroupingChanged(accountId, '', $li);
+				}
+			}
 		});
 
 		this.recountBadge();
@@ -411,7 +440,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			return;
 		}
 
-		var templateLi = this.searchBoxes[accountId].closest('.source-list').find('.twitter-delete-template');
+		var templateLi = this.searchBoxes[accountId].closest('.nav-list').find('.twitter-delete-template');
 
 		var templateHtml = templateLi.clone().wrap('<div>').parent().html();
 		templateHtml = templateHtml.replace(/__placeholder-url__/g, encodeURIComponent(searchTerm)).replace(/__placeholder__/g, searchTerm);

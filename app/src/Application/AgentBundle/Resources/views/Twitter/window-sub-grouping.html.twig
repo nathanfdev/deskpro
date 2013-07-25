@@ -1,4 +1,15 @@
-<ul class="sub-group" style="display: block">
+<div class="item-form" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}>
+	<div class="select-value-wrap">
+		<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
+		<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
+			<option value="">Select Field to Group Tweets</option>
+			<option {% if group_by == 'type' %}selected="selected"{% endif %} value="type">{{ phrase('agent.general.group_by') }} Type</option>
+			<option {% if group_by == 'agent' %}selected="selected"{% endif %} value="agent">{{ phrase('agent.general.group_by') }} Agent</option>
+			<option {% if group_by == 'team' %}selected="selected"{% endif %} value="team">{{ phrase('agent.general.group_by') }} Team</option>
+		</select>
+	</div>
+</div>
+<ul class="nav-list-small indented" {% if not group_by %}style="display: none;"{% endif %}>
 	{% if group_by == 'type' %}
 		{% for group_type,name in {'favorite': 'Starred', 'direct': 'Direct Messages', 'reply': 'Replies', 'mention': 'Mentions', 'retweet': 'Retweets', 'other': 'Other'} %}
 			<li {% if not data[group_type] %}style="display:none"{% endif %}>
