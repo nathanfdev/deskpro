@@ -41,4 +41,5 @@ class NewTicketPerson
 	public $email_address;
 	public $organization = 0;
 	public $organization_position;
+	public $language_id;
 }

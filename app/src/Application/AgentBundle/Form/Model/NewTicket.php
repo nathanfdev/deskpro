@@ -192,6 +192,10 @@ class NewTicket
 			$person->name = $this->person->name;
 		}
 
+		if ($this->person->language_id) {
+			$person->setLanguageId($this->person->language_id);
+		}
+
 		$this->_em->persist($person);
 		$this->_em->flush();
 

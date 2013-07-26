@@ -29,4 +29,18 @@
 			</td>
 		</tr>
 	</tbody>
+	{% if not person.id and app.getLanguages().isLangSystemEnabled() %}
+		<tbody>
+			<tr>
+				<th>{{ phrase('agent.general.language') }}</th>
+				<td>
+					<select name="newticket[person][language_id]">
+						{% for lang in app.getLanguages().getAll() %}
+							<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ phrase_object(lang, 'title') }}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	{% endif %}
 </table>
