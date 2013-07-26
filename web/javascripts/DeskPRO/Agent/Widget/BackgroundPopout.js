@@ -208,6 +208,12 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		pop.open();
 	},
 
+	isOpen: function() {
+		if (!this.pop) return false;
+		if (this.pop.isOpen()) return true;
+		return false;
+	},
+
 	toggle: function() {
 		if (!this.pop) {
 			this.open();

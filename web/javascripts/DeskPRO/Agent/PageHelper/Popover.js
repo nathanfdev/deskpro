@@ -384,7 +384,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	isOpen: function() {
 		if (this.isDestroyed || !this._hasInit) return false;
 
-		if (this.popover && this.popover.is(':visible')) {
+		if (this.popover && this._isOpen) {
 			return true;
 		}
 
@@ -422,6 +422,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			}
 		}, this);
 
+		this._isOpen = true;
 		this.popoverOuter.show();
 
 		var self = this;
@@ -447,6 +448,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.isDestroyed) return;
 		if (!this.isOpen()) return;
+
+		this._isOpen = false;
 
 		if (!ignoreForms && this.hasFormsChanged() && this.page && !this.page.noIgnoreForm) {
 			var self = this;

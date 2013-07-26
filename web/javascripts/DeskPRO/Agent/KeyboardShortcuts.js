@@ -149,8 +149,21 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	//# Global Shortcuts
 	//#########################################################################
 
+	hasModalOpen: function(except) {
+		if (except != 'newTicketLoader' && DeskPRO_Window.newTicketLoader && DeskPRO_Window.newTicketLoader.isOpen()) return true;
+		if (except != 'newArticleLoader' && DeskPRO_Window.newArticleLoader && DeskPRO_Window.newArticleLoader.isOpen()) return true;
+		if (except != 'newNewsLoader' && DeskPRO_Window.newNewsLoader && DeskPRO_Window.newNewsLoader.isOpen()) return true;
+		if (except != 'newDownloadLoader' && DeskPRO_Window.newDownloadLoader && DeskPRO_Window.newDownloadLoader.isOpen()) return true;
+		if (except != 'newFeedbackLoader' && DeskPRO_Window.newFeedbackLoader && DeskPRO_Window.newFeedbackLoader.isOpen()) return true;
+		if (except != 'newPersonLoader' && DeskPRO_Window.newPersonLoader && DeskPRO_Window.newPersonLoader.isOpen()) return true;
+		if (except != 'newOrganizationLoader' && DeskPRO_Window.newOrganizationLoader && DeskPRO_Window.newOrganizationLoader.isOpen()) return true;
+		if (except != 'newTaskLoader' && DeskPRO_Window.newTaskLoader && DeskPRO_Window.newTaskLoader.isOpen()) return true;
+		if ($('body').find('> .deskpro-overlay-outer').is(':visible')) return true;
+		return false;
+	},
+
 	goTabTop: function() {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen()) return;
 
 		var page = DeskPRO_Window.getCurrentTabPage();
 		if (page) {
@@ -159,44 +172,44 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	showNewTicket: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newTicketLoader')) return;
 		DeskPRO_Window.newTicketLoader.toggle();
 	},
 	showNewArticle: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newArticleLoader')) return;
 		DeskPRO_Window.newArticleLoader.toggle();
 	},
 	showNewNews: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newNewsLoader')) return;
 		DeskPRO_Window.newNewsLoader.toggle();
 	},
 	showNewDownload: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newDownloadLoader')) return;
 		DeskPRO_Window.newDownloadLoader.toggle();
 	},
 	showNewFeedback: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newFeedbackLoader')) return;
 		DeskPRO_Window.newFeedbackLoader.toggle();
 	},
 	showNewPerson: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newPersonLoader')) return;
 		DeskPRO_Window.newPersonLoader.toggle();
 	},
 	showNewOrganization: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newOrganizationLoader')) return;
 		DeskPRO_Window.newOrganizationLoader.toggle();
 	},
 	showNewTask: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newTaskLoader')) return;
 		$('form#newTaskForm input, form#newTaskForm select').val('');
 		DeskPRO_Window.newTaskLoader.toggle();
 	},
 	showNewTweet: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen('newTweetLoader')) return;
 		DeskPRO_Window.newTweetLoader.toggle();
 	},
 	showNewDeal: function(ev) {
-		if (this.isPaused) return;
+		if (this.isPaused || this.hasModalOpen()) return;
 		DeskPRO_Window.newDealLoader.toggle();
 	},
 
