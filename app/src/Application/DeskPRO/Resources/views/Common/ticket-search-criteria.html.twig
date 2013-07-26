@@ -328,6 +328,15 @@
 			</select>
 		</div>
 	</div>
+
+	<div class="builder-type" title="Ticket is on hold" data-rule-type="is_hold" data-term-type="GenericMenuTerm" data-term-triggers="is_hold">
+		<div class="builder-op">
+			<input type="hidden" name="op" value="is" />
+		</div>
+		<div class="builder-options">
+			<input type="hidden" name="is_hold" value="1" />
+		</div>
+	</div>
 	{% endif %}
 
 	{% if 'organization' not in no_show_fields and app.getDataService('Organization').getOrganizationNames() %}
