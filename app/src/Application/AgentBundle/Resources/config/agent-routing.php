@@ -240,6 +240,14 @@ $collection->add('agent_login_authenticate_local', new Route(
 	array()
 ));
 
+$collection->add('agent_login_adminlogin', new Route(
+	'/login/admin-login/{code}',
+	array('_controller' => 'AgentBundle:Login:authAdminLogin'),
+	array(),
+	array()
+));
+
+
 $collection->add('agent_send_lost', new Route(
 	'/login/send-lost.json',
 	array('_controller' => 'AgentBundle:Login:sendResetPassword', '_format' => 'json'),

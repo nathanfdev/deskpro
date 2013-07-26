@@ -41,10 +41,12 @@ use Application\AdminBundle\Form\EditAgentType;
 use Application\AdminBundle\FormModel as AdminFormModel;
 use Application\DeskPRO\Entity\Usersource;
 
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
+use QueryPath\Entities;
 use Symfony\Component\Form;
 
 class AgentsController extends AbstractController
@@ -1592,6 +1594,101 @@ class AgentsController extends AbstractController
 		$person_editor->saveNotificationPreferences($agent, $prefs);
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+
+	public function adminLoginAsAction($agent_id)
+	{
+		if (!$this->person->can_admin || !$this->container->getAgentData()->get($agent_id)) {
+			return $this->createNotFoundException();
+		}
+
+		foreach (array('dpsid-agent') as $cookie_name) {
+			if (!empty($_COOKIE[$cookie_name])) {
+				$sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+				if ($sess2) {
+					$this->em->remove($sess2);
+					$this->em->flush();
+				}
+			}
+
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
+			$cookie->send();
+		}
+
+		$tmp = Entity\TmpData::create('admin_agent_login', array(
+			'admin_id' => $this->person->getId(),
+			'agent_id' => $agent_id
+		), '+5 minutes');
+		$this->em->persist($tmp);
+		$this->em->flush();
+
+		return $this->redirectRoute('agent_login_adminlogin', array('code' => $tmp->getCode()));
+	}
+
+	############################################################################
+
+	public function loginLogsAction()
+	{
+		$per_page = 50;
+		$p = $this->in->getUint('p');
+
+		$agent_id = $this->in->getUint('agent_id');
+
+		if (!$p) {
+			$p = 1;
+		}
+
+		if ($agent_id) {
+			$agent = $this->container->getAgentData()->get($agent_id);
+			if (!$agent) {
+				return $this->createNotFoundException();
+			}
+
+			$logs_count = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM login_log
+				WHERE person_id = ?
+			", array($agent->id));
+
+
+			$limit = ($p - 1) * $per_page;
+
+			$logs = $this->db->fetchAll("
+				SELECT *
+				FROM login_log
+				WHERE person_id = ?
+				ORDER BY id DESC
+				LIMIT $limit, $per_page
+			", array($agent->id));
+		} else {
+			$agent = null;
+
+			$logs_count = $this->db->fetchColumn("
+				SELECT COUNT(*)
+				FROM login_log
+			");
+
+			$limit = ($p - 1) * $per_page;
+
+			$logs = $this->db->fetchAll("
+				SELECT *
+				FROM login_log
+				ORDER BY id DESC
+				LIMIT $limit, $per_page
+			");
+		}
+
+		$pageinfo = Numbers::getPaginationPages($logs_count, $p, $per_page, 5);
+
+		return $this->render('AdminBundle:Agents:login-log.html.twig', array(
+			'logs'       => $logs,
+			'logs_count' => $logs_count,
+			'agent'      => $agent,
+			'agent_id'   => $agent ? $agent->getId() : 0,
+			'pageinfo'   => $pageinfo,
+		));
 	}
 
 	############################################################################

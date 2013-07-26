@@ -862,6 +862,20 @@ $collection->add('admin_agents_remove', new Route(
 	array('agent_id' => '\\d+')
 ));
 
+$collection->add('admin_agents_loginas', new Route(
+	'/agents/{agent_id}/login-as',
+	array('_controller' => 'AdminBundle:Agents:adminLoginAs'),
+	array(),
+	array('agent_id' => '\\d+')
+));
+
+$collection->add('admin_agents_loginas', new Route(
+	'/agents/login-log/{agent_id}',
+	array('_controller' => 'AdminBundle:Agents:loginLogs', 'agent_id' => '0'),
+	array(),
+	array('agent_id' => '\\d+')
+));
+
 $collection->add('admin_agents_new_fromusersource', new Route(
 	'/agents/new-from-usersource/{usersource_id}',
 	array('_controller' => 'AdminBundle:Agents:newFromUsersource', 'usersource_id' => '0'),
@@ -999,6 +1013,13 @@ $collection->add('admin_agents_notifications_saveagent', new Route(
 	'/agents/{person_id}/notifications/save-agent-options.json',
 	array('_controller' => 'AdminBundle:Agents:notificationsSave'),
 	array('person_id' => '\\d+', '_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_login_logs', new Route(
+	'/login-logs',
+	array('_controller' => 'AdminBundle:Agents:loginLogs'),
+	array(),
 	array()
 ));
 

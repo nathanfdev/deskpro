@@ -161,7 +161,9 @@
 
 {% if online_agents|length %}
 	<br/>
-	There are {{ online_agents|length }} online agents using the agent interface.<br/>
+	There are {{ online_agents|length }} online agents using the agent interface
+	&bull; <a href="{{ path('admin_login_logs') }}">View the login log</a>
+	<br/>
 {% endif %}
 
 {% if count_deleted %}

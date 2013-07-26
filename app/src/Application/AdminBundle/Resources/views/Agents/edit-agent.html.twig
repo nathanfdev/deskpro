@@ -10,6 +10,7 @@
 	</nav>
 	<ul id="tools_menu" style="display: none">
 		<li><a href="{{ path('admin_agents_remove', {agent_id: agent.id}) }}">{{ phrase('admin.agents.delete_agent') }}</a></li>
+		<li><a href="{{ path('admin_agents_loginas', {agent_id: agent.id}) }}">Login as this agent</a></li>
 	</ul>
 	{% endif %}
 

@@ -148,4 +148,39 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		));
 	}
+
+	public function authAdminLoginAction($code)
+	{
+		$tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
+		if (!$tmp) {
+			return $this->createNotFoundException();
+		}
+
+		$admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
+		$person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
+
+		if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
+			return $this->createNotFoundException();
+		}
+
+		$this->session->set('auth_person_id', $person->id);
+		$this->session->set('dp_interface', DP_INTERFACE);
+		$this->session->save();
+
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+
+		$this->db->insert('login_log', array(
+			'person_id'    => $person->getId(),
+			'area'         => 'agent',
+			'is_success'   => 1,
+			'ip_address'   => App::getRequest()->getClientIp(),
+			'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+			'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+			'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
+			'date_created' => date('Y-m-d H:i:s')
+		));
+
+		return $this->redirectRoute('agent');
+	}
 }
