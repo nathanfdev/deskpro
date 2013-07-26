@@ -47,7 +47,7 @@
 							<input type="hidden" name="email" id="email" value="{{ agent_session.person.primary_email_address }}" />
 						</dd>
 					{% else %}
-						<dd><input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></dd>
+						<dd><input type="{% if app.usersourceManager.getWithCapability('form_login') %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></dd>
 					{% endif %}
 
 					<dt>{{ phrase('agent.general.password') }}</dt>
