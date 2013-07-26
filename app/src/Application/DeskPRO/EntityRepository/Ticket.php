@@ -144,6 +144,21 @@ class Ticket extends AbstractEntityRepository
 			ORDER BY t.id DESC
 		")->setParameters(array($ref."%"))->setMaxResults(10)->execute();
 
+		$new_ticket_ids = App::getDb()->fetchAll("
+			SELECT new_ticket_id
+			FROM tickets_delete
+			WHERE old_ref LIKE ?
+		", array($ref));
+		if ($new_ticket_ids) {
+			$other_tickets = $this->_em->getRepository('DeskPRO:Ticket')->getByIds($new_ticket_ids);
+			if (count($other_tickets)) {
+				$ret = array();
+				foreach ($tickets as $t) { $ret[$t->getId()] = $t; }
+				foreach ($other_tickets as $t) { $ret[$t->getId()] = $t; }
+				$tickets = array_values($ret);
+			}
+		}
+
 		return $tickets;
 	}
 
