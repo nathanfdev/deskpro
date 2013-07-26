@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity\TmpData;
 
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
+use Orb\Validator\StringEmail;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -671,6 +673,7 @@ HTML;
 			'invalid_email' => $invalid_email,
 			'invalid_code' => $invalid_code,
 			'form' => $form->createView(),
+			'invalid' => $this->in->getBool('inv'),
 		));
 	}
 
@@ -726,6 +729,11 @@ HTML;
 	public function sendResetPasswordAction($_format = 'html')
 	{
 		$email = $this->in->getString('email');
+
+		if (!$email || !StringEmail::isValueValid($email)) {
+			return $this->redirectRoute('user_login_resetpass', array('inv' => 1));
+		}
+
 		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
 		if (!$person) {
