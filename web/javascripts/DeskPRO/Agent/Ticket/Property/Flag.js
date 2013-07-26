@@ -22,29 +22,28 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 	},
 
 	setValue: function(value) {
-		DP.console.log('set %o', value);
+		var old_flag = this.ticketPage.getEl('flag_old').val();
+		this.ticketPage.getEl('flag_old').val(value);
+		this.ticketPage.getEl('flag').val(value);
 
-		var old_flag = $('li.last-on', this.ticketPage.getEl('flag_opt')).removeClass('last-on').data('value');
-
-		$('li', this.ticketPage.getEl('flag_opt')).removeClass('on');
-		var new_flag = $('li.flag-' + value, this.ticketPage.getEl('flag_opt')).addClass('on last-on').data('value');
-
-		if (!value || value == "") {
-			DeskPRO_Window.util.modCountEl(this.ticketPage.getEl('flag_count'), '=', 0);
-		} else {
-			DeskPRO_Window.util.modCountEl(this.ticketPage.getEl('flag_count'), '=', 1);
+		if (old_flag == value) {
+			return;
 		}
 
-		if (DeskPRO_Window.sections.tickets_section) {
-			DeskPRO_Window.sections.tickets_section.changeFlagCountsForSwitch({
-				old_flag: old_flag,
-				new_flag: new_flag
-			});
+		if (old_flag && old_flag != "") {
+			DeskPRO_Window.util.modCountEl($('#ticket_flag_'+old_flag+'_count'), '-', 1);
 		}
 
+		var winCountEl = $('#ticket_flag_'+value+'_count');
+		DeskPRO_Window.util.modCountEl(winCountEl, '+', 1);
+
+		var label = winCountEl.closest('li').find('.flag-label').text().trim();
 		this.ticketPage.getEl('flagicon').get(0).className = this.ticketPage.getEl('flagicon').get(0).className.replace(/flag\-color\-\w+/g, '');
 		if (value) {
 			this.ticketPage.getEl('flagicon').addClass('flag-color-' + value);
+			this.ticketPage.getEl('flagtext').text(label);
+		} else {
+			this.ticketPage.getEl('flagtext').text('');
 		}
 	}
 });

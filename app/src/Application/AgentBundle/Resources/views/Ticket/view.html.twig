@@ -259,6 +259,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<span class="dp-caret"></span>
 		</li>
 		<li>
+			<input type="hidden" id="{{ baseId }}_flag_old" value="{{ ticket_flagged }}" />
 			<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons" data-invisible-trigger="1" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
 				<option
 					value=""
@@ -274,6 +275,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</select>
 
 			<i id="{{ baseId }}_flagicon" class="icon-flag flag-color-{{ ticket_flagged|default('none') }}" style="margin:0; padding: 0;"></i>
+			<span id="{{ baseId }}_flagtext">{% if ticket_flagged %}{{ flag.flag_name(ticket_flagged) }}{% endif %}</span>
 
 			<span class="dp-caret"></span>
 		</li>
