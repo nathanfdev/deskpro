@@ -1384,12 +1384,20 @@ table.layout-table.v-middle {
 		> li.version-notes {
 			background: transparent;
 			margin-left: 12px;
+			.badge {
+				top: -1px;
+				right: -2px;
+			}
 			i {
 				position: relative;
-				top: 4px;
+				top: 3px;
 				left: 3px;
-				color: #fff;
+				color: lighten(#113F64, 3%);
 				font-size: 21px;
+			}
+
+			&:hover {
+				i { color: #fff; }
 			}
 		}
 
