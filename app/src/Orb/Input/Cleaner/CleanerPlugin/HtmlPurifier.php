@@ -126,7 +126,7 @@ class HtmlPurifier implements CleanerPlugin
 			// The message has been converted to UTF8 by now, and is HTML,
 			// so discard the meta content-type tag that can interfere with
 			// DOMDocument (esp on windows)
-			$value = preg_replace('#<meta.*?Content-Type.*?>#', '', $value);
+			$value = preg_replace('#<meta[^>]*Content-Type[^>]*>#i', '', $value);
 
 			// Remove <a name="_MailEndCompose">. HTMLPurifier will clean up the </a> automatically
 			$value = str_replace('<a name="_MailEndCompose">', '', $value);

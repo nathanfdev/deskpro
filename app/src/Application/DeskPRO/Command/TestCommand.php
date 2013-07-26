@@ -59,13 +59,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$bad_ids = App::getDb()->fetchAllGrouped("
-			SELECT id, status
-			FROM feedback
-			WHERE status IN ('active', 'closed') AND status_category_id IS NULL
-		", array(), 'status', null, 'id');
-
-		print_r($bad_ids);
+		echo __FILE__;
 		echo "\n";
 		exit;
 	}
