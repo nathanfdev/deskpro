@@ -13,6 +13,13 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
 		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
 		$(document).bind('keydown', 'shift+t', this.goTabTop.bind(this));
+		$(document).bind('keydown', 'shift+/', function() {
+			if ($('#dp_header_help').hasClass('active')) {
+				Orb.shimClickCallbackPop();
+			} else {
+				$('#dp_header_help_trigger').click();
+			}
+		});
 
 		function getActiveListNav() {
 			var listNav = null;
