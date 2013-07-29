@@ -314,6 +314,9 @@ if ('ontouchend' in document) {
 					};
 					fns.push(fn);
 					oViewport.obj[0].addEventListener("MSPointerDown", fn,false);
+
+					oThumb.obj.bind('mousedown', start);
+					oTrack.obj.bind('mouseup', drag);
 				} else {
 					oThumb.obj.bind('mousedown', start);
 					oTrack.obj.bind('mouseup', drag);
@@ -336,7 +339,7 @@ if ('ontouchend' in document) {
 						drag( event.touches[ 0 ] );
 					};
 					document.ontouchend = end;
-				} else if (msTouchEvents) {
+				} else if (msTouchEvents && oEvent.pointerType && oEvent.pointerType == oEvent.MSPOINTER_TYPE_TOUCH) {
 					var fn = function( event )
 					{
 						isTouchEvent = true;
