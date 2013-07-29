@@ -55,6 +55,10 @@ class UsersCacheStep extends AbstractZendeskStep
 
 	public function countPages()
 	{
+		if ($this->importer->getConfig('with_preinserted_cache')) {
+			return 0;
+		}
+
 		$this->db->replace('import_datastore', array(
 			'typename' => 'zd_users_cache_time',
 			'data' => time()
@@ -83,6 +87,9 @@ class UsersCacheStep extends AbstractZendeskStep
 
 	public function run($batch = 1)
 	{
+		if ($this->importer->getConfig('with_preinserted_cache')) {
+			return;
+		}
 		if ($batch == 1) {
 			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_users_cache.%'");
 		}
@@ -107,7 +114,7 @@ class UsersCacheStep extends AbstractZendeskStep
 				$retry_pages[$page] = $reqs[$page];
 			} else {
 				$this->db->replace('import_datastore', array(
-					'typename' => 'zd_users_cache_p'.$page,
+					'typename' => 'zd_users_cache.p'.$page,
 					'data' => serialize($info['response'])
 				));
 			}

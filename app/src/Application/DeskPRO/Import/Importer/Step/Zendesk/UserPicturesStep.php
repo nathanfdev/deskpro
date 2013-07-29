@@ -47,6 +47,10 @@ class UserPicturesStep extends AbstractZendeskStep
 
 	public function countPages()
 	{
+		if ($this->importer->getConfig('fast_import')) {
+			return 0;
+		}
+
 		$count = $this->db->fetchColumn("
 			SELECT COUNT(*) FROM import_datastore
 			WHERE typename LIKE 'attach.person_picture.%'
@@ -61,6 +65,10 @@ class UserPicturesStep extends AbstractZendeskStep
 
 	public function run($page = 1)
 	{
+		if ($this->importer->getConfig('fast_import')) {
+			return 0;
+		}
+
 		$perpage = self::PERPAGE;
 		$start = ($page - 1) * $perpage;
 		$batch = $this->db->fetchAllCol("

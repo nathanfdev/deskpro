@@ -69,7 +69,7 @@ class ImportTicket
 			$import_user->importUserId($ticket_info['requester_id']);
 
 			if (!$this->importer->getMappedNewId('zd_user_id', $ticket_info['requester_id'])) {
-				return 0;
+				throw new \Exception("Unknown user and could not import: {$ticket_info['requester_id']}");
 			}
 		}
 

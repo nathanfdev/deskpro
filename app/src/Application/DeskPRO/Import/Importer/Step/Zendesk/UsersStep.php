@@ -77,8 +77,6 @@ class UsersStep extends AbstractZendeskStep
 		$this->logMessage("-- Processing batch {$page}");
 
 		$users = $this->getBatch($page);
-		$this->db->exec("SET unique_checks = 0");
-		$this->db->exec("SET foreign_key_checks = 0");
 
 		$this->db->beginTransaction();
 		try {
@@ -91,9 +89,6 @@ class UsersStep extends AbstractZendeskStep
 			$this->db->rollback();
 			throw $e;
 		}
-
-		$this->db->exec("SET unique_checks = 1");
-		$this->db->exec("SET foreign_key_checks = 1");
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));

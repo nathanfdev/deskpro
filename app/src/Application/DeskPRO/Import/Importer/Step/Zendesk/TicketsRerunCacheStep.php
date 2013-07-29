@@ -91,7 +91,6 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		if ($batch == 1) {
 			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_rerun_cache.p%'");
-			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_tickets_audits_cache.t%'");
 		}
 
 		if ($batch != 1) {
