@@ -2794,6 +2794,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$data['total_to_resolution'] = $this->getTimeUntilResolution();
 		$data['total_to_resolution_work'] = $this->getWorkTimeUntilResolution();
 
+		if ($this->agent) {
+			$data['agent']['display_name'] = $this->agent->getDisplayNameUser();
+			$data['agent']['display_name_real'] = $this->agent->getDisplayName();
+		}
+
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
 
