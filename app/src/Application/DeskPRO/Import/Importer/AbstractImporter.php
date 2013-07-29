@@ -370,7 +370,7 @@ abstract class AbstractImporter
 			return;
 		}
 
-		$sql = 'REPLACE INTO import_map (typename, old_id, new_id) VALUES ';
+		$sql = 'INSERT INTO import_map (typename, old_id, new_id) VALUES ';
 		$sql_parts = array();
 
 		foreach ($this->buffered_save_mapped_ids as $vals) {
@@ -390,6 +390,7 @@ abstract class AbstractImporter
 		}
 
 		$sql .= implode(',', $sql_parts);
+		$sql .= " ON DUPLICATE KEY UPDATE ";
 		$sql .= '/*DP_QLOG_NOLOG*/';
 
 		$this->db->exec($sql);

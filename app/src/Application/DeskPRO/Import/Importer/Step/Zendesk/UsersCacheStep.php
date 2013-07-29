@@ -89,15 +89,21 @@ class UsersCacheStep extends AbstractZendeskStep
 	{
 		if ($this->importer->getConfig('with_preinserted_cache')) {
 			return;
-		}
-		if ($batch == 1) {
-			$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_users_cache.%'");
+		} else {
+			if ($batch == 1) {
+				$this->db->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE 'zd_users_cache.%'");
+			}
 		}
 
 		$reqs = array();
 
 		for ($i = 1; $i <= self::PERBATCH; $i++) {
 			$page = (($batch-1)*self::PERBATCH) + $i;
+
+			$got = $this->db->fetchColumn("SELECT typename FROM import_datastore WHERE typename = ?", array('zd_users_cache.p'.$page));
+			if ($got) {
+				continue;
+			}
 
 			$reqs[$page] = array(
 				'users',
