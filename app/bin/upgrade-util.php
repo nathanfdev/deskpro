@@ -1018,7 +1018,7 @@ class Upgrade
 			throw new MysqlBackupException("Could not find path to `mysqldump` command", MysqlBackupException::NO_MYSQLDUMP);
 		}
 
-		$f = date('Y-m-d') . '-database.sql';
+		$f = date('Y-m-d-His') . '-database.sql';
 		$f_full = $this->getBackupDir() . DIRECTORY_SEPARATOR . $f;
 
 		if (file_exists($f_full)) {
@@ -1279,7 +1279,7 @@ class Upgrade
 
 		$time_start = microtime(true);
 
-		$f = DIRECTORY_SEPARATOR . date('Y-m-d') . '-files';
+		$f = DIRECTORY_SEPARATOR . date('Y-m-d-His') . '-files';
 		$backup_dir = $this->getTmpDir() . $f;
 		if (is_dir($backup_dir)) {
 			throw new FileBackupException("Backup directory already exists: $backup_dir", FileBackupException::FILE_EXISTS);
