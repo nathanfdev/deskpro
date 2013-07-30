@@ -139,6 +139,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			txt.addClass('expanded');
 
 			if (addToW) {
+				txt.stop();
 				txt.animate({ width: w+addToW }, 300, function() {
 					$('#dp_search_box_help_trigger').show();
 					$('#dp_search_box_help_trigger').css('opacity', 0);
@@ -147,6 +148,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			} else {
 				$('#dp_search_box_help_trigger').show();
 				$('#dp_search_box_help_trigger').css('opacity', 0);
+				$('#dp_search_box_help_trigger').stop();
 				$('#dp_search_box_help_trigger').animate({opacity: 100}, 1500);
 			}
 
@@ -173,6 +175,8 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 				wrap.css('margin-right', '0');
 
 				txt = searchBox;
+				txt.stop();
+				$('#dp_search_box_help_trigger').stop();
 				txt.width(txt.data('orig-width')).removeClass('expanded');
 				$('#dp_search_box_help_trigger').hide();
 
