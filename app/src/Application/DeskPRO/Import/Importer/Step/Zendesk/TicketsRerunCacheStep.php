@@ -98,6 +98,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 			sleep(60);
 		}
 
+		$all_ticket_ids = $ticket_ids;
 		$ticket_ids = array_chunk($ticket_ids, self::PERPAGE);
 
 		$reqs = array();
@@ -122,6 +123,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		foreach ($results as $page => $info) {
 			if ($info['exception'] || !$info['response']) {
+				$this->logMessage("Page $page error");
 				$retry_pages[$page] = $reqs[$page];
 			} else {
 				$this->db->replace('import_datastore', array(
@@ -139,6 +141,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 			$retry_pages = array();
 			foreach ($results as $page => $info) {
 				if ($info['exception'] || !$info['response']) {
+					$this->logMessage("Page $page error (on retry)");
 					$retry_pages[$page] = $reqs[$page];
 				} else {
 					$this->db->replace('import_datastore', array(
@@ -151,6 +154,6 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		// Also get audits
 		sleep(30);
-		$this->zd->cacheManyTicketAudits($ticket_ids);
+		$this->zd->cacheManyTicketAudits($all_ticket_ids);
 	}
 }
