@@ -133,7 +133,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		$('#recent_tabs_list_li_none').remove();
 
 		if (!ts) {
-			ts = (new Date()).getTime() / 1000;
+			ts = parseInt((new Date()).getTime() / 1000);
 		}
 
 		var idString = type + '-' + id, idx = null;

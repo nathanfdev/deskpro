@@ -246,7 +246,7 @@ class AgentMessagesLoader extends LoaderAbstract
 					if ($a[4] == $b[4]) {
 						return 0;
 					}
-					return ($a[4] < $b[4]) ? -1 : 1;
+					return ($a[4] > $b[4]) ? -1 : 1;
 				});
 
 				while (count($recent_tabs) > 350) {
