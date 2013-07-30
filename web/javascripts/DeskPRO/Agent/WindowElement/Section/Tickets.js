@@ -821,9 +821,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var baseRoute = $('.item', filterEl).first().data('route');
 
+		var existGroupingEl = subgroupEl.find('.nav-selected');
+		var existGrouping = existGroupingEl[0] ? existGroupingEl.data('grouping-option') : null;
+
 		subgroupEl.empty();
 		if (html.length) {
 			subgroupEl.html(html);
+		}
+
+		if (existGrouping) {
+			subgroupEl.find('.grouping-' + existGrouping).addClass('nav-selected');
 		}
 
 		var li = subgroupEl.closest('li');
