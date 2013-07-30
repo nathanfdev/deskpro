@@ -39,6 +39,7 @@ return array(
 
 	// X-Mailer: Apple Mail (2.1082)
 	'apple_mail_1'                       => 'br /br div div #^on\s.*\sat\s.*\swrote:$#iU /div br /br blockquote /blockquote /div',
+	'apple_mail_2'                       => '#On\s+.*?,\s+at\s+[0-9:]+\s+(AM|PM),\s+.*?\s+wrote:\s*<br[^>]*>#',
 
 	// X-Mailer: Microsoft Windows Live Mail 15.4.3538.513
 	'windows_live_mail_1'                => 'div b #from:#i /b /div div b #sent:#i /b /div div b #to:#i /b /div div b #subject:#i /b /div',
