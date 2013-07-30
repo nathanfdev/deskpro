@@ -62,8 +62,8 @@ class NewTicketController extends AbstractController
 		}
 
 		$website_url = App::getRequest()->getUri();
-		if ($format == 'iframe') {
-			$website_url = $this->in->getString('website_url');
+		if (!empty($GLOBALS['DP_WEBSITE_URL'])) {
+			$website_url = $GLOBALS['DP_WEBSITE_URL'];
 		}
 
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(

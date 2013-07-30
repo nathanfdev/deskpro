@@ -158,14 +158,16 @@ var HelpdeskWidget = new (function() {
 			src += options.loadPath.replace(/^\//, '');
 		}
 
-		if (options.languageId) {
-			if (src.indexOf('?') === -1) {
-				src += '?';
-			} else {
-				src += '&';
-			}
+		if (src.indexOf('?') === -1) {
+			src += '?';
+		} else {
+			src += '&';
+		}
 
-			src += 'language_id=' + options.languageId;
+		src += 'dp_website_url=' + encodeURIComponent(window.location + '')
+
+		if (options.languageId) {
+			src += '&language_id=' + options.languageId;
 		}
 
 		src += '#' + encodeURIComponent(document.location.href);

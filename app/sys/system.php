@@ -123,6 +123,27 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
+		if ($this instanceof UserKernel) {
+			$website_url = '';
+			if (!empty($_REQUEST['dp_website_url'])) {
+				$website_url = $_REQUEST['dp_website_url'];
+			} else if (!empty($_COOKIE['dp_o_uri'])) {
+				$website_url = @base64_decode($_COOKIE['dp_o_uri'], false);
+			}
+
+			if ($website_url == 'DP_UNSET') {
+				$website_url = '';
+			}
+
+			if ($website_url && (empty($_COOKIE['dp_o_uri']) || $_COOKIE['dp_o_uri'] != $website_url)) {
+				setcookie('dp_o_uri', base64_encode($website_url), null, '/', null, null, true);
+			} else if (!$website_url && !empty($_COOKIE['dp_o_uri'])) {
+				setcookie('dp_o_uri', '', -3600, '/', null, null, true);
+			}
+
+			$GLOBALS['DP_WEBSITE_URL'] = $website_url;
+		}
+
 		if ($this instanceof UserKernel && $this->isHelpdeskOffline()) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
@@ -356,6 +377,12 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		if ($response->headers->get('Content-Type') == 'text/html') {
 			$content = $response->getContent();
 			$content = str_replace('<head>', "<head>\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />", $content);
+
+			if ($this instanceof UserKernel) {
+				$website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
+				$content = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="' . htmlspecialchars($website_url) . '" />', $content);
+			}
+
 			$response->setContent($content);
 		}
 

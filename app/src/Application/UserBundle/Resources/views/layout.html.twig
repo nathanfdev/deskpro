@@ -349,5 +349,16 @@
 {% if not app.user.id %}
 	{{ dp_js_sso_loader() }}
 {% endif %}
+<script type="text/javascript">
+(function() {
+	if (window.self !== window.top) {
+		return;
+	}
+	var els = document.getElementsByClassName('dp_website_url');
+	for (var i = 0; i < els.length; i++) {
+		els[i].value = 'DP_UNSET';
+	}
+})();
+</script>
 </body>
 </html>

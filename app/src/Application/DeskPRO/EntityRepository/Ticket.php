@@ -146,7 +146,7 @@ class Ticket extends AbstractEntityRepository
 
 		$new_ticket_ids = App::getDb()->fetchAll("
 			SELECT new_ticket_id
-			FROM tickets_delete
+			FROM tickets_deleted
 			WHERE old_ref LIKE ?
 		", array($ref));
 		if ($new_ticket_ids) {

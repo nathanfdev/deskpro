@@ -101,7 +101,7 @@ var TicketFormWidget = new (function() {
 		var src, iframeHtml;
 
 		var src = options.deskproUrl + 'tickets/new-simple/' + options.departmentId;
-		src += '?website_url=' + encodeURIComponent(window.location + '')
+		src += '?dp_website_url=' + encodeURIComponent(window.location + '')
 		if (options.languageId) {
 			src += '&language_id=' + options.languageId
 		}
