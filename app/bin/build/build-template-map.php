@@ -23,6 +23,18 @@ $paths = array(
 	'BillingBundle'    => DP_ROOT.'/src/Application/BillingBundle/Resources/views',
 );
 
+$plugins_dir = realpath(DP_ROOT.'/../plugins');
+$d = dir($plugins_dir);
+while ($f = $d->read()) {
+	if ($f == '.' || $f == '..') continue;
+	$p_path = $plugins_dir.'/'.$f;
+	$p_path_views = $p_path . '/Resources/views';
+
+	if (!is_dir($p_path) || !is_dir($p_path_views)) continue;
+
+	$paths[$f] = $p_path_views;
+}
+
 $tpl_info = array();
 
 $bogus = true;
