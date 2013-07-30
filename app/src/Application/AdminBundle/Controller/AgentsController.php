@@ -356,6 +356,23 @@ class AgentsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$mapped_fields = $usersource->getFieldsFromIdentity($identity);
+		$mapped_fields = Arrays::removeEmptyString($mapped_fields);
+
+		// User already exists in the db so dont attempt to re-init them through
+		// the login processor
+		if (!empty($mapped_fields['email'])) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($mapped_fields['email']);
+			if ($person) {
+				$person->is_agent = true;
+				$person->can_agent = true;
+				$this->em->persist($person);
+				$this->em->flush();
+
+				return $this->redirectRoute('admin_agents_edit', array('person_id' => $person->getId()));
+			}
+		}
+
 		$this->db->beginTransaction();
 		try {
 			$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($usersource, $identity);
