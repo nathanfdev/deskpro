@@ -47,6 +47,9 @@
 											<option {% if initial_inbox_grouping[filter.id] == "user_waiting" %}selected="selected"{% endif %} value="user_waiting">View by Waiting Time</option>
 											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">View by All Waiting Time</option>
 											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">View by Time Open</option>
+											{% for f in app.getTicketFieldManager().getFields() %}
+												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">View by {{ f.title }}</option>
+											{% endfor %}
 										</select>
 									</div>
 								</div>
@@ -91,6 +94,9 @@
 											<option {% if initial_inbox_grouping[filter.id] == "user_waiting" %}selected="selected"{% endif %} value="user_waiting">View by Waiting Time</option>
 											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">View by All Waiting Time</option>
 											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">View by Time Open</option>
+											{% for f in app.getTicketFieldManager().getFields() %}
+												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">View by {{ f.title }}</option>
+											{% endfor %}
 										</select>
 									</div>
 								</div>

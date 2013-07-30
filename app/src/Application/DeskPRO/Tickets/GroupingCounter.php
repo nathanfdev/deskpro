@@ -38,7 +38,9 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
 
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Orb\Util\Util;
+use Orb\Validator\StringEmail;
 
 class GroupingCounter
 {
@@ -180,6 +182,12 @@ class GroupingCounter
 		} elseif ($grouping == 'language') {
 			$default = App::getEntityRepository('DeskPRO:Language')->getDefault();
 			return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
+		} elseif ($f = $this->getCustomDefField($grouping)) {
+			if ($f->isChoiceType()) {
+				return "COALESCE(custom_data_ticket_$field.field_id, 0) AS $field";
+			} else {
+				return "COALESCE(custom_data_ticket_$field.input, 0) AS $field";
+			}
 		} else {
 			try {
 				$group_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($grouping);
@@ -207,6 +215,22 @@ class GroupingCounter
 			$group_by .= ', field2';
 		}
 		$select_fields[] = 'COUNT(*) AS total';
+
+		$join = '';
+		if ($f = $this->getCustomDefField($this->grouping1)) {
+			if ($f->isChoiceType()) {
+				$join = "LEFT JOIN custom_data_ticket AS custom_data_ticket_field1 ON (custom_data_ticket_field1.ticket_id = tickets.id AND custom_data_ticket_field1.root_field_id = {$f->getId()})";
+			} else {
+				$join = "LEFT JOIN custom_data_ticket AS custom_data_ticket_field1 ON (custom_data_ticket_field1.ticket_id = tickets.id AND custom_data_ticket_field1.field_id = {$f->getId()})";
+			}
+		}
+		if ($this->grouping2 && ($f = $this->getCustomDefField($this->grouping2))) {
+			if ($f->isChoiceType()) {
+				$join = "LEFT JOIN custom_data_ticket AS custom_data_ticket_field2 ON (custom_data_ticket_field2.ticket_id = tickets.id AND custom_data_ticket_field2.root_field_id = {$f->getId()})";
+			} else {
+				$join = "LEFT JOIN custom_data_ticket AS custom_data_ticket_field2 ON (custom_data_ticket_field2.ticket_id = tickets.id AND custom_data_ticket_field2.field_id = {$f->getId()})";
+			}
+		}
 
 		// Doing a search on a sys-type filter at the same time
 
@@ -260,6 +284,7 @@ class GroupingCounter
 			$sql = "
 				SELECT " . implode(', ', $select_fields) . "
 				FROM tickets
+				$join
 				LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
 				LEFT JOIN tickets_participants AS part_check ON (part_check.ticket = tickets.id)
 				WHERE " . implode(' AND ', $wheres) . "
@@ -277,6 +302,7 @@ class GroupingCounter
 			$sql = "
 				SELECT " . implode(', ', $select_fields) . "
 				FROM tickets
+				$join
 				WHERE " . implode(' AND ', $wheres) . "
 				$group_by WITH ROLLUP
 			";
@@ -303,6 +329,19 @@ class GroupingCounter
 			TicketSearch::TERM_TOTAL_USER_WAITING,
 			TicketSearch::TERM_DATE_CREATED,
 		));
+	}
+
+
+	/**
+	 * @param string $field
+	 * @return \Application\DeskPRO\Entity\CustomDefTicket|null
+	 */
+	public function getCustomDefField($field)
+	{
+		if ($fid = Strings::extractRegexMatch('#^ticket_field_(\d+)$#', $field)) {
+			return App::getSystemService('TicketFieldsManager')->getFieldFromId($fid);
+		}
+		return null;
 	}
 
 
@@ -601,14 +640,31 @@ class GroupingCounter
 
 			default:
 
-				$this->grouping_summary = $field;
+				if ($f = $this->getCustomDefField($field)) {
+					if ($f->isChoiceType()) {
+						$titles = array('0' => 'None');
+						foreach (App::getSystemService('TicketFieldsManager')->getFieldChildren($f) as $subf) {
+							$titles[$subf->getId()] = $subf->title;
+						}
+					} else {
+						if ($ids) {
+							$titles = array_combine($ids, $ids);
+						} else {
+							$titles = array();
+						}
 
-				// Just make all titles the ids themselves by default,
-				// useful for things like status which might be rendered into words after
-				if ($ids) {
-					$titles = array_combine($ids, $ids);
+						Arrays::unshiftAssoc($titles, '0', 'None');
+					}
 				} else {
-					$titles = array();
+					$this->grouping_summary = $field;
+
+					// Just make all titles the ids themselves by default,
+					// useful for things like status which might be rendered into words after
+					if ($ids) {
+						$titles = array_combine($ids, $ids);
+					} else {
+						$titles = array();
+					}
 				}
 				break;
 		}
@@ -737,6 +793,21 @@ class GroupingCounter
 			case 'person':
 				return array('type' => 'person_id', 'op' => 'is', 'options' => array('person_id' => $groupchoice));
 			default:
+				$f = null;
+				if ($fid = Strings::extractRegexMatch('#^ticket_field_(\d+)$#', $groupvar)) {
+					$f = App::getSystemService('TicketFieldsManager')->getFieldFromId($fid);
+				}
+				if ($f) {
+					if ($groupchoice === '0') {
+						$groupchoice = 'DP_NO_SELECTION';
+					}
+					return array(
+						'type' => "ticket_field[$fid]",
+						'op' => 'is',
+						'options' => array('value' => $groupchoice)
+					);
+				}
+
 				return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
 		}
 	}

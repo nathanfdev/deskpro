@@ -60,5 +60,8 @@
 		<li data-group-by="user_waiting">{{ phrase('agent.general.time_waiting') }}</li>
 		<li data-group-by="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</li>
 		<li data-group-by="date_created">{{ phrase('agent.general.date_opened') }}</li>
+		{% for f in app.getTicketFieldManager().getFields() %}
+			<li data-group-by="ticket_field_{{ f.id }}">{{ f.title }}</li>
+		{% endfor %}
 	</ul>
 </header>

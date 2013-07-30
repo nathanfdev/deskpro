@@ -1857,15 +1857,19 @@ class TicketSearch extends SearcherAbstract
 						break;
 
 					case self::TERM_TICKET_FIELD:
-						$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
-						if (!$field) break;
+						$field_def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
+						if (!$field_def) break;
 
-						$this->affected_fields[] = 'ticket.custom_data_ticket_' . $field['id'];
+						$this->affected_fields[] = 'ticket.custom_data_ticket_' . $field_def['id'];
 
-						$search_type = $field->getHandler()->getSearchType();
+						$search_type = $field_def->getHandler()->getSearchType();
 
 						if (is_array($choice) && isset($choice['custom_fields']['field_' . $term_id])) {
 							$choice = $choice['custom_fields']['field_' . $term_id];
+						}
+
+						if (is_array($choice) && isset($choice['value'])) {
+							$choice = $choice['value'];
 						}
 
 						switch ($search_type) {
@@ -1877,9 +1881,9 @@ class TicketSearch extends SearcherAbstract
 								}
 
 								if ($op == self::OP_IS) {
-									$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice));
+									$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field_def['title'], 'value' => $choice));
 								} else {
-									$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
+									$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field_def['title'], 'value' => $choice));
 								}
 
 								$joins[] = array(
@@ -1890,10 +1894,18 @@ class TicketSearch extends SearcherAbstract
 								$field = 'custom_data_ticket_'.$join_id.'.'.$search_type;
 								switch ($op) {
 									case self::OP_IS:
-										$wheres[] = "$field = " . $db->quote($choice);
+										if ($choice == 'DP_NO_SELECTION') {
+											$wheres[] = "$field IS NULL";
+										} else {
+											$wheres[] = "$field = " . $db->quote($choice);
+										}
 										break;
 									case self::OP_NOT:
-										$wheres[] = "$field != " . $db->quote($choice);
+										if ($choice == 'DP_NO_SELECTION') {
+											$wheres[] = "$field IS NOT NULL";
+										} else {
+											$wheres[] = "$field != " . $db->quote($choice);
+										}
 										break;
 									case self::OP_CONTAINS:
 									case self::OP_NOTCONTAINS:
@@ -1910,50 +1922,69 @@ class TicketSearch extends SearcherAbstract
 							case 'id':
 								$join_id = Util::requestUniqueId();
 								$choices_in = array();
-								$choice = (array)$choice;
-								if (isset($choice["field_{$field->getId()}"])) {
-									$choice = $choice["field_{$field->getId()}"];
-								}
-								if (!is_array($choice)) {
-									$choice = array($choice);
-								}
-								foreach ($choice as $c) {
-									$choices_in[] = (int)$c;
-								}
-								$choices_in = implode(',', $choices_in);
 
-								$choice_str = array();
-								foreach ($field->children as $child) {
-									if (in_array($child['id'], $choice)) {
-										$choice_str[] = $child['title'];
+								if ($choice != 'DP_NO_SELECTION') {
+									$choice = (array)$choice;
+									if (isset($choice["field_{$field_def->getId()}"])) {
+										$choice = $choice["field_{$field_def->getId()}"];
 									}
-								}
-								$choice_str = implode(', ', $choice_str);
+									if (!is_array($choice)) {
+										$choice = array($choice);
+									}
+									foreach ($choice as $c) {
+										$choices_in[] = (int)$c;
+									}
+									$choices_in = implode(',', $choices_in);
 
-								if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
-									$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
-								} else {
-									$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
+									$choice_str = array();
+									foreach ($field_def->children as $child) {
+										if (in_array($child['id'], $choice)) {
+											$choice_str[] = $child['title'];
+										}
+									}
+									$choice_str = implode(', ', $choice_str);
+
+									if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
+										$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field_def['title'], 'value' => $choice_str));
+									} else {
+										$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field_def['title'], 'value' => $choice_str));
+									}
 								}
 
 								$field = 'custom_data_ticket_'.$join_id.'.field_id';
 								switch ($op) {
 									case self::OP_CONTAINS:
 									case self::OP_IS:
-										$joins[] = array(
-											'custom_data_ticket',
-											"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
-										);
-										$wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
+										if ($choice == 'DP_NO_SELECTION') {
+											$joins[] = array(
+												'custom_data_ticket',
+												"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})"
+											);
+											$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+										} else {
+											$joins[] = array(
+												'custom_data_ticket',
+												"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
+											);
+											$wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
+										}
 										break;
 
 									case self::OP_NOTCONTAINS:
 									case self::OP_NOT:
-										$joins[] = array(
-											'custom_data_ticket',
-											"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
-										);
-										$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+										if ($choice == 'DP_NO_SELECTION') {
+											$joins[] = array(
+												'custom_data_ticket',
+												"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})"
+											);
+											$wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
+										} else {
+											$joins[] = array(
+												'custom_data_ticket',
+												"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
+											);
+											$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+										}
 										break;
 								}
 								break;
