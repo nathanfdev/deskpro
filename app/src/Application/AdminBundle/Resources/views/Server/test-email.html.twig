@@ -46,6 +46,13 @@
 						<textarea name="message" cols="30" rows="10" style="width: 98%; height: 140px;">This is a test email from DeskPRO sent on {{ 'now'|date('fulltime') }}</textarea>
 					</td>
 				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<label><input type="radio" name="send_when" value="now" checked="checked" /> Send right now</label><br/>
+						<label><input type="radio" name="send_when" value="queued" /> Queue for sending during next task run</label>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

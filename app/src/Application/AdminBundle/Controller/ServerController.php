@@ -787,17 +787,25 @@ class ServerController extends AbstractController
 			$message->setFrom($this->in->getString('from'));
 			$message->setSubject($this->in->getString('subject'));
 			$message->setBody($this->in->getString('message'));
-			$message->setForceTransport($tr->getTransport());
 
 			$failed = array();
-			$this->container->getMailer()->sendNow($message, $failed);
+
+			$send_when = $this->in->getString('send_when');
+			if ($send_when == 'queued') {
+				$message->enableQueueHint();
+				$this->container->getMailer()->send($message, $failed);
+			} else {
+				$message->setForceTransport($tr->getTransport());
+				$this->container->getMailer()->sendNow($message, $failed);
+			}
 
 
 			$log = implode("\n", $this->container->getMailer()->getLogMessages());
 
 			return $this->render('AdminBundle:Server:test-email-result.html.twig', array(
-				'failed' => $failed,
-				'log' => $log,
+				'failed'    => $failed,
+				'log'       => $log,
+				'send_when' => $send_when,
 			));
 		}
 
