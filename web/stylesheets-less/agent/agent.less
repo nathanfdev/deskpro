@@ -2269,6 +2269,17 @@ ul.pane-tabs {
 				padding: 6px 0 6px 3px;
 			}
 
+			&:hover > h3 {
+				text-decoration: underline;
+			}
+
+			&.with-title:hover > h3 {
+				text-decoration: none;
+				.title-text {
+					text-decoration: underline;
+				}
+			}
+
 			.float-side {
 				position: absolute;
 				top: 0;

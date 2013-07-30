@@ -1,12 +1,12 @@
 {% for cat in cats %}
 	<li class="is-nav-item cat-{{ cat.id }}" id="publish_dlcat_{{ cat.id }}">
-		<div class="item" data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}">
+		<div class="item with-title" data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}">
 			{% if download_repo.getChildren(cat)|length %}
 				<i class="dp-toggle-icon click-through icon-caret-right"></i>
 			{% endif %}
 			<h3>
 				{% if depth and not kb_repo.getChildren(cat)|length %}&mdash;{% endif %}
-				{{ cat.title }}
+				<span class="title-text">{{ cat.title }}</span>
 			</h3>
 			<div class="dp-fader"></div>
 			<em class="counter list-counter"
