@@ -155,7 +155,7 @@ class HtmlPurifier implements CleanerPlugin
 			);
 
 			$m = null;
-			if (preg_match_all('#<span\s*style=(?:\'|").*?font-family\s*:\s*Wingdings.*?(?:\'|")>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
+			if (preg_match_all('#<span\s*style=(?:\'|")[^"\'>]+font-family\s*:\s*Wingdings[^"\'>]+(?:\'|")>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
 				foreach ($m as $match) {
 					$replace = $match[1];
 					foreach ($map as $f => $r) {
