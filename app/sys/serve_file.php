@@ -760,9 +760,9 @@ class FilestorageLoader extends LoaderAbstract
 			$content_disposition = 'inline';
 		}
 
-		header('Content-Type: ' . $mimetype . '; filename=' . $filename);
+		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
 		header('Content-Length: ' . filesize($filepath));
-		header('Content-Disposition: '.$content_disposition.'; filename=' . $filename);
+		header('Content-Disposition: '.$content_disposition.'; filename="' . addslashes($filename) . '"');
 		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
 		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
 		header('Cache-Control: max-age=31556926,private');
@@ -929,13 +929,13 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	protected function sendHeaders($blob)
 	{
-		header('Content-Type: ' . $blob['content_type'] . '; filename="' . $blob['filename'] . '"');
+		header('Content-Type: ' . $blob['content_type'] . '; filename="' . addslashes($blob['filename']) . '"');
 		header('Content-Length: ' . $blob['filesize']);
 
 		if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
-			header('Content-Disposition: inline; filename="' . $blob['filename'] . '"');
+			header('Content-Disposition: inline; filename="' . addslashes($blob['filename']) . '"');
 		} else {
-			header('Content-Disposition: attachment; filename="' . $blob['filename_safe'] . '"');
+			header('Content-Disposition: attachment; filename="' . addslashes($blob['filename_safe']) . '"');
 		}
 
 		$d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);
