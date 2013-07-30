@@ -795,7 +795,11 @@ class AgentsController extends AbstractController
 			WHERE person_id = ?
 		", array($load_agent->id));
 
-		$associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($agent);
+		if ($agent && $agent->getId()) {
+			$associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($agent);
+		} else {
+			$associations = array();
+		}
 
 		return $this->render('@Agents:edit-agent.html.twig', array(
 			'agent'             => $agent,
