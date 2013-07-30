@@ -734,7 +734,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						var grouping = this.getGroupingVar(filterId);
 					}
 
-					var selectedGrouping = filterEl.find('ul.sub-group li.nav-selected').data('grouping-option');
+					var selectedGrouping = filterEl.find('ul.nav-list-small').first().find('li.nav-selected').data('grouping-option');
 					var li = filterEl.find('li.grouping-' + selectedGrouping);
 					var currentRoute = null;
 
