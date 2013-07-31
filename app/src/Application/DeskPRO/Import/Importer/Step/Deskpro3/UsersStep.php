@@ -82,6 +82,28 @@ class UsersStep extends AbstractDeskpro3Step
 
 	public function postRunAll()
 	{
+		// - Some DP installs have bad email data which could potentially
+		// result in dupe email addresses. This means when we add the unique index,
+		// it'll erorr out.
+		// - So here we are appending a unique string to the dupes, then
+		// an agent can go in later to merge accounts if they are real
+		$sql = "
+			SELECT id, COUNT(*) AS count
+			FROM people_emails
+			GROUP BY email
+			HAVING count > 1
+			LIMIT 5000
+		";
+
+		while ($ids = $this->db->fetchAllCol($sql)) {
+			$ids_in = implode(',', $ids);
+			$this->db->executeUpdate("
+				UPDATE people_emails
+				SET email = CONCAT(email, '.', id, '.importer-duplicate')
+				WHERE id IN ($ids_in)
+			");
+		}
+
 		$this->importer->restoreTableIndexes('people');
 		$this->importer->restoreTableIndexes('custom_data_person');
 		$this->importer->restoreTableIndexes('person2usergroups');
