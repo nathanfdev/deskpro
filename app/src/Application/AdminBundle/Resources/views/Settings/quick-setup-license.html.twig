@@ -1,3 +1,4 @@
+{% if not is_import %}
 <div class="page-radio-group {%  if not license_code %}open{% endif %}" id="lic_group_get_demo">
 	<header>
 		<h3><label><input type="radio" {%  if not license_code %}checked="checked"{% endif %} name="lic_box" /> Get a demo license</input></label></h3>
@@ -99,12 +100,14 @@
 		</form>
 	</article>
 </div>
+{% endif %}
 
-<div class="page-radio-group {% if license_code %}open{% endif %}" id="lic_group_enter_license">
+<div class="page-radio-group {% if license_code or is_import %}open{% endif %}" id="lic_group_enter_license">
 	<header>
 		<h3><label><input type="radio" name="lic_box" {% if license_code %}checked="checked"{% endif %} /> Enter license code</input></label></h3>
 	</header>
 	<article>
+
 		<div class="alert-message block-message error errors-box" style="display: none">
 			<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
 			<ul>
@@ -125,6 +128,12 @@
 							<br />
 							&larr; <a id="lic_do_send_again">Didn't get the license email or want to change your email address? Go back and try again</a>.
 						</div>
+						{% if is_import %}
+							<div class="alert-message block-message success demo-sent-message">
+								You can get your license code from your members area at <a href="https://www.deskpro.com/members/" target="_blank">https://www.deskpro.com/members/</a>.<br/>
+								If you cannot find your license code or need any help, please contact <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
+							</div>
+						{% endif %}
 						<textarea name="license_code" style="height: 150px; width: 90%;"></textarea>
 					</td>
 				</tr>
