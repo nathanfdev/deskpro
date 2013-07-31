@@ -46,6 +46,19 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 					new DeskPRO.Agent.ScrollerHandler(null, scrollEl);
 				}
 			}
+
+			if (self.sectionEl) {
+				self.sectionEl.find('.pill-two-switcher').each(function() {
+					$(this).find('li').each(function() {
+						var target = $(this).data('tab-for');
+						if (target) {
+							$(target).on('dp_simpletabs_show', function() {
+								self.updateUi();
+							});
+						}
+					});
+				});
+			}
 		});
 
 		this._isVisible = false;
