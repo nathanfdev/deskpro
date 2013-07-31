@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Import\Importer;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Orb\Log\Logger;
+use Orb\Util\Arrays;
 
 /**
  * We have importers for each platform, and each Importer has a number of Steps.
@@ -373,6 +374,9 @@ abstract class AbstractImporter
 		$sql = 'INSERT INTO import_map (typename, old_id, new_id) VALUES ';
 		$sql_parts = array();
 
+		// Make sure theres no blanks
+		$this->buffered_save_mapped_ids = Arrays::removeEmptyArray($this->buffered_save_mapped_ids);
+
 		foreach ($this->buffered_save_mapped_ids as $vals) {
 			$quoted = array();
 
@@ -390,7 +394,7 @@ abstract class AbstractImporter
 		}
 
 		$sql .= implode(',', $sql_parts);
-		$sql .= " ON DUPLICATE KEY UPDATE ";
+		$sql .= " ON DUPLICATE KEY UPDATE new_id = VALUES(new_id) ";
 		$sql .= '/*DP_QLOG_NOLOG*/';
 
 		$this->db->exec($sql);
