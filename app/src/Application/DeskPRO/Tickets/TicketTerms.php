@@ -1275,6 +1275,10 @@ class TicketTerms
 			case 'input':
 			case 'value':
 
+				if (is_array($choice)) {
+					$choice = implode(' ', $choice);
+				}
+
 				$set_value = $obj->getCustomDataForField($term_id);
 				if ($set_value) {
 					$set_value = $set_value->getData();
