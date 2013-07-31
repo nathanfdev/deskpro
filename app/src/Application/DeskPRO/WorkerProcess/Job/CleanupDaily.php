@@ -284,5 +284,82 @@ class CleanupDaily extends AbstractJob
 			'name' => 'core_tickets.enable_like_search_auto',
 			'value' => $like_search
 		));
+
+		#------------------------------
+		# Temp files
+		#------------------------------
+
+		// 50 days, sanity check
+		$min_time = time() - 4320000;
+
+		$cleanup_list = array();
+
+		$tmpdir = dp_get_tmp_dir();
+		$tmpdir_swift = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'swiftmailer-cache';
+
+		if (is_dir($tmpdir) && is_readable($tmpdir)) {
+			$dir = dir($tmpdir);
+
+			while ($f = $dir->read()) {
+				if ($f == '.' || $f == '..') continue;
+
+				$f_path  = $dir->path . DIRECTORY_SEPARATOR . $f;
+				$mtime   = @filemtime($f_path);
+
+				if (!$mtime || $mtime < $min_time) {
+					continue;
+				}
+
+				$do_cleanup = false;
+
+				// Temp email files are dpm* and eml*
+				if (is_file($f_path) && (strpos($f, 'dpm') === 0 || strpos($f, 'eml') === 0) && $mtime < strtotime('-3 days')) {
+					$do_cleanup = true;
+
+				// Temp files created for ticket debug export are dpd
+				} elseif (is_dir($f_path) && strpos($f, 'dpd') === 0 && $mtime < strtotime('-1 day')) {
+					$do_cleanup = true;
+
+				// Unzipped distros created during upgrade
+				} elseif (is_dir($f_path) && is_file($f_path . DIRECTORY_SEPARATOR . 'config.new.php') && $mtime < strtotime('-1 day')) {
+					$do_cleanup = true;
+				}
+
+				if ($do_cleanup) {
+					$cleanup_list[] = $f_path;
+				}
+			}
+
+			$dir->close();
+		}
+
+		if (is_dir($tmpdir_swift) && is_readable($tmpdir_swift)) {
+			$dir = dir($tmpdir_swift);
+
+			// Swiftmailer may write to the fs sometimes
+			while ($f = $dir->read()) {
+				if ($f == '.' || $f == '..' || strlen($f) != 32) continue;
+
+				$f_path  = $dir->path . DIRECTORY_SEPARATOR . $f;
+				$mtime   = @filemtime($f_path);
+
+				if (!$mtime || $mtime > strtotime('-4 days') || !is_dir($f_path)) {
+					continue;
+				}
+
+				$cleanup_list[] = $f_path;
+			}
+
+			$dir->close();
+		}
+
+		if ($cleanup_list) {
+			$file_util = new \Symfony\Component\HttpKernel\Util\Filesystem();
+			foreach ($cleanup_list as $f) {
+				@$file_util->remove($f);
+			}
+
+			$this->logStatus("Cleaned up " . count($cleanup_list) . " old files");
+		}
 	}
 }
