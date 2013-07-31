@@ -264,22 +264,23 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		// Article Cats
 		//-----
 
+		$self = $this;
 		$insert_faqperms = array();
-
 		$cat_perms = $this->getOldDb()->fetchAllCol("SELECT catid FROM faq_permissions WHERE groupid = ?", array($group_info['id']));
-		foreach ($this->faq_cats as $cat) {
+
+		$fn_proc_cat = function($cat) use ($self, $cat_perms, &$fn_proc_cat, &$insert_faqperms) {
 			if ($cat['perm_inherit'] || in_array($cat['id'], $cat_perms)) {
-				$insert_faqperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
+				$insert_faqperms[] = $self->getMappedNewId('faq_cat', $cat['id']);
 				if ($cat['children']) {
 					foreach ($cat['children'] as $subcat) {
-						if ($subcat['perm_inherit']) {
-							$insert_faqperms[] = $this->getMappedNewId('faq_cat', $subcat['id']);
-						} elseif (in_array($subcat['id'], $cat_perms)) {
-							$insert_faqperms[] = $this->getMappedNewId('faq_cat', $subcat['id']);
-						}
+						$fn_proc_cat($subcat);
 					}
 				}
 			}
+		};
+
+		foreach ($this->faq_cats as $cat) {
+			$fn_proc_cat($cat);
 		}
 
 		//-----
