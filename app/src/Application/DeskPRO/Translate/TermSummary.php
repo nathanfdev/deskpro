@@ -404,7 +404,10 @@ class TermSummary
 
 			case 'person_field':
 				$field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
-				if (!$field) break;
+				if (!$field) {
+					$summary = $term . '.' . $term_id;
+					break;
+				}
 
 				$search_type = $field->getHandler()->getSearchType();
 				$text = $choice['custom_fields']['field_' . $field->getId()];
@@ -412,6 +415,10 @@ class TermSummary
 				switch ($search_type) {
 					case 'input':
 					case 'value':
+
+						if (is_array($text)) {
+							$text = implode(', ', $text);
+						}
 
 						if ($op == self::OP_IS) {
 							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
@@ -422,6 +429,17 @@ class TermSummary
 						break;
 
 					case 'id':
+						if (is_array($text)) {
+							$real = array();
+							foreach ($text as $c_id) {
+								$c = $field->getChildById($c_id);
+								if ($c) {
+									$real[] = $c->getTitle();
+								}
+							}
+							$text = implode(', ', $real);
+						}
+
 						if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
 							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
 						} else {
@@ -433,7 +451,10 @@ class TermSummary
 
 			case 'ticket_field':
 				$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
-				if (!$field) break;
+				if (!$field) {
+					$summary = $term . '.' . $term_id;
+					break;
+				}
 
 				$search_type = $field->getHandler()->getSearchType();
 				$text = $choice['custom_fields']['field_' . $field->getId()];
@@ -441,6 +462,10 @@ class TermSummary
 				switch ($search_type) {
 					case 'input':
 					case 'value':
+
+						if (is_array($text)) {
+							$text = implode(', ', $text);
+						}
 
 						if ($op == self::OP_IS) {
 							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
