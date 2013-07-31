@@ -87,7 +87,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 			// With departments, if a child is allowed, then the parent is too since its just a wrapper
 			if ($dep && $dep->parent) {
-				$this->allowed_cats[$d['app']][$dep->parent->getId()]['full'] = 1;
+				$this->allowed_cats[$d['app']][$dep->parent->getId()][$d['name']] = 1;
 			}
 		}
 	}
