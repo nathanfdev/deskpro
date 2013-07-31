@@ -109,7 +109,10 @@ class ActionsCollection
 
 		if (isset($this->actions[$name])) {
 			$old_action = $this->actions[$name];
-			$action = $old_action->merge($action);
+			$new_action = $old_action->merge($action);
+			if ($new_action) {
+				$action = $new_action;
+			}
 		}
 
 		$action->setMetaData($metadata);
