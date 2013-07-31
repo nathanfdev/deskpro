@@ -382,11 +382,15 @@ class ZendeskApi extends Zendesk
 		$per_page = 100;
 
 		if (!$reload) {
-			$cached = $this->importer->db->fetchColumn("
-				SELECT data
-				FROM import_datastore
-				WHERE typename = 'zd_tickets_audits_cache.t{$ticket_id}'
-			");
+			if (isset($GLOBALS['DP_IMPORT_DATASTORE_CACHE']["zd_tickets_audits_cache.t{$ticket_id}"])) {
+				$cached = $GLOBALS['DP_IMPORT_DATASTORE_CACHE']["zd_tickets_audits_cache.t{$ticket_id}"];
+			} else {
+				$cached = $this->importer->db->fetchColumn("
+					SELECT data
+					FROM import_datastore
+					WHERE typename = 'zd_tickets_audits_cache.t{$ticket_id}'
+				");
+			}
 		} else {
 			$cached = false;
 		}

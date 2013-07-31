@@ -75,6 +75,21 @@ class TicketsStep extends AbstractZendeskStep
 
 		$tickets = $this->getBatch($page);
 
+		$cache_typenames = array();
+		foreach ($tickets as $t) {
+			$cache_typenames[] = "'zd_tickets_audits_cache.t{$t['id']}'";
+		}
+
+		if ($cache_typenames) {
+			$cache_typenames = array_unique($cache_typenames);
+			$cache_typenames = implode(',', $cache_typenames);
+			$GLOBALS['DP_IMPORT_DATASTORE_CACHE'] = $this->db->fetchAllKeyValue("
+				SELECT typename, data
+				FROM import_datastore
+				WHERE typename IN ($cache_typenames)
+			");
+		}
+
 		$this->db->beginTransaction();
 		try {
 			foreach ($tickets as $t) {
