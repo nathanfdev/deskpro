@@ -39,6 +39,7 @@ if (!defined('DP_ROOT')) exit('No access');
 
 use Application\DeskPRO\Entity\SendmailQueue;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Orb\Util\Util;
 use Orb\Util\Web;
 
@@ -72,7 +73,7 @@ class FailedSendmailJob extends LoaderAbstract
 		#------------------------------
 
 		$data = '';
-		$mode = 0;
+		$mode = 0; // 0 = headers, 1 = data
 		$fp = fopen($_FILES['mailfile']['tmp_name'], 'r');
 
 		while (!feof($fp)) {
@@ -88,6 +89,15 @@ class FailedSendmailJob extends LoaderAbstract
 			}
 		}
 		fclose($fp);
+
+		// $data may include a header of <DP_SMTP_DEBUG>...</DP_SMTP_DEBUG>
+		$debug_data = '';
+		$m = null;
+
+		if (preg_match('#\s*<DP_SMTP_DEBUG>(.*?)</DP_SMTP_DEBUG>\s*#s', $data, $m)) {
+			$debug_data = trim($m[1]);
+			$data = substr($data, strlen($m[0]));
+		}
 
 		$data = @json_decode($data, true);
 		if (!$data) {
@@ -108,6 +118,10 @@ class FailedSendmailJob extends LoaderAbstract
 		$email->to_address   = array_merge($data['to_addresses'], $data['cc_addresses'], $data['bcc_addresses']);
 		$email->from_address = $data['from_addresses'];
 		$email->attempts     = 4;
+
+		if ($debug_data) {
+			$email->appendLog($debug_data);
+		}
 
 		$container->getEm()->persist($email);
 		$container->getEm()->flush($email);
