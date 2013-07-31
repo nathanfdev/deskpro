@@ -660,4 +660,35 @@ class FieldManager
 		$classname = $this->options->get('data_entity_class');
 		return new $classname;
 	}
+
+
+	/**
+	 * Adds custom field API data to an object along with rendered values.
+	 *
+	 * @param mixed $object
+	 * @param array $data
+	 */
+	public function addApiData($object, array &$data)
+	{
+		if (!empty($data['custom_data'])) {
+			foreach ($data['custom_data'] as &$_f) {
+				if (!empty($_f['root_field']) && $_f['root_field']['id'] == $_f['id']) {
+					unset($_f['root_field']);
+				}
+			}
+			unset($_f);
+
+			$values = $this->getRenderedToTextForObject($object);
+			foreach ($values as $fid => $v) {
+				$data["field{$fid}"] = $v['rendered'];
+
+				foreach ($data['custom_data'] as &$_f) {
+					if ($_f['id'] == $fid) {
+						$_f['rendered_value'] = $v['rendered'];
+					}
+				}
+				unset($_f);
+			}
+		}
+	}
 }

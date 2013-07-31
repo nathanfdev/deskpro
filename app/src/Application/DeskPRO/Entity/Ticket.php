@@ -2801,11 +2801,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('ticket_fields_manager');
-
-		$values = $field_manager->getRenderedToTextForObject($this);
-		foreach ($values as $fid => $v) {
-			$data["field{$fid}"] = $v['rendered'];
-		}
+		$field_manager->addApiData($this, $data);
 
 		return $data;
 	}
