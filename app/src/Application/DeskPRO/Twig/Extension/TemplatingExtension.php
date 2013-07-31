@@ -1114,10 +1114,6 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function countryName($code)
 	{
-		if (strlen($code != 2)) {
-			return $code;
-		}
-
 		$name = Countries::getCountryFromCode($code);
 		if (!$name) {
 			return $code;

@@ -1131,6 +1131,12 @@ class Countries
 	 */
 	public static function getCountryFromCode($code)
 	{
+		if (strlen($code) != 2) {
+			return $code;
+		}
+
+		$code = strtoupper($code);
+
 		if (!isset(self::$code_to_name[$code])) {
 			return null;
 		}
