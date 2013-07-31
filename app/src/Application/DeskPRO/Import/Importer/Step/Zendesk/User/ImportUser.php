@@ -86,11 +86,7 @@ class ImportUser
 			return $user_id;
 		}
 
-		if (empty($user_info['email'])) {
-			return null;
-		}
-
-		if (!StringEmail::isValueValid($user_info['email'])) {
+		if (empty($user_info['email']) || !StringEmail::isValueValid($user_info['email'])) {
 			if (empty($user_info['notes'])) $user_info['notes'] = '';
 			$user_info['notes'] = trim("User had an invalid email address: {$user_info['email']}" . "\n\n\n" . $user_info['notes']);
 			$user_info['email'] = "invalid-email@" . Strings::random(10) . '.local';
