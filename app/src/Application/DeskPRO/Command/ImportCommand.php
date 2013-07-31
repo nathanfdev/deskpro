@@ -230,14 +230,22 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		// Check thei mport db too
 		try {
 			$e = error_reporting(E_ALL ^ E_WARNING);
-			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
+			$params = array(
 				'driver'        => 'pdo_mysql',
 				'host'          => $DP_CONFIG['import']['db_host'],
 				'user'          => $DP_CONFIG['import']['db_user'],
 				'password'      => $DP_CONFIG['import']['db_password'],
 				'dbname'        => $DP_CONFIG['import']['db_name'],
 				'names_charset' => 'latin1'
-			));
+			);
+
+			$m = null;
+			if (isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
+				$params['host'] = $m[1];
+				$params['port'] = $m[2];
+			}
+
+			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection($params);
 			$old_db->connect();
 			error_reporting($e);
 
