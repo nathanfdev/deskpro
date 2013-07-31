@@ -86,7 +86,7 @@ class ImportTicket
 		$insert_ticket['auth']          = \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY);
 		$insert_ticket['date_created']  = date('Y-m-d H:i:s', strtotime($ticket_info['created_at']));
 		$insert_ticket['person_id']     = $this->importer->getMappedNewId('zd_user_id', $ticket_info['requester_id']);
-		$insert_ticket['subject']       = $ticket_info['subject'];
+		$insert_ticket['subject']       = $ticket_info['subject'] ?: '(no subject)';
 		$insert_ticket['ref']           = 'TICKET-' . $ticket_id;
 		$insert_ticket['department_id'] = $this->importer->getMappedNewId('zd_groupdep_id', $ticket_info['group_id']) ?: null;
 
