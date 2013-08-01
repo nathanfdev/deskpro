@@ -160,6 +160,20 @@
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 </head>
 <body class="dp {% if is_demo %}is-demo{% endif %}">
+
+<script type="text/javascript">
+	(function() {
+		var ua = navigator.userAgent.toLowerCase();
+		var is_ios = /(iPhone|iPod|iPad).*AppleWebKit/i.test(navigator.userAgent);
+		var is_android = ua.indexOf("android") > -1;
+
+		if (is_ios || is_android) {
+			window.DP_NO_JS_SCROLL = true;
+			document.body.className = document.body.className + " dp_no_js_scroll";
+		}
+	})();
+</script>
+
 <div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
 <div id="dp_window">
 
