@@ -35,7 +35,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="options">
 		<div style="float:right; position:relative;top: -3px;">
 			<button class="clean-white x-small" id="{{ baseId }}_approve_user">{{ phrase('agent.general.approve') }}</button>
-			<button class="clean-white x-small" id="{{ baseId }}_delete_user">Delete</button>
+			{%  if app.user.hasPerm('agent_people.delete') %}<button class="clean-white x-small" id="{{ baseId }}_delete_user">Delete</button>{% endif %}
 		</div>
 		This user is awaiting validation
 	</div>
