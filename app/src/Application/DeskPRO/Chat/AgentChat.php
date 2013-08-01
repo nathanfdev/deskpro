@@ -159,7 +159,8 @@ class AgentChat
 		$agent_ids = array();
 
 		foreach ($agent_ids_raw as $aid) {
-			if (App::getContainer()->getAgentData()->get($aid)) {
+			$agent = App::getContainer()->getAgentData()->get($aid);
+			if ($agent && !$agent->is_deleted) {
 				$agent_ids[] = $aid;
 			}
 		}
