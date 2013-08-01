@@ -365,6 +365,9 @@ class PersonSearch extends SearcherAbstract
 							$wheres[] = "$people_table.id IN (" .  implode(',', $person_ids) . ")";
 						}
 					}
+
+					$this->mode = self::MODE_ANY;
+
 					break;
 				case self::TERM_EMAIL:
 					$joins[] = array(

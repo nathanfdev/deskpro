@@ -183,28 +183,38 @@ class Usergroup extends AbstractEntityRepository
 
 		$ids_comma = implode(',', $ids);
 
+
 		$output = App::getDb()->fetchAllKeyValue("
 			SELECT usergroup_id, COUNT(*)
 			FROM person2usergroups
 			WHERE usergroup_id IN ($ids_comma)
 			GROUP BY usergroup_id
 		");
-		$output = array_map('intval', $output);
+		$output = Arrays::castToType($output, 'int', 'int');
 
+		// Org counts
+		// Need to count all members of the org that are not part of the usergroup themselves
 		$results = App::getDb()->fetchAll("
-			SELECT o2u.usergroup_id, (SELECT COUNT(*) FROM people WHERE people.organization_id = o2u.organization_id) AS total
-			FROM organization2usergroups AS o2u
-			WHERE o2u.usergroup_id IN ($ids_comma)
+			SELECT o2u.usergroup_id, COUNT(*) AS total
+			FROM people
+			LEFT JOIN organization2usergroups AS o2u ON (o2u.organization_id = people.organization_id)
+			LEFT JOIN person2usergroups AS p2u ON (p2u.person_id = people.id AND p2u.usergroup_id = o2u.usergroup_id)
+			WHERE o2u.usergroup_id IN ($ids_comma) AND p2u.person_id IS NULL
+			GROUP BY o2u.usergroup_id
 		");
-		foreach ($results AS $result) {
-			if (!$result['total']) {
-				continue;
+
+		if ($results) {
+			foreach ($results AS $result) {
+				if (!$result['total']) {
+					continue;
+				}
+				if (isset($output[$result['usergroup_id']])) {
+					$output[$result['usergroup_id']] += $result['total'];
+				} else {
+					$output[$result['usergroup_id']] = $result['total'];
+				}
 			}
-			if (isset($output[$result['usergroup_id']])) {
-				$output[$result['usergroup_id']] += $result['total'];
-			} else {
-				$output[$result['usergroup_id']] = $result['total'];
-			}
+			$output = Arrays::castToType($output, 'int', 'int');
 		}
 
 		return $output;
