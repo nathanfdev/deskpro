@@ -110,7 +110,7 @@ class ActionsCollection
 		if (isset($this->actions[$name])) {
 			$old_action = $this->actions[$name];
 			$new_action = $old_action->merge($action);
-			if ($new_action) {
+			if ($new_action && $new_action instanceof ActionInterface) {
 				$action = $new_action;
 			}
 		}
