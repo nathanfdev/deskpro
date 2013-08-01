@@ -46,7 +46,8 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 				bounce: false,
 				resizePolling: 100000000,
 				useTransition: false,
-				useTransform: false
+				useTransform: false,
+				preventDefault: false
 			});
 
 			scroller.on('refresh', function() {
