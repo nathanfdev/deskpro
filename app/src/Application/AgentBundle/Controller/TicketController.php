@@ -1184,7 +1184,7 @@ class TicketController extends AbstractController
 
 		if ($add_cc_emails) {
 			foreach ($add_cc_emails as $email) {
-				if (!$email || !$email_validator->isValid($email)) {
+				if (!$email || !$email_validator->isValid($email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($email)) {
 					continue;
 				}
 
