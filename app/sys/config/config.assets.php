@@ -76,8 +76,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.mousewheel.js',
 		'vendor/jquery/jquery.scrollTo.js',
 		'vendor/jquery/jquery.sizes.min.js',
-		'vendor/jquery/jquery.tinyscrollbar.js',
 		'vendor/jquery/jquery.hotkeys.js',
+		'vendor/iscroll/iscroll-min.js',
 		'vendor/jquery/jquery.textarea-expander.js',
 		'vendor/jqTree/tree.jquery.js',
 
