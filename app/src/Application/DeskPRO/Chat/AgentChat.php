@@ -155,6 +155,15 @@ class AgentChat
 	{
 		$em = App::getOrm();
 
+		$agent_ids_raw = $agent_ids;
+		$agent_ids = array();
+
+		foreach ($agent_ids_raw as $aid) {
+			if (App::getContainer()->getAgentData()->get($aid)) {
+				$agent_ids[] = $aid;
+			}
+		}
+
 		$conversation = null;
 		if ($convo_id) {
 			$conversation = $em->find('DeskPRO:ChatConversation', $convo_id);
