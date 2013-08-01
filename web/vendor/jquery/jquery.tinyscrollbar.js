@@ -10,7 +10,7 @@
  * Date: 02 / 24 / 2011
  * Depends on library: jQuery
  */
-if ('ontouchend' in document) {
+if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 		(function($){
 		$.fn.tinyscrollbar = function(options){
 			var defaults = {
