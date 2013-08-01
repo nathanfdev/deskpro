@@ -1301,6 +1301,8 @@ class AgentsController extends AbstractController
 				// Remove their permissions
 				App::getDb()->delete('department_permissions', array('person_id' => $agent->getId()));
 				App::getDb()->delete('permissions', array('person_id' => $agent->getId()));
+				App::getDb()->delete('agent_team_members', array('person_id' => $agent->getId()));
+				App::getDb()->delete('ticket_filter_subscriptions', array('person_id' => $agent->getId()));
 			}
 
 			$this->em->persist($agent);
