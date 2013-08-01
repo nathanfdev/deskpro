@@ -1732,45 +1732,53 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 	bottom: 0;
 	left: 55px;
 }
-
-.scroll-viewport { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
-.scroll-content { position: absolute; left: 0; top: 0; right: 0; }
-.scrollbar { position: relative; float: right; width: 6px; z-index: 1000;}
-.scrollbar > .track { display: none; }
-.scroll-draw > .scrollbar > .track { display: block; }
-
-.scroll-draw:hover > .scrollbar .thumb {
-    -webkit-transition: background 500ms ease;
-    -moz-transition: background 500ms ease;
-    transition: background 500ms ease;
-
-    background-color: #686D75;
+.with-scroll-handler {
+	position: absolute;
+	overflow: hidden;
+	z-index: 1;
+	top: 0; right: 0; bottom: 0; left: 0;
+}
+.scroll-viewport {
+	position: absolute;
+	z-index: 1;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	width: 100%;
+	-webkit-transform: translateZ(0);
+	-moz-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	-o-transform: translateZ(0);
+	transform: translateZ(0);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-text-size-adjust: none;
+	-moz-text-size-adjust: none;
+	-ms-text-size-adjust: none;
+	-o-text-size-adjust: none;
+	text-size-adjust: none;
 }
 
-.scrollbar .thumb {
-	height: 20px; width: 5px; cursor: pointer; overflow: hidden; position: absolute; top: 0;
-	.border-radius(4px, 4px, 4px, 4px);
-    background-color: transparent;
-
-    .opacity(50);
-
-    -webkit-transition: background 600ms ease;
-    -moz-transition: background 600ms ease;
-    transition: background 600ms ease;
-
-    min-height: 54px !important;
+.with-scroll-handler > .iScrollLoneScrollbar {
+	.opacity(0);
+	transition: opacity .25s ease-in-out;
+	-moz-transition: opacity .25s ease-in-out;
+	-webkit-transition: opacity .25s ease-in-out;
 }
 
-.scrollbar .thumb .end { display:none; }
-.scrollbar.disable{ display: none; }
+.with-scroll-handler:hover > .iScrollLoneScrollbar {
+	.opacity(100);
+}
 
-.scrollbar-disabled .viewport { position: static; }
-.scrollbar-disabled .scrollbar { display: none; }
+.iScrollIndicator {
+	background:rgba(0,0,0,0.4) !important;
+}
 
-.ipad {
-	.scroll-viewport { overflow: auto; overflow-x: hidden; }
-	.scroll-content { }
-	.scrollbar { display: none; }
+.iScrollLoneScrollbar:hover > .iScrollIndicator {
+	width: 12px !important;
+	margin-left: -5px;
+	.rounded(25px);
 }
 
 #dp_devbar {

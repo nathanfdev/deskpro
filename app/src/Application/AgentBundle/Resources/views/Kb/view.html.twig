@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
@@ -21,11 +22,8 @@ pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %}
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-listing page-kb-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{{ layout.scroll_containers('page-listing page-kb-view') }}
+<div class="{% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
 
 <div class="delete-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.properties') }}</button>
@@ -416,6 +414,5 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ optionbox.section_end() }}
 {{ optionbox.end(phrase('agent.general.add_category')) }}
 
-{# scroll containers #}
-</div></div></div>
-{# /scroll containers #}
+</div>
+{{ layout.scroll_containers_end() }}

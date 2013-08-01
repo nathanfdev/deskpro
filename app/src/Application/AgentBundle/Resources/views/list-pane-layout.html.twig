@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 {% set _nothing %}{% block dp_declare %}{% endblock %}{% endset %}
 {% block top %}{% endblock %}
 <div class="list-pane-instance {{ add_classname }}">
@@ -7,12 +8,8 @@
 	<div class="list-pane-content">
 		{% block pane_content_outscroll %}{% endblock %}
 
-		<div class="layout-content with-scrollbar">
-		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-		<div class="scroll-viewport"><div class="scroll-content">
+		{{ layout.scroll_containers() }}
 			{% block pane_content %}{% endblock %}
-		</div>
-		</div>
-		</div>
+		{{ layout.scroll_containers_end() }}
 	</div>
 </div>

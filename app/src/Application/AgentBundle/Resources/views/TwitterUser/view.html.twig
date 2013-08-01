@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterUser';
 
@@ -12,12 +13,7 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_twitter_user', {'user_id': user
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-
-{# Page Containers #}
-<div class="profile layout-content with-scrollbar">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /Page Containers #}
+{{ layout.scroll_containers('page-listing') }}
 
 <header class="page-header twitter-user-page">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
@@ -221,8 +217,4 @@ pageMeta.baseId = '{{ baseId }}';
 	.tabbed article { padding: 10px; }
 </style>
 
-{# Page Containers #}
-</div>
-</div>
-</div>
-{# /Page Containers #}
+{{ layout.scroll_containers_end() }}

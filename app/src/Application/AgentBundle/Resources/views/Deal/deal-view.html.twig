@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Deal';
@@ -11,11 +12,8 @@ pageMeta.ajaxSaveUrl = '{{ path('agent_deal_ajaxsave', {'deal_id': deal.id}) }}'
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{# Page Containers #}
-<div class="profile layout-content with-scrollbar">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /Page Containers #}
+{{ layout.scroll_containers('page-listing') }}
+
 <form class="value-form" style="display:none">
 	<input type="hidden" name="agent_id" class="agent_id" value="{{deal.assigned_agent.id|default(0)}}" />
 </form>
@@ -148,14 +146,6 @@ pageMeta.baseId = '{{ baseId }}';
             </tr>
         </table>
 
-{# Page Containers #}
-</div>
-
-</div>
-</div>
-{# /Page Containers #}
-
-
 {{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
 	{{ optionbox.section_start('', 'status') }}
 		<li class="top parent-option item-open" data-item-id="0" data-full-title="{{ phrase('agent.general.open') }}">
@@ -187,3 +177,5 @@ pageMeta.baseId = '{{ baseId }}';
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Visibility') }}
+
+{{ layout.scroll_containers_end() }}

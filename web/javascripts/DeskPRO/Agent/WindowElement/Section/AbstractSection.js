@@ -271,7 +271,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		var scrollEl = $('.with-scrollbar', this.getListElement());
 		if (scrollEl.length && !scrollEl.is('.scroll-setup')) {
-			page.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(page, scrollEl, {
+			page.scrollerHandler = DeskPRO.Agent.ScrollerHandler.attachHandler(page, scrollEl, {
 				showEvent: 'show',
 				hideEvent: 'hide'
 			});

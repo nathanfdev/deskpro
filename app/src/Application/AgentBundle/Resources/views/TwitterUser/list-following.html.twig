@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers';
 
@@ -11,12 +12,7 @@ pageMeta.listUrl = '{{ path('agent_twitter_following_list', {'account_id': accou
 
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
-
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-listing">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{{ layout.scroll_containers('page-listing') }}
 
 <div class="layout-content twitter">
     <div class="content">
@@ -55,6 +51,4 @@ pageMeta.listUrl = '{{ path('agent_twitter_following_list', {'account_id': accou
 	{% endif %}
 </div>
 
-{# scroll containers #}
-</div></div></div>
-{# /scroll containers #}
+{{ layout.scroll_containers_end() }}

@@ -1,12 +1,10 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 pageMeta.title = 'Ticket Deleted';
 </script>
-{# Page Containers #}
-<div class="profile layout-content with-scrollbar {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
-	<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-	<div class="scroll-viewport"><div class="scroll-content">
-{# /Page Containers #}
+{{ layout.scroll_containers('profile') }}
+<div class="{% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
 
 <div class="ticket-hidden-bar deleted">
 	<article>
@@ -27,6 +25,5 @@ pageMeta.title = 'Ticket Deleted';
 	</article>
 </div>
 
-{# Page Containers #}
-</div></div></div>
-{# /Page Containers #}
+</div>
+{{ layout.scroll_containers_end() }}

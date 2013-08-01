@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Organization';
 pageMeta.title = {{ org.name|json_encode|raw }};
@@ -19,11 +20,8 @@ pageMeta.perms = {
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{# Page Containers #}
-<div class="profile org-profile profile layout-content with-scrollbar {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /Page Containers #}
+{{ layout.scroll_containers('profile org-profile') }}
+<div class="{% if not perms.can_edit %}perm-no-edit{% endif %}">
 
 <header class="page-header">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
@@ -92,7 +90,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ dp_widgets(baseId, 'organization', '', '', org_api) }}
 
-{# Page Containers #}
-</div></div>
 </div>
-{# /Page Containers #}
+{{ layout.scroll_containers_end() }}

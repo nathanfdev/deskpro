@@ -3213,7 +3213,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var scrollEls = $('.with-scrollbar', context);
 			if (scrollEls.length) {
 				scrollEls.each(function() {
-					new DeskPRO.Agent.ScrollerHandler(page, $(this), {
+					DeskPRO.Agent.ScrollerHandler.attachHandler(page, $(this), {
 						showEvent: 'show',
 						hideEvent: 'hide'
 					});

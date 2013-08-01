@@ -284,7 +284,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		var hasFooter = !!($('> section > footer', this.popoverOuter).length);
 		var scrollContentHeight = false;
 
-		$('.scroll-content', this.popoverOuter).each(function() {
+		$('.scroll-viewport', this.popoverOuter).each(function() {
 			var $this = $(this);
 			var height = $this.height();
 			if ($this.data('extra-height')) {
