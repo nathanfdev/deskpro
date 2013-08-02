@@ -276,14 +276,18 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			}
 		};
 
-		var updateSearch = function() {
+		var updateSearch = function(force) {
 			if (updateTimeout) {
 				window.clearTimeout(updateTimeout);
 				updateTimeout = null;
 			}
 
 			if (runningAjax) {
-				return;
+				if (force) {
+					runningAjax.abort();
+				} else {
+					return;
+				}
 			}
 
 			var input = $.trim(searchBox.val());
@@ -293,7 +297,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 				closeResults();
 			}
 
-			if (input == prevInput) {
+			if (input == prevInput && !force) {
 				return;
 			}
 
@@ -332,11 +336,17 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 				Orb.cancelEvent(ev);
 				var current = list.find('.dp-cursor');
 				eatNext = true;
+
+				// Selected item
 				if (current[0]) {
 					DeskPRO_Window.runPageRouteFromElement(current);
+					searchBox.blur();
+					closeResults();
+
+				// Or else just re-run the current search
+				} else {
+					updateSearch(true);
 				}
-				searchBox.blur();
-				closeResults();
 
 			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
 				Orb.cancelEvent(ev);
