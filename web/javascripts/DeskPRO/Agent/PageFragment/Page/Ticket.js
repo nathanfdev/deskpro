@@ -2248,11 +2248,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		} else {
 			txt.focus();
 		}
-
-		var sh = this.wrapper.find('.with-scroll-handler').data('scroll_handler');
-		if (sh) {
-			sh.scrollToElement(txt);
-		}
 	},
 
 

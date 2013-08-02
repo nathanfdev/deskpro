@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 %startScript%
 {% block pagemeta %}{% endblock %}
 %endScript%
@@ -8,7 +7,11 @@
 			<span class="new-category trigger-newcat"></span>
 			<h4>{{ phrase('agent.general.categories') }}</h4>
 		</header>
-		{{ layout.scroll_containers() }}
+		{# Page Containers #}
+		<div class="layout-content with-scrollbar" style="top: 21px">
+		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport"><div class="scroll-content" data-extra-height="21">
+		{# /Page Containers #}
 			<ul id="%baseId%_catlist">
 				<li class="category category-0" data-category="0">
 					<a>
@@ -24,7 +27,10 @@
 					</li>
 				{% endfor %}
 			</ul>
-	 	{{ layout.scroll_containers_end() }}
+	 	{# Page Containers #}
+        </div></div>
+        </div>
+        {# /Page Containers #}
 	</nav>
 	<div class="snippet-sections-wrap">
 		<div class="snippet-filter-options">
@@ -41,9 +47,16 @@
 				</select>
 			{% endif %}
 		</div>
-		{{ layout.scroll_containers() }}
-		<div id="%baseId%_snippet_list"></div>
-        {{ layout.scroll_containers_end() }}
+		{# Page Containers #}
+		<div class="layout-content with-scrollbar">
+		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport"><div class="scroll-content snippet-sections" id="%baseId%_snippet_list">
+		{# /Page Containers #}
+
+        {# Page Containers #}
+        </div></div>
+        </div>
+        {# /Page Containers #}
 	</div>
 
 	<div id="%baseId%_edit_snippet" class="snippet-editor-overlay" style="width: 720px; height: 420px; display: none;">

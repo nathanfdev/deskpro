@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
  <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewDeal';
 pageMeta.title = 'New Deal';
@@ -10,7 +9,11 @@ pageMeta.deal_id = 0;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{{ layout.scroll_containers('page-listing') }}
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-new-ticket page-new-content">
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
 
     <form id="{{baseId}}_newdeal">
 
@@ -269,4 +272,9 @@ pageMeta.baseId = '{{ baseId }}';
            <button class="save-trigger">{{ phrase('agent.general.apply') }}</button>
         </footer>
     </div>
-{{ layout.scroll_containers_end() }}
+
+
+{# scroll containers #}
+</div></div>
+</div>
+{# /scroll containers #}

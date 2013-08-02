@@ -1,5 +1,5 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title         = {{ticket.subject|json_encode|raw}};
@@ -54,8 +54,9 @@ pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
 
 </script>
-{{ layout.scroll_containers('page-ticket') }}
-<div class="{% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
 
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
 
@@ -824,8 +825,8 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	</div>
 </div>
 
-{{ layout.preload_content(baseId ~ '_person', page_preload.person) }}
-{{ layout.preload_content(baseId ~ '_person_organization', page_preload.person_organization) }}
+{{ agentui.preload_content(baseId ~ '_person', page_preload.person) }}
+{{ agentui.preload_content(baseId ~ '_person_organization', page_preload.person_organization) }}
 
-</div>
-{{ layout.scroll_containers_end() }}
+</div></div> {# /scroll #}
+</div>{# /layout #}

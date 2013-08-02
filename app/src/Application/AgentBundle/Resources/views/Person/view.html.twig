@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = {{ person.getDisplayName()|json_encode|raw }};
@@ -25,8 +24,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 {% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
-{{ layout.scroll_containers('profile') }}
-<div class="{% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
+{# Page Containers #}
+<div class="profile layout-content with-scrollbar {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /Page Containers #}
 
 {% if (not person.is_confirmed or not person.is_agent_confirmed) or (person.is_confirmed and person.is_agent_confirmed and has_email_validating) %}
 <div class="validating-bar">
@@ -161,6 +163,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 {# Page Containers #}
+</div>
 {% if with_warn_for_email %}
 <div class="full-tab-warn">
 	<div class="message">
@@ -171,6 +174,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 {% endif %}
-
 </div>
-{{ layout.scroll_containers_end() }}
+</div>
+{# /Page Containers #}

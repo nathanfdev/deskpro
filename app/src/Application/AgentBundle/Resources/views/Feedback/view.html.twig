@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.FeedbackView';
@@ -20,8 +19,9 @@ pageMeta.isValidating = true;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{{ layout.scroll_containers('page-listing page-feedback-view') }}
-<div class="{% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="layout-content full-page page-feedback-view with-scrollbar {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content"related-content>
 
 <div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	This feedback has been deleted <button class="clean-gray xxx-small undelete">Undelete</button>
@@ -254,5 +254,6 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.category_ob(feedback_categories, phrase('agent.general.type'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
-</div>
-{{ layout.scroll_containers_end() }}
+{# scroll containers #}
+</div></div></div>
+{# /scroll containers #}

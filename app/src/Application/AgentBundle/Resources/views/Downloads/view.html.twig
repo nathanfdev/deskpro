@@ -1,4 +1,3 @@
-{% import 'AgentBundle:Common:agent-macros.html.twig' as layout %}
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.DownloadsView';
@@ -20,8 +19,11 @@ pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %}
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{{ layout.scroll_containers('page-listing page-download-view') }}
-<div class="{% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-listing page-download-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
 
 <div class="delete-notice" {% if download.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.category') }}</button>
@@ -284,5 +286,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.category_ob(download_categories, phrase('agent.publish.download_category'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
-</div>
-{{ layout.scroll_containers_end() }}
+</div></div> {# scrollbar divs #}
+</div> {# main layout div #}
