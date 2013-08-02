@@ -668,8 +668,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		// so the "empty reply" isnt processed as a reply
 		$did_add_message = false;
 		if (!isset($this->reply_actions['no_reply']) && ($has_message || ($has_reply_codes && !$has_message))) {
+
+			$this->logMessage('[TicketGatewayProcessor] Checking for dupe message: ' . $message->getMessageHash());
+
 			$did_add_message = true;
-			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
+			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket, 10800, $this->logger)) {
 				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
 				$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
 
