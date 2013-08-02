@@ -42,7 +42,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 	public $on_run = false;
 
 	const PERPAGE = 100;
-	const PERBATCH = 200;
+	const PERBATCH = 5;
 
 	public static function getTitle()
 	{
@@ -61,7 +61,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		$count = count($ticket_ids);
 		$pages = ceil($count / self::PERPAGE);
-		$batches = ceil($pages / 5);
+		$batches = ceil($pages / self::PERBATCH);
 
 		$this->db->replace('import_datastore', array(
 			'typename' => 'zd_tickets_cache_rerun_pages',
@@ -100,6 +100,7 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 
 		$all_ticket_ids = $ticket_ids;
 		$ticket_ids = array_chunk($ticket_ids, self::PERPAGE);
+		$page_ticket_ids = array();
 
 		$reqs = array();
 
@@ -111,11 +112,15 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 				continue;
 			}
 
+			$page_ticket_ids = array_merge($page_ticket_ids, $ticket_ids[$idx]);
+
 			$reqs[$page] = array(
 				'tickets/show_many',
 				array('per_page' => self::PERPAGE, 'ids' => implode(',', $ticket_ids[$idx]))
 			);
 		}
+
+		$this->logMessage("Fetching page info with " . count($reqs) . " requests");
 
 		$results = $this->zd->sendGetMulti($reqs);
 
@@ -132,6 +137,8 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 				));
 			}
 		}
+
+		$this->logMessage("Finished requests with " . count($retry_pages) . " to retry");
 
 		$try = 0;
 		while ($try++ < 6 and $retry_pages) {
@@ -152,8 +159,12 @@ class TicketsRerunCacheStep extends AbstractZendeskStep
 			}
 		}
 
+		$this->logMessage("Finished requests retries, getting audits for " . count($page_ticket_ids) . " tickets");
+
 		// Also get audits
 		sleep(30);
-		$this->zd->cacheManyTicketAudits($all_ticket_ids);
+		$this->zd->cacheManyTicketAudits($page_ticket_ids);
+
+		$this->logMessage("Finished getting audits");
 	}
 }
