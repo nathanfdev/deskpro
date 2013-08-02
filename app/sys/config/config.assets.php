@@ -608,7 +608,7 @@ $CONFIG['user_vendors'] = array(
 
 $CONFIG['agent_css1'] = array(
 	'out' => 'css/agent-pack1.css',
-	'post_filters' => array('image_gradients', 'smartsprites', 'css'),
+	'post_filters' => array('smartsprites', 'css', 'image_gradients'),
 	'references' => array(
 		'agent_interface_css1',
 	)
@@ -616,7 +616,7 @@ $CONFIG['agent_css1'] = array(
 
 $CONFIG['agent_css2'] = array(
 	'out' => 'css/agent-pack2.css',
-	'post_filters' => array('image_gradients', 'smartsprites', 'css'),
+	'post_filters' => array('smartsprites', 'css', 'image_gradients'),
 	'references' => array(
 		'agent_interface_css2',
 	)
