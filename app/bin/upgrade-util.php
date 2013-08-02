@@ -2546,9 +2546,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->out("<prompt>Before we install the updates, you should generate a back up first. You can back up both your files and your database.\n</prompt>");
 
-		$db_backup_path   = $this->upgrade->getBackupDir() . DIRECTORY_SEPARATOR . date('Y-m-d') . '-database.zip';
-		$file_backup_path = $this->upgrade->getBackupDir() . DIRECTORY_SEPARATOR . date('Y-m-d') . '-files.zip';
-
 		$this->upgrade->log("(Gathering input)");
 		while(true) {
 			$this->out("Do you want to back up your current source files? ", false);
@@ -2560,13 +2557,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->out();
 			$this->out("<comment>Backup files: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
 			$this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
-
-			if ($this->answer_backup_files && is_file($file_backup_path)) {
-				$this->out("<warn>WARNING: File backup for today already exists. It will be overwritten if you continue.</warn>");
-			}
-			if ($this->answer_backup_db && is_file($db_backup_path)) {
-				$this->out("<warn>WARNING: Database backup for today already exists. It will be overwritten if you continue.</warn>");
-			}
 
 			$this->out();
 			$this->out("<prompt>Are you ready to continue?\nAnswer 'n' to re-input backup options.</prompt>");
@@ -2582,13 +2572,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$fileutil = new FilesystemUtil();
 		$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
-
-		if (is_file($db_backup_path)) {
-			$fileutil->remove($db_backup_path);
-		}
-		if (is_file($file_backup_path)) {
-			$fileutil->remove($file_backup_path);
-		}
 
 		#------------------------------
 		# Backup files
@@ -2610,7 +2593,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->revert_checkpoint = 'files';
 			$this->out("<info>DONE</info>");
 
-			$this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($file_backup_path)), $file_backup_path));
+			$this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($this->file_backup)), $this->file_backup));
 		}
 
 		#------------------------------
@@ -2645,7 +2628,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 				$this->errorExit("There was a problem backing up your database.");
 			}
 
-			$this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($db_backup_path)), $db_backup_path));
+			$this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($this->db_backup)), $this->db_backup));
 
 			$this->revert_checkpoint = 'db';
 			$this->out("<info>DONE</info>");
