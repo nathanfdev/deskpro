@@ -1512,6 +1512,97 @@ class Strings
 		return $value;
 	}
 
+	/**
+	 * Parses out data URLs in <img> tags and replaces them with unique tokens you can later
+	 * str_replace with real paths.
+	 *
+	 * Returns an array:
+	 *     array('string' => $string, 'files' => array(array('token' => 'xxx', 'type' => 'mime/type', 'data' => 'xxx')));
+	 *
+	 * If $raw is enabled the format changes slightly:
+	 *    array('string' => $string, 'files' => array(array('token' => 'xxx', 'raw_data' => 'xxx')));
+	 *
+	 * @param string  $string The string to process
+	 * @param boolean $raw    Dont base64 decode the images, return the raw string
+	 * @return array
+	 */
+	public static function parseImageDataUrls($string, $raw = false)
+	{
+		$matches = null;
+		if (!preg_match_all('#<img[^>]*/?>#i', $string, $matches[0])) {
+			return array('string' => $string, 'tokens' => array());
+		}
+
+		$files = array();
+
+		foreach ($matches[0] as $m) {
+			$url_m = null;
+			if (!preg_match('#src=(?:\'|")(data:[A-Za-z0-9+/=:;,]+)#i', $m[0], $url_m)) {
+				continue;
+			}
+
+			$tok = '__DP_TOK_' . self::random(20, self::CHARS_ALPHANUM_IU) . '__';
+
+			$new_str = str_replace($url_m[1], $tok, $m[0]);
+
+			$string = str_replace(
+				$m[0],
+				$new_str,
+				$string
+			);
+
+			if ($raw) {
+				$files[] = array(
+					'token'    => $tok,
+					'raw_data' => $url_m[1]
+				);
+			} else {
+				$info = self::decodeDataUrl($url_m[1]);
+				$files[] = array(
+					'token' => $tok,
+					'type'  => $info['type'],
+					'data'  => $info['data']
+				);
+				unset($info);
+			}
+		}
+
+		return array(
+			'string' => $string,
+			'files'  => $files
+		);
+	}
+
+
+	/**
+	 * Takes a data url and returns array('type' => 'mime/type', 'data' => 'binary_data').
+	 * Returns null on failure.
+	 *
+	 * Data URLs look like:
+	 *     data:image/png;base64,datahere
+	 *
+	 * @param string $data_url
+	 * @return array|null
+	 */
+	public static function decodeDataUrl($data_url)
+	{
+		if ($data_url[0] === ' ') {
+			$data_url = trim($data_url);
+		}
+
+		if (substr($data_url, 0, 5) == 'data:') {
+			$data_url = substr($data_url, 5);
+		}
+
+		$colon_pos  = strpos($data_url, ';');
+		$comma_pos  = strpos($data_url, ',');
+		$mime_type  = substr($data_url, 0, $colon_pos);
+		$data      = substr($data_url, $comma_pos+1);
+		$data      = @base64_decode($data);
+
+		return array('type' => $mime_type, 'data' => $data);
+	}
+
 
 	/**
 	 * Just like explode() except it runs each item through trim as well.

@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Orb\Data\ContentTypes;
 use Symfony\Component\HttpFoundation\Response;
 
 use Application\DeskPRO\App;
@@ -59,6 +60,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Util;
 
 use FineDiff;
+use Zend\Http\Header\ContentType;
 
 /**
  * Handles ticket searches
@@ -465,9 +467,32 @@ class KbController extends AbstractController
 
 			case 'content':
 
+				$content_info = Strings::parseImageDataUrls($this->in->getCleanValue('content', 'string', null, array('noclean' => true)));
+
+				if (!empty($content_info['files'])) {
+					foreach ($content_info['files'] as $file_info) {
+						$file_ext = ContentTypes::findExtensionForContentType($file_info['type'], false);
+						if (!$file_ext) {
+							continue;
+						}
+
+						$blob = $this->container->getBlobStorage()->createBlobRecordFromString(
+							$file_info['data'],
+							"file.$file_ext",
+							$file_info['type'],
+							array()
+						);
+						$blob->is_media_upload = true;
+
+						$this->em->persist($blob);
+
+						$content_info['string'] = str_replace($file_info['token'], $blob->getDownloadUrl(true, true), $content_info['string']);
+					}
+				}
+
 				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
-				$article['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
+				$article['content'] = $content_info['string'];
 
 				$rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
 				$rev['content'] = $article['content'];
