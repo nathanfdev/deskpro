@@ -28,11 +28,11 @@
 						</a>
 					</td>
 					<td nowrap="nowrap">{{ log.area }}</td>
-					<td nowrap="nowrap" {% if not log.is_success %}style="background-color: #FFB2AF;"{% endif %}>{% if log.is_success %}Yes{% else %}NO{% endif %}</td>
+					<td nowrap="nowrap" {% if not log.is_success %}style="background-color: #FFB2AF;"{% endif %}>{% if log.is_success %}Yes {% if log.via_cookie %}(via cookie){% endif %}{% else %}NO{% endif %}</td>
 					<td nowrap="nowrap">{{ log.ip_address }}</td>
 					<td nowrap="nowrap">{{ log.hostname }}</td>
 					<td>{{ log.user_agent }}</td>
-					<td nowrap="nowrap">{{ log.date|date('fulltime') }}</td>
+					<td nowrap="nowrap">{{ log.date_created|date('fulltime') }}</td>
 				</tr>
 				{% if log.note %}
 					<tr>

@@ -869,7 +869,7 @@ $collection->add('admin_agents_loginas', new Route(
 	array('agent_id' => '\\d+')
 ));
 
-$collection->add('admin_agents_loginas', new Route(
+$collection->add('admin_agents_login_logs', new Route(
 	'/agents/login-log/{agent_id}',
 	array('_controller' => 'AdminBundle:Agents:loginLogs', 'agent_id' => '0'),
 	array(),

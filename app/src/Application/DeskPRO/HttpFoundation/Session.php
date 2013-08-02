@@ -92,6 +92,20 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 				// Set last login date
 				App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+
+				// Insert log
+				if ($person->is_agent) {
+					App::getDb()->insert('login_log', array(
+						'person_id'    => $person_id,
+						'area'         => DP_INTERFACE,
+						'is_success'   => 1,
+						'ip_address'   => App::getRequest()->getClientIp(),
+						'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+						'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+						'date_created' => date('Y-m-d H:i:s'),
+						'via_cookie'   => 1
+					));
+				}
 			}
 		}
 

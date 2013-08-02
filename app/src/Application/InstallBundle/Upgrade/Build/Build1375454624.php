@@ -29,28 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupWeekly extends AbstractJob
+class Build1375454624 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 604800;
-
 	public function run()
 	{
-		$date = date('Y-m-d H:i:s', strtotime('-30 days'));
-
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM login_log
-			WHERE date_created < ?
-		", array($date));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num old login logs");
-		}
+		$this->out("Fix for login_log.user_agent being too short, add login_log.via_cookie");
+		$this->execMutateSql("ALTER TABLE login_log ADD via_cookie TINYINT(1) NOT NULL, CHANGE user_agent user_agent VARCHAR(255) NOT NULL");
 	}
 }
