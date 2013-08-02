@@ -533,13 +533,19 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $field
 	 * @return int
 	 */
-	public function deleteIn($table, array $ids, $field = 'id')
+	public function deleteIn($table, array $ids, $field = 'id', $not = false)
 	{
 		if (!$ids) {
 			return 0;
 		}
 
-		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` IN (" . $this->quoteIn($ids) . ")");
+		if ($not) {
+			$not = ' NOT ';
+		} else {
+			$not = '';
+		}
+
+		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ")");
 	}
 
 
