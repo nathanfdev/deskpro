@@ -1713,10 +1713,11 @@ class TicketController extends AbstractController
 		$message->message = preg_replace("/$embed_code/i", '', $message->message);
 		$this->em->persist($message);
 
-		$this->em->flush();
-
 		// need this to be removed, but don't want to trigger a change log for it as we're inserting it manually
 		$message->attachments->removeElement($attachment);
+
+		$this->container->getBlobStorage()->deleteBlobRecord($attachment->blob);
+		$this->db->delete('tickets_attachments', array('id' => $attachment->id));
 
 		$ticket_attachments = array();
 		$ticket_message_attachments = array();
@@ -1724,6 +1725,8 @@ class TicketController extends AbstractController
 			$ticket_attachments[$message_attach->id] = $message_attach;
 			$ticket_message_attachments[$message->id][] = $message_attach->id;
 		}
+
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true,
