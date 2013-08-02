@@ -611,7 +611,7 @@ class ImportTicket
 		$add_logs      = array();
 		$add_datastore = array();
 
-		$audits_raw = $this->importer->zd->sendGetAll("tickets/$ticket_id/audits", 'audits', array('per_page' => 100));
+		$audits_raw = $this->importer->zd->getTicketAudits($ticket_id);
 		$audits = array();
 
 		// Format into a "flat" structure
