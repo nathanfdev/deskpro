@@ -155,15 +155,7 @@ class AgentChat
 	{
 		$em = App::getOrm();
 
-		$agent_ids_raw = $agent_ids;
-		$agent_ids = array();
-
-		foreach ($agent_ids_raw as $aid) {
-			$agent = App::getContainer()->getAgentData()->get($aid);
-			if ($agent && !$agent->is_deleted) {
-				$agent_ids[] = $aid;
-			}
-		}
+		$agent_ids = App::getContainer()->getAgentData()->confirmAgentIds($agent_ids);
 
 		$conversation = null;
 		if ($convo_id) {

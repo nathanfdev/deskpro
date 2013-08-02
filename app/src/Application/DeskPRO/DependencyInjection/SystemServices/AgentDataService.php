@@ -155,6 +155,69 @@ class AgentDataService
 
 
 	/**
+	 * @return bool
+	 */
+	public function has($id)
+	{
+		$this->preload();
+
+		return isset($this->agents[$id]);
+	}
+
+
+	/**
+	 * Get an array of agents by ids
+	 *
+	 * @param array $ids
+	 * @return array
+	 */
+	public function getByIds($ids)
+	{
+		$this->preload();
+
+		$agents = array();
+
+		foreach ($ids as $id) {
+			$id = (int)$id;
+			if (isset($this->agents[$id])) {
+				$agents[$id] = $this->agents[$id];
+			}
+		}
+
+		return $agents;
+	}
+
+
+	/**
+	 * Returns an array of valid agent IDs in $ids. Optionally
+	 * specify $invalid and all invalid IDs will be put into it.
+	 *
+	 * @param array $ids
+	 * @param null $invalid
+	 * @return array
+	 */
+	public function confirmAgentIds(array $ids, &$invalid_ids = null)
+	{
+		$this->preload();
+
+		$valid_ids = array();
+		if (!isset($invalid_ids) || !$invalid_ids) {
+			$invalid_ids = array();
+		}
+
+		foreach ($ids as $id) {
+			if (isset($this->agents[$id])) {
+				$valid_ids[] = $id;
+			} else {
+				$invalid_ids[] = $id;
+			}
+		}
+
+		return $ids;
+	}
+
+
+	/**
 	 * @param string $email
 	 * @return \Application\DeskPRO\Entity\Person
 	 */

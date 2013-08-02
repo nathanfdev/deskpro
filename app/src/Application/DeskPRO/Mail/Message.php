@@ -126,6 +126,13 @@ class Message extends \Orb\Mail\Message
 				$this->template_vars['to_email']   = $this->set_to['email'];
 				$this->template_vars['to_name']    = !empty($this->set_to['name']) ? $this->set_to['name'] : $this->set_to['email'];
 				$this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'] . ' <' . $this->set_to['email'] . '>' : $this->set_to['email'];
+
+				if (strpos($this->template, ':emails_agent:') !== false) {
+					$agent = App::getContainer()->getAgentData()->getByEmail($this->set_to['email']);
+					if (!$agent) {
+						throw new \InvalidArgumentException("Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
+					}
+				}
 			}
 
 			if (!$this->set_to_person && $this->template_vars['to_email']) {
