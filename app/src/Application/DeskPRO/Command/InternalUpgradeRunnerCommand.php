@@ -118,6 +118,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		if (!$write_status('runner_start')) {
 			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', 1);
 			$output->write('<error>Could not write upgrade status file to root dir: ' . DP_WEB_ROOT . '</error>');
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 			return 1;
 		}
 
@@ -130,6 +131,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$write_status("error_unknown_binary", array('php'));
 			$write_status("error_basic_checks_fail");
 			$output->write('<error>Could not find path to PHP</error>');
+			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 			return 1;
 		}
 
@@ -162,6 +164,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 				$write_status("error_unknown_binary", array('php'));
 				$write_status("error_basic_checks_fail");
 				$output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
+				@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 				return 1;
 			}
 		}
