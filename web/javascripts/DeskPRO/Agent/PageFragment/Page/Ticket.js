@@ -1777,11 +1777,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if (message.hasClass('note-message')) {
 					menuElement.find('li.set-as-message').show();
 					menuElement.find('li.set-as-note').hide();
-					menuElement.find('li.delete-link').show();
 				} else {
 					menuElement.find('li.set-as-message').hide();
 					menuElement.find('li.set-as-note').show();
-					menuElement.find('li.delete-link').hide();
 				}
 
 				if (message.hasClass('with-attach')) {

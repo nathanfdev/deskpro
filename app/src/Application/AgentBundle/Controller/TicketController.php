@@ -1598,10 +1598,6 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		if (!$message['is_agent_note']) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
 		if (count($ticket->messages) == 1) {
 			$this->db->replace('tickets_deleted', array(
 				'ticket_id' => $ticket->id,

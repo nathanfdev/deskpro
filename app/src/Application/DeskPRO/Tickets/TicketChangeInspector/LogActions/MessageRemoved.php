@@ -69,6 +69,7 @@ class MessageRemoved extends AbstractLogAction
 		$details['person_name'] = $this->message->person->getDisplayName();
 		$details['is_agent_note'] = $this->message->is_agent_note;
 		$details['is_agent_message'] = $this->message->person->is_agent;
+		$details['old_message'] = $this->message->getMessageHtml();
 
 		return $details;
 	}

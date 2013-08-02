@@ -136,11 +136,18 @@
 	{% else %}
 		<span class="type">Message deleted</span>
 	{% endif %}
-	<span class="old-val">ID {{log.details.message_id}}</span>
+	<span class="new-val {% if log.details.old_message %}expand{% endif %}" data-set=".set-orig">ID {{log.details.message_id}}</span>
 	{% if log.details.is_agent_message %}
 		(written by agent {{ log.details.person_name }})
 	{% else %}
 		(written by {{ log.details.person_name }}, ID {{ log.details.person_id }})
+	{% endif %}
+	{% if log.details.old_message %}
+		<div class="expand-set set-orig" style="display: none">
+			<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">Old message:<br/>
+				<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.old_message }}</textarea>
+			</div>
+		</div>
 	{% endif %}
 {% elseif log.action_type == 'changed_priority' %}
 	<span class="type">{{ phrase('agent.general.priority') }}</span> {{ phrase('agent.tickets.changed_from') }}
