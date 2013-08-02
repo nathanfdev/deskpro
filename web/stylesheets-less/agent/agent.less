@@ -2304,21 +2304,44 @@ ul.pane-tabs {
 				margin: 7px 6px 0 0;
 				font-style: normal;
 
+				&.ok, &.warning, &.fail  {
+					padding: 3px 5px;
+					.opacity(18);
+				}
+
+				&.ok:hover, &.warning:hover, &.fail:hover,
+				&.ok.not-empty, &.warning.not-empty, &.fail.not-empty {
+					.opacity(100);
+				}
+
+				&.ok.not-empty {
+					border: 1px solid darken(#abf3ae, 20%);
+				}
+				&.warning.not-empty{
+					border: 1px solid darken(#f3cf8d, 20%);
+				}
+				&.fail.not-empty {
+					border: 1px solid darken(#de5949, 20%);
+				}
+
 				&.ok {
 					background-color: #abf3ae;
+					border: 1px solid #abf3ae;
 					color: #000;
 					margin-right: 4px;
 				}
 
 				&.warning {
 					background-color: #f3cf8d;
+					border: 1px solid #f3cf8d;
 					color: #000;
 					margin-right: 4px;
 				}
 
 				&.fail {
 					background-color: #de5949;
-					color: #000;
+					border: 1px solid #de5949;
+					color: #fff;
 					margin-right: 4px;
 				}
 			}

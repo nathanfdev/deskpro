@@ -175,9 +175,9 @@
 							<div class="item" data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id}) }}">
 								<h3>{{ sla.title }}</h3>
 								<div class="float-side">
-									<em data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'fail'}) }}" class="counter list-counter fail {% if sla_counts[sla.id].fail > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_fail">{{ sla_counts[sla.id].fail|default(0) }}</em>
-									<em data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'warning'}) }}" class="counter list-counter warning {% if sla_counts[sla.id].warning > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_warning">{{ sla_counts[sla.id].warning|default(0) }}</em>
-									<em data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'ok'}) }}" class="counter list-counter ok {% if sla_counts[sla.id].ok > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_ok">{{ sla_counts[sla.id].ok|default(0) }}</em>
+									<em style="cursor:pointer" title="Tickets that have already failed the SLA requirements" data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'fail'}) }}" class="counter list-counter fail {% if sla_counts[sla.id].fail > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_fail">{{ sla_counts[sla.id].fail|default(0) }}</em>
+									<em style="cursor:pointer" title="Tickets that are in danger of failing the SLA requirements" data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'warning'}) }}" class="counter list-counter warning {% if sla_counts[sla.id].warning > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_warning">{{ sla_counts[sla.id].warning|default(0) }}</em>
+									<em style="cursor:pointer" title="Tickets that are currently passing the SLA requirements but are still unresolved" data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id, 'sla_status': 'ok'}) }}" class="counter list-counter ok {% if sla_counts[sla.id].ok > 0 %}not-empty{% endif %}" id="ticket_sla_{{sla.id}}_count_ok">{{ sla_counts[sla.id].ok|default(0) }}</em>
 								</div>
 							</div>
 						</li>
