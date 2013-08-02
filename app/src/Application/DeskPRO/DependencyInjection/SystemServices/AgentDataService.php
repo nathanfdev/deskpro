@@ -213,7 +213,7 @@ class AgentDataService
 			}
 		}
 
-		return $ids;
+		return $valid_ids;
 	}
 
 
