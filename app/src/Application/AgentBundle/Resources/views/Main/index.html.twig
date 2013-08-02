@@ -4,7 +4,30 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
-	<meta name="viewport" content="height=device-height, width=1180, user-scalable=yes" />
+	<meta name="viewport" content="height=height, width=device-width, user-scalable=yes, initial-scale=1.0" id="dp_meta_viewport" />
+	<script type="text/javascript">
+		(function() {
+			var h = 'height';
+			var w = 'device-width';
+			var d = false;
+
+			if (window.innerWidth < 1200) {
+				w = '1200';
+				d = true;
+			}
+			if (window.innerHeight < 800) {
+				h = 800;
+				d = true;
+			}
+
+			if (d) {
+				var vp = document.getElementById('dp_meta_viewport');
+				if (vp) {
+					vp.setAttribute('content','height='+h+', width='+w+', user-scalable=yes, initial-scale=1.0');
+				}
+			}
+		})();
+	</script>
 
 	<style type="text/css">
 		body,html {
