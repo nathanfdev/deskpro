@@ -1520,6 +1520,27 @@ class Arrays
 
 
 	/**
+	 * Replace all $find values in the array with $replace.
+	 *
+	 * @param array $value
+	 * @param string $find
+	 * @param string $replace
+	 * @return array
+	 */
+	public static function replaceValue(array $value, $find, $replace)
+	{
+		$new = $value;
+		foreach ($new as &$v) {
+			if ($v == $find) {
+				$v = $replace;
+			}
+		}
+
+		return $new;
+	}
+
+
+	/**
 	 * Take an array of arrays, and merge each sub-array into one big one.
 	 *
 	 * <code>
