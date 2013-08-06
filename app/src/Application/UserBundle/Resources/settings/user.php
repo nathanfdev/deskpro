@@ -19,5 +19,5 @@
 	'user.register_captcha' => true,
 	'user.always_show_captcha' => false,
 	'user.feedback_notify_comments' => true,
-	'user.kb_subscriptions' => false
+	'user.kb_subscriptions' => true
 );
