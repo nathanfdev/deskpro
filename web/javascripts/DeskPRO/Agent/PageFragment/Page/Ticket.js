@@ -2227,6 +2227,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var txt = this.getReplyTextArea();
 
 		if (txt.data('redactor')) {
+
+			try {
+				txt.data('redactor').restoreSelection();
+				txt.data('redactor').setBuffer();
+			} catch (e) {}
+
 			var html = DP.convertTextToWysiwygHtml(text, true);
 			html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 			html = html.replace(/^<p>/, '');
