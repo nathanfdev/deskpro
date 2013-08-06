@@ -1759,6 +1759,17 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     transition: background 600ms ease;
 
     min-height: 54px !important;
+	left: 0px;
+}
+
+.scrollbar .track {
+	margin-left: -7px;
+}
+
+.scrollbar .track:hover .thumb, .scrollbar .track.dragging .thumb {
+	left: -9px;
+	width: 14px;
+	.rounded(10px);
 }
 
 .scrollbar .thumb .end { display:none; }

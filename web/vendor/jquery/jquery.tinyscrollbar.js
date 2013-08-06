@@ -353,6 +353,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					$( document ).bind( 'mousemove', drag );
 					$( document ).bind( 'mouseup', end );
 					oThumb.obj.bind( 'mouseup', end );
+					oTrack.obj.addClass('dragging');
 				}
 				return false;
 			};
@@ -389,6 +390,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				$(document).unbind('mousemove', drag);
 				$(document).unbind('mouseup', end);
 				oThumb.obj.unbind('mouseup', end);
+				oTrack.obj.removeClass('dragging');
 
 				if (iScroll == oContent[options.axis] - oViewport[options.axis]) {
 					oScrollbar.obj.addClass('stuck-btm');
