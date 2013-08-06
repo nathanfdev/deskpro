@@ -373,6 +373,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		if (this.countTotal < 1) {
 			this.getEl('is_results').hide();
 			this.getEl('no_results').show();
+
+			this.getEl('total_count').text(this.countTotal);
+			this.wrapper.find('.results-count-display').text(this.countTotal);
 		} else {
 
 			if (!this.resultsHelper) {
