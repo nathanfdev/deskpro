@@ -287,6 +287,8 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$logs_block_info = $this->_getTicketLogsBlockInfo($ticket);
+
 		$vars = array(
 			'agents'                     => $agents,
 			'agent_teams'                => $agent_teams,
@@ -308,7 +310,6 @@ class TicketController extends AbstractController
 			'edit_person'                => $edit_person,
 
 			'last_message_id'            => $ticket_messages_blockcache['last_message_id'],
-			'last_log_id'                => $ticket_messages_blockcache['last_log_id'],
 			'message_count'              => $ticket_messages_blockcache['message_count'],
 			'message_page_count'         => $ticket_messages_blockcache['message_page_count'],
 			'message_page'               => $ticket_messages_blockcache['message_page'],
@@ -323,6 +324,7 @@ class TicketController extends AbstractController
 			'show_related_content'       => $show_related_content,
 
 			'ticket_messages_block'      => $ticket_messages_block,
+			'logs_block'                 => $logs_block_info['rendered'],
 
 			'ticket_deleted'             => $hidden_data['ticket_deleted'],
 			'hard_delete_time'           => $hidden_data['hard_delete_time'],
@@ -405,6 +407,68 @@ class TicketController extends AbstractController
 		return $ticket_perms;
 	}
 
+	public function loadTicketLogsAction($ticket_id)
+	{
+		$page       = $this->in->getUint('page') ?: 1;
+		$filter     = $this->in->getString('filter');
+		$up_to_page = $this->in->getBool('up_to_page');
+
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$info = $this->_getTicketLogsBlockInfo($ticket, $page, $filter == 'all' ? null :  $filter, $up_to_page);
+
+		return $this->createResponse($info['rendered']);
+	}
+
+	protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false)
+	{
+		if ($filter) {
+			// 50 when filtered because entries are "loose"
+			$per_page = 50;
+		} else {
+			// Only 10 when not filtered because entries are grouped,
+			// so 10 is typically more like 50
+			$per_page = 10;
+		}
+
+		$options = array();
+		$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket, $options);
+
+		$counts = $this->em->getRepository('DeskPRO:TicketLog')->countTicketLogTypes($all_ticket_logs);
+
+		if ($filter) {
+			$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->filterTicketLogs($all_ticket_logs, $filter);
+		} else {
+			$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->groupTicketLogs($all_ticket_logs);
+		}
+
+		$all_ticket_logs = array_chunk($all_ticket_logs, $per_page);
+
+		if ($up_to_page) {
+			$ticket_logs = array();
+			for ($i = 0; $i < $page; $i++) {
+				$p = isset($all_ticket_logs[$page-1]) ? $all_ticket_logs[$page-1] : array();
+				$ticket_logs = array_merge($ticket_logs, $p);
+			}
+		} else {
+			$ticket_logs = isset($all_ticket_logs[$page-1]) ? $all_ticket_logs[$page-1] : array();
+		}
+
+
+		$info = array();
+		$info['ticket']      = $ticket;
+		$info['num_pages']   = count($all_ticket_logs);
+		$info['cur_page']    = $page;
+		$info['ticket_logs'] = $ticket_logs;
+		$info['filter']      = $filter;
+		$info['counts']      = $counts;
+
+		$rendered = $this->renderView('AgentBundle:Ticket:ticket-logs.html.twig', $info);
+		$info['rendered'] = $rendered;
+
+		return $info;
+	}
+
 	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page, array $ticket_attachments = null, $is_pdf = false)
 	{
 		$per_page = 25;
@@ -416,6 +480,7 @@ class TicketController extends AbstractController
 			ORDER BY id DESC
 		", array($ticket->getId()));
 
+		$message_numbers = array();
 		if ($all_message_ids) {
 			$message_numbers = array_combine(array_values($all_message_ids), array_reverse(array_keys($all_message_ids)));
 		}
@@ -450,24 +515,7 @@ class TicketController extends AbstractController
 			$ticket_message_attachments[$attach['message']->getId()][] = $attach->getId();
 		}
 
-		$ticket_logs_raw = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
-		$ticket_logs = array();
-		foreach ($ticket_logs_raw as $l) {
-			if ($l->parent && isset($ticket_logs[$l->parent->id])) {
-				if (!isset($ticket_logs[$l->parent->id])) {
-					$ticket_logs[$l->parent->id] = $ticket_logs_raw[$l->parent->id];
-				}
-
-				$ticket_logs[$l->parent->id]->grouped[$l->id] = $l;
-			} else {
-				$ticket_logs[$l->id] = $l;
-			}
-		}
-
-		$ticket_message_logs = array();
-
 		$last_message_id = 0;
-		$last_log_id = 0;
 
 		$ticket_messages_num = array();
 		foreach ($ticket_messages as $m) {
@@ -476,44 +524,6 @@ class TicketController extends AbstractController
 
 			if ($m['id'] > $last_message_id) {
 				$last_message_id = $m['id'];
-			}
-		}
-		foreach ($ticket_logs as $l) {
-			if ($l['id'] > $last_log_id) {
-				$last_log_id = $l['id'];
-			}
-		}
-
-		// Sort log items into messages
-		// - $ticket_message_logs[123] is an array of log items that should be displayed before it
-		// - $ticket_message_logs[after] is an array of remaining log items (ie after last message)
-		$log_keys = array_keys($ticket_logs);
-
-		$before_m = null;
-		foreach ($ticket_messages as $m) {
-			if (!$before_m) {
-				$before_m = $m;
-				continue;
-			}
-
-			foreach ($log_keys as $thisk => $k) {
-				$l = $ticket_logs[$k];
-
-				if ($l['date_created'] >= $before_m['date_created'] && $l['date_created'] < $m['date_created']) {
-					$ticket_message_logs[$before_m['id']][] = $l['id'];
-					unset($log_keys[$thisk]);
-				}
-			}
-
-			$before_m = $m;
-		}
-
-		if ($log_keys) {
-			$ticket_message_logs['after'] = array();
-			foreach ($log_keys as $k) {
-				$l = $ticket_logs[$k];
-				$ticket_message_logs['after'][] = $l['id'];
-				unset($log_keys[$k]);
 			}
 		}
 
@@ -535,8 +545,6 @@ class TicketController extends AbstractController
 				'ticket_messages_num'        => $ticket_messages_num,
 				'ticket_message_attachments' => $ticket_message_attachments,
 				'ticket_attachments'         => $ticket_attachments,
-				'ticket_message_logs'        => $ticket_message_logs,
-				'ticket_logs'                => $ticket_logs,
 				'all_feedback'               => $all_feedback,
 				'message_page'               => $page,
 				'message_count'              => $message_count,
@@ -569,7 +577,6 @@ class TicketController extends AbstractController
 			'message_page'               => $page,
 			'message_page_count'         => $num_pages,
 			'last_message_id'            => $last_message_id,
-			'last_log_id'                => $last_log_id,
 		);
 
 		return $ticket_messages_blockcache;

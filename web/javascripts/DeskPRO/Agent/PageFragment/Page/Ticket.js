@@ -524,32 +524,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			messageboxTabs.addEvent('tabSwitch', function(evData) {
 				var type = evData.tabEl.data('list-type');
 
-				if (type == 'log') {
-					self.refreshLogTypes();
-					self.getEl('full_typenav').show();
-				} else {
-					self.getEl('full_typenav').hide();
-					self.getEl('messages_wrap').find('.content-message').show();
-				}
-
 				if (type == 'messages') {
-					self.getEl('messages_wrap').find('.log-batch').hide();
 					self.getEl('messages_wrap').removeClass('show-log');
 					self.getEl('messages_wrap').find('article.content-message').show();
 				} else if (type == 'feedback') {
 					self.getEl('messages_wrap').removeClass('show-log');
 					self.getEl('messages_wrap').find('article.content-message').show().not('article.with-feedback').hide();
-				} else {
-					self.getEl('messages_wrap').addClass('show-log');
-					self.getEl('messages_wrap').find('article.content-message').hide();
+				} else if (type == 'log') {
+					self.refreshLogTypes();
 				}
-			});
-		}
-
-		var logTypeNav = this.getEl('full_typenav').data('simpletabs');
-		if (logTypeNav) {
-			logTypeNav.addEvent('tabSwitch', function(evData) {
-				self.refreshLogTypes();
 			});
 		}
 
@@ -608,6 +591,98 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			} else {
 				self.getEl('cc_list').show().addClass('cc-open');
 				self.getEl('cc_list').find('.addrow').show();
+			}
+		});
+
+		var logsWrap = this.getEl('logs_wrap');
+		logsWrap.on('click', '.trigger-update-filter', function(ev) {
+			Orb.cancelEvent(ev);
+
+			var logsNav  = logsWrap.find('nav').first();
+			var filter = $(this).data('typename');
+
+			var postData = [];
+
+			if (filter && filter != 'all') {
+				postData.push({name: 'filter', value: filter});
+			}
+			postData.push({name: 'page', value: 1});
+
+			logsNav.addClass('dp-loading-on');
+			$.ajax({
+				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
+				data: postData,
+				complete: function() {
+					logsNav.removeClass('dp-loading-on');
+				},
+				success: function(html) {
+					logsWrap.html(html);
+					self.updateUi();
+				}
+			});
+		});
+
+		logsWrap.on('click', '.trigger-next-page', function(ev) {
+			var btn = $(this);
+			var logsNav  = logsWrap.find('nav').first();
+
+			var filter = logsNav.data('filter');
+			var page   = logsNav.data('page');
+
+			var postData = [];
+			if (filter && filter != 'all') {
+				postData.push({name: 'filter', value: filter});
+			}
+			if (page) {
+				page++;
+				postData.push({name: 'page', value: page});
+			}
+
+			logsNav.addClass('dp-loading-on');
+			btn.addClass('dp-loading-on');
+			$.ajax({
+				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
+				data: postData,
+				complete: function() {
+					logsNav.removeClass('dp-loading-on');
+					btn.remove();
+				},
+				success: function(html) {
+					var el = $(html);
+					var newNav = el.find('nav').first();
+					var newPage = el.find('.logs-page').first();
+
+					logsNav.replaceWith(newNav);
+					logsWrap.append(newPage);
+
+					self.updateUi();
+				}
+			});
+		});
+
+
+		logsWrap.on('click', '.expand', function(ev) {
+			var expandBtn = $(this);
+			var el = expandBtn.closest('.log-row');
+
+			if (!el[0]) {
+				return;
+			}
+
+			Orb.cancelEvent(ev);
+
+			var sel = '.expand-set';
+			if ($(this).data('set')) {
+				sel = $(this).data('set');
+			}
+
+			var expandEl = $(sel, el);
+			if (expandEl.is(':visible')) {
+				expandEl.slideUp();
+				expandBtn.removeClass('open');
+			} else {
+				expandEl.slideDown();
+				expandBtn.addClass('open');
 			}
 		});
 	},
@@ -702,75 +777,34 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	refreshLogTypes: function() {
-		var sel;
-		var logs = this.getEl('messages_wrap').find('.log-row');
-		var showType = this.getEl('full_typenav').find('.on').data('typename');
+		var self     = this;
+		var logsLi   = this.getEl('messagebox_tabs').find('.logs');
+		var logsWrap = this.getEl('logs_wrap');
+		var logsNav  = logsWrap.find('nav').first();
+		var isActive = logsLi.hasClass('on');
 
-		var types = {
-			'message':  '.type-message_removed, .type-message_edit, .type-message_created',
-			'note':     '.type-message_note_created',
-			'notif':    '.type-agent_notify, .type-user_notify',
-			'assign':   '.type-changed_agent, .type-changed_agent_team, .type-changed_person, .type-participant_added, .type-participant_removed',
-			'slas':     '.with-sla, .type-ticket_sla_added, .type-ticket_sla_removed, .type-ticket_sla_updated',
-			'triggers': '.with-trigger, .type-executed_triggers',
-			'status':   '.type-changed_status'
-		};
-
-		if (!this.logTypeCounts || this.logTypeCounts.all != logs.length) {
-			this.logTypeCounts = {};
-			this.logTypeCounts.all = logs.length;
-
-			var tmp = 0;
-			Object.each(types, function(v,k) {
-				this.logTypeCounts[k] = logs.filter(v).length;
-				tmp+=this.logTypeCounts[k];
-			}, this);
-
-			this.logTypeCounts.other = this.logTypeCounts.all - tmp;
-
-			var nav = this.getEl('full_typenav');
-			Object.each(this.logTypeCounts, function(v,k) {
-				if (v < 1) {
-					v = '0';
-				}
-				nav.find('.' + k + '-count').text(v);
-			}, this);
+		if (!isActive || !logsLi.hasClass('dirty')) {
+			return;
 		}
 
-		if (showType != 'all') {
-			this.getEl('messages_wrap').find('.content-message').hide();
+		var filter = logsNav.data('filter');
+		var page   = logsNav.data('page');
 
-			if (showType == 'message') {
-				this.getEl('messages_wrap').find('.public-message').show();
-			} else if (showType == 'note') {
-				this.getEl('messages_wrap').find('.note-message').show();
-			}
+		var postData = [];
+		if (filter && filter != 'all') {
+			postData.push({name: 'filter', value: filter});
+		}
+		if (page && page != 1) {
+			postData.push({name: 'page', value: page});
+			postData.push({name: 'up_to_page', value: 1});
 		}
 
-		if (showType == 'all') {
-			logs.show().addClass('is-vis');
-		} else if (showType == 'other') {
-			sel = [];
-			Object.each(types, function(v,k) {
-				sel.push(v);
-			});
-			sel = sel.join(', ');
-
-			logs.hide().removeClass('is-vis');
-			logs.not(sel).show().addClass('is-vis');
-		} else {
-			sel = types[showType];
-
-			logs.hide().removeClass('is-vis');
-			logs.filter(sel).show().addClass('is-vis');
-		}
-
-		this.getEl('messages_wrap').find('.log-batch').each(function() {
-			var el = $(this);
-			if (el.find('> .is-vis')[0]) {
-				el.show();
-			} else {
-				el.hide();
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
+			data: postData,
+			success: function(html) {
+				logsWrap.html(html);
+				self.updateUi();
 			}
 		});
 	},
@@ -1122,10 +1156,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-		var tab = this.getEl('messagebox_tabs').find('li.on');
-		if (tab.data('list-type') == 'log') {
-			this.refreshLogTypes();
-		}
+		this.getEl('messagebox_tabs').find('.logs').addClass('dirty');
+		this.refreshLogTypes();
 	},
 
 	updateUi: function() {
@@ -1187,27 +1219,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			photo: true,
 			opacity: 0.5,
 			transition: 'none'
-		});
-
-		$('.log-row:not(.has-init)', messageEl).each(function() {
-			$(this).addClass('has-init');
-			var expandBtn = $('.expand', this);
-			var el = $(this);
-			expandBtn.on('click', function() {
-				var sel = '.expand-set';
-				if ($(this).data('set')) {
-					sel = $(this).data('set');
-				}
-
-				var expandEl = $(sel, el);
-				if (expandEl.is(':visible')) {
-					expandEl.slideUp();
-					expandBtn.removeClass('open');
-				} else {
-					expandEl.slideDown();
-					expandBtn.addClass('open');
-				}
-			});
 		});
 
 		var lastCount = 0;

@@ -518,7 +518,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">Messages</li>
-				<li data-list-type="log" data-tab-for="#{{baseId}}_messages_wrap">Full Log</li>
+				<li class="logs" data-list-type="log" data-tab-for="#{{baseId}}_logs_wrap">Full Log</li>
 				{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and ticket.date_feedback_rating %}
 					<li data-list-type="feedback" data-tab-for="#{{baseId}}_messages_wrap">
 						Ticket Feedback <span class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
@@ -531,20 +531,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</ul>
 		</nav>
 	</header>
-	<nav class="section-subnav" id="{{ baseId }}_full_typenav" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" style="display: none;">
-		<ul>
-			<li data-tab-for="NOOP" class="on" data-typename="all"><em>All (<span class="all-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="message"><em>Messages (<span class="message-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="note"><em>Notes (<span class="note-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="notif"><em>Notifications (<span class="notif-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="assign"><em>Assignments (<span class="assign-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="slas"><em>SLAs (<span class="slas-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="triggers"><em>Triggers (<span class="triggers-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="status"><em>Status Changes (<span class="status-count"></span>)</em></li>
-			<li data-tab-for="NOOP" data-typename="other"><em>Other (<span class="other-count"></span>)</em></li>
-		</ul>
-	</nav>
-	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap" data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
+	<section class="messages-wrap" id="{{baseId}}_messages_wrap" data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
 		<div class="message-page-prev" {% if message_page == message_page_count or app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_prev_page">
 			<strong>{% if not app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
 		</div>
@@ -568,6 +555,9 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<div class="message-page-next" {% if message_page == message_page_count or not app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_next_page">
 			<strong>{% if app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
 		</div>
+	</section>
+	<section id="{{baseId}}_logs_wrap" style="margin: 0;padding: 0;">
+		{{ logs_block|raw }}
 	</section>
 	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
 		<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">

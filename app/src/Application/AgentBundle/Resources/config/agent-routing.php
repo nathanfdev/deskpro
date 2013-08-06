@@ -1010,6 +1010,12 @@ $collection->add('agent_ticket_view', new Route(
 	array('fragment_name' => 't')
 ));
 
+$collection->add('agent_ticket_loadlogs', new Route(
+	'/tickets/{ticket_id}/load-logs',
+	array('_controller' => 'AgentBundle:Ticket:loadTicketLogs'),
+	array('ticket_id' => '\\d+')
+));
+
 $collection->add('agent_ticket_download_debug_report', new Route(
 	'/tickets/{ticket_id}/download-debug-report',
 	array('_controller' => 'AgentBundle:Ticket:downloadTicketDebug'),

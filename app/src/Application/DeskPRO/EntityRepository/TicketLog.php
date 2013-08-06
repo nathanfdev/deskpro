@@ -38,33 +38,171 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use \Doctrine\ORM\EntityRepository;
+use Orb\Util\Arrays;
 
 class TicketLog extends AbstractEntityRepository
 {
+	/**
+	 * @param Entity\Ticket $ticket
+	 * @param array $options
+	 * @return array
+	 */
 	public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
 	{
+		#------------------------------
+		# Get logs
+		#------------------------------
+
 		if (!isset($options['order_dir'])) {
 			$options['order_dir'] = 'ASC';
 		}
 
-		if (!empty($options['since_id'])) {
-			$query = $this->_em->createQuery("
-				SELECT log
-				FROM DeskPRO:TicketLog log INDEX BY log.id
-				WHERE log.ticket = ?1 AND log.id > ?2
-				ORDER BY log.date_created {$options['order_dir']}
-			")->setParameter(1, $ticket)->setParameter(2, $options['since_id']);
+		$params = array('ticket_id' => $ticket->getId());
+
+		$qb = $this->getEntityManager()->createQueryBuilder();
+		$qb->select('log, p')
+			->from('DeskPRO:TicketLog', 'log')
+			->leftJoin('log.person', 'p')
+			->andWhere('log.ticket = :ticket_id');
+
+		if ($options['order_dir'] == 'ASC') {
+			$qb->orderBy('log.date_created', 'ASC');
 		} else {
-			$query = $this->_em->createQuery("
-				SELECT log
-				FROM DeskPRO:TicketLog log INDEX BY log.id
-				WHERE log.ticket = ?1
-				ORDER BY log.date_created ASC
-			")->setParameter(1, $ticket);
+			$qb->orderBy('log.date_created', 'DESC');
 		}
 
-		return $query->execute();
+		if (!empty($options['since_id'])) {
+			$qb->andWhere('log.id > :since_id');
+			$params['since_id'] = $options['since_id'];
+		}
+
+		$query = $qb->getQuery();
+		$raw_ticket_logs = $query->execute($params);
+
+		$ticket_logs = array();
+		foreach ($raw_ticket_logs as $l) {
+			$ticket_logs[$l->getId()] = $l;
+		}
+		unset($raw_ticket_logs);
+
+		return $ticket_logs;
 	}
+
+
+	/**
+	 * @param $ticket_logs
+	 * @return array
+	 */
+	public function groupTicketLogs($ticket_logs)
+	{
+		#------------------------------
+		# Group them
+		#------------------------------
+
+		// Need another one to make sure all of the children are here as well
+		$pids = array(0);
+		$cids = array(0);
+		foreach ($ticket_logs as $l) {
+			if (!$l->parent) {
+				$pids[] = $l->getId();
+			} else {
+				$cids[] = $l->getId();
+			}
+		}
+
+		// Sort them into correct order
+		uasort($ticket_logs, function($a, $b) {
+			return $a->date_created < $b->date_created ? -1 : 1;
+		});
+
+		// And group children under their parent row
+		$return = array();
+
+		foreach ($ticket_logs as $log) {
+			if ($log->parent) {
+				$pid = $log->parent->getId();
+
+				if (!isset($ticket_logs[$pid])) {
+					continue;
+				}
+
+				if (!isset($return[$pid])) {
+					$return[$pid] = $ticket_logs[$pid];
+				}
+
+				$return[$pid]->grouped[] = $log;
+			} else {
+				$return[$log->getId()] = $log;
+			}
+		}
+
+		return $return;
+	}
+
+
+	/**
+	 * @param $ticket_logs
+	 * @param $filter_type
+	 * @return array
+	 */
+	public function filterTicketLogs($ticket_logs, $filter_type)
+	{
+		$type_map = array(
+			'message'  => array('message_removed', 'message_edit', 'message_created'),
+			'note'     => array('message_note_created'),
+			'notif'    => array('agent_notify', 'user_notify'),
+			'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
+			'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
+			'triggers' => array('executed_triggers'),
+			'status'   => array('status'),
+		);
+
+		$types = $type_map[$filter_type];
+
+		$return = array();
+
+		foreach ($ticket_logs as $log) {
+			if (in_array($log->action_type, $types)) {
+				$return[$log->id] = $log;
+			}
+		}
+
+		return $return;
+	}
+
+
+	/**
+	 * @param $ticket_logs
+	 * @return array
+	 */
+	public function countTicketLogTypes($ticket_logs)
+	{
+		$counts = array('all' => 0);
+
+		$type_map = array(
+			'message'  => array('message_removed', 'message_edit', 'message_created'),
+			'note'     => array('message_note_created'),
+			'notif'    => array('agent_notify', 'user_notify'),
+			'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
+			'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
+			'triggers' => array('executed_triggers'),
+			'status'   => array('status'),
+		);
+
+		foreach ($ticket_logs as $log) {
+			$counts['all']++;
+
+			foreach ($type_map as $t => $types) {
+				if (in_array($log->action_type, $types)) {
+					if (!isset($counts[$t])) $counts[$t] = 0;
+					$counts[$t]++;
+				}
+			}
+		}
+
+		return $counts;
+	}
+
 
     public function getLogsForAgent(Entity\Person $agent, array $options = array())
     {
