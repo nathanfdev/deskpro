@@ -358,6 +358,21 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				return false;
 			};
 			function wheel(oEvent){
+
+				// Scrolling the rich text editor
+				var redactor = null;
+				if (oEvent && oEvent.explicitOriginalTarget) {
+					redactor = $(oEvent.explicitOriginalTarget).closest('.redactor_editor');
+					if (redactor[0]) {
+						var maxH = parseInt(redactor.css('max-height'));
+						var h = parseInt(redactor.height());
+
+						if (h >= maxH) {
+							return;
+						}
+					}
+				}
+
 				if(!(oContent.ratio >= 1)){
 					var oEvent = oEvent || window.event;
 					var iDelta = oEvent.wheelDelta ? oEvent.wheelDelta/120 : -oEvent.detail/3;
