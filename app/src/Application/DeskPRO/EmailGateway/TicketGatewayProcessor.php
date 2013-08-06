@@ -1227,6 +1227,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['subject'] = $this->reader->getSubject()->getSubject();
 		}
 
+		if (!$run_reply_cutter) {
+			// Auto-detect if we should run the cutter anyway to catch large
+			// emails that weren't caught as replies
+			if (
+				strpos($email_info['body'], 'DP_TOP_MARK') !== false
+				|| strpos($email_info['body'], '<!-- DP_MESSAGE_BEGIN -->') !== false
+				|| substr_count($email_info['body'], '>') > 15000
+			) {
+				$run_reply_cutter = true;
+			}
+		}
+
 		if ($run_reply_cutter) {
 			$this->logMessage('[TicketGatewayProcessor] runNewTicket running reply cutter (new ticket from reply)');
 			$email_info = array_merge($email_info, $this->getEmailBodyInfo());
