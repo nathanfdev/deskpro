@@ -1231,9 +1231,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			// Auto-detect if we should run the cutter anyway to catch large
 			// emails that weren't caught as replies
 			if (
-				strpos($email_info['body'], 'DP_TOP_MARK') !== false
-				|| strpos($email_info['body'], '<!-- DP_MESSAGE_BEGIN -->') !== false
-				|| substr_count($email_info['body'], '>') > 15000
+				strpos($this->email_body_html, 'DP_TOP_MARK') !== false
+				|| strpos($this->email_body_html, '<!-- DP_MESSAGE_BEGIN -->') !== false
+				|| substr_count($this->email_body_html, '>') > 15000
 			) {
 				$run_reply_cutter = true;
 			}
@@ -1384,7 +1384,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket_message->setMessageHtml($email_info['body']);
 			$ticket_message->withNewSubject = $newticket->ticket->subject;
 
-			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
+			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->logger)) {
 				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
 				$this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
 				return $dupe_message;

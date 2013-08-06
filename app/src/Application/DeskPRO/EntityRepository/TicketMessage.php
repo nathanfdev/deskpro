@@ -152,14 +152,14 @@ class TicketMessage extends AbstractEntityRepository
 	public function checkDupeMessage(Entity\TicketMessage $message, $ticket = null, $secs_ago = 10800 /* 3 hours */, \Orb\Log\Logger $logger = null)
 	{
 		if (App::getConfig('debug.disable_dupe_check')) {
-			$logger->logDebug("debug.disable_dupe_check is enabled");
+			if ($logger) $logger->logDebug("debug.disable_dupe_check is enabled");
 			return false;
 		}
 
 		$timesnip = date_create('-' . $secs_ago . ' seconds');
 
 		if ($ticket) {
-			$logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupe in ticket {$ticket['id']} (-$secs_ago s)");
+			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupe in ticket {$ticket['id']} (-$secs_ago s)");
 			$check_matches = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessage m
@@ -167,7 +167,7 @@ class TicketMessage extends AbstractEntityRepository
 				WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2
 			")->setParameters(array($message['message_hash'], $timesnip, $ticket))->getResult();
 		} else {
-			$logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupes in any previous ticket (-$secs_ago s)");
+			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupes in any previous ticket (-$secs_ago s)");
 			$check_matches = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessage m
@@ -180,7 +180,7 @@ class TicketMessage extends AbstractEntityRepository
 		foreach ($check_matches as $t) $ids[] = $t->getId();
 		$ids = implode(', ', $ids);
 
-		$logger->logDebug("[EntityRepository:TicketMessage] Found " . count($check_matches) . " possibles: $ids");
+		if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Found " . count($check_matches) . " possibles: $ids");
 
 		if (!$check_matches || !count($check_matches)) {
 			return false;
@@ -196,17 +196,17 @@ class TicketMessage extends AbstractEntityRepository
 
 			// There is no previous message, so it is a dupe
 			if (!$prev_message) {
-				$logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because no prev message, dupe yes");
+				if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because no prev message, dupe yes");
 				return $check;
 			}
 
 			// The previous message is also by us, so it is a dupe
 			if ($prev_message->person->getId() == $message->person->getId()) {
-				$logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because prev message is by us");
+				if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because prev message is by us");
 				return $check;
 			}
 
-			$logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is not a match");
+			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is not a match");
 		}
 
 		return false;
