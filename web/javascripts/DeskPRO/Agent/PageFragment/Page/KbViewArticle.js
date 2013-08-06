@@ -828,7 +828,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'editarticle',
+			stateId: 'editarticle.' + this.article_id,
 			listenOn: $('.article-editor-wrap:first', wrap)
 		});
 		this.ownObject(this.editStateSaver);

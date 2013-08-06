@@ -109,7 +109,7 @@ class KbController extends AbstractController
 		$content = $article->content;
 		$glossary_words = $glossary->findWords($content);
 
-		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle.' . $article->getId(), $this->person->id);
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($article);
 
