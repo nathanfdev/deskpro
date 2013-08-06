@@ -776,15 +776,17 @@ HTML;
 				}
 			}
 
-			if ($this->request->isXmlHttpRequest()) {
-				return $this->createJsonResponse(array('status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)));
-			}
+			if ($us_names) {
+				if ($this->request->isXmlHttpRequest()) {
+					return $this->createJsonResponse(array('status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)));
+				}
 
-			// No other user sources for the user
-			// Default is to just show standard message to not reveal if account exists
-			return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
-				'route_prefix' => $this->route_prefix,
-			));
+				// No other user sources for the user
+				// Default is to just show standard message to not reveal if account exists
+				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+					'route_prefix' => $this->route_prefix,
+				));
+			}
 		}
 
 		// Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
