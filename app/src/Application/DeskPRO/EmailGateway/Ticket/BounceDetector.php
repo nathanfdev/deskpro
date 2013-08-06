@@ -69,6 +69,43 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 			if ($this->logger) $this->logger->logDebug('No PTAC found');
 		}
 
+		// There might be emails as attachments that we should check out
+		if (!$this->ptac_code) {
+			foreach ($this->reader->getAttachments() as $k => $attach) {
+				if ($attach->mime_type == 'message/rfc822') {
+
+					if ($this->logger) $this->logger->logDebug("Checking attach #$k {$attach->file_name} for PTAC");
+
+					$headers = array();
+
+					$fp = @fopen($attach->tmp_file, 'r');
+					if (!$fp) continue;
+
+					$limit = 200;
+					while ($limit-- > 0 && !feof($fp)) {
+						$l = @fgets($fp, 2000);
+						if (!$l || trim($l) === '') {
+							break; // stop reading after we have all headers
+						}
+						$headers[] = $l;
+					}
+
+					@fclose($fp);
+
+					$headers = implode("\n", $headers);
+
+					if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $headers, $m)) {
+						$this->ptac_code = $m[1];
+						if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
+						break; // break out of reading attaches
+					} else {
+						$this->ptac_code = false;
+						if ($this->logger) $this->logger->logDebug('No PTAC found');
+					}
+				}
+			}
+		}
+
 		return $this->ptac_code;
 	}
 
