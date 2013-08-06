@@ -16,6 +16,8 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		this.listWidthRatio = 0.40;
 
+		this.enableHashUpdate = true;
+
 		window.onresize = function() {
 			self.doResize(true);
 		};
@@ -132,7 +134,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		if (paneVis.tabs) body.addClass('panevis-tabs-on').removeClass('panevis-tabs-off');
 		else body.removeClass('panevis-tabs-on').addClass('panevis-tabs-off');
 
-		//DeskPRO_Window.updateWindowUrlFragment();
+		if (this.enableHashUpdate) {
+			DeskPRO_Window.updateWindowUrlFragment();
+		}
 
 		this.fireEvent('resized', [this]);
 	}

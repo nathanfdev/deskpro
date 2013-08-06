@@ -457,6 +457,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initPage: function() {
 
+		var startHash = window.location.hash + "";
+		startHash = startHash.substring(1);
+
 		var loadNewTicket = false;
 		if (loadNewTicket = window.location.hash.match(/#newticket:(\d+)/)) {
 			loadNewTicket = loadNewTicket[1];
@@ -465,6 +468,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var loadSearchTerm = false;
 		if (loadSearchTerm = window.location.hash.match(/#q:(.*?)$/)) {
 			loadSearchTerm = loadSearchTerm[1];
+		}
+
+		var loadVis = false;
+		if (loadVis = window.location.hash.match(/vis:([0-5]{1})/)) {
+			loadVis = parseInt(loadVis[1]);
 		}
 
 		$.fn.qtip.zindex = 999999999;
@@ -531,8 +539,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.fragmentRouter.setBaseUrl(BASE_URL);
 
 		var self = this;
+		this.hashInitial = false;
 
 		$.history.init(function(hash){
+			if (!self.hashInitial) {
+				self.hashInitial = true;
+				return;
+			}
 			self.loadHashPath(hash);
 		},{ unescape: ",/:" });
 
@@ -878,6 +891,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (loadSearchTerm) {
 			$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
 		}
+
+		if (loadVis) {
+			this.layout.enableHashUpdate = false;
+			this.setPaneVisNum(loadVis);
+			this.layout.enableHashUpdate = true;
+		}
+
+		this.cancelHashLoad = 0;
+		this.loadHashPath(startHash);
 	},
 
 	addOnloadFunction: function(fn) {
@@ -995,7 +1017,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'status':
 				case 'label':
 				case 'ended':
-				case 'vis':
 					argRequired = true;
 					break;
 			}
@@ -1008,7 +1029,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var type = this.fragmentRouter.getFragmentType(fragmentName);
 
 			if (type == 'vis') {
-				this.setPaneVisNum(args[0]);
 			} else if (type == 'list') {
 				this.loadingListFragment = hash;
 				this.loadListPane(url, { url_fragment: hash });
@@ -4000,31 +4020,37 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.paneVis.source = true;
 				this.paneVis.list = true;
 				this.paneVis.tabs = true;
+				break;
 
 			case 1:
 				this.paneVis.source = true;
 				this.paneVis.list = true;
 				this.paneVis.tabs = false;
+				break;
 
 			case 2:
 				this.paneVis.source = true;
 				this.paneVis.list = false;
 				this.paneVis.tabs = true;
+				break;
 
 			case 3:
 				this.paneVis.source = false;
 				this.paneVis.list = true;
 				this.paneVis.tabs = false;
+				break;
 
 			case 4:
 				this.paneVis.source = false;
 				this.paneVis.list = false;
 				this.paneVis.tabs = true;
+				break;
 
 			case 5:
 				this.paneVis.source = false;
 				this.paneVis.list = true;
 				this.paneVis.tabs = true;
+				break;
 		}
 
 		this.layout.doResize(true);
