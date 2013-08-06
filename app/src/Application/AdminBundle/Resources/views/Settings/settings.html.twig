@@ -279,6 +279,10 @@
 			<input type="hidden" name="set_settings_falseable[]" value="user.feedback_notify_comments" />
 			<label><input type="checkbox" name="settings[user.feedback_notify_comments]" {% if app.getSetting('user.feedback_notify_comments') %}checked="checked"{% endif %} /> Notify users participating in Feedback posts when a new comment is added</label>
 		</div>
+		<div class="field_row">
+			<input type="hidden" name="set_settings_falseable[]" value="user.kb_subscriptions" />
+			<label><input type="checkbox" name="settings[user.kb_subscriptions]" {% if app.getSetting('user.kb_subscriptions') %}checked="checked"{% endif %} /> Allow users to subscribe to articles and categories. When articles are updated or new articles are created in a category, subscribed users will be notified by email.</label>
+		</div>
 
 		<div class="field_row">
 			<label>Google Analytics Tracking ID</label>

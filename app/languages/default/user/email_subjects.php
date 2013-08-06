@@ -18,5 +18,8 @@
 	'user.email_subjects.validate-email'           => 'Validate your email address',
 	'user.email_subjects.ticket-rate'              => 'Rate your support experience on your ticket "{{ticket.subject}}"',
 	'user.email_subjects.register-welcome'         => 'Thank you for registering',
-	'user.email_subjects.email-too-big'            => 'Your email "{{subject}}" was not accepted'
+	'user.email_subjects.email-too-big'            => 'Your email "{{subject}}" was not accepted',
+	'user.email_subjects.kb_sub_new'               => 'New Articles',
+	'user.email_subjects.kb_sub_updated'           => 'Updated Articles',
+	'user.email_subjects.kb_sub_new_and_updated'   => 'New and Updated Articles',
 );

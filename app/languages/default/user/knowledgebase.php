@@ -11,4 +11,8 @@
 	'user.knowledgebase.title-categories'     => 'There is 1 sub-category|There are {{count}} sub-categories',
 	'user.knowledgebase.type_article'         => 'Article',
 	'user.knowledgebase.article-viewed'       => 'This article has been viewed 1 time|This article has been viewed {{count}} times',
+	'user.knowledgebase.subscribe-article'    => '<a href="{{link}}">Subscribe</a> to this article to get an email notification when it is updated.',
+	'user.knowledgebase.unsubscribe-article'  => 'You are subscribed to this article and will receive email notifications when it is updated. <a href="{{link}}">Unsubscribe</a>.',
+	'user.knowledgebase.subscribe-category'   => '<a href="{{link}}">Subscribe</a> to this category to get an email notification when new articles are published.',
+	'user.knowledgebase.unsubscribe-category' => 'You are subscribed to this category and will receive email notifications when new articles are published. <a href="{{link}}">Unsubscribe</a>.',
 );

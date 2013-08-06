@@ -238,6 +238,12 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 				$commenting->newCommentNotify($obj);
 			}
 
+			if (isset($this->assignments['article']) && $obj->status == 'visible') {
+				$this->assignments['article']->date_last_comment = new \DateTime();
+				App::getOrm()->persist($this->assignments['article']);
+				App::getOrm()->flush();
+			}
+
 			return $obj;
 
 		} catch (\Exception $e) {

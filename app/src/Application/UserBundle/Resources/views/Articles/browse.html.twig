@@ -106,6 +106,18 @@
 	</section>
 {% endif %}
 
+{% if category %}
+	{% if app.getSetting('user.kb_subscriptions') %}
+			<div class="dp-subscribe dp-subscribe-category {% if is_subscribed %}dp-subscribe-on{% endif %}" id="dp_sb">
+				{% if is_subscribed %}
+					{{ phrase('user.knowledgebase.unsubscribe-category', {link: path('user_articles_cat_togglesub', {category_id: category.id, auth: security_token('subscribe_category')})}) }}
+				{% else %}
+					{{ phrase('user.knowledgebase.subscribe-category', {link: path('user_articles_cat_togglesub', {category_id: category.id, auth: security_token('subscribe_category')})}) }}
+				{% endif %}
+			</div>
+		{% endif %}
+{% endif %}
+
 <br style="clear: both; height: 1px; overflow: hidden" />
 
 {% endblock %}

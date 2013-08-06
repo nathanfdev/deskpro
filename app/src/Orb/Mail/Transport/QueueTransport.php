@@ -93,6 +93,11 @@ class QueueTransport implements \Swift_Transport
 		$sendmail->blob = $blob;
 		$sendmail->subject = $message->getSubject() ?: '';
 		$sendmail->date_next_attempt = new \DateTime();
+		$sendmail->priority = 10;
+
+		if ($message instanceof \Orb\Mail\Message) {
+			$sendmail->priority = $message->getQueuePriority();
+		}
 
 		$tos = array();
 		foreach ($message->getTo() as $addr => $name) {

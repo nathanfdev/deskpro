@@ -412,6 +412,27 @@ $collection->add('user_articles_article', new Route(
 	array()
 ));
 
+$collection->add('user_articles_article_togglesub', new Route(
+	'/kb/article-subscription/{article_id}/{auth}',
+	array('_controller' => 'UserBundle:Articles:articleSubscription'),
+	array(),
+	array()
+));
+
+$collection->add('user_articles_cat_togglesub', new Route(
+	'/kb/category-subscription/{category_id}/{auth}',
+	array('_controller' => 'UserBundle:Articles:categorySubscription'),
+	array(),
+	array()
+));
+
+$collection->add('user_articles_unsub_all', new Route(
+	'/kb/unsubscribe-all/{person_id}/{auth}',
+	array('_controller' => 'UserBundle:Articles:unsubscribeAll'),
+	array(),
+	array()
+));
+
 $collection->add('user_articles_article_agent_iframe', new Route(
 	'/kb/articles/agent-iframe/{article_id}/{agent_session_id}',
 	array('_controller' => 'UserBundle:Articles:articleAgentIframe'),

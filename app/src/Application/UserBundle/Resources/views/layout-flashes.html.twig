@@ -25,6 +25,11 @@
 				{% endif %}
 			</div>
 		{% endif %}
+		{% if app.session.getFlash('email_prefs_saved') %}
+			<div class="dp-alert alert-block dp-alert-success">
+				{{ phrase('user.profile.email_preferences_updated') }}
+			</div>
+		{% endif %}
 	</div>
 {% endif %}
 {% if app.user.id and not app.user.is_agent_confirmed %}

@@ -79,6 +79,16 @@
 			#}
 		{% endif %}
 
+		{% if app.getSetting('user.kb_subscriptions') %}
+			<div class="dp-subscribe dp-subscribe-article {% if is_subscribed %}dp-subscribe-on{% endif %}" id="dp_sb">
+				{% if is_subscribed %}
+					{{ phrase('user.knowledgebase.unsubscribe-article', {link: path('user_articles_article_togglesub', {article_id: article.id, auth: security_token('subscribe_article')})}) }}
+				{% else %}
+					{{ phrase('user.knowledgebase.subscribe-article', {link: path('user_articles_article_togglesub', {article_id: article.id, auth: security_token('subscribe_article')})}) }}
+				{% endif %}
+			</div>
+		{% endif %}
+
 		{% if app.getSetting('core.show_share_widget') %}
 			{{ social.social_block(url('user_articles_article', {'slug': article.url_slug}), article.title) }}
 		{% endif %}

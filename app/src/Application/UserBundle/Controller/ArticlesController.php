@@ -140,6 +140,15 @@ class ArticlesController extends AbstractController
 
 		$tpl = 'UserBundle:Articles:browse.html.twig';
 
+		$is_subscribed = false;
+		if ($category && !$this->person->isGuest() && $this->settings->get('user.kb_subscriptions')) {
+			$is_subscribed = $this->db->fetchColumn("
+				SELECT id
+				FROM kb_subscriptions
+				WHERE person_id = ? AND category_id = ?
+			", array($this->person->getId(), $category->getId()));
+		}
+
 		return $this->render($tpl, array(
 			'pageinfo' => $pageinfo,
 			'category' => $category,
@@ -149,7 +158,8 @@ class ArticlesController extends AbstractController
 			'category_counts' => $category_counts,
 			'articles' => $articles,
 			'comment_counts' => $comment_counts,
-			'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts()
+			'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts(),
+			'is_subscribed'  => $is_subscribed,
 		));
 	}
 
@@ -294,6 +304,15 @@ class ArticlesController extends AbstractController
 
 		$this->container->getSystemService('view_log')->view($article);
 
+		$is_subscribed = false;
+		if (!$this->person->isGuest() && $this->settings->get('user.kb_subscriptions')) {
+			$is_subscribed = $this->db->fetchColumn("
+				SELECT id
+				FROM kb_subscriptions
+				WHERE person_id = ? AND article_id = ?
+			", array($this->person->getId(), $article->getId()));
+		}
+
 		return $this->render($tpl, array(
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,
@@ -306,7 +325,8 @@ class ArticlesController extends AbstractController
 			'comments_widget' => $comments_widget,
 			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 
-			'related_content' => $related_content
+			'related_content' => $related_content,
+			'is_subscribed' => $is_subscribed,
 		));
 	}
 
@@ -343,6 +363,112 @@ class ArticlesController extends AbstractController
 			'glossary_words' => $glossary_words,
 			'word_defs' => $word_defs,
 		));
+	}
+
+
+	/**
+	 * @param $article_id
+	 */
+	public function articleSubscriptionAction($article_id, $auth)
+	{
+		$article = $this->em->getRepository('DeskPRO:Article')->find($article_id);
+		if (!$article) {
+			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
+		}
+
+		if (!$this->checkAuthToken('subscribe_article', $auth) || !$this->settings->get('user.kb_subscriptions')) {
+			return $this->redirectRoute('user_articles_article', array('slug' => $article->getUrlSlug()));
+		}
+
+		if ($this->person->isGuest()) {
+			return $this->renderLoginOrPermissionError($this->generateUrl('user_articles_article_togglesub', array('article_id' => $article_id, 'auth' => $this->session->generateSecurityToken('subscribe_article'))));
+		}
+
+		$exist = $this->db->fetchColumn("
+			SELECT id
+			FROM kb_subscriptions
+			WHERE person_id = ? AND article_id = ?
+		", array($this->person->getId(), $article->getId()));
+
+		if ($exist) {
+			$this->db->delete('kb_subscriptions', array(
+				'person_id'  => $this->person->getId(),
+				'article_id' => $article->getId()
+			));
+		} else {
+			$this->db->insert('kb_subscriptions', array(
+				'person_id'  => $this->person->getId(),
+				'article_id' => $article->getId()
+			));
+		}
+
+		$url = $this->generateUrl('user_articles_article', array('slug' => $article->getUrlSlug()), true);
+		return $this->redirect($url . '#dp_sb');
+	}
+
+	/**
+	 * @param $category_id
+	 */
+	public function categorySubscriptionAction($category_id, $auth)
+	{
+		$category = $this->em->getRepository('DeskPRO:ArticleCategory')->find($category_id);
+		if (!$category) {
+			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
+		}
+
+		if (!$this->checkAuthToken('subscribe_category', $auth) || !$this->settings->get('user.kb_subscriptions')) {
+			return $this->redirectRoute('user_articles', array('slug' => $category->getUrlSlug()));
+		}
+
+		if ($this->person->isGuest()) {
+			return $this->renderLoginOrPermissionError($this->generateUrl('user_articles_cat_togglesub', array('category_id' => $category_id, 'auth' => $this->session->generateSecurityToken('subscribe_category'))));
+		}
+
+		$exist = $this->db->fetchColumn("
+			SELECT id
+			FROM kb_subscriptions
+			WHERE person_id = ? AND category_id = ?
+		", array($this->person->getId(), $category->getId()));
+
+		if ($exist) {
+			$this->db->delete('kb_subscriptions', array(
+				'person_id'   => $this->person->getId(),
+				'category_id' => $category->getId()
+			));
+		} else {
+			$this->db->insert('kb_subscriptions', array(
+				'person_id'   => $this->person->getId(),
+				'category_id' => $category->getId()
+			));
+		}
+
+		$url = $this->generateUrl('user_articles', array('slug' => $category->getUrlSlug()), true);
+		return $this->redirect($url . '#dp_sb');
+	}
+
+	public function unsubscribeAllAction($person_id, $auth)
+	{
+		$person = $this->em->find('DeskPRO:Person', $person_id);
+		if (!$person) {
+			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
+		}
+
+		if (!\Orb\Util\Util::checkStaticSecurityToken($auth, App::getSetting('core.app_secret') . $person->getId() . $person->secret_string)) {
+			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
+		}
+
+		$this->db->delete('kb_subscriptions', array('person_id' => $person->getId()));
+
+		$this->session->setFlash('email_prefs_saved', true);
+		$this->session->save();
+
+		// Disable cache for this guest so the flash message
+		// appears and doesnt get cached for everyone
+		if ($this->person->isGuest()) {
+			App::setSkipCache(true);
+		}
+
+		return $this->redirectRoute('user');
 	}
 
 

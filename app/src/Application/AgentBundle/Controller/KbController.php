@@ -508,6 +508,8 @@ class KbController extends AbstractController
 					}
 				}
 
+				$article->date_updated = new \DateTime();
+
 				$data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
 					'article' => $article,
 					'content' => $content

@@ -48,6 +48,11 @@ class Message extends \Swift_Message
 	protected $_queue_hint = false;
 
 	/**
+	 * @var int
+	 */
+	protected $_queue_priority = 10;
+
+	/**
 	 * @var bool
 	 */
 	protected $_suppress_autoreply = false;
@@ -145,9 +150,19 @@ class Message extends \Swift_Message
 	/**
 	 * Enable the queue hint that hints that it's okay to queue and send later.
 	 */
-	public function enableQueueHint()
+	public function enableQueueHint($priority = 10)
 	{
 		$this->_queue_hint = true;
+		$this->_queue_priority = $priority;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getQueuePriority()
+	{
+		return $this->_queue_priority;
 	}
 
 

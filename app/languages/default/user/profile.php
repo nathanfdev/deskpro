@@ -72,4 +72,5 @@
 	'user.profile.you_are_waiting_agent_validation'    => 'Your registration is currently being validated by our agents. Any content you submit will become active after our agents confirm your account.',
 	'user.profile.you_have_validated'                  => 'Thank you for validating your email address.',
 	'user.profile.your_profile'                        => 'Your Profile',
+	'user.profile.email_preferences_updated'           => 'Your email preferences have been updated successfully.',
 );

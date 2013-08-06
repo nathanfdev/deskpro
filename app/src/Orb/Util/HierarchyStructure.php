@@ -153,7 +153,7 @@ class HierarchyStructure
 
 		$ids = array();
 		while (!empty($this->parent_map[$cat_id])) {
-			$cat_id = $this->_cat_parent_map[$cat_id];
+			$cat_id = $this->parent_map[$cat_id];
 			$ids[] = $cat_id;
 		}
 

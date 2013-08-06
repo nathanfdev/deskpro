@@ -1058,6 +1058,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\Heartbeat::DEFAULT_INTER
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.kb_subscriptions##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'kb_subscriptions';
+$j['worker_group'] = 'kb_subscriptions';
+$j['title'] = 'KB Subscriptions';
+$j['description'] = 'Sends notifications to users who are subscribed to articles or categories';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\KbSubscriptions';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\KbSubscriptions::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ##BEGIN:create_jobs.move_blobs##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'move_blobs';

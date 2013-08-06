@@ -312,7 +312,7 @@ class SendmailQueueRunner implements Loggable
 		$next = $this->db->fetchAssoc("
 			SELECT * FROM sendmail_queue
 			WHERE date_next_attempt < ? AND blob_id IS NOT NULL
-			ORDER BY date_next_attempt ASC
+			ORDER BY priority DESC, date_next_attempt ASC
 			LIMIT 1
 		", array($date));
 
