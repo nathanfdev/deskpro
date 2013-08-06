@@ -1122,6 +1122,20 @@ $collection->add('admin_langs', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_mass_update_tickets', new Route(
+	'/languages/mass-update-tickets',
+	array('_controller' => 'AdminBundle:Languages:massUpdateTickets'),
+	array(),
+	array()
+));
+
+$collection->add('admin_langs_mass_update_people', new Route(
+	'/languages/mass-update-people',
+	array('_controller' => 'AdminBundle:Languages:massUpdatePeople'),
+	array(),
+	array()
+));
+
 $collection->add('admin_langs_toggle_auto', new Route(
 	'/languages/settings/toggle-auto-install',
 	array('_controller' => 'AdminBundle:Languages:toggleAutoInstall'),
