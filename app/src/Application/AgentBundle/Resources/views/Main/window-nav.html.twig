@@ -47,7 +47,7 @@
 			{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
 				<li id="twitter_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Twitter">
 					<span class="count-badge" style="display: none"><span></span></span>
-					<a title="Twitter"><span class="twitterNavIcon"></span></a>
+					<a title="{{ phrase('agent.interface.app-twitter') }}"><span class="twitterNavIcon"></span></a>
 				</li>
 			{% endif %}
 		</ul>
@@ -61,7 +61,7 @@
 
 			{% if app.user.can_billing %}
 				<li id="billing_section" class="no-click-switch {% if app.user.can_admin %}with-can-admin{% endif %}">
-					<a title="Billing" target="_blank" href="{{ app.request.getBaseUrl() }}/billing/"><span class="billingNavIcon"></span></a>
+					<a title="{{ phrase('agent.interface.app-billing') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/billing/"><span class="billingNavIcon"></span></a>
 				</li>
 			{% endif %}
 

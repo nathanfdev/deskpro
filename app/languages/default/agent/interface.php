@@ -53,4 +53,12 @@
 	'agent.interface.search_in_types'              => 'Search in types',
 	'agent.interface.set_ticket_resolved'          => 'Set ticket resolved',
 	'agent.interface.toggle_mute'                  => 'Toggle mute',
+	'agent.interface.quick-search-placeholder'     => 'Search',
+	'agent.interface.app-twitter' => 'Twitter',
+	'agent.interface.app-billing' => 'Billing',
+	'agent.interface.chat-notification-vol' => 'Chat notification volume',
+	'agent.interface.viewbtn-source' => 'Toggle Filter and Search Columm',
+	'agent.interface.viewbtn-table' => 'Tabular Results View',
+	'agent.interface.viewbtn-normal' => 'List and Tabs View',
+	'agent.interface.viewbtn-tab' => 'Tabs Only View',
 );
