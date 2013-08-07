@@ -57,6 +57,9 @@ class SettingsProfile
 
 	public $auto_dismiss_notifications = 60;
 
+	public $new_emails;
+	public $remove_emails;
+
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
@@ -180,6 +183,23 @@ class SettingsProfile
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
+		}
+
+		// Additional email addresses
+		foreach ($this->new_emails as $new_email) {
+			if ($person->hasEmailAddress($new_email)) {
+				continue;
+			}
+
+			$email_address = $person->addEmailAddressString($new_email);
+			$this->em->persist($email_address);
+			$this->em->flush();
+		}
+
+		// Removing email addresses
+		foreach ($this->remove_emails as $remove_email_id) {
+			$person->removeEmailAddressId($remove_email_id);
+			$this->em->flush();
 		}
 	}
 }

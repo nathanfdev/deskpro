@@ -83,6 +83,23 @@ class AgentProfileValidator extends AbstractValidator
 			}
 		}
 
+		if ($this->profile->new_emails) {
+			foreach ($this->profile->new_emails as $new_email) {
+				if (!\Orb\Validator\StringEmail::isValueValid($new_email) || App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+					$this->addError('email.invalid');
+				} else {
+					$check_exist = App::getDb()->fetchColumn("
+						SELECT person_id
+						FROM people_emails
+						WHERE email = ?
+					", array($new_email));
+					if ($check_exist && $check_exist != $this->profile->getPerson()->getId()) {
+						$this->addError('email.in_use');
+					}
+				}
+			}
+		}
+
 		if ($this->errors) {
 			return false;
 		}

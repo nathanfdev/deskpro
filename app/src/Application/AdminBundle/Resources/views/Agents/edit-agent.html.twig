@@ -25,6 +25,47 @@
 {% endblock %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentEditPage.js') }}"></script>
+<style type="text/css">
+#more_emails_empty {
+	font-size: 11px;
+	padding: 6px;
+}
+
+#more_emails {
+	font-size: 11px;
+	padding: 6px;
+}
+
+#more_emails .add-row {
+	font-size: 11px;
+}
+
+#more_emails .add-row input {
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-bottom: 1px solid #888;
+	width: 130px;
+	box-shadow: none;
+	font-size:11px;
+}
+
+#more_emails .add-row #more_emails_trigger {
+	color: #888;
+	border: 1px solid #888;
+	border-radius: 4px;
+	padding: 1px 4px;
+}
+
+#more_emails .remove-trigger {
+	color: #999;
+	cursor: pointer;
+}
+
+#more_emails .remove-trigger:hover {
+	color: #A60003;
+}
+</style>
 {% endblock %}
 {% block page %}
 
@@ -104,6 +145,19 @@
 			</div>
 			<div class="dp-form-input">
 				<input style="width:422px;" type="text" name="agent[email]" value="{{ agent.primary_email_address }}" />
+
+				<div id="more_emails_empty" {% if agent.emails|length != 1 %}style="display: none;"{% endif %}>
+					<a href="#">Add additional emails &rarr;</a>
+				</div>
+				<div id="more_emails" {% if agent.emails|length == 1 %}style="display: none;"{% endif %}>
+					<strong>Additional Emails:</strong>
+					<ul>
+						{% for email in agent.emails if email.id != agent.primary_email.id %}
+							<li data-email-id="{{ email.id }}">&bull; <span>{{ email.email }}</span>&nbsp;&nbsp;&nbsp;<i class="icon-trash remove-trigger" title="Remove email"></i></li>
+						{% endfor %}
+						<li class="add-row">Add another email: <input type="text" id="more_emails_txt" /> <a id="more_emails_trigger" href="#">Add</a></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 

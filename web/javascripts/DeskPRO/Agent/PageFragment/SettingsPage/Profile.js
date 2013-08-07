@@ -172,5 +172,48 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 				notification.show();
 			});
 		}
+
+		// Email Addresses
+		el.find('.more_emails_empty').find('a').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			el.find('.more_emails_empty').hide();
+			el.find('.more_emails').show();
+		});
+
+		var moreEmails  = el.find('.more_emails');
+		var addEmailTxt = el.find('.more_emails_txt');
+
+		el.find('.more_emails_trigger').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			var val = $.trim(addEmailTxt.val());
+
+			if (!val.indexOf('@')) {
+				alert('Please enter a valid email address');
+				return;
+			}
+
+			var li = $('<li class="is-new">&bull; <input type="hidden" name="new_emails[]" /><span></span>&nbsp;&nbsp;&nbsp;<i class="icon-trash remove-trigger" title="Remove email"></i></li>');
+			li.addClass('is-new');
+			li.find('input').val(val);
+			li.find('span').text(val);
+
+			moreEmails.find('ul').prepend(li);
+
+			addEmailTxt.val('');
+		});
+
+		moreEmails.on('click', '.remove-trigger', function(ev) {
+			Orb.cancelEvent(ev);
+
+			var li = $(this).closest('li');
+			if (li.hasClass('is-new')) {
+				li.remove();
+			} else {
+				var input = $('<input type="hidden" name="remove_emails[]" />');
+				input.val(li.data('email-id'));
+				moreEmails.append(input);
+				li.remove();
+			}
+		});
 	}
 });

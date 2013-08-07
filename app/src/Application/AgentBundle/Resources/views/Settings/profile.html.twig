@@ -35,6 +35,18 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-input">
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
 			</div>
+			<div class="more_emails_empty" {% if app.user.emails|length != 1 %}style="display: none;"{% endif %}>
+				<a href="#">Add additional emails &rarr;</a>
+			</div>
+			<div class="more_emails" {% if app.user.emails|length == 1 %}style="display: none;"{% endif %}>
+				<strong>Additional Emails:</strong>
+				<ul>
+					{% for email in app.user.emails if email.id != app.user.primary_email.id %}
+						<li data-email-id="{{ email.id }}">&bull; <span>{{ email.email }}</span>&nbsp;&nbsp;&nbsp;<i class="icon-trash remove-trigger" title="Remove email"></i></li>
+					{% endfor %}
+					<li class="add-row">Add another email: <input type="text" class="more_emails_txt" /> <a class="more_emails_trigger" href="#">Add</a></li>
+				</ul>
+			</div>
 		</div>
 
 		<div class="dp-form-row">

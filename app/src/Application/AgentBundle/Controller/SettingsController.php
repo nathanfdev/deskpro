@@ -62,6 +62,8 @@ class SettingsController extends AbstractController
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
 		$form->bindRequest($this->get('request'));
+		$edit_profile->new_emails = $this->in->getCleanValueArray('new_emails', 'string', 'discard');
+		$edit_profile->remove_emails = $this->in->getCleanValueArray('remove_emails', 'uint', 'discard');
 
 		if ($edit_profile->requiresAuth()) {
 			$code = $this->in->getString('authcode');

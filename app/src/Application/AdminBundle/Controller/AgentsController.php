@@ -861,6 +861,20 @@ class AgentsController extends AbstractController
 			$errors[] = 'You did not a name';
 		}
 
+		// Check new emails
+		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $new_email) {
+			if (!$email or !\Orb\Validator\StringEmail::isValueValid($new_email)) {
+				$errors[] = 'The email address "'.$new_email.'" is not valid.';
+			} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($new_email)) {
+				$errors[] = 'The email address "'.$new_email.'" belongs to a ticket account.';
+			} elseif (!$agent or !$agent->findEmailAddress($new_email)) {
+				$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
+				if ($exist_check && !$this->in->getBool('confirm_email_dupe')) {
+					$errors[] = 'show_dupe_confirm';
+				}
+			}
+		}
+
 		if ($errors) {
 			return $this->createJsonResponse(array('error' => true, 'error_messages' => $errors));
 		}
@@ -1238,6 +1252,37 @@ class AgentsController extends AbstractController
 			if (\DeskPRO\Kernel\License::getLicense()->isDemo()) {
 				\Application\InstallBundle\Data\DataInitializer::newDefaultTicket($agent);
 			}
+		}
+
+		$this->em->refresh($agent);
+
+		// Additional email addresses
+		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $new_email) {
+			if ($agent->hasEmailAddress($new_email)) {
+				continue;
+			}
+
+			$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
+			if ($exist_check) {
+				if ($exist_check->getId() == $agent->getId()) {
+					continue;
+				}
+
+				$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $agent, $exist_check);
+				$merge->merge();
+
+				$this->em->refresh($agent);
+			} else {
+				$email_address = $agent->addEmailAddressString($new_email);
+				$this->em->persist($email_address);
+				$this->em->flush();
+			}
+		}
+
+		// Removing email addresses
+		foreach ($this->in->getCleanValueArray('remove_emails', 'uint', 'discard') as $remove_email_id) {
+			$agent->removeEmailAddressId($remove_email_id);
+			$this->em->flush();
 		}
 
 		$this->session->setFlash('saved_agent', 1);
