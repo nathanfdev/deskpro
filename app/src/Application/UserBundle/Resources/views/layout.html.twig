@@ -348,6 +348,9 @@
 
 {% if not app.user.id %}
 	{{ dp_js_sso_loader() }}
+{% else %}
+	<!-- SHARE -->
+	{{ dp_js_sso_share() }}
 {% endif %}
 <script type="text/javascript">
 (function() {

@@ -39,6 +39,7 @@ use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Usersource;
+use Orb\Util\Strings;
 
 class UsersourceManager
 {
@@ -106,6 +107,26 @@ class UsersourceManager
 
 		$this->usersources = $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources(true);
 		return $this->usersources;
+	}
+
+
+	/**
+	 * @param string $type
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getUsersourcesOfType($type)
+	{
+		$ret = array();
+
+		$type = strtolower($type);
+
+		foreach ($this->getUsersources() as $us) {
+			if (strtolower($us->source_type) == $type) {
+				$ret[$us->id] = $us;
+			}
+		}
+
+		return $ret;
 	}
 
 

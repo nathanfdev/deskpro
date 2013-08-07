@@ -129,6 +129,7 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_widget_tabs_header'            => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
 			'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
+			'dp_js_sso_share'                  => new \Twig_Function_Method($this, 'getJsSsoShare', array('is_safe' => array('html'))),
 			'base_template_name'               => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
 			'array_attr'                       => new \Twig_Function_Method($this, 'getArrayAttribute'),
 			'min'                              => new \Twig_Function_Method($this, 'min'),
@@ -1325,6 +1326,28 @@ class TemplatingExtension extends \Twig_Extension
 		foreach ($sources AS $source) {
 			$adapter = $source->getAdapter()->getAuthAdapter();
 			$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
+		}
+
+		return implode("\n\n", $output);
+	}
+
+	public function getJsSsoShare()
+	{
+		$person = App::getCurrentPerson();
+
+		if (!$person || $person->isGuest()) {
+			return '';
+		}
+
+		$output = array();
+		foreach ($person->usersource_assoc as $assoc) {
+			$us = $assoc->usersource;
+			if (!$us->isCapable('share_session')) {
+				continue;
+			}
+
+			$adapter = $us->getAdapter()->getAuthAdapter();
+			$output[] = $adapter->getSsoShareSessionHtml($assoc->identity);
 		}
 
 		return implode("\n\n", $output);

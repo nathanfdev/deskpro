@@ -670,4 +670,16 @@ $collection->add('user_long_tweet_view', new Route(
 	array()
 ));
 
+################################################################################
+# Plugins
+################################################################################
+
+$collection->add('user_plugins_run', new Route(
+	'/plugins/{plugin_id}/run/{action}',
+	array('_controller' => 'UserBundle:Plugins:run'),
+	array(),
+	array()
+));
+
+
 return $collection;
