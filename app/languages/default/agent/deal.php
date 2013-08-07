@@ -9,7 +9,6 @@
 	'agent.deal.deal_size'           => 'Deal Size',
 	'agent.deal.deal_type'           => 'Deal Type',
 	'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
-	'agent.deal.edit_customfields'   => 'Edit Custom Fields',
 	'agent.deal.edit_name'           => 'edit name',
 	'agent.deal.enter_note_'         => 'Enter note ...',
 	'agent.deal.my_deals'            => 'My Deals',

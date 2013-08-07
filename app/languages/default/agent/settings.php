@@ -1,5 +1,4 @@
 <?php return array(
-	'agent.settings.agent_messages'              => 'Agent Messages',
 	'agent.settings.browser_notifications'       => 'Browser Notifications',
 	'agent.settings.create_filter'               => 'Create Filter',
 	'agent.settings.create_macro'                => 'Create Macro',
@@ -25,6 +24,5 @@
 	'agent.settings.ticket_signature_desc'       => 'This signature will be appended automatically when you send ticket replies',
 	'agent.settings.title_other_notifs'          => 'Notifications',
 	'agent.settings.title_ticket_notifs'         => 'Ticket Notifications',
-	'agent.settings.user_messages'               => 'User Messages',
 	'agent.settings.your_current_picture'        => 'Your current picture',
 );

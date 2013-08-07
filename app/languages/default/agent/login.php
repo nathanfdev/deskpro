@@ -7,7 +7,6 @@
 	'agent.login.forgot_password'            => 'Forgot your password?',
 	'agent.login.browser_requirements'       => 'Browser Requirements',
 	'agent.login.email_instructions'         => 'Email Instructions',
-	'agent.login.email_username'             => 'Email / Username',
 	'agent.login.enter_new_password'         => 'Enter New Password',
 	'agent.login.enter_password'             => 'Enter your password',
 	'agent.login.google_chrome'              => 'Google Chrome',
