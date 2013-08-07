@@ -41,6 +41,14 @@
 			{% include 'ReportBundle:Overview:tickets-response-time.html.twig' with { data: tickets_response_time_data, initial_display: true } %}
 		</div>
 
+		{% if app.getDataService('Sla').getAllSlas()|length %}
+			<br />
+
+			<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'tickets_sla_status'}) }}">
+				{% include 'ReportBundle:Overview:tickets-sla-status.html.twig' with { data: tickets_sla_status, initial_display: true } %}
+			</div>
+		{% endif %}
+
 		<br />
 
 		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'chats_created'}) }}">

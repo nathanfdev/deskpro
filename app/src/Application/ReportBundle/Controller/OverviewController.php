@@ -78,6 +78,7 @@ class OverviewController extends AbstractController
 			'tickets_response_time_data'     => $this->getValues('tickets_response_time'),
 			'tickets_user_waiting_time_data' => $this->getValues('tickets_user_waiting_time'),
 			'tickets_opened_hour_data'       => $this->getValues('tickets_opened_hour'),
+			'tickets_sla_status'             => $this->getValues('tickets_sla_status'),
 			'chats_created_data'             => $this->getValues('chats_created'),
 			'kb_views_hour_data'             => $this->getValues('kb_views_hour'),
 		));
@@ -141,6 +142,20 @@ class OverviewController extends AbstractController
 				return $this->render('ReportBundle:Overview:tickets-opened-hour.html.twig', array(
 					'data' => $this->getValues('tickets_opened_hour', array('date_choice' => $date_choice))
 				));
+
+			case 'tickets_sla_status':
+
+				$date_choice = $this->in->getString('date_choice');
+				$sla_id = $this->in->getUint('sla_id');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_sla_status.date_choice', $date_choice);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_sla_status.sla_id', $sla_id);
+
+				return $this->render('ReportBundle:Overview:tickets-sla-status.html.twig', array(
+					'data' => $this->getValues('tickets_sla_status', array('date_choice' => $date_choice, 'sla_id' => $sla_id))
+				));
+
+				break;
 
 			case 'kb_views_hour':
 				return $this->render('ReportBundle:Overview:kb-views-hour.html.twig', array(
@@ -390,6 +405,62 @@ class OverviewController extends AbstractController
 					'max'            => $stat->getMax(),
 					'sum'            => $sum,
 				);
+
+			case 'tickets_sla_status':
+				$date_choice = $options->get('date_choice');
+				switch ($date_choice) {
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P7D');
+						$date->sub($interval)->setTime(0,0,0);
+						break;
+					case 'this_month':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0,0,0);
+						break;
+					case 'this_year':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y') - 1, 1, 1)->setTime(0,0,0);
+						break;
+					default:
+						$options->set('date_choice', 'today');
+						$date = $this->person->getDateTime();
+						$date->setTime(0,0,0);
+						break;
+				}
+
+				$date2 = new \DateTime();
+
+				if (!$options->get('sla_id')) {
+					$pref = $this->person->getPref('reports.ui.overview.options.'.$type.'.sla_id');
+					if ($pref) {
+						$options->set('sla_id', $pref);
+					}
+				}
+
+				$sla_id = $options->get('sla_id', null);
+				if ($sla_id) {
+					$sla = $this->em->find('DeskPRO:Sla', $sla_id);
+					if (!$sla) {
+						$sla = null;
+					}
+				} else {
+					$sla_id = null;
+				}
+
+				$stat = new \Application\ReportBundle\OverviewStat\TicketSlaStatus($sla_id, $date, $date2);
+				$stat->setLogger($this->logger);
+				$sum = array_sum($stat->getValues());
+				return array(
+					'sla_id'         => $sla_id,
+					'date_choice'    => $date_choice,
+					'titles'         => $stat->getTitles(),
+					'values'         => $stat->getValues(),
+					'max'            => $stat->getMax(),
+					'sum'            => $sum,
+				);
+
+				break;
 
 			case 'chats_created':
 				$date_choice = $options->get('date_choice');
