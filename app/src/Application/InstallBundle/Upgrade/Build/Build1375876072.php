@@ -29,91 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People\PermissionChecker;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ChatConversation;
-
-use Orb\Util\Arrays;
-
-class ChatChecker extends AbstractChecker
+class Build1375876072 extends AbstractBuild
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-
-	/**
-	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
-	 * @return bool
-	 */
-	public function canView(ChatConversation $convo)
+	public function run()
 	{
-		if (!$this->person->hasPerm('agent_chat.view_transcripts')) {
-			return false;
+		$this->out("Insert default value for new agent_chat.view_transcripts permission");
+		$copy = $this->container->getDb()->fetchAll("
+			SELECT usergroup_id, person_id
+			FROM permissions
+			WHERE name = 'agent_chat.use'
+		");
+
+		$insert = array();
+
+		foreach ($copy as $r) {
+			$insert[] = array(
+				'usergroup_id' => $r['usergroup_id'] ?: null,
+				'person_id'    => $r['person_id'] ?: null,
+				'value'        => 1,
+				'name'         => 'agent_chat.view_transcripts'
+			);
 		}
 
-		// Cant be an agent chat, obviously
-		if ($convo->is_agent) {
-			return false;
+		if ($insert) {
+			$this->container->getDb()->batchInsert('permissions', $insert, true);
 		}
-
-		#------------------------------
-		# If the user is part of the chat
-		# then we know right away they can view
-		#------------------------------
-
-		if ($convo->agent && $convo->agent->id == $this->person->id) {
-			return true;
-		}
-
-		if (in_array($this->person->id, $convo->getParticipantIds())) {
-			return true;
-		}
-
-		#------------------------------
-		# Can't view certain deps
-		#------------------------------
-
-		if ($convo->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($convo->department, 'chat')) {
-			return false;
-		}
-
-		#------------------------------
-		# Cant view unassigned
-		#------------------------------
-
-		if (!$convo->agent && !$this->person->hasPerm('agent_chat.view_unassigned')) {
-			return false;
-		}
-
-		#------------------------------
-		# Cant view others
-		#------------------------------
-
-		if ($convo->agent && !$this->person->hasPerm('agent_chat.view_others')) {
-			return false;
-		}
-
-		// If we got here, then we're allowed
-		return true;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
-	 * @return bool
-	 */
-	public function canDelete(ChatConversation $convo)
-	{
-		if (!$this->canView($convo) || !$this->person->hasPerm('agent_chat.delete')) {
-			return false;
-		}
-
-		return false;
 	}
 }

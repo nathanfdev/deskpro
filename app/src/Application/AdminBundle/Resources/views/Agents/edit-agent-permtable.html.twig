@@ -171,6 +171,7 @@
 				</thead>
 				<tbody>
 					<!-- PERMISSION:agent_chat.use -->{{ col.perm_col(phrase('admin.agents.use_chat'), usergroup_values, 'agent_chat', 'use') }}
+					<!-- PERMISSION:agent_chat.view_transcripts -->{{ col.perm_col(phrase('admin.agents.view_chat_transcripts'), usergroup_values, 'agent_chat', 'view_transcripts') }}
 					<!-- PERMISSION:agent_chat.view_unassigned -->{{ col.perm_col(phrase('admin.agents.view_new_unassigned_chats'), usergroup_values, 'agent_chat', 'view_unassigned') }}
 					<!-- PERMISSION:agent_chat.view_others -->{{ col.perm_col(phrase('admin.agents.view_others_chats'), usergroup_values, 'agent_chat', 'view_others') }}
 					<!-- PERMISSION:agent_chat.delete -->{{ col.perm_col(phrase('admin.agents.delete_chat_transcripts'), usergroup_values, 'agent_chat', 'delete') }}
