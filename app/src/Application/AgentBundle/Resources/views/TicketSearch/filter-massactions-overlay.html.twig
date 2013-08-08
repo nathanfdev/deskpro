@@ -1,12 +1,13 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script type="text/x-deskpro-plain" class="mass-actions-overlay-tpl">
 <div
 	class="mass-actions-overlay-container mass-actions"
-	data-base-id="{{baseId}}"
+	data-base-id="%baseId%"
 	data-upload-url="{{ path('agent_accept_upload') }}"
 >
-	<script type="text/x-deskpro-plain" class="radio-tpl">
+	<%scriptWord% type="text/x-deskpro-plain" class="radio-tpl">
 		<button class="clean-white radio"><span class="radio-title"></span></button>
-	</script>
+	</%scriptWord%>
 	<section class="mass-actions-overlay">
 		<header>
 			<span class="close close-trigger"></span>
@@ -227,18 +228,9 @@
 						</nav>
 					</header>
 					<section class="ticketreply">
-						<nav id="{{baseId}}_header_rows">
-							<ul class="option-buttons">
-								<li class="tipped attach hide-note" title="{{ phrase('agent.tickets.add_attachments') }}">
-									<input type="file" class="file" name="file-upload" />
-									<span>{{ phrase('agent.general.attachments') }}</span>
-								</li>
-								<li class="tipped snippets hide-note" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.tickets.insert_text_snippets') }}"><a href="javascript:">{{ phrase('agent.general.snippets') }}</a></li>
-							</ul>
-						</nav>
 						<article>
 							<section>
-								<ul id="{{baseId}}_attach_row" style="display: none">
+								<ul id="%baseId%_attach_row" style="display: none">
 									<li class="attach-row">
 										<label><span>{{ phrase('agent.general.attachments') }}</span></label>
 										<div>
@@ -247,10 +239,11 @@
 										</div>
 									</li>
 
-									{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]'} %}
+									{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]', scriptWord: '%scriptWord%'} %}
 								</ul>
 								<div class="input-wrap">
-									<textarea id="{{baseId}}_replybox_txt" name="actions[reply][reply_text]"></textarea>
+									<textarea id="%baseId%_replybox_txt" name="actions[reply][reply_text]"></textarea>
+									<input type="hidden" id="{{localBaseId}}_is_html_reply" name="actions[reply][is_html]" value="0" />
 								</div>
 							</section>
 						</article>
@@ -285,3 +278,4 @@
 		</footer>
 	</section>
 </div>
+</script>

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -49,12 +50,14 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	protected $reply_pos;
 	protected $attach_ids = array();
 	protected $person_context;
+	protected $is_html = false;
 
-	public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null)
+	public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null, $is_html = false)
 	{
 		$this->reply_text = $reply_text;
 		$this->attach_ids = $attach_ids;
 		$this->reply_pos  = $reply_pos;
+		$this->is_html    = $is_html;
 	}
 
 
@@ -109,7 +112,17 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
-		$message->message_text = $this->reply_text;
+
+		if ($this->is_html) {
+			$message->message_text = $this->reply_text;
+		} else {
+			$reply_text = $this->reply_text;
+
+			$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+			$reply_text = $formatter->formatText($reply_text, $ticket);
+
+			$message->setMessageHtml($reply_text);
+		}
 		$ticket->addMessage($message);
 
 		if ($this->attach_ids) {
@@ -121,7 +134,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 					$attach['blob'] = $blob;
 					$attach['person'] = $this->person_context;
 
-					//$message->addAttachment($attach);
+					$message->addAttachment($attach);
+					App::getOrm()->persist($attach);
 				}
 			}
 		}
@@ -136,7 +150,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids)
+			array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html)
 		);
 	}
 

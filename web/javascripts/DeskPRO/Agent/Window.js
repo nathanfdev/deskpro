@@ -102,6 +102,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				html = html.replace(/%startScript%/g, '<script>');
 				html = html.replace(/%endScript%/g, '</script>');
 
+				html = html.replace(/%scriptWord%/g, 'script');
+
 				var uid = Orb.uuid();
 				html = html.replace(/%baseId%/g, uid);
 

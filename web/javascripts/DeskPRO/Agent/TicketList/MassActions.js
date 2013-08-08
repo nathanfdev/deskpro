@@ -70,7 +70,16 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			}
 		}
 
-		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+		this.wrapperEl = this.options.templateElement;
+		if (!this.wrapperEl || !this.wrapperEl[0]) {
+			this.wrapperEl = page.wrapper.find('.mass-actions-overlay-tpl');
+			if (!this.wrapperEl[0]) {
+				this.wrapperEl = null;
+			}
+		}
+		if (!this.wrapperEl) {
+			$('div.mass-actions-overlay-container', page.wrapper);
+		}
 
 		if(!this.wrapperEl.length) {
 			return;
@@ -108,9 +117,20 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		if (this.wrapper) {
 			this.wrapper.remove();
 		}
+		if (this.wrapperContainer) {
+			this.wrapperContainer.remove();
+		}
 
-		this.wrapper = $('<div/>').addClass('mass-actions-overlay-container mass-actions').data('base-id', this.wrapperEl.data('base-id')).data('upload-url', this.wrapperEl.data('upload-url'));
-		this.wrapper.html(this.wrapperEl.html());
+		if (!this.wrapperEl.is('script')) {
+			this.wrapper = $('<div/>').addClass('mass-actions-overlay-container mass-actions').data('base-id', this.wrapperEl.data('base-id')).data('upload-url', this.wrapperEl.data('upload-url'));
+			var wrapperHtml = this.wrapperEl.html();
+			this.wrapper.html(wrapperHtml);
+		} else {
+			var wrapperHtml = DeskPRO_Window.util.getPlainTpl(this.wrapperEl);
+			this.wrapper = $(wrapperHtml);
+			this.wrapper.detach().appendTo('body');
+		}
+
 		this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
 
 		this.countEl = $('.selected-tickets-count', this.wrapper);
@@ -298,11 +318,111 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			this.apply();
 		}).bind(this));
 
+		//------------------------------
+		// Reply Box
+		//------------------------------
+
+		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
+		this.textarea = textarea;
+
+		if (DeskPRO_Window.canUseAgentReplyRte()) {
+			isWysiwyg = true;
+
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				inlineHiddenPosition: this.getElById('is_html_reply'),
+				minHeight: 120,
+				callback: function(obj) {
+					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
+					obj.addBtnSeparatorAfter('dp_attach');
+
+					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+					snippetBtn.on('click', function(ev) {
+						Orb.cancelEvent(ev);
+						self.snippetsViewer.open();
+					});
+
+					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+					attachBtn.addClass('attach');
+					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+
+					obj.addBtnSeparatorAfter('dp_snippets');
+				}
+			});
+			this.getElById('is_html_reply').val(1);
+		}
+
+		//------------------------------
+		// Snippets Viewer
+		//------------------------------
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			driver: DeskPRO_Window.ticketSnippetDriver,
+			onBeforeOpen: function() {
+				if (isWysiwyg && textarea.data('redactor')) {
+					try {
+						textarea.data('redactor').saveSelection();
+					} catch (e) {}
+				}
+			},
+			onSnippetClick: function(info) {
+
+				var snippetId    = info.snippetId;
+				var snippetCode  = info.snippetCode;
+
+				var agentText;
+				var defaultText;
+				var useText;
+				var result;
+
+				Array.each(snippetCode, function(info) {
+					if (info.value) {
+						if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+							agentText = info.value;
+						}
+						if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+							defaultText = info.value;
+						}
+						useText = info.value;
+					}
+				});
+
+				if (agentText) {
+					useText = agentText;
+				} else if (defaultText) {
+					useText = defaultText;
+				}
+
+				result = useText;
+
+				if (isWysiwyg && textarea.data('redactor')) {
+					try {
+						textarea.data('redactor').restoreSelection();
+						textarea.data('redactor').setBuffer();
+					} catch (e) {}
+
+					var html = result;
+					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+					html = html.replace(/^<p>/, '');
+					html = html.replace(/<\/p>$/, '');
+					textarea.data('redactor').insertHtml(html);
+				} else {
+					self.page.insertTextInReply(result);
+				}
+
+				self.snippetsViewer.close();
+			}
+		});
+
+		/*
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			sidePosition: 'top',
 			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: this._onSnippetClick.bind(this)
 		});
+		*/
 
 		//------------------------------
 		// Upload handling
@@ -325,6 +445,9 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.wrapper.bind('fileuploaddone', function() {
 			self.getElById('attach_row').fadeIn();
+			self.wrapper.find('[name="attach\\[\\]"]').each(function() {
+				$(this).name('actions[reply][attach_ids][]');
+			});
 		});
 		this.wrapper.bind('fileuploadstart', function() {
 			self.getElById('attach_row').fadeIn();
@@ -830,6 +953,10 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 	 * Open this overlay
 	 */
 	open: function() {
+		if (!this.wrapper || !this.wrapper[0]) {
+			this._resetWrapper();
+		}
+
 		this._initOverlay();
 
 		//this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(this, $('> section > article', this.wrapper), {});
@@ -839,7 +966,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		this.backdropEls.show();
 
 		this.updateCount(null);
-		this.wrapper.addClass('open');
+		this.wrapper.addClass('open').show();
 		//this.updatePreview();
 
 		this.updatePositions();
@@ -871,6 +998,14 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		if (this._hasInit) {
 			this.wrapper.remove();
 			this.backdropEls.remove();
+		}
+
+		if (this.wrapperContainer) {
+			this.wrapperContainer.remove();
+		}
+
+		if (this.textarea && this.textarea.data('redactor')) {
+			this.textarea.redactor('destroy');
 		}
 	}
 });

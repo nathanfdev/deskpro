@@ -115,7 +115,7 @@ DeskPRO.Agent.RteEditor = {
 					var adjustmentType = ev.shiftKey ? "extend" : "move";
 
 					switch (ev.keyCode) {
-						case 39: // right - act like "end" in windows
+					case 39: // right - act like "end" in windows
 							sel.modify(adjustmentType, "right", "lineboundary");
 							ev.preventDefault();
 							break;
