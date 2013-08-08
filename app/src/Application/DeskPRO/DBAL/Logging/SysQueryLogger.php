@@ -35,76 +35,89 @@
 namespace Application\DeskPRO\DBAL\Logging;
 
 use Application\DeskPRO\App;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 {
-	public $query_count = 0;
-	public $total_time = 0.0;
-	public $is_enabled = false;
-	public $is_logging = false;
-	public $last_query = null;
+	/**
+	 * Max number of queries logged before we start dropping them.
+	 * This is in case we get stuck in a loop somehwere, we dont want to fill the hdd or memory with
+	 * a giant log.
+	 */
+	const SAFE_MAX = 1000;
 
-	public $obj_start_time;
-	public $log_maxtime   = false;
-	public $log_nowhere   = false;
-	public $log_countstar = true;
-	public $log_all       = false;
-	public $log_explain   = false;
-	public $log_trace     = false;
-	public $min_log_query = 0;
+	/**
+	 * Is this logger enabled?
+	 *
+	 * @var bool
+	 */
+	private $_enabled = false;
 
-	public $queries = array();
+	/**
+	 * The time this object was instantiated. Most scripts have the DP_START_TIME constant
+	 * defined during boot, so this is just a fallback used when determining when to log the
+	 * slow page log.
+	 *
+	 * @var int
+	 */
+	private $_start_time = null;
+
+	/**
+	 * The last query started that we are currently loggin.
+	 *
+	 * @var array|null
+	 */
+	private $_last_query = null;
+
+	/**
+	 * Info about all the queries this current request
+	 *
+	 * @var array
+	 */
+	private $_queries = array();
+
+	/**
+	 * @var array
+	 */
+	private	$_query_id_count = array();
+
+	/**
+	 * @var array
+	 */
+	private	$_query_id_names = array();
+
+	/**
+	 * Number of queries executed
+	 *
+	 * @var int
+	 */
+	private $_query_count = 0;
+
+	/**
+	 * A count of DB time used so far
+	 *
+	 * @var int
+	 */
+	private $_db_time = 0;
 
 	public function __construct()
 	{
-		$this->obj_start_time = microtime(true);
+		$this->_start_time = microtime(true);
 
-		global $DP_CONFIG;
-		if (!empty($DP_CONFIG['debug']['querylog']['enabled'])) {
-			$this->is_enabled = true;
+		if (!function_exists('dp_get_config')) return;
+		if (!dp_get_config('debug.page_log.enabled') || isset($GLOBALS['DP_NOSQL_LOG'])) return;
 
-			if (!empty($DP_CONFIG['debug']['querylog']['log_maxtime'])) {
-				$this->log_maxtime = $DP_CONFIG['debug']['querylog']['log_maxtime'];
-			}
-
-			if (!empty($DP_CONFIG['debug']['querylog']['log_nowhere'])) {
-				$this->log_nowhere = $DP_CONFIG['debug']['querylog']['log_nowhere'];
-			}
-
-			if (!empty($DP_CONFIG['debug']['querylog']['log_countstar'])) {
-				$this->log_countstar = $DP_CONFIG['debug']['querylog']['log_countstar'];
-			}
-
-			if (!empty($DP_CONFIG['debug']['querylog']['log_all'])) {
-				$this->log_all = $DP_CONFIG['debug']['querylog']['log_all'];
-			}
-
-			if (!empty($DP_CONFIG['debug']['querylog']['log_explain'])) {
-				$this->log_explain = $DP_CONFIG['debug']['querylog']['log_explain'];
-			}
-
-			if (!empty($DP_CONFIG['debug']['querylog']['log_trace'])) {
-				$this->log_trace = $DP_CONFIG['debug']['querylog']['log_trace'];
-			}
-		}
-
-		if (!empty($DP_CONFIG['debug']['enable_slow_page_log'])) {
-			$this->is_enabled = true;
-		}
-
-		if (!empty($DP_CONFIG['debug']['enable_slow_page_log_trace'])) {
-			$this->log_trace = true;
-		}
-
-		if ($this->is_enabled && isset($DP_CONFIG['debug']['enable_slow_page_log_minquerytime']) && $DP_CONFIG['debug']['enable_slow_page_log_minquerytime']) {
-			$this->min_log_query = $DP_CONFIG['debug']['enable_slow_page_log_minquerytime'];
-		}
+		$this->_enabled = true;
 
 		\DpShutdown::add(array($this, 'writeLogQuiet'));
 	}
 
 	public function writeLogQuiet()
 	{
+		if (!$this->_enabled) return;
+		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
+
 		try {
 			$this->writeLog();
 		} catch (\Exception $e) {}
@@ -112,10 +125,17 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
-		if ($this->is_logging) return;
+		if (!isset($GLOBALS['DP_QUERY_COUNT'])) {
+			$GLOBALS['DP_QUERY_COUNT'] = 0;
+		}
+		$GLOBALS['DP_QUERY_COUNT']++;
+		$this->_query_count++;
 
-		$this->last_query = array(
-			'sql'            => $sql,
+		if (!$this->_enabled) return;
+		if ($this->_query_count > self::SAFE_MAX) return;
+
+		$this->_last_query = array(
+			'sql'            => trim($sql),
 			'params'         => $params,
 			'time_start'     => microtime(true),
 			'time_end'       => 0,
@@ -124,317 +144,340 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		);
 	}
 
-	public function processLast()
-	{
-		if (!$this->last_query) {
-			return;
-		}
-
-		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
-		if ($this->is_logging) {
-			return;
-		}
-		if (!$this->is_enabled) {
-			return;
-		}
-		$this->is_logging = true;
-
-		$queryinfo = $this->last_query;
-
-		if (preg_match('#^\s*SELECT#i', $queryinfo['sql'])) {
-			$query_typename = 'SELECT';
-		} else if (preg_match('#^\s*UPDATE#i', $queryinfo['sql'])) {
-			$query_typename = 'UPDATE';
-		} else if (preg_match('#^\s*INSERT#i', $queryinfo['sql'])) {
-			$query_typename = 'INSERT';
-		} else if (preg_match('#^\s*DELETE#i', $queryinfo['sql'])) {
-			$query_typename = 'DELETE';
-		} else {
-			$query_typename = 'OTHER';
-		}
-		$queryinfo['query_typename'] = $query_typename;
-		$queryinfo['params_string'] = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
-		$queryinfo['time_end']   = microtime(true);
-		$queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
-		$queryinfo['time_taken_str'] = sprintf('%.2f', $queryinfo['time_taken']);
-		$queryinfo['trans_level'] = App::getDb()->getTransactionNestingLevel();
-
-		if (preg_match('#\s+(FROM|INSERT INTO|UPDATE|DELETE FROM)\s+(.*?)\s+#', $queryinfo['sql'], $m)) {
-			$table = $m[2];
-		} else {
-			$table = '(unknown table)';
-		}
-
-		$do_log = false;
-		if ($this->log_all) {
-			$do_log = true;
-		}
-		if (!$do_log && $this->log_countstar) {
-			if (strpos($queryinfo['time_sql'], 'COUNT(*)') !== false && strpos($queryinfo['time_sql'], 'WHERE') === false) {
-				$do_log = true;
-			}
-		}
-		if (!$do_log && $this->log_nowhere) {
-			if ($this->log_nowhere === true || $this->log_nowhere <= $queryinfo['time_taken']) {
-				$do_log = true;
-			}
-		}
-		if (!$do_log && $this->log_maxtime && $this->log_maxtime <= $queryinfo['time_taken']) {
-			$do_log = true;
-		}
-
-		if ($do_log) {
-			$explain = '';
-			try {
-				if ($this->log_explain && $queryinfo['query_typename'] == 'SELECT') {
-					try {
-						$explain = App::getDb()->fetchAll("EXPLAIN {$queryinfo['sql']}", $queryinfo['params']);
-					} catch (\Exception $e) {}
-				}
-
-				$db = App::getDb();
-				$db->insert('log_items', array(
-					'log_name' => 'query_log',
-					'priority' => 7,
-					'priority_name' => 'DEBUG',
-					'message' => "[{$queryinfo['time_taken_str']} {$table}] {$queryinfo['sql']}",
-					'data' => serialize(array(
-						'time'    => sprintf('%.8f', $queryinfo['time_taken']),
-						'sql'     => $queryinfo['sql'],
-						'params'  => $queryinfo['params_string'],
-						'trace'   => $queryinfo['trace'],
-						'explain' => $explain,
-					))
-				));
-			} catch (\Exception $e) {}
-		}
-
-
-		$this->last_query = null;
-		$this->is_logging = false;
-	}
-
 	public function stopQuery()
 	{
-		$this->last_query['time_end']   = microtime(true);
-		$this->last_query['time_taken'] = $this->last_query['time_end'] - $this->last_query['time_start'];
-		$this->last_query['memory']     = memory_get_usage();
+		if (!$this->_enabled) return;
+		if (!$this->_last_query) return;
+		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
 
-		if ($this->is_enabled && (!$this->min_log_query || $this->last_query['time_taken'] >= $this->min_log_query)) {
-			if ($this->log_trace) {
-				try { throw new \Exception(); } catch (\Exception $e) { $trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace()); }
-				$this->last_query['trace'] = $trace;
-			}
-			$this->queries[] = $this->last_query;
-		}
+		$queryinfo = $this->_last_query;
 
-		$this->query_count++;
-		if (!isset($GLOBALS['DP_QUERY_COUNT'])) {
-			$GLOBALS['DP_QUERY_COUNT'] = 0;
-		}
-		$GLOBALS['DP_QUERY_COUNT']++;
-		$this->total_time += $this->last_query['time_taken'];
+		$queryinfo['params_string']  = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
+		$queryinfo['time_end']       = microtime(true);
+		$queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
+
+		$this->_queries[] = $queryinfo;
+		$this->_db_time += $queryinfo['time_taken'];
+
+		$this->_last_query = null;
 	}
 
 	public function writeLog()
 	{
-		global $DP_CONFIG;
-		if (!isset($DP_CONFIG['debug']['enable_slow_page_log']) OR !$DP_CONFIG['debug']['enable_slow_page_log']) {
-			return;
-		}
+		if (!$this->_enabled) return;
+		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
 
-		if (isset($DP_CONFIG['debug']['slow_page_log_ignorenourl']) && $DP_CONFIG['debug']['slow_page_log_ignorenourl'] && (!defined('DP_REQUEST_URL') || !DP_REQUEST_URL)) {
-			return;
-		}
-
-		if (isset($DP_CONFIG['debug']['enable_slow_page_log_simplelog']) && $DP_CONFIG['debug']['enable_slow_page_log_simplelog']) {
-			$this->writeLogSimple();
-			return;
-		}
-
-		if (defined('DP_START_TIME')) {
-			$start_time = DP_START_TIME;
-		} else {
-			$start_time = $this->obj_start_time;
-		}
+		$start_time = DP_START_TIME;
 
 		$total_time = microtime(true) - $start_time;
-		$db_time    = $this->total_time;
+		$db_time    = $this->_db_time;
 		$php_time   = $total_time - $db_time;
 
-		$do_log = false;
-		if (is_numeric($DP_CONFIG['debug']['enable_slow_page_log'])) {
-			if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log']) {
-				$do_log = true;
-			}
-		} else {
-			if ($DP_CONFIG['debug']['enable_slow_page_log'] && $this->queries) {
-				$do_log = true;
+		$opt_slow_query_time = dp_get_config('debug.page_log.slow_query_time');
+		$opt_max_query_count = dp_get_config('debug.page_log.max_query_count');
+		$opt_slow_db_time    = dp_get_config('debug.page_log.slow_db_time');
+		$opt_slow_php_time   = dp_get_config('debug.page_log.slow_php_time');
+		$opt_slow_page_time  = dp_get_config('debug.page_log.slow_page_time');
+
+		$do_slow_query = false;
+		foreach ($this->_queries as $queryinfo) {
+			if ($queryinfo['time_taken'] >= $opt_slow_query_time) {
+				$do_slow_query = true;
+				break;
 			}
 		}
 
-		if ($do_log) {
-			$write = array("--- Page Log Begin ---\n");
-			if (defined('DP_REQUEST_URL')) {
-				$write[] = "=> URL: " . DP_REQUEST_URL . "\n";
+		$do_max_query  = ($opt_max_query_count && $this->_query_count >= $opt_max_query_count) ? true : false;
+		$do_slow_db    = ($opt_slow_db_time    && $db_time            >= $opt_slow_db_time)    ? true : false;
+		$do_slow_php   = ($opt_slow_php_time   && $php_time           >= $opt_slow_php_time)   ? true : false;
+		$do_slow_page  = ($opt_slow_page_time  && $total_time         >= $opt_slow_page_time)  ? true : false;
+
+		if (!$do_slow_query && !$do_max_query && !$do_slow_db && !$do_slow_php && !$do_slow_page) {
+			return;
+		}
+
+		$this->_procQueryArray();
+
+		$unique_queries = null;
+		$repeated_queries = array();
+
+		foreach ($this->_queries as $queryinfo) {
+			$query_name = $queryinfo['query_name'];
+			if (!isset($unique_queries[$query_name])) {
+				$unique_queries[$query_name] = $queryinfo;
+				$repeated_queries[$query_name] = array(
+					'count'      => 1,
+					'total_time' => $queryinfo['time_taken'],
+					'min_time'   => $queryinfo['time_taken'],
+					'max_time'   => $queryinfo['time_taken'],
+				);
+			} else {
+				$repeated_queries[$query_name]['count']++;
+				$repeated_queries[$query_name]['total_time'] += $queryinfo['time_taken'];
+
+				if ($queryinfo['time_taken'] < $repeated_queries[$query_name]['min_time']) {
+					$repeated_queries[$query_name]['min_time'] = $queryinfo['time_taken'];
+				}
+				if ($queryinfo['time_taken'] > $repeated_queries[$query_name]['max_time']) {
+					$repeated_queries[$query_name]['max_time'] = $queryinfo['time_taken'];
+				}
 			}
+		}
 
-			$write[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d\n", $total_time, $php_time, $db_time, $this->query_count, memory_get_peak_usage());
+		foreach ($repeated_queries as &$q) {
+			if ($q['count'] == 1) {
+				$q = null;
+			} else {
+				$q['avg_time'] = $q['total_time'] / $q['count'];
+			}
+		}
+		unset($q);
 
-			$hashes_to_name = array();
-			$count = 0;
-			$name_counts = array();
-			$name_counts_time = array();
+		$repeated_queries = Arrays::removeFalsey($repeated_queries);
 
-			foreach ($this->queries as $q) {
+		$page_header = array();
+		$page_header[] = "--- Page Log Begin ---";
+		if (defined('DP_REQUEST_URL')) {
+			$page_header[] = "=> URL: " . DP_REQUEST_URL;
+		} elseif (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+			$page_header[] = "=> URL: (Command) " . implode(' ', $_SERVER['argv']);
+		} elseif (!empty($_SERVER["REQUEST_URI"])) {
+			$page_header[] = "=> URL: " . $_SERVER["REQUEST_URI"];
+		}
 
-				$sql = trim($q['sql']);
-				$hash = md5($q['sql']);
+		$page_header[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d", $total_time, $php_time, $db_time, $this->_query_count, memory_get_peak_usage());
 
-				if (!isset($hashes_to_name[$hash])) {
-					$hashes_to_name[$hash] = sprintf('query_%04d', $count);
-					$count++;
-				}
+		#------------------------------
+		# Slow Query Log
+		#------------------------------
 
-				$name = $hashes_to_name[$hash];
-
-				if (!isset($name_counts[$name])) {
-					$name_counts[$name] = 0;
-					$name_counts_time[$name] = 0.0;
-				}
-
-				$name_counts[$name]++;
-				$name_counts_time[$name] += $q['time_taken'];
-
-				$sql = str_replace(array("\r\n", "\n", "\t"), ' ', $sql);
-				$sql = preg_replace('# {2,}#', ' ', $sql);
-				$sql = substr($sql, 0, 5000);
-
-				$params = array();
-				if ($q['params']) {
-					foreach ($q['params'] as $v) {
-						if (is_numeric($v) || ctype_digit($v)) {
-							$params[] = $v;
-						} elseif (is_string($v)) {
-							$v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
-							$v = preg_replace('# {2,}#', ' ', $v);
-
-							if (strlen($v) > 100) {
-								$v = substr($v, 0, 100);
-							}
-
-							$params[] = 'string:' . $v;
-						} elseif ($v === null) {
-							$params[] = 'NULL';
-						} elseif (is_array($v)) {
-							$params[] = substr(\DeskPRO\Kernel\KernelErrorHandler::varToString($v), 0, 200);
-						} elseif (is_object($v)) {
-							$params[] = get_class($v);
-						} else {
-							$params[] = gettype($v);
-						}
-					}
-				}
-
-				$m = null;
-				if (preg_match('# FROM ([a-zA-Z_]+)#', $sql, $m)) {
-					$table = $m[1];
-				} elseif (preg_match('#INSERT INTO ([a-zA-Z_]+)#', $sql, $m)) {
-					$table = $m[1];
-				} elseif (preg_match('#UPDATE ([a-zA-Z_]+)#', $sql, $m)) {
-					$table = $m[1];
-				} elseif (preg_match('#DELETE FROM ([a-zA-Z_]+)#', $sql, $m)) {
-					$table = $m[1];
-				} else {
-					$table = '';
-				}
-
-				if ($table) {
-					$table = ' ' . $table;
-				}
-
-				if (!isset($q['trans_level'])) {
-					$q['trans_level'] = 0;
-				}
-
-				$memory = $q['memory'] / 1024;
-
-				$write[] = sprintf("%s> Query %.4f %4dK %s$table: %s \t\t Query_Params: %s\n", str_repeat('=', $q['trans_level']+1), $q['time_taken'], $memory, $name, $sql, implode(', ', $params));
-				if (isset($q['trace'])) {
-					$write[] = \Orb\Util\Strings::modifyLines($q['trace'], "   ", '', true);
-					$write[] = "\n";
+		if ($do_slow_query) {
+			$slow_queries = array();
+			foreach ($this->_queries as $queryinfo) {
+				if ($queryinfo['time_taken'] >= $opt_slow_query_time) {
+					$slow_queries[$queryinfo['query_name']] = $queryinfo;
 				}
 			}
 
-			foreach ($name_counts as $name => $count) {
-				if ($count > 1) {
-					$write[] = sprintf("\n=> Repeated_Query %s: %s times    Total_Time: %.4f", $name, $count, $name_counts_time[$name]);
+			// Sort from highest to lowest
+			uksort($slow_queries, function($a, $b) {
+				if ($a['time_taken'] == $b['time_taken']) {
+					return 0;
+				}
+
+				return $a['time_taken'] > $b['time_taken'] ? -1 : 1;
+			});
+
+			$repeated_lines = $this->_formatRepeatedQueries($repeated_queries);
+			foreach ($repeated_lines as $k => &$l) {
+				if ($k === 0) continue;
+				$name = Strings::extractRegexMatch('/<(#[0-9]+)>/', $l);
+				if (!isset($slow_queries[$name])) {
+					$l = null;
 				}
 			}
+			unset($l);
 
-			$write = implode('', $write);
-			$write = trim($write);
+			$repeated_lines = Arrays::removeFalsey($repeated_lines);
 
-			$prefix = '[' . date('Y-m-d H:i:s') . '] ';
-			$write = \Orb\Util\Strings::modifyLines($write, $prefix);
-			$write = trim($write);
-			$write .= "\n";
-
-			$path = dp_get_log_dir().'/slow-page-log.log';
-			if (isset($DP_CONFIG['debug']['enable_slow_page_log_filepath']) && $DP_CONFIG['debug']['enable_slow_page_log_filepath']) {
-				$path = $DP_CONFIG['debug']['enable_slow_page_log_filepath'];
+			// Means just the 'Repeated Queries' header we want to get rid of
+			if (count($repeated_lines) == 1) {
+				$repeated_lines = array();
 			}
 
-			file_put_contents($path, $write, \FILE_APPEND | \LOCK_EX);
+			$write = array_merge($page_header, $this->_formatAllQueryRows($slow_queries), $repeated_lines);
+			$this->_writeLogFile(
+				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-queries.log',
+				$write
+			);
+		}
 
-			// If we just created the file this will make it writable
-			// in case the same file is being writ to by the CLI and web server both
-			@chmod($path, 0777);
+		#------------------------------
+		# Max Query Count Log
+		#------------------------------
+
+		if ($do_max_query) {
+			$write = array_merge($page_header, $this->_formatAllQueryRows($this->_queries), $this->_formatRepeatedQueries($repeated_queries));
+			$this->_writeLogFile(
+				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-query-count.log',
+				$write
+			);
+		}
+
+		#------------------------------
+		# Slow DB Log
+		#------------------------------
+
+		if ($do_slow_db) {
+			$write = array_merge($page_header, $this->_formatAllQueryRows($this->_queries), $this->_formatRepeatedQueries($repeated_queries));
+			$this->_writeLogFile(
+				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-db.log',
+				$write
+			);
+		}
+
+		#------------------------------
+		# Slow PHP Log
+		#------------------------------
+
+		if ($do_slow_db) {
+			$this->_writeLogFile(
+				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-php.log',
+				$page_header
+			);
+		}
+
+		#------------------------------
+		# Slow Page Log
+		#------------------------------
+
+		if ($do_slow_db) {
+			$this->_writeLogFile(
+				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-page.log',
+				$page_header
+			);
 		}
 	}
 
-	public function writeLogSimple()
+
+	/**
+	 * @return void
+	 */
+	private function _procQueryArray()
 	{
-		global $DP_CONFIG;
+		foreach ($this->_queries as $k => &$queryinfo) {
+			if (stripos($queryinfo['sql'], 'SELECT') === 0) {
+				$query_typename = 'SELECT';
+			} elseif (stripos($queryinfo['sql'], 'UPDATE') === 0) {
+				$query_typename = 'UPDATE';
+			} elseif (stripos($queryinfo['sql'], 'INSERT') === 0) {
+				$query_typename = 'INSERT';
+			} elseif (stripos($queryinfo['sql'], 'DELETE') === 0) {
+				$query_typename = 'DELETE';
+			} else {
+				$query_typename = 'OTHER';
+			}
 
-		if (defined('DP_START_TIME')) {
-			$start_time = DP_START_TIME;
-		} else {
-			$start_time = $this->obj_start_time;
+			if (preg_match('#\s+(FROM|INSERT INTO|UPDATE|DELETE FROM)\s+(.*?)\s+#', $queryinfo['sql'], $m)) {
+				$query_table = $m[2];
+			} else {
+				$query_table = '?';
+			}
+
+			$sql_string = str_replace(array("\r\n", "\n", "\t"), ' ', $queryinfo['sql']);
+			$sql_string = preg_replace('# {2,}#', ' ', $sql_string);
+			$sql_string = substr($sql_string, 0, 5000);
+			$queryinfo['sql_string'] = $sql_string;
+
+			$query_id = md5($queryinfo['sql']);
+
+			$queryinfo['query_typename'] = $query_typename;
+			$queryinfo['query_table']    = $query_table;
+			$queryinfo['query_id']       = $query_id;
+
+			if (!isset($this->_query_id_count[$query_id])) {
+				$this->_query_id_names[$query_id] = sprintf("#%04d", $k);
+				$this->_query_id_count[$query_id] = 1;
+
+				$queryinfo['query_name'] = $this->_query_id_names[$query_id];
+				$queryinfo['count_of_id'] = 0;
+			} else {
+				$queryinfo['count_of_id'] = $this->_query_id_count[$query_id];
+				$queryinfo['query_name'] = $this->_query_id_names[$query_id];
+
+				$this->_query_id_count[$query_id]++;
+			}
+
+		}
+	}
+
+
+	/**
+	 * @param array $queryinfo
+	 * @return string
+	 */
+	private function _formatQueryRow(array $queryinfo)
+	{
+		// [2.3s] <Q123.2:tablename> query     <Params>
+
+		$row = sprintf(
+			"[%.4fs] <%s:%s> %s    <PARAMS> %s",
+			$queryinfo['time_taken'],
+			$queryinfo['query_name'] . ($queryinfo['count_of_id'] ? sprintf(".%03d", $queryinfo['count_of_id']) : ''),
+			$queryinfo['query_table'],
+			$queryinfo['sql_string'],
+			$queryinfo['params_string']
+		);
+
+		return $row;
+	}
+
+
+	/**
+	 * @param array $all_queryinfo
+	 * @return string[]
+	 */
+	private function _formatAllQueryRows(array $all_queryinfo)
+	{
+		$write = array();
+
+		foreach ($all_queryinfo as $queryinfo) {
+			$write[] = $this->_formatQueryRow($queryinfo);
 		}
 
-		$total_time = microtime(true) - $start_time;
-		$db_time    = $this->total_time;
-		$php_time   = $total_time - $db_time;
+		return $write;
+	}
 
-		if ($total_time < $DP_CONFIG['debug']['enable_slow_page_log']) {
-			return;
+
+	/**
+	 * @param array $repeated_queries
+	 * @return string[]
+	 */
+	private function _formatRepeatedQueries(array $repeated_queries)
+	{
+		if (!$repeated_queries) {
+			return array();
 		}
 
-		$url = '';
-		if (defined('DP_REQUEST_URL')) {
-			$url = DP_REQUEST_URL;
-		}
-		if (!$url) {
-			return;
-		}
+		$write = array();
+		$write[] = "Repeated Queries:";
 
-		// Trim off _rt
-		$url = preg_replace('#(\??)&?_rt=[a-zA-Z0-9]+\-[a-zA-Z0-9]+\-[a-f0-9]+#', '$1', $url);
-
-		// Trim of _=1434343 cache buster
-		$url = preg_replace('#(\??)&?_=([0-9]+)#', '$1', $url);
-
-		// trim off single trailing ?
-		$url = rtrim($url, '?&');
-
-		$write = sprintf("[%s] Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d    URL: %s\n", date('Y-m-d H:i:s'), $total_time, $php_time, $db_time, $this->query_count, memory_get_peak_usage(), $url);
-
-		$path = dp_get_log_dir().'/slow-page-simplelog.log';
-		if (isset($DP_CONFIG['debug']['enable_slow_page_log_filepath']) && $DP_CONFIG['debug']['enable_slow_page_log_filepath']) {
-			$path = $DP_CONFIG['debug']['enable_slow_page_log_filepath'];
+		foreach ($repeated_queries as $name => $info) {
+			$write[] = sprintf(
+				"\t<%s> Count: %03d   Time: %.4f   MaxTime: %.4f   MinTime: %.4f   AvgTime: %.4f",
+				$name,
+				$info['count'],
+				$info['total_time'],
+				$info['max_time'],
+				$info['min_time'],
+				$info['avg_time']
+			);
 		}
 
-		file_put_contents($path, $write, \FILE_APPEND | \LOCK_EX);
+		return $write;
+	}
+
+
+	/**
+	 * @param string $path
+	 * @param array $lines
+	 * @return int
+	 */
+	private function _writeLogFile($path, array $lines)
+	{
+		$lines = implode("\n", $lines);
+
+		$prefix = '[' . date('Y-m-d H:i:s') . '] ';
+		$lines = Strings::modifyLines($lines, $prefix);
+		$lines = trim($lines);
+		$lines .= "\n";
+
+		$ret = @file_put_contents($path, $lines, \FILE_APPEND | \LOCK_EX);
+
+		// If we just created the file this will make it writable
+		// in case the same file is being writ to by the CLI and web server both
+		@chmod($path, 0777);
+
+		return $ret;
 	}
 }

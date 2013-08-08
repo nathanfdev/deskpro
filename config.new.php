@@ -240,14 +240,63 @@ $DP_CONFIG['debug']['enable_debug_trace'] = false;
 $DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 
 ######################################################
-# OPTIONAL : Slow Page Logs                          #
+# OPTIONAL : Page Logs                               #
 #                                                    #
 # Sometimes a support agent may ask you to enable    #
 # these options to help debug a problem              #
 ######################################################
 
-$DP_CONFIG['debug']['enable_slow_page_log'] = false;
-$DP_CONFIG['debug']['enable_slow_page_log_minquerytime'] = 0.01;
+$DP_CONFIG['debug']['page_log'] = array(
+	/**
+	 * Enable the page log system
+	 */
+	'enabled' => false,
+
+	/**
+	 * Slow Query Log: data/logs/pagelog-slow-queries.log
+	 * This logs queries that take longer than a certain time.
+	 *
+	 * Value: A a time in seconds
+	 * Example: 0.08 to log any query that takes longer than 0.08 secs
+	 */
+	'slow_query_time' => false,
+
+	/**
+	 * Query Count Log: data/logs/pagelog-query-count.log
+	 * This logs requests that execute more than a certain number of queries.
+	 *
+	 * Value: Number of queries to start logging on
+	 * Example: 10 to log any page that executes more than 10 queries
+	 */
+	'max_query_count' => false,
+
+	/**
+	 * Slow DB Log: data/logs/pagelog-slow-db.log
+	 * This logs pages where the total time spent doing database queries is over a certain time.
+	 *
+	 * Value: A time in seconds
+	 * Example: 0.5 to log any page where DB-work takes longer than 0.5 seconds.
+	 */
+	'slow_db_time' => false,
+
+	/**
+	 * Slow DB Log: data/logs/pagelog-slow-php.log
+	 * This logs pages where the total time spent in PHP is over a certain time.
+	 *
+	 * Value: A time in seconds
+	 * Example: 0.5 to log any page where PHP-work takes longer than 0.5 seconds.
+	 */
+	'slow_php_time' => false,
+
+	/**
+	 * Slow Page Log: data/logs/pagelog-slow-page.log
+	 * This logs any page that takes longer than a certain time to finish.
+	 *
+	 * Value: A time in seconds
+	 * Example: 0.8 to log any page that takes longer than 0.8 seconds from start to finish
+	 */
+	'slow_page_time' => false,
+);
 
 ######################################################
 # OPTIONAL : Usersource Log                          #
