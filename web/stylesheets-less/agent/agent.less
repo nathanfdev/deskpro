@@ -2236,10 +2236,10 @@ ul.pane-tabs {
 				margin-right: 5px;
 				border: 1px solid darken(#fff, 11%);
 
-				&.ok, &.warning, &.fail  {
-					margin-top: 7px;
-					margin-right: 4px;
-					border: none;
+				&.ok, &.fail, &.warning, &.ok.not-empty, &.fail.not-empty, &.warning.not-empty {
+					padding: 3px 5px;
+					border: 1px solid transparent;
+					margin: 7px 4px 0 0;
 				}
 			}
 
