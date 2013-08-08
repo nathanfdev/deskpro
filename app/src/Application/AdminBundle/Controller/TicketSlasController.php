@@ -63,6 +63,8 @@ class TicketSlasController extends AbstractController
 		if ($this->in->getBool('process')) {
 			$this->ensureRequestToken();
 
+			$action_proc_info = array();
+
 			$holidays = $this->in->getCleanValueArray('work_holidays', 'raw', 'discard');
 			$add_all_holidays = array();
 			foreach ($holidays AS $holiday) {
@@ -141,6 +143,9 @@ class TicketSlasController extends AbstractController
 			$action_rules = RuleBuilder::newActionsBuilder();
 			$actions = $action_rules->readForm($this->in->getCleanValueArray('warning_actions', 'raw' , 'discard'));
 			$actions[] = array('type' => 'recalculate_sla_status', 'options' => array());
+
+			$actions = Entity\TicketTrigger::passActionsArray($actions, $action_proc_info);
+
 			$warning_trigger->actions = $actions;
 
 			$this->em->persist($warning_trigger);
@@ -172,6 +177,9 @@ class TicketSlasController extends AbstractController
 			$action_rules = RuleBuilder::newActionsBuilder();
 			$actions = $action_rules->readForm($this->in->getCleanValueArray('fail_actions', 'raw' , 'discard'));
 			$actions[] = array('type' => 'recalculate_sla_status', 'options' => array());
+
+			$actions = Entity\TicketTrigger::passActionsArray($actions, $action_proc_info);
+
 			$fail_trigger->actions = $actions;
 
 			$this->em->persist($fail_trigger);
@@ -235,6 +243,11 @@ class TicketSlasController extends AbstractController
 
 			if ($warning_time_err) {
 				return $this->redirectRoute('admin_tickets_sla_edit', array('sla_id' => $sla->id, 'show_warning_time_err' => 1));
+			}
+
+			if (!empty($action_proc_info['new_templates'])) {
+				$first = array_shift($action_proc_info['new_templates']);
+				return $this->redirectRoute('admin_templates_editemail', array('name' => $first));
 			}
 
 			return $this->redirectRoute('admin_tickets_slas');

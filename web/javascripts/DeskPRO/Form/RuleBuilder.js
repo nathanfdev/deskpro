@@ -216,7 +216,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 
 			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
-				$(':input, textarea, select', new_row).filter(':not(.op, .type)').first().val(existing.options);
+				var els = $(':input, textarea, select', new_row).filter(':not(.op, .type)').first().val(existing.options);
 			} else {
 				// Otherwise we'll assume its a k=>v array
 				Object.each(existing.options, function(val, name) {
@@ -225,6 +225,13 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
 					if (typeof val == 'string' || typeof val == 'number') {
 						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val).change();
+						if (el.is('select')) {
+							el.find('option').each(function() {
+								if (this.value == val) {
+									$(this).prop('selected', true);
+								}
+							});
+						}
 					} else if (typeOf(val) == 'object') {
 						Object.each(val, function(subval, subname) {
 							var sub_name = name_safe + "["+subname+"]";

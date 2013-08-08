@@ -654,6 +654,100 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $event;
 	}
 
+
+	public static function passActionsArray($actions_array, array &$info = null)
+	{
+		if ($info === null) {
+			$info = array();
+		}
+
+		$actions = $actions_array;
+
+		$redirect_to = null;
+		$tpl_types = array(
+			'set_user_email_template_newticket' => 1,
+			'user_newticket_agent' => 1,
+			'set_user_email_template_newticket_validate' => 1,
+			'set_agent_email_template_newticket' => 1,
+			'set_user_email_template_newticket_agent' => 1,
+			'set_user_email_template_newreply_agent' => 1,
+			'set_agent_email_template_newreply_agent' => 1,
+			'set_user_email_template_newreply_user' => 1,
+			'set_agent_email_template_newreply_user' => 1,
+			'send_user_email' => 1,
+			'send_agent_email' => 1,
+			'send_autoclose_warn_email' => 1,
+		);
+		foreach ($actions as &$_info) {
+			if (isset($tpl_types[$_info['type']])) {
+				if (isset($_info['options']['new_option']) && !empty($_info['options']['new_option'])) {
+					$new_name = $_info['options']['new_option'];
+					$new_name = preg_replace('#[^a-zA-Z0-9\-_]#', '_', $new_name);
+					if (!$new_name) {
+						$new_name = 'custom_template';
+					}
+
+					unset($_info['options']['new_option']);
+
+					if (strpos($_info['type'], 'set_user_') !== false || strpos($_info['type'], 'send_user_email') !== false || $_info['type'] == 'send_autoclose_warn_email') {
+						$_info['options']['template_name'] = 'DeskPRO:emails_user:custom_' . $new_name . '.html.twig';
+					} else {
+						$_info['options']['template_name'] = 'DeskPRO:emails_agent:custom_' . $new_name . '.html.twig';
+					}
+
+					$variant = null;
+
+					switch ($_info['type']) {
+						case 'set_user_email_template_newticket': $variant = 'DeskPRO:emails_user:new-ticket.html.twig'; break;
+						case 'user_newticket_agent': $variant = 'DeskPRO:emails_user:new-ticket-agent.html.twig'; break;
+						case 'set_user_email_template_newticket_validate': $variant = 'DeskPRO:emails_user:new-ticket-validate.html.twig'; break;
+						case 'set_agent_email_template_newticket': $variant = 'DeskPRO:emails_agent:new-ticket.html.twig'; break;
+						case 'set_user_email_template_newticket_agent': $variant = 'DeskPRO:emails_user:new-ticket-agent.html.twig'; break;
+						case 'set_user_email_template_newreply_agent': $variant = 'DeskPRO:emails_user:new-reply-agent.html.twig'; break;
+						case 'set_agent_email_template_newreply_agent': $variant = 'DeskPRO:emails_agent:new-reply-agent.html.twig'; break;
+						case 'set_user_email_template_newreply_user': $variant = 'DeskPRO:emails_user:new-reply-user.html.twig'; break;
+						case 'set_agent_email_template_newreply_user': $variant = 'DeskPRO:emails_agent:new-reply-user.html.twig'; break;
+						case 'send_user_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
+						case 'send_agent_email': $variant = 'DeskPRO:emails_agent:blank.html.twig'; break;
+						case 'send_autoclose_warn_email': $variant = 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig'; break;
+					}
+
+					$template = App::getOrm()->getRepository('DeskPRO:Template')->findOneBy(array('name' => $new_name));
+
+					// A new variation
+					if (!$template && $variant && in_array($variant, App::getTemplating()->getVariedTemplateNames())) {
+						$template = new Template();
+						$template->style = App::getContainer()->getSystemService('style');
+						$template->variant_of = $variant;
+
+						$name = preg_replace('#[^a-zA-Z0-9\-_]#', '_', $new_name);
+						$nameparts = explode(':', $template->variant_of);
+						array_pop($nameparts);
+
+						$name = implode(':', $nameparts) . ':custom_' . $name . '.html.twig';
+						$template->name = $name;
+
+						$code = App::getTemplating()->getSource($template->variant_of);
+						$code = preg_replace('#\{%\s*include\s+(\'|")(.*?)(\'|")\s+#', '{% include \'$2\' ignore missing ', $code);
+
+						$twig = App::getContainer()->get('twig');
+						$compiled = $twig->compileSource($code, $name);
+						$template->setTemplate($code, $compiled);
+
+						App::getOrm()->persist($template);
+						App::getOrm()->flush();
+
+						if (!isset($info['new_templates'])) {
+							$info['new_templates'][] = $name;
+						}
+					}
+				}
+			}
+		}
+
+		return $actions;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

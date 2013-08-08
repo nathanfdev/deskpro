@@ -14,6 +14,34 @@
 		new DpTplSearch('emails_agent');
 	});
 	</script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		new DpTplSearch('emails_user');
+
+		var variationOverlayEl = $('#add_variation_overlay');
+		var variationOverlay = new DeskPRO.UI.Overlay({
+			contentElement: variationOverlayEl,
+			triggerElement: $('#add_variation_trigger'),
+			onBeforeOverlayOpened: function() {
+				variationOverlayEl.find('input.template_name').val('');
+			}
+		});
+
+		variationOverlayEl.find('button.save-trigger').on('click', function(ev) {
+			var new_name = variationOverlayEl.find('input.template_name').val();
+			new_name = new_name.replace(/[^a-zA-Z0-9_\-]/g, '_');
+
+			if (!new_name) {
+				alert('Please enter a unique ID');
+				return;
+			}
+
+			var url = BASE_URL + 'admin/templates/email/edit/' + encodeURIComponent(new_name) + '?variant_of=' + encodeURIComponent('DeskPRO:emails_agent:blank.html.twig');
+
+			window.location = url;
+		});
+	});
+	</script>
 {% endblock %}
 {% block content %}
 
@@ -109,6 +137,55 @@
 					{% endfor %}
 				</tbody>
 			</table>
+		</div>
+	</div>
+
+	<div class="page-content">
+		<div class="content-table">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th class="single-title">
+							<div style="float:right;">
+								<button id="add_variation_trigger" class="clean-white" style="font-size: 10px; padding: 0 6px;">Create Custom Template</button>
+							</div>
+							Custom Templates
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for tpl in custom_templates %}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
+					{% else %}
+						<tr><td>
+							You have not created any custom templates yet.
+							<br />
+							<br />
+							You can use custom templates in conjunction with ticket triggers to send arbitrary emails to users.
+						</td></tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="add_variation_overlay" class="edit-phrase-overlay" style="width: 725px; height: 200px; display: none;">
+		<div class="overlay-title">
+			<span class="close-trigger close-overlay"></span>
+			<h4>Add Custom Template</h4>
+		</div>
+		<div class="overlay-content">
+			<section class="phrase-section custom">
+				<header>
+					<h4>Unique Template ID</h4>
+				</header>
+				<article>
+					custom_<input type="text" class="template_name" name="template_name" placeholder="Enter a unique ID that will be used to identify this template" style="width: 350px;" />
+				</article>
+			</section>
+		</div>
+		<div class="overlay-footer">
+			<button class="clean-white save-trigger">Create Custom Template</button>
 		</div>
 	</div>
 {% endblock %}

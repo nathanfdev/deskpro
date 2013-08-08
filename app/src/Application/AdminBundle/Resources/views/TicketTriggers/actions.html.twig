@@ -279,7 +279,7 @@
 	<div class="builder-options">
 		<select class="template_name" name="template_name">
 			<option value="NEW">Create a new template</option>
-			{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
+			{% for tpl in app.getDataService('Template').getCustomEmailsOfType('DeskPRO:emails_agent:blank.html.twig') %}
 				<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
 			{% endfor %}
 		</select>

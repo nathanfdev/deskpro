@@ -24,7 +24,7 @@
 			<a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a>
 		{% endif %}
 	</li>
-	{% if template.variant_of == 'DeskPRO:emails_user:blank.html.twig' %}
+	{% if template.variant_of == 'DeskPRO:emails_user:blank.html.twig' or template.variant_of == 'DeskPRO:emails_agent:blank.html.twig' %}
 		<li>
 			Custom Template
 		</li>
@@ -86,7 +86,7 @@ $(document).ready(function() {
 {% endif %}
 {% block page %}
 
-	{% if template.variant_of == 'DeskPRO:emails_user:blank.html.twig' %}
+	{% if template.variant_of == 'DeskPRO:emails_user:blank.html.twig' or template.variant_of == 'DeskPRO:emails_agent:blank.html.twig' %}
 		<h3>Custom Template: {{ template.getBaseName() }}</h3>
 		<br/>
 	{% else %}

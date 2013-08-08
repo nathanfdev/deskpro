@@ -15,7 +15,7 @@ DeskPRO.Agent.RuleBuilder.SelectNewOption = new Orb.Class({
 			self.rowEl.find('select.template_name, select.agents').each(function() {
 				DP.select($(this));
 			});
-		}, 0);
+		},10);
 
 		this.updateOption();
 	},

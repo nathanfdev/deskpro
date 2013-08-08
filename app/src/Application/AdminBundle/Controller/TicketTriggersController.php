@@ -339,7 +339,7 @@ class TicketTriggersController extends AbstractController
 						case 'set_user_email_template_newreply_user': $variant = 'DeskPRO:emails_user:new-reply-user.html.twig'; break;
 						case 'set_agent_email_template_newreply_user': $variant = 'DeskPRO:emails_agent:new-reply-user.html.twig'; break;
 						case 'send_user_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
-						case 'send_agent_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
+						case 'send_agent_email': $variant = 'DeskPRO:emails_agent:blank.html.twig'; break;
 						case 'send_autoclose_warn_email': $variant = 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig'; break;
 					}
 

@@ -646,6 +646,12 @@ class TemplatesController extends AbstractController
 			WHERE name LIKE 'DeskPRO:emails_agent:%'
 		", array(), 'variant_of', null);
 
+		$vars['custom_templates'] = App::getDb()->fetchAllCol("
+			SELECT name
+			FROM templates
+			WHERE name LIKE 'DeskPRO:emails_agent:custom_%' AND variant_of = 'DeskPRO:emails_agent:blank.html.twig'
+		");
+
 		$vars['trigger_map'] = $this->em->getRepository('DeskPRO:TicketTrigger')->getTemplateVariantMap();
 
 		return $this->render('@emails-list-agent.html.twig', $vars);
