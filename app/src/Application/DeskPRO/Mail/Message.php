@@ -127,7 +127,13 @@ class Message extends \Orb\Mail\Message
 				$this->template_vars['to_name']    = !empty($this->set_to['name']) ? $this->set_to['name'] : $this->set_to['email'];
 				$this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'] . ' <' . $this->set_to['email'] . '>' : $this->set_to['email'];
 
-				if (strpos($this->template, ':emails_agent:') !== false) {
+				$skip_check = array(
+					// Agent email sent to an unknown email address for agent ticket replies
+					// ("your reply was not accepted because it was sent from an unknown address")
+					'DeskPRO:emails_agent:error-unknown-from.html.twig' => 1,
+				);
+
+				if (strpos($this->template, ':emails_agent:') !== false && !isset($skip_check[$this->template])) {
 					$agent = App::getContainer()->getAgentData()->getByEmail($this->set_to['email']);
 					if (!$agent) {
 						throw new \InvalidArgumentException("Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
