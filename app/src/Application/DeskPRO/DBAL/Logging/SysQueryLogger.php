@@ -88,7 +88,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 		}
 
-		if (!empty($DP_CONFIG['debug']['enable_slow_page_log']) && is_numeric($DP_CONFIG['debug']['enable_slow_page_log'])) {
+		if (!empty($DP_CONFIG['debug']['enable_slow_page_log'])) {
 			$this->is_enabled = true;
 		}
 
@@ -262,7 +262,18 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$db_time    = $this->total_time;
 		$php_time   = $total_time - $db_time;
 
-		if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log']) {
+		$do_log = false;
+		if (is_numeric($DP_CONFIG['debug']['enable_slow_page_log'])) {
+			if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log']) {
+				$do_log = true;
+			}
+		} else {
+			if ($DP_CONFIG['debug']['enable_slow_page_log'] && $this->queries) {
+				$do_log = true;
+			}
+		}
+
+		if ($do_log) {
 			$write = array("--- Page Log Begin ---\n");
 			if (defined('DP_REQUEST_URL')) {
 				$write[] = "=> URL: " . DP_REQUEST_URL . "\n";
