@@ -16,6 +16,9 @@
 		</ul>
 	</nav>
 	<div class="logs-page" style="padding: 6px;">
+		{% if app.user.getPref('agent.ticket_reverse_order') %}
+			{% set ticket_logs = ticket_logs|reverse %}
+		{% endif %}
 		{% for log in ticket_logs %}
 			<div class="log-batch log-batch-id-{{ log.id }}" data-log-batch-id="{{ log.id }}">
 				<div
