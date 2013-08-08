@@ -247,18 +247,18 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function getPersonTickets(Entity\Person $person, $limit = null, $status_order = false)
 	{
-		$ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE person_id = ?
-		", array($person->id));
-
-		if (!$person->is_agent) {
-			$ids = array_merge($ids, App::getDb()->fetchAllCol("
-				SELECT ticket_id
-				FROM tickets_participants
+		if ($person->is_agent) {
+			$ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM tickets
 				WHERE person_id = ?
-			", array($person->id)));
+			", array($person->id));
+		} else {
+			$ids = App::getDb()->fetchAllCol("
+				SELECT id FROM tickets WHERE person_id = ?
+				UNION
+				SELECT ticket_id FROM tickets_participants WHERE person_id = ?
+			", array($person->id, $person->id));
 		}
 
 		if (!$ids) {
@@ -361,17 +361,13 @@ class Ticket extends AbstractEntityRepository
 			", array($person->id));
 		} else {
 			$count = App::getDb()->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets
-				WHERE (tickets.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
-			", array($person->id));
-
-			$count += App::getDb()->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets_participants
-				" . ($status ? " LEFT JOIN tickets ON (tickets.id = tickets_participants.ticket_id) " : '') . "
-				WHERE (tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
-			", array($person->id));
+				SELECT SUM(count)
+				FROM (
+					SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+					UNION
+					SELECT COUNT(*) AS count FROM tickets_participants WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+				) a
+			", array($person->id, $person->id));
 		}
 
 		return $count;
