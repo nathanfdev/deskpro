@@ -320,7 +320,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		# Slow PHP Log
 		#------------------------------
 
-		if ($do_slow_db) {
+		if ($do_slow_php) {
 			$this->_writeLogFile(
 				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-php.log',
 				$page_header
@@ -331,7 +331,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		# Slow Page Log
 		#------------------------------
 
-		if ($do_slow_db) {
+		if ($do_slow_page) {
 			$this->_writeLogFile(
 				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-page.log',
 				$page_header
