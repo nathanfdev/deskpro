@@ -120,11 +120,15 @@ class TicketMessageTranslated extends AbstractEntityRepository
 
 			$lang_code = array_unique($lang_code);
 
+			if (!$ticket_messages || !$lang_code) {
+				return array();
+			}
+
 			$trans_messages = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessageTranslated m
 				WHERE m.ticket_message IN (?0) AND m.lang_code IN (?1)
-			")->setParameters(array(array_values($ticket_messages), $lang_code))->execute();
+			")->setParameters(array(array_values($ticket_messages), array_values($lang_code)))->execute();
 
 			$ret = array();
 
