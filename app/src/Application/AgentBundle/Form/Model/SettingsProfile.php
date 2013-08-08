@@ -111,72 +111,73 @@ class SettingsProfile
 
 	public function save()
 	{
-		$this->em->beginTransaction();
-
 		$person = $this->person;
 
+		$person->name = $this->name;
+		$person->override_display_name = $this->override_display_name;
+		$person->timezone = $this->timezone;
+
+		if ($this->new_picture_blob_id) {
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
+			if ($blob) {
+				$person->picture_blob = $blob;
+			}
+		}
+
+		$primary_email = $person->getPrimaryEmail();
+		if ($primary_email->email != $this->email) {
+
+			$found_email = $person->findEmailAddress($this->email);
+			if ($found_email) {
+				$new_primary_email = $found_email;
+			} else {
+				$new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
+				$new_primary_email->email = $this->email;
+				$new_primary_email->is_validated = true;
+				$person->addEmailAddress($new_primary_email);
+				$this->em->persist($new_primary_email);
+			}
+
+			$person->primary_email = $new_primary_email;
+
+			$person->removeEmailAddressId($primary_email->id);
+			$this->em->remove($primary_email);
+		}
+
+		if ($this->password) {
+			$person->setPassword($this->password);
+		}
+
+		$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);
+		$person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
+		$person->setPreference('agent.ticket_go_next_reply', $this->ticket_go_next_reply ? 1 : 0);
+		$person->setPreference('agent.hide_claimed_chat', $this->hide_claimed_chat ? 1 : 0);
+		$person->setPreference('agent.ticket_reverse_order', $this->ticket_reverse_order ? 1 : 0);
+
+		$assign_team_setting = (
+			App::getSetting('core_tickets.new_assignteam') == 'assign'
+			|| App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
+			|| App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
+		);
+		if (count($person->getAgent()->getTeams()) && $assign_team_setting) {
+			$person->setPreference('agent.ticket_default_team_id', intval($this->default_team_id));
+		}
+
+		$person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
+
+		if ($this->reset_api_token) {
+			$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+			if ($token) {
+				$token->regenerateToken();
+				$this->em->persist($token);
+			}
+		}
+
+		$this->em->persist($person);
+
+		$this->em->beginTransaction();
+
 		try {
-			$person->name = $this->name;
-			$person->override_display_name = $this->override_display_name;
-			$person->timezone = $this->timezone;
-
-			if ($this->new_picture_blob_id) {
-				$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
-				if ($blob) {
-					$person->picture_blob = $blob;
-				}
-			}
-
-			$primary_email = $person->getPrimaryEmail();
-			if ($primary_email->email != $this->email) {
-
-				$found_email = $person->findEmailAddress($this->email);
-				if ($found_email) {
-					$new_primary_email = $found_email;
-				} else {
-					$new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
-					$new_primary_email->email = $this->email;
-					$new_primary_email->is_validated = true;
-					$person->addEmailAddress($new_primary_email);
-					$this->em->persist($new_primary_email);
-				}
-
-				$person->primary_email = $new_primary_email;
-
-				$person->removeEmailAddressId($primary_email->id);
-				$this->em->remove($primary_email);
-			}
-
-			if ($this->password) {
-				$person->setPassword($this->password);
-			}
-
-			$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);
-			$person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
-			$person->setPreference('agent.ticket_go_next_reply', $this->ticket_go_next_reply ? 1 : 0);
-			$person->setPreference('agent.hide_claimed_chat', $this->hide_claimed_chat ? 1 : 0);
-			$person->setPreference('agent.ticket_reverse_order', $this->ticket_reverse_order ? 1 : 0);
-
-			$assign_team_setting = (
-				App::getSetting('core_tickets.new_assignteam') == 'assign'
-				|| App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
-				|| App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
-			);
-			if (count($person->getAgent()->getTeams()) && $assign_team_setting) {
-				$person->setPreference('agent.ticket_default_team_id', intval($this->default_team_id));
-			}
-
-			$person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
-
-			if ($this->reset_api_token) {
-				$token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
-				if ($token) {
-					$token->regenerateToken();
-					$this->em->persist($token);
-				}
-			}
-
-			$this->em->persist($person);
 			$this->em->flush();
 			$this->em->commit();
 
