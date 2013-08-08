@@ -107,7 +107,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
-		$data['category_id'] = $this->category->getId();
+		$data['category_id'] = $this->category ? $this->category->getId() : 0;
 		$data['title'] = array();
 		$data['snippet'] = array();
 
