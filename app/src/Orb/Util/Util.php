@@ -523,6 +523,33 @@ class Util
 	}
 
 
+	/**
+	 * Converts a hex string to binary (opposite of bin2hex).
+	 *
+	 * @see http://php.net/manual/en/function.hex2bin.php
+	 * @param string $hex_string
+	 * @return string
+	 */
+	public static function hex2bin($hex_string)
+	{
+		// PHP 5.4
+		if (function_exists('hex2bin')) {
+			return @hex2bin($hex_string);
+		}
+
+		$len = strlen($hex_string);
+		$bin_string = '';
+
+        $pos = 0;
+        while($pos < $len) {
+			$bin_string .= pack("H*", substr($hex_string, $pos, 2));
+            $pos += 2;
+        }
+
+        return $bin_string;
+	}
+
+
 
 	/**
 	 * Generate random bytes.
