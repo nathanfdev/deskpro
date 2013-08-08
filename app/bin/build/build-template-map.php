@@ -68,9 +68,17 @@ foreach ($paths as $bundle => $dir) {
 			$time = time();
 		}
 
+		$path = $file->getRealPath();
+		if (strpos($path, DP_ROOT) === 0) {
+			$path = str_replace(DP_ROOT, '', $file->getRealPath());
+			$path = "DP_ROOT.'$path'";
+		} else {
+			$path = str_replace(DP_WEB_ROOT, '', $file->getRealPath());
+			$path = "DP_ROOT.'/..$path'";
+		}
 
 		$tpl_info[$tplname] = array(
-			'path' => str_replace(DP_ROOT, '', $file->getRealPath()),
+			'path' => $path,
 			'last_updated' => $time,
 		);
 
@@ -81,7 +89,7 @@ foreach ($paths as $bundle => $dir) {
 $php = array("<?php return array(\n");
 
 foreach ($tpl_info as $k => $info) {
-	$php[] = "'$k' => array('path' => DP_ROOT.'{$info['path']}', 'last_updated' => {$info['last_updated']}),\n";
+	$php[] = "'$k' => array('path' => {$info['path']}, 'last_updated' => {$info['last_updated']}),\n";
 }
 
 $php[] = ");";
