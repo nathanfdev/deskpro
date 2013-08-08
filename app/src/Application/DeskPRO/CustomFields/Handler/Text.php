@@ -63,7 +63,7 @@ class Text extends HandlerAbstract
 		if (!empty($form_data[$name]) || (isset($form_data[$name]) && $form_data[$name] === '0')) {
 			$value = $form_data[$name];
 		}
-		if (isset($value)) {
+		if (is_array($value)) {
 			$value = implode(' ', $value);
 		}
 

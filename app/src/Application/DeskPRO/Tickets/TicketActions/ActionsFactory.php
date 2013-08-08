@@ -136,6 +136,9 @@ class ActionsFactory
 				elseif (!empty($value['labels'])) $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
 				break;
 			case 'reply':
+				if (empty($value['reply_text'])) {
+					break;
+				}
 				$options['reply_text'] = $value['reply_text'];
 				$options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : array();
 				$options['reply_pos'] = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
