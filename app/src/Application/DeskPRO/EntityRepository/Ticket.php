@@ -247,33 +247,33 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function getPersonTickets(Entity\Person $person, $limit = null, $status_order = false)
 	{
-		$params = array($person->getId());
-		if (!$person->is_agent) {
-			$params[] = $person->getId();
-		}
+		$ids = App::getDb()->fetchAllCol("
+			SELECT id
+			FROM tickets
+			WHERE person_id = ?
+		", array($person->id));
 
-		if ($status_order) {
-			$ids = $this->_em->getConnection()->fetchAllCol("
-				SELECT tickets.id
-				FROM tickets
-					" . (!$person->is_agent ? 'LEFT JOIN tickets_participants AS part ON (part.ticket_id = tickets.id)' : '') ."
-				WHERE tickets.person_id = ?
-				" . (!$person->is_agent ? 'OR part.person_id = ?' : '') ."
-				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, tickets.urgency DESC
-			", $params);
-		} else {
-			$ids = $this->_em->getConnection()->fetchAllCol("
-				SELECT tickets.id
-				FROM tickets
-					" . (!$person->is_agent ? 'LEFT JOIN tickets_participants AS part ON (part.ticket_id = tickets.id)' : '') ."
-				WHERE tickets.person_id = ?
-				" . (!$person->is_agent ? 'OR part.person_id = ?' : '') ."
-				ORDER BY tickets.id DESC
-			", $params);
+		if (!$person->is_agent) {
+			$ids = array_merge($ids, App::getDb()->fetchAllCol("
+				SELECT ticket_id
+				FROM tickets_participants
+				WHERE person_id = ?
+			", array($person->id)));
 		}
 
 		if (!$ids) {
 			return array();
+		}
+
+		if ($status_order && count($ids) < 2000) {
+			$ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE id IN (" . implode(',', $ids) . ")
+				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, tickets.urgency DESC
+			");
+		} else {
+			sort($ids, \SORT_NUMERIC);
 		}
 
 		if ($limit && count($ids) > $limit) {
@@ -361,11 +361,17 @@ class Ticket extends AbstractEntityRepository
 			", array($person->id));
 		} else {
 			$count = App::getDb()->fetchColumn("
-				SELECT COUNT(DISTINCT tickets.id)
+				SELECT COUNT(*)
 				FROM tickets
-				LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-				WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
-			", array($person->id, $person->id));
+				WHERE (tickets.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
+			", array($person->id));
+
+			$count += App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets_participants
+				" . ($status ? " LEFT JOIN tickets ON (tickets.id = tickets_participants.ticket_id) " : '') . "
+				WHERE (tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
+			", array($person->id));
 		}
 
 		return $count;
