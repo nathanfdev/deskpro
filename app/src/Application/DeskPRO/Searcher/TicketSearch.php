@@ -430,23 +430,20 @@ class TicketSearch extends SearcherAbstract
 			$org_parts = $this->org_search->getSqlParts();
 		}
 
-		$where = '';
-
 		if ($this->isArchiveSearch() || !App::getSetting('core_tickets.use_archive')) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';
 		}
 
-		$select = '';
-		if ($this->add_raw_selects) {
-			$select = ', ' . implode(', ', $this->add_raw_selects);
-		}
-		$sql = "SELECT COUNT(DISTINCT tickets.id) FROM $table AS tickets ";
+		$sql = "SELECT COUNT(DISTINCT tickets.id) AS count FROM $table AS tickets ";
+		$sql2 = "SELECT COUNT(DISTINCT part_perm.ticket_id) AS count FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
 
 		#------------------------------
 		# Standard for permissions
 		#------------------------------
+
+		$with_part_union = false;
 
 		if ($this->person AND $this->person['is_agent']) {
 
@@ -473,22 +470,14 @@ class TicketSearch extends SearcherAbstract
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
 			}
 
-			if (!$where_perm) {
-				$where_perm[] = '1';
-			}
-
-			$where = '((' . implode(' AND ', $where_perm) . ') OR (';
-
-			$ticket_parts['joins'][] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)");
-			$where .= "tickets.agent_id = {$this->person['id']} OR ";
-			if ($this->person->getAgentTeamIds()) {
-				$where .= "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ") OR ";
-			}
-
-			$where .= "tickets_participants_perm.person_id = {$this->person->id}))";
+			$where_perm = '(' . implode(' AND ', $where_perm) . ')';
+			$with_part_union = true;
 		} else {
-			// all where parts below add starting with AND
-			$where = '1';
+			$where_perm = '';
+		}
+
+		if ($where_perm) {
+			$where_perm .= ' AND ';
 		}
 
 
@@ -496,27 +485,29 @@ class TicketSearch extends SearcherAbstract
 		# Add joins
 		#------------------------------
 
+		$sql_joins = '';
+
 		foreach ($ticket_parts['joins'] as $j) {
 			if (is_array($j)) {
-				$sql .= $j[1] . " ";
+				$sql_joins .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
+				$sql_joins .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
 			}
 		}
 
 		if ($user_parts) {
-			$sql .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
+			$sql_joins .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
 		}
 		if ($org_parts) {
-			$sql .= "LEFT JOIN organizations ON (organizations.id = tickets.organization_id) ";
+			$sql_joins .= "LEFT JOIN organizations ON (organizations.id = tickets.organization_id) ";
 		}
 
 		if ($user_parts AND $user_parts['joins']) {
 			foreach ($user_parts['joins'] as $j) {
 				if (is_array($j)) {
-					$sql .= $j[1] . " ";
+					$sql_joins .= $j[1] . " ";
 				} else {
-					$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+					$sql_joins .= "LEFT JOIN $j ON $j.person_id = people.id ";
 				}
 			}
 		}
@@ -524,20 +515,22 @@ class TicketSearch extends SearcherAbstract
 		if ($org_parts AND $org_parts['joins']) {
 			foreach ($org_parts['joins'] as $j) {
 				if (is_array($j)) {
-					$sql .= $j[1] . " ";
+					$sql_joins .= $j[1] . " ";
 				} else {
-					$sql .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
+					$sql_joins .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
 				}
 			}
 		}
 
 		if ($this->add_raw_joins) {
-			$sql .= implode(' ', $this->add_raw_joins);
+			$sql_joins .= implode(' ', $this->add_raw_joins);
 		}
 
 		#------------------------------
 		# Add wheres
 		#------------------------------
+
+		$where = '1';
 
 		if (!empty($ticket_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $ticket_parts['wheres']);
@@ -560,17 +553,37 @@ class TicketSearch extends SearcherAbstract
 			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
 		}
 
+		$sql .= " $sql_joins ";
+		$sql2 .= " $sql_joins ";
+
 		if ($where) {
-			$sql .= " WHERE $where";
+			$sql .= " WHERE $where_perm $where";
+			$sql2 .= " WHERE $where ";
+			if ($this->person) {
+				$sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
+			}
 		}
 
-		$this->getLogger()->logDebug("Search Count Query: " . $sql);
+		if ($with_part_union) {
+			$count_sql = "
+				SELECT SUM(count)
+				FROM (
+					$sql
+					UNION
+					$sql2
+				) a
+			";
+		} else {
+			$count_sql = $sql;
+		}
+
+		$this->getLogger()->logDebug("Search Count Query: " . $count_sql);
 		$time = microtime(true);
 
 		$db = App::getDbRead();
 
 		try {
-			$result = $db->fetchColumn($sql);
+			$result = $db->fetchColumn($count_sql);
 		} catch (\PDOException $e) {
 			$result = 0;
 			KernelErrorHandler::logException($e, true);
@@ -619,10 +632,13 @@ class TicketSearch extends SearcherAbstract
 			$select = ', ' . implode(', ', $this->add_raw_selects);
 		}
 		$sql = "SELECT tickets.id $select FROM $table AS tickets ";
+		$sql2 = "SELECT part_perm.ticket_id AS id $select FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
 
 		#------------------------------
 		# Standard for permissions
 		#------------------------------
+
+		$with_part_union = false;
 
 		if ($this->person AND $this->person['is_agent']) {
 
@@ -649,48 +665,44 @@ class TicketSearch extends SearcherAbstract
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
 			}
 
-			if (!$where_perm) {
-				$where_perm[] = '1';
-			}
+			$where_perm = '(' . implode(' AND ', $where_perm) . ')';
+			$with_part_union = true;
 
-			$where = '((' . implode(' AND ', $where_perm) . ') OR (';
-
-			$ticket_parts['joins'][] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)");
-			$where .= "tickets.agent_id = {$this->person['id']} OR ";
-			if ($this->person->getAgentTeamIds()) {
-				$where .= "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ") OR ";
-			}
-			$where .= "tickets_participants_perm.person_id = {$this->person->id}))";
 		} else {
-			// all where parts below add starting with AND
-			$where = '1';
+			$where_perm = '';
+		}
+
+		if ($where_perm) {
+			$where_perm .= ' AND ';
 		}
 
 		#------------------------------
 		# Add joins
 		#------------------------------
 
+		$sql_joins = '';
+
 		foreach ($ticket_parts['joins'] as $j) {
 			if (is_array($j)) {
-				$sql .= $j[1] . " ";
+				$sql_joins .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
+				$sql_joins .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
 			}
 		}
 
 		if ($user_parts) {
-			$sql .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
+			$sql_joins .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
 		}
 		if ($org_parts) {
-			$sql .= "LEFT JOIN organizations ON (organizations.id = tickets.organization_id) ";
+			$sql_joins .= "LEFT JOIN organizations ON (organizations.id = tickets.organization_id) ";
 		}
 
 		if ($user_parts AND $user_parts['joins']) {
 			foreach ($user_parts['joins'] as $j) {
 				if (is_array($j)) {
-					$sql .= $j[1] . " ";
+					$sql_joins .= $j[1] . " ";
 				} else {
-					$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+					$sql_joins .= "LEFT JOIN $j ON $j.person_id = people.id ";
 				}
 			}
 		}
@@ -698,9 +710,9 @@ class TicketSearch extends SearcherAbstract
 		if ($org_parts AND $org_parts['joins']) {
 			foreach ($org_parts['joins'] as $j) {
 				if (is_array($j)) {
-					$sql .= $j[1] . " ";
+					$sql_joins .= $j[1] . " ";
 				} else {
-					$sql .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
+					$sql_joins .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
 				}
 			}
 		}
@@ -709,16 +721,18 @@ class TicketSearch extends SearcherAbstract
 			$order_join = $order_by[0];
 			$order_by = $order_by[1];
 
-			$sql .= " $order_join ";
+			$sql_joins .= " $order_join ";
 		}
 
 		if ($this->add_raw_joins) {
-			$sql .= implode(' ', $this->add_raw_joins);
+			$sql_joins .= implode(' ', $this->add_raw_joins);
 		}
 
 		#------------------------------
 		# Add wheres
 		#------------------------------
+
+		$where = '1';
 
 		if (!empty($ticket_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $ticket_parts['wheres']);
@@ -741,27 +755,44 @@ class TicketSearch extends SearcherAbstract
 			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
 		}
 
-		if ($where) {
-			$sql .= " WHERE $where";
+		$sql .= " $sql_joins WHERE $where_perm $where";
+		$sql2 .= " $sql_joins WHERE $where";
+
+		if ($this->person) {
+			$sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
 		}
 
-		$sql .= " GROUP BY tickets.id ";
-		$sql .= $order_by;
-
+		$limit_sql = '';
 		if ($pageinfo) {
 			// A null limit means no limit :o
 			if ($pageinfo['limit'] !== null) {
-				$sql .= " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
+				$limit_sql = " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
 			}
 		} else {
-            if($this->limit) {
-			    $sql .= ' LIMIT '.$this->limit;
-            }
+			if($this->limit) {
+				$limit_sql = ' LIMIT '.$this->limit;
+			}
 		}
 
-		$this->_last_sql = $sql;
+		$sql .= " GROUP BY tickets.id ";
+		$sql2 .= " GROUP BY part_perm.ticket_id ";
 
-		return $sql;
+		if ($with_part_union) {
+			$select_query = "
+				($sql)
+				UNION
+				($sql2)
+				$order_by
+				$limit_sql
+			";
+		} else {
+			$sql .= " $limit_sql ";
+			$select_query = $sql;
+		}
+
+		$this->_last_sql = $select_query;
+
+		return $select_query;
 	}
 
 
@@ -805,12 +836,14 @@ class TicketSearch extends SearcherAbstract
 		switch ($type) {
 			case 'ticket.urgency':
 				if($this->needsUrgency()) {
-					$order_by = "ORDER BY status = 'awaiting_agent' $dir, tickets.urgency $dir, tickets.date_user_waiting $r_dir";
+					//$order_by = "ORDER BY status = 'awaiting_agent' $dir, tickets.urgency $dir, tickets.date_user_waiting $r_dir";
 				}
 				else {
-					$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
+					//$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
 				}
 
+				$this->add_raw_selects[] = "tickets.urgency AS status_order";
+				$order_by = "ORDER BY status_order ASC";
 				$this->order_summary = $tr->phrase('agent.general.urgency');
 				break;
 
@@ -824,20 +857,21 @@ class TicketSearch extends SearcherAbstract
 					END AS status_order
 				";
 
-				$order_by = "ORDER BY status_order ASC, tickets.urgency DESC";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
 			case 'ticket.date_created':
-				$order_by = "ORDER BY tickets.id $dir";
+				$order_by = "ORDER BY id $dir";
 				$this->order_summary = $tr->phrase('agent.general.date_opened');
 				break;
 
 			case 'ticket.priority':
 				$pris = App::getEntityRepository('DeskPRO:TicketPriority')->getIdsInOrder();
 				if ($pris) {
-					$order_by = "ORDER BY FIELD(tickets.priority_id, " . implode(',', $pris) . ") $dir, tickets.id $dir";
+					$this->add_raw_selects[] = "FIELD(tickets.priority_id, " . implode(',', $pris) . ") AS status_order";
+					$order_by = "ORDER BY status_order $dir, id $dir";
 				} else {
-					$order_by = "ORDER BY tickets.priority_id $dir, tickets.id $dir";
+					$order_by = "ORDER BY id $dir";
 				}
 				$this->order_summary = $tr->phrase('agent.general.priority');
 				break;
@@ -851,51 +885,60 @@ class TicketSearch extends SearcherAbstract
 				break;
 
 			case 'ticket.date_resolved':
+				$this->add_raw_selects[] = "tickets.date_resolved AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.date_resolved');
-				$order_by = "ORDER BY tickets.date_resolved $dir";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
 			case 'ticket.date_closed':
+				$this->add_raw_selects[] = "tickets.date_closed AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.date_opened');
-				$order_by = "ORDER BY tickets.date_closed $dir";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
 			case 'ticket.last_activity':
+				$this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.date_of_last_user_reply');
-				$order_by = "ORDER BY tickets.date_last_user_reply $dir";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
             case 'ticket.total_user_waiting':
+				$this->add_raw_selects[] = "tickets.total_user_waiting AS status_order";
                 $this->order_summary = $tr->phrase('agent.general.total_time_waiting');
-                $order_by = "ORDER BY tickets.total_user_waiting $dir";
+                $order_by = "ORDER BY status_order $dir";
                 break;
 
             case 'ticket.date_user_waiting':
+				$this->add_raw_selects[] = "tickets.date_user_waiting AS status_order";
                 $this->order_summary = $tr->phrase('agent.general.time_waiting');
-                $order_by = "ORDER BY tickets.date_user_waiting $dir";
+                $order_by = "ORDER BY status_order $dir";
                 break;
 
 			case 'ticket.organization':
+				$this->add_raw_selects[] = "sort_table.name AS status_order";
 				$this->order_summary = $tr->phrase('agent.general.organization_name');
 				$order_by = array(
 					"INNER JOIN organizations AS sort_table ON (sort_table.id = tickets.organization_id)",
-					"ORDER BY sort_table.name $dir"
+					"ORDER BY status_order $dir"
 				);
 				break;
 
 			case 'ticket.date_last_user_reply':
+				$this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
 				$this->order_summary = 'Date of Last User Reply';
-				$order_by = "ORDER BY tickets.date_last_user_reply $dir";
+				$order_by = "ORDER BY tickets.status_order $dir";
 				break;
 
 			case 'ticket.date_last_agent_reply':
 				$this->order_summary = 'Date of Last Agent Reply';
-				$order_by = "ORDER BY tickets.date_last_agent_reply $dir";
+				$this->add_raw_selects[] = "tickets.date_last_agent_reply AS status_order";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
 			case 'ticket.date_last_reply':
 				$this->order_summary = 'Date of Last Reply';
-				$order_by = "ORDER BY GREATEST(COALESCE(tickets.date_last_agent_reply, '0000-00-00'), COALESCE(tickets.date_last_user_reply, '0000-00-00'), tickets.date_created) $dir";
+				$this->add_raw_selects[] = "GREATEST(COALESCE(tickets.date_last_agent_reply, '0000-00-00'), COALESCE(tickets.date_last_user_reply, '0000-00-00'), tickets.date_created) AS status_order";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
 			case 'ticket.ticket_field':
@@ -909,9 +952,10 @@ class TicketSearch extends SearcherAbstract
 				switch ($search_type) {
 					case 'input':
 					case 'value':
+						$this->add_raw_selects[] = "sort_table.$search_type AS status_order";
 						$order_by = arary(
 							"INNER JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.id = $term_id)",
-							"ORDER BY sort_table.$search_type $dir"
+							"ORDER BY status_order $dir"
 						);
 						break;
 				}
