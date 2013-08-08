@@ -87,10 +87,15 @@ class SendFeedbackEmailAction extends AbstractAction
 		$vars['person'] = $person;
 		$vars['message'] = $ticket_message;
 
-		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person) {
+		$from_address = $ticket->getFromAddress();
+
+		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person, $from_address) {
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate('DeskPRO:emails_user:ticket-rate.html.twig', $vars);
 			$message->setToPerson($person);
+			$message->setContextId('ticket_gateway');
+			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+			$message->setFrom($from_address);
 
 			App::getMailer()->send($message);
 		});
