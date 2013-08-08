@@ -82,11 +82,12 @@ class TicketTriggers extends AbstractJob
 
 		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 100));
 
+		$this->logger->log("Trigger {$trigger->id}: Found " . count($ticket_ids) . " matching", 'INFO');
+
 		if (!$ticket_ids) {
 			return;
 		}
 
-		$this->logger->log("Trigger {$trigger->id}: Found " . count($ticket_ids) . " matching", 'INFO');
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
 		foreach ($tickets as $ticket) {
@@ -136,6 +137,11 @@ class TicketTriggers extends AbstractJob
 				App::getOrm()->persist($ticket);
 				App::getOrm()->flush();
 				App::getDb()->commit();
+
+				// Need to call this explicitly or logs wont be applied when there are only actions
+				// that dont directly modify the ticket (e.g., emails with no prop changes)
+				// wont fire as part of the usual post-commit hooks
+				$ticket->_saveTicketLogs();
 			} catch (\Exception $e) {
 				App::getDb()->rollback();
 

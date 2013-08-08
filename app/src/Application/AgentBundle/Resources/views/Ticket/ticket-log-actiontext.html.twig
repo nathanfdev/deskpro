@@ -110,7 +110,7 @@
 {% elseif log.action_type == 'executed_triggers' %}
 	<span class="type">{{ phrase('agent.general.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
 	<span class="new-val">{{ log.details.trigger_titles }}</span>
-{% elseif log.action_type == 'executed_triggers' %}
+{% elseif log.action_type == 'executed_escalations' %}
 	<span class="type">{{ phrase('agent.general.ticket_escalations') }}</span> {{ phrase('agent.tickets.applied') }}:
 	<span class="new-val">{{ log.details.trigger_titles }}</span>
 {% elseif log.action_type == 'message_created' %}
