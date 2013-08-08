@@ -611,4 +611,6 @@
 	'agent.general.years'                                   => 'years',
 	'agent.general.yim'                                     => 'YIM',
 	'agent.general.your_email_address'                      => 'Your Email Address',
+	'agent.general.check_on'                                => 'ON',
+	'agent.general.check_off'                               => 'OFF',
 );
