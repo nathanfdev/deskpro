@@ -2267,6 +2267,7 @@ ul.pane-tabs {
 				color: @agent_text_color;
 				line-height: 20px;
 				padding: 6px 0 6px 3px;
+				white-space: nowrap;
 			}
 
 			&:hover > h3 {
@@ -2364,6 +2365,11 @@ ul.pane-tabs {
 			[class^="icon-flag-"],[class*=" icon-flag-"] {
 				margin-right: 4px;
 			}
+		}
+
+		.filter > .item > h3 {
+			max-width: 150px;
+			text-overflow: ellipsis;
 		}
 	}
 

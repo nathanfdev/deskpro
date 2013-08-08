@@ -29,7 +29,7 @@
 									<h3>
 										{{ filter.title }}
 									</h3>
-									<em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</em>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</em></div>
 								</div>
 								<div class="item-form" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}>
 									<div class="select-value-wrap">
@@ -76,7 +76,7 @@
 									<h3>
 										{{ filter.title }}
 									</h3>
-									<em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</em>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</em></div>
 								</div>
 								<div class="item-form" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}>
 									<div class="select-value-wrap">
@@ -135,7 +135,7 @@
 							>
 								<div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 									<h3>{{ filter.title }}</h3>
-									<em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</em>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</em></div>
 								</div>
 							</li>
 						{% endfor %}

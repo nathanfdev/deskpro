@@ -2,7 +2,7 @@
 	<li data-grouping-option="0" class="grouping-0">
 		<div class="item is-nav-item">
 			<h3>{{ phrase('agent.general.none') }}</h3>
-			<em class="counter list-counter">{{ grouped_info.counts[0].total }}</em>
+			<div class="float-side"><em class="counter list-counter">{{ grouped_info.counts[0].total }}</em></div>
 		</div>
 	</li>
 {% endif %}
@@ -45,14 +45,16 @@
 						{{ cat.title }}
 					{% endif %}
 				</h3>
-				<em class="counter list-counter">
-					{% if cat.children %}
-						{% if count %}{{ count }}{% endif %}{% if count and count_all %}/{% endif %}{% if count_all %}{{ count_all }}{% endif %}
-						{% if not count and not count_all %}0{% endif %}
-					{% elseif count %}
-						{{ count|default('0') }}
-					{% endif %}
-				</em>
+				<div class="float-side">
+					<em class="counter list-counter">
+						{% if cat.children %}
+							{% if count %}{{ count }}{% endif %}{% if count and count_all %}/{% endif %}{% if count_all %}{{ count_all }}{% endif %}
+							{% if not count and not count_all %}0{% endif %}
+						{% elseif count %}
+							{{ count|default('0') }}
+						{% endif %}
+					</em>
+				</div>
 			</div>
 		</li>
 		{% if cat.children %}
@@ -62,7 +64,7 @@
 					<li data-grouping-option="{{ subcat.id }}" class="sub-item grouping-{{ subcat.id }}">
 						<div class="item">
 							<h3>&mdash; {{ subcat.title }}</h3>
-							<em class="counter list-counter">{{ subcount }}</em>
+							<div class="float-side"><em class="counter list-counter">{{ subcount }}</em></div>
 						</div>
 					</li>
 				{% endif %}
