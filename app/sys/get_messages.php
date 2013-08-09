@@ -583,7 +583,35 @@ class AgentMessagesLoader extends LoaderAbstract
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filters, $this->_getPerson());
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
-		return array(array(null, 'filters.filter_data', $filter_id_matches));
+		$filter_counts = array();
+		$prefs = App::getDb()->fetchAllKeyValue("
+			SELECT name, value_str
+			FROM people_prefs
+			WHERE name LIKE 'ticket_counts.' AND person_id = ?
+		", array($this->_getPerson()->getId()));
+		foreach ($filters as $f) {
+			if (isset($filter_id_matches[$f->id])) {
+				$filter_counts[$f->id] = count($filter_id_matches[$f->id]);
+			} elseif ($f->isArchiveTableFilter()) {
+				$pref_key = 'ticket_counts.' . $f->sys_name;
+				if (isset($prefs[$pref_key])) {
+					$filter_counts[$f->id] = (int)$prefs[$pref_key];
+				} else {
+					$filter_counts[$f->id] = intval(App::getSetting('core_tablecounts.tickets.' . $f->sys_name) ?: 0);
+				}
+			}
+		}
+
+		$filter_counts = Arrays::castToTypeDeep($filter_counts, 'int', 'int');
+
+		$filter_data = array(
+			'ids' => $filter_id_matches,
+			'counts' => $filter_counts
+		);
+
+		return array(
+			array(null, 'filters.filter_data', $filter_data),
+		);
 	}
 
 	public function getCustomFiltersDataMessage()
@@ -596,7 +624,12 @@ class AgentMessagesLoader extends LoaderAbstract
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
-		return array(array(null, 'filters.filter_data', $filter_id_matches));
+		$filter_data = array(
+			'ids' => $filter_id_matches,
+			'counts' => array()
+		);
+
+		return array(array(null, 'filters.filter_data', $filter_data));
 	}
 
 

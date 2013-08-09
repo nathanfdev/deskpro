@@ -8,6 +8,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.archiveFilterIds = [];
 		this.buttonEl = $('#tickets_section');
 		this.filterTicketIds = {};
+		this.filterCounts = {};
+		this.archiveTableFilterIds = [13, 14, 15, 16];
 
 		this.urlFragmentName = 'tickets';
 
@@ -358,7 +360,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
 			var ticketId = data.ticket_id;
@@ -461,6 +462,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var count_str_real = count_str;
 		if (count >= 10000) count_str = '10000+';
 
+		if (this.archiveTableFilterIds.indexOf(filter_id) != -1 && count > 0) {
+			count_str = '~' + count;
+		}
+
 		var system_name = DeskPRO_Window.getData('systemFilters')[filter_id];
 		if (system_name) {
 
@@ -519,7 +524,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 	},
 
-	updateFilterData: function(data) {
+	updateFilterData: function(rawdata) {
+
+		var data = rawdata.ids;
+		var datacounts = rawdata.counts;
 
 		var viewingFilterId = null;
 		var refreshUrl = null;
@@ -542,6 +550,27 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var newCount = ticketIds.length;
 
 			this.filterTicketIds[filterId] = ticketIds;
+
+			if (oldCount != newCount) {
+				this.setFilterCount(filterId, newCount);
+
+				// If we are currently viewing this filter that is out of date, we need to refresh it now
+				if (viewingFilterId == filterId && refreshUrl) {
+					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl);
+				}
+			}
+		}, this);
+
+		Object.each(datacounts, function(count, filterId) {
+			filterId = parseInt(filterId);
+
+			var oldCount = 0;
+			if (this.filterCounts[filterId]) {
+				oldCount = this.filterCounts[filterId];
+			}
+			var newCount = count;
+
+			this.filterCounts[filterId] = newCount;
 
 			if (oldCount != newCount) {
 				this.setFilterCount(filterId, newCount);

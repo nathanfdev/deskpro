@@ -571,8 +571,8 @@ class TicketSearch extends SearcherAbstract
 			$sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
 		}
 
-		$sql .= " GROUP BY tickets.id ";
-		$sql2 .= " GROUP BY part_perm.ticket_id ";
+		$sql .= " ";
+		$sql2 .= " ";
 
 		if ($with_part_union) {
 			$count_sql = "

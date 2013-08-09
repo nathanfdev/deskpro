@@ -214,33 +214,38 @@ class Filters
 	 * @param array $ticket_filters
 	 * @return array
 	 */
-	public function getAllCountsForFiltersCollection($ticket_filters)
+	public function getAllCountsForFiltersCollection($ticket_filters, Person $person_context = null)
 	{
 		$counts = array();
+
+		$prefs = array();
+		if ($person_context) {
+			$prefs = App::getDb()->fetchAllKeyValue("
+				SELECT name, value_str
+				FROM people_prefs
+				WHERE name LIKE 'ticket_counts.' AND person_id = ?
+			", array($person_context->id));
+		}
 
 		foreach ($ticket_filters as $ticket_filter) {
 
 			$count = 0;
 
 			switch ($ticket_filter['sys_name']) {
-				case 'archive_resolved':
-					$count = App::getSetting('core_tablecounts.tickets.resolved');
-					break;
-
 				case 'archive_closed':
-					$count = App::getSetting('core_tablecounts.tickets.closed');
+					$count = isset($prefs['ticket_counts.archive_closed']) ? $prefs['ticket_counts.archive_closed'] : App::getSetting('core_tablecounts.tickets.archive_closed');
 					break;
 
 				case 'archive_validating':
-					$count = App::getSetting('core_tablecounts.tickets.validating');
+					$count = isset($prefs['ticket_counts.archive_validating']) ? $prefs['ticket_counts.archive_validating'] : App::getSetting('core_tablecounts.tickets.archive_validating');
 					break;
 
 				case 'archive_spam':
-					$count = App::getSetting('core_tablecounts.tickets.spam');
+					$count = isset($prefs['ticket_counts.archive_spam']) ? $prefs['ticket_counts.archive_spam'] : App::getSetting('core_tablecounts.tickets.archive_spam');
 					break;
 
 				case 'archive_deleted':
-					$count = App::getSetting('core_tablecounts.tickets.deleted');
+					$count = isset($prefs['ticket_counts.archive_deleted']) ? $prefs['ticket_counts.archive_deleted'] : App::getSetting('core_tablecounts.tickets.archive_deleted');
 					break;
 			}
 
@@ -268,6 +273,10 @@ class Filters
 		$all_ids = array();
 
 		foreach ($ticket_filters as $ticket_filter) {
+			if (strpos($ticket_filter->sys_name, 'archive_') === 0 && $ticket_filter->sys_name != 'archive_resolved') {
+				continue;
+			}
+
 			$all_ids[$ticket_filter['id']] = $ticket_filter->getResults($person_context);
 		}
 

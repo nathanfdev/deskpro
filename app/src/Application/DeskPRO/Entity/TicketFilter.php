@@ -323,6 +323,26 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_results;
 	}
 
+	public function isArchiveTableFilter()
+	{
+		return self::checkFilterNameForArchiveTable($this->sys_name);
+	}
+
+	public static function checkFilterNameForArchiveTable($name)
+	{
+		return in_array($name, self::getArchiveTableFilterNames());
+	}
+
+	public static function getArchiveTableFilterNames()
+	{
+		return array(
+			'archive_closed',
+			'archive_validating',
+			'archive_spam',
+			'archive_deleted'
+		);
+	}
+
 	public function getResultsCount()
 	{
 		return count($this->getResults());
@@ -330,7 +350,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __toString()
 	{
-		return $this->id;
+		return (string)$this->id;
 	}
 
 
