@@ -571,6 +571,9 @@ class TicketSearch extends SearcherAbstract
 			$sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
 		}
 
+		$sql .= " GROUP BY tickets.id ";
+		$sql2 .= " GROUP BY part_perm.ticket_id ";
+
 		if ($with_part_union) {
 			$count_sql = "
 				SELECT SUM(count)
@@ -788,8 +791,8 @@ class TicketSearch extends SearcherAbstract
 			}
 		}
 
-		$sql .= " $order_by $limit_sql ";
-		$sql2 .= " $order_by $limit_sql ";
+		$sql .= " GROUP BY tickets.id $order_by $limit_sql";
+		$sql2 .= " GROUP BY part_perm.id $order_by $limit_sql ";
 
 		if ($with_part_union) {
 			$select_query = "
