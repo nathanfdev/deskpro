@@ -890,10 +890,12 @@ class TicketSearch extends SearcherAbstract
 				break;
 
 			case 'ticket.sla_severity':
+				$this->add_raw_selects[] = "MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) AS status_order";
+				$this->add_raw_selects[] = "IF(MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) <= 1, MIN(sort_table.warn_date), MIN(sort_table.fail_date)) AS status_order2";
 				$this->order_summary = 'SLA Severity';
 				$order_by = array(
 					"INNER JOIN ticket_slas AS sort_table ON (sort_table.ticket_id = tickets.id)",
-					"ORDER BY MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) $dir, IF(MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) <= 1, MIN(sort_table.warn_date), MIN(sort_table.fail_date)) $r_dir"
+					"ORDER BY status_order $dir,  status_order2 $r_dir"
 				);
 				break;
 
