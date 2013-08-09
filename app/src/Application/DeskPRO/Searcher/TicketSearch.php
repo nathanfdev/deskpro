@@ -436,8 +436,8 @@ class TicketSearch extends SearcherAbstract
 			$table = 'tickets_search_active';
 		}
 
-		$sql = "SELECT COUNT(DISTINCT tickets.id) AS count FROM $table AS tickets ";
-		$sql2 = "SELECT COUNT(DISTINCT part_perm.ticket_id) AS count FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
+		$sql = "SELECT COUNT(tickets.id) AS count FROM $table AS tickets ";
+		$sql2 = "SELECT COUNT(part_perm.id) AS count FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
 
 		#------------------------------
 		# Standard for permissions
@@ -447,17 +447,22 @@ class TicketSearch extends SearcherAbstract
 
 		if ($this->person AND $this->person['is_agent']) {
 
+			$assigned_perm_part = "tickets.agent_id = {$this->person['id']}";
+			if ($this->person->getAgentTeamIds()) {
+				$assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . "))";
+			}
+
 			$where_perm = array();
 
 			if ($this->person->getDisallowedDepartments()) {
-				$where_perm[] = "tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ")";
+				$where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
 			}
 
 			if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
 				$where_perm[] = 'tickets.agent_id IS NOT NULL';
 			}
 
-			if (!$this->person->hasPerm('agent_tickets.view_others')) {
+			if (!$this->person->hasPerm('agent_tickets.view_others') || $this->person->getDisallowedDepartments()) {
 				$part = array();
 				$part[] = "tickets.agent_id = {$this->person['id']}";
 				if ($this->person->getAgentTeamIds()) {
@@ -470,7 +475,11 @@ class TicketSearch extends SearcherAbstract
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
 			}
 
-			$where_perm = '(' . implode(' AND ', $where_perm) . ')';
+			if ($where_perm) {
+				$where_perm = '(' . implode(' AND ', $where_perm) . ')';
+			} else {
+				$where_perm = '';
+			}
 			$with_part_union = true;
 		} else {
 			$where_perm = '';
@@ -556,12 +565,10 @@ class TicketSearch extends SearcherAbstract
 		$sql .= " $sql_joins ";
 		$sql2 .= " $sql_joins ";
 
-		if ($where) {
-			$sql .= " WHERE $where_perm $where";
-			$sql2 .= " WHERE $where ";
-			if ($this->person) {
-				$sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
-			}
+		$sql .= " WHERE $where_perm $where";
+		$sql2 .= " WHERE $where ";
+		if ($this->person) {
+			$sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
 		}
 
 		if ($with_part_union) {
@@ -619,9 +626,7 @@ class TicketSearch extends SearcherAbstract
 
 		$order_by = $this->getOrderByPart();
 
-		$where = '';
-
-		if ($this->isArchiveSearch() || !App::getSetting('tickets_search_active')) {
+		if ($this->isArchiveSearch() || !App::getSetting('core_tickets.use_archive')) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';
@@ -642,10 +647,15 @@ class TicketSearch extends SearcherAbstract
 
 		if ($this->person AND $this->person['is_agent']) {
 
+			$assigned_perm_part = "tickets.agent_id = {$this->person['id']}";
+			if ($this->person->getAgentTeamIds()) {
+				$assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . "))";
+			}
+
 			$where_perm = array();
 
 			if ($this->person->getDisallowedDepartments()) {
-				$where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL)";
+				$where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
 			}
 
 			if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
@@ -665,7 +675,11 @@ class TicketSearch extends SearcherAbstract
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
 			}
 
-			$where_perm = '(' . implode(' AND ', $where_perm) . ')';
+			if ($where_perm) {
+				$where_perm = '(' . implode(' AND ', $where_perm) . ')';
+			} else {
+				$where_perm = '';
+			}
 			$with_part_union = true;
 
 		} else {
@@ -774,8 +788,8 @@ class TicketSearch extends SearcherAbstract
 			}
 		}
 
-		$sql .= " GROUP BY tickets.id ";
-		$sql2 .= " GROUP BY part_perm.ticket_id ";
+		$sql .= " $order_by $limit_sql ";
+		$sql2 .= " $order_by $limit_sql ";
 
 		if ($with_part_union) {
 			$select_query = "
@@ -926,7 +940,7 @@ class TicketSearch extends SearcherAbstract
 			case 'ticket.date_last_user_reply':
 				$this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
 				$this->order_summary = 'Date of Last User Reply';
-				$order_by = "ORDER BY tickets.status_order $dir";
+				$order_by = "ORDER BY status_order $dir";
 				break;
 
 			case 'ticket.date_last_agent_reply':
@@ -1590,6 +1604,7 @@ class TicketSearch extends SearcherAbstract
 							$w .= ')';
 						} else {
 							$w .= '(';
+							$w .= "$tickets_table.status = 'hidden' AND ";
 							$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
 							$w .= ')';
 						}

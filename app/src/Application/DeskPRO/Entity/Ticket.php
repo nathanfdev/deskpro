@@ -3058,6 +3058,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'indexes' => array(
 				'date_created_idx' => array('columns' => array('date_created')),
 				'date_locked_idx' => array('columns' => array('date_locked')),
+				'status_idx' => array('columns' => array('status')),
 			),
 			'uniqueConstraints' => array(
 				'ref_idx' => array('columns' => array('ref'))
