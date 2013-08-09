@@ -65,7 +65,7 @@ class EditEmailTransport extends AbstractType
 		$options_form->add('username', 'text', array('required' => false));
 		$options_form->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
 		$options_form->add('port', 'text', array('required' => false));
-		$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => '', 'choices' => array('ssl' => 'SSL', 'tls' => 'TLS')));
+		$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => false, 'choices' => array('' => 'None', 'ssl' => 'Use SSL', 'tls' => 'Use TLS')));
 		$builder->add($options_form);
 
 		$options_form = $builder->create('gmail_options', 'form');

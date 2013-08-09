@@ -128,6 +128,14 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 				return;
 			}
 
+			var smtpType = $('#gateway_form').find('[name="transport[transport_type]"]').filter(':checked').val();
+			if (smtpType == 'smtp' && $('#smtp_requires_auth_check').is(':checked') && (!$('#transport_smtp_options_username').val().length || !$('#transport_smtp_options_password').val().length)) {
+				$('#transport_smtp_options_username').focus();
+				alert('You did not enter authentication details for your SMTP server.');
+				ev.preventDefault();
+				return;
+			}
+
 			ev.preventDefault();
 			$('#gateway_form').addClass('loading');
 			waitingSend = true;
