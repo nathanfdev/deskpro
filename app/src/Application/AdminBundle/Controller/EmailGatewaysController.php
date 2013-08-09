@@ -267,6 +267,7 @@ class EmailGatewaysController extends AbstractController
 			'errors' => $errors,
 			'gateway' => $gateway,
 			'transport' => $transport,
+			'edittrans' => $edittrans,
 			'form' => $form->createView(),
 			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
