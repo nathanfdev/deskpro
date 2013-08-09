@@ -180,10 +180,12 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$opt_slow_page_time  = dp_get_config('debug.page_log.slow_page_time');
 
 		$do_slow_query = false;
-		foreach ($this->_queries as $queryinfo) {
-			if ($queryinfo['time_taken'] >= $opt_slow_query_time) {
-				$do_slow_query = true;
-				break;
+		if ($opt_slow_query_time) {
+			foreach ($this->_queries as $queryinfo) {
+				if ($queryinfo['time_taken'] >= $opt_slow_query_time) {
+					$do_slow_query = true;
+					break;
+				}
 			}
 		}
 
