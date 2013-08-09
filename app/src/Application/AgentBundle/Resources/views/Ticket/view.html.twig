@@ -124,7 +124,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		</td></tr></table>
 	</div>
 	<div class="row author last">
-		<a class="dp-btn as-popover user-btn" data-route-preload-id="{{ baseId }}_person" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+		<a class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 			<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 				{{ ticket.person.getNameWithTitle() }}
 				<span class="email">({{ ticket.person_email_address }})</span>
@@ -133,7 +133,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 		{% if ticket.person.organization %}
 			&nbsp;&nbsp;
-			<a id="{{ baseId }}_org_link" class="dp-btn as-popover" data-route-preload-id="{{ baseId }}_person_organization" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i class="icon-briefcase"></i>
+			<a id="{{ baseId }}_org_link" class="dp-btn as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i class="icon-briefcase"></i>
 				{{ ticket.person.organization }}
 				{% if ticket.person.organization_position %}<span class="email">({{ ticket.person.organization_position }})</span>{% endif %}
 			</a>
@@ -814,9 +814,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		</div>
 	</div>
 </div>
-
-{{ agentui.preload_content(baseId ~ '_person', page_preload.person) }}
-{{ agentui.preload_content(baseId ~ '_person_organization', page_preload.person_organization) }}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}
