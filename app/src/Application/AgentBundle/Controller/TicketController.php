@@ -1743,6 +1743,8 @@ class TicketController extends AbstractController
 
 		$perms_before = $this->_getTicketPerms($ticket);
 
+		$was_hidden = $ticket->status == 'hidden';
+
 		$macro_id = $this->in->getUint('macro_id');
 		if ($macro_id) {
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
@@ -1888,6 +1890,10 @@ class TicketController extends AbstractController
 
 		if (isset($ticket_edit) && $ticket_edit->getPermErrors()) {
 			$data['data']['perm_errors'] = $ticket_edit->getPermErrors();
+			$data['data']['refresh'] = true;
+		}
+
+		if ($was_hidden && $ticket->status != 'hidden') {
 			$data['data']['refresh'] = true;
 		}
 

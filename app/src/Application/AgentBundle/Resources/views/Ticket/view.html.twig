@@ -217,6 +217,9 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		</li>
 		<li title="Ticket Status">
 			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
+				{% if ticket.status == 'hidden' %}
+					<option value="" selected="selected">Hidden</option>
+				{% endif %}
 				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
 					<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
 				{% endif %}
