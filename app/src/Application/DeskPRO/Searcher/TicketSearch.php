@@ -800,7 +800,6 @@ class TicketSearch extends SearcherAbstract
 				$limit_sql
 			";
 		} else {
-			$sql .= " $limit_sql ";
 			$select_query = $sql;
 		}
 
