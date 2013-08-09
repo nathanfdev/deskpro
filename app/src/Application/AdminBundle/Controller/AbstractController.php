@@ -71,6 +71,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function requireRequestToken($action, $arguments = null)
 	{
+		// Pre install we dont have a secret yet
+		// So dont require the request token on POSTs
+		// while we fill out setup form
+		if (!App::getSetting('core.setup_initial')) {
+			return false;
+		}
+
 		if ($this->request->getMethod() == 'POST') {
 			return true;
 		}
