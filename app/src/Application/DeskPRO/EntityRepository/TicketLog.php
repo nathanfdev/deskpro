@@ -54,7 +54,7 @@ class TicketLog extends AbstractEntityRepository
 		#------------------------------
 
 		if (!isset($options['order_dir'])) {
-			$options['order_dir'] = 'ASC';
+			$options['order_dir'] = 'DESC';
 		}
 
 		$params = array('ticket_id' => $ticket->getId());
@@ -109,11 +109,6 @@ class TicketLog extends AbstractEntityRepository
 				$cids[] = $l->getId();
 			}
 		}
-
-		// Sort them into correct order
-		uasort($ticket_logs, function($a, $b) {
-			return $a->date_created < $b->date_created ? -1 : 1;
-		});
 
 		// And group children under their parent row
 		$return = array();

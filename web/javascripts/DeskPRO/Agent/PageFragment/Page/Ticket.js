@@ -652,6 +652,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					var newNav = el.find('nav').first();
 					var newPage = el.find('.logs-page').first();
 
+					DeskPRO_Window.initInterfaceServices(newPage);
+
 					logsNav.replaceWith(newNav);
 					logsWrap.append(newPage);
 

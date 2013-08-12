@@ -428,7 +428,7 @@ class TicketController extends AbstractController
 			$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->groupTicketLogs($all_ticket_logs);
 		}
 
-		$all_ticket_logs = array_chunk($all_ticket_logs, $per_page);
+		$all_ticket_logs = array_chunk($all_ticket_logs, $per_page, true);
 
 		if ($up_to_page) {
 			$ticket_logs = array();
@@ -439,7 +439,6 @@ class TicketController extends AbstractController
 		} else {
 			$ticket_logs = isset($all_ticket_logs[$page-1]) ? $all_ticket_logs[$page-1] : array();
 		}
-
 
 		$info = array();
 		$info['ticket']      = $ticket;
