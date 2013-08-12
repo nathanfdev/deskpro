@@ -52,7 +52,7 @@ class Usergroup extends AbstractEntityRepository
 	{
 		return $this->_em->createQuery("
 			SELECT ug
-			FROM DeskPRO:Usergroup ug
+			FROM DeskPRO:Usergroup ug INDEX BY ug.id
 			WHERE ug.is_agent_group = 0
 			ORDER BY ug.title ASC
 		")->execute();
@@ -66,7 +66,7 @@ class Usergroup extends AbstractEntityRepository
 	{
 		return $this->_em->createQuery("
 			SELECT ug
-			FROM DeskPRO:Usergroup ug
+			FROM DeskPRO:Usergroup ug INDEX BY ug.id
 			WHERE ug.is_agent_group = true
 			ORDER BY ug.title ASC
 		")->execute();
