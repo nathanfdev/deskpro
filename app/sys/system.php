@@ -898,6 +898,7 @@ STR;
 	private static $sysdata = array(
 		'xlic' => array(
 			'KDQP-8287-VSWH' => true,
+			'JPPJ-8339-DIFJ' => true,
 		)
 	);
 }
