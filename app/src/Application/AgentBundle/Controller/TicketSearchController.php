@@ -1247,6 +1247,7 @@ class TicketSearchController extends AbstractController
             switch($display_field) {
 				case 'id':
 					$row[] = 'ticket_id';
+					break;
                 case 'language_id':
                 case 'department_id':
                 case 'priority_id':
@@ -1260,6 +1261,7 @@ class TicketSearchController extends AbstractController
                 case 'person_email_id':
                 case 'person_email_validating_id':
                     $row[] = preg_replace('/id$/' , 'email', $display_field);
+					break;
                 case 'person_id':
                 case 'agent_id':
                 case 'agent_team_id':
@@ -1320,18 +1322,32 @@ class TicketSearchController extends AbstractController
                         break;
                     case 'person_id':
                     case 'agent_id':
-                    case 'agent_team_id':
-                    case 'organization_id':
-                        $entity = $ticket->person;
+                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        list(, $name) = $matches;
+                        $entity = $ticket->{$name};
+
+                        if($entity) {
+                            $row[] = $entity->id;
+                            $row[] = $entity->display_name;
+                        } else {
+                            $row[] = '';
+                            $row[] = '';
+                        }
+                        break;
+					case 'agent_team_id':
+					case 'organization_id':
+						preg_match('/^(.*)_id$/', $display_field, $matches);
+                        list(, $name) = $matches;
+                        $entity = $ticket->{$name};
 
                         if($entity) {
                             $row[] = $entity->id;
                             $row[] = $entity->name;
+                        } else {
+                            $row[] = '';
+                            $row[] = '';
                         }
-                        else {
-                            $row[] = $row[] = $row[] = '';
-                        }
-                        break;
+						break;
                     case 'person_email_id':
                     case 'person_email_validating_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
@@ -1355,9 +1371,9 @@ class TicketSearchController extends AbstractController
 
                             if($entity) {
                                 $row[] = $entity->id;
-                            }
-
-                            $row[] = '';
+                            } else {
+								$row[] = '';
+							}
                         }
                         else {
                             $value = $ticket->{$display_field};
@@ -1367,8 +1383,12 @@ class TicketSearchController extends AbstractController
                             } elseif(is_object($value)) {
                                 if($value instanceof \DateTime) {
                                     $row[] = $value->format('c');
-                                }
-                            }
+                                } else {
+									$row[] = '';
+								}
+                            } else {
+								$row[] = '';
+							}
                         }
                         break;
                 }
