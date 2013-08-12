@@ -74,13 +74,13 @@
 	<div id="dp_admin_nav_sections" class="deskproPane">
 		<ul class="start-ul">
 			<li>
-				<a href="{{ path('admin') }}"><span class="start">Admin</span></a>
+				<a href="{{ app.request.getBaseUrl() }}admin/"><span class="start">Admin</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>
 		<ul class="start-ul">
 			<li>
-				<a href="{{ path('agent') }}"><span class="agents">Agent</span></a>
+				<a href="{{ app.request.getBaseUrl() }}agnet/"><span class="agents">Agent</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>
