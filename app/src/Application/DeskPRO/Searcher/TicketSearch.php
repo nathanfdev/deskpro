@@ -462,7 +462,7 @@ class TicketSearch extends SearcherAbstract
 				$where_perm[] = 'tickets.agent_id IS NOT NULL';
 			}
 
-			if (!$this->person->hasPerm('agent_tickets.view_others') || $this->person->getDisallowedDepartments()) {
+			if (!$this->person->hasPerm('agent_tickets.view_others')) {
 				$part = array();
 				$part[] = "tickets.agent_id = {$this->person['id']}";
 				if ($this->person->getAgentTeamIds()) {
@@ -481,6 +481,7 @@ class TicketSearch extends SearcherAbstract
 				$where_perm = '';
 			}
 			$with_part_union = true;
+
 		} else {
 			$where_perm = '';
 		}

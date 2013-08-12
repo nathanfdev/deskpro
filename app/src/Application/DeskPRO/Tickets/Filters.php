@@ -188,7 +188,7 @@ class Filters
 			->getRepository('DeskPRO:TicketFilter')
 			->getSystemFilters($person);
 
-		return $this->getAllCountsForFiltersCollection($coll);
+		return $this->getAllCountsForFiltersCollection($coll, $person);
 	}
 
 
@@ -251,7 +251,7 @@ class Filters
 
 			if (!$count || $count < 10000) {
 				$searcher = $ticket_filter->getSearcher();
-				$searcher->setPerson(App::getCurrentPerson());
+				$searcher->setPerson($person_context ?: App::getCurrentPerson());
 				$count = $searcher->getCount(null);
 			}
 
@@ -273,7 +273,7 @@ class Filters
 		$all_ids = array();
 
 		foreach ($ticket_filters as $ticket_filter) {
-			if (strpos($ticket_filter->sys_name, 'archive_') === 0 && $ticket_filter->sys_name != 'archive_resolved') {
+			if ($ticket_filter->isArchiveTableFilter()) {
 				continue;
 			}
 
