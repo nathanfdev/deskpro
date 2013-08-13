@@ -330,7 +330,7 @@ class WidgetController extends AbstractController
 		}
 
 		// User is blocked
-		$blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked($this->getRequest()->getClientIp(), $session->visitor);
+		$blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked(dp_get_user_ip_address(), $session->visitor);
 
 		if ($blocked) {
 			$response = $this->createResponse('');

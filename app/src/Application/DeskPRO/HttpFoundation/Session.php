@@ -99,8 +99,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 						'person_id'    => $person_id,
 						'area'         => DP_INTERFACE,
 						'is_success'   => 1,
-						'ip_address'   => App::getRequest()->getClientIp(),
-						'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+						'ip_address'   => dp_get_user_ip_address(),
+						'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
 						'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
 						'date_created' => date('Y-m-d H:i:s'),
 						'via_cookie'   => 1
@@ -149,15 +149,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
-		if (App::getContainer()->isScopeActive('request')) {
-			if (dp_get_config('trust_proxy_data')) {
-				$user_ip = App::getRequest()->getClientIp(true);
-			} else {
-				$user_ip = App::getRequest()->getClientIp();
-			}
-		} else {
-			$user_ip = \Orb\Util\Web::getUserIp();
-		}
+		$user_ip = dp_get_user_ip_address();
 
 		$path = '';
 		if (App::getContainer()->isScopeActive('request')) {

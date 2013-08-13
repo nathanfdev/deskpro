@@ -299,8 +299,8 @@ HTML;
 					'person_id'    => $attempt_person->getId(),
 					'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
 					'is_success'   => 0,
-					'ip_address'   => App::getRequest()->getClientIp(),
-					'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+					'ip_address'   => dp_get_user_ip_address(),
+					'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
 					'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
 					'date_created' => date('Y-m-d H:i:s')
 				));
@@ -368,8 +368,8 @@ HTML;
 					'person_id'    => $person->getId(),
 					'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
 					'is_success'   => 1,
-					'ip_address'   => App::getRequest()->getClientIp(),
-					'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+					'ip_address'   => dp_get_user_ip_address(),
+					'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
 					'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
 					'date_created' => date('Y-m-d H:i:s')
 				));

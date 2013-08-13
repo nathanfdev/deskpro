@@ -468,7 +468,7 @@ class TicketController extends AbstractController
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
-		$message['ip_address'] = $this->request->getClientIp();
+		$message['ip_address'] = dp_get_user_ip_address();
 		$message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
 		$notify_agent_ids = array();

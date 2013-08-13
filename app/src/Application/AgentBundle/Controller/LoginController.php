@@ -174,8 +174,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			'person_id'    => $person->getId(),
 			'area'         => 'agent',
 			'is_success'   => 1,
-			'ip_address'   => App::getRequest()->getClientIp(),
-			'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+			'ip_address'   => dp_get_user_ip_address(),
+			'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
 			'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
 			'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
 			'date_created' => date('Y-m-d H:i:s')

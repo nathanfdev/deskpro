@@ -81,7 +81,7 @@ class DataController extends AbstractController
 	{
 		$error_text = $this->in->getString('error_text');
 
-		$ip_address = $this->request->getClientIp();
+		$ip_address = dp_get_user_ip_address();
 		$user_agent = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
 		$referrer   = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 		$hash       = $this->in->getString('hash');

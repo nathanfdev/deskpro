@@ -75,7 +75,7 @@ class Recaptcha extends CaptchaAbstract
 	{
 		$challenge = $this->getRequest()->request->get('recaptcha_challenge_field');
 		$response  = $this->getRequest()->request->get('recaptcha_response_field');
-		$remote_ip = $this->getRequest()->getClientIp();
+		$remote_ip = dp_get_user_ip_address();
 
 		if (!$challenge || !$response || !$remote_ip) {
 			return false;

@@ -176,7 +176,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		// Make sure we arent banned ip
 		if (!preg_match('#^/admin/?#', $path)) {
-			$ip = $request->getClientIp();
+			$ip = dp_get_user_ip_address();
 			$ip_long = sprintf("%u", ip2long($ip));
 
 			$banned = App::getDb()->fetchColumn("

@@ -65,7 +65,7 @@ class ChatBlock extends AbstractEntityRepository
 				SELECT b
 				FROM DeskPRO:ChatBlock b
 				WHERE (b.ip_address = ?0) AND b.date_created > ?2
-			")->setParameters(array(App::getRequest()->getClientIp(), $datecut))->setMaxResults(1)->getOneOrNullResult();
+			")->setParameters(array(dp_get_user_ip_address(), $datecut))->setMaxResults(1)->getOneOrNullResult();
 		}
 
 		return $block;

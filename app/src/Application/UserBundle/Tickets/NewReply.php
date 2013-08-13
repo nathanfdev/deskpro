@@ -70,7 +70,7 @@ class NewReply
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 		$ticket_message->creation_system = TicketMessage::CREATED_WEB_PERSON_PORTAL;
-		$ticket_message->ip_address = App::getRequest()->getClientIp();
+		$ticket_message->ip_address = dp_get_user_ip_address();
 		$ticket_message->visitor = App::getSession()->getVisitor();
 
 		$attach = false;

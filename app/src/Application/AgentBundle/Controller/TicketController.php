@@ -1035,7 +1035,7 @@ class TicketController extends AbstractController
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
-		$message['ip_address'] = $this->request->getClientIp();
+		$message['ip_address'] = dp_get_user_ip_address();
 		$message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
 		if ($this->in->getBool('is_html_reply')) {
