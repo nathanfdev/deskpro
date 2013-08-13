@@ -74,6 +74,11 @@
 		'repos'   => 'git://github.com/pda/pheanstalk.git',
 		'version' => 'v2.1.0',
 	),
+	'php_ipaddress' => array(
+		'into'    => DP_ROOT.'/vendor/php_ipaddress',
+		'repos'   => 'https://github.com/leth/PHP-IPAddress.git',
+		'version' => 'HEAD',
+	),
 	'webprofilerextra' => array(
 		'into'    => DP_ROOT.'/vendor/profiler/Elao/WebProfilerExtraBundle',
 		'repos'   => 'git://github.com/Elao/WebProfilerExtraBundle.git',
