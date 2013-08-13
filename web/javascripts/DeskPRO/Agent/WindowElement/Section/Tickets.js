@@ -550,6 +550,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var newCount = ticketIds.length;
 
 			this.filterTicketIds[filterId] = ticketIds;
+			this.filterCounts[filterId] = ticketIds.length;
 
 			if (oldCount != newCount) {
 				this.setFilterCount(filterId, newCount);
