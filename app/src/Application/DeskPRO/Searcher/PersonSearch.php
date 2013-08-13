@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\BigMode;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -374,7 +375,13 @@ class PersonSearch extends SearcherAbstract
 						'people_emails',
 						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.email", $op, $choice);
+
+					$suffix_only = false;
+					if (BigMode::isBigMode(BigMode::PERSON_SEARCH_PREFIX_WILDCARD)) {
+						$suffix_only = true;
+					}
+
+					$wheres[] = $this->_stringMatch("$join_name.email", $op, $choice, $suffix_only);
 
 					$choice = implode(' or ', (array)$choice);
 					$this->summary[] = "Email is " . $choice;
@@ -395,11 +402,16 @@ class PersonSearch extends SearcherAbstract
 						$choice = ltrim($choice, '@');
 					}
 
+					$suffix_only = false;
+					if (BigMode::isBigMode(BigMode::PERSON_SEARCH_PREFIX_WILDCARD)) {
+						$suffix_only = true;
+					}
+
 					$joins[] = array(
 						'people_emails',
 						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice, $suffix_only);
 
 					$choice = implode(' or ', (array)$choice);
 					$this->summary[] = "Email domain is " . $choice;
