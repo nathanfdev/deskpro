@@ -131,6 +131,13 @@ class Message extends \Orb\Mail\Message
 					// Agent email sent to an unknown email address for agent ticket replies
 					// ("your reply was not accepted because it was sent from an unknown address")
 					'DeskPRO:emails_agent:error-unknown-from.html.twig' => 1,
+
+					// If you created a new agent after calling the AgentDataServer,
+					// then the repository wont contain the new agent when sending this welcome.
+					'DeskPRO:emails_agent:agent-welcome.html.twig' => 1,
+
+					// Server / Test email can be sent to anyone
+					'DeskPRO:emails_agent:test-email.html.twig' => 1,
 				);
 
 				if (strpos($this->template, ':emails_agent:') !== false && !isset($skip_check[$this->template])) {
