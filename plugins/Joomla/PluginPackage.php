@@ -92,6 +92,9 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 				}
 
 				if (!empty($params['return'])) {
+					if (!preg_match('#^https?://#i', $params['return'])) {
+						$params['return'] = App::getSetting('Joomla.joomla_url') . '/' . $params['return'];
+					}
 					return $controller->redirect($params['return']);
 				} else {
 					return $controller->redirect(App::getSetting('Joomla.joomla_url'));
@@ -102,6 +105,12 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 				throw $controller->createNotFoundException();
 		}
 	}
+
+	function __call($name, $arguments)
+	{
+		// TODO: Implement __call() method.
+	}
+
 
 	/**
 	 * Called the first time the plugin is installed.
