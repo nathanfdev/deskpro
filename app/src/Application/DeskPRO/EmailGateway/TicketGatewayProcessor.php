@@ -1314,11 +1314,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 
 		#------------------------------
-		# If the user is new with no lang, then try to guess based off the email
+		# Try to guess based off the email
 		#------------------------------
 
-		if ($person->isNewPerson() || !$person->getRealLanguage()) {
+		$use_lang = null;
 
+		if (!$person->getRealLanguage() && App::getDataService('Language')->isLangSystemEnabled()) {
 			$detect_body = strip_tags($email_info['body']);
 			if (strlen($detect_body) < 300) {
 				$this->logMessage('Message too short to attempt lang detection');
@@ -1330,7 +1331,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$lang = $lang_detect->detectLanguage($detect_body);
 				if ($lang) {
 					$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
-					$person->language = $lang;
+					$use_lang = $lang;
 				}
 			}
 		}
@@ -1343,6 +1344,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			Entity\Ticket::CREATED_GATEWAY_PERSON,
 			$person
 		);
+
+		if ($use_lang) {
+			$newticket->language = $use_lang;
+		}
 
 		// We do our own dupe check here
 		$newticket->do_dupe_check = false;

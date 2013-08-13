@@ -61,6 +61,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 	 * @var \Application\DeskPRO\Tickets\NewTicket\TicketProps
 	 */
 	public $ticket;
+	public $language;
 
 	public $custom_ticket_fields = array();
 
@@ -266,8 +267,13 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket['subject'] = $this->ticket->subject;
 			$ticket['validating'] = $validating;
 
+
+			// A specific lang was set
+			if ($this->language) {
+				$ticket['language'] = $this->language;
+
 			// The user has a real lang set
-			if ($person->getRealLanguage()) {
+			} else if ($person->getRealLanguage()) {
 				$ticket['language'] = $person->getRealLanguage();
 
 			// Or if this is the web interface, then set the current lang the user is viewing
