@@ -51,13 +51,15 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	protected $attach_ids = array();
 	protected $person_context;
 	protected $is_html = false;
+	protected $person_id = null;
 
-	public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null, $is_html = false)
+	public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null, $is_html = false, $person_id = null)
 	{
 		$this->reply_text = $reply_text;
 		$this->attach_ids = $attach_ids;
 		$this->reply_pos  = $reply_pos;
 		$this->is_html    = $is_html;
+		$this->person_id  = $person_id;
 	}
 
 
@@ -87,31 +89,42 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if (!$this->person_context) {
-			if ($ticket->agent) {
-				$this->person_context = $ticket->agent;
-			} else {
-				// Try to find last agent to replied in tikcet
-				$agent_id = App::getDb()->fetchColumn("
-					SELECT tickets_messages.person_id
-					FROM tickets_messages
-					LEFT JOIN people ON (people.id = tickets_messages.person_id)
-					WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
-					ORDER BY tickets_messages.id DESC
-				");
+		$person = null;
 
-				if ($agent_id) {
-					$this->person_context = App::getDataService('Agent')->get($agent_id);
+		if ($this->person_id) {
+			$person = App::getDataService('Agent')->get($this->person_id);
+		}
+
+		if (!$person) {
+			if ($this->person_context && $this->person_context->getId()) {
+				$person = $this->person_context;
+			} else {
+				if ($ticket->agent) {
+					$this->person_context = $ticket->agent;
+				} else {
+					// Try to find last agent to replied in tikcet
+					$agent_id = App::getDb()->fetchColumn("
+						SELECT tickets_messages.person_id
+						FROM tickets_messages
+						LEFT JOIN people ON (people.id = tickets_messages.person_id)
+						WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
+						ORDER BY tickets_messages.id DESC
+					");
+
+					if ($agent_id) {
+						$person = App::getDataService('Agent')->get($agent_id);
+					}
 				}
 			}
 		}
 
-		if (!$this->person_context) {
+		if (!$person || !$person->getId()) {
 			return;
 		}
 
 		$message = new TicketMessage();
-		$message->person = $this->person_context;
+		$message->person = $person;
+		$message->date_created = new \DateTime('+1 second');
 
 		if ($this->is_html) {
 			$message->message_text = $this->reply_text;
@@ -150,7 +163,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html)
+			array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id)
 		);
 	}
 

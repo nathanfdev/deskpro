@@ -370,6 +370,12 @@
 <div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply" data-rule-group="Ticket">
 	<div class="builder-options" style="display:block">
 		<textarea name="reply_text" cols="80" rows="4"></textarea>
+		<br/>By: <select name="person_id">
+			<option value="0">Assigned agent</option>
+			{% for agent in app.agents.getAgents() %}
+				<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+			{% endfor %}
+		</select>
 	</div>
 </div>
 

@@ -144,7 +144,8 @@ class ActionsFactory
 				}
 				$options['reply_text'] = $value['reply_text'];
 				$options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : array();
-				$options['reply_pos'] = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
+				$options['reply_pos']  = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
+				$options['person_id']  = !empty($value['person_id']) && $value['person_id'] ? $value['person_id'] : null;
 				break;
 			case 'reply_snippet':
 				$options['snippet_id'] = $value['snippet_id'];
