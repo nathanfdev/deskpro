@@ -853,14 +853,12 @@ class TicketSearch extends SearcherAbstract
 		switch ($type) {
 			case 'ticket.urgency':
 				if($this->needsUrgency()) {
-					//$order_by = "ORDER BY status = 'awaiting_agent' $dir, tickets.urgency $dir, tickets.date_user_waiting $r_dir";
-				}
-				else {
-					//$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
+					$this->add_raw_selects[] = "IF(status = 'awaiting_agent', tickets.urgency, IF(status = 'awaiting_user', 1, 0)) AS status_order";
+				} else {
+					$this->add_raw_selects[] = "tickets.urgency AS status_order";
 				}
 
-				$this->add_raw_selects[] = "tickets.urgency AS status_order";
-				$order_by = "ORDER BY status_order ASC";
+				$order_by = "ORDER BY status_order $dir";
 				$this->order_summary = $tr->phrase('agent.general.urgency');
 				break;
 
