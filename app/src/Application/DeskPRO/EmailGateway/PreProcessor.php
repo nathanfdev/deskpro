@@ -116,6 +116,20 @@ class PreProcessor extends AbstractGatewayProcessor
 			return;
 		}
 
+		#------------------------------
+		# Check if date is older than start_date_limit
+		# on the account
+		#------------------------------
+
+		if ($this->gateway->start_date_limit && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+			if ($email_date < $this->gateway->start_date_limit) {
+				$this->error = EmailSource::ERR_DATE_LIMIT;
+				$this->source_info[] = "Gateway date limit: " . $this->gateway->start_date_limit->format(\DateTime::RFC2822);
+				$this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
+				return;
+			}
+		}
+
 		unset($subj, $message, $message2, $attach);
 	}
 

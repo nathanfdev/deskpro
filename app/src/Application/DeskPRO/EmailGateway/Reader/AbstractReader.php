@@ -333,4 +333,47 @@ abstract class AbstractReader
 
 		return $this->vals['is_outlook'];
 	}
+
+
+	/**
+	 * Gets a Date object representing the Date header or null if there is no Date header.
+	 * If there are multiple Date headers, the latest (closest to now) date is used.
+	 *
+	 * @return \DateTime|null
+	 */
+	public function getDate()
+	{
+		if (isset($this->vals['date'])) {
+			return $this->vals['date'] ? $this->vals['date'] : null;
+		}
+
+		$this->vals['date'] = false;
+
+		$use_date = null;
+		$date = null;
+
+		$date_header = $this->getHeader('Date');
+		if (!$date_header || !count($date_header->header_parts)) {
+			return null;
+		}
+
+		foreach ($date_header->header_parts as $date_part) {
+			if (!is_string($date_part)) {
+				continue;
+			}
+
+			$date = \DateTime::createFromFormat(\DateTime::RFC2822, $date_part);
+
+			if ($date && (!$use_date || $date > $use_date)) {
+				$use_date = $date;
+			}
+		}
+
+		if ($use_date) {
+			$this->vals['date'] = $use_date;
+			return $use_date;
+		}
+
+		return null;
+	}
 }

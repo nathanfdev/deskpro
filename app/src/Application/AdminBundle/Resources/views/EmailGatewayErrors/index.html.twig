@@ -102,6 +102,9 @@
 						{% elseif source.error_code == 'agent_bounce' %}
 							Agent Auto-Response
 							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email was an agent reply but was detected to be an auto-response such as an out-of-office reply or bounce error."></span>
+						{% elseif source.error_code == 'date_limit' %}
+							Date Limit
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The date of the email is from before the email account was configured in DeskPRO. For example, if the POP3 account was reset then many old messages that were already read by DeskPRO may be loaded again. To prevent this, messages older than the account are rejected."></span>
 						{% else %}
 							{{ source.error_code_title }}
 						{% endif %}

@@ -29,71 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Controller
+ * @subpackage
  */
 
-namespace Application\DeskPRO\ResourceScanner;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Orb\Util\Arrays;
-
-/**
- * Defines which settings are to be displayed in the 'advanced' page
- */
-class AdvancedSettings extends SettingFiles
+class Build1376384938 extends AbstractBuild
 {
-	public function getAllSettings()
+	public function run()
 	{
-		$settings = parent::getAllSettings();
+		$this->out("Add email_gateways.start_date_limit");
+		$this->execMutateSql("ALTER TABLE email_gateways ADD start_date_limit DATETIME DEFAULT NULL");
 
-		$accept_settings = array(
-			'agent.max_login_attempts',
-			'agent.login_lockout_time',
-			'agent.notify_self_login',
-			'agent.notify_login_emaillist',
-			'agent_notify_list_login',
-			'agent_notify_list_failed_login',
-			'agent_notify_list_adminlogin',
-			'agent_notify_list_failed_adminlogin',
-			'core_chat.assign_ack_timeout',
-			'core_chat.agent_timeout',
-			'core_chat.user_timeout',
-			'core_chat.require_department',
-			'core.bcc_all_emails',
-			'core.drafts_lifetime',
-			'core.store_sent_mail_days',
-			'core.site_id',
-			'core.sessions_lifetime',
-			'core.email_source_storetime',
-			'core_email.failed_email_attempts_notify',
-			'core_email.antiflood_newtickets',
-			'core_email.antiflood_newtickets_warn',
-			'core_email.antiflood_newreplies',
-			'core_email.antiflood_newreplies_warn',
-			'core_misc.cleanup_visitors',
-			'core_misc.cleanup_login_logs',
-			'core_misc.cleanup_gateway_sources',
-			'core_misc.cleanup_gateway_sources_onlyclosed',
-			'core_misc.cleanup_task_logs',
-			'core.allow_arbitrary_gateway_address',
-			'core_tickets.gateway_agent_require_marker',
-			'core_tickets.gateway_enable_subject_match',
-			'core.agent_translate_debug',
-			'core_email.enable_date_limit_rejection',
-		);
-
-		if (!defined('DPC_IS_CLOUD')) {
-			$accept_settings[] = 'core.api_rate_limit';
-		}
-
-		$ret = array();
-
-		foreach ($accept_settings as $k) {
-			if (isset($settings[$k])) {
-				$ret[$k] = $settings[$k];
-			}
-		}
-
-		return $ret;
+		$date_str = date('Y-m-d H:i:s', strtotime("-10 days"));
+		$this->execMutateSql("UPDATE email_gateways SET start_date_limit = '$date_str'");
 	}
 }

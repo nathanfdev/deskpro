@@ -466,6 +466,16 @@ class Runner
 				try {
 					$source = $fetcher->readNext($gateway->getSourceObjectType());
 					if (!$source) {
+						$this->logger->logDebug("No more messages in inbox");
+
+						// If this is the first time we've reached the end
+						// save a start date to the gateway
+						if (!$gateway->start_date_limit) {
+							$gateway->start_date_limit = new \DateTime("-10 days");
+							App::getOrm()->persist($gateway);
+							App::getOrm()->flush($gateway);
+						}
+
 						break;
 					}
 				} catch (\Exception $e) {

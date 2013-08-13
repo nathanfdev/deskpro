@@ -17,4 +17,6 @@
 	'core_email.antiflood_newreplies_warn' => 5,
 	'core_email.antiflood_newreplies_time' => 900,
 
+	'core_email.enable_date_limit_rejection' => true,
+
 );

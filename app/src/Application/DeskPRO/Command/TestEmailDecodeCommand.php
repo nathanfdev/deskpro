@@ -59,6 +59,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		))->setName('dp:test-email-decode');
 
 		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
+		$this->addOption('source', null, InputOption::VALUE_NONE, 'The "file" is a source ID to process instead of a file on the filesystem');
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
@@ -71,23 +72,34 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$save_attach = $input->getOption('save-attach');
 
 		$file = $input->getArgument('file');
-		if ($file && !is_file($file)) {
-			if (is_file(getcwd() . '/' . $file)) {
-				$file = getcwd() . '/' . $file;
-			}
-		}
-		if (!$file || !is_file($file)) {
-			$output->writeln("<error>Invalid file specified</error>");
-			return 1;
-		}
+		if ($input->getOption('source')) {
 
-		$source = file_get_contents($file);
+			$source_obj = App::getOrm()->find('DeskPRO:EmailSource', $file);
+			if (!$source_obj || !$source_obj->blob) {
+				$output->writeln("<error>Invalid source ID</error>");
+				return 1;
+			}
+
+			$source = App::getSystemService('BlobStorage')->copyBlobRecordToString($source_obj->blob);
+
+		} else {
+			if ($file && !is_file($file)) {
+				if (is_file(getcwd() . '/' . $file)) {
+					$file = getcwd() . '/' . $file;
+				}
+			}
+			if (!$file || !is_file($file)) {
+				$output->writeln("<error>Invalid file specified</error>");
+				return 1;
+			}
+
+			$source = file_get_contents($file);
+		}
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
 		$this->reader = $r;
-
 
 		echo "Subject: " . $r->getSubject()->getSubjectUtf8();
 		echo "\n";
@@ -101,31 +113,38 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 		foreach ($r->getToAddresses() as $email) {
 			if ($email->getNameUtf8()) {
-				echo "To: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">\n";
+				echo "To: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">";
 			} else {
-				echo "To: <" . $email->getEmail() . ">\n";
+				echo "To: <" . $email->getEmail() . ">";
 			}
+			echo "\n";
 		}
-		echo "\n";
 
 		foreach ($r->getCcAddresses() as $email) {
 			if ($email->getNameUtf8()) {
-				echo "CC: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">\n";
+				echo "CC: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">";
 			} else {
-				echo "CC: <" . $email->getEmail() . ">\n";
+				echo "CC: <" . $email->getEmail() . ">";
 			}
+			echo "\n";
 		}
-		echo "\n";
+
+		if ($date = $r->getDate()) {
+			echo "Date: " . $date->format('Y-m-d H:i:s');
+			echo "\n";
+		}
 
 		if ($attaches = $r->getAttachments()) {
 			foreach ($attaches as $k => $attach) {
 				if ($save_attach) {
 					file_put_contents(dirname($file) . '/' . $k . '-' . $attach->getFileName(), $attach->getFileContents());
 				}
-				echo "Attachment: " . $attach->getFileName() . "\n";
+				echo "Attachment: " . $attach->getFileName();
+				echo "\n";
 			}
-			echo "\n";
 		}
+
+		echo "\n";
 
 		if ($input->getOption('forward')) {
 			$email_info = array();
