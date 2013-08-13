@@ -87,7 +87,10 @@ class SendFeedbackEmailAction extends AbstractAction
 		$vars['person'] = $person;
 		$vars['message'] = $ticket_message;
 
-		$from_address = $ticket->getFromAddress();
+		$from = $ticket->getFromAddress();
+		$from_email = !empty($from['email']) ? $from['email'] : '';
+		$from_name  = !empty($from['email']) ? $from['email'] : '';
+		$from_address = array($from_email => $from_name);
 
 		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person, $from_address) {
 			$message = App::getMailer()->createMessage();
