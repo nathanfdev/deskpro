@@ -226,7 +226,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.fireEvent('removeRow');
 
 		if (row.data('notification')) {
-			row.data('notification').close();
+			// Depending on which api is being imlpemented by the browser, it could be close or cancel
+			if (row.data('notification').close) {
+				try { row.data('notification').close(); } catch (e) {}
+			}
+			if (row.data('notification').cancel) {
+				try { row.data('notification').cancel(); } catch (e) {}
+			}
 			row.data('notification', false);
 		}
 
