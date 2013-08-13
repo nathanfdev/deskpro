@@ -26,6 +26,11 @@ DeskPRO.TextExpander = new Orb.Class({
 					self.fireEvent('combo', [combo, ev]);
 				}
 
+			} else if (ev.which == 8) {
+				// nothing
+				// some browsers like (firefox) pass backspace event
+				// into keypress, while others (webkit, ie) do not
+
 			// Other input keys after 'start'
 			// of combo string
 			} else if (self.comboString) {
@@ -37,6 +42,13 @@ DeskPRO.TextExpander = new Orb.Class({
 				}
 			} else {
 				self.comboString = null;
+			}
+		});
+
+		// Handle backspace
+		this.$txt.on('keyup', function(ev) {
+			if (self.comboString && ev.which == 8) {
+				self.comboString = self.comboString.substring(0, self.comboString.length-1);
 			}
 		});
 	}
