@@ -12,7 +12,11 @@
 	{{ dp_asset_html('user_helpdeskwin') }}
 
 	{% if app.getSetting('core.favicon_blob_url') %}
-		<link rel="shortcut icon" id="favicon" href="{{ app.request.getBaseUrl()|replace({'/index.php': ''}) }}/{{ app.getSetting('core.favicon_blob_url') }}" />
+		{% if 'http' in app.getSetting('core.favicon_blob_url') %}
+			<link rel="shortcut icon" id="favicon" href="{{ app.getSetting('core.favicon_blob_url') }}" />
+		{% else %}
+			<link rel="shortcut icon" id="favicon" href="{{ app.request.getBaseUrl()|replace({'/index.php': ''}) }}/{{ app.getSetting('core.favicon_blob_url') }}" />
+		{% endif %}
 	{% endif %}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>
