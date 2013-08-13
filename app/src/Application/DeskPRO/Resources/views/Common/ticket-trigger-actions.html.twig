@@ -108,6 +108,18 @@
 	</div>
 </div>
 
+{% if app.getDataService('Language').isLangSystemEnabled() %}
+	<div class="builder-type" title="Set Language" data-rule-type="language" data-rule-group="Ticket">
+		<div class="builder-options">
+			<select name="language">
+				{% for lang in app.getDataService('Language').getAll() %}
+					<option value="{{lang.id}}">{{ phrase_object(lang, 'title') }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+
 {% if app.getSetting('core.use_ticket_category') %}
 	<div class="builder-type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category" data-rule-group="Ticket">
 		<div class="builder-options">
