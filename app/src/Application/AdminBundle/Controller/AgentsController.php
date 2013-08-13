@@ -1171,7 +1171,9 @@ class AgentsController extends AbstractController
 					}
 					unset($_s);
 
-					$this->db->batchInsert('ticket_filter_subscriptions', $subs, true);
+					if ($subs) {
+						$this->db->batchInsert('ticket_filter_subscriptions', $subs, true);
+					}
 
 					$sub_prefs = $this->db->fetchAll("
 						SELECT person_id, name, value_str, value_array
@@ -1186,7 +1188,9 @@ class AgentsController extends AbstractController
 					}
 					unset($_s);
 
-					$this->db->batchInsert('people_prefs', $sub_prefs, true);
+					if ($sub_prefs) {
+						$this->db->batchInsert('people_prefs', $sub_prefs, true);
+					}
 
 				// Brand new agents, insert some defaults
 				} else {
