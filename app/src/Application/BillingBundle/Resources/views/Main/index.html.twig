@@ -119,8 +119,9 @@
 				<tr>
 					<td class="title">Agents</td>
 					<td class="prop">
-						{{ lic.getMaxAgents()|default('Unlimited') }}
-						{% if lic.getMaxAgents() %}
+						{% if not lic.getMaxAgents() or lic.getMaxAgents() > 100 %}
+							{{ lic.getMaxAgents()|default('Unlimited') }}
+						{% else %}
 							&nbsp;&nbsp;
 							<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">Add more agents</a>
 						{% endif %}
