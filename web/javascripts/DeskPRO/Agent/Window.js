@@ -1699,6 +1699,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (el.data('route-notabreload')) {
 			extraData.noToggle = true;
+			extraData.focus = true;
 		} else {
 			if (el.closest('#dp_content_wrap')[0] || el.closest('.popover-wrapper')[0]) {
 				extraData.noToggle = true;

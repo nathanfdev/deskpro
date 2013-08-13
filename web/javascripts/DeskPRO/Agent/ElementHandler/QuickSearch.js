@@ -29,6 +29,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 
 		list.on('click', '[data-route]', function(ev) {
 			Orb.cancelEvent(ev);
+			ev.stopImmediatePropagation();
 			DeskPRO_Window.runPageRouteFromElement($(this));
 			closeResults();
 			eatClick = false;
@@ -235,6 +236,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 					resultEl.find('.row-id').text(res.id)
 					resultEl.find('.row-title').html(res.title);
 					resultEl.data('route', res.route).attr('data-route', res.route);
+					resultEl.data('route-notabreload', '1').attr('data-route-notabreload', '1');
 
 					if (res.subs) {
 						subList = $('<ul></ul>');
@@ -245,6 +247,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 							subResultEl.find('.row-id').text(subRes.id)
 							subResultEl.find('.row-title').html(subRes.title);
 							subResultEl.data('route', subRes.route).attr('data-route', subRes.route);
+							subResultEl.data('route-notabreload', '1').attr('data-route-notabreload', '1');
 							subResultEl.appendTo(subList);
 						}
 

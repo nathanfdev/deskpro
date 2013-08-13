@@ -186,6 +186,8 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		row.find('a')
 			.data('route', 'page:'+item[3])
 			.attr('data-route', 'page:'+item[3])
+			.data('route-notabreload', '1')
+			.attr('data-route-notabreload', '1')
 			.find('span').text(item[2]);
 		row.find('a').find('strong').text(item[1]);
 
