@@ -634,31 +634,49 @@ function dp_trust_proxy_data()
 	}
 
 	#------------------------------
-	# Trust option is a file of rules
-	#------------------------------
-
-	if (is_string($trust_option) && $trust_option[0] == '@') {
-		$trust_option = substr($trust_option, 1);
-		$trust_option = include($trust_option);
-	}
-
-	#------------------------------
 	# If we have an array, it means we have
 	# a set of IPs we trust
 	#------------------------------
 
 	if (is_array($trust_option)) {
 
-		$client_ip = \Leth\IPAddress\IP\Address::factory(dp_get_client_ip_address());
+		try {
+			$client_ip = \Leth\IPAddress\IP\Address::factory(dp_get_client_ip_address());
+		} catch (\Exception $e) {
+			$do_trust = false;
+			return false;
+		}
 
 		foreach ($trust_option as $ip_range) {
-			try {
-				$ip_ragnge = \Leth\IPAddress\IP\NetworkAddress::factory($ip_range);
-				if ($ip_ragnge->encloses_address($client_ip)) {
-					$do_trust = true;
-					break;
+			// $ip_range is a file reference: @/path/to/file
+			if (is_string($ip_range) && $ip_range[0] == '@') {
+				$ip_range = substr($ip_range, 1);
+
+				// A relative file starts with ~
+				if ($ip_range[0] == '~') {
+					$ip_range = DP_ROOT . substr($ip_range, 1);
 				}
-			} catch (\Exception $e) {}
+
+				$ip_range = include($ip_range);
+
+				foreach ($ip_range as $check_ip_range) {
+					try {
+						$ip_range = \Leth\IPAddress\IP\NetworkAddress::factory($check_ip_range);
+						if ($ip_range->encloses_address($client_ip)) {
+							$do_trust = true;
+							break 2;
+						}
+					} catch (\Exception $e) {}
+				}
+			} else {
+				try {
+					$ip_range = \Leth\IPAddress\IP\NetworkAddress::factory($ip_range);
+					if ($ip_range->encloses_address($client_ip)) {
+						$do_trust = true;
+						break;
+					}
+				} catch (\Exception $e) {}
+			}
 		}
 
 	#------------------------------

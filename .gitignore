@@ -17,6 +17,7 @@
 /app/sys/config/build-num.php
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
+/app/sys/Resources/cloudflare-ips.php
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.php
 /auto-update-is-running.trigger
