@@ -22,6 +22,8 @@
 	Changed category to {{log.details.new_category_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_department' %}
 	Changed department to {{log.details.new_department_title|default(phrase('agent.general.none'))}}
+{% elseif log.action_type == 'changed_language' %}
+	Changed language to {{log.details.new_language_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_organization' %}
 	Changed organization to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_subject' %}

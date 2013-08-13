@@ -98,6 +98,9 @@
 {% elseif log.action_type == 'changed_department' %}
 	<span class="type">{{ phrase('agent.general.department') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_department_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
+{% elseif log.action_type == 'changed_language' %}
+	<span class="type">{{ phrase('agent.general.language') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_language_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_language_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_organization' %}
 	<span class="type">{{ phrase('agent.general.organization') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_org_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_org_name|default(phrase('agent.general.none'))}}</span>

@@ -166,6 +166,12 @@ class Log
 						}
 						break;
 
+					case 'language':
+						if (!$this->tracker->isNewTicket() || $this->tracker->isTriggerChangeField($prop)) {
+							$action = new LogActions\Language($old_val, $new_val);
+						}
+						break;
+
 					case 'messages':
 						if ($new_val) {
 							$action = new LogActions\Message($new_val);
