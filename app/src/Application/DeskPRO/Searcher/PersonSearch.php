@@ -381,6 +381,20 @@ class PersonSearch extends SearcherAbstract
 
 					break;
 				case self::TERM_EMAIL_DOMAIN:
+
+					if (is_array($choice) AND count($choice) == 1) {
+						$choice = Arrays::getFirstItem($choice);
+					}
+
+					if (is_array($choice)) {
+						foreach ($choice as &$x) {
+							$x = ltrim($x, '@');
+						}
+						unset($x);
+					} else {
+						$choice = ltrim($choice, '@');
+					}
+
 					$joins[] = array(
 						'people_emails',
 						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
@@ -772,6 +786,7 @@ class PersonSearch extends SearcherAbstract
 					if (is_array($choice)) {
 						$choice = array_pop($choice);
 					}
+					$choice = ltrim($choice, '@');
 					foreach ($person['emails'] as $email) {
 						if (strpos(strtolower($email['email_domain']), strtolower($choice)) !== false) {
 							$any = true;
