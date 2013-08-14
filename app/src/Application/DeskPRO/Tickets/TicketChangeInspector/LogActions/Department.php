@@ -68,9 +68,9 @@ class Department extends AbstractLogAction
 			'id_after'  => $this->new_dep['id'] ?: null,
 
 			'old_department_id'    => $this->old_dep ? $this->old_dep['id'] : 0,
-			'old_department_title' => $this->old_dep ? $this->old_dep['title'] : '',
+			'old_department_title' => $this->old_dep ? $this->old_dep->getFullTitle() : '',
 			'new_department_id'    => $this->new_dep ? $this->new_dep['id'] : 0,
-			'new_department_title' => $this->new_dep ? $this->new_dep['title'] : '',
+			'new_department_title' => $this->new_dep ? $this->new_dep->getFullTitle() : '',
 		);
 	}
 
