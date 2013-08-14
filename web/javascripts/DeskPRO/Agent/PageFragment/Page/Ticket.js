@@ -1425,18 +1425,35 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		countEl.data('count', count).html('(' + count + ')');
 	},
 
-	appendToMessage: function(content) {
-		this.insertTextInReply(content);
+	appendToMessage: function(content, is_html) {
 
-		// Scroll down
-		if (!this.meta.ticket_reverse_order) {
-			this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
+		if (is_html) {
+			var textarea = this.getReplyTextArea();
+			if (textarea.data('redactor')) {
+				try {
+					textarea.data('redactor').restoreSelection();
+					textarea.data('redactor').setBuffer();
+				} catch (e) {}
+
+				var html = content;
+				html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+				html = html.replace(/^<p>/, '');
+				html = html.replace(/<\/p>$/, '');
+				textarea.data('redactor').insertHtml(html);
+			}
+		} else {
+			this.insertTextInReply(content);
+
+			// Scroll down
+			if (!this.meta.ticket_reverse_order) {
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
+			}
+
+			this.focusOnReply();
+
+			// Resize it by firing change which'll run the resize
+			this.getReplyTextArea().trigger('textareaexpander_fire');
 		}
-
-		this.focusOnReply();
-
-		// Resize it by firing change which'll run the resize
-		this.getReplyTextArea().trigger('textareaexpander_fire');
 	},
 
 	addAttachToList: function(attachInfo) {

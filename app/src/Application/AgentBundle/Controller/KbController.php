@@ -892,7 +892,8 @@ class KbController extends AbstractController
 		$data = array(
 			'article_id' => $article['id'],
 			'permalink'  => $article->getLink(),
-			'content'    => $article->getContentPlain()
+			'content'    => $article->getContentHtml(),
+			'is_html'    => true,
 		);
 
 		return $this->createJsonResponse($data);

@@ -156,7 +156,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			dataType: 'json',
 			success: function(data) {
 				if (action == 'content') {
-					ticketPage.appendToMessage(data.content);
+					ticketPage.appendToMessage(data.content, true);
 				} else {
 					ticketPage.appendToMessage(data.permalink);
 				}
