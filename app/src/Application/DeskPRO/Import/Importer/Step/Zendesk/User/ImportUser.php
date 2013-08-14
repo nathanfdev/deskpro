@@ -92,6 +92,20 @@ class ImportUser
 			$user_info['email'] = "invalid-email@" . Strings::random(10) . '.local';
 		}
 
+		// Check for existing account with this email address
+		$existing_user_id = $this->importer->db->fetchColumn("SELECT person_id FROM people_emails WHERE email = ?", array($user_info['email']));
+		if ($existing_user_id) {
+
+			// save the userid map so this lookup hits next time
+			$this->importer->saveMappedId('zd_user_id', $user_info['id'], $existing_user_id);
+
+			if ($return_userinfo) {
+				$userinfo = $this->importer->db->fetchAssoc("SELECT * FROM people WHERE id = ?", array($existing_user_id));
+				return $userinfo;
+			}
+			return $existing_user_id;
+		}
+
 		#----------------------------------------
 		# Insert user record
 		#----------------------------------------
