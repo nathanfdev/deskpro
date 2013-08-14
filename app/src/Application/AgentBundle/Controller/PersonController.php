@@ -95,7 +95,7 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 100);
+		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, true);
 		$person_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
 		$max = 5;
