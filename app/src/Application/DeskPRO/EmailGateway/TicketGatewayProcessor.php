@@ -803,7 +803,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] Document too complex, pre-cut');
 
 				$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-				$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+				if ($this->ticket) {
+					$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+				} else {
+					$generic_cut = $email_info['body'];
+				}
 
 				// If we had no successful cut or the body is still too complex, use the plaintext version
 				if ($email_info['body'] == $generic_cut || substr_count($email_info['body'], '>') > 15000) {
@@ -914,7 +918,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			// Always generic cut from the DP_TOP_MARK position first
 			// The PatternCutter will trim off the remaining quoted headers
 			$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			$generic_cut = $generic_cutter->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+			if ($this->ticket) {
+				$generic_cut = $generic_cutter->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+			} else {
+				$generic_cut = $email_info['body'];
+			}
+
 			if ($email_info['body'] != $generic_cut) {
 				$email_info['body'] = $generic_cut;
 				$email_info['generic_cut'] = $generic_cut;
