@@ -148,7 +148,7 @@ class TicketSla extends AbstractEntityRepository
 			WHERE ts.is_completed = 0
 				AND ts.sla_status IN ($statuses)
 				AND ts.$date_field < ?0
-		")->execute(array(new \DateTime('now', new \DateTimeZone('UTC'))));
+		")->setMaxResults(250)->execute(array(new \DateTime('now', new \DateTimeZone('UTC'))));
 	}
 
 	public function getTicketSlaAdminGraphData()

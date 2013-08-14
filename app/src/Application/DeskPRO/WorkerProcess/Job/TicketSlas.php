@@ -68,6 +68,9 @@ class TicketSlas extends AbstractJob
 			}
 		}
 
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
+
 		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
 		foreach ($ticket_slas as $ticket_sla) {
 			$ticket_sla->evaluateSlaDates();
@@ -78,6 +81,9 @@ class TicketSlas extends AbstractJob
 				$count_warning++;
 			}
 		}
+
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
 
 		if ($count_warning || $count_failed) {
 			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
