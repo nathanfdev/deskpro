@@ -367,6 +367,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		if (
 			(isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
 			|| strpos($request->getPathInfo(), '/admin/') === 0
+			|| (defined('DP_INTERFACE') && DP_INTERFACE == 'admin')
 		) {
 			return null;
 		}
