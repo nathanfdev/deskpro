@@ -34,6 +34,7 @@
 
 namespace Joomla\Usersource\Auth;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -259,7 +260,7 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 
 			return $result;
 		} catch (\Exception $e) {
-			echo $e->getMessage();
+			KernelErrorHandler::logException($e, false, 'joomla_call_err');
 			return array();
 		}
 	}
