@@ -3460,7 +3460,7 @@ class TicketController extends AbstractController
 		file_put_contents($tmpdir . '/ticket-log.json', json_encode($d->getData()));
 
 		foreach ($ticket->messages as $message) {
-			$data = $message->toArray();
+			$data = $message->toApiData();
 
 			if (count($message->attachments)) {
 				$data['attachments'] = array();

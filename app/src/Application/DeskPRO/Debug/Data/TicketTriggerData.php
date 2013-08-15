@@ -39,6 +39,8 @@ class TicketTriggerData implements DataInterface
 {
 	public function getData()
 	{
+		$ret = array();
+
 		$data = App::getDb()->fetchAll("SELECT * FROM ticket_triggers ORDER BY id ASC");
 		foreach ($data as &$d) {
 			if ($d['terms']) {
@@ -51,7 +53,12 @@ class TicketTriggerData implements DataInterface
 				$d['actions'] = @unserialize($d['actions']);
 			}
 		}
+		unset($d);
+		$ret['triggers'] = $data;
 
-		return $data;
+		$data = App::getDb()->fetchAll("SELECT * FROM slas ORDER BY id ASC");
+		$ret['slas'] = $data;
+
+		return $ret;
 	}
 }
