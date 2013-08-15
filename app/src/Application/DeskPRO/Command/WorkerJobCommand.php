@@ -293,7 +293,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 					$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . date('Y-m-d H:i:s', $date) . ").\n\n"
 							. "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
-							. "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com.";
+							. "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com."
+							. "\n\n"
+							. "More information about this error can be found here: https://support.deskpro.com/kb/articles/170\n";
 
 					$output->writeln($title);
 					$output->writeln($text);

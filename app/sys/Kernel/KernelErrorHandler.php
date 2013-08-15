@@ -428,7 +428,7 @@ class KernelErrorHandler
 			$fallback_send = true;
 
 			if (isset($errinfo['email_body'])) {
-				$email_str = $errinfo['email_body'] . "\n\n\n-------------------------\n\n\n" . $str;
+				$email_str = $errinfo['email_body'];
 			} else {
 				$email_str = $str;
 			}
@@ -442,7 +442,7 @@ class KernelErrorHandler
 				try {
 					$message = App::getMailer()->createMessage();
 					$message->setTo(DP_TECHNICAL_EMAIL);
-					$message->setSubject($line);
+					$message->setSubject($email_subject);
 					$message->disableQueueHint();
 
 					$email_str = nl2br(htmlspecialchars($email_str, \ENT_QUOTES, 'UTF-8'));
