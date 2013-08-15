@@ -1352,6 +1352,16 @@ class AgentsController extends AbstractController
 				App::getDb()->delete('permissions', array('person_id' => $agent->getId()));
 				App::getDb()->delete('agent_team_members', array('person_id' => $agent->getId()));
 				App::getDb()->delete('ticket_filter_subscriptions', array('person_id' => $agent->getId()));
+
+				// Any open tickets should be unassigned
+				$this->db->executeUpdate("
+					UPDATE tickets SET agent_id = NULL
+					WHERE agent_id = ? AND status IN ('awaiting_agent')
+				", array($agent->id));
+				$this->db->executeUpdate("
+					UPDATE tickets_search_active SET agent_id = NULL
+					WHERE agent_id = ? AND status IN ('awaiting_agent')
+				", array($agent->id));
 			}
 
 			$this->em->persist($agent);
