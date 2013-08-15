@@ -315,6 +315,13 @@ class TemplatesController extends AbstractController
 
 		$code = $this->in->getRaw('code');
 
+		if ($name == 'UserBundle:Portal:welcome-block.html.twig') {
+			// Fix common mistake of removing </article>
+			if (stripos($code, '<article') !== false && stripos($code, '</article>') === false) {
+				$code .= "\n</article>";
+			}
+		}
+
 		try {
 			/** @var $twig \Application\DeskPRO\Twig\Environment */
 			$twig = $this->container->get('twig');
