@@ -10,7 +10,7 @@
 
 	'sparrow_1'                          => '#^On (.*?), ([0-9]+) (.*?) ([0-9]{4})( at (.*?))?, (.*?) wrote:$#m',
 
-	'thunderbird_1'                      => '#On ([0-9]+)/([0-9]+)/([0-9]+) ([0-9]+):([0-9a-zA-Z]+), (.*?) wrote:#',
+	'thunderbird_1'                      => '#On ([0-9]+)/([0-9]+)/([0-9]+) ([0-9]{1,2}):([0-9]{1,2})\s*([ap]m)?, (.*?) wrote:#i',
 	'thunderbird_2'                      => '#\-\-\- Original Message Follows \-\-\-\s+Sender:(.*?)\s+Date:(.*?)\s+#',
 
 	'applemail_1'                        => '#On (.*?), ([0-9]+), at (.*?), (.*?) wrote:\s+#',
