@@ -143,7 +143,7 @@ class CleanupQuarterHourly extends AbstractJob
 
 		if ($inserts) {
 			App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
-			App::getDb()->batchInsert('people_prefs', $inserts);
+			App::getDb()->batchInsert('people_prefs', $inserts, true);
 		}
 	}
 }
