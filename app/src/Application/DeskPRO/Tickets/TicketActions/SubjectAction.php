@@ -110,7 +110,7 @@ class SubjectAction extends AbstractAction
 	{
 		if ($as_html) {
 			$html = htmlspecialchars($this->subject, \ENT_QUOTES);
-			$ret = 'Set subject: ' . $html .'</span>';
+			$ret = 'Set subject: <span class="with-set-subject">' . $html .'</span>';
 		} else {
 			$ret = 'Set subject: ' . $this->subject;
 		}

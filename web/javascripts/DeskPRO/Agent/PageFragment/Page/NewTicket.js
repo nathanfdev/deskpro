@@ -632,6 +632,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						this.getEl('close_tab_opt').prop('checked', true);
 					}
 
+					var setSubject = actionsRowList.find('.with-set-subject').text().trim();
+					if (setSubject) {
+						this.getEl('subject').val(setSubject);
+					}
+
 					this.updateUi();
 					this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 				}
