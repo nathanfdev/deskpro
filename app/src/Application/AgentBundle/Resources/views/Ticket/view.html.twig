@@ -58,6 +58,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 <div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
+{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
 
 <form class="value-form" id="{{ baseId }}_value_form" style="display:none">
@@ -84,8 +85,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">Unlock Ticket</button>
 			<div style="margin-right: 100px;">
 				<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
-					You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
-					{% if app.getSetting('core_tickets.unlock_on_close') %}<br/>This lock will automatically be released when you close this ticket.{% endif %}
+					{% if locked_self and app.getSetting('core_tickets.lock_on_view') %}
+						You have an automatic lock on this ticket. Other agents will not be able to edit the ticket until it is unlocked.
+					{% else %}
+						You have locked this ticket. Other agents will not be able to edit the ticket until it is unlocked..
+					{% endif %}
+					{% if app.getSetting('core_tickets.unlock_on_close') %}<br/>Your lock will be automatically released when you close this ticket.{% endif %}
 				</div>
 				{% if ticket.locked_by_agent and not locked_self %}
 					<div id="{{baseId}}_locked_message_other">
@@ -322,7 +327,6 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		</div>
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
-			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
 					<label class="field-label-title">Agent</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
