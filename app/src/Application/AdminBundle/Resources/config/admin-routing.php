@@ -579,6 +579,13 @@ $collection->add('admin_login_authenticate_local', new Route(
 	array()
 ));
 
+$collection->add('admin_login_logoupload', new Route(
+	'/login/accept-logo-upload',
+	array('_controller' => 'AdminBundle:Login:acceptLogoUpload'),
+	array(),
+	array()
+));
+
 
 ################################################################################
 # Settings

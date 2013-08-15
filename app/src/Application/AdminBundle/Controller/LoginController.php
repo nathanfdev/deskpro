@@ -91,12 +91,69 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			$this->session->save();
 		}
 
+		$logo_blob = null;
+		if ($logo_blob_id = $this->settings->get('agent.login_logo_blob_id')) {
+			$logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
+		}
+
 		$has_logged_out = $this->in->checkIsset('o');
 		return $this->render('AdminBundle:Login:index.html.twig', array(
 			'return' => $url,
+			'logo_blob' => $logo_blob,
 			'agent_session' => $agent_session,
 			'failed_login_name' => $failed_login_name,
 			'has_logged_out' => $has_logged_out
 		));
+	}
+
+	public function _doLoginSuccess()
+	{
+		if ($this->in->getBool('remove_logo')) {
+			$this->settings->setSetting('agent.login_logo_blob_id', null);
+		}
+
+		if ($new_logo_auth_id = $this->in->getString('new_logo')) {
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($new_logo_auth_id);
+			if ($blob) {
+				$this->settings->setSetting('agent.login_logo_blob_id', $blob->id);
+			}
+		}
+	}
+
+	public function acceptLogoUploadAction()
+	{
+		$this->ensureRequestToken();
+
+		$file = $this->request->files->get('upfile');
+		$accept = $this->container->getAttachmentAccepter();
+
+		$error = $accept->getError($file, 'agent');
+		if (!$error) {
+			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+			$accept->addRestrictionSet('only_images', $set);
+			$error = $accept->getError($file, 'only_images');
+		}
+		if ($error) {
+			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+			return $this->createJsonResponse(array($error));
+		}
+
+		$blob = $accept->accept($file);
+
+		$res = $this->createJsonResponse(array(
+			'blob_id'           => $blob['id'],
+			'blob_auth'         => $blob->authcode,
+			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+			'download_url'      => $blob->getDownloadUrl(true, false),
+			'download_url_scaled' => $blob->getThumbnailUrl(100),
+			'filename'          => $blob['filename'],
+			'filesize_readable' => $blob->getReadableFilesize(),
+			'is_image'          => $blob->isImage()
+		));
+
+		// Required for iframe transport on IE to prevent 'download' popup
+		$res->headers->set('Content-Type', 'text/plain');
+		return $res;
 	}
 }

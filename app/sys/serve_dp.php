@@ -912,7 +912,7 @@ class DpLoader extends LoaderAbstract
 
 			if (dp_get_config('debug.language_test_mode')) {
 				foreach ($js_phrases as &$p) {
-					$p = "^$p^";
+					$p = $p;
 				}
 				unset($p);
 			}

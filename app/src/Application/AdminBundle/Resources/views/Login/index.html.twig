@@ -65,8 +65,8 @@
 	}
 	#dp_login #wrapper .client-logo {
 		position: relative;
-		height: 100px;
-		background: rgba(255, 255, 255, 0.75);
+		height: 110px;
+		background: #fff;
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		-ms-border-radius: 3px;
@@ -77,21 +77,23 @@
 	#dp_login #wrapper .client-logo .drag-files {
 		margin: 10px;
 		padding: 10px;
-		height: 58px;
+		height: 68px;
 		width: 318px;
 		text-align: center;
 		border: 1px dashed #7b838b;
 		color: #7b838b;
 		font-weight: bold;
 		display: table;
+		background: #eee;
 	}
 	#dp_login #wrapper .client-logo .drag-files:hover {
 		cursor: move;
 	}
 	#dp_login #wrapper .client-logo .drag-files p {
-		display: table-cell;
+		display: block;
 		vertical-align: middle;
 		text-align: center;
+		padding-top: 15px;
 	}
 	#dp_login #wrapper .client-logo .drag-files .progress-bar {
 		height: 4px;
@@ -143,6 +145,9 @@
 		-ms-border-radius: 3px 3px 0 0;
 		-o-border-radius: 3px 3px 0 0;
 		border-radius: 3px 3px 0 0;
+	}
+	#dp_login #wrapper .dialog-box .title.admin {
+		background: #440006;
 	}
 	#dp_login #wrapper .dialog-box .content {
 		padding: 10px 30px;
@@ -297,6 +302,59 @@
 		border-radius: 20px;
 		font-style: normal;
 	}
+
+	#client_logo_upload {
+		position: relative;
+		overflow: hidden;
+	}
+
+	#client_logo_upload input[type="file"] {
+		position: absolute;
+		top: -100px;
+		left: -100px;
+		z-index: 1;
+		padding: 1000px;
+		margin: 0;
+	}
+
+	.dp-loading-on .dp-not-loading { display: none; }
+	.dp-loading-on .dp-loading { display: block; }
+	.dp-not-loading { display: block; }
+	.dp-loading { display: none; }
+
+	#client_logo_upload .dp-loading {
+		background: url({{ asset('images/spinners/loading-big-circle.gif') }}) no-repeat 50% 50%;
+		height: 50px;
+	}
+
+	#client_logo_img > div.img {
+		width: 360px;
+		height: 110px;
+		background-position: 50% 50%;
+		background-repeat: no-repeat;
+	}
+
+	#client_logo_img {
+		position: relative;
+	}
+
+	#client_logo_img .remove-btn {
+		display: none;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: #888;
+		background: rgba(0,0,0, 0.55);
+		text-align: center;
+		padding: 5px;
+		color: #fff;
+		cursor: pointer;
+	}
+
+	#client_logo_img:hover .remove-btn {
+		display: block;
+	}
 </style>
 <script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
 </head>
@@ -304,15 +362,30 @@
 
 <div id="dp_login">
 	<div id="wrapper">
+
+		<div class="client-logo">
+			<div id="client_logo_img" {% if not logo_blob %}style="display: none;"{% endif %}>
+				<div class="img" {% if logo_blob %}style="background-image: url({{ logo_blob.getThumbnailUrl('360x100') }}&size-fit=1)"{% endif %}></div>
+				<div class="remove-btn">Click here to remove</div>
+			</div>
+			<div class="drag-files" id="client_logo_upload" {% if logo_blob %}style="display: none;"{% endif %}>
+				<div class="dp-loading"></div>
+				<div class="dp-not-loading">
+					<input type="file" name="upfile" />
+					<p>Drag & drop your logo here<br />or click to upload it.</p><br />
+				</div>
+			</div>
+		</div>
+
 		<div class="dialog-box">
-
-
-
-			<div class="title">
-				{{ phrase('agent.general.log_in') }}
+			<div class="title admin">
+				{{ phrase('agent.general.log_in') }} &mdash; Admin
 			</div>
 			<div class="content">
-				<form action="{{ path('admin_login_authenticate_local') }}" method="post">
+				<form action="{{ path('admin_login_authenticate_local') }}" method="post" id="login_form">
+					<input type="hidden" name="remove_logo" value="0" />
+					<input type="hidden" name="new_logo" value="0" />
+
 					<input type="hidden" name="agent_login" value="1" />
 					{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 					{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
@@ -325,7 +398,7 @@
 					<fieldset>
 						<p>
 							<i class="icon-envelope-alt"></i>
-							<input type="{% if app.usersourceManager.getWithCapability('form_login') %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}" tabindex="1" />
+							<input type="{% if app.usersourceManager.getWithCapability('form_login') %}text{% else %}email{% endif %}" class="text" value="{% if failed_login_name %}{{ failed_login_name }}{% elseif agent_session and agent_session.person.primary_email_address %}{{ agent_session.person.primary_email_address }}{% endif %}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}" tabindex="1" />
 						</p>
 						<p>
 							<i class="icon-lock"></i>
@@ -364,7 +437,11 @@
 </div>
 
 <script type="text/javascript">
-var el = document.getElementById('email');
+{% if not agent_session.person.primary_email_address and not failed_login_name %}
+	var el = document.getElementById('email');
+{% else %}
+	var el = document.getElementById('password');
+{% endif %}
 if (el) {
 	el.focus();
 }
@@ -380,5 +457,50 @@ $('#lost_explain').find('.close').on('click', function(ev) {
 </script>
 
 <link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}" type="text/css" />
+<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery-ui/jquery.ui.widget.min.js') }}"></script>
+<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/fileupload/jquery.iframe-transport.js') }}"></script>
+<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/fileupload/jquery.fileupload.js') }}"></script>
+<script type="text/javascript">
+$('#client_logo_upload').fileupload({
+	dataType: 'json',
+	url: '{{ path('admin_login_logoupload', {_dp_security_token: security_token() }) }}',
+	start: function() {
+		$('#client_logo_upload').addClass('dp-loading-on');
+	},
+	stop: function() {
+		$('#client_logo_upload').removeClass('dp-loading-on');
+	},
+	done: function (e, data) {
+		console.log(e);
+		console.log(data);
+		$('#client_logo_upload').removeClass('dp-loading-on');
+
+		if (data.result.error) {
+			alert('Please upload a valid image');
+			return;
+		}
+
+		$('#client_logo_upload').hide();
+
+		$('#client_logo_img').show().find('.img').css({
+			'background-image': 'url(' + data.result.download_url_scaled + ')'
+		});
+		$('#login_form').find('input[name="new_logo"]').val(data.result.blob_auth_id);
+	},
+	singleFileUploads: true,
+	autoUpload: true,
+	fileInput: $('#client_logo_upload').find('input[type="file"]')
+});
+
+$(document).bind('drop dragover', function (e) {
+    e.preventDefault();
+});
+
+$('#client_logo_img').find('.remove-btn').on('click', function(){
+	$('#client_logo_img').hide();
+	$('#client_logo_upload').show();
+	$('#login_form').find('input[name="remove_logo"]').val('1');
+});
+</script>
 </body>
 </html>

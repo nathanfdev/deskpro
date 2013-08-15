@@ -420,11 +420,18 @@ HTML;
 			App::getSession()->save();
 		}
 
+		$this->_doLoginSuccess();
+
 		if ($return) {
 			return $this->redirect($return);
 		} else {
 			return $this->redirectRoute($this->route_prefix);
 		}
+	}
+
+	public function _doLoginSuccess()
+	{
+		return;
 	}
 
 

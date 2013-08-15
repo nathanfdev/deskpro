@@ -114,9 +114,15 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			$this->session->save();
 		}
 
+		$logo_blob = null;
+		if ($logo_blob_id = $this->settings->get('agent.login_logo_blob_id')) {
+			$logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
+		}
+
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $url,
 			'route_prefix'       => $this->route_prefix,
+			'logo_blob'          => $logo_blob,
 			'has_logged_out'     => $has_logged_out,
 			'has_done_reset'     => $has_done_reset,
 			'failed_login_name'  => $failed_login_name,

@@ -2,6 +2,7 @@
 
 	'agent.max_login_attempts' => 5,
 	'agent.login_lockout_time' => 3600,
+	'agent.login_logo_blob_id' => null,
 
 	'agent.notify_self_login' => false,
 	'agent.notify_self_failed_login' => true,

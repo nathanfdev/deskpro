@@ -36,6 +36,7 @@
 namespace DeskPRO\Kernel;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Imagine\Image\Box;
 use Orb\Util\Strings;
 
 if (!defined('DP_ROOT')) exit('No access');
@@ -675,7 +676,7 @@ class FilestorageLoader extends LoaderAbstract
 		$this->addLogMessage("Expecting file path: %s", $filepath);
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
+		if (isset($_GET['s']) && ((is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) || preg_match('#^\d+x\d+$#', $_GET['s']))) {
 			$size = $_GET['s'];
 			$this->addLogMessage("With size: %s", $size);
 		}
@@ -779,7 +780,7 @@ class FilestorageLoader extends LoaderAbstract
 		$authcode = $blob_id . $authseg;
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
+		if (isset($_GET['s']) && ((is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) || preg_match('#^\d+x\d+$#', $_GET['s']))) {
 			$size = $_GET['s'];
 		}
 
@@ -864,7 +865,7 @@ class FilestorageLoader extends LoaderAbstract
 		}
 
 		if ($is_image && $size) {
-			$this->addLogMessage("Showing resized");
+			$this->addLogMessage("Showing resized: " . $size);
 
 			$is_fit = false;
 
@@ -1056,8 +1057,32 @@ class FilestorageLoader extends LoaderAbstract
 		$width = $image->getSize()->getWidth();
 		$height = $image->getSize()->getHeight();
 
+		$m = null;
+		if (preg_match('#^(\d+)x(\d+)$#', $size, $m)) {
+			$req_w = $m[1];
+			$req_h = $m[2];
+		} else {
+			$req_w = $size;
+			$req_h = $size;
+		}
+
+		$req_w = (int)$req_w;
+		$req_h = (int)$req_h;
+
+		if ($req_w < 1) $req_w = 1;
+		if ($req_h < 1) $req_h = 1;
+
+		if ($req_w > 1000) $req_w = 1000;
+		if ($req_h > 1000) $req_h = 1000;
+
+		if ($req_h == $req_h) {
+			$no_fit = max($width, $height) > $size;
+		} else {
+			$no_fit = ($width > $req_w) || ($height > $req_h);
+		}
+
 		// Only shrink if it doesn't fit inside the box.
-		if (max($width, $height) > $size || $is_fit) {
+		if ($no_fit || $is_fit) {
 
 			// If the image has a w/h of 1, then scaling with
 			// fit will result in a dim of 0 when Imagine tries to scale
@@ -1070,10 +1095,11 @@ class FilestorageLoader extends LoaderAbstract
 
 			if ($is_fit) {
 				try {
-					$width  = $size;
-					$height = $size;
+					$width  = $req_w;
+					$height = $req_h;
 
-					$size      = new \Imagine\Image\Box($width, $height);
+					$size      = new \Imagine\Image\Box($req_w, $req_h);
+
 					$mode      = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
 					$resizeimg = $image->thumbnail($size, $mode);
 					$sizeR     = $resizeimg->getSize();
@@ -1116,7 +1142,8 @@ class FilestorageLoader extends LoaderAbstract
 					$image->resize($box);
 				}
 			} else {
-				$size_w = $size_h = $size;
+				$size_w = $req_w;
+				$size_h = $req_h;
 
 				if ($height > $width) {
 					$size_w = round($size_w * ($width / $height));
