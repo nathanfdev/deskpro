@@ -81,6 +81,7 @@ class Date extends AbstractFunc
 			$d = new \DateTime($min);
 			$interval = $d->diff(new \DateTime($max));
 
+			$fills = array();
 			if ($interval->days) {
 				$fills = array();
 				for ($i = 0; $i < $interval->days; $i++) {
