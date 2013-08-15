@@ -137,10 +137,13 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
 				$this->session->setFlash('register_done', 1);
 
+				$to_login = false;
 				if (!$person->primary_email) {
 					$this->session->setFlash('register_done_email_validate', 1);
+					$to_login = true;
 				} elseif (!$person->is_agent_confirmed) {
 					$this->session->setFlash('register_done_agent_validate', 1);
+					$to_login = true;
 				}
 
 				// User not validating if they have an added email address already
@@ -163,7 +166,11 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 					}
 				}
 
-				return $this->redirectRoute('user');
+				if ($to_login) {
+					return $this->redirectRoute('user_login');
+				} else {
+					return $this->redirectRoute('user');
+				}
 			} else {
 				$errors = $validator->getErrors(true);
 				$error_fields = $validator->getErrorGroups(true);
