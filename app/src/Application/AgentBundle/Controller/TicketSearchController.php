@@ -222,7 +222,7 @@ class TicketSearchController extends AbstractController
 
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 		$searcher->setPerson($this->person);
-		$searcher->setOrderBy('ticket.status');
+		$searcher->setOrderBy('ticket.date_created');
 
 		if ($person_id = $this->in->getUint('person_id')) {
 			$searcher->addTerm('person', 'is', array('person_id' => $person_id));
