@@ -112,6 +112,7 @@ class DepartmentDataService extends BaseRepositoryService
 		foreach ($this->cats as $c) {
 			$this->cat_ids[] = $c->getId();
 			$c->getTitle();
+			$c->__dp_is_preloaded_repos = $this;
 
 			$cats[$c->getId()] = array(
 				'id' => $c->getId(),

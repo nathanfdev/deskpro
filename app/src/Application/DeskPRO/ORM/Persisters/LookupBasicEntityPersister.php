@@ -74,4 +74,20 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 
 		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit);
 	}
+
+	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
+    {
+		if ($sourceEntity->__dp_is_preloaded_repos && isset($assoc['fieldName']) && $assoc['fieldName'] == 'children') {
+			$repos = $sourceEntity->__dp_is_preloaded_repos;
+			$children = $repos->getChildren($sourceEntity);
+
+			if ($children) {
+				foreach ($children as $c) {
+					$coll->hydrateAdd($c);
+				}
+			}
+		} else {
+			return parent::loadOneToManyCollection($assoc, $sourceEntity, $coll);
+		}
+    }
 }
