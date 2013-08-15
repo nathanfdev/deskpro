@@ -457,14 +457,21 @@ Orb.getSelectionCoords = function(sel) {
 	var range, rect;
 	if (sel.rangeCount) {
 		range = sel.getRangeAt(0).cloneRange();
-		if (range.getClientRects) {
-			range.collapse(true);
-			rect = range.getClientRects()[0];
+		try {
+			if (range.getClientRects) {
+				range.collapse(true);
+				rect = range.getClientRects()[0];
+				if (rect) {
+					return null;
+				}
 
-			return {
-				left: rect.left,
-				top: rect.top
-			};
+				return {
+					left: rect.left,
+					top: rect.top
+				};
+			}
+		} catch (e) {
+			return null;
 		}
 	} else if (sel.type && sel.type != "Control" && sel.createRange) {
 		range = sel.createRange();
