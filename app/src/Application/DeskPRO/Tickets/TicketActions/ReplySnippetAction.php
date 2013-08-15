@@ -132,8 +132,17 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
 
+		$snippet_text = App::getTranslator()->objectChoosePhraseText(
+			$this->snippet,
+			'snippet',
+			array(
+				$ticket->language,
+				$this->person_context->getRealLanguage()
+			)
+		);
+
 		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-		$message->setMessageHtml($formatter->formatText($this->snippet->snippet, $ticket));
+		$message->setMessageHtml($formatter->formatText($snippet_text, $ticket));
 		$ticket->addMessage($message);
 	}
 
@@ -216,8 +225,15 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
 			$html = '';
 			if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
+
+				$snippet_text = App::getTranslator()->objectChoosePhraseText(
+					$this->snippet,
+					'snippet',
+					array($GLOBALS['DP_ACTIVE_TICKET']->language)
+				);
+
 				$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-				$html = $formatter->formatText($this->snippet->snippet, $GLOBALS['DP_ACTIVE_TICKET']);
+				$html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
 			}
 
 			$ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';

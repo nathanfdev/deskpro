@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Entity\Language;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -903,5 +904,68 @@ class Translate implements PersonContextInterface
 		$this->_phrase_object_namer = new \Application\DeskPRO\Translate\ObjectPhraseNamer();
 
 		return $this->_phrase_object_namer;
+	}
+
+
+	/**
+	 * Given an Entity this returns the phrase for the first lang in $lang_priority.
+	 *
+	 * $lang_priority is an array of languages or lang ID's.
+	 * Or you can pass multiple values (variable number of args) and all
+	 * trailing args will be considered lang Ids.
+	 *
+	 * @param mixed  $object
+	 * @param string $property
+	 * @param array  $lang_priority
+	 * @return string
+	 */
+	public function objectChoosePhraseText($object, $property, $lang_priority)
+	{
+		$args = func_get_args();
+		array_shift($args);
+		array_shift($args);
+
+		#------------------------------
+		# Build priority array
+		#------------------------------
+
+		// Verifies lang params, converts lang IDs to objects
+
+		$lang_priority = array();
+		foreach ($args as $arg) {
+			if (!is_array($arg)) {
+				$arg = array($arg);
+			}
+
+			foreach ($arg as $l) {
+				if (!$l) continue;
+
+				if (is_numeric($l)) {
+					$l = App::getContainer()->getLanguageData()->get($l);
+				}
+
+				if ($l instanceof Language) {
+					$lang_priority[] = $l;
+				}
+			}
+		}
+
+		#------------------------------
+		# Pick the lang text
+		#------------------------------
+
+		$obj_lang_repos = App::getContainer()->getObjectLangRepository();
+
+		foreach ($lang_priority as $lang) {
+			$obj_lang_repos->preloadObject($lang, $object);
+		}
+
+		$rec = $obj_lang_repos->getRec($lang_priority, $object, $property, true);
+
+		if (!$rec) {
+			return '';
+		}
+
+		return $rec->value;
 	}
 }
