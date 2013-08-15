@@ -125,6 +125,19 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
+		if (isset($GLOBALS['DP_DEV_ECHO_QUERY']) && $GLOBALS['DP_DEV_ECHO_QUERY']) {
+			$sql_string = str_replace(array("\r\n", "\n", "\t"), ' ', $sql);
+			$sql_string = preg_replace('# {2,}#', ' ', $sql_string);
+			$sql_string = substr($sql_string, 0, 5000);
+			echo "\n";
+			echo "Query:  " . $sql_string;
+			if ($params) {
+				echo "\n";
+				echo "Params: " . \DeskPRO\Kernel\KernelErrorHandler::varToString($params);
+			}
+			echo "\n";
+		}
+
 		if (!isset($GLOBALS['DP_QUERY_COUNT'])) {
 			$GLOBALS['DP_QUERY_COUNT'] = 0;
 		}
@@ -134,13 +147,20 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		if (!$this->_enabled) return;
 		if ($this->_query_count > self::SAFE_MAX) return;
 
+		$trace = null;
+		if (dp_get_config('debug.page_log.save_trace')) {
+			$e = new \Exception();
+			$trace = $e->getTraceAsString();
+		}
+
 		$this->_last_query = array(
 			'sql'            => trim($sql),
 			'params'         => $params,
 			'time_start'     => microtime(true),
 			'time_end'       => 0,
 			'time_taken'     => 0,
-			'trans_level'    => 0
+			'trans_level'    => 0,
+			'trace'          => $trace
 		);
 	}
 
@@ -410,6 +430,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$queryinfo['sql_string'],
 			$queryinfo['params_string']
 		);
+
+		if ($queryinfo['trace']) {
+			$trace = Strings::modifyLines($queryinfo['trace'], "\t\t");
+			$row .= "\tTrace:\n$trace";
+		}
 
 		return $row;
 	}
