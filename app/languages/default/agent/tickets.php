@@ -190,4 +190,7 @@
 	'agent.tickets.x_messages_moved'                    => '1 message moved|{{count}} messages moved',
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
+	'agent.tickets.slas_title'                          => 'SLAs',
+	'agent.tickets.grouped_results_empty'               => 'Grouped results will appear when this filter has matching tickets',
+	'agent.tickets.select_group_var'                    => 'Select Field to Group Tickets',
 );

@@ -905,8 +905,16 @@ class DpLoader extends LoaderAbstract
 				'agent.userchat.resume-button',
 			);
 
+
 			foreach ($add_phrases as $k) {
 				$js_phrases[$k] = $tr->getPhraseText($k);
+			}
+
+			if (dp_get_config('debug.language_test_mode')) {
+				foreach ($js_phrases as &$p) {
+					$p = "^$p^";
+				}
+				unset($p);
 			}
 
 			$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";

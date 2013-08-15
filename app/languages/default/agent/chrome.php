@@ -36,6 +36,8 @@
 	'agent.chrome.nav_feedback' => 'Feedback',
 	'agent.chrome.nav_tasks' => 'Tasks',
 	'agent.chrome.nav_publish' => 'Publish',
+	'agent.chrome.nav_search' => 'Search',
+	'agent.chrome.nav_twitter' => 'Twitter',
 	'agent.chrome.nav_admin_settings' => 'Admin Settings',
 	'agent.chrome.nav_reports'  => 'Reports',
 	'agent.chrome.notify_list-new-messages' => '<span class="notify-count">0</span> New Notifications',
@@ -65,4 +67,5 @@
 	'agent.chrome.kbd-change-status-user' => 'Change status to Awaiting User',
 	'agent.chrome.kbd-change-status-agent' => 'Change status to Awaiting Agent',
 	'agent.chrome.kbd-change-status-resolved' => 'Change status to Resolved',
+	'agent.chrome.search-show-more' => 'Show {{count}} more|Show {{count}} more',
 );

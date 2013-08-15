@@ -952,7 +952,12 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getPhraseText($phrase_name)
 	{
-		return $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
+		$p = $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
+		if ($p && dp_get_config('debug.language_test_mode')) {
+			$p = "^$p^";
+		}
+
+		return $p;
 	}
 
 	public function getPhrase($context, $phrase_name, $vars = null, $raw = false)

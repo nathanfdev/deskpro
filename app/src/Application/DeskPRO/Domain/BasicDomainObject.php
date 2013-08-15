@@ -64,6 +64,14 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	private $_custom_callables = array();
 
+	/**
+	 * Special var that should be set during preload in a DataService
+	 * to help the Doctrine entity persisters from trying to query data we already have.
+	 *
+	 * @var null
+	 */
+	public $__dp_is_preloaded_repos = null;
+
 
 	/**
 	 * Set values from an array

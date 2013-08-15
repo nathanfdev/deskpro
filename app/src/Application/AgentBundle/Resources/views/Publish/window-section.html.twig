@@ -1,7 +1,7 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-article"></i> Publish</li>
+	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-article"></i> {{ phrase('agent.chrome.nav_publish') }}</li>
 {% endblock %}
 {% block pane_content %}
 <div class="pane-content pane-content-main">
@@ -71,7 +71,7 @@
 					<li class="new-cat-trigger new-cat">
 						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'article'}) }}">
 							<i class="icon-folder-close-alt"></i>
-							<h3>Add new category</h3>
+							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
 					</li>
 				</ul>
@@ -79,7 +79,7 @@
 				{% if kb_translate_queue[0] %}
 					<nav class="pane-section-tabs border-top" style="margin: 15px 0 3px 0;">
 						<ul>
-							<li class="on"><span>Translations</span></li>
+							<li class="on"><span>{{ phrase('agent.general.translations') }}</span></li>
 							<li class="invis-last"></li>
 						</ul>
 					</nav>
@@ -121,7 +121,7 @@
 					<li class="new-cat-trigger new-cat">
 						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'news'}) }}">
 							<i class="icon-folder-close-alt"></i>
-							<h3>Add new category</h3>
+							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
 					</li>
 				</ul>
@@ -143,7 +143,7 @@
 					<li class="new-cat-trigger new-cat">
 						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'download'}) }}">
 							<i class="icon-folder-close-alt"></i>
-							<h3>Add new category</h3>
+							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
 					</li>
 				</ul>
@@ -163,25 +163,25 @@
 				<li class="is-nav-item">
 					<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'all'}) }}">
 						<i class="dp-toggle-icon click-through icon-caret-right"></i>
-						<h3>All Comments</h3>
+						<h3>{{ phrase('agent.publish.all_comments') }}</h3>
 						<em class="counter list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</em>
 					</div>
 					<ul class="nav-list nav-list-small indented" style="display: none;">
 						<li class="is-nav-item" {% if not counts.comments.articles  %}style="display: none;"{% endif %}>
 							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'articles'}) }}">
-								<h3>Article Comments</h3>
+								<h3>{{ phrase('agent.publish.article_comments') }}</h3>
 								<em class="counter list-counter" id="publish_articles_comments_count">{{ counts.comments.articles|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item" {% if not counts.comments.news %}style="display: none;"{% endif %}>
 							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'news'}) }}">
-								<h3>News Comments</h3>
+								<h3>{{ phrase('agent.publish.news_comments') }}</h3>
 								<em class="counter list-counter" id="publish_news_comments_count">{{ counts.comments.news|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item" {% if not counts.comments.downloads %}style="display: none;"{% endif %}>
 							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'downloads'}) }}">
-								<h3>Download Comments</h3>
+								<h3>{{ phrase('agent.publish.download_comments') }}</h3>
 								<em class="counter list-counter" id="publish_downloads_comments_count">{{ counts.comments.downloads|default(0) }}</em>
 							</div>
 						</li>

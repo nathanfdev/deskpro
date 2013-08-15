@@ -1,14 +1,14 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active"><i class="icon-dp-task"></i> Tasks</li>
+	<li class="tab active"><i class="icon-dp-task"></i> {{ phrase('agent.chrome.nav_tasks') }}</li>
 {% endblock %}
 {% block pane_other_tabs %}{% endblock %}
 {% block pane_content %}
 <div class="pane-content pane-content-main">
 	<section class="pane-section last">
 		<header>
-			<h1>Tasks</h1>
+			<h1>{{ phrase('agent.chrome.nav_tasks') }}</h1>
 		</header>
 		<article>
 			<ul class="nav-list">

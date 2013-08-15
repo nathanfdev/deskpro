@@ -268,7 +268,9 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 					resultEl.appendTo(list);
 				}
 				if (hasMore) {
-					sectionEl.find('.show-more').show().find('.show-more-num').text(typeResults.length - 5);
+					var showMoreEl = sectionEl.find('.show-more');
+					Orb.phraseTextEl(showMoreEl, {count: typeResults.length - 5});
+					showMoreEl.show();
 				}
 			}, this);
 

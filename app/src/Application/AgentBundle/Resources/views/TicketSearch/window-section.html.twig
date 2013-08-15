@@ -1,7 +1,7 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-ticket"></i> Tickets</li>
+	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-ticket"></i> {{ phrase('agent.chrome.nav_tickets') }}</li>
 {% endblock %}
 {% block pane_content %}
 	<div class="pane-content pane-content-main">
@@ -35,27 +35,27 @@
 									<div class="select-value-wrap">
 										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
-											<option value="">Select Field to Group Tickets</option>
-											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">View by Department</option>
-											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">View by Product</option>
-											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">View by Organization</option>
-											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">View by Person</option>
-											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">View by Language</option>
-											<option {% if initial_inbox_grouping[filter.id] == "urgency" %}selected="selected"{% endif %} value="urgency">View by Urgency</option>
-											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent" %}selected="selected"{% endif %} value="agent">View by Agent</option>{% endif %}
-											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent_team" %}selected="selected"{% endif %} value="agent_team">View by Agent Team</option>{% endif %}
-											<option {% if initial_inbox_grouping[filter.id] == "user_waiting" %}selected="selected"{% endif %} value="user_waiting">View by Waiting Time</option>
-											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">View by All Waiting Time</option>
-											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">View by Time Open</option>
+											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">{{ phrase('agent.general.organization') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">{{ phrase('agent.general.person') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">{{ phrase('agent.general.language') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "urgency" %}selected="selected"{% endif %} value="urgency">{{ phrase('agent.general.urgency') }}</option>
+											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent" %}selected="selected"{% endif %} value="agent">{{ phrase('agent.general.agent') }}</option>{% endif %}
+											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent_team" %}selected="selected"{% endif %} value="agent_team">{{ phrase('agent.general.agent_team') }}</option>{% endif %}
+											<option {% if initial_inbox_grouping[filter.id] == "user_waiting" %}selected="selected"{% endif %} value="user_waiting">{{ phrase('agent.general.time_waiting') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">{{ phrase('agent.general.time_open') }}</option>
 											{% for f in app.getTicketFieldManager().getFields() %}
-												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">View by {{ f.title }}</option>
+												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">{{ f.title }}</option>
 											{% endfor %}
 										</select>
 									</div>
 								</div>
 
 								<aside class="none-yet source-info-explain" style="display: none;">
-									Grouped results will appear when this filter has matching tickets.
+									{{ phrase('agent.tickets.grouped_results_empty') }}
 								</aside>
 								<ul class="nav-list-small indented" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}></ul>
 							</li>
@@ -82,18 +82,18 @@
 									<div class="select-value-wrap">
 										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
-											<option value="">Select Field to Group Tickets</option>
-											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">View by Department</option>
-											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">View by Product</option>
-											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">View by Organization</option>
-											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">View by Person</option>
-											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">View by Language</option>
-											<option {% if initial_inbox_grouping[filter.id] == "urgency" %}selected="selected"{% endif %} value="urgency">View by Urgency</option>
-											<option {% if initial_inbox_grouping[filter.id] == "agent" %}selected="selected"{% endif %} value="agent">View by Agent</option>
-											<option {% if initial_inbox_grouping[filter.id] == "agent_team" %}selected="selected"{% endif %} value="agent_team">View by Agent Team</option>
-											<option {% if initial_inbox_grouping[filter.id] == "user_waiting" %}selected="selected"{% endif %} value="user_waiting">View by Waiting Time</option>
-											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">View by All Waiting Time</option>
-											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">View by Time Open</option>
+											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">{{ phrase('agent.general.organization') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">{{ phrase('agent.general.person') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">{{ phrase('agent.general.language') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "urgency" %}selected="selected"{% endif %} value="urgency">{{ phrase('agent.general.urgency') }}</option>
+											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent" %}selected="selected"{% endif %} value="agent">{{ phrase('agent.general.agent') }}</option>{% endif %}
+											{% if filter.sys_name != 'agent' and filter.sys_name != 'unassigned' %}<option {% if initial_inbox_grouping[filter.id] == "agent_team" %}selected="selected"{% endif %} value="agent_team">{{ phrase('agent.general.agent_team') }}</option>{% endif %}
+											<option {% if initial_inbox_grouping[filter.id] == "user_waiting" %}selected="selected"{% endif %} value="user_waiting">{{ phrase('agent.general.time_waiting') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</option>
+											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">{{ phrase('agent.general.time_open') }}</option>
 											{% for f in app.getTicketFieldManager().getFields() %}
 												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">View by {{ f.title }}</option>
 											{% endfor %}
@@ -103,7 +103,7 @@
 
 								<div class="none-yet" style="display: none;">
 									<p>
-										Grouped results will appear when this filter has matching tickets.
+									{{ phrase('agent.tickets.grouped_results_empty') }}
 									</p>
 								</div>
 								<ul class="nav-list-small indented" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}></ul>
@@ -156,7 +156,7 @@
 			<section class="pane-section sla-section">
 				<header id="ticket_slas_header" data-sla-filter="{{ sla_filter }}">
 					<h1>
-						<span style="text-transform: none">SLAs</span><span class="sla-filter-type" id="ticket_sla_filter_agent" {% if sla_filter != 'agent' %}style="display:none"{% endif %}>: My Tickets</span><span class="sla-filter-type" id="ticket_sla_filter_team" {% if sla_filter != 'team' %}style="display:none"{% endif %}>: My Teams' Tickets</span>
+						<span style="text-transform: none">{{ phrase('agent.tickets.slas_title') }}</span><span class="sla-filter-type" id="ticket_sla_filter_agent" {% if sla_filter != 'agent' %}style="display:none"{% endif %}>: {{ phrase('agent.tickets.filter_agent') }}</span><span class="sla-filter-type" id="ticket_sla_filter_team" {% if sla_filter != 'team' %}style="display:none"{% endif %}>: {{ phrase('agent.tickets.filter_agent_teams') }}</span>
 					</h1>
 					<nav>
 						<ul>
@@ -193,7 +193,7 @@
 		<section class="pane-section with-tabs sla-section last">
 			<nav class="pane-section-tabs" id="tickets_outline_tabstrip">
 				<ul>
-					<li style="width: 33%;" class="archive" data-tab-for="#tickets_outline_archive"><span>Tickets</span></li>
+					<li style="width: 33%;" class="archive" data-tab-for="#tickets_outline_archive"><span>{{ phrase('agent.chrome.nav_tickets') }}</span></li>
 					<li style="width: 33%;" class="labels"  data-tab-for="#tickets_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
 					<li style="width: 33%;" class="flagged fill-out" data-tab-for="#tickets_outline_flagged"><span>{{ phrase('agent.general.flagged') }}</span></li>
 				</ul>

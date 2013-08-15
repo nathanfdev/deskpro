@@ -1,6 +1,7 @@
 <?php return array(
 	'agent.publish.add_new_glossary'              => 'Add new glossary word',
 	'agent.publish.add_pending'                   => 'Add a new pending article',
+	'agent.publish.add_new_category'              => 'Add new category',
 	'agent.publish.all_articles'                  => 'All Articles',
 	'agent.publish.all_downloads'                 => 'All Downloads',
 	'agent.publish.all_draft_content'             => 'All Drafts',
@@ -70,5 +71,9 @@
 	'agent.publish.word_def'                      => 'Word definition',
 	'agent.publish.word_title'                    => 'Word title',
 	'agent.publish.words'                         => 'Words',
-	'agent.publish.untranslated_articles'         => 'Untranslated Articles'
+	'agent.publish.untranslated_articles'         => 'Untranslated Articles',
+	'agent.publish.all_comments'                  => 'All Comments',
+	'agent.publish.article_comments'              => 'Article Comments',
+	'agent.publish.news_comments'                 => 'News Comments',
+	'agent.publish.download_comments'             => 'Download Comments',
 );

@@ -2,16 +2,23 @@
 	<div class="select-value-wrap">
 		<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
 		<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
-			<option value="">Select Field to Group Tweets</option>
-			<option {% if group_by == 'type' %}selected="selected"{% endif %} value="type">{{ phrase('agent.general.group_by') }} Type</option>
-			<option {% if group_by == 'agent' %}selected="selected"{% endif %} value="agent">{{ phrase('agent.general.group_by') }} Agent</option>
-			<option {% if group_by == 'team' %}selected="selected"{% endif %} value="team">{{ phrase('agent.general.group_by') }} Team</option>
+			<option value="">{{ phrase('agent.twitter.select_group_var') }}</option>
+			<option {% if group_by == 'type' %}selected="selected"{% endif %} value="type">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.type') }}</option>
+			<option {% if group_by == 'agent' %}selected="selected"{% endif %} value="agent">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent') }}</option>
+			<option {% if group_by == 'team' %}selected="selected"{% endif %} value="team">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent_team') }}</option>
 		</select>
 	</div>
 </div>
 <ul class="nav-list-small indented" {% if not group_by %}style="display: none;"{% endif %}>
 	{% if group_by == 'type' %}
-		{% for group_type,name in {'favorite': 'Starred', 'direct': 'Direct Messages', 'reply': 'Replies', 'mention': 'Mentions', 'retweet': 'Retweets', 'other': 'Other'} %}
+		{% for group_type,name in {
+			'favorite': phrase('agent.twitter.starred'),
+			'direct': phrase('agent.twitter.direct_messages'),
+			'reply': phrase('agent.twitter.replies'),
+			'mention': phrase('agent.twitter.mentions'),
+			'retweet': phrase('agent.twitter.retweets'),
+			'other': phrase('agent.twitter.other')
+		} %}
 			<li {% if not data[group_type] %}style="display:none"{% endif %}>
 				<span class="title is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-type-{{ group_type }}" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'type', 'group_value': group_type}) }}">
 					<span class="list-counter">{{ data[group_type]|default(0) }}</span>

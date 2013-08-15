@@ -126,12 +126,12 @@ class UsergroupDataService extends BaseRepositoryService
 				if (!$this->get($cid)) {
 					$ret[$cid] = "Unknown #$cid";
 				} else {
-					$ret[$cid] = $this->translator->getPhraseObject($this->get($cid), 'title');
+					$ret[$cid] = $this->get($cid)->title;
 				}
 			}
 		} else {
-			foreach ($this->cat_ids as $cid) {
-				$ret[$cid] = $this->translator->getPhraseObject($this->get($cid), 'title');
+			foreach ($this->ug_ids as $cid) {
+				$ret[$cid] = $this->get($cid)->title;
 			}
 		}
 

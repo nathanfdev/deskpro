@@ -749,7 +749,9 @@ class Translate implements PersonContextInterface
 
 			return $p_prefixes[$package].$phrase_text;
 		} else if ($debug == 'prefix') {
-			return '__'.$phrase_text;
+			return '@'.$phrase_text;
+		} else if ($debug == 'wrap') {
+			return '^'.$phrase_text . '^';
 		}
 
 		return $phrase_text;

@@ -237,7 +237,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
-			var count = parseInt(info.online_count);
+			var count = parseInt(info.online_count) || 0;
 
 			Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
 			DeskPRO_Window.util.modCountEl($('.userchat-online-users-count'), '=', count);
@@ -320,6 +320,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			success: function(html) {
 				$('#agent_status_online_users').empty().html(html);
 				var count = parseInt($.trim($('#agent_status_online_users').find('.count-online-users').text()));
+				count = count || 0;
 
 				Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
 				$('.userchat-online-users-count').text(count);

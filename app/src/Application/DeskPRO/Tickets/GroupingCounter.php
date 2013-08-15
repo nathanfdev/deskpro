@@ -488,12 +488,12 @@ class GroupingCounter
 
 			case TicketSearch::TERM_CATEGORY:
 				$group_structure = App::getDataService('TicketCategory')->getInHierarchy();
-				$group_structure['0'] = array('id' => 0, 'title' => 'None');
+				$group_structure['0'] = array('id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
 				$group_structure = App::getDataService('Product')->getInHierarchy();
-				$group_structure['0'] = array('id' => 0, 'title' => 'None');
+				$group_structure['0'] = array('id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			default:
@@ -675,32 +675,36 @@ class GroupingCounter
 	public static function getTimeTitles()
 	{
 		$times = array(
-			300        => '< 5 minutes',
-			900        => '5 - 15 minutes',
-			1800       => '15 - 30 minutes',
-			3600       => '30 - 60 minutes',
-			7200       => '1 - 2 hours',
-			10800      => '2 - 3 hours',
-			14400      => '3 - 4 hours',
-			21600      => '4 - 6 hours',
-			43200      => '6 - 12 hours',
-			86400      => '12 - 24 hours',
-			172800     => '1 - 2 days',
-			259200     => '2 - 3 days',
-			345600     => '3 - 4 days',
-			432000     => '4 - 5 days',
-			518400     => '5 - 6 days',
-			604800     => '6 - 7 days',
-			1209600    => '1 - 2 weeks',
-			1814400    => '2 - 3 weeks',
-			2419200    => '3 - 4 weeks',
-			4838400    => '1 - 2 months',
-			7257600    => '2 - 3 months',
-			9676800    => '3 - 4 months',
-			12096000   => '4 - 5 months',
-			14515200   => '5 - 6 months',
-			self::LAST_TIME_MARKER => '> 6 months'
+			300                                => 'agent.time.group_lt_5_mins',
+			900                                => 'agent.time.group_5_to_15_mins',
+			1800                               => 'agent.time.group_15_to_30_mins',
+			3600                               => 'agent.time.group_30_to_60_mins',
+			7200                               => 'agent.time.group_1_to_2_hours',
+			10800                              => 'agent.time.group_2_to_3_hours',
+			14400                              => 'agent.time.group_3_to_4_hours',
+			21600                              => 'agent.time.group_4_to_6_hours',
+			43200                              => 'agent.time.group_6_to_12_hours',
+			86400                              => 'agent.time.group_12_to_24_hours',
+			172800                             => 'agent.time.group_1_to_2_days',
+			259200                             => 'agent.time.group_2_to_3_days',
+			345600                             => 'agent.time.group_3_to_4_days',
+			432000                             => 'agent.time.group_4_to_5_days',
+			518400                             => 'agent.time.group_5_to_6_days',
+			604800                             => 'agent.time.group_6_to_7_days',
+			1209600                            => 'agent.time.group_1_to_2_weeks',
+			1814400                            => 'agent.time.group_2_to_3_weeks',
+			2419200                            => 'agent.time.group_3_to_4_weeks',
+			4838400                            => 'agent.time.group_1_to_2_months',
+			7257600                            => 'agent.time.group_2_to_3_months',
+			9676800                            => 'agent.time.group_3_to_4_months',
+			12096000                           => 'agent.time.group_4_to_5_months',
+			14515200                           => 'agent.time.group_5_to_6_months',
+			self::LAST_TIME_MARKER             => 'agent.time.group_gt_6_months',
 		);
+
+		foreach ($times as &$phrase) {
+			$phrase = App::getTranslator()->phrase($phrase);
+		}
 
 		return $times;
 	}
