@@ -2170,7 +2170,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function resetSlaStatuses()
 	{
 		foreach ($this->ticket_slas AS $ticket_sla) {
-			$ticket_sla->is_completed = false;
+			if (!$ticket_sla->is_completed_set) {
+				$ticket_sla->is_completed = false;
+			}
 		}
 	}
 

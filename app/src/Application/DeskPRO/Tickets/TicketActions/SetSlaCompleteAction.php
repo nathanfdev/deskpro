@@ -83,7 +83,7 @@ class SetSlaCompleteAction extends AbstractAction
 				}
 
 				foreach ($ticket_slas AS $ticket_sla) {
-					$ticket_sla->setIsCompleted($complete);
+					$ticket_sla->setIsCompletedSet($complete);
 				}
 			}
 		}

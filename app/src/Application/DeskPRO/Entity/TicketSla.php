@@ -78,6 +78,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_completed = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $is_completed_set = false;
+
+	/**
 	 * @var null|integer
 	 */
 	protected $completed_time_taken = null;
@@ -176,6 +181,23 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 			}
 		} else {
 			$this->setModelField('completed_time_taken', null);
+		}
+	}
+
+	/**
+	 * Same as setIsCompleted but the completed status is set forever (unless its overriden with a trigger etc).
+	 * Usually when status changes, the SLA is re-calculated.
+	 *
+	 * @param $value
+	 * @param null $date
+	 */
+	public function setIsCompletedSet($value, $date = null)
+	{
+		$this->setIsCompleted($value, $date);
+		if ($value) {
+			$this->setModelField('is_completed_set', true);
+		} else {
+			$this->setModelField('is_completed_set', false);
 		}
 	}
 
@@ -423,6 +445,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'warn_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'warn_date', ));
 		$metadata->mapField(array( 'fieldName' => 'fail_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'fail_date', ));
 		$metadata->mapField(array( 'fieldName' => 'is_completed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_completed', ));
+		$metadata->mapField(array( 'fieldName' => 'is_completed_set', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_completed_set', ));
 		$metadata->mapField(array( 'fieldName' => 'completed_time_taken', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'completed_time_taken', ));
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
