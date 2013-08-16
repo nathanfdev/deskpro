@@ -375,6 +375,16 @@ class ErrorReporter
 			}
 		}
 
+		// Make sure payload isnt too big
+		foreach ($data as &$d) {
+			if (!is_string($d)) continue;
+			if (isset($d[512001])) {
+				$d = substr($d, 0, 512000);
+				$d .= ' (Truncated)';
+			}
+		}
+		unset($d);
+
 		try {
 			$client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
