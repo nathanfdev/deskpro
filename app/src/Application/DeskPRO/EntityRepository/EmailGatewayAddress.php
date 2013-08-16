@@ -82,4 +82,19 @@ class EmailGatewayAddress extends AbstractEntityRepository
 			ORDER BY a.match_pattern ASC
 		")->execute();
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultTicketAddress()
+	{
+		return App::getDb()->fetchColumn("
+			SELECT email_gateway_addresses.match_pattern
+			FROM email_gateway_addresses
+			LEFT JOIN email_gateways ON email_gateways.id = email_gateway_addresses.email_gateway_id
+			WHERE email_gateway_addresses.match_type = 'exact' AND email_gateways.gateway_type = 'tickets'
+			ORDER BY email_gateway_addresses.run_order ASC, email_gateway_addresses.id ASC
+			LIMIT 1
+		");
+	}
 }

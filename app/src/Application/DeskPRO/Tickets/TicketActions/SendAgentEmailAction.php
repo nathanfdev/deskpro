@@ -77,13 +77,7 @@ class SendAgentEmailAction extends AbstractAction
 		}
 
 		$from_email = App::getSetting('core.default_from_email');
-		$default_address = App::getDb()->fetchColumn("
-			SELECT match_pattern
-			FROM email_gateway_addresses
-			WHERE match_type = 'exact'
-			ORDER BY run_order ASC, id ASC
-			LIMIT 1
-		");
+		$default_address = App::getOrm()->getRepository('DeskPRO:EmailGatewayAddress')->getDefaultTicketAddress();
 
 		if ($default_address) {
 			$from_email = $default_address;

@@ -151,7 +151,7 @@ class AddressMatcher
 			SELECT a.id, a.email_gateway_id, a.match_type, a.match_pattern
 			FROM email_gateway_addresses a
 			LEFT JOIN email_gateways g ON (g.id = a.email_gateway_id)
-			WHERE g.is_enabled
+			WHERE g.is_enabled AND g.gateway_type = 'tickets'
 			ORDER BY run_order ASC
 		");
 
