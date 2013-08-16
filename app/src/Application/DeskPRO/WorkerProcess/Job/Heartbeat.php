@@ -43,6 +43,16 @@ class Heartbeat extends AbstractJob
 
 	public function run()
 	{
-		\Application\DeskPRO\Service\ErrorReporter::sendHeartbeat();
+		$ret_data = \Application\DeskPRO\Service\ErrorReporter::sendHeartbeat();
+
+		if ($ret_data && ($ret_data = @json_decode($ret_data, true))) {
+			if (!empty($ret_data['replace_license_code'])) {
+				App::getDb()->replace('settings', array(
+					'name'  => 'core.license',
+					'value' => $ret_data['replace_license_code']
+				));
+				$this->logStatus('Updated license code');
+			}
+		}
 	}
 }

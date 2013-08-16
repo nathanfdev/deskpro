@@ -425,6 +425,7 @@ class ErrorReporter
 
 		$data['setting_core_deskpro_url'] = App::getSetting('core.deskpro_url');
 		$data['db_id_hash'] = md5(DP_DATABASE_HOST . DP_DATABASE_NAME . DP_DATABASE_USER);
+		$data['license_code'] = App::getSetting('core.license');
 
 		try {
 			$client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true));
@@ -435,6 +436,7 @@ class ErrorReporter
 			return $r->getBody();
 		} catch (\Exception $e) {
 			error_log(sprintf("sendHeartbeat %s %s", $e->getCode(), $e->getMessage()));
+			return null;
 		}
 	}
 

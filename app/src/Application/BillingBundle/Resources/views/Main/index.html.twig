@@ -122,6 +122,7 @@
 						{% if not lic.getMaxAgents() or lic.getMaxAgents() > 100 %}
 							{{ lic.getMaxAgents()|default('Unlimited') }}
 						{% else %}
+							{{ lic.getMaxAgents() }}
 							&nbsp;&nbsp;
 							<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">Add more agents</a>
 						{% endif %}
