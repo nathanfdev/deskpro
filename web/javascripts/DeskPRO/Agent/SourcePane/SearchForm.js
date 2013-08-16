@@ -234,6 +234,16 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 						self.open();
 					}
 				});
+
+				this.targetSummaryEl.on('keypress', function(ev) {
+					if (self.el.find('.pane-row').length > 1) {
+						$(this).val('');
+						$(this).blur();
+						self.open();
+					} else {
+						self.el.find('input[type="text"]').val('');
+					}
+				});
 			}
 		}
 
