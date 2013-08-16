@@ -33,6 +33,13 @@ $collection->add('billing_login_authenticate_local', new Route(
 	array()
 ));
 
+$collection->add('billing_login_ma_login', new Route(
+	'/login/verity-ma-login/{license_id}/{code}',
+	array('_controller' => 'BillingBundle:Login:verifyMaLoginRequest'),
+	array(),
+	array()
+));
+
 ################################################################################
 # License
 ################################################################################

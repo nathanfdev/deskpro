@@ -38,6 +38,7 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\License;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -65,5 +66,16 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		$url = $this->generateUrl('billing', array(), true);
 		return $this->render('BillingBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session));
+	}
+
+	public function verifyMaLoginRequestAction($license_id, $code)
+	{
+		$ma_token = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'ma_login');
+
+		if ($ma_token && License::getLicense()->getLicenseId() == $license_id) {
+			return $this->createJsonResponse(array("success" => true, "email_address" => $ma_token->getData('email_address')));
+		}
+
+		return $this->createJsonResponse(array("error" => true));
 	}
 }

@@ -113,7 +113,7 @@
 							Your license has expired
 						{% endif %}
 						&nbsp;&nbsp;
-						<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">{% if not is_expired %}Renew{% else %}Extend{% endif %}</a>
+						<a target="_blank" class="clean-white go-ma-trigger" href="http://www.deskpro.com/members/">{% if not is_expired %}Renew{% else %}Extend{% endif %}</a>
 					</td>
 				</tr>
 				<tr>
@@ -124,7 +124,7 @@
 						{% else %}
 							{{ lic.getMaxAgents() }}
 							&nbsp;&nbsp;
-							<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">Add more agents</a>
+							<a target="_blank" class="clean-white go-ma-trigger" href="http://www.deskpro.com/members/">Add more agents</a>
 						{% endif %}
 					</td>
 				</tr>
@@ -170,4 +170,17 @@
 	</div>
 
 
+	<div style="display: none;">
+		<form action="{{ ma_login_url }}" method="POST" id="go_ma_form">
+			<input type="hidden" name="callback_url" value="{{ url_full('billing_login_ma_login', {code: ma_token.getCode(), license_id: lic.getLicenseId() }) }}" />
+			<input type="hidden" name="license_code" value="{{ lic.getLicenseCode() }}" />
+			<input type="hidden" name="license_id" value="{{ lic.getLicenseId() }}" />
+		</form>
+	</div>
+	<script type="text/javascript">
+	$('.go-ma-trigger').on('click', function(ev) {
+		ev.preventDefault();
+		$('#go_ma_form').submit();
+	});
+	</script>
 {% endblock %}

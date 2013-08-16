@@ -33,6 +33,7 @@
  */
 namespace Application\BillingBundle\Controller;
 
+use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
 
@@ -54,11 +55,24 @@ class MainController extends AbstractController
 			}
 		}
 
+		$ma_token = TmpData::create('ma_login', array(
+			'email_address' => $this->person->getPrimaryEmailAddress()
+		), '+1 hour');
+		$this->em->persist($ma_token);
+		$this->em->flush($ma_token);
+
+		$ma_login_url = License::getLicServer() . '/login_check_license';
+		if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
+			$ma_login_url = str_replace('http://', 'https://', $ma_login_url);
+		}
+
 		return $this->render('BillingBundle:Main:index.html.twig', array(
 			'lic'              => $lic,
 			'is_expired'       => $is_expired,
 			'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
-			'expire_in_days'   => $expire_in_days
+			'expire_in_days'   => $expire_in_days,
+			'ma_token'         => $ma_token,
+			'ma_login_url'     => $ma_login_url,
 		));
     }
 }
