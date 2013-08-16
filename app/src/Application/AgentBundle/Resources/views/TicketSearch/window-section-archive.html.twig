@@ -19,7 +19,7 @@
 			<li data-filter-id="{{ filter.id }}" class="is-nav-item with-route filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} is-archive-filter" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 				<div class="item">
 					<h3>{{ phrase(title) }}</h3>
-					<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count">
+					<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ archive_filter_counts[filter.id]|default(0) }}">
 						{% if archive_filter_counts[filter.id] and filter.id in [13, 14, 15, 16] %}~{% endif %}{{ archive_filter_counts[filter.id]|default(0) }}
 					</em></div>
 				</div>

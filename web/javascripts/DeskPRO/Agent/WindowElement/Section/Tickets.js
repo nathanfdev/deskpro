@@ -438,7 +438,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	modFilterCount: function(filter_id, op) {
 		filter_id = parseInt(filter_id);
-		var count = parseInt($('#ticket_filter_' + filter_id + '_count').text().trim());
+		var isTilde = $('#ticket_filter_' + filter_id + '_count').text().indexOf('~') !== -1;
+		var count = parseInt($('#ticket_filter_' + filter_id + '_count').data('count'));
 
 		if (op == 'add') {
 			count++;
@@ -450,7 +451,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			count = 0;
 		}
 
-		var el = $('#ticket_filter_' + filter_id + '_count').html(count).data('count', count);
+		var countStr = count;
+		if (isTilde) {
+			countStr = '~' + count;
+		}
+
+		var el = $('#ticket_filter_' + filter_id + '_count').html(countStr).data('count', count);
 		$('#ticket_filter_' + filter_id + '_count2').html(count);
 	},
 
