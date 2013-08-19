@@ -127,8 +127,16 @@ class TicketSearchController extends AbstractController
 	public function getFiltersAction()
 	{
 		$filters = $this->_getFiltersApi()->getFiltersForPerson($this->person);
+		$data = array('filters' => $this->getApiData($filters));
 
-		return $this->createApiResponse(array('filters' => $this->getApiData($filters)));
+		if ($this->in->getBool('with_counts')) {
+			$all_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($filters);
+			$all_counts = Arrays::castToType($all_counts, 'int', 'int');
+
+			$data['counts'] = $all_counts;
+		}
+
+		return $this->createApiResponse($data);
 	}
 
 
@@ -154,10 +162,11 @@ class TicketSearchController extends AbstractController
 		$tickets = $this->_getFiltersApi()->getTicketsFromFilter($filter_id, $page, $per_page);
 
 		return $this->createApiResponse(array(
-			'page' => $page,
+			'page'     => $page,
 			'per_page' => $per_page,
-			'total' => $total,
-			'tickets' => $this->getApiData($tickets)
+			'total'    => $total,
+			'tickets'  => $this->getApiData($tickets),
+			'filter'   => $filter->toApiData(true)
 		));
 	}
 

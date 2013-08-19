@@ -245,7 +245,22 @@ class TicketController extends AbstractController
 			$data['flag'] = $ticket_flagged;
 		}
 
-		return $this->createApiResponse(array('ticket' => $data));
+		$data = array('ticket' => $data);
+
+		if ($this->in->getBool('with_messages')) {
+			$messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket, array(
+				'with_notes' => true,
+				'limit'      => 10,
+				'order'      => 'DESC'
+			));
+
+			$data['messages'] = array();
+			foreach ($messages as $m) {
+				$data['messages'][] = $m->toApiData(true);
+			}
+		}
+
+		return $this->createApiResponse($data);
 	}
 
 	public function postTicketAction($ticket_id)
