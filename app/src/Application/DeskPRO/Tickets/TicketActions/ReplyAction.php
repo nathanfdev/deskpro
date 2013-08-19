@@ -100,7 +100,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 				$person = $this->person_context;
 			} else {
 				if ($ticket->agent) {
-					$this->person_context = $ticket->agent;
+					$person = $ticket->agent;
 				} else {
 					// Try to find last agent to replied in tikcet
 					$agent_id = App::getDb()->fetchColumn("

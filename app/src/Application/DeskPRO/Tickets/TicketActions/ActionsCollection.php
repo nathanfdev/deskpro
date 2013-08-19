@@ -389,6 +389,28 @@ class ActionsCollection
 	}
 
 
+	/**
+	 * @param array $order
+	 */
+	public function sortActions(array $order)
+	{
+		if (!isset($order['default'])) {
+			$order['default'] = 0;
+		}
+
+		uasort($this->actions, function ($a, $b) use ($order) {
+			$a_name = \Orb\Util\Util::getBaseClassname($a);
+			$b_name = \Orb\Util\Util::getBaseClassname($b);
+
+			$a_order = isset($order[$a_name]) ? $order[$a_name] : $order['default'];
+			$b_order = isset($order[$b_name]) ? $order[$b_name] : $order['default'];
+
+			if ($a_order == $b_order) return 0;
+			return $a_order < $b_order ? -1 : 1;
+		});
+	}
+
+
 	public function getDescriptions($as_html)
 	{
 		$desc = array();
