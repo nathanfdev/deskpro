@@ -2740,7 +2740,7 @@ class TicketController extends AbstractController
 
 		$top .= '<br/><br/><div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
 		$top .= '--- Forwarded Message ---<br/>';
-		$top .= 'From: '. $ticket->person->getDisplayName() .' &lt;<a href="mailto:'. $ticket->person->getPrimaryEmailAddress() .'">'. $ticket->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
+		$top .= 'From: '. $message->person->getDisplayName() .' &lt;<a href="mailto:'. $message->person->getPrimaryEmailAddress() .'">'. $message->person->getPrimaryEmailAddress() .'</a>&gt;<br/>';
 
 		$from = $ticket->getFromAddress();
 		$top .= 'To: '. $from['name'] .' &lt;<a href="mailto:'. $from['email'] .'">'. $from['email'] .'</a>&gt;<br/>';
