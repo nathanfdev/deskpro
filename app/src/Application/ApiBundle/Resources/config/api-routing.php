@@ -51,6 +51,13 @@ $collection->add('api_token_exchange', new Route(
 	array()
 ));
 
+$collection->add('api_token_renew', new Route(
+	'/renew-token',
+	array('_controller' => 'ApiBundle:Misc:renewToken'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('api_misc_upload', new Route(
 	'/misc/upload',
 	array('_controller' => 'ApiBundle:Misc:upload'),

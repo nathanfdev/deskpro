@@ -145,7 +145,7 @@ class MiscController extends AbstractController
 		if (!$token) {
 			$token = new \Application\DeskPRO\Entity\ApiToken();
 			$token->person = $person;
-		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time) {
+		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
 			$token->regenerateToken();
 		}
 		$token->date_expires = null;
@@ -153,10 +153,68 @@ class MiscController extends AbstractController
 		$this->em->persist($token);
 		$this->em->flush();
 
-		return $this->createApiResponse(array(
+		$data = array(
 			'success' => true,
 			'api_token' => $token->getKeyString()
-		));
+		);
+
+		if ($this->in->getBool('return_info')) {
+			$api_url = App::getSetting('core.deskpro_url');
+
+			if (!dp_get_config('rewrite_urls') && strpos($api_url, 'index.php') === false) {
+				$api_url .= 'index.php/';
+			}
+
+			$data['api_url'] = $api_url;
+			$data['helpdesk_info'] = array(
+				'url'  => App::getSetting('core.deskpro_url'),
+				'name' => App::getSetting('core.helpdesk_name')
+			);
+			$data['person_id']    = $person->getId();
+			$data['person_info']  = $person->toApiData(true);
+		}
+
+		return $this->createApiResponse($data);
+	}
+
+	public function renewTokenAction()
+	{
+		$person = $this->person;
+
+		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+		if (!$token) {
+			$token = new \Application\DeskPRO\Entity\ApiToken();
+			$token->person = $person;
+		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
+			$token->regenerateToken();
+		}
+		$token->date_expires = null;
+
+		$this->em->persist($token);
+		$this->em->flush();
+
+		$data = array(
+			'success' => true,
+			'api_token' => $token->getKeyString()
+		);
+
+		if ($this->in->getBool('return_info')) {
+			$api_url = App::getSetting('core.deskpro_url');
+
+			if (!dp_get_config('rewrite_urls') && strpos($api_url, 'index.php') === false) {
+				$api_url .= 'index.php/';
+			}
+
+			$data['api_url'] = $api_url;
+			$data['helpdesk_info'] = array(
+				'url'  => App::getSetting('core.deskpro_url'),
+				'name' => App::getSetting('core.helpdesk_name')
+			);
+			$data['person_id']    = $person->getId();
+			$data['person_info']  = $person->toApiData(true);
+		}
+
+		return $this->createApiResponse($data);
 	}
 
 	public function uploadAction()
