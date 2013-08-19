@@ -65,7 +65,7 @@
 	'agent.general.author'                                  => 'Author',
 	'agent.general.awaiting_validation'                     => 'Awaiting Validation',
 	'agent.general.awaiting_email_validation'               => 'Awaiting Email Validation',
-	'agent.general.awaiting_agnet_validation'               => 'Awaiting Agent Validation',
+	'agent.general.awaiting_agent_validation'               => 'Awaiting Agent Validation',
 	'agent.general.before'                                  => 'before',
 	'agent.general.between'                                 => 'between',
 	'agent.general.license_interface'                       => 'Licensing Interface',
