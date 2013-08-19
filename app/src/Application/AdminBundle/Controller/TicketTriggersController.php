@@ -86,6 +86,12 @@ class TicketTriggersController extends AbstractController
 		if (!empty($triggers['new.web.user.widget'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.widget']);
 		if (!empty($triggers['new.web.user.embed'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.embed']);
 
+		// Need to sort the arary since we just messed up
+		// ordering by merging all of the new.web* types
+		usort($triggers['new.web.user_any'], function($a, $b) {
+			return $a->run_order < $b->run_order ? -1 : 1;
+		});
+
 		$show_api_option = $this->em->getRepository('DeskPRO:ApiKey')->countApiKeys() > 0;
 
 		return $this->render($list_tpl, array(
