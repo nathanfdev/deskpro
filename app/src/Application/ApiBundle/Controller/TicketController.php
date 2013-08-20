@@ -260,6 +260,35 @@ class TicketController extends AbstractController
 			}
 		}
 
+		// Full data so we can re-construct an edit-type form
+		if ($this->in->getBool('with_display_options')) {
+			$display_options = array();
+
+			$display_options['departments'] = $this->getApiData(array_values($this->container->getDataService('Department')->getRootNodes()));
+			$display_options['agents']      = $this->getApiData(array_values($this->container->getAgentData()->getAgents()));
+
+			if (App::getSetting('core.use_agent_team')) {
+				$display_options['agent_teams'] = $this->getApiData(array_values($this->container->getDataService('AgentTeam')->getTeams()));
+			}
+			if (App::getSetting('core.use_product')) {
+				$display_options['products'] = $this->getApiData(array_values($this->container->getDataService('Product')->getRootNodes()));
+			}
+			if (App::getSetting('core.use_ticket_category')) {
+				$display_options['categories'] = $this->getApiData(array_values($this->container->getDataService('TicketCategory')->getRootNodes()));
+			}
+			if (App::getSetting('core.use_ticket_priority')) {
+				$display_options['priorities'] = $this->getApiData(array_values($this->container->getDataService('TicketPriority')->getAll()));
+			}
+			if (App::getSetting('core.use_ticket_workflow')) {
+				$display_options['workflows'] = $this->getApiData(array_values($this->container->getDataService('TicketWorkflow')->getAll()));
+			}
+			if ($this->container->getLanguageData()->isMultiLang()) {
+				$display_options['languages'] = $this->getApiData(array_values($this->container->getLanguageData()->getAll()));
+			}
+
+			$data['display_options'] = $display_options;
+		}
+
 		return $this->createApiResponse($data);
 	}
 

@@ -2137,6 +2137,13 @@ $collection->add('api_glossary_definition_delete', new Route(
 # Activity
 ################################################################################
 
+$collection->add('api_dismiss_activity', new Route(
+	'/activity/dismiss',
+	array('_controller' => 'ApiBundle:Activity:dismiss'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('api_get_activity', new Route(
 	'/activity/{since}',
 	array('_controller' => 'ApiBundle:Activity:getActivity'),

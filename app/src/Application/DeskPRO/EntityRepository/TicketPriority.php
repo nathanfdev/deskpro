@@ -77,6 +77,20 @@ class TicketPriority extends AbstractEntityRepository
 	}
 
 
+	/**
+	 * @return array
+	 */
+	public function getAll()
+	{
+		$pris = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketPriority p
+			ORDER BY p.priority
+		")->execute();
+
+		return $pris;
+	}
+
 
 	/**
 	 * Get all priority IDs in the order they are meant to go

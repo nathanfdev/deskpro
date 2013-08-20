@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Entity\ChatConversation;
+use Orb\Util\Arrays;
 
 class ActivityController extends AbstractController
 {
@@ -73,5 +74,39 @@ class ActivityController extends AbstractController
 		$last_id = $this->db->fetchColumn("SELECT id FROM agent_alerts ORDER BY id DESC LIMIT 1");
 
 		return $this->createApiResponse(array('last_id' => $last_id, 'alerts' => $alerts));
+	}
+
+	public function dismissAction()
+	{
+		// Could be a json encoded array
+		if (isset($_REQUEST['dismiss_ids']) && !is_array($_REQUEST['dismiss_ids'])) {
+			$alert_ids = $this->in->getString('dismiss_ids');
+			$alert_ids = @json_decode($alert_ids, true);
+			$alert_ids = Arrays::castToType($alert_ids, 'int', 'discard');
+			$alert_ids = array_unique($alert_ids);
+
+		// or a regular posted array
+		} else {
+			$alert_ids = $this->in->getCleanValueArray('dismiss_ids', 'int', 'discard');
+			$alert_ids = Arrays::removeFalsey($alert_ids);
+			$alert_ids = array_unique($alert_ids);
+		}
+
+		if (in_array(-1, $alert_ids)) {
+			$this->db->executeUpdate("
+				UPDATE agent_alerts
+				SET is_dismissed = 1
+				WHERE person_id = ?
+			", array($this->person->getId()));
+		} else {
+			$ids_in = implode(',', $alert_ids);
+			$this->db->executeUpdate("
+				UPDATE agent_alerts
+				SET is_dismissed = 1
+				WHERE person_id = ? AND id IN ($ids_in)
+			", array($this->person->getId()));
+		}
+
+		return $this->createApiResponse(array('success' => true));
 	}
 }
