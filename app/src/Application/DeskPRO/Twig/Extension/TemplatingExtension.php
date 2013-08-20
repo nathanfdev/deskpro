@@ -156,7 +156,7 @@ class TemplatingExtension extends \Twig_Extension
 			'encode_number'          => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
 			'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
-			'date'                   => new \Twig_Filter_Method($this, 'userDate'),
+			'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
 			'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
 			'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
@@ -561,8 +561,18 @@ class TemplatingExtension extends \Twig_Extension
 		return Strings::slugifyTitle($str);
 	}
 
-	public function userDate($date, $format = 'F j, Y H:i', $timezone = null)
+	public function userDate($context, $date, $format = 'F j, Y H:i', $timezone = null)
 	{
+		// Backwards compat calls: args shifted back one
+		if (!is_array($context)) {
+			$args = func_get_args();
+			if (!isset($args[1])) $args[1] = 'F j, Y H:i';
+			if (!isset($args[2])) $args[2] = null;
+
+			list ($date, $format, $timezone) = $args;
+			$context = null;
+		}
+
 		switch ($format) {
 			case 'full':
 				//D, jS M Y
@@ -605,6 +615,10 @@ class TemplatingExtension extends \Twig_Extension
 		if (!($date instanceof \DateTime)) {
 			$date_str = (string)$date;
 			return "invalid_date($date_str)";
+		}
+
+		if ($timezone === null && $context && isset($context['context']['person_timezone'])) {
+			$timezone = $context['context']['person_timezone'];
 		}
 
 		if ($timezone === null && App::getCurrentPerson()) {
