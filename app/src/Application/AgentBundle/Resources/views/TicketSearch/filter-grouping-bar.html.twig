@@ -5,6 +5,12 @@
 		{% else %}
 			{% set grouping_url = 'listpane:' ~ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) ~ '&group_by=' ~ group_by ~ '&grouping_option=' %}
 		{% endif %}
+	{% elseif sla_id %}
+		{% if set_group_term %}
+			{% set grouping_url = 'listpane:' ~ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) ~ '?set_group_term=' ~ set_group_term ~ '&set_group_option=' ~ set_group_option ~ '&group_by=' ~ group_by ~ '&grouping_option=' %}
+		{% else %}
+			{% set grouping_url = 'listpane:' ~ path('agent_ticketsearch_runsla', {'sla_id': sla_id, 'sla_status': sla_status}) ~ '?group_by=' ~ group_by ~ '&grouping_option=' %}
+		{% endif %}
 	{% else %}
 		{% if set_group_term %}
 			{% set grouping_url = 'listpane:' ~ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) ~ '?set_group_term=' ~ set_group_term ~ '&set_group_option=' ~ set_group_option ~ '&group_by=' ~ group_by ~ '&grouping_option=' %}
