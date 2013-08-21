@@ -15,6 +15,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Macros = new Orb.Class({
 
 		$('#settingswin').bind('dp_settings_macrosupdated', function() {
 			self.settingsWindow.reloadTab('macros');
+			window.DESKPRO_MACRO_LABELS = null;
 		});
 
 		var event = jQuery.Event("dp_macros_updated");

@@ -875,6 +875,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var statusBackdrop = null;
 		var statusMacroFilter = null;
 		var statusMacroList = statusMenu.find('.macro-list');
+		var statusMacroListMap = null;
 		var statusListItems = null;
 		var replyAsType = this.getElById('reply_as_type');
 
@@ -993,14 +994,48 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						statusMacroList.find('li').show().removeClass('off');
 						updateStatusPos();
 					} else {
+						var lis = statusMacroList.find('li');
+						var lis_show = [];
+
 						val = val.toLowerCase();
-						statusMacroList.find('li').each(function() {
-							if ($(this).text().toLowerCase().indexOf(val) !== -1) {
-								$(this).show().removeClass('off');
-							} else {
-								$(this).hide().addClass('off');
+
+						if (window.DESKPRO_MACRO_LABELS) {
+
+							if (!statusMacroListMap) {
+								// Generate map of macro_id => li element
+								for (var i = 0; i < window.DESKPRO_MACRO_LABELS.length; i++) {
+									statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]] = document.getElementById(self.baseId + '_res_ticketmacro_' + window.DESKPRO_MACRO_LABELS[i][0]);
+								}
 							}
-						});
+
+							for (var i = 0; i < window.DESKPRO_MACRO_LABELS.length; i++) {
+								if (window.DESKPRO_MACRO_LABELS[i][1].indexOf(val) !== -1) {
+									if (statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]]) {
+										lis_show.push(statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]]);
+									} else {
+										lis_show.push(document.getElementById(self.baseId + '_res_ticketmacro_' + window.DESKPRO_MACRO_LABELS[i][0]));
+									}
+								}
+							}
+
+							if (lis_show.length) {
+								if (lis_show.length < lis.length) {
+									lis.not(lis_show).addClass('off').hide();
+								}
+								$(lis_show).removeClass('off').show();
+							} else {
+								lis.addClass('off').hide();
+							}
+
+						} else {
+							statusMacroList.find('li').each(function() {
+								if ($(this).text().toLowerCase().indexOf(val) !== -1) {
+									$(this).show().removeClass('off');
+								} else {
+									$(this).hide().addClass('off');
+								}
+							});
+						}
 						updateStatusPos();
 					}
 
@@ -1068,6 +1103,18 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (teamSel.val() == this.page.getEl('value_form').find('.agent_team_id').val()) {
 				teamSelCheck.prop('checked', false);
 			}
+		}
+
+		// Init macro title list
+		if (!window.DESKPRO_MACRO_LABELS) {
+			window.DESKPRO_MACRO_LABELS = [];
+			statusMacroListMap = {};
+			statusMacroList.find('li').each(function() {
+				var label = $(this).data('macro-title').toLowerCase();
+				var macro_id = parseInt($(this).data('macro-id'));
+				window.DESKPRO_MACRO_LABELS.push([macro_id, label.toLowerCase()])
+				statusMacroListMap[macro_id] = this;
+			});
 		}
 	},
 

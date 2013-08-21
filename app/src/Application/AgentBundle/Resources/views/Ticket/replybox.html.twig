@@ -30,7 +30,7 @@
 			<input type="text" class="label-input macro-filter" placeholder="Reply and set a macro..." />
 			<ul class="macro-list">
 				{% for macro in app.user.getHelper('Agent').getMacros() %}
-					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="Send Reply and apply {{ macro.title }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
+					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" id="{{replyBaseId}}_res_ticketmacro_{{ macro.id }}" data-macro-title="{{ macro.title }}" data-macro-id="{{ macro.id }}" data-label="Send Reply and apply {{ macro.title }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
 						<div class="on-icon"><i class="icon-ok"></i></div>
 						<span class="macro-title">{{ macro.title }}</span>
 					</li>
