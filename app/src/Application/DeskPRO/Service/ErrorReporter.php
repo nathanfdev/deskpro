@@ -262,10 +262,7 @@ class ErrorReporter
 				continue;
 			}
 
-			$log = file_get_contents($logpath);
-			if (filesize($logpath) > 40960) {
-				$log = substr($log, -40960);
-			}
+			$log = file_get_contents($logpath, false, null, max(0, filesize($logpath) - 40960));
 
 			$info[$logfile] = $log;
 		}
