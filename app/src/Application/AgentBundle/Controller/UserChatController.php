@@ -499,6 +499,10 @@ class UserChatController extends AbstractController
 
 		$blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
 
+		if (!$blob) {
+			return $this->createJsonCmResponse();
+		}
+
 		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
 		if ($blob->isImage()) {
 			$msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
