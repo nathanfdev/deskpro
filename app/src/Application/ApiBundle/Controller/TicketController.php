@@ -264,7 +264,15 @@ class TicketController extends AbstractController
 		if ($this->in->getBool('with_display_options')) {
 			$display_options = array();
 
-			$display_options['departments'] = $this->getApiData(array_values($this->container->getDataService('Department')->getRootNodes()));
+			$all_deps = $this->container->getDataService('Department')->getRootNodes();
+			$ticket_deps = array();
+			foreach ($all_deps as $d) {
+				if ($d->is_tickets_enabled) {
+					$ticket_deps[] = $d;
+				}
+			}
+
+			$display_options['departments'] = $this->getApiData(array_values($ticket_deps));
 			$display_options['agents']      = $this->getApiData(array_values($this->container->getAgentData()->getAgents()));
 
 			if (App::getSetting('core.use_agent_team')) {
