@@ -197,6 +197,8 @@ abstract class DomainObject extends BasicDomainObject
 
 			if ($val instanceof \DateTime) {
 				$values[$name] = $val->format('Y-m-d H:i:s');
+				$values["{$name}_ts"] = $val->getTimestamp();
+				$values["{$name}_ts_ms"] = $val->getTimestamp() * 1000;
 			} else {
 				$values[$name] = $val;
 			}

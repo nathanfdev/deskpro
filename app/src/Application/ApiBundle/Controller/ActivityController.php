@@ -65,9 +65,12 @@ class ActivityController extends AbstractController
 		$alerts = array();
 		foreach ($alert_recs as $alert) {
 			$alerts[] = array(
-				'id'   => $alert->getId(),
-				'type' => $alert->typename,
-				'data' => $this->container->getAgentAlertSender()->getDataArray($alert)
+				'id'                 => $alert->getId(),
+				'type'               => $alert->typename,
+				'date_created'       => $alert->date_created->format('Y-m-d H:i:s'),
+				'date_created_ts'    => $alert->date_created->getTimestamp(),
+				'date_created_ts_ms' => $alert->date_created->getTimestamp() * 1000,
+				'data'               => $this->container->getAgentAlertSender()->getDataArray($alert)
 			);
 		}
 
