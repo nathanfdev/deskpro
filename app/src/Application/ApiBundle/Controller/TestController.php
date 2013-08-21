@@ -33,12 +33,22 @@
  */
 
 namespace Application\ApiBundle\Controller;
+use Application\DeskPRO\App;
 
 /**
  * A Test API resource
  */
 class TestController extends AbstractController
 {
+	public function preAction($action, $arguments = null)
+	{
+		if ($action == 'testAction') {
+			return null;
+		}
+
+		return parent::preAction($action, $arguments);
+	}
+
 	public function aboutAction()
 	{
 		return $this->createApiResponse(array(
@@ -53,7 +63,20 @@ class TestController extends AbstractController
 	 */
 	public function testAction()
 	{
-		return $this->createApiResponse(array('message' => 'It works!'));
+		$api_url = App::getSetting('core.deskpro_url');
+		$api_url .= 'index.php/';
+
+		// If this call is secure, then we know https works and the client
+		// requested it specifically, so return the same protocol
+		if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0) {
+			$api_url = preg_replace('#^http://#', 'https://', $api_url);
+		}
+
+		return $this->createApiResponse(array(
+			'success'     => true,
+			'api_version' => DP_BUILD_TIME,
+			'api_url'     => $api_url
+		));
 	}
 
 

@@ -160,9 +160,10 @@ class MiscController extends AbstractController
 
 		if ($this->in->getBool('return_info')) {
 			$api_url = App::getSetting('core.deskpro_url');
+			$api_url .= 'index.php/';
 
-			if (!dp_get_config('rewrite_urls') && strpos($api_url, 'index.php') === false) {
-				$api_url .= 'index.php/';
+			if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0) {
+				$api_url = preg_replace('#^http://#', 'https://', $api_url);
 			}
 
 			$data['api_url'] = $api_url;
