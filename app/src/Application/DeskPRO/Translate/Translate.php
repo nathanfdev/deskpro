@@ -420,7 +420,7 @@ class Translate implements PersonContextInterface
 
 		$pos = strpos($phrase_name, '.');
 		if ($pos === false) {
-			return false;
+			return '__default__';
 		}
 
 		$parts = Strings::rexplode('.', $phrase_name, 2);
