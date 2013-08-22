@@ -1,7 +1,7 @@
 <div class="full-tab-content">
 	<div class="article-content-wrap content-post-wrap">
 		<span class="article-loading">Loading...</span>
-		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U'), agent_session_id: app.getSession().getId() }) }}" style="width: 100%" class="article-iframe" frameborder="0"></iframe>
+		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U'), agent_session_id: app.getSession().getId(), 'real': 1 }) }}" style="width: 100%" class="article-iframe" frameborder="0"></iframe>
 		{% if article.attachments|length %}
 		<ul class="attachment-list">
 			{% for attach in article.attachments %}
@@ -18,14 +18,14 @@
 	</div>
 	<div class="article-editor-wrap" style="display: none">
 		<div class="article-editor">
-			{% if state.article.content %}
+			{% if state.article.real_content %}
 				<div class="revert-message-notice">
 					{{ phrase('agent.general.unsaved_changes_were_restored') }}
 					<button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
 				</div>
 			{% endif %}
-			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.content) }}</textarea>
+			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
 			{% if app.languages.isMultiLang() %}
 				<div style="float: right; padding-right: 18px; padding-top: 4px;">
 					<span class="small-light-icon tipped" title="The primary language for this article. Create translations from the 'Translate' tab."></span>

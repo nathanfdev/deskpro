@@ -12,7 +12,7 @@
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
-						<a class="row-title click-through"><span class="obj-title-article_{{ article.id }}">{{ article.title }}</span></a>
+						<a class="row-title click-through"><span class="obj-title-article_{{ article.id }}">{{ article.real_title }}</span></a>
 					</h3>
 				</div>
 				<div class="top-row-right">
@@ -20,7 +20,7 @@
 				</div>
 				<div class="top-row-right visible-content-link-control">
 					<div class="bound-fade"></div>
-					<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.getTitle() }}"></span>
+					<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.real_title }}"></span>
 				</div>
 				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-fade"></div>

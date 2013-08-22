@@ -48,8 +48,8 @@ pageMeta.baseId = '{{ baseId }}';
 		</select>
 	</div>
 	<h1>
-		<span id="{{baseId}}_showname">{{ article.title }}</span>
-		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ article.title }}" /></span>
+		<span id="{{baseId}}_showname">{{ article.real_title }}</span>
+		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ article.real_title }}" /></span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>
@@ -386,7 +386,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
-		<input type="text" name="title" value="{{ article.title }}"/>
+		<input type="text" name="title" value="{{ article.real_title }}"/>
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
