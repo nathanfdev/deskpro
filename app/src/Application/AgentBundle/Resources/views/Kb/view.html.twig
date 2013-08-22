@@ -68,7 +68,8 @@ pageMeta.baseId = '{{ baseId }}';
 								'with_blank': 0,
 								'blank_title': '',
 								'categories': article_categories,
-								'selected': cat.id
+								'selected': cat.id,
+								'allow_parent_sel': true
 							} %}
 						</li>
 					{% endfor %}
@@ -85,6 +86,7 @@ pageMeta.baseId = '{{ baseId }}';
 									'with_blank': 0,
 									'blank_title': '',
 									'categories': article_categories,
+									'allow_parent_sel': true,
 									'selected': 0
 								} %}
 							</li>
