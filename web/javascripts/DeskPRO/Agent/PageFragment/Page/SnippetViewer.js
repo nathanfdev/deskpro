@@ -396,6 +396,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					};
 				}
 
+				if (catList.find('li').length < 2) {
+					editCatEl.find('.no-cats-notice').show();
+				} else {
+					editCatEl.find('.no-cats-notice').hide();
+				}
+
 				editCatEl.css({left: 0, top: 0});
 				editCatEl.position(openPos);
 
@@ -637,6 +643,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		self.wrapper.find('.trigger-new-snippet').on('click', function(ev) {
 			Orb.cancelEvent(ev);
+
+			if (self.getEl('catlist').find('li').length < 2) {
+				self.wrapper.find('.trigger-newcat').first().click();
+				return;
+			}
+
 			self.editSnippet();
 		});
 
