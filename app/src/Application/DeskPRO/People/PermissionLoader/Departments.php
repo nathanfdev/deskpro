@@ -75,6 +75,11 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 			");
 		}
 
+		$parent_with_allowed_child = array(
+			'tickets' => array(),
+			'chat'    => array()
+		);
+
 		foreach ($res as $d) {
 			$dep = App::getDataService('Department')->get($d['department_id']);
 
@@ -87,7 +92,20 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 			// With departments, if a child is allowed, then the parent is too since its just a wrapper
 			if ($dep && $dep->parent) {
+				$parent_with_allowed_child[$d['app']][$dep->parent->getId()] = true;
+
 				$this->allowed_cats[$d['app']][$dep->parent->getId()][$d['name']] = 1;
+			}
+		}
+
+		// Now for each parent, we need to make sure at least one child is allowed
+		// because you can never use a parent without a child (e.g, dont want to be able to assign to a parent)
+		foreach (App::getDataService('Department')->getParentNodes() as $dep) {
+			if (!isset($parent_with_allowed_child['chat'][$dep->getId()])) {
+				unset($this->allowed_cats['chat'][$dep->getId()]);
+			}
+			if (!isset($parent_with_allowed_child['tickets'][$dep->getId()])) {
+				unset($this->allowed_cats['tickets'][$dep->getId()]);
 			}
 		}
 	}

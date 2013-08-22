@@ -42,6 +42,8 @@ class DepartmentDataService extends BaseRepositoryService
 	protected $cats;
 	protected $cat_ids = array();
 	protected $root_node_ids = array();
+	protected $leaf_node_ids = array();
+	protected $nodes_with_children = array();
 	protected $filtered_nodes = array();
 	protected $filtered_chat_nodes = array();
 
@@ -125,7 +127,10 @@ class DepartmentDataService extends BaseRepositoryService
 			}
 		}
 		foreach ($this->cats as $c) {
-			$c->children->initialize();
+			foreach ($c->children as $sc) {
+				$this->nodes_with_children[$c->getId()] = true;
+				$this->leaf_node_ids[] = $sc->getId();
+			}
 		}
 
 		$this->repos->getInHierarchy($cats);
@@ -268,6 +273,26 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 
 		return $this->getByIds($this->root_node_ids);
+	}
+
+	public function getParentNodes()
+	{
+		return $this->getByIds(array_keys($this->nodes_with_children));
+	}
+
+	public function getParentNodeIds()
+	{
+		return array_keys($this->nodes_with_children);
+	}
+
+	public function getLeafNodeIds()
+	{
+		return $this->leaf_node_ids;
+	}
+
+	public function getLeafNodes()
+	{
+		return $this->getByIds($this->leaf_node_ids);
 	}
 
 	public function getPath($category)
