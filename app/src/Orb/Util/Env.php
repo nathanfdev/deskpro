@@ -248,18 +248,28 @@ class Env
 
 
 	/**
-	 * Get the upload temp directory
+	 * Get the upload temp directory.
 	 *
-	 * @return string
+	 * Returns null when the tmp dir is invalid. For example,
+	 * if the tmp dir is configured to be outside of open_basedir restrictions, then this
+	 * is a sysadmin error that we cant fix and attachmetns just wont work.
+	 *
+	 * @return string|null
 	 */
 	public static function getUploadTempDir()
 	{
 		$dirname = ini_get('upload_tmp_dir');
 
 		if ($dirname) {
-			$dirname = realpath($dirname);
-		} else {
-			$dirname = realpath(sys_get_temp_dir());
+			$dirname = @realpath($dirname);
+		}
+
+		if (!$dirname) {
+			$dirname = @realpath(@sys_get_temp_dir());
+		}
+
+		if (!$dirname) {
+			$dirname = null;
 		}
 
 		return $dirname;
