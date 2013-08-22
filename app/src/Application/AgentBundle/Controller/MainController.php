@@ -756,6 +756,7 @@ class MainController extends AbstractController
 		}
 
 		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+			'q' => $q,
 			'router' => App::getRouter(),
 			'results' => $results,
 			'result_meta' => $result_meta,

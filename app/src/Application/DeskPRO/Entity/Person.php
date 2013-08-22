@@ -1456,6 +1456,24 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->primary_email;
 	}
 
+	public function pickEmailAddress($search)
+	{
+		$search = strtolower($search);
+
+		if (count($this->emails) == 1) {
+			return $this->getPrimaryEmailAddress();
+		}
+
+		foreach ($this->emails as $e) {
+			$email = strtolower($e->email);
+			if (strpos($email, $search) !== false) {
+				return $email;
+			}
+		}
+
+		return $this->getPrimaryEmailAddress();
+	}
+
 
 	/**
 	 * Alias for getPrimaryEmailAddress

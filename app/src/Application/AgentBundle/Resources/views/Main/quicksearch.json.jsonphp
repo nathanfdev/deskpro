@@ -55,7 +55,7 @@ if ($results['person']) {
 		$OUTPUT['person'][] = array(
 			'id' => $r->id,
 			'type' => 'person',
-			'title' => htmlspecialchars($r->getDisplayName()) . ($r->getPrimaryEmailAddress() ? ' &lt;' . $r->getPrimaryEmailAddress() . '&gt;' : ''),
+			'title' => htmlspecialchars($r->getDisplayName()) . ($r->getPrimaryEmailAddress() ? ' &lt;' . $r->pickEmailAddress($q) . '&gt;' : ''),
 			'icon' => $r->getPictureUrl(16),
 			'subtitle' => $org_str ? htmlspecialchars($org_str) : null,
 			'route' => 'person:' . $router->generate('agent_people_view', array('person_id' => $r->id)),
