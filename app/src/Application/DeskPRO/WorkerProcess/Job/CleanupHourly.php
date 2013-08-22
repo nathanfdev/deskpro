@@ -157,15 +157,15 @@ class CleanupHourly extends AbstractJob
 			$this->logStatus("Cleaned up $num temporary attachments");
 		}
 
-		$datetime = date('Y-m-d H:i:s', time());
-
 		#------------------------------
 		# Temp data
 		#------------------------------
 
+		$datetime = date('Y-m-d H:i:s', time());
+
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM tmp_data
-			WHERE date_expire > ?
+			WHERE date_expire < ?
 		", array($datetime));
 
 		if ($num) {
@@ -176,9 +176,11 @@ class CleanupHourly extends AbstractJob
 		# Prefs
 		#------------------------------
 
+		$datetime = date('Y-m-d H:i:s', time());
+
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM people_prefs
-			WHERE date_expire > ?
+			WHERE date_expire < ?
 		", array($datetime));
 
 		if ($num) {
