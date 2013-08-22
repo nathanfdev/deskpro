@@ -885,7 +885,6 @@ class DpLoader extends LoaderAbstract
 				'agent.userchat.ended_by',
 				'agent.userchat.message_ended-by',
 				'agent.userchat.message_ended-by-user',
-				'agent.userchat.ended',
 				'agent.userchat.ended_user',
 				'agent.userchat.message_started',
 				'agent.userchat.message_user-joined',
@@ -897,12 +896,7 @@ class DpLoader extends LoaderAbstract
 				'agent.userchat.message_agent-timeout',
 				'agent.userchat.message_wait-timeout',
 				'agent.userchat.message_user-timeout',
-				'agent.userchat.message_ended_by',
 				'agent.userchat.message_ended',
-				'agent.userchat.message_ended_user',
-				'agent.userchat.window_open-new',
-				'agent.userchat.window_start-button',
-				'agent.userchat.resume-button',
 			);
 
 

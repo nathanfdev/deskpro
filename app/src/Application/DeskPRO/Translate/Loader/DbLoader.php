@@ -96,7 +96,7 @@ class DbLoader implements LoaderInterface
 		$lang_in = implode(',', $langs);
 
 		// Depending on the interface, we load user, user+agent or user+agent+admin
-		if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'cron' || DP_INTERFACE == 'cli') {
+		if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'cron' || DP_INTERFACE == 'cli' || (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'dp')) {
 			$sql = "
 				SELECT name, phrase, original_phrase
 				FROM phrases

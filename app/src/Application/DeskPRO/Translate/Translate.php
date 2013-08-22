@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Translate;
 use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -458,6 +459,11 @@ class Translate implements PersonContextInterface
 
 				$this->_loadPendingPhraseGroups();
 				return $this->getPhraseText($phrase_name, $language_id);
+			}
+
+			if (strpos($phrase_name, 'obj') === false) {
+				$e = new \InvalidArgumentException("Missing phrase: $phrase_name");
+				KernelErrorHandler::logException($e, true/*, 'missing_phrase_' . $phrase_name*/);
 			}
 
 			if ($null_on_notfound) {
