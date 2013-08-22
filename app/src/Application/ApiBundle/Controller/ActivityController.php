@@ -85,8 +85,11 @@ class ActivityController extends AbstractController
 		if (isset($_REQUEST['dismiss_ids']) && !is_array($_REQUEST['dismiss_ids'])) {
 			$alert_ids = $this->in->getString('dismiss_ids');
 			$alert_ids = @json_decode($alert_ids, true);
-			$alert_ids = Arrays::castToType($alert_ids, 'int', 'discard');
-			$alert_ids = array_unique($alert_ids);
+
+			if ($alert_ids) {
+				$alert_ids = Arrays::castToType($alert_ids, 'int', 'discard');
+				$alert_ids = array_unique($alert_ids);
+			}
 
 		// or a regular posted array
 		} else {
@@ -95,19 +98,21 @@ class ActivityController extends AbstractController
 			$alert_ids = array_unique($alert_ids);
 		}
 
-		if (in_array(-1, $alert_ids)) {
-			$this->db->executeUpdate("
-				UPDATE agent_alerts
-				SET is_dismissed = 1
-				WHERE person_id = ?
-			", array($this->person->getId()));
-		} else {
-			$ids_in = implode(',', $alert_ids);
-			$this->db->executeUpdate("
-				UPDATE agent_alerts
-				SET is_dismissed = 1
-				WHERE person_id = ? AND id IN ($ids_in)
-			", array($this->person->getId()));
+		if ($alert_ids) {
+			if (in_array(-1, $alert_ids)) {
+				$this->db->executeUpdate("
+					UPDATE agent_alerts
+					SET is_dismissed = 1
+					WHERE person_id = ?
+				", array($this->person->getId()));
+			} else {
+				$ids_in = implode(',', $alert_ids);
+				$this->db->executeUpdate("
+					UPDATE agent_alerts
+					SET is_dismissed = 1
+					WHERE person_id = ? AND id IN ($ids_in)
+				", array($this->person->getId()));
+			}
 		}
 
 		return $this->createApiResponse(array('success' => true));
