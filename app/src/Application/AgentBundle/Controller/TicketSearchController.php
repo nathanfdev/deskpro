@@ -597,6 +597,10 @@ class TicketSearchController extends AbstractController
 				}
 			}
 
+			if ($search_person_id = $this->in->getUint('search_person_id')) {
+				$terms[] = array('type' => 'person_id', 'op' => 'is', 'options' => array('person_id' => $search_person_id));
+			}
+
 			// Search form: status
 			if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
 				$terms[] = array('type' => 'status', 'op' =>'contains', 'options' => array('status' => $search_term));
@@ -684,7 +688,7 @@ class TicketSearchController extends AbstractController
 					continue;
 				}
 				if (!isset($term['options'])) $term['options'] = array();
-				if (strpos($term['type'], 'person_') === 0) {
+				if (strpos($term['type'], 'person_') === 0 && $term['type'] != 'person_id') {
 					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
 					$has_user_terms = true;
 				} elseif (strpos($term['type'], 'org_') === 0) {

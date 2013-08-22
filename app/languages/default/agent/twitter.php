@@ -39,4 +39,5 @@
 	'agent.twitter.delete-search-confirm' => 'Are you sure you want to delete this search?',
 	'agent.twitter.select_group_var'     => 'Select Field to Group Tweets',
 	'agent.twitter.find_person'          => 'Find @person...',
+	'agent.twitter.other'                => 'Other',
 );
