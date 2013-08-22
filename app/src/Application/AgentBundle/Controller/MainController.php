@@ -639,10 +639,10 @@ class MainController extends AbstractController
 					}
 
 					foreach ($people as $p) {
-						$results['person'][] = $p;
+						$results['person'][$p->id] = $p;
 
 						if ($p->organization) {
-							$results['organization'][] = $p->organization;
+							$results['organization'][$p->organization->id] = $p->organization;
 						}
 					}
 
@@ -693,10 +693,10 @@ class MainController extends AbstractController
 					}
 
 					foreach ($people as $p) {
-						$results['person'][] = $p;
+						$results['person'][$p->id] = $p;
 
 						if ($p->organization) {
-							$results['organization'][] = $p->organization;
+							$results['organization'][$p->organization->id] = $p->organization;
 						}
 					}
 
@@ -704,7 +704,7 @@ class MainController extends AbstractController
 					$orgs = $this->em->getRepository('DeskPRO:Organization')->search($q, 25);
 					$oids = array();
 					foreach ($orgs as $o) {
-						$results['organization'][] = $o;
+						$results['organization'][$o->id] = $o;
 						$oids[] = $o->getId();
 					}
 
@@ -717,7 +717,7 @@ class MainController extends AbstractController
 							ORDER BY p.date_last_login DESC, p.id DESC
 						")->execute(array($oids));
 						foreach ($people as $p) {
-							$results['person'][] = $p;
+							$results['person'][$p->id] = $p;
 						}
 					}
 				}
