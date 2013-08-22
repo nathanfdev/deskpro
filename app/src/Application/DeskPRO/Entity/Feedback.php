@@ -181,7 +181,7 @@ class Feedback extends ContentAbstract
 		$this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
 	}
 
-	public function getLink($absolute = false)
+	public function getLink($absolute = true)
 	{
 		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), $absolute);
 
