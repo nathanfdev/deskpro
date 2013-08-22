@@ -23,16 +23,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		$('#dp_header_notify_wrap').on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
-			$(this).closest('.dp-header-notify-menu').find('li').each(function() {
-				var row = $(this);
-				if (row.data('alert-id')) {
-					self.dismissAlertId(row.data('alert-id'));
-				}
-				self.removeRow(row);
-			});
-
-			DeskPRO_Window.dismissAlertQueue = [-1];
-			DeskPRO_Window.getMessageChanneler().poller.send();
+			self.dismissAll();
 			Orb.shimClickCallbackPop();
 		}).on('click', '.dismiss', function(ev) {
 			Orb.cancelEvent(ev);
@@ -78,7 +69,24 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		});
 	},
 
+	dismissAll: function() {
+		var self = this;
+		$('#dp_notify_list').find('li').each(function() {
+			var row = $(this);
+			self.removeRow(row, true);
+		});
+
+		DeskPRO_Window.dismissAlertQueue = [-1];
+		DeskPRO_Window.getMessageChanneler().poller.send();
+	},
+
 	dismissAlertId: function(alertId) {
+
+		if ($('#dp_notify_list').find('li').length < 1) {
+			this.dismissAll();
+			return;
+		}
+
 		alertId = parseInt(alertId);
 		this.dismissedIds.include(alertId);
 		DeskPRO_Window.dismissAlertQueue.push(alertId);
