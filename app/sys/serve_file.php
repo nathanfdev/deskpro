@@ -1101,7 +1101,7 @@ class FilestorageLoader extends LoaderAbstract
 					$size_box  = new \Imagine\Image\Box($req_w, $req_h);
 
 					$mode      = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
-					$resizeimg = $image->thumbnail($size, $mode);
+					$resizeimg = $image->thumbnail($size_box, $mode);
 					$sizeR     = $resizeimg->getSize();
 					$widthR    = $sizeR->getWidth();
 					$heightR   = $sizeR->getHeight();
