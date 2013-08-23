@@ -1046,6 +1046,11 @@ class TicketSearch extends SearcherAbstract
 					$this->getLogger()->logDebug(sprintf("Term: %s %s %s", $term, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
 				}
 
+				if (!$term) {
+					//skip empty terms
+					continue;
+				}
+
 				switch ($term) {
 					case self::TERM_ID:
 						$this->enableArchiveSearch();
