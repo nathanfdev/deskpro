@@ -23,10 +23,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return parseInt(catId) || 0;
 			},
 			getCategoryId: function() {
+				var catId = null;
 				if (self.mode == 'edit') {
-					var catId = self.page.getEl('ticket_category_id').val();
-				} else {
-					var catId = self.page.getEl('value_form').find('.category_id').val();
+					catId = self.page.getEl('ticket_category_id').val();
+				}
+				if (typeof catId == 'undefined' || catId === null) {
+					catId = self.page.getEl('value_form').find('.category_id').val();
 				}
 				return parseInt(catId) || 0;
 			},
@@ -43,18 +45,23 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return parseInt(window.DESKPRO_TICKET_PRI_MAP[id]);
 			},
 			getPriorityId: function() {
+				var catId = null;
 				if (self.mode == 'edit') {
-					var catId = self.page.getEl('ticket_priority_id').val();
-				} else {
-					var catId = self.page.getEl('value_form').find('.priority_id').val();
+					catId = self.page.getEl('ticket_priority_id').val();
+				}
+
+				if (typeof catId == 'undefined' || catId === null) {
+					catId = self.page.getEl('value_form').find('.priority_id').val();
 				}
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
+				var catId = null;
 				if (self.mode == 'edit') {
-					var catId = self.page.getEl('ticket_product_id').val();
-				} else {
-					var catId = self.page.getEl('value_form').find('.product_id').val();
+					catId = self.page.getEl('ticket_product_id').val();
+				}
+				if (typeof catId == 'undefined' || catId === null) {
+					catId = self.page.getEl('value_form').find('.product_id').val();
 				}
 				return parseInt(catId) || 0;
 			},
@@ -62,10 +69,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return 0;
 			},
 			getWorkflow: function() {
+				var catId = null;
 				if (self.mode == 'edit') {
-					self.page.getEl('value_form').find('.workflow_id').val();
-				} else {
-					var catId = self.page.getEl('ticket_workflow_id').val();
+					catId = self.page.getEl('value_form').find('.workflow_id').val();
+				}
+				if (typeof catId == 'undefined' || catId === null) {
+					catId = self.page.getEl('ticket_workflow_id').val();
 				}
 				return parseInt(catId) || 0;
 			}
@@ -290,6 +299,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 
 		changeManager.saveChanges(customFieldData, (function(data) {
+			this.updateDisplay();
 			this.closeEditMode();
 
 			if (data.data && data.data.perm_errors) {

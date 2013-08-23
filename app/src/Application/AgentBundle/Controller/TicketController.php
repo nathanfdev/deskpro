@@ -1861,9 +1861,9 @@ class TicketController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		$data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
-			'ticket' => $ticket,
-			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields
+			'ticket'              => $ticket,
+			'ticket_options'      => $ticket_options,
+			'custom_fields'       => $custom_fields,
 		));
 
 		$client_messages = false;
