@@ -1367,7 +1367,7 @@ class TicketSearch extends SearcherAbstract
 								$joins[] = array(
 									'ticket_slas',
 									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
-										. "AND $join_name.sla_status IN ($statuses_in)"
+										. " AND $join_name.sla_status IN ($statuses_in)"
 										. ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
 								);
 								$wheres[] = "$join_name.ticket_id IS NULL";
