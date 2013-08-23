@@ -116,6 +116,7 @@ class KernelBooter
 			}
 		}
 
+		require(DP_ROOT . '/sys/Kernel/compat.php');
 		require(DP_ROOT . '/sys/system.php');
 	}
 
