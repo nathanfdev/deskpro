@@ -1149,6 +1149,13 @@ $collection->add('agent_ticket_ajaxsavesubject', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_ajaxchangeuseremail', new Route(
+	'/tickets/{ticket_id}/ajax-change-email.json',
+	array('_controller' => 'AgentBundle:Ticket:ajaxChangeUserEmail'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_ajaxsaveoptions', new Route(
 	'/tickets/{ticket_id}/ajax-save-options',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveOptions'),

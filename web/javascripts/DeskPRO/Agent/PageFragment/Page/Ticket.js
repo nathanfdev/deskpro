@@ -138,6 +138,67 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initEditName();
 		this._initSlas();
 
+		// Change email menu
+		var emailText = this.getEl('user_email_text');
+		var emailChangeTrig = this.getEl('user_email_menu_trigger');
+		var emailChangeMenu = this.getEl('user_email_menu');
+		var emailChangeBackdrop = null;
+		if (emailChangeTrig[0]) {
+
+			var closeEmailChangeMenu = function() {
+				emailChangeBackdrop.hide();
+				emailChangeMenu.hide();
+			};
+
+			var updateEmailChangePos = function() {
+				var pos = emailChangeTrig.offset();
+				emailChangeMenu.css({
+					left: pos.left + 3,
+					top: pos.top + 32
+				});
+			};
+
+			var openEmailChangeMenu = function() {
+				// Means we're opening fo rhte first time
+				if (!emailChangeBackdrop) {
+					emailChangeBackdrop = $('<div class="backdrop"></div>');
+					emailChangeBackdrop.appendTo('body');
+					emailChangeBackdrop.on('click', function(ev) {
+						ev.stopPropagation();
+						closeEmailChangeMenu();
+					});
+					emailChangeMenu.detach().appendTo('body');
+
+					emailChangeMenu.find('li').on('click', function(ev) {
+						ev.preventDefault();;
+						var item = $(this);
+						var emailId = item.data('email-id');
+						var text = item.text().trim();
+
+						emailText.text(text);
+						closeEmailChangeMenu();
+
+						$.ajax({
+							url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-change-email.json',
+							data: { email_id : emailId },
+							dataType: 'json',
+							type: 'POST'
+						});
+					});
+				}
+
+				emailChangeBackdrop.show();
+				updateEmailChangePos();
+				emailChangeMenu.show();
+			};
+
+
+			emailChangeTrig.on('click', function(ev) {
+				ev.preventDefault();
+				openEmailChangeMenu();
+			});
+		}
+
 		this.billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('billing_wrap'), this.meta.baseId, {
 			auto_start_bill: this.meta.auto_start_bill
 		});
@@ -2324,7 +2385,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
 
-		var statusMenu = new DeskPRO.UI.Menu({
+		var emailChangeMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('task_menu_vis'),
 			onItemClicked: function(info) {
 				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
@@ -2384,7 +2445,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.row-item');
-			statusMenu.open(ev);
+			emailChangeMenu.open(ev);
 		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');
@@ -2817,6 +2878,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (!this.meta.ticket_reverse_order) {
 			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 		}
-		this.ticketReplyBox.openStatusMenu();
+		this.ticketReplyBox.openEmailChangeMenu();
 	}
 });

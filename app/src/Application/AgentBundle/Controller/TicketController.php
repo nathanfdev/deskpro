@@ -1924,6 +1924,22 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function ajaxChangeUserEmailAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_fields');
+
+		$email_id = $this->in->getUint('email_id');
+
+		$new_email = $ticket->person->getEmailId($email_id);
+		if ($new_email) {
+			$ticket->person_email = $new_email;
+			$this->em->persist($ticket);
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	############################################################################
 	# ajax-get-macro-actions
 	############################################################################

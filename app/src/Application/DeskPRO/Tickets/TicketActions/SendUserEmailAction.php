@@ -127,9 +127,9 @@ class SendUserEmailAction extends AbstractAction
 
 		App::getTranslator()->setTemporaryLanguage($ticket->getLanguage(), function($tr, $lang) use ($template_name, $vars, $from_address, $ticket, $person, $parts) {
 
-			$email = $person->getPrimaryEmailAddress();
+			$email = $ticket->getPersonEmailAddress();
 			if(!$email && $ticket->person_email_validating) {
-				$email = $ticket->person_email_validating;
+				$email = $ticket->person_email_validating->email;
 			}
 
 			if (!$email) {
