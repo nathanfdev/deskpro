@@ -1098,7 +1098,7 @@ class FilestorageLoader extends LoaderAbstract
 					$width  = $req_w;
 					$height = $req_h;
 
-					$size      = new \Imagine\Image\Box($req_w, $req_h);
+					$size_box  = new \Imagine\Image\Box($req_w, $req_h);
 
 					$mode      = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
 					$resizeimg = $image->thumbnail($size, $mode);
@@ -1106,7 +1106,7 @@ class FilestorageLoader extends LoaderAbstract
 					$widthR    = $sizeR->getWidth();
 					$heightR   = $sizeR->getHeight();
 
-					$preserve  = $container->getImagine()->create($size);
+					$preserve  = $container->getImagine()->create($size_box);
 					$startX = $startY = 0;
 					if ( $widthR < $width ) {
 						$startX = ( $width - $widthR ) / 2;
