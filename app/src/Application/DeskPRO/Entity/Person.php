@@ -1460,7 +1460,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$search = strtolower($search);
 
-		if (count($this->emails) == 1) {
+		if (count($this->emails) == 1 || !trim($search)) {
 			return $this->getPrimaryEmailAddress();
 		}
 
