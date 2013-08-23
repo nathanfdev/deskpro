@@ -130,7 +130,7 @@ class SendmailQueueController extends AbstractController
 		}
 
 		$limit_start = ($page - 1) * $per_page;
-		$sql .= "ORDER BY id ASC LIMIT $limit_start, 1000";
+		$sql .= "ORDER BY id ASC LIMIT $limit_start, $per_page";
 
 		$results     = $this->db->fetchAll($sql);
 		$num_results = $this->db->fetchColumn($sql_count);
