@@ -64,7 +64,17 @@ class TicketSearchController extends AbstractController
 			'workflow_id'     => TicketSearch::TERM_WORKFLOW,
 			'sla_id'          => TicketSearch::TERM_SLA,
 			'sla_status'      => TicketSearch::TERM_SLA_STATUS,
-			'sla_completed'   => TicketSearch::TERM_SLA_COMPLETED
+			'sla_completed'   => TicketSearch::TERM_SLA_COMPLETED,
+		);
+
+		$date_search_map = array(
+			'date_created'          => TicketSearch::TERM_DATE_CREATED,
+			'date_resolved'         => TicketSearch::TERM_DATE_RESOLVED,
+			'date_archived'         => TicketSearch::TERM_DATE_CLOSED,
+			'date_status'           => TicketSearch::TERM_DATE_STATUS,
+			'date_last_agent_reply' => TicketSearch::TERM_DATE_LAST_AGENT_REPLY,
+			'date_last_user_reply'  => TicketSearch::TERM_DATE_LAST_USER_REPLY,
+			'date_last_reply'       => TicketSearch::TERM_DATE_LAST_REPLY,
 		);
 
 		$terms = array();
@@ -74,6 +84,89 @@ class TicketSearchController extends AbstractController
 			if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
 				$terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
 			}
+		}
+
+		$proc_date_input = function($date_input) {
+			$date = null;
+			if (Numbers::isTimestamp($date_input)) {
+				try {
+					$date = new \DateTime("@$date_input");
+				} catch (\Exception $e) {
+					$date = null;
+				}
+			}
+
+			if (!$date) {
+				try {
+					$date = \DateTime::createFromFormat(\DateTime::ISO8601, $date_input);
+				} catch (\Exception $e) {
+					$date = null;
+				}
+			}
+
+			if (!$date) {
+				try {
+					$date = \DateTime::createFromFormat('Y-m-d H:i:s', $date_input, new \DateTimeZone('UTC'));
+				} catch (\Exception $e) {
+					$date = null;
+				}
+			}
+
+			if (!$date) {
+				try {
+					$date = \DateTime::createFromFormat('Y-m-d', $date_input, new \DateTimeZone('UTC'));
+					$date->setTime(0,0,0);
+				} catch (\Exception $e) {
+					$date = null;
+				}
+			}
+
+			return $date;
+		};
+
+		foreach ($date_search_map as $input => $search_key) {
+			$raw = $this->in->getString($input);
+			if (!$raw) {
+				continue;
+			}
+
+			$date1 = null;
+			$date2 = null;
+
+			if (strpos($raw, '/') !== false) {
+				$op = 'between';
+				list ($date1_input, $date2_input) = explode('/', $raw, 2);
+
+				$date1 = $proc_date_input($date1_input);
+				$date2 = $proc_date_input($date2_input);
+
+				if (!$date1 || !$date2) {
+					return $this->createApiErrorResponse('invalid_term', "$input includes a bad date range: $raw. Expected format: date1/date2 where the dates are unix timestamps or ISO 8601");
+				}
+
+				$options = array('date1' => $date1, 'date2' => $date2);
+
+			} else {
+				$op_sym = $raw[0];
+				$raw = substr($raw, 1);
+
+				if ($op_sym == '<' || $op_sym == '<=') {
+					$op = 'lt';
+				} else if ($op_sym == '>' || $op_sym == '>=') {
+					$op = 'gt';
+				} else {
+					return $this->createApiErrorResponse('invalid_term', "$input includes a bad operator: $op_sym. Expected '<' or '>'");
+				}
+
+				$date1 = $proc_date_input($raw);
+				if (!$date1) {
+					return $this->createApiErrorResponse('invalid_term', "$input includes a bad date: $raw. Expected format is a unix timestamp or ISO 8601");
+				}
+
+				$options = array('date1' => $date1);
+			}
+
+			$terms[] = array('type' => $search_key, 'op' => $op, 'options' => $options);
 		}
 
 		foreach ($this->container->getSystemService('ticket_fields_manager')->getFields() as $field) {

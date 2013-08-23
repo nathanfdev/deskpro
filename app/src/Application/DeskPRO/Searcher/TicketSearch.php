@@ -69,6 +69,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_DATE_CREATED              = 'date_created';
 	const TERM_DATE_RESOLVED             = 'date_resolved';
 	const TERM_DATE_CLOSED               = 'date_closed';
+	const TERM_DATE_STATUS               = 'date_status';
 	const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
 	const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
 	const TERM_DATE_LAST_REPLY           = 'date_last_reply';
@@ -1174,6 +1175,11 @@ class TicketSearch extends SearcherAbstract
 					case self::TERM_DATE_CREATED:
 						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
+						break;
+					case self::TERM_DATE_STATUS:
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_status", $op, $choice);
+						$this->enableArchiveSearch();
 						break;
 					case self::TERM_DATE_RESOLVED:
 						$this->enableArchiveSearch();

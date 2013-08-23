@@ -353,4 +353,17 @@ class Numbers
 
 		return $suffix;
 	}
+
+
+	/**
+	 * True if input looks like a unix timestamp.
+	 * "Looks like" means a positive integer that is no longer than 10 chars.
+	 *
+	 * @param string $input
+	 * @return bool
+	 */
+	public static function isTimestamp($input)
+	{
+		return self::isInteger($input) && strlen($input) <= 10 && ctype_digit($input);
+	}
 }
