@@ -288,6 +288,16 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 									}
 								});
 
+								if (data.find('> *').length == 1) {
+									var span = $('<span></span>');
+									span.append(data.find('> *'));
+									data = span;
+								} else if (data.find('> *').length == 0) {
+									var span = $('<span></span>');
+									span.html(data.html());
+									data = span;
+								}
+
 								data.append('<span class="_cursor"></span>');
 								var cursor = data.find('._cursor');
 
@@ -336,8 +346,32 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				var val = useText;
 
 				var messageTextarea = self.getEl('replybox_txt')
+
+				var data = $('<div></div>').html(val);
+				if (data.find('> *').length == 1) {
+					var span = $('<span></span>');
+					span.append(data.find('> *'));
+					data = span;
+				} else if (data.find('> *').length == 0) {
+					var span = $('<span></span>');
+					span.html(data.html());
+					data = span;
+				}
+
+				val = data.html();
+
 				if (messageTextarea.data('redactor')) {
-					messageTextarea.data('redactor').insertHtml(val);
+
+					try {
+						messageTextarea.data('redactor').restoreSelection();
+						messageTextarea.data('redactor').setBuffer();
+					} catch (e) {}
+
+					var html = val;
+					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+					html = html.replace(/^<p>/, '');
+					html = html.replace(/<\/p>$/, '');
+					messageTextarea.data('redactor').insertHtml(html);
 					messageTextarea.change();
 					window.setTimeout(function() {
 						var tmp = ed.height();
