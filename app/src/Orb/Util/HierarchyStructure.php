@@ -181,7 +181,9 @@ class HierarchyStructure
 
 		$cats = array();
 		foreach ($ids as $id) {
-			$cats[$id] = $this->cats[$id];
+			if (isset($this->cats[$id])) {
+				$cats[$id] = $this->cats[$id];
+			}
 		}
 
 		return $cats;
