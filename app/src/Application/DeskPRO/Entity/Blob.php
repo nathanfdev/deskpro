@@ -419,6 +419,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			'authcode' => $this->authcode,
 			'filename' => $this->filename,
 			'filesize' => $this->filesize,
+			'filesize_display' => $this->getReadableFilesize(),
 			'content_type' => $this->content_type,
 			'download_url' => $this->getDownloadUrl(true)
 		);

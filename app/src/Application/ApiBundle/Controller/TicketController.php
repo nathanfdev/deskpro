@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\Entity\Ticket AS Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\SnippetFormatter;
+use Application\DeskPRO\Tickets\TicketDisplay;
 
 class TicketController extends AbstractController
 {
@@ -248,6 +249,9 @@ class TicketController extends AbstractController
 		$data = array('ticket' => $data);
 
 		if ($this->in->getBool('with_messages')) {
+
+			$ticket_display = new TicketDisplay($ticket, $this->person);
+
 			$messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket, array(
 				'with_notes' => true,
 				'limit'      => 10,
@@ -256,7 +260,18 @@ class TicketController extends AbstractController
 
 			$data['messages'] = array();
 			foreach ($messages as $m) {
-				$data['messages'][] = $m->toApiData(true);
+				$msg_data = $m->toApiData(true);
+				$msg_data['message'] = $m->procInlineAttach($msg_data['message']);
+
+				$attach = $ticket_display->getMessageAttachments($m, false);
+				if ($attach) {
+					$msg_data['attachments'] = array();
+					foreach ($attach as $a) {
+						$msg_data['attachments'][] = $a->toApiData(true);
+					}
+				}
+
+				$data['messages'][] = $msg_data;
 			}
 		}
 
@@ -555,6 +570,10 @@ class TicketController extends AbstractController
 
 		if ($this->in->getBool('suppress_user_notify')) {
 			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+		}
+
+		if ($this->in->getString('status')) {
+			$ticket->status = $this->in->getString('status');
 		}
 
 		// need to ensure we treat things as the message owner
