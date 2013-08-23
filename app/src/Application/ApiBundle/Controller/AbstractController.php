@@ -141,7 +141,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 
-		if ($person && $person->is_agent) {
+		if ($person && $person->is_agent && !$person->is_deleted && !$person->is_disabled) {
 			App::setCurrentPerson($person);
 
 			$this->person = $person;
