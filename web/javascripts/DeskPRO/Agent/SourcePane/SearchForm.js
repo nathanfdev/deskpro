@@ -13,6 +13,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 	initialize: function(el) {
 		var self = this;
 		this.el = el;
+		this.origHtml = el.html();
 		this.hasInit = false;
 
 		this.formPanels = [];
@@ -22,6 +23,17 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 		this.el.on('dp_activated', function() {
 			self.initPanel();
 		});
+	},
+
+	reset: function() {
+		this.el.html(this.origHtml);
+		Array.each(this.formPanels, function(formPanel) {
+			formPanel.destroy();
+		});
+		this.formPanels = [];
+		this.widgets = [];
+		this.hasInit = false;
+		this.initPanel();
 	},
 
 	getFormData: function() {
@@ -70,6 +82,11 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 				$(this).data('search-url'),
 				{postData: postData}
 			);
+		});
+
+		this.el.find('.reset-form-trigger').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			self.reset();
 		});
 
 		this.initStandardFormElements(this.el);
