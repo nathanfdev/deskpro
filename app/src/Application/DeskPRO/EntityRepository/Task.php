@@ -719,7 +719,7 @@ class Task extends AbstractEntityRepository
 		return $query->getResult();
 	}
 
-	public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context)
+	public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context, $all = false)
 	{
 		$person_context->loadHelper('Agent');
 		if ($person_context->Agent->getTeamIds()) {
@@ -730,20 +730,36 @@ class Task extends AbstractEntityRepository
 
 		$team_ids = implode(',', $team_ids);
 
-		$task_ids = App::getDb()->fetchAllCol("
-			SELECT tasks.id
-			FROM tasks
-			LEFT JOIN task_associations ON task_associations.task_id = tasks.id
-			WHERE
-				tasks.is_completed = 0
-				AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN ($team_ids)) OR tasks.visibility = 1)
-				AND task_associations.ticket_id = ?
-				ORDER BY tasks.date_due ASC
-		", array(
-			$person_context->getId(),
-			$person_context->getId(),
-			$ticket->getId()
-		));
+		if ($all) {
+			$task_ids = App::getDb()->fetchAllCol("
+				SELECT tasks.id
+				FROM tasks
+				LEFT JOIN task_associations ON task_associations.task_id = tasks.id
+				WHERE
+					((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN ($team_ids)) OR tasks.visibility = 1)
+					AND task_associations.ticket_id = ?
+					ORDER BY tasks.date_due ASC
+			", array(
+				$person_context->getId(),
+				$person_context->getId(),
+				$ticket->getId()
+			));
+		} else {
+			$task_ids = App::getDb()->fetchAllCol("
+				SELECT tasks.id
+				FROM tasks
+				LEFT JOIN task_associations ON task_associations.task_id = tasks.id
+				WHERE
+					tasks.is_completed = 0
+					AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN ($team_ids)) OR tasks.visibility = 1)
+					AND task_associations.ticket_id = ?
+					ORDER BY tasks.date_due ASC
+			", array(
+				$person_context->getId(),
+				$person_context->getId(),
+				$ticket->getId()
+			));
+		}
 
 		if (!$task_ids) {
 			return array();

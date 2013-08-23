@@ -159,7 +159,7 @@ class TicketController extends AbstractController
 		# Linked tasks
 		#------------------------------
 
-		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
+		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person, true);
 
 		$addable_slas = $this->em->getRepository('DeskPRO:Sla')->getAddableSlas($ticket);
 		$ticket_api = array();
