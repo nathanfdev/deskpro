@@ -164,7 +164,7 @@
 			<select name="priority">
 				<option value="0">None</option>
 				{% for id,name in app.getDataService('TicketPriority').getNames() %}
-					<option value="{{ id }}">{{ title }}</option>
+					<option value="{{ id }}">{{ name }}</option>
 				{% endfor %}
 			</select>
 		</div>
