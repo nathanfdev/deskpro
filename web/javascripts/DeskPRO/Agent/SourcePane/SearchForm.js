@@ -74,7 +74,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 			self.formPanels.push(panel);
 		});
 
-		this.el.find('.trigger-submit-search').on('click', function(ev) {
+		var submitBtn = this.el.find('.trigger-submit-search').on('click', function(ev) {
 			Orb.cancelEvent(ev);
 			var postData = self.getFormData();
 
@@ -83,10 +83,17 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 				{postData: postData}
 			);
 		});
+		submitBtn = submitBtn.first();
 
 		this.el.find('.reset-form-trigger').on('click', function(ev) {
 			Orb.cancelEvent(ev);
 			self.reset();
+		});
+
+		this.el.find('input[type="text"]').on('keypress', function(ev) {
+			if (ev.keyCode == 13 /* enter key */) {
+				submitBtn.click();
+			}
 		});
 
 		this.initStandardFormElements(this.el);
