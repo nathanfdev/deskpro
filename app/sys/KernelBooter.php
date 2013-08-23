@@ -617,6 +617,30 @@ class KernelBooter
 			return;
 		}
 
+		$lock_file = dp_get_tmp_dir() . '/cron.lock';
+		$lock_fp = null;
+
+		// Use a file lock for better "cron is still running" detection
+		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+			if (!in_array('-f', $_SERVER['argv']) && !in_array('--force', $_SERVER['argv'])) {
+				if (file_exists($lock_file)) {
+					$lock_fp = @fopen($lock_file, 'r+');
+				} else {
+					$lock_fp = @fopen($lock_file, 'w');
+				}
+				if ($lock_fp) {
+					if (!@flock($lock_fp, \LOCK_EX | \LOCK_NB)) {
+						if (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv'])) {
+							echo "Lock file still locked, cron already running: $lock_file\n";
+						}
+						exit;
+					}
+
+					@fwrite($lock_fp, time());
+				}
+			}
+		}
+
 		$check_twitter = false;
 
 		$do_upgrade = false;
@@ -693,6 +717,12 @@ class KernelBooter
 		$app->setAutoExit(false);
 		$return = $app->run($input);
 		$GLOBALS['DP_IS_IN_CLI'] = false;
+
+		if ($lock_fp) {
+			@flock($lock_fp, LOCK_UN);
+			@fclose($lock_fp);
+			@unlink($lock_file);
+		}
 
 		return $return;
 	}
