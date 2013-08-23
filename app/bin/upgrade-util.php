@@ -427,6 +427,8 @@ class Upgrade
 
 	public function runAction_auto()
 	{
+
+
 		$time_start = microtime(true);
 
 		$is_quiet        = in_array('--quiet', $this->argv);
@@ -463,6 +465,7 @@ class Upgrade
 				$that->log($status);
 
 				@file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
+				@file_put_contents(dp_get_tmp_dir() . '/auto-upgrade-started', time());
 			};
 
 			if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.php', 'w'))) {
@@ -652,6 +655,7 @@ class Upgrade
 			$this->outAndLog("Failed basic checks");
 
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 			$e = new \RuntimeException("Failed basic checks");
 			$this->sendLog($e);
@@ -668,6 +672,7 @@ class Upgrade
 			$this->getLatestVersion();
 		} catch (ServiceCallException $e) {
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 			$write_status("error_server_comm", $e->getMessage());
 			$this->outAndLog("Error communicating with server: " . $e->getMessage());
@@ -686,6 +691,7 @@ class Upgrade
 			}
 
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 			exit(0);
 		}
 
@@ -709,6 +715,7 @@ class Upgrade
 			$write_status("downloading_update_done");
 		} catch (\Exception $e) {
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 			$write_status("error_downloading_update", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
@@ -744,6 +751,7 @@ class Upgrade
 		} catch (\Exception $e) {
 			$write_status("error_backup_files", $e->getMessage());
 			$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+			$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 			$this->sendLog($e);
@@ -772,6 +780,7 @@ class Upgrade
 		} catch (\Exception $e) {
 			$write_status("error_backup_db", $e->getMessage());
 			$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+			$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 			$this->sendLog($e);
@@ -829,6 +838,7 @@ class Upgrade
 
 		if (!$is_quiet) $this->out("-> Done");
 		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		if (!$is_quiet) $this->out("Helpdesk turned on");
 		$write_status('helpdesk_online');
@@ -862,6 +872,7 @@ class Upgrade
 		}
 
 		unlink(dp_get_data_dir().'/auto-update-is-running.trigger');
+		@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		$this->revert_checkpoint = null;
 	}
@@ -1972,6 +1983,7 @@ class Upgrade
 function Upgrade_Shutdown_Function()
 {
 	@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+	@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 	global $UPGRADE_CLEANUP;
 	if (!$UPGRADE_CLEANUP) {
@@ -1996,6 +2008,7 @@ function Upgrade_Shutdown_Function()
 
 	try {
 		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 	} catch (\Exception $e) {}
 
 	$UPGRADE_CLEANUP = null;
@@ -2652,6 +2665,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		}
 
 		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		$this->outHeader("DONE");
 		$this->out();
@@ -2834,6 +2848,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$fileutil = new FilesystemUtil();
 		$fileutil->remove(dp_get_data_dir().'/auto-update-is-running.trigger');
+		$fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		$e = new \Exception($message);
 		$this->upgrade->sendLog($e);

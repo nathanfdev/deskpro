@@ -93,7 +93,13 @@ if (!DP_REAL_ERROR_LOG) {
 #------------------------------
 
 if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgrade')) {
-	if (file_exists(DP_WEB_ROOT.'/auto-update-is-running.trigger') || (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED == 'upgrading')) {
+	if (
+		// The upgrade is still marked as running -- this is the point the helpdesk is actually supposed to be off
+		(file_exists(DP_WEB_ROOT.'/auto-update-is-running.trigger') || (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED == 'upgrading'))
+
+		// But on the CLI/command, we turn off when the upgrade is actually started (while its doing backups etc could be a while)
+		|| (file_exists(dp_get_tmp_dir() . '/auto-upgrade-started') && intval(trim(file_get_contents(dp_get_tmp_dir() . '/auto-upgrade-started'))) > time() - 600)
+	) {
 		if (php_sapi_name() == 'cli') {
 			echo "Currently installing updates";
 			die(0);

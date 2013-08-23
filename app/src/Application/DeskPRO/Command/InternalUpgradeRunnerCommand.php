@@ -73,6 +73,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			// Otherwise assume crashed and continue
 		}
 
+		@file_put_contents(dp_get_tmp_dir() . '/auto-upgrade-started', time());
+
 		if (file_exists(DP_WEB_ROOT . '/auto-update-status.php')) {
 			@unlink(DP_WEB_ROOT . '/auto-update-status.php');
 		}
@@ -119,6 +121,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', 1);
 			$output->write('<error>Could not write upgrade status file to root dir: ' . DP_WEB_ROOT . '</error>');
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 			return 1;
 		}
 
@@ -132,6 +135,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$write_status("error_basic_checks_fail");
 			$output->write('<error>Could not find path to PHP</error>');
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 			return 1;
 		}
 
@@ -165,6 +169,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 				$write_status("error_basic_checks_fail");
 				$output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
 				@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+				@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 				return 1;
 			}
 		}
@@ -197,6 +202,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
 			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
 			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 			return 1;
 		}
@@ -241,6 +247,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
 		@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+		@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
 
 		return $ret;
 	}
