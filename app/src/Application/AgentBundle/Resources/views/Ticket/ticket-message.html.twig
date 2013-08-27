@@ -95,6 +95,12 @@
 								Email
 							{% elseif message.creation_system == 'gateway.agent' %}
 								Email (by agent)
+							{% elseif message.creation_system == 'web.api' %}
+								API
+							{% elseif message.creation_system == 'web.api.mobile.agent' %}
+								Mobile (by agent)
+							{% elseif message.creation_system == 'web.api.mobile.person' %}
+								Mobile (by user)
 							{% else %}
 								{{ message.creation_system }}
 							{% endif %}
