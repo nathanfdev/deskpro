@@ -538,6 +538,10 @@ class TicketController extends AbstractController
 		$message['ip_address'] = dp_get_user_ip_address();
 		$message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
+		if ($this->in->getBool('dp_is_mobile')) {
+			$message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_MOBILE_AGENT;
+		}
+
 		$notify_agent_ids = array();
 
 		if ($this->in->getBool('message_is_html')) {

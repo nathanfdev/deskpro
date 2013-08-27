@@ -51,6 +51,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	const CREATED_WEB_AGENT         = 'web.agent';
 	const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
 	const CREATED_WEB_API           = 'web.api';
+	const CREATED_MOBILE_AGENT      = 'web.api.mobile.agent';
+	const CREATED_MOBILE_PERSON     = 'web.api.mobile.person';
 	const CREATED_GATEWAY_PERSON    = 'gateway.person';
 	const CREATED_GATEWAY_AGENT     = 'gateway.agent';
 
