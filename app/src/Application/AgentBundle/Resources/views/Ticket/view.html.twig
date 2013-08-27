@@ -518,7 +518,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">Remove ticket from hold</li>
 	{% if ticket_perms.modify_merge %}<li data-action="split">Split Messages to New Ticket</li>{% endif %}
 	<li data-action="kb-pending">Create a new pending article</li>
-	<li data-action="print">{{ phrase('agent.general.print') }}</li>
+	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'view_print': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.print') }}</a></li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
 </ul>
 

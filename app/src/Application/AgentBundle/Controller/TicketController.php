@@ -326,8 +326,7 @@ class TicketController extends AbstractController
 			'person_object_counts'       => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person),
 		);
 
-        if($is_pdf)
-        {
+        if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
 
             $mpdf = new \mPDF_mPDF
@@ -365,6 +364,11 @@ class TicketController extends AbstractController
 
             return $response;
         }
+
+		if ($this->in->getBool('view_print')) {
+			$vars['print'] = true;
+			return $this->render('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+		}
 
 		return $this->render($tpl, $vars);
 	}
