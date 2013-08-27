@@ -426,6 +426,16 @@ class MainController extends AbstractController
 
 		$people_top = false;
 
+		if (!$q) {
+			return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+				'q' => $q,
+				'router' => App::getRouter(),
+				'results' => $results,
+				'result_meta' => $result_meta,
+				'people_top' => $people_top,
+			));
+		}
+
 		#------------------------------
 		# ID based
 		#------------------------------
@@ -533,6 +543,7 @@ class MainController extends AbstractController
 					FROM $table
 					WHERE $where
 					ORDER BY id DESC
+					LIMIT 25
 				");
 
 				if ($ids) {
@@ -715,7 +726,7 @@ class MainController extends AbstractController
 							FROM DeskPRO:Person p
 							WHERE p.organization IN (?0)
 							ORDER BY p.date_last_login DESC, p.id DESC
-						")->execute(array($oids));
+						")->setMaxResults(100)->execute(array($oids));
 						foreach ($people as $p) {
 							$results['person'][$p->id] = $p;
 						}
