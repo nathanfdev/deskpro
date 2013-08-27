@@ -67,6 +67,10 @@ class GeneralChecker extends AbstractChecker
 
 	public function canSetPicture()
 	{
+		if (!$this->person->is_agent) {
+			return true;
+		}
+
 		return $this->person->hasPerm('agent_general.picture');
 	}
 }

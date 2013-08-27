@@ -86,48 +86,50 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			}
 
 			/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
-			$file = $this->request->files->get('new_picture');
-			if ($file && $file->getClientSize()) {
-				$accept = $this->container->getAttachmentAccepter();
+			if ($this->person->getPermissionsManager()->get('GeneralChecker')->canSetPicture()) {
+				$file = $this->request->files->get('new_picture');
+				if ($file && $file->getClientSize()) {
+					$accept = $this->container->getAttachmentAccepter();
 
-				$picture_error = $accept->getError($file, 'user');
-				if ($picture_error) {
-					switch ($picture_error['error_code']) {
-						case 'size': $phrase_id = 'user.error.attach_size'; break;
-						case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
-						case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
-						case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
-						case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
-						case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+					$picture_error = $accept->getError($file, 'user');
+					if ($picture_error) {
+						switch ($picture_error['error_code']) {
+							case 'size': $phrase_id = 'user.error.attach_size'; break;
+							case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
+							case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
+							case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
+							case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
+							case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+						}
+						$picture_error['error'] = $this->container->getTranslator()->phrase($phrase_id, $picture_error);
 					}
-					$picture_error['error'] = $this->container->getTranslator()->phrase($phrase_id, $picture_error);
-				}
-				if (!$picture_error) {
-					$set = new \Application\DeskPRO\Attachments\RestrictionSet();
-					$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
-					$accept->addRestrictionSet('only_images', $set);
-					$picture_error = $accept->getError($file, 'only_images');
-				}
+					if (!$picture_error) {
+						$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+						$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+						$accept->addRestrictionSet('only_images', $set);
+						$picture_error = $accept->getError($file, 'only_images');
+					}
 
-				if (!$picture_error) {
-					$blob = $accept->accept($file);
-					$this->person->setPictureBlob($blob);
-					$new_blob_key = $blob->getId() . '-' . $blob->getAuthId();
-				}
-			} else {
-				$new_blob_key = $this->in->getString('new_blob_key');
-				if ($new_blob_key) {
-					list($id, $auth_code) = explode('-', $new_blob_key);
-					$blob = $this->em->getRepository('DeskPRO:Blob')->find($id);
-					if ($new_blob_key && $blob->getAuthId() == $auth_code) {
+					if (!$picture_error) {
+						$blob = $accept->accept($file);
 						$this->person->setPictureBlob($blob);
+						$new_blob_key = $blob->getId() . '-' . $blob->getAuthId();
+					}
+				} else {
+					$new_blob_key = $this->in->getString('new_blob_key');
+					if ($new_blob_key) {
+						list($id, $auth_code) = explode('-', $new_blob_key);
+						$blob = $this->em->getRepository('DeskPRO:Blob')->find($id);
+						if ($new_blob_key && $blob->getAuthId() == $auth_code) {
+							$this->person->setPictureBlob($blob);
+						}
 					}
 				}
-			}
 
-			if ($this->in->getBool('remove_picture')) {
-				$this->person->setPictureBlob(null);
-				$new_blob_key = false;
+				if ($this->in->getBool('remove_picture')) {
+					$this->person->setPictureBlob(null);
+					$new_blob_key = false;
+				}
 			}
 
 			if ($is_valid) {
