@@ -268,7 +268,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 								var wrapper = $('<div/>');
 								wrapper.html(useText);
 
-								if (wrapper.find('> *')[0]) {
+								if (wrapper.find('> div, > p, > span')[0]) {
 									data = wrapper.find('> *');
 								} else {
 									data = wrapper;
@@ -288,7 +288,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 									}
 								});
 
-								if (data.find('> *').length == 1) {
+								if (data.find('> div, > span, > p').length == 1) {
 									var span = $('<span></span>');
 									span.append(data.find('> *'));
 									data = span;
@@ -348,11 +348,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				var messageTextarea = self.getEl('replybox_txt')
 
 				var data = $('<div></div>').html(val);
-				if (data.find('> *').length == 1) {
+				if (data.find('> span, > div, > p').length == 1) {
 					var span = $('<span></span>');
 					span.append(data.find('> *'));
 					data = span;
-				} else if (data.find('> *').length == 0) {
+				} else if (data.find('> span, > div, > p').length == 0) {
 					var span = $('<span></span>');
 					span.html(data.html());
 					data = span;
