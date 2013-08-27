@@ -65,7 +65,7 @@ class TicketTriggers extends AbstractLogAction
 				$tr[] = $t->id;
 
 				if ($t->title) {
-					if ($t->sys_name) {
+					if ($t->sys_name && App::getTranslator()->hasPhrase($t->getSysPhraseName())) {
 						$tr_names[] = App::getTranslator()->phrase($t->getSysPhraseName()) . " ({$t->id})";
 					} else {
 						$tr_names[] =  "{$t->title} ({$t->id})";
