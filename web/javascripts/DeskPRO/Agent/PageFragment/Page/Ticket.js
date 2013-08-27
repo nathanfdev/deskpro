@@ -2385,7 +2385,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
 
-		var emailChangeMenu = new DeskPRO.UI.Menu({
+		var statusMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('task_menu_vis'),
 			onItemClicked: function(info) {
 				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
@@ -2445,7 +2445,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.row-item');
-			emailChangeMenu.open(ev);
+			statusMenu.open.open(ev);
 		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');
@@ -2878,6 +2878,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (!this.meta.ticket_reverse_order) {
 			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 		}
-		this.ticketReplyBox.openEmailChangeMenu();
+		this.ticketReplyBox.openStatusMenu();
 	}
 });
