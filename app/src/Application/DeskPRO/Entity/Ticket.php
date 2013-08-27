@@ -1546,7 +1546,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($dep) {
 			// For backwards compat, with TicketChangeTracker::getOriginalTicket,
 			// dont apply for that
-			if (!$this->_no_persist) {
+			if (!$this->_isNoPersist()) {
 				if (!$dep->is_tickets_enabled) {
 					$e = new \InvalidArgumentException("Department is not a ticket department");
 					KernelErrorHandler::logException($e, true, 'ticket_dep_err1');
