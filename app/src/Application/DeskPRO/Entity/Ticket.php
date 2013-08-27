@@ -1542,17 +1542,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setDepartment(Department $dep = null)
 	{
+		// Dep check
 		if ($dep) {
-			if (!$dep->is_tickets_enabled) {
-				$e = new \InvalidArgumentException("Department is not a ticket department");
-				KernelErrorHandler::logException($e, true, 'ticket_dep_err1');
-				return;
-			}
+			// For backwards compat, with TicketChangeTracker::getOriginalTicket,
+			// dont apply for that
+			if (!$this->_no_persist) {
+				if (!$dep->is_tickets_enabled) {
+					$e = new \InvalidArgumentException("Department is not a ticket department");
+					KernelErrorHandler::logException($e, true, 'ticket_dep_err1');
+					return;
+				}
 
-			if (count($dep->children)) {
-				$e = new \InvalidArgumentException("Department is a parent");
-				KernelErrorHandler::logException($e, true, 'ticket_dep_err2');
-				return;
+				if (count($dep->children)) {
+					$e = new \InvalidArgumentException("Department is a parent");
+					KernelErrorHandler::logException($e, true, 'ticket_dep_err2');
+					return;
+				}
 			}
 		}
 
