@@ -277,21 +277,25 @@ class DepartmentDataService extends BaseRepositoryService
 
 	public function getParentNodes()
 	{
+		$this->preload();
 		return $this->getByIds(array_keys($this->nodes_with_children));
 	}
 
 	public function getParentNodeIds()
 	{
+		$this->preload();
 		return array_keys($this->nodes_with_children);
 	}
 
 	public function getLeafNodeIds()
 	{
+		$this->preload();
 		return $this->leaf_node_ids;
 	}
 
 	public function getLeafNodes()
 	{
+		$this->preload();
 		return $this->getByIds($this->leaf_node_ids);
 	}
 
