@@ -8,6 +8,17 @@
 <div class="pane-content pane-content-main">
 
 	{% macro twitter_sub_grouping(type, route, account, grouping, agents, teams) %}
+		<div class="item-form" style="display: none;">
+			<div class="select-value-wrap">
+				<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
+				<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
+					<option value="">{{ phrase('agent.twitter.select_group_var') }}</option>
+					<option {% if group_by == 'type' %}selected="selected"{% endif %} value="type">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.type') }}</option>
+					<option {% if group_by == 'agent' %}selected="selected"{% endif %} value="agent">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent') }}</option>
+					<option {% if group_by == 'team' %}selected="selected"{% endif %} value="team">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.agent_team') }}</option>
+				</select>
+			</div>
+		</div>
 		{% include 'AgentBundle:Twitter:window-sub-grouping.html.twig' with {
 			'group_by': grouping.group,
 			'data': grouping.data,
@@ -24,7 +35,7 @@
 			<ul class="nav-list" id="twitter-section-counts-{{ account.id }}">
 				<li class="is-nav-item" data-type="mine" data-grouping-ignore="agent,team" data-initial-grouping="{{ groupings[account.id].mine.group }}">
 					<div class="item" data-route="listpane:{{ path('agent_twitter_mine_list', {'account_id': account.id}) }}">
-						<i class="dp-toggle-icon icon-caret-right click-through"></i>
+						<i class="dp-toggle-icon {% if not groupings[account.id].mine.group %}icon-caret-right{% else %}icon-caret-down{% endif %} click-through"></i>
 						<h3>{{ phrase('agent.twitter.my_tweets') }}</h3>
 						<em class="counter list-counter twitter-mine-counter" id="twitter_{{ account.id }}_mine_count" data-count="{{ counts[account.id].mine|default(0) }}">{{ counts[account.id].mine|default(0) }}</em>
 					</div>
@@ -34,7 +45,7 @@
 				{% if app.getSetting('core.use_agent_team') %}
 					<li class="is-nav-item" data-type="team" data-grouping-ignore="agent" data-initial-grouping="{{ groupings[account.id].team.group }}">
 						<div class="item" data-route="listpane:{{ path('agent_twitter_team_list', {'account_id': account.id}) }}">
-							<i class="dp-toggle-icon icon-caret-right click-through"></i>
+							<i class="dp-toggle-icon {% if not groupings[account.id].team.group %}icon-caret-right{% else %}icon-caret-down{% endif %} click-through"></i>
 							<h3>{{ phrase('agent.twitter.my_teams_tweets') }}</h3>
 							<em class="counter list-counter twitter-team-counter" id="twitter_{{ account.id }}_team_count" data-count="{{ counts[account.id].team|default(0) }}">{{ counts[account.id].team|default(0) }}</em>
 						</div>
@@ -44,7 +55,7 @@
 
 				<li class="is-nav-item" data-type="unassigned" data-grouping-ignore="agent,team" data-initial-grouping="{{ groupings[account.id].unassigned.group }}">
 					<div class="item" data-route="listpane:{{ path('agent_twitter_unassigned_list', {'account_id': account.id}) }}">
-						<i class="dp-toggle-icon icon-caret-right click-through"></i>
+						<i class="dp-toggle-icon {% if not groupings[account.id].unassigned.group %}icon-caret-right{% else %}icon-caret-down{% endif %} click-through"></i>
 						<h3>{{ phrase('agent.twitter.unassigned_tweets') }}</h3>
 						<em class="counter list-counter twitter-unassigned-counter" id="twitter_{{ account.id }}_unassigned_count" data-count="{{ counts[account.id].unassigned|default(0) }}">{{ counts[account.id].unassigned|default(0) }}</em>
 					</div>
@@ -53,7 +64,7 @@
 
 				<li class="is-nav-item" data-type="all" data-initial-grouping="{{ groupings[account.id].all.group }}">
 					<div class="item" data-route="listpane:{{ path('agent_twitter_all_list', {'account_id': account.id}) }}">
-						<i class="dp-toggle-icon icon-caret-right click-through"></i>
+						<i class="dp-toggle-icon {% if not groupings[account.id].all.group %}icon-caret-right{% else %}icon-caret-down{% endif %} click-through"></i>
 						<h3>{{ phrase('agent.twitter.all_tweets') }}</h3>
 						<em class="counter list-counter twitter-all-counter" id="twitter_{{ account.id }}_all_count" data-count="{{ counts[account.id].all|default(0) }}">{{ counts[account.id].all|default(0) }}</em>
 					</div>

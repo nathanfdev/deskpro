@@ -383,8 +383,8 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 						if (!html.find('li').filter(function() { return $(this).css('display') !== 'none'; }).length) {
 							html.css('display', 'none');
 						}
-						el.find('.nav-list').first().replaceWith(html);
-						el.find('.nav-list').show();
+						el.find('.nav-list-small').first().replaceWith(html);
+						el.find('.nav-list-small').show();
 					}
 				}
 			});
