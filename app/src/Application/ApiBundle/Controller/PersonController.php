@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Entity\Person;
+use Orb\Util\Numbers;
 
 class PersonController extends AbstractController
 {
@@ -112,7 +113,7 @@ class PersonController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$person_ids = $result_cache->results;
 
@@ -748,7 +749,7 @@ class PersonController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$person_ids = $result_cache->results;
 
@@ -788,7 +789,7 @@ class PersonController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$ids = $result_cache->results;
 

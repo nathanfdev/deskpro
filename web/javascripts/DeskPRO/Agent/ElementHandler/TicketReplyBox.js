@@ -1002,6 +1002,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						if (window.DESKPRO_MACRO_LABELS) {
 
 							if (!statusMacroListMap) {
+								statusMacroListMap = {};
 								// Generate map of macro_id => li element
 								for (var i = 0; i < window.DESKPRO_MACRO_LABELS.length; i++) {
 									statusMacroListMap[window.DESKPRO_MACRO_LABELS[i][0]] = document.getElementById(self.baseId + '_res_ticketmacro_' + window.DESKPRO_MACRO_LABELS[i][0]);

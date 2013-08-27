@@ -87,7 +87,7 @@ class OrganizationController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$person_ids = $result_cache->results;
 
@@ -328,7 +328,7 @@ class OrganizationController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 		$offset = $per_page * ($page - 1);
 
 		$activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, $per_page, $offset);
@@ -370,7 +370,7 @@ class OrganizationController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$person_ids = $result_cache->results;
 
@@ -414,7 +414,7 @@ class OrganizationController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$person_ids = $result_cache->results;
 
@@ -464,7 +464,7 @@ class OrganizationController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
 		$chats = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
@@ -592,7 +592,7 @@ class OrganizationController extends AbstractController
 	{
 		$organization = $this->_getOrganizationOr404($organization_id);
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;

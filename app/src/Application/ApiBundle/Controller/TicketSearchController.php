@@ -201,7 +201,7 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$helper = \Application\AgentBundle\Controller\Helper\TicketResults::newFromResultCache($this, $result_cache);
 
@@ -244,10 +244,7 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = $this->in->getUint('per_page');
-		if (!Numbers::inRange($per_page, 1, 100)) {
-			$per_page = 25;
-		}
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$filter = $this->_getFiltersApi()->getFilterFromId($filter_id);
 		$total = $filter->getResultsCount();

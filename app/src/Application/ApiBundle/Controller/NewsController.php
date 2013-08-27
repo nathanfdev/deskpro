@@ -94,7 +94,7 @@ class NewsController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$ids = $result_cache->results;
 
@@ -552,7 +552,7 @@ class NewsController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$per_page = 25;
+		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$ids = $result_cache->results;
 
