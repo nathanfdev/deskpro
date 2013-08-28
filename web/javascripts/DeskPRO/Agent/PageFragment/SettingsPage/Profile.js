@@ -31,6 +31,12 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			var pass1 = $('input.password1', form);
 			var pass2 = $('input.password2', form);
 
+			// Form might not have password fields if agent is from a usersource
+			if (!pass1[0]) {
+				changePass = false;
+				return true;
+			}
+
 			if (pass1.val().length) {
 				changePass = true;
 				if (pass1.val() != pass2.val()) {
