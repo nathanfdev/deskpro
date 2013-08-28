@@ -266,7 +266,13 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_USERNAME];
-		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
+		$driver =  $this->db->getDriver()->getName();
+		if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+          $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
+        }
+        else {
+          $sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
+        }
 
 		$result = $this->db->fetchAssoc($sql, array($username));
 		if (!$result) {
@@ -290,7 +296,13 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_EMAIL];
-		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
+        $driver =  $this->db->getDriver()->getName();
+        if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+          $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
+        }
+        else {
+          $sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
+        }
 
 		$result = $this->db->fetchAssoc($sql, array($email));
 		if (!$result) {
@@ -310,8 +322,13 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	{
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_ID];
-		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
-
+		$driver =  $this->db->getDriver()->getName();
+		if ( $driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' ){
+          $sql = "SELECT TOP 1 * FROM $table WHERE $field = ? ";
+        }
+        else {
+			$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
+		}
 		$result = $this->db->fetchAssoc($sql, array($id));
 		if (!$result) {
 			return null;
