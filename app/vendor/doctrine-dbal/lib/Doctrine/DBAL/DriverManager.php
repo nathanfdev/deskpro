@@ -36,6 +36,7 @@ final class DriverManager
      * @todo REMOVE. Users should directly supply class names instead.
      */
      private static $_driverMap = array(
+            'pdo_dblib' => 'Doctrine\DBAL\Driver\PDODblib\Driver',
             'pdo_mysql'  => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
             'pdo_sqlite' => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
             'pdo_pgsql'  => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
