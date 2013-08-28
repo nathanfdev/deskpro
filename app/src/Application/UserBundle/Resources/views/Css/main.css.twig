@@ -2198,8 +2198,6 @@ dp .dp-new-feedback td {
 	overflow: visible;
 }
 
-
-
 #dp ul.dp-browse-list:first-of-type {
 	border-top: none;
 	margin-top: 0;
@@ -2261,6 +2259,19 @@ dp .dp-new-feedback td {
 	margin-left: 15px;
 	list-style: square;
 	line-height: 150%;
+}
+
+/*
+	Fix missing bullets in webkit (due to bug: https://bugs.webkit.org/show_bug.cgi?id=13332)
+	- Fixing in webkit breaks Firefox, fixing in Firefox breaks Chrome.
+	- Original bug is in webkit, so this is a webkit-specific media query to apply the fix which
+	  wont affect others.
+*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	#dp ul.dp-browse-list > li > ul > li {
+		list-style-position: inside;
+		margin-left: 0;
+	}
 }
 
 /******************
