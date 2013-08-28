@@ -155,16 +155,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}
 					}
 				});
-				var maxH = $('#dp_content_info').height() - 200;
-				ed.css('max-height', maxH);
 				var heightUp = function() {
 					textarea.addClass('touched');
 
 					if (self.page && lastH != ed.height()) {
-						lastH = ed.height();
-
-						maxH = $('#dp_content_info').height() - 200;
-						ed.css('max-height', maxH);
+						var newH = ed.height();
+						var hDiff = newH - lastH;
+						lastH = newH;
 
 						if (!self.page.meta.ticket_reverse_order) {
 							self.page.doScrollBottom = true;
@@ -173,7 +170,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 							if (self.page) {
 								var sEl = self.page.wrapper.find('.layout-content').first().find('.scroll-viewport').first();
 								if (sEl && sEl[0]) {
-									sEl.get(0).scrollTop = 0;
+									sEl.get(0).scrollTop = sEl.get(0).scrollTop + hDiff;
 								}
 								self.page.updateUi();
 							}
