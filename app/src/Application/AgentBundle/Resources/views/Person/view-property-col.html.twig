@@ -253,7 +253,7 @@
 			<div id="{{baseId}}_ug_display_box" class="contact-list">
 				<ul>
 					<li style="padding-left: 0;">{{ reg_group.title }}</li>
-					{% for id,name in app.usergroups.getUsergroupNames() %}
+					{% for id,name in app.usergroups.getUsergroupNames() if id != 2 and id != 1 %}
 						<li class="ug-row ug-row-{{ id }}" {% if not person.isMemberOfUsergroup(id) %}style="display: none"{% endif %}>{{ name }}</li>
 					{% endfor %}
 				</ul>
@@ -263,7 +263,7 @@
 					<div>
 						<label><input type="checkbox" checked="checked" onclick="this.checked=true;" /> {{ reg_group.title }}</label>
 					</div>
-					{% for id,name in app.usergroups.getUsergroupNames() %}
+					{% for id,name in app.usergroups.getUsergroupNames() if id != 2 and id != 1 %}
 						<div>
 							<label><input type="checkbox" value="{{ id }}" name="usergroup_ids[]" class="ug-check ug-check-{{ id }}" {% if person.isMemberOfUsergroup(id) %}checked="checked"{% endif %} /> {{ name }}</label>
 						</div>

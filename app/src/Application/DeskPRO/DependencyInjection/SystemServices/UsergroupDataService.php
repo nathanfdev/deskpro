@@ -115,7 +115,7 @@ class UsergroupDataService extends BaseRepositoryService
 		}
 	}
 
-	public function getUsergroupNames($for_ids = null)
+	public function getNames($for_ids = null)
 	{
 		$this->preload();
 
@@ -136,6 +136,12 @@ class UsergroupDataService extends BaseRepositoryService
 		}
 
 		return $ret;
+	}
+
+	public function getUsergroupNames()
+	{
+		$this->preload();
+		$names = $this->getNames(array_keys($this->user_ugs));
 	}
 
 	public function getAgentUsergroupNames()
