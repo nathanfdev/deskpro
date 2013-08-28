@@ -73,6 +73,7 @@ class PersonSearch extends SearcherAbstract
 	const TERM_IS_CONFIRMED       = 'is_confirmed';
 	const TERM_AGENT_TEAM         = 'person_agent_team';
 	const TERM_AGENT_MODE         = 'agent_mode';
+	const TERM_USER_MODE          = 'user_mode';
 	const TERM_ANY_MODE           = 'any_mode';
 	const TERM_IP_ADDRESS         = 'person_ip';
 
@@ -676,6 +677,10 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_AGENT_MODE:
 					$this->setMode(self::MODE_AGENT);
+					break;
+
+				case self::TERM_USER_MODE:
+					$this->setMode(self::MODE_USER);
 					break;
 
 				case self::TERM_ANY_MODE:

@@ -68,8 +68,12 @@ class PersonController extends AbstractController
 			}
 		}
 
-		if ($this->in->getBool('is_agent')) {
-			$terms[] = array('type' => PersonSearch::TERM_AGENT_MODE, 'op' => 'contains', 'options' => 1);
+		if ($this->in->checkIsset('is_agent')) {
+			if ($this->in->getBool('is_agent')) {
+				$terms[] = array('type' => PersonSearch::TERM_AGENT_MODE, 'op' => 'is', 'options' => 1);
+			} else {
+				$terms[] = array('type' => PersonSearch::TERM_USER_MODE, 'op' => 'is', 'options' => 1);
+			}
 		}
 
 		$date_created_start = $this->in->getUint('date_created_start');
