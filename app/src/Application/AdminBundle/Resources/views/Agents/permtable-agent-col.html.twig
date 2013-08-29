@@ -12,13 +12,15 @@
 		</td>
 		<td class="title">{{ title|raw }}</td>
 		<td class="prop">
+			{% set is_ug_perm = false %}
+			{% for id, ug in usergroup_values %}{% if id and id != 'override' %}{% if ug[permgroup ~ '.' ~ name] %}{% set is_ug_perm = true %}{% endif %}{% endif %}{% endfor %}
 			<input
 				class="onoff-slider override-perm"
 				type="checkbox"
 				name="permissions[{{ permgroup }}][override][{{ name }}]"
 				id="perm_val_override_{{ perm_fname_flat }}"
 				value="1"
-				{% if usergroup_values['override'][permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
+				{% if not is_ug_perm and usergroup_values['override'][permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
 			/>
 			{# Other permission values #}
 			{% for id, ug in usergroup_values %}
