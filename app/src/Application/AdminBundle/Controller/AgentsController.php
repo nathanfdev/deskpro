@@ -1081,66 +1081,7 @@ class AgentsController extends AbstractController
 			#------------------------------
 
 			$ug_perm_matrix = $this->in->getCleanValueArray('permissions', 'raw', 'raw');
-
-			$grouped_perms = array(
-				 'agent_tickets.modify_own'        => '#^agent_tickets.modify_(.*?)_own$#',
-				 'agent_tickets.modify_followed'   => '#^agent_tickets.modify_(.*?)_followed$#',
-				 'agent_tickets.modify_unassigned' => '#^agent_tickets.modify_(.*?)_unassigned$#',
-				 'agent_tickets.modify_others'     => '#^agent_tickets.modify_(.*?)_others$#',
-			);
-
-			$overrides = array();
-			foreach ($ug_perm_matrix as $group => $ug_perms) {
-				foreach (array(0, 1) as $run_num) {
-					foreach ($ug_perms as $ug_id => $perms) {
-
-						// Not one we enabled so we dont care
-						if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
-							continue;
-						}
-
-						foreach ($perms as $perm => $v) {
-
-							if (!$v) {
-								continue; //dont care about non 1's
-							}
-
-							$perm_name = "{$group}.{$perm}";
-							$is_sub = false;
-
-							// If this is a sub-permission and the ug has the parent on,
-							// then this is on too
-							foreach ($grouped_perms as $parent_perm => $pattern) {
-								if (preg_match($pattern, $perm_name)) {
-									$is_sub = $parent_perm;
-								}
-							}
-
-							if ($is_sub) {
-								// First time around we're just building parents
-								if ($run_num == 0) {
-									continue;
-
-								// Second time around we're doing sub-perms
-								} else {
-									// Granted by usergroup permission
-									if (isset($all_ug_perms[$perm_name]) && $all_ug_perms[$perm_name]) {
-										continue;
-
-									// Granted by parent permission of our own override
-									} elseif (isset($overrides[$perm_name]) && $overrides[$perm_name]) {
-										continue;
-									}
-								}
-							}
-
-							if ($ug_id == 'override') {
-								$overrides[$perm_name] = 1;
-							}
-						}
-					}
-				}
-			}
+			$overrides = \Application\DeskPRO\People\Util::resolveOverridePermissions($ug_perm_matrix, $usergroups, $all_ug_perms);
 
 			// Save overrides
 			$this->db->delete('permissions', array('person_id' => $agent->id));
@@ -1491,6 +1432,7 @@ class AgentsController extends AbstractController
 		if ($this->in->getBool('process')) {
 
 			$this->em->getConnection()->beginTransaction();
+			$proc_agents = array();
 
 			try {
 				$usergroup->title = $this->in->getString('usergroup.title');
@@ -1502,7 +1444,11 @@ class AgentsController extends AbstractController
 				$this->db->delete('person2usergroups', array('usergroup_id' => $usergroup->id));
 
 				foreach ($this->in->getCleanValueArray('usergroup.members', 'uint', 'discard') as $pid) {
-					$this->db->insert('person2usergroups', array('usergroup_id' => $usergroup->id, 'person_id' => $pid));
+					$agent = $this->container->getAgentData()->get($pid);
+					if ($agent) {
+						$proc_agents[] = $agent;
+						$this->db->insert('person2usergroups', array('usergroup_id' => $usergroup->id, 'person_id' => $pid));
+					}
 				}
 
 				$this->db->delete('permissions', array('usergroup_id' => $usergroup->id));
@@ -1519,6 +1465,19 @@ class AgentsController extends AbstractController
 			} catch (\Exception $e) {
 				$this->em->getConnection()->rollback();
 				throw $e;
+			}
+
+			// Agents in this group need to have their overrides resolved
+			if ($proc_agents) {
+				foreach ($proc_agents as $agent) {
+					$overrides = \Application\DeskPRO\People\Util::resolveOverridePermissionsForAgent($agent);
+
+					// Save overrides
+					$this->db->delete('permissions', array('person_id' => $agent->id));
+					foreach ($overrides as $perm_name => $v) {
+						$this->db->insert('permissions', array('person_id' => $agent->id, 'name' => $perm_name, 'value' => 1));
+					}
+				}
 			}
 
 			$this->sendAgentReloadSignal();
