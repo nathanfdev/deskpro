@@ -458,7 +458,7 @@ class Translate implements PersonContextInterface
 				$this->_pending_groups[$language_id][] = $check_group;
 
 				$this->_loadPendingPhraseGroups();
-				return $this->getPhraseText($phrase_name, $language_id);
+				return $this->getPhraseText($phrase_name, $language_id, $null_on_notfound);
 			}
 
 			if ($null_on_notfound) {
