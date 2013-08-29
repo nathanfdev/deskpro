@@ -297,7 +297,7 @@ HTML;
 			if ($attempt_person) {
 				$this->db->insert('login_log', array(
 					'person_id'    => $attempt_person->getId(),
-					'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
+					'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
 					'is_success'   => 0,
 					'ip_address'   => dp_get_user_ip_address(),
 					'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
@@ -366,7 +366,7 @@ HTML;
 				// Login log
 				$this->db->insert('login_log', array(
 					'person_id'    => $person->getId(),
-					'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
+					'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
 					'is_success'   => 1,
 					'ip_address'   => dp_get_user_ip_address(),
 					'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
