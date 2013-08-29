@@ -1709,6 +1709,8 @@ class AgentsController extends AbstractController
 			$logs_count = $this->db->fetchColumn("
 				SELECT COUNT(*)
 				FROM login_log
+				LEFT JOIN people ON (people.id = login_log.person_id)
+				WHERE people.is_agent
 			");
 
 			$limit = ($p - 1) * $per_page;
@@ -1716,6 +1718,8 @@ class AgentsController extends AbstractController
 			$logs = $this->db->fetchAll("
 				SELECT *
 				FROM login_log
+				LEFT JOIN people ON (people.id = login_log.person_id)
+				WHERE people.is_agent
 				ORDER BY id DESC
 				LIMIT $limit, $per_page
 			");
