@@ -51,6 +51,11 @@
 			<select name="op" class="op">
 				<option value="is">{{ phrase('agent.general.is') }}</option>
 				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				{% if event_trigger_master == 'update' %}
+					<option value="changed">{{ phrase('agent.general.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+					<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+				{% endif %}
 			</select>
 		</div>
 		<div class="builder-options">
