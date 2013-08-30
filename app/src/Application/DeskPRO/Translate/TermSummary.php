@@ -604,7 +604,11 @@ class TermSummary
 
 			case 'gateway_account':
 				$names = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice['gateway_account']);
-				$summary = $tr->phrase('agent.general.gateway_is_summary', array('names' => implode(', ', $names)));
+				if ($op == self::OP_NOT) {
+					$summary = $tr->phrase('agent.general.gateway_is_not_summary', array('names' => implode(', ', $names)));
+				} else {
+					$summary = $tr->phrase('agent.general.gateway_is_summary', array('names' => implode(', ', $names)));
+				}
 				break;
 
 			case 'action_performer':
