@@ -315,6 +315,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 		if ($r->count() == 1) {
 			$arr = $r->getFirst();
+			$arr['domain'] = $this->options['accountDomainName'];
 			$arr['accountDomainName'] = $this->options['accountDomainName'];
 			return $arr;
 		}
@@ -374,6 +375,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 		if ($r->count() == 1) {
 			$arr = $r->getFirst();
+			$arr['domain'] = $this->options['accountDomainName'];
 			$arr['accountDomainName'] = $this->options['accountDomainName'];
 			return $arr;
 		}
