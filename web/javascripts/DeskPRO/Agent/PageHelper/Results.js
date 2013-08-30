@@ -359,6 +359,10 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			}
 		}
 
+		if (this.options.postSetNewResults) {
+			this.options.postSetNewResults();
+		}
+
 		this.updateShowingCount();
 
 		this.fireEvent('postSetNewResults', [this, this.resultsContainer, results]);
