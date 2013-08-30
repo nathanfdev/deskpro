@@ -267,6 +267,17 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			var wheelStopTimeout = null;
 			var mouseoverTimeout = null;
 
+			// - Sometimes the browser might scroll the view,
+			//   which is different than the position offset
+			//   used by this JS scroller
+			// - So this creates a scroll + our offset,
+			//   which screws up the whole thing
+			// - A browser modifies the scroll when focusing fields
+			//   or links (eg if you were to tab through, or when we auto-focus the reply box)
+			oViewport.obj.on('scroll', function(ev) {
+				oViewport.obj.scrollTop(0);
+			});
+
 			if (this.length > 1){
 				this.each(function(){$(this).tinyscrollbar(options)});
 				return this;
