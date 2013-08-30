@@ -209,6 +209,7 @@
 	'agent.general.field_type_choice'                       => 'Pre-defined choices',
 	'agent.general.field_type_toggle'                       => 'On/off checkbox',
 	'agent.general.field_type_date'                         => 'A date input widget',
+	'agent.general.field_type_data'                         => 'Data',
 	'agent.general.field_type_display'                      => 'HTML Display',
 	'agent.general.field_type_text'                         => 'Text box',
 	'agent.general.field_type_textarea'                     => 'Multi-line text area box',
