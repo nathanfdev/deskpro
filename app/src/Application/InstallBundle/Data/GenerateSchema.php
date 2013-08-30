@@ -131,6 +131,9 @@ class GenerateSchema
 			return;
 		}
 
+		$this->creates = array();
+		$this->alters = array();
+
 		#------------------------------
 		# Load SQL
 		#------------------------------
@@ -287,6 +290,8 @@ SQL;
 		$php_creates  = array();
 		$php_alters   = array();
 		$php_triggers = array();
+
+
 
 		foreach ($all_sql as $s) {
 			$s = trim($s);
