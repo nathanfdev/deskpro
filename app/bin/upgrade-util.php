@@ -792,8 +792,22 @@ class Upgrade
 
 			$write_status("installing_files_start");
 			if (!$is_quiet) $this->out("Installing latest source files ...");
-			$this->installFilesFromZip($new_source_zip, false);
+			$failures = array();
+			$this->installFilesFromZip($new_source_zip, false, $failures);
 			if (!$is_quiet) $this->out("-> Done");
+
+			if ($failures) {
+				$write_status("error_installing_files", sprintf("%d files failed to install due to file permissions", count($failures)));
+				$this->out(sprintf("%d files failed to install due to file permissions", count($failures)));
+
+				$e = new \Exception(sprintf("%d files failed to install due to file permissions", count($failures)));
+				$e->_dp_failures = $failures;
+
+				$this->logException($e);
+				$this->sendLog($e);
+				exit(25);
+			}
+
 			$write_status("installing_files_done");
 
 			// Remove downloaded zip
@@ -942,10 +956,14 @@ class Upgrade
 	 *
 	 * @param string $zip_path
 	 */
-	public function installFilesFromZip($zip_path, $dry_run = false)
+	public function installFilesFromZip($zip_path, $dry_run = false, array &$failures = null)
 	{
 		if (!is_file($zip_path)) {
 			throw new UpgradeFilesException("Zip path does not exist: $zip_path", UpgradeFilesException::BAD_ZIP);
+		}
+
+		if ($failures === null) {
+			$failures = null;
 		}
 
 		$time_start = microtime(true);
@@ -2027,8 +2045,12 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 		$this->dry_run = true;
 	}
 
-	public function mirror($originDir, $targetDir, \Traversable $iterator = null, $options = array())
+	public function mirror($originDir, $targetDir, \Traversable $iterator = null, $options = array(), array &$failures = null)
 	{
+		if ($failures === null) {
+			$failures = array();
+		}
+
 		$copyOnWindows = false;
 		if (isset($options['copy_on_windows']) && !function_exists('symlink')) {
 			$copyOnWindows = $options['copy_on_windows'];
@@ -2059,17 +2081,21 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 			if (is_link($file)) {
 				$this->symlink($file, $target);
 			} elseif (is_dir($file)) {
-				$this->mkdir($target);
+				$this->mkdir($target, 0777, $failures);
 			} elseif (is_file($file) || ($copyOnWindows && is_link($file))) {
-				$this->copy($file, $target, isset($options['override']) ? $options['override'] : false);
+				$this->copy($file, $target, isset($options['override']) ? $options['override'] : false, $failures);
 			} else {
 				throw new \RuntimeException(sprintf('Unable to guess "%s" file type.', $file));
 			}
 		}
 	}
 
-	public function copy($originFile, $targetFile, $override = false)
+	public function copy($originFile, $targetFile, $override = false, array &$failures = null)
 	{
+		if ($failures === null) {
+			$failures = array();
+		}
+
 		if ($this->dry_run) {
 			echo "[copy] $originFile => $targetFile\n";
 			return;
@@ -2078,8 +2104,12 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 		parent::copy($originFile, $targetFile, $override);
 	}
 
-	public function mkdir($dirs, $mode = 0777)
+	public function mkdir($dirs, $mode = 0777, array &$failures = null)
 	{
+		if ($failures === null) {
+			$failures = array();
+		}
+
 		if ($this->dry_run) {
 			foreach ($this->toIterator($dirs) as $dir) {
 				if (is_dir($dir)) {
