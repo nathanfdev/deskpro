@@ -38,7 +38,7 @@ use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class XenForoType extends AbstractType
+class XenforoType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
@@ -52,7 +52,7 @@ class XenForoType extends AbstractType
 	public function getDefaultOptions(array $options)
 	{
 		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\Usersource\\Model\\XenForoModel',
+			'data_class' => 'Application\\AdminBundle\\Form\\Usersource\\Model\\XenforoModel',
 		);
 	}
 

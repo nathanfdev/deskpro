@@ -34,7 +34,7 @@
 
 namespace Orb\Auth\Adapter;
 
-class XenForo extends DbTable
+class Xenforo extends DbTable
 {
 	protected function initOptions()
 	{

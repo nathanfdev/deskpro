@@ -34,6 +34,6 @@
 
 namespace Application\AdminBundle\Form\Usersource\Model;
 
-class XenForoModel extends BaseDbTableModel
+class XenforoModel extends BaseDbTableModel
 {
 }
