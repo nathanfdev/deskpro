@@ -237,6 +237,106 @@ class LdapRaw implements FormLoginInterface, Loggable
 
 
 	/**
+	 * Search the AD for the user based on email address
+	 */
+	public function findRecordViaEmail()
+	{
+		if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
+			return null;
+		}
+
+		if ($this->logger) {
+			$this->logger->log("START Filter for email", Logger::DEBUG);
+		}
+
+		$zend_auth = $this->getZendAuthAdapter();
+		// Bogus because zend only creates ldap obj when its needed,
+		// so this is a hack to get it to set all the correct options
+		// for us
+		try {
+			$zend_auth->setUsername('__bogus__');
+			$zend_auth->setPassword('__bogus__');
+			$zend_auth->authenticate();
+		} catch (\Exception $e) {}
+
+		/** @var $ldap \Zend\Ldap\Ldap */
+		$ldap = $zend_auth->getLdap();
+
+		$filter = sprintf('(&(objectClass=inetOrgPerson)('.$this->options[self::OPT_FIELD_EMAIL].'=%s))', \Zend\Ldap\Filter::escapeValue($this->set_username));
+		if ($this->logger) {
+			$this->logger->log("Sending filter: $filter", Logger::DEBUG);
+		}
+
+		try {
+			$r = $ldap->search($filter, $this->options['baseDn']);
+		} catch (\Exception $e) {
+			if ($this->logger) {
+				$this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+			}
+			return null;
+		}
+
+		if ($this->logger) {
+			$this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+		}
+
+		if ($r->count() == 1) {
+			$arr = $r->getFirst();
+			return $arr;
+		}
+		return null;
+	}
+
+
+	/**
+	 * Search the AD for the user based on username
+	 */
+	public function findRecordViaUsername()
+	{
+		if ($this->logger) {
+			$this->logger->log("START Filter for username", Logger::DEBUG);
+		}
+
+		$zend_auth = $this->getZendAuthAdapter();
+		// Bogus because zend only creates ldap obj when its needed,
+		// so this is a hack to get it to set all the correct options
+		// for us
+		try {
+			$zend_auth->setUsername('__bogus__');
+			$zend_auth->setPassword('__bogus__');
+			$zend_auth->authenticate();
+		} catch (\Exception $e) {}
+
+		/** @var $ldap \Zend\Ldap\Ldap */
+		$ldap = $zend_auth->getLdap();
+
+		$filter = sprintf('(&(objectClass=inetOrgPerson)('.$this->options[self::OPT_FIELD_USERNAME].'=%s))', \Zend\Ldap\Filter::escapeValue($this->set_username));
+		if ($this->logger) {
+			$this->logger->log("Sending filter: $filter", Logger::DEBUG);
+		}
+
+		try {
+			$r = $ldap->search($filter, $this->options['baseDn']);
+		} catch (\Exception $e) {
+			if ($this->logger) {
+				$this->logger->log("Failed to search: " . $e->getCode() . ' ' . $e->getMessage(), Logger::DEBUG);
+			}
+			return null;
+		}
+
+		if ($this->logger) {
+			$this->logger->log("Filter results: " . print_r($r->toArray(),1), Logger::DEBUG);
+		}
+
+		if ($r->count() == 1) {
+			$arr = $r->getFirst();
+			return $arr;
+		}
+		return null;
+	}
+
+
+	/**
 	 * @param \Orb\Log\Logger $logger
 	 */
 	public function setLogger(\Orb\Log\Logger $logger)

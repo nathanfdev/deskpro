@@ -70,56 +70,62 @@ class Ldap extends AbstractAdapter
 	/**
 	 * Find a user identity just by an email address.
 	 *
-	 * @param $id_input
+	 * @param string $id_input Username or email address
 	 * @return \Orb\Auth\Identity|null
 	 */
 	public function findIdentityByInput($id_input)
 	{
 		$usersource = clone $this->usersource;
 		$usersource->setOption('bindRequiresDn', true);
-		$adapter = $usersource->getAdapter();
 
-		/** @var $zend_auth \Zend\Authentication\Adapter\Ldap */
-		$zend_auth = $adapter->getAuthAdapter()->getZendAuthAdapter();
+		/** @var \Orb\Auth\Adapter\LdapRaw $adapter */
+		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
-		// Bogus because zend only creates ldap obj when its needed,
-		// so this is a hack to get it to set all the correct options
-		// for us
-		try {
-			$zend_auth->setUsername('__bogus__');
-			$zend_auth->setPassword('__bogus__');
-			$zend_auth->authenticate();
-		} catch (\Exception $e) {}
+		if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
 
-		/** @var $ldap \Zend\Ldap\Ldap */
-		$ldap = $zend_auth->getLdap();
+		$adapter->setFormData(array(
+			'username' => $id_input,
+			'password' => '',
+		));
+		$rec = null;
+		$rec_arr = $adapter->findRecordViaEmail($id_input);
 
-		$raw_info = null;
-
-		try {
-			$dn = $ldap->getCanonicalAccountName($id_input, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
-			$rec = $ldap->getNode($dn);
-		} catch (\Exception $e) {
-			return null;
+		if (!$rec_arr || !isset($rec_arr['dn'])) {
+			$rec_arr = $adapter->findRecordViaUsername($id_input);
 		}
 
-		$raw_info = null;
+		$raw_info = array();
+		if ($rec_arr && isset($rec_arr['dn'])) {
+
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: " . print_r($rec_arr,1));
+
+			$raw_info = $rec_arr;
+			$raw_info['identity'] = $rec_arr['dn'];
+
+			$auth = $this->getAuthAdapter()->getZendAuthAdapter();
+
+			// Bogus because zend only creates ldap obj when its needed,
+			// so this is a hack to get it to set all the correct options
+			// for us
+			try {
+				$auth->setUsername('__bogus__');
+				$auth->setPassword('__bogus__');
+				$auth->authenticate();
+			} catch (\Exception $e) {}
+
+			/** @var $ldap \Zend\Ldap\Ldap */
+			$ldap = $auth->getLdap();
+
+			/** @var $rec \Zend\Ldap\Node */
+			$rec = $ldap->getNode($rec_arr['dn']);
+
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("getNode result: " . print_r($rec,1));
+		} else {
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: null");
+		}
+
 		if ($rec) {
-			$raw_info = array();
-
-			$raw_info['domain'] = $usersource->getOption('accountDomainName');
-
-			if ($rec->getAttribute('userPrincipalName')) {
-				$raw_info['identity'] = $rec->getAttribute('userPrincipalName', 0);
-			} elseif ($rec->getAttribute('sAMAccountName')) {
-				$raw_info['identity'] = $rec->getAttribute('sAMAccountName', 0);
-			} elseif ($rec->getAttribute('uid')) {
-				$raw_info['identity'] = $rec->getAttribute('uid', 0);
-			} else {
-				$raw_info['identity'] = $dn;
-			}
-
-			$raw_info['dn'] = $dn;
+			$raw_info = array_merge($raw_info, $rec->getAttributes());
 
 			if ($rec->getAttribute('givenName')) {
 				$raw_info['first_name'] = $rec->getAttribute('givenName', 0);
@@ -128,7 +134,9 @@ class Ldap extends AbstractAdapter
 				$raw_info['last_name'] = $rec->getAttribute('sn', 0);
 			}
 
-			if ($rec->getAttribute('name')) {
+			if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
+				$raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+			} elseif ($rec->getAttribute('name')) {
 				$raw_info['name'] = $rec->getAttribute('name', 0);
 			} elseif ($rec->getAttribute('cn')) {
 				$raw_info['name'] = $rec->getAttribute('cn', 0);
@@ -140,14 +148,20 @@ class Ldap extends AbstractAdapter
 				$raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
 			}
 
-			foreach ($raw_info as &$v) {
-				if (is_array($v)) {
-					$v = Arrays::getFirstItem($v);
-				}
+			if ($rec->getAttribute('jpegPhoto')) {
+				$raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
+			} else if ($rec->getAttribute('thumbnailPhoto')) {
+				$raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
+			}
+
+			if ($rec->getAttribute('telephoneNumber')) {
+				$raw_info['phone'] = $rec->getAttribute('telephoneNumber', 0);
 			}
 		}
 
 		if ($raw_info) {
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("RESULT: " . print_r($raw_info,1));
+
 			$identity = new Identity($raw_info['identity'], $raw_info);
 			return $identity;
 		}
