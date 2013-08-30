@@ -11,7 +11,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
-		var sigTrimmed = false;
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 		this.textarea = textarea;
@@ -254,7 +253,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var wasAgentChecked = agentSelCheck.prop('checked');
 		var wasTeamChecked  = teamSelCheck.prop('checked');
 
+		var storedReplyText = '';
+		var storedNoteText = '';
+		var replyMode = 'reply';
+
 		this.getElById('replybox_replytab_btn').on('click', function() {
+			if (replyMode == 'reply') {
+				return;
+			}
+			replyMode = 'reply';
+
 			self.el.removeClass('dp-note-on');
 			$(this).addClass('on');
 			self.getElById('replybox_notetab_btn').removeClass('on');
@@ -277,23 +285,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				teamSelCheck.prop('checked', true);
 			}
 
-			if (sigTrimmed) {
-				if (isWysiwyg && textarea.data('redactor')) {
-					var reply = textarea.getCode();
-					if (sig.length) {
-						reply = reply.replace(/\s*(<p>(<br\s*\/?>)?<\/p>\s*)*$/, '');
-						if (!reply.length) {
-							reply += ($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>');
-						} else {
-							reply += ($.browser.msie ? '<p></p>' : '<p><br></p>');
-						}
-						textarea.setCode(reply + "\n\n" + sig);
-					}
-				} else {
-					var reply = textarea.val();
-					textarea.val(reply + "\n\n" + sig);
-				}
-				sigTrimmed = false;
+			if (isWysiwyg && textarea.data('redactor')) {
+				storedNoteText = textarea.getCode();
+				textarea.setCode(storedReplyText || '');
+			} else {
+				storedNoteText = textarea.val();
+				textarea.val(storedReplyText || '');
 			}
 
 			if (self.page) {
@@ -306,6 +303,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
+			if (replyMode == 'note') {
+				return;
+			}
+			replyMode = 'note';
+
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
 			self.getElById('replybox_replytab_btn').removeClass('on');
@@ -321,28 +323,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				closeTabCheck.prop('checked', false);
 			}
 
+			if (isWysiwyg && textarea.data('redactor')) {
+				storedReplyText = textarea.getCode();
+				textarea.setCode(storedNoteText || '');
+			} else {
+				storedReplyText = textarea.val();
+				textarea.val(storedNoteText || '');
+			}
+
 			wasAgentChecked = agentSelCheck.prop('checked');
 			wasTeamChecked  = teamSelCheck.prop('checked');
 
 			agentSelCheck.prop('checked', false);
 			teamSelCheck.prop('checked', false);
-
-			if (isWysiwyg && textarea.data('redactor')) {
-				var reply = textarea.getCode();
-				var newReply = reply.replace(/<(p|div) class="dp-signature-start">[\w\W]*$/, '');
-				if (newReply != reply) {
-					textarea.setCode(newReply);
-					sigTrimmed = true;
-				}
-			} else {
-				var reply = textarea.val();
-				if (Orb.strEndsWith(reply, sig)) {
-					var pos = reply.indexOf(sig);
-					reply = $.trim(reply.substring(0, pos));
-					textarea.val(reply);
-					sigTrimmed = true;
-				}
-			}
 
 			if (self.page) {
 				var scroller = self.page.wrapper.find('div.layout-content');
