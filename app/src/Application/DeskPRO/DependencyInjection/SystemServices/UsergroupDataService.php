@@ -142,6 +142,7 @@ class UsergroupDataService extends BaseRepositoryService
 	{
 		$this->preload();
 		$names = $this->getNames(array_keys($this->user_ugs));
+		return $names;
 	}
 
 	public function getAgentUsergroupNames()
