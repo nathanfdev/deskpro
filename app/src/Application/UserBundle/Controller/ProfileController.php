@@ -186,7 +186,10 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$em->persist($person);
 			});
 
-			$this->session->setFlash('password_saved', 1);
+			// Reset user session
+			$this->db->delete('sessions', array('person_id' => $this->person->id));
+
+			return $this->redirectRoute('user_login');
 		}
 
 		return $this->redirectRoute('user_profile');

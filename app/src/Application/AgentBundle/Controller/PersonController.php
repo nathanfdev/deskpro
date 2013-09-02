@@ -643,6 +643,8 @@ class PersonController extends AbstractController
 					$person->setPassword($this->in->getString('password'));
 					$this->em->persist($person);
 
+					$this->db->delete('sessions', array('person_id' => $person->id));
+
 					if ($this->in->getBool('send_email')) {
 						$message = $this->container->getMailer()->createMessage();
 						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());

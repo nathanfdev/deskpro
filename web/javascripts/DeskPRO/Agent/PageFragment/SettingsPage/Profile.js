@@ -114,6 +114,11 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 					$('#agent_settings_win_errors').hide();
 
+					if (data.login) {
+						DeskPRO_Window.util.reloadInterface();
+						return;
+					}
+
 					self.settingsWindow.showSavePuff();
 					startEmail = $('#settings_profile_email').val();
 					self.settingsWindow.reloadInterface = true;

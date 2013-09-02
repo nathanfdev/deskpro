@@ -652,6 +652,13 @@ $collection->add('api_people_person_reset_password', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_clear_session', new Route(
+	'/people/{person_id}/clear-session',
+	array('_controller' => 'ApiBundle:Person:clearSession'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_slas', new Route(
 	'/people/{person_id}/slas',
 	array('_controller' => 'ApiBundle:Person:getPersonSlas'),

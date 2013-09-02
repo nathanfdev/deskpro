@@ -825,6 +825,7 @@ class PersonController extends AbstractController
 		}
 
 		$person->setPassword($password);
+		$this->db->delete('sessions', array('person_id' => $person->id));
 		$this->em->persist($person);
 
 		if ($send_email) {
@@ -837,6 +838,13 @@ class PersonController extends AbstractController
 			$this->container->getMailer()->send($message);
 		}
 
+		return $this->createSuccessResponse();
+	}
+
+	public function clearSessionAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'reset_password');
+		$this->db->delete('sessions', array('person_id' => $person->id));
 		return $this->createSuccessResponse();
 	}
 

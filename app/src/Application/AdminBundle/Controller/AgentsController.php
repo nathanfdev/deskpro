@@ -971,6 +971,7 @@ class AgentsController extends AbstractController
 
 		if ($this->in->getString('agent.password')) {
 			$agent->setPassword($this->in->getString('agent.password'));
+			$this->db->delete('sessions', array('person_id' => $agent->id));
 		}
 
 		$this->em->getConnection()->beginTransaction();

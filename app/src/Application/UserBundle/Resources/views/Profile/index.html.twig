@@ -251,11 +251,6 @@
 				{{ phrase('user.profile.invalid_password_length') }}
 			</div>
 		{% endif %}
-		{% if app.session.hasFlash('password_saved') %}
-			<div class="dp-alert dp-alert-success">
-				{{ phrase('user.profile.password_updated') }}
-			</div>
-		{% endif %}
 
 		<form action="{{ path('user_profile_changepassword') }}" method="post">
 			{{ form_token() }}

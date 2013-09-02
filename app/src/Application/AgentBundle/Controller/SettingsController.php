@@ -121,6 +121,11 @@ class SettingsController extends AbstractController
 
 		$edit_profile->save();
 
+		if ($edit_profile->password) {
+			$this->db->delete('sessions', array('person_id' => $this->person->id));
+			return $this->createJsonResponse(array('success' => true, 'login' => true));
+		}
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 

@@ -39,3 +39,10 @@
 		</div>
 	</div>
 {% endif %}
+{% if app.session.hasFlash('password_saved') %}
+	<div class="dp-flashes">
+		<div class="dp-alert dp-alert-success">
+			{{ phrase('user.profile.password_updated') }}
+		</div>
+	</div>
+{% endif %}
