@@ -119,6 +119,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			$logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
 		}
 
+		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
+
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $url,
 			'route_prefix'       => $this->route_prefix,
@@ -126,6 +128,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			'has_logged_out'     => $has_logged_out,
 			'has_done_reset'     => $has_done_reset,
 			'failed_login_name'  => $failed_login_name,
+			'browser_warnings'   => $browser_warnings,
 			'timeout'            => $this->in->getBool('timeout')
 		));
 	}

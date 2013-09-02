@@ -64,6 +64,28 @@ class UserAgentRequirementCheck
 		return true;
 	}
 
+	public static function getInterfaceWarnings(Browser $browser = null, $interface = null)
+	{
+		if (!$browser) {
+			$browser = new \Browser();
+		}
+
+		if ($interface === null) {
+			$interface = DP_INTERFACE;
+		}
+
+		$warnings = array();
+
+		$browser_name = strtolower($browser->getBrowser());
+		$version      = intval($browser->getVersion());
+
+		if ($browser_name == 'chrome' && $version == 29) {
+			$warnings['chrome_29_unstable'] = true;
+		}
+
+		return $warnings;
+	}
+
 	public static function passAdminInterface()
 	{
 		return self::passAgentInterface();
