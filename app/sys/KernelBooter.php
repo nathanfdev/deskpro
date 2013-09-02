@@ -564,7 +564,7 @@ class KernelBooter
 	public static function prepareCachedOutputForOffline($content, $message = null)
 	{
 		if ($message === null) {
-			$message = 'Our helpdesk is temporarily offline for maintanance.';
+			$message = 'Our helpdesk is temporarily offline for maintenance.';
 		}
 
 		$content = str_replace('<!--DP_OFFLINE_CACHE_PAGE_NOTE-->', "<div id=\"dp-offline-cache-note\">" . ($message ? "$message<br /><br />" : '') . "This is a cached page. Live pages will automatically return when the helpdesk comes back online.</div>", $content);

@@ -62,7 +62,7 @@
 	'core.use_product_fields' => false,
 
 	/**
-	 * Is the helpdesk disabled? A disabled helpdesk doesn't fully boot and shows a maintanance message.
+	 * Is the helpdesk disabled? A disabled helpdesk doesn't fully boot and shows a maintenance message.
 	 */
 	'core.helpdesk_disabled' => false,
 
