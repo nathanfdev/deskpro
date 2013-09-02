@@ -87,6 +87,7 @@ class NewTicketValidator extends AbstractValidator
 		$this->is_resolved = $newticket->status == 'resolved';
 
 		$this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
+		$this->mock_ticket->_setNoPersist();
 		if ($newticket->department_id) {
 			$this->mock_ticket->setDepartmentId($newticket->department_id);
 		}
