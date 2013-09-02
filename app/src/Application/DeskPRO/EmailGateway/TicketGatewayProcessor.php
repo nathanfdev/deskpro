@@ -1521,6 +1521,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($ev->cancel OR !$fwd_cutter->isValid()) {
 			$this->logMessage('[TicketGatewayProcessor] Invalid forward');
 
+			$has_eml_attach = false;
+			foreach ($this->reader->getAttachments() as $attach) {
+				if ($attach->mime_type == 'message/rfc822' && $attach->file_name == 'email.eml') {
+					$has_eml_attach = $attach;
+					break;
+				}
+			}
+
+			if ($has_eml_attach) {
+				$this->runNewForwardedEmailAsAttachTicket($agent, $has_eml_attach);
+			}
+
 			if ($fwd_cutter->getErrorCode() == 'unknown_email') {
 				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD_EMAIL;
 			} else {
@@ -1682,6 +1694,207 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if ($this->processBlobs()) {
 				$this->logMessage('[TicketGatewayProcessor] Adding attachments to agent message');
 				foreach ($this->processBlobs() as $blob) {
+					$attach = new Entity\TicketAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $agent;
+
+					$agent_message->addAttachment($attach);
+					App::getOrm()->persist($attach);
+				}
+			}
+
+			$ticket->setStatus('awaiting_user');
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush($ticket);
+			App::getOrm()->commit();
+		}
+
+		return $ticket;
+	}
+
+	protected function runNewForwardedEmailAsAttachTicket(Entity\Person $agent, \Application\DeskPRO\EmailGateway\Reader\Item\Attachment $has_eml_attach)
+	{
+		$user_raw_source = $has_eml_attach->getFileContents();
+		$user_reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$user_reader->setRawSource($user_raw_source);
+		$user_reader->setProperty('email_source', $user_raw_source);
+
+		$this->person = $agent;
+
+		$this->logMessage('[TicketGatewayProcessor] Forwarded attached ticket by ' . $agent->getId() . ' ' . $agent->getDisplayContact());
+
+		if ($this->reader->getBodyHtml() && $this->reader->getBodyHtml()->body_utf8) {
+			$agent_reply = $this->reader->getBodyHtml()->body_utf8;
+
+			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email_preclean');
+			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email_basicclean');
+			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email');
+			$agent_reply = $this->trimHtmlWhitespace($agent_reply);
+			$agent_reply = $this->cleaner->clean($agent_reply, 'html_email_postclean');
+
+		} else {
+			$agent_reply = trim($this->reader->getBodyText()->body_utf8);
+			if ($agent_reply) {
+				$agent_reply = nl2br(@htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
+			}
+		}
+
+		#------------------------------
+		# Find person
+		#------------------------------
+
+		$person_processor = new PersonFromEmailProcessor();
+		$person_email_item = $user_reader->getFromAddress();
+
+		$person = $person_processor->findPerson($person_email_item);
+		if ($person) {
+			$person_processor->passPerson($person_email_item, $person);
+		} else {
+			$person = $person_processor->createPerson($person_email_item, true);
+		}
+
+		#------------------------------
+		# Create ticket
+		#------------------------------
+
+		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
+			Entity\Ticket::CREATED_GATEWAY_AGENT,
+			$person
+		);
+		$newticket->setPersonContext($person);
+		$newticket->gateway = $this->gateway;
+		$newticket->gateway_address = $this->gateway_address;
+		$newticket->sent_to	= $this->sent_to;
+
+		// We do our own dupe check here
+		$newticket->do_dupe_check = false;
+
+		if ($this->logger) {
+			$newticket->logger = $this->logger;
+		}
+
+		$newticket->ticket->subject = $user_reader->getSubject()->subject;
+
+		if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
+			$body = $user_reader->getBodyHtml()->body_utf8;
+
+			$body = $this->cleaner->clean($body, 'html_email_preclean');
+			$body = $this->cleaner->clean($body, 'html_email_basicclean');
+			$body = $this->cleaner->clean($body, 'html_email');
+			$body = $this->trimHtmlWhitespace($body);
+			$body = $this->cleaner->clean($body, 'html_email_postclean');
+
+
+		} else {
+			$body = nl2br(@htmlspecialchars(trim($user_reader->getBodyText()->body_utf8), \ENT_QUOTES, 'UTF-8'));
+		}
+
+		$newticket->ticket->message = $body;
+		$newticket->ticket->message_is_html = true;
+
+		$tracker_extras = array(
+			'fwd_via_agent' => $agent
+		);
+		if ($agent->getPref("agent_notify_override.forward.email")) {
+			$tracker_extras['force_notify_email'] = array($agent->id);
+		}
+		if ($agent->getPref("agent_notify_override.forward.alert")) {
+			$tracker_extras['force_notify_alert'] = array($agent->id);
+		}
+
+		if (isset($this->reply_actions['user'])) {
+			$newticket->creation_system = 'gateway.agent';
+		}
+
+		App::getOrm()->beginTransaction();
+		$ticket = $newticket->save(array(), $tracker_extras);
+
+		if (!$newticket->new_message) {
+			$this->logMessage("[TicketGatewayProcessor] Found as duplicate of ticket: $ticket->id");
+		}
+
+		// Handle CC's
+		$ccs = $this->reader->getCcAddresses();
+		$ccs = array_merge($user_reader->getCcAddresses());
+
+		$cc_emails = $this->reader->getDeliveredAddresses();
+		$cc_emails = array_merge($cc_emails, $user_reader->getDeliveredAddresses());
+
+		if ($ccs) {
+			foreach ($ccs as $e) {
+				$e_a = new Reader\Item\EmailAddress();
+				$e_a->email = $e['email'];
+				$e_a->name = $e['name'];
+
+				$cc_emails[] = $e_a;
+			}
+		}
+
+		if ($cc_emails) {
+			$this->handleCc($ticket, $cc_emails);
+		}
+
+		if ($this->reader->hasProperty('email_source') && $newticket->new_message) {
+			$message = $newticket->new_message;
+			$message['email'] = $user_reader->getFromAddress()->email;
+			$message['email_source'] = $this->reader->getProperty('email_source');
+
+			App::getOrm()->persist($message);
+			App::getOrm()->flush();
+		}
+
+		// Add attachments to users message if no agent reply
+		if ($user_reader->getAttachments() && $newticket->new_message) {
+			$this->logMessage('[TicketGatewayProcessor] Adding attachments to user message');
+			$message = $newticket->new_message;
+
+			foreach ($user_reader->getAttachments() as $attach) {
+
+				$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+					$attach->getFileContents(),
+					$attach->getFileName(),
+					$attach->getMimeType()
+				);
+				$blob_id = $blob->getId();
+
+				$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
+
+				$attach = new Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $person;
+
+				$message->addAttachment($attach);
+				App::getOrm()->persist($attach);
+			}
+
+			$message->email_source = null;
+			$message = null;
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		// Add agent reply if there was one
+		if ($agent_reply) {
+			$ticket->getTicketLogger()->recordExtra('is_fwd_reply', true);
+
+			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
+
+			App::getOrm()->beginTransaction();
+			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
+			$agent_message->email_reader = $this->reader;
+			$agent_message->person = $agent;
+			$agent_message->setMessageHtml($agent_reply);
+			$ticket->addMessage($agent_message);
+
+			if ($this->processBlobs()) {
+				$this->logMessage('[TicketGatewayProcessor] Adding attachments to agent message');
+				foreach ($this->processBlobs() as $blob) {
+					if ($blob->filename == 'email.eml') {
+						continue;
+					}
+
 					$attach = new Entity\TicketAttachment();
 					$attach['blob'] = $blob;
 					$attach['person'] = $agent;

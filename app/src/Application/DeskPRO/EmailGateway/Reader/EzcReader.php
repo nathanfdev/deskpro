@@ -249,7 +249,7 @@ class EzcReader extends AbstractReader
 
 				} elseif ($part instanceof \ezcMailRfc822Digest) {
 					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
-					file_put_contents($attach->tmp_file, $part->generate());
+					file_put_contents($attach->tmp_file, $part->generateBody());
 
 					$attach->tmp_file = $attach->tmp_file;
 					$attach->file_name = 'email.eml';
