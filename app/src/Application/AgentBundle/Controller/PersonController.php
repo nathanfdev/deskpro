@@ -179,7 +179,8 @@ class PersonController extends AbstractController
 			'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
 			'reset_password'   => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.reset_password'),
 			'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
-			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
+			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create'),
+			'login_as'         => !$person->is_agent && $this->person->hasPerm('agent_people.login_as')
 		);
 
 		$person_api = $person->getDataForWidget();
@@ -1158,6 +1159,41 @@ class PersonController extends AbstractController
 		$edit_manager->deleteUser($person);
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# login-as
+	############################################################################
+
+	public function loginAsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->person->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
+			return $this->createNotFoundException();
+		}
+
+		foreach (array('dpsid') as $cookie_name) {
+			if (!empty($_COOKIE[$cookie_name])) {
+				$sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+				if ($sess2) {
+					$this->em->remove($sess2);
+					$this->em->flush();
+				}
+			}
+
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
+			$cookie->send();
+		}
+
+		$tmp = Entity\TmpData::create('agent_user_login', array(
+			'agent_id' => $this->person->getId(),
+			'person_id' => $person->id
+		), '+5 minutes');
+		$this->em->persist($tmp);
+		$this->em->flush();
+
+		return $this->redirectRoute('user_login_agentlogin', array('code' => $tmp->getCode()));
 	}
 
 	############################################################################

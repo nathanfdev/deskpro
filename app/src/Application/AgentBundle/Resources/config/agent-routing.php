@@ -523,6 +523,13 @@ $collection->add('agent_people_delete', new Route(
 	array()
 ));
 
+$collection->add('agent_people_login_as', new Route(
+	'/people/{person_id}/login-as',
+	array('_controller' => 'AgentBundle:Person:loginAs'),
+	array(),
+	array()
+));
+
 $collection->add('agent_people_changepicoverlay', new Route(
 	'/people/{person_id}/change-picture-overlay',
 	array('_controller' => 'AgentBundle:Person:changePictureOverlay'),

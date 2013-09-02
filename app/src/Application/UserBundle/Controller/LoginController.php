@@ -978,6 +978,57 @@ HTML;
 	}
 
 	############################################################################
+	# agent-login
+	############################################################################
+
+	public function authAgentLoginAction($code)
+	{
+		$tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
+		if (!$tmp) {
+			return $this->createNotFoundException();
+		}
+
+		$agent  = $this->container->getAgentData()->get($tmp->getData('agent_id'));
+		$person = $this->em->getRepository('DeskPRO:Person')->find($tmp->getData('person_id'));
+
+		if (!$agent || !$agent->is_agent || !$agent->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
+			return $this->createNotFoundException();
+		}
+
+		$this->session->set('auth_person_id', $person->id);
+		$this->session->set('dp_interface', DP_INTERFACE);
+		$this->session->save();
+
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+
+		$this->db->insert('login_log', array(
+			'person_id'    => $person->getId(),
+			'area'         => 'user',
+			'is_success'   => 1,
+			'ip_address'   => dp_get_user_ip_address(),
+			'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+			'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+			'note'         => "Agent login by Admin #{$agent->id} {$agent->display_name} <{$agent->email_address}>",
+			'date_created' => date('Y-m-d H:i:s')
+		));
+
+		// Log to activity log
+		$this->db->insert('person_activity', array(
+			'person_id'    => $person->id,
+			'action_type'  => 'agent_login_as',
+			'date_created' => date('Y-m-d H:i:s'),
+			'details'      => serialize(array(
+				'agent_id'    => $agent->id,
+				'agent_name'  => $agent->display_name,
+				'agent_email' => $agent->email_address
+			))
+		));
+
+		return $this->redirectRoute('user_profile');
+	}
+
+	############################################################################
 	# Usersource SSO
 	############################################################################
 

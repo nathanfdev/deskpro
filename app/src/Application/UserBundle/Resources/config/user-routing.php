@@ -146,6 +146,13 @@ $collection->add('user_login_resetpass_newpass', new Route(
 	array()
 ));
 
+$collection->add('user_login_agentlogin', new Route(
+	'/login/agent-login/{code}',
+	array('_controller' => 'UserBundle:Login:authAgentLogin'),
+	array(),
+	array()
+));
+
 $collection->add('user_register', new Route(
 	'/register',
 	array('_controller' => 'UserBundle:Register:register'),

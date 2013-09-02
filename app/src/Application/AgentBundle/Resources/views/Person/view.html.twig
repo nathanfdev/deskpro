@@ -85,6 +85,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if perms.merge %}
 					<li class="merge menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.merge') }} <em></em></a></li>
 				{% endif %}
+				{% if perms.login_as %}
+					<li><a class="clean-white large" href="{{ path('agent_people_login_as', {'person_id': person.id, '_rt': security_token('request_token', 10800)}) }}" target="_blank">Login as User</a></li>
+				{% endif %}
 				{% if not person.is_agent and (perms.reset_password or perms.delete or perms.edit) %}
 					<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>
 				{% endif %}

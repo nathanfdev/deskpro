@@ -30,6 +30,7 @@
 	'admin.agents.delete_own_and_team_tickets'          => 'Delete and spam own and teams tickets',
 	'admin.agents.delete_own_and_teams_tickets'         => 'Delete own and teams tickets',
 	'admin.agents.delete_people'                        => 'Delete people',
+	'admin.agents.login_as'                             => 'Login as user',
 	'admin.agents.delete_permission_group'              => 'Delete Permission Group',
 	'admin.agents.delete_team'                          => 'Delete Team',
 	'admin.agents.delete_unassigned_tickets'            => 'Delete and spam unassigned tickets',
