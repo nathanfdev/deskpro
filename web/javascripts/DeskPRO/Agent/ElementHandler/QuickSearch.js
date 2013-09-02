@@ -27,14 +27,6 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			}
 		});
 
-		list.on('click', '[data-route]', function(ev) {
-			Orb.cancelEvent(ev);
-			ev.stopImmediatePropagation();
-			DeskPRO_Window.runPageRouteFromElement($(this));
-			closeResults();
-			eatClick = false;
-		});
-
 		list.on('click', '.show-more', function(ev) {
 			Orb.cancelEvent(ev);
 			var type = $(this).closest('.title').data('type');
@@ -48,9 +40,18 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			searchBox.focus();
 		});
 
-		listWrap.on('click', function() {
+		listWrap.on('mousedown', function(ev) {
 			$(this).addClass('dp-focus');
 			searchBox.focus();
+			Orb.cancelEvent(ev);
+			ev.stopImmediatePropagation();
+		});
+
+		list.on('mousedown', function(ev) {
+			$(this).addClass('dp-focus');
+			searchBox.focus();
+			Orb.cancelEvent(ev);
+			ev.stopImmediatePropagation();
 		});
 
 		//------------------------------
@@ -273,6 +274,16 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 					showMoreEl.show();
 				}
 			}, this);
+
+			list.find('[data-route]').on('click', function(ev) {
+				console.log("CLick");
+				Orb.cancelEvent(ev);
+				ev.stopImmediatePropagation();
+				DeskPRO_Window.runPageRouteFromElement($(this));
+				searchBox.blur();
+				closeResults();
+				eatClick = false;
+			});
 
 			if (count) {
 				openResults();
