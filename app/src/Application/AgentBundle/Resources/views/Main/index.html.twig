@@ -66,39 +66,42 @@
 		<script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
 	{% endif %}
 
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/CurrentTs.js?' ~ el_uid()) }}"></script>
 	<script type="text/javascript">
-		if (!DP_IS_DOMDUMP_VIEW) {
-			(function() {
-				var lastTime = (new Date()).getTime();
+		if (window.DP_LOAD_TIME_TS) {
+			if (!DP_IS_DOMDUMP_VIEW) {
+				(function() {
+					var lastTime = (new Date()).getTime();
 
-				setInterval(function() {
-					var currentTime = (new Date()).getTime();
-					if (currentTime > (lastTime + 360000)) {
-						// Probably just woke up from sleep
-						window.location.reload(false);
+					setInterval(function() {
+						var currentTime = (new Date()).getTime();
+						if (currentTime > (lastTime + 360000)) {
+							// Probably just woke up from sleep
+							window.location.reload(false);
+						}
+						lastTime = currentTime;
+					}, 240000);
+				})();
+
+				(function() {
+					var now_ts = window.DP_LOAD_TIME_TS;
+					var diff = Math.abs(now_ts - {{ 'now'|date('U') }});
+
+					if (diff > 1200) {
+						DESKPRO_TIME_OUT_OF_SYNC = diff;
+						console.log("Time is off by %s seconds", diff);
+
+						if (DESKPRO_TIME_OUT_OF_SYNC_IGNORE && Math.abs(diff - DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
+							DESKPRO_TIME_OUT_OF_SYNC = null;
+							console.log("Time offset is ignored");
+						}
 					}
-					lastTime = currentTime;
-				}, 240000);
-			})();
 
-			(function() {
-				var now_ts = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
-				var diff = Math.abs(now_ts - {{ 'now'|date('U') }});
-
-				if (diff > 1200) {
-					DESKPRO_TIME_OUT_OF_SYNC = diff;
-					console.log("Time is off by %s seconds", diff);
-
-					if (DESKPRO_TIME_OUT_OF_SYNC_IGNORE && Math.abs(diff - DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
+					{% if is_first_login %}
 						DESKPRO_TIME_OUT_OF_SYNC = null;
-						console.log("Time offset is ignored");
-					}
-				}
-
-				{% if is_first_login %}
-					DESKPRO_TIME_OUT_OF_SYNC = null;
-				{% endif %}
-			})();
+					{% endif %}
+				})();
+			}
 		}
 	</script>
 
