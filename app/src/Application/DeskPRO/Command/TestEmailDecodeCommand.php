@@ -180,8 +180,6 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 					return 0;
 				}
 
-				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
-
 				if (!$input->getOption('no-cut')) {
 
 					$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
@@ -197,15 +195,16 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 				$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
 				$body = $inline_image->processTokens($body);
+
+				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
 				$body = Strings::trimHtmlAdvanced($body);
+				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
 
 				foreach ($r->getAttachments() as $attach) {
 					$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
 				}
-
-				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
 			} else {
 				$body = $r->getBodyText()->getBodyUtf8();
 
