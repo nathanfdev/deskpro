@@ -4,7 +4,7 @@
 | a British company located in London, England.                            |
 |                                                                          |
 | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
+1|                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
 |                                                                          |
@@ -722,6 +722,10 @@ class KbController extends AbstractController
 	public function pendingArticleInfoAction($pending_article_id)
 	{
 		$pending_article = $this->em->find('DeskPRO:ArticlePendingCreate', $pending_article_id);
+
+		if (!$pending_article) {
+			return $this->createNotFoundException();
+		}
 
 		$data = array();
 		$data['id'] = $pending_article_id;
