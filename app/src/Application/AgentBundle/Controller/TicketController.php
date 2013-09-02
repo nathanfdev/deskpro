@@ -1219,7 +1219,7 @@ class TicketController extends AbstractController
 			$tracker->recordExtra('enabled_cc', $new_user_ids);
 		}
 
-		if (!$message['is_agent_note'] && $collection->countActions()) {
+		if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
 			$collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 		}
 
@@ -1257,7 +1257,7 @@ class TicketController extends AbstractController
 				$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 			}
 
-			if (!$message['is_agent_note']) {
+			if (!$message['is_agent_note'] || $macro) {
 				if ($action_type != 'macro') {
 					$ticket['status'] = $action_type;
 				}
@@ -1283,7 +1283,7 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		if (!$message['is_agent_note']) {
+		if (!$message['is_agent_note'] || $macro) {
 			$participants = $this->em->createQuery("
 				SELECT p
 				FROM DeskPRO:TicketParticipant p
