@@ -155,7 +155,7 @@
 				</div>
 				<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
-						<label>Manager:</label>
+						<label>{{ phrase('agent.people.manager') }}:</label>
 					</td><td width="100%">
 						<input type="checkbox" class="org-manager-set" value="1" {% if person.organization_manager %}checked="checked"{% endif %} />
 					</td></tr></table>
@@ -184,7 +184,7 @@
 			</div>
 			{% endif %}
 			{{ dp_widget_tabs_header(baseId, 'profile', 'slas', {
-				(baseId ~ '_sla_body'): 'SLAs'
+				(baseId ~ '_sla_body'): phrase('agent.general.slas')
 			}) }}
 		</header>
 		<section id="{{baseId}}_sla_body">
@@ -193,7 +193,7 @@
 				{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
 					<li class="sla-row sla-row-{{ sla.id }}" {% if not person.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
 				{% endfor %}
-				<li class="no-slas" style="padding-left: 0; {% if person.slas|length %}display: none;{% endif %}}">No SLAs are being automatically applied to this person.</li>
+				<li class="no-slas" style="padding-left: 0; {% if person.slas|length %}display: none;{% endif %}}">{{ phrase('agent.people.no_slas') }}</li>
 				</ul>
 			</div>
 			<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">

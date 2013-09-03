@@ -61,7 +61,7 @@
 								</li>
 							{% elseif field == 'num_comments' %}
 								<li>
-									<span class="prop-title">Comments</span>
+									<span class="prop-title">{{ phrase('agent.general.comments') }}</span>
 									<span class="prop-val">{{ comment_counts[download.id]|default(0) }}</span>
 								</li>
 							{% elseif field == 'labels' %}

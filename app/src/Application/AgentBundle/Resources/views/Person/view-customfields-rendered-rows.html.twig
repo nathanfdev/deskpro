@@ -21,7 +21,7 @@
 	</tr>
 	{% if person.getRealLanguage() and app.languages.isMultiLang() %}
 		<tr>
-			<th>Language</th>
+			<th>{{ phrase('agent.general.language') }}</th>
 			<td>
 				{{ person.language.getTitle() }}
 			</td>

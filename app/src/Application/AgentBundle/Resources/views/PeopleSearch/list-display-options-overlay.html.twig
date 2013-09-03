@@ -18,7 +18,7 @@
 	<li data-field="org" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org" {% if not show_all or 'org' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.organization') }}</label></li>
 	<li data-field="org_pos" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org_pos" {% if not show_all or 'org_pos' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.position') }}</label></li>
 	{% if app.getUsersourceManager().getUsersources() %}
-		<li data-field="person_username"><label><input type="checkbox" name="person_username" {% if not show_all or 'person_username' in display_fields %}checked="checked"{% endif %} /> Username</label></li>
+		<li data-field="person_username"><label><input type="checkbox" name="person_username" {% if not show_all or 'person_username' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.username') }}</label></li>
 	{% endif %}
 
 	{% if app.languages.isMultiLang() %}

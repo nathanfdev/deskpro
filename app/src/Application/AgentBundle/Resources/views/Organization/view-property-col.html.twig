@@ -87,7 +87,7 @@
 				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 			{{ dp_widget_tabs_header(baseId, 'organization', 'slas', {
-				(baseId ~ '_sla_body'): 'SLAs'
+				(baseId ~ '_sla_body'): phrase('agent.general.slas')
 			}) }}
 		</header>
 		<section id="{{baseId}}_sla_body">
@@ -96,7 +96,7 @@
 				{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
 					<li class="sla-row sla-row-{{ sla.id }}" {% if not organization.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
 				{% endfor %}
-				<li class="no-slas" style="padding-left: 0; {% if organization.slas|length %}display: none;{% endif %}}">No SLAs are being automatically applied to this organization.</li>
+				<li class="no-slas" style="padding-left: 0; {% if organization.slas|length %}display: none;{% endif %}}">{{ phrase('agent.organizations.no_slas') }}</li>
 				</ul>
 			</div>
 			<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">

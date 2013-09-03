@@ -101,4 +101,6 @@
 	'agent.publish.create_artilce'                => 'Create Article',
 	'agent.publish.missing_translation'           => 'Missing Translation',
 	'agent.publish.set_contents_from_article'     => 'Set contents from article',
+	'agent.publish.news_list_title'               => '1 Post|{{count}} Posts',
+	'agent.publish.no_news_cats_error'            => 'There are no categories defined. Before you can add posts to the news section, you need to define a category.',
 );

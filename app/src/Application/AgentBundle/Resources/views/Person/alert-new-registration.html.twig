@@ -5,9 +5,9 @@
 >
 	<div class="dismiss"><i class="icon-ban-circle"></i></div>
 	<time></time>
-	<big>New registration: {{ person.getDisplayContact() }}</big>
+	<big>{{ phrase('agent.people.new_registration', {name: person.getDisplayContact()}) }} </big>
 	<small>
-		New registration
-		{% if not person.is_agent_confirmed %}requires validation{% endif %}
+		{{ phrase('agent.people.new_registration') }}
+		{% if not person.is_agent_confirmed %}{{ phrase('agent.general.requires_validation') }}{% endif %}
 	</small>
 </li>

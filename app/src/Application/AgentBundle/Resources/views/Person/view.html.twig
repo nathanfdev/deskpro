@@ -99,9 +99,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
 		{% if perms.disable %}
 			{% if person.is_disabled %}
-				<li data-action="enable-user" data-flip="Disable Account">Enable Account</li>
+				<li data-action="enable-user" data-flip="{{ phrase('agent.people.disable_account') }}">{{ phrase('agent.people.enable_account') }}</li>
 			{% else %}
-				<li data-action="disable-user" data-flip="Enable Account">Disable Account</li>
+				<li data-action="disable-user" data-flip="{{ phrase('agent.people.enable_account') }}">{{ phrase('agent.people.disable_account') }}</li>
 			{% endif %}
 		{% endif %}
 		{% if perms.reset_password %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
@@ -110,20 +110,20 @@ pageMeta.baseId = '{{ baseId }}';
 				data-action="ban"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person'), ban: 1 }) }}"
 			>
-				Delete User &amp; Ban Email
+				{{ phrase('agent.people.delete_and_ban_email') }}
 			</li>
 			<li
 				data-action="delete"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
 				class="delete-trigger"
 			>
-				Delete User
+				{{ phrase('agent.people.delete_user') }}
 			</li>
 		{% endif %}
 	</ul>
 
 	<ul id="{{baseId}}_merge_menu" style="display: none;">
-		<li>Find person...</li>
+		<li>{{ phrase('agent.people.find_person') }}</li>
 	</ul>
 </header>
 
@@ -147,20 +147,20 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div style="display: none">
 	<div id="{{ baseId }}_delete_confirm">
-		Are you sure you want to delete this user? <strong class="warning">The user will be permanantly deleted</strong>.
+		{{ phrase('agent.people.person_delete_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted') }}</strong>
 		{% if person_object_counts.tickets or person_object_counts.chats %}
-			<br/><br/>The users other associated content will be deleted too:<br/>
-			{% if person_object_counts.tickets %}&bull; {{ person_object_counts.tickets }} Tickets<br/>{% endif %}
-			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
+			<br/><br/>{{ phrase('agent.people.other_user_content_being_deleted') }}<br/>
+			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}
+			{% if person_object_counts.chats %}&bull; {{ phrase('agent.general.count_chat', {count: person_object_counts.chats}) }}<br/>{% endif %}
 		{% endif %}
 	</div>
 
 	<div id="{{ baseId }}_ban_confirm">
-		Are you sure you want to ban this user? <strong class="warning">The user will be permanantly deleted</strong> and their email address banned.
+		{{ phrase('agent.people.person_ban_confirm') }} <strong class="warning">{{ phrase('agent.people.user_will_be_perm_deleted_banned') }}</strong>
 		{% if person_object_counts.tickets or person_object_counts.chats %}
-			<br/><br/>The users other associated content will be deleted too:<br/>
-			{% if person_object_counts.tickets %}&bull; {{ person_object_counts.tickets }} Tickets<br/>{% endif %}
-			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
+			<br/><br/>{{ phrase('agent.people.other_user_content_being_deleted') }}<br/>
+			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}
+			{% if person_object_counts.chats %}&bull; {{ phrase('agent.general.count_chat', {count: person_object_counts.chats}) }}<br/>{% endif %}
 		{% endif %}
 	</div>
 </div>

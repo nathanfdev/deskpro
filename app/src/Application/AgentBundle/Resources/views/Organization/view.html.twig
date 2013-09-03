@@ -34,7 +34,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="titlewrap">
 			<h4 class="id-number">#{{ org.id }}</h4>
 			<h1>
-				<span class="editable person-name-editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default('Double-click to set Name') }}</span>
+				<span class="editable person-name-editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default(phrase('agent.people.double_click_set_name')) }}</span>
 				{% if app.user.hasPerm('agent_org.edit') %}<span class="edit-name-gear"></span>{% endif %}
 				<div id="{{baseId}}_editname" style="display: none">
 					<input type="hidden" name="action" value="name" />

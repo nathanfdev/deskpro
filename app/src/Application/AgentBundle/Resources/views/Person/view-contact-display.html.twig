@@ -17,7 +17,7 @@
 				<span class="set-primary" data-email-id="{{ email.id }}">{{ phrase('agent.people.make_primary_email') }}</span>
 			{% endif %}
 			{% if banned_emails[email.email] %}
-				<span class="banned" data-email-id="{{ email.id }}" data-unban-url="{{ path('agent_people_unban_email', {person_id: person.id, email_id: email.id}) }}">banned</span>
+				<span class="banned" data-email-id="{{ email.id }}" data-unban-url="{{ path('agent_people_unban_email', {person_id: person.id, email_id: email.id}) }}">{{ phrase('agent.general.banned') }}</span>
 			{% endif %}
 		</li>
 	{% endfor %}

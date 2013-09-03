@@ -31,7 +31,7 @@
 							{% elseif field == 'person_username' %}
 								{% if result_display.getPersonUsernames(person) %}
 									<li>
-										<span class="prop-val org">Username: </span>
+										<span class="prop-val org">{{ phrase('agent.general.username') }}: </span>
 										{% for u in result_display.getPersonUsernames(person) %}
 											{{ u }}
 										{% endfor %}
@@ -79,8 +79,8 @@
 						{% elseif not person.is_agent_confirmed %}
 							User is awaiting agent validation:
 						{% endif %}
-						<button class="agent-confirm-approve" data-person-id="{{ person.id }}">Approve</button>
-						{%  if app.user.hasPerm('agent_people.delete') %}<button class="agent-confirm-delete" data-person-id="{{ person.id }}">Delete</button>{% endif %}
+						<button class="agent-confirm-approve" data-person-id="{{ person.id }}">{{ phrase('agent.general.approve') }}</button>
+						{%  if app.user.hasPerm('agent_people.delete') %}<button class="agent-confirm-delete" data-person-id="{{ person.id }}">{{ phrase('agent.general.delete') }}</button>{% endif %}
 					</div>
 				{% endif %}
 			{% endif %}

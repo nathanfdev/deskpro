@@ -17,7 +17,7 @@
 			{% if person.organization_position %}
 				{{ person.organization_position }}
 			{% else %}
-				<span style="font-size: 11px; color: #959595;">No position set</span>
+				<span style="font-size: 11px; color: #959595;">{{ phrase('agent.people.no_position_set') }}</span>
 			{% endif %}
 		</span>
 		<div class="position-edit" style="display: none">
@@ -33,8 +33,8 @@
 	<td width="11" style="text-align: center; width: 11px;">
 		<span
 			class="organization-manager-icon"
-			data-is-manager="Organization Manager. Click to remove."
-			data-not-manager="Click to set as organization manager."
+			data-is-manager="{{ phrase('agent.organizations.org_manager_click_to_remove') }}"
+			data-not-manager="{{ phrase('agent.organizations.click_set_manager') }}"
 			data-save-url="{{ path('agent_org_save_member_manager', {'organization_id': org.id, 'person_id': person.id }) }}"
 			style="position:relative;top:-1px;"
 		></span>

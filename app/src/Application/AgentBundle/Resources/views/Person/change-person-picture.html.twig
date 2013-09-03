@@ -14,26 +14,26 @@
 		</div>
 		{% endif %}
 		<form class="new-picture">
-			<header><h3>Update Picture</h3></header>
+			<header><h3>{{ phrase('agent.people.update_picture') }}</h3></header>
 			<ul>
 				<li>
-					<label><input type="radio" name="set_pic_opt" {% if person.disable_picture %}checked="checked" value="nochange"{% else %}value="remove"{% endif %} /> No Picture</label>
+					<label><input type="radio" name="set_pic_opt" {% if person.disable_picture %}checked="checked" value="nochange"{% else %}value="remove"{% endif %} /> {{ phrase('agent.people.no_picture') }}</label>
 					<div><img src="{{ path('serve_default_picture', {'s': 60, 'size-fit': 1}) }}" alt="" class="pic-default" style="display:none" /></div>
 				</li>
 				{% if person.primary_email and app.getSetting('core.use_gravatar') %}
 					<li>
-						<label><input type="radio" name="set_pic_opt" {% if not person.picture_blob and not person.disable_picture %}checked="checked" value="nochange"{% else %}value="gravatar"{% endif %} /> Use picture from Gravatar</label>
+						<label><input type="radio" name="set_pic_opt" {% if not person.picture_blob and not person.disable_picture %}checked="checked" value="nochange"{% else %}value="gravatar"{% endif %} /> {{ phrase('agent.people.use_pic_gravatar') }}</label>
 						<div><img src="{{ person.getGravatarUrl(60) }}" alt="" class="pic-gravatar" style="display:none" /></div>
 					</li>
 				{% endif %}
 				{% if person.picture_blob %}
 					<li>
-						<label><input type="radio" name="set_pic_opt" value="nochange" checked="" /> Use uploaded picture</label>
+						<label><input type="radio" name="set_pic_opt" value="nochange" checked="" /> {{ phrase('agent.people.use_uploaded_pic') }}</label>
 						<div><img src="{{ person.getPictureUrl(60) }}" alt="" class="pic-uploaded" style="display:none" /></div>
 					</li>
 				{% endif %}
 				<li style="margin-top: -4px">
-					<label><input type="radio" name="set_pic_opt" value="newpic" /> Upload a new picture</label>
+					<label><input type="radio" name="set_pic_opt" value="newpic" /> {{ phrase('agent.people.upload_new_picture') }}</label>
 					<div class="upload-control">
 						<input type="file" name="file-upload" />
 						<button class="clean-white small">{{ phrase('agent.general.upload') }}</button>

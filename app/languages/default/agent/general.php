@@ -649,4 +649,11 @@
 	'agent.general.update_region_question'                  => 'Do you want to update your region now?',
 	'agent.general.select_your_region'                      => 'Select your region',
 	'agent.general.performing_updates'                      => 'The helpdesk is currently performing updates.',
+	'agent.general.leave_unchanged'                         => 'Leave Unchanged',
+	'agent.general.slas'                                    => 'SLAs',
+	'agent.general.requires_validation'                     => 'Requires validation',
+	'agent.general.count_tickets'                           => '1 Ticket|{{count}} Tickets',
+	'agent.general.count_chat'                              => '1 Chat|{{count}} Chats',
+	'agent.general.banned'                                  => 'Banned',
+	'agent.general.fields'                                  => 'Fields',
 );

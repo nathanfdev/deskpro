@@ -111,7 +111,7 @@
 					{% if members_count > 50 %}
 						<tr class="more">
 							<td colspan="3">
-								<a class="clean-white" data-route="listpane:{{ path('agent_peoplesearch_organization', {id: org.id}) }}">Browse all members</a>
+								<a class="clean-white" data-route="listpane:{{ path('agent_peoplesearch_organization', {id: org.id}) }}">{{ phrase('agent.organizations.browse_all_members') }}</a>
 							</td>
 						</tr>
 					{% endif %}
