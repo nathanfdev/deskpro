@@ -856,8 +856,8 @@ class DpLoader extends LoaderAbstract
 
 			$js_phrases = array();
 			$js_phrases['agent.general.add_a_label'] = $tr->getPhraseText('agent.general.add_a_label');
-			$js_phrases['agent.general.check_on']    = $tr->getPhraseText('agent.general.check_on');
-			$js_phrases['agent.general.check_off']   = $tr->getPhraseText('agent.general.check_off');
+			$js_phrases['agent.general.on']    = $tr->getPhraseText('agent.general.on');
+			$js_phrases['agent.general.off']   = $tr->getPhraseText('agent.general.off');
 
 			$js_phrases["agent.general.reltime_less_second"]    = $tr->getPhraseText("agent.general.reltime_less_second");
 			$js_phrases["agent.general.reltime_less_minute"]    = $tr->getPhraseText("agent.general.reltime_less_minute");

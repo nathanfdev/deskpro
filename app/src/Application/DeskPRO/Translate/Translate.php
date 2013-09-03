@@ -466,7 +466,12 @@ class Translate implements PersonContextInterface
 			} else {
 				if (strpos($phrase_name, 'obj') === false) {
 					$e = new \InvalidArgumentException("Missing phrase: $phrase_name");
-					KernelErrorHandler::logException($e, true, 'missing_phrase_' . $phrase_name);
+
+					if (dp_get_config('debug.dev')) {
+						KernelErrorHandler::logException($e, false);
+					} else {
+						KernelErrorHandler::logException($e, true, 'missing_phrase_' . $phrase_name);
+					}
 				}
 			}
 

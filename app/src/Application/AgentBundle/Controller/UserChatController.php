@@ -554,7 +554,7 @@ class UserChatController extends AbstractController
 		{
 			$grouper = array();
 			$grouper['id'] = $grouper_id;
-			$grouper['title'] = $tr->phrase('agent.general.group_' . $grouper_id);
+			$grouper['title'] = $tr->hasPhrase('agent.general.group_' . $grouper_id) ? $tr->hasPhrase('agent.general.group_' . $grouper_id) : $grouper_id;
 			$groupers[] = $grouper;
 		}
 
