@@ -402,8 +402,11 @@ class ActionsCollection
 			$a_name = \Orb\Util\Util::getBaseClassname($a);
 			$b_name = \Orb\Util\Util::getBaseClassname($b);
 
-			$a_order = isset($order[$a_name]) ? $order[$a_name] : $order['default'];
-			$b_order = isset($order[$b_name]) ? $order[$b_name] : $order['default'];
+			$a_default = $a->doPrepend() ? $order['prepend'] : $order['default'];
+			$b_default = $b->doPrepend() ? $order['prepend'] : $order['default'];
+
+			$a_order = isset($order[$a_name]) ? $order[$a_name] : $a_default;
+			$b_order = isset($order[$b_name]) ? $order[$b_name] : $b_default;
 
 			if ($a_order == $b_order) return 0;
 			return $a_order < $b_order ? -1 : 1;

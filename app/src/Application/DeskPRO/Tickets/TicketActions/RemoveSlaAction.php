@@ -148,4 +148,9 @@ class RemoveSlaAction extends AbstractAction
 			return $tr->phrase('agent.tickets.remove_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
 		}
 	}
+
+	public function doPrepend()
+	{
+		return true;
+	}
 }

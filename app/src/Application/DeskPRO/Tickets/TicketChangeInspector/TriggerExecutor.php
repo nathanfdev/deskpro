@@ -495,7 +495,8 @@ class TriggerExecutor
 		// Eg., reply can be written by "Assigned Agent" which might not be set until after a trigger action runs
 		// So we say ReplyAction is run after Agent so it can use that variable
 		$actions_collection->sortActions(array(
-			'default' => 0,
+			'prepend' => 0,
+			'default' => 1,
 			'ReplyAction' => 1000
 		));
 
