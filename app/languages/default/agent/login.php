@@ -16,6 +16,7 @@
 	'agent.login.ie_compat_mode_step3'       => 'Make sure your helpdesk URL is not in the list. If it is, click it and then click the Remove button. Also make sure "Display all websites in Compatibility View" is disabled. If you are using DeskPRO in an intranet, you must also uncheck the other option, "Display intranet sites in Compatibility View."',
 	'agent.login.ie_compat_mode_step4'       => 'Close this window and refresh the page',
 	'agent.login.ie_compat_mode_title'       => 'Are you already using IE8 or later? <a href="{{url}}">Make sure Compatibility Mode is not enabled</a>',
+	'agent.login.ie_use_chrome_frame'        => 'Alternatively, you can install <a href="http://www.google.com/chromeframe">Google Chrome Frame</a>',
 	'agent.login.login_failed'               => 'Invalid login. Please try again.',
 	'agent.login.mozilla_firefox'            => 'Mozilla Firefox',
 	'agent.login.notice_outdated_browser'    => 'The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.',
@@ -28,4 +29,6 @@
 	'agent.login.session_timeout'            => 'Your session has timed out, you must log in again.',
 	'agent.login.supported_browsers'         => 'The following browsers are supported',
 	'agent.login.version_x_or_later'         => 'v{{version}} or later',
+	'agent.login.chrome_29_title'            => 'We have detected that you are using Google Chrome v29.',
+	'agent.login.chrome_29_info'             => 'Some users have reported instability issues while using DeskPRO with Chrome v29.',
 );

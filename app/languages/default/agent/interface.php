@@ -61,4 +61,12 @@
 	'agent.interface.viewbtn-source'               => 'Toggle Filter and Search Columm',
 	'agent.interface.viewbtn-tab'                  => 'Tabs Only View',
 	'agent.interface.viewbtn-table'                => 'Tabular Results View',
+	'agent.interface.kbd_open_user_profile'        => 'Open user profile',
+	'agent.interface.kbd_open_org_profile'         => 'Open organization profile',
+	'agent.interface.kbd_send_reply'               => 'Send reply',
+	'agent.interface.kbd_open_snippets'            => 'Open snippets',
+	'agent.interface.kbd_open_send_options'        => 'Open send action options',
+	'agent.interface.kbd_change_status_user'       => 'Change status to Awaiting User',
+	'agent.interface.kbd_change_status_agent'      => 'Change status to Awaiting Agent',
+	'agent.interface.kbd_change_status_resolved'   => 'Change status to Resolved',
 );

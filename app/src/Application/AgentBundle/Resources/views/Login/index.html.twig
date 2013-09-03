@@ -78,11 +78,11 @@
 		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
 				{% if browser_warnings['chrome_29_unstable'] %}
 					<div class="warning">
-						We have detected that you are using Google Chrome v29.
+						{{ phrase('agent.login.chrome_29_title') }}
 						<br/><br/>
-						Some users have reported instability issues while using DeskPRO with Chrome v29.
+						{{ phrase('agent.login.chrome_29_info') }}
 						<br/><br/>
-						<a href="https://support.deskpro.com/kb/articles/171" target="_blank">Click here to learn more &rarr;</a>
+						<a href="https://support.deskpro.com/kb/articles/171" target="_blank">{{ phrase('agent.general.click_learn_more') }} &rarr;</a>
 					</div>
 				{% endif %}
 
@@ -98,7 +98,7 @@
 				<fieldset>
 					<p>
 						<i class="icon-envelope-alt"></i>
-						<input type="{% if app.usersourceManager.getWithCapability('form_login') %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}" tabindex="1" />
+						<input type="{% if app.usersourceManager.getWithCapability('form_login') %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if app.usersourceManager.getWithCapability('form_login') %}/ {{ phrase('agent.general.username') }}{% endif %}" tabindex="1" />
 					</p>
 					<p>
 						<i class="icon-lock"></i>
@@ -138,11 +138,11 @@
 				<p>{{ phrase('agent.login.reset-password-info') }}</p>
 				<p>
 					<i class="icon-envelope-alt"></i>
-					<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="Email" tabindex="1" />
+					<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
 				</p>
 			</fieldset>
 			<div id="lost_fields_submit">
-				<p><input class="full-width" type="submit" value="Email Instructions" /></p>
+				<p><input class="full-width" type="submit" value="{{ phrase('agent.login.email_instructions') }}" /></p>
 				<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
 			</div>
 			<div id="lost_fields_laoding" style="display: none;">

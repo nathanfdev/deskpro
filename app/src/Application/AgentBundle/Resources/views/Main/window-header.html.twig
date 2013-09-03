@@ -226,11 +226,11 @@
 					{% endif %}
 					{% if app.user.hasPerm('agent_publish.create') %}
 						<li id="create_article_btn"><a><div class="wrap"><i class="icon-dp-article"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
-						<li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></span></a></li>
+						<li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></a></li>
 						<li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
 						<li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback" title="{{ phrase('agent.chrome.quicksearch_title-feedback') }}"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
 					{% endif %}
-					{% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></span></a></li>{% endif %}
+					{% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>{% endif %}
 				</ul>
 		</div>
 		<div class="btn-wrap pull-left">
