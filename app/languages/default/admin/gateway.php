@@ -27,7 +27,6 @@
 	'admin.gateway.exact_address'                   => 'Exact address',
 	'admin.gateway.explain_different_servers'       => 'You may {{link}} to send emails using different servers. For example, if your SMTP server requires authentication for each specific "From" address, you will need to create multiple outgoing accounts for each "From" address you plan to support.',
 	'admin.gateway.explain_email_gateway'           => 'An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your agents to read and respond to. This allows you to communicate seamlessly with users via normal email.',
-	'admin.gateway.from'                            => 'From',
 	'admin.gateway.from_domain'                     => 'From *@{{pattern}}',
 	'admin.gateway.from_google'                     => 'Google Apps: {{username}}',
 	'admin.gateway.from_pattern'                    => 'From {{pattern}}',

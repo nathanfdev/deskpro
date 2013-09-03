@@ -6,7 +6,7 @@
 			'reply': phrase('agent.twitter.replies'),
 			'mention': phrase('agent.twitter.mentions'),
 			'retweet': phrase('agent.twitter.retweets'),
-			'other': phrase('agent.twitter.other')
+			'other': phrase('agent.general.other')
 		} %}
 			<li {% if not data[group_type] %}style="display:none"{% endif %}>
 				<div class="item is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-type-{{ group_type }}" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'type', 'group_value': group_type}) }}">

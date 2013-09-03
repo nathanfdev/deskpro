@@ -122,7 +122,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if custom_fields|length %}
 					<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>
 				{% endif %}
-				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.ucfirst_delete') }}</button>
+				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
 				<button class="clean-white spam delete-type noedit-hide" {% if feedback.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.general.mark_spam') }}</button>
 				<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
 				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>

@@ -25,7 +25,7 @@
 	'agent.login.sent_pw_reset_instructions' => 'We sent instructions on how to reset your password to the email address you provided.',
 	'agent.login.supported_browsers'         => 'The following browsers are supported',
 	'agent.login.version_x_or_later'         => 'v{{version}} or later',
-	'agent.login.btn_login'                  => 'Log In',
+
 	'agent.login.session_timeout'            => 'Your session has timed out, you must log in again.',
 	'agent.login.reset-password-info'        => 'Enter your email address to receieve instructions on how to reset your password:',
 	'agent.login.reset-password-sent'        => 'We have sent a message to your email address with instructions on how to reset your password.',

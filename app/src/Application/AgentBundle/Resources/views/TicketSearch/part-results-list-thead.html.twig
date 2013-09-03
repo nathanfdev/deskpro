@@ -6,7 +6,7 @@
 		{% set perc = (100 / display_fields|length) %}
 		{% for field in display_fields %}
 			{% if field == 'subject' %}<th>{{ phrase('agent.general.subject') }}</th>
-			{% elseif field == 'ref' %}<th>{{ phrase('agent.general.reference') }}</th>
+			{% elseif field == 'ref' %}<th>{{ phrase('agent.general.ref') }}</th>
 			{% elseif field == 'id' %}<th>{{ phrase('agent.general.id') }}</th>
 			{% elseif field == 'status' %}<th>{{ phrase('agent.general.status') }}</th>
 			{% elseif field == 'user' %}<th>{{ phrase('agent.general.user') }}</th>

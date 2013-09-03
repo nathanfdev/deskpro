@@ -476,6 +476,11 @@ class LanguageController extends Controller
 				$real_folder = basename(dirname($data['filename']));
 				$real_path = $real_folder . '/' . $real_file;
 
+				if (strpos($id, '.') === false) {
+					echo "INVALID: $id<br/>";
+					continue;
+				}
+
 				list($expect_folder, $rest) = explode('.', $id, 2);
 
 				$parts = explode('.', $rest, 3);
@@ -726,7 +731,7 @@ class LanguageController extends Controller
     public function globaliseString($content, $id, $twig_phrases, $php_phrases)
     {
         list($by_id, $by_content) = $this->parseLangFiles();
-        $rootdir = DP_ROOT.'/languages';
+        $rootdir = DP_ROOT.'/languages/default';
 
         $parts = explode('.', $id, 3);
 
@@ -739,8 +744,10 @@ class LanguageController extends Controller
             $filename = $parts[1];
         }
 
-        if(!file_exists($rootdir.'/'.$package.'/'.$filename.'.php')) {
-            die('Could not load language file.');
+		$path = $rootdir.'/'.$package.'/'.$filename.'.php';
+
+        if(!file_exists($path)) {
+            die('Could not load language file: ' . $path);
         }
 
         $files = $by_content[$content];

@@ -37,7 +37,7 @@
 {% endblock %}
 {% block display_elements_list %}
 	<li data-field="id"><label><input type="checkbox" name="id" {% if 'id' in display_fields %}checked="checked"{% endif %} /> ID</label></li>
-	{% if app.getSetting('core.tickets.use_ref') %}<li data-field="ref"><label><input type="checkbox" name="ref" {% if 'ref' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.reference') }}</label></li>{% endif %}
+	{% if app.getSetting('core.tickets.use_ref') %}<li data-field="ref"><label><input type="checkbox" name="ref" {% if 'ref' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.ref') }}</label></li>{% endif %}
 	<li data-field="status"><label><input type="checkbox" name="status" {% if 'status' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.status') }}</label></li>
 	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="subject" {% if not show_all or 'subject' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.subject') }}</label></li>
 	<li data-field="user" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="user" {% if not show_all or 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.user') }}</label></li>

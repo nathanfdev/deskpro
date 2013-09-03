@@ -76,7 +76,7 @@
 				</li>
 			{% elseif field == 'ref' %}
 				<li class="{{field}}">
-					<span class="prop-title">{{ phrase('agent.general.reference') }}:</span>
+					<span class="prop-title">{{ phrase('agent.general.ref') }}:</span>
 					<span class="prop-val ref" data-prop-value="{{ticket.ref}}">{{ ticket.ref }}</span>
 				</li>
 			{% elseif field == 'language' and (ticket.language or changed_fields[ticket.id].language) %}

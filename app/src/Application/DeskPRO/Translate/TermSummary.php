@@ -388,7 +388,7 @@ class TermSummary
 			case 'flagged':
 				$color = $choice;
 				if ($color == 'any') {
-					$summary = $tr->phrase('agent.general.flagged_summary');
+					$summary = $tr->phrase('agent.general.flagged');
 				} else {
 					$summary = $tr->phrase('agent.general.flagged_with_color_summary', array('color' => $color));
 				}

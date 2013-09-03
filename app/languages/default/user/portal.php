@@ -1,5 +1,5 @@
 <?php return array(
-	'search_label-search_show'                  => 'Show',
+	'user.portal.search_label-search_show'      => 'Show',
 	'user.portal.language_chooser'              => 'Language:',
 	'user.portal.login-box_cancel-button'       => 'Cancel',
 	'user.portal.more_labels'                   => 'More Labels',

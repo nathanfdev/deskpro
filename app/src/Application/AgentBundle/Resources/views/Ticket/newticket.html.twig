@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="about">{{ phrase('agent.tickets.commented_on') }}: <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a></div>
 		<div class="post-action">
 			<select name="comment_action" id="{{baseId}}_comment_action">
-				<option value="delete">{{ phrase('agent.general.ucfirst_delete') }}</option>
+				<option value="delete">{{ phrase('agent.general.delete') }}</option>
 				<option value="approve">Approve</option>
 			</select>
 			{{ phrase('agent.tickets.coment_after_ticket_created') }}
@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="errors-section" id="{{baseId}}_error_section" style="display: none;">
 	<div style="display:none;" class="error-message subject">&bull; {{ phrase('agent.tickets.please_enter_subject') }}</div>
 	<div style="display:none;" class="error-message person_id person_no_user">&bull; {{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
-	<div style="display:none;" class="error-message person_email_address">&bull; {{ phrase('agent.general.please_enter_valid_email') }}</div>
+	<div style="display:none;" class="error-message person_email_address">&bull; {{ phrase('agent.general.error_email_address') }}</div>
 	<div style="display:none;" class="error-message person_email_address_gateway">&bull; The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot create a ticket for an email account.</div>
 	<div style="display:none;" class="error-message department_id">&bull; Please choose a department</div>
 	<div style="display:none;" class="error-message message">&bull; Please enter a message</div>
