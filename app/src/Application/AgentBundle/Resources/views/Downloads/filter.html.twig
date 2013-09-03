@@ -22,7 +22,7 @@
 
 {% block pane_header %}
 	<ul class="pane-tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-active-classname="active">
-		<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ total_results|default(0) }} Downloads</li>
+		<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ phrase('agent.publish.downloads_list_title', {count: total_results|default(0)}) }}</li>
 
 		{% if category %}
 			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> {{ category.title }}</li>
@@ -88,10 +88,10 @@
 <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
 	<section class="pane-section last" id="{{ tplvars.baseId }}_del_cat">
-		<header><h1>Delete Category</h1></header>
+		<header><h1>{{ phrase('agent.publish.delete_category') }}</h1></header>
 		<article style="padding: 10px;">
 			<div class="dp-not-loading">
-				<button class="dp-btn cat-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'downloads', category_id: category.id}) }}">Delete Category</button>
+				<button class="dp-btn cat-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'downloads', category_id: category.id}) }}">{{ phrase('agent.publish.delete_category_btn') }}</button>
 			</div>
 			<div class="dp-is-loading">
 				<i class="spinner-flat"></i>
@@ -100,20 +100,20 @@
 	</section>
 
 	<section class="pane-section">
-		<header><h1>Edit Category</h1></header>
+		<header><h1>{{ phrase('agent.publish.edit_category_btn') }}</h1></header>
 		<article>
 			<div class="pane-form">
 				<table class="pane-form-table">
 					<tbody>
 						<tr>
-							<th width="100">Title</th>
+							<th width="100">{{ phrase('agent.general.title') }}</th>
 							<td>
 								<input type="hidden" name="category[id]" value="{{ category.id }}" />
 								<input type="text" name="category[title]" value="{{ category.title }}" />
 							</td>
 						</tr>
 						<tr class="vtop">
-							<th>Permissions</th>
+							<th>{{ phrase('agent.general.permissions') }}</th>
 							<td>
 								<ul>
 									{% for ug in app.getUsergroups().getUserUsergroups() %}
@@ -134,7 +134,7 @@
 	</section>
 
 	<section class="pane-section last">
-		<header><h1>Reorder Category (Drag & Drop)</h1></header>
+		<header><h1>{{ phrase('agent.publish.reorder_category_title') }}</h1></header>
 		<article>
 			<div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
 			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" value="" />
@@ -143,7 +143,7 @@
 
 	<footer class="pane-footer" id="{{ tplvars.baseId }}_catfoot">
 		<div class="dp-not-loading">
-			<button class="dp-btn cat-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'download'}) }}">Save Category</button>
+			<button class="dp-btn cat-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'download'}) }}">{{ phrase('agent.general.save') }}</button>
 		</div>
 		<div class="dp-is-loading">
 			<i class="spinner-flat"></i>

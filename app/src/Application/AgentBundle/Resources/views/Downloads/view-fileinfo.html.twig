@@ -5,26 +5,26 @@
 		</div>
 	{% endif %}
 	<dl class="info-list">
-		<dt>File name:</dt>
+		<dt>{{ phrase('agent.general.filename') }}:</dt>
 		<dd class="filename-mark">{{ download.title }}</dd>
 
-		<dt>File size:</dt>
+		<dt>{{ phrase('agent.general.filesize') }}:</dt>
 		<dd>{{ download.blob.readable_filesize }}</dd>
 
-		<dt>Download URL:</dt>
+		<dt>{{ phrase('agent.general.download_url') }}:</dt>
 		<dd>
 			<a href="{{ path('user_downloads_file_download', {slug: download.url_slug}) }}" target="_blank" title="{{ download.blob.content_type }}">{{ helpdesk_url(download.blob.download_url) }}</a>
 		</dd>
 	</dl>
 {% else %}
 	<dl class="info-list">
-		<dt>File name:</dt>
+		<dt>{{ phrase('agent.general.filename') }}:</dt>
 		<dd class="filename-mark">{{ download.filename }}</dd>
 
-		<dt>File size:</dt>
+		<dt>{{ phrase('agent.general.filesize') }}:</dt>
 		<dd>{{ download.getReadableFileSize() }}</dd>
 
-		<dt>Download URL:</dt>
+		<dt>{{ phrase('agent.general.download_url') }}:</dt>
 		<dd>
 			<a href="{{ download.fileurl }}">{{ download.fileurl }}</a>
 		</dd>

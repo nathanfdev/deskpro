@@ -9,8 +9,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="form-header-error" style="display: none">
-	There are no categories defined. Before you can add files to the downloads section,
-	you need to define a category.
+	{{ phrase('agent.publish.no_downlod_cats_error') }}
 </div>
 <div class="form-outer">
 
@@ -35,7 +34,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'allow_parent_sel': true,
 				'selected': state.newdownload.category_id
 			} %}
-			<div class="error-message category_id">Please choose a category.</div>
+			<div class="error-message category_id">{{ phrase('agent.publish.please_select_category') }}</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
@@ -57,10 +56,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section file-section" id="{{baseId}}_file_section">
 	<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 	<div class="content">
-		<div class="error-message attach">Please choose a file.</div>
+		<div class="error-message attach">{{ phrase('agent.publish.please_choose_file') }}</div>
 		<div id="{{ baseId }}_file_upload_type" class="on">
 			<div class="content">
-				<h4 style="float:left;">File</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">Or hotlink an existing file</a></em>
+				<h4 style="float:left;">{{ phrase('agent.general.file') }}</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">{{ phrase('agent.publish.download_hotlink_btn') }}</a></em>
 				<br class="clear" />
 				<div id="{{baseId}}_file_section_up">
 					<input type="file" name="file-upload" multiple="multiple" />
@@ -70,25 +69,25 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<div class="content" style="margin-top: 8px;">
 				<h4>File Name</h4>
-				<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify a different filename.</small><br />
+				<small style="font-size: 11px; margin-bottom: 4px;">{{ phrase('agent.publish.download_specify_filename') }}.</small><br />
 				<input type="text" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
 			</div>
 		</div>
 		<div id="{{ baseId }}_file_url_type" style="display: none;">
 			<div class="content" style="margin-top: 8px;">
-				<h4 style="float:left;">File</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">Or hotlink an existing file</a></em>
+				<h4 style="float:left;">File</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">{{ phrase('agent.publish.download_upload_btn') }}</a></em>
 				<br class="clear" />
 				<input type="text" name="newdownload[fileurl]" value="{{ state.newdownload.file_url }}" /><br/>
-				<small style="font-size: 11px; margin-bottom: 4px;">Enter the full URL to a file. A user clicking the "Download" button will be taken to this URL.</small><br />
+				<small style="font-size: 11px; margin-bottom: 4px;">{{ phrase('agent.publish.download_specify_url') }}</small><br />
 			</div>
 			<div class="content" style="margin-top: 8px;">
-				<h4>File Size</h4>
-				<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify the size of the file to display. Eg: 50 MB or 2 KB.</small><br />
+				<h4>{{ phrase('agent.general.filesize') }}</h4>
+				<small style="font-size: 11px; margin-bottom: 4px;">{{ phrase('agent.publish.download_specify_filesize') }}</small><br />
 				<input type="text" name="newdownload[filesize]" value="{{ state.newdownload.filesize }}" />
 			</div>
 			<div class="content" style="margin-top: 8px;">
-				<h4>File Name</h4>
-				<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify a different filename.</small><br />
+				<h4>{{ phrase('agent.general.filename') }}</h4>
+				<small style="font-size: 11px; margin-bottom: 4px;">{{ phrase('agent.publish.download_specify_filename') }}</small><br />
 				<input type="text" name="newdownload[filename]" id="{{baseId}}_title" value="{{ state.newdownload.filename }}" />
 			</div>
 		</div>

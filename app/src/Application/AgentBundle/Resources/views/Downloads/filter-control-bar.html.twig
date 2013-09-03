@@ -12,7 +12,7 @@
 				{% elseif 'num_downloads' in cache.criteria.order_by %}
 					{{ phrase('agent.publish.download_count') }}
 				{% elseif 'title' in cache.criteria.order_by %}
-					Title
+					{{ phrase('agent.general.title') }}
 				{% endif %}
 			</span>
 			<em></em>
@@ -21,6 +21,6 @@
 	<ul class="order-by-menu" style="display: none">
 		<li data-order-by="date">{{ phrase('agent.general.date_created') }}</li>
 		<li data-order-by="num_downloads">{{ phrase('agent.general.num_downloads') }}</li>
-		<li data-order-by="title">Title</li>
+		<li data-order-by="title">{{ phrase('agent.general.title') }}</li>
 	</ul>
 </header>

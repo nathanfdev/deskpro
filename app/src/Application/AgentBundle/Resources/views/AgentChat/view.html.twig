@@ -7,7 +7,7 @@ pageMeta.conversation_id = {{convo.id}};
 {{ agentui.scroll_containers('agentchat-page') }}
 	<header class="page-header">
 		<h1>
-			Chat between
+			{{ phrase('agent.chat.between_members') }}
 			{% for p in convo.participants %}
 				{% if loop.last %} and {% endif %}{{ p.display_name }}{% if not loop.last and convo.participants|length > 2 %},{% endif %}
 			{% endfor %}

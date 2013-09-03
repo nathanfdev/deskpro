@@ -4,11 +4,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentTeamChatHisto
 pageMeta.agentTeamId = {{ agent_team.id|default(0) }};
 {% endblock pagemeta %}
 {% block pane_header %}
-	<h1><i class="icon-dp-chat"></i> {{ conversations|length }} Conversations</h1>
+	<h1><i class="icon-dp-chat"></i> {{ phrase('agent.chat.list_title', {count: conversations|length}) }}</h1>
 {% endblock %}
 {% block listing %}
 	{% include 'AgentBundle:AgentChat:list-team-part.html.twig' %}
 {% endblock listing %}
 {% block result_nav %}
-	<div class="cursor">Showing results 1-{{ conversations|length }} of {{ conversations|length }}</div>
+	<div class="cursor">{{ phrase('agent.general.showing_results_x_of_y', {'display_count': '1-'~(conversations|length),'size':conversations|length}, true) }}</div>
 {% endblock %}

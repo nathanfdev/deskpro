@@ -3,7 +3,7 @@
 		{% if download.content_html %}
 			{{ download.content_html|raw }}
 		{% else %}
-			<em>No content</em>
+			<em>{{ phrase('agent.general.no_content') }}</em>
 		{% endif %}
 	</div>
 	<div class="download-editor-wrap article-editor-wrap" style="display: none">

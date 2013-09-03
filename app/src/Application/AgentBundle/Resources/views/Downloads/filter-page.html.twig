@@ -67,7 +67,7 @@
 							{% elseif field == 'labels' %}
 								{% if download.labels|length %}
 									<li>
-										<span class="prop-title">Labels</span>
+										<span class="prop-title">{{ phrase('agent.general.labels') }}</span>
 										<span class="prop-val labels">
 											{% for label in download.labels %}
 												<span class="listing-tag">{{ label }}</span>
@@ -77,14 +77,15 @@
 								{% endif %}
 							{% elseif field == 'rating' %}
 								<li>
-									<span class="prop-title">Rating</span>
+									<span class="prop-title">{{ phrase('agent.general.rating') }}</span>
 									<span class="prop-val">
-										{{ download.up_votes }} up, {{ download.down_votes }} down
+										{{ phrase('agent.general.x_up_votes', {count: download.up_votes}) }},
+										{{ phrase('agent.general.x_down_votes', {count: download.down_votes}) }}
 									</span>
 								</li>
 							{% elseif field == 'rating_votes' %}
 								<li>
-									<span class="prop-title">Number of votes</span>
+									<span class="prop-title">{{ phrase('agent.general.number_of_ratings') }}</span>
 									<span class="prop-val">
 										{{ download.num_ratings }}
 									</span>

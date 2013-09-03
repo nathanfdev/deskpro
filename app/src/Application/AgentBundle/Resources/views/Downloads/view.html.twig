@@ -63,7 +63,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<button class="cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
 				<button class="save-trigger" id="{{baseId}}_org_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
-			<h4>File</h4>
+			<h4>{{ phrase('agent.general.file') }}</h4>
 		</header>
 		<section class="description-area">
 			<div id="{{baseId}}_showfile">{% include 'AgentBundle:Downloads:view-fileinfo.html.twig' %}</div>
@@ -76,23 +76,23 @@ pageMeta.baseId = '{{ baseId }}';
 							{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'download[attach]', noremove: true} %}
 							<ul class="files file-list"></ul>
 						</dd>
-						<dt>Filename:</dt>
+						<dt>{{ phrase('agent.general.filename') }}:</dt>
 						<dd>
 							<input type="text" name="download[title]" value="{{ download.title }}" /><br />
-							<small style="font-size: 11px;">Optionally specify a different filename.</small>
+							<small style="font-size: 11px;">{{ phrase('agent.publish.download_specify_filename') }}</small>
 						</dd>
 					</dl>
 				{% else %}
 					<dl class="info-list">
-						<dt>File URL:</dt>
+						<dt>{{ phrase('agent.general.fileurl') }}:</dt>
 						<dd>
 							<input type="text" name="download[fileurl]" value="{{ download.fileurl }}" /><br />
 						</dd>
-						<dt>File Size:</dt>
+						<dt>{{ phrase('agent.general.filesize') }}:</dt>
 						<dd>
 							<input type="text" name="download[filesize]" value="{{ download.getReadableFileSize() }}" /><br />
 						</dd>
-						<dt>File Name:</dt>
+						<dt>{{ phrase('agent.general.filename') }}:</dt>
 						<dd>
 							<input type="text" name="download[filename]" value="{{ download.filename }}" /><br />
 						</dd>
@@ -131,14 +131,14 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if user_view_count %}
 					<dt></dt>
 					<dd>
-						Registered views: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+						{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
 					</dd>
 				{% endif %}
 
 				{% if user_download_count %}
 					<dt></dt>
 					<dd>
-						Registered downloads: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id, view_action: 2}) }}" class="open-who-downloaded">{{ user_download_count }}</a>
+						{{ phrase('agent.general.registered_downloads') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id, view_action: 2}) }}" class="open-who-downloaded">{{ user_download_count }}</a>
 					</dd>
 				{% endif %}
 			</dl>
