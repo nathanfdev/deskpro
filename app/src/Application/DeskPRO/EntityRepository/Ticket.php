@@ -270,7 +270,7 @@ class Ticket extends AbstractEntityRepository
 				SELECT id
 				FROM tickets
 				WHERE id IN (" . implode(',', $ids) . ")
-				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, tickets.urgency DESC, tickets.id ASC
+				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, tickets.urgency DESC, tickets.id DESC
 			");
 		} else {
 			sort($ids, \SORT_NUMERIC);
