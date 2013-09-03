@@ -1,6 +1,6 @@
 <div class="ticket-merge overlay">
 	<div class="overlay-title">
-		<h4>Change User</h4>
+		<h4>{{ phrase('agent.tickets.change_user') }}</h4>
 	</div>
 
 	<div class="overlay-content">
@@ -60,10 +60,10 @@
 		</div>
 
 		<div class="submit-row" style="display:none; margin-top: 1em">
-			<div><label><input type="checkbox" class="participant-check" checked="checked" /> Send CC to {{ ticket.person.name }}</label></div>
+			<div><label><input type="checkbox" class="participant-check" checked="checked" /> {{ phrase('agent.tickets.send_cc_to') }} {{ ticket.person.name }}</label></div>
 
 			<div style="text-align: center; margin-top: 1em">
-				<button class="clean-white change-user-trigger">Change Person</button>
+				<button class="clean-white change-user-trigger">{{ phrase('agent.tickets.change_user') }}</button>
 			</div>
 		</div>
 	</div>

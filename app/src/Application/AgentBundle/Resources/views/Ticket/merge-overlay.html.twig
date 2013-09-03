@@ -27,7 +27,7 @@
 						</a></li>
 					</script>
 					<div class="input-wrapper">
-						<input type="text" style="width: 98%" class="term" placeholder="Find ticket..." class="user-input" />
+						<input type="text" style="width: 98%" class="term" placeholder="{{ phrase('agent.tickets.find_ticket') }}" class="user-input" />
 					</div>
 					<input type="hidden" name="ticket_id" class="ticket-id" value="" />
 					<div class="ticket-search-box person-search-box" style="display: none">
@@ -47,20 +47,20 @@
 							<tr class="header-row">
 								<td class="first">&nbsp;</td>
 								<td colspan="2"><div class="switcher-wrap">
-									<div class="left-text merge-target-button" data-merge-id="{{ ticket.id }}" data-keep="1">KEEP THIS</div>
-									<button class="switch-trigger clean-white" style="margin-top: 1px;">&lsaquo; Switch &rsaquo;</button>
-									<div class="right-text merge-target-button" data-merge-id="{{ other_ticket.id }}">MERGE THIS</div>
+									<div class="left-text merge-target-button" data-merge-id="{{ ticket.id }}" data-keep="1">{{ phrase('agent.general.merge_keep_this') }}</div></div>
+									<button class="switch-trigger clean-white" style="margin-top: 1px;">&lsaquo; {{ phrase('agent.general.merge_switch_btn') }} &rsaquo;</button>
+									<div class="right-text merge-target-button" data-merge-id="{{ other_ticket.id }}">{{ phrase('agent.general.merge_merge_this') }}</div>
 								</div></td>
 							</tr>
 						</tbody>
 						<tbody class="merge-data-rows">
 							<tr class="always-keep">
-								<th nowrap="nowrap"><div>ID</div></th>
+								<th nowrap="nowrap"><div>{{ phrase('agent.general.id') }}</div></th>
 								<td width="50%">{{ ticket.id }}</td>
 								{% if other_ticket %}<td width="50%">{{ other_ticket.id }}</td>{% endif %}
 							</tr>
 							<tr class="always-keep">
-								<th nowrap="nowrap"><div>Subject</div></th>
+								<th nowrap="nowrap"><div>{{ phrase('agent.general.subject') }}</div></th>
 								<td width="50%">
 									<div style="max-width: 325px; text-overflow: ellipsis; display: block; overflow: hidden; white-space: nowrap;">{{ ticket.subject }}</div>
 								</td>
@@ -71,37 +71,37 @@
 								{% endif %}
 							</tr>
 							<tr class="always-keep">
-								<th nowrap="nowrap"><div>Person</div></th>
+								<th nowrap="nowrap"><div>{{ phrase('agent.general.person') }}</div></th>
 								<td width="50%">{{ ticket.person.name }}</td>
 								{% if other_ticket %}<td width="50%">{{ other_ticket.person.name }}</td>{% endif %}
 							</tr>
 							<tr class="always-keep">
-								<th nowrap="nowrap"><div>Date Created</div></th>
+								<th nowrap="nowrap"><div>{{ phrase('agent.general.date_created') }}</div></th>
 								<td width="50%">{{ ticket.date_created|date('fulltime') }}</td>
 								{% if other_ticket %}<td width="50%">{{ other_ticket.date_created|date('fulltime') }}</td>{% endif %}
 							</tr>
 							<tr>
-								<th nowrap="nowrap"><div>Department</div></th>
+								<th nowrap="nowrap"><div>{{ phrase('agent.general.department') }}</div></th>
 								<td width="50%">{{ ticket.department ? ticket.department.full_title : '' }}</td>
 								{% if other_ticket %}
 									<td width="50%">{{ other_ticket.department ? other_ticket.department.full_title : '' }}</td>
 								{% endif %}
 							</tr>
 							<tr class="always-keep">
-								<th nowrap="nowrap"><div>Status</div></th>
+								<th nowrap="nowrap"><div>{{ phrase('agent.general.status') }}</div></th>
 								<td width="50%">{{ phrase('agent.tickets.status_' ~ ticket.status) }}</td>
 								{% if other_ticket %}<td width="50%">{{ phrase('agent.tickets.status_' ~ other_ticket.status) }}</td>{% endif %}
 							</tr>
 							{% if ticket.urgency and other_ticket.urgency and ticket.urgency != other_ticket.urgency %}
 								<tr class="always-keep">
-									<th nowrap="nowrap"><div>Urgency</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.urgency') }}</div></th>
 									<td width="50%">{{ ticket.urgency }}</td>
 									{% if other_ticket %}<td width="50%">{{ other_ticket.urgency }}</td>{% endif %}
 								</tr>
 							{% endif %}
 							{% if ticket.language or other_ticket.language %}
 								<tr>
-									<th nowrap="nowrap"><div>Language</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.language') }}</div></th>
 									<td width="50%">{{ ticket.language ? ticket.language.title : '' }}</td>
 									{% if other_ticket %}
 										<td width="50%">{{ other_ticket.language ? other_ticket.language.title : '' }}</td>
@@ -110,7 +110,7 @@
 							{% endif %}
 							{% if ticket.category or other_ticket_category %}
 								<tr>
-									<th nowrap="nowrap"><div>Category</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.category') }}</div></th>
 									<td width="50%">{{ ticket.category ? ticket.category.title : '' }}</td>
 									{% if other_ticket %}
 										<td width="50%">{{ other_ticket.category ? other_ticket.category.title : '' }}</td>
@@ -119,7 +119,7 @@
 							{% endif %}
 							{% if ticket.priority or other_ticket.priority%}
 								<tr>
-									<th nowrap="nowrap"><div>Priority</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.priority') }}</div></th>
 									<td width="50%">{{ ticket.priority ? ticket.priority.title : '' }}</td>
 									{% if other_ticket %}
 										<td width="50%">{{ other_ticket.priority ? other_ticket.priority.title : '' }}</td>
@@ -128,7 +128,7 @@
 							{% endif %}
 							{% if ticket.product or other_ticket.product %}
 								<tr>
-									<th nowrap="nowrap"><div>Product</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.product') }}</div></th>
 									<td width="50%">{{ ticket.product ? ticket.product.title : '' }}</td>
 									{% if other_ticket %}
 										<td width="50%">{{ other_ticket.product ? other_ticket.product.title : '' }}</td>
@@ -137,7 +137,7 @@
 							{% endif %}
 							{% if ticket.workflow or other_ticket.workflow %}
 								<tr>
-									<th nowrap="nowrap"><div>Workflow</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.workflow') }}</div></th>
 									<td width="50%">{{ ticket.workflow ? ticket.workflow.title : '' }}</td>
 									{% if other_ticket %}
 										<td width="50%">{{ other_ticket.workflow ? other_ticket.workflow.title : '' }}</td>
@@ -157,7 +157,7 @@
 							{% endfor %}
 							{% if ticket.labels is not empty or other_ticket.labels is not empty %}
 								<tr class="mergeable">
-									<th nowrap="nowrap"><div>Labels</div></th>
+									<th nowrap="nowrap"><div>{{ phrase('agent.general.label') }}</div></th>
 									<td width="50%">
 										{% if ticket.labels is not empty %}
 											<ul>
@@ -189,7 +189,7 @@
 	{% if other_ticket %}
 		<div class="overlay-footer">
 			<div class="is-not-loading">
-				<button class="clean-white merge-trigger">Merge these two tickets</button>
+				<button class="clean-white merge-trigger">{{ phrase('agent.tickets.merge_submit_btn') }}</button>
 			</div>
 			<div class="is-loading">
 				<div class="loading-icon"></div>

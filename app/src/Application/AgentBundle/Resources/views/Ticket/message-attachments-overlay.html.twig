@@ -1,9 +1,9 @@
 <div class="message-attachments-delete-overlay overlay">
 	<div class="overlay-title">
-		<h4>Delete Attachments</h4>
+		<h4>{{ phrase('agent.tickets.delete_attachments') }}</h4>
 	</div>
 
-	<div class="overlay-content" data-confirm="Are you sure you want to delete this attachment?">
+	<div class="overlay-content" data-confirm="{{ phrase('agent.tickets.delete_attach_confirm') }}">
 		<ul class="attachment-list">
 		{% for attachment in attachments %}
 			<li class="attachment-row {% if attachment.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attachment.blob.extension|default('none')}}{% endif %}">

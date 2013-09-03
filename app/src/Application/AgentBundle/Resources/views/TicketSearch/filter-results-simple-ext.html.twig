@@ -71,7 +71,8 @@
 {######################################################################################################################}
 
 {% block pane_header %}
-	<h1><i class="icon-dp-ticket"></i> <span class="results-count-display">{{ ticket_ids|length }}</span> Tickets</h1>
+	{% set phrase_part %}<span class="results-count-display">{{ ticket_ids|length }}</span>{% endset %}
+	<h1><i class="icon-dp-ticket"></i> {{ phrase('agent.tickets.list_title_counter', {x: phrase_part}, true) }} </h1>
 {% endblock %}
 
 {######################################################################################################################}

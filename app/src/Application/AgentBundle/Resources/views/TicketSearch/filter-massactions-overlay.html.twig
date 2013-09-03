@@ -71,7 +71,7 @@
 							<dd>
 								<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 									<option value="-1"></option>
-									<option value="0">Unassigned</option>
+									<option value="0">{{ phrase('agent.general.unassigned') }}</option>
 
 									{% for agent in agents %}
 										<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
@@ -86,7 +86,7 @@
 							<dd>
 								<select name="actions[agent_team]" class="dpe_select">
 									<option value="-1"></option>
-									<option value="0">No Team</option>
+									<option value="0">{{ phrase('agent.general.no_team') }}</option>
 
 									{% for team in agent_teams %}
 									<option value="{{ team.id }}">{{ team.name }}</option>
@@ -98,9 +98,9 @@
 				</tr></table>
 
 				<dl>
-					<dt>Followers</dt>
+					<dt>{{ phrase('agent.general.followers') }}</dt>
 					<dd>
-						<select name="actions[add_participants][add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add followers">
+						<select name="actions[add_participants][add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="{{ phrase('gent.tickets.add_followers') }}">
 							<option data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 							{% for agent in agents %}
 							{% if agent.id != app.user.id %}
@@ -114,7 +114,7 @@
 				<table cellspacing="0" cellpadding="0" border="0"><tr>
 					<td>
 						<dl>
-							<dt>Department</dt>
+							<dt>{{ phrase('agent.general.department') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-department.html.twig' with {
 									'name': 'actions[department]',
@@ -131,7 +131,7 @@
 					{% if app.getSetting('core.use_ticket_category') %}
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>Category</dt>
+							<dt>{{ phrase('agent.general.category') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-category.html.twig' with {
 									'name': 'actions[category]',
@@ -149,7 +149,7 @@
 					{% if app.getSetting('core.use_product') %}
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>Product</dt>
+							<dt>{{ phrase('agent.general.category') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-product.html.twig' with {
 									'name': 'actions[product]',
@@ -167,7 +167,7 @@
 					{% if app.getSetting('core.use_ticket_priority') %}
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>Priority</dt>
+							<dt>{{ phrase('agent.general.priority') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-priority.html.twig' with {
 									'name': 'actions[priority]',
@@ -185,7 +185,7 @@
 					{% if app.getSetting('core.use_ticket_workflow') %}
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>Workflow</dt>
+							<dt>{{ phrase('agent.general.workflow') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 									'name': 'actions[workflow]',
@@ -203,7 +203,7 @@
 					{% if app.languages.isMultiLang() %}
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>Language</dt>
+							<dt>{{ phrase('agent.general.language') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-language.html.twig' with {
 									'name': 'actions[language]',
@@ -224,7 +224,7 @@
 				<div class="profile-box-container reply-box-wrap">
 					<header>
 						<nav>
-							<ul><li>Mass Reply</li></ul>
+							<ul><li>{{ phrase('agent.tickets.mass_reply') }}</li></ul>
 						</nav>
 					</header>
 					<section class="ticketreply">

@@ -55,10 +55,10 @@
 		<br/>
 
 		<dl class="info-list" style="font-size: 11px;">
-			<dt>Debug File</dt>
+			<dt>{{ phrase('agent.tickets.debug_file') }}</dt>
 			<dd>
-				<a href="{{ path('agent_ticket_download_debug_report', {ticket_id: message.ticket.id, _rt: security_token('request_token', 10800)}) }}">Download Debug File</a><br/>
-				A DeskPRO support agent may ask you to provide this file to help diagnose issues.
+				<a href="{{ path('agent_ticket_download_debug_report', {ticket_id: message.ticket.id, _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</a><br/>
+				{{ phrase('agent.tickets.debug_file_explain') }}
 			</dd>
 		</dl>
 	{% endif %}
