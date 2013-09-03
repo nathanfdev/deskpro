@@ -22,4 +22,11 @@
 	'agent.feedback.vote_for_this_feedback' => 'Vote for this feedback',
 	'agent.feedback.votes_least_most'       => 'Votes (Least-Most)',
 	'agent.feedback.votes_most_least'       => 'Votes (Most-Least)',
+	'agent.feedback.list_title'             => '1 Submission|{{count}} Submissions',
+	'agent.feedback.merge_feedback'         => 'Merge Feedback',
+	'agent.feedback.merge_feedback_note'    => 'The description from the merged feedback will be added as a comment to the kept feedback.',
+	'agent.feedback.merge_feedback_submit'  => 'Merge these two feedback submissions',
+	'agent.feedback.no_feedback_cats_error' => 'There are no types defined. Before you can add types to the feedback section, you need to define a type from the Admin Interface.',
+	'agent.feedback.feedback_deleted'       => 'This feedback has been deleted',
+	'agent.feedback.merge_howto'            => 'Open an additional feedback tab to merge',
 );

@@ -10,7 +10,7 @@
 
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>Search Terms</strong>
+			<strong>{{ phrase('agent.general.search_terms') }}</strong>
 		</div>
 		<div class="input-row-body add-to-search">
 			<input class="full" type="text" name="query" value="" placeholder="Enter search terms" />
@@ -34,7 +34,7 @@
 
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>Categories</strong>
+			<strong>{{ phrase('agent.general.categories') }}</strong>
 		</div>
 		<div class="input-row-body add-to-search">
 			<div class="cat-select-type cat-select-articles">
@@ -48,9 +48,9 @@
 	</div>
 
 	<footer>
-		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_publish_search') }}">Search</button>
+		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_publish_search') }}">{{ phrase('agent.general.search') }}</button>
 		<div style="padding-top: 4px; text-align: center; font-size: 11px;">
-			<a href="#" class="reset-form-trigger">Reset</a>
+			<a href="#" class="reset-form-trigger">{{ phrase('agent.general.reset') }}</a>
 		</div>
 	</footer>
 

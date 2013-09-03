@@ -90,4 +90,6 @@
 	'agent.publish.download_specify_filename'     => 'Optionally specify a different filename',
 	'agent.publish.download_specify_url'          => 'Enter the full URL to a file. A user clicking the "Download" button will be taken to this URL',
 	'agent.publish.download_specify_filesize'     => 'Optionally specify the size of the file to display. Eg: 50 MB or 2 KB.',
+	'agent.publish.requires_validation'           => 'Requires Validation',
+	'agent.publish.new_feedback_by'               => 'New feedback by {{name}}',
 );

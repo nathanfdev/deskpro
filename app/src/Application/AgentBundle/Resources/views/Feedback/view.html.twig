@@ -24,7 +24,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content"related-content>
 
 <div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	This feedback has been deleted <button class="clean-gray xxx-small undelete">Undelete</button>
+	{{ phrase('agent.feedback.feedback_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 <div class="spam-notice" {% if feedback.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
@@ -131,7 +131,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 
 		<ul id="{{baseId}}_merge_menu" style="display: none;">
-			<li class="elm no-choice">Open an additional feedback tab to merge.</li>
+			<li class="elm no-choice">{{ phrase('agent.feedback.merge_howto') }}</li>
 		</ul>
 	</section>
 </div>
