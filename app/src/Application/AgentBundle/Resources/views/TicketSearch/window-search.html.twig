@@ -6,34 +6,34 @@
 
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.status') }}</strong>
+			<strong>{{ phrase('agent.general.status') }}</strong>
 		</div>
 		<div class="input-row-body add-to-search">
 			{% set elid = el_uid() %}
 			<select class="dp-select-widget-simple" name="search_status[]" multiple="multiple" data-target-menu="#{{ elid }}_menu">
-				<option selected="selected" value="awaiting_agent">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_awaiting_agent') }}</option>
-				<option selected="selected" value="awaiting_user">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_awaiting_user') }}</option>
-				<option value="resolved">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_resolved') }}</option>
-				{% if app.getSetting('core_tickets.use_archive') %}<option value="closed">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_closed') }}</option>{% endif %}
-				<option value="hidden.awaiting_validation">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_hidden_validating') }}</option>
-				<option value="hidden.spam">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_hidden_spam') }}</option>
-				<option value="hidden.deleted">{{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_hidden_deleted') }}</option>
+				<option selected="selected" value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+				<option selected="selected" value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+				{% if app.getSetting('core_tickets.use_archive') %}<option value="closed">{{ phrase('agent.tickets.status_closed') }}</option>{% endif %}
+				<option value="hidden.awaiting_validation">{{ phrase('agent.tickets.status_hidden_validating') }}</option>
+				<option value="hidden.spam">{{ phrase('agent.tickets.status_hidden_spam') }}</option>
+				<option value="hidden.deleted">{{ phrase('agent.tickets.status_hidden_deleted') }}</option>
 			</select>
 			<div class="source-pane-select-menu" id="{{ elid }}_menu">
 				<i class="icon-caret-up"></i>
 				<ul class="checkbox-list">
-					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_awaiting_agent') }}</label></li>
-					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_awaiting_user') }}</label></li>
-					<li><label><input class="widget-val" type="checkbox" value="resolved" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_resolved') }}</label></li>
-					{% if app.getSetting('core_tickets.use_archive') %}<li><label><input class="widget-val" type="checkbox" value="closed" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_closed') }}</label></li>{% endif %}
+					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> {{ phrase('agent.tickets.status_awaiting_agent') }}</label></li>
+					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> {{ phrase('agent.tickets.status_awaiting_user') }}</label></li>
+					<li><label><input class="widget-val" type="checkbox" value="resolved" /> {{ phrase('agent.tickets.status_resolved') }}</label></li>
+					{% if app.getSetting('core_tickets.use_archive') %}<li><label><input class="widget-val" type="checkbox" value="closed" /> {{ phrase('agent.tickets.status_closed') }}</label></li>{% endif %}
 				</ul>
 
 				<div class="alt-options">
-					<strong>{{ {{ phrase('agent.general.phrase') }}('agent.tickets.hidden_tickets') }}:</strong>
+					<strong>{{ phrase('agent.tickets.hidden_tickets') }}:</strong>
 					<ul class="checkbox-list">
-						<li><label><input class="widget-val" type="checkbox" value="hidden.awaiting_validation" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_hidden_validating') }}</label></li>
-						<li><label><input class="widget-val" type="checkbox" value="hidden.spam" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_hidden_spam') }}</label></li>
-						<li><label><input class="widget-val" type="checkbox" value="hidden.deleted" /> {{ {{ phrase('agent.general.phrase') }}('agent.tickets.status_hidden_deleted') }}</label></li>
+						<li><label><input class="widget-val" type="checkbox" value="hidden.awaiting_validation" /> {{ phrase('agent.tickets.status_hidden_validating') }}</label></li>
+						<li><label><input class="widget-val" type="checkbox" value="hidden.spam" /> {{ phrase('agent.tickets.status_hidden_spam') }}</label></li>
+						<li><label><input class="widget-val" type="checkbox" value="hidden.deleted" /> {{ phrase('agent.tickets.status_hidden_deleted') }}</label></li>
 					</ul>
 				</div>
 			</div>
@@ -46,20 +46,20 @@
 
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.agent') }}</strong>
+			<strong>{{ phrase('agent.general.agent') }}</strong>
 		</div>
 		<div class="input-row-body add-to-search">
 			{% set elid = el_uid() %}
 			<select class="dp-select-widget-simple" name="search_assigned[]" multiple="multiple" data-target-menu="auto">
-				<optgroup label="{{ {{ phrase('agent.general.phrase') }}('agent.general.agents') }}">
-					<option value="0">{{ {{ phrase('agent.general.phrase') }}('agent.general.unassigned') }}</option>
+				<optgroup label="{{ phrase('agent.general.agents') }}">
+					<option value="0">{{ phrase('agent.general.unassigned') }}</option>
 					<option selected="selected" value="{{ app.user.id }}">Me</option>
 					{% for agent in app.agents.getAgents() if agent.id != app.user.id %}
 						<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 					{% endfor %}
 				</optgroup>
 				{% if app.agent_teams.getTeams()|length %}
-					<optgroup label="{{ {{ phrase('agent.general.phrase') }}('agent.general.teams') }}">
+					<optgroup label="{{ phrase('agent.general.teams') }}">
 						<option value="team.0">No team</option>
 						{% for team in app.agent_teams.getTeams() %}
 							<option value="team.{{ team.id }}">{{ team.name }}</option>
@@ -77,7 +77,7 @@
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.fields') }}</strong>
+			<strong>{{ phrase('agent.general.fields') }}</strong>
 		</div>
 		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-fields"><i class="icon-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-ticket-fields" id="{{ elid }}_termlist">
@@ -96,7 +96,7 @@
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.subject') }}</strong>
+			<strong>{{ phrase('agent.general.subject') }}</strong>
 		</div>
 		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-subject" data-target-summary="#{{ elid }}_text_val"><i class="icon-cog"></i></div>
 		<div class="input-row-body with-adv add-to-search">
@@ -109,12 +109,12 @@
 			<div class="pane-row row-orig add-to-search" id="{{ elid }}_orig_row">
 				<div class="sep-row">
 					<div class="line"></div>
-					<strong>{{ {{ phrase('agent.general.phrase') }}('agenet.general.and') }}</strong>
+					<strong>{{ phrase('agent.general.and') }}</strong>
 				</div>
 				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
 				<table class="layout-table v-middle" width="100%">
 					<tr>
-						<td width="80">{{ {{ phrase('agent.general.phrase') }}('agent.general.subject') }}</td>
+						<td width="80">{{ phrase('agent.general.subject') }}</td>
 						<td>
 							<input class="full-width search-string" type="text" name="search_subject_string[]" placeholder="Enter search words" style="margin-bottom: 6px;" />
 						</td>
@@ -123,13 +123,13 @@
 						<td>&nbsp;</td>
 						<td>
 							<select class="dp-select-widget-simple" name="search_subject_op[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-								<option selected="selected" value="is">{{ {{ phrase('agent.general.phrase') }}('agent.general.contains') }}</option>
-								<option value="not">{{ {{ phrase('agent.general.phrase') }}('agent.general.does_not_contain') }}</option>
+								<option selected="selected" value="is">{{ phrase('agent.general.contains') }}</option>
+								<option value="not">{{ phrase('agent.general.does_not_contain') }}</option>
 							</select>
 							{% if app.getSetting('tickets_enable_like_search') %}
 								<select class="dp-select-widget-simple" name="search_subject_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-									<option value="and">{{ {{ phrase('agent.general.phrase') }}('agent.general.all_words') }}</option>
-									<option value="or">{{ {{ phrase('agent.general.phrase') }}('agent.general.any_words') }}</option>
+									<option value="and">{{ phrase('agent.general.all_words') }}</option>
+									<option value="or">{{ phrase('agent.general.any_words') }}</option>
 									<option value="{{ phrase('agent.general.phrase') }}">{{ phrase('agent.general.phrase') }}</option>
 								</select>
 							{% else %}
@@ -152,7 +152,7 @@
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.message') }}</strong>
+			<strong>{{ phrase('agent.general.message') }}</strong>
 		</div>
 		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-message" data-target-summary="#{{ elid }}_text_val"><i class="icon-cog"></i></div>
 		<div class="input-row-body with-adv add-to-search">
@@ -165,12 +165,12 @@
 			<div class="pane-row row-orig add-to-search" id="{{ elid }}_orig_row">
 				<div class="sep-row">
 					<div class="line"></div>
-					<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.and') }}</strong>
+					<strong>{{ phrase('agent.general.and') }}</strong>
 				</div>
 				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
 				<table class="layout-table v-middle" width="100%">
 					<tr>
-						<td width="80">{{ {{ phrase('agent.general.phrase') }}('agent.general.message') }}</td>
+						<td width="80">{{ phrase('agent.general.message') }}</td>
 						<td>
 							<input class="full-width search-string" type="text" name="search_message_string[]" placeholder="Enter search words" style="margin-bottom: 6px;" />
 						</td>
@@ -179,13 +179,13 @@
 						<td>&nbsp;</td>
 						<td>
 							<select class="dp-select-widget-simple" name="search_message_op[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-								<option selected="selected" value="is">{{ {{ phrase('agent.general.phrase') }}('agent.general.contains') }}</option>
-								<option value="not">{{ {{ phrase('agent.general.phrase') }}('agent.general.does_not_contain') }}</option>
+								<option selected="selected" value="is">{{ phrase('agent.general.contains') }}</option>
+								<option value="not">{{ phrase('agent.general.does_not_contain') }}</option>
 							</select>
 							{% if app.getSetting('tickets_enable_like_search') %}
 								<select class="dp-select-widget-simple" name="search_message_type[]" data-target-menu="auto" data-menu-addclass="no-caret" data-zindex="10000001" data-select-close="1">
-									<option value="and">{{ {{ phrase('agent.general.phrase') }}('agent.general.all_words') }}</option>
-									<option value="or">{{ {{ phrase('agent.general.phrase') }}('agent.general.any_words') }}</option>
+									<option value="and">{{ phrase('agent.general.all_words') }}</option>
+									<option value="or">{{ phrase('agent.general.any_words') }}</option>
 									<option value="{{ phrase('agent.general.phrase') }}">{{ phrase('agent.general.phrase') }}</option>
 								</select>
 							{% else %}
@@ -239,7 +239,7 @@
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.user') }}</strong>
+			<strong>{{ phrase('agent.general.user') }}</strong>
 		</div>
 		<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields"><i class="icon-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-user-fields" id="{{ elid }}_termlist">
@@ -259,7 +259,7 @@
 		{% set elid = el_uid() %}
 		<div class="input-row">
 			<div class="input-row-title">
-				<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.organization') }}</strong>
+				<strong>{{ phrase('agent.general.organization') }}</strong>
 			</div>
 			<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields"><i class="icon-cog"></i></div>
 			<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-org-fields" id="{{ elid }}_termlist">
@@ -279,7 +279,7 @@
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ {{ phrase('agent.general.phrase') }}('agent.general.dates_and_times') }}</strong>
+			<strong>{{ phrase('agent.general.dates_and_times') }}</strong>
 		</div>
 		<div class="adv-btn trigger-open-panel" data-panel-id="panel-date-fields"><i class="icon-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-date-fields" id="{{ elid }}_termlist">
@@ -292,9 +292,9 @@
 	</div>
 
 	<footer>
-		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_ticketsearch_runcustomfilter') }}">{{ {{ phrase('agent.general.phrase') }}('agent.general.search') }}</button>
+		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_ticketsearch_runcustomfilter') }}">{{ phrase('agent.general.search') }}</button>
 		<div style="padding-top: 4px; text-align: center; font-size: 11px;">
-			<a href="#" class="reset-form-trigger">{{ {{ phrase('agent.general.phrase') }}('agent.general.reset') }}</a>
+			<a href="#" class="reset-form-trigger">{{ phrase('agent.general.reset') }}</a>
 		</div>
 	</footer>
 </section>

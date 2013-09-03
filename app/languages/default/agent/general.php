@@ -42,7 +42,7 @@
 	'agent.general.andor'                                   => 'and/or',
 	'agent.general.anonymous'                               => 'Anonymous',
 	'agent.general.any'                                     => 'any',
-	'agent.general.any_word'                                => 'Any word',
+	'agent.general.any_words'                               => 'Any words',
 	'agent.general.apply'                                   => 'Apply',
 	'agent.general.apply_to_x_selections'                   => 'Apply actions to {{placeholder}} selections',
 	'agent.general.approve'                                 => 'Approve',
