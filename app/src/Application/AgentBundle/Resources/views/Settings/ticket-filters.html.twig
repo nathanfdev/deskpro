@@ -13,8 +13,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 			<thead>
 				<tr>
 					<th style="text-align:left;">{{ phrase('agent.general.filters') }}</th>
-					<th style="text-align:left;" width="100">Hide <span class="small-light-icon tipped" title="Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time."></span></th>
-					<th style="text-align:left;" width="10">Edit</th>
+					<th style="text-align:left;" width="100">{{ phrase('agent.general.hide') }} <span class="small-light-icon tipped" title="{{ phrase('agent.settings.hidden_filters_info') }}"></span></th>
+					<th style="text-align:left;" width="10">{{ phrase('agent.general.edit') }}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -22,9 +22,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 					<tr>
 						<td>{{ filter.title }}</td>
 						<td nowrap="nowrap">
-							<label><input type="checkbox" name="filters_hidden[]" class="filter-hidden-check filter-{{ filter.id }}" value="{{ filter.id }}" {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}checked="checked"{% endif %} /> Hide</label>
+							<label><input type="checkbox" name="filters_hidden[]" class="filter-hidden-check filter-{{ filter.id }}" value="{{ filter.id }}" {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}checked="checked"{% endif %} /> {{ phrase('agent.general.hide') }}</label>
 						</td>
-						<td><button class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}" data-zindex="32050">Edit</button></td>
+						<td><button class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}" data-zindex="32050">{{ phrase('agent.general.edit') }}</button></td>
 					</tr>
 				{% else %}
 					<tr>
@@ -42,8 +42,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 			<table width="100%">
 				<thead>
 					<tr>
-						<th style="text-align:left;">Filters shared with you <span class="small-light-icon tipped" title="These are filters created by the administrator that you can use."></span></th>
-						<th style="text-align:left;" width="100">Hide <span class="small-light-icon tipped" title="Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time."></span></th>
+						<th style="text-align:left;">Filters shared with you <span class="small-light-icon tipped" title="{{ phrase('agent.settings.admin_filters_info') }}"></span></th>
+						<th style="text-align:left;" width="100">Hide <span class="small-light-icon tipped" title="{{ phrase('agent.settings.hidden_filters_info') }}"></span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -51,7 +51,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 						<tr>
 							<td>{{ filter.title }}</td>
 							<td nowrap="nowrap">
-								<label><input type="checkbox" name="filters_hidden[]" class="filter-hidden-check filter-{{ filter.id }}" value="{{ filter.id }}" {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}checked="checked"{% endif %} /> Hide</label>
+								<label><input type="checkbox" name="filters_hidden[]" class="filter-hidden-check filter-{{ filter.id }}" value="{{ filter.id }}" {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}checked="checked"{% endif %} /> {{ phrase('agent.general.hide') }}</label>
 							</td>
 						</tr>
 					{% endfor %}

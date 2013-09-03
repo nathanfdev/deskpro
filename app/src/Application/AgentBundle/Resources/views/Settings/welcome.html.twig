@@ -2,14 +2,14 @@
 	<form action="{{ path('agent_settings_profile_savewelcome') }}" method="post">
 		<article>
 			{% if not is_first_login_name and app.user.name %}
-				<p>Welcome to DeskPRO, {{ app.user.name }}.</p>
+				<p>{{ phrase('agent.settings.welcome_name', {name: app.user.name}) }}</p>
 				<p>
-					This is your first time logging in, would you like to upload a profile picture?
+					{{ phrase('agent.settings.first_login_set_pic') }}
 				</p>
 			{% else %}
-				<p>Welcome to DeskPRO.</p>
+				<p>{{ phrase('agent.settings.welcome_to_deskpro') }}</p>
 				<p>
-					This is your first time logging in, please fill in your name and upload a profile picture.
+					{{ phrase('agent.settings.first_login_set_name') }}
 				</p>
 			{% endif %}
 
@@ -17,15 +17,15 @@
 				<tbody>
 					<tr>
 						<td>
-							Your Name:
+							{{ phrase('agent.general.name') }}:
 						</td>
 						<td>
-							<input type="text" class="name" value="{{ app.user.name }}" placeholder="Enter your name" />
+							<input type="text" class="name" value="{{ app.user.name }}" placeholder="" />
 						</td>
 					</tr>
 					<tr>
 						<td>
-							Timezone:
+							{{ phrase('agent.general.timezone') }}:
 						</td>
 						<td>
 							<select class="timezone">
@@ -66,7 +66,7 @@
 					<tr>
 						<td></td>
 						<td>
-							<button class="clean-white save-trigger">Done, start using DeskPRO &rarr;</button>
+							<button class="clean-white save-trigger">{{ phrase('agent.settings.done_start_using') }} &rarr;</button>
 						</td>
 					</tr>
 				</tfoot>

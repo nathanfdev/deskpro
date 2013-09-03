@@ -4,14 +4,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketSlas';
 <div style="padding: 10px;">
 	{% if slas|length %}
 
-		Filter SLA results: <select class="grouping-option" data-sla-id="{{ sla.id }}">
-			<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>Show all matching tickets</option>
-			<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>Show only tickets assigned to me</option>
+		{{ phrase('agent.settings.sla_filter_results') }}: <select class="grouping-option" data-sla-id="{{ sla.id }}">
+			<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>{{ phrase('agent.settings.sla_filter_all') }}</option>
+			<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>{{ phrase('agent.settings.sla_filter_assigned') }}</option>
 			{% if app.user.getAgentTeamIds()|length %}
-				<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>Show only tickets assigned to my team</option>
+				<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>{{ phrase('agent.settings.sla_filter_team') }}</option>
 			{% endif %}
 		</select>
-		<span class="small-light-icon tipped" title="When SLAs are displayed in the agent interface, the counts and listings will be filtered by this option."></span>
+		<span class="small-light-icon tipped" title="{{ phrase('agent.settings.sla_filter_results_info') }}"></span>
 
 		<br/>
 
@@ -19,11 +19,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketSlas';
 			<table width="100%">
 				<thead>
 					<tr>
-						<th style="text-align:left;">SLA</th>
-						<th style="text-align:left;">Type</th>
-						<th style="text-align:left;">Warning Time</th>
-						<th style="text-align:left;">Failure Time</th>
-						<th style="text-align:left;">Hide <span class="small-light-icon tipped" title="Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time."></span></th>
+						<th style="text-align:left;">{{ phrase('agent.general.slas') }}</th>
+						<th style="text-align:left;">{{ phrase('agent.general.type') }}</th>
+						<th style="text-align:left;">{{ phrase('agent.general.warning') }}</th>
+						<th style="text-align:left;">{{ phrase('agent.general.failure') }}</th>
+						<th style="text-align:left;">{{ phrase('agent.general.hide') }} <span class="small-light-icon tipped" title="{{ phrase('agent.settings.hidden_filters_info') }}"></span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -31,12 +31,12 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketSlas';
 						<tr>
 							<td>{{ sla.title }}</td>
 							<td>
-								{% if sla.sla_type == 'first_response' %}Time until first response
-								{% elseif sla.sla_type == 'resolution' %}Time until ticket resolution
-								{% elseif sla.sla_type == 'waiting_time' %}User waiting time until ticket resolution{% endif %}
-								{% if sla.active_time == 'default' %}(default working hours)
-								{% elseif sla.active_time == 'all' %}(24x7)
-								{% elseif sla.active_time == 'work_hours' %}(working hours){% endif %}
+								{% if sla.sla_type == 'first_response' %}{{ phrase('agent.general.time_until_first_response') }}
+								{% elseif sla.sla_type == 'resolution' %}{{ phrase('agent.general.time_until_resolution') }}
+								{% elseif sla.sla_type == 'waiting_time' %}{{ phrase('agent.general.user_time_until_resolution') }}{% endif %}
+								{% if sla.active_time == 'default' %}({{ phrase('agent.general.default_working_hours') }})
+								{% elseif sla.active_time == 'all' %}({{ phrase('agent.general.24x7') }})
+								{% elseif sla.active_time == 'work_hours' %}({{ phrase('agent.general.working_hours') }}){% endif %}
 							</td>
 							<td>{{ sla.getWarningTimeText() }}</td>
 							<td>{{ sla.getFailTimeText() }}</td>
@@ -51,9 +51,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketSlas';
 	{% else %}
 		<p style="padding:10px;">
 			{% if app.user.can_admin %}
-				You have no created any SLAs yet. You can define new SLAs from Admin Interface &gt; Tickets &gt; SLAs.
+				{{ phrase('agent.settings.no_slas_admin') }}
 			{% else %}
-				Your administrator has not defined any SLAs.
+				{{ phrase('agent.settings.no_slas') }}
 			{% endif %}
 		</p>
 	{% endif %}

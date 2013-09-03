@@ -23,10 +23,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Override Name</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.settings.override_name') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.override_display_name) }}
-				<em class="desc">If entered, this name will be displayed to users instead of your real name.</em>
+				<em class="desc">{{ phrase('agent.settings.override_name_explain') }}</em>
 			</div>
 		</div>
 
@@ -36,15 +36,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
 			</div>
 			<div class="more_emails_empty" {% if app.user.emails|length != 1 %}style="display: none;"{% endif %}>
-				<a href="#">Add additional emails &rarr;</a>
+				<a href="#">{{ phrase('agent.settings.add_additional_emails') }} &rarr;</a>
 			</div>
 			<div class="more_emails" {% if app.user.emails|length == 1 %}style="display: none;"{% endif %}>
-				<strong>Additional Emails:</strong>
+				<strong>{{ phrase('agent.settings.additional_emails') }}:</strong>
 				<ul>
 					{% for email in app.user.emails if email.id != app.user.primary_email.id %}
 						<li data-email-id="{{ email.id }}">&bull; <span>{{ email.email }}</span>&nbsp;&nbsp;&nbsp;<i class="icon-trash remove-trigger" title="Remove email"></i></li>
 					{% endfor %}
-					<li class="add-row">Add another email: <input type="text" class="more_emails_txt" /> <a class="more_emails_trigger" href="#">Add</a></li>
+					<li class="add-row">{{ phrase('agent.settings.add_another_email') }}: <input type="text" class="more_emails_txt" /> <a class="more_emails_trigger" href="#">{{ phrase('agent.general.add') }}</a></li>
 				</ul>
 			</div>
 		</div>
@@ -96,16 +96,16 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		{% endif %}
 
 		<div class="dp-form-row dp-desktop-notifications" style="display:none">
-			<div class="dp-form-label"><label>Desktop Notifications</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.settings.desktop_notifs') }}</label></div>
 			<div class="dp-form-input">
-				<button class="clean-white enable-desktop-notifications">Enable Desktop Notifications</button>
+				<button class="clean-white enable-desktop-notifications">{{ phrase('agent.settings.desktop_notifs_enable') }}</button>
 				<div class="dp-desktop-notifications-enabled">
-					<div>Desktop notifications are currently enabled. They can only be disabled via controls on the notification itself.</div>
-					<div>Automatically hide notifications after: {{ form_widget(form.auto_dismiss_notifications) }}</div>
-					<div><button class="clean-white generate-test-notification">Generate Test Notification</button></div>
+					<div>{{ phrase('agent.settings.desktop_notifs_are_enabled') }}</div>
+					<div>{{ phrase('agent.settings.desktop_notifs_autohide') }} {{ form_widget(form.auto_dismiss_notifications) }}</div>
+					<div><button class="clean-white generate-test-notification">{{ phrase('agent.settings.desktop_notifs_test') }}</button></div>
 				</div>
 				<div class="dp-desktop-notifications-disabled" style="display:none">
-					<div>Desktop notifications have been explicitly disabled. They must be enabled for this domain via the browser itself (Settings &gt; Show advanced settings &gt; Content settings &gt; Notifications &gt; Manage exceptions).</div>
+					<div>{{ phrase('agent.settings.desktop_notifs_explicit_disabled') }}</div>
 				</div>
 			</div>
 		</div>
@@ -122,45 +122,38 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		{% endif %}
 
 		<div class="dp-form-row" >
-			<div class="dp-form-label"><label>Tickets</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.tickets') }}</label></div>
 			<div class="dp-form-input">
-				Automatically close ticket tabs when:
-					<label>{{ form_widget(form.ticket_close_reply) }} replying</label> &nbsp;&nbsp;
-					<label>{{ form_widget(form.ticket_close_note) }} adding a note</label>
+				{{ phrase('agent.settings.auto_close_ticket_tabs') }}
+					<label>{{ form_widget(form.ticket_close_reply) }} {{ phrase('agent.settings.auto_close_ticket_tabs_reply') }}</label> &nbsp;&nbsp;
+					<label>{{ form_widget(form.ticket_close_note) }} {{ phrase('agent.settings.auto_close_ticket_tabs_note') }}</label>
 				<br/>
 				<label>
 					{{ form_widget(form.ticket_reverse_order) }}
-					Show newest messages first (reverse chronological order) with the replybox at the top
+					{{ phrase('agent.settings.tickets_reverse_order') }}
 				</label>
 				<br/>
-				<label>{{ form_widget(form.ticket_go_next_reply) }} Automatically load the next ticket in the list after replying (only if closing the ticket tab)</label>
+				<label>{{ form_widget(form.ticket_go_next_reply) }} {{ phrase('agent.settings.tickets_autoload_next') }}</label>
 			</div>
 		</div>
 
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>User Chat</label></div>
 			<div class="dp-form-input">
-				<label>{{ form_widget(form.hide_claimed_chat) }} Immediately dismiss "new chat" window when another agent takes a chat</label>
+				<label>{{ form_widget(form.hide_claimed_chat) }} {{ phrase('agent.settings.chat_immediate_dismiss') }}</label>
 			</div>
 		</div>
 
 		{% set assign_team_setting = (app.getSetting('core_tickets.new_assignteam') == 'assign' or app.getSetting('core_tickets.reply_assignteam_assigned') == 'assign' or app.getSetting('core_tickets.reply_assignteam_unassigned') == 'assign') %}
 		{% if app.user.getAgent().getTeams()|length >= 2 and assign_team_setting %}
 			<div class="dp-form-row">
-				<div class="dp-form-label"><label>Default Team</label></div>
+				<div class="dp-form-label"><label>{{ phrase('agent.settings.default_team') }}</label></div>
 				<div class="dp-form-input">
 					<select name="settings_profile[default_team_id]">
 					{% for team in app.user.getAgent().getTeams() %}
 						<option value="{{ team.id }}" {% if form.default_team_id.get('value') == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 					{% endfor %}
 					</select>
-					<em class="desc" style="display: block;">This will apply when:
-						<ul class="inline-pipe-list">
-						{% if app.getSetting('core_tickets.new_assignteam') == 'assign' %}<li>creating a new ticket</li>{% endif %}
-						{% if app.getSetting('core_tickets.reply_assignteam_unassigned') == 'assign' %}<li>replying to a ticket without a team</li>{% endif %}
-						{% if app.getSetting('core_tickets.reply_assignteam_assigned') == 'assign' %}<li>replying to a ticket with a team</li>{% endif %}
-						</ul>
-					</em>
 				</div>
 			</div>
 		{% endif %}
@@ -169,7 +162,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<div class="dp-form-row">
 				<div class="dp-form-label"><label>API Token</label></div>
 				<div class="dp-form-input">
-					<label><input type="checkbox" name="settings_profile[reset_api_token]" value="1" /> Reset your API token. You will need to relogin with any external apps.</label>
+					<label><input type="checkbox" name="settings_profile[reset_api_token]" value="1" /> {{ phrase('agent.settings.reset_api_token') }}</label>
 				</div>
 			</div>
 		{% endif %}

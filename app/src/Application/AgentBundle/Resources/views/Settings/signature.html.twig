@@ -23,10 +23,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 
 		{% if app.user.getTwitterAccountIds()|length %}
 			<div class="dp-form-row">
-				<div class="dp-form-label"><label>Twitter Signature</label></div>
+				<div class="dp-form-label"><label>{{ phrase('agent.settings.twitter_signature') }}</label></div>
 				<div class="dp-form-input">
 					<input type="text" name="tweet_signature" value="{{ tweet_signature }}" />
-					<em class="desc">Any tweets you write will be signed off with this. Keep it short.</em>
+					<em class="desc">{{ phrase('agent.settings.twitter_signature_desc') }}</em>
 				</div>
 			</div>
 		{% endif %}

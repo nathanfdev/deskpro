@@ -1,6 +1,7 @@
 <?php return array(
 	'agent.chat.added_as_participant'             => 'Added as a participant',
 	'agent.chat.agent_chats'                      => 'Agent Chats',
+	'agent.chat.between_members'                  => 'Chat between:',
 	'agent.chat.chat_history'                     => 'Chat History',
 	'agent.chat.chat_started_by'                  => 'Chat started by',
 	'agent.chat.chat_transcript'                  => 'Chat Transcript',
@@ -9,7 +10,6 @@
 	'agent.chat.filter_title_assigned'            => 'Assigned Chats',
 	'agent.chat.filter_title_mine'                => 'My Chats',
 	'agent.chat.filter_title_missed'              => 'Missed Chats',
-	'agent.chat.list_title'                       => '1 Conversation|{{count}} Conversations',
 	'agent.chat.in_department'                    => 'in {{name}}',
 	'agent.chat.invite_agent'                     => 'Invite Agent',
 	'agent.chat.invite_another_agent'             => 'Invite another agent',
@@ -20,6 +20,7 @@
 	'agent.chat.leave_chat_confirm'               => 'Are you sure you want to leave this chat?',
 	'agent.chat.leave_end'                        => 'End chat and leave',
 	'agent.chat.leave_unassign'                   => 'Unassign myself and leave',
+	'agent.chat.list_title'                       => '1 Conversation|{{count}} Conversations',
 	'agent.chat.msg_agent_timeout'                => '{{agent_name}} has timed out',
 	'agent.chat.msg_assigned_agent'               => 'Chat assigned to {{agent_name}}',
 	'agent.chat.msg_part_joined'                  => '{{person_name}} has joined',
@@ -57,5 +58,4 @@
 	'agent.chat.x_by_anonymous'                   => 'Chat {{chat_id}} by Anonymous',
 	'agent.chat.x_by_anonymousymous'              => 'Chat by Anonymous',
 	'agent.chat.you_have_been_invited'            => 'You have been invited to a chat',
-	'agent.chat.between_members'                  => 'Chat between:',
 );

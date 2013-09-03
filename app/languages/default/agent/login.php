@@ -4,6 +4,8 @@
 	'agent.login.apple_safari'               => 'Apple Safari',
 	'agent.login.back_to_login'              => 'Back to login form',
 	'agent.login.browser_requirements'       => 'Browser Requirements',
+	'agent.login.chrome_29_info'             => 'Some users have reported instability issues while using DeskPRO with Chrome v29.',
+	'agent.login.chrome_29_title'            => 'We have detected that you are using Google Chrome v29.',
 	'agent.login.email_instructions'         => 'Email Instructions',
 	'agent.login.enter_new_password'         => 'Enter New Password',
 	'agent.login.enter_password'             => 'Enter your password',
@@ -29,6 +31,4 @@
 	'agent.login.session_timeout'            => 'Your session has timed out, you must log in again.',
 	'agent.login.supported_browsers'         => 'The following browsers are supported',
 	'agent.login.version_x_or_later'         => 'v{{version}} or later',
-	'agent.login.chrome_29_title'            => 'We have detected that you are using Google Chrome v29.',
-	'agent.login.chrome_29_info'             => 'Some users have reported instability issues while using DeskPRO with Chrome v29.',
 );

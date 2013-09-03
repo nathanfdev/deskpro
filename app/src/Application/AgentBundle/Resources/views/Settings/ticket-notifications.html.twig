@@ -17,7 +17,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 
 			{% if app.user.getPref('agent_notif.no_allow_set_email') %}
 				<p>
-					Please contact the administrator to update your email notification preferences.
+					{{ phrase('agent.settings.notif_contact_admin') }}
 				</p>
 			{% else %}
 				<div class="check-grid">
@@ -26,17 +26,17 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
-								<th nowrap="nowrap">New Ticket</th>
-								<th nowrap="nowrap">Assignment</th>
-								<th nowrap="nowrap">User Message</th>
-								<th nowrap="nowrap">Agent Message</th>
-								<th nowrap="nowrap">Agent Note</th>
-								<th nowrap="nowrap">Property Change</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_new') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_assign') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_user') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_agent') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_note') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_change') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td class="title" style="text-align: right;">My Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_my') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[1][email_created]" value="1" {% if my_subs[1].email_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created and assigned to me"></span>
@@ -66,7 +66,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">Tickets I Follow</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_follow') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[3][email_created]" value="1" {% if my_subs[3].email_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created and I am added as a follower"></span>
@@ -96,7 +96,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">My Teams' Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_team') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[2][email_created]" value="1" {% if my_subs[2].email_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that is assigned to one of my teams"></span>
@@ -126,7 +126,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">Unassigned Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_unassigned') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[4][email_created]" value="1" {% if my_subs[4].email_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that is not assigned to any agent or team"></span>
@@ -156,7 +156,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">All Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_all') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[5][email_created]" value="1" {% if my_subs[5].email_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any new ticket is created"></span>
@@ -194,12 +194,12 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
-								<th nowrap="nowrap">New Ticket <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_new') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that matches this filter"></span></th>
 								<th nowrap="nowrap">Filter Match <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a change to a ticket causes it to match this filter"></span></th>
-								<th nowrap="nowrap">User Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a user replies to a ticket that matches this filter"></span></th>
-								<th nowrap="nowrap">Agent Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket that matches this filter"></span></th>
-								<th nowrap="nowrap">Agent Note <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket that matches this filter"></span></th>
-								<th nowrap="nowrap">Property Change <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any change is made to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a user replies to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_agent') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_note') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_change') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any change is made to a ticket that matches this filter"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -233,18 +233,18 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 				{% endif %}
 
 				<div class="check-grid">
-					<header>My Events</header>
+					<header>{{ phrase('agent.settings.notif_my_events') }}</header>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
-								<th nowrap="nowrap">All Actions</th>
-								<th nowrap="nowrap">Forwards</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_all_actions') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_forwards') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td class="title" style="text-align: right;">My own actions</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_my_own_actions') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="agent_notify_override_all_email" value="1" {% if app.user.getPref('agent_notify_override.all.email') %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send me notifications for all events I trigger"></span>
@@ -260,15 +260,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 
 				<br />
 				<div class="check-grid">
-					<header>Notes with @mentions</header>
+					<header>{{ phrase('agent.settings.notif_notes_with_mentions') }}</header>
 					<table width="100%">
 						<tbody>
 							<tr>
 								<td class="title" style="text-align: left;">
-									How do you want to be notified when an agent mentions you in a ticket note?<br/>
+									{{ phrase('agent.settings.notif_notes_with_mentions_opt') }}<br/>
 									<select name="ticket_mention">
-										<option {% if app.user.getPref('agent_notif.ticket_mention', 'always_send') == 'always_send' %}selected="selected"{% endif %}value="always_send">Always email &amp; send a chat message</option>
-										<option {% if app.user.getPref('agent_notif.ticket_mention', 'always_send') == 'smart_send'  %}selected="selected"{% endif %}value="smart_send">Send a chat message if online or email if offline</option>
+										<option {% if app.user.getPref('agent_notif.ticket_mention', 'always_send') == 'always_send' %}selected="selected"{% endif %}value="always_send">{{ phrase('agent.settings.notif_notes_with_mentions_always') }}</option>
+										<option {% if app.user.getPref('agent_notif.ticket_mention', 'always_send') == 'smart_send'  %}selected="selected"{% endif %}value="smart_send">{{ phrase('agent.settings.notif_notes_with_mentions_smart') }}</option>
 									</select>
 								</td>
 							</tr>
@@ -281,7 +281,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 		<div id="settingswin_ticket_notifications_alert" style="display: none">
 			{% if app.user.getPref('agent_notif.no_allow_set_browser') %}
 				<p>
-					Please contact the administrator to update your browser notification preferences.
+					{{ phrase('agent.settings.notif_contact_admin') }}
 				</p>
 			{% else %}
 				<div class="check-grid">
@@ -290,17 +290,17 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
-								<th nowrap="nowrap">New Ticket</th>
-								<th nowrap="nowrap">Assignment</th>
-								<th nowrap="nowrap">User Message</th>
-								<th nowrap="nowrap">Agent Message</th>
-								<th nowrap="nowrap">Agent Note</th>
-								<th nowrap="nowrap">Property Change</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_new') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_assign') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_user') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_agent') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_note') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_change') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td class="title" style="text-align: right;">My Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_my') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[1][alert_created]" value="1" {% if my_subs[1].alert_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created and assigned to me"></span>
@@ -330,7 +330,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">Tickets I Follow</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_follow') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[3][alert_created]" value="1" {% if my_subs[3].alert_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created and I am added as a follower"></span>
@@ -360,7 +360,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">My Teams' Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_team') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[2][alert_created]" value="1" {% if my_subs[2].alert_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that is assigned to one of my teams"></span>
@@ -390,7 +390,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">Unassigned Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_unassigned') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[4][alert_created]" value="1" {% if my_subs[4].alert_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that is not assigned to any agent or team"></span>
@@ -420,7 +420,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							</tr>
 
 							<tr>
-								<td class="title" style="text-align: right;">All Tickets</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_group_all') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="filter_sub[5][alert_created]" value="1" {% if my_subs[5].alert_created %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any new ticket is created"></span>
@@ -452,16 +452,16 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 				{% if custom_filters|length %}
 				<br />
 				<div class="check-grid">
-					<header>Filters</header>
+					<header>{{ phrase('agent.general.filters') }}</header>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
-								<th nowrap="nowrap">New Ticket <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that matches this filter"></span></th>
-								<th nowrap="nowrap">Filter Match <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a change to a ticket causes it to match this filter"></span></th>
-								<th nowrap="nowrap">User Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a user replies to a ticket that matches this filter"></span></th>
-								<th nowrap="nowrap">Agent Message <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket that matches this filter"></span></th>
-								<th nowrap="nowrap">Property Change <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any change is made to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_new') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.general.filter_match') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a change to a ticket causes it to match this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a user replies to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_agent') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to or adds a note to a ticket that matches this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_change') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when any change is made to a ticket that matches this filter"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -492,18 +492,18 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 
 				<br />
 				<div class="check-grid">
-					<header>My Events</header>
+					<header>{{ phrase('agent.settings.notif_my_events') }}</header>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
-								<th nowrap="nowrap">All Actions</th>
-								<th nowrap="nowrap">Forwards</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_all_actions') }}</th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.notif_forwards') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td class="title" style="text-align: right;">My own actions</td>
+								<td class="title" style="text-align: right;">{{ phrase('agent.settings.notif_my_own_actions') }}</td>
 								<td class="prop">
 									<input type="checkbox" name="agent_notify_override_all_alert" value="1" {% if app.user.getPref('agent_notify_override.all.alert') %}checked="checked"{% endif %} />
 									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send me notifications for all events I trigger"></span>

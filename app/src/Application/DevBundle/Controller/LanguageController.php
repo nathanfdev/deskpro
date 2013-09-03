@@ -222,8 +222,6 @@ class LanguageController extends Controller
 			}
         }
 
-        $this->exportPOAction('user');
-
         return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES, 'message' => 'Reformatted Language Files'));
 
     }

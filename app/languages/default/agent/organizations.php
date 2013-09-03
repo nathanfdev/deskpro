@@ -1,5 +1,7 @@
 <?php return array(
 	'agent.organizations.add_person'                      => 'Add a person to this organization',
+	'agent.organizations.browse_all_members'              => 'Browse all members',
+	'agent.organizations.click_set_manager'               => 'Click to set as organization manager.',
 	'agent.organizations.create_organization'             => 'Create Organization',
 	'agent.organizations.email_domain_assoc'              => 'Email Domain Associations',
 	'agent.organizations.email_domain_assoc_add'          => 'Add New Domain',
@@ -12,9 +14,7 @@
 	'agent.organizations.email_domain_assoc_title'        => 'Email Domain Associations for {{name}}',
 	'agent.organizations.enter_position'                  => 'Enter position',
 	'agent.organizations.is_empty'                        => 'This organization has no members.',
-	'agent.organizations.browse_all_members'              => 'Browse all members',
-	'agent.organizations.org_manager_click_to_remove'     => 'Organization Manager. Click to remove.',
-	'agent.organizations.click_set_manager'               => 'Click to set as organization manager.',
-	'agent.organizations.no_slas'                         => 'No SLAs are being automatically applied to this organization.',
 	'agent.organizations.list_title'                      => '1 Organization|{{count}} Organizations',
+	'agent.organizations.no_slas'                         => 'No SLAs are being automatically applied to this organization.',
+	'agent.organizations.org_manager_click_to_remove'     => 'Organization Manager. Click to remove.',
 );
