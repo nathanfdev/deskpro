@@ -632,4 +632,5 @@
 	'agent.general.merge_switch_btn'                        => 'Switch',
 	'agent.general.merge_merge_this'                        => 'Merge This',
 	'agent.general.search_terms'                            => 'Search Terms',
+	'agent.general.added_by'                                => 'added by {{name}}',
 );

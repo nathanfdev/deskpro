@@ -60,13 +60,13 @@
 								</li>
 							{% elseif field == 'num_comments' %}
 								<li>
-									<span class="prop-title">Comments</span>
+									<span class="prop-title">{{ phrase('agent.general.comments') }}</span>
 									<span class="prop-val">{{ comment_counts[article.id]|default(0) }}</span>
 								</li>
 							{% elseif field == 'labels' %}
 								{% if article.labels|length %}
 									<li>
-										<span class="prop-title">Labels</span>
+										<span class="prop-title">{{ phrase('agent.general.labels') }}</span>
 										<span class="prop-val labels">
 											{% for label in article.labels %}
 												<span class="listing-tag">{{ label }}</span>
@@ -76,14 +76,15 @@
 								{% endif %}
 							{% elseif field == 'rating' %}
 								<li>
-									<span class="prop-title">Rating</span>
+									<span class="prop-title">{{ phrase('agent.general.rating') }}</span>
 									<span class="prop-val">
-										{{ article.up_votes }} up, {{ article.down_votes }} down
+										{{ phrase('agent.general.x_up_votes', {count: article.up_votes}) }},
+										{{ phrase('agent.general.x_down_votes', {count: article.down_votes}) }}
 									</span>
 								</li>
 							{% elseif field == 'rating_votes' %}
 								<li>
-									<span class="prop-title">Number of votes</span>
+									<span class="prop-title">{{ phrase('agent.general.number_of_ratings') }}</span>
 									<span class="prop-val">
 										{{ article.num_ratings }}
 									</span>

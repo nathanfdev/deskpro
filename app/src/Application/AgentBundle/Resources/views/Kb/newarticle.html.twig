@@ -14,8 +14,7 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <div class="form-header-error" style="display: none">
-	There are no categories defined. Before you can add articles to the knowledgebase section,
-	you need to define a category.
+	{{ phrase('agent.publish.no_kb_cats_error') }}
 </div>
 <div class="form-outer">
 
@@ -23,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 <input type="hidden" name="pending_article_id" id="{{baseId}}_pending_article_id" value="0" />
 
 <div class="pending-info" style="display: none;" style="display: none;">
-	<h3>Creating pending article (added by <span class="person-name"></span>)</h3>
+	<h3>Creating pending article ({{ phrase('agent.general.added_by', {name: '<span class="person-name"></span>'}, true) }})</h3>
 	<div class="pending-item pending-ticket">
 		<div class="about">
 			<div class="pending-ticket" style="display: none">
@@ -49,7 +48,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'allow_parent_sel': true,
 				'selected': state.newarticle.category_id|default(0)
 			} %}
-			<div class="error-message category_id">Please choose a category.</div>
+			<div class="error-message category_id">{{ phrase('agent.publish.please_select_category') }}</div>
 		</div>
 		<div class="col">
 			<h4>{{ phrase('agent.general.status') }}</h4>
@@ -72,7 +71,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
 		<input type="text" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" style="width: 80%;" />
-		<div class="error-message title">Please enter a title.</div>
+		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
 	</div>
 </div>
 
@@ -84,8 +83,8 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		{% if app.languages.isMultiLang() %}
 			<div style="float: right; padding-right: 18px; padding-top: 4px;">
-				<span class="small-light-icon tipped" title="The primary language for this article. After the article has been created you will be able to translate it into other languages."></span>
-				Language: <select name="newarticle[language_id]">
+				<span class="small-light-icon tipped" title="{{ phrase('agent.publish.primary_lang_explain') }}"></span>
+				{{ phrase('agent.general.language') }}: <select name="newarticle[language_id]">
 					{% for lang in app.languages.getAll() %}
 						<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
 					{% endfor %}

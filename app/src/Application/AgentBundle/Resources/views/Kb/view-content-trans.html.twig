@@ -9,7 +9,7 @@
 							<i class="icon-ok"></i>
 						</div>
 						<div class="dp-status-neg">
-							Missing Translation
+							{{ phrase('agent.publish.missing_translation') }}
 						</div>
 					</div>
 					<label>
@@ -18,7 +18,7 @@
 							{{ lang.title }}
 							<span class="dp-group-hideoff">
 								&middot;
-								<span class="faux-link copy-trigger">Set contents from article</span>
+								<span class="faux-link copy-trigger">{{ phrase('agent.publish.set_contents_from_article') }}</span>
 							</span>
 						</strong>
 					</label>
@@ -33,7 +33,7 @@
 					</div>
 					<div class="save-row">
 						<div class="dp-not-loading">
-							<button class="dp-btn dp-btn-primary save-trigger">Save Changes</button>
+							<button class="dp-btn dp-btn-primary save-trigger">{{ phrase('agent.general.save') }}</button>
 						</div>
 						<div class="dp-is-loading">
 							<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
