@@ -12,6 +12,6 @@
 	</div>
 {% else %}
 	<div class="ticket-lock-bar validating-bar" style="padding: 4px; text-align: left;">
-		Awaiting Validation: An agent with permission to validate content will need to approve this before it is displayed in the portal.
+		{{ phrase('agent.publish.awaiting_validation_info') }}
 	</div>
 {% endif %}

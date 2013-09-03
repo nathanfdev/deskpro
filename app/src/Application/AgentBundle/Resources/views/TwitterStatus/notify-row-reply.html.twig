@@ -7,9 +7,9 @@
 >
 	<div class="dismiss"><i class="icon-ban-circle"></i></div>
 	<time></time>
-	<big>Tweet</big>
+	<big>{{ phrase('agent.twitter.tweet') }}</big>
 	<small>
-		@{{ account_status.status.user.screen_name }} replied to your tweet.
+		{{ phrase('agent.twitter.user_replied_to_tweet', {name: '@' ~ account_status.status.user.screen_name}) }}
 		<div>{{ account_status.status.text|raw }}</div>
 	</small>
 </li>

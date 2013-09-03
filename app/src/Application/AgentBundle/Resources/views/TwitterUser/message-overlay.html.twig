@@ -1,6 +1,6 @@
 <div class="overlay twitter-message-overlay twitter-message-send">
 	<div class="overlay-title">
-		<h4>Send @{{ user.screen_name }} a message on Twitter</h4>
+		<h4>{{ phrase('agent.twitter.send_user_message_on_twitter', {name: '@'~user.screen_name}) }}</h4>
 	</div>
 
 	<div class="new-message overlay-content">

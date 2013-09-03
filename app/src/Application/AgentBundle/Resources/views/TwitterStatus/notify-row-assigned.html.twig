@@ -11,12 +11,12 @@
 >
 	<div class="dismiss"><i class="icon-ban-circle"></i></div>
 	<time></time>
-	<big>Tweet</big>
+	<big>{{ phrase('agent.twitter.tweet') }}</big>
 	<small>
 		{% if account_status.agent %}
-			Assigned to this tweet by {{ performer.display_name }}.
+			{{ phrase('agent.twitter.assigned_to_by', {name: performer.display_name}) }}
 		{% elseif account_status.agent_team %}
-			Your team was assigned to this tweet by {{ performer.display_name }}.
+			{{ phrase('agent.twitter.team_assigned_by', {name: performer.display_name}) }}
 		{% endif %}
 		<div>{{ account_status.status.text|raw }}</div>
 	</small>

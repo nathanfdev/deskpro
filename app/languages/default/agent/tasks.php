@@ -19,4 +19,10 @@
 	'agent.tasks.task_has_deal_x'    => 'Task linked to: Deal "{{label}}"',
 	'agent.tasks.task_has_ticket_x'  => 'Task linked to: Ticket "{{label}}"',
 	'agent.tasks.tasks_i_delegated'  => 'Tasks I Delegated',
+	'agent.tasks.assigned_to_by'     => 'Assigned to this task by {{name}}',
+	'agent.tasks.team_assigned_by'     => 'Your team was assigned to this task by {{name}',
+	'agent.tasks.completed_by' => 'Task was completed by {{name}}',
+	'agent.tasks.task_due_today' => 'This task is due today',
+	'agent.tasks.list_title' => '1 Task|{{count}} Tasks',
+	'agent.tasks.delete_confirm' => 'Are you sure you want to delete this task?'
 );

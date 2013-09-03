@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</td></tr></table>
 
 	<div style="margin-top: 10px;" style="clear: both">
-		Associated people:
+		{{ phrase('agent.twitter.associated_people') }}:
 		{% for person in user.getVerifiedPeople() %}
 			<a class="as-popover tipped person-name-picture person-verified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Verified">{{ person.display_name }}<em></em></a>
 		{% endfor %}
@@ -83,7 +83,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<div style="margin-top: 10px;" style="clear: both">
-		Associated organizations:
+		{{ phrase('agent.twitter.associated_orgs') }}:
 		{% for org in user.getPossibleOrganizations() %}
 			{% include 'AgentBundle:TwitterUser:part-possible-organization.html.twig' %}
 		{% endfor %}
@@ -137,7 +137,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{% endif %}
 					<li class="send-message-button"><a class="clean-white large">{{ phrase('agent.general.message') }}</a></li>
 				{% endif %}
-				<li><a href="https://twitter.com/{{ user.screen_name }}" target="_blank" class="clean-white large">View Twitter Profile</a></li>
+				<li><a href="https://twitter.com/{{ user.screen_name }}" target="_blank" class="clean-white large">{{ phrase('agent.twitter.view_twitter_profile') }}</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -157,11 +157,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<header id="{{baseId}}_twitter_header">
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
-				<li data-tab-for="#{{baseId}}_statuses_tab" class="on">Tweets ({{ user.statuses_count }})</li>
+				<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.twitter.tweets') }} ({{ user.statuses_count }})</li>
 				<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.general.messages') }}</li>
 				<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.general.mentions') }}</li>
-				<li data-tab-for="#{{baseId}}_following_tab">Following ({{ user.friends_count }})</li>
-				<li data-tab-for="#{{baseId}}_followers_tab">Followers ({{ user.followers_count }})</li>
+				<li data-tab-for="#{{baseId}}_following_tab">{{ phrase('agent.twitter.following') }} ({{ user.friends_count }})</li>
+				<li data-tab-for="#{{baseId}}_followers_tab">{{ phrase('agent.twitter.folowers') }} ({{ user.followers_count }})</li>
 			</ul>
 		</nav>
 	</header>
@@ -170,7 +170,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% for status in statuses %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
-				<div style="padding: 10px">No statuses for user.</div>
+				<div style="padding: 10px">{{ phrase('agent.twitter.no_statuses') }}</div>
 			{% endfor %}
 			{% if user.statuses_count > 25 %}
 				<div class="more-box"><button class="clean-white more-button" data-load-url="{{ path('agent_twitter_user_statuses', {'user_id': user.id, 'page': 2}) }}">View More... <span class="flat-spinner" style="display: none"></span></button></div>
@@ -181,7 +181,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% for status in messages %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' with {'hide_replies': true} %}
 			{% else %}
-				<div style="padding: 10px">No messages for user.</div>
+				<div style="padding: 10px">{{ phrase('agent.twitter.no_messages') }}</div>
 			{% endfor %}
 		</article>
 
@@ -189,7 +189,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% for status in mentions %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' with {'hide_replies': true} %}
 			{% else %}
-				<div style="padding: 10px">No mentions for user.</div>
+				<div style="padding: 10px">{{ phrase('agent.twitter.no_mentions') }}</div>
 			{% endfor %}
 		</article>
 
@@ -199,7 +199,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</article>
 		{% else %}
 			<article id="{{baseId}}_following_tab">
-				<div style="padding: 10px">No followed users.</div>
+				<div style="padding: 10px">{{ phrase('agent.twitter.no_followed') }}</div>
 			</article>
 		{% endif %}
 
@@ -209,7 +209,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</article>
 		{% else %}
 			<article id="{{baseId}}_followers_tab">
-				<div style="padding: 10px">No followers.</div>
+				<div style="padding: 10px">{{ phrase('agent.twitter.no_followers') }}</div>
 			</article>
 		{% endif %}
 	</section>

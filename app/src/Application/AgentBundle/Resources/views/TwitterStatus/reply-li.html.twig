@@ -1,9 +1,9 @@
 <li class="twitter-reply twitter-reply-{{ reply.id }}" data-status-id="{{ reply.id }}" data-twitter-status-id="{{ reply.status.id }}">
 	{% if reply.status.user.id == reply.account.user.id and not reply.status.recipient %}
-		<i class="status-delete reply-action tipped" title="Delete"></i>
+		<i class="status-delete reply-action tipped" title="{{ phrase('agent.general.delete') }}"></i>
 	{% endif %}
 	{% if reply.status.long %}
-		<i class="status-edit status-action tipped" title="Edit"></i>
+		<i class="status-edit status-action tipped" title="{{ phrase('agent.general.edit') }}"></i>
 	{% endif %}
 
 	<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.status.user.id}) }}">
@@ -19,7 +19,7 @@
 			<span class="dm-notice">DM</span>
 		{% endif %}
 		{% if reply.status.long %}
-			<span class="long-notice">{% if reply.status.long.is_public %}Long{% else %}Long Private{% endif %}</span>
+			<span class="long-notice">{% if reply.status.long.is_public %}{{ phrase('agent.twitter.long_private') }}{% else %}{{ phrase('agent.twitter.long_private') }}{% endif %}</span>
 		{% endif %}
 	</h6>
 

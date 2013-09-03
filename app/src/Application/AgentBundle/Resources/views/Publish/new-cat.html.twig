@@ -14,7 +14,7 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <header>
 	<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
-	<h1>Add new category</h1>
+	<h1>{{ phrase('agent.general.add_category') }}</h1>
 </header>
 <article class="padded" data-width="700" data-height="400">
 
@@ -22,20 +22,20 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container reply-box-wrap">
 	<header>
-		<h4>Properties</h4>
+		<h4>{{ phrase('agent.general.properties') }}</h4>
 	</header>
 	<section>
 		<article class="headerbox">
 			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
 				<tbody>
 					<tr>
-						<th width="120">Title</th>
+						<th width="120">{{ phrase('agent.general.title') }}</th>
 						<td>
 							<input type="text" name="category[title]" style="width: 200px;" />
 						</td>
 					</tr>
 					<tr>
-						<th width="80">Parent Category</th>
+						<th width="80">{{ phrase('agent.general.parent_category') }}</th>
 						<td>
 							{% include 'AgentBundle:Common:select-standard.html.twig' with {
 								'name': 'category[parent_id]',
@@ -49,7 +49,7 @@ pageMeta.baseId = '{{ baseId }}';
 						</td>
 					</tr>
 					<tr>
-						<th width="80">Permissions</th>
+						<th width="80">{{ phrase('agent.general.permissions') }}</th>
 						<td>
 							<ul>
 								{% for ug in app.getUsergroups().getUserUsergroups() %}
@@ -73,7 +73,7 @@ pageMeta.baseId = '{{ baseId }}';
 </article>
 <footer>
 	<div class="dp-not-loading">
-		<button class="submit-trigger clean-white">Create Category</button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.general.save') }}</button>
 	</div>
 	<div class="dp-is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

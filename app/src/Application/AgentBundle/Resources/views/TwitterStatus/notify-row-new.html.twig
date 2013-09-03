@@ -7,14 +7,14 @@
 >
 	<div class="dismiss"><i class="icon-ban-circle"></i></div>
 	<time></time>
-	<big>Tweet</big>
+	<big>{{ phrase('agent.twitter.tweet') }}</big>
 	<small>
 		{% if account_status.status_type == 'direct' %}
-			@{{ account_status.account.user.screen_name }} received a new direct message from @{{ account_status.status.user.screen_name }}.
+			{{ phrase('agent.twitter.account_rec_new_dm_from', {account: '@'~account_status.account.user.screen_name, name: '@'~account_status.status.user.screen_name }) }}
 		{% elseif account_status.status_type == 'retweet' %}
-			@{{ account_status.account.user.screen_name }} was retweeted by @{{ account_status.status.user.screen_name }}.
+			{{ phrase('agent.twitter.account_retweeted_by', {account: '@'~account_status.account.user.screen_name, name: '@'~account_status.status.user.screen_name }) }}
 		{% else %}
-			@{{ account_status.account.user.screen_name }} received a new tweet from @{{ account_status.status.user.screen_name }}.
+			{{ phrase('agent.twitter.account_rec_tweet_from', {account: '@'~account_status.account.user.screen_name, name: '@'~account_status.status.user.screen_name }) }}
 		{% endif %}
 		<div>{{ account_status.status.text|raw }}</div>
 	</small>

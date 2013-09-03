@@ -27,7 +27,7 @@
 		</div>
 	</div>
 	<div class="message-sent-confirmation" style="display: none">
-		Message sent: <span class="message"></span>
+		{{ phrase('agent.twitter.message_sent') }}: <span class="message"></span>
 	</div>
 	<div class="new-message" style="display: none">
 		{% include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
@@ -42,15 +42,15 @@
 		<ul>
 			{% if user.id in account.friend_ids %}
 				<li class="noval opt-trigger unfollow">
-					<label>Unfollow</label>
+					<label>{{ phrase('agent.twitter.unfollow') }}</label>
 				</li>
 			{% else %}
 				<li class="noval opt-trigger follow">
-					<label>Follow</label>
+					<label>{{ phrase('agent.twitter.follow') }}</label>
 				</li>
 			{% endif %}
 			<li class="noval opt-trigger message">
-				<label>Send Tweet</label><span class="drop-icon"></span>
+				<label>{{ phrase('agent.twitter.send_tweet') }}</label><span class="drop-icon"></span>
 			</li>
 		</ul>
 	</div>

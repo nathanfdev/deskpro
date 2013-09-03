@@ -14,7 +14,7 @@
 >
 	<div class="task-title">
 		<span class="expand-collapse-icon"></span>
-		{% if task.person.id == app.user.id %}<i class="delete-task" data-confirm="Are you sure you want to delete this task?"></i>{% endif %}
+		{% if task.person.id == app.user.id %}<i class="delete-task" data-confirm="{{ phrase('agent.tasks.delete_confirm') }}"></i>{% endif %}
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
 		<h5>{{ task.title }}</h5>
 	</div>
@@ -22,7 +22,7 @@
 		<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
 			<ul>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.tasks.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
-					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}Public{% else %}Private{% endif %}</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}{{ phrase('agent.general.public') }}{% else %}{{ phrase('agent.general.private') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; position: relative;">
 						<label>
 							{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}

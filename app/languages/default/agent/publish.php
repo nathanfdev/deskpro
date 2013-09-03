@@ -103,4 +103,12 @@
 	'agent.publish.set_contents_from_article'     => 'Set contents from article',
 	'agent.publish.news_list_title'               => '1 Post|{{count}} Posts',
 	'agent.publish.no_news_cats_error'            => 'There are no categories defined. Before you can add posts to the news section, you need to define a category.',
+	'agent.publish.new_comment_on'                => 'New comment on {{name}}',
+	'agent.publish.comment_by'                    => 'Comment by {{name}}',
+	'agent.publish.drafts_list_title'             => '1 Draft|{{count}} Drafts',
+	'agent.publish.comments_list_title'           => '1 Comment|{{count}} Comments',
+	'agent.publish.validating_list_title'         => '1 Validating|{{count}} Validating',
+	'agent.publish.awaiting_validation_info' => 'Awaiting Validation: An agent with permission to validate content will need to approve this before it is displayed in the portal.',
+	'agent.publish.who_downloaded' => 'Who Downloaded',
+	'agent.publish.who_viewed' => 'Who Viewed',
 );

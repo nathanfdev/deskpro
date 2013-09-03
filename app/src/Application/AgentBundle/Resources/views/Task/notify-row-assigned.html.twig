@@ -12,9 +12,9 @@
 	<big>{{ task.title }}</big>
 	<small>
 		{% if task.assigned_agent %}
-			Assigned to this task by {{ performer.display_name }}
+			{{ phrase('agent.tasks.assigned_to_by', {name: performer.display_name}) }}
 		{% elseif task.assigned_agent_team %}
-			Your team was assigned to this task by {{ performer.display_name }}
+			{{ phrase('agent.tasks.team_assigned_by', {name: performer.display_name}) }}
 		{% endif %}
 	</small>
 </li>

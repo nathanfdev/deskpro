@@ -7,6 +7,6 @@
 	<time></time>
 	<big>{{ task.title }}</big>
 	<small>
-		Task was completed by {{ performer.display_name }}
+		{{ phrase('agent.tasks.completed_by', {name: performer.display_name}) }}
 	</small>
 </li>

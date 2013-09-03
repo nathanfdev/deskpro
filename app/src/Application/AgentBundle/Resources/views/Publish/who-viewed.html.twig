@@ -3,9 +3,9 @@
 		<span class="close-trigger"></span>
 		<h4>
 			{% if view_action == 2 %}
-				Who Downloaded
+				{{ phrase('agent.publish.who_downloaded') }}
 			{% else %}
-				Who Viewed
+				{{ phrase('agent.publish.who_viewed') }}
 			{% endif %}
 		</h4>
 	</div>
@@ -14,9 +14,9 @@
 			<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table with-head">
 				<tbody>
 					<tr>
-						<th class="col-head">User</th>
-						<th class="col-head">Count</th>
-						<th class="col-head" width="10">When</th>
+						<th class="col-head">{{ phrase('agent.general.user') }}</th>
+						<th class="col-head">{{ phrase('agent.general.count') }}</th>
+						<th class="col-head" width="10">{{ phrase('agent.general.when') }}</th>
 					</tr>
 					{% for person in people %}
 						<tr>

@@ -25,7 +25,7 @@
 					<span class="dm-notice">DM</span>
 				{% endif %}
 				{% if status.long %}
-					<span class="long-notice">{% if status.long.is_public %}Long{% else %}Long Private{% endif %}</span>
+					<span class="long-notice">{% if status.long.is_public %}{{ phrase('agent.twitter.long') }}{% else %}{{ phrase('agent.twitter.long_private') }}{% endif %}</span>
 				{% endif %}
 			</h4>
 
@@ -43,12 +43,13 @@
 					{% endif %}
 					{% if retweet %}
 						<div class="extra-row retweet">
-							<em></em>Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+							{% set name_part %}<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>{% endset %}
+							{{ phrase('agent.twitter.retweeted_by', {name: name_part}, true) }}
 						</div>
 					{% endif %}
 					{% if status.long and status.long.date_read %}
 						<div class="extra-row long-read">
-							Long tweet read <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
+							{{ phrase('agent.twitter.long_tweet_read') }} (<time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>)
 						</div>
 					{% endif %}
 				</div>

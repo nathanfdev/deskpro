@@ -27,7 +27,7 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="reply" />
-										Reply
+										{{ phrase('agent.general.reply') }}
 									</label>
 
 									<div class="dp-group-options twitter-message-send" style="display: none">
@@ -49,12 +49,12 @@
 												{% if account %}
 													@{{ account.user.screen_name }}
 												{% else %}
-													<i>corresponding Twitter account</i>
+													<i>{{ phrase('agent.twitter.corresponding_twitter_account') }}</i>
 												{% endif %}
 												<textarea name="text"></textarea>
 												<div class="is-not-loading">
-													<span class="character-count"><em>140</em> remaining</span>
-													<span class="over-options" style="display: none"><label class="tipped" title="If checked, this will be sent as multiple tweets. If unchecked, a single tweet with a link to the full message will be sent."><input type="checkbox" name="split" value="1" checked="checked" /> Split to multiple</label></span>
+													<span class="character-count">{{ phrase('agent.twitter.char_remaining', {num_chars: '<em>140</em>'}, true) }}</span>
+													<span class="over-options" style="display: none"><label class="tipped" title="{{ phrase('agent.twitter.split_to_multiple_explain') }}"><input type="checkbox" name="split" value="1" checked="checked" /> {{ phrase('agent.twitter.split_to_multiple') }}</label></span>
 												</div>
 											</div>
 										</div>
@@ -71,7 +71,7 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="retweet" />
-										Retweet
+										{{ phrase('agent.twitter.retweet') }}
 									</label>
 
 									<span class="dp-group-options" style="display: none">
@@ -85,7 +85,7 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="unretweet" />
-										Unretweet
+										{{ phrase('agent.twitter.unretweet') }}
 									</label>
 
 									<span class="dp-group-options" style="display: none">
@@ -99,7 +99,7 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="favorite" />
-										Favorite
+										{{ phrase('agent.general.favorite') }}
 									</label>
 
 									<span class="dp-group-options" style="display: none">
@@ -113,7 +113,7 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="unfavorite" />
-										Remove favorite
+										{{ phrase('agent.general.remove_favorite') }}
 									</label>
 
 									<span class="dp-group-options" style="display: none">
@@ -127,14 +127,13 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="assign" />
-										Assign
+										{{ phrase('agent.general.assign') }}
 									</label>
 									<div class="dp-group-options" style="display: none; text-align: left; padding-top: 3px">
 										<label>
-											Assign to:
 											<select name="assign" class="agents_sel dpe_select" style="min-width: 170px" >
-												<option value="">None</option>
-												<optgroup label="Agents">
+												<option value="">{{ phrase('agent.general.none') }}</option>
+												<optgroup label="{{ phrase('agent.general.agents') }}">
 													{% for agent in app.agents.getAgents() %}
 														{% if not account or account.hasPerson(agent) %}
 															<option data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
@@ -142,7 +141,7 @@
 													{% endfor %}
 												</optgroup>
 												{% if app.agent_teams.getTeams()|length %}
-													<optgroup label="Teams">
+													<optgroup label="{{ phrase('agent.general.teams') }}">
 														{% for team in app.agent_teams.getTeams() %}
 															<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
 														{% endfor %}
@@ -162,7 +161,7 @@
 								<div class="dp-input-group">
 									<label>
 										<input type="radio" class="option-trigger" name="action" value="archive" />
-										Archive
+										{{ phrase('agent.general.archive') }}
 									</label>
 
 									<span class="dp-group-options" style="display: none">

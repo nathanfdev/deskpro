@@ -3,5 +3,5 @@
 {% endfor %}
 
 {% if more %}
-	<div class="more-box"><button class="clean-white more-button" data-load-url="{{ path('agent_twitter_user_statuses', {'user_id': user.id, 'page': more_page}) }}">View More... <span class="flat-spinner" style="display: none"></span></button></div>
+	<div class="more-box"><button class="clean-white more-button" data-load-url="{{ path('agent_twitter_user_statuses', {'user_id': user.id, 'page': more_page}) }}">{{ phrase('agent.general.view_more') }} <span class="flat-spinner" style="display: none"></span></button></div>
 {% endif %}
