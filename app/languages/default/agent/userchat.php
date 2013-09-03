@@ -11,7 +11,6 @@
 	'agent.userchat.message_set-department' => '{{name}} set department to {{department}}',
 	'agent.userchat.message_set_department' => '{{name}} set department to {{department}}',
 	'agent.userchat.message_started'        => 'Chat started',
-	'agent.userchat.transcript_sent'        => 'Transcript sent to {{email}}',
 	'agent.userchat.message_unassigned'     => 'Chat unassigned',
 	'agent.userchat.message_uploading'      => 'Uploading...',
 	'agent.userchat.message_user-joined'    => '{{name}} joined the chat',
@@ -24,6 +23,7 @@
 	'agent.userchat.msg_agent_timeout'      => '{{name}} is not responding. Please wait while will try to find another agent.',
 	'agent.userchat.msg_new_user_track'     => 'User is viewing: {{label}}',
 	'agent.userchat.msg_user_timeout'       => 'User is not responding.',
+	'agent.userchat.transcript_sent'        => 'Transcript sent to {{email}}',
 	'agent.userchat.unassigned'             => 'Chat unassigned',
 	'agent.userchat.you_have_been_invited'  => 'You have been invited to join a chat',
 );
