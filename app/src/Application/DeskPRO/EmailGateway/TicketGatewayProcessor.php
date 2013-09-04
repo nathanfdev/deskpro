@@ -1530,7 +1530,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 
 			if ($has_eml_attach) {
-				$this->runNewForwardedEmailAsAttachTicket($agent, $has_eml_attach);
+				return $this->runNewForwardedEmailAsAttachTicket($agent, $has_eml_attach);
 			}
 
 			if ($fwd_cutter->getErrorCode() == 'unknown_email') {
@@ -1738,6 +1738,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if ($agent_reply) {
 				$agent_reply = nl2br(@htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 			}
+		}
+
+		if ($agent_reply && !trim(str_replace('&nbsp;', '', strip_tags($agent_reply)))) {
+			$agent_reply = null;
 		}
 
 		#------------------------------
