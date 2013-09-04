@@ -859,15 +859,15 @@ class DpLoader extends LoaderAbstract
 			$js_phrases['agent.general.on']    = $tr->getPhraseText('agent.general.on');
 			$js_phrases['agent.general.off']   = $tr->getPhraseText('agent.general.off');
 
-			$js_phrases["agent.general.reltime_less_second"]    = $tr->getPhraseText("agent.general.reltime_less_second");
-			$js_phrases["agent.general.reltime_less_minute"]    = $tr->getPhraseText("agent.general.reltime_less_minute");
-			$js_phrases["agent.general.reltimeago_less_second"] = $tr->getPhraseText("agent.general.reltimeago_less_second");
-			$js_phrases["agent.general.reltimeago_less_minute"] = $tr->getPhraseText("agent.general.reltimeago_less_minute");
+			$js_phrases["agent.time.reltime_less_second"]    = $tr->getPhraseText("agent.time.reltime_less_second");
+			$js_phrases["agent.time.reltime_less_minute"]    = $tr->getPhraseText("agent.time.reltime_less_minute");
+			$js_phrases["agent.time.reltimeago_less_second"] = $tr->getPhraseText("agent.time.reltimeago_less_second");
+			$js_phrases["agent.time.reltimeago_less_minute"] = $tr->getPhraseText("agent.time.reltimeago_less_minute");
 
 			foreach (array('reltime', 'reltimeago') as $pre) {
 				foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
-					$js_phrases["agent.general.{$pre}_1_{$name}"] = $tr->getPhraseText("agent.general.{$pre}_1_{$name}");
-					$js_phrases["agent.general.{$pre}_x_{$name}"] = $tr->getPhraseText("agent.general.{$pre}_x_{$name}");
+					$js_phrases["agent.time.{$pre}_1_{$name}"] = $tr->getPhraseText("agent.time.{$pre}_1_{$name}");
+					$js_phrases["agent.time.{$pre}_x_{$name}"] = $tr->getPhraseText("agent.time.{$pre}_x_{$name}");
 				}
 			}
 

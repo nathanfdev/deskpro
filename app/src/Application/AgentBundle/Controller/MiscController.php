@@ -239,19 +239,19 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
 	}
 
 	if ((type == 'secs' || type == 'sec') && num < 60) {
-		var phrasename = 'agent.general.' + phrasepre + '_less_minute';
+		var phrasename = 'agent.time.' + phrasepre + '_less_minute';
 	} else {
 		if (type == 'min') type = 'minute';
 		else if (type == 'mins') type = 'minutes';
 		else if (type == 'sec') type = 'second';
 		else if (type == 'secs') type = 'seconds';
 
-		var phrasename = 'agent.general.' + phrasepre + '_x_' + type;
+		var phrasename = 'agent.time.' + phrasepre + '_x_' + type;
 		if (num == 1) {
-			var phrasename = 'agent.general.' + phrasepre + '_1_' + type;
+			var phrasename = 'agent.time.' + phrasepre + '_1_' + type;
 		}
 		if (type == 'sec' && num <= 0) {
-			var phrasename = 'agent.general.' + phrasepre + '_less_second';
+			var phrasename = 'agent.time.' + phrasepre + '_less_second';
 		}
 	}
 
