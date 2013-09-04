@@ -4,15 +4,15 @@
 			<i class="spinner-flat"></i>
 		</div>
 		<ul>
-			<li class="trigger-update-filter {% if not filter or filter == 'all' %}on{% endif %}" data-typename="all"><em>All ({{ counts.all|default('0') }})</em></li>
-			{% if counts.message %}<li class="trigger-update-filter {% if filter == 'message' %}on{% endif %}" data-typename="message"><em>Messages ({{ counts.message|default('0') }})</em></li>{% endif %}
-			{% if counts.note %}<li class="trigger-update-filter {% if filter == 'note' %}on{% endif %}" data-typename="note"><em>Notes ({{ counts.note|default('0') }})</em></li>{% endif %}
-			{% if counts.notif %}<li class="trigger-update-filter {% if filter == 'notif' %}on{% endif %}" data-typename="notif"><em>Notifications ({{ counts.notif|default('0') }})</em></li>{% endif %}
-			{% if counts.assign %}<li class="trigger-update-filter {% if filter == 'assign' %}on{% endif %}" data-typename="assign"><em>Assignments ({{ counts.assign|default('0') }})</em></li>{% endif %}
-			{% if counts.slas %}<li class="trigger-update-filter {% if filter == 'slas' %}on{% endif %}" data-typename="slas"><em>SLAs ({{ counts.slas|default('0') }})</em></li>{% endif %}
-			{% if counts.triggers %}<li class="trigger-update-filter {% if filter == 'triggers' %}on{% endif %}" data-typename="triggers"><em>Triggers ({{ counts.triggers|default('0') }})</em></li>{% endif %}
-			{% if counts.status %}<li class="trigger-update-filter {% if filter == 'status' %}on{% endif %}" data-typename="status"><em>Status Changes ({{ counts.status|default('0') }})</em></li>{% endif %}
-			{% if counts.other %}<li class="trigger-update-filter {% if filter == 'other' %}on{% endif %}" data-typename="other"><em>Other ({{ counts.other|default('0') }})</em></li>{% endif %}
+			<li class="trigger-update-filter {% if not filter or filter == 'all' %}on{% endif %}" data-typename="all"><em>{{ phrase('agent.general.all') }} ({{ counts.all|default('0') }})</em></li>
+			{% if counts.message %}<li class="trigger-update-filter {% if filter == 'message' %}on{% endif %}" data-typename="message"><em>{{ phrase('agent.tickets.messages') }} ({{ counts.message|default('0') }})</em></li>{% endif %}
+			{% if counts.note %}<li class="trigger-update-filter {% if filter == 'note' %}on{% endif %}" data-typename="note"><em>{{ phrase('agent.tickets.notes') }} ({{ counts.note|default('0') }})</em></li>{% endif %}
+			{% if counts.notif %}<li class="trigger-update-filter {% if filter == 'notif' %}on{% endif %}" data-typename="notif"><em>{{ phrase('agent.tickets.notifications') }} ({{ counts.notif|default('0') }})</em></li>{% endif %}
+			{% if counts.assign %}<li class="trigger-update-filter {% if filter == 'assign' %}on{% endif %}" data-typename="assign"><em>{{ phrase('agent.tickets.assignments') }} ({{ counts.assign|default('0') }})</em></li>{% endif %}
+			{% if counts.slas %}<li class="trigger-update-filter {% if filter == 'slas' %}on{% endif %}" data-typename="slas"><em>{{ phrase('agent.general.slas') }} ({{ counts.slas|default('0') }})</em></li>{% endif %}
+			{% if counts.triggers %}<li class="trigger-update-filter {% if filter == 'triggers' %}on{% endif %}" data-typename="triggers"><em>{{ phrase('agent.tickets.triggers') }} ({{ counts.triggers|default('0') }})</em></li>{% endif %}
+			{% if counts.status %}<li class="trigger-update-filter {% if filter == 'status' %}on{% endif %}" data-typename="status"><em>{{ phrase('agent.general.status') }} ({{ counts.status|default('0') }})</em></li>{% endif %}
+			{% if counts.other %}<li class="trigger-update-filter {% if filter == 'other' %}on{% endif %}" data-typename="other"><em>{{ phrase('agenet.general.other') }} ({{ counts.other|default('0') }})</em></li>{% endif %}
 		</ul>
 	</nav>
 	<div class="logs-page" style="padding: 6px;">
@@ -27,7 +27,7 @@
 				>
 					<div class="info">
 						{% if log.sla %}
-							<span class="sla">{{ phrase('agent.general.sla') }} {{ log.sla.title }}{% if log.sla_status == 'warning' %} (Warning){% elseif log.sla_status == 'fail' %} (Failed){% endif %}</span>,
+							<span class="sla">{{ phrase('agent.general.sla') }} {{ log.sla.title }}{% if log.sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif log.sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}</span>,
 						{% elseif log.trigger_id %}
 							{% if log.details.trigger_is_escalation %}
 								<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ log.trigger_id }}</span>,
@@ -53,7 +53,7 @@
 						>
 							<div class="info">
 								{% if sublog.sla %}
-									<span class="sla">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} (Warning){% elseif sublog.sla_status == 'fail' %} (Failed){% endif %}</span>,
+									<span class="sla">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sublog.sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}</span>,
 								{% elseif sublog.trigger_id %}
 									{% if sublog.details.trigger_is_escalation %}
 										<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ sublog.trigger_id }}</span>,

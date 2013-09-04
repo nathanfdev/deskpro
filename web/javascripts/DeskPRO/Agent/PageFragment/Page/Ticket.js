@@ -453,19 +453,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						backEl = $('<div/>');
 						backEl.addClass('dp-popover-backdrop');
 
-						tmp = $('<div/>').html('<section><header><strong>Find a ticket...</strong></header><article style="padding: 6px;"><button class="trigger-search dp-btn dp-btn-small">Search</button></article></section>');
+						tmp = $('<div/>').html('<section><header><strong>'+self.meta.lang.find_ticket+'</strong></header><article style="padding: 6px;"><button class="trigger-search dp-btn dp-btn-small">'+sef.meta.lang.serch+'</button></article></section>');
 						tmp.addClass('search-tickets');
 						tmp.appendTo(menuElInner);
 
-						tmp = $('<div/>').html('<section><header><strong>User\'s Tickets</strong></header><article><ul></ul></article></section>');
+						tmp = $('<div/>').html('<section><header><strong>'+self.meta.lang.users_tickets+'</strong></header><article><ul></ul></article></section>');
 						tmp.addClass('users-tickets').hide();
 						tmp.appendTo(menuElInner);
 
-						tmp = $('<div/>').html('<section><header><strong>Open Tickets</strong></header><article><ul></ul></article></section>');
+						tmp = $('<div/>').html('<section><header><strong>'+self.meta.lang.open_tickets+'</strong></header><article><ul></ul></article></section>');
 						tmp.addClass('open-tickets').hide();
 						tmp.appendTo(menuElInner);
 
-						tmp = $('<div/>').html('<section><header><strong>Filter Results</strong></header><article><ul></ul></article></section>');
+						tmp = $('<div/>').html('<section><header><strong>'+self.meta.lang.filter_results+'</strong></header><article><ul></ul></article></section>');
 						tmp.addClass('filter-tickets').hide();
 						tmp.appendTo(menuElInner);
 

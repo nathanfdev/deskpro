@@ -12,6 +12,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
 
+		this.lang = eval(this.el.data('dp-lang') || '{}');
+
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 		this.textarea = textarea;
 
@@ -95,11 +97,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					obj.addBtnSeparatorAfter('dp_attach');
 
 					snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
-					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+
+					var snippets_html = self.lang.snippets_btn;
+					snippets_html = snippets_html.replace(/Ss/, '<span class="show-key-shortcut">S</span>');
+					snippetBtn.addClass('snippets').find('a').html(snippets_html);
 
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
-					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+					attachBtn.find('a').text(self.lang.attach_btn).append('<input type="file" class="file" name="file-upload" />');
 
 					obj.addBtnSeparatorAfter('dp_snippets');
 				}

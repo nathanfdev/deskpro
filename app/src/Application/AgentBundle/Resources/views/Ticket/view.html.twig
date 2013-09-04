@@ -51,7 +51,13 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 
 pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
-
+pageMeta.lang = {{ {
+	'find_ticket': phrase('agent.tickets.find_ticket'),
+	'users_tickets': phrase('agent.tickets.users_tickets'),
+	'open_tickets': phrase('agent.tickets.open_tickets'),
+	'filter_results': phrase('agent.tickets.filter_results'),
+	'search': phrase('agent.general.search'),
+}|json_encode|raw }};
 </script>
 <div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
 <div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
@@ -81,19 +87,19 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 <header class="main-header" id="{{ baseId }}_page_header">
 	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
 		<div class="locked-message">
-			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">Unlock Ticket</button>
+			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">{{ phrase('agent.tickets.unlock') }}</button>
 			<div style="margin-right: 100px;">
 				<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
 					{% if locked_self and app.getSetting('core_tickets.lock_on_view') %}
-						You have an automatic lock on this ticket. Other agents will not be able to edit the ticket until it is unlocked.
+						{{ phrase('agent.tickets.you_have_auto_lock') }}
 					{% else %}
-						You have locked this ticket. Other agents will not be able to edit the ticket until it is unlocked..
+						{{ phrase('agent.tickets.you_have_locked') }}
 					{% endif %}
-					{% if app.getSetting('core_tickets.unlock_on_close') %}<br/>Your lock will be automatically released when you close this ticket.{% endif %}
+					{% if app.getSetting('core_tickets.unlock_on_close') %}<br/>{{ phrase('agent.tickets.lock_auto_release') }}{% endif %}
 				</div>
 				{% if ticket.locked_by_agent and not locked_self %}
 					<div id="{{baseId}}_locked_message_other">
-						{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
+						{{ phrase('agent.tickets.agent_has_lock', {agent: ticket.locked_by_agent.display_name}) }}
 					</div>
 				{% endif %}
 			</div>
@@ -103,7 +109,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<div class="hold-message">
 			<button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">Unhold Ticket</button>
 			<div style="margin-right: 100px;">
-				This ticket is currently on hold.
+				{{ phrase('agent.tickets.currently_on_hold') }}
 			</div>
 		</div>
 	</div>
@@ -111,12 +117,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="10" nowrap="nowrap">
 			<div class="id-number" id="{{ baseId }}_idref_switch">
 				<span id="{{ baseId }}_id_num" title="Ticket ID">
-					<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="Copy to clipboard"><i class="icon-paste"></i></span></span>
-					ID: {{ ticket.id }}
+					<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
+					{{ phrase('agent.general.id') }}: {{ ticket.id }}
 				</span>
 				<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
-					<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="Copy to clipboard"><i class="icon-paste"></i></span></span>
-					Ref: {{ ticket.ref }}
+					<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
+					{{ phrase('agent.general.id') }}: {{ ticket.ref }}
 				</span>
 			</div>
 		</td><td>
@@ -142,7 +148,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				<div id="{{ baseId }}_user_email_menu" class="dp-menu" style="display: none;">
 					<section>
 						<div class="dp-menu-area">
-							<label>Change the user email address on this ticket</label>
+							<label>{{ phrase('agent.tickets.change_user_ticket_email') }}</label>
 							<ul>
 								{% for email in ticket.person.emails %}
 									<li data-email-id="{{ email.id }}">{{ email.email }}</li>
@@ -163,7 +169,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		{% endif %}
 
 		{% if ticket_perms.modify_cc and not user_parts|length %}
-			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC</em></a>
+			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
 		{% endif %}
 
 		{% if ticket_perms.modify_cc or user_parts|length %}
@@ -187,13 +193,13 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			</ul>
 			<div class="cc-btn-holder">
 				{% if ticket_perms.modify_cc and user_parts|length %}
-					<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>Add CC</em></a>
+					<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
 				{% endif %}
 			</div>
 
 			{% if ticket_perms.modify_cc %}
 				<div class="cc-autocomplete addrow noedit-hide" style="display: none; clear:left;">
-					<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
+					<input type="text" class="user-part cc-people-search-trigger" placeholder="{{ phrase('agent.general.choose_a_person') }}" />
 					<div class="person-search-box" style="display: none">
 						<section>
 							<ul class="results-list">
@@ -223,11 +229,11 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 <nav class="header-nav">
 	<ul>
-		<li title="Ticket Department">
+		<li title="{{ phrase('agent.general.department') }}">
 			{% include 'AgentBundle:Common:select-department.html.twig' with {
 				'name': "department_id",
 				'with_blank': blank_option,
-				'blank_title': 'None',
+				'blank_title': phrase('agent.general.none'),
 				'selected': ticket.department.id|default(0),
 				'id': baseId ~ '_department_id',
 				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header"',
@@ -238,42 +244,32 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 
 			<span class="dp-caret"></span>
 		</li>
-		<li title="Ticket Status">
+		<li title="{{ phrase('agent.general.status') }}">
 			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
 				{% if ticket.status == 'hidden' %}
-					<option value="" selected="selected">Hidden</option>
+					<option value="" selected="selected">{{ phrase('agent.general.hidden') }}</option>
 				{% endif %}
 				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
-					<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
+					<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 				{% endif %}
 				{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
-					<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
+					<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 				{% endif %}
 				{% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
-					<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
+					<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
 				{% endif %}
 				{%  if ticket.status_code == 'closed' %}
-					<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Archived</option>
+					<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_closed') }}</option>
 				{% endif %}
 			</select>
 
 			<span id="{{ baseId }}_status_txt" class="urgency-text">
-				{% if ticket.status_code == 'awaiting_user' %}
-					Awaiting User
-				{% elseif ticket.status_code == 'awaiting_agent' %}
-					Awaiting Agent
-				{% elseif ticket.status_code == 'resolved' %}
-					Resolved
-				{% elseif ticket.status_code == 'closed' %}
-					Archived
-				{% elseif ticket.status == 'hidden' %}
-					Hidden
-				{% endif %}
+				{{ phrase('agent.tickets.status_' ~ ticket.status_code) }}
 			</span>
 
 			<span class="dp-caret"></span>
 		</li>
-		<li title="Ticket Urgency" class="urgency-item">
+		<li title="{{ phrase('agent.general.urgency') }}" class="urgency-item">
 			<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency" style="display: none" data-invisible-trigger="1" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
 				{% for i in 1..10 %}
 					<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
@@ -328,15 +324,15 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% for ticket_sla in ticket.ticket_slas %}<span class="sla-pip {{ ticket_sla.sla_status }}" data-sla-id="{{ ticket_sla.sla_id }}"></span>{% endfor %}
 		{% endset %}
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
-			(baseId ~ '_fields_display_main_wrap'): 'Properties',
-			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)',
-			(baseId ~ '_sla_wrap'): (((addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty) ? 'SLAs ' ~ sla_pips|raw : false),
-			(baseId ~ '_billing_wrap'): (app.getSetting('core_tickets.enable_billing') ? 'Billing' : false)
+			(baseId ~ '_fields_display_main_wrap'): phrase('agent.general.properties'),
+			(baseId ~ '_tasks_wrap'): phrase('agent.general.tasks') ~' (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)',
+			(baseId ~ '_sla_wrap'): (((addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty) ? phrase('agent.general.slas') ~ ' ' ~ sla_pips|raw : false),
+			(baseId ~ '_billing_wrap'): (app.getSetting('core_tickets.enable_billing') ? phrase('agent.tickets.billing') : false)
 		}) }}
 	</header>
 	<section class="description-area" style="padding:0">
 		<div class="error-list {% if validator_errors %}on{% endif %}" id="{{baseId}}_field_errors" {% if not validator_errors %}style="display:none"{% endif %}>
-			<span class="title">Please correct the following errors:</span>
+			<span class="title">{{ phrase('agent.tickets.save_errors') }}:</span>
 			<ul>
 				{% for i in validator_errors %}
 					<li>{{ i }}</li>
@@ -348,7 +344,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
 					<label class="field-label-title">Agent</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>{% endif %}
+						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
 							<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 						{% endif %}
@@ -362,11 +358,11 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 				<label class="field-label-title">Team</label>
 				<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 					{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
-						<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+						<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
 					{% endif %}
 
 					{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
-					<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+					<optgroup label="{{ phrase('agent.general.your_teams') }}">
 						{% for team in app.user.getAgent().getTeams() %}
 							<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 						{% endfor %}
@@ -380,7 +376,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					{% endfor %}
 				</select>
 			</td><td width="100%">
-				<label class="field-label-title">Followers</label>
+				<label class="field-label-title">{{ phrase('agent.general.followers') }}</label>
 				<div class="followers-list">
 					<ul id="{{ baseId }}_followers_list">
 						{% for a in agent_parts %}
@@ -389,7 +385,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					</ul>
 					<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
 						<select id="{{ baseId }}_followers_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-							<option value="0">Select an Agent</option>
+							<option value="0">{{ phrase('agent.general.select_agent') }}</option>
 							{% for agent in agents %}
 								<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}" data-icon-small="{{ agent.getPictureUrl(15) }}">{{ agent.display_name }}</option>
 							{% endfor %}
@@ -397,7 +393,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					</div>
 					<a class="new-follower-btn" id="{{ baseId }}_add_follower_btn">
 						<i class="icon-signin"></i>
-						Add a follower
+						{{ phrase('agent.tickets.add_follower') }}
 					</a>
 				</div>
 			</td></tr></table>
@@ -408,7 +404,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 					{% if ticket_perms.modify_labels or ticket.labels|length %}
 						<tbody class="always-bottom">
 							<tr>
-								<th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0;">Labels:</th>
+								<th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0;">{{ phrase('agent.general.labels') }}:</th>
 								<td style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">
 									<div style="width: 98%" id="{{ baseId }}_labels_wrap">
 										<input
@@ -460,63 +456,63 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<ul>
 		<li id="{{ baseId }}_unlock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %}>
 			<i class="icon-unlock"></i>
-			Unlock
+			{{ phrase('agent.tickets.unlock') }}
 		</li>
 		<li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>
 			<i class="icon-lock"></i>
-			Lock
+			{{ phrase('agent.tickets.unlock') }}
 		</li>
 		{% if ticket_perms.modify_merge %}
 			<li class="merge-menu-trigger noedit-hide">
 				<i class="icon-columns"></i>
-				Merge
+				{{ phrase('agent.general.merge') }}
 				<span class="dp-caret"></span>
 			</li>
 		{% endif %}
 		<li id="{{baseId}}_macros_menu_trigger">
 			<i class="icon-tasks"></i>
-			Macros
+			{{ phrase('agent.general.macros') }}
 			<span class="dp-caret"></span>
 		</li>
 		{% if ticket_perms.delete %}
 			{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
 				<li id="{{baseId}}_remove_menu_trigger">
 					<i class="icon-trash"></i>
-					Remove
+					{{ phrase('agent.general.remove') }}
 					<span class="dp-caret"></span>
 				</li>
 			{% endif %}
 		{% endif %}
 		<li id="{{ baseId }}_actions_menu_trigger">
 			<i class="icon-edit"></i>
-			Actions
+			{{ phrase('agent.general.actions') }}
 			<span class="dp-caret"></span>
 		</li>
 	</ul>
 </nav>
 
 <ul style="display:none" id="{{baseId}}_remove_menu">
-	<li data-action="spam">Set Ticket as Spam</li>
-	<li data-action="delete">Delete this Ticket</li>
+	<li data-action="spam">{{ phrase('agent.tickets.set_as_spam') }}</li>
+	<li data-action="delete">{{ phrase('agent.tickets.delete_ticket') }}</li>
 	{% if app.user.hasPerm('agent_people.delete') %}
 		{% if person_object_counts.tickets > 1 or person_object_counts.chats > 0 %}
 			{% if person_object_counts.tickets > 1 %}
-				<li data-action="delete.ban">Permanently Delete User and their {{ person_object_counts.tickets }} Tickets</li>
+				<li data-action="delete.ban">{{ phrase('agent.tickets.perm_del_user_and_other_tickets', {ticket_count: person_object_counts.tickets}) }}</li>
 			{% else %}
-				<li data-action="delete.ban">Permanently Delete User and their other content</li>
+				<li data-action="delete.ban">{{ phrase('agent.tickets.perm_del_user_and_content') }}</li>
 			{% endif %}
 		{% else %}
-			<li data-action="delete.ban">Permanently Delete User and this Ticket</li>
+			<li data-action="delete.ban">{{ phrase('agent.tickets.perm_del_user_and_ticket') }}</li>
 		{% endif %}
 	{% endif %}
 </ul>
 
 <ul style="display:none" id="{{baseId}}_actions_menu">
-	<li data-action="change-user">Change User</li>
-	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">Put ticket on hold</li>
-	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">Remove ticket from hold</li>
-	{% if ticket_perms.modify_merge %}<li data-action="split">Split Messages to New Ticket</li>{% endif %}
-	<li data-action="kb-pending">Create a new pending article</li>
+	<li data-action="change-user">{{ phrase('agent.tickets.change_user_btn') }}</li>
+	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">{{ phrase('agent.tickets.hold_btn') }}</li>
+	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">{{ phrase('agent.tickets.unhold_btn') }}</li>
+	{% if ticket_perms.modify_merge %}<li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
+	<li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'view_print': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.print') }}</a></li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
 </ul>
@@ -542,14 +538,14 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 		{% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
 		<nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
-				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">Messages</li>
-				<li class="logs" data-list-type="log" data-tab-for="#{{baseId}}_logs_wrap">Full Log</li>
+				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
+				<li class="logs" data-list-type="log" data-tab-for="#{{baseId}}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
 				{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and ticket.date_feedback_rating %}
 					<li data-list-type="feedback" data-tab-for="#{{baseId}}_messages_wrap">
-						Ticket Feedback <span class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
+						{{ phrase('agent.tickets.ticket_feedback') }} <span class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
 					</li>
 				{% endif %}
-				<li data-tab-for="#{{ baseId }}_times">Dates &amp; Times</li>
+				<li data-tab-for="#{{ baseId }}_times">{{ phrase('agent.general.dates_and_times') }}</li>
 			{% for widget in messageTabs %}
 				<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
 			{% endfor %}
@@ -558,7 +554,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	</header>
 	<section class="messages-wrap" id="{{baseId}}_messages_wrap" data-page="{{ message_page }}" data-page-count="{{ message_page_count }}">
 		<div class="message-page-prev" {% if message_page == message_page_count or app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_prev_page">
-			<strong>{% if not app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
+			<strong>{% if not app.user.getPref('agent.ticket_reverse_order') %}{{ phrase('agent.tickets.view_older_messages') }}{% else %}{{ phrase('agent.tickets.view_newer_messages') }}{% endif %}</strong>
 		</div>
 		{% if active_drafts and app.user.getPref('agent.ticket_reverse_order') %}
 			{% for active_draft in active_drafts %}
@@ -578,7 +574,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endfor %}
 		{% endif %}
 		<div class="message-page-next" {% if message_page == message_page_count or not app.user.getPref('agent.ticket_reverse_order') %}style="display: none"{% endif %} id="{{ baseId }}_message_next_page">
-			<strong>{% if app.user.getPref('agent.ticket_reverse_order') %}View older messages{% else %}View newer messages{% endif %}</strong>
+			<strong>{% if app.user.getPref('agent.ticket_reverse_order') %}{{ phrase('agent.tickets.view_older_messages') }}{% else %}{{ phrase('agent.tickets.view_newer_messages') }}{% endif %}</strong>
 		</div>
 	</section>
 	<section id="{{baseId}}_logs_wrap" style="margin: 0;padding: 0;">
@@ -587,7 +583,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
 		<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
 			<tbody><tr>
-				<th width="200">Created:</th>
+				<th width="200">{{ phrase('agent.general.created') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time>
 					({{ ticket.date_created|date('fulltime') }})
@@ -596,7 +592,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% set times_work_hours = (ticket.getWorkHoursSet().getActiveTime() != 'all') %}
 			{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
 			<tbody><tr>
-				<th>Current user waiting time:</th>
+				<th>{{ phrase('agent.tickets.current_user_waiting_time') }}:</th>
 				<td>
 					{% if times_work_hours %}
 						{{ ticket.current_user_waiting_work_time|time_length('hours') }}
@@ -610,7 +606,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.real_total_user_waiting and ticket.real_total_user_waiting > 0 %}
 			<tbody><tr>
-				<th>Total user waiting time:</th>
+				<th>{{ phrase('agent.tickets.total_user_waiting_time') }}:</th>
 				<td>
 					{% if times_work_hours %}
 						{{ ticket.total_user_waiting_work_time|time_length('hours') }}
@@ -623,7 +619,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.total_to_first_reply and ticket.total_to_first_reply > 0 %}
 				<tbody><tr>
-					<th>Waiting until first reply:</th>
+					<th>{{ phrase('agent.tickets.waiting_til_first_reply') }}:</th>
 					<td>
 						{% if times_work_hours %}
 							{{ ticket.work_time_to_first_reply|time_length('hours') }}
@@ -636,7 +632,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.status == 'awaiting_user' and ticket.date_agent_waiting %}
 			<tbody><tr>
-				<th>Current agent waiting time:</th>
+				<th>{{ phrase('agent.tickets.current_agent_waiting_time') }}:</th>
 				<td>
 					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_agent_waiting|date('c', 'UTC') }}"></time>
 					(since {{ ticket.date_agent_waiting|date('fulltime') }})
@@ -645,14 +641,14 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.date_resolved %}
 			<tbody><tr>
-				<th>Date resolved:</th>
+				<th>{{ phrase('agent.general.date_resolved') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ ticket.date_resolved|date('c', 'UTC') }}"></time>
 					({{ ticket.date_resolved|date }})
 				</td>
 			</tr></tbody>
 			<tbody><tr>
-				<th>Time until resolution:</th>
+				<th>{{ phrase('agent.tickets.time_til_resolve') }}</th>:</th>
 				<td>
 					{% if times_work_hours %}
 						{{ ticket.work_time_until_resolution|time_length('hours') }}
@@ -665,7 +661,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.date_closed %}
 			<tbody><tr>
-				<th>Date archived:</th>
+				<th>{{ phrase('agent.general.date_archived') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ ticket.date_closed|date('c', 'UTC') }}"></time>
 					({{ ticket.date_closed|date }})
@@ -674,7 +670,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.date_first_agent_assign %}
 			<tbody><tr>
-				<th>First assignment:</th>
+				<th>{{ phrase('agent.tickets.first_assignment') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ ticket.date_first_agent_assign|date('c', 'UTC') }}"></time>
 					({{ ticket.date_first_agent_assign|date('fulltime') }})
@@ -683,7 +679,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.date_first_agent_reply %}
 			<tbody><tr>
-				<th>First agent reply:</th>
+				<th>{{ phrase('agent.tickets.first_agent_reply') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ ticket.date_first_agent_reply|date('c', 'UTC') }}"></time>
 					({{ ticket.date_first_agent_reply|date('fulltime') }})
@@ -692,7 +688,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.date_last_agent_reply %}
 			<tbody><tr>
-				<th>Last agent reply:</th>
+				<th>{{ phrase('agent.tickets.last_agent_reply') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ ticket.date_last_agent_reply|date('c', 'UTC') }}"></time>
 					({{ ticket.date_last_agent_reply|date('fulltime') }})
@@ -701,7 +697,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 			{% endif %}
 			{% if ticket.date_last_user_reply %}
 			<tbody><tr>
-				<th>Last user reply:</th>
+				<th>{{ phrase('agent.tickets.last_user_reply') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}"></time>
 					({{ ticket.date_last_user_reply|date('fulltime') }})
@@ -780,23 +776,23 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 </script>
 
 <ul class="ticket-message-edit-menu" style="display:none">
-	<li data-option-id="window" data-url="{{ path('agent_ticket_message_window', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">View message in a new window</li>
+	<li data-option-id="window" data-url="{{ path('agent_ticket_message_window', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.view_message_in_window') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
-	<li class="forward-message" data-option-id="fwd">Forward Message</li>
-	{% if ticket_perms.modify_messages %}<li class="delete-link" data-option-id="delete">Delete message</li>{% endif %}
-	{% if ticket_perms.delete %}<li class="delete-attachments-link" data-option-id="delete-attachments">Delete attachments</li>{% endif %}
-	<li class="set-as-note" data-option-id="setnote.note">Set as agent note</li>
-	<li class="set-as-message" data-option-id="setnote.message">Set as normal message</li>
-	{% if ticket_perms.modify_merge %}<li data-option-id="split">Split to new ticket</li>{% endif %}
-	{% if ticket_perms.modify_messages %}<li data-option-id="edit">Edit</li>{% endif %}
-	{% if app.user.can_admin %}<li data-option-id="debug" data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">Download Debug File</li>{% endif %}
+	<li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
+	{% if ticket_perms.modify_messages %}<li class="delete-link" data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>{% endif %}
+	{% if ticket_perms.delete %}<li class="delete-attachments-link" data-option-id="delete-attachments">{{ phrase('agent.tickets.delete_attach') }}</li>{% endif %}
+	<li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
+	<li class="set-as-message" data-option-id="setnote.message">{{ phrase('agent.tickets.set_as_normal_message') }}</li>
+	{% if ticket_perms.modify_merge %}<li data-option-id="split">{{ phrase('agent.tickets.split_message_btn') }}</li>{% endif %}
+	{% if ticket_perms.modify_messages %}<li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>{% endif %}
+	{% if app.user.can_admin %}<li data-option-id="debug" data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</li>{% endif %}
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
 <ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
 	{% for macro in macros %}
 		<li class="res-ticketmacro-{{ macro.id }}" data-macro-id="{{macro.id}}"><span class="macro-title">{{macro.title}}</span></li>
 	{% endfor %}
-	<li class="open-settings-trigger" style="background-color: #E4E4E4; border-top: 1px solid #C1C1C1;"><i class="icon-cog"></i> Manage Macros</li>
+	<li class="open-settings-trigger" style="background-color: #E4E4E4; border-top: 1px solid #C1C1C1;"><i class="icon-cog"></i> {{ phrase('agent.general.manage_macros') }}</li>
 </ul>
 
 <div class="delete-ticket-overlay overlay" style="display:none">
@@ -833,7 +829,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 	</div>
 
 	<div class="overlay-content">
-		Are you sure you want to delete this message?
+		{{ phrase('agent.tickets.delete_message_confirm') }}
 		<div class="ticket-messages"></div>
 		<input type="hidden" class="message-id" value="" />
 	</div>
@@ -868,7 +864,7 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 <section id="{{ baseId }}_message_edit_overlay" style="display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
-		<h4>Edit Message</h4>
+		<h4>{{ phrase('agent.general.edit') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<input type="hidden" name="message_id" class="message_id" value="0" />
@@ -889,12 +885,12 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'tr
 <div id="{{baseId}}_pending_add" style="display:none;" data-save-url="{{ path('agent_kb_newpending') }}">
 	<div class="mass-actions-overlay pending-article" style="width: 550px; height: 400px;">
 		<div class="overlay-title">
-			<h4>Add a pending article</h4>
+			<h4>{{ phrase('agent.tickets.create_new_pending_article') }}</h4>
 		</div>
 		<div class="overlay-content">
-			<div style="font-size: 12px; padding-bottom: 9px;">A pending article is a note in the Publish section about an article that needs to be written.</div>
+			<div style="font-size: 12px; padding-bottom: 9px;">{{ phrase('agent.tickets.pending_article_info') }}</div>
 			<input type="hidden" name="ticket_id" value="{{ ticket.id }}" />
-			<textarea name="comment" placeholder="Enter a note or description about the article that needs to be written. It will also be linked to this ticket." style="width: 98%; height: 260px;"></textarea>
+			<textarea name="comment" placeholder="{{ phrase('agent.tickets.pending_article_desc') }}" style="width: 98%; height: 260px;"></textarea>
 		</div>
 		<div class="overlay-footer">
 			<div class="is-not-loading">
