@@ -257,6 +257,48 @@ echo "\n";
 #####################################################################
 
 $time = microtime(true);
+echo "build-checkphrases ... ";
+
+if ($quick) {
+	echo "SKIPPED (--quick)";
+} else {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases.php', DP_ROOT.'/bin/build');
+	$proc->setTimeout(600);
+	$proc->run($output_realtime);
+
+	if (!$proc->isSuccessful()) {
+		echo ("\nDetected error. Quitting.\n");
+		exit($proc->getExitCode());
+	}
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
+
+#####################################################################
+
+$time = microtime(true);
+echo "build-checkphrases-vars ... ";
+
+if ($quick) {
+	echo "SKIPPED (--quick)";
+} else {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases-vars', DP_ROOT.'/bin/build');
+	$proc->setTimeout(600);
+	$proc->run($output_realtime);
+
+	if (!$proc->isSuccessful()) {
+		echo ("\nDetected error. Quitting.\n");
+		exit($proc->getExitCode());
+	}
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
+
+#####################################################################
+
+$time = microtime(true);
 echo "build-checksum-file ... ";
 
 if ($quick) {

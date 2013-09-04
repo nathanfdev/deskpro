@@ -86,7 +86,7 @@ class DephrasifyTemplate
 		if (!preg_match_all('#\{\{\s*phrase\.([a-zA-Z0-9\.\-_]+)\s\}\}#', $string, $matches, PREG_SET_ORDER)) {
 			return $string;
 		}
-		
+
 		foreach ($matches as $match) {
 			$phrase = $match[1];
 
@@ -102,9 +102,7 @@ class DephrasifyTemplate
 
 
 	/**
-	 * Expands simple phrases:
-	 *
-	 * {{ phrase('simple_phrase_name') }}
+	 * Expands simple phrases
 	 *
 	 * @param  string $string
 	 * @return string
@@ -115,7 +113,7 @@ class DephrasifyTemplate
 		if (!preg_match_all('#\{\{\s*phrase\((\'|\")([a-zA-Z0-9\.\-_]+)(\'|\")\)\s*\}\}#', $string, $matches, PREG_SET_ORDER)) {
 			return $string;
 		}
-		
+
 		foreach ($matches as $match) {
 			$phrase = $match[2];
 			$phrase_text = $this->translate->phrase($phrase);
@@ -142,7 +140,7 @@ class DephrasifyTemplate
 		if (!preg_match_all('#\{\{\s*phrase\((\'|\")([a-zA-Z0-9\.\-_]+)(\'|\")\s*,\s*\{(.*?)\}\s*\)\s*\}\}#', $string, $matches, PREG_SET_ORDER)) {
 			return $string;
 		}
-		
+
 		foreach ($matches as $match) {
 			$line = $match[0];
 			$phrase = $match[2];
@@ -188,10 +186,10 @@ class DephrasifyTemplate
 		return $string;
 	}
 
-	
+
 	/**
 	 * Tries to parse out the value of a key in a hash string
-	 * 
+	 *
 	 * @param  $varname
 	 * @param  $hash_string
 	 * @return null|string

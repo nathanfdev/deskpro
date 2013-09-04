@@ -70,6 +70,8 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 		# Process langs to detect vars
 		#------------------------------
 
+		$bad_count = 0;
+
 		foreach ($lang_dirs as $dirname) {
 			$done_one = false;
 			$lang_phrases = $this->_readLang(DP_ROOT . "/languages/$dirname");
@@ -103,10 +105,18 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 					$output->writeln("<error>$phrase</error> has bad vars:");
 					echo "\tDefault: $default_phrasetext\n";
 					echo "\tLang: $phrasetext\n\n";
+
+					$bad_count++;
 				}
 			}
 		}
 
+		if ($bad_count) {
+			$output->writeln("<error>Found $bad_count phrases with bad varnames</error>\n");
+			return 1;
+		} else {
+			$output->writeln("<info>All phrases check out fine</info>\n");
+		}
 
 		return 0;
 	}

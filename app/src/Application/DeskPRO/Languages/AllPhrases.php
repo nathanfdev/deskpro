@@ -48,12 +48,17 @@ class AllPhrases
 	/**
 	 * @var string[]
 	 */
-	protected $phrases;
+	protected $phrases = null;
+
+	/**
+	 * @var string[]
+	 */
+	protected $phrase_ids = null;
 
 	/**
 	 * @var callback
 	 */
-	protected $callback;
+	protected $callback = null;
 
 	public function __construct($dir)
 	{
@@ -80,12 +85,13 @@ class AllPhrases
 	public function getPhrases()
 	{
 		if ($this->phrases !== null) {
-			return $this->phrases !== null;
+			return $this->phrases;
 		}
 
 		$this->phrases = array();
 
-		$finder = Finder::create()->files()->name('*.php')->in(array($this->dir))->depth('< 2');
+		$finder = Finder::create()->files()->name('*.php')->in(array($this->dir));
+
 		foreach ($finder as $file) {
 			/** @var $file \SplFileInfo */
 			$path = $file->getRealPath();
@@ -106,6 +112,21 @@ class AllPhrases
 		}
 
 		return $this->phrases;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getPhraseIds()
+	{
+		if ($this->phrase_ids !== null) {
+			return $this->phrase_ids;
+		}
+
+		$this->phrase_ids = array_keys($this->getPhrases());
+
+		return $this->phrase_ids;
 	}
 
 
