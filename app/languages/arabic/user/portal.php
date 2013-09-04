@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'مشاهدة',
 	'user.portal.language_chooser'                                         => 'اللغة',
 	'user.portal.login-box_cancel-button'                                  => 'الغاء',
 	'user.portal.more_labels'                                              => 'بقية التصنيفات',

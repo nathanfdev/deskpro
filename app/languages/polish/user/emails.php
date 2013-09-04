@@ -17,7 +17,7 @@
 	'user.emails.feedback_updated'                                         => 'Wysłana przez Ciebie opinia "{{title}}" została zaktualizowana. W tej chwili posiada status "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Potwierdź swój adres email, klikając na następujący link:',
 	'user.emails.feedback_votes'                                           => 'Twoja opinia obecnie ma <strong>1</strong> głos. Zobacz Twoją opinię online:|Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:',
-	'user.emails.greeting'                                                 => 'Szanowny(a) {{name}},',
+	'user.emails.greeting'                                                 => 'Szanowny(a) {{to_name}},',
 	'user.emails.label_view-online'                                        => 'Zobacz online',
 	'user.emails.message-clipped'                                          => '(Reszta wiadomości zostala ukryta)',
 	'user.emails.password_agent-reset'                                     => 'Nasz pracownik zmienił Twoje hasło. Możesz się zalogować z tymi poświadczeniami.',

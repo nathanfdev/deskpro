@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Mostrar',
 	'user.portal.language_chooser'                                         => 'Linguagem',
 	'user.portal.login-box_cancel-button'                                  => 'Cancelar',
 	'user.portal.more_labels'                                              => 'Mais Etiquetas',

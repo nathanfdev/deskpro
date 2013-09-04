@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Visa',
 	'user.portal.language_chooser'                                         => 'Språk:',
 	'user.portal.login-box_cancel-button'                                  => 'Avbryt',
 	'user.portal.more_labels'                                              => 'Fler Etiketter',

@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Tonen',
 	'user.portal.language_chooser'                                         => 'Taal:',
 	'user.portal.login-box_cancel-button'                                  => 'Annuleren',
 	'user.portal.more_labels'                                              => 'Meer labels',
@@ -27,7 +26,7 @@
 	'user.portal.tab_knowledgebase-description'                            => 'Lees artikelen',
 	'user.portal.tab_tickets'                                              => 'Neem contact met ons op',
 	'user.portal.tab_tickets-description'                                  => 'Wij zijn er om te helpen',
-	'user.portal.twitter-user-link'                                        => '@{{naam}} op Twitter',
+	'user.portal.twitter-user-link'                                        => '@{{name}} op Twitter',
 	'user.portal.twitter-view-more'                                        => 'Bekijk meer van @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'                                       => 'Welkom terug, gast',
 );

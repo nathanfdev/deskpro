@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Показать',
 	'user.portal.language_chooser'                                         => 'Язык:',
 	'user.portal.login-box_cancel-button'                                  => 'Отмена',
 	'user.portal.more_labels'                                              => 'Отобразить больше меток',

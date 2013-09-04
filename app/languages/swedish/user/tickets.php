@@ -56,7 +56,7 @@
 	'user.tickets.new_reply'                                               => 'Nytt Svar',
 	'user.tickets.new_reply_closed_explain'                                => 'Det här ärendet har stängts och inga nya svar kommer att registreras. Om du fortfarande behöver hjälp kan du skicka in ett nytt ärende.',
 	'user.tickets.new_ticket'                                              => 'Nytt Ärende',
-	'user.tickets.new_ticket_email'                                        => 'Ditt ärende har registrerats. En agent kommer att kontakta dig så fort som möjligt.',
+	'user.tickets.new_ticket_email'                                        => 'Ditt ärende har registrerats. En agent kommer att kontakta dig så fort som möjligt: {{email}}',
 	'user.tickets.no_subject'                                              => '(Inget ämne)',
 	'user.tickets.open_tickets'                                            => 'Öppna Ärenden',
 	'user.tickets.rate-intro'                                              => '{{name}} hjälpte dig med ditt ärende "{{subject}}"',

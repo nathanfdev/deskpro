@@ -14,7 +14,7 @@
 	'user.emails.feedback_updated'                                         => 'il tuo feedback "{{title}}" è stato aggiornato. Ora si trova sotto il nuovo status "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Convalida il tuo indirizzo email online cliccando sul seguente link:',
 	'user.emails.feedback_votes'                                           => 'Il tuo feedback ha <strong>1</strong> voto. Guardalo online su:|Il tuo feedback ha <strong>{{count}}</strong> voti. Guardalo online su:',
-	'user.emails.greeting'                                                 => 'Caro {{name}},',
+	'user.emails.greeting'                                                 => 'Caro {{to_name}},',
 	'user.emails.label_view-online'                                        => 'Vedi online',
 	'user.emails.password_agent-reset'                                     => 'Un membro dello staff ha resettato la tua password. Puoi fare il login con queste credenziali',
 	'user.emails.password_reset'                                           => 'Hai chiesto che la tua password sia resettata. Per farlo clicca il link seguente:',

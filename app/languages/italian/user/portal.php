@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Mostra',
 	'user.portal.language_chooser'                                         => 'Lingua:',
 	'user.portal.login-box_cancel-button'                                  => 'Annulla',
 	'user.portal.more_labels'                                              => 'Altre etichette',

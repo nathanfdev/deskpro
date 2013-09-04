@@ -16,7 +16,7 @@
 	'user.emails.feedback_updated'                                         => 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。',
 	'user.emails.feedback_validate-email'                                  => '次のリンクをクリックしてメールアドレスを有効にしてください。:',
 	'user.emails.feedback_votes'                                           => 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:|あなたのフィードバックには現在 <strong>{{count}}</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:',
-	'user.emails.greeting'                                                 => '{{name}}様',
+	'user.emails.greeting'                                                 => '{{to_name}}様',
 	'user.emails.label_view-online'                                        => 'オンラインで確認',
 	'user.emails.password_agent-reset'                                     => 'アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。',
 	'user.emails.password_reset'                                           => 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:',

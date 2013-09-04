@@ -17,7 +17,7 @@
 	'user.emails.feedback_updated'                                         => 'Su comentario "{{title}}" ha sido actualizado. Su estado actual es "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Valide su dirección de correo electrónico haciendo clic en el siguiente enlace:',
 	'user.emails.feedback_votes'                                           => 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:|Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:',
-	'user.emails.greeting'                                                 => 'Apreciado/a {{name}}',
+	'user.emails.greeting'                                                 => 'Apreciado/a {{to_name}}',
 	'user.emails.label_view-online'                                        => 'Ver',
 	'user.emails.message-clipped'                                          => '(El mensaje se ha recortado)',
 	'user.emails.password_agent-reset'                                     => 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales',

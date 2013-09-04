@@ -16,7 +16,7 @@
 	'user.emails.feedback_updated'                                         => 'Din tilbakemelding "{{title}}" har nå blitt oppdatert. Den har nå fått statusen "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Vennligst bekreft epostaddressen din ved å klikke på følgende lenke:',
 	'user.emails.feedback_votes'                                           => 'Din tilbakemelding har fått 1 stemme. Se tilbakemeldingen her:|Din tilbakemelding har fått <strong>{{count}}</strong> stemmer. Se tilbakemeldingen her:',
-	'user.emails.greeting'                                                 => 'Kjære {{name}},',
+	'user.emails.greeting'                                                 => 'Kjære {{to_name}},',
 	'user.emails.label_view-online'                                        => 'Se denne online',
 	'user.emails.message-clipped'                                          => '(Meldingen har blitt kuttet ned)',
 	'user.emails.password_agent-reset'                                     => 'En av våre medarbeidere har tilbakestilt passordet ditt. Du kan logge inn med følgende detaljer:',

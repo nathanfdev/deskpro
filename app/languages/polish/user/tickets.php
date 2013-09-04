@@ -40,7 +40,7 @@
 	'user.tickets.from_x_at_y'                                             => 'Od {{name}} {{date}}',
 	'user.tickets.i_dont_need_to_email'                                    => 'Nie potrzebuję więcej pomocy',
 	'user.tickets.i_still_want_to_email'                                   => 'Nadal chcę wysłać swoje pytanie',
-	'user.tickets.join_explain'                                            => 'Za chwilę staniesz się uczestnikiem zgłoszenia "{{subject}}" od {{nazwa}}. <br /> <br />Gdy zgłoszenie zostanie zaktualizowane, będziesz mógł czytać i odpowiadać w zgłoszeniu oraz otrzymywać powiadomienia via email. Należy pamiętać, że Twoje dołączenie do zgłoszenia zostanie zarejestrowane, a Twój udział będzie widoczny innym uczestnikom tego zgłoszenia.',
+	'user.tickets.join_explain'                                            => 'Za chwilę staniesz się uczestnikiem zgłoszenia "{{subject}}" od {{name}}. <br /> <br />Gdy zgłoszenie zostanie zaktualizowane, będziesz mógł czytać i odpowiadać w zgłoszeniu oraz otrzymywać powiadomienia via email. Należy pamiętać, że Twoje dołączenie do zgłoszenia zostanie zarejestrowane, a Twój udział będzie widoczny innym uczestnikom tego zgłoszenia.',
 	'user.tickets.join_ticket'                                             => 'Dołącz do zgłoszenia',
 	'user.tickets.label_cc_emails'                                         => 'Dodaj CC do tej petycji',
 	'user.tickets.label_cced'                                              => 'Kopia',

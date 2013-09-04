@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Arata',
 	'user.portal.language_chooser'                                         => 'Limba:',
 	'user.portal.login-box_cancel-button'                                  => 'Anuleaza',
 	'user.portal.more_labels'                                              => 'Mai multe etichete',

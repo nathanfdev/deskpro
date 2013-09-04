@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'نشان دادن',
 	'user.portal.language_chooser'                                         => 'زبان:',
 	'user.portal.login-box_cancel-button'                                  => 'انصراف',
 	'user.portal.more_labels'                                              => 'برچسب های بیشتر',

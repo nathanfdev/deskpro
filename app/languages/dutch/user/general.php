@@ -13,7 +13,7 @@
 	'user.general.form_fix_email'                                          => 'Voer een geldig e-mailadres in',
 	'user.general.go'                                                      => 'Gaan',
 	'user.general.go_back'                                                 => 'Ga terug',
-	'user.general.helpdesk_by'                                             => 'Helpdesk software door <strong>{{Deskpro}}</strong>',
+	'user.general.helpdesk_by'                                             => 'Helpdesk software door <strong>{{deskpro}}</strong>',
 	'user.general.label_captcha'                                           => 'Bevestigingscode',
 	'user.general.last_name'                                               => 'Achternaam',
 	'user.general.loading'                                                 => 'Laden',

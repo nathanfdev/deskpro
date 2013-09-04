@@ -13,7 +13,7 @@
 	'user.general.form_fix_email'                                          => 'Geben Sie eine gültige Email Adresse ein',
 	'user.general.go'                                                      => 'Los',
 	'user.general.go_back'                                                 => 'Zurückgehen',
-	'user.general.helpdesk_by'                                             => 'Helpdesk Software von <strong>{{Deskpro}}</strong>',
+	'user.general.helpdesk_by'                                             => 'Helpdesk Software von <strong>{{deskpro}}</strong>',
 	'user.general.label_captcha'                                           => 'Bestätigungscode',
 	'user.general.last_name'                                               => 'Nachname',
 	'user.general.loading'                                                 => 'Lade',

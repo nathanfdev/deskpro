@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Vis',
 	'user.portal.language_chooser'                                         => 'Sprog:',
 	'user.portal.login-box_cancel-button'                                  => 'Fortryd',
 	'user.portal.more_labels'                                              => 'Flere mærkater',

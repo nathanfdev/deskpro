@@ -17,7 +17,7 @@ Dit is een automatisch verzonden bericht, e-mails naar dit adres zullen niet wor
 	'user.emails.feedback_updated'                                         => 'Uw feedback "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'U kunt uw e-mailadres online valideren door te klikken op de volgende link:',
 	'user.emails.feedback_votes'                                           => 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:|Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:',
-	'user.emails.greeting'                                                 => 'Beste {{name}},',
+	'user.emails.greeting'                                                 => 'Beste {{to_name}},',
 	'user.emails.label_view-online'                                        => 'Bekijk online',
 	'user.emails.message-clipped'                                          => '(Bericht is geknipt)',
 	'user.emails.password_agent-reset'                                     => 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens',

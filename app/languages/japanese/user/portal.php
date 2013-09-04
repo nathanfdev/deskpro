@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => '表示',
 	'user.portal.language_chooser'                                         => '言語:',
 	'user.portal.login-box_cancel-button'                                  => 'キャンセル',
 	'user.portal.more_labels'                                              => 'ラベル選択',

@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Mutat',
 	'user.portal.language_chooser'                                         => 'Nyelv:',
 	'user.portal.login-box_cancel-button'                                  => 'Mégsem',
 	'user.portal.more_labels'                                              => 'Több címke',

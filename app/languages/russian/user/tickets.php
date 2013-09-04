@@ -60,7 +60,7 @@
 	'user.tickets.new_reply'                                               => 'Новый комментарий',
 	'user.tickets.new_reply_closed_explain'                                => 'В этой заявке больше нельзя оставлять комментарии. Если Вы до сих пор нуждаетесь в нашей помощи, создайте новую заявку',
 	'user.tickets.new_ticket'                                              => 'Новая заявка',
-	'user.tickets.new_ticket_email'                                        => 'Ваш вопрос принят к рассмотрению. Наши специалисты ответят Вам на Ваш адрес электронной почты:',
+	'user.tickets.new_ticket_email'                                        => 'Ваш вопрос принят к рассмотрению. Наши специалисты ответят Вам на Ваш адрес электронной почты: {{email}}',
 	'user.tickets.no_subject'                                              => '(Без темы)',
 	'user.tickets.open_tickets'                                            => 'Открытые заявки',
 	'user.tickets.organization_tickets'                                    => 'Обращения {{organization}}',

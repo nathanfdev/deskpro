@@ -21,5 +21,5 @@
 	'user.defaults.news_category_general'                                  => 'Nytt',
 	'user.defaults.news_example_content'                                   => 'Dette er en eksempel nyhet. Gjør gjerne endringer eller fjern den fra agent grensesnittet.',
 	'user.defaults.news_example_title'                                     => 'Eksempel nyhet',
-	'user.defaults.trigger_warn_autoclose'                                 => 'Du har ikke svart på forespørselen på {{count}} dager. Hvis problemet har løst seg kan du ignorere denne beskjeden, og din forespørsel vil bli automatisk satt til løst om to dager. Hvis du fremdeles trenger hjelp, kan du bare svare på denne beskjeden.',
+	'user.defaults.trigger_warn_autoclose'                                 => 'Du har ikke svart på forespørselen på 3 dager. Hvis problemet har løst seg kan du ignorere denne beskjeden, og din forespørsel vil bli automatisk satt til løst om to dager. Hvis du fremdeles trenger hjelp, kan du bare svare på denne beskjeden.',
 );

@@ -16,7 +16,7 @@
 	'user.emails.feedback_updated'                                         => 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:',
 	'user.emails.feedback_votes'                                           => 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:|Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:',
-	'user.emails.greeting'                                                 => 'Hej {{name}},',
+	'user.emails.greeting'                                                 => 'Hej {{to_name}},',
 	'user.emails.label_view-online'                                        => 'Visa Online',
 	'user.emails.message-clipped'                                          => '(Meddelandet har klippts)',
 	'user.emails.password_agent-reset'                                     => 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:',

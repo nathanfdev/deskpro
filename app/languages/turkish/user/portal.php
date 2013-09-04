@@ -1,5 +1,4 @@
 <?php return array(
-	'search_label-search_show'                                             => 'Göster',
 	'user.portal.language_chooser'                                         => 'Dil:',
 	'user.portal.login-box_cancel-button'                                  => 'Vazgeç',
 	'user.portal.more_labels'                                              => 'Daha Fazla Etiket',
