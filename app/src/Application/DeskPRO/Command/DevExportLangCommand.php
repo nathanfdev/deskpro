@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Languages\Build\OneSkyBuild;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,13 +52,14 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 	protected function configure()
 	{
 		$this->setName('dpdev:export-lang');
-		$this->addOption('po', null, InputOption::VALUE_NONE, 'Only export PO files');
-		$this->addOption('transifex', null, InputOption::VALUE_NONE, 'Only export to transifex');
+		$this->addOption('po', null, InputOption::VALUE_NONE, 'Export PO files');
+		$this->addOption('transifex', null, InputOption::VALUE_NONE, 'Export to transifex');
+		$this->addOption('onesky', null, InputOption::VALUE_NONE, 'Export to onesky');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		if (!$input->getOption('po')) {
+		if ($input->getOption('transifex')) {
 			if (
 				!dp_get_config('transifex.url')
 				|| !dp_get_config('transifex.username')
@@ -68,18 +70,45 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			}
 		}
 
-		if (!$input->getOption('transifex')) {
+		if ($input->getOption('onesky')) {
+			if (
+				!dp_get_config('onesky.api_key')
+				|| !dp_get_config('onesky.secret_key')
+			) {
+				$output->writeln("Missing onesky configuration");
+				return 1;
+			}
+		}
+
+		$done_any = false;
+
+		if ($input->getOption('po')) {
 			$ret = $this->exportPOs($input, $output);
 			if ($ret) {
 				return $ret;
 			}
+			$done_any = true;
 		}
 
-		if (!$input->getOption('po')) {
+		if (!$input->getOption('transifex')) {
 			$ret = $this->exportTransifex($input, $output);
 			if ($ret) {
 				return $ret;
 			}
+			$done_any = true;
+		}
+
+		if (!$input->getOption('onesky')) {
+			$ret = $this->exportOneSky($input, $output);
+			if ($ret) {
+				return $ret;
+			}
+			$done_any = true;
+		}
+
+		if (!$done_any) {
+			$output->writeln("<error>Choose an export option. See --help for options.");
+			return 1;
 		}
 
 		return 0;
@@ -154,6 +183,18 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			dp_get_config('transifex.username'),
 			dp_get_config('transifex.password')
 		);
+
+		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
+		$build->getLogger()->addWriter($wr);
+
+		$build->updateAllSources();
+
+		return 0;
+	}
+
+	public function exportOneSky(InputInterface $input, OutputInterface $output)
+	{
+		$build = new OneSkyBuild(dp_get_config('onesky.api_key'), dp_get_config('onesky.secret_key'));
 
 		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
 		$build->getLogger()->addWriter($wr);
