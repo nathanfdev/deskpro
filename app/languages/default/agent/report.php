@@ -1,6 +1,4 @@
 <?php return array(
-	'agent.report.add_chart'           => 'Add Chart',
-	'agent.report.add_dashboard_chart' => 'Add Dashboard Chart',
 	'agent.report.agent_activity'      => 'Agent Activity',
 	'agent.report.agent_hours'         => 'Agent Hours',
 	'agent.report.clone'               => 'Clone',
