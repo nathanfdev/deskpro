@@ -10,4 +10,5 @@
 	'user.knowledgebase.title-articles'                                    => 'Il y a 1 article|Il y a {{count}} articles',
 	'user.knowledgebase.title-articles-paged'                              => 'Vue des articles {{first}} à {{last}} sur {{total}}',
 	'user.knowledgebase.title-categories'                                  => 'Il y a 1 sous-catégorie|Il y a {{count}} sous-catégories',
+	'user.knowledgebase.type_article'                                      => 'Article',
 );

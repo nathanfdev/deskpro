@@ -13,6 +13,7 @@
 	'user.general.form_fix_email'                                          => '有効なメールアドレスを入力',
 	'user.general.go'                                                      => '進む',
 	'user.general.go_back'                                                 => '戻る',
+	'user.general.helpdesk_by'                                             => 'Helpdesk software by <strong>{{deskpro}}</strong>',
 	'user.general.label_captcha'                                           => '確認コード',
 	'user.general.last_name'                                               => '名字',
 	'user.general.loading'                                                 => '読み込み中',

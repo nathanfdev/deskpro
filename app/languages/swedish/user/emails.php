@@ -12,8 +12,8 @@
 	'user.emails.feedback_disapproved-reason'                              => 'Vi mailar till dig för att meddela att din feedback har blivit nekad och att den inte kommer att visas på vår sida. {{name}} angav följande anledning:',
 	'user.emails.feedback_new-comment'                                     => '{{name}} postade en ny kommentar:',
 	'user.emails.feedback_published'                                       => 'Din feedback "{{title}}" har blivit granskad och kommer nu att visas på vår sida.',
-	'user.emails.feedback_thank-you'                                       => 'Tack för att du skickade in din feedback "{{title}}',
-	'user.emails.feedback_updated'                                         => 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}',
+	'user.emails.feedback_thank-you'                                       => 'Tack för att du skickade in din feedback "{{title}}"',
+	'user.emails.feedback_updated'                                         => 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:',
 	'user.emails.feedback_votes'                                           => 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:|Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:',
 	'user.emails.greeting'                                                 => 'Hej {{to_name}},',
@@ -23,11 +23,13 @@
 	'user.emails.password_reset'                                           => 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:',
 	'user.emails.profile_email-new-confirm'                                => 'För att slutföra registreringen av din sekundära e-postadress så klickar du på följande länk för att bekfräfta den:',
 	'user.emails.profile_email_link-validate'                              => 'Klicka på följande länk för att bekräfta din e-postadress',
-	'user.emails.register-confirm'                                         => 'Tack för att du registrerar ett konto.',
+	'user.emails.register-confirm'                                         => 'Tack för att du registrerar ett konto.
+Innan du har möjlighet att börja använda det så måste du bekräfta din e-postadress',
 	'user.emails.registration_closed'                                      => 'Hej {{name}}, Nya ärenden accepteras bara från befintliga medlemmar. Om du redan har ett konto så kan du maila oss igen från den e-postadress som du registrerade dig med.',
 	'user.emails.ticket_access_ticket_online'                              => 'Visa och hantera detta ärende online:',
 	'user.emails.ticket_cc-new'                                            => 'Du har blivit inkluderad i ett ärende startat av {{name}}.',
-	'user.emails.ticket_flood'                                             => 'Du skickade nyligen ett meddelande till vår helpdesk. Vårt automatiska system har upptäckt att du har skickat väldigt många meddelanden på kort tid som troligtvis vart automatiserade.',
+	'user.emails.ticket_flood'                                             => 'Du skickade nyligen ett meddelande till vår helpdesk. Vårt automatiska system har upptäckt att du har skickat väldigt många meddelanden på kort tid som troligtvis vart automatiserade.
+För att skydda vår helpdesk mot loopar med autosvar så kommer vi inte längre att skicka dig några notifieringar via e-post.',
 	'user.emails.ticket_message_title'                                     => '{{date}} klockan {{time}} skrev {{author}}:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Varning: Bekräftelsemail är avstängt',
 	'user.emails.ticket_rate-negative'                                     => 'Nej',
@@ -36,7 +38,8 @@
 	'user.emails.ticket_rate-question'                                     => 'Var detta meddelande till någon hjälp?',
 	'user.emails.ticket_received'                                          => 'Ditt ärende har registrerats. En av våra agenter kommer att kontakta dig inom kort.',
 	'user.emails.ticket_reply-confirm'                                     => 'Tack för ditt svar. En av våra agenter kommer att kontakta dig inom kort.',
-	'user.emails.ticket_validate'                                          => 'Tack för att du kontaktar oss.',
+	'user.emails.ticket_validate'                                          => 'Tack för att du kontaktar oss.
+Innan en agent kan läsa ditt meddelande så måste du bekräfta din e-postadress.',
 	'user.emails.tickets_ommitted'                                         => '1 meddelande har utelämnats|{{count}} meddelanden har utelämnats',
 	'user.emails.view_full_history_online'                                 => 'Visa hela ärendet online',
 );

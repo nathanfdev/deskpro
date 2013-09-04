@@ -38,6 +38,7 @@
 	'user.tickets.from_x_at_y'                                             => 'Fra {{name}}, {{date}}',
 	'user.tickets.i_dont_need_to_email'                                    => 'Jeg trenger ikke kontakte dere lengre',
 	'user.tickets.i_still_want_to_email'                                   => 'Jeg vil fremdeles sende inn spørsmålet',
+	'user.tickets.join_explain'                                            => 'You are about to become a participant on the ticket "{{subject}}" by {{name}}.<br /><br />You will be able to read and interact with the ticket, and you will be sent email notifications when the ticket is updated. Note that the action of adding yourself to the ticket will be logged, and your participation will be public to other ticket participants.',
 	'user.tickets.join_ticket'                                             => 'Delta i sak',
 	'user.tickets.label_cc_emails'                                         => 'CC andre på denne saken',
 	'user.tickets.label_cced'                                              => 'CCet',

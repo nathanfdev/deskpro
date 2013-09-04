@@ -64,7 +64,7 @@
 	'user.tickets.no_subject'                                              => '(Без темы)',
 	'user.tickets.open_tickets'                                            => 'Открытые заявки',
 	'user.tickets.organization_tickets'                                    => 'Обращения {{organization}}',
-	'user.tickets.rate-intro'                                              => '{{name}} помог Вам по заявке: "{{subject}}',
+	'user.tickets.rate-intro'                                              => '{{name}} помог Вам по заявке: "{{subject}}"',
 	'user.tickets.rate-negative'                                           => 'Неудовлетворительно',
 	'user.tickets.rate-neutral'                                            => 'Хорошо',
 	'user.tickets.rate-positive'                                           => 'Отлично',

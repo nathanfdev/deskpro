@@ -13,7 +13,7 @@
 	'user.email_subjects.password_agent-reset'                             => 'أحد الموظفين قام بإعاده تعيين كلمه المرور الخاصه بك',
 	'user.email_subjects.password_reset'                                   => 'إعادة تعيين كلمة المرور',
 	'user.email_subjects.re'                                               => 'رد : {{subject}}',
-	'user.email_subjects.ticket-rate'                                      => 'يرجي تقييم تجربتك مع الدعم من خلال التذكرة :"{{ticket.subject}}',
+	'user.email_subjects.ticket-rate'                                      => 'يرجي تقييم تجربتك مع الدعم من خلال التذكرة :"{{ticket.subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'تم إضافة شخص جديد لتذكرتك',
 	'user.email_subjects.tickets_re'                                       => 'رد :  {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'يرجي التحقق من بريدك الإلكتروني',

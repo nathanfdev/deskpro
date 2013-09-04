@@ -64,7 +64,7 @@
 	'user.tickets.no_subject'                                              => '(Brak tematu)',
 	'user.tickets.open_tickets'                                            => 'Otwarte zgłoszenia',
 	'user.tickets.organization_tickets'                                    => '{{organization}}: petycje',
-	'user.tickets.rate-intro'                                              => '{{name}} pomógł/pomogła Ci rozwiązać zgłoszenie "{{subject}}',
+	'user.tickets.rate-intro'                                              => '{{name}} pomógł/pomogła Ci rozwiązać zgłoszenie "{{subject}}"',
 	'user.tickets.rate-negative'                                           => 'Zła',
 	'user.tickets.rate-neutral'                                            => 'OK',
 	'user.tickets.rate-positive'                                           => 'Dobra',

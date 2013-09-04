@@ -6,6 +6,7 @@
 	'user.error.attach_size'                                               => 'Su archivo adjunto es demasiado grande. El tamaño máximo de archivo es {{error_detail}}',
 	'user.error.attach_unknown-error'                                      => 'Ha habido un problema en nuestro servidor que ha impedido que su archivo adjunto se cargue. Inténtelo de nuevo.',
 	'user.error.error_code'                                                => 'Código de error',
+	'user.error.error_title'                                               => 'Error',
 	'user.error.expired-token'                                             => 'La página a la que está intentado acceder ha caducado. Vuelva hacia atrás e inténtelo de nuevo.',
 	'user.error.form_choice_invalid'                                       => 'Por favor, elija una opción de la lista',
 	'user.error.form_choice_max'                                           => 'Por favor, seleccione como máximo una opción|Por favor, seleccione como máximo {{count}} opciones',

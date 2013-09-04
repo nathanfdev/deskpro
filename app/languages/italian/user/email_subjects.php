@@ -10,6 +10,7 @@
 	'user.email_subjects.feedback_new-disapproved'                         => 'Feedback rifiutato',
 	'user.email_subjects.feedback_updated'                                 => 'Feedback aggiornato: {{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'Un membro dello staff ha resettato la tua password',
+	'user.email_subjects.password_reset'                                   => 'Reset Password',
 	'user.email_subjects.re'                                               => 'Ri: {{subject}}',
 	'user.email_subjects.ticket_new-participant'                           => 'Una nuova persona è stata aggiunta al tuo ticket',
 	'user.email_subjects.validate-email'                                   => 'Convalida il tuo indirizzo email',

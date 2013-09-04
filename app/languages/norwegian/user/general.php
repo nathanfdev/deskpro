@@ -7,6 +7,7 @@
 	'user.general.comments_no_comments'                                    => 'Ingen kommentarer',
 	'user.general.comments_please_enter_email'                             => 'Skriv inn epost adressen din',
 	'user.general.count_comments'                                          => '{{count}} kommentar|{{count}} kommentarer',
+	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'Epost adresse',
 	'user.general.email_addresses'                                         => 'Epost adresser',
 	'user.general.first_name'                                              => 'Fornavn',

@@ -1,9 +1,11 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Adresa dumneavoastra de Email',
-	'user.chat.ended-no-agent'                                             => 'Pentru moment toti operatorii nostri sunt ocupati. Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.',
+	'user.chat.ended-no-agent'                                             => 'Pentru moment toti operatorii nostri sunt ocupati. 
+Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.',
 	'user.chat.error'                                                      => 'Eroare chat',
 	'user.chat.form_chat_button-submit'                                    => 'Trimite',
 	'user.chat.form_chat_send-file'                                        => 'Incarca un fisier',
+	'user.chat.form_create_button-submit'                                  => 'Start Chat',
 	'user.chat.form_create_department'                                     => 'Alegeti un departament',
 	'user.chat.form_create_title'                                          => 'Incepeti Chat-ul cu un agent',
 	'user.chat.form_feedback_button-submit'                                => 'Trimite feedback-ul si inchide fereastra',
@@ -17,6 +19,7 @@
 	'user.chat.log-title'                                                  => 'Chat-urile dumneavoastra',
 	'user.chat.log_chat-id'                                                => 'ID Chat',
 	'user.chat.log_created-date'                                           => 'Creat la {{date}}',
+	'user.chat.log_fields_agent'                                           => 'Agent',
 	'user.chat.log_fields_department'                                      => 'Departament',
 	'user.chat.log_message_author-you'                                     => 'Dumneavoastra',
 	'user.chat.log_nav-view-chats'                                         => 'Arata ultimul log al chat-ului| Arata ultimele {{count}} loguri de chat.',

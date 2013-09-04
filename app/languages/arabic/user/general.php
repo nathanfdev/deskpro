@@ -8,6 +8,7 @@
 	'user.general.comments_no_comments'                                    => 'لا توجد تعليقات.',
 	'user.general.comments_please_enter_email'                             => 'فضلاً أدخل عنوان بريدك الإلكتروني',
 	'user.general.count_comments'                                          => '{{count}} تعليق|{{count}} تعليقات',
+	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'البريد الإلكتروني',
 	'user.general.email_addresses'                                         => 'عناوين البريد الإلكترونية',
 	'user.general.first_name'                                              => 'الأسم الأول',

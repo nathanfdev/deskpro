@@ -64,7 +64,7 @@
 	'user.tickets.no_subject'                                              => '(Nincs tárgy)',
 	'user.tickets.open_tickets'                                            => 'Nyitott ügyek',
 	'user.tickets.organization_tickets'                                    => '{{organization}} ügyei',
-	'user.tickets.rate-intro'                                              => '{{subject}}" tárgyú ügyében {{name}} munkatársunk segített Önnek',
+	'user.tickets.rate-intro'                                              => '"{{subject}}" tárgyú ügyében {{name}} munkatársunk segített Önnek',
 	'user.tickets.rate-negative'                                           => 'Nem jó',
 	'user.tickets.rate-neutral'                                            => 'Elfogadható',
 	'user.tickets.rate-positive'                                           => 'Jó',

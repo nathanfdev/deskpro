@@ -3,6 +3,7 @@
 	'user.defaults.article_example_content'                                => 'Dette er et eksempel av en kunnskapsbase artikkel. Gjør gjerne endringer eller fjern den fra agent grensesnittet.',
 	'user.defaults.article_example_title'                                  => 'Artikkel Eksempel',
 	'user.defaults.department_sales'                                       => 'Salg',
+	'user.defaults.department_support'                                     => 'Support',
 	'user.defaults.download_category_general'                              => 'Generelt',
 	'user.defaults.downloads_category_general'                             => 'Dokumenter',
 	'user.defaults.feedback_example_content'                               => 'Dette er et eksempel forslag. Gjør gjerne endringer eller fjern den fra agent grensesnittet.',

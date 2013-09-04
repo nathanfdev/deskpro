@@ -12,8 +12,8 @@
 	'user.emails.feedback_disapproved-reason'                              => 'Wir mailen Ihnen damit Sie wissen dass Ihr Feedback leider abgelehnt wurde und nicht öffentlich auf unserer Website erscheinen wird. {{name}} gab folgenden Grund an:',
 	'user.emails.feedback_new-comment'                                     => '{{name}} hat einen neuen Kommentar gepostet:',
 	'user.emails.feedback_published'                                       => 'Ihr eingereichtes Feedback "{{title}}" wurde validiert und wird nun auf unserer Website erscheinen.',
-	'user.emails.feedback_thank-you'                                       => 'Vielen Dank für Ihr Feedback "{{title}}',
-	'user.emails.feedback_updated'                                         => 'Ihr eingereichtes Feedback "{{title}}" wurde aktualisiert. Es wird nun unter dem neuen Status eingereicht "{{status}}',
+	'user.emails.feedback_thank-you'                                       => 'Vielen Dank für Ihr Feedback "{{title}}"',
+	'user.emails.feedback_updated'                                         => 'Ihr eingereichtes Feedback "{{title}}" wurde aktualisiert. Es wird nun unter dem neuen Status eingereicht "{{status}}"',
 	'user.emails.feedback_validate-email'                                  => 'Bitte bestätigen Sie Ihre Email Adresse online indem Sie auf den folgenden Link klicken:',
 	'user.emails.feedback_votes'                                           => 'Ihr Feedback hat derzeit <strong> 1 </ strong> Votum. Sehen Sie sich Ihr Feedback online an unter: | Ihr Feedback hat derzeit <strong> {{count}} </ strong> Vota. Sehen Sie sich Ihr Feedback online an unter:',
 	'user.emails.greeting'                                                 => 'Liebe(r) {{to_name}},',
@@ -22,16 +22,21 @@
 	'user.emails.password_reset'                                           => 'Sie baten um einen Kennwort-Reset. Um Ihr Kennwort zurückzusetzen klicken Sie auf den untenstehenden Link:',
 	'user.emails.profile_email-new-confirm'                                => 'Um das Hinzufügen dieser sekundären Email Adresse zu Ihrem Konto abzuschliessen einfach auf den folgenden Validierungslink klicken',
 	'user.emails.profile_email_link-validate'                              => 'Klicken Sie einfach auf den folgenden Link um Ihre Email Adresse zu bestätigen',
-	'user.emails.register-confirm'                                         => 'Danke für die Registrierung eines Kontos.',
-	'user.emails.registration_closed'                                      => 'Liebe(r) {{name}}',
+	'user.emails.register-confirm'                                         => 'Danke für die Registrierung eines Kontos.
+Um Ihr Konto nutzen zu können müssen Sie auf den folgenden Link klicken um Ihre Email Adresse zu bestätigen',
+	'user.emails.registration_closed'                                      => 'Liebe(r) {{name}},
+
+neue Tickets werden nur von bestehenden Helpdesk Mitgliedern akzeptiert. Wenn Sie bereits ein Konto haben, mailen Sie uns bitte nochmals von Ihrer registrierten Email Adresse.',
 	'user.emails.ticket_access_ticket_online'                              => 'Ansehen und Verwalten dieses Tickets online:',
 	'user.emails.ticket_cc-new'                                            => 'Sie wurden einem Ticket hinzugefügt das durch {{name}} eröffnet wurde.',
-	'user.emails.ticket_flood'                                             => 'Sie haben vor Kurzem eine Email an unseren Helpdesk gesendet. Unser automatisiertes System hat festgestellt, dass Sie viele Nachrichten in schneller Folge gesendet haben, die wahrscheinlich automatisiert geschickt wurden.',
+	'user.emails.ticket_flood'                                             => 'Sie haben vor Kurzem eine Email an unseren Helpdesk gesendet. Unser automatisiertes System hat festgestellt, dass Sie viele Nachrichten in schneller Folge gesendet haben, die wahrscheinlich automatisiert geschickt wurden.
+Als Schutz vor einer Auto-Responder Schleife wird unser Helpdesk keine weiteren automatischen Benachrichtigungsemails mehr an Sie senden.',
 	'user.emails.ticket_message_title'                                     => 'Am {{date}} um {{time}} schrieb {{author}}:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Warnung: Bestätigungemails ausgeschaltet',
 	'user.emails.ticket_received'                                          => 'Wir haben Ihr Ticket erhalten. Einer unserer Mitarbeiter wird in Kürze antworten.',
 	'user.emails.ticket_reply-confirm'                                     => 'Vielen Dank für Ihre Antwort. Einer unserer Mitarbeiter wird in Kürze antworten.',
-	'user.emails.ticket_validate'                                          => 'Vielen Dank für die Kontaktaufnahme.',
+	'user.emails.ticket_validate'                                          => 'Vielen Dank für die Kontaktaufnahme.
+Damit unsere Agenten Ihre Nachricht lesen und Ihnen antworten müssen Sie Ihre Email Adresse validieren.',
 	'user.emails.tickets_ommitted'                                         => '1 Nachricht wurde ausgelassen | {{count}} Nachrichten wurden ausgelassen',
 	'user.emails.view_full_history_online'                                 => 'Geamtes Ticket online ansehen',
 );

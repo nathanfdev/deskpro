@@ -33,6 +33,7 @@
 	'user.profile.lost_qm'                                                 => 'Persa?',
 	'user.profile.new_password'                                            => 'Nuova password',
 	'user.profile.or_connect_with'                                         => 'O fai il login con',
+	'user.profile.password'                                                => 'Password',
 	'user.profile.password_mismatch'                                       => 'Le due password non corrispondono. Ritenta.',
 	'user.profile.password_updated'                                        => 'Password aggiornata con successo.',
 	'user.profile.primary_address'                                         => 'Indirizzo primario',
