@@ -31,7 +31,6 @@
 	'user.widget.ticket_form_error_department'                             => 'Veuillez choisir un service',
 	'user.widget.ticket_form_error_message'                                => 'Veuillez entrer au moins 5 caractères',
 	'user.widget.ticket_form_error_subject'                                => 'Veuillez entrer un sujet d\'au moins 5 caractères',
-	'user.widget.ticket_form_message'                                      => 'Message',
 	'user.widget.ticket_form_subject'                                      => 'Sujet',
 	'user.widget.ticket_form_submit'                                       => 'Envoyer email',
 	'user.widget.ticket_form_upload-drag'                                  => 'Déposez ici le fichier à télécharger',

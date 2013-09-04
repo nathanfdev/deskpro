@@ -23,19 +23,15 @@
 	'user.emails.profile_email-new-confirm'                                => 'アカウントに予備のメールアドレスの追加を許可するには、次のリンクをクリックしてください。',
 	'user.emails.profile_email_link-validate'                              => 'あなたのメールアドレスを有効にするには次のリンクをクリックしてください。',
 	'user.emails.register-confirm'                                         => 'アカウントをご登録いただきありがとうございます。',
-	'user.emails.registration_closed'                                      => '{{name}}様
-
-新たなリクエストの受付はヘルプデスクのメンバー様からに限定されています。既にアカウントをお持ちのお客様は、登録済みのメールアドレスからもう一度Eメールを送り直してください。',
+	'user.emails.registration_closed'                                      => '{{name}}様',
 	'user.emails.ticket_access_ticket_online'                              => 'このリクエストをウェブ上で表示し管理:',
 	'user.emails.ticket_cc-new'                                            => '{{name}}さんにより作成されたリクエストにあなたは追加されました。',
-	'user.emails.ticket_flood'                                             => 'ヘルプデスクへメールを頂いた方へ通知します。あなたから短い間隔で複数のメッセージを頂いたため、当社の自動システムはあなたからのメッセージを自動発信のメッセージであると判断しました。
-双方の自動発信によるループトラフィックを避けるため、当社からの自動通知メッセージの送信を停止します。',
+	'user.emails.ticket_flood'                                             => 'ヘルプデスクへメールを頂いた方へ通知します。あなたから短い間隔で複数のメッセージを頂いたため、当社の自動システムはあなたからのメッセージを自動発信のメッセージであると判断しました。',
 	'user.emails.ticket_message_title'                                     => '{{date}} {{time}}, 作成者{{author}} :',
 	'user.emails.ticket_no-autoresponse'                                   => '注意: 確認メールの送信設定がオフです',
 	'user.emails.ticket_received'                                          => 'リクエストを受け付けました。エージェントにより折り返しいたしますのでしばらくお待ちください。',
 	'user.emails.ticket_reply-confirm'                                     => '返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。',
-	'user.emails.ticket_validate'                                          => 'ご連絡をいただきありがとうございます。
-エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。',
+	'user.emails.ticket_validate'                                          => 'ご連絡をいただきありがとうございます。',
 	'user.emails.tickets_ommitted'                                         => 'メッセージが1つ削除されました|メッセージが{{count}}つ削除されました',
 	'user.emails.view_full_history_online'                                 => 'リクエストの全文をオンラインにて表示',
 );

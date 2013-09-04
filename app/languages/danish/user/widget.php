@@ -1,6 +1,5 @@
 <?php return array(
 	'user.widget.chat_form_error_department'                               => 'Vælg en afdeling',
-	'user.widget.chat_form_submit'                                         => 'Start Chat',
 	'user.widget.chat_form_wait'                                           => 'Vent venligst mens vi finder en ansat til dig',
 	'user.widget.chat_form_wait_title'                                     => 'Vent venligts',
 	'user.widget.email'                                                    => 'Din emailadresse',

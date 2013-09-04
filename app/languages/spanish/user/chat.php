@@ -12,7 +12,6 @@
 	'user.chat.form_feedback_rate-satisfaction'                            => '¿Se ha quedado satisfecho con esta conversación?',
 	'user.chat.form_feedback_rate-satisfied'                               => 'Si',
 	'user.chat.form_feedback_rate-time'                                    => '¿Ha sido nuestro tiempo de respuesta bueno?',
-	'user.chat.form_feedback_rate-unsatisfied'                             => 'No',
 	'user.chat.form_feedback_title'                                        => 'Envíenos su comentario',
 	'user.chat.form_feedback_transcript-email'                             => 'Enviar una transcripción de la conversación a',
 	'user.chat.message_agent-timeout'                                      => 'Lo sentimos; {{name}} está deconectado. Espere un momento e inténtelo de nuevo con otro agente',

@@ -8,7 +8,6 @@
 	'user.general.comments_no_comments'                                    => 'Brak komentarzy.',
 	'user.general.comments_please_enter_email'                             => 'Wpisz swój adres email',
 	'user.general.count_comments'                                          => 'Ilość komentarzy - {{count}}|Ilość komentarzy - {{count}}',
-	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'Adres email',
 	'user.general.email_addresses'                                         => 'Adresy email',
 	'user.general.first_name'                                              => 'Imię',

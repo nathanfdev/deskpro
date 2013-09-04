@@ -9,7 +9,6 @@
 	'user.general.comments_no_comments'                                    => 'Nu exista comentarii.',
 	'user.general.comments_please_enter_email'                             => 'Va rugam sa introduceti adresa dumneavoastra de email',
 	'user.general.count_comments'                                          => '{{count}} Comentariu|{{count}} Comentarii',
-	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'Adresa de email',
 	'user.general.email_addresses'                                         => 'Adrese de email',
 	'user.general.first_name'                                              => 'Prenume',

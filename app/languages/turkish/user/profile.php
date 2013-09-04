@@ -33,7 +33,6 @@
 	'user.profile.lost_qm'                                                 => 'Kayıp?',
 	'user.profile.new_password'                                            => 'Yeni Parola',
 	'user.profile.or_connect_with'                                         => 'ya da bağlan',
-	'user.profile.password'                                                => 'Password',
 	'user.profile.password_mismatch'                                       => 'girdiğiniz parolalar birbiriyle eşleşmiyor. Lütfen yeniden deneyin.',
 	'user.profile.password_updated'                                        => 'Parolanız başarıyla güncellendi.',
 	'user.profile.primary_address'                                         => 'Birincil Adres',

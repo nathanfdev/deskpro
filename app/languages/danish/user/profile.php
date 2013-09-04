@@ -33,7 +33,6 @@
 	'user.profile.lost_qm'                                                 => 'fortabt?',
 	'user.profile.new_password'                                            => 'Nyt password',
 	'user.profile.or_connect_with'                                         => 'Eller tilslut med',
-	'user.profile.password'                                                => 'Password',
 	'user.profile.password_mismatch'                                       => 'De to password var ikke ens. Prøv igen.',
 	'user.profile.password_updated'                                        => 'Dit password er nu opdateret.',
 	'user.profile.primary_address'                                         => 'Primær adresse',

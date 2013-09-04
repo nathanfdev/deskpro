@@ -13,7 +13,7 @@
 	'user.emails.feedback_disapproved-reason'                              => 'Nous vous écrivons pour vous informer que votre remarque n\'a malheureusement pas été approuvée. Elle n\'apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:',
 	'user.emails.feedback_new-comment'                                     => '{{name}} a posté un nouveau commentaire',
 	'user.emails.feedback_published'                                       => 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.',
-	'user.emails.feedback_thank-you'                                       => 'Merci de nous avoir fait parvenir vos remarques "{{title}}"',
+	'user.emails.feedback_thank-you'                                       => 'Merci de nous avoir fait parvenir vos remarques "{{title}}',
 	'user.emails.feedback_updated'                                         => 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}',
 	'user.emails.feedback_validate-email'                                  => 'Merci de valider votre adresse email en ligne en cliquant sur le lien suivant:',
 	'user.emails.feedback_votes'                                           => 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:|Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:',
@@ -24,15 +24,11 @@
 	'user.emails.password_reset'                                           => 'Vous avez demandé à recevoir un nouveau mot de passe. Pour générer un nouveau mot de passe, cliquez sur le lien ci-dessous:',
 	'user.emails.profile_email-new-confirm'                                => 'Pour finir d\'ajouter cette deuxième adresse email à votre compte, cliquez sur le lien d\'activation suivant:',
 	'user.emails.profile_email_link-validate'                              => 'Cliquez simplement sur le lien suivant pour valider votre adresse email.',
-	'user.emails.register-confirm'                                         => 'Merci d\'avoir créé un compte.
-Avant de pouvoir utiliser votre compte, vous devez valider votre adresse mail en cliquant sur le lien suivant',
-	'user.emails.registration_closed'                                      => 'Chère/Cher {{name}},
-
-Seuls les membres inscrits au service d\'aide sont habilités à poster de nouveaux tickets. Si vous possédez un compte, merci de nous écrire avec l\'adresse email enregistrée pour votre compte.',
+	'user.emails.register-confirm'                                         => 'Merci d\'avoir créé un compte.',
+	'user.emails.registration_closed'                                      => 'Chère/Cher {{name}}',
 	'user.emails.ticket_access_ticket_online'                              => 'Voir et gérer votre ticket en ligne',
 	'user.emails.ticket_cc-new'                                            => 'Vous avez été ajouté à un ticket créé par {{name}}.',
-	'user.emails.ticket_flood'                                             => 'Vous avez récemment envoyé un email à notre service d\'assistance, suite à quoi notre système a détecté l\'envoi successifs par votre boite mail de nombreux messages certainement automatiques.
-Pour éviter la création d\'une chaine de messages automatiques notre service d\'assistance ne vous enverra plus de notifications automatiques par email.',
+	'user.emails.ticket_flood'                                             => 'Vous avez récemment envoyé un email à notre service d\'assistance, suite à quoi notre système a détecté l\'envoi successifs par votre boite mail de nombreux messages certainement automatiques.',
 	'user.emails.ticket_message_title'                                     => 'Le {{date}} à {{time}}, {{author}} a écrit:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Attention: Emails de confirmation désactivés.',
 	'user.emails.ticket_rate-negative'                                     => 'Non',
@@ -41,8 +37,7 @@ Pour éviter la création d\'une chaine de messages automatiques notre service d
 	'user.emails.ticket_rate-question'                                     => 'Ce message vous a-t-il aidé ?',
 	'user.emails.ticket_received'                                          => 'Votre ticket a bien été reçu. Un de nos agents va vous répondre sous peu.',
 	'user.emails.ticket_reply-confirm'                                     => 'Merci pour votre réponse. Un de nos agents va vous répondre sous peu.',
-	'user.emails.ticket_validate'                                          => 'Merci de nous avoir contacté.
-Avant que nos agents ne lisent et répondent à votre message, vous devez valider votre adresse email.',
+	'user.emails.ticket_validate'                                          => 'Merci de nous avoir contacté.',
 	'user.emails.tickets_ommitted'                                         => '1 message a été omis|{{count}} messages ont été omis',
 	'user.emails.view_full_history_online'                                 => 'Voir l\'intégralité du ticket en ligne',
 );

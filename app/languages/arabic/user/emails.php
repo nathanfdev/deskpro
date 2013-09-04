@@ -13,8 +13,8 @@
 	'user.emails.feedback_disapproved-reason'                              => 'نراسلك لإبلاغك انه للأسف الشديد تنويهك تم رفضه ولن ينشر في موقعنا . {{name}}  أعطى السبب التالي',
 	'user.emails.feedback_new-comment'                                     => '{{name}} قام بإضافة رد جديد :',
 	'user.emails.feedback_published'                                       => 'تنويهك المرسل بعنوان "{{title}}"  تم التحقق منه و الأن هو منشور علي موقعنا',
-	'user.emails.feedback_thank-you'                                       => 'شكرا لك علي إرسال تنويهك "{{title}}"',
-	'user.emails.feedback_updated'                                         => 'تنويهك المرسل بعنوان "{{title}}"   تم تحديثه . و الحاله الجديده له الأن هي "{{status}}"',
+	'user.emails.feedback_thank-you'                                       => 'شكرا لك علي إرسال تنويهك "{{title}}',
+	'user.emails.feedback_updated'                                         => 'تنويهك المرسل بعنوان "{{title}}"   تم تحديثه . و الحاله الجديده له الأن هي "{{status}}',
 	'user.emails.feedback_validate-email'                                  => 'يرجي تأكيد صحة بريدك الالكتروني عن طريق الضغط على الرابط التالي :',
 	'user.emails.feedback_votes'                                           => 'تحصل تنويهك على عدد <strong>1</strong> تصويت . إستعرض تنويهك مباشرة علي :| تنويهك تحصل على عدد  تصويتات <strong>{{count}}</strong>  . إستعرض تنويهك مباشرة على :',
 	'user.emails.greeting'                                                 => 'عزيزي {{to_name}},',
@@ -24,10 +24,8 @@
 	'user.emails.password_reset'                                           => 'لقد قمت بطلب إعادة تعيين كلمةالمرور . لإستكمال العملية , إضغط على الرابط التالي :',
 	'user.emails.profile_email-new-confirm'                                => 'لإنهاء عملية إضافة بريد آخر لحسابك , فقط قم بالضغط على رابط التحقق التالي .',
 	'user.emails.profile_email_link-validate'                              => 'قم بالضغط على الرابط التالي لتأكيد بريدك الإلكتروني',
-	'user.emails.register-confirm'                                         => 'شكرا لقيامك بتسجيل حسابك ⏎
-قبل ان تكون قادر على إستخدام حسابك , يجب عليك تأكيد بريدك الإلكتروني عن طريق الرابط التالي',
-	'user.emails.registration_closed'                                      => 'عزيزي {{name}},⏎
-التذاكر الجديدة تقبل فقط من الأعضاء المسجلين . إذا كنتم عضو مسجل بالفعل , يرجي إعادة إرسال تذكرتك من خلال بريدك الإلكتروني المسجل به',
+	'user.emails.register-confirm'                                         => 'شكرا لقيامك بتسجيل حسابك ⏎',
+	'user.emails.registration_closed'                                      => 'عزيزي {{name}},⏎',
 	'user.emails.ticket_access_ticket_online'                              => 'إستعراض وإدارة تلك التذكرة :',
 	'user.emails.ticket_cc-new'                                            => 'تمت إضافتك في التذكرة التي بدأت بواسطة : {{name}}.',
 	'user.emails.ticket_flood'                                             => 'لقد أستلمنا مؤخرا رسالة من طرفكم لطلب المساعدة , وقد إكتشف النظام الآلي سرعه تعاقب الإرسال في وقت قصير و التي تشبه الي حد كبير نظام الإرسال الألي .⏎ و كإجراء وقائي للرد الآلي المتعاقب لن يقوم النظام بإرسال اية رسائل أخري او تنبيهات إليك',
@@ -39,8 +37,7 @@
 	'user.emails.ticket_rate-question'                                     => 'هل ساعدتك تلك الرسالة ؟',
 	'user.emails.ticket_received'                                          => 'تم إستلام تذكرتك . سيقوم أحد موظفينا بالرد عليك في أقرب وقت',
 	'user.emails.ticket_reply-confirm'                                     => 'شكرا لك علي الرد . سيقوم أحد موظفينا بالرد عليك في أقرب وقت',
-	'user.emails.ticket_validate'                                          => 'شكرا لك علي الإتصال بنا ⏎
-يجب عليك تأكيد صحة بريدك الإلكتروني , لكي يقوم أحد موظفينا بالرد عليك',
+	'user.emails.ticket_validate'                                          => 'شكرا لك علي الإتصال بنا ⏎',
 	'user.emails.tickets_ommitted'                                         => 'تم أهمال رسالة واحدة | عدد الرسائل المهمله{{count}}',
 	'user.emails.view_full_history_online'                                 => 'إستعرض التذكرة بالكامل',
 );

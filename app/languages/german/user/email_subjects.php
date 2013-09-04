@@ -6,7 +6,7 @@
 	'user.email_subjects.email_new-confirm'                                => 'Bestätigen Sie Ihre Email Adresse',
 	'user.email_subjects.feedback_new'                                     => 'Vielen Dank für Ihr Feedback',
 	'user.email_subjects.feedback_new-approved'                            => 'Ihr Feedback wurde genehmigt',
-	'user.email_subjects.feedback_new-comment'                             => 'Es gibt einen neuen Kommentar zu "{{title}}"',
+	'user.email_subjects.feedback_new-comment'                             => 'Es gibt einen neuen Kommentar zu "{{title}}',
 	'user.email_subjects.feedback_new-confirm'                             => 'Vielen Dank für Ihr Feedback (Validierung erforderlich)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Ihr Feedback wurde abgelehnt',
 	'user.email_subjects.feedback_updated'                                 => 'Ihr Feedback wurde aktualisiert: {{title}}',

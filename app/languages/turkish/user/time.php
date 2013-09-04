@@ -33,7 +33,6 @@
 	'user.time.short-month_july'                                           => 'Tem',
 	'user.time.short-month_june'                                           => 'Haz',
 	'user.time.short-month_march'                                          => 'Mart',
-	'user.time.short-month_may'                                            => 'May',
 	'user.time.short-month_november'                                       => 'Kas',
 	'user.time.short-month_october'                                        => 'Ekim',
 	'user.time.short-month_september'                                      => 'Eylül',

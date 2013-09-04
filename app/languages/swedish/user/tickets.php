@@ -59,7 +59,7 @@
 	'user.tickets.new_ticket_email'                                        => 'Ditt ärende har registrerats. En agent kommer att kontakta dig så fort som möjligt: {{email}}',
 	'user.tickets.no_subject'                                              => '(Inget ämne)',
 	'user.tickets.open_tickets'                                            => 'Öppna Ärenden',
-	'user.tickets.rate-intro'                                              => '{{name}} hjälpte dig med ditt ärende "{{subject}}"',
+	'user.tickets.rate-intro'                                              => '{{name}} hjälpte dig med ditt ärende "{{subject}}',
 	'user.tickets.rate-negative'                                           => 'Den var inte bra',
 	'user.tickets.rate-neutral'                                            => 'Den var okej',
 	'user.tickets.rate-positive'                                           => 'Den var bra',

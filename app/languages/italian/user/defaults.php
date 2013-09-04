@@ -14,7 +14,6 @@
 	'user.defaults.feedback_status_planning'                               => 'Pianificazione',
 	'user.defaults.feedback_status_started'                                => 'Iniziato',
 	'user.defaults.feedback_status_under-review'                           => 'In revisione',
-	'user.defaults.feedback_type_bug-report'                               => 'Bug Report',
 	'user.defaults.feedback_type_feature-request'                          => 'Richiesta di funzionalità',
 	'user.defaults.feedback_type_suggestion'                               => 'Suggerimento',
 	'user.defaults.language_english'                                       => 'Inglese',

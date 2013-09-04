@@ -11,7 +11,6 @@
 	'user.chat.form_feedback_rate-satisfaction'                            => 'Sei soddisfatto della conversazione?',
 	'user.chat.form_feedback_rate-satisfied'                               => 'Sì',
 	'user.chat.form_feedback_rate-time'                                    => 'Il tempo di risposta ti ha soddisfatto?',
-	'user.chat.form_feedback_rate-unsatisfied'                             => 'No',
 	'user.chat.form_feedback_title'                                        => 'Invia un feedback',
 	'user.chat.form_feedback_transcript-email'                             => 'Invia questa chat a',
 	'user.chat.message_agent-timeout'                                      => 'Ci scusiamo; sembra che {{name}} si sia disconnesso. Attendi mentre cerchiamo un altro membro dello staff.',
