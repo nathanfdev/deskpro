@@ -20,7 +20,7 @@
 			{% if macros|length %}
 				<div class="macro-load">
 					<select name="macro_id" class="macro macro_id is-not-loading" data-placeholder="Apply a macro">
-						<option value="0">Apply a macro...</option>
+						<option value="0">{{ phrase('agent.tickets.apply_a_macro') }}</option>
 						<optgroup label="Macros">
 							{% for macro in macros %}
 								<option value="{{ macro.id }}">{{ macro.title }}</option>
@@ -67,7 +67,7 @@
 				<table cellspacing="0" cellpadding="0" border="0"><tr>
 					<td>
 						<dl>
-							<dt>Agent</dt>
+							<dt>{{ phrase('agent.general.agent') }}</dt>
 							<dd>
 								<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 									<option value="-1"></option>
@@ -82,7 +82,7 @@
 					</td>
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>Team</dt>
+							<dt>{{ phrase('agent.general.team') }}</dt>
 							<dd>
 								<select name="actions[agent_team]" class="dpe_select">
 									<option value="-1"></option>

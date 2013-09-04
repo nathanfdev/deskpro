@@ -1,5 +1,5 @@
 <section class="new-user-chat-alert new-chat-dlg" data-conversation-id="{{ convo.id }}" id="new_user_chat_alert_{{ convo.id }}" data-play-sound="new-chat">
-	<header>New Chat</header>
+	<header>{{ phrase('agent.userchat.new_chat') }}</header>
 	<div class="content">
 		<div class="row name">
 			<div class="form-label"><label>{{ phrase('agent.chat.chat_started_by') }}</label></div>
@@ -32,7 +32,7 @@
 		</div>
 
 		<div class="row taken" style="display: none">
-			<div class="form-label"><label>Chat Taken by</label></div>
+			<div class="form-label"><label>{{ phrase('agent.userchat.taken_by') }}</label></div>
 			<div class="form-input"><span class="place-assigned-name"></span></div>
 		</div>
 
@@ -67,8 +67,8 @@
 	</div>
 	<footer>
 		<div>
-			<a href="#" class="btn cancel dismiss-trigger"><i class="icon-ban-circle"></i> Dismiss</a>
-			<a href="#"class="btn accept-trigger"><i class="icon-ok"></i> Take Chat </a>
+			<a href="#" class="btn cancel dismiss-trigger"><i class="icon-ban-circle"></i> {{ phrase('agent.general.dismiss') }}</a>
+			<a href="#"class="btn accept-trigger"><i class="icon-ok"></i> {{ phrase('agent.userchat.take_chat') }} </a>
 		</div>
 	</footer>
 </section>

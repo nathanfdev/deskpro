@@ -3,7 +3,7 @@
 		<div class="pane-row add-to-search">
 			<table class="layout-table v-middle" width="100%">
 				<tr>
-					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">Department</span></td>
+					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.department') }}</span></td>
 					<td style="padding: 0 5px;" width="10">
 						<select name="terms_expanded[department][op]" class="with-select2">
 							<option value="contains">{{ phrase('agent.general.is') }}</option>
@@ -34,7 +34,7 @@
 		<div class="pane-row add-to-search">
 			<table class="layout-table v-middle" width="100%">
 				<tr>
-					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">Product</span></td>
+					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.product') }}</span></td>
 					<td style="padding: 0 5px;" width="10">
 						<select name="terms_expanded[product][op]" class="with-select2">
 							<option value="contains">{{ phrase('agent.general.is') }}</option>
@@ -43,7 +43,7 @@
 					</td>
 					<td>
 						<select name="terms_expanded[product][options][product_ids][]" multiple="multiple" class="with-select2 ensure-value">
-							<option value="0">None</option>
+							<option value="0">{{ phrase('agent.general.none') }}</option>
 							{% for id,title in app.products.getNames() %}
 								<option value="{{ id }}">{{ title }}</option>
 							{% endfor %}
@@ -58,7 +58,7 @@
 		<div class="pane-row add-to-search">
 			<table class="layout-table v-middle" width="100%">
 				<tr>
-					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">Category</span></td>
+					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.category') }}</span></td>
 					<td style="padding: 0 5px;" width="10">
 						<select name="terms_expanded[category][op]" class="with-select2">
 							<option value="contains">{{ phrase('agent.general.is') }}</option>
@@ -67,7 +67,7 @@
 					</td>
 					<td>
 						<select name="terms_expanded[category][options][category_ids][]" multiple="multiple" class="with-select2 ensure-value">
-							<option value="0">None</option>
+							<option value="0">{{ phrase('agent.general.none') }}</option>
 							{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
 								{% if cat.children|length %}
 									<optgroup label="{{ cat.title }}">
@@ -90,7 +90,7 @@
 		<div class="pane-row add-to-search">
 			<table class="layout-table v-middle" width="100%">
 				<tr>
-					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">Priority</span></td>
+					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.priority') }}</span></td>
 					<td style="padding: 0 5px;" width="10">
 						<select name="terms_expanded[priority][op]" class="with-select2">
 							<option value="contains">{{ phrase('agent.general.is') }}</option>
@@ -99,7 +99,7 @@
 					</td>
 					<td>
 						<select name="terms_expanded[priority][options][priority_ids][]" multiple="multiple" class="with-select2 ensure-value">
-							<option value="0">None</option>
+							<option value="0">{{ phrase('agent.general.none') }}</option>
 							{% for id,name in app.getDataService('TicketPriority').getNames() %}
 								<option value="{{ id }}">{{ name }}</option>
 							{% endfor %}
@@ -114,7 +114,7 @@
 		<div class="pane-row add-to-search">
 			<table class="layout-table v-middle" width="100%">
 				<tr>
-					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">Workflow</span></td>
+					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.workflow') }}</span></td>
 					<td style="padding: 0 5px;" width="10">
 						<select name="terms_expanded[workflow][op]" class="with-select2">
 							<option value="contains">{{ phrase('agent.general.is') }}</option>
@@ -123,7 +123,7 @@
 					</td>
 					<td>
 						<select name="terms_expanded[workflow][options][workflow_ids][]" multiple="multiple" class="with-select2 ensure-value">
-							<option value="0">None</option>
+							<option value="0">{{ phrase('agent.general.none') }}</option>
 							{% for work in app.getDataService('TicketWorkflow').getAll() %}
 								<option value="{{ work.id }}">{{ work.title }}</option>
 							{% endfor %}
@@ -147,7 +147,7 @@
 				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
 				<div class="sep-row">
 					<div class="line"></div>
-					<strong>and</strong>
+					<strong>{{ phrase('agent.general.and') }}</strong>
 				</div>
 				<table cellpadding="0" cellspacing="0" width="100%" border="0" class="term-table"><tbody><tr>
 					<td class="builder-controls" style="vertical-align: middle;">
@@ -178,12 +178,12 @@
 							<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 						</optgroup>
 						<optgroup label="Changed (ranged)">
-							<option value="changed_to_gte">Changed to &gt;=</option>
-							<option value="changed_to_lte">Changed to &lt;=</option>
-							<option value="changed_from_gte">Changed from &gt;=</option>
-							<option value="changed_from_lte">Changed from &lt;=</option>
-							<option value="not_changed_to_gte">Not changed to &gt;=</option>
-							<option value="not_changed_from_lte">Not changed from &lt;=</option>
+							<option value="changed_to_gte">{{ phrase('agent.general.changed_to_gte') }}</option>
+							<option value="changed_to_lte">{{ phrase('agent.general.changed_to_lte') }}</option>
+							<option value="changed_from_gte">{{ phrase('agent.general.changed_from_gte') }}</option>
+							<option value="changed_from_lte">{{ phrase('agent.general.changed_from_gle') }}</option>
+							<option value="not_changed_to_gte">{{ phrase('agent.general.not_changed_to_gte') }}</option>
+							<option value="not_changed_from_lte">{{ phrase('agent.general.not_changed_from_lte') }}</option>
 						</optgroup>
 					{% endif %}
 				</select>
@@ -203,7 +203,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="language">
-					<option value="0">None</option>
+					<option value="0">{{ phrase('agent.general.none') }}</option>
 					{% for id,title in term_options.languages %}
 					<option value="{{id}}">{{title}}</option>
 					{% endfor %}
@@ -213,7 +213,7 @@
 		{% endif %}
 
 		{% if term_options.slas %}
-			<div class="builder-type" title="SLA" data-rule-type="sla" data-term-type="GenericMenuTerm" data-term-triggers="sla">
+			<div class="builder-type" title="{{ phrase('agent.general.sla') }}" data-rule-type="sla" data-term-type="GenericMenuTerm" data-term-triggers="sla">
 				<div class="builder-op">
 					<select name="op" class="op">
 						<option value="is">{{ phrase('agent.general.is') }}</option>
@@ -229,7 +229,7 @@
 				</div>
 			</div>
 
-			<div class="builder-type" title="SLA Status" data-rule-type="sla_status" data-term-type="GenericMenuTerm" data-term-triggers="sla_status,slastatus">
+			<div class="builder-type" title="{{ phrase('agent.general.sla_status') }}" data-rule-type="sla_status" data-term-type="GenericMenuTerm" data-term-triggers="sla_status,slastatus">
 				<div class="builder-op">
 					<select name="op" class="op">
 						<option value="is">{{ phrase('agent.general.is') }}</option>
@@ -238,16 +238,15 @@
 				</div>
 				<div class="builder-options">
 					<select name="sla_status">
-						<option value="ok">OK</option>
-						<option value="warn">Warning</option>
-						<option value="fail">Fail</option>
+						<option value="ok">{{ phrase('agent.general.okay') }}</option>
+						<option value="warn">{{ phrase('agent.general.warning') }}</option>
+						<option value="fail">{{ phrase('agent.general.failed') }}</option>
 					</select>
-					for SLA
 					<select name="sla_id">
-						<option value="0">Any</option>
-					{% for id,title in term_options.slas %}
-						<option value="{{id}}">{{title}}</option>
-					{% endfor %}
+						<option value="0">{{ phrase('agent.general.any_sla') }}</option>
+						{% for id,title in term_options.slas %}
+							<option value="{{id}}">{{title}}</option>
+						{% endfor %}
 					</select>
 				</div>
 			</div>

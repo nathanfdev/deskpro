@@ -173,7 +173,7 @@
 						{% endfor %}
 					</optgroup>
 					{% if app.agent_teams.getTeams()|length %}
-						<optgroup label="{{ phrase('agenet.general.teams') }}">
+						<optgroup label="{{ phrase('agent.general.teams') }}">
 							{% for team in app.agent_teams.getTeams() %}
 								<option value="agent_team:{{ team.id }}" {% if account_status.agent_team and account_status.agent_team.id == team.id %}selected="selected"{% endif %} data-icon="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}">{{ team.name }}</option>
 							{% endfor %}
@@ -194,7 +194,7 @@
 		<div class="note-input">
 			<textarea class="note-textarea"></textarea>
 			<div class="is-not-loading">
-				<button class="clean-white small save-note-trigger">{{ phrase('agenet.general.add_note') }}</button>
+				<button class="clean-white small save-note-trigger">{{ phrase('agent.general.add_note') }}</button>
 				<span class="cancel-note-trigger">{{ phrase('agent.general.cancel') }}</span>
 			</div>
 			<div class="is-loading">

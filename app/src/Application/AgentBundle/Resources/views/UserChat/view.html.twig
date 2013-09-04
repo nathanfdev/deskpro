@@ -52,7 +52,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{% if not ticket.department %}{% set blank_option = true %}{% endif %}
 					{% include 'AgentBundle:Common:select-department.html.twig' with {
 						'name': "department_id",
-						'blank_title': 'None',
+						'blank_title': phrase('agent.general.none'),
 						'selected': convo.department.id|default(0),
 						'id': baseId ~ '_department_id',
 						'departments': app.departments.getPersonDepartments(app.user, 'chat', [convo.department.id|default(0)])
@@ -65,7 +65,7 @@ pageMeta.baseId = '{{ baseId }}';
 						id="{{baseId}}_labels_input"
 						class="dpe_select dpe_select_noborder"
 						data-select-width="auto"
-						data-placeholder="Add a label"
+						data-placeholder="{{ phrase('agent.general.add_a_label') }}"
 						value="{% for label in convo.labels %}{{ label.label }},{% endfor %}"
 					/>
 				</div>
@@ -125,12 +125,12 @@ pageMeta.baseId = '{{ baseId }}';
 						{% if convo.person and convo.person.id != session.person.id %}
 							<div style="font-size: 11px; margin: 0 0 2px 13px;">
 								<strong style="color: #d00;">{{ phrase('agent.chat.warning') }}</strong>:
-								Identity not confirmed, email has not been validated
+								{{ phrase('agent.userchat.ident_unconfirmed') }}
 								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.chat.warning_email_address_not_unique') }}"></span>
 							</div>
 						{% endif %}
 
-						<button id="{{baseId}}_create_ticket_btn2" class="clean-white" style="margin: 0 0 5px 11px; {% if convo.status != 'ended' and convo.ended_by != 'timeout' %}display: none{% else %}display:block{% endif %}">Create Ticket</button>
+						<button id="{{baseId}}_create_ticket_btn2" class="clean-white" style="margin: 0 0 5px 11px; {% if convo.status != 'ended' and convo.ended_by != 'timeout' %}display: none{% else %}display:block{% endif %}">{{ phrase('agent.userchat.create_ticket') }}</button>
                     </article>
 					{{ dp_widget_tabs(baseId, 'chat', 'people', 'article', convo_api) }}
                 </section>
@@ -153,7 +153,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dl>
 							<dt class="agent-row">{{ phrase('agent.general.assigned_agent') }}</dt>
 							<dd class="agent-row">
-								<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
+								<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default(phrase('agent.general.unassigned')) }}</a>
 							</dd>
 
 							<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.chat.other_agents') }}</dt>
@@ -197,12 +197,12 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs" id="{{ baseId }}_main_tabs_nav"><ul>
 			<li data-tab-for="#{{baseId}}_chat">{{ phrase('agent.general.chat') }}</li>
-			<li data-tab-for="#{{ baseId }}_fields_display_main_wrap" id="{{ baseId }}_fields_display_main_wrap_tab" class="is-fields-tab">Fields</li>
+			<li data-tab-for="#{{ baseId }}_fields_display_main_wrap" id="{{ baseId }}_fields_display_main_wrap_tab" class="is-fields-tab">{{ phrase('agent.general.fields') }}</li>
 			{% if convo.visitor %}
-				<li data-tab-for="#{{baseId}}_session">Visitor Information</li>
+				<li data-tab-for="#{{baseId}}_session">{{ phrase('agent.userchat.visitor_info') }}</li>
 			{% endif %}
 			{% if convo.status == 'open' or block %}
-				<li data-tab-for="#{{baseId}}_block">{% if block %}User Blocked{% else %}Block User{% endif %}</li>
+				<li data-tab-for="#{{baseId}}_block">{% if block %}{{ phrase('agent.userchat.user_is_blocked') }}{% else %}{{ phrase('agent.userchat.block_user') }}{% endif %}</li>
 			{% endif %}
 		</ul></nav>
 	</header>
@@ -304,38 +304,38 @@ pageMeta.baseId = '{{ baseId }}';
 					<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table">
 						<tbody>
 							<tr>
-								<th>IP Address:</th>
+								<th>{{ phrase('agent.general.ip_address') }}:</th>
 								<td>
 									{{ convo.visitor.last_track.ip_address }}
 								</td>
 							</tr>
 							<tr>
-								<th>User Agent:</th>
+								<th>{{ phrase('agent.general.user_agent') }}:</th>
 								<td>
 									{{ convo.visitor.last_track.user_agent }}
 								</td>
 							</tr>
 							{% if convo.session %}
 								<tr>
-									<th>Session Start Time:</th>
+									<th>{{ phrase('agent.usertrack.session_start_time') }}:</th>
 									<td>{{ convo.session.date_last|date('fulltime') }}</td>
 								</tr>
 							{% endif %}
 							{% if convo.visitor.visit_track %}
 								<tr>
-									<th>Session Landing Page:</th>
+									<th>{{ phrase('agent.usertrack.session_landing_page') }}:</th>
 									<td>{{ convo.visitor.visit_track.page_url }}</td>
 								</tr>
 							{% endif %}
 							<tr>
-								<th>Initial Visit Time:</th>
+								<th>{{ phrase('agent.usertrack.initial_visit_time') }}:</th>
 								<td>
 									{{ convo.visitor.date_last|date('fulltime') }}
 								</td>
 							</tr>
 							{% if convo.visitor.initial_track %}
 							<tr>
-								<th>Initial Landing Page:</th>
+								<th>{{ phrase('agent.usertrack.initial_landing_page') }}:</th>
 								<td>
 									{{ convo.visitor.initial_track.page_url }}
 								</td>
@@ -349,21 +349,21 @@ pageMeta.baseId = '{{ baseId }}';
 		{% if convo.status == 'open' or block %}
 			<article id="{{baseId}}_block" style="direction: none; padding: 15px;">
 				{% if block %}
-					{{ block.by_person.display_name }} set a block on {{ block.date_created|date('fulltime') }}.
-					{% if block.reason %}<div>Reason: {{ block.reason }}</div>{% endif %}
+					{{ phrase('agent.userchat.agent_blocked_user_on', {name: block.by_person.display_name, date: block.date_created|date('fulltime')}) }}
+					{% if block.reason %}<div>{{ phrase('agent.userchat.block_reason', {reason: block.reason}) }}</div>{% endif %}
 
 					<br /><br />
-					<button class="clean-white" id="{{baseId}}_unblock_user">Unblock</button>
+					<button class="clean-white" id="{{baseId}}_unblock_user">{{ phrase('agent.userchat.unblock') }}</button>
 				{% else %}
-					End the chat and block this user from starting a new chat for the next 24 hours.<br />
-					Reason: <input type="text" id="{{baseId}}_block_reason" value="" style="width: 60%;" /><br />
+					{{ phrase('agent.userchat.block_title') }}<br />
+					{{ phrase('agent.general.reason') }}: <input type="text" id="{{baseId}}_block_reason" value="" style="width: 60%;" /><br />
 					<label>
-						<input type="checkbox" id="{{baseId}}_block_ip" /> Block IP address
-						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Blocking on the IP address can be more effective, but may result in other legitimate users being blocked as well if the IP address is used by many people (for example, a shared network, a public wifi etc)."></span>
+						<input type="checkbox" id="{{baseId}}_block_ip" /> {{ phrase('agent.userchat.block_ip_address') }}
+						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.userchat.block_ip_address_info') }}"></span>
 					</label>
 
 					<br /><br />
-					<button class="clean-white" id="{{baseId}}_block_user">Block User</button>
+					<button class="clean-white" id="{{baseId}}_block_user">{{ phrase('agent.userchat.block_user') }}</button>
 				{% endif %}
 			</article>
 		{% endif %}
@@ -458,7 +458,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="alert-overlay mass-actions-overlay" style="width: 800px; height: 600px;">
 		<div class="overlay-title">
 			<span class="close-trigger">{{ phrase('agent.general.dismiss') }}</span>
-			<h4>Full Message</h4>
+			<h4>{{ phrase('agent.userchat.full_message') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<div style="max-height: 500px; overflow: auto;" id="{{ baseId }}_view_full_message_content"></div>

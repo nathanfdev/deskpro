@@ -10,7 +10,7 @@
 				<td>
 					<div class="custom-field content chat_field_{{f.id}}" data-item-id="{{f.id}}">
 						{% if not convo.hasCustomField(f.id) %}
-							None
+							{{ phrase('agent.general.none') }}
 						{% else %}
 							{{ render_custom_field(f) }}
 						{% endif %}
@@ -32,7 +32,7 @@
 					<td>
 						<div class="custom-field content chat_field_{{f.id}}" data-item-id="{{f.id}}">
 							{% if not chat.hasCustomField(f.id) %}
-								None
+								{{ phrase('agent.general.none') }}
 							{% else %}
 								{{ render_custom_field(f) }}
 							{% endif %}
