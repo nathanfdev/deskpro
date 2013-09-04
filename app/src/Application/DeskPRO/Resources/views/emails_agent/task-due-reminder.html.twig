@@ -1,15 +1,14 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
-<dp:subject>Task {{ task.title }} due today</dp:subject>
+<dp:subject>{{ phrase('agent.emails.task_due_today', {title: task.title}) }}</dp:subject>
 {% if task.assigned_agent %}
-
-The task {{ task.title }}, assigned to you, is due today.
+{{ phrase('agent.emails.task_assigned_due_today', {title: task.title}) }}
 <br /><br />
-<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">View your tasks</a>
+<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
 
 {% elseif task.assigned_agent_team %}
 
-The task {{ task.title }}, assigned to your team, is due today.
+{{ phrase('agent.emails.task_assigned_team_due_today', {title: task.title}) }}
 <br /><br />
-<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">View your team's tasks</a>
+<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
 
 {% endif %}

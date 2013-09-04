@@ -271,6 +271,7 @@
 	'agent.tickets.subscribed_tickets'                  => 'Subscribed tickets',
 	'agent.tickets.teams_action'                        => 'Teams: {{teams}}',
 	'agent.tickets.text_body'                           => 'Text Body',
+	'agent.tickets.ticket_changes'                      => 'Ticket Changes',
 	'agent.tickets.ticket_field_name'                   => 'Ticket Field: {{field}}',
 	'agent.tickets.ticket_is_deleted'                   => 'Ticket is deleted',
 	'agent.tickets.ticket_is_marked_as_spam'            => 'This ticket has been marked as spam.',

@@ -1,32 +1,24 @@
-<dp:subject>Error with your forwarded email: {{ subject }}</dp:subject>
-We have detected the email you just sent as a forwarded message.
+<dp:subject>{{ phrase('agent.emails.subject_error_forwarded_email') }}</dp:subject>
+{{ phrase('agent.emails.detected_as_forward') }}
 
 {% if error == 'invalid_fwd_email' %}
-	However, we were <b>unable to verify the email address</b> of the user in the original
-	message. You should check that your email client added the email address to the message.
-	Some clients may only show the name, in which case you can correct this error by manually
-	adding the email address.
+	{{ phrase('agent.emails.invalid_fwd_email') }}
 {% else %}
-	However, we were <b>unable to parse the original message</b> so were unable to process
-	the forward into a new ticket.
+	{{ phrase('agent.emails.invalid_fwd_email_parse') }}
 {% endif %}
 
-<br /><br /
+<br /><br />
 
-Because of this error, your email has been discarded. No new ticket was created and no notifications or any
-other action has been peformed.
+{{ phrase('agent.emails.fwd_discarded') }}
 
 <br /><br />
 
-If you need to start a new ticket for a user, please use the agent web interface
-at <a href="{{ app.getSetting('core.deskpro_url') }}agent/">{{ app.getSetting('core.deskpro_url') }}agent/</a>
+{{ phrase('agent.emails.fwd_not_processed', {url: app.getSetting('core.deskpro_url') ~ 'agent/'}) }}
 
 <br /><br />
 
-If you did NOT want to create a new ticket on behalf of a user, you can re-send the email without the 'FW:' or 'FWD:' prefix
-in the subject line. This will create a new ticket from you instead.
+{{ phrase('agent.emails.fwd_resend_without_fwd') }}
 
 <br /><br />
 
-For more information about this error, you can refer to the DeskPRO support site:<br/>
-<a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>
+{{ phrase('agent.emails.fwd_error_more_info') }}

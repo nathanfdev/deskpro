@@ -14,7 +14,7 @@
 
 <br /><br />
 
-<h1>Ticket</h1>
+<h1>{{ phrase('agent.general.ticket') }}</h1>
 {{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
 
 <br /><br />
@@ -23,7 +23,7 @@
 
 <br /><br />
 
-<h1>Ticket Changes</h1>
+<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
 <dp:ticket-logs />
 
 <br /><br />

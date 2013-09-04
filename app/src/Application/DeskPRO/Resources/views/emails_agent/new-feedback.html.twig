@@ -1,13 +1,13 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
-	New feedback: {{ feedback.title }} {% if feedback.getStatusCode() == 'hidden.validating' %}(requires validation){% endif %}
+	{{ phrase('agent.feedback.new_feedback') }}	{{ feedback.title }} {% if feedback.getStatusCode() == 'hidden.validating' %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
-{{ feedback.person.getDisplayContact() }} has submitted new feedback "{{ feedback.title }}"
-{% if feedback.getStatusCode() == 'hidden.validating' %}that requires validation{% endif %}
+{{ phrase('agent.feedback.user_submitted_new_feedback', {name: feedback.person.getDisplayContact() }) }}
+{% if feedback.getStatusCode() == 'hidden.validating' %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 
 <br /><br />
 
-View online: <a href="{{ url_full('agent') }}#app.feedback,i:{{ feedback.id }}">{{ url_full('agent') }}#app.feedback,fb_content,i:{{ feedback.id }}</a>
+{{ phrase('agent.emails.view_online_at') }}: <a href="{{ url_full('agent') }}#app.feedback,i:{{ feedback.id }}">{{ url_full('agent') }}#app.feedback,fb_content,i:{{ feedback.id }}</a>
 
 <br /><br />
 

@@ -615,6 +615,7 @@
 	'agent.general.subject'                                 => 'Subject',
 	'agent.general.summary'                                 => 'Summary',
 	'agent.general.supportdeskprocom'                       => 'support@deskpro.com',
+	'agent.general.system_user'                             => 'System',
 	'agent.general.tasks'                                   => 'Tasks',
 	'agent.general.team'                                    => 'Team',
 	'agent.general.teams'                                   => 'Teams',

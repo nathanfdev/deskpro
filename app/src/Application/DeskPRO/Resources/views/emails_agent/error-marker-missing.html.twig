@@ -1,7 +1,6 @@
-<dp:subject>Error with your reply to "{{ subject }}"</dp:subject>
-Your email reply to ticket #{{ ticket.id }} was missing a marker line that looks like this:
+<dp:subject>{{ phrase('agent.emails.subject_error_with_reply') }}</dp:subject>
+{{ phrase('agent.emails.error_reply_to_ticket_missing_marker', {ticket_id: ticket.id}) }}
 <br /><br />
 === {{ phrase('agent.emails.reply_above_line') }} ===
 <br /><br />
-This reply marker is required for proper processing of your replies. Please re-send your reply,
-but this time leave the reply line marker in tact.
+{{ phrase('agent.emails.error_missing_marker_explain') }}
