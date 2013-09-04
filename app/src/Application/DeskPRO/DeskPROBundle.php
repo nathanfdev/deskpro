@@ -71,6 +71,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\DevExportLangCommand',
 			'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
 			'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
+			'Application\\DeskPRO\\Command\\DevLangCheckVarsCommand',
 			'Application\\DeskPRO\\Command\\DevLoadDataCommand',
 			'Application\\DeskPRO\\Command\\DevPagelogCommand',
 			'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
