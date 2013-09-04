@@ -162,7 +162,7 @@ class LangPackInfo
 	 */
 	public function getDefaultSections()
 	{
-		return array('user');
+		return array('user', 'agent');
 		return array('admin', 'agent', 'user');
 	}
 

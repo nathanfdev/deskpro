@@ -201,28 +201,30 @@ class OneSkyBuild extends AbstractBuild
 		#-------------------------
 
 		$got_phrases = $this->getCategoryWords('default', $section, $category);
-		$delete_phrase_ids = array();
+		if ($got_phrases) {
+			$delete_phrase_ids = array();
 
-		foreach ($got_phrases as $phrase_id => $phrasetext) {
-			if (!isset($phrases[$phrase_id])) {
-				$delete_phrase_ids[] = $phrase_id;
-			}
-		}
-
-		if ($delete_phrase_ids) {
-			$this->getLogger()->logDebug("$section.$category removing old phrases: " . implode(', ', $delete_phrase_ids));
-
-			$post_data = array();
-			$post_data['platform-id'] = $platform_id;
-			$post_data['to-delete'] = array();
-
-			foreach ($delete_phrase_ids as $phrase_id) {
-				$post_data['to-delete'][] = array(
-					'string-key' => $phrase_id
-				);
+			foreach ($got_phrases as $phrase_id => $phrasetext) {
+				if (!isset($phrases[$phrase_id])) {
+					$delete_phrase_ids[] = $phrase_id;
+				}
 			}
 
-			$this->restPost('string/delete', $post_data);
+			if ($delete_phrase_ids) {
+				$this->getLogger()->logDebug("$section.$category removing old phrases: " . implode(', ', $delete_phrase_ids));
+
+				$post_data = array();
+				$post_data['platform-id'] = $platform_id;
+				$post_data['to-delete'] = array();
+
+				foreach ($delete_phrase_ids as $phrase_id) {
+					$post_data['to-delete'][] = array(
+						'string-key' => $phrase_id
+					);
+				}
+
+				$this->restPost('string/delete', $post_data);
+			}
 		}
 
 		return $input_result;
