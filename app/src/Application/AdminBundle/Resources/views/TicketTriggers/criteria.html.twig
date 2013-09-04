@@ -624,7 +624,7 @@
 </div>
 
 {% if app.getPersonFieldManager.getFields() %}
-	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.field_name'), 'contains': phrase('agent.general.field_name'), 'notcontains': phrase('agent.general.field_name'), 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.greater_than'), 'lt': phrase('agent.general.less_than')} %}
 	{% for field in app.getPersonFieldManager().getDisplayArray() %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="builder-type" title="{{ phrase('agent.general.field_name', {'field':field.field_def.title}) }}" data-rule-group="Person" data-rule-type="person_field[{{field.field_def.id}}]">
