@@ -90,7 +90,7 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			$done_any = true;
 		}
 
-		if (!$input->getOption('transifex')) {
+		if ($input->getOption('transifex')) {
 			$ret = $this->exportTransifex($input, $output);
 			if ($ret) {
 				return $ret;
@@ -98,7 +98,7 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			$done_any = true;
 		}
 
-		if (!$input->getOption('onesky')) {
+		if ($input->getOption('onesky')) {
 			$ret = $this->exportOneSky($input, $output);
 			if ($ret) {
 				return $ret;
