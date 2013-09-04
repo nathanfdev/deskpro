@@ -13,7 +13,7 @@
 							{% endfor %}
 						</select>
 					{% else %}
-						{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">View Profile</a>
+						{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.people.view_profile') }}</a>
 					{% endif %}
 				{% else %}
 					<input type="text" name="newticket[person][email_address]" class="email" value="" style="margin:0;" />

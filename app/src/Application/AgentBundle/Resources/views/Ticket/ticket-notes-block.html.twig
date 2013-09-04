@@ -1,5 +1,0 @@
-{% for message in ticket.messages %}
-	{% if message.is_agent_note %}
-		{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
-	{% endif %}
-{% endfor %}

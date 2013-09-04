@@ -54,15 +54,6 @@ class PersonController extends AbstractController
 	# /agent/people/:person_id                                   agent_people_view
 	############################################################################
 
-	public function viewTipAction($person_id)
-	{
-		$person = $this->getPersonOr404($person_id);
-
-		return $this->render('AgentBundle:Person:view-tip.html.twig', array(
-			'person' => $person,
-		));
-	}
-
 	public function viewAction($person_id, $with_warn_for_email = false)
 	{
 		$person = $this->getPersonOr404($person_id);

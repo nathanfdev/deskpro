@@ -449,7 +449,7 @@ class Person extends AbstractEntityRepository
 
 
 	/**
-	 * Get the count of users awaiting validation by agnets
+	 * Get the count of users awaiting validation by agents
 	 *
 	 * @return int
 	 */
@@ -463,7 +463,7 @@ class Person extends AbstractEntityRepository
 	}
 
 	/**
-	 * Get the count of users awaiting validation by agnets
+	 * Get the count of users awaiting validation by agents
 	 *
 	 * @return int
 	 */

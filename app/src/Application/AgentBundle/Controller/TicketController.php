@@ -572,30 +572,6 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
-	# view-tip
-	############################################################################
-
-	/**
-	 * Serves up a tool-tip description for the ticket
-	 *
-	 * @param  $ticket_id
-	 */
-	public function viewTipAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$message = null;
-		try {
-			$message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
-		} catch (\Exception $e) {};
-
-		return $this->render('AgentBundle:Ticket:ticket-tip.html.twig', array(
-			'ticket' => $ticket,
-			'message' => $message
-		));
-	}
-
-	############################################################################
 	# Ajax loaded tabs
 	############################################################################
 
@@ -2019,95 +1995,6 @@ class TicketController extends AbstractController
 			'macro_id' => $macro->getId(),
 			'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']),
 			'success' => true,
-		));
-	}
-
-	############################################################################
-	# view-message-details
-	############################################################################
-
-	public function viewMessageDetailsAction($message_id)
-	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
-		$ticket = $message->ticket;
-
-		return $this->render('AgentBundle:Ticket:message-details.html.twig', array(
-			'message' => $message,
-			'ticket' => $ticket
-		));
-	}
-
-	public function viewUnformattedMessageAction($message_id)
-	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
-
-		return $this->render('AgentBundle:Ticket:message-details-unformatted.html.twig', array(
-			'message' => $message,
-			'ticket' => $message['ticket']
-		));
-	}
-
-	public function viewEmailSourceAction($message_id)
-	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
-
-		return $this->render('AgentBundle:Ticket:message-details-email-source.html.twig', array(
-			'message' => $message,
-			'ticket' => $message['ticket']
-		));
-	}
-
-	public function viewDecodedEmailAction($message_id)
-	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
-
-		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-		$r->setRawSource($message->email_source->raw_source);
-		$body_html = $r->getBodyHtml() ? $r->getBodyHtml()->getBodyUtf8() : null;
-		$body_text = $r->getBodyText() ? $r->getBodyText()->getBodyUtf8() : null;
-
-		unset($r);
-
-		return $this->render('AgentBundle:Ticket:message-details-decoded-email.html.twig', array(
-			'message' => $message,
-			'ticket' => $message['ticket'],
-			'body_html' => $body_html,
-			'body_text' => $body_text,
-		));
-	}
-
-	public function viewEmailLogAction($message_id)
-	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
-
-		return $this->render('AgentBundle:Ticket:message-details-email-log.html.twig', array(
-			'message' => $message,
-			'ticket' => $message['ticket'],
-		));
-	}
-
-	public function viewChangeTrackerLogAction($message_id)
-	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
-
-		$logs = App::getDb()->fetchAllCol("
-			SELECT log
-			FROM ticket_changetracker_logs
-			WHERE ticket_id = ?
-			ORDER BY id ASC
-		", array($message->ticket->getId()));
-
-		if ($this->in->getBool('download')) {
-			$res = new Response(implode("\n\n\n", $logs), 200);
-			$res->headers->set('Content-Type', 'plain/text');
-			$res->headers->set('Content-Disposition', 'attachment');
-			return $res;
-		}
-
-		return $this->render('AgentBundle:Ticket:message-details-tracker-log.html.twig', array(
-			'message' => $message,
-			'ticket'  => $message['ticket'],
-			'logs'    => $logs,
 		));
 	}
 

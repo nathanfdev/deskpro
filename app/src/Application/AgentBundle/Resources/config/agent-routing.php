@@ -425,13 +425,6 @@ $collection->add('agent_people_view_basicjson', new Route(
 	array()
 ));
 
-$collection->add('agent_people_viewtip', new Route(
-	'/person/{person_id}/tip',
-	array('_controller' => 'AgentBundle:Person:viewTip'),
-	array('person_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_people_viewsession', new Route(
 	'/people/session/{session_id}',
 	array('_controller' => 'AgentBundle:Person:viewSession'),
@@ -1121,13 +1114,6 @@ $collection->add('agent_ticket_changeuser', new Route(
 	array()
 ));
 
-$collection->add('agent_ticket_viewtip', new Route(
-	'/tickets/{ticket_id}/tip',
-	array('_controller' => 'AgentBundle:Ticket:viewTip'),
-	array('ticket_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticket_ajaxsavecustomfields', new Route(
 	'/tickets/{ticket_id}/ajax-save-custom-fields',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveCustomFields'),
@@ -1226,58 +1212,9 @@ $collection->add('agent_ticket_ajax_save_actions', new Route(
 	array()
 ));
 
-$collection->add('agent_ticket_message_details', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}',
-	array('_controller' => 'AgentBundle:Ticket:viewMessageDetails'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_message_raw', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/view-raw',
-	array('_controller' => 'AgentBundle:Ticket:viewRawMessage'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticket_message_window', new Route(
 	'/tickets/{ticket_id}/message-details/{message_id}/window/{type}',
 	array('_controller' => 'AgentBundle:Ticket:viewMessageWindow', 'type' => 'normal'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_message_emailsource', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/email-source',
-	array('_controller' => 'AgentBundle:Ticket:viewEmailSource'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_message_emaildecoded', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/email-decoded',
-	array('_controller' => 'AgentBundle:Ticket:viewDecodedEmail'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_message_emaillog', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/email-log',
-	array('_controller' => 'AgentBundle:Ticket:viewEmailLog'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_message_changetrackerlog', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/changetracker-log',
-	array('_controller' => 'AgentBundle:Ticket:viewChangeTrackerLog'),
-	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_ticket_message_unformatted', new Route(
-	'/tickets/{ticket_id}/message-details/{message_id}/unformatted',
-	array('_controller' => 'AgentBundle:Ticket:viewUnformattedMessage'),
 	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 	array()
 ));

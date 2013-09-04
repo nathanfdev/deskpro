@@ -23,7 +23,7 @@
 		<li {% if not data[0] %}style="display:none"{% endif %}>
 			<div class="item is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-agent-0" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'agent', 'group_value': 0}) }}">
 				<h3>
-					{{ phrase('agnet.general.none') }}
+					{{ phrase('agent.general.none') }}
 				</h3>
 				<div class="float-side">
 					<em class="counter list-counter">{{ data[0]|default(0) }}</em>
@@ -48,7 +48,7 @@
 		<li {% if not data[0] %}style="display:none"{% endif %}>
 			<div class="item is-nav-item twitter-sub-group-{{ account.id }}-{{ section_type }}-team-0" data-route="listpane:{{ path(route, {'account_id': account.id, 'group': 'team', 'group_value': 0}) }}">
 				<h3>
-					{{ phrase('agnet.general.none') }}
+					{{ phrase('agent.general.none') }}
 				</h3>
 				<div class="float-side">
 					<em class="counter list-counter">{{ data[0]|default(0) }}</em>

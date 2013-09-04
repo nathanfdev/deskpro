@@ -26,7 +26,7 @@
 {% endmacro %}
 <div class="extended-merge split-overlay overlay">
 	<div class="overlay-title">
-		<h4>{% if message %}Split Message to New Ticket{% else %}Split Messages to New Ticket{% endif %}</h4>
+		<h4>{{ phrase('agent.tickets.split_messages_into_ticket') }}</h4>
 	</div>
 
 	<div class="overlay-content">
@@ -34,7 +34,7 @@
 
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>New Ticket Subject</label>
+					<label>{{ phrase('agent.tickets.new_ticket_subject') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="text" name="subject" value="" />
@@ -53,7 +53,7 @@
 			</div>
 
 			<div style="text-align: center">
-				<span class="is-not-loading"><button type="submit" class="clean-white">{% if message %}Split Message{% else %}Split Selected Messages{% endif %}</button></span>
+				<span class="is-not-loading"><button type="submit" class="clean-white">{% if message %}{{ phrase('agent.tickets.split_message_btn') }}{% else %}{{ phrase('agent.tickets.split_selected_messages_btn') }}{% endif %}</button></span>
 				<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
 			</div>
 		</form>

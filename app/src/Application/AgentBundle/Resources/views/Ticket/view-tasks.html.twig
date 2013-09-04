@@ -12,17 +12,17 @@
 			<div class="task-info">
 				<ul>
 					<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
-					<li class="noval opt-trigger visibility"><label>Public</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger visibility"><label>{{ phrase('agent.general.public') }}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
 						<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>
 						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
-							<optgroup label="Agents">
+							<optgroup label="{{ phrase('agent.general.agents') }}">
 								{% for agent in app.agents.getAgents() %}
 									<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</optgroup>
 							{% if app.agent_teams.getTeams()|length %}
-								<optgroup label="Teams">
+								<optgroup label="{{ phrase('agent.general.teams') }}">
 									{% for team in app.agent_teams.getTeams() %}
 										<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
 									{% endfor %}

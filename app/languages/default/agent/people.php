@@ -68,6 +68,7 @@
 	'agent.people.user_not_autoresponder'           => 'User is not an auto-repsonder',
 	'agent.people.user_will_be_perm_deleted'        => 'The user will be permanantly deleted.',
 	'agent.people.user_will_be_perm_deleted_banned' => 'The user will be permanantly deleted and their email address banned.',
+	'agent.people.view_profile'                     => 'View Profile',
 	'agent.people.warn_email_address'               => 'The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information.',
 	'agent.people.website'                          => 'Website',
 	'agent.people.website_url_placeholder'          => 'Website URL',

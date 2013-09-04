@@ -17,7 +17,7 @@
 			<div class="message-header-extra-controls">
 				<div class="message-translate-controls">
 					<div class="translate-controls-off">
-						<span>Translation</span>
+						<span>{{ phrase('agent.general.translation') }}</span>
 						<i class="icon-globe"></i>
 					</div>
 					<div class="translate-controls-on">
@@ -27,14 +27,17 @@
 							</div>
 							<div class="dp-btn-group dp-dropdown dp-not-loading">
 								<a class="dp-btn trans-trigger">
-									Translate from
-									<span class="translate-from-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
-										{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
-									</span>
-									to
-									<span class="translate-to-lang" data-locale="{{ app.user.language.locale }}">
-										{{ phrase_object(app.user.language) }}
-									</span>
+									{% set phrase_part1 %}
+										<span class="translate-from-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
+											{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
+										</span>
+									{% endset %}
+									{% set phrase_part2 %}
+										<span class="translate-to-lang" data-locale="{{ app.user.language.locale }}">
+											{{ phrase_object(app.user.language) }}
+										</span>
+									{% endset %}
+									{{ phrase('agent.general.translate_from_x_to_y', {x: phrase_part1, y: phrase_part2}, true) }}
 								</a>
 								<a class="dp-btn dp-dropdown-toggle">
 									<span class="dp-caret dp-caret-down"></span>
@@ -77,30 +80,30 @@
 			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>
-						<th>Date Created:</th>
+						<th>{{ phrase('agent.general.date_created') }}:</th>
 						<td>{{ message.date_created|date('fulltime') }}</td>
 					</tr>
 					<tr>
-						<th>Via:</th>
+						<th>{{ phrase('agent.general.via') }}:</th>
 						<td>
 							{% if message.creation_system == 'web.agent.portal' %}
-								Agent Interface
+								{{ phrase('agent.general.agent_interface') }}
 							{% elseif message.creation_system == 'web.person.portal' %}
-								User Portal
+								{{ phrase('agent.general.user_interface') }}
 							{% elseif message.creation_system == 'web.person.widget' %}
-								Website Widget
+								{{ phrase('agent.general.website_widget') }}
 							{% elseif message.creation_system == 'web.person.embed' %}
-								Website Embed
+								{{ phrase('agent.general.website_embed') }}
 							{% elseif message.creation_system == 'gateway.person' %}
-								Email
+								{{ phrase('agent.general.email') }}
 							{% elseif message.creation_system == 'gateway.agent' %}
-								Email (by agent)
+								{{ phrase('agent.general.email') }} ({{ phrase('agent.general.agent') }})
 							{% elseif message.creation_system == 'web.api' %}
-								API
+								{{ phrase('agent.tickets.api') }}
 							{% elseif message.creation_system == 'web.api.mobile.agent' %}
-								Mobile (by agent)
+								{{ phrase('agent.general.mobile') }} ({{ phrase('agent.general.agent') }})
 							{% elseif message.creation_system == 'web.api.mobile.person' %}
-								Mobile (by user)
+								{{ phrase('agent.general.mobile') }}
 							{% else %}
 								{{ message.creation_system }}
 							{% endif %}
@@ -108,7 +111,7 @@
 					</tr>
 					{% if message.email %}
 						<tr>
-							<th>From Email Address:</th>
+							<th>{{ phrase('agent.general.from') }}:</th>
 							<td>
 								{{ message.email }}
 							</td>
@@ -116,9 +119,9 @@
 					{% endif %}
 					{% if message.ip_address %}
 						<tr>
-							<th>IP Address:</th>
+							<th>{{ phrase('agent.general.ip_address') }}:</th>
 							<td>
-								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="icon-search" title="Find other tickets submitted from this IP address"></i></a>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="icon-search" title="{{ phrase('agent.tickets.find_other_ip_addy') }}"></i></a>
 								{{ message.ip_address }}
 								{% if message.getGeoCountry() %}
 									<span class="dp-flag-{{ message.getGeoCountry()|lower }}"></span>
@@ -136,18 +139,18 @@
 			</div>
 			<div class="body-message-translate-original">
 				<div class="body-message-translate-original-caption">
-					Original Message
+					{{ phrase('agent.tickets.original_message') }}
 				</div>
 				<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
 					{% if message.getMessageLength() > 1100000 %}
 						{{message.getMessageHtmlClipped(1100000)|raw }}
 						<br/><br/><br/>
 						<div style="text-align: center;">
-							This message has been clipped because it is very long. <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">View the entire message in a new window &rarr;</a>
+							{{ phrase('agent.tickets.long_message_clipped') }} <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">{{ phrase('agent.tickets.view_entire_in_new_win') }} &rarr;</a>
 						</div>
 					{% else %}
 						{{message.message_html|safe_link_urls_html }}
-						{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
+						{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="{{ phrase('agent.tickets.view_full_quoted_message') }}">&bull; &bull; &bull;</em></div>{% endif %}
 					{% endif %}
 				</div>
 				{% if message.message_full %}
@@ -160,7 +163,7 @@
 					<em>
 						<strong>
 							<i></i>
-							View Full Message
+							{{ phrase('agent.tickets.view_full_message') }}
 							<i class="last"></i>
 						</strong>
 					</em>

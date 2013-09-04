@@ -1915,16 +1915,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		switch (optionId) {
-			case 'view-details':
-				var overlay = new DeskPRO.UI.Overlay({
-					contentMethod: 'iframe',
-					title: 'Message Details',
-					iframeUrl: this.getMetaData('viewMessageUnformattedUrl').replace('{message_id}', messageId) + '?_rt=' + DP_REQUEST_TOKEN,
-					destroyOnClose: true
-				});
-				overlay.openOverlay();
-				break;
-
 			case 'quote':
 				var quote = $('textarea.message-quote-' + messageId, this.wrapper).val();
 				if (!quote) {

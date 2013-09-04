@@ -27,10 +27,10 @@
 <div class="dp-menu replybox" id="{{ replyBaseId }}_status_menu" style="min-width: 225px;">
 	<section>
 		<div class="dp-menu-area small">
-			<input type="text" class="label-input macro-filter" placeholder="Reply and set a macro..." />
+			<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
 			<ul class="macro-list">
 				{% for macro in app.user.getHelper('Agent').getMacros() %}
-					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" id="{{replyBaseId}}_res_ticketmacro_{{ macro.id }}" data-macro-title="{{ macro.title }}" data-macro-id="{{ macro.id }}" data-label="Send Reply and apply {{ macro.title }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
+					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" id="{{replyBaseId}}_res_ticketmacro_{{ macro.id }}" data-macro-title="{{ macro.title }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_reply_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
 						<div class="on-icon"><i class="icon-ok"></i></div>
 						<span class="macro-title">{{ macro.title }}</span>
 					</li>
@@ -40,20 +40,20 @@
 	</section>
 	<section>
 		<div class="dp-menu-area dp-menu-area-primary">
-			<label>Reply and set a status</label>
+			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
 				<li data-type="awaiting_user" data-label="Send Reply as Awaiting User">
 					<div class="on-icon"><i class="icon-ok"></i></div>
-					Awaiting <span class="show-key-shortcut">U</span>ser
+					{{ phrase('agent.tickets.kbd_awaiting_user') }}
 				</li>
 				<li data-type="awaiting_agent" data-label="Send Reply as Awaiting Agent">
 					<div class="on-icon"><i class="icon-ok"></i></div>
-					Awaiting <span class="show-key-shortcut">A</span>gent
+					{{ phrase('agent.tickets.kbd_awaiting_agent') }}
 				</li>
 				{% if ticket_perms.modify_set_resolved %}
 					<li data-type="resolved" data-label="Send Reply as Resolved">
 						<div class="on-icon"><i class="icon-ok"></i></div>
-						Resolve<span class="show-key-shortcut">d</span>
+						{{ phrase('agent.tickets.kbd_resolved') }}
 					</li>
 				{% endif %}
 			</ul>
@@ -65,11 +65,11 @@
 	<div class="drop-file-zone drop-file-zone-file" id="{{ replyBaseId }}_file_drop_zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 	<div class="ticket-errors-overlay">
 		<strong>
-			There are errors with the ticket fields that you must correct before replying.
+			{{ phrase('agent.tickets.error_reply_badfields') }}
 		</strong>
 	</div>
 	<div class="ticket-sending-overlay" style="display: none;">
-		<strong><span class="hide-note">Sending your message</span><span class="hide-reply" style="display: none">Adding your note</span></strong>
+		<strong><span class="hide-note">{{ phrase('agent.tickets.sending_your_message') }}</span><span class="hide-reply" style="display: none">{{ phrase('agent.tickets.adding_your_note') }}</span></strong>
 	</div>
 	<header>
 		{% if app.isPluginInstalled('MicrosoftTranslator') %}
@@ -78,7 +78,7 @@
 					<div class="dp-btn-group dp-dropdown">
 						<a class="dp-btn dp-btn-primary trans-trigger">
 							<i class="icon-globe"></i>&nbsp;
-							Translate message into
+							{{ phrase('agent.tickets.translate_into') }}
 							<span class="translate-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
 								{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
 							</span>
@@ -174,9 +174,9 @@
 						{% endif %}
 						{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_reply') %}
 							<li id="{{replyBaseId}}_billing_reply" class="hide-note">
-								<label>Charge:</label>
+								<label>{{ phrase('agent.tickets.charge') }}:</label>
 								<div>
-									<label><input type="checkbox" name="charge_time" value="0" checked="checked" /> Charge time: <span id="{{replyBaseId}}_billing_reply_time"></span></label>
+									<label><input type="checkbox" name="charge_time" value="0" checked="checked" /> {{ phrase('agent.tickets.charge_time') }}: <span id="{{replyBaseId}}_billing_reply_time"></span></label>
 								</div>
 							</li>
 						{% endif %}
@@ -196,7 +196,7 @@
 							</div>
 						</li>
 						<li id="{{replyBaseId}}_actions_row" class="actions-row" style="display: none;">
-							<label><span>Actions</span></label>
+							<label><span>{{ phrase('agent.general.actions') }}</span></label>
 							<ul></ul>
 							<br class="clear"/>
 						</li>
@@ -234,13 +234,13 @@
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
 							{% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' or (ticket.status == 'awaiting_user' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting User</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
 							{% elseif app.getSetting('core_tickets.reply_status') == 'awaiting_agent' or (ticket.status == 'awaiting_agent' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_agent">Send <span class="show-key-shortcut">R</span>eply as Awaiting Agent</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.kbd_send_awaiting_agent') }}</span>
 							{% elseif app.getSetting('core_tickets.reply_status') == 'resolved' or (ticket.status == 'resolved' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="resolved">Send <span class="show-key-shortcut">R</span>eply as Resolved</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_resolved') }}</span>
 							{% else %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">Send <span class="show-key-shortcut">R</span>eply as Awaiting User</span>
+								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
 							{% endif %}
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
@@ -249,7 +249,7 @@
 				<div class="hide-reply" style="display: none">
 					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
 						<i class="icon-share"></i>&nbsp;
-						Add Note
+						{{ phrase('agent.tickets.add_note') }}
 					</a>
 				</div>
 			</td><td valign="middle" style="vertical-align: middle;">
@@ -307,14 +307,14 @@
 				<div class="cell">
 					<div class="inner-cell" style="padding-left: 11px;">
 						<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
-						<label for="{{ replyBaseId }}_close_tab_opt">Close Tab <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Close this tab after your message is saved"></span></label>
+						<label for="{{ replyBaseId }}_close_tab_opt">{{ phrase('agent.general.close_tab') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.close_tab_tip') }}"></span></label>
 					</div>
 				</div>
 
 				<div class="cell hide-note">
 					<div class="inner-cell" style="padding-left: 11px;">
 						<input type="checkbox" id="{{ replyBaseId }}_email_user" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
-						<label for="{{ replyBaseId }}_email_user">Email User <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Send the user an email notification of this reply"></span></label>
+						<label for="{{ replyBaseId }}_email_user">{{ phrase('agent.general.email_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_tip') }}"></span></label>
 					</div>
 				</div>
 			</td>

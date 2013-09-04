@@ -27,10 +27,10 @@
 				>
 					<div class="info">
 						{% if log.sla %}
-							<span class="sla">SLA {{ log.sla.title }}{% if log.sla_status == 'warning' %} (Warning){% elseif log.sla_status == 'fail' %} (Failed){% endif %}</span>,
+							<span class="sla">{{ phrase('agent.general.sla') }} {{ log.sla.title }}{% if log.sla_status == 'warning' %} (Warning){% elseif log.sla_status == 'fail' %} (Failed){% endif %}</span>,
 						{% elseif log.trigger_id %}
 							{% if log.details.trigger_is_escalation %}
-								<span class="trigger-id">Escalation {{ log.trigger_id }}</span>,
+								<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ log.trigger_id }}</span>,
 							{% else %}
 								<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: log.trigger_id}) }}</span>,
 							{% endif %}
@@ -53,10 +53,10 @@
 						>
 							<div class="info">
 								{% if sublog.sla %}
-									<span class="sla">SLA {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} (Warning){% elseif sublog.sla_status == 'fail' %} (Failed){% endif %}</span>,
+									<span class="sla">{{ phrase('agent.general.sla') }} {{ sublog.sla.title }}{% if sublog.sla_status == 'warning' %} (Warning){% elseif sublog.sla_status == 'fail' %} (Failed){% endif %}</span>,
 								{% elseif sublog.trigger_id %}
 									{% if sublog.details.trigger_is_escalation %}
-										<span class="trigger-id">Escalation {{ sublog.trigger_id }}</span>,
+										<span class="trigger-id">{{ phrase('agent.general.escalation') }} {{ sublog.trigger_id }}</span>,
 									{% else %}
 										<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: sublog.trigger_id}) }}</span>,
 									{% endif %}
@@ -78,7 +78,7 @@
 		{% if cur_page < num_pages %}
 			<div class="message-page-next trigger-next-page">
 				<div class="dp-is-loading"><i class="spinner-flat"></i></div>
-				<div class="dp-not-loading"><strong>View More</strong></div>
+				<div class="dp-not-loading"><strong>{{ phrase('agent.general.view_more') }}</strong></div>
 			</div>
 		{% endif %}
 	</div>

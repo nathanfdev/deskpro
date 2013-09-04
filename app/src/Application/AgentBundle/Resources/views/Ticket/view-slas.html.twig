@@ -1,11 +1,11 @@
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table" {% if ticket.ticket_slas is empty %}style="display:none"{% endif %}>
 <thead>
-	<th width="28%" style="padding-left: 25px">SLA</th>
-	<th width="36%">Warn Date</th>
-	<th width="36%">Fail Date</th>
+	<th width="28%" style="padding-left: 25px">{{ phrase('agent.general.sla') }}</th>
+	<th width="36%">{{ phrase('agent.tickets.sla_warn_date') }}</th>
+	<th width="36%">{{ phrase('agent.tickets.sla_fail_date') }}</th>
 	<th style="min-width: 20px">&nbsp;</th>
 </thead>
-<tbody id="{{ baseId }}_sla_rows" data-delete-confirm="Are you sure you want to remove this SLA?">
+<tbody id="{{ baseId }}_sla_rows" data-delete-confirm="{{ phrase('agent.tickets.sla_remove_confirm') }}">
 {% for ticket_sla in ticket.ticket_slas %}
 	{% include 'AgentBundle:Ticket:view-sla-row.html.twig' %}
 {% endfor %}
