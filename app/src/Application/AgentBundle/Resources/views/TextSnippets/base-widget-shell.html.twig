@@ -15,7 +15,7 @@
 			<ul id="%baseId%_catlist">
 				<li class="category category-0" data-category="0">
 					<a>
-						<span class="label">All Snippets</span>
+						<span class="label">{{ phrase('agent.snippets.all_snippets') }}</span>
 					</a>
 				</li>
 				{% for category in snippet_cats %}
@@ -35,7 +35,7 @@
 	<div class="snippet-sections-wrap">
 		<div class="snippet-filter-options">
 			<div style="float: right; margin: 3px 4px 0 0;">
-				<button class="dp-btn dp-btn-small trigger-new-snippet">Add Snippet</button>
+				<button class="dp-btn dp-btn-small trigger-new-snippet">{{ phrase('agent.snippets.add_snippet') }}</button>
 			</div>
 			<input type="text" id="%baseId%_filter" placeholder="Filter" />
 			{% if app.languages.getAll()|length > 1 %}
@@ -62,7 +62,7 @@
 	<div id="%baseId%_edit_snippet" class="snippet-editor-overlay" style="width: 720px; height: 420px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4 class="is-edit-snippet">Edit Snippet</h4>
+			<h4 class="is-edit-snippet">{{ phrase('agent.snippets.edit_snippet') }}</h4>
 		</div>
 		<div class="overlay-content">
 
@@ -72,14 +72,14 @@
 			{% endfor %}
 
 			<div style="padding-bottom: 4px; vertical-align: middle;">
-				Category: <select name="category_id" class="category_id" id="%baseId%_editsnippet_category_select">
+				{{ phrase('agent.general.category') }}: <select name="category_id" class="category_id" id="%baseId%_editsnippet_category_select">
 					{% for category in snippet_cats %}
 						<option value="{{ category.id }}">{{ category.title }}</option>
 					{% endfor %}
 				</select>
 
 				<div style="{% if app.languages.getAll()|length == 1 %}display: none;{% else %}display: inline;{% endif %}">
-					Language: <select name="language_id" class="language_id" id="%baseId%_editsnippet_category_select">
+					{{ phrase('agent.general.language') }}: <select name="language_id" class="language_id" id="%baseId%_editsnippet_category_select">
 						{% for lang in app.languages.getAll() %}
 							<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
 						{% endfor %}
@@ -95,8 +95,8 @@
 			</div>
 			<div style="float:left; font-size: 11px;">
 				{% block edit_snippet_bottomleft %}
-					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Type this code into the ticket reply box and the snippet will be inserted automatically. For example, with shortcut code of 'standard-response' you simply type in '%standard-response%' to insert the snippet without opening the snippet manager."></span>
-					Shortcut code: <span class="snippet-code-wrap">%<input type="text" name="shortcut_code" class="shortcut_code" value="" placeholder="Enter a shortcut" />%</span>
+					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.snippets.shortcut_code_info') }}"></span>
+					{{ phrase('agent.snippets.shortcut_code') }}: <span class="snippet-code-wrap">%<input type="text" name="shortcut_code" class="shortcut_code" value="" placeholder="Enter a shortcut" />%</span>
 				{% endblock %}
 			</div>
 			<div style="float:right; text-align: right; font-size:  11px;">
@@ -107,7 +107,7 @@
 			<div class="is-not-loading">
 				<button class="clean-white small save-snippet-trigger is-edit-snippet">{{ phrase('agent.general.save') }}</button>
 				<span class="delete-link-wrap">
-					or
+					&mdash;
 					<span class="faux-link delete-snippet-trigger">{{ phrase('agent.general.delete') }}</span>
 				</span>
 			</div>
@@ -122,25 +122,25 @@
 			<section>
 				<header>
 					<span class="trigger-close"><i class="icon-remove"></i></span>
-					<strong>Snippet Category</strong>
+					<strong>{{ phrase('agent.general.category') }}</strong>
 				</header>
 				<article>
 					<p class="no-cats-notice" style="display: none; font-size: 115%; text-align: center; padding-bottom: 9px;">
-						Before you start creating snippets,<br/>you need to create your first category.
+						{{ phrase('agent.snippets.must_create_cat') }}
 					</p>
 
 					<input type="text" name="title" class="input_title" value="" placeholder="Category Title" />
 					<input type="hidden" name="id" class="input_id" value="" />
 
-					Category can be used by
+					{{ phrase('agent.snippets.cat_can_be_used_by') }}
 					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.general.just_me') }}</label>
 					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.usergroup_everyone') }}</label>
 				</article>
 				<footer>
 					<div class="dp-not-loading">
-						<button class="dp-btn dp-btn-small trigger-save">Save</button>
+						<button class="dp-btn dp-btn-small trigger-save">{{ phrase('agent.general.save') }}</button>
 						<span class="delete-link-wrap">
-							or
+							&mdash;
 							<span class="faux-link delete-cat-trigger">{{ phrase('agent.general.delete') }}</span>
 						</span>
 					</div>
