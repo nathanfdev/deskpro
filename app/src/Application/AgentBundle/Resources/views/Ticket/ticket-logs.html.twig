@@ -12,7 +12,7 @@
 			{% if counts.slas %}<li class="trigger-update-filter {% if filter == 'slas' %}on{% endif %}" data-typename="slas"><em>{{ phrase('agent.general.slas') }} ({{ counts.slas|default('0') }})</em></li>{% endif %}
 			{% if counts.triggers %}<li class="trigger-update-filter {% if filter == 'triggers' %}on{% endif %}" data-typename="triggers"><em>{{ phrase('agent.tickets.triggers') }} ({{ counts.triggers|default('0') }})</em></li>{% endif %}
 			{% if counts.status %}<li class="trigger-update-filter {% if filter == 'status' %}on{% endif %}" data-typename="status"><em>{{ phrase('agent.general.status') }} ({{ counts.status|default('0') }})</em></li>{% endif %}
-			{% if counts.other %}<li class="trigger-update-filter {% if filter == 'other' %}on{% endif %}" data-typename="other"><em>{{ phrase('agenet.general.other') }} ({{ counts.other|default('0') }})</em></li>{% endif %}
+			{% if counts.other %}<li class="trigger-update-filter {% if filter == 'other' %}on{% endif %}" data-typename="other"><em>{{ phrase('agent.general.other') }} ({{ counts.other|default('0') }})</em></li>{% endif %}
 		</ul>
 	</nav>
 	<div class="logs-page" style="padding: 6px;">

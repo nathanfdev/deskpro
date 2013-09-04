@@ -2,14 +2,14 @@
 {{ phrase('agent.emails.detected_as_forward') }}
 
 {% if error == 'invalid_fwd_email' %}
-	{{ phrase('agent.emails.invalid_fwd_email') }}
+	{{ phrase('agent.emails.invalid_fwd_email_address') }}
 {% else %}
 	{{ phrase('agent.emails.invalid_fwd_email_parse') }}
 {% endif %}
 
 <br /><br />
 
-{{ phrase('agent.emails.fwd_discarded') }}
+{{ phrase('agent.emails.fwd_not_processed') }}
 
 <br /><br />
 

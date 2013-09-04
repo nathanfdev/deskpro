@@ -2,7 +2,7 @@
 	<form action="{{ path('agent_settings_profile_savewelcome') }}" method="post">
 		<article>
 			{% if not is_first_login_name and app.user.name %}
-				<p>{{ phrase('agent.settings.welcome_name', {name: app.user.name}) }}</p>
+				<p>{{ phrase('agent.settings.welcome_to_deskpro_name', {name: app.user.name}) }}</p>
 				<p>
 					{{ phrase('agent.settings.first_login_set_pic') }}
 				</p>

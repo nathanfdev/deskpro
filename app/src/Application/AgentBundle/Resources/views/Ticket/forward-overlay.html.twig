@@ -7,11 +7,11 @@
 		<form action="{{ path('agent_ticket_fwd_send', {ticket_id: ticket.id, message_id: message.id}) }}" method="post">
 			<div class="forward-wrapper">
 				<div class="header-line">
-					<div class="label">{{ phrase('agent.tickets.to') }}:</div>
+					<div class="label">{{ phrase('agent.general.to') }}:</div>
 					<div class="input"><input type="text" name="to" value="" placeholder="{{ phrase('agent.general.email_address') }}" /></div>
 				</div>
 				<div class="header-line last">
-					<div class="label">{{ phrase('agent.tickets.subject') }}:</div>
+					<div class="label">{{ phrase('agent.general.subject') }}:</div>
 					<div class="input"><input type="text" name="subject" placeholder="{{ phrase('agent.general.subject') }}" value="FW: {{ ticket.subject }}" /></div>
 				</div>
 				<div class="message-area">
