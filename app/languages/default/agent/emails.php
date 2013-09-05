@@ -22,6 +22,7 @@
 	'agent.emails.fwd_resend_without_fwd'               => 'If you did NOT want to create a new ticket on behalf of a user, you can re-send the email without the \'FW:\' or \'FWD:\' prefix in the subject line. This will create a new ticket from you instead.',
 	'agent.emails.invalid_fwd_email_address'            => 'However, we were <b>unable to verify the email address</b> of the user in the original	message. You should check that your email client added the email address to the message. Some clients may only show the name, in which case you can correct this error by manually adding the email address.',
 	'agent.emails.invalid_fwd_email_parse'              => 'However, we were <b>unable to parse the original message</b> so were unable to process the forward into a new ticket.',
+	'agent.emails.invalid_fwd_try_attach'               => 'If your email client supports forwarding the original email as an attachment instead, you can try that instead of forwarding the message in-line. This method of forwarding tickets works better with DeskPRO.',
 	'agent.emails.login_url'                            => 'Login URL',
 	'agent.emails.new_agent_reply_ticket_subject'       => '[#{{ticket.id}} AGENT REPLY] Re: {{ticket.subject}}',
 	'agent.emails.new_chat_message_from'                => 'New chat message from {{name}}',
