@@ -288,7 +288,6 @@ class Generic implements ForwardDef, QuoteDef
 		if ($pos === false) {
 			$pos = strpos($body, 'DP_TOP_MARK_USER');
 			if ($pos === false) {
-
 				// Try to detect '=== REPLY ABOVE THIS LINE ===' bits
 				if (!$is_html) {
 					$langs = App::getDataService('Language')->getAll();
@@ -308,7 +307,7 @@ class Generic implements ForwardDef, QuoteDef
 			}
 		}
 
-		$body = substr($body, 0, $pos);
+		$body = trim(substr($body, 0, $pos));
 
 		// We also want to cut from is the < character, so we dont
 		// cut mid-way into an html tag
@@ -317,6 +316,8 @@ class Generic implements ForwardDef, QuoteDef
 			if ($pos) {
 				$body = substr($body, 0, $pos);
 			}
+		} else {
+			$body = rtrim($body, '> ');
 		}
 
 		// Cut off "===" that would preceded the cut marker
