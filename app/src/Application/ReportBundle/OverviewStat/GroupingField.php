@@ -197,8 +197,8 @@ class GroupingField
 						'select' => 'COALESCE(custom_def_ticket.title, 0) AS group_field',
 						'group_by' => 'group_field',
 						'join' => "
-							LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN('.$ids.'))
-							LEFT JOIN custom_def_person ON (custom_def_person.id = custom_data_person.field_id)
+							LEFT JOIN custom_def_people ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN('.$ids.'))
+							LEFT JOIN custom_def_people ON (custom_def_people.id = custom_data_person.field_id)
 						",
 						'where' => ''
 					);

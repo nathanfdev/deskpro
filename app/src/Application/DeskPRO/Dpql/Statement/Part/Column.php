@@ -384,7 +384,7 @@ class Column extends AbstractPart
 				$custom_def_table = str_replace('_data_', '_def_', $assocTable);
 				switch ($custom_def_table) {
 					case 'custom_def_ticket': $manager = App::getContainer()->getSystemService('TicketFieldsManager'); break;
-					case 'custom_def_person': $manager = App::getContainer()->getSystemService('PersonFieldsManager'); break;
+					case 'custom_def_people': $manager = App::getContainer()->getSystemService('PersonFieldsManager'); break;
 					case 'custom_def_organizations': $manager = App::getContainer()->getSystemService('OrgFieldsManager'); break;
 					default: $manager = null; break;
 				}
