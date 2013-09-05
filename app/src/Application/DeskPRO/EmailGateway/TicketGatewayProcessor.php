@@ -305,7 +305,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$rc->setLogger($this->logger);
 				$this->reply_actions = $rc->getProperties();
 				if ($this->reply_actions) {
-					$this->email_body_html = $rc->getNewBody();
+					$this->email_body_text = $rc->getNewBody();
 				}
 			}
 		}
