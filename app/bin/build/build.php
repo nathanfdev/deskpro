@@ -283,7 +283,7 @@ echo "build-checkphrases-vars ... ";
 if ($quick) {
 	echo "SKIPPED (--quick)";
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases-vars', DP_ROOT.'/bin/build');
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases-vars.php', DP_ROOT.'/bin/build');
 	$proc->setTimeout(600);
 	$proc->run($output_realtime);
 
