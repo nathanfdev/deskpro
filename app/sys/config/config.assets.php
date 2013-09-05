@@ -358,7 +358,6 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Form/InlineEdit.js',
 		'javascripts/DeskPRO/Form/RuleBuilder.js',
 		'javascripts/DeskPRO/FaviconBadge.js',
-		'javascripts/DeskPRO/Agent/MediaBrowser.js',
 		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
 
 		'javascripts/DeskPRO/Agent/Widget/FindPerson.js',

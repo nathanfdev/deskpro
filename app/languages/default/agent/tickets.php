@@ -319,6 +319,7 @@
 	'agent.tickets.ticket_merged'                       => 'Ticket merged',
 	'agent.tickets.ticket_put_on_hold'                  => 'Ticket put on hold',
 	'agent.tickets.ticket_removed_from_hold'            => 'Ticket removed from hold',
+	'agent.tickets.ticket_replying'                     => 'Ticket Replying',
 	'agent.tickets.ticket_split'                        => 'Ticket split',
 	'agent.tickets.ticket_split_from'                   => 'Ticket split from',
 	'agent.tickets.ticket_split_to'                     => 'Ticket split to',

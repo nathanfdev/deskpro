@@ -2249,34 +2249,6 @@ $collection->add('agent_downloads_comparerevs', new Route(
 	array()
 ));
 
-$collection->add('agent_mediabrowser_acceptupload', new Route(
-	'/media-browser/accept-upload',
-	array('_controller' => 'AgentBundle:MediaBrowser:acceptUpload'),
-	array(),
-	array()
-));
-
-$collection->add('agent_mediabrowser_updateblob', new Route(
-	'/media-browser/update-blob/{blob_id}',
-	array('_controller' => 'AgentBundle:MediaBrowser:updateBlob'),
-	array(),
-	array()
-));
-
-$collection->add('agent_mediabrowser_imageeditor', new Route(
-	'/media-browser/image-editor/{blob_id}',
-	array('_controller' => 'AgentBundle:MediaBrowser:imageEditor'),
-	array(),
-	array()
-));
-
-$collection->add('agent_mediabrowser_imageeditor_save', new Route(
-	'/media-browser/save-image-editor/{blob_id}',
-	array('_controller' => 'AgentBundle:MediaBrowser:saveImageEditor'),
-	array(),
-	array()
-));
-
 $collection->add('agent_feedback_category', new Route(
 	'/feedback/category/{category_id}',
 	array('_controller' => 'AgentBundle:Feedback:categoryList'),

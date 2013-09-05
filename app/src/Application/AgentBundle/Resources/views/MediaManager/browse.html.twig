@@ -15,7 +15,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.MediaManagerPage.Browse';
 			data-is-image="{% if blob.is_image %}1{% else %}0{% endif %}"
 			data-file-name="{{ blob.filename }}"
 			data-blob-id="{{ blob.id }}"
-		>Insert Into Article</button>
+		>{{ phrase('agent.general.insert_into_article') }}</button>
 		<button class="clean-white" onclick="prompt('', '{{ blob.download_url }}')">Copy URL</button>
 		{% if blob.isImage() %}
 			<br style="clear: both; height: 1px; overflow: hiden;" />
@@ -23,7 +23,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.MediaManagerPage.Browse';
 	</div>
 {% else %}
 	<p>
-		There have not been any uploads yet.
+		{{ phrase('agent.publish.no_uploads_yet') }}
 	</p>
 {% endfor %}
 </div>
