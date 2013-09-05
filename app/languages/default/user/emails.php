@@ -29,19 +29,15 @@
 	'user.emails.profile_email-new-confirm'   => 'To finish adding this secondary email address to your account, simply click on the following validation link',
 	'user.emails.profile_email_link-validate' => 'Simply click on the following link to validate to your email address',
 	'user.emails.register-agent-validation'   => 'Note: Before your account is fully active, our agents must manually validate your account. Tickets and other content you submit will be held in a validation queue until an agent validates your accounts.',
-	'user.emails.register-confirm'            => 'Thank you for registering an account.
-Before you will be able to use your account, you must click on the following link to validate your email address',
+	'user.emails.register-confirm'            => 'Thank you for registering an account.<br/><br/>Before you will be able to use your account, you must click on the following link to validate your email address',
 	'user.emails.register-welcome'            => 'Thank you for registering. You can now log in using your email address {{to_email}} on our helpdesk:',
-	'user.emails.registration_closed'         => 'Dear {{name}},
-
-New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.',
+	'user.emails.registration_closed'         => 'Dear {{name}},<br/><br/>New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.',
 	'user.emails.reject_resolved'             => 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.',
 	'user.emails.reject_resolved-new'         => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a> or you can submit our online form at:<br/><a href="{{link}}">{{link}}</a>',
 	'user.emails.reject_resolved-newemail'    => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a>',
 	'user.emails.ticket_access_ticket_online' => 'View and manage this ticket online:',
 	'user.emails.ticket_cc-new'               => 'You have been included in a ticket started by {{name}}.',
-	'user.emails.ticket_flood'                => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession that were most likely automated.
-To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.',
+	'user.emails.ticket_flood'                => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession that were most likely automated.<br/><br/>To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.',
 	'user.emails.ticket_message_title'        => 'On {{date}} at {{time}}, {{author}} wrote:',
 	'user.emails.ticket_no-autoresponse'      => 'Warning: Confirmation emails turned off',
 	'user.emails.ticket_rate-negative'        => 'No',
@@ -50,8 +46,7 @@ To protect against an auto-responder loop our helpdesk will not send any more au
 	'user.emails.ticket_rate-question'        => 'Was this message helpful?',
 	'user.emails.ticket_received'             => 'Your ticket has been received. One of our agents will reply to you shortly.',
 	'user.emails.ticket_reply-confirm'        => 'Thank you for your reply. One of our agents will reply to you shortly.',
-	'user.emails.ticket_validate'             => 'Thank you for contacting us.
-Before our agents will read and reply to your message, you must validate your email address.',
+	'user.emails.ticket_validate'             => 'Thank you for contacting us.<br/><br/>Before our agents will read and reply to your message, you must validate your email address.',
 	'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
 	'user.emails.view_full_history_online'    => 'View full ticket online',
 );
