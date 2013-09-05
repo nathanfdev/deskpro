@@ -46,16 +46,16 @@
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
-				<li data-type="awaiting_user" data-label="Send Reply as Awaiting User">
+				<li data-type="awaiting_user" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}">
 					<div class="on-icon"><i class="icon-ok"></i></div>
 					{{ phrase('agent.tickets.kbd_awaiting_user') }}
 				</li>
-				<li data-type="awaiting_agent" data-label="Send Reply as Awaiting Agent">
+				<li data-type="awaiting_agent" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_agent')}) }}">
 					<div class="on-icon"><i class="icon-ok"></i></div>
 					{{ phrase('agent.tickets.kbd_awaiting_agent') }}
 				</li>
 				{% if ticket_perms.modify_set_resolved %}
-					<li data-type="resolved" data-label="Send Reply as Resolved">
+					<li data-type="resolved" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_resolved')}) }}">
 						<div class="on-icon"><i class="icon-ok"></i></div>
 						{{ phrase('agent.tickets.kbd_resolved') }}
 					</li>

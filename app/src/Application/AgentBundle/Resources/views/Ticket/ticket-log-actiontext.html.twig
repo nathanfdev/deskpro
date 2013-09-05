@@ -17,7 +17,7 @@
 	{% elseif log.details.event == 'new.email.agent' %}
 		{{ phrase('agent.tickets.log_new_email_agent') }}
 	{% elseif log.details.event == 'new.web.agent.portal' %}
-		New ticket by agent via web interface
+		{{ phrase('agent.tickets.log_new_web_agent_portal') }}
 	{% elseif log.details.event == 'new.web.api' %}
 		{{ phrase('agent.tickets.log_new_email_api') }}
 	{% elseif log.details.event == 'update.agent' %}
@@ -108,7 +108,7 @@
 	<span class="type">{{ phrase('agent.general.organization') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_org_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_org_name|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_subject' %}
-	<span class="type">Subject</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="type">{{ phrase('agent.general.subject') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_subject|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_subject|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_person' %}
 	<span class="type">{{ phrase('admin.api.user_owner') }}</span> {{ phrase('agent.tickets.changed_from') }}
@@ -135,7 +135,7 @@
     {{ phrase('agent.tickets.from_email', {'address':log.details.email}) }}
 	{% endif %}
 	&mdash;
-	<a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">View <i class="icon-external-link" style="font-size: 11px;"></i></a>
+	<a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">{{ phrase('agent.general.view') }} <i class="icon-external-link" style="font-size: 11px;"></i></a>
 {% elseif log.action_type == 'message_removed' %}
 	{% if log.details.is_agent_note %}
 		<span class="type">{{ phrase('agent.tickets.log_note_deleted') }}</span>
@@ -150,7 +150,7 @@
 	{% endif %}
 	{% if log.details.old_message %}
 		<div class="expand-set set-orig" style="display: none">
-			<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">Old message:<br/>
+			<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">{{ phrase('agent.tickets.log_message_old_message') }}:<br/>
 				<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.old_message }}</textarea>
 			</div>
 		</div>
@@ -172,8 +172,8 @@
 {% elseif log.action_type == 'attach_removed' %}
 	<span class="type">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span class="old-val">{{ phrase('agent.general.id') }} {{log.details.old_attach_id}} {{ log.details.filename }}</span>
 	{% if log.details.message_id %}
-		from message <span class="old-val">{{ phrase('agent.general.id') }} {{log.details.message_id}}</span>
-		{% if log.details.message_person_name %}written by {{ log.details.message_person_name }}{% endif %}
+		(<span class="old-val">{{ phrase('agent.general.id') }} {{log.details.message_id}}</span>
+		{% if log.details.message_person_name %} {{ log.details.message_person_name }}{% endif %}
 	{% endif %}
 {% elseif log.action_type == 'changed_status' %}
 	<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
@@ -191,17 +191,17 @@
 	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>
 {% elseif log.action_type == 'ticket_sla_added' %}
-	SLA added: <span class="new-val">{{ log.details.title }}</span>
+	{{ phrase('agent.tickets.log_sla_added') }}: <span class="new-val">{{ log.details.title }}</span>
 	{% if log.details.sla_status != 'ok' or log.details.is_completed %}
 		({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}{{ phrase('agent.general.requirements_complete') }}{% endif %})
 	{% endif %}
 {% elseif log.action_type == 'ticket_sla_removed' %}
-	SLA removed: <span class="new-val">{{ log.details.title }}</span>
+	{{ phrase('agent.tickets.log_sla_removed') }}: <span class="new-val">{{ log.details.title }}</span>
 	{% if log.details.sla_status != 'ok' or log.details.is_completed %}
 		({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}{{ phrase('agent.general.requirements_complete') }}{% endif %})
 	{% endif %}
 {% elseif log.action_type == 'ticket_sla_updated' %}
-	SLA <span class="type">{{ log.details.title }}</span> updated.
+	{{ phrase('agent.tickets.log_sla_updated') }}: <span class="type">{{ log.details.title }}</span>
 	{% if log.details.status_changed %}
 		<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span class="old-val">{{ _self.get_sla_status(log.details.original_status) }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ _self.get_sla_status(log.details.sla_status) }}</span>.
@@ -234,8 +234,8 @@
 					{% endif %}
 
 					{% if info.info %}
-						{% if info.info.filters %}(Subscription on filter: {{ info.info.filters|join(', ') }})
-						{% elseif info.info.is_via_trigger %}(Trigger forced notification)
+						{% if info.info.filters %}({{ phrase('agent.tickets.log_sub_on_filter') }}: {{ info.info.filters|join(', ') }})
+						{% elseif info.info.is_via_trigger %}({{ phrase('agent.tickets.log_trigger_forced_notif') }})
 						{% endif %}
 					{% endif %}
 				</li>

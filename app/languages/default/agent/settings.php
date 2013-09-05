@@ -23,6 +23,8 @@
 	'agent.settings.edit_filter'                      => 'Edit Filter',
 	'agent.settings.edit_macro'                       => 'Edit Macro',
 	'agent.settings.email_notifications'              => 'Email Notifications',
+	'agent.settings.filter_match'                     => 'Filter Match',
+	'agent.settings.filters_shared_with_you'          => 'Filters shared with you',
 	'agent.settings.first_login_set_name'             => 'This is your first time logging in, please fill in your name and upload a profile picture.',
 	'agent.settings.first_login_set_pic'              => 'This is your first time logging in, would you like to upload a profile picture?',
 	'agent.settings.hidden_filters_info'              => 'Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time.',

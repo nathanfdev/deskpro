@@ -17,7 +17,7 @@
 		data-submit-url="{{ path('agent_ticket_addsla', {ticket_id: ticket.id}) }}"
 	>
 	<tr>
-		<th width="80">Apply SLA</th>
+		<th width="80">{{ phrase('agent.general.apply_sla') }}</th>
 		<td>
 			<span style="display: inline-block; width: 200px; margin-right: 5px;">
 				<select name="sla_id" data-select-width="auto">
@@ -27,7 +27,7 @@
 					{% endfor %}
 				</select>
 			</span>
-			<button class="clean-white">Apply</button>
+			<button class="clean-white">{{ phrase('agent.general.apply') }}</button>
 			<img src="{{ asset('images/spinners/loading-small.gif') }}" style="display: none" id="{{ baseId }}_sla_save_progress" />
 		</td>
 	</tr>

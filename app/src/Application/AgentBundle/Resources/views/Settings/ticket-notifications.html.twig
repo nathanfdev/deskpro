@@ -189,13 +189,13 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 
 				{% if custom_filters|length %}
 				<div class="check-grid">
-					<header>Filters</header>
+					<header>{{ phrase('agent.general.filters') }}</header>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th width="180">&nbsp;</th>
 								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_new') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a new ticket is created that matches this filter"></span></th>
-								<th nowrap="nowrap">Filter Match <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a change to a ticket causes it to match this filter"></span></th>
+								<th nowrap="nowrap">{{ phrase('agent.settings.filter_match') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a change to a ticket causes it to match this filter"></span></th>
 								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when a user replies to a ticket that matches this filter"></span></th>
 								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_agent') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent replies to a ticket that matches this filter"></span></th>
 								<th nowrap="nowrap">{{ phrase('agent.settings.notif_type_note') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Notify me when an agent adds a note to a ticket that matches this filter"></span></th>

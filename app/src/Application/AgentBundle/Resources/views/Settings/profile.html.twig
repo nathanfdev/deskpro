@@ -138,7 +138,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>User Chat</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.chat') }}</label></div>
 			<div class="dp-form-input">
 				<label>{{ form_widget(form.hide_claimed_chat) }} {{ phrase('agent.settings.chat_immediate_dismiss') }}</label>
 			</div>
@@ -160,7 +160,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 
 		{% if app.user.getApiToken() %}
 			<div class="dp-form-row">
-				<div class="dp-form-label"><label>API Token</label></div>
+				<div class="dp-form-label"><label>{{ phrase('agent.general.api_token') }}</label></div>
 				<div class="dp-form-input">
 					<label><input type="checkbox" name="settings_profile[reset_api_token]" value="1" /> {{ phrase('agent.settings.reset_api_token') }}</label>
 				</div>

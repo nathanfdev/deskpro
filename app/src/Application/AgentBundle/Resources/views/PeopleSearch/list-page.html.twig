@@ -73,11 +73,11 @@
 				{% if not person.is_confirmed or not person.is_agent_confirmed %}
 					<div class="validation-row">
 						{% if not person.is_confirmed and not person.is_agent_confirmed %}
-							User is awaiting email and agent validation:
+							{{ phrase('agent.people.user_awaiting_email_and_agent_validation') }}
 						{% elseif not person.is_confirmed %}
-							User is awaiting email validation:
+							{{ phrase('agent.people.user_awaiting_email_validation') }}
 						{% elseif not person.is_agent_confirmed %}
-							User is awaiting agent validation:
+							{{ phrase('agent.people.user_awaiting_agent_validation') }}
 						{% endif %}
 						<button class="agent-confirm-approve" data-person-id="{{ person.id }}">{{ phrase('agent.general.approve') }}</button>
 						{%  if app.user.hasPerm('agent_people.delete') %}<button class="agent-confirm-delete" data-person-id="{{ person.id }}">{{ phrase('agent.general.delete') }}</button>{% endif %}

@@ -40,7 +40,7 @@
 			<input type="text" id="%baseId%_filter" placeholder="Filter" />
 			{% if app.languages.getAll()|length > 1 %}
 				<select name="show_language_id" id="%baseId%_show_language_id">
-					<option value="0">Any Language</option>
+					<option value="0">{{ phrase('agent.general.any_language') }}</option>
 					{% for lang in app.languages.getAll() %}
 						<option value="{{ lang.id }}">{{ phrase_object(lang) }}</option>
 					{% endfor %}

@@ -184,7 +184,7 @@
 									</div>
 									<div class="line">
 										{% if not chat.person %}
-											Anonymous
+											{{ phrase(''agent.general.anonymous'                               => 'Anonymous',') }}
 										{% else %}
 											<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': chat.person.id}) }}" style="background: url('{{ chat.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{chat.person.display_name}}</a>
 										{% endif %}
@@ -217,7 +217,7 @@
 				{% endfor %}
 				<tr>
 					<th colspan="2">
-						Totals:
+						{{ phrase('agent.general.total') }}:
 						{{ org_charge_totals.count }} charges &bull;
 						{% if org_charge_totals.charge_time %}{{ org_charge_totals.charge_time|time_length }}{% if org_charge_totals.charge %} &bull; {% endif %}{% endif %}
 						{% if org_charge_totals.charge %}{{ org_charge_totals.charge|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}{% endif %}

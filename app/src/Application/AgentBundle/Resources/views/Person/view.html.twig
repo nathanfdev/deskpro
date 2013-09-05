@@ -35,9 +35,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="options">
 		<div style="float:right; position:relative;top: -3px;">
 			<button class="clean-white x-small" id="{{ baseId }}_approve_user">{{ phrase('agent.general.approve') }}</button>
-			{%  if app.user.hasPerm('agent_people.delete') %}<button class="clean-white x-small" id="{{ baseId }}_delete_user">Delete</button>{% endif %}
+			{%  if app.user.hasPerm('agent_people.delete') %}<button class="clean-white x-small" id="{{ baseId }}_delete_user">{{ phrase('agent.general.delete') }}</button>{% endif %}
 		</div>
-		This user is awaiting validation
+		{{ phrase('agent.people.user_awaiting_validation') }}
 	</div>
 </div>
 {% endif %}
@@ -86,7 +86,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<li class="merge menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.merge') }} <em></em></a></li>
 				{% endif %}
 				{% if perms.login_as %}
-					<li><a class="clean-white large" href="{{ path('agent_people_login_as', {'person_id': person.id, '_rt': security_token('request_token', 10800)}) }}" target="_blank">Login as User</a></li>
+					<li><a class="clean-white large" href="{{ path('agent_people_login_as', {'person_id': person.id, '_rt': security_token('request_token', 10800)}) }}" target="_blank">{{ phrase('agent.people.login_as_user') }}</a></li>
 				{% endif %}
 				{% if not person.is_agent and (perms.reset_password or perms.delete or perms.edit) %}
 					<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>

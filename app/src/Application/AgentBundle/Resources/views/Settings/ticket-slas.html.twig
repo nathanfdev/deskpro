@@ -41,7 +41,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketSlas';
 							<td>{{ sla.getWarningTimeText() }}</td>
 							<td>{{ sla.getFailTimeText() }}</td>
 							<td nowrap="nowrap">
-								<label><input type="checkbox" name="slas_hidden[]" class="sla-hidden-check filter-{{ sla.id }}" value="{{ sla.id }}" {% if filter_show_options['agent.ui.sla.filter-visibility.' ~ sla.id] == 'hidden' %}checked="checked"{% endif %} /> Hide</label>
+								<label><input type="checkbox" name="slas_hidden[]" class="sla-hidden-check filter-{{ sla.id }}" value="{{ sla.id }}" {% if filter_show_options['agent.ui.sla.filter-visibility.' ~ sla.id] == 'hidden' %}checked="checked"{% endif %} /> {{ phrase('agent.general.hide') }}</label>
 							</td>
 						</tr>
 					{% endfor %}
