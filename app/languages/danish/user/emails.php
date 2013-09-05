@@ -23,7 +23,7 @@
 	'user.emails.password_reset'                                           => 'Du har bedt om at få nustillet dit password. For at nulstille dit password, klik på følgende link:',
 	'user.emails.profile_email-new-confirm'                                => 'For at kunne tilføje denne sekundære email adresse, skal du bare klikke på følgende bekræftende link',
 	'user.emails.profile_email_link-validate'                              => 'Klik på følgende link for at bekræfte din email adresse',
-	'user.emails.register-confirm'                                         => 'Tak fordi du oprettede en konto. ⏎<br /><br />Før at du kan bruge din konto, skal du bekræfte din email adresse på følgende link.',
+	'user.emails.register-confirm'                                         => 'Tak fordi du oprettede en konto. <td width="150"><a<br /><br />Før at du kan bruge din konto, skal du bekræfte din email adresse på følgende link.',
 	'user.emails.registration_closed'                                      => 'Kære {{name}},<br /><br /><br /><br />Nye sager bliver kun accepteret fra vores helpdesk medlemmer. Hvis du allerede har en konto, så email os venligts igen fra den adresse du oprindeligt registrerede.',
 	'user.emails.ticket_access_ticket_online'                              => 'Se og rediger denne sag online:',
 	'user.emails.ticket_cc-new'                                            => 'Du er inkluderet i en sag startet af {{name}}.',
