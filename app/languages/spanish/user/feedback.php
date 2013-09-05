@@ -25,6 +25,7 @@
 	'user.feedback.status_closed'                                          => 'Cerrado',
 	'user.feedback.status_new'                                             => 'Comentarios en aumento',
 	'user.feedback.status_open'                                            => 'Abierto',
+	'user.feedback.status_popular'                                         => 'Popular',
 	'user.feedback.submit_feedback'                                        => 'Enviar comentario',
 	'user.feedback.title'                                                  => 'Comentarios',
 	'user.feedback.title-feedback'                                         => 'Hay 1 asunto para comentar|Hay {{count}} asuntos para comentar',

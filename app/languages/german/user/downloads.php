@@ -6,6 +6,7 @@
 	'user.downloads.noun'                                                  => 'Datei',
 	'user.downloads.related_downloads'                                     => 'Ähnliche Dateien',
 	'user.downloads.sidebar_description'                                   => 'Sehen Sie sich unsere Datei an|Unsere {{count}} Dateien durchsehen',
+	'user.downloads.title'                                                 => 'Downloads',
 	'user.downloads.title-categories'                                      => 'Es gibt 1 Unterordner|Es gibt {{count}} Unterordner',
 	'user.downloads.title-downloads'                                       => 'Es gibt 1 Datei|Es gibt {{count}} Dateien',
 );

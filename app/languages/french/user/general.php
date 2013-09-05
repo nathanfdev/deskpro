@@ -25,6 +25,7 @@
 	'user.general.marked_as_unhelpful'                                     => 'Vous avez signalé cette page comme étant inutile',
 	'user.general.name'                                                    => 'Nom',
 	'user.general.next'                                                    => 'Suivant',
+	'user.general.page'                                                    => 'Page',
 	'user.general.page_prev'                                               => 'Prec.',
 	'user.general.please_enter_your_email'                                 => 'Merci d\'entrer votre adresse email',
 	'user.general.please_enter_your_name'                                  => 'Merci d\'entrer votre nom',

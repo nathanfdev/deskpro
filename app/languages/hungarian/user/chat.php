@@ -22,6 +22,7 @@
 	'user.chat.message_ended-by'                                           => '{{name}} befejezte a beszélgetést',
 	'user.chat.message_ended-by-user'                                      => 'A felhasználó befejezte a beszélgetést',
 	'user.chat.message_finding-agent'                                      => 'Kapcsolat létrehozása...',
+	'user.chat.message_long-wait'                                          => 'Munkatársaink jelenleg elfoglaltak. <br/<br/>Sürgős esetben <a class="cancel-and-newticket-trigger">hagyjon üzenetet a várakozás helyett!</a>',
 	'user.chat.message_set-department'                                     => '{{department}} részleg beállítása megtörtént {{name}} által',
 	'user.chat.message_started'                                            => 'Beszélgetés kezdete',
 	'user.chat.message_unassigned'                                         => 'Beszélgetés kiosztatlan',

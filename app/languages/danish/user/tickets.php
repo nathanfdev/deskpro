@@ -10,6 +10,7 @@
 	'user.tickets.contact_us_explain'                                      => 'Udfyld venligst hele denne blanket og en af vores medarbejdere vil svare dig via email så hurtigt som muligt',
 	'user.tickets.content-suggestions_answered'                            => 'Vi er glade for at du fandt svar på dit spørgsmål. Vil du stadig sende os en email også?',
 	'user.tickets.dont_add_me_to_ticket'                                   => 'Nej tak',
+	'user.tickets.download_pdf'                                            => 'Download PDF',
 	'user.tickets.edit'                                                    => 'Rediger',
 	'user.tickets.email_explain'                                           => 'Dette er hvor vores medarbejdere sender til',
 	'user.tickets.empty_message'                                           => '(Tom besked)',

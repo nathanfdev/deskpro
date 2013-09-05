@@ -3,6 +3,7 @@
 	'user.defaults.article_example_content'                                => 'Dette er et eksempel på en videnbaseartikel. Du kan bare redigere eller slette den fra agent brugergrænsefladen.',
 	'user.defaults.article_example_title'                                  => 'Eksempel artikel',
 	'user.defaults.department_sales'                                       => 'Salg',
+	'user.defaults.department_support'                                     => 'Support',
 	'user.defaults.download_category_general'                              => 'Generelt',
 	'user.defaults.downloads_category_general'                             => 'Dokumenter',
 	'user.defaults.feedback_example_content'                               => 'Dette er et eksempel forslag. Du kan bare redigere eller slette den fra agent brugergrænsefladen.',

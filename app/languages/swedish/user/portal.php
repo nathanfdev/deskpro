@@ -20,6 +20,7 @@
 	'user.portal.sidebar_welcome-user'                                     => 'Välkommen tillbaka, {{name}}',
 	'user.portal.tab_downloads'                                            => 'Nedladdningar',
 	'user.portal.tab_downloads-description'                                => 'Bläddra bland våra nedladdningar',
+	'user.portal.tab_feedback'                                             => 'Feedback',
 	'user.portal.tab_feedback-description'                                 => 'Förslag från användare',
 	'user.portal.tab_knowledgebase'                                        => 'Kunskapsbas',
 	'user.portal.tab_knowledgebase-description'                            => 'Läs kunskapsartiklar',

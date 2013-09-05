@@ -21,6 +21,7 @@
 	'user.feedback.sort_newest'                                            => 'En yeni',
 	'user.feedback.status'                                                 => 'Durum',
 	'user.feedback.status_active'                                          => 'Aktif',
+	'user.feedback.status_any'                                             => 'Any Status',
 	'user.feedback.status_closed'                                          => 'Kapalı',
 	'user.feedback.status_new'                                             => 'Geri Bildirim Alınıyor',
 	'user.feedback.status_open'                                            => 'Açık',

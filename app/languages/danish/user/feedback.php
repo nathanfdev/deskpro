@@ -19,6 +19,7 @@
 	'user.feedback.sort_i-voted'                                           => 'Jeg stemte',
 	'user.feedback.sort_most-votes'                                        => 'Flest stemmer',
 	'user.feedback.sort_newest'                                            => 'Nyeste',
+	'user.feedback.status'                                                 => 'Status',
 	'user.feedback.status_active'                                          => 'Aktive',
 	'user.feedback.status_any'                                             => 'Alle statusser',
 	'user.feedback.status_closed'                                          => 'Lukket',

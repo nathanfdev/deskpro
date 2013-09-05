@@ -6,6 +6,7 @@
 	'user.general.comments_no_comments'                                    => 'Yorum yok.',
 	'user.general.comments_please_enter_email'                             => 'Lütfen eposta adresinizi girin.',
 	'user.general.count_comments'                                          => '{{count}} Yorum|{{count}} Yorum',
+	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'Eposta Adresi',
 	'user.general.email_addresses'                                         => 'Eposta Adresleri',
 	'user.general.first_name'                                              => 'Adı',

@@ -6,6 +6,7 @@
 	'user.general.comments_no_comments'                                    => 'Er zijn geen reacties',
 	'user.general.comments_please_enter_email'                             => 'Voer uw e-mailadres in',
 	'user.general.count_comments'                                          => '{{count}} Opmerking|{{count}} Opmerkingen',
+	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'E-mailadres',
 	'user.general.email_addresses'                                         => 'E-mailadressen',
 	'user.general.first_name'                                              => 'Voornaam',

@@ -13,8 +13,10 @@
 	'user.email_subjects.feedback_updated'                                 => 'Feedback-ul dumneavoastra a fost actualizat: {{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'Un agent v-a resetat parola',
 	'user.email_subjects.password_reset'                                   => 'Resetare parola',
+	'user.email_subjects.re'                                               => 'RE: {{subject}}',
 	'user.email_subjects.register-welcome'                                 => 'Va multumim ca v-ati inregistrat',
 	'user.email_subjects.ticket-rate'                                      => 'Va rugam sa dati o nota experientei dumneavoastra cu tichetul "{{ticket.subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'O noua persoana a fost adaugata tichetului dumneavoastra',
+	'user.email_subjects.tickets_re'                                       => 'RE: {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'Va rugam sa validati adresa dumneavoastra de email',
 );

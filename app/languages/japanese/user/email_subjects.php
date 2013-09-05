@@ -12,6 +12,7 @@
 	'user.email_subjects.feedback_updated'                                 => 'フィードバックが更新されました：{{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'エージェントによりあなたのパスワードはリセットされました。',
 	'user.email_subjects.password_reset'                                   => 'パスワードのリセット',
+	'user.email_subjects.re'                                               => 'RE: {{subject}}',
 	'user.email_subjects.ticket_new-participant'                           => 'リクエストに新たな参加者が追加されました。',
 	'user.email_subjects.validate-email'                                   => 'あなたのメールアドレスを認証してください。',
 );

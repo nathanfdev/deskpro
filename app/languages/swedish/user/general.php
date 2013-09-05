@@ -7,6 +7,7 @@
 	'user.general.comments_no_comments'                                    => 'Det finns inga nya kommentarer.',
 	'user.general.comments_please_enter_email'                             => 'Var vänlig och skriv din e-postadress',
 	'user.general.count_comments'                                          => '{{count}} Kommentar|{{count}} Kommentarer',
+	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'E-Postadress',
 	'user.general.email_addresses'                                         => 'E-Postadresser',
 	'user.general.first_name'                                              => 'Förnamn',
