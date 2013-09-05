@@ -124,15 +124,33 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
 					$phrases = include($filepath);
 
+					$requests = array();
+
 					foreach ($phrases as $k => $v) {
-						echo "[$file] $k ...";
+						echo "[$lid] $k ...";
 						$res = $this->_restPost('string/translate', array(
 							'platform-id' => $user_platform_id,
 							'string-key' => $k,
 							'translation' => $v,
 							'locale' => $locale
-						));
+						), true);
+
+						$requests[] = $res;
 						echo " Done\n";
+
+						if (count($requests) == 40) {
+							echo "Sending ...";
+							$r = $this->_getHttpClient()->send($requests);
+							$requests = array();
+							echo "Done\n";
+						}
+					}
+
+					if (count($requests)) {
+						echo "Sending ...";
+						$r = $this->_getHttpClient()->send($requests);
+						$requests = array();
+						echo "Done\n";
 					}
 				}
 			}
@@ -168,7 +186,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 	 * @return array
 	 * @throws \RuntimeException
 	 */
-	private function _restPost($path, array $post_vars = array())
+	private function _restPost($path, array $post_vars = array(), $return = false)
 	{
 		$vars = array();
 		$vars['api-key']   = $this->api_key;
@@ -196,6 +214,10 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 			}
 
 			$request->addPostFields($post_vars);
+		}
+
+		if ($return) {
+			return $request;
 		}
 
 		$response = $request->send();
