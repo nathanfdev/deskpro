@@ -270,7 +270,6 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/DeskproSubmitFeedback.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 
