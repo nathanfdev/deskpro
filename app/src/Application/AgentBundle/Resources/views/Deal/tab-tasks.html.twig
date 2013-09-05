@@ -19,7 +19,7 @@
                             {% endif %}
                         </span>|
                         <span>
-                        {% if deal_task.task.isDueToday(app.user) == 1 %} Due Today{% elseif deal_task.task.isDueTomorrow(app.user) %}Due Tomorrow
+                        {% if deal_task.task.isDueToday(app.user) == 1 %} {{ phrase('agent.deal.due_today') }}{% elseif deal_task.task.isDueTomorrow(app.user) %}{{ phrase('agent.deal.due_tomorrow') }}
                         {% elseif deal_task.task.isOverdue %}Over Due on {{deal_task.task.date_due|date('day')}}
                         {% else %}Due {{deal_task.task.date_due|date('day')}} {% endif %}
 

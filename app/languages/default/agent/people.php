@@ -28,6 +28,7 @@
 	'agent.people.double_click_set_name'                    => 'Double-click to set name',
 	'agent.people.download_vcard'                           => 'Download vCard',
 	'agent.people.drop_your_vcard_here'                     => 'Drop your vCard here',
+	'agent.people.email_awaiting_validation'                => 'Email Awaiting Validation',
 	'agent.people.enable_account'                           => 'Enable Account',
 	'agent.people.enter_name_here'                          => 'Enter a name here',
 	'agent.people.find_person'                              => 'Find Person',

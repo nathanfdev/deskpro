@@ -138,7 +138,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 						$requests[] = $res;
 						echo " Done\n";
 
-						if (count($requests) == 40) {
+						if (count($requests) == 100) {
 							echo "Sending ...";
 							$r = $this->_getHttpClient()->send($requests);
 							$requests = array();

@@ -218,7 +218,7 @@
 				<tr>
 					<th colspan="2">
 						{{ phrase('agent.general.total') }}:
-						{{ org_charge_totals.count }} charges &bull;
+						{{ phrase('agent.tickets.count_charges', {count: org_charge_totals.count}) }}
 						{% if org_charge_totals.charge_time %}{{ org_charge_totals.charge_time|time_length }}{% if org_charge_totals.charge %} &bull; {% endif %}{% endif %}
 						{% if org_charge_totals.charge %}{{ org_charge_totals.charge|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}{% endif %}
 					</th>

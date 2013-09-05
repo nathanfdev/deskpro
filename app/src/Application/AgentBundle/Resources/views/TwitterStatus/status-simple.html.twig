@@ -22,7 +22,7 @@
 					<span class="screen-name">@{{ status.user.screen_name }}</span>
 				</span>
 				{% if status.isMessage() %}
-					<span class="dm-notice">DM</span>
+					<span class="dm-notice">{{ phrase('agent.twitter.dm') }}</span>
 				{% endif %}
 				{% if status.long %}
 					<span class="long-notice">{% if status.long.is_public %}{{ phrase('agent.twitter.long') }}{% else %}{{ phrase('agent.twitter.long_private') }}{% endif %}</span>

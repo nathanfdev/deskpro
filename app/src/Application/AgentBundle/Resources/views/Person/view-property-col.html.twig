@@ -63,7 +63,7 @@
 {% if validating_emails %}
 	<div class="profile-box-container summary">
 		<header>
-			<h4>Email Awaiting Validation</h4>
+			<h4>{{ phrase('agent.people.email_awaiting_validation') }}</h4>
 		</header>
 		<section>
 			<div class="table-content contact-list contact-list-wrapper">
@@ -71,7 +71,7 @@
 					{% for vemail in validating_emails %}
 						<li class="email">
 							{{ vemail.email }}
-							<span class="set-primary validate-trigger" data-token="{{ security_token('validate_email') }}" data-email-id="{{ vemail.id }}">Validate</span>
+							<span class="set-primary validate-trigger" data-token="{{ security_token('validate_email') }}" data-email-id="{{ vemail.id }}">{{ phrase('agent.general.validate') }}</span>
 						</li>
 					{% endfor %}
 				</ul>
@@ -217,7 +217,7 @@
 {% if person.usersource_assoc|length %}
 	<div class="profile-box-container summary" id="{{baseId}}_us_box">
 		<header>
-			<h4>Usersources</h4>
+			<h4>{{ phrase('agent.general.usersources') }}</h4>
 		</header>
 		<section id="{{baseId}}_us_body">
 			<div id="{{baseId}}_us_display_box" class="contact-list">

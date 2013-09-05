@@ -86,7 +86,7 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="profile-box-container">
                 <header>
  					{{ dp_widget_tabs_header(baseId, 'chat', 'people', {
-						(baseId ~ '_people_box_person'): phrase('agent.general.person') ~ (not convo.person ? ' (Unregistered)' : '')
+						(baseId ~ '_people_box_person'): phrase('agent.general.person') ~ (not convo.person ? ' (' ~ phrase('agent.general.anonymous') ~ ')' : '')
 					}) }}
                 </header>
                 <section id="{{baseId}}_people_box_person_container">

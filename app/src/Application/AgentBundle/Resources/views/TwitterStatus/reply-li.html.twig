@@ -16,7 +16,7 @@
 			<span class="screen-name">@{{ reply.status.user.screen_name }}</span>
 		</span>
 		{% if reply.status.isMessage() %}
-			<span class="dm-notice">DM</span>
+			<span class="dm-notice">{{ phrase('agent.twitter.dm') }}</span>
 		{% endif %}
 		{% if reply.status.long %}
 			<span class="long-notice">{% if reply.status.long.is_public %}{{ phrase('agent.twitter.long_private') }}{% else %}{{ phrase('agent.twitter.long_private') }}{% endif %}</span>

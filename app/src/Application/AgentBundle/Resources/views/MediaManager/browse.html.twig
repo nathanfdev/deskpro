@@ -16,7 +16,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.MediaManagerPage.Browse';
 			data-file-name="{{ blob.filename }}"
 			data-blob-id="{{ blob.id }}"
 		>{{ phrase('agent.general.insert_into_article') }}</button>
-		<button class="clean-white" onclick="prompt('', '{{ blob.download_url }}')">Copy URL</button>
+		<button class="clean-white" onclick="prompt('', '{{ blob.download_url }}')">{{ phrase('agent.general.copy_url') }}</button>
 		{% if blob.isImage() %}
 			<br style="clear: both; height: 1px; overflow: hiden;" />
 		{% endif %}

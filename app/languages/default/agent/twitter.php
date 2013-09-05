@@ -3,6 +3,7 @@
 	'agent.twitter.account_rec_tweet_from'        => '{{account}} receieved a new tweet from {{name}}',
 	'agent.twitter.account_retweeted_by'          => '{{account}} was retweeted by {{name}}',
 	'agent.twitter.add_note'                      => 'Add Note',
+	'agent.twitter.added_by_agent'                => 'Added by agent {{name}}',
 	'agent.twitter.all_tweets'                    => 'All Tweets',
 	'agent.twitter.assigned_to_by'                => 'Assigned to tweet by {{name}}',
 	'agent.twitter.associated_orgs'               => 'Associated organizations',
@@ -45,6 +46,7 @@
 	'agent.twitter.oldest_first'                  => 'Oldest First',
 	'agent.twitter.people'                        => 'People',
 	'agent.twitter.perform_action'                => 'Perform Action',
+	'agent.twitter.previous_tweets'               => 'Previous Tweets',
 	'agent.twitter.protected'                     => 'Protected',
 	'agent.twitter.replies'                       => 'Replies',
 	'agent.twitter.retweet'                       => 'Retweet',
@@ -77,6 +79,4 @@
 	'agent.twitter.unretweet'                     => 'Unretweet',
 	'agent.twitter.user_replied_to_tweet'         => '{{name}} replied to your tweet',
 	'agent.twitter.view_twitter_profile'          => 'View Twitter Profile',
-	'agent.twitter.previous_tweets'          => 'Previous Tweets',
-	'agent.twitter.added_by_agent' => 'Added by agent {{name}}',
 );

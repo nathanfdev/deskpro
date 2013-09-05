@@ -187,13 +187,13 @@
 		{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}
 			<div class="feedback">
-                {{ feedback.person.display_name }} rated this message as
+				{{ phrase('agent.tickets.x_rated_this_message_as', {name: feedback.person.display_name}) }}
 				{% if feedback.rating == 1 %}
 					<em class="helpful">{{ phrase('agent.tickets.helpful') }}</em>
 				{% elseif feedback.rating == -1 %}
 					<em class="unhelpful">{{ phrase('agent.tickets.unhelpful') }}</em>
 				{% else %}
-					<em class="neutral">neutral</em>
+					<em class="neutral">{{ phrase('agent.tickets.neutral') }}</em>
 				{% endif %}
 				{% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
 			</div>

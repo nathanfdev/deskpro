@@ -13,7 +13,7 @@
 		<header>
 			<span class="edit-gear comment-edit-btn"></span>
 			<span class="message-counter">#{{ loop.index }}</span>
-			{% if comment.status == 'validating' or (comment.status == 'visible' and comment.is_reviewed == 0) %}<span class="comment-validate-btn count tipped" title="{{ phrase('agent.publish.validating_comment_manage_tip') }}">Validate comment</span>{% endif %}
+			{% if comment.status == 'validating' or (comment.status == 'visible' and comment.is_reviewed == 0) %}<span class="comment-validate-btn count tipped" title="{{ phrase('agent.publish.validating_comment_manage_tip') }}">{{ phrase('agent.general.validate') }}</span>{% endif %}
 			{% if comment.person %}
 				<h4
 					class="with-route person-popover"
@@ -26,7 +26,7 @@
 						{% if comment.name %}{{ comment.name }}{% endif %}
 						{% if comment.email %}&lt;{{ comment.email }}&gt;{% endif %}
 					{% else %}
-						Anonymous
+						{{ phrase('agent.general.anonymous') }}
 					{% endif %}
 				</h4>
 			{% endif %}

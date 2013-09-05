@@ -45,7 +45,8 @@
 	<footer class="results-nav">
 		<div class="pagecontrols results-nav">
 			<div class="cursor">
-				Page {{ pageinfo.cursor }} of {{ pageinfo.last }}
+				{{ phrase('agent.general.page_x_of_y', {page: pageinfo.cursor, num_pages: pageinfo.last}) }}
+
 			</div>
 			{% if pageinfo.last > 1 %}
 				<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
