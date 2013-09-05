@@ -20,22 +20,6 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			}
 		});
 
-		list.on('click', '.sublist-toggle', function(ev) {
-			Orb.cancelEvent(ev);
-			eatClick = true;
-
-			$(this).addClass('dp-focus');
-			searchBox.focus();
-
-			if ($(this).hasClass('expanded')) {
-				$(this).removeClass('expanded');
-				$(this).closest('li').find('ul').hide();
-			} else {
-				$(this).addClass('expanded');
-				$(this).closest('li').find('ul').show();
-			}
-		});
-
 		list.on('click', '.show-more', function(ev) {
 			Orb.cancelEvent(ev);
 			var type = $(this).closest('.title').data('type');
@@ -283,6 +267,22 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 					showMoreEl.show();
 				}
 			}, this);
+
+			list.find('.sublist-toggle').on('click', function(ev) {
+				Orb.cancelEvent(ev);
+				eatClick = true;
+
+				$(this).addClass('dp-focus');
+				searchBox.focus();
+
+				if ($(this).hasClass('expanded')) {
+					$(this).removeClass('expanded');
+					$(this).closest('li').find('ul').hide();
+				} else {
+					$(this).addClass('expanded');
+					$(this).closest('li').find('ul').show();
+				}
+			});
 
 			list.find('[data-route]').on('click', function(ev) {
 				console.log("CLick");
