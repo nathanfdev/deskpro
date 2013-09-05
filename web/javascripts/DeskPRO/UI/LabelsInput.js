@@ -93,7 +93,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 			var label = $(this).text().trim();
 			if (label) {
-				$('#dp_omniinput').data('handler').setSearch('[' + label + ']');
+				$('#dp_search_box').data('handler').setSearch('[' + label + ']');
 			}
 		});
 	},

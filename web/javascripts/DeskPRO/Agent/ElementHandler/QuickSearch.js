@@ -11,6 +11,15 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 		var list       = $('#dp_search_box_list');
 		var eatClick   = false;
 
+		searchBox.data('handler', {
+			setSearch: function(term) {
+				searchBox.focus();
+				searchBox.val('');
+				searchBox.val(term);
+				updateSearch(true);
+			}
+		});
+
 		list.on('click', '.sublist-toggle', function(ev) {
 			Orb.cancelEvent(ev);
 			eatClick = true;
