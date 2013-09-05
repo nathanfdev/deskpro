@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Command;
 
 use Orb\Util\Arrays;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
@@ -43,10 +44,13 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 	protected function configure()
 	{
 		$this->setName('dpdev:lang:check-vars');
+		$this->addOption('with-plural', null, InputOption::VALUE_NONE, 'Also check for plurals');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$do_plural_check = $input->getOption('with-plural');
+
 		#------------------------------
 		# Get default phrases and lang dirs
 		#------------------------------
@@ -107,6 +111,22 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 					echo "\tLang: $phrasetext\n\n";
 
 					$bad_count++;
+				} else if ($do_plural_check) {
+					$default_is_plural = (bool)strpos($default_phrasetext, '|');
+					$lang_is_plural = (bool)strpos($phrasetext, '|');
+
+					if ($default_is_plural != $lang_is_plural) {
+						if (!$done_one) {
+							$output->writeln("\n\n<info>####################\n# $dirname\n####################\n</info>");
+							$done_one = true;
+						}
+
+						$output->writeln("<error>$phrase</error> plurality does not match:");
+						echo "\tDefault: $default_phrasetext\n";
+						echo "\tLang: $phrasetext\n\n";
+
+						$bad_count++;
+					}
 				}
 			}
 		}
