@@ -194,10 +194,10 @@ class GroupingField
 					$ids = implode(',', array_keys($children));
 
 					return array(
-						'select' => 'COALESCE(custom_def_ticket.title, 0) AS group_field',
+						'select' => 'COALESCE(custom_def_people.title, 0) AS group_field',
 						'group_by' => 'group_field',
 						'join' => "
-							LEFT JOIN custom_def_people ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN('.$ids.'))
+							LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN($ids))
 							LEFT JOIN custom_def_people ON (custom_def_people.id = custom_data_person.field_id)
 						",
 						'where' => ''
