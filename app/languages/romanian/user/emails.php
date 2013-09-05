@@ -26,19 +26,15 @@
 	'user.emails.profile_email-new-confirm'                                => 'Pentru a finaliza adaugarea aceste adrese secundare contului dumneavoastra, va rugam sa dati click pe urmatorul link',
 	'user.emails.profile_email_link-validate'                              => 'Dati click pe urmatorul link pentru a valida adresa dumneavoastra de email',
 	'user.emails.register-agent-validation'                                => 'Nota: Pentru a deveni activ, contul dumneavoastra trebuie sa fie validat manual de catre unul dintre agentii nostri. Tichetele si orice alt continut trimis va fi tinut intr-o coada de validare pana cand un agent va confirma contul.',
-	'user.emails.register-confirm'                                         => 'Va multumim pentru crearea contului.
-Inainte sa va puteti folosi contul trebuie sa dati click pe urmatorul link pentru a valida adresa dumneavoastra de email.',
+	'user.emails.register-confirm'                                         => 'Va multumim pentru crearea contului. Inainte sa va puteti folosi contul trebuie sa dati click pe urmatorul link pentru a valida adresa dumneavoastra de email.',
 	'user.emails.register-welcome'                                         => 'Va multumim ca v-ati inregistrat. Incepand din acest moment va puteti loga in Helpdesk-ul nostru folosind urmatoarea adresa de email: {{to_email}}',
-	'user.emails.registration_closed'                                      => 'Draga {{name}},⏎
-⏎
-Tichetele noi sunt acceptate doar de la membrii existenti ai Helpdesk-ului. Daca aveti deja un cont, va rugam sa ne trimiteti un email de la adresa deja inregistrata.',
+	'user.emails.registration_closed'                                      => 'Draga {{name}},⏎ ⏎ Tichetele noi sunt acceptate doar de la membrii existenti ai Helpdesk-ului. Daca aveti deja un cont, va rugam sa ne trimiteti un email de la adresa deja inregistrata.',
 	'user.emails.reject_resolved'                                          => 'Mesajul dumneavoastra nu a fost acceptat deoarece tichetul a fost deja marcat ca fiind rezolvat. Agentii nostri nu vor citi sau raspunde la acest mesaj.',
 	'user.emails.reject_resolved-new'                                      => 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a> sau sa completati formularul nostru online la adresa: <br/><a href="{{link}}">{{link}}</a>',
 	'user.emails.reject_resolved-newemail'                                 => 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a>',
 	'user.emails.ticket_access_ticket_online'                              => 'Vedeti si modificati acest tichet online:',
 	'user.emails.ticket_cc-new'                                            => 'Ati fost inclus in conversatia de pe un tichet deschis de {{name}}.',
-	'user.emails.ticket_flood'                                             => 'Ati trimis recent un email catre Helpdesk-ul nostru. Sistemul nostru automat a detectat ca ati trimis o succesiune de mesaje care, cel mai probabil, au fost automate. 
-Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostru nu va va mai trimite notificari automate.',
+	'user.emails.ticket_flood'                                             => 'Ati trimis recent un email catre Helpdesk-ul nostru. Sistemul nostru automat a detectat ca ati trimis o succesiune de mesaje care, cel mai probabil, au fost automate.  Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostru nu va va mai trimite notificari automate.',
 	'user.emails.ticket_message_title'                                     => 'La {{date}}; {{time}}, {{author}} a scris:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Avertizare: Email-urile de confirmare au fost oprite',
 	'user.emails.ticket_rate-negative'                                     => 'NU',
@@ -47,8 +43,7 @@ Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostr
 	'user.emails.ticket_rate-question'                                     => 'A fost acest mesaj de ajutor?',
 	'user.emails.ticket_received'                                          => 'Tichetul dumneavoastra a fost primit. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.',
 	'user.emails.ticket_reply-confirm'                                     => 'Va multumim pentru raspuns. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.',
-	'user.emails.ticket_validate'                                          => 'Va multumim ca ne-ati contactat. 
-Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.',
+	'user.emails.ticket_validate'                                          => 'Va multumim ca ne-ati contactat.  Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.',
 	'user.emails.tickets_ommitted'                                         => '1 mesaj a fost omis| {{count}} mesaje au fost omise',
 	'user.emails.view_full_history_online'                                 => 'Vedeti intregul tichet online',
 );

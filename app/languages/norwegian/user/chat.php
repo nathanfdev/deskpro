@@ -21,9 +21,7 @@
 	'user.chat.message_ended-by'                                           => 'Chat ble avsluttet av {{name}}',
 	'user.chat.message_ended-by-user'                                      => 'Chat ble avsluttet av kunde',
 	'user.chat.message_finding-agent'                                      => 'Finner en medarbeider',
-	'user.chat.message_long-wait'                                          => 'Vi prøver fremdeles å finne en tilgjengelig medarbeider til å svare, dette tar normalt under ett minutt. 
-
-Travelt?  <a class="cancel-and-newticket-trigger"Skriv en beskjed til oss isteden</a>',
+	'user.chat.message_long-wait'                                          => 'Vi prøver fremdeles å finne en tilgjengelig medarbeider til å svare, dette tar normalt under ett minutt.   Travelt?  <a class="cancel-and-newticket-trigger"Skriv en beskjed til oss isteden</a>',
 	'user.chat.message_set-department'                                     => '{{name}} satt avdeling til {{department}}',
 	'user.chat.message_started'                                            => 'Chat startet',
 	'user.chat.message_unassigned'                                         => 'Chat unassigned',

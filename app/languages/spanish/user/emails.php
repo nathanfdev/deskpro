@@ -24,15 +24,11 @@
 	'user.emails.password_reset'                                           => 'Ha solicitado la reinicialización de su contraseña. Para reinicializarla haga clic en el enlace:',
 	'user.emails.profile_email-new-confirm'                                => 'Para finalizar la incorporación de una nueva dirección a su cuenta, haga clic en el siguiente enlace de validación',
 	'user.emails.profile_email_link-validate'                              => 'Haga clic en el siguiente enlace para validar su dirección de correo electrónico',
-	'user.emails.register-confirm'                                         => 'Gracias por registrar una cuenta.⏎
-Antes de que pueda utilizarla, haga clic en el siguiente enlace para validar su dirección de correo electrónico',
-	'user.emails.registration_closed'                                      => 'Apreciado/a {{name}},
-
-los nuevos tickets solo se aceptan desde miembros de nuestro servicio. Si tiene una cuenta abierta en nuestro sistema, envíenos de nuevo el correo electrónico desde dicha cuenta.',
+	'user.emails.register-confirm'                                         => 'Gracias por registrar una cuenta.⏎ Antes de que pueda utilizarla, haga clic en el siguiente enlace para validar su dirección de correo electrónico',
+	'user.emails.registration_closed'                                      => 'Apreciado/a {{name}},  los nuevos tickets solo se aceptan desde miembros de nuestro servicio. Si tiene una cuenta abierta en nuestro sistema, envíenos de nuevo el correo electrónico desde dicha cuenta.',
 	'user.emails.ticket_access_ticket_online'                              => 'Ver y gestionar este ticket:',
 	'user.emails.ticket_cc-new'                                            => 'Ha sido incluido en un ticket abierto por {{name}}.',
-	'user.emails.ticket_flood'                                             => 'Ha enviado recientemente un correo electrónico a nuestro servicio. Nuestro sistema automático ha detectado que ha enviado demasiados mensajes que probablememte son automáticos.⏎
-Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.',
+	'user.emails.ticket_flood'                                             => 'Ha enviado recientemente un correo electrónico a nuestro servicio. Nuestro sistema automático ha detectado que ha enviado demasiados mensajes que probablememte son automáticos.⏎ Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.',
 	'user.emails.ticket_message_title'                                     => 'El día {{date}} a {{time}}, {{author}} escribió:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Alerta: Correos electrónicos de confirmación desactivados',
 	'user.emails.ticket_rate-negative'                                     => 'No',
@@ -41,8 +37,7 @@ Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán
 	'user.emails.ticket_rate-question'                                     => '¿ Le ha ayudado este mensaje ?',
 	'user.emails.ticket_received'                                          => 'Se ha recibido su ticket. Uno de nuestros agentes le responderán pronto.',
 	'user.emails.ticket_reply-confirm'                                     => 'Gracias por su respuesta. Uno de nuestros agentes le responderá pronto.',
-	'user.emails.ticket_validate'                                          => 'Gracias por contactar con nosotros.
-Antes de que nuestros agentes puedan responder su mensaje, debe validar su dirección de correo electrónico.',
+	'user.emails.ticket_validate'                                          => 'Gracias por contactar con nosotros. Antes de que nuestros agentes puedan responder su mensaje, debe validar su dirección de correo electrónico.',
 	'user.emails.tickets_ommitted'                                         => '1 mensaje se ha omitido|{{count}} mensajes se han omitido',
 	'user.emails.view_full_history_online'                                 => 'Ver el ticket completo',
 );

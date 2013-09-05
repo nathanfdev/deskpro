@@ -22,17 +22,13 @@
 	'user.emails.label_view-online'                                        => 'Ver Online',
 	'user.emails.message-clipped'                                          => '(Mensagem foi cortada)',
 	'user.emails.password_agent-reset'                                     => 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.',
-	'user.emails.password_reset'                                           => 'Solicitou a reinicialização da palavra chave.
-Para reinicializar a sua palavra chave, clique no link abaixo:',
+	'user.emails.password_reset'                                           => 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:',
 	'user.emails.profile_email-new-confirm'                                => 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo',
 	'user.emails.profile_email_link-validate'                              => 'Para validar o seu endereço de email simplesmente clique no link abaixo',
 	'user.emails.register-agent-validation'                                => 'Nota: Antes da sua conta se tornar completamente ativa, os nossos agentes necessitam validar a sua conta. Bilhetes e outros conteúdos que já enviou serão mantidos numa fila de validação até que um agente valide as suas contas.',
-	'user.emails.register-confirm'                                         => 'Obrigado por registar a sua conta.
-Antes de ser capaz de utilizar a sua conta, tem de clicar no link seguinte para validar o seu endereço de email',
+	'user.emails.register-confirm'                                         => 'Obrigado por registar a sua conta. Antes de ser capaz de utilizar a sua conta, tem de clicar no link seguinte para validar o seu endereço de email',
 	'user.emails.register-welcome'                                         => 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}',
-	'user.emails.registration_closed'                                      => 'Caro {{name}},
-
-Novos bilhetes só são aceites de membros do helpdesk existentes. Se já possui uma conta, por favor envie-nos novamente um email através do endereço de email registado.',
+	'user.emails.registration_closed'                                      => 'Caro {{name}},  Novos bilhetes só são aceites de membros do helpdesk existentes. Se já possui uma conta, por favor envie-nos novamente um email através do endereço de email registado.',
 	'user.emails.reject_resolved'                                          => 'A sua resposta não foi aceite porque o bilhete já foi marcado como resolvido. Os nossos agentes não vão ler ou responder a esta mensagem.',
 	'user.emails.reject_resolved-new'                                      => 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br/><a href="{{link}}">{{link}}</a>',
 	'user.emails.reject_resolved-newemail'                                 => 'e quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a>',
@@ -47,8 +43,7 @@ Novos bilhetes só são aceites de membros do helpdesk existentes. Se já possui
 	'user.emails.ticket_rate-question'                                     => 'Esta mensagem foi de ajuda?',
 	'user.emails.ticket_received'                                          => 'O seu bilhete foi recebido. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.',
 	'user.emails.ticket_reply-confirm'                                     => 'Obrigado pela sua resposta. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.',
-	'user.emails.ticket_validate'                                          => 'Obrigado por nos contactar.
-Antes dos nossos agentes lerem e responderem à sua mensagem, necessita validar o seu endereço de email.',
+	'user.emails.ticket_validate'                                          => 'Obrigado por nos contactar. Antes dos nossos agentes lerem e responderem à sua mensagem, necessita validar o seu endereço de email.',
 	'user.emails.tickets_ommitted'                                         => '1 mensagem foi omitida|{{count}} mensagens foram omitidas',
 	'user.emails.view_full_history_online'                                 => 'Ver bilhete online inteiro',
 );

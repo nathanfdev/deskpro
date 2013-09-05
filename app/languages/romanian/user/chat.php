@@ -1,7 +1,6 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Adresa dumneavoastra de Email',
-	'user.chat.ended-no-agent'                                             => 'Pentru moment toti operatorii nostri sunt ocupati. 
-Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.',
+	'user.chat.ended-no-agent'                                             => 'Pentru moment toti operatorii nostri sunt ocupati.  Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.',
 	'user.chat.error'                                                      => 'Eroare chat',
 	'user.chat.form_chat_button-submit'                                    => 'Trimite',
 	'user.chat.form_chat_send-file'                                        => 'Incarca un fisier',

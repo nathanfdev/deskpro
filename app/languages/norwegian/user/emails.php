@@ -23,21 +23,16 @@
 	'user.emails.password_reset'                                           => 'Du har spurt etter et nytt passord. For å sette nytt passord, klikk på følgende lenke:',
 	'user.emails.profile_email-new-confirm'                                => 'For å legge til en sekundær epost addresse, vennligst klikk på følgende lenke:',
 	'user.emails.profile_email_link-validate'                              => 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:',
-	'user.emails.register-confirm'                                         => 'Takk for at du lagde en konto hos oss.
-Før du kan bruke kontoen, så må du klikke på følgende lenke:',
-	'user.emails.registration_closed'                                      => 'Dear {{name}},
-
-New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.',
+	'user.emails.register-confirm'                                         => 'Takk for at du lagde en konto hos oss. Før du kan bruke kontoen, så må du klikke på følgende lenke:',
+	'user.emails.registration_closed'                                      => 'Dear {{name}},  New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.',
 	'user.emails.ticket_access_ticket_online'                              => 'Se og administrer denne saken online:',
 	'user.emails.ticket_cc-new'                                            => 'Du har blitt inkludert i en sak startet av {{name}}',
-	'user.emails.ticket_flood'                                             => 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske. 
-For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.',
+	'user.emails.ticket_flood'                                             => 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske.  For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.',
 	'user.emails.ticket_message_title'                                     => 'Den {{date}} kl {{time}}, {{author}} skrev:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Advarsel: Bekreftelsesepost er skrudd av.',
 	'user.emails.ticket_received'                                          => 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.',
 	'user.emails.ticket_reply-confirm'                                     => 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.',
-	'user.emails.ticket_validate'                                          => 'Takk for at du tok kontakt.
-Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.',
+	'user.emails.ticket_validate'                                          => 'Takk for at du tok kontakt. Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.',
 	'user.emails.tickets_ommitted'                                         => '1 melding har blitt utelatt|{{count}} melding har blitt utelatt',
 	'user.emails.view_full_history_online'                                 => 'Se hele saken online',
 );
