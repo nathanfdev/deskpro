@@ -215,6 +215,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 				}
 
 				if (!$input->getOption('no-cut')) {
+					$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+					$body = $generic_cutter->cutQuoteBlock($body, false);
+
 					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
 					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
 					$cutter->addPatterns($pattern_config->all());
