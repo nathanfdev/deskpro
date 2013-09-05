@@ -683,6 +683,7 @@
 	'agent.general.username'                                => 'Username',
 	'agent.general.users'                                   => 'Users',
 	'agent.general.usersources'                             => 'Usersources',
+	'agent.general.validate'                                => 'Validate',
 	'agent.general.validate_comment'                        => 'Validate Comment',
 	'agent.general.value'                                   => 'Value',
 	'agent.general.verified'                                => 'Verified',
