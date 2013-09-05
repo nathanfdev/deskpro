@@ -165,7 +165,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		this.modCount(type, '+');
 
-		if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
+		if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 && DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
 
 			var icon = row.data('icon') || '';
 			if (icon) {

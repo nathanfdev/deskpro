@@ -8,6 +8,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 
 	_init: function() {
 		this.count = 0;
+		this.hasDoneInitialLoad = false;
 
 		this.lastMessageId = -1;
 		this.poller = new DeskPRO.AjaxPoller.Poller({
@@ -128,6 +129,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		}
 
 		this.fireEvent('postMessageSend', [data]);
+		this.hasDoneInitialLoad = true;
 	},
 
 	getLastMessageId: function() {
