@@ -56,6 +56,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
+		{% if constant('DP_ENABLE_AGENT_LANG') %}
+			<div class="dp-form-row" {% if not app.getLanguages().isMultiLang() %}style="display: none;"{% endif %}>
+				<div class="dp-form-label"><label>{{ phrase('agent.general.language') }}</label></div>
+				<div class="dp-form-input">
+					{{ form_widget(form.language_id) }}
+				</div>
+			</div>
+		{% endif %}
+
 		{% if app.user.getPermissionsManager().get('GeneralChecker').canSetPicture() %}
 		<div class="dp-form-row new-picture">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.label_picture') }}</label></div>

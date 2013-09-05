@@ -16,7 +16,7 @@
 	'user.emails.feedback_thank-you'                                       => 'Благодарим Вас за отзыв {{title}}.',
 	'user.emails.feedback_updated'                                         => 'В Ваш комментарий {{title}} были внесены изменения. Сейчас он обладает статусом {{status}}.',
 	'user.emails.feedback_validate-email'                                  => 'Пожалуйста, перейдите по следующей ссылке, чтобы подтвердить адрес Вашей почты:',
-	'user.emails.feedback_votes'                                           => 'Количество голосов, которые получил Ваш отзыв на данный момент: <strong>{{count}}</strong>.',
+	'user.emails.feedback_votes'                                           => 'Количество голосов, которые получил Ваш отзыв на данный момент: <strong>{{count}}</strong>.|Количество голосов, которые получил Ваш отзыв на данный момент: <strong>{{count}}</strong>.',
 	'user.emails.greeting'                                                 => 'Уважаемый/-ая {{to_name}},',
 	'user.emails.label_view-online'                                        => 'Смотреть онлайн',
 	'user.emails.message-clipped'                                          => '(Сообщение прикреплено)',

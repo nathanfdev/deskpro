@@ -43,6 +43,7 @@ class SettingsProfile
 	public $override_display_name;
 	public $email;
 	public $timezone = 'UTC';
+	public $language_id = 0;
 	public $password = '';
 	public $password2 = '';
 	public $new_picture_blob_id = false;
@@ -80,6 +81,7 @@ class SettingsProfile
 		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
+		$this->language_id = $person->getLanguage()->getId();
 
 		$this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
 		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', false);
@@ -146,6 +148,10 @@ class SettingsProfile
 
 		if ($this->password) {
 			$person->setPassword($this->password);
+		}
+
+		if ($this->language_id) {
+			$person->setLanguageId($this->language_id);
 		}
 
 		$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);

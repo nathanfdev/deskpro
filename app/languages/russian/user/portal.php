@@ -14,7 +14,7 @@
 	'user.portal.search_label-search_with'                                 => 'Метки:',
 	'user.portal.search_labels_title'                                      => 'Найти метки',
 	'user.portal.search_more-results'                                      => 'Показать больше результатов поиска',
-	'user.portal.search_result-count'                                      => 'Результатов поиска: {{count}}',
+	'user.portal.search_result-count'                                      => 'Результатов поиска: {{count}}|Результатов поиска: {{count}}',
 	'user.portal.share_this'                                               => 'Поделиться',
 	'user.portal.sidebar_staff-description'                                => 'Наши сотрудники готовы помочь.',
 	'user.portal.sidebar_welcome-user'                                     => 'Рады видеть Вас снова, {{name}}',

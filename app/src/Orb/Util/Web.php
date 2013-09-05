@@ -151,15 +151,19 @@ class Web
 	static public function setCookie($name, $value, $expire = 'next week', $httponly = true, $secure = null, $path = null, $domain = null)
 	{
 		// Not a timestamp
-		if (!ctype_digit($expire)) {
-			if ($expire == 'never') {
-				$expire = mktime(0, 0, 0, 0, 0, 2020);
-			} else {
-				$expire = strtotime($expire);
+		if ($expire === null) {
+			$expire = false;
+		} else {
+			if (!ctype_digit($expire)) {
+				if ($expire == 'never') {
+					$expire = mktime(0, 0, 0, 0, 0, 2020);
+				} else {
+					$expire = strtotime($expire);
 
-				if (!$expire) {
-					$expire = null;
-					throw new \Exception('Unknown expire format: ' . $expire);
+					if (!$expire) {
+						$expire = null;
+						throw new \Exception('Unknown expire format: ' . $expire);
+					}
 				}
 			}
 		}

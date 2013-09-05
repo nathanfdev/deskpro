@@ -660,6 +660,10 @@ class Translate implements PersonContextInterface
 			} catch (\Exception $e) {}
 		}
 
+		if (!$debug && isset($_COOKIE['dp_dev_langdebug'])) {
+			$debug = $_COOKIE['dp_dev_langdebug'];
+		}
+
 		if ($debug == 'user' AND $phrase_name != 'agent.general.x_is_y') {
 			if (substr($phrase_name, 0, 4) != 'user') {
 				echo $phrase_name;

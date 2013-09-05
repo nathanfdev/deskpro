@@ -35,14 +35,38 @@
 namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
+use Orb\Util\Web;
 
 class TestController extends AbstractController
 {
 	public function indexAction()
 	{
 		$page_html = '';
+
+		if (isset($_GET['langdebug'])) {
+			$page_html = $this->_langDebugPage();
+		}
+
 		return $this->render('AdminBundle:Main:test.html.twig', array(
 			'page_html' => $page_html
 		));
+	}
+
+	private function _langDebugPage()
+	{
+		if (isset($_GET['opt_enable'])) {
+			Web::setCookie('dp_dev_langdebug', 'japanese', null, true, false, '/');
+			return "Option enabled";
+		} else if (isset($_GET['opt_disable'])) {
+			Web::setCookie('dp_dev_langdebug', null, -1, true, false, '/');
+			return "Option disabled";
+		}
+
+		$html = <<<HTML
+<a href="?langdebug&amp;opt_enable">Enable Language Debug</a> &bull;
+<a href="?langdebug&amp;opt_disable">Disable Language Debug</a>
+HTML;
+
+		return $html;
 	}
 }

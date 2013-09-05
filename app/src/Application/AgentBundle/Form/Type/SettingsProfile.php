@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Form\Type;
 
+use Application\DeskPRO\App;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
@@ -46,6 +47,14 @@ class SettingsProfile extends AbstractType
 		$builder->add('email', 'text', array('required' => false));
 		$builder->add('timezone', 'choice', array(
 			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
+		));
+
+		$lang_names = array();
+		foreach (App::getDataService('Language')->getAll() as $l) {
+			$lang_names[$l->getId()] = App::getTranslator()->getPhraseObject($l, 'title');
+		}
+		$builder->add('language_id', 'choice', array(
+			'choices' => $lang_names
 		));
 		$builder->add('password', 'password', array('required' => false));
 		$builder->add('password2', 'password', array('required' => false));
