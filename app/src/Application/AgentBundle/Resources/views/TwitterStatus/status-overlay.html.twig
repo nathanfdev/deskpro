@@ -12,7 +12,7 @@ pageMeta.baseId = '{{ baseId }}';
 <article class="full" data-width="600" data-height="{{ parents ? 400 : 300 }}">
 	{% if parents %}
 		<div class="twitter-parents">
-			<h3>Previous Tweets</h3>
+			<h3>{{ phrase('agent.twitter.previous_tweets') }}</h3>
 			{% for parent in parents %}
 				{% include 'AgentBundle:TwitterStatus:status-simple.html.twig' with {'status': parent} %}
 			{% endfor %}

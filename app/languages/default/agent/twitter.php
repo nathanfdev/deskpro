@@ -77,4 +77,6 @@
 	'agent.twitter.unretweet'                     => 'Unretweet',
 	'agent.twitter.user_replied_to_tweet'         => '{{name}} replied to your tweet',
 	'agent.twitter.view_twitter_profile'          => 'View Twitter Profile',
+	'agent.twitter.previous_tweets'          => 'Previous Tweets',
+	'agent.twitter.added_by_agent' => 'Added by agent {{name}}',
 );

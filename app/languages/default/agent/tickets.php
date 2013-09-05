@@ -347,6 +347,7 @@
 	'agent.tickets.unassign_team'                       => 'Unassign team',
 	'agent.tickets.unhelpful'                           => 'unhelpful',
 	'agent.tickets.unhold_btn'                          => 'Remove ticket from hold',
+	'agent.tickets.unhold_ticket'                       => 'Unhold Ticket',
 	'agent.tickets.unlock'                              => 'Unlock',
 	'agent.tickets.unsanitized_message'                 => 'Raw Message (Unsanitized)',
 	'agent.tickets.unsanitized_message_confirm'         => 'Are you sure you want to view the unsanitized version? This could contain malicous and dangerous source code.',
@@ -375,4 +376,5 @@
 	'agent.tickets.you_have_locked'                     => 'You have locked this ticket. Other agents will not be able to edit the ticket until it is unlocked.',
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
+	'agent.tickets.click_icon_to_show_slas'             => 'Click {{icon}} to show SLAs',
 );

@@ -70,17 +70,18 @@
 					{% endif %}
 					{% if retweet %}
 						<div class="extra-row retweet">
-							<em></em>Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+							{% set phrase_part %}<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>{% endset %}
+							{{ phrase('agent.twitter.retweeted_by', {name: phrase_part}, true) }}
 						</div>
 					{% endif %}
 					{% if status.long and status.long.date_read %}
 						<div class="extra-row long-read">
-							Long tweet read <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
+							{{ phrase('agent.twitter.long_tweet_read') }} <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
 						</div>
 					{% endif %}
 					{% if account_status.action_agent %}
 						<div class="extra-row action-agent">
-							Added by agent <strong>{{ account_status.action_agent.display_name }}</strong>
+							{{ phrase('agent.twitter.added_by_agent', {name: account_status.action_agent.display_name}) }}
 						</div>
 					{% endif %}
 				</div>
@@ -101,7 +102,7 @@
 			{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
 				'account': account_status.account,
 				'default_type': status.recipient ? 'private' : 'public',
-				'send_text': 'Reply',
+				'send_text': phrase('agent.general.reply'),
 				'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ account_status.id ~ '" />'
 			} %}
 		</div>
@@ -159,9 +160,9 @@
 			<li class="noval opt-trigger agent" style="overflow:hidden; height: 18px; position: relative; float: right;">
 				<label>
 					{% if account_status.agent and account_status.agent.id != app.user.id %}<img src="{{ account_status.agent.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> {{ account_status.agent.display_name }}
-					{% elseif account_status.agent and account_status.agent.id == app.user.id %}<img src="{{ app.user.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> Me
+					{% elseif account_status.agent and account_status.agent.id == app.user.id %}<img src="{{ app.user.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> {{ phrase('agent.general.me') }}
 					{% elseif account_status.agent_team %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> {{ account_status.agent_team.name }}
-					{% else %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> None{% endif %}
+					{% else %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> {{ phrase('agent.general.none') }}{% endif %}
 				</label><span class="drop-icon"></span>
 				<select class="agents_sel dpe_select"  style="min-width: 170px; display: none" data-invisible-trigger="1" data-style-type="icons">
 					<option {% if not account_status.agent and not account_status.agent_team %}selected="selected"{% endif %} value="" data-icon="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}">{{ phrase('agent.general.none') }}</option>

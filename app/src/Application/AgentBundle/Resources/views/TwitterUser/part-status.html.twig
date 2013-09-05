@@ -23,16 +23,16 @@
 			</span>
 			{% if account and status.user.id != account.user.id and status.user.id != user.id %}
 					{% if status.user.id in account.friend_ids %}
-						<span class="follow-unfollow-button unfollow">Unfollow</span>
+						<span class="follow-unfollow-button unfollow">{{ phrase('agent.twitter.unfollow') }}</span>
 					{% else %}
-						<span class="follow-unfollow-button follow">Follow</span>
+						<span class="follow-unfollow-button follow">{{ phrase('agent.twitter.follow') }}</span>
 					{% endif %}
 				{% endif %}
 			{% if status.isMessage() %}
 				<span class="dm-notice">DM</span>
 			{% endif %}
 			{% if status.long %}
-				<span class="long-notice">{% if status.long.is_public %}Long{% else %}Long Private{% endif %}</span>
+				<span class="long-notice">{% if status.long.is_public %}{{ phrase('agent.twitter.long') }}{% else %}{{ phrase('agent.twitter.long_private') }}{% endif %}</span>
 			{% endif %}
 		</h4>
 
@@ -50,12 +50,13 @@
 				{% endif %}
 				{% if retweet %}
 					<div class="extra-row retweet">
-						<em></em>Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+						{% set phrase_part %}<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>{% endset %}
+						{{ phrase('agent.twitter.retweeted_by', {name: phrase_part}, true) }}
 					</div>
 				{% endif %}
 				{% if status.long and status.long.date_read %}
 					<div class="extra-row long-read">
-						Long tweet read <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
+						{{ phrase('agent.twitter.long_tweet_read') }} <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
 					</div>
 				{% endif %}
 			</div>
@@ -76,7 +77,7 @@
 				{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
 					'account': account,
 					'default_type': status.recipient ? 'private' : 'public',
-					'send_text': 'Reply',
+					'send_text': phrase('agent.general.reply'),
 					'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ (account_status ? account_status.id : 'status' ~ status.id) ~ '" />'
 				} %}
 			</div>
@@ -126,17 +127,17 @@
 					{% endif %}
 				{% endif %}
 				<li class="note-btn" style="float:right;">
-					<label>Add Note</label><span class="drop-icon"></span>
+					<label>{{ phrase('agent.general.add_note') }}</label><span class="drop-icon"></span>
 				</li>
 				<li class="noval opt-trigger agent" style="overflow:hidden; height: 18px; position: relative; float: right;">
 					<label>
 						{% if account_status and account_status.agent and account_status.agent.id != app.user.id %}<img src="{{ account_status.agent.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> {{ account_status.agent.display_name }}
-						{% elseif account_status and account_status.agent and account_status.agent.id == app.user.id %}<img src="{{ app.user.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> Me
+						{% elseif account_status and account_status.agent and account_status.agent.id == app.user.id %}<img src="{{ app.user.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> {{ phrase('agent.general.me') }}
 						{% elseif account_status and account_status.agent_team %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> {{ account_status.agent_team.name }}
 						{% else %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> None{% endif %}
 					</label><span class="drop-icon"></span>
 					<select class="agents_sel dpe_select"  style="min-width: 170px; display: none" data-invisible-trigger-right="1" data-style-type="icons">
-						<option {% if not account_status or (not account_status.agent and not account_status.agent_team) %}selected="selected"{% endif %} value="" data-icon="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}">None</option>
+						<option {% if not account_status or (not account_status.agent and not account_status.agent_team) %}selected="selected"{% endif %} value="" data-icon="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}">{{ phrase('agent.general.none') }}</option>
 						<optgroup label="{{ phrase('agent.general.agents') }}">
 							{% for agent in app.agents.getAgents() %}
 								{% if account.hasPerson(agent) %}
@@ -168,7 +169,7 @@
 			<div class="note-input">
 				<textarea class="note-textarea"></textarea>
 				<div class="is-not-loading">
-					<button class="clean-white small save-note-trigger">Add Note</button>
+					<button class="clean-white small save-note-trigger">{{ phrase('agent.general.add_note') }}</button>
 					<span class="cancel-note-trigger">{{ phrase('agent.general.cancel') }}</span>
 				</div>
 				<div class="is-loading">

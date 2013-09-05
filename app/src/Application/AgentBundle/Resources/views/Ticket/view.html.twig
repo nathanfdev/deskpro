@@ -107,7 +107,7 @@ pageMeta.lang = {{ {
 	</div>
 	<div id="{{baseId}}_hold_message" {% if not ticket.is_hold %}style="display: none"{% endif %}>
 		<div class="hold-message">
-			<button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">Unhold Ticket</button>
+			<button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">{{ phrase('agent.tickets.unhold_ticket') }}</button>
 			<div style="margin-right: 100px;">
 				{{ phrase('agent.tickets.currently_on_hold') }}
 			</div>
@@ -240,7 +240,7 @@ pageMeta.lang = {{ {
 				'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 
-			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default('None') }}</span>
+			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default(phrase('agent.general.none')) }}</span>
 
 			<span class="dp-caret"></span>
 		</li>
@@ -342,7 +342,7 @@ pageMeta.lang = {{ {
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
-					<label class="field-label-title">Agent</label>
+					<label class="field-label-title">{{ phrase('agent.general.agent') }}</label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
@@ -355,7 +355,7 @@ pageMeta.lang = {{ {
 						{% endfor %}
 					</select>
 			</td><td style="padding-right: 5px;">
-				<label class="field-label-title">Team</label>
+				<label class="field-label-title">{{ phrase('agent.general.team') }}</label>
 				<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 					{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 						<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
@@ -600,7 +600,7 @@ pageMeta.lang = {{ {
 					{% else %}
 						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
 					{% endif %}
-					(since {{ ticket.date_user_waiting|date('fulltime') }})
+					({{ phrase('agent.general.since_time', {time: ticket.date_user_waiting|date('fulltime')}) }})
 				</td>
 			</tr></tbody>
 			{% endif %}
@@ -635,7 +635,7 @@ pageMeta.lang = {{ {
 				<th>{{ phrase('agent.tickets.current_agent_waiting_time') }}:</th>
 				<td>
 					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_agent_waiting|date('c', 'UTC') }}"></time>
-					(since {{ ticket.date_agent_waiting|date('fulltime') }})
+					({{ phrase('agent.general.since_time', {time: ticket.date_agent_waiting|date('fulltime')}) }})
 				</td>
 			</tr></tbody>
 			{% endif %}
@@ -806,9 +806,9 @@ pageMeta.lang = {{ {
 		{% if person_object_counts.tickets > 1 or person_object_counts.chats %}
 		<div id="{{ baseId }}_delete_user_list" style="display: none;">
 			<br/>
-			Deleting the user will also delete their other related content:<br />
-			&bull; {{ person_object_counts.tickets }} Tickets<br/>
-			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
+			{{ phrase('agent.people.other_user_content_being_deleted') }}<br />
+			&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}
+			{% if person_object_counts.chats %}&bull; {{ phrase('agent.general.count_chat', {count: person_object_counts.chats}) }}<br/>{% endif %}
 		</div>
 		{% endif %}
 	</div>

@@ -31,13 +31,13 @@
 
 	{% if reply.status.long and reply.status.long.date_read %}
 		<div class="extra-row long-read">
-			Long tweet read <time class="timeago" title="{{reply.status.long.date_read|date('c', 'UTC')}}">{{reply.status.long.date_read|date('day')}}</time>
+			{{ phrase('agent.twitter.long_tweet_read') }} <time class="timeago" title="{{reply.status.long.date_read|date('c', 'UTC')}}">{{reply.status.long.date_read|date('day')}}</time>
 		</div>
 	{% endif %}
 
 	{% if reply.action_agent %}
 		<div class="extra-row action-agent">
-			Added by agent <strong>{{ reply.action_agent.display_name }}</strong>
+			{{ phrase('agent.twitter.added_by_agent', {name: reply.action_agent.display_name}) }}
 		</div>
 	{% endif %}
 </li>

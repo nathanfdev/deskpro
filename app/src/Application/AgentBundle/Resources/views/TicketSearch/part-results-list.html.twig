@@ -41,9 +41,9 @@
 			{% elseif field == 'deleted_reason' %}
 				<td class="{{field}}">
 					{% if deleted_tickets[ticket.id] %}
-						Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
+						{{ phrase('agent.general.deleted_by', {name: deleted_tickets[ticket.id].by_person.display_name}) }}
 						{% if deleted_tickets[ticket.id].reason %}
-							because: {{ deleted_tickets[ticket.id].reason }}
+							({{ phrase('agent.general.reason') }}: {{ deleted_tickets[ticket.id].reason }})
 						{% endif %}
 					{% endif %}
 				</td>

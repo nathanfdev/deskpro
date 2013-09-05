@@ -173,7 +173,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div style="padding: 10px">{{ phrase('agent.twitter.no_statuses') }}</div>
 			{% endfor %}
 			{% if user.statuses_count > 25 %}
-				<div class="more-box"><button class="clean-white more-button" data-load-url="{{ path('agent_twitter_user_statuses', {'user_id': user.id, 'page': 2}) }}">View More... <span class="flat-spinner" style="display: none"></span></button></div>
+				<div class="more-box"><button class="clean-white more-button" data-load-url="{{ path('agent_twitter_user_statuses', {'user_id': user.id, 'page': 2}) }}">{{ phrase('agent.general.view_more') }} <span class="flat-spinner" style="display: none"></span></button></div>
 			{% endif %}
 		</article>
 
@@ -195,7 +195,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{% if user.friends_count %}
 			<article id="{{baseId}}_following_tab" data-load-url="{{ path('agent_twitter_user_following', {'user_id': user.id}) }}">
-				<div style="padding: 10px; text-align: center">Loading... <span class="flat-spinner"></span></div>
+				<div style="padding: 10px; text-align: center"><span class="flat-spinner"></span></div>
 			</article>
 		{% else %}
 			<article id="{{baseId}}_following_tab">
@@ -205,7 +205,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{% if user.followers_count %}
 			<article id="{{baseId}}_followers_tab" data-load-url="{{ path('agent_twitter_user_followers', {'user_id': user.id}) }}">
-				<div style="padding: 10px; text-align: center">Loading... <span class="flat-spinner"></span></div>
+				<div style="padding: 10px; text-align: center"><span class="flat-spinner"></span></div>
 			</article>
 		{% else %}
 			<article id="{{baseId}}_followers_tab">

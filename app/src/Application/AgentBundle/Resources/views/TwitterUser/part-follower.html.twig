@@ -20,10 +20,10 @@
 		</div>
 
 		<div class="extra-container extra-row">
-			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Tweets: {{ user.statuses_count }}</span>
-			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Following: {{ user.friends_count }}</span>
-			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Followers: {{ user.followers_count }}</span>
-			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Interactions: {{ user.countAccountInteractions(account) }}</span>
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">{{ phrase('agent.twitter.tweets') }}: {{ user.statuses_count }}</span>
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">{{ phrase('agent.twitter.following') }}: {{ user.friends_count }}</span>
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">{{ phrase('agent.twitter.followers') }}: {{ user.followers_count }}</span>
+			<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">{{ phrase('agent.twitter.interactions') }}: {{ user.countAccountInteractions(account) }}</span>
 		</div>
 	</div>
 	<div class="message-sent-confirmation" style="display: none">
@@ -34,7 +34,7 @@
 			'account': account,
 			'default_type': 'public',
 			'default_text': '@' ~ user.screen_name ~ ' ',
-			'send_text': 'Send Message',
+			'send_text': phrase('agent.twitter.send_tweet'),
 			'reply_form_extra': '<input type="hidden" name="user_id" value="' ~ user.id ~ '" />'
 		} %}
 	</div>

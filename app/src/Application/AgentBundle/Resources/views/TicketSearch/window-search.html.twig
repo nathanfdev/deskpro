@@ -53,14 +53,14 @@
 			<select class="dp-select-widget-simple" name="search_assigned[]" multiple="multiple" data-target-menu="auto">
 				<optgroup label="{{ phrase('agent.general.agents') }}">
 					<option value="0">{{ phrase('agent.general.unassigned') }}</option>
-					<option selected="selected" value="{{ app.user.id }}">Me</option>
+					<option selected="selected" value="{{ app.user.id }}">{{ phrase('agent.general.me') }}</option>
 					{% for agent in app.agents.getAgents() if agent.id != app.user.id %}
 						<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 					{% endfor %}
 				</optgroup>
 				{% if app.agent_teams.getTeams()|length %}
 					<optgroup label="{{ phrase('agent.general.teams') }}">
-						<option value="team.0">No team</option>
+						<option value="team.0">{{ phrase('agent.general.none') }}</option>
 						{% for team in app.agent_teams.getTeams() %}
 							<option value="team.{{ team.id }}">{{ team.name }}</option>
 						{% endfor %}

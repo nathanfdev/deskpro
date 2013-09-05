@@ -31,8 +31,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="message-block" style="margin-left: 0">
 			<textarea name="text" style="min-height: 100px"></textarea>
 			<div>
-				<span class="character-count"><em>140</em> remaining</span>
-				<span class="over-options" style="display: none"><label class="tipped" title="If checked, this will be sent as multiple tweets. If unchecked, a single tweet with a link to the full message will be sent."><input type="checkbox" name="split" value="1" checked="checked" /> Split to multiple</label></span>
+				<span class="character-count">{{ phrase('agent.twitter.char_remaining', {num_chars: '<em>140</em>'}, true) }}</span>
+				<span class="over-options" style="display: none"><label class="tipped" title="{{ phrase('agent.twitter.split_to_multiple_explain') }}"><input type="checkbox" name="split" value="1" checked="checked" /> {{ phrase('agent.twitter.split_to_multiple') }}</label></span>
 			</div>
 		</div>
 	</div>

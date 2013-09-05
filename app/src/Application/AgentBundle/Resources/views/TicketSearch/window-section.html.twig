@@ -33,7 +33,7 @@
 								</div>
 								<div class="item-form" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}>
 									<div class="select-value-wrap">
-										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
+										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
@@ -80,7 +80,7 @@
 								</div>
 								<div class="item-form" {% if not initial_inbox_grouping[filter.id] %}style="display: none;"{% endif %}>
 									<div class="select-value-wrap">
-										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}">Group by None</label> <i class="icon-caret-down"></i></div>
+										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
@@ -95,7 +95,7 @@
 											<option {% if initial_inbox_grouping[filter.id] == "total_user_waiting" %}selected="selected"{% endif %} value="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "date_created" %}selected="selected"{% endif %} value="date_created">{{ phrase('agent.general.time_open') }}</option>
 											{% for f in app.getTicketFieldManager().getFields() %}
-												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">View by {{ f.title }}</option>
+												<option {% if initial_inbox_grouping[filter.id] == "ticket_field_"~f.id %}selected="selected"{% endif %} value="ticket_field_{{ f.id }}">{{ f.title }}</option>
 											{% endfor %}
 										</select>
 									</div>
@@ -183,7 +183,7 @@
 						</li>
 					{% endfor %}
 						<li class="no-data" {% if has_any_showing %}style="display: none"{% endif %}>
-							Click <span class="gear-icon"></span> to show SLAs
+							{{ phrase('agent.tickets.click_icon_to_show_slas', {icon: '<span class="gear-icon"></span>'}, true) }}
 						</li>
 					</ul>
 				</article>

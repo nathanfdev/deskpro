@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</span>
 		{% else %}
 			{% if visitor.name or visitor.email %}
-				Anonymous: {{ visitor.name }} {% if visitor.email %}({{ visitor.email }}){% endif %}
+				{{ phrase('agent.general.anonymous') }}: {{ visitor.name }} {% if visitor.email %}({{ visitor.email }}){% endif %}
 			{% endif %}
 		{% endif %}
 	</h1>
@@ -70,7 +70,7 @@ pageMeta.baseId = '{{ baseId }}';
 								</a>
 								{% if track.ref_page_url %}
 								<div style="font-size: 10px;">
-									Referrer:
+									{{ phrase('agent.general.referrer') }}:
 									<a href="{{ track.ref_page_url }}" target="_blank">
 										{{ track.ref_page_url|url_trim_scheme(true) }}
 									</a>
@@ -102,7 +102,7 @@ pageMeta.baseId = '{{ baseId }}';
 								</a>
 								{% if track.ref_page_url %}
 								<div style="font-size: 10px;">
-									Referrer:
+									{{ phrase('agent.general.referrer') }}:
 									<a href="{{ track.ref_page_url }}" target="_blank">
 										{{ track.ref_page_url|url_trim_scheme(true) }}
 									</a>
