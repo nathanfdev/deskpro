@@ -1,5 +1,5 @@
 <?php return array(
-	'user.knowledgebase.article-viewed'                                    => 'Artikkelen har blitt lest {{count}} ganger.',
+	'user.knowledgebase.article-viewed'                                    => 'Artikkelen har blitt lest 1 ganger.|Artikkelen har blitt lest {{count}} ganger.',
 	'user.knowledgebase.article_not_found'                                 => 'Kan ikke finne artikkelen',
 	'user.knowledgebase.category_no-articles'                              => 'Ingen artikler i denne kategorien',
 	'user.knowledgebase.knowledgebase'                                     => 'Kunnskapsbase',

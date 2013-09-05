@@ -1,6 +1,7 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Din epost adresse',
 	'user.chat.ended-no-agent'                                             => 'Vi beklager, men det er ingen som kan chatte med deg akkurat nå. Vennligst send oss en epost eller prøv senere.',
+	'user.chat.error'                                                      => 't',
 	'user.chat.form_chat_button-submit'                                    => 'Send',
 	'user.chat.form_chat_send-file'                                        => 'Last opp fil',
 	'user.chat.form_create_button-submit'                                  => 'Start Chat',
