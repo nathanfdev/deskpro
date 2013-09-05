@@ -21,7 +21,7 @@
 	'user.chat.message_ended-by'                                           => 'Chat terminata da {{name}}',
 	'user.chat.message_ended-by-user'                                      => 'Chat terminata dall\'utente',
 	'user.chat.message_finding-agent'                                      => 'Stiamo cercando un membro dello staff',
-	'user.chat.message_long-wait'                                          => 'Continuiamo a cercare un membro dello staff. Hai fretta? <a class="cancel-and-newticket-trigger">Vuoi lasciarci un messaggio?</a>',
+	'user.chat.message_long-wait'                                          => 'Continuiamo a cercare un membro dello staff.<br /><br />Hai fretta? <a class="cancel-and-newticket-trigger">Vuoi lasciarci un messaggio?</a>',
 	'user.chat.message_set-department'                                     => '{{name}} ha settato il dipartimento a {{department}}',
 	'user.chat.message_started'                                            => 'Chat iniziata',
 	'user.chat.message_unassigned'                                         => 'Chat non assegnata',

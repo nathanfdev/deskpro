@@ -10,7 +10,7 @@
 	'agent.emails.alert_failed_login'                   => 'Failed Login Attempt Alert',
 	'agent.emails.alert_successful_login'               => 'Successful Login Alert',
 	'agent.emails.deskpro_test_email'                   => 'DeskPRO Test Email',
-	'agent.emails.deskpro_test_email_body'              => 'This is a test of the DeskPRO email system.<br/><br/>If you received this, your email settings are correct.',
+	'agent.emails.deskpro_test_email_body'              => 'This is a test of the DeskPRO email system.<br /><br />If you received this, your email settings are correct.',
 	'agent.emails.detected_as_forward'                  => 'We have detected the email you just sent as a forwarded message.',
 	'agent.emails.email_change_merge'                   => 'This email is to confirm you want to merge your two existing helpdesk accounts: {{old_email}} and {{new_email}}. If you do not want to merge these accounts, or did not request this, then you can ignore this email. To confirm the merger, click on the following link:',
 	'agent.emails.error_missing_marker_explain'         => 'This reply marker is required for proper processing of your replies. Please re-send your reply, but this time leave the reply line marker in tact.',

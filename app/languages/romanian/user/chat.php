@@ -1,6 +1,6 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Adresa dumneavoastra de Email',
-	'user.chat.ended-no-agent'                                             => 'Pentru moment toti operatorii nostri sunt ocupati.  Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.',
+	'user.chat.ended-no-agent'                                             => 'Pentru moment toti operatorii nostri sunt ocupati. Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.',
 	'user.chat.error'                                                      => 'Eroare chat',
 	'user.chat.form_chat_button-submit'                                    => 'Trimite',
 	'user.chat.form_chat_send-file'                                        => 'Incarca un fisier',
@@ -31,7 +31,7 @@
 	'user.chat.message_ended-by'                                           => 'Chat inchis de catre {{name}}',
 	'user.chat.message_ended-by-user'                                      => 'Chat inchis de catre user',
 	'user.chat.message_finding-agent'                                      => 'In cautarea unui agent disponibil',
-	'user.chat.message_long-wait'                                          => 'Suntem in cautarea unui agent disponibil. Aceasta operatiune dureaza in mod normal mai putin de un minut. <br/><br/> Sunteti in graba?<a class="cancel-and-newticket-trigger">Doriti sa ne lasati un mesaj in schimb?</a>',
+	'user.chat.message_long-wait'                                          => 'Suntem in cautarea unui agent disponibil. Aceasta operatiune dureaza in mod normal mai putin de un minut. <br /><br /> Sunteti in graba?<a class="cancel-and-newticket-trigger">Doriti sa ne lasati un mesaj in schimb?</a>',
 	'user.chat.message_set-department'                                     => '{{name}} a setat departamentul ca {{department}}',
 	'user.chat.message_started'                                            => 'Chat-ul a pornit',
 	'user.chat.message_unassigned'                                         => 'Chat neasignat',

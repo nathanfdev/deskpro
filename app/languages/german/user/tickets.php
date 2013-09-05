@@ -38,7 +38,7 @@
 	'user.tickets.from_x_at_y'                                             => 'Von {{name}} am {{date}}',
 	'user.tickets.i_dont_need_to_email'                                    => 'Ich muss sie nicht mehr kontaktieren',
 	'user.tickets.i_still_want_to_email'                                   => 'Ich möchte meine Frage weiterhin stellen',
-	'user.tickets.join_explain'                                            => 'Sie sind dabei ein Teilnehmer des Tickets "{{subject}}" von {{name}} zu werden.<br/><br/>Sie können es lesen und mit dem Ticket interagieren und Sie erhalten Emailbenachrichtigungen wenn das Ticket aktualisiert wird. Beachten Sie dass Ihr Beitreten zum Ticket protokolliert wird und Ihre Teilnahme für  andere Ticket-Teilnehmer öffentlich sichtbar ist.',
+	'user.tickets.join_explain'                                            => 'Sie sind dabei ein Teilnehmer des Tickets "{{subject}}" von {{name}} zu werden.<br /><br />Sie können es lesen und mit dem Ticket interagieren und Sie erhalten Emailbenachrichtigungen wenn das Ticket aktualisiert wird. Beachten Sie dass Ihr Beitreten zum Ticket protokolliert wird und Ihre Teilnahme für  andere Ticket-Teilnehmer öffentlich sichtbar ist.',
 	'user.tickets.join_ticket'                                             => 'Dem Ticket beitreten',
 	'user.tickets.label_cced'                                              => 'CCed',
 	'user.tickets.lbl_what_is_your_question'                               => 'Wie lautet Ihre Frage?',

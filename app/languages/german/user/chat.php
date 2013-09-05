@@ -21,7 +21,7 @@
 	'user.chat.message_ended-by'                                           => 'Chat beendet durch {{name}}',
 	'user.chat.message_ended-by-user'                                      => 'Chat durch den Benutzer beendet',
 	'user.chat.message_finding-agent'                                      => 'Suche einen Agenten',
-	'user.chat.message_long-wait'                                          => 'Wir versuchen immer noch einen verfügbaren Agenten zu finden um Ihren Chat annehmen zu können. Dies dauert in der Regel weniger als eine Minute.<br/><br/>Sie sind in Eile?<a class="cancel-and-newticket-trigger">Wollen Sie uns stattdessen eine Nachricht hinterlassen?</a>',
+	'user.chat.message_long-wait'                                          => 'Wir versuchen immer noch einen verfügbaren Agenten zu finden um Ihren Chat annehmen zu können. Dies dauert in der Regel weniger als eine Minute.<br /><br />Sie sind in Eile?<a class="cancel-and-newticket-trigger">Wollen Sie uns stattdessen eine Nachricht hinterlassen?</a>',
 	'user.chat.message_set-department'                                     => '{{name}} Bereich setzen auf {{department}}',
 	'user.chat.message_started'                                            => 'Chat gestartet',
 	'user.chat.message_unassigned'                                         => 'Chat nicht zugewiesen',

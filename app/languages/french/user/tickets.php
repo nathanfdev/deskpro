@@ -40,7 +40,7 @@
 	'user.tickets.from_x_at_y'                                             => 'De {{name}} le {{date}}',
 	'user.tickets.i_dont_need_to_email'                                    => 'Je n\'ai plus besoin de vous contacter',
 	'user.tickets.i_still_want_to_email'                                   => 'Je souhaite toujours poser ma question',
-	'user.tickets.join_explain'                                            => 'Vous êtes sur le point de participer au ticket "{{subject}}" de {{name}}. Vous pourrez lire ce ticket, interagir dessus et vous recevrez des emails de notifications quand ce ticket sera mis à jour. Sachez que votre ajout à ce ticket sera enregistré et que votre participation à ce ticket sera rendue publique et visible par les autres participants.',
+	'user.tickets.join_explain'                                            => 'Vous êtes sur le point de participer au ticket "{{subject}}" de {{name}}.<br /><br /> Vous pourrez lire ce ticket, interagir dessus et vous recevrez des emails de notifications quand ce ticket sera mis à jour. Sachez que votre ajout à ce ticket sera enregistré et que votre participation à ce ticket sera rendue publique et visible par les autres participants.',
 	'user.tickets.join_ticket'                                             => 'Rejoindre le Ticket',
 	'user.tickets.label_cc_emails'                                         => 'CC d\'autres personnes dans ce ticket',
 	'user.tickets.label_cced'                                              => 'CC',

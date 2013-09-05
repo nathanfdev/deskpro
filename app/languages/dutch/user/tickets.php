@@ -83,7 +83,7 @@
 	'user.tickets.title_links_safe'                                        => 'Maak u geen zorgen, u zult op deze pagina blijven wanneer u op een titel klikt.',
 	'user.tickets.type_your_reply_here'                                    => 'Typ uw antwoord hier ...',
 	'user.tickets.unassigned'                                              => 'Niet toegewezen',
-	'user.tickets.validate_to_be_seen'                                     => 'Voordat uw ticket zal worden gelezen door onze medewerkers, moet u uw e-mailadres valideren. Controleer uw e-mail voor onze bevestiging link.',
+	'user.tickets.validate_to_be_seen'                                     => '<strong>Voordat uw ticket zal worden gelezen door onze medewerkers</strong>, moet u uw e-mailadres valideren. Controleer uw e-mail voor onze bevestiging link.',
 	'user.tickets.view_more_results'                                       => 'bekijk {{part}} meer resultaten',
 	'user.tickets.view_your_x_tickets'                                     => 'Bekijk uw ticket|Bekijk uw {{count}} tickets',
 	'user.tickets.was_reply_helpful'                                       => 'Was dit antwoord nuttig?',

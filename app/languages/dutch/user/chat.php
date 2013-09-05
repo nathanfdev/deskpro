@@ -1,6 +1,6 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Uw e-mail adres',
-	'user.chat.ended-no-agent'                                             => 'Het spijt ons. Er is op dit moment niemand beschikbaar om met u te chatten.  Stuur ons een e-mail of probeer het later nogmaals',
+	'user.chat.ended-no-agent'                                             => 'Het spijt ons. Er is op dit moment niemand beschikbaar om met u te chatten. Stuur ons een e-mail of probeer het later nogmaals',
 	'user.chat.form_chat_button-submit'                                    => 'Stuur',
 	'user.chat.form_chat_send-file'                                        => 'Upload een bestand',
 	'user.chat.form_create_button-submit'                                  => 'Start Chat',
@@ -21,7 +21,7 @@
 	'user.chat.message_ended-by'                                           => 'Chat beëindigd door {{name}}',
 	'user.chat.message_ended-by-user'                                      => 'Chat beëindigd door gebruiker',
 	'user.chat.message_finding-agent'                                      => 'Bezig met zoeken naar medewerker',
-	'user.chat.message_long-wait'                                          => 'We kunnen nog geen beschikbare medewerker voor u vinden. Dit duurt normaal niet langer dan een minuut. <br/><br/>Heeft u haast?  <a class="cancel-and-newticket-trigger"> Laat een bericht achter? </a>',
+	'user.chat.message_long-wait'                                          => 'We kunnen nog geen beschikbare medewerker voor u vinden. Dit duurt normaal niet langer dan een minuut. <br /><br />Heeft u haast?  <a class="cancel-and-newticket-trigger"> Laat een bericht achter? </a>',
 	'user.chat.message_set-department'                                     => '{{name}}zette de afdeling op {{department}}',
 	'user.chat.message_started'                                            => 'Chat gestart',
 	'user.chat.message_unassigned'                                         => 'Chat niet toegewezen',
