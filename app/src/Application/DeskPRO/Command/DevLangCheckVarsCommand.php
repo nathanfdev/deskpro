@@ -99,6 +99,20 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 					}
 				}
 
+				$is_bad_html = false;
+				if (!$is_bad) {
+					$default_html_vars = $this->_getHtmlVars($default_phrasetext);
+					$lang_html_vars = $this->_getHtmlVars($phrasetext);
+
+					if (count($default_html_vars) != count($lang_html_vars)) {
+						$is_bad_html = true;
+					} else if ($default_html_vars || $lang_html_vars) {
+						if (!Arrays::isIn($default_html_vars, $lang_html_vars, true, true)) {
+							$is_bad_html = true;
+						}
+					}
+				}
+
 				if ($is_bad) {
 
 					if (!$done_one) {
@@ -111,6 +125,19 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 					echo "\tLang: $phrasetext\n\n";
 
 					$bad_count++;
+				} else if ($is_bad_html) {
+
+					if (!$done_one) {
+						$output->writeln("\n\n<info>####################\n# $dirname\n####################\n</info>");
+						$done_one = true;
+					}
+
+					$output->writeln("<error>$phrase</error> has bad HTML vars:");
+					echo "\tDefault: $default_phrasetext\n";
+					echo "\tLang: $phrasetext\n\n";
+
+					$bad_count++;
+
 				} else if ($do_plural_check) {
 					$default_is_plural = (bool)strpos($default_phrasetext, '|');
 					$lang_is_plural = (bool)strpos($phrasetext, '|');
@@ -145,6 +172,22 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 	{
 		$matches = 0;
 		if (!preg_match_all('#\{\{\s*(.*?)\s*\}\}#', $phrasetext, $matches, \PREG_PATTERN_ORDER)) {
+			return array();
+		}
+
+		$vars = array();
+
+		foreach ($matches[1] as $m) {
+			$vars[$m] = $m;
+		}
+
+		return $vars;
+	}
+
+	private function _getHtmlVars($phrasetext)
+	{
+		$matches = 0;
+		if (!preg_match_all('#(<[^>]+>)#', $phrasetext, $matches, \PREG_PATTERN_ORDER)) {
 			return array();
 		}
 
