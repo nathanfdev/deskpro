@@ -12,7 +12,6 @@
 	'user.email_subjects.feedback_updated'                                 => 'Din tilbakemelding har blitt oppdatert: {{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'Ditt passord har blitt nullstillt',
 	'user.email_subjects.password_reset'                                   => 'Nullstill passord',
-	'user.email_subjects.re'                                               => 'RE: {{subject}}',
 	'user.email_subjects.ticket_new-participant'                           => 'En ny person har blitt lagt til din sak',
 	'user.email_subjects.validate-email'                                   => 'Bekreft epostaddressen din',
 );

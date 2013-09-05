@@ -40,7 +40,6 @@
 	'user.tickets.from_x_at_y'                                             => '{{name}} - {{date}}',
 	'user.tickets.i_dont_need_to_email'                                    => 'Nincs szükségem további segítségre',
 	'user.tickets.i_still_want_to_email'                                   => 'Továbbra is szeretném feltenni a kérdésemet.',
-	'user.tickets.join_explain'                                            => 'Amennyiben részvevő kíván lenni {{name}} "{{subject}}" tárgyú ügyében, Ön is kap értesítést az ügy frissítésekor, valamint válaszokat is küldhet rá. Vegye figyelembe, hogy az üggyel kapcsolatos tevékenysége naplózásra kerül, és résztvétele a többi résztvevő számára is nyilvános lesz.',
 	'user.tickets.join_ticket'                                             => 'Kapcsolódás az ügyhöz',
 	'user.tickets.label_cc_emails'                                         => 'Más személy hozzáadása a másolat címzettjei közé',
 	'user.tickets.label_cced'                                              => 'Másolatot kap',

@@ -19,7 +19,6 @@
 	'user.feedback.sort_i-voted'                                           => 'Zgadzasz się',
 	'user.feedback.sort_most-votes'                                        => 'Najwięcej głosów',
 	'user.feedback.sort_newest'                                            => 'Najnowsze',
-	'user.feedback.status'                                                 => 'Status',
 	'user.feedback.status_active'                                          => 'Aktywne',
 	'user.feedback.status_any'                                             => 'Dowolny status',
 	'user.feedback.status_closed'                                          => 'Zamknięte',

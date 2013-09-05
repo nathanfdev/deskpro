@@ -6,7 +6,6 @@
 	'user.general.comments_no_comments'                                    => 'Non ci sono commenti.',
 	'user.general.comments_please_enter_email'                             => 'Inserisci il tuo indirizzo email',
 	'user.general.count_comments'                                          => '{{count}} Commento|{{count}} Commenti',
-	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'Indirizzo email',
 	'user.general.email_addresses'                                         => 'Indirizzi Email',
 	'user.general.first_name'                                              => 'Nome',

@@ -39,7 +39,6 @@
 	'user.tickets.i_still_want_to_email'                                   => 'Yine de sorumu göndermek istiyorum',
 	'user.tickets.join_explain'                                            => '"{{subject}}" by {{name}} ilgili çağrı kaydına katılıyorsunuz.<br /><br /> Çağrı kaydını okuyabilecek, değiştirebilecek ve güncellemelerde eposta ile bilgilendirileceksiniz. Kendinizi çağrı kaydına ekleme işleminiz kayıt altına alınacak ve diğer çağrı kaydı katılımcıları tarafından görülebilecektir.',
 	'user.tickets.join_ticket'                                             => 'Çağrı Kaydına Katıl',
-	'user.tickets.label_cced'                                              => 'CCed',
 	'user.tickets.lbl_what_is_your_question'                               => 'Sorunuz nedir?',
 	'user.tickets.leave_feedback_text_title'                               => 'Herhangi bir geri bildiriminiz var mı?',
 	'user.tickets.leave_feedback_title'                                    => 'İsterseniz bir dakikanızı ayırarak bizi değerlendirebilirsiniz.',

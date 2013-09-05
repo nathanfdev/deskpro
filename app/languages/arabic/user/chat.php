@@ -22,7 +22,6 @@
 	'user.chat.message_ended-by'                                           => 'المحادثة انتهت بواسطة الموظف{{name}}',
 	'user.chat.message_ended-by-user'                                      => 'المحادثة انتهت بواسطة المستخدم',
 	'user.chat.message_finding-agent'                                      => 'يتم البحث الآن عن احد موظفينا للرد عليك',
-	'user.chat.message_long-wait'                                          => 'مازلنا نحاول البحث عن اي من موظفينا المتواجدين للرد عليك ، عادة يستغرق هذا الامر اقل من دقيقة . هل انت على عجلة من امرك؟ تفضل بترك رسالتك الآن.',
 	'user.chat.message_set-department'                                     => '{{name}} أضف إلي قسم {{department}}',
 	'user.chat.message_started'                                            => 'بدأت المحادثة',
 	'user.chat.message_unassigned'                                         => 'المحادثة غير مسندة لاحد',

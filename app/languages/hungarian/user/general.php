@@ -8,7 +8,6 @@
 	'user.general.comments_no_comments'                                    => 'Még nincs kapcsolódó hozzászólás. Legyen Ön az első!',
 	'user.general.comments_please_enter_email'                             => 'Kérjük adja meg e-mail címét',
 	'user.general.count_comments'                                          => '{{count}} hozzászólás|{{count}} hozzászólás',
-	'user.general.deskpro'                                                 => 'DeskPRO',
 	'user.general.email_address'                                           => 'E-mail cím',
 	'user.general.email_addresses'                                         => 'E-mail címek',
 	'user.general.first_name'                                              => 'Utónév',

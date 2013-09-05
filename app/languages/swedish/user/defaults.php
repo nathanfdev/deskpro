@@ -3,7 +3,6 @@
 	'user.defaults.article_example_content'                                => 'Detta är ett exempel på en kunskapsbasartikel. Känn dig fri att redigera eller radera den från agentgränsittet',
 	'user.defaults.article_example_title'                                  => 'Exempelartikel',
 	'user.defaults.department_sales'                                       => 'Försäljning',
-	'user.defaults.department_support'                                     => 'Support',
 	'user.defaults.download_category_general'                              => 'Allmänt',
 	'user.defaults.downloads_category_general'                             => 'Dokument',
 	'user.defaults.feedback_example_content'                               => 'Detta är ett exempel på ett förslag. Känn dig fri att redigera eller radera den från agentgränsittet.',

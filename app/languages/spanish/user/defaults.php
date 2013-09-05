@@ -1,10 +1,8 @@
 <?php return array(
-	'user.defaults.article_category_general'                               => 'General',
 	'user.defaults.article_example_content'                                => 'Este es un artículo de ejemplo de la base de conocimiento. Puede editarlo o eliminarlo desde la interfaz de agente.',
 	'user.defaults.article_example_title'                                  => 'Arítulo de ejemplo',
 	'user.defaults.department_sales'                                       => 'Ventas',
 	'user.defaults.department_support'                                     => 'Soporte',
-	'user.defaults.download_category_general'                              => 'General',
 	'user.defaults.downloads_category_general'                             => 'Documentos',
 	'user.defaults.feedback_example_content'                               => 'Esto es una sugerencia de ejemplo. Puede editarla o eliminarla desde la interfaz de agente.',
 	'user.defaults.feedback_example_title'                                 => 'Sugerencia de ejemplo',
@@ -18,7 +16,6 @@
 	'user.defaults.feedback_type_feature-request'                          => 'Solicitud de mejora',
 	'user.defaults.feedback_type_suggestion'                               => 'Sugerencia',
 	'user.defaults.language_english'                                       => 'Inglés',
-	'user.defaults.news_category_general'                                  => 'General',
 	'user.defaults.news_example_content'                                   => 'Este es un ejemplo de un nuevo envío de noticia. Puede editarla o eliminarla desde la interfaz de agente.',
 	'user.defaults.news_example_title'                                     => 'Ejemplo de nuevo envío de noticia',
 	'user.defaults.trigger_warn_autoclose'                                 => 'No ha respondido al ticket en 3 días. Si su problema ha sido resuelto, puede ignorar este mensaje y su ticket será resuelto en otros dis días. Si todavía requiere asistencia, por favor responda este correo para mantener su ticket abierto.',

@@ -75,7 +75,6 @@
 	'user.tickets.ticket_ref'                                              => 'Rif. ticket',
 	'user.tickets.ticket_starter'                                          => 'Ha postato il ticket',
 	'user.tickets.ticket_was_closed'                                       => 'Il tuo ticket è stato risolto con successo',
-	'user.tickets.tickets'                                                 => 'Tickets',
 	'user.tickets.title'                                                   => 'Contattaci',
 	'user.tickets.title_links_safe'                                        => 'Non preoccuparti, puoi cliccare sul titolo e rimanere su questa pagina.',
 	'user.tickets.type_your_reply_here'                                    => 'Scrivi qui la tua risposta...',

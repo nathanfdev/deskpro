@@ -96,7 +96,6 @@
 	'user.tickets.title_links_safe'                                        => 'Nie martw się, klikając na temat pozostaniesz na tej stronie.',
 	'user.tickets.type_your_reply_here'                                    => 'Wpisz odpowiedź tutaj...',
 	'user.tickets.unassigned'                                              => 'Nieprzypisane',
-	'user.tickets.validate_to_be_seen'                                     => 'Zanim twoje zgłoszenie zostanie przeczytane przez naszych pracowników, musisz potwierdzić swój adres email. Link potwierdzający został wysłany do Ciebie.',
 	'user.tickets.view_more_results'                                       => 'Zobacz więcej wyników - {{part}}',
 	'user.tickets.view_organization_x_tickets'                             => 'Zobacz zgłoszenie {{organization}}|Zobacz zgłoszenia {{organization}} - {{count}}',
 	'user.tickets.view_your_x_tickets'                                     => 'Przejdź do swojego zgłoszenia - {{count}}',

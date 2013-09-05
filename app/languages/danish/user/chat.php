@@ -1,7 +1,6 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Din emailadresse',
 	'user.chat.ended-no-agent'                                             => 'Vi beklager, men vi har ingen ledige til at besvare din chat nu. Email os eller prøv igen senere',
-	'user.chat.form_chat_button-submit'                                    => 'Send',
 	'user.chat.form_chat_send-file'                                        => 'Upload en fil',
 	'user.chat.form_create_button-submit'                                  => 'Start chat',
 	'user.chat.form_create_department'                                     => 'Vælg afdeling',

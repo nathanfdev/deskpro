@@ -12,7 +12,6 @@
 	'user.email_subjects.feedback_updated'                                 => 'Uw feedback is bijgewerkt: {{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'Een medewerker heeft uw wachtwoord gereset',
 	'user.email_subjects.password_reset'                                   => 'Reset uw wachtwoord',
-	'user.email_subjects.re'                                               => 'RE: {{subject}}',
 	'user.email_subjects.ticket_new-participant'                           => 'Er is een nieuw persoon toegevoegd aan uw ticket',
 	'user.email_subjects.validate-email'                                   => 'Valideer uw e-mailadres',
 );
