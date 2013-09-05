@@ -43,7 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<option value="published">{{ phrase('agent.publish.status_published') }}</option>
 				{% endif %}
 				{% if constant('DP_DEBUG') or not app.user.hasPerm('agent_publish.validate') %}
-					<option value="hidden.validating" selected="selected">Publish (will require validation)</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.publish.status_published') }} ({{ phrase('agent.general.requires_validation') }})</option>
 				{% endif %}
 				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
@@ -68,14 +68,14 @@ pageMeta.baseId = '{{ baseId }}';
 				<ul class="files file-list"></ul>
 			</div>
 			<div class="content" style="margin-top: 8px;">
-				<h4>File Name</h4>
+				<h4>{{ phrase('agent.general.filename') }}</h4>
 				<small style="font-size: 11px; margin-bottom: 4px;">{{ phrase('agent.publish.download_specify_filename') }}.</small><br />
 				<input type="text" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
 			</div>
 		</div>
 		<div id="{{ baseId }}_file_url_type" style="display: none;">
 			<div class="content" style="margin-top: 8px;">
-				<h4 style="float:left;">File</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">{{ phrase('agent.publish.download_upload_btn') }}</a></em>
+				<h4 style="float:left;">{{ phrase('agent.general.file') }}</h4> <em style="font-size: 11px; margin-left: 10px; float: left;"><a href="#" class="switch-upload-type">{{ phrase('agent.publish.download_upload_btn') }}</a></em>
 				<br class="clear" />
 				<input type="text" name="newdownload[fileurl]" value="{{ state.newdownload.file_url }}" /><br/>
 				<small style="font-size: 11px; margin-bottom: 4px;">{{ phrase('agent.publish.download_specify_url') }}</small><br />

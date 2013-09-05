@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 <input type="hidden" name="pending_article_id" id="{{baseId}}_pending_article_id" value="0" />
 
 <div class="pending-info" style="display: none;" style="display: none;">
-	<h3>Creating pending article ({{ phrase('agent.general.added_by', {name: '<span class="person-name"></span>'}, true) }})</h3>
+	<h3>{{ phrase('user.knowledgebase.creating_pending_article') }} ({{ phrase('agent.general.added_by', {name: '<span class="person-name"></span>'}, true) }})</h3>
 	<div class="pending-item pending-ticket">
 		<div class="about">
 			<div class="pending-ticket" style="display: none">
@@ -57,7 +57,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<option value="published">{{ phrase('agent.publish.status_published') }}</option>
 				{% endif %}
 				{% if constant('DP_DEBUG') or not app.user.hasPerm('agent_publish.validate') %}
-					<option value="hidden.validating" selected="selected">Publish (will require validation)</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.publish.status_published') }} ({{ phrase('agent.general.requires_validation') }})</option>
 				{% endif %}
 				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>

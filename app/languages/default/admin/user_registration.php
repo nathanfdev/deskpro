@@ -24,16 +24,7 @@
 	'admin.user_registration.enter_facebook_api_secret'             => 'Enter your Facebook API application secret',
 	'admin.user_registration.enter_name_field_here'                 => 'If your schema has a field that stores the users full name, enter it here.',
 	'admin.user_registration.enter_port_here'                       => 'If you are using a non-standard port (389, or 636 for secure connections), enter it here',
-	'admin.user_registration.enter_raw_php_code'                    => 'Enter the raw PHP code to use when checking the validity of an inputted password against
-				a found user record. The following variables are available for use:
-				<ul>
-					<li>&middot; $userinfo is the full row from your table</li>
-					<li>&middot; $userinfo_password is the password field from the row. This is the same as $userinfo[\'yourpasswordfield\']</li>
-					<li>&middot; $password_input is the password inputted by the user. This is what you need to check against $userinfo_password.</li>
-					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it is invalid, set it to false.</li>
-				</ul>
-                Here is some example code to check a salted password:<br />
-				<code>$pass = (md5($password_input . $userinfo[\'salt\']) == $userinfo_password);</code>',
+	'admin.user_registration.enter_raw_php_code'                    => 'Enter the raw PHP code to use when checking the validity of an inputted password against 				a found user record. The following variables are available for use: 				<ul> 					<li>&middot; $userinfo is the full row from your table</li> 					<li>&middot; $userinfo_password is the password field from the row. This is the same as $userinfo[\'yourpasswordfield\']</li> 					<li>&middot; $password_input is the password inputted by the user. This is what you need to check against $userinfo_password.</li> 					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it is invalid, set it to false.</li> 				</ul>                 Here is some example code to check a salted password:<br /> 				<code>$pass = (md5($password_input . $userinfo[\'salt\']) == $userinfo_password);</code>',
 	'admin.user_registration.enter_table_prefix_here'               => 'If your installation is using a table prefix, enter it here.',
 	'admin.user_registration.enter_the_dsn'                         => 'Enter the DSN connection string for the database. Refer to the manual for the string format ({{links}}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>',
 	'admin.user_registration.enter_twitter_key'                     => 'Enter your Twitter consumer key',
@@ -67,9 +58,7 @@
 	'admin.user_registration.notice_closed_helpdesk'                => 'With a closed helpdesk, registration is closed so users must already exist in an external user-source or their accounts must be created manually by an agent.',
 	'admin.user_registration.notice_enable_twitter'                 => 'To enable Twitter integration, you must register with Twitter to get your own key and secret.',
 	'admin.user_registration.notice_enabled_facebook'               => 'To enable Facebook integration, you must register with Facebook to get your own application key and application secret.',
-	'admin.user_registration.notice_force_validate_email'           => 'Force users to validate their email address when they first register.
-
-This applies to everything except new tickets. You can enable email validation on tickets via <a href="{{path}}">ticket triggers</a> or by enabling these built-in triggers:',
+	'admin.user_registration.notice_force_validate_email'           => 'Force users to validate their email address when they first register.  This applies to everything except new tickets. You can enable email validation on tickets via <a href="{{path}}">ticket triggers</a> or by enabling these built-in triggers:',
 	'admin.user_registration.notice_like_request_registration'      => 'This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk.',
 	'admin.user_registration.notice_when_email_exists'              => 'If a user tries to submit new content with an email address that is already in the system, they will be prompted to log in before their form is accepted.',
 	'admin.user_registration.open_helpdesk'                         => 'Open Helpdesk',

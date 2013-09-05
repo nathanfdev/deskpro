@@ -114,14 +114,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav  id="{{baseId}}_bodytabs">
 			<div class="controls" id="{{baseId}}_article_save">
 				<span style="display:none" class="mark-loading"></span>
-				<span style="display:none" class="mark-saved">Saved</span>
+				<span style="display:none" class="mark-saved">{{ phrase('agent.general.saved') }}</span>
 			</div>
 			<ul>
 				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.general.article') }}</span></li>
 				{% if app.languages.isMultiLang() %}
-					<li data-tab-for="#{{baseId}}_tab_contents .kb-trans"><span>Translations</span></li>
+					<li data-tab-for="#{{baseId}}_tab_contents .kb-trans"><span>{{ phrase('agent.general.translations') }}</span></li>
 				{% endif %}
-				<li data-tab-for="#{{baseId}}_tab_contents .kb-props"><span>Properties</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .kb-props"><span>{{ phrase('agent.general.properties') }}</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{article.revisions|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
@@ -198,13 +198,6 @@ pageMeta.baseId = '{{ baseId }}';
 							</dd>
 						{% endif %}
 
-						{# VIEW_COUNTER
-						<dt>Views</dt>
-						<dd>
-							{{ article.view_count }}
-						</dd>
-						#}
-
 						<dt>{{ phrase('agent.general.rating') }}</dt>
 						<dd>
 							{% set phrase_part %}
@@ -217,7 +210,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% if user_view_count %}
 							<dt></dt>
 							<dd>
-								Registered views: <a href="{{ path('agent_publish_whoviewed', {object_type: 1, object_id: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+								{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 1, object_id: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
 							</dd>
 						{% endif %}
 
@@ -261,9 +254,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 						<dd id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
 							<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
-								Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
-								on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
-									{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+								{% set phrase_part1 %}<span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
+								{% set phrase_part2 %}<span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}> {% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>{% endset %}
+								{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
 								<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
 								(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
 							</span>
@@ -280,9 +273,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 						<dd id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
 							<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
-								Automatically publish
-								on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
-									{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+								{% set phrase_part1 %}{{ phrase('agent.general.publish') }}{% endset %}
+								{% set phrase_part2 %}<span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}> {% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>{% endset %}
+								{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
 								<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
 								(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
 							</span>

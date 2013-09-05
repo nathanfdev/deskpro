@@ -7,12 +7,12 @@
 		<div class="revision-compare">
 			{% if new_blob %}
 			<div class="batch">
-					{{ phrase('agent.publish.label_old_file') }}: {% if not old_blob %}N/A
+					{{ phrase('agent.publish.label_old_file') }}: {% if not old_blob %}{{ phrase('agent.general.na') }}
 					{% else %}
 						<a href="{{ old_blob.getDownloadUrl() }}">{{ old_blob.filename }}</a> ({{ old_blob.readable_filesize }})
 					{% endif %}
 					<br />
-					{{ phrase('agent.publish.label_new_file') }}: {% if not new_blob %}N/A
+					{{ phrase('agent.publish.label_new_file') }}: {% if not new_blob %}{{ phrase('agent.general.na') }}
 					{% else %}
 						<a href="{{ new_blob.getDownloadUrl() }}">{{ new_blob.filename }}</a> ({{ new_blob.readable_filesize }})
 					{% endif %}

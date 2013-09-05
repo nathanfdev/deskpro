@@ -31,7 +31,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'categories': feedback_categories,
 				'selected': state.newfeedback.category_id|default(0)
 			} %}
-			<div class="error-message category_id">Please choose a type.</div>
+			<div class="error-message category_id">{{ phrase('agent.general.choose_a_type') }}</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
@@ -45,7 +45,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
 		<input type="text" name="newfeedback[title]" id="{{baseId}}_title" value="{{ state.newfeedback.title }}" style="width: 80%;" />
-		<div class="error-message title">Please enter a title.</div>
+		<div class="error-message title">{{ phrase('agent.general.enter_a_title') }}</div>
 	</div>
 </div>
 

@@ -1,7 +1,7 @@
 <?php return array(
 	'agent.people.act_reg'                          => 'Registered an account',
-	'agent.people.act_replied_ticket'               => 'Replied to a ticket: ',
-	'agent.people.act_submitted_ticket'             => 'Submitted a ticket: ',
+	'agent.people.act_replied_ticket'               => 'Replied to a ticket:',
+	'agent.people.act_submitted_ticket'             => 'Submitted a ticket:',
 	'agent.people.add_address'                      => 'Add an address',
 	'agent.people.add_an_email_address'             => 'Add an email address',
 	'agent.people.add_another'                      => 'add another',

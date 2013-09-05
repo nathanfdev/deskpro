@@ -1,6 +1,6 @@
 <div class="full-tab-content">
 	<div class="article-content-wrap content-post-wrap">
-		<span class="article-loading">Loading...</span>
+		<span class="article-loading"><i class="spinner-flat"></i></span>
 		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U'), agent_session_id: app.getSession().getId(), 'real': 1 }) }}" style="width: 100%" class="article-iframe" frameborder="0"></iframe>
 		{% if article.attachments|length %}
 		<ul class="attachment-list">
@@ -28,8 +28,8 @@
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
 			{% if app.languages.isMultiLang() %}
 				<div style="float: right; padding-right: 18px; padding-top: 4px;">
-					<span class="small-light-icon tipped" title="The primary language for this article. Create translations from the 'Translate' tab."></span>
-					Language: <select name="article[language_id]" class="language_id">
+					<span class="small-light-icon tipped" title="{{ phrase('agent.publish.primary_lang_explain') }}"></span>
+					{{ phrase('agent.general.language') }}: <select name="article[language_id]" class="language_id">
 						{% for lang in app.languages.getAll() %}
 							<option value="{{ lang.id }}" {% if lang.id == article.language.id %}selected="selected"{% endif %}>{{ lang.title }}</option>
 						{% endfor %}
