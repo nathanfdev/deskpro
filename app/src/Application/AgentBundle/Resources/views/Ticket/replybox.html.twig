@@ -177,7 +177,7 @@
 							{% endif %}
 						{% endif %}
 						{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_reply') %}
-							<li id="{{replyBaseId}}_billing_reply" class="hide-note">
+							<li id="{{replyBaseId}}_billing_reply">
 								<label>{{ phrase('agent.tickets.charge') }}:</label>
 								<div>
 									<label><input type="checkbox" name="charge_time" value="0" checked="checked" /> {{ phrase('agent.tickets.charge_time') }}: <span id="{{replyBaseId}}_billing_reply_time"></span></label>

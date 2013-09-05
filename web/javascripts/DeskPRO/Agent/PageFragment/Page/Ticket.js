@@ -1165,6 +1165,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				billing.resetBillingForm();
 			} else {
 				billing.updateBillingForm(false);
+				billing.resetBillingForm();
 			}
 		}
 
