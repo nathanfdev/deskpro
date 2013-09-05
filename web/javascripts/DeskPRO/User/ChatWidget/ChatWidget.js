@@ -790,6 +790,10 @@ var DpChatWidget = new (function() {
 		body.appendChild(openBtn);
 
 		tmp = util.getElWidth(document.getElementById('dpchat_border_11'));
+		if (tmp < 170) {
+			document.getElementById('dpchat_border_11').style.width = 170 + 'px';
+			tmp = 170;
+		}
 		document.getElementById('dpchat_btn_label_start_chat2').style.width = tmp + 'px';
 		document.getElementById('dpchat_btn_label_open_chat2').style.width = tmp + 'px';
 		document.getElementById('dpchat_btn_label_offline2').style.width = tmp + 'px';
