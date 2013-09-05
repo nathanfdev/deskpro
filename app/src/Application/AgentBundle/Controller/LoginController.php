@@ -39,6 +39,7 @@ use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\License;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -120,6 +121,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		}
 
 		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
+
+		if (isset($browser_warnings['chrome_29_unstable']) && License::getLicense()->isDemo()) {
+			unset($browser_warnings['chrome_29_unstable']);
+		}
 
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $url,
