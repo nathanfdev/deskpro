@@ -201,6 +201,11 @@ class LanguageController extends Controller
             $pairs = array();
 
             foreach($phrases as $id=>$text) {
+
+				$text = Strings::standardEol($text);
+				$text = str_replace("\n", ' ', $text);
+				$text = trim($text);
+
                 $id = var_export($id, true);
                 $text = var_export($text, true);
 
