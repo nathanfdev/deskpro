@@ -165,6 +165,28 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		$this->saveMappedId('gateway_account', $account['id'], $new_gateway->id);
 
 		#------------------------------
+		# Copy the imported transport to this account
+		# because v3 uses the same account for everything
+		#------------------------------
+
+		$tr = $this->db->fetchAll("
+			SELECT * FROM email_transports
+			WHERE title = 'Imported Transport'
+			LIMIT 1
+		");
+
+		unset($tr['id']);
+		$tr['title'] = 'Transport for Email Account #' . $new_gateway->getId();
+		$tr['match_type'] = 'exact';
+		$tr['match_pattern'] = $new_gateway->getPrimaryEmailAddress();
+		$this->db->insert('email_transports', $tr);
+		$tr['id'] = $this->db->lastInsertId();
+
+		$this->db->update('email_gateways', array(
+			'linked_transport_id' => $tr['id']
+		), array('id' => $new_gateway->getId()));
+
+		#------------------------------
 		# Copy email ids
 		#------------------------------
 
