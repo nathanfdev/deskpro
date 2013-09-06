@@ -264,7 +264,7 @@ pageMeta.lang = {{ {
 			</select>
 
 			<span id="{{ baseId }}_status_txt" class="urgency-text">
-				{{ phrase('agent.tickets.status_' ~ ticket.status_code) }}
+				{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}
 			</span>
 
 			<span class="dp-caret"></span>
