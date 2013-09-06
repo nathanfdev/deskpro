@@ -8,5 +8,6 @@ $collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Res
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php'));
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php'), '/agent');
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/AdminBundle/Resources/config/admin-routing.php'), '/admin');
+$collection->addCollection($loader->import(DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php'), '/adm');
 
 return $collection;

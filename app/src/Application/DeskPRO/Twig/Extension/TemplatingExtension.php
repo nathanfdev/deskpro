@@ -823,9 +823,9 @@ class TemplatingExtension extends \Twig_Extension
 		return str_repeat($str, $count);
 	}
 
-	public function strTrim($str)
+	public function strTrim($str, $chars = null)
 	{
-		return trim($str);
+		return trim($str, $chars);
 	}
 
 	/**

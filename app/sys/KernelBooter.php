@@ -197,7 +197,7 @@ class KernelBooter
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
-		} elseif (preg_match('#^/admin(/|\?|$)#', $path)) {
+		} elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AdminKernel';
 			define('DP_INTERFACE', 'admin');
 		} elseif (preg_match('#^/billing(/|\?|$)#', $path)) {

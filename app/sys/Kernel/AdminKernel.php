@@ -53,6 +53,8 @@ class AdminKernel extends AbstractKernel
 		$bundles = array(
 			new \Application\AdminBundle\AdminBundle(),
 
+			new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
+
 			// Needed for things like templates
 			new \Application\AgentBundle\AgentBundle(),
 		);

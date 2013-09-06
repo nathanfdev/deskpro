@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>DeskPRO</title>
+	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+</head>
+<body>
+
+<script type="text/javascript">
+window.DP_ASSET_URL = '{{ asset('') }}';
+window.DP_BASE_URL = '/{{ path('user')|trim('/') }}';
+window.DP_BASE_ADMIN_URL = '/{{ path('adm')|trim('/') }}';
+</script>
+<script
+	type="text/javascript"
+	data-main="{{ asset('app/admin/loader.js') }}"
+	src="{{ asset('app/bower_components/requirejs/require.js') }}"
+></script>
+</body>
+</html>
