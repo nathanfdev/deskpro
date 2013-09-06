@@ -497,7 +497,8 @@ class TriggerExecutor
 		$actions_collection->sortActions(array(
 			'prepend' => 0,
 			'default' => 1,
-			'ReplyAction' => 1000
+			'ReplyAction' => 1000,
+			'NewTicketAction' => 1000,
 		));
 
 		#------------------------------
