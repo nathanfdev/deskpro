@@ -2166,7 +2166,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getStatusCode()
 	{
-		return $this->status . ($this->hidden_status ? ".{$this->hidden_status}" : '');
+		if ($this->status == 'hidden') {
+			return 'hidden.' . $this->hidden_status;
+		} else {
+			return $this->status;
+		}
 	}
 
 	public function setIsHold($is_hold)
