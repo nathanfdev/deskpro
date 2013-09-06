@@ -1,12 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>DeskPRO</title>
 	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+
+	<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap/dist/css/bootstrap.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap-switch/static/stylesheets/bootstrap-switch.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/admin/style/main.css') }}"/>
 </head>
 <body>
+
+<header class="header navbar-fixed-top">
+	<div class="row">
+		<!-- User Profile -->
+		<div class="col-md-6">
+			<section class="user-profile">
+				<img class="up-photo" alt="">
+
+				<div class="up-content">
+					<p class="up-name">Hello, {{ app.user.display_name }}</p>
+					<ul class="up-nav">
+						<li><i class="icon-cog"></i> <a href="#">Settings</a></li>
+						<li><i class="icon-question-sign"></i> <a href="#">Help</a></li>
+						<li><i class="icon-signout"></i> <a href="#">Logout</a></li>
+					</ul>
+				</div>
+			</section>
+		</div>
+
+		<!-- Logo -->
+		<div class="col-md-6">
+			<a href="index.html" class="logo">DeskPRO</a>
+		</div>
+	</div>
+</header>
+
+<!-- Left Navigation Column -->
+<nav class="left-nav">
+	<ul>
+		<li class="active">
+			<a class="ln-icon ln-icon-home" href="#">Home</a>
+		</li>
+		<li>
+			<a class="ln-icon ln-icon-chat" href="#">Agent Chat</a>
+		</li>
+		<li>
+			<a class="ln-icon ln-icon-ticket" href="#">Ticket</a>
+		</li>
+		<li>
+			<a class="ln-icon ln-icon-crm" href="#">CRM</a>
+		</li>
+		<li>
+			<a class="ln-icon ln-icon-publish" href="#">Publish</a>
+		</li>
+		<li>
+			<a class="ln-icon ln-icon-twitter" href="#">Twitter</a>
+		</li>
+		<li>
+			<a class="ln-icon ln-icon-rate" href="#">Rate</a>
+		</li>
+	</ul>
+</nav>
+
+<div ui-view id="dp_main_view"></div>
 
 <script type="text/javascript">
 window.DP_ASSET_URL = '{{ asset('') }}';
