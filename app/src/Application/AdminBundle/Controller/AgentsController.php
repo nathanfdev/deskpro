@@ -1717,11 +1717,11 @@ class AgentsController extends AbstractController
 			$limit = ($p - 1) * $per_page;
 
 			$logs = $this->db->fetchAll("
-				SELECT *
+				SELECT login_log.*
 				FROM login_log
 				LEFT JOIN people ON (people.id = login_log.person_id)
 				WHERE people.is_agent
-				ORDER BY id DESC
+				ORDER BY login_log.id DESC
 				LIMIT $limit, $per_page
 			");
 		}
