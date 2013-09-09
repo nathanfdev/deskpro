@@ -9,7 +9,8 @@
 	<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap/dist/css/bootstrap.min.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap-switch/static/stylesheets/bootstrap-switch.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/admin/style/main.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/Admin/Resources/style/main.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/Admin/Resources/style/layout.css') }}"/>
 </head>
 <body>
 
@@ -38,34 +39,39 @@
 	</div>
 </header>
 
-<!-- Left Navigation Column -->
-<nav class="left-nav">
-	<ul>
-		<li class="active">
-			<a class="ln-icon ln-icon-home" href="#">Home</a>
-		</li>
-		<li>
-			<a class="ln-icon ln-icon-chat" href="#">Agent Chat</a>
-		</li>
-		<li>
-			<a class="ln-icon ln-icon-ticket" href="#">Ticket</a>
-		</li>
-		<li>
-			<a class="ln-icon ln-icon-crm" href="#">CRM</a>
-		</li>
-		<li>
-			<a class="ln-icon ln-icon-publish" href="#">Publish</a>
-		</li>
-		<li>
-			<a class="ln-icon ln-icon-twitter" href="#">Twitter</a>
-		</li>
-		<li>
-			<a class="ln-icon ln-icon-rate" href="#">Rate</a>
-		</li>
-	</ul>
-</nav>
-
-<div ui-view id="dp_main_view"></div>
+<div id="dp_main_view">
+	<!-- Left Navigation Column -->
+	<nav class="left-nav">
+		<ul>
+			<li class="active">
+				<a class="ln-icon ln-icon-home" href="#">Home</a>
+			</li>
+			<li>
+				<a class="ln-icon ln-icon-chat" href="#">Agent Chat</a>
+			</li>
+			<li>
+				<a class="ln-icon ln-icon-ticket" href="#">Ticket</a>
+			</li>
+			<li>
+				<a class="ln-icon ln-icon-crm" href="#">CRM</a>
+			</li>
+			<li>
+				<a class="ln-icon ln-icon-publish" href="#">Publish</a>
+			</li>
+			<li>
+				<a class="ln-icon ln-icon-twitter" href="#">Twitter</a>
+			</li>
+			<li>
+				<a class="ln-icon ln-icon-rate" href="#">Rate</a>
+			</li>
+		</ul>
+	</nav>
+	<div class="dp-section" ui-view>
+		<nav class="dp-section-nav sections-nav" ui-view="dp_section_nav" id="dp_section_nav"></nav>
+		<div class="dp-section-list" ui-view="dp_section_list" id="dp_section_list"></div>
+		<div class="dp-section-page with-list" ui-view="dp_section_page" id="dp_section_page"></div>
+	</div>
+</div>
 
 <script type="text/javascript">
 window.DP_ASSET_URL = '{{ asset('') }}';

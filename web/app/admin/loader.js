@@ -6,14 +6,12 @@ requirejs.config({
 		angular:         DP_ASSET_URL+'/app/bower_components/angular/angular',
 		angularUiRouter: DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
 		angularSanitize: DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
-		admin:           DP_ASSET_URL+'/app/admin',
-		jquerySplitter:  DP_ASSET_URL+'/app/other_components/jquery-splitter/jquery.splitter'
+		Admin:           DP_ASSET_URL+'/app/Admin'
 	},
 	shim: {
 		'angular' : {'exports' : 'angular'},
 		'angularUiRouter': ['angular'],
-		'angularSanitize': ['angular'],
-		'jquerySplitter': ['jquery']
+		'angularSanitize': ['angular']
 	},
 	priority: [
 		"angular"
@@ -22,21 +20,26 @@ requirejs.config({
 
 window.name = "NG_DEFER_BOOTSTRAP!";
 
-requirejs( [
+requirejs([
 	'jquery',
 	'angular',
 	'angularUiRouter',
-	'jquerySplitter',
-	'admin/AdminApp',
-	'admin/directives/common',
-	'admin/controllers/index',
-	'admin/routes'
-], function(jquery, angular, app, routes) {
+	'Admin/Resources/config/routing',
+	'Admin/App',
+
+	'Admin/Main/Directive/Section',
+	'Admin/Main/Ctrl/Base',
+	'Admin/Main/Ctrl/Index',
+	'Admin/Main/Ctrl/SettingsNav',
+
+	'Admin/TicketDeps/Ctrl/List',
+	'Admin/TicketDeps/Ctrl/Edit'
+], function(jquery, angular) {
 	'use strict';
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 
 	angular.element().ready(function() {
 		$html.addClass('ng-app');
-		angular.bootstrap($html, ['AdminApp']);
+		angular.bootstrap($html, ['Admin_App']);
 	});
 });

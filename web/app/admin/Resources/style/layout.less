@@ -1,0 +1,42 @@
+@topHeight: 54px;
+@appNavWidth: 55px;
+@navWidth: 235px;
+@listWidth: 475px;
+
+.dp-section {
+	position: fixed;
+	top: @topHeight;
+	right: 0;
+	left: 0;
+	bottom: 0;
+}
+
+.dp-section-nav {
+	position: fixed;
+	top: @topHeight;
+	bottom: 0;
+	left: @appNavWidth;
+	width: @navWidth;
+}
+
+.dp-section-list {
+	position: fixed;
+	top: @topHeight;
+	bottom: 0;
+	left: @appNavWidth + @navWidth;
+	width: @listWidth;
+	background: #F5F7FA;
+}
+
+.dp-section-page {
+	position: fixed;
+	top: @topHeight;
+	bottom: 0;
+	left: @appNavWidth + @navWidth;
+	right: 0;
+
+	&.with-list {
+		border-left: 1px solid #A8ABB2;
+		left: @appNavWidth + @navWidth + @listWidth;
+	}
+}
