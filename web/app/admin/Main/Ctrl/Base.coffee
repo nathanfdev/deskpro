@@ -5,6 +5,11 @@ define ['angular', 'Admin/App'], (angular) ->
 		@DEPS      = []
 
 		@EXPORT_CTRL: () ->
+			if @DEPS.indexOf('AppState') == -1
+				@DEPS.push('AppState')
+			if @DEPS.indexOf('$scope') == -1
+				@DEPS.push('$scope')
+
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
 			return angular.module(@MODULE_ID).controller(@CTRL_ID, ctrl_def);

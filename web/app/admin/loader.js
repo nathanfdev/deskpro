@@ -25,9 +25,10 @@ requirejs([
 	'angular',
 	'angularUiRouter',
 	'Admin/Resources/config/routing',
+	'Admin/Main/Service/AppState',
+	'Admin/Main/Directive/ActiveStateMark',
 	'Admin/App',
 
-	'Admin/Main/Directive/Section',
 	'Admin/Main/Ctrl/Base',
 	'Admin/Main/Ctrl/Index',
 	'Admin/Main/Ctrl/SettingsNav',

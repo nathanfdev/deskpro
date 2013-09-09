@@ -8,15 +8,13 @@ $collection = new RouteCollection();
 $collection->add('adm', new Route(
 	'/',
 	array('_controller' => 'AdminInterfaceBundle:Index:interface'),
-	array(),
 	array()
 ));
 
 $collection->add('adm_tpl_home', new Route(
 	'/load-view/{view_name}',
 	array('_controller' => 'AdminInterfaceBundle:Interface:loadView'),
-	array('view_name' => '.+'),
-	array()
+	array('view_name' => '.+')
 ));
 
 return $collection;

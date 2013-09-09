@@ -137,6 +137,7 @@ class TemplatingExtension extends \Twig_Extension
 			'match'                            => new \Twig_Function_Method($this, 'match'),
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
+			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1448,6 +1449,10 @@ class TemplatingExtension extends \Twig_Extension
 		$source = str_replace('</script>',  '%endScript%', $source);
 		$source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
 		return $source;
+	}
+
+	public function ngVar($var) {
+		return '{{' . $var . '}}';
 	}
 }
 

@@ -13,6 +13,12 @@
 
       Admin_Ctrl_Base.EXPORT_CTRL = function() {
         var ctrl_def;
+        if (this.DEPS.indexOf('AppState') === -1) {
+          this.DEPS.push('AppState');
+        }
+        if (this.DEPS.indexOf('$scope') === -1) {
+          this.DEPS.push('$scope');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         return angular.module(this.MODULE_ID).controller(this.CTRL_ID, ctrl_def);

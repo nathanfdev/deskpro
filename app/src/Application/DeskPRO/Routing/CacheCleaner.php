@@ -105,6 +105,7 @@ class CacheCleaner
 
 		$this->routing_files = array(
 			DP_ROOT  . '/src/Application/AdminBundle/Resources/config/admin-routing.php',
+			DP_ROOT  . '/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
 			DP_ROOT  . '/src/Application/AgentBundle/Resources/config/agent-routing.php',
 			DP_ROOT  . '/src/Application/ApiBundle/Resources/config/api-routing.php',
 			DP_ROOT  . '/src/Application/UserBundle/Resources/config/user-routing.php',

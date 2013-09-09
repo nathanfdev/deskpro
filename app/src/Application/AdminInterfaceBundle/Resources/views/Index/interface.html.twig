@@ -22,11 +22,13 @@
 				<img class="up-photo" alt="">
 
 				<div class="up-content">
-					<p class="up-name">Hello, {{ app.user.display_name }}</p>
+					<p class="up-name">
+						{{ phrase('agent.chrome.hello-user', {name: app.user.display_name}) }}
+					</p>
 					<ul class="up-nav">
-						<li><i class="icon-cog"></i> <a href="#">Settings</a></li>
-						<li><i class="icon-question-sign"></i> <a href="#">Help</a></li>
-						<li><i class="icon-signout"></i> <a href="#">Logout</a></li>
+						<li><i class="icon-cog"></i> <a href="#">{{ phrase('agent.general.settings') }}</a></li>
+						<li><i class="icon-question-sign"></i> <a href="#">{{ phrase('agent.general.help') }}</a></li>
+						<li><i class="icon-signout"></i> <a href="#">{{ phrase('agent.general.log_out') }}</a></li>
 					</ul>
 				</div>
 			</section>
@@ -44,7 +46,7 @@
 	<nav class="left-nav">
 		<ul>
 			<li class="active">
-				<a class="ln-icon ln-icon-home" href="#">Home</a>
+				<a class="ln-icon ln-icon-home" href="#" dp-state-mark="settings">Home</a>
 			</li>
 			<li>
 				<a class="ln-icon ln-icon-chat" href="#">Agent Chat</a>
@@ -74,8 +76,9 @@
 </div>
 
 <script type="text/javascript">
-window.DP_ASSET_URL = '{{ asset('') }}';
-window.DP_BASE_URL = '/{{ path('user')|trim('/') }}';
+window.DP_ASSET_URL      = '{{ asset('') }}';
+window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
+window.DP_BASE_API_URL   = window.DP_BASE_URL+'/api';
 window.DP_BASE_ADMIN_URL = '/{{ path('adm')|trim('/') }}';
 </script>
 <script

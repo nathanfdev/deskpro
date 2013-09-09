@@ -29,6 +29,15 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'settings.ticket_deps.create',
+		url: '/create',
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/edit.html',
+			controller: 'Admin_TicketDeps_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
 		id: 'settings.ticket_deps.edit',
 		url: '/{id}',
 		page: {

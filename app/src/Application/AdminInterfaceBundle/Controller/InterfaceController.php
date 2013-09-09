@@ -41,6 +41,39 @@ class InterfaceController extends AbstractController
 		$view_name = str_replace('/', ':', $view_name);
 		$view_name = str_replace('.html', '.html.twig', $view_name);
 
-		return $this->render("AdminInterfaceBundle:$view_name");
+		$load_data = null;
+
+		// Load data from a route at the same time
+		if ($this->in->getString('load_data')) {
+			try {
+				$route_info = $this->container->getRouter()->match($this->in->getString('load_data'));
+			} catch (\Exception $e) {
+				$route_info = null;
+			}
+
+			if ($route_info) {
+				$ctrl_name = null;
+				$ctrl_path = $route_info['_controller'];
+				$m = null;
+				if (preg_match('#^Application\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
+					$ctrl_name = $m[1] . ':' . $m[2] . ':' . $m[3];
+				}
+
+				unset($route_info['_controller']);
+				unset($route_info['_route']);
+				$path_vars = $route_info;
+
+				if ($ctrl_path) {
+					$load_data = $this->forward($ctrl_path, $path_vars)->getContent();
+				}
+			}
+		}
+
+		$rendered = $this->renderView("AdminInterfaceBundle:$view_name");
+		if ($load_data) {
+			$rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
+		}
+
+		return $this->createResponse($rendered);
 	}
 }

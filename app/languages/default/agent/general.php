@@ -187,6 +187,7 @@
 	'agent.general.deleted_by'                              => 'Deleted by {{name}}',
 	'agent.general.deleted_reason'                          => 'Deleted Reason',
 	'agent.general.department'                              => 'Department',
+	'agent.general.departments'                              => 'Departments',
 	'agent.general.description'                             => 'Description',
 	'agent.general.deskpro'                                 => 'DeskPRO',
 	'agent.general.detail'                                  => 'Detail',

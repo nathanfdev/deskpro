@@ -2158,4 +2158,32 @@ $collection->add('api_get_activity', new Route(
 	array()
 ));
 
+########################################################################################################################
+# TICKET DEPARTMENTS
+########################################################################################################################
+
+$collection->add('api_ticket_deps', new Route(
+	'/ticket_deps',
+	array('_controller' => 'ApiBundle:TicketDeps:list'),
+	array()
+));
+
+$collection->add('adm_settings_ticket_deps_get', new Route(
+	'/ticket_deps/{id}.json',
+	array('_controller' => 'ApiBundle:TicketDeps:get'),
+	array()
+));
+
+$collection->add('api_ticket_deps_save', new Route(
+	'/ticket_deps/{id}.json',
+	array('_controller' => 'ApiBundle:TicketDeps:save'),
+	array('_method' => 'POST')
+));
+
+$collection->add('adm_settings_ticket_deps_remove', new Route(
+	'/ticket_deps/{id}.json',
+	array('_controller' => 'ApiBundle:TicketDeps:remove'),
+	array('_method' => 'DELETE')
+));
+
 return $collection;

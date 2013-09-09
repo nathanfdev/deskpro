@@ -40,6 +40,7 @@ switch (DP_BOOT_MODE) {
 	case 'cron':            require DP_ROOT.'/sys/boot_cron.php';        break;
 	case 'cli':             require DP_ROOT.'/sys/boot_cli.php';         break;
 	case 'web':             require DP_ROOT.'/sys/boot_web.php';         break;
+	case 'testing':         require DP_ROOT.'/sys/boot_tests.php';       break;
 	case 'serve_file':      require DP_ROOT.'/sys/serve_file.php';       break;
 	case 'get_messages':    require DP_ROOT.'/sys/get_messages.php';     break;
 	case 'import':          require DP_ROOT.'/sys/boot_import.php';      break;

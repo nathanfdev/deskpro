@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,47 +25,34 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\ApiBundle\Controller;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TicketDepsController extends AbstractController
 {
-	protected function configure()
+	public function listAction()
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+	public function getAction($id)
+	{
+		return $this->createApiResponse(array('id' => $id));
+	}
+
+	public function saveAction($id)
 	{
 
-		$router = App::getContainer()->getRouter();
+	}
 
-		$info = $router->match('/agent/tickets/11');
+	public function removeAction($id)
+	{
 
-		print_r($info);
-
-		echo "\n";
-		exit;
 	}
 }
