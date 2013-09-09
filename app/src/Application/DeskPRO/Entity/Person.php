@@ -1696,6 +1696,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$email_address = strtolower($email_address);
 
+		if ($this->primary_email && strtolower($this->primary_email->email) == $email_address) {
+			return $this->primary_email;
+		}
+
 		foreach ($this->emails as $email) {
 			if (strtolower($email['email']) == $email_address) {
 				return $email;
