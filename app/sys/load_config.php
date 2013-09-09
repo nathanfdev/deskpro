@@ -38,7 +38,21 @@ function dp_load_config()
 	}
 
 	if (!is_array($DP_CONFIG)) {
-		if (file_exists(DP_CONFIG_FILE)) {
+
+		$config_file = DP_CONFIG_FILE;
+		if (defined('DP_BOOT_MODE')) {
+			$config_file = str_replace('.php', '.testing.php', $config_file);
+			if (!file_exists($config_file)) {
+				echo "!!!!!!!!!!!!!!!!!!!!!!\n";
+				echo "Running tests requires a separate config.testing.php file.\n\n";
+				echo "Copy your config.php to config.testing.php and try again.\n";
+				echo "Make sure config.testing.php includes database details for a test database you don\'t mind losing.\n";
+				echo "!!!!!!!!!!!!!!!!!!!!!!\n\n";
+				exit(1);
+			}
+		}
+
+		if (file_exists($config_file)) {
 			require DP_CONFIG_FILE;
 
 			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {

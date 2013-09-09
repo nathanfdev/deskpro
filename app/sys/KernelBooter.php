@@ -729,6 +729,22 @@ class KernelBooter
 
 
 	/**
+	 * Boot tests
+	 */
+	public static function bootTests()
+	{
+		define('DP_INTERFACE', 'cli');
+		$GLOBALS['DP_IS_IN_CLI'] = true;
+		KernelBooter::bootstrapConfig();
+		KernelBooter::bootstrapLib(true);
+		KernelBooter::bootstrapEnv();
+
+		$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
+		$kernel->boot('cli');
+	}
+
+
+	/**
 	 * Boots the CLI runs the import CLI command
 	 *
 	 * @param string $env
