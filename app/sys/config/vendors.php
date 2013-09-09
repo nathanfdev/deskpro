@@ -64,6 +64,11 @@
 		'repos'   => 'git://github.com/schmittjoh/metadata.git',
 		'version' => '1.1.0',
 	),
+	'mockery' => array(
+		'into'    => DP_ROOT.'/vendor/mockery',
+		'repos'   => 'https://github.com/padraic/mockery.git',
+		'version' => 'HEAD',
+	),
 	'monolog' => array(
 		'into'    => DP_ROOT.'/vendor/monolog',
 		'repos'   => 'git://github.com/Seldaek/monolog.git',
