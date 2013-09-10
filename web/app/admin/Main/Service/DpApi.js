@@ -26,7 +26,7 @@
         endpoint = endpoint.replace(/^\//, '');
         url = "" + this.api_url + "/" + endpoint;
         if (params) {
-          if (url.indexOf('?') !== -1) {
+          if (url.indexOf('?') === -1) {
             url += '?';
           } else {
             url += '&';
@@ -49,6 +49,29 @@
           url = url.replace(/&$/, '');
         }
         return url;
+      };
+
+      /**
+      		* Uses the api-caller endpoint to fetch multiple data points at once.
+        	*
+        	* @return {Promise}
+      */
+
+
+      DpApi.prototype.sendDataGet = function(paths, http_params) {
+        var params, path, _i, _len;
+        if (http_params == null) {
+          http_params = {};
+        }
+        params = [];
+        for (_i = 0, _len = paths.length; _i < _len; _i++) {
+          path = paths[_i];
+          params.push({
+            name: 'load_data[]',
+            value: this.formatUrl(path)
+          });
+        }
+        return this.sendGet('api_caller', params, http_params);
       };
 
       /**

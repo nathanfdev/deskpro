@@ -15,9 +15,30 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_ID = 'Admin_TicketDeps_Ctrl_Edit';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$scope'];
+      Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'TicketDepsEdit';
 
-      Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {};
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$scope', 'DepartmentData', 'Api', '$stateParams'];
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
+        var _this = this;
+        this.deps_list = this.DepartmentData.deps.values();
+        return this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']).success(function(data) {
+          _this.dep = data.api_ticket_deps_get.department;
+          return _this.agents = data.api_agents_list;
+        });
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.saveDep = function() {
+        var model;
+        this.Api.sendPost('/ticket_deps/' + this.dep.id, {
+          title: this.dep.title,
+          user_title: this.dep.user_title
+        });
+        model = this.DepartmentData.deps.get(this.dep.id);
+        model.title = this.dep.title;
+        model.user_title = this.dep.user_title;
+        return this.ngApply();
+      };
 
       return Admin_TicketDeps_Ctrl_Edit;
 

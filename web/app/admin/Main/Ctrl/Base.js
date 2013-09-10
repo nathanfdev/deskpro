@@ -70,9 +70,7 @@
           arg = args[i];
           if (arg._is_ds_class != null) {
             arg.registerCtrl(this);
-            this.$scope.$on('$destroy', function() {
-              return arg.unregisterCtrl(me);
-            });
+            this.$scope.$on('$destroy', function() {});
           }
         }
         if (this.constructor.CTRL_AS) {
@@ -96,7 +94,7 @@
 
 
       Admin_Ctrl_Base.prototype.ngApply = function(fn) {
-        if (this.$scope.$$phase || this.$scope.$root.$$phase) {
+        if (!this.$scope.$$phase && !this.$scope.$root.$$phase) {
           return this.$scope.$apply(fn);
         }
       };

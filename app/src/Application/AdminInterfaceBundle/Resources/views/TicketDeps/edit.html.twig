@@ -1,1 +1,52 @@
-EDIT
+<header class="sn-header">
+	<h3>Edit Department</h3>
+</header>
+
+<section class="pagebar">
+	<div class="row">
+		<div class="col-md-12">
+			<a class="btn btn-danger pull-right" href="#"><i class="icon-remove"></i> Delete</a>
+		</div>
+	</div>
+</section>
+
+<section class="grids-section">
+	<ul class="gs-list gs-list-bottom-border">
+		<li>
+			<div class="row">
+				<div class="col-md-4">
+					<label for="title">Title</label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" ng-model="TicketDepsEdit.dep.title">
+				</div>
+			</div>
+		</li>
+		<li>
+			<div class="row">
+				<div class="col-md-4">
+					<label for="user_title">User Title</label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" ng-model="TicketDepsEdit.dep.user_title">
+				</div>
+			</div>
+		</li>
+		<li>
+			<div class="row">
+				<div class="col-md-4">
+					<label for="title">Parent</label>
+				</div>
+				<div class="col-md-8">
+					<select
+						ng-model="TicketDepsEdit.dep.parent_id"
+						ng-options="dep.id as dep.title for dep in TicketDepsEdit.deps_list"
+					>
+					</select>
+				</div>
+			</div>
+		</li>
+	</ul>
+
+	<button class="btn btn-primary" ng-click="TicketDepsEdit.saveDep()">Save</button>
+</section>

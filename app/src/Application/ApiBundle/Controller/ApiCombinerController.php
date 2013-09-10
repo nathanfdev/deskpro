@@ -29,77 +29,51 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
  */
 
 namespace Application\ApiBundle\Controller;
 
-class TicketDepsController extends AbstractController
+class ApiCombinerController extends AbstractController
 {
-	public function listAction()
+	function getAction()
 	{
-		$data = array();
-
-		$deps = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.is_tickets_enabled = true
-			ORDER BY d.display_order ASC
-		")->execute();
-
-		$data['departments'] = $this->getApiData($deps, false);
-		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
-
-		return $this->createApiResponse($data);
-	}
-
-	public function getAction($id)
-	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
-
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
+		// Currently can only be used by admins
+		if (!$this->person->can_admin) {
+			return $this->createApiErrorResponse("admin_required", "api-combine can only be used by admins");
 		}
 
 		$data = array();
-		$data['department'] = $this->getApiData($dep);
 
-		$perms = $this->db->fetchAll("SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?", array($dep->id));
-		$data['perms_usergroup_ids']  = array();
-		$data['perms_agentgroup_ids'] = array();
-		$data['perms_agent_ids']      = array();
+		foreach ($this->in->getCleanValueArray('load_data', 'string', 'discard') as $load_data_id) {
+			try {
+				$route_info = $this->container->getRouter()->match($load_data_id);
+			} catch (\Exception $e) {
+				$route_info = null;
+			}
 
-		foreach ($perms as $perm) {
-			if ($perm['usergroup_id']) {
-				if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-					$data['perms_agentgroup_ids'][] = $perm['usergroup_id'];
-				} else {
-					$data['perms_usergroup_ids'][] = $perm['usergroup_id'];
-				}
-			} else {
-				$data['perms_agent_ids'][] = $perm['person_id'];
+			$ctrl_name = null;
+			$ctrl_path = $route_info['_controller'];
+			$m = null;
+			if (preg_match('#^Application\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
+				$ctrl_name = $m[1] . ':' . $m[2] . ':' . $m[3];
+			}
+
+			$route_id = $route_info['_route'];
+			unset($route_info['_controller']);
+			unset($route_info['_route']);
+			$path_vars = $route_info;
+
+			$load_data = null;
+			if ($ctrl_name) {
+				$load_data = $this->forward($ctrl_name, $path_vars)->getContent();
+				$load_data = @json_decode($load_data);
+			}
+
+			if ($load_data) {
+				$data[$route_id] = $load_data;
 			}
 		}
 
 		return $this->createApiResponse($data);
-	}
-
-	public function saveAction($id)
-	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
-
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
-		}
-
-		$dep->title = $this->in->getString('title');
-		$dep->user_title = $this->in->getString('user_title');
-
-		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
-	}
-
-	public function removeAction($id)
-	{
-
 	}
 }

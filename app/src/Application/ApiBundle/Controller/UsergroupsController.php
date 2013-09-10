@@ -34,72 +34,32 @@
 
 namespace Application\ApiBundle\Controller;
 
-class TicketDepsController extends AbstractController
+class UsergroupsController extends AbstractController
 {
-	public function listAction()
+	public function listAction($type)
 	{
 		$data = array();
 
-		$deps = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.is_tickets_enabled = true
-			ORDER BY d.display_order ASC
-		")->execute();
+		if ($type == 'agent') {
+			$ugs = $this->em->createQuery("
+				SELECT ug
+				FROM DeskPRO:Usergroup ug
+				WHERE ug.is_agent_group = true
+				ORDER BY ug.title ASC
+			")->execute();
 
-		$data['departments'] = $this->getApiData($deps, false);
-		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
+			$data['agentgroups'] = $this->getApiData($ugs);
+		} else {
+			$ugs = $this->em->createQuery("
+				SELECT ug
+				FROM DeskPRO:Usergroup ug
+				WHERE ug.is_agent_group = false
+				ORDER BY ug.title ASC
+			")->execute();
 
-		return $this->createApiResponse($data);
-	}
-
-	public function getAction($id)
-	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
-
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
-		}
-
-		$data = array();
-		$data['department'] = $this->getApiData($dep);
-
-		$perms = $this->db->fetchAll("SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?", array($dep->id));
-		$data['perms_usergroup_ids']  = array();
-		$data['perms_agentgroup_ids'] = array();
-		$data['perms_agent_ids']      = array();
-
-		foreach ($perms as $perm) {
-			if ($perm['usergroup_id']) {
-				if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-					$data['perms_agentgroup_ids'][] = $perm['usergroup_id'];
-				} else {
-					$data['perms_usergroup_ids'][] = $perm['usergroup_id'];
-				}
-			} else {
-				$data['perms_agent_ids'][] = $perm['person_id'];
-			}
+			$data['usergroups'] = $this->getApiData($ugs);
 		}
 
 		return $this->createApiResponse($data);
-	}
-
-	public function saveAction($id)
-	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
-
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
-		}
-
-		$dep->title = $this->in->getString('title');
-		$dep->user_title = $this->in->getString('user_title');
-
-		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
-	}
-
-	public function removeAction($id)
-	{
-
 	}
 }

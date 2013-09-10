@@ -34,72 +34,42 @@
 
 namespace Application\ApiBundle\Controller;
 
-class TicketDepsController extends AbstractController
+class AgentsController extends AbstractController
 {
 	public function listAction()
 	{
-		$data = array();
+		$data = array('agents' => array());
 
-		$deps = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.is_tickets_enabled = true
-			ORDER BY d.display_order ASC
-		")->execute();
+		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+			$agent_data = array();
 
-		$data['departments'] = $this->getApiData($deps, false);
-		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
-
-		return $this->createApiResponse($data);
-	}
-
-	public function getAction($id)
-	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
-
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
-		}
-
-		$data = array();
-		$data['department'] = $this->getApiData($dep);
-
-		$perms = $this->db->fetchAll("SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?", array($dep->id));
-		$data['perms_usergroup_ids']  = array();
-		$data['perms_agentgroup_ids'] = array();
-		$data['perms_agent_ids']      = array();
-
-		foreach ($perms as $perm) {
-			if ($perm['usergroup_id']) {
-				if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-					$data['perms_agentgroup_ids'][] = $perm['usergroup_id'];
-				} else {
-					$data['perms_usergroup_ids'][] = $perm['usergroup_id'];
-				}
-			} else {
-				$data['perms_agent_ids'][] = $perm['person_id'];
+			foreach (array('first_name', 'last_name', 'name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
+				$agent_data[$k] = $agent[$k];
 			}
+
+			$agent_data['primary_email'] = array(
+				'id'    => $agent->primary_email->id,
+				'email' => $agent->primary_email->email
+			);
+
+			$agent_data['emails'] = array();
+			foreach ($agent->emails as $eml) {
+				$agent_data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
+			}
+
+			$agent_data['usergroup_ids']  = array();
+			$agent_data['agentgroup_ids'] = array();
+			foreach ($agent->getUsergroupIds() as $ug_id) {
+				if ($this->container->getDataService('Usergroup')->get($ug_id)->is_agent_group) {
+					$agent_data['agentgroup_ids'][] = $ug_id;
+				} else {
+					$agent_data['usergroup_ids'][] = $ug_id;
+				}
+			}
+
+			$data['agents'][] = $agent_data;
 		}
 
 		return $this->createApiResponse($data);
-	}
-
-	public function saveAction($id)
-	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
-
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
-		}
-
-		$dep->title = $this->in->getString('title');
-		$dep->user_title = $this->in->getString('user_title');
-
-		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
-	}
-
-	public function removeAction($id)
-	{
-
 	}
 }

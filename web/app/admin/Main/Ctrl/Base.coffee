@@ -52,7 +52,7 @@ define ['angular', 'Admin/App'], (angular) ->
 				if arg._is_ds_class?
 					arg.registerCtrl(@)
 					@$scope.$on('$destroy', ->
-						arg.unregisterCtrl(me)
+						#arg.unregisterCtrl(me)
 					)
 
 			if @constructor.CTRL_AS
@@ -74,5 +74,5 @@ define ['angular', 'Admin/App'], (angular) ->
 		* Calls $apply on scope only if digest isn't already being processed
 		###
 		ngApply: (fn) ->
-			if @$scope.$$phase or @$scope.$root.$$phase
+			if !@$scope.$$phase && !@$scope.$root.$$phase
 				@$scope.$apply(fn);

@@ -807,6 +807,57 @@ $collection->add('api_people_groups', new Route(
 ));
 
 ################################################################################
+# Agents
+################################################################################
+
+$collection->add('api_agents_list', new Route(
+	'/agents',
+	array('_controller' => 'ApiBundle:Agents:list'),
+	array('_method' => 'GET'),
+	array()
+));
+
+################################################################################
+# Usergroups
+################################################################################
+
+$collection->add('api_agentgroups_list', new Route(
+	'/agentgroups',
+	array('_controller' => 'ApiBundle:Usergroups:list', 'type' => 'agent'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_usergroups_list', new Route(
+	'/usergroups',
+	array('_controller' => 'ApiBundle:Usergroups:list', 'type' => 'user'),
+	array('_method' => 'GET'),
+	array()
+));
+
+################################################################################
+# ApiCombiner
+################################################################################
+
+$collection->add('api_combiner', new Route(
+	'/api_caller',
+	array('_controller' => 'ApiBundle:ApiCombiner:get'),
+	array('_method' => 'GET'),
+	array()
+));
+
+################################################################################
+# Email Gateways
+################################################################################
+
+$collection->add('api_ticketaccounts_list', new Route(
+	'/ticket_accounts',
+	array('_controller' => 'ApiBundle:EmailGateway:list', 'type' => 'ticket'),
+	array('_method' => 'GET'),
+	array()
+));
+
+################################################################################
 # Organizations
 ################################################################################
 
@@ -2168,20 +2219,20 @@ $collection->add('api_ticket_deps', new Route(
 	array()
 ));
 
-$collection->add('adm_settings_ticket_deps_get', new Route(
-	'/ticket_deps/{id}.json',
+$collection->add('api_ticket_deps_get', new Route(
+	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:get'),
 	array()
 ));
 
 $collection->add('api_ticket_deps_save', new Route(
-	'/ticket_deps/{id}.json',
+	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:save'),
 	array('_method' => 'POST')
 ));
 
-$collection->add('adm_settings_ticket_deps_remove', new Route(
-	'/ticket_deps/{id}.json',
+$collection->add('api_ticket_deps_remove', new Route(
+	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:remove'),
 	array('_method' => 'DELETE')
 ));

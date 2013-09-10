@@ -286,6 +286,12 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 			$data['parent_id'] = null;
 		}
 
+		if ($this->email_gateway) {
+			$data['email_gateway_id'] = $this->email_gateway->getId();
+		} else {
+			$data['email_gateway_id'] = null;
+		}
+
 		return $data;
 	}
 

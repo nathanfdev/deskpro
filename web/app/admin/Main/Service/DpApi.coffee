@@ -17,7 +17,7 @@ define ['angular'], (angular) ->
 			url = "#{@api_url}/#{endpoint}"
 
 			if params
-				if url.indexOf('?') != -1
+				if url.indexOf('?') == -1
 					url += '?'
 				else
 					url += '&'
@@ -37,6 +37,21 @@ define ['angular'], (angular) ->
 
 			return url
 
+
+		###*
+		* Uses the api-caller endpoint to fetch multiple data points at once.
+    	*
+    	* @return {Promise}
+		###
+		sendDataGet: (paths, http_params = {}) ->
+			params = []
+			for path in paths
+				params.push({
+					name: 'load_data[]',
+					value: @formatUrl(path)
+				})
+
+			return @sendGet('api_caller', params, http_params)
 
 		###*
 		* Format an endpoint with GET params to a full URL string.

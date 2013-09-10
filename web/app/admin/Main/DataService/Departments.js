@@ -13,23 +13,25 @@
         this.$q = $q;
         this.Api = Api;
         this.deps = null;
+        this.parent_to_children = {};
         this.default_dep = null;
       }
 
-      Admin_Main_DataService_Departments.prototype.loadDepList = function() {
+      /**
+      		* Loads the whole department structure
+        	* Returns a promise.
+        	* After loaded, you can use getDepartments()
+        	*
+        	* @return {Promise}
+      */
+
+
+      Admin_Main_DataService_Departments.prototype.loadDepList = function(reload) {
         var deferred, http_def,
           _this = this;
         deferred = this.$q.defer();
         http_def = this.Api.sendGet('/ticket_deps').success(function(data, status, headers, config) {
-          var dep, model, _i, _len, _ref;
-          _this.deps = new Admin_Main_Collection_OrderedDictionary();
-          _ref = data.departments;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            dep = _ref[_i];
-            model = new Admin_Main_Model_Base();
-            model.setData(dep);
-            _this.deps.set(model.id, model);
-          }
+          _this._setDepData(data.departments);
           _this.default_dep = new Admin_Main_Model_Base();
           _this.default_dep.default_id = data.default_id;
           return deferred.resolve(_this.deps, _this.default_dep);
@@ -39,8 +41,59 @@
         return deferred.promise;
       };
 
+      /**
+      		* Initialises the models to keep track of department data
+        	*
+        	* @return {Promise}
+      */
+
+
+      Admin_Main_DataService_Departments.prototype._setDepData = function(departments) {
+        var dep, model, parent_dep, _i, _j, _len, _len1, _ref, _results;
+        this.deps = null;
+        this.parent_to_children = {};
+        this.default_dep = null;
+        this.deps = new Admin_Main_Collection_OrderedDictionary();
+        for (_i = 0, _len = departments.length; _i < _len; _i++) {
+          dep = departments[_i];
+          model = new Admin_Main_Model_Base();
+          if (!dep.parent_id) {
+            dep.parent_id = 0;
+          }
+          model.setData(dep);
+          this.deps.set(model.id, model);
+        }
+        _ref = this.deps.values();
+        _results = [];
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          dep = _ref[_j];
+          if (dep.parent_id) {
+            parent_dep = this.deps.get(dep.parent_id);
+            if (parent_dep) {
+              if (this.parent_to_children[parent_dep.id] == null) {
+                this.parent_to_children[parent_dep.id] = [];
+              }
+              this.parent_to_children[parent_dep.id].push(dep.id);
+              _results.push(dep._depth = 1);
+            } else {
+              _results.push(void 0);
+            }
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      /**
+      		* Cleans up models that are sitting in memory
+      */
+
+
       Admin_Main_DataService_Departments.prototype._cleanup = function() {
         this.deps = null;
+        this.parent_to_children = {};
+        this.default_dep = null;
       };
 
       return Admin_Main_DataService_Departments;
