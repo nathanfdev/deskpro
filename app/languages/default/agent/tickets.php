@@ -186,6 +186,7 @@
 	'agent.tickets.log_trigger_forced_notif'            => 'Trigger forced notification',
 	'agent.tickets.log_update_agent'                    => 'Updated by agent',
 	'agent.tickets.log_update_agent_reply'              => 'Reply by agent',
+	'agent.tickets.log_update_escalation'               => 'Updated by escalation',
 	'agent.tickets.log_update_user'                     => 'Updated by user',
 	'agent.tickets.log_update_user_reply'               => 'Reply by user',
 	'agent.tickets.log_written_by'                      => 'Written by {{name}} (ID {{id}})',

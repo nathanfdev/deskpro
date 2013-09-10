@@ -32,6 +32,8 @@
 		{% else %}
 			{{ phrase('agent.tickets.log_update_user') }}
 		{% endif %}
+	{% elseif log.details.event == 'update.escalation' %}
+		{{ phrase('agent.tickets.log_update_escalation') }}
 	{% else %}
 		{{ log.details.event }}
 	{% endif %}
