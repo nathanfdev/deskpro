@@ -169,7 +169,7 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		# because v3 uses the same account for everything
 		#------------------------------
 
-		$tr = $this->db->fetchAll("
+		$tr = $this->db->fetchAssoc("
 			SELECT * FROM email_transports
 			WHERE title = 'Imported Transport'
 			LIMIT 1
