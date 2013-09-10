@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailGatewayAddress;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class PopAccountsStep extends AbstractDeskpro3Step
 {
@@ -178,7 +180,8 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		unset($tr['id']);
 		$tr['title'] = 'Transport for Email Account #' . $new_gateway->getId();
 		$tr['match_type'] = 'exact';
-		$tr['match_pattern'] = $new_gateway->getPrimaryEmailAddress();
+		$primary_addr = Arrays::getFirstItem($set_addresses);
+		$tr['match_pattern'] = $primary_addr;
 		$this->db->insert('email_transports', $tr);
 		$tr['id'] = $this->db->lastInsertId();
 
