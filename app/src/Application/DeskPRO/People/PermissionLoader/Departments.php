@@ -62,11 +62,28 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 		$in = implode(',', $this->getUsergroupIds());
 
 		if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
-			$res = App::getDb()->fetchAll("
-				SELECT department_id, app, name, value
-				FROM department_permissions
-				WHERE person_id = {$this->person->getId()}
-			");
+			$agent_ugs = App::getDataService('Usergroup')->getAgentUsergroups();
+			$has_agent_ugs = array();
+
+			foreach ($this->usergroup_ids as $ugid) {
+				if (isset($agent_ugs[$ugid])) {
+					$has_agent_ugs[] = $ugid;
+				}
+			}
+
+			if ($has_agent_ugs) {
+				$res = App::getDb()->fetchAll("
+					SELECT department_id, app, name, value
+					FROM department_permissions
+					WHERE person_id = {$this->person->getId()} OR usergroup_id IN (" . implode(',', $has_agent_ugs) . ")
+				");
+			} else {
+				$res = App::getDb()->fetchAll("
+					SELECT department_id, app, name, value
+					FROM department_permissions
+					WHERE person_id = {$this->person->getId()}
+				");
+			}
 		} else {
 			$res = App::getDb()->fetchAll("
 				SELECT department_id, app, name, value
