@@ -1,5 +1,6 @@
 # IDE project files
 /.idea/
+/web/app/.idea/
 /nbproject/
 /catalog.xml
 /.settings/
@@ -8,6 +9,7 @@
 /.tags
 *.komodoproject
 *.sublime*
+*.map
 
 # cache and log files
 /app/sys/cache/*

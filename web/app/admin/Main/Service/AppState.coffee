@@ -6,6 +6,7 @@ define ->
 			@activeStateApp = null
 			@activeStateNav = null
 			@activeStateList = null
+			@sectionState = null
 
 			@$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) =>
 				@setActiveState(toState.name)
@@ -20,7 +21,3 @@ define ->
 			@activeStateList = bits.shift()
 
 			@$rootScope.$broadcast('dp_activeStateChange', @activeState, @activeStateApp, @activeStateNav, @activeStateList)
-
-	return ['$rootScope', ($rootScope) ->
-		return new AppState($rootScope)
-	];

@@ -15,8 +15,6 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_ID = 'Admin_TicketDeps_Ctrl_Edit';
 
-      Admin_TicketDeps_Ctrl_Edit.MODULE_ID = 'Admin_App';
-
       Admin_TicketDeps_Ctrl_Edit.DEPS = ['$scope'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {};
@@ -28,3 +26,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=Edit.map
+*/

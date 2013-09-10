@@ -24,19 +24,18 @@ requirejs([
 	'jquery',
 	'angular',
 	'angularUiRouter',
-	'Admin/Resources/config/routing',
-	'Admin/Main/Service/AppState',
-	'Admin/Main/Directive/ActiveStateMark',
 	'Admin/App',
 
-	'Admin/Main/Ctrl/Base',
-	'Admin/Main/Ctrl/Index',
 	'Admin/Main/Ctrl/SettingsNav',
-
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit'
 ], function(jquery, angular) {
 	'use strict';
+
+	window.DP_UID_COUNTER = 0;
+	window.dp_get_uid = function() {
+		return window.DP_UID_COUNTER++;
+	};
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 
 	angular.element().ready(function() {

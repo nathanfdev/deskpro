@@ -15,8 +15,6 @@
 
       Admin_Main_Ctrl_SettingsNav.CTRL_ID = 'Admin_Main_Ctrl_SettingsNav';
 
-      Admin_Main_Ctrl_SettingsNav.MODULE_ID = 'Admin_App';
-
       Admin_Main_Ctrl_SettingsNav.DEPS = ['$scope'];
 
       Admin_Main_Ctrl_SettingsNav.prototype.init = function() {};
@@ -28,3 +26,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=SettingsNav.map
+*/

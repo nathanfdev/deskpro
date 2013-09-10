@@ -38,7 +38,19 @@ class TicketDepsController extends AbstractController
 {
 	public function listAction()
 	{
+		$data = array();
 
+		$deps = $this->em->createQuery("
+			SELECT d
+			FROM DeskPRO:Department d
+			WHERE d.is_tickets_enabled = true
+			ORDER BY d.display_order ASC
+		")->execute();
+
+		$data['departments'] = $this->getApiData($deps, false);
+		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
+
+		return $this->createApiResponse($data);
 	}
 
 	public function getAction($id)

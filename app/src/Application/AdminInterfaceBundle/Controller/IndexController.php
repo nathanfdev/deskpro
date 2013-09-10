@@ -37,6 +37,20 @@ class IndexController extends AbstractController
 {
 	public function interfaceAction()
 	{
-		return $this->render('AdminInterfaceBundle:Index:interface.html.twig');
+		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($this->person);
+		if (!$token) {
+			$token = new \Application\DeskPRO\Entity\ApiToken();
+			$token->person = $this->person;
+		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
+			$token->regenerateToken();
+		}
+		$token->date_expires = null;
+
+		$this->em->persist($token);
+		$this->em->flush();
+
+		return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
+			'api_token' => $token
+		));
 	}
 }

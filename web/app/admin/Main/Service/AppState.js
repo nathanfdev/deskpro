@@ -2,7 +2,7 @@
 (function() {
   define(function() {
     var AppState;
-    AppState = (function() {
+    return AppState = (function() {
       function AppState($rootScope) {
         var _this = this;
         this.$rootScope = $rootScope;
@@ -11,6 +11,7 @@
         this.activeStateApp = null;
         this.activeStateNav = null;
         this.activeStateList = null;
+        this.sectionState = null;
         this.$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
           return _this.setActiveState(toState.name);
         });
@@ -29,11 +30,10 @@
       return AppState;
 
     })();
-    return [
-      '$rootScope', function($rootScope) {
-        return new AppState($rootScope);
-      }
-    ];
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=AppState.map
+*/

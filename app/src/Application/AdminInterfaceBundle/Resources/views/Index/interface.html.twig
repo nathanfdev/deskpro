@@ -78,8 +78,10 @@
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
 window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
-window.DP_BASE_API_URL   = window.DP_BASE_URL+'/api';
+window.DP_BASE_API_URL   = window.DP_BASE_URL+'api';
 window.DP_BASE_ADMIN_URL = '/{{ path('adm')|trim('/') }}';
+window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
+window.DP_PERSON_ID      = '{{ person.id }}';
 </script>
 <script
 	type="text/javascript"

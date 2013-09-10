@@ -15,8 +15,6 @@
 
       Admin_Main_Ctrl_Index.CTRL_ID = 'Admin_Main_Ctrl_Index';
 
-      Admin_Main_Ctrl_Index.MODULE_ID = 'Admin_App';
-
       Admin_Main_Ctrl_Index.DEPS = ['$scope'];
 
       Admin_Main_Ctrl_Index.prototype.init = function() {};
@@ -28,3 +26,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=Index.map
+*/

@@ -3,7 +3,7 @@
 </header>
 <nav class="links-nav anchor-list">
 	<ul>
-		<li ng-repeat="dep in departments">
+		<li ng-repeat="dep in TicketDepsList.departments">
 			<a href="#/settings/ticket_deps/{{ ng_var('dep.id') }}">
 				<span class="ln-status ln-status-default">{{ ng_var('dep.id') }}</span>
 				<p class="ln-type">{{ ng_var('dep.title') }}</p>

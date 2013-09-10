@@ -15,11 +15,22 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_ID = 'Admin_TicketDeps_Ctrl_List';
 
-      Admin_TicketDeps_Ctrl_List.MODULE_ID = 'Admin_App';
+      Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$scope'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$scope', 'DepartmentData'];
 
-      Admin_TicketDeps_Ctrl_List.prototype.init = function() {};
+      Admin_TicketDeps_Ctrl_List.prototype.init = function() {
+        var promise,
+          _this = this;
+        console.log(this.DepartmentData);
+        this.departments = null;
+        promise = this.DepartmentData.loadDepList();
+        return promise.then(function(departments) {
+          console.log(departments);
+          _this.departments = departments.values();
+          return console.log(_this.departments);
+        });
+      };
 
       return Admin_TicketDeps_Ctrl_List;
 
@@ -28,3 +39,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=List.map
+*/

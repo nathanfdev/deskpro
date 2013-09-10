@@ -3,29 +3,58 @@
   var __slice = [].slice;
 
   define(['angular', 'Admin/App'], function(angular) {
+    /**
+    	* The base controller class is mainly to make it easier to define controllers with angular.
+       *
+       * At the bottom of controller files, the controllers register themselves by calling
+       * the class method EXPORT_CTRL().
+       *
+       * EXPORT_CTRL() is pre-configured to install the controller into the Admin_App module
+       * with the defined dependencies (as well as AppState and $scope which are always defined).
+       *
+       * Note that controllers typically *register themselves* with EXPORT_CTRL(). This is converse to
+       * all other types of objects (services and directives etc) which are registered through the App
+       * loader.
+    */
+
     var Admin_Ctrl_Base;
     return Admin_Ctrl_Base = (function() {
+      Admin_Ctrl_Base.CTRL_AS = null;
+
       Admin_Ctrl_Base.CTRL_ID = 'Admin_Main_Ctrl_Base';
 
-      Admin_Ctrl_Base.MODULE_ID = 'Admin_App';
-
       Admin_Ctrl_Base.DEPS = [];
+
+      /**
+      		* Exports this controller to the Admin_App angular module
+        	* so it can be used.
+      */
+
 
       Admin_Ctrl_Base.EXPORT_CTRL = function() {
         var ctrl_def;
         if (this.DEPS.indexOf('AppState') === -1) {
           this.DEPS.push('AppState');
         }
+        if (this.DEPS.indexOf('Api') === -1) {
+          this.DEPS.push('Api');
+        }
         if (this.DEPS.indexOf('$scope') === -1) {
           this.DEPS.push('$scope');
         }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
-        return angular.module(this.MODULE_ID).controller(this.CTRL_ID, ctrl_def);
+        angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);
+        return this;
       };
 
+      /**
+      		* The constructor will assign all passed-in dependencies to class vars
+      */
+
+
       function Admin_Ctrl_Base() {
-        var arg, arg_name, args, i, _i, _len;
+        var arg, arg_name, args, i, me, _i, _j, _len, _len1;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         if (this.constructor.DEPS.length !== args.length) {
           console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
@@ -36,15 +65,41 @@
           arg_name = this.constructor.DEPS[i];
           this[arg_name] = arg;
         }
+        me = this;
+        for (i = _j = 0, _len1 = args.length; _j < _len1; i = ++_j) {
+          arg = args[i];
+          if (arg._is_ds_class != null) {
+            arg.registerCtrl(this);
+            this.$scope.$on('$destroy', function() {
+              return arg.unregisterCtrl(me);
+            });
+          }
+        }
+        if (this.constructor.CTRL_AS) {
+          this.$scope[this.constructor.CTRL_AS] = this;
+        }
         this.has_init = false;
-        this.baseTypeInit();
         this.init();
         this.has_init = true;
       }
 
-      Admin_Ctrl_Base.prototype.baseTypeInit = function() {};
+      /**
+      		* Controllers can implement this init() method to add custom init functionality.
+      */
+
 
       Admin_Ctrl_Base.prototype.init = function() {};
+
+      /**
+      		* Calls $apply on scope only if digest isn't already being processed
+      */
+
+
+      Admin_Ctrl_Base.prototype.ngApply = function(fn) {
+        if (this.$scope.$$phase || this.$scope.$root.$$phase) {
+          return this.$scope.$apply(fn);
+        }
+      };
 
       return Admin_Ctrl_Base;
 
@@ -52,3 +107,7 @@
   });
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=Base.map
+*/
