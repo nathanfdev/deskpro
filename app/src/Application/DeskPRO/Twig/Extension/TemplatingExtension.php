@@ -174,6 +174,7 @@ class TemplatingExtension extends \Twig_Extension
 			'url_trim_scheme'        => new \Twig_Filter_Method($this, 'urlTrimScheme'),
 			'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
 			'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
+			'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
 
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -1448,6 +1449,14 @@ class TemplatingExtension extends \Twig_Extension
 		$source = str_replace('</script>',  '%endScript%', $source);
 		$source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
 		return $source;
+	}
+
+	public function smartWrap($string, $len = 50, $break = null)
+	{
+		if ($break === null) {
+			$break = Strings::ZERO_WIDTH_SPACE;
+		}
+		return Strings::smartWordWrap($string, $len, $break);
 	}
 }
 
