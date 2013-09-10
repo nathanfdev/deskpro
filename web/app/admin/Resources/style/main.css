@@ -935,11 +935,6 @@ body {
 }
 a {
   color: #2c85c6;
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
-  transition: all 0.2s;
 }
 a:focus {
   outline: none;
@@ -2218,14 +2213,14 @@ html input[disabled] {
   position: relative;
   left: -10px;
 }
-.anchor-list li.active {
+.anchor-list li.state-on {
   background: #2c85c6;
 }
-.anchor-list li.active a {
+.anchor-list li.state-on a {
   color: #fff;
 }
-.anchor-list li.active a p,
-.anchor-list li.active a span {
+.anchor-list li.state-on a p,
+.anchor-list li.state-on a span {
   color: #fff !important;
 }
 .links-nav-radio-buttons .ui-buttonset {

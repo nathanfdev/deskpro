@@ -25,6 +25,10 @@ define(function() {
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/list.html',
 			controller: 'Admin_TicketDeps_Ctrl_List'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/help-page.html',
+			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
 

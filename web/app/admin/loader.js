@@ -26,6 +26,7 @@ requirejs([
 	'angularUiRouter',
 	'Admin/App',
 
+	'Admin/Main/Ctrl/Bare',
 	'Admin/Main/Ctrl/SettingsNav',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit'

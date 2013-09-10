@@ -1,0 +1,46 @@
+@import "include";
+@admin_help_bg: #FCF8E3;
+
+section.dp-help-page {
+	background: @admin_help_bg;
+	border: 1px solid darken(@admin_help_bg, 18%);
+	margin: 25px;
+	line-height: 160%;
+	font-size: 95%;
+	.rounded(5px);
+
+	article {
+		padding: 30px;
+
+		h1 { font-size: 24px; }
+		h2 { font-size: 20px; }
+		h3 { font-size: 16px; }
+		h1, h2, h3 {
+			margin: 0 0 14px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid darken(@admin_help_bg, 18%);
+		}
+
+		p {
+			margin: 14px 0;
+		}
+
+		ul {
+			margin-left: 40px;
+			li {
+				list-style-type: disc;
+			}
+		}
+
+		dl {
+			margin: 0;
+			dt {
+				margin-top: 10px;
+
+				&:first-child {
+					margin-top: 0;
+				}
+			}
+		}
+	}
+}

@@ -9,7 +9,12 @@ define ->
 			@sectionState = null
 
 			@$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) =>
-				@setActiveState(toState.name)
+				full = toState.name
+
+				if toParams.id?
+					full += '.' + toParams.id
+
+				@setActiveState(full)
 			)
 
 		setActiveState: (activeState) ->
@@ -19,5 +24,9 @@ define ->
 			@activeStateApp = bits.shift()
 			@activeStateNav = bits.shift()
 			@activeStateList = bits.shift()
+			@activeStatePage = null
+
+			if bits.length
+				@activeStatePage = bits.join('.')
 
 			@$rootScope.$broadcast('dp_activeStateChange', @activeState, @activeStateApp, @activeStateNav, @activeStateList)

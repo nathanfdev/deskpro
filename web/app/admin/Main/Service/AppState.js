@@ -13,7 +13,12 @@
         this.activeStateList = null;
         this.sectionState = null;
         this.$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-          return _this.setActiveState(toState.name);
+          var full;
+          full = toState.name;
+          if (toParams.id != null) {
+            full += '.' + toParams.id;
+          }
+          return _this.setActiveState(full);
         });
       }
 
@@ -24,6 +29,10 @@
         this.activeStateApp = bits.shift();
         this.activeStateNav = bits.shift();
         this.activeStateList = bits.shift();
+        this.activeStatePage = null;
+        if (bits.length) {
+          this.activeStatePage = bits.join('.');
+        }
         return this.$rootScope.$broadcast('dp_activeStateChange', this.activeState, this.activeStateApp, this.activeStateNav, this.activeStateList);
       };
 
