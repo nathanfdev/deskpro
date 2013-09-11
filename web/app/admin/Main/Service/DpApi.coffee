@@ -102,13 +102,13 @@ define ['angular'], (angular) ->
 
 			data_str = ''
 			if post_data
-				if angular.isArray(params)
-					for itm in params
+				if angular.isArray(post_data)
+					for itm in post_data
 						k = encodeURIComponent(itm.name)
 						v = encodeURIComponent(itm.value)
 						data_str += "#{k}=#{v}&"
 				else
-					for k, v of params
+					for own k, v of post_data
 						k = encodeURIComponent(k)
 						v = encodeURIComponent(v)
 						data_str += "#{k}=#{v}&"
@@ -117,7 +117,7 @@ define ['angular'], (angular) ->
 
 			http_params.method = 'POST'
 			http_params.url    = url
-			http_params.data   = data_str if post_data
+			http_params.data   = data_str
 			@prepareHttpParams(http_params)
 
 			return @$http(http_params)

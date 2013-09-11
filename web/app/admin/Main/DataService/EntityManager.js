@@ -65,6 +65,7 @@
         if (!entity_id) {
           throw new Error("entity must have a id_prop");
         }
+        entity_id = entity_id + "";
         if (this.entity_cache[entity_type] == null) {
           this.entity_cache[entity_type] = {};
         }
@@ -113,6 +114,7 @@
         if (!entity_id) {
           throw new Error("entity must have a id_prop");
         }
+        entity_id = entity_id + "";
         if (((_ref = this.entity_cache[entity_type]) != null ? _ref[entity_id] : void 0) == null) {
           throw new Error("entity does not exist in manager");
         }
@@ -135,6 +137,7 @@
         if (!entity_id) {
           throw new Error("entity must have a id_prop");
         }
+        entity_id = entity_id + "";
         if (((_ref = this.entity_cache[entity_type]) != null ? _ref[entity_id] : void 0) == null) {
           throw new Error("entity does not exist in manager");
         }
@@ -158,6 +161,7 @@
         if (!entity_id) {
           throw new Error("entity must have a id_prop");
         }
+        entity_id = entity_id + "";
         if (((_ref = this.entity_cache[entity_type]) != null ? _ref[entity_id] : void 0) != null) {
           return delete this.entity_cache[entity_type][entity_id];
         }
@@ -172,6 +176,7 @@
 
       Admin_Main_DataService_EntityManager.prototype.removeById = function(entity_type, entity_id) {
         var _ref;
+        entity_id = entity_id + "";
         if (((_ref = this.entity_cache[entity_type]) != null ? _ref[entity_id] : void 0) != null) {
           return delete this.entity_cache[entity_type][entity_id];
         }
@@ -187,6 +192,7 @@
 
       Admin_Main_DataService_EntityManager.prototype.hasById = function(entity_type, entity_id) {
         var _ref;
+        entity_id = entity_id + "";
         if (((_ref = this.entity_cache[entity_type]) != null ? _ref[entity_id] : void 0) != null) {
           return true;
         }
@@ -211,6 +217,7 @@
         if (!entity_id) {
           throw new Error("entity must have a id_prop and valid ID");
         }
+        entity_id = entity_id + "";
         if (((_ref = this.entity_cache[entity_type]) != null ? _ref[entity_id] : void 0) != null) {
           return true;
         }

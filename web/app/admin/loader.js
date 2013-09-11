@@ -2,16 +2,21 @@ requirejs.config({
 	baseUrl: DP_ASSET_URL,
 	urlArgs: "bust=" + (new Date()).getTime(),
     paths: {
-		jquery:          DP_ASSET_URL+'/app/bower_components/jquery/jquery',
-		angular:         DP_ASSET_URL+'/app/bower_components/angular/angular',
-		angularUiRouter: DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
-		angularSanitize: DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
-		Admin:           DP_ASSET_URL+'/app/Admin'
+		jquery:             DP_ASSET_URL+'/app/bower_components/jquery/jquery',
+		bootstrap_switch:   DP_ASSET_URL+'/app/other_components/bootstrap-switch/bootstrap-switch',
+		angular:            DP_ASSET_URL+'/app/bower_components/angular/angular',
+		angularUiRouter:    DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
+		angularSanitize:    DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
+		Admin:              DP_ASSET_URL+'/app/Admin'
 	},
 	shim: {
 		'angular' : {'exports' : 'angular'},
 		'angularUiRouter': ['angular'],
-		'angularSanitize': ['angular']
+		'angularSanitize': ['angular'],
+		'bootstrap_switch': {
+			deps: ['jquery'],
+			exports: 'jQuery.fn.bootstrapSwitch'
+		}
 	},
 	priority: [
 		"angular"
@@ -23,6 +28,7 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 requirejs([
 	'jquery',
 	'angular',
+	'bootstrap_switch',
 	'angularUiRouter',
 	'Admin/App',
 

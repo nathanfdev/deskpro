@@ -8,44 +8,139 @@
 </section>
 
 <section class="grids-section">
-	<div class="form">
-		<ul class="gs-list gs-list-bottom-border">
-			<li>
-				<div class="row">
-					<div class="col-md-4">
-						<label for="title">Title</label>
+	<div class="content-border">
+		<header class="cb-header">
+			<h3>Properties</h3>
+		</header>
+		<div class="form">
+			<ul class="gs-list gs-list-bottom-border">
+				<li>
+					<div class="row">
+						<div class="col-md-4">
+							<label for="title">Title</label>
+						</div>
+						<div class="col-md-8">
+							<input type="text" ng-model="TicketDepsEdit.dep.title">
+						</div>
 					</div>
-					<div class="col-md-8">
-						<input type="text" ng-model="TicketDepsEdit.dep.title">
+				</li>
+				<li>
+					<div class="row">
+						<div class="col-md-4">
+							<label for="user_title">User Title</label>
+						</div>
+						<div class="col-md-8">
+							<input type="text" ng-model="TicketDepsEdit.dep.user_title">
+						</div>
 					</div>
-				</div>
-			</li>
-			<li>
-				<div class="row">
-					<div class="col-md-4">
-						<label for="user_title">User Title</label>
+				</li>
+				<li>
+					<div class="row">
+						<div class="col-md-4">
+							<label for="title">Parent</label>
+						</div>
+						<div class="col-md-8">
+							<select
+								ng-model="TicketDepsEdit.dep.parent_id"
+								ng-options="dep.id as dep.title for dep in TicketDepsEdit.dep_parent_list"
+							>
+							</select>
+						</div>
 					</div>
-					<div class="col-md-8">
-						<input type="text" ng-model="TicketDepsEdit.dep.user_title">
+				</li>
+				<li>
+					<div class="col-md-12 text-center">
+						<button class="btn btn-primary" ng-click="TicketDepsEdit.saveProperties()">Save Properties</button>
 					</div>
-				</div>
-			</li>
-			<li>
-				<div class="row">
-					<div class="col-md-4">
-						<label for="title">Parent</label>
-					</div>
-					<div class="col-md-8">
-						<select
-							ng-model="TicketDepsEdit.dep.parent_id"
-							ng-options="dep.id as dep.title for dep in TicketDepsEdit.departments"
-						>
-						</select>
-					</div>
-				</div>
-			</li>
-		</ul>
-
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.saveDep()">Save</button>
+				</li>
+			</ul>
+		</div>
 	</div>
 </section>
+
+
+<div class="content-border">
+	<header class="cb-header">
+		<h3>Agent Group Permissions</h3>
+	</header>
+	<table class="datagrid">
+		<thead>
+			<tr>
+				<th>Agent Group</th>
+				<th>Full Access</th>
+				<th>Assignment</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups">
+				<td>{{ ng_var('usergroup.title') }}</td>
+				<td>
+					<div><input type="checkbox" ng-model="usergroup.full" dp-toggle-switch value="1" /></div>
+				</td>
+				<td>
+					<div><input type="checkbox" ng-model="usergroup.assign" dp-toggle-switch value="1" /></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="col-md-12 text-center">
+		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermission('agentgroups')">Save Agent Group Permissions</button>
+	</div>
+</div>
+
+<div class="content-border">
+	<header class="cb-header">
+		<h3>Agent Permissions</h3>
+	</header>
+	<table class="datagrid">
+		<thead>
+			<tr>
+				<th>Agent</th>
+				<th>Full Access</th>
+				<th>Assignment</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="agent in TicketDepsEdit.agents">
+				<td>{{ ng_var('agent.display_name') }}</td>
+				<td>
+					<div><input type="checkbox" ng-model="agent.full" dp-toggle-switch value="1" /></div>
+				</td>
+				<td>
+					<div><input type="checkbox" ng-model="agent.assign" dp-toggle-switch value="1" /></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="col-md-12 text-center">
+		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermission('agents')">Save Agent Permission</button>
+	</div>
+</div>
+
+<div class="content-border">
+	<header class="cb-header">
+		<h3>User Group Permissions</h3>
+	</header>
+	<table class="datagrid">
+		<thead>
+			<tr>
+				<th>Agent Group</th>
+				<th>Access</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
+				<td>{{ ng_var('usergroup.title') }}</td>
+				<td>
+					<div><input type="checkbox" ng-model="usergroup.perm" dp-toggle-switch value="1" /></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="col-md-12 text-center">
+		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermission('usergroups')">Save User Group Permission</button>
+	</div>
+</div>

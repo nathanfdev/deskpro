@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Departments\DepartmentEditor;
+
 class TicketDepsController extends AbstractController
 {
 	public function listAction()
@@ -72,12 +74,18 @@ class TicketDepsController extends AbstractController
 		foreach ($perms as $perm) {
 			if ($perm['usergroup_id']) {
 				if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-					$data['perms_agentgroup_ids'][] = $perm['usergroup_id'];
+					$data['perms_agentgroup_ids'][] = array(
+						'usergroup_id' => (int)$perm['usergroup_id'],
+						'perm_name'    => $perm['name'],
+					);
 				} else {
-					$data['perms_usergroup_ids'][] = $perm['usergroup_id'];
+					$data['perms_usergroup_ids'][] = (int)$perm['usergroup_id'];
 				}
-			} else {
-				$data['perms_agent_ids'][] = $perm['person_id'];
+			} elseif ($perm['person_id']) {
+				$data['perms_agent_ids'][] = array(
+					'agent_id'  => (int)$perm['person_id'],
+					'perm_name' => $perm['name']
+				);
 			}
 		}
 
@@ -86,20 +94,53 @@ class TicketDepsController extends AbstractController
 
 	public function saveAction($id)
 	{
+		$editor = $this->_getDepartmentEditor($id);
+		$editor->editProperties(array(
+			'title' => $this->in->getString('title'),
+			'user_title' => $this->in->getString('user_title'),
+			'parent_id' => $this->in->getUint('parent_id'),
+			'move_tickets_to' => $this->in->getUint('move_tickets_to'),
+		));
+
+		return $this->createApiResponse(array('id' => $editor->getDepartment()->id, 'success' => true));
+	}
+
+	public function savePermissionsAction($id)
+	{
+		$editor = $this->_getDepartmentEditor($id);
+		$editor->editPermissions(
+			$this->in->getCleanValueArray('agent_permissions'),
+			$this->in->getCleanValueArray('agentgroup_permissions'),
+			$this->in->getCleanValueArray('usergroup_permissions')
+		);
+
+		return $this->createApiResponse(array('id' => $editor->getDepartment()->id, 'success' => true));
+	}
+
+	public function removeAction($id)
+	{
+		$move_to = $this->in->getUint('move_to');
+		$editor = $this->_getDepartmentEditor($id);
+
+		$old_id = $editor->remove($move_to);
+
+		return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
+	}
+
+	/**
+	 * @param $id
+	 * @return DepartmentEditor
+	 * @throws
+	 */
+	private function _getDepartmentEditor($id)
+	{
 		$dep = $this->em->find('DeskPRO:Department', $id);
 
 		if (!$dep || !$dep->is_tickets_enabled) {
 			throw new $this->createNotFoundException();
 		}
 
-		$dep->title = $this->in->getString('title');
-		$dep->user_title = $this->in->getString('user_title');
-
-		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
-	}
-
-	public function removeAction($id)
-	{
-
+		$editor = new DepartmentEditor($this->em, $dep);
+		return $editor;
 	}
 }

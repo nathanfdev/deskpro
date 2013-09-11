@@ -43,12 +43,12 @@ class AgentsController extends AbstractController
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
 			$agent_data = array();
 
-			foreach (array('first_name', 'last_name', 'name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
+			foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
 				$agent_data[$k] = $agent[$k];
 			}
 
 			$agent_data['primary_email'] = array(
-				'id'    => $agent->primary_email->id,
+				'id'    => (int)$agent->primary_email->id,
 				'email' => $agent->primary_email->email
 			);
 

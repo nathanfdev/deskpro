@@ -2216,13 +2216,13 @@ $collection->add('api_get_activity', new Route(
 $collection->add('api_ticket_deps', new Route(
 	'/ticket_deps',
 	array('_controller' => 'ApiBundle:TicketDeps:list'),
-	array()
+	array('_method' => 'GET')
 ));
 
 $collection->add('api_ticket_deps_get', new Route(
 	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:get'),
-	array()
+	array('_method' => 'GET')
 ));
 
 $collection->add('api_ticket_deps_save', new Route(

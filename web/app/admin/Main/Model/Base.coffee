@@ -48,6 +48,13 @@ define ['angular'], (angular) ->
 
 
 		###*
+    	# Copy properties from another model
+    	###
+		copyProperties: (model) ->
+			@setData(mode.getData())
+
+
+		###*
     	* Get the type of model this is
     	*
     	* @return {String}

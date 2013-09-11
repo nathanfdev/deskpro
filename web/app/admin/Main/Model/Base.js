@@ -61,6 +61,15 @@
       };
 
       /**
+        	# Copy properties from another model
+      */
+
+
+      Admin_Main_Model_Base.prototype.copyProperties = function(model) {
+        return this.setData(mode.getData());
+      };
+
+      /**
         	* Get the type of model this is
         	*
         	* @return {String}

@@ -10,6 +10,7 @@ define [
 		constructor: ->
 			@entity_cache = {}
 
+
 		###*
 		* Creates a new managed entity
     	*
@@ -53,6 +54,7 @@ define [
 			if not entity_type then throw new Error("entity must have a type_id")
 			if not entity_id   then throw new Error("entity must have a id_prop")
 
+			entity_id = entity_id+""
 			if not @entity_cache[entity_type]?
 				@entity_cache[entity_type] = {}
 
@@ -89,6 +91,8 @@ define [
 
 			if not entity_type then throw new Error("entity must have a type_id")
 			if not entity_id   then throw new Error("entity must have a id_prop")
+
+			entity_id = entity_id+""
 			if not @entity_cache[entity_type]?[entity_id]? then throw new Error("entity does not exist in manager")
 
 			return @entity_cache[entity_type][entity_id]
@@ -103,6 +107,8 @@ define [
 		getById: (entity_type, entity_id) ->
 			if not entity_type then throw new Error("entity must have a type_id")
 			if not entity_id   then throw new Error("entity must have a id_prop")
+			entity_id = entity_id+""
+
 			if not @entity_cache[entity_type]?[entity_id]? then throw new Error("entity does not exist in manager")
 
 			return @entity_cache[entity_type][entity_id]
@@ -119,6 +125,7 @@ define [
 
 			if not entity_type then throw new Error("entity must have a type_id")
 			if not entity_id   then throw new Error("entity must have a id_prop")
+			entity_id = entity_id+""
 
 			if @entity_cache[entity_type]?[entity_id]?
 				delete @entity_cache[entity_type][entity_id]
@@ -130,6 +137,8 @@ define [
     	* @param {Admin_Main_Model_Base} entity
 		###
 		removeById: (entity_type, entity_id) ->
+			entity_id = entity_id+""
+
 			if @entity_cache[entity_type]?[entity_id]?
 				delete @entity_cache[entity_type][entity_id]
 
@@ -141,6 +150,8 @@ define [
     	* @return {Boolean}
 		###
 		hasById: (entity_type, entity_id) ->
+			entity_id = entity_id+""
+
 			if @entity_cache[entity_type]?[entity_id]?
 				return true
 
@@ -159,6 +170,7 @@ define [
 
 			if not entity_type then throw new Error("entity must have a type_id")
 			if not entity_id   then throw new Error("entity must have a id_prop and valid ID")
+			entity_id = entity_id+""
 
 			if @entity_cache[entity_type]?[entity_id]?
 				return true

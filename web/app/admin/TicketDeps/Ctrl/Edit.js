@@ -20,10 +20,11 @@
       Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
+        var _this = this;
         this.$scope.watch(function() {
           return this.DepartmentData.deps;
         }, function(newVal) {
-          return this.departments = this.DepartmentData.deps.values();
+          return _this.initDeplistData(_this.DepartmentData.deps);
         });
         return this.loadTicket();
       };
@@ -35,23 +36,86 @@
         return this.$q.all(waiting).then(function(d) {
           var data_results, departments;
           departments = d[0], data_results = d[1];
-          _this.departments = departments.values();
-          _this.dep = _this.em.createEntity('department', 'id', data_results.data.api_ticket_deps_get.department);
-          _this.dep_ug_perms = data_results.data.api_ticket_deps_get.perms_usergroup_ids;
-          _this.dep_ag_perms = data_results.data.api_ticket_deps_get.perms_agentgroup_ids;
-          return _this.dep_a_perms = data_results.data.api_ticket_deps_get.perms_agent_ids;
+          _this.initDeplistData(departments);
+          return _this.initData(data_results.data.api_ticket_deps_get.department, {
+            usergroups: data_results.data.api_ticket_deps_get.perms_usergroup_ids,
+            agentgroups: data_results.data.api_ticket_deps_get.perms_agentgroup_ids,
+            agents: data_results.data.api_ticket_deps_get.perms_agent_ids
+          }, data_results.data.api_agents_list.agents, data_results.data.api_agentgroups_list.agentgroups, data_results.data.api_usergroups_list.usergroups);
         });
       };
 
-      Admin_TicketDeps_Ctrl_Edit.prototype.saveDep = function() {
+      Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(dep, department_perms, agents, agentgroups, usergroups) {
+        var ag, perm, ug, ugid, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
+        this.dep = this.em.createUnmanagedEntity('department', 'id', dep);
+        this.agentgroups = agentgroups;
+        _ref1 = this.agentgroups;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          ug = _ref1[_i];
+          _ref2 = department_perms.agentgroups;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            perm = _ref2[_j];
+            if (perm.usergroup_id = ug.id) {
+              ug[perm.perm_name] = true;
+            }
+          }
+        }
+        this.usergroups = usergroups;
+        _ref3 = this.usergroups;
+        for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+          ug = _ref3[_k];
+          _ref4 = department_perms.usergroups;
+          for (_l = 0, _len3 = _ref4.length; _l < _len3; _l++) {
+            ugid = _ref4[_l];
+            if (ugid === ug.id) {
+              ug.perm = true;
+            }
+          }
+        }
+        this.agents = agents;
+        _ref5 = this.agents;
+        _results = [];
+        for (_m = 0, _len4 = _ref5.length; _m < _len4; _m++) {
+          ag = _ref5[_m];
+          _results.push((function() {
+            var _len5, _n, _ref6, _results1;
+            _ref6 = department_perms.agents;
+            _results1 = [];
+            for (_n = 0, _len5 = _ref6.length; _n < _len5; _n++) {
+              perm = _ref6[_n];
+              if (perm.agent_id = ag.id) {
+                _results1.push(ag[perm.perm_name] = true);
+              } else {
+                _results1.push(void 0);
+              }
+            }
+            return _results1;
+          })());
+        }
+        return _results;
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.initDeplistData = function(departments) {
+        this.departments = departments.values();
+        this.dep_parent_list = departments.values();
+        return this.dep_parent_list.unshift({
+          id: 0,
+          title: 'No Parent'
+        });
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.saveProperties = function() {
         var model;
         this.Api.sendPost('/ticket_deps/' + this.dep.id, {
           title: this.dep.title,
-          user_title: this.dep.user_title
+          user_title: this.dep.user_title,
+          parent_id: this.dep.parent_id || 0
         });
-        model = this.DepartmentData.deps.get(this.dep.id);
-        model.title = this.dep.title;
-        model.user_title = this.dep.user_title;
+        if (this.em.hasById('department', this.dep.id)) {
+          model = this.em.getById('department', this.dep.id);
+          model.title = this.dep.title;
+          model.user_title = this.dep.user_title;
+        }
         return this.ngApply();
       };
 
