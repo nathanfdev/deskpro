@@ -1,4 +1,4 @@
-define ->
+define ['angular'], (angular) ->
 	###*
     * A model holds data about some kind of entity.
     * Our model class does nothing special except tries to make it easier
@@ -15,11 +15,63 @@ define ->
     * These models by themselves are not a repository.
 	###
 	class Admin_Main_Model_Base
-		constructor: ->
-			@_dp_uid = dp_get_uid()
-			@_is_model = true
+		constructor: (type_id, id_prop = 'id') ->
+			@_obj_time   = (new Date()).getTime()
+			@_obj_refc   = 0
+			@_type_id    = type_id
+			@_id_prop    = id_prop
+			@_is_mult_id = angular.isArray(id_prop)
+			@_dp_uid     = dp_get_uid()
+			@_is_model   = true
 			@_data_checkpoints = []
 
+
+		###*
+    	# Add to the ref counter
+    	#
+    	# @param {Object} obj Optionally set up auto-release on obj
+    	###
+		retain: (obj) ->
+			@_obj_refc += 1
+			@_obj_time  = (new Date()).getTime()
+
+			if obj? and obj._configureAutoReleaseObject?
+				obj._configureAutoReleaseObject(obj)
+
+
+		###*
+    	# Remove from the ref counter
+    	###
+		release: ->
+			@_obj_refc -= 1
+			@_obj_time  = (new Date()).getTime()
+
+
+		###*
+    	* Get the type of model this is
+    	*
+    	* @return {String}
+		###
+		getTypeId: ->
+			return @_type_id
+
+		###*
+    	* Get the ID of the entity this object represents (typically a numeric ID)
+    	*
+    	* @return {Integer}
+		###
+		getEntityId: ->
+			if @[@_id_prop]?
+				if @_is_mult_id
+					id_parts = []
+					for idp in @_id_prop
+						id_parts.push(idp)
+					return id_parts.join('::')
+
+				else
+					return @[@_id_prop]
+
+			return null
 
 		###*
     	* Create a new checkpoint. Checkpoints allow you to revert data to previous states or compare

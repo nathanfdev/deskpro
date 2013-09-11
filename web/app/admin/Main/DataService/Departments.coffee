@@ -8,11 +8,12 @@ define [
 	Admin_Main_Collection_OrderedDictionary
 )  ->
 	class Admin_Main_DataService_Departments extends Admin_Main_DataService_Base
-		constructor: (Api, $q) ->
-			super()
+		constructor: (em, Api, $q) ->
+			super(em)
 			@$q   = $q
 			@Api  = Api
 
+			@loadDepListPromise = null
 			@deps = null
 			@parent_to_children = {}
 			@default_dep = null
@@ -26,19 +27,28 @@ define [
     	* @return {Promise}
 		###
 		loadDepList: (reload) ->
+
+			if @loadDepListPromise
+				return @loadDepListPromise
+
 			deferred = @$q.defer()
+			if not reload and @deps
+				deferred.resolve(@deps)
+				return deferred.promise
 
 			http_def = @Api.sendGet('/ticket_deps').success( (data, status, headers, config) =>
 				@_setDepData(data.departments)
 				@default_dep = new Admin_Main_Model_Base()
 				@default_dep.default_id = data.default_id
 
-				deferred.resolve(@deps, @default_dep)
+				deferred.resolve(@deps)
 			, (data, status, headers, config) ->
 				deferred.reject()
 			)
 
-			return deferred.promise
+			@loadDepListPromise = deferred.promise
+
+			return @loadDepListPromise
 
 
 		###*
@@ -54,12 +64,11 @@ define [
 			@deps = new Admin_Main_Collection_OrderedDictionary()
 
 			for dep in departments
-				model = new Admin_Main_Model_Base()
-
 				if not dep.parent_id
 					dep.parent_id = 0
 
-				model.setData(dep)
+				model = @em.createEntity('department', 'id', dep)
+				model.retain()
 				@deps.set(model.id, model)
 
 			for dep in @deps.values()
@@ -77,6 +86,10 @@ define [
 		* Cleans up models that are sitting in memory
 		###
 		_cleanup: ->
+			if @deps
+				for dep in @deps.values()
+					dep.release()
+
 			@deps = null
 			@parent_to_children = {}
 			@default_dep = null

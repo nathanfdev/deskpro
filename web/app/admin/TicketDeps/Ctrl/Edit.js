@@ -17,14 +17,29 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'TicketDepsEdit';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$scope', 'DepartmentData', 'Api', '$stateParams'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
-        var _this = this;
-        this.deps_list = this.DepartmentData.deps.values();
-        return this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']).success(function(data) {
-          _this.dep = data.api_ticket_deps_get.department;
-          return _this.agents = data.api_agents_list;
+        this.$scope.watch(function() {
+          return this.DepartmentData.deps;
+        }, function(newVal) {
+          return this.departments = this.DepartmentData.deps.values();
+        });
+        return this.loadTicket();
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.loadTicket = function() {
+        var waiting,
+          _this = this;
+        waiting = [this.DepartmentData.loadDepList(), this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
+        return this.$q.all(waiting).then(function(d) {
+          var data_results, departments;
+          departments = d[0], data_results = d[1];
+          _this.departments = departments.values();
+          _this.dep = _this.em.createEntity('department', 'id', data_results.data.api_ticket_deps_get.department);
+          _this.dep_ug_perms = data_results.data.api_ticket_deps_get.perms_usergroup_ids;
+          _this.dep_ag_perms = data_results.data.api_ticket_deps_get.perms_agentgroup_ids;
+          return _this.dep_a_perms = data_results.data.api_ticket_deps_get.perms_agent_ids;
         });
       };
 

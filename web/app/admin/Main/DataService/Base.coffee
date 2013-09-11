@@ -4,9 +4,10 @@ define ->
     * keeping it, and updating it.
 	###
 	class Admin_Main_DataService_Base
-		constructor: ->
+		constructor: (em) ->
 			@_is_ds_class = true
 			@reg_ctrl = []
+			@em = em
 
 		###*
 		* Multiple controllers can "register" their interest in a data service.

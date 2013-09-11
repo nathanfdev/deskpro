@@ -2,7 +2,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(function() {
+  define(['angular'], function(angular) {
     /**
        * A model holds data about some kind of entity.
        * Our model class does nothing special except tries to make it easier
@@ -21,11 +21,80 @@
 
     var Admin_Main_Model_Base;
     return Admin_Main_Model_Base = (function() {
-      function Admin_Main_Model_Base() {
+      function Admin_Main_Model_Base(type_id, id_prop) {
+        if (id_prop == null) {
+          id_prop = 'id';
+        }
+        this._obj_time = (new Date()).getTime();
+        this._obj_refc = 0;
+        this._type_id = type_id;
+        this._id_prop = id_prop;
+        this._is_mult_id = angular.isArray(id_prop);
         this._dp_uid = dp_get_uid();
         this._is_model = true;
         this._data_checkpoints = [];
       }
+
+      /**
+        	# Add to the ref counter
+        	#
+        	# @param {Object} obj Optionally set up auto-release on obj
+      */
+
+
+      Admin_Main_Model_Base.prototype.retain = function(obj) {
+        this._obj_refc += 1;
+        this._obj_time = (new Date()).getTime();
+        if ((obj != null) && (obj._configureAutoReleaseObject != null)) {
+          return obj._configureAutoReleaseObject(obj);
+        }
+      };
+
+      /**
+        	# Remove from the ref counter
+      */
+
+
+      Admin_Main_Model_Base.prototype.release = function() {
+        this._obj_refc -= 1;
+        return this._obj_time = (new Date()).getTime();
+      };
+
+      /**
+        	* Get the type of model this is
+        	*
+        	* @return {String}
+      */
+
+
+      Admin_Main_Model_Base.prototype.getTypeId = function() {
+        return this._type_id;
+      };
+
+      /**
+        	* Get the ID of the entity this object represents (typically a numeric ID)
+        	*
+        	* @return {Integer}
+      */
+
+
+      Admin_Main_Model_Base.prototype.getEntityId = function() {
+        var id_parts, idp, _i, _len, _ref;
+        if (this[this._id_prop] != null) {
+          if (this._is_mult_id) {
+            id_parts = [];
+            _ref = this._id_prop;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              idp = _ref[_i];
+              id_parts.push(idp);
+            }
+            return id_parts.join('::');
+          } else {
+            return this[this._id_prop];
+          }
+        }
+        return null;
+      };
 
       /**
         	* Create a new checkpoint. Checkpoints allow you to revert data to previous states or compare

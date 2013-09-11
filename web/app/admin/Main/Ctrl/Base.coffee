@@ -76,3 +76,19 @@ define ['angular', 'Admin/App'], (angular) ->
 		ngApply: (fn) ->
 			if !@$scope.$$phase && !@$scope.$root.$$phase
 				@$scope.$apply(fn);
+
+
+		###*
+		* Configures an object for auto-release when this controller is destroyed
+		*
+		* @param {Admin_Main_Model_Base} obj
+		###
+		_configureAutoReleaseObject: (obj) ->
+			if not @_autoReleaseObjects?
+				@_autoReleaseObjects = []
+				@$scope.$on('$destroy', =>
+					for i in @_autoReleaseObjects
+						i.release()
+				)
+
+			@_autoReleaseObjects.push(obj)

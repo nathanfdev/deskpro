@@ -20,15 +20,14 @@
       Admin_TicketDeps_Ctrl_List.DEPS = ['$scope', 'DepartmentData'];
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
-        var promise,
-          _this = this;
-        console.log(this.DepartmentData);
-        this.departments = null;
-        promise = this.DepartmentData.loadDepList();
-        return promise.then(function(departments) {
-          console.log(departments);
-          _this.departments = departments.values();
-          return console.log(_this.departments);
+        var _this = this;
+        this.$scope.watch(function() {
+          return this.DepartmentData.deps;
+        }, function(newVal) {
+          return this.departments = this.DepartmentData.values();
+        });
+        return this.DepartmentData.loadDepList().then(function(departments) {
+          return _this.departments = departments.values();
         });
       };
 

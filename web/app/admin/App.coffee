@@ -4,6 +4,7 @@ define [
 	'Admin/Main/Service/AppState'
 	'Admin/Main/Service/DpApi'
 	'Admin/Main/Directive/ActiveStateMark',
+	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
 ], (
 	angular,
@@ -11,6 +12,7 @@ define [
 	Admin_Main_Service_AppState,
 	Admin_Main_Service_DpApi,
 	Admin_Main_Directive_ActiveStateMark,
+	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments
 ) ->
 	####################################################################################################################
@@ -39,8 +41,12 @@ define [
 	# Data services
 	####################################################################################################################
 
-	Admin_App.service('DepartmentData', ['Api', '$q', (Api, $q) ->
-		return new Admin_Main_DataService_Departments(Api, $q)
+	Admin_App.service('em', [ ->
+		return new Admin_Main_DataService_EntityManager()
+	])
+
+	Admin_App.service('DepartmentData', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_Main_DataService_Departments(em, Api, $q)
 	])
 
 	####################################################################################################################

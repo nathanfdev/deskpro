@@ -2314,7 +2314,7 @@ html input[disabled] {
   padding: 8px 14px;
 }
 .grids-section {
-  padding: 0 0 15px;
+  padding: 0 15px 0 15px;
 }
 /* Grids List */
 .gs-list {

@@ -8,10 +8,11 @@
     return Admin_Main_DataService_Departments = (function(_super) {
       __extends(Admin_Main_DataService_Departments, _super);
 
-      function Admin_Main_DataService_Departments(Api, $q) {
-        Admin_Main_DataService_Departments.__super__.constructor.call(this);
+      function Admin_Main_DataService_Departments(em, Api, $q) {
+        Admin_Main_DataService_Departments.__super__.constructor.call(this, em);
         this.$q = $q;
         this.Api = Api;
+        this.loadDepListPromise = null;
         this.deps = null;
         this.parent_to_children = {};
         this.default_dep = null;
@@ -29,16 +30,24 @@
       Admin_Main_DataService_Departments.prototype.loadDepList = function(reload) {
         var deferred, http_def,
           _this = this;
+        if (this.loadDepListPromise) {
+          return this.loadDepListPromise;
+        }
         deferred = this.$q.defer();
+        if (!reload && this.deps) {
+          deferred.resolve(this.deps);
+          return deferred.promise;
+        }
         http_def = this.Api.sendGet('/ticket_deps').success(function(data, status, headers, config) {
           _this._setDepData(data.departments);
           _this.default_dep = new Admin_Main_Model_Base();
           _this.default_dep.default_id = data.default_id;
-          return deferred.resolve(_this.deps, _this.default_dep);
+          return deferred.resolve(_this.deps);
         }, function(data, status, headers, config) {
           return deferred.reject();
         });
-        return deferred.promise;
+        this.loadDepListPromise = deferred.promise;
+        return this.loadDepListPromise;
       };
 
       /**
@@ -56,11 +65,11 @@
         this.deps = new Admin_Main_Collection_OrderedDictionary();
         for (_i = 0, _len = departments.length; _i < _len; _i++) {
           dep = departments[_i];
-          model = new Admin_Main_Model_Base();
           if (!dep.parent_id) {
             dep.parent_id = 0;
           }
-          model.setData(dep);
+          model = this.em.createEntity('department', 'id', dep);
+          model.retain();
           this.deps.set(model.id, model);
         }
         _ref = this.deps.values();
@@ -91,6 +100,14 @@
 
 
       Admin_Main_DataService_Departments.prototype._cleanup = function() {
+        var dep, _i, _len, _ref;
+        if (this.deps) {
+          _ref = this.deps.values();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            dep = _ref[_i];
+            dep.release();
+          }
+        }
         this.deps = null;
         this.parent_to_children = {};
         this.default_dep = null;

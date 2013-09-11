@@ -8,9 +8,10 @@
 
     var Admin_Main_DataService_Base;
     return Admin_Main_DataService_Base = (function() {
-      function Admin_Main_DataService_Base() {
+      function Admin_Main_DataService_Base(em) {
         this._is_ds_class = true;
         this.reg_ctrl = [];
+        this.em = em;
       }
 
       /**

@@ -99,6 +99,31 @@
         }
       };
 
+      /**
+      		* Configures an object for auto-release when this controller is destroyed
+      		*
+      		* @param {Admin_Main_Model_Base} obj
+      */
+
+
+      Admin_Ctrl_Base.prototype._configureAutoReleaseObject = function(obj) {
+        var _this = this;
+        if (this._autoReleaseObjects == null) {
+          this._autoReleaseObjects = [];
+          this.$scope.$on('$destroy', function() {
+            var i, _i, _len, _ref, _results;
+            _ref = _this._autoReleaseObjects;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              i = _ref[_i];
+              _results.push(i.release());
+            }
+            return _results;
+          });
+        }
+        return this._autoReleaseObjects.push(obj);
+      };
+
       return Admin_Ctrl_Base;
 
     })();
