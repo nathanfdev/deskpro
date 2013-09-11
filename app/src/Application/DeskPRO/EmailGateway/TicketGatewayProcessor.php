@@ -1827,11 +1827,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($ccs) {
 			foreach ($ccs as $e) {
-				$e_a = new Reader\Item\EmailAddress();
-				$e_a->email = $e['email'];
-				$e_a->name = $e['name'];
-
-				$cc_emails[] = $e_a;
+				$cc_emails[] = $e;
 			}
 		}
 
