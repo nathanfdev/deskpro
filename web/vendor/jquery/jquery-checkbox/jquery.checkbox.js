@@ -66,8 +66,8 @@
 			if (ch.wrapper) ch.wrapper.remove();
 
 			/* Creating wrapper for checkbox and assigning "hover" event */
-			var phrase_on  = (window.DESKPRO_LANG ? DESKPRO_LANG['agent.general.check_on'] : false) || "ON";
-			var phrase_off = (window.DESKPRO_LANG ? DESKPRO_LANG['agent.general.check_off'] : false) || "OFF";
+			var phrase_on  = (window.DESKPRO_LANG ? DESKPRO_LANG['agent.general.on'] : false) || "ON";
+			var phrase_off = (window.DESKPRO_LANG ? DESKPRO_LANG['agent.general.off'] : false) || "OFF";
 			ch.wrapper = $('<span class="' + settings.cls + '"><span class="dp-on-text">'+phrase_on+'</span><span class="dp-off-text">'+phrase_off+'</span><span class="mark"><img src="' + settings.empty + '" /></span></span>');
 			ch.wrapperInner = ch.wrapper.children('span:eq(0)');
 			ch.wrapper.hover(
