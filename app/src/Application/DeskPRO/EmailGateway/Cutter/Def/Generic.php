@@ -71,14 +71,22 @@ class Generic implements ForwardDef, QuoteDef
 		$found = 0;
 		$start_line = null;
 
-		// Try to fix From that has [email address] on a new line after From:
+		// - Try to fix From that has [email address] on a new line after From:
+		// - Normalise labels that have starts around them: *From:* which can happen when clients convert html to text (eg postboxapp)
 		foreach ($this->translate_map as $set) {
 			$pattern = '#^(%From%): ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m';
+			$pattern2 = '#^\*(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):\*#mi';
+			$pattern3 = '#^(\s*>+\s*)\*(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):\*#mi';
+
 			foreach ($set as $f => $r) {
 				$pattern = str_replace($f, $r, $pattern);
+				$pattern2 = str_replace($f, $r, $pattern2);
+				$pattern3 = str_replace($f, $r, $pattern3);
 			}
 
 			$body = preg_replace($pattern, '$1: $2 <$4>', $body);
+			$body = preg_replace($pattern2, '$1:', $body);
+			$body = preg_replace($pattern3, '$1$2:', $body);
 		}
 
 		$body = explode("\n", $body);
@@ -208,11 +216,15 @@ class Generic implements ForwardDef, QuoteDef
 		}
 
 		if (count($fwd_parts) != 2) {
-			return $forward_data;
+			$fwd_parts = array($fwd_message_body, $fwd_message_body);
 		}
 
 		$forward_data['fwd_message_headers'] = trim($fwd_parts[0]);
 		$forward_data['fwd_message_body']    = trim($fwd_parts[1]);
+
+		if (!$forward_data['fwd_message_body']) {
+			$forward_data['fwd_message_body'] = $fwd_message_body;
+		}
 
 		#------------------------------
 		# Try to read the email address from the fwd headers
