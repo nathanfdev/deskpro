@@ -257,6 +257,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				&& !preg_match('#^/admin/login#', $path)
 				&& !preg_match('#^/admin/license#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
+				&& !preg_match('#^/admin/email#', $path)
 				&& !preg_match('#^/admin/setup/default-smtp#', $path)
 				&& !preg_match('#^/billing#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
