@@ -116,13 +116,20 @@ class Choice extends HandlerAbstract
 
 		foreach ($children as $child) {
 			if (isset($has_children[$child->getId()])) {
-				$options[$child->getTitle()] = array();
-			} elseif ($child->getOption('parent_id')) {
-				$title = $children[$child->getOption('parent_id')]->getTitle();
-				if (!isset($options[$title])) {
-					$options[$title] = array();
+				if (!($this->multiple && $this->expanded)) {
+					$options[$child->getTitle()] = array();
 				}
-				$options[$title][$child->getId()] = $child->getTitle();
+			} elseif ($child->getOption('parent_id')) {
+				if (!($this->multiple && $this->expanded)) {
+					$title = $children[$child->getOption('parent_id')]->getTitle();
+					if (!isset($options[$title])) {
+						$options[$title] = array();
+					}
+					$options[$title][$child->getId()] = $child->getTitle();
+				} else {
+					$title = $children[$child->getOption('parent_id')]->getTitle();
+					$options[$child->getId()] = $title . ' > ' . $child->getTitle();
+				}
 			} else {
 				$options[$child->getId()] = $child->getTitle();
 			}
