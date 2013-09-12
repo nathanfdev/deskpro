@@ -138,10 +138,10 @@ class CoreExtension extends Extension
 	protected function loadInputReader(ContainerBuilder $container)
 	{
 		// Init readers
-		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST'));
+		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true)));
 		$container->setDefinition('deskpro.core.input_reader_req', $definition);
 
-		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST'));
+		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST', array('accept_json_post' => true)));
 		$container->setDefinition('deskpro.core.input_reader_post', $definition);
 
 		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));

@@ -33,6 +33,8 @@
  */
 
 namespace Orb\Input\Reader\Source;
+use Orb\Util\OptionsArray;
+use Orb\Util\Web;
 
 /**
  * A reader source that fetches data from a superglobal array.
@@ -52,13 +54,19 @@ class Superglobal implements SourceInterface
 	protected $array = null;
 
 	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	protected $options = array();
+
+	/**
 	 * Create the source.
 	 *
 	 * @param  $sg_name  The name of the superglobal: _POST, _GET etc.
 	 */
-	public function __construct($sg_name)
+	public function __construct($sg_name, array $options = null)
 	{
 		$this->superglobal = $sg_name;
+		$this->options = new OptionsArray($options ?: array());
 	}
 
 
@@ -107,11 +115,28 @@ class Superglobal implements SourceInterface
 
 		// We'll enforce our own request array
 		if ($this->superglobal == '_REQUEST') {
-			$this->array = \array_merge($_GET, $_POST);
+			$this->array = \array_merge($_GET, $this->_getPostArray());
 		} else {
-			$this->array = $GLOBALS[$this->superglobal];
+			if ($this->superglobal == '_POST') {
+				$this->array = $this->_getPostArray();
+			} else {
+				$this->array = $GLOBALS[$this->superglobal];
+			}
 		}
 		if (!$this->array) $this->array = array();
+	}
+
+	private function _getPostArray()
+	{
+		$post = $_POST;
+		if ($this->options->get('accept_json_post') && in_array(Web::getRequestContentType(), array('application/json', 'text/x-json'))) {
+			$json_post = @json_decode(@file_get_contents('php://input'), true);
+			if ($json_post) {
+				$post = array_merge($post, $json_post);
+			}
+		}
+
+		return $post;
 	}
 
 
