@@ -198,6 +198,33 @@ class Web
 	}
 
 
+	/**
+	 * Get the content-type of a client request.
+	 *
+	 * @return null|string
+	 */
+	public static function getRequestContentType()
+	{
+		$content_type = null;
+
+		if (isset($_SERVER['CONTENT_TYPE'])) {
+			$content_type = $_SERVER['CONTENT_TYPE'];
+		}
+		if (!$content_type && isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+			$content_type = $_SERVER['HTTP_CONTENT_TYPE'];
+		}
+
+		if ($content_type) {
+			if (strpos($content_type, ';')) {
+				list($content_type,) = explode(';', $content_type, 2);
+			}
+			return strtolower(trim($content_type));
+		}
+
+		return null;
+	}
+
+
 
 	/**
 	 * Get the users IP address.
