@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\LogActionInterface;
 
+use DeskPRO\Kernel\KernelBooter;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 
 class Log
@@ -540,6 +542,24 @@ class Log
 	public function run()
 	{
 		$this->tracker->logMessage('[Log] run');
+
+		if ($this->tracker->getExtra('primary_ticket_log')) {
+
+			// Verify that there is an actual log to run
+			$has_log = false;
+			foreach ($this->getTicketLogs() as $log_item) {
+				if ($log_item->action_type != 'action_starter') {
+					$has_log = true;
+					break;
+				}
+			}
+
+			if (!$has_log) {
+				$e = new \RuntimeException("Ticket log group without changes");
+				$e->_dp_context_data = $this->tracker->getLogMessagesAsString();
+				KernelErrorHandler::logException($e, false);
+			}
+		}
 
 		foreach ($this->getTicketLogs() as $log_item) {
 			App::getOrm()->persist($log_item);

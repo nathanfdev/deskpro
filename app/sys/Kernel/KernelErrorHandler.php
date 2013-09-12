@@ -534,6 +534,10 @@ class KernelErrorHandler
 			}
 		}
 
+		if (!$context_data && isset($exception->_dp_context_data)) {
+			$context_data = $exception->_dp_context_data;
+		}
+
 		$type = get_class($exception);
 		$summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
 

@@ -816,6 +816,18 @@ class TicketChangeTracker extends ChangeTracker
 	}
 
 
+	/**
+	 * @return string
+	 */
+	public function getLogMessagesAsString()
+	{
+		if (!$this->arr_writer) {
+			return '';
+		}
+
+		return $this->arr_writer->getMessagesAsString();
+	}
+
 
 	/**
 	 * Notify all listeners that changes to the ticket have been committed
