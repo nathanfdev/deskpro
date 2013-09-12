@@ -54,11 +54,22 @@ class VerifySearchTablesCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 	protected function configure()
 	{
 		$this->setName('dp:verify-search-tables');
+		$this->addOption('limit', null, InputOption::VALUE_REQUIRED,  'Max tickets to fetch (defaults to 10000)');
 	}
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+		$limit = intval($input->getOption('limit')) ?: 10000;
+
 		$tool = new DetectSearchTableErrors(App::getDb());
-		$tool->outputErrors();
+		$tool->setLimit($limit);
+
+		$str = $tool->errorsAsString();
+		if ($str) {
+			$output->writeln("<error>Detected problems</error>");
+			echo $str;
+		} else {
+			echo "Everything looks okay\n";
+		}
 	}
 }

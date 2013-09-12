@@ -42,10 +42,34 @@ class DetectSearchTableErrors
 	 */
 	protected $db;
 
+	/**
+	 * @var int
+	 */
+	protected $limit = 10000;
+
 	public function __construct(Connection $db)
 	{
 		$this->db = $db;
 	}
+
+
+	/**
+	 * @return int $limit
+	 */
+	public function getLimit()
+	{
+		return $this->limit;
+	}
+
+
+	/**
+	 * @param int $limit
+	 */
+	public function setLimit($limit)
+	{
+		$this->limit = $limit;
+	}
+
 
 	public function outputErrors($errors = null)
 	{
@@ -125,6 +149,8 @@ class DetectSearchTableErrors
 		$q = $this->db->executeQuery("
 			SELECT $select_fields
 			FROM tickets_search_active
+			ORDER BY id DESC
+			LIMIT {$this->limit}
 		");
 		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 			$search_tickets[$r['id']] = $r;
@@ -137,6 +163,8 @@ class DetectSearchTableErrors
 			SELECT $select_fields
 			FROM tickets
 			WHERE status IN ('awaiting_user', 'awaiting_agent', 'resolved')
+			ORDER BY id DESC
+			LIMIT {$this->limit}
 		");
 		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 			$real_tickets[$r['id']] = $r;
