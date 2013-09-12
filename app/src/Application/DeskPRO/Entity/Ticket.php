@@ -3032,11 +3032,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		", array($this->id));
 	}
 
-	public function getFromAddress()
+	public function getFromAddress($context = 'user', array $options = null)
 	{
-		if ($this->notify_email) {
+		if ($context == 'user' && $this->notify_email) {
 			$from_email = $this->notify_email;
-		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress()) {
+		} elseif ($context == 'agent' && $this->notify_email_agent) {
+			$from_email = $this->notify_email_agent;
+		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress() && $this->email_gateway->is_enabled) {
 			$from_email = $this->email_gateway->getPrimaryEmailAddress();
 		} else {
 			$from_email = App::getSetting('core.default_from_email');
@@ -3053,10 +3055,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if ($this->notify_email_name) {
+		if ($context == 'user' && $this->notify_email_name) {
 			$from_name = $this->notify_email_name;
+		} elseif ($context == 'agent' && $this->notify_email_name_agent) {
+			$from_name = $this->notify_email_name_agent;
 		} else {
 			$from_name = App::getSetting('core.deskpro_name');
+
+			if ($options && isset($options['default_name']) && $options['default_name']) {
+				$from_name = $options['default_name'];
+			}
 		}
 
 		return array(
