@@ -6,42 +6,14 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		var addUrl = this.el.data('add-url');
-		var deleteUrl = this.el.data('delete-url');
+		this.deleteUrl = this.el.data('delete-url');
 
 		var list = $('ul', this.el).first();
 		var newrow = $('li.newrow', this.el);
 
-		this.el.find('ul').on('click', '.remove-row-trigger', function(ev) {
-			ev.stopPropagation();
-			ev.preventDefault();
-
-			var row = $(this).closest('li');
-			var personId = row.data('person-id');
-			var email = row.data('email-address');
-
-			if (personId) {
-				$.ajax({
-					url: deleteUrl,
-					type: 'POST',
-					data: { person_id: personId },
-					dataType: 'json',
-					success: function(data) {
-						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
-							$(this).empty().html(data.cc_list || '');
-						});
-					},
-					error: function() {
-						row.show();
-					}
-				});
-
-				row.fadeOut('fast');
-			}
-
-			row.fadeOut('fast', function() {
-				row.remove();
-			});
-		});
+		this.el.find('li').each(function() {
+			self.initRow($(this));
+		})
 
 		var addRow = $('.addrow', this.el);
 		if (addRow.length) {
@@ -74,6 +46,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 								DeskPRO_Window.showAlert('The user you specified is an agent. To add an agent to this ticket, use the "Add a follower" button in the Properties box.');
 								self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
 									$(this).empty().html(data.cc_list || '');
+									$(this).find('li').each(function() {
+										self.initRow($(this));
+									});
 								});
 							}
 							return;
@@ -88,10 +63,47 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
 							$(this).empty().html(data.cc_list || '');
+							$(this).find('li').each(function() {
+								self.initRow($(this));
+							});
 						});
 					}
 				});
 			});
 		}
+	},
+
+	initRow: function(row) {
+		var self = this;
+		row.find('.remove-row-trigger').on('click', function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			var personId = row.data('person-id');
+			var email = row.data('email-address');
+
+			if (personId) {
+				$.ajax({
+					url: self.deleteUrl,
+					type: 'POST',
+					data: { person_id: personId },
+					dataType: 'json',
+					success: function(data) {
+						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
+							$(this).empty().html(data.cc_list || '');
+						});
+					},
+					error: function() {
+						row.show();
+					}
+				});
+
+				row.fadeOut('fast');
+			}
+
+			row.fadeOut('fast', function() {
+				row.remove();
+			});
+		});
 	}
 });
