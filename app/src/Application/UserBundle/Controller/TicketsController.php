@@ -213,10 +213,11 @@ class TicketsController extends AbstractController
 		$tickets = $this->em->createQuery("
 			SELECT ticket
 			FROM DeskPRO:Ticket ticket
+			LEFT JOIN ticket.participants part
 			$dql_join
-			WHERE ticket.organization = :organization AND ticket.status != 'hidden' AND ticket.department IN (:dep_ids)
+			WHERE ticket.organization = :organization AND ticket.status != 'hidden' AND (ticket.department IN (:dep_ids) OR part.person = :person)
 			ORDER BY $sort_dql
-		")->execute(array('organization' => $this->person->organization, 'dep_ids' => $allowed_ids));
+		")->execute(array('organization' => $this->person->organization, 'dep_ids' => $allowed_ids, 'person' => $this->person));
 
 		$active_tickets   = array();
 		$resolved_tickets = array();
@@ -620,11 +621,11 @@ class TicketsController extends AbstractController
 		);
 
 		if (!$is_participant AND !$is_org_manager AND !isset($this->session_allowed[$ticket['id']])) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
+			return $this->renderStandardError(null, null, 403);
 		}
 
-		if ($is_org_manager && !$this->person->getPermissionsManager()->Departments->isAllowed($ticket->getDepartmentId(), 'tickets')) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
+		if (($is_org_manager && !$is_participant) && !$this->person->getPermissionsManager()->Departments->isAllowed($ticket->getDepartmentId(), 'tickets')) {
+			return $this->renderStandardError(null, null, 403);
 		}
 
 		if (isset($this->session_allowed[$ticket['id']])) {
