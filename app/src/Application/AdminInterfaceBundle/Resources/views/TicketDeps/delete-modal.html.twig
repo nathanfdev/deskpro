@@ -1,0 +1,25 @@
+<div class="modal-dialog">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Delete Department</h4>
+	</div>
+	<div class="modal-body">
+		<p>
+			Deleting a department cannot be undone. Along with a department
+		</p>
+		<p>
+			Any tickets that are currently in this department will be moved to:
+		</p>
+			<select
+				ng-model="move_to_id"
+				ng-options="dep.id as dep.title for dep in move_deps_list"
+			>
+			</select>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="confirm()">Delete Department</button>
+		<button class="btn btn-primary" ng-click="dismiss()">Cancel</button>
+	</div>
+</div>
+</div>

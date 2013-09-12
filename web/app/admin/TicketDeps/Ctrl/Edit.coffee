@@ -2,13 +2,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS = 'TicketDepsEdit'
-		@DEPS    = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q']
+		@DEPS    = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$modal']
 
 		init: ->
-			@$scope.$watch( =>
-				return @DepartmentData._touch
-			, (newVal) =>
+			@addManagedListener(@DepartmentData.deps, 'changed', =>
 				@initDeplistData(@DepartmentData.deps)
+				@ngApply()
 			)
 
 			@loadDepartment()
@@ -45,9 +44,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				else
 					dep_data = { department: {}, perms_usergroup_ids: [], perms_agentgroup_ids: [], perms_agent_ids: [] }
 
+				dep = dep_data.department
+				if not dep.parent_id then dep.parent_id = 0
+				@dep = @em.createUnmanagedEntity('department', 'id', dep)
+
 				@initDeplistData(departments)
 				@initData(
-					dep_data.department,
 					{ usergroups: dep_data.perms_usergroup_ids, agentgroups: dep_data.perms_agentgroup_ids, agents: dep_data.perms_agent_ids },
 					data_results.data.api_agents_list.agents,
 					data_results.data.api_agentgroups_list.agentgroups,
@@ -59,10 +61,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		###*
 		# Init data from loadDepartment, getting it ready for use
 		###
-		initData: (dep, department_perms, agents, agentgroups, usergroups) ->
-			if not dep.parent_id then dep.parent_id = 0
-			@dep = @em.createUnmanagedEntity('department', 'id', dep)
-
+		initData: (department_perms, agents, agentgroups, usergroups) ->
 			@agentgroups = agentgroups
 			for ug in @agentgroups
 				for perm in department_perms.agentgroups
@@ -84,9 +83,30 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		initDeplistData: (departments) ->
 			@departments = departments.values()
-			@dep_parent_list = departments.values()
-			@dep_parent_list.unshift({ id: 0, title: 'No Parent'})
 
+			if not @dep then return
+
+			@dep_parent_list = departments.values()
+			@dep_parent_list = [{
+				id: 0,
+				title: 'No Parent'
+			}]
+			for dep in @departments
+				if @dep.id != dep.id and not dep.parent_id
+					 @dep_parent_list.push(dep)
+
+
+		###*
+		* Get the move dep list for use in the delete/move dlg
+    	* @return {Array}
+		###
+		getMoveDepList: ->
+			dep_move_list = []
+			for dep in @departments
+				 if @dep.id != dep.id
+					 dep_move_list.push(dep)
+
+			return dep_move_list
 
 		###*
 		# Save the Properties part of the form
@@ -113,6 +133,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					model = @em.createEntity('department', 'id', @dep.getData())
 					@DepartmentData.addToList(model)
+					@initDeplistData(@DepartmentData.deps)
 				)
 
 			return promise
@@ -165,5 +186,30 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			return @Api.sendPostJson('/ticket_deps/' + @dep.id, {
 				permissions: perms
 			})
+
+		startDelete: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketDeps/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance, move_deps_list) ->
+					$scope.move_to_id = 0
+					$scope.move_deps_list = move_deps_list
+
+					$scope.confirm = ->
+						$modalInstance.close($scope.move_to_id);
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+				],
+				resolve: {
+					move_deps_list: =>
+						return @getMoveDepList()
+				}
+			});
+
+			inst.result.then( ->
+				console.log("X")
+			, ->
+				console.log("Y")
+			)
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

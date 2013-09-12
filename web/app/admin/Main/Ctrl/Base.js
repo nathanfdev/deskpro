@@ -155,6 +155,17 @@
         return object.addListener(event_name, fn);
       };
 
+      /**
+      		* Get the URL to the template
+      		*
+      		* @return {String}
+      */
+
+
+      Admin_Ctrl_Base.prototype.getTemplatePath = function(path) {
+        return DP_BASE_ADMIN_URL + '/load-view/' + path;
+      };
+
       return Admin_Ctrl_Base;
 
     })();

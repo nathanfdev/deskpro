@@ -951,3 +951,6 @@ section.dp-help-page article dl dt {
 section.dp-help-page article dl dt:first-child {
   margin-top: 0;
 }
+.modal {
+  display: block;
+}

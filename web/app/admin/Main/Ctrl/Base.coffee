@@ -117,3 +117,11 @@ define ['angular', 'Admin/App'], (angular) ->
 			})
 
 			object.addListener(event_name, fn)
+
+		###*
+		* Get the URL to the template
+		*
+		* @return {String}
+		###
+		getTemplatePath: (path) ->
+			return DP_BASE_ADMIN_URL+'/load-view/' + path

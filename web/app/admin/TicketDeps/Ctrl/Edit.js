@@ -17,14 +17,13 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'TicketDepsEdit';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$modal'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
-        this.$scope.$watch(function() {
-          return _this.DepartmentData._touch;
-        }, function(newVal) {
-          return _this.initDeplistData(_this.DepartmentData.deps);
+        this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
+          _this.initDeplistData(_this.DepartmentData.deps);
+          return _this.ngApply();
         });
         return this.loadDepartment();
       };
@@ -39,7 +38,7 @@
           _this = this;
         waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
         return this.$q.all(waiting).then(function(d) {
-          var data_results, dep_data, departments;
+          var data_results, dep, dep_data, departments;
           departments = d[0], data_results = d[1];
           if (_this.$stateParams.id) {
             dep_data = data_results.data.api_ticket_deps_get;
@@ -51,8 +50,13 @@
               perms_agent_ids: []
             };
           }
+          dep = dep_data.department;
+          if (!dep.parent_id) {
+            dep.parent_id = 0;
+          }
+          _this.dep = _this.em.createUnmanagedEntity('department', 'id', dep);
           _this.initDeplistData(departments);
-          return _this.initData(dep_data.department, {
+          return _this.initData({
             usergroups: dep_data.perms_usergroup_ids,
             agentgroups: dep_data.perms_agentgroup_ids,
             agents: dep_data.perms_agent_ids
@@ -65,12 +69,8 @@
       */
 
 
-      Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(dep, department_perms, agents, agentgroups, usergroups) {
+      Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
         var ag, perm, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
-        if (!dep.parent_id) {
-          dep.parent_id = 0;
-        }
-        this.dep = this.em.createUnmanagedEntity('department', 'id', dep);
         this.agentgroups = agentgroups;
         _ref1 = this.agentgroups;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -119,12 +119,48 @@
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initDeplistData = function(departments) {
+        var dep, _i, _len, _ref1, _results;
         this.departments = departments.values();
+        if (!this.dep) {
+          return;
+        }
         this.dep_parent_list = departments.values();
-        return this.dep_parent_list.unshift({
-          id: 0,
-          title: 'No Parent'
-        });
+        this.dep_parent_list = [
+          {
+            id: 0,
+            title: 'No Parent'
+          }
+        ];
+        _ref1 = this.departments;
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          dep = _ref1[_i];
+          if (this.dep.id !== dep.id && !dep.parent_id) {
+            _results.push(this.dep_parent_list.push(dep));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      /**
+      		* Get the move dep list for use in the delete/move dlg
+        	* @return {Array}
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.getMoveDepList = function() {
+        var dep, dep_move_list, _i, _len, _ref1;
+        dep_move_list = [];
+        _ref1 = this.departments;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          dep = _ref1[_i];
+          if (this.dep.id !== dep.id) {
+            dep_move_list.push(dep);
+          }
+        }
+        return dep_move_list;
       };
 
       /**
@@ -152,7 +188,8 @@
           promise.success(function(result) {
             _this.dep.id = result.id;
             model = _this.em.createEntity('department', 'id', _this.dep.getData());
-            return _this.DepartmentData.addToList(model);
+            _this.DepartmentData.addToList(model);
+            return _this.initDeplistData(_this.DepartmentData.deps);
           });
         }
         return promise;
@@ -220,6 +257,36 @@
         }
         return this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
           permissions: perms
+        });
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.startDelete = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketDeps/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
+              $scope.move_to_id = 0;
+              $scope.move_deps_list = move_deps_list;
+              $scope.confirm = function() {
+                return $modalInstance.close($scope.move_to_id);
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ],
+          resolve: {
+            move_deps_list: function() {
+              return _this.getMoveDepList();
+            }
+          }
+        });
+        return inst.result.then(function() {
+          return console.log("X");
+        }, function() {
+          return console.log("Y");
         });
       };
 
