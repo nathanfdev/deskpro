@@ -54,7 +54,8 @@
 
 
       function Admin_Ctrl_Base() {
-        var arg, arg_name, args, i, me, _i, _j, _len, _len1;
+        var arg, arg_name, args, i, me, _i, _j, _len, _len1,
+          _this = this;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         if (this.constructor.DEPS.length !== args.length) {
           console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
@@ -76,6 +77,19 @@
         if (this.constructor.CTRL_AS) {
           this.$scope[this.constructor.CTRL_AS] = this;
         }
+        this._managed_listeners = [];
+        this.$scope.$on('$destroy', function() {
+          var info, _k, _len2, _ref;
+          if (!_this._managed_listeners.length) {
+            return;
+          }
+          _ref = _this._managed_listeners;
+          for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
+            info = _ref[_k];
+            info.object.removeListener(info.event_name, info.fn);
+          }
+          return _this._managed_listeners = null;
+        });
         this.has_init = false;
         this.init();
         this.has_init = true;
@@ -122,6 +136,23 @@
           });
         }
         return this._autoReleaseObjects.push(obj);
+      };
+
+      /**
+      		* Attaches a listener to an object that will be automatically removed
+        	* when this controller is destroyed.
+      		*
+      		* @param {Admin_Main_Model_Base} obj
+      */
+
+
+      Admin_Ctrl_Base.prototype.addManagedListener = function(object, event_name, fn) {
+        this._managed_listeners.push({
+          object: object,
+          event_name: event_name,
+          fn: fn
+        });
+        return object.addListener(event_name, fn);
       };
 
       return Admin_Ctrl_Base;

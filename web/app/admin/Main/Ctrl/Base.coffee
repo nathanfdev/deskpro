@@ -58,6 +58,15 @@ define ['angular', 'Admin/App'], (angular) ->
 			if @constructor.CTRL_AS
 				@$scope[@constructor.CTRL_AS] = @
 
+			@_managed_listeners = []
+			@$scope.$on('$destroy', =>
+				if not @_managed_listeners.length then return
+				for info in @_managed_listeners
+					info.object.removeListener(info.event_name, info.fn)
+
+				@_managed_listeners = null
+			)
+
 			@has_init = false
 			@init()
 			@has_init = true
@@ -92,3 +101,19 @@ define ['angular', 'Admin/App'], (angular) ->
 				)
 
 			@_autoReleaseObjects.push(obj)
+
+
+		###*
+		* Attaches a listener to an object that will be automatically removed
+    	* when this controller is destroyed.
+		*
+		* @param {Admin_Main_Model_Base} obj
+		###
+		addManagedListener: (object, event_name, fn) ->
+			@_managed_listeners.push({
+				object: object,
+				event_name: event_name,
+				fn: fn
+			})
+
+			object.addListener(event_name, fn)

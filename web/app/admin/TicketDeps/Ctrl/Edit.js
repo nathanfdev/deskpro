@@ -21,8 +21,8 @@
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
-        this.$scope.watch(function() {
-          return this.DepartmentData.deps;
+        this.$scope.$watch(function() {
+          return _this.DepartmentData._touch;
         }, function(newVal) {
           return _this.initDeplistData(_this.DepartmentData.deps);
         });
@@ -37,15 +37,25 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.loadDepartment = function() {
         var waiting,
           _this = this;
-        waiting = [this.DepartmentData.loadDepList(), this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
+        waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
         return this.$q.all(waiting).then(function(d) {
-          var data_results, departments;
+          var data_results, dep_data, departments;
           departments = d[0], data_results = d[1];
+          if (_this.$stateParams.id) {
+            dep_data = data_results.data.api_ticket_deps_get;
+          } else {
+            dep_data = {
+              department: {},
+              perms_usergroup_ids: [],
+              perms_agentgroup_ids: [],
+              perms_agent_ids: []
+            };
+          }
           _this.initDeplistData(departments);
-          return _this.initData(data_results.data.api_ticket_deps_get.department, {
-            usergroups: data_results.data.api_ticket_deps_get.perms_usergroup_ids,
-            agentgroups: data_results.data.api_ticket_deps_get.perms_agentgroup_ids,
-            agents: data_results.data.api_ticket_deps_get.perms_agent_ids
+          return _this.initData(dep_data.department, {
+            usergroups: dep_data.perms_usergroup_ids,
+            agentgroups: dep_data.perms_agentgroup_ids,
+            agents: dep_data.perms_agent_ids
           }, data_results.data.api_agents_list.agents, data_results.data.api_agentgroups_list.agentgroups, data_results.data.api_usergroups_list.usergroups);
         });
       };
@@ -123,16 +133,29 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveProperties = function() {
-        var model;
-        this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
-          properties: this.dep.getData()
-        });
+        var model, promise,
+          _this = this;
+        if (this.dep.id) {
+          promise = this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
+            properties: this.dep.getData()
+          });
+        } else {
+          promise = this.Api.sendPostJson('/ticket_deps/create', {
+            properties: this.dep.getData()
+          });
+        }
         if (this.em.hasById('department', this.dep.id)) {
           model = this.em.getById('department', this.dep.id);
           model.title = this.dep.title;
           model.user_title = this.dep.user_title;
+        } else {
+          promise.success(function(result) {
+            _this.dep.id = result.id;
+            model = _this.em.createEntity('department', 'id', _this.dep.getData());
+            return _this.DepartmentData.addToList(model);
+          });
         }
-        return this.ngApply();
+        return promise;
       };
 
       /**

@@ -58,7 +58,7 @@ class TicketDepartmentEditor
 	 * @param $em
 	 * @return DepartmentEditor
 	 */
-	public function createNew(EntityManager $em)
+	public static function createNew(EntityManager $em)
 	{
 		$dep = new Department();
 		$dep->is_tickets_enabled = true;
@@ -89,7 +89,7 @@ class TicketDepartmentEditor
 			unset($props['parent_id']);
 		}
 
-		if (!$this->dep->parent && isset($props['parent_id']) && $props['parent_id']) {
+		if (!$this->dep->parent && isset($props['parent_id']) && !$props['parent_id']) {
 			unset($props['parent_id']);
 		}
 
@@ -170,7 +170,7 @@ class TicketDepartmentEditor
 			}
 		}
 
-		if ($agent_perms !== null) {
+		if ($agentgroup_perms !== null) {
 			$this->db->executeQuery("
 				DELETE FROM department_permissions
 				WHERE person_id IS NOT NULL AND department_id = ?

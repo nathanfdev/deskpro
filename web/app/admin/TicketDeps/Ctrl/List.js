@@ -17,14 +17,13 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$scope', 'DepartmentData'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData'];
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
-        this.$scope.watch(function() {
-          return this.DepartmentData.deps;
-        }, function(newVal) {
-          return this.departments = this.DepartmentData.values();
+        this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
+          _this.departments = _this.DepartmentData.deps.values();
+          return _this.ngApply();
         });
         return this.DepartmentData.loadDepList().then(function(departments) {
           return _this.departments = departments.values();

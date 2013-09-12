@@ -131,13 +131,19 @@ class TicketDepsController extends AbstractController
 	 */
 	private function _getDepartmentEditor($id)
 	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
+		if ($id) {
+			$dep = $this->em->find('DeskPRO:Department', $id);
 
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
+			if (!$dep || !$dep->is_tickets_enabled) {
+				throw $this->createNotFoundException();
+			}
+
+			$editor = new TicketDepartmentEditor($this->em, $dep);
+		} else {
+			$editor = TicketDepartmentEditor::createNew($this->em);
 		}
 
-		$editor = new TicketDepartmentEditor($this->em, $dep);
+
 		return $editor;
 	}
 }

@@ -1,6 +1,16 @@
 <header class="sn-header">
 	<h3>{{ phrase('agent.general.departments') }}</h3>
 </header>
+<section class="pagebar">
+	<div class="row">
+		<div class="col-md-6">
+			<a href="#/settings/ticket_deps/{{ ng_var('dep.id') }}" class="btn btn-success"><i class="icon-plus"></i> Add Department</a>
+		</div>
+		<div class="col-md-6">
+			<a href="#" class="btn btn-default pull-right"><i class="icon-cog"></i> General Settings</a>
+		</div>
+	</div>
+</section>
 <nav class="links-nav anchor-list">
 	<ul>
 		<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="settings.ticket_deps.edit.{{ ng_var('dep.id') }}">

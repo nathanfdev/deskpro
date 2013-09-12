@@ -2225,6 +2225,12 @@ $collection->add('api_ticket_deps_get', new Route(
 	array('_method' => 'GET')
 ));
 
+$collection->add('api_ticket_deps_create', new Route(
+	'/ticket_deps/create',
+	array('_controller' => 'ApiBundle:TicketDeps:save', 'id' => '0'),
+	array('_method' => 'POST')
+));
+
 $collection->add('api_ticket_deps_save', new Route(
 	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:save'),

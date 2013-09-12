@@ -14,7 +14,7 @@ define [
 			@Api  = Api
 
 			@loadDepListPromise = null
-			@deps = null
+			@deps = new Admin_Main_Collection_OrderedDictionary()
 			@parent_to_children = {}
 			@default_dep = null
 
@@ -32,7 +32,7 @@ define [
 				return @loadDepListPromise
 
 			deferred = @$q.defer()
-			if not reload and @deps
+			if not reload and @deps.count()
 				deferred.resolve(@deps)
 				return deferred.promise
 
@@ -52,16 +52,28 @@ define [
 
 
 		###*
+		* Adds a new model to the existing department list (eg a dep was just created)
+    	*
+    	* @return {Admin_Main_Model_Base}
+		###
+		addToList: (dep) ->
+			if not dep._is_model
+				model = @em.createEntity('department', 'id', dep)
+			else
+				model = @em.add(dep, true)
+
+			@deps.set(model.id, model)
+			return model
+
+
+		###*
 		* Initialises the models to keep track of department data
     	*
     	* @return {Promise}
 		###
 		_setDepData: (departments) ->
-			@deps = null
 			@parent_to_children = {}
 			@default_dep = null
-
-			@deps = new Admin_Main_Collection_OrderedDictionary()
 
 			for dep in departments
 				if not dep.parent_id

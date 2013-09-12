@@ -1,13 +1,21 @@
-define ->
+define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 	###*
 	* Save an ordered k=>v
 	###
 	class Admin_Main_Collection_OrderedDictionary
 		constructor: ->
+			EventsMixin(this)
+			@_touch = (new Date()).getTime();
+			@scope = null
 			@data = {}
 			@order = []
 
+		count: ->
+			return @order.length
+
 		set: (k, v) ->
+			@_touch = (new Date()).getTime();
+
 			@data[k] = v
 
 			exist_pos = @order.indexOf(k)
@@ -15,6 +23,8 @@ define ->
 				@order.splice(exist_pos, 1)
 
 			@order.push(k)
+			@notifyListeners('changed')
+			return v
 
 		get: (k, default_val = null) ->
 			if not @data[k]?
@@ -23,10 +33,15 @@ define ->
 			return @data[k]
 
 		remove: (k) ->
+			@_touch = (new Date()).getTime();
+
 			if @data[k]?
 				delete @data[k]
 				exist_pos = @order.indexOf(k)
 				@order.splice(exist_pos, 1)
+
+			@notifyListeners('changed')
+			return null
 
 		has: (k) ->
 			return !!@data[k]?

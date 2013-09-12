@@ -1,8 +1,9 @@
 <header class="sn-header">
-	<h3>Edit Department</h3>
+	<h3 ng-if="TicketDepsEdit.dep.id">Edit Department</h3>
+	<h3 ng-if="!TicketDepsEdit.dep.id">New Department</h3>
 </header>
 
-<section class="pagebar">
+<section class="pagebar" ng-if="TicketDepsEdit.dep.id">
 	<a class="btn btn-danger pull-right" href="#"><i class="icon-remove"></i> Delete</a>
 	<br style="clear: right;"/>
 </section>
@@ -58,96 +59,97 @@
 	</div>
 </section>
 
+<div ng-if="TicketDepsEdit.dep.id">
+	<div class="content-border">
+		<header class="cb-header">
+			<h3>Agent Group Permissions</h3>
+		</header>
+		<table class="datagrid">
+			<thead>
+				<tr>
+					<th>Agent Group</th>
+					<th>Full Access</th>
+					<th>Assignment</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups">
+					<td>{{ ng_var('usergroup.title') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="usergroup.full"></button>
+					</td>
+					<td>
+						<button dp-toggle-switch ng-model="usergroup.assign"></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-<div class="content-border">
-	<header class="cb-header">
-		<h3>Agent Group Permissions</h3>
-	</header>
-	<table class="datagrid">
-		<thead>
-			<tr>
-				<th>Agent Group</th>
-				<th>Full Access</th>
-				<th>Assignment</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups">
-				<td>{{ ng_var('usergroup.title') }}</td>
-				<td>
-					<button dp-toggle-switch ng-model="usergroup.full"></button>
-				</td>
-				<td>
-					<button dp-toggle-switch ng-model="usergroup.assign"></button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<div class="col-md-12 text-center">
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agentgroups')">Save Agent Group Permissions</button>
+		<div class="col-md-12 text-center">
+			<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agentgroups')">Save Agent Group Permissions</button>
+		</div>
 	</div>
-</div>
 
-<div class="content-border">
-	<header class="cb-header">
-		<h3>Agent Permissions</h3>
-	</header>
-	<table class="datagrid">
-		<thead>
-			<tr>
-				<th>Agent</th>
-				<th>Full Access</th>
-				<th>Assignment</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="agent in TicketDepsEdit.agents">
-				<td>{{ ng_var('agent.display_name') }}</td>
-				<td>
-					<button dp-toggle-switch ng-model="agent.full"></button>
-				</td>
-				<td>
-					<button dp-toggle-switch ng-model="agent.assign"></button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="content-border">
+		<header class="cb-header">
+			<h3>Agent Permissions</h3>
+		</header>
+		<table class="datagrid">
+			<thead>
+				<tr>
+					<th>Agent</th>
+					<th>Full Access</th>
+					<th>Assignment</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="agent in TicketDepsEdit.agents">
+					<td>{{ ng_var('agent.display_name') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="agent.full"></button>
+					</td>
+					<td>
+						<button dp-toggle-switch ng-model="agent.assign"></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-	<div class="col-md-12 text-center">
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agents')">Save Agent Permission</button>
+		<div class="col-md-12 text-center">
+			<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agents')">Save Agent Permission</button>
+		</div>
 	</div>
-</div>
 
-<div class="content-border">
-	<header class="cb-header">
-		<h3>User Group Permissions</h3>
-	</header>
-	<table class="datagrid">
-		<thead>
-			<tr>
-				<th>Agent Group</th>
-				<th>Access</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
-				<td>{{ ng_var('usergroup.title') }}</td>
-				<td>
-					<button dp-toggle-switch ng-model="usergroup.use"></button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="content-border">
+		<header class="cb-header">
+			<h3>User Group Permissions</h3>
+		</header>
+		<table class="datagrid">
+			<thead>
+				<tr>
+					<th>Agent Group</th>
+					<th>Access</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
+					<td>{{ ng_var('usergroup.title') }}</td>
+					<td>
+						<button dp-toggle-switch ng-model="usergroup.use"></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-	<div class="col-md-12 text-center">
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('usergroups')">Save User Group Permission</button>
+		<div class="col-md-12 text-center">
+			<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('usergroups')">Save User Group Permission</button>
+		</div>
 	</div>
-</div>
 
-<div class="content-border">
-	<header class="cb-header">
-		<h3>Layout Editor</h3>
-	</header>
-	<div style="height: 400px;"></div>
+	<div class="content-border">
+		<header class="cb-header">
+			<h3>Layout Editor</h3>
+		</header>
+		<div style="height: 400px;"></div>
+	</div>
 </div>

@@ -5,8 +5,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@DEPS    = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q']
 
 		init: ->
-			@$scope.watch( ->
-				return @DepartmentData.deps
+			@$scope.$watch( =>
+				return @DepartmentData._touch
 			, (newVal) =>
 				@initDeplistData(@DepartmentData.deps)
 			)
@@ -20,22 +20,35 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		loadDepartment: ->
 			waiting = [
 				@DepartmentData.loadDepList(),
-				@Api.sendDataGet([
-					'/ticket_deps/' + @$stateParams.id,
-					'/agents',
-					'/agentgroups',
-					'/usergroups',
-					'/ticket_accounts'
-				])
+				if @$stateParams.id
+					@Api.sendDataGet([
+						'/ticket_deps/' + @$stateParams.id,
+						'/agents',
+						'/agentgroups',
+						'/usergroups',
+						'/ticket_accounts'
+					])
+				else
+					@Api.sendDataGet([
+						'/agents',
+						'/agentgroups',
+						'/usergroups',
+						'/ticket_accounts'
+					])
 			]
 
 			@$q.all(waiting).then( (d) =>
 				[departments, data_results] = d
 
+				if @$stateParams.id
+					dep_data = data_results.data.api_ticket_deps_get
+				else
+					dep_data = { department: {}, perms_usergroup_ids: [], perms_agentgroup_ids: [], perms_agent_ids: [] }
+
 				@initDeplistData(departments)
 				@initData(
-					data_results.data.api_ticket_deps_get.department,
-					{ usergroups: data_results.data.api_ticket_deps_get.perms_usergroup_ids, agentgroups: data_results.data.api_ticket_deps_get.perms_agentgroup_ids, agents: data_results.data.api_ticket_deps_get.perms_agent_ids },
+					dep_data.department,
+					{ usergroups: dep_data.perms_usergroup_ids, agentgroups: dep_data.perms_agentgroup_ids, agents: dep_data.perms_agent_ids },
 					data_results.data.api_agents_list.agents,
 					data_results.data.api_agentgroups_list.agentgroups,
 					data_results.data.api_usergroups_list.usergroups
@@ -79,16 +92,30 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		# Save the Properties part of the form
 		###
 		saveProperties: ->
-			@Api.sendPostJson('/ticket_deps/' + @dep.id, {
-				properties: @dep.getData()
-			})
+			if @dep.id
+				promise = @Api.sendPostJson('/ticket_deps/' + @dep.id, {
+					properties: @dep.getData()
+				})
+			else
+				promise = @Api.sendPostJson('/ticket_deps/create', {
+					properties: @dep.getData()
+				})
 
+			# If the department is new, we need to handle updating the UI
+			# with the newly saved department once the request comes back with an ID
 			if @em.hasById('department', @dep.id)
 				model = @em.getById('department', @dep.id)
 				model.title = @dep.title
 				model.user_title = @dep.user_title
+			else
+				promise.success( (result) =>
+					@dep.id = result.id
 
-			@ngApply()
+					model = @em.createEntity('department', 'id', @dep.getData())
+					@DepartmentData.addToList(model)
+				)
+
+			return promise
 
 
 		###*
@@ -135,7 +162,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 							perm_name: 'use'
 						})
 
-			@Api.sendPostJson('/ticket_deps/' + @dep.id, {
+			return @Api.sendPostJson('/ticket_deps/' + @dep.id, {
 				permissions: perms
 			})
 

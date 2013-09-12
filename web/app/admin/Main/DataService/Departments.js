@@ -13,7 +13,7 @@
         this.$q = $q;
         this.Api = Api;
         this.loadDepListPromise = null;
-        this.deps = null;
+        this.deps = new Admin_Main_Collection_OrderedDictionary();
         this.parent_to_children = {};
         this.default_dep = null;
       }
@@ -34,7 +34,7 @@
           return this.loadDepListPromise;
         }
         deferred = this.$q.defer();
-        if (!reload && this.deps) {
+        if (!reload && this.deps.count()) {
           deferred.resolve(this.deps);
           return deferred.promise;
         }
@@ -51,6 +51,24 @@
       };
 
       /**
+      		* Adds a new model to the existing department list (eg a dep was just created)
+        	*
+        	* @return {Admin_Main_Model_Base}
+      */
+
+
+      Admin_Main_DataService_Departments.prototype.addToList = function(dep) {
+        var model;
+        if (!dep._is_model) {
+          model = this.em.createEntity('department', 'id', dep);
+        } else {
+          model = this.em.add(dep, true);
+        }
+        this.deps.set(model.id, model);
+        return model;
+      };
+
+      /**
       		* Initialises the models to keep track of department data
         	*
         	* @return {Promise}
@@ -59,10 +77,8 @@
 
       Admin_Main_DataService_Departments.prototype._setDepData = function(departments) {
         var dep, model, parent_dep, _i, _j, _len, _len1, _ref, _results;
-        this.deps = null;
         this.parent_to_children = {};
         this.default_dep = null;
-        this.deps = new Admin_Main_Collection_OrderedDictionary();
         for (_i = 0, _len = departments.length; _i < _len; _i++) {
           dep = departments[_i];
           if (!dep.parent_id) {
