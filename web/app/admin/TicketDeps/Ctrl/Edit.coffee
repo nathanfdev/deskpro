@@ -11,9 +11,13 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@initDeplistData(@DepartmentData.deps)
 			)
 
-			@loadTicket()
+			@loadDepartment()
 
-		loadTicket: ->
+
+		###*
+		# Load (or reload) the page values
+		###
+		loadDepartment: ->
 			waiting = [
 				@DepartmentData.loadDepList(),
 				@Api.sendDataGet([
@@ -38,25 +42,31 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				)
 			)
 
+
+		###*
+		# Init data from loadDepartment, getting it ready for use
+		###
 		initData: (dep, department_perms, agents, agentgroups, usergroups) ->
+			if not dep.parent_id then dep.parent_id = 0
 			@dep = @em.createUnmanagedEntity('department', 'id', dep)
 
 			@agentgroups = agentgroups
 			for ug in @agentgroups
 				for perm in department_perms.agentgroups
-					if perm.usergroup_id = ug.id
+					if perm.usergroup_id == ug.id
 						ug[perm.perm_name] = true
+
 
 			@usergroups = usergroups
 			for ug in @usergroups
-				for ugid in department_perms.usergroups
-					if ugid == ug.id
-						ug.perm = true
+				for perm in department_perms.usergroups
+					if perm.usergroup_id == ug.id
+						ug[perm.perm_name] = true
 
 			@agents = agents
 			for ag in @agents
 				for perm in department_perms.agents
-					if perm.agent_id = ag.id
+					if perm.agent_id == ag.id
 						ag[perm.perm_name] = true
 
 		initDeplistData: (departments) ->
@@ -64,11 +74,13 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			@dep_parent_list = departments.values()
 			@dep_parent_list.unshift({ id: 0, title: 'No Parent'})
 
+
+		###*
+		# Save the Properties part of the form
+		###
 		saveProperties: ->
-			@Api.sendPost('/ticket_deps/' + @dep.id, {
-				title: @dep.title,
-				user_title: @dep.user_title,
-				parent_id: @dep.parent_id || 0
+			@Api.sendPostJson('/ticket_deps/' + @dep.id, {
+				properties: @dep.getData()
 			})
 
 			if @em.hasById('department', @dep.id)
@@ -77,5 +89,54 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				model.user_title = @dep.user_title
 
 			@ngApply()
+
+
+		###*
+		# Save the Permissions sections of the form
+		###
+		savePermissions: (type = 'all') ->
+
+			perms = {}
+
+			if type == 'all' || type == 'agents'
+				perms.agents = []
+				for agent in @agents
+					if agent.full
+						perms.agents.push({
+							agent_id: agent.id,
+							perm_name: 'full'
+						})
+					else if agent.assign
+						perms.agents.push({
+							agent_id: agent.id,
+							perm_name: 'assign'
+						})
+
+			if type == 'all' || type == 'agentgroups'
+				perms.agentgroups = []
+				for agentgroup in @agentgroups
+					if agentgroup.full
+						perms.agentgroups.push({
+							usergroup_id: agentgroup.id,
+							perm_name: 'full'
+						})
+					else if agentgroup.assign
+						perms.agentgroups.push({
+							usergroup_id: agentgroup.id,
+							perm_name: 'assign'
+						})
+
+			if type == 'all' || type == 'usergroups'
+				perms.usergroups = []
+				for usergroup in @usergroups
+					if usergroup.use
+						perms.usergroups.push({
+							usergroup_id: usergroup.id,
+							perm_name: 'use'
+						})
+
+			@Api.sendPostJson('/ticket_deps/' + @dep.id, {
+				permissions: perms
+			})
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

@@ -75,17 +75,17 @@
 			<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups">
 				<td>{{ ng_var('usergroup.title') }}</td>
 				<td>
-					<div><input type="checkbox" ng-model="usergroup.full" dp-toggle-switch value="1" /></div>
+					<button dp-toggle-switch ng-model="usergroup.full"></button>
 				</td>
 				<td>
-					<div><input type="checkbox" ng-model="usergroup.assign" dp-toggle-switch value="1" /></div>
+					<button dp-toggle-switch ng-model="usergroup.assign"></button>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
 	<div class="col-md-12 text-center">
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermission('agentgroups')">Save Agent Group Permissions</button>
+		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agentgroups')">Save Agent Group Permissions</button>
 	</div>
 </div>
 
@@ -105,17 +105,17 @@
 			<tr ng-repeat="agent in TicketDepsEdit.agents">
 				<td>{{ ng_var('agent.display_name') }}</td>
 				<td>
-					<div><input type="checkbox" ng-model="agent.full" dp-toggle-switch value="1" /></div>
+					<button dp-toggle-switch ng-model="agent.full"></button>
 				</td>
 				<td>
-					<div><input type="checkbox" ng-model="agent.assign" dp-toggle-switch value="1" /></div>
+					<button dp-toggle-switch ng-model="agent.assign"></button>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
 	<div class="col-md-12 text-center">
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermission('agents')">Save Agent Permission</button>
+		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agents')">Save Agent Permission</button>
 	</div>
 </div>
 
@@ -134,13 +134,20 @@
 			<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
 				<td>{{ ng_var('usergroup.title') }}</td>
 				<td>
-					<div><input type="checkbox" ng-model="usergroup.perm" dp-toggle-switch value="1" /></div>
+					<button dp-toggle-switch ng-model="usergroup.use"></button>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
 	<div class="col-md-12 text-center">
-		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermission('usergroups')">Save User Group Permission</button>
+		<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('usergroups')">Save User Group Permission</button>
 	</div>
+</div>
+
+<div class="content-border">
+	<header class="cb-header">
+		<h3>Layout Editor</h3>
+	</header>
+	<div style="height: 400px;"></div>
 </div>

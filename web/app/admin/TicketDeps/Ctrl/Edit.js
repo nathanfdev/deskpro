@@ -26,10 +26,15 @@
         }, function(newVal) {
           return _this.initDeplistData(_this.DepartmentData.deps);
         });
-        return this.loadTicket();
+        return this.loadDepartment();
       };
 
-      Admin_TicketDeps_Ctrl_Edit.prototype.loadTicket = function() {
+      /**
+      		# Load (or reload) the page values
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.loadDepartment = function() {
         var waiting,
           _this = this;
         waiting = [this.DepartmentData.loadDepList(), this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
@@ -45,8 +50,16 @@
         });
       };
 
+      /**
+      		# Init data from loadDepartment, getting it ready for use
+      */
+
+
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(dep, department_perms, agents, agentgroups, usergroups) {
-        var ag, perm, ug, ugid, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
+        var ag, perm, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
+        if (!dep.parent_id) {
+          dep.parent_id = 0;
+        }
         this.dep = this.em.createUnmanagedEntity('department', 'id', dep);
         this.agentgroups = agentgroups;
         _ref1 = this.agentgroups;
@@ -55,7 +68,7 @@
           _ref2 = department_perms.agentgroups;
           for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
             perm = _ref2[_j];
-            if (perm.usergroup_id = ug.id) {
+            if (perm.usergroup_id === ug.id) {
               ug[perm.perm_name] = true;
             }
           }
@@ -66,9 +79,9 @@
           ug = _ref3[_k];
           _ref4 = department_perms.usergroups;
           for (_l = 0, _len3 = _ref4.length; _l < _len3; _l++) {
-            ugid = _ref4[_l];
-            if (ugid === ug.id) {
-              ug.perm = true;
+            perm = _ref4[_l];
+            if (perm.usergroup_id === ug.id) {
+              ug[perm.perm_name] = true;
             }
           }
         }
@@ -83,7 +96,7 @@
             _results1 = [];
             for (_n = 0, _len5 = _ref6.length; _n < _len5; _n++) {
               perm = _ref6[_n];
-              if (perm.agent_id = ag.id) {
+              if (perm.agent_id === ag.id) {
                 _results1.push(ag[perm.perm_name] = true);
               } else {
                 _results1.push(void 0);
@@ -104,12 +117,15 @@
         });
       };
 
+      /**
+      		# Save the Properties part of the form
+      */
+
+
       Admin_TicketDeps_Ctrl_Edit.prototype.saveProperties = function() {
         var model;
-        this.Api.sendPost('/ticket_deps/' + this.dep.id, {
-          title: this.dep.title,
-          user_title: this.dep.user_title,
-          parent_id: this.dep.parent_id || 0
+        this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
+          properties: this.dep.getData()
         });
         if (this.em.hasById('department', this.dep.id)) {
           model = this.em.getById('department', this.dep.id);
@@ -117,6 +133,71 @@
           model.user_title = this.dep.user_title;
         }
         return this.ngApply();
+      };
+
+      /**
+      		# Save the Permissions sections of the form
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.savePermissions = function(type) {
+        var agent, agentgroup, perms, usergroup, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+        if (type == null) {
+          type = 'all';
+        }
+        perms = {};
+        if (type === 'all' || type === 'agents') {
+          perms.agents = [];
+          _ref1 = this.agents;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            agent = _ref1[_i];
+            if (agent.full) {
+              perms.agents.push({
+                agent_id: agent.id,
+                perm_name: 'full'
+              });
+            } else if (agent.assign) {
+              perms.agents.push({
+                agent_id: agent.id,
+                perm_name: 'assign'
+              });
+            }
+          }
+        }
+        if (type === 'all' || type === 'agentgroups') {
+          perms.agentgroups = [];
+          _ref2 = this.agentgroups;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            agentgroup = _ref2[_j];
+            if (agentgroup.full) {
+              perms.agentgroups.push({
+                usergroup_id: agentgroup.id,
+                perm_name: 'full'
+              });
+            } else if (agentgroup.assign) {
+              perms.agentgroups.push({
+                usergroup_id: agentgroup.id,
+                perm_name: 'assign'
+              });
+            }
+          }
+        }
+        if (type === 'all' || type === 'usergroups') {
+          perms.usergroups = [];
+          _ref3 = this.usergroups;
+          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+            usergroup = _ref3[_k];
+            if (usergroup.use) {
+              perms.usergroups.push({
+                usergroup_id: usergroup.id,
+                perm_name: 'use'
+              });
+            }
+          }
+        }
+        return this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
+          permissions: perms
+        });
       };
 
       return Admin_TicketDeps_Ctrl_Edit;

@@ -35,8 +35,9 @@ namespace Application\DeskPRO\Departments;
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\DBAL\Connection;
+use Orb\Util\OptionsArray;
 
-class DepartmentEditor
+class TicketDepartmentEditor
 {
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -88,6 +89,10 @@ class DepartmentEditor
 			unset($props['parent_id']);
 		}
 
+		if (!$this->dep->parent && isset($props['parent_id']) && $props['parent_id']) {
+			unset($props['parent_id']);
+		}
+
 		if (!$this->dep->parent && isset($props['parent_id'])) {
 			if (!isset($props['move_tickets_to'])) {
 				throw new \InvalidArgumentException("You must supply a move_tickets_to when moving top-level department to become a parent");
@@ -112,7 +117,7 @@ class DepartmentEditor
 			$this->dep->title = $props['title'];
 		}
 		if (isset($props['user_title'])) {
-			$this->dep->title = $props['user_title'];
+			$this->dep->user_title = $props['user_title'];
 		}
 		if (isset($props['parent_id'])) {
 			$new_parent = $this->em->find('DeskPRO:Department', $props['parent_id']);
@@ -175,7 +180,7 @@ class DepartmentEditor
 				$inserts[] = array(
 					'department_id' => $this->dep->id,
 					'usergroup_id' => null,
-					'person_id' => $perm['person_id'],
+					'person_id' => $perm['agent_id'],
 					'app' => 'tickets',
 					'name' => $perm['perm_name'],
 					'value' => 1,
@@ -195,7 +200,7 @@ class DepartmentEditor
 					'usergroup_id' => $perm['usergroup_id'],
 					'person_id' => null,
 					'app' => 'tickets',
-					'name' => 'full',
+					'name' => 'use',
 					'value' => 1,
 				);
 			}

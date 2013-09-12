@@ -34,7 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Departments\DepartmentEditor;
+use Application\DeskPRO\Departments\TicketDepartmentEditor;
 
 class TicketDepsController extends AbstractController
 {
@@ -79,7 +79,10 @@ class TicketDepsController extends AbstractController
 						'perm_name'    => $perm['name'],
 					);
 				} else {
-					$data['perms_usergroup_ids'][] = (int)$perm['usergroup_id'];
+					$data['perms_usergroup_ids'][] = array(
+						'usergroup_id' => (int)$perm['usergroup_id'],
+						'perm_name'    => $perm['name'],
+					);
 				}
 			} elseif ($perm['person_id']) {
 				$data['perms_agent_ids'][] = array(
@@ -95,24 +98,18 @@ class TicketDepsController extends AbstractController
 	public function saveAction($id)
 	{
 		$editor = $this->_getDepartmentEditor($id);
-		$editor->editProperties(array(
-			'title' => $this->in->getString('title'),
-			'user_title' => $this->in->getString('user_title'),
-			'parent_id' => $this->in->getUint('parent_id'),
-			'move_tickets_to' => $this->in->getUint('move_tickets_to'),
-		));
 
-		return $this->createApiResponse(array('id' => $editor->getDepartment()->id, 'success' => true));
-	}
+		if ($this->in->checkIsset('properties')) {
+			$editor->editProperties($this->in->getArrayValue('properties'));
+		}
 
-	public function savePermissionsAction($id)
-	{
-		$editor = $this->_getDepartmentEditor($id);
-		$editor->editPermissions(
-			$this->in->getCleanValueArray('agent_permissions'),
-			$this->in->getCleanValueArray('agentgroup_permissions'),
-			$this->in->getCleanValueArray('usergroup_permissions')
-		);
+		if ($this->in->checkIsset('permissions')) {
+			$editor->editPermissions(
+				$this->in->checkIsset('permissions.agents')      ? $this->in->getCleanValueArray('permissions.agents') : null,
+				$this->in->checkIsset('permissions.agentgroups') ? $this->in->getCleanValueArray('permissions.agentgroups') : null,
+				$this->in->checkIsset('permissions.usergroups')  ? $this->in->getCleanValueArray('permissions.usergroups') : null
+			);
+		}
 
 		return $this->createApiResponse(array('id' => $editor->getDepartment()->id, 'success' => true));
 	}
@@ -129,7 +126,7 @@ class TicketDepsController extends AbstractController
 
 	/**
 	 * @param $id
-	 * @return DepartmentEditor
+	 * @return TicketDepartmentEditor
 	 * @throws
 	 */
 	private function _getDepartmentEditor($id)
@@ -140,7 +137,7 @@ class TicketDepsController extends AbstractController
 			throw new $this->createNotFoundException();
 		}
 
-		$editor = new DepartmentEditor($this->em, $dep);
+		$editor = new TicketDepartmentEditor($this->em, $dep);
 		return $editor;
 	}
 }
