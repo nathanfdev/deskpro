@@ -63,30 +63,10 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 
 	public function getFromAddress(Ticket $ticket)
 	{
-		if ($ticket->notify_email) {
-			$from_email = $ticket->notify_email;
-		} elseif ($ticket->email_gateway && $ticket->email_gateway->getPrimaryEmailAddress()) {
-			$from_email = $ticket->email_gateway->getPrimaryEmailAddress();
-		} else {
-			$from_email = App::getSetting('core.default_from_email');
-			$default_address = App::getOrm()->getRepository('DeskPRO:EmailGatewayAddress')->getDefaultTicketAddress();
-
-			if ($default_address) {
-				$from_email = $default_address;
-			}
-		}
-
-		if ($ticket->notify_email_name) {
-			$from_name = $ticket->notify_email_name;
-		} else {
-			$from_name = App::getSetting('core.deskpro_name');
-
-			if ($this->tracker->isExtraSet('set_initial_from_touser')) {
-				$from_name = $this->tracker->getExtra('set_initial_from_touser');
-			}
-		}
-
-		return array($from_email => $from_name);
+		$info = $ticket->getFromAddress('user', array(
+			'default_from' => $this->tracker->isExtraSet('set_initial_from_touser') ? $this->tracker->getExtra('set_initial_from_touser') : null
+		));
+		return array($info['email'] => $info['name']);
 	}
 
 	public function setEmailTemplate($tpl, $tpl_type)
