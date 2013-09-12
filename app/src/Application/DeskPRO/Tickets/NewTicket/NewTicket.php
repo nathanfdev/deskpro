@@ -281,8 +281,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket['language'] = App::getSession()->getLanguage();
 			}
 
-			$ticket['notify_email'] = $this->ticket->notify_email;
-
 			if ($this->sent_to) {
 				$ticket['sent_to_address'] = $this->sent_to;
 			}
@@ -292,6 +290,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			}
 			if ($this->gateway_address) {
 				$ticket->email_gateway_address = $this->gateway_address;
+			}
+			if (!$this->gateway) {
+				$ticket['notify_email'] = $this->ticket->notify_email;
 			}
 
 			if ($email_validating) {

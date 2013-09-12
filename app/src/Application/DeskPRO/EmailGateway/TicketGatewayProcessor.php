@@ -1378,13 +1378,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->message_is_html = true;
 		$newticket->ticket->department_id = null;
 
-		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
-			$this->logMessage('[TicketGatewayProcessor] Setting ticket email: ' . $this->gateway_address->match_pattern);
-			$newticket->ticket->notify_email = $this->gateway_address->match_pattern;
-		} else {
-			$this->logMessage('[TicketGatewayProcessor] Could not find ticket email!');
-		}
-
 		#------------------------------
 		# Check for dupe first
 		#------------------------------
