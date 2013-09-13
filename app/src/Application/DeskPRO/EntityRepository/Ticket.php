@@ -576,6 +576,9 @@ class Ticket extends AbstractEntityRepository
 			FROM tickets
 			WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved')
 		");
+
+		$this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.last_searchtables_refill', value = '".time()."'");
+		$this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '0'");
 	}
 
 

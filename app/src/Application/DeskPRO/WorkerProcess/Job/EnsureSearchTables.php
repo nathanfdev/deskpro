@@ -46,23 +46,51 @@ class EnsureSearchTables extends AbstractJob
 
 	public function run()
 	{
-		// Check to see if the search table isnt already filled
-		$has_one = App::getDb()->fetchColumn("SELECT id FROM tickets_search_active LIMIT 1");
-		if ($has_one) {
-			return;
+		$last_search_refill = App::getSetting('core.last_searchtables_refill');
+		if (!$last_search_refill) {
+			$last_search_refill = 0;
 		}
 
-		// Check to see if the search table is legitamtely empty (ie no tickets need attn)
-		$has_one = App::getDb()->fetchColumn("SELECT id FROM tickets WHERE status IN ('awaiting_agent', 'awaiting_user') LIMIT 1");
-		if (!$has_one) {
-			return;
+		// If we've done a refill within the last 15 mins,
+		// dont try again (dont want to continously refill, could slow everything down)
+		if ($last_search_refill > strtotime('-15 minutes')) {
+			//return;
 		}
 
-		// If we got this far then we need to refill the table,
-		// ie after a server reboot
-		App::getEntityRepository('DeskPRO:Ticket')->fillSearchTable();
+		$do_refill = false;
+		if (App::getSetting('core.do_searchtables_refill')) {
+			$do_refill = true;
+		} else {
+			// Check to see if the search table isnt already filled
+			$has_one = App::getDb()->fetchColumn("SELECT id FROM tickets_search_active LIMIT 1");
+			if (!$has_one) {
+				$has_one = App::getDb()->fetchColumn("SELECT id FROM tickets WHERE status IN ('awaiting_agent', 'awaiting_user') LIMIT 1");
+				if ($has_one) {
+					$do_refill = true;
+				}
+			}
+		}
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM tickets_search_active");
-		$this->logStatus("Filled tickets_search_active table with {$count} tickets");
+		if ($do_refill) {
+			App::getContainer()->getSettingsHandler()->setSetting('core.last_searchtables_refill', time());
+			App::getContainer()->getSettingsHandler()->setSetting('core.do_searchtables_refill', 0);
+
+			App::getEntityRepository('DeskPRO:Ticket')->fillSearchTable();
+			$this->logStatus("Filled tickets_search_active table");
+
+			// Broadcast a refresh event to all agents
+			$cm = new \Application\DeskPRO\Entity\ClientMessage();
+			$cm->fromArray(array(
+				'channel' => 'agent.ui.reload',
+				'data' => array(
+					'type'        => 'admin',
+					'person_id'   => 0,
+					'person_name' => 'System'
+				)
+			));
+
+			App::getOrm()->persist($cm);
+			App::getOrm()->flush();
+		}
 	}
 }

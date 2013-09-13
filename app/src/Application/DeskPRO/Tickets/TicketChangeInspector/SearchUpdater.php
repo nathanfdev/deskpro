@@ -94,6 +94,12 @@ class SearchUpdater
 	 */
 	public function run()
 	{
+		if (App::getSetting('core_tickets.use_archive')) {
+			// A flag used in error handling
+			// See Application\DeskPRO\DBAL\Connection::rollback
+			$GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'] = true;
+		}
+
 		if ($this->ticket->_isRemoved) {
 			App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->_isRemoved));
 			App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->_isRemoved));

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use PDO;
 use Orb\Log\Logger;
 
@@ -640,6 +641,12 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		if (!$this->getTransactionNestingLevel()) {
+
+			// Set in SearchUpdater::run
+			// If we have got here with a successful commit, then the changes are now
+			// properly synced and we dont need the flag set anymore
+			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
+
 			\DpShutdown::run('db_done_trans');
 			\DpShutdown::run('db_done_trans_commit');
 		}
@@ -653,6 +660,21 @@ class Connection extends \Doctrine\DBAL\Connection
 			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			return;
+		}
+
+		// Set in SearchUpdater::run
+		// - This flag means we've updated records in the search tables.
+		// - Search tables are no innodb which means they cant be rolled back
+		// - So we have to set this reset flag so the cron job will regenerate them next turn
+		if (isset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'])) {
+			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
+			try {
+				error_log("Setting regen flag");
+				$this->executeUpdate("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '1'");
+
+				$e = new \RuntimeException("Rollback will result in corrupted search tables");
+				KernelErrorHandler::logException($e, false);
+			} catch (\Exception $e) {}
 		}
 
 		$level = $this->getTransactionNestingLevel();
