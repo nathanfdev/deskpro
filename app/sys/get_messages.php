@@ -580,6 +580,16 @@ class AgentMessagesLoader extends LoaderAbstract
 			}
 		}
 
+		$client_counts = null;
+		if (isset($_REQUEST['filters_data_counts'])) {
+			$client_counts = $_REQUEST['filters_data_counts'];
+			if ($client_counts) {
+				$client_counts = @json_decode($client_counts, true);
+			}
+		}
+		if (!$client_counts) {
+			$client_counts = array();
+		}
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filters, $this->_getPerson());
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
@@ -598,6 +608,16 @@ class AgentMessagesLoader extends LoaderAbstract
 					$filter_counts[$f->id] = (int)$prefs[$pref_key];
 				} else {
 					$filter_counts[$f->id] = intval(App::getSetting('core_tablecounts.tickets.' . $f->sys_name) ?: 0);
+				}
+			}
+		}
+
+		// When the counts are the same, we dont send the full list
+		// back to the client. This reduces the request size on lists that dont change
+		if ($client_counts) {
+			foreach (array_keys($filter_id_matches) as $filter_id) {
+				if (isset($client_counts[$filter_id]) && $client_counts[$filter_id] == count($filter_id_matches[$filter_id])) {
+					unset($filter_id_matches[$filter_id]);
 				}
 			}
 		}
