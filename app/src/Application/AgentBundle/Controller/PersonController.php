@@ -637,7 +637,25 @@ class PersonController extends AbstractController
 
 					$this->db->delete('sessions', array('person_id' => $person->id));
 
-					if ($this->in->getBool('send_email')) {
+					$email = $person->getPrimaryEmailAddress();
+					if (!$email) {
+						// We are implicitly validating the account when we set a password
+						$validating_emails = $validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
+
+						foreach ($validating_emails as $v_eml) {
+							$validator = new \Application\DeskPRO\People\EmailValidator($v_eml);
+
+							$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($v_eml->getEmail());
+							if ($email_exists) {
+								continue;
+							}
+
+							$email = $validator->validate();
+							break;
+						}
+					}
+
+					if ($email) {
 						$message = $this->container->getMailer()->createMessage();
 						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 						$message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
