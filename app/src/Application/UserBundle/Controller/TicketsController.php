@@ -599,9 +599,12 @@ class TicketsController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_ref, $authcode = null)
 	{
+		$ticket = null;
 		if (ctype_digit($ticket_ref)) {
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneById($ticket_ref);
-		} else {
+		}
+
+		if (!$ticket) {
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 		}
 
