@@ -61,7 +61,7 @@ define [
 		return {
 			restrict: 'A',
 			require:  'ngModel',
-			template: '<div><input type="checkbox" /></div>',
+			template: '<div ng-class="{\'switch-on\': model, \'switch-off\': !model}"><input type="checkbox" /></div>',
 			replace: true,
 			scope: {
 				options: '@dpToggleSwitch',
@@ -75,9 +75,13 @@ define [
 
 				$wrap = jQuery(element)
 				$wrap.attr('data-off-label', options['off-label'] || "<i class='icon-remove'></i>");
-				$wrap.attr('data-on-label', options['on-label'] || "<i class='icon-check'></i>");
+				$wrap.attr('data-on-label', options['on-label'] || "<i class='icon-ok'></i>");
 				$wrap.attr('data-off', options['off-class'] || "danger");
 				$wrap.attr('data-on', options['on-class'] || "success");
+
+				$wrap.addClass('dp-switch')
+				if scope.class
+					$wrap.addClass(scope.class)
 
 				if scope.model
 					$wrap.find('input').get(0).checked = true

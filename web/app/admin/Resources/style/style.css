@@ -954,3 +954,34 @@ section.dp-help-page article dl dt:first-child {
 .modal {
   display: block;
 }
+.dp-switch {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  overflow: hidden;
+}
+.dp-switch.switch-off {
+  background: #E74C3C;
+  border: 2px solid #E74C3C;
+}
+.dp-switch.switch-on {
+  background: #1ABC9C;
+  border: 2px solid #1ABC9C;
+}
+.dp-switch .has-switch label {
+  top: 0 !important;
+  line-height: 29px !important;
+}
+.has-switch label {
+  top: 0 !important;
+  line-height: 19px !important;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}

@@ -955,7 +955,6 @@ h3,
 h4,
 ul,
 li,
-p,
 form {
   margin: 0;
   padding: 0;
@@ -1043,6 +1042,9 @@ img {
   width: 228px;
   height: 44px;
   float: left;
+}
+.header .user-profile p {
+  margin: 0;
 }
 .header .user-profile .up-photo {
   outline: 1px solid rgba(0, 0, 0, 0.75);

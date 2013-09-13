@@ -48,3 +48,29 @@ section.dp-help-page {
 .modal {
 	display: block;
 }
+
+.dp-switch {
+	.rounded(4px);
+	overflow: hidden;
+
+	&.switch-off {
+		background: #E74C3C;
+		border: 2px solid #E74C3C;
+	}
+
+	&.switch-on {
+		background: #1ABC9C;
+		border: 2px solid #1ABC9C;
+	}
+
+	.has-switch label {
+		top: 0 !important;
+		line-height: 29px !important;
+	}
+}
+
+.has-switch label {
+	top: 0 !important;
+	line-height: 19px !important;
+	.rounded(4px);
+}
