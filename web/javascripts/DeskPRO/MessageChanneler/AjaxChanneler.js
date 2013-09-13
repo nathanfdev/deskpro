@@ -14,7 +14,11 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
 			interval: this.options.interval,
-			ajaxType: 'POST'
+			ajaxType: 'SMART',
+			postTypes: [
+				'dismiss_alerts',
+				'recent_tabs'
+			]
 		});
 
 		this.poller.addData((function () {
