@@ -92,13 +92,19 @@
         _results = [];
         for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
           dep = _ref[_j];
+          dep._full_title = dep.title;
           if (dep.parent_id) {
             parent_dep = this.deps.get(dep.parent_id);
             if (parent_dep) {
+              dep._full_title = parent_dep.title + " > " + dep.title;
               if (this.parent_to_children[parent_dep.id] == null) {
                 this.parent_to_children[parent_dep.id] = [];
               }
               this.parent_to_children[parent_dep.id].push(dep.id);
+              if (!parent_dep._child_ids) {
+                parent_dep._child_ids = [];
+              }
+              parent_dep._child_ids.push(dep.id);
               _results.push(dep._depth = 1);
             } else {
               _results.push(void 0);

@@ -13,10 +13,10 @@
 		</p>
 			<select
 				ui-select2
-				ng-model="move_to_id"
+				ng-model="selected.move_to_id"
 				style="min-width: 240px"
 			>
-				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in move_deps_list">{{ ng_var('dep.title') }}</option>
+				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in move_deps_list">{{ ng_var('dep._full_title') }}</option>
 			</select>
 	</div>
 	<div class="modal-footer">

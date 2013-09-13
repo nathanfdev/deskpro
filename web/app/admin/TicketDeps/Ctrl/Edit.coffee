@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS = 'TicketDepsEdit'
-		@DEPS    = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$modal']
+		@DEPS    = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$modal', '$state']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
@@ -104,9 +104,11 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			dep_move_list = []
 			for dep in @departments
 				 if @dep.id != dep.id
-					 dep_move_list.push(dep)
+					 if not dep._child_ids
+					 	dep_move_list.push(dep)
 
 			return dep_move_list
+
 
 		###*
 		# Save the Properties part of the form
@@ -187,15 +189,22 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				permissions: perms
 			})
 
+
+		###*
+		# Show the delete dlg
+		###
 		startDelete: ->
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketDeps/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance, move_deps_list) ->
-					$scope.move_to_id = 0
+					$scope.selected = {
+						move_to_id: "0"
+					}
 					$scope.move_deps_list = move_deps_list
 
 					$scope.confirm = ->
-						$modalInstance.close($scope.move_to_id);
+						console.log($scope.selected.move_to_id)
+						$modalInstance.close($scope.selected.move_to_id);
 
 					$scope.dismiss = ->
 						$modalInstance.dismiss();
@@ -206,10 +215,21 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				}
 			});
 
-			inst.result.then( ->
-				console.log("X")
-			, ->
-				console.log("Y")
+			inst.result.then( (move_to) =>
+				@deleteDepartment(move_to)
 			)
+
+		###*
+		# Actually do th edelete
+		###
+		deleteDepartment: (move_to) ->
+			@Api.sendDelete('/ticket_deps/' + @dep.id, {
+				move_to: move_to
+			}).success( =>
+				@DepartmentData.deps.remove(@dep.id)
+				@em.removeById('department', @dep.id)
+				@$state.go('settings.ticket_deps')
+			)
+
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

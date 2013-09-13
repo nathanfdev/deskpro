@@ -215,19 +215,29 @@ class TicketDepartmentEditor
 	/**
 	 * Deletes the department
 	 */
-	public function remove($move_to)
+	public function remove($move_to_id)
 	{
-		if (ctype_digit($move_to)) {
-			$move_to = $this->em->find('DeskPRO:Department', $move_to);
+		$move_to = $this->em->find('DeskPRO:Department', $move_to_id);
+
+		if (!$move_to) {
+			throw new \InvalidArgumentException("You must specify a department to move to");
 		}
 
-		if (!$move_to || $move_to->id == $this->dep->id) {
-			throw new \InvalidArgumentException("You must specify a valid department to move existing tickets to");
+		if ($move_to->id == $this->dep->id) {
+			throw new \InvalidArgumentException("You must choose a different department");
+		}
+
+		if (count($move_to->getChildren())) {
+			throw new \InvalidArgumentException("You must choose a valid department");
 		}
 
 		$old_id = $this->dep->id;
 		$this->em->remove($this->dep);
 		$this->em->flush();
+
+		$this->db->executeUpdate("UPDATE tickets SET department_id = ? WHERE department_id = ?", array($move_to, $old_id));
+		$this->db->executeUpdate("UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?", array($move_to, $old_id));
+
 		return $old_id;
 	}
 

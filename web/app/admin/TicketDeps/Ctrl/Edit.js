@@ -17,7 +17,7 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'TicketDepsEdit';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$modal'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$modal', '$state'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
@@ -157,7 +157,9 @@
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           dep = _ref1[_i];
           if (this.dep.id !== dep.id) {
-            dep_move_list.push(dep);
+            if (!dep._child_ids) {
+              dep_move_list.push(dep);
+            }
           }
         }
         return dep_move_list;
@@ -260,6 +262,11 @@
         });
       };
 
+      /**
+      		# Show the delete dlg
+      */
+
+
       Admin_TicketDeps_Ctrl_Edit.prototype.startDelete = function() {
         var inst,
           _this = this;
@@ -267,10 +274,13 @@
           templateUrl: this.getTemplatePath('TicketDeps/delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
-              $scope.move_to_id = 0;
+              $scope.selected = {
+                move_to_id: "0"
+              };
               $scope.move_deps_list = move_deps_list;
               $scope.confirm = function() {
-                return $modalInstance.close($scope.move_to_id);
+                console.log($scope.selected.move_to_id);
+                return $modalInstance.close($scope.selected.move_to_id);
               };
               return $scope.dismiss = function() {
                 return $modalInstance.dismiss();
@@ -283,10 +293,24 @@
             }
           }
         });
-        return inst.result.then(function() {
-          return console.log("X");
-        }, function() {
-          return console.log("Y");
+        return inst.result.then(function(move_to) {
+          return _this.deleteDepartment(move_to);
+        });
+      };
+
+      /**
+      		# Actually do th edelete
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.deleteDepartment = function(move_to) {
+        var _this = this;
+        return this.Api.sendDelete('/ticket_deps/' + this.dep.id, {
+          move_to: move_to
+        }).success(function() {
+          _this.DepartmentData.deps.remove(_this.dep.id);
+          _this.em.removeById('department', _this.dep.id);
+          return _this.$state.go('settings.ticket_deps');
         });
       };
 

@@ -108,8 +108,17 @@
 
 
       Admin_Ctrl_Base.prototype.ngApply = function(fn) {
+        var e,
+          _this = this;
         if (!this.$scope.$$phase && !this.$scope.$root.$$phase) {
-          return this.$scope.$apply(fn);
+          try {
+            return this.$scope.$apply(fn);
+          } catch (_error) {
+            e = _error;
+            return window.setTimeout(function() {
+              return _this.ngApply();
+            }, 100);
+          }
         }
       };
 

@@ -84,7 +84,12 @@ define ['angular', 'Admin/App'], (angular) ->
 		###
 		ngApply: (fn) ->
 			if !@$scope.$$phase && !@$scope.$root.$$phase
-				@$scope.$apply(fn);
+				try
+					@$scope.$apply(fn);
+				catch e
+					window.setTimeout(=>
+						@ngApply()
+					, 100)
 
 
 		###*
