@@ -54,7 +54,7 @@ class EnsureSearchTables extends AbstractJob
 		// If we've done a refill within the last 15 mins,
 		// dont try again (dont want to continously refill, could slow everything down)
 		if ($last_search_refill > strtotime('-15 minutes')) {
-			//return;
+			return;
 		}
 
 		$do_refill = false;

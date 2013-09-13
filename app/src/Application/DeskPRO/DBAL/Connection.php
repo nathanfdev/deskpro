@@ -669,7 +669,6 @@ class Connection extends \Doctrine\DBAL\Connection
 		if (isset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'])) {
 			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
 			try {
-				error_log("Setting regen flag");
 				$this->executeUpdate("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '1'");
 
 				$e = new \RuntimeException("Rollback will result in corrupted search tables");
