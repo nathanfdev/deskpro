@@ -78,7 +78,7 @@ class DetectSearchTableErrors
 		}
 
 		foreach ($errors as $error) {
-			switch ($errors['type']) {
+			switch ($error['type']) {
 				case 'missing_real_id':
 					echo "[missing_search_id] #{$error['ticket_id']} is in search but not real\n";
 					break;
