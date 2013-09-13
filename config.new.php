@@ -220,6 +220,30 @@ $DP_CONFIG['trust_proxy_data'] = false;
 # ~~~~~~~~~~~~~~~~ DEBUG & LOGS ~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
+# OPTIONAL : Override php.ini 'display_errors'       #
+#                                                    #
+# Enabling display_errors means you will see output  #
+# in the interface of errors (like database errors). #
+#                                                    #
+# Disabling display_errors means no error output     #
+# will be visible in the interface.                  #
+#                                                    #
+# All errors are saved to the error log regardless,  #
+# so it is generally recommended  display_errors     #
+# is kept off and the erorr log regularly monitored. #
+#                                                    #
+# If both of the following lines remain commented    #
+# out, then the default value defined in your server #
+# php.ini file is used.                              #
+######################################################
+
+# Override php.ini and enable display_errors
+#ini_set('display_errors', '1');
+
+# Override php.ini and disable display_errors
+#ini_set('display_errors', '0');
+
+######################################################
 # OPTIONAL : Disable URL corrections                 #
 #                                                    #
 # This disables the auto-redirection that happens    #

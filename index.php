@@ -1,12 +1,6 @@
 <?php
 
 /**
- * You may wish to turn the display of PHP errors off.
- * You should monitor your PHP error log (location defined in php.ini) if you do.
- */
-ini_set('display_errors', true);
-
-/**
  * The path to the 'app' directory.
  * If you move the app directory, you must update this path.
  */
