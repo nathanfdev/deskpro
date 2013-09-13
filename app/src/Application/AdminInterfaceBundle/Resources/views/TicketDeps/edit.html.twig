@@ -45,9 +45,11 @@
 						</div>
 						<div class="col-md-8">
 							<select
+								ui-select2
 								ng-model="TicketDepsEdit.dep.parent_id"
-								ng-options="dep.id as dep.title for dep in TicketDepsEdit.dep_parent_list"
+								style="min-width: 240px"
 							>
+								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
 							</select>
 						</div>
 					</div>

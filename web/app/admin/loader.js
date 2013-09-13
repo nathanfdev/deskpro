@@ -4,23 +4,28 @@ requirejs.config({
     paths: {
 		jquery:             DP_ASSET_URL+'/app/bower_components/jquery/jquery',
 		bootstrap_modal:    DP_ASSET_URL+'/app/bower_components/bootstrap/js/modal',
-		bootstrap_switch:   DP_ASSET_URL+'/app/other_components/bootstrap-switch/bootstrap-switch',
+		bootstrap_switch:   DP_ASSET_URL+'/app/bower_components/bootstrap-switch/static/js/bootstrap-switch',
 		angular:            DP_ASSET_URL+'/app/bower_components/angular/angular',
 		angularUiRouter:    DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
 		angularSanitize:    DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
 		angularBootstrap:   DP_ASSET_URL+'/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
+		angularSelect2:     DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
+		select2:            DP_ASSET_URL+'/app/bower_components/select2/select2.min',
 		Admin:              DP_ASSET_URL+'/app/Admin'
 	},
 	shim: {
 		'angular' : {'exports' : 'angular'},
 		'angularUiRouter': ['angular'],
 		'angularSanitize': ['angular'],
+		'angularSelectize': ['angular'],
 		'angularBootstrap': ['angular'],
+		'angularSelect2': ['angular'],
 		'bootstrap_modal': ['jquery'],
 		'bootstrap_switch': {
 			deps: ['jquery'],
 			exports: 'jQuery.fn.bootstrapSwitch'
-		}
+		},
+		select2: ['jquery']
 	},
 	priority: [
 		"angular"
@@ -34,6 +39,8 @@ requirejs([
 	'angular',
 	'bootstrap_switch',
 	'angularUiRouter',
+	'angularSelect2',
+	'select2',
 	'angularBootstrap',
 	'Admin/App',
 

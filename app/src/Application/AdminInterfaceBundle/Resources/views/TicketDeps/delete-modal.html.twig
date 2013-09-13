@@ -12,9 +12,11 @@
 			Any tickets that are currently in this department will be moved to:
 		</p>
 			<select
+				ui-select2
 				ng-model="move_to_id"
-				ng-options="dep.id as dep.title for dep in move_deps_list"
+				style="min-width: 240px"
 			>
+				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in move_deps_list">{{ ng_var('dep.title') }}</option>
 			</select>
 	</div>
 	<div class="modal-footer">
