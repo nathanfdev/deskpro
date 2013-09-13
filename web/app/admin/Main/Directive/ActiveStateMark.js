@@ -11,12 +11,15 @@
 
       Admin_Main_Directive_ActiveStateMark.prototype.link = function(scope, element, attrs) {
         return scope.$on('dp_activeStateChange', function(ev, newStateId) {
-          var stateId;
+          var stateId, stateIdRegex;
           stateId = attrs.dpStateMark;
           if (!stateId) {
             return;
           }
-          if (newStateId.indexOf(stateId) === 0) {
+          stateIdRegex = '^';
+          stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          stateIdRegex += '\\b';
+          if (newStateId.match(new RegExp(stateIdRegex))) {
             return element.addClass('state-on');
           } else {
             return element.removeClass('state-on');

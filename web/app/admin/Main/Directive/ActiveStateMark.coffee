@@ -8,7 +8,11 @@ define ->
 				stateId = attrs.dpStateMark
 				return if not stateId
 
-				if newStateId.indexOf(stateId) == 0
+				stateIdRegex = '^'
+				stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+				stateIdRegex += '\\b'
+
+				if newStateId.match(new RegExp(stateIdRegex))
 					element.addClass('state-on')
 				else
 					element.removeClass('state-on')
