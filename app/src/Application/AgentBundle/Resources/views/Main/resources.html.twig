@@ -69,6 +69,10 @@
 		options.retryCodes  = originalOptions.retryCodes || [500, 502, 503];
 		options.tryNum      = originalOptions.tryNum || 1;
 
+		if (window.DP_DEBUG) {
+			options.retryCodes = [];
+		}
+
 		if (typeof originalOptions.numTries != 'undefined') {
 			options.numTries = originalOptions.numTries;
 		}
