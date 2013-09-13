@@ -71,7 +71,7 @@ class CssGradientImage implements FilterInterface
 		$lines = explode("\n", $asset->getContent());
 		foreach ($lines as &$l) {
 			$m = null;
-			if (!preg_match('#/\*gradient_(h|v):([0-9]+):(.*?):(.*?)\*/#', $l, $m)) {
+			if (!preg_match('#/\*gradient_(h|v):([0-9]+)(?:px)?:(.*?):(.*?)\*/#', $l, $m)) {
 				continue;
 			}
 
