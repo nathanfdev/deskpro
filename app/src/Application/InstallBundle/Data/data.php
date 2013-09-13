@@ -734,7 +734,6 @@ $em->flush();
 ##BEGIN:create_trigger.auto_close_resolve_user_reply##
 // When a ticket has been awaiting agent for 2 months, set it to resolved
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'auto_close.resolve_user_reply';
 $q->event_trigger = 'time.user_waiting';
 $q->setEventTriggerOption('time', '2 months');
 $q->is_enabled = 1;
@@ -762,7 +761,6 @@ $em->flush();
 ##BEGIN:create_trigger.auto_close_resolve_agent_reply##
 // When a ticket has been awaiting user for 5 days, set it to resolved
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'auto_close.resolve_agent_reply';
 $q->event_trigger = 'time.agent_waiting';
 $q->setEventTriggerOption('time', '5 days');
 $q->is_enabled = 0;
