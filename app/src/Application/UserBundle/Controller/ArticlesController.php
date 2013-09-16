@@ -98,7 +98,7 @@ class ArticlesController extends AbstractController
 			}
 
 			$category_path = $category->getTreeParents();
-			$category_children = $category->getChildren();
+			$category_children = $structure->getArticleCategoryHelper()->getChildren($category, true);
 
 			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 			$searcher->setPersonContext($this->person);
