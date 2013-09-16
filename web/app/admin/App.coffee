@@ -3,7 +3,6 @@ define [
 	'Admin/Resources/config/routing'
 	'Admin/Main/Service/AppState'
 	'Admin/Main/Service/DpApi'
-	'Admin/Main/Directive/ActiveStateMark',
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
 ], (
@@ -11,7 +10,6 @@ define [
 	routing,
 	Admin_Main_Service_AppState,
 	Admin_Main_Service_DpApi,
-	Admin_Main_Directive_ActiveStateMark,
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments
 ) ->
@@ -53,9 +51,25 @@ define [
 	# Main directives
 	####################################################################################################################
 
-	Admin_App.directive('dpStateMark', ->
-		return new Admin_Main_Directive_ActiveStateMark()
-	)
+	Admin_App.directive('dpStateMark', ['$rootScope', ($rootScope) ->
+		return {
+			restrict: 'A',
+			link: (scope, element, attrs) ->
+				$rootScope.$on('dp_activeStateChange', (ev, newStateId) ->
+					stateId = attrs.dpStateMark
+					return if not stateId
+
+					stateIdRegex = '^'
+					stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+					stateIdRegex += '\\b'
+
+					if newStateId.match(new RegExp(stateIdRegex))
+						element.addClass('state-on')
+					else
+						element.removeClass('state-on')
+				, true);
+		}
+	])
 
 	Admin_App.directive('dpToggleSwitch', ->
 		return {
@@ -105,7 +119,7 @@ define [
 	####################################################################################################################
 
 	Admin_App.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-		$urlRouterProvider.otherwise("/settings/ticket_deps")
+		$urlRouterProvider.otherwise("/")
 
 		for route in routing
 			id = route.id

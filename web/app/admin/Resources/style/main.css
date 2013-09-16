@@ -1126,15 +1126,23 @@ img {
 .left-nav .ln-icon-home {
   background-position: -1px 9px;
 }
-.left-nav .active .ln-icon-home,
+.left-nav .state-on .ln-icon-home,
 .left-nav .ln-icon-home:focus,
 .left-nav .ln-icon-home:hover {
   background-position: -1px -90px;
 }
+.left-nav .ln-icon-cog {
+  background-position: -643px 4px;
+}
+.left-nav .state-on .ln-icon-cog,
+.left-nav .ln-icon-cog:focus,
+.left-nav .ln-icon-cog:hover {
+  background-position: -643px -96px;
+}
 .left-nav .ln-icon-chat {
   background-position: -721px 0;
 }
-.left-nav .active .ln-icon-chat,
+.left-nav .state-on .ln-icon-chat,
 .left-nav .ln-icon-chat:focus,
 .left-nav .ln-icon-chat:hover {
   background-position: -721px -100px;
@@ -1142,7 +1150,7 @@ img {
 .left-nav .ln-icon-ticket {
   background-position: -92px 9px;
 }
-.left-nav .active .ln-icon-ticket,
+.left-nav .state-on .ln-icon-ticket,
 .left-nav .ln-icon-ticket:focus,
 .left-nav .ln-icon-ticket:hover {
   background-position: -92px -91px;
@@ -1150,7 +1158,7 @@ img {
 .left-nav .ln-icon-crm {
   background-position: -251px 5px;
 }
-.left-nav .active .ln-icon-crm,
+.left-nav .state-on .ln-icon-crm,
 .left-nav .ln-icon-crm:focus,
 .left-nav .ln-icon-crm:hover {
   background-position: -251px -95px;
@@ -1158,7 +1166,7 @@ img {
 .left-nav .ln-icon-publish {
   background-position: -408px 4px;
 }
-.left-nav .active .ln-icon-publish,
+.left-nav .state-on .ln-icon-publish,
 .left-nav .ln-icon-publish:hover,
 .left-nav .ln-icon-publish:focus {
   background-position: -408px -96px;
@@ -1166,7 +1174,7 @@ img {
 .left-nav .ln-icon-twitter {
   background-position: -570px 9px;
 }
-.left-nav .active .ln-icon-twitter,
+.left-nav .state-on .ln-icon-twitter,
 .left-nav .ln-icon-twitter:hover,
 .left-nav .ln-icon-twitter:focus {
   background-position: -570px -91px;
@@ -1174,7 +1182,7 @@ img {
 .left-nav .ln-icon-rate {
   background-position: -331px 5px;
 }
-.left-nav .active .ln-icon-rate,
+.left-nav .state-on .ln-icon-rate,
 .left-nav .ln-icon-rate:hover,
 .left-nav .ln-icon-rate:focus {
   background-position: -331px -95px;

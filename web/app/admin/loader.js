@@ -45,7 +45,16 @@ requirejs([
 	'Admin/App',
 
 	'Admin/Main/Ctrl/Bare',
-	'Admin/Main/Ctrl/SettingsNav',
+	'Admin/Main/Ctrl/NavAgents',
+	'Admin/Main/Ctrl/NavApps',
+	'Admin/Main/Ctrl/NavBase',
+	'Admin/Main/Ctrl/NavChat',
+	'Admin/Main/Ctrl/NavCrm',
+	'Admin/Main/Ctrl/NavPortal',
+	'Admin/Main/Ctrl/NavServer',
+	'Admin/Main/Ctrl/NavSetup',
+	'Admin/Main/Ctrl/NavTickets',
+	'Admin/Main/Ctrl/NavTwitter',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit'
 ], function(jquery, angular) {

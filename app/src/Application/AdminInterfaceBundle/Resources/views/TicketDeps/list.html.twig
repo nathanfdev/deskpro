@@ -4,7 +4,7 @@
 <section class="pagebar">
 	<div class="row">
 		<div class="col-md-6">
-			<a href="#/settings/ticket_deps/{{ ng_var('dep.id') }}" class="btn btn-success"><i class="icon-plus"></i> Add Department</a>
+			<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" class="btn btn-success"><i class="icon-plus"></i> Add Department</a>
 		</div>
 		<div class="col-md-6">
 			<a href="#" class="btn btn-default pull-right"><i class="icon-cog"></i> General Settings</a>
@@ -14,7 +14,7 @@
 <nav class="links-nav anchor-list">
 	<ul>
 		<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="settings.ticket_deps.edit.{{ ng_var('dep.id') }}">
-			<a href="#/settings/ticket_deps/{{ ng_var('dep.id') }}" ng-class="{'sublink': dep._depth}">
+			<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" ng-class="{'sublink': dep._depth}">
 				<span class="ln-status ln-status-default">{{ ng_var('dep.id') }}</span>
 				<p class="ln-type">{{ ng_var('dep.title') }}</p>
 			</a>
