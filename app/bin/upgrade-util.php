@@ -1065,25 +1065,57 @@ class Upgrade
 			$pass = "--password=" . escapeshellarg($DP_CONFIG['db']['password']);
 			$log_pass = '--password=...';
 		}
-		$cmd = sprintf(
-			"%s --opt -Q -h%s -u%s %s %s > %s",
-			$mysql_dump_path,
-			escapeshellarg($DP_CONFIG['db']['host']),
-			escapeshellarg($DP_CONFIG['db']['user']),
-			$pass,
-			escapeshellarg($DP_CONFIG['db']['dbname']),
-			escapeshellarg($f)
-		);
 
-		$log_cmd = sprintf(
-			"%s --opt -Q -h%s -u%s %s %s > %s",
-			$mysql_dump_path,
-			escapeshellarg($DP_CONFIG['db']['host']),
-			escapeshellarg($DP_CONFIG['db']['user']),
-			$log_pass,
-			escapeshellarg($DP_CONFIG['db']['dbname']),
-			escapeshellarg($f)
-		);
+		$host = $DP_CONFIG['db']['host'];
+		$port = null;
+		if (preg_match('#^(.*?):([0-9]+)$#', $host, $m)) {
+			$host = $m[1];
+			$port = $m[2];
+		}
+
+		if ($port) {
+			$cmd = sprintf(
+				"%s --opt -Q -h%s --port=%s -u%s %s %s > %s",
+				$mysql_dump_path,
+				escapeshellarg($host),
+				escapeshellarg($port),
+				escapeshellarg($DP_CONFIG['db']['user']),
+				$pass,
+				escapeshellarg($DP_CONFIG['db']['dbname']),
+				escapeshellarg($f)
+			);
+
+			$log_cmd = sprintf(
+				"%s --opt -Q -h%s --port=%s -u%s %s %s > %s",
+				$mysql_dump_path,
+				escapeshellarg($host),
+				escapeshellarg($port),
+				escapeshellarg($DP_CONFIG['db']['user']),
+				$log_pass,
+				escapeshellarg($DP_CONFIG['db']['dbname']),
+				escapeshellarg($f)
+			);
+		} else {
+			$cmd = sprintf(
+				"%s --opt -Q -h%s -u%s %s %s > %s",
+				$mysql_dump_path,
+				escapeshellarg($host),
+				escapeshellarg($DP_CONFIG['db']['user']),
+				$pass,
+				escapeshellarg($DP_CONFIG['db']['dbname']),
+				escapeshellarg($f)
+			);
+
+			$log_cmd = sprintf(
+				"%s --opt -Q -h%s -u%s %s %s > %s",
+				$mysql_dump_path,
+				escapeshellarg($host),
+				escapeshellarg($DP_CONFIG['db']['user']),
+				$log_pass,
+				escapeshellarg($DP_CONFIG['db']['dbname']),
+				escapeshellarg($f)
+			);
+		}
 
 		$this->log("Backup directory:  {$this->getBackupDir()}");
 		$this->log("Backup command:    $log_cmd");
