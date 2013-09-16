@@ -1,5 +1,412 @@
-@import "include";
-@admin_help_bg: #FCF8E3;
+a {
+	&, &:focus {
+		outline: none;
+	}
+}
+
+//######################################################################################################################
+//# Page Header
+//######################################################################################################################
+
+.dp-app-header {
+	.container();
+	padding-top: 3px;
+	padding-bottom: 0;
+	padding-left: 6px;
+	pading-right: 6px;
+
+	border-top: 1px solid #458dbf;
+	border-bottom: 1px solid #343942;
+
+	background: #2579b4; /* Old browsers */
+	background: -moz-linear-gradient(top,  #2579b4 0%, #206fac 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2579b4), color-stop(100%,#206fac)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #2579b4 0%,#206fac 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #2579b4 0%,#206fac 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #2579b4 0%,#206fac 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #2579b4 0%,#206fac 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2579b4', endColorstr='#206fac',GradientType=0 ); /* IE6-9 */
+
+	/* User Profile */
+	.user-profile {
+		border: 1px solid #2d85c4;
+		background: #1a6299;
+		padding: 5px;
+
+		.box-shadow(inset 0 0 8px 0 rgba(0, 0, 0, .2));
+
+		width: 228px;
+		height: 44px;
+
+		float: left;
+
+		ul {
+			margin: 0;
+			padding: 0;
+			li {
+				padding: 0;
+				margin: 0;
+				list-style-type: none;
+			}
+		}
+
+		p {
+			margin: 0;
+		}
+
+		.up-photo {
+			outline: 1px solid rgba(0,0,0,.75);
+			border-bottom: 1px solid #3b78a6;
+			float: left;
+			width: 30px;
+			height: 30px;
+			margin: 1px 0 0 2px;
+		}
+
+		.up-content {
+			display: block;
+			padding-left: 45px;
+		}
+
+		.up-name {
+			color: #bcd6e8;
+			font-size: 13px;
+			line-height: 18px;
+			font-weight: 600;
+			text-shadow: 0 1px 0 rgba(0,0,0,.25);
+		}
+
+		.up-nav {
+			position: relative;
+			margin-top: -2px;
+
+			li {
+				color: #fff;
+				font-size: 12px;
+				float: left;
+				margin-left: 8px;
+
+				&:first-child {
+					margin-left: 0;
+				}
+			}
+
+			a {
+				color: #fff;
+				font-size: 12px;
+			}
+		}
+	}
+
+	/* Logo */
+	.logo {
+		text-indent: 200%;
+		white-space: nowrap;
+		display: block;
+		overflow: hidden;
+		width: 103px;
+		height: 28px;
+		margin: 10px;
+		float: right;
+		background: url(../img/logo.png) no-repeat;
+	}
+}
+
+
+//######################################################################################################################
+//# App Nav
+//######################################################################################################################
+
+.dp-app-nav {
+
+	ul {
+		margin: 0;
+		padding: 0;
+		li {
+			padding: 0;
+			margin: 0;
+			list-style-type: none;
+		}
+	}
+
+	.app-icon {
+		text-indent: 200%;
+		white-space: nowrap;
+		display: block;
+		overflow: hidden;
+
+		width: 100%;
+		height: 60px;
+
+		border-top: 1px solid transparent;
+		border-bottom: 1px solid transparent;
+		background: url("@{admin_static_path}/img/app-icons.png") no-repeat;
+
+		.transition(none);
+
+		&:focus,
+		&:hover {
+			background-color: #1c1f21;
+			border-top: 1px solid #3b3e43;
+			border-bottom: 1px solid #3b3e43;
+		}
+	}
+
+	.state-on .app-icon {
+		background-color: #1c1f21;
+		border-top: 1px solid #3b3e43;
+		border-bottom: 1px solid #3b3e43;
+	}
+
+	.app-icon-home {
+		background-position: -1px 9px;
+	}
+
+	.state-on .app-icon-home,
+	.app-icon-home:focus,
+	.app-icon-home:hover {
+		background-position: -1px -90px;
+	}
+
+	.app-icon-cog {
+		background-position: -643px 4px;
+	}
+
+	.state-on .app-icon-cog,
+	.app-icon-cog:focus,
+	.app-icon-cog:hover {
+		background-position: -643px -96px;
+	}
+
+	.app-icon-chat {
+		background-position: -721px 0;
+	}
+	.state-on .app-icon-chat,
+	.app-icon-chat:focus,
+	.app-icon-chat:hover {
+		background-position: -721px -100px;
+	}
+
+	.app-icon-ticket {
+		background-position: -92px 9px;
+	}
+	.state-on .app-icon-ticket,
+	.app-icon-ticket:focus,
+	.app-icon-ticket:hover {
+		background-position: -92px -91px;
+	}
+
+	.app-icon-crm {
+		background-position: -251px 5px;
+	}
+	.state-on .app-icon-crm,
+	.app-icon-crm:focus,
+	.app-icon-crm:hover {
+		background-position: -251px -95px;
+	}
+
+	.app-icon-publish {
+		background-position: -408px 4px;
+	}
+	.state-on .app-icon-publish,
+	.app-icon-publish:hover,
+	.app-icon-publish:focus {
+		background-position: -408px -96px;
+	}
+
+	.app-icon-twitter {
+		background-position: -570px 9px;
+	}
+	.state-on .app-icon-twitter,
+	.app-icon-twitter:hover,
+	.app-icon-twitter:focus {
+		background-position: -570px -91px;
+	}
+
+	.app-icon-rate {
+		background-position: -331px 5px;
+	}
+	.state-on .app-icon-rate,
+	.app-icon-rate:hover,
+	.app-icon-rate:focus {
+		background-position: -331px -95px;
+	}
+}
+
+//######################################################################################################################
+//# Nav Section (First Pane)
+//######################################################################################################################
+
+.dp-section-nav {
+	background: #eceef0;
+	border-right: 1px solid #b7bac0;
+
+	.nav {
+		a {
+			color: @text-color;
+			padding-left: 6px;
+
+			i {
+				display: inline-block;
+				width: 16px;
+				text-align: center;
+				margin-right: 3px;
+			}
+		}
+	}
+}
+
+//######################################################################################################################
+//# List Section (Second Pane)
+//######################################################################################################################
+
+.dp-section-list {
+	.container();
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+//######################################################################################################################
+//# Page Section (Third Pane)
+//######################################################################################################################
+
+.dp-section-page {
+	.container();
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+
+//######################################################################################################################
+//# Pane Styles
+//######################################################################################################################
+
+header.pane-header {
+	margin: 0;
+	padding: 0;
+	background: #D1D3D7;
+	border-bottom: 1px solid darken(#D1D3D7, 10%);
+	color: darken(#D1D3D7, 45%);
+
+	h3 {
+		padding: 4px;
+		margin: 0;
+		font-size: 14px;
+	}
+}
+
+header.pane-controls {
+	background: #E9EBF0;
+	border-bottom: 1px solid darken(#E9EBF0, 10%);
+	padding: 10px 0;
+
+	> .row {
+		margin-left: 0;
+		margin-right: 0;
+	}
+}
+
+article.pane-content {
+	.container();
+
+	&.no-pad {
+		padding-top: 0;
+		padding-bottom: 0;
+		padding-left: 0;
+		padding-right: 0;
+
+		&.pad-top {
+			padding-top: 15px;
+		}
+	}
+
+	&.pad-top {
+		padding-top: 15px;
+	}
+}
+
+//######################################################################################################################
+//# Nav Style
+//######################################################################################################################
+
+.nav-rows {
+	> li {
+		&.active > a {
+			&, &:hover, &:focus {
+				color: @nav-pills-active-link-hover-color;
+				background-color: @nav-pills-active-link-hover-bg;
+      	}
+		}
+	}
+}
+
+//######################################################################################################################
+//# List style
+//######################################################################################################################
+
+.dp-item-list {
+	padding: 0;
+	margin: 0;
+
+	> li {
+		list-style-type: none;
+	}
+
+	> li, > .dp-itm {
+		display: block;
+		padding: 0;
+		margin: 0;
+
+		&.active > a {
+			color: @nav-pills-active-link-hover-color;
+			background-color: @nav-pills-active-link-hover-bg;
+		}
+
+		> a {
+			display: block;
+			text-decoration: none;
+			color: @text-color;
+			padding: 15px;
+			line-height: 100%;
+
+			h4, h5, h6 {
+				margin: 0;
+				padding: 0;
+			}
+			h4 {
+				font-size: @font-size-base;
+			}
+		}
+	}
+}
+
+//######################################################################################################################
+//# Panel Style
+//######################################################################################################################
+
+.panel {
+	> table.table {
+		> thead > tr {
+			td, th {
+				background: #F2F2F2;
+				font-size: 11px;
+				font-weight: bold;
+				color: lighten(@text-color, 10%);
+				padding-top: 3px;
+				padding-bottom: 3px;
+				border-bottom-width: 1px;
+			}
+		}
+	}
+}
+
+//######################################################################################################################
+//# Help
+//######################################################################################################################
 
 section.dp-help-page {
 	background: @admin_help_bg;

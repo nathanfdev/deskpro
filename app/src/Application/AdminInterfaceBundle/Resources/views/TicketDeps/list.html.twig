@@ -1,23 +1,25 @@
-<header class="sn-header">
-	<h3>{{ phrase('agent.general.departments') }}</h3>
-</header>
-<section class="pagebar">
-	<div class="row">
-		<div class="col-md-6">
-			<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" class="btn btn-success"><i class="icon-plus"></i> Add Department</a>
+<div class="pane">
+	<header class="pane-header">
+		<h3>{{ phrase('agent.general.departments') }}</h3>
+	</header>
+	<header class="pane-controls">
+		<div class="row">
+			<div class="col-md-6">
+				<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" class="btn btn-success"><i class="icon-plus"></i> Add Department</a>
+			</div>
+			<div class="col-md-6">
+				<a href="#" class="btn btn-default pull-right"><i class="icon-cog"></i> General Settings</a>
+			</div>
 		</div>
-		<div class="col-md-6">
-			<a href="#" class="btn btn-default pull-right"><i class="icon-cog"></i> General Settings</a>
-		</div>
-	</div>
-</section>
-<nav class="links-nav anchor-list">
-	<ul>
-		<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="settings.ticket_deps.edit.{{ ng_var('dep.id') }}">
-			<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" ng-class="{'sublink': dep._depth}">
-				<span class="ln-status ln-status-default">{{ ng_var('dep.id') }}</span>
-				<p class="ln-type">{{ ng_var('dep.title') }}</p>
-			</a>
-		</li>
-	</ul>
-</nav>
+	</header>
+	<article class="pane-content no-pad">
+		<ul class="dp-item-list">
+			<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}">
+				<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" ng-class="{'sublink': dep._depth}">
+					<span class="badge pull-right">ID: {{ ng_var('dep.id') }}</span>
+					<h4>{{ ng_var('dep.title') }}</h4>
+				</a>
+			</li>
+		</ul>
+	</article>
+</div>

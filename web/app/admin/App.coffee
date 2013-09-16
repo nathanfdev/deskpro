@@ -64,9 +64,9 @@ define [
 					stateIdRegex += '\\b'
 
 					if newStateId.match(new RegExp(stateIdRegex))
-						element.addClass('state-on')
+						element.addClass('state-on active')
 					else
-						element.removeClass('state-on')
+						element.removeClass('state-on active')
 				, true);
 		}
 	])

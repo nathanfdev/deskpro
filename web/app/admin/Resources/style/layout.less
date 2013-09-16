@@ -1,7 +1,22 @@
-@topHeight: 54px;
-@appNavWidth: 55px;
-@navWidth: 235px;
-@listWidth: 475px;
+.dp-app-header {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: @topHeight;
+	background: #2b2f33;
+	z-index: 2;
+}
+
+.dp-app-nav {
+	position: absolute;
+	top: @topHeight;
+	bottom: 0;
+	left: 0;
+	width: @appNavWidth;
+	background: #2b2f33;
+	z-index: 2;
+}
 
 .dp-section {
 	position: fixed;

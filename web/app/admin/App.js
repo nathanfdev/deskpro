@@ -45,9 +45,9 @@
               stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
               stateIdRegex += '\\b';
               if (newStateId.match(new RegExp(stateIdRegex))) {
-                return element.addClass('state-on');
+                return element.addClass('state-on active');
               } else {
-                return element.removeClass('state-on');
+                return element.removeClass('state-on active');
               }
             }, true);
           }

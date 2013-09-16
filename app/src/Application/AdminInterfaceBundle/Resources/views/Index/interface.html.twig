@@ -6,17 +6,15 @@
 	<title>DeskPRO</title>
 	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
 
-	<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap/dist/css/bootstrap.min.css') }}"/>
+	<!--<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap/dist/css/bootstrap.min.css') }}"/>-->
 	<link rel="stylesheet" href="{{ asset('app/bower_components/bootstrap-switch/static/stylesheets/bootstrap-switch.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
 	<link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/Admin/Resources/style/main.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/Admin/Resources/style/layout.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app/Admin/Resources/style/style.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app/Admin/Resources/style/admin-style.css') }}"/>
 </head>
 <body>
 
-<header class="header navbar-fixed-top">
+<header class="dp-app-header">
 	<div class="row">
 		<!-- User Profile -->
 		<div class="col-md-6">
@@ -45,23 +43,23 @@
 
 <div id="dp_main_view">
 	<!-- Left Navigation Column -->
-	<nav class="left-nav">
+	<nav class="dp-app-nav">
 		<ul>
-			<li dp-state-mark="setup" class="state-on"><a class="ln-icon ln-icon-cog" href="#/setup">Setup</a></li>
-			<li dp-state-mark="agents" class=""><a class="ln-icon ln-icon-chat" href="#/agents">Agents</a></li>
-			<li dp-state-mark="tickets" class=""><a class="ln-icon ln-icon-ticket" href="#/tickets">Tickets</a></li>
-			<li dp-state-mark="crm" class=""><a class="ln-icon ln-icon-crm" href="#/crm">CRM</a></li>
-			<li dp-state-mark="portal" class=""><a class="ln-icon ln-icon-publish" href="#/portal">Portal</a></li>
-			<li dp-state-mark="chat" class=""><a class="ln-icon ln-icon-chat" href="#/chat">Chat</a></li>
-			<li dp-state-mark="twitter" class=""><a class="ln-icon ln-icon-twitter" href="#/twitter">Twitter</a></li>
-			<li dp-state-mark="apps" class=""><a class="ln-icon ln-icon-rate" href="#/apps">Apps</a></li>
-			<li dp-state-mark="server" class=""><a class="ln-icon ln-icon-cog" href="#/server">Server</a></li>
+			<li dp-state-mark="setup" class="state-on"><a class="app-icon app-icon-cog" href="#/setup">Setup</a></li>
+			<li dp-state-mark="agents" class=""><a class="app-icon app-icon-chat" href="#/agents">Agents</a></li>
+			<li dp-state-mark="tickets" class=""><a class="app-icon app-icon-ticket" href="#/tickets">Tickets</a></li>
+			<li dp-state-mark="crm" class=""><a class="app-icon app-icon-crm" href="#/crm">CRM</a></li>
+			<li dp-state-mark="portal" class=""><a class="app-icon app-icon-publish" href="#/portal">Portal</a></li>
+			<li dp-state-mark="chat" class=""><a class="app-icon app-icon-chat" href="#/chat">Chat</a></li>
+			<li dp-state-mark="twitter" class=""><a class="app-icon app-icon-twitter" href="#/twitter">Twitter</a></li>
+			<li dp-state-mark="apps" class=""><a class="app-icon app-icon-rate" href="#/apps">Apps</a></li>
+			<li dp-state-mark="server" class=""><a class="app-icon app-icon-cog" href="#/server">Server</a></li>
 		</ul>
 	</nav>
 	<div class="dp-section" ui-view>
 		<nav class="dp-section-nav sections-nav" ui-view="dp_section_nav" id="dp_section_nav"></nav>
-		<div class="dp-section-list col-grids" ui-view="dp_section_list" id="dp_section_list"></div>
-		<div class="dp-section-page col-grids with-list" ui-view="dp_section_page" id="dp_section_page"></div>
+		<div class="dp-section-list" ui-view="dp_section_list" id="dp_section_list"></div>
+		<div class="dp-section-page with-list" ui-view="dp_section_page" id="dp_section_page"></div>
 	</div>
 </div>
 
