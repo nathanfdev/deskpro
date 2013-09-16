@@ -735,7 +735,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 						$template->setTemplate($code, $compiled);
 
 						App::getOrm()->persist($template);
-						App::getOrm()->flush();
+						App::getOrm()->flush($template);
 
 						if (!isset($info['new_templates'])) {
 							$info['new_templates'][] = $name;
