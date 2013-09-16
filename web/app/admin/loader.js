@@ -45,6 +45,7 @@ requirejs([
 	'Admin/App',
 
 	'Admin/Main/Ctrl/Bare',
+	'Admin/Main/Ctrl/BackToAgent',
 	'Admin/Main/Ctrl/NavAgents',
 	'Admin/Main/Ctrl/NavApps',
 	'Admin/Main/Ctrl/NavBase',

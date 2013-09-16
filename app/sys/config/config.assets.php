@@ -268,6 +268,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',

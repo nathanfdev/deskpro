@@ -6907,6 +6907,13 @@ a:focus {
   list-style-type: none;
 }
 
+.dp-app-nav ul.btm {
+  position: absolute;
+  bottom: 0;
+  width: 55px;
+  overflow: hidden;
+}
+
 .dp-app-nav .app-icon {
   display: block;
   width: 100%;

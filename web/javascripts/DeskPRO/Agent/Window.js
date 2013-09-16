@@ -477,6 +477,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadVis = parseInt(loadVis[1]);
 		}
 
+		var loadAdmin = false;
+		if (loadAdmin = window.location.hash.match(/#admin:(.*?)$/)) {
+			loadAdmin = loadAdmin[1];
+		}
+
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -881,35 +886,58 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
-		if (loadNewTicket) {
-			DeskPRO_Window.newTicketLoader.open(function(page) {
-				var data = {
-					person_id: loadNewTicket
-				};
-				page.setNewByPerson(data);
-			});
-		}
+		if (loadAdmin) {
+			if ($('#admin_interface_trigger').data('handler')) {
+				console.log("Loading admin: " + loadAdmin);
+				$('#admin_interface_trigger').data('handler').open(loadAdmin);
+			}
+		} else {
+			if (loadNewTicket) {
+				DeskPRO_Window.newTicketLoader.open(function(page) {
+					var data = {
+						person_id: loadNewTicket
+					};
+					page.setNewByPerson(data);
+				});
+			}
 
-		if (loadSearchTerm) {
-			$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
-		}
+			if (loadSearchTerm) {
+				$('#dp_search_box').focus().val(decodeURIComponent(loadSearchTerm)).trigger('keypress');
+			}
 
-		if (loadVis) {
-			this.layout.enableHashUpdate = false;
-			this.setPaneVisNum(loadVis);
-			this.layout.enableHashUpdate = true;
-		}
+			if (loadVis) {
+				this.layout.enableHashUpdate = false;
+				this.setPaneVisNum(loadVis);
+				this.layout.enableHashUpdate = true;
+			}
 
-		this.cancelHashLoad = 0;
-		this.loadHashPath(startHash);
+			this.cancelHashLoad = 0;
+			this.loadHashPath(startHash);
+		}
 	},
 
 	addOnloadFunction: function(fn) {
 		this.onloadStack.push(fn);
 	},
 
+	disableHashPath: function(custom_handler) {
+		this.hashHandling = false;
+		this.customHashHandler = custom_handler;
+	},
+
+	enableHashPath: function() {
+		this.hashHandling = true;
+		this.cancelHashLoad = 0;
+		this.customHashHandler = null;
+	},
+
 	loadHashPath: function(browserHash) {
 
+		if (this.customHashHandler) {
+			this.customHashHandler(browserHash);
+		}
+
+		if (!this.hashHandling) return;
 		if (this.DEBUG.disableUrlFragments) return;
 
 		// This is sometimes set to prevent any of the below loading
@@ -1077,6 +1105,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	updateWindowUrlFragment: function() {
 
+		if (!this.hashHandling) return;
 		if (this.DEBUG.disableUrlFragments) return;
 		if (!jQuery.history) return;
 

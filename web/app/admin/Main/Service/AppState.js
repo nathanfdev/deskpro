@@ -14,7 +14,7 @@
         this.activeStateList = null;
         this.sectionState = null;
         this.$rootScope.$on('$viewContentLoaded', function() {
-          var current_state_id;
+          var current_state_id, _ref, _ref1;
           if (_this.$state.current) {
             current_state_id = $state.current.name;
             if ($state.params.id) {
@@ -22,23 +22,29 @@
             }
             _this.setActiveState(current_state_id);
             if (_this.$state.current.with_list_view) {
-              return $(document.body).addClass('with-section-list');
+              $(document.body).addClass('with-section-list');
             } else {
-              return $(document.body).removeClass('with-section-list');
+              $(document.body).removeClass('with-section-list');
+            }
+            if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {
+              return (_ref1 = window.parent) != null ? _ref1.DP_FRAME_OVERLAY_admin.setHash((window.location.hash + '').substring(1)) : void 0;
             }
           }
         });
         this.$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-          var full;
+          var full, _ref, _ref1;
           full = toState.name;
           if (toParams.id != null) {
             full += '.' + toParams.id;
           }
           _this.setActiveState(full);
           if (_this.$state.current.with_list_view) {
-            return $(document.body).addClass('with-section-list');
+            $(document.body).addClass('with-section-list');
           } else {
-            return $(document.body).removeClass('with-section-list');
+            $(document.body).removeClass('with-section-list');
+          }
+          if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {
+            return (_ref1 = window.parent) != null ? _ref1.DP_FRAME_OVERLAY_admin.setHash((window.location.hash + '').substring(1)) : void 0;
           }
         });
       }

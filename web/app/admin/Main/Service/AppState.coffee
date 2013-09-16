@@ -20,6 +20,9 @@ define ->
 						$(document.body).addClass('with-section-list')
 					else
 						$(document.body).removeClass('with-section-list')
+
+					if window.parent?.DP_FRAME_OVERLAY_admin
+						window.parent?.DP_FRAME_OVERLAY_admin.setHash((window.location.hash+'').substring(1))
 			)
 
 			@$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) =>
@@ -34,6 +37,9 @@ define ->
 					$(document.body).addClass('with-section-list')
 				else
 					$(document.body).removeClass('with-section-list')
+
+				if window.parent?.DP_FRAME_OVERLAY_admin
+					window.parent?.DP_FRAME_OVERLAY_admin.setHash((window.location.hash+'').substring(1))
 			)
 
 		isStateActive: (stateId) ->
