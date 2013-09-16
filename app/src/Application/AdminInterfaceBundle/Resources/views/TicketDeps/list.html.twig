@@ -14,10 +14,10 @@
 	</header>
 	<article class="pane-content no-pad">
 		<ul class="dp-item-list">
-			<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}">
-				<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" ng-class="{'sublink': dep._depth}">
+			<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" ng-class="{'sub-item': dep._depth}">
+				<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}">
 					<span class="badge pull-right">ID: {{ ng_var('dep.id') }}</span>
-					<h4>{{ ng_var('dep.title') }}</h4>
+					<h4><span class="sub-item-indent" ng-if="dep._depth"><i>&mdash;</i></span>{{ ng_var('dep.title') }}</h4>
 				</a>
 			</li>
 		</ul>
