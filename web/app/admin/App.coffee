@@ -19,8 +19,8 @@ define [
 
 	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2']);
 
-	Admin_App.service('AppState', ['$rootScope', ($rootScope) ->
-		return new Admin_Main_Service_AppState($rootScope)
+	Admin_App.service('AppState', ['$rootScope', '$state', ($rootScope, $state) ->
+		return new Admin_Main_Service_AppState($rootScope, $state)
 	])
 	Admin_App.service('Api', ['$http', ($http) ->
 		return new Admin_Main_Service_DpApi(
@@ -51,19 +51,31 @@ define [
 	# Main directives
 	####################################################################################################################
 
-	Admin_App.directive('dpStateMark', ['$rootScope', ($rootScope) ->
+	Admin_App.directive('dpStateMark', ['$rootScope', '$state', ($rootScope, $state) ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
-				$rootScope.$on('dp_activeStateChange', (ev, newStateId) ->
-					stateId = attrs.dpStateMark
-					return if not stateId
-
+				checkState = (stateId, newStateId) ->
+					return if not stateId or not newStateId
 					stateIdRegex = '^'
 					stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
 					stateIdRegex += '\\b'
 
 					if newStateId.match(new RegExp(stateIdRegex))
+						return true
+					else
+						return false
+
+				if $state.current?.name
+					current_state_id = $state.current.name
+					if $state.params.id
+						current_state_id += '.' + $state.params.id
+
+					if checkState(attrs.dpStateMark, current_state_id)
+						element.addClass('state-on active')
+
+				$rootScope.$on('dp_activeStateChange', (ev, newStateId) ->
+					if checkState(attrs.dpStateMark, newStateId)
 						element.addClass('state-on active')
 					else
 						element.removeClass('state-on active')

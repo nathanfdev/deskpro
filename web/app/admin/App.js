@@ -4,8 +4,8 @@
     var Admin_App;
     Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2']);
     Admin_App.service('AppState', [
-      '$rootScope', function($rootScope) {
-        return new Admin_Main_Service_AppState($rootScope);
+      '$rootScope', '$state', function($rootScope, $state) {
+        return new Admin_Main_Service_AppState($rootScope, $state);
       }
     ]);
     Admin_App.service('Api', [
@@ -31,20 +31,36 @@
       }
     ]);
     Admin_App.directive('dpStateMark', [
-      '$rootScope', function($rootScope) {
+      '$rootScope', '$state', function($rootScope, $state) {
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            return $rootScope.$on('dp_activeStateChange', function(ev, newStateId) {
-              var stateId, stateIdRegex;
-              stateId = attrs.dpStateMark;
-              if (!stateId) {
+            var checkState, current_state_id, _ref;
+            checkState = function(stateId, newStateId) {
+              var stateIdRegex;
+              if (!stateId || !newStateId) {
                 return;
               }
               stateIdRegex = '^';
               stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
               stateIdRegex += '\\b';
               if (newStateId.match(new RegExp(stateIdRegex))) {
+                return true;
+              } else {
+                return false;
+              }
+            };
+            if ((_ref = $state.current) != null ? _ref.name : void 0) {
+              current_state_id = $state.current.name;
+              if ($state.params.id) {
+                current_state_id += '.' + $state.params.id;
+              }
+              if (checkState(attrs.dpStateMark, current_state_id)) {
+                element.addClass('state-on active');
+              }
+            }
+            return $rootScope.$on('dp_activeStateChange', function(ev, newStateId) {
+              if (checkState(attrs.dpStateMark, newStateId)) {
                 return element.addClass('state-on active');
               } else {
                 return element.removeClass('state-on active');

@@ -3,15 +3,26 @@
   define(function() {
     var AppState;
     return AppState = (function() {
-      function AppState($rootScope) {
+      function AppState($rootScope, $state) {
         var _this = this;
         this.$rootScope = $rootScope;
+        this.$state = $state;
         this.vars = {};
         this.activeState = null;
         this.activeStateApp = null;
         this.activeStateNav = null;
         this.activeStateList = null;
         this.sectionState = null;
+        this.$rootScope.$on('$viewContentLoaded', function() {
+          var current_state_id;
+          if (_this.$state.current) {
+            current_state_id = $state.current.name;
+            if ($state.params.id) {
+              current_state_id += '.' + $state.params.id;
+            }
+            return _this.setActiveState(current_state_id);
+          }
+        });
         this.$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
           var full;
           full = toState.name;
@@ -22,8 +33,26 @@
         });
       }
 
+      AppState.prototype.isStateActive = function(stateId) {
+        var stateIdRegex;
+        if (!stateId || !this.activeState) {
+          return false;
+        }
+        stateIdRegex = '^';
+        stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        stateIdRegex += '\\b';
+        if (this.activeState.match(new RegExp(stateIdRegex))) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
       AppState.prototype.setActiveState = function(activeState) {
         var bits;
+        if (this.activeState === activeState) {
+          return;
+        }
         this.activeState = activeState;
         bits = this.activeState.split('.');
         this.activeStateApp = bits.shift();
