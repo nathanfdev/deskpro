@@ -154,6 +154,8 @@ class TemplatingExtension extends \Twig_Extension
 			'raw_url_encode'         => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat'                 => new \Twig_Filter_Method($this, 'strRepeat'),
 			'trim'                   => new \Twig_Filter_Method($this, 'strTrim'),
+			'ltrim'                  => new \Twig_Filter_Method($this, 'strLtrim'),
+			'rtrim'                  => new \Twig_Filter_Method($this, 'strRtrim'),
 			'encode_number'          => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
 			'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
@@ -827,6 +829,16 @@ class TemplatingExtension extends \Twig_Extension
 	public function strTrim($str, $chars = null)
 	{
 		return trim($str, $chars);
+	}
+
+	public function strLtrim($str, $chars = null)
+	{
+		return ltrim($str, $chars);
+	}
+
+	public function strRtrim($str, $chars = null)
+	{
+		return rtrim($str, $chars);
 	}
 
 	/**
