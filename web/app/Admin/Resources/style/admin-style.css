@@ -7476,7 +7476,7 @@ nav.dp-main-tabs ul li.active {
 
 section.dp-help-page {
   margin: 25px;
-  font-size: 95%;
+  font-size: 110%;
   line-height: 160%;
   background: #fcf8e3;
   border: 1px solid #f3e390;
@@ -7514,14 +7514,6 @@ section.dp-help-page article h3 {
 
 section.dp-help-page article p {
   margin: 14px 0;
-}
-
-section.dp-help-page article ul {
-  margin-left: 40px;
-}
-
-section.dp-help-page article ul li {
-  list-style-type: disc;
 }
 
 section.dp-help-page article dl {
