@@ -219,11 +219,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			agent_id = agent_id.agent_id;
 		}
 
-		// Ignore ourselves
-		if (DESKPRO_PERSON_ID && agent_id == DESKPRO_PERSON_ID) {
-			return;
-		}
-
 		var origLi = $('.agent-' + agent_id, this.offlineListEl);
 
 		if (!origLi.length) {
@@ -251,6 +246,10 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	removeOnlineAgent: function(agent_id) {
+		if (DESKPRO_PERSON_ID && agent_id == DESKPRO_PERSON_ID) {
+			return;
+		}
+
 		var li = $('.agent-' + agent_id, this.onlineListEl);
 		var offlineLi = $('.agent-' + agent_id, this.offlineListEl);
 
