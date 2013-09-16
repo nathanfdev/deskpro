@@ -6926,7 +6926,7 @@ a:focus {
   overflow: hidden;
   text-indent: 200%;
   white-space: nowrap;
-  background: url("../../../../app/admin/Resources/img/app-icons.png") no-repeat;
+  background: url("../../../../app/Admin/Resources/img/app-icons.png") no-repeat;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
   -webkit-transition: none;
