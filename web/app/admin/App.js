@@ -116,8 +116,9 @@
     });
     Admin_App.config([
       '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-        var id, route, url, views, _i, _len, _results;
+        var id, opts, route, segs, url, views, with_lists, _i, _len, _results;
         $urlRouterProvider.otherwise("/");
+        with_lists = {};
         _results = [];
         for (_i = 0, _len = routing.length; _i < _len; _i++) {
           route = routing[_i];
@@ -133,10 +134,25 @@
           if (route.page != null) {
             views['dp_section_page@'] = route.page;
           }
-          _results.push($stateProvider.state(id, {
+          opts = {
             url: url,
             views: views
-          }));
+          };
+          if (route.with_list_view) {
+            opts.with_list_view = true;
+          } else if (route.list != null) {
+            opts.with_list_view = true;
+          } else if (route.page != null) {
+            segs = id.split('.');
+            segs.pop();
+            if (with_lists[segs.join('.')]) {
+              opts.with_list_view = true;
+            }
+          }
+          if (opts.with_list_view) {
+            with_lists[id] = true;
+          }
+          _results.push($stateProvider.state(id, opts));
         }
         return _results;
       }

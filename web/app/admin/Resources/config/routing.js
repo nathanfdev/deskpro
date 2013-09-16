@@ -94,6 +94,7 @@ define(function() {
 	routes.push({
 		id: 'tickets.ticket_deps',
 		url: '/ticket_deps',
+		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/list.html',
 			controller: 'Admin_TicketDeps_Ctrl_List'

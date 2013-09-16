@@ -15,6 +15,11 @@ define ->
 						current_state_id += '.' + $state.params.id
 
 					@setActiveState(current_state_id)
+
+					if @$state.current.with_list_view
+						$(document.body).addClass('with-section-list')
+					else
+						$(document.body).removeClass('with-section-list')
 			)
 
 			@$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) =>
@@ -24,6 +29,11 @@ define ->
 					full += '.' + toParams.id
 
 				@setActiveState(full)
+
+				if @$state.current.with_list_view
+					$(document.body).addClass('with-section-list')
+				else
+					$(document.body).removeClass('with-section-list')
 			)
 
 		isStateActive: (stateId) ->

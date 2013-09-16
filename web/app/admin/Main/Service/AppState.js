@@ -20,7 +20,12 @@
             if ($state.params.id) {
               current_state_id += '.' + $state.params.id;
             }
-            return _this.setActiveState(current_state_id);
+            _this.setActiveState(current_state_id);
+            if (_this.$state.current.with_list_view) {
+              return $(document.body).addClass('with-section-list');
+            } else {
+              return $(document.body).removeClass('with-section-list');
+            }
           }
         });
         this.$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
@@ -29,7 +34,12 @@
           if (toParams.id != null) {
             full += '.' + toParams.id;
           }
-          return _this.setActiveState(full);
+          _this.setActiveState(full);
+          if (_this.$state.current.with_list_view) {
+            return $(document.body).addClass('with-section-list');
+          } else {
+            return $(document.body).removeClass('with-section-list');
+          }
         });
       }
 

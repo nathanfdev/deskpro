@@ -6741,7 +6741,7 @@ body.modal-open,
   overflow: auto;
 }
 
-.dp-section-page.with-list {
+.with-section-list .dp-section-page {
   left: 765px;
   border-left: 1px solid #A8ABB2;
 }

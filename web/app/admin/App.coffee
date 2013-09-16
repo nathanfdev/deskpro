@@ -133,6 +133,8 @@ define [
 	Admin_App.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
 		$urlRouterProvider.otherwise("/")
 
+		with_lists = {}
+
 		for route in routing
 			id = route.id
 			url = route.url
@@ -145,7 +147,22 @@ define [
 			if route.page?
 				views['dp_section_page@'] = route.page
 
-			$stateProvider.state(id, {url: url, views: views})
+			opts = {url: url, views: views}
+			if route.with_list_view
+				opts.with_list_view = true
+			else if route.list?
+				opts.with_list_view = true
+			else if route.page?
+				segs = id.split('.')
+				segs.pop()
+
+				if with_lists[segs.join('.')]
+					opts.with_list_view = true
+
+			if opts.with_list_view
+				with_lists[id] = true
+
+			$stateProvider.state(id, opts)
 	])
 
 	return Admin_App
