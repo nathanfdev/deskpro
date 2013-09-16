@@ -43,6 +43,7 @@
 	width: @listWidth;
 	background: #F5F7FA;
 	overflow: auto;
+	display: none;
 }
 
 .dp-section-page {
@@ -54,7 +55,13 @@
 	overflow: auto;
 }
 
-.with-section-list .dp-section-page {
-	border-left: 1px solid #A8ABB2;
-	left: @appNavWidth + @navWidth + @listWidth;
+.with-section-list {
+	.dp-section-list {
+		display: block;
+	}
+
+	.dp-section-page {
+		border-left: 1px solid #A8ABB2;
+		left: @appNavWidth + @navWidth + @listWidth;
+	}
 }

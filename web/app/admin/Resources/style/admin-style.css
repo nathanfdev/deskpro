@@ -6727,6 +6727,7 @@ body.modal-open,
   top: 54px;
   bottom: 0;
   left: 290px;
+  display: none;
   width: 475px;
   overflow: auto;
   background: #F5F7FA;
@@ -6739,6 +6740,10 @@ body.modal-open,
   bottom: 0;
   left: 290px;
   overflow: auto;
+}
+
+.with-section-list .dp-section-list {
+  display: block;
 }
 
 .with-section-list .dp-section-page {
