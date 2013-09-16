@@ -248,17 +248,60 @@ a {
 	background: #eceef0;
 	border-right: 1px solid #b7bac0;
 
+	.nav-rows > li.active > a {
+		color: #3476BE;
+		background: #D4E4FF;
+
+		i.icon-caret-right {
+			display: block;
+		}
+	}
+
+
 	.nav {
+
 		a {
-			color: @text-color;
-			padding-left: 6px;
+			color: darken(#878787, 15%);
+			padding-left: 13px;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			vertical-align: text-bottom;
+			line-height: 20px;
+
+			border-bottom: 1px solid #ccc;
+
+			i.icon-caret-right {
+				position: absolute;
+				right: -6px;
+				top: 11px;
+				display: none;
+				font-size: 12px;
+			}
+
+			i.icon-caret-down {
+				position: relative;
+				top: -1px;
+				font-size: 11px;
+				margin-left: 3px;
+				vertical-align: middle;
+				line-height: 20px;
+			}
 
 			i {
 				display: inline-block;
 				width: 16px;
 				text-align: center;
-				margin-right: 3px;
+				margin-right: 11px;
+				font-size: 150%;
+				line-height: 20px;
+				vertical-align: middle;
 			}
+		}
+	}
+
+	.nav.sub-nav {
+		a {
+			padding-left: 35px;
 		}
 	}
 }
@@ -300,9 +343,10 @@ header.pane-header {
 	color: darken(#D1D3D7, 45%);
 
 	h3 {
-		padding: 4px;
+		padding: 15px;
 		margin: 0;
-		font-size: 14px;
+		//font-size: 120%;
+		font-size: 16px;
 	}
 }
 
@@ -363,22 +407,31 @@ article.pane-content {
 		list-style-type: none;
 	}
 
+	> li.title {
+		padding: 9px 15px;
+		padding-top: 20px;
+		border-bottom: 3px solid #aaa;
+		font-size: 110%;
+	}
+
 	> li, > .dp-itm {
 		display: block;
 		padding: 0;
 		margin: 0;
 
 		&.active > a {
-			color: @nav-pills-active-link-hover-color;
-			background-color: @nav-pills-active-link-hover-bg;
+			color: #3476BE;
+			background: #D4E4FF;
 		}
 
 		> a {
 			display: block;
 			text-decoration: none;
 			color: @text-color;
-			padding: 15px;
+			padding: 9px 15px;
 			line-height: 100%;
+
+			border-bottom: 1px solid #ccc;
 
 			h4, h5, h6 {
 				margin: 0;
@@ -398,7 +451,47 @@ article.pane-content {
 		}
 
 		&.active .sub-item-indent i {
-			color: #fff;
+			color: #3476BE;
+		}
+	}
+}
+
+//######################################################################################################################
+//# Main Tabs Style
+//######################################################################################################################
+
+nav.dp-main-tabs {
+	height: 35px;
+	background-color: #E1E1E6;
+	border-bottom: 1px solid darken(#E1E1E6, 10%);
+
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		li {
+			display: block;
+			float: left;
+			margin-left: 13px;
+
+			line-height: 29px;
+			padding-left: 15px;
+			padding-right: 15px;
+			border: 1px solid darken(#E1E1E6, 10%);
+			border-bottom: none;
+
+			margin-top: 4px;
+
+			a {
+				text-decoration: none;
+				font-size: 120%;
+			}
+
+			&.active {
+				padding-bottom: 1px;
+				background: #fff;
+			}
 		}
 	}
 }
@@ -412,13 +505,76 @@ article.pane-content {
 		> thead > tr {
 			td, th {
 				background: #F2F2F2;
-				font-size: 11px;
+				font-size: 14px;
 				font-weight: bold;
 				color: lighten(@text-color, 10%);
-				padding-top: 3px;
-				padding-bottom: 3px;
-				border-bottom-width: 1px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				border-bottom-width: 2px;
+				font-weight: normal;
 			}
+		}
+	}
+}
+
+.panel.panel-default {
+	background: transparent;
+	border: 1px solid #ccc;
+	margin-bottom: 30px;
+	.rounded(0);
+	box-shadow: none;
+
+	.panel-heading {
+		border-bottom: 3px solid #aaa;
+		.rounded(0);
+		background: transparent;
+
+		h3 {
+			padding: 0;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			margin-left: 0;
+			margin-right: 0;
+			font-size: 120%;
+		}
+	}
+}
+
+.panel.panel-fill {
+	background: transparent;
+	border: none;
+	margin-bottom: 30px;
+	box-shadow: none;
+
+	.panel-heading {
+		border-bottom: 3px solid #aaa;
+
+		nav.dp-controls {
+			float: right;
+			margin-top: -3px;
+			margin-right: -3px;
+
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+
+				li {
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+					margin-left: 3px;
+				}
+			}
+		}
+
+		h3 {
+			padding: 0;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			margin-left: 0;
+			margin-right: 0;
+			font-size: 120%;
 		}
 	}
 }

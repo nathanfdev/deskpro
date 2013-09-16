@@ -1,25 +1,26 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3>{{ phrase('agent.general.departments') }}</h3>
-	</header>
-	<header class="pane-controls">
-		<div class="row">
-			<div class="col-md-6">
-				<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}" class="btn btn-success"><i class="icon-plus"></i> Add Department</a>
-			</div>
-			<div class="col-md-6">
-				<a href="#" class="btn btn-default pull-right"><i class="icon-cog"></i> General Settings</a>
-			</div>
-		</div>
+		<h3><i class="icon-briefcase"></i> Tickets &rarr; Departments</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<ul class="dp-item-list">
-			<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" ng-class="{'sub-item': dep._depth}">
-				<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}">
-					<span class="badge pull-right">ID: {{ ng_var('dep.id') }}</span>
-					<h4><span class="sub-item-indent" ng-if="dep._depth"><i>&mdash;</i></span>{{ ng_var('dep.title') }}</h4>
-				</a>
-			</li>
-		</ul>
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li><a class="btn btn-danger" href="#/tickets/ticket_deps/"><i class="icon-trash"></i> Delete</a></li>
+						<li><a class="btn btn-success" href="#/tickets/ticket_deps/"><i class="icon-plus"></i> Add</a></li>
+					</ul>
+				</nav>
+				<h3>{{ ng_var('TicketDepsList.departments.length') }} Departments</h3>
+			</div>
+			<ul class="dp-item-list">
+				<li ng-repeat="dep in TicketDepsList.departments" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" ng-class="{'sub-item': dep._depth}">
+					<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}">
+						<span class="badge pull-right">ID: {{ ng_var('dep.id') }}</span>
+						<h4><span class="sub-item-indent" ng-if="dep._depth"><i>&mdash;</i></span>{{ ng_var('dep.title') }}</h4>
+					</a>
+				</li>
+			</ul>
+		</div>
 	</article>
 </div>
