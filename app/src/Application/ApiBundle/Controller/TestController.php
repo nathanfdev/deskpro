@@ -68,7 +68,7 @@ class TestController extends AbstractController
 
 		// If this call is secure, then we know https works and the client
 		// requested it specifically, so return the same protocol
-		if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0) {
+		if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
 			$api_url = preg_replace('#^http://#', 'https://', $api_url);
 		}
 

@@ -209,7 +209,7 @@ class MiscController extends AbstractController
 			$api_url = App::getSetting('core.deskpro_url');
 			$api_url .= 'index.php/';
 
-			if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0) {
+			if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
 				$api_url = preg_replace('#^http://#', 'https://', $api_url);
 			}
 
