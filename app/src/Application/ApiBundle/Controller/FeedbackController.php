@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Searcher\FeedbackSearch;
+use Orb\Util\Numbers;
 
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
