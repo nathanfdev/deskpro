@@ -9,106 +9,84 @@ a {
 //######################################################################################################################
 
 .dp-app-header {
-	.container();
-	padding-top: 3px;
-	padding-bottom: 0;
-	padding-left: 6px;
-	pading-right: 6px;
+	.gradient-v(@agent_header_bg_color, darken(@agent_header_bg_color, 2%), @topHeight);
+	border-top: 1px solid @agent_header_bg_color;
+	border-bottom: 1px solid @agent_header_border_color;
 
-	border-top: 1px solid #458dbf;
-	border-bottom: 1px solid #343942;
-
-	background: #2579b4; /* Old browsers */
-	background: -moz-linear-gradient(top,  #2579b4 0%, #206fac 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2579b4), color-stop(100%,#206fac)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #2579b4 0%,#206fac 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #2579b4 0%,#206fac 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #2579b4 0%,#206fac 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #2579b4 0%,#206fac 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2579b4', endColorstr='#206fac',GradientType=0 ); /* IE6-9 */
-
-	/* User Profile */
 	.user-profile {
-		border: 1px solid #2d85c4;
-		background: #1a6299;
-		padding: 5px;
+		background-color: @agent_header_userprofile_bg_color;
+		height: (@agent_header_height - 9);
+		width: 236px;
+		margin: 4px 0 0 6px;
+		padding: 3px 5px 3px 3px;
+		border: 1px solid @agent_header_userprofile_border_color;
+		border-radius: 3px;
+		box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+		color: @agent_header_userprofile_text_color;
+		line-height: 100%;
+		white-space: nowrap;
+		overflow: hidden;
 
-		.box-shadow(inset 0 0 8px 0 rgba(0, 0, 0, .2));
+		.gravatar {
+			border: 1px solid darken(@agent_header_userprofile_border_color, 30%);
+			margin-right: 4px;
+			border-radius: 3px;
+			overflow: hidden;
+			width: 31px;
+			height: 31px;
+		}
 
-		width: 228px;
-		height: 44px;
-
-		float: left;
+		 .username {
+			white-space: nowrap;
+			margin-left: 38px;
+			font-size: 11px;
+			padding: 3px 0 2px 0;
+			line-height: 100%;
+			width: 158px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 
 		ul {
-			margin: 0;
-			padding: 0;
-			li {
-				padding: 0;
-				margin: 0;
-				list-style-type: none;
-			}
+			line-height: 15px;
+			margin-left: 2px;
+			width: 200px;
 		}
 
-		p {
-			margin: 0;
+		ul li {
+			display: inline-block;
+			margin-right: 6px;
+			font-size: 11px;
+			line-height: 100%;
+			color: lighten(@agent_header_userprofile_text_color, 25%);
 		}
 
-		.up-photo {
-			outline: 1px solid rgba(0,0,0,.75);
-			border-bottom: 1px solid #3b78a6;
-			float: left;
-			width: 30px;
-			height: 30px;
-			margin: 1px 0 0 2px;
+		ul li:last-child {
+			margin-right: 0;
 		}
 
-		.up-content {
-			display: block;
-			padding-left: 45px;
+		ul li:hover {
+			cursor: pointer;
+			color: darken(@agent_header_userprofile_text_color, 8%);
 		}
 
-		.up-name {
-			color: #bcd6e8;
-			font-size: 13px;
-			line-height: 18px;
-			font-weight: 600;
-			text-shadow: 0 1px 0 rgba(0,0,0,.25);
+		ul li a {
+			font-size: 11px;
+			color: lighten(@agent_header_userprofile_text_color, 25%);
+			border-bottom: 1px solid #165d94;
 		}
 
-		.up-nav {
-			position: relative;
-			margin-top: -2px;
-
-			li {
-				color: #fff;
-				font-size: 12px;
-				float: left;
-				margin-left: 8px;
-
-				&:first-child {
-					margin-left: 0;
-				}
-			}
-
-			a {
-				color: #fff;
-				font-size: 12px;
-			}
+		ul li a:hover, ul li:hover a {
+			color: darken(@agent_header_userprofile_text_color, 8%);
 		}
 	}
 
-	/* Logo */
-	.logo {
-		text-indent: 200%;
-		white-space: nowrap;
+	a.logo {
 		display: block;
-		overflow: hidden;
-		width: 103px;
 		height: 28px;
-		margin: 10px;
-		float: right;
-		background: url(../img/logo.png) no-repeat;
+		width: 103px;
+		background: url('@{img_path}/header-logo.png') no-repeat left top;
+		margin: 10px 10px 0 10px;
 	}
 }
 
@@ -118,7 +96,7 @@ a {
 //######################################################################################################################
 
 .dp-app-nav {
-
+	overflow: hidden;
 	ul {
 		margin: 0;
 		padding: 0;
@@ -145,24 +123,12 @@ a {
 		width: 100%;
 		height: 60px;
 
-		border-top: 1px solid transparent;
-		border-bottom: 1px solid transparent;
 		background: url("@{admin_static_path}/img/app-icons.png") no-repeat;
-
-		.transition(none);
-
-		&:focus,
-		&:hover {
-			background-color: #1c1f21;
-			border-top: 1px solid #3b3e43;
-			border-bottom: 1px solid #3b3e43;
-		}
 	}
 
 	.state-on .app-icon {
-		background-color: #1c1f21;
-		border-top: 1px solid #3b3e43;
-		border-bottom: 1px solid #3b3e43;
+		background-color: #1D2022;
+		box-shadow: 0 -1px 1px #080909;
 	}
 
 	.app-icon-home {

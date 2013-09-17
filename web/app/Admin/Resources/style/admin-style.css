@@ -6691,13 +6691,12 @@ body.modal-open,
   right: 0;
   left: 0;
   z-index: 2;
-  height: 54px;
-  background: #2b2f33;
+  height: 51px;
 }
 
 .dp-app-nav {
   position: absolute;
-  top: 54px;
+  top: 51px;
   bottom: 0;
   left: 0;
   z-index: 2;
@@ -6707,7 +6706,7 @@ body.modal-open,
 
 .dp-section {
   position: fixed;
-  top: 54px;
+  top: 51px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -6715,7 +6714,7 @@ body.modal-open,
 
 .dp-section-nav {
   position: fixed;
-  top: 54px;
+  top: 51px;
   bottom: 0;
   left: 55px;
   width: 235px;
@@ -6724,7 +6723,7 @@ body.modal-open,
 
 .dp-section-list {
   position: fixed;
-  top: 54px;
+  top: 51px;
   bottom: 0;
   left: 290px;
   display: none;
@@ -6735,7 +6734,7 @@ body.modal-open,
 
 .dp-section-page {
   position: fixed;
-  top: 54px;
+  top: 51px;
   right: 0;
   bottom: 0;
   left: 290px;
@@ -6757,148 +6756,90 @@ a:focus {
 }
 
 .dp-app-header {
-  padding-top: 3px;
-  padding-right: 15px;
-  padding-bottom: 0;
-  padding-left: 15px;
-  padding-left: 6px;
-  margin-right: auto;
-  margin-left: auto;
-  background: #2579b4;
-  background: -moz-linear-gradient(top, #2579b4 0%, #206fac 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2579b4), color-stop(100%, #206fac));
-  background: -webkit-linear-gradient(top, #2579b4 0%, #206fac 100%);
-  background: -o-linear-gradient(top, #2579b4 0%, #206fac 100%);
-  background: -ms-linear-gradient(top, #2579b4 0%, #206fac 100%);
-  background: linear-gradient(to bottom, #2579b4 0%, #206fac 100%);
-  border-top: 1px solid #458dbf;
-  border-bottom: 1px solid #343942;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2579b4', endColorstr='#206fac', GradientType=0);
-  zoom: 1;
-  pading-right: 6px;
-}
-
-.dp-app-header:before {
-  display: block;
-  content: '';
-}
-
-.dp-app-header:after {
-  display: table;
-  clear: both;
-  content: '';
-}
-
-.dp-app-header:before,
-.dp-app-header:after {
-  display: table;
-  content: " ";
-}
-
-.dp-app-header:after {
-  clear: both;
-}
-
-.dp-app-header:before {
-  display: block;
-  content: '';
-}
-
-.dp-app-header:after {
-  display: table;
-  clear: both;
-  content: '';
-}
-
-.dp-app-header:before,
-.dp-app-header:after {
-  display: table;
-  content: " ";
-}
-
-.dp-app-header:after {
-  clear: both;
+  background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
+  border-top: 1px solid #1d7ab2;
+  border-bottom: 1px solid #273036;
 }
 
 .dp-app-header .user-profile {
-  float: left;
-  width: 228px;
-  height: 44px;
-  padding: 5px;
-  background: #1a6299;
+  width: 236px;
+  height: 40px;
+  padding: 3px 5px 3px 3px;
+  margin: 4px 0 0 6px;
+  overflow: hidden;
+  line-height: 100%;
+  color: #bcd6e8;
+  white-space: nowrap;
+  background-color: #1a6299;
   border: 1px solid #2d85c4;
-  -webkit-box-shadow: inset 0 0 8px 0 rgba(0, 0, 0, 0.2);
-          box-shadow: inset 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  box-shadow: inset 0 0px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dp-app-header .user-profile .gravatar {
+  width: 31px;
+  height: 31px;
+  margin-right: 4px;
+  overflow: hidden;
+  border: 1px solid #103148;
+  border-radius: 3px;
+}
+
+.dp-app-header .user-profile .username {
+  width: 158px;
+  padding: 3px 0 2px 0;
+  margin-left: 38px;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dp-app-header .user-profile ul {
-  padding: 0;
-  margin: 0;
+  width: 200px;
+  margin-left: 2px;
+  line-height: 15px;
 }
 
 .dp-app-header .user-profile ul li {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 11px;
+  line-height: 100%;
+  color: #ffffff;
 }
 
-.dp-app-header .user-profile p {
-  margin: 0;
+.dp-app-header .user-profile ul li:last-child {
+  margin-right: 0;
 }
 
-.dp-app-header .user-profile .up-photo {
-  float: left;
-  width: 30px;
-  height: 30px;
-  margin: 1px 0 0 2px;
-  border-bottom: 1px solid #3b78a6;
-  outline: 1px solid rgba(0, 0, 0, 0.75);
+.dp-app-header .user-profile ul li:hover {
+  color: #9ec3de;
+  cursor: pointer;
 }
 
-.dp-app-header .user-profile .up-content {
+.dp-app-header .user-profile ul li a {
+  font-size: 11px;
+  color: #ffffff;
+  border-bottom: 1px solid #165d94;
+}
+
+.dp-app-header .user-profile ul li a:hover,
+.dp-app-header .user-profile ul li:hover a {
+  color: #9ec3de;
+}
+
+.dp-app-header a.logo {
   display: block;
-  padding-left: 45px;
-}
-
-.dp-app-header .user-profile .up-name {
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 18px;
-  color: #bcd6e8;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
-}
-
-.dp-app-header .user-profile .up-nav {
-  position: relative;
-  margin-top: -2px;
-}
-
-.dp-app-header .user-profile .up-nav li {
-  float: left;
-  margin-left: 8px;
-  font-size: 12px;
-  color: #fff;
-}
-
-.dp-app-header .user-profile .up-nav li:first-child {
-  margin-left: 0;
-}
-
-.dp-app-header .user-profile .up-nav a {
-  font-size: 12px;
-  color: #fff;
-}
-
-.dp-app-header .logo {
-  display: block;
-  float: right;
   width: 103px;
   height: 28px;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
+  background: url('../../../../images/header-logo.png') no-repeat left top;
+}
+
+.dp-app-nav {
   overflow: hidden;
-  text-indent: 200%;
-  white-space: nowrap;
-  background: url(../img/logo.png) no-repeat;
 }
 
 .dp-app-nav ul {
@@ -6927,23 +6868,11 @@ a:focus {
   text-indent: 200%;
   white-space: nowrap;
   background: url("../../../../app/Admin/Resources/img/app-icons.png") no-repeat;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-  -webkit-transition: none;
-          transition: none;
-}
-
-.dp-app-nav .app-icon:focus,
-.dp-app-nav .app-icon:hover {
-  background-color: #1c1f21;
-  border-top: 1px solid #3b3e43;
-  border-bottom: 1px solid #3b3e43;
 }
 
 .dp-app-nav .state-on .app-icon {
-  background-color: #1c1f21;
-  border-top: 1px solid #3b3e43;
-  border-bottom: 1px solid #3b3e43;
+  background-color: #1D2022;
+  box-shadow: 0 -1px 1px #080909;
 }
 
 .dp-app-nav .app-icon-home {
