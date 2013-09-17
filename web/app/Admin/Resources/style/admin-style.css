@@ -7297,9 +7297,9 @@ article.pane-content.pad-top {
 }
 
 nav.dp-main-tabs {
-  height: 35px;
-  background-color: #E1E1E6;
-  border-bottom: 1px solid #c5c5cf;
+  height: 49px;
+  background-color: #EEEEEE;
+  border-bottom: 3px solid #999999;
 }
 
 nav.dp-main-tabs ul {
@@ -7313,20 +7313,37 @@ nav.dp-main-tabs ul li {
   float: left;
   padding-right: 15px;
   padding-left: 15px;
-  margin-top: 4px;
+  margin-top: 8px;
   margin-left: 13px;
-  line-height: 29px;
-  border: 1px solid #c5c5cf;
+  line-height: 37px;
+  cursor: pointer;
+  border: 1px solid #999999;
   border-bottom: none;
+  -webkit-border-top-right-radius: 4px;
+          border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 0;
+          border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+          border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 4px;
+          border-top-left-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
 }
 
 nav.dp-main-tabs ul li a {
   font-size: 120%;
+  color: #333333;
   text-decoration: none;
 }
 
 nav.dp-main-tabs ul li.active {
-  padding-bottom: 1px;
+  padding-bottom: 3px;
   background: #fff;
 }
 
@@ -7412,6 +7429,13 @@ nav.dp-main-tabs ul li.active {
   margin-bottom: 5px;
   margin-left: 0;
   font-size: 120%;
+}
+
+.pane-footer {
+  padding: 20px;
+  margin-top: 25px;
+  background: #EEEEEE;
+  border-top: 2px solid #999999;
 }
 
 section.dp-help-page {

@@ -6,55 +6,56 @@
 	<article class="pane-content no-pad">
 		<nav class="dp-main-tabs">
 			<ul>
-				<li class="active"><a href="#">Properties</a></li>
-				<li><a href="#">Permissions</a></li>
-				<li><a href="#">Layout</a></li>
+				<li class="active" dp-tab-btn="main.props"><a href="#">Properties</a></li>
+				<li dp-tab-btn="main.perms" ng-if="TicketDepsEdit.dep.id"><a href="#">Permissions</a></li>
+				<li dp-tab-btn="main.layout" ng-if="TicketDepsEdit.dep.id"><a href="#">Layout</a></li>
 			</ul>
 		</nav>
 
-		<div class="panel panel-fill">
-			<div class="panel-heading"><h3>Properties</h3></div>
-			<div class="panel-body">
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<div class="col-md-2 text-right">
-							<label for="title">Title</label>
+		<div dp-tab-body="main.props">
+			<div class="panel panel-fill">
+				<br/>
+				<div class="panel-body">
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<div class="col-md-2 text-right">
+								<label for="title">Title</label>
+							</div>
+							<div class="col-md-5">
+								<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.title">
+							</div>
 						</div>
-						<div class="col-md-10">
-							<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.title">
+						<div class="form-group">
+							<div class="col-md-2 text-right">
+								<label for="user_title">User Title</label>
+							</div>
+							<div class="col-md-5">
+								<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title">
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-md-2 text-right">
-							<label for="user_title">User Title</label>
+						<div class="form-group">
+							<div class="col-md-2 text-right">
+								<label for="title">Parent</label>
+							</div>
+							<div class="col-md-5">
+								<select
+									ui-select2
+									ng-model="TicketDepsEdit.dep.parent_id"
+									style="min-width: 240px"
+								>
+									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
+								</select>
+							</div>
 						</div>
-						<div class="col-md-10">
-							<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title">
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-md-2 text-right">
-							<label for="title">Parent</label>
-						</div>
-						<div class="col-md-10">
-							<select
-								ui-select2
-								ng-model="TicketDepsEdit.dep.parent_id"
-								style="min-width: 240px"
-							>
-								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
-							</select>
-						</div>
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
-			<div class="panel-content text-center">
-				<br/><br/>
+			<div class="pane-footer text-center">
 				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveProperties()">Save</button>
 			</div>
 		</div>
 
-		<div ng-if="TicketDepsEdit.dep.id">
+		<div ng-if="TicketDepsEdit.dep.id" dp-tab-body="main.perms">
 			<div class="panel panel-fill">
 				<div class="panel-heading"><h3>Agent Group Permissions</h3></div>
 				<table class="table table-hover">
@@ -77,10 +78,6 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="panel-content text-center">
-					<br/><br/>
-					<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agentgroups')">Save</button>
-				</div>
 			</div>
 
 			<div class="panel panel-fill">
@@ -105,10 +102,6 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="panel-content text-center">
-					<br/><br/>
-					<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('agents')">Save</button>
-				</div>
 			</div>
 
 			<div class="panel panel-fill">
@@ -129,17 +122,22 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="panel-content text-center">
-					<br/><br/>
-					<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions('usergroups')">Save</button>
-				</div>
 			</div>
 
+			<div class="pane-footer text-center">
+				<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions()">Save</button>
+			</div>
+		</div>
+
+		<div ng-if="TicketDepsEdit.dep.id" dp-tab-body="main.layout">
 			<div class="panel panel-fill">
 				<div class="panel-heading"><h3>Layout</h3></div>
 				<div class="panel-body" style="height: 400px;">
 
 				</div>
+			</div>
+			<div class="pane-footer text-center">
+				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveLayout()">Save</button>
 			</div>
 		</div>
 	</article>

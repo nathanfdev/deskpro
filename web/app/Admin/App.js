@@ -114,6 +114,73 @@
         }
       };
     });
+    Admin_App.directive('dpTabBtn', function() {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var id_segs, tab_group, tab_val;
+          if (!scope.dp_tab_ids) {
+            scope.dp_tab_ids = {};
+          }
+          id_segs = attrs['dpTabBtn'];
+          if (!id_segs) {
+            return;
+          }
+          id_segs = id_segs.split('.');
+          tab_val = id_segs.pop();
+          tab_group = id_segs.join('.');
+          if (element.hasClass('active')) {
+            scope.dp_tab_ids[tab_group] = tab_val;
+          }
+          element.on('click', function(ev) {
+            ev.preventDefault();
+            scope.dp_tab_ids[tab_group] = tab_val;
+            return scope.$apply();
+          });
+          return scope.$watch(function() {
+            return scope.dp_tab_ids[tab_group];
+          }, function(newVal) {
+            if (newVal === tab_val) {
+              return element.addClass('active');
+            } else {
+              return element.removeClass('active');
+            }
+          });
+        }
+      };
+    });
+    Admin_App.directive('dpTabBody', function() {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var id_segs, tab_group, tab_val;
+          if (!scope.dp_tab_ids) {
+            scope.dp_tab_ids = {};
+          }
+          id_segs = attrs['dpTabBody'];
+          if (!id_segs) {
+            return;
+          }
+          id_segs = id_segs.split('.');
+          tab_val = id_segs.pop();
+          tab_group = id_segs.join('.');
+          if (scope.dp_tab_ids[tab_group] === tab_val) {
+            element.show();
+          } else {
+            element.hide();
+          }
+          return scope.$watch(function() {
+            return scope.dp_tab_ids[tab_group];
+          }, function(newVal) {
+            if (newVal === tab_val) {
+              return element.show();
+            } else {
+              return element.hide();
+            }
+          });
+        }
+      };
+    });
     Admin_App.config([
       '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
         var id, opts, route, segs, url, views, with_lists, _i, _len, _results;
