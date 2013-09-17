@@ -499,10 +499,18 @@ class TriggerExecutor
 		// Eg., reply can be written by "Assigned Agent" which might not be set until after a trigger action runs
 		// So we say ReplyAction is run after Agent so it can use that variable
 		$actions_collection->sortActions(array(
-			'prepend' => 0,
-			'default' => 1,
-			'ReplyAction' => 1000,
-			'NewTicketAction' => 1000,
+			'prepend'                                   => 0,
+			'default'                                   => 1,
+			'ReplyAction'                               => 1000,
+			'NewTicketAction'                           => 1000,
+			'AgentNotificationAction'                   => 1000,
+			'SendAgentEmail'                            => 1000,
+			'SendUserEmail'                             => 1000,
+			'SendTicketEmail'                           => 1000,
+			'UserNotificationNewReplyAgentAction'       => 1000,
+			'UserNotificationNewReplyUserAction'        => 1000,
+			'UserNotificationNewReplyParticipantAction' => 1000,
+			'UserNotificationNewReplyOtherAction'       => 1000,
 		));
 
 		#------------------------------

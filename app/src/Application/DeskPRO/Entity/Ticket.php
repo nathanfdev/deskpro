@@ -3062,8 +3062,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$from_name = App::getSetting('core.deskpro_name');
 
-			if ($options && isset($options['default_name']) && $options['default_name']) {
-				$from_name = $options['default_name'];
+			if ($options && isset($options['default_from']) && $options['default_from']) {
+				$from_name = $options['default_from'];
 			}
 		}
 
