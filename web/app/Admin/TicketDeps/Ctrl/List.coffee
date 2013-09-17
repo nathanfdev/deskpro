@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
 		@CTRL_AS = 'TicketDepsList'
-		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em']
+		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
@@ -13,6 +13,20 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			@DepartmentData.loadDepList().then( (departments) =>
 				@initDepList(departments.values())
 			)
+
+			@sortedListOptions = {
+				axis: 'y',
+				update: (ev, data) =>
+					$list = data.item.closest('ul')
+
+					postData = {display_orders: []}
+
+					$list.find('li').each(->
+						postData.display_orders.push($(this).data('id'))
+					)
+
+					promise = @Api.sendPostJson('/ticket_deps/display_order', postData)
+			}
 
 		initDepList: (departments) ->
 			@departments = departments

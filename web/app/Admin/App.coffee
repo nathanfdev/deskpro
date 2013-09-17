@@ -17,7 +17,7 @@ define [
 	# Main services
 	####################################################################################################################
 
-	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2']);
+	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable']);
 
 	Admin_App.service('AppState', ['$rootScope', '$state', ($rootScope, $state) ->
 		return new Admin_Main_Service_AppState($rootScope, $state)

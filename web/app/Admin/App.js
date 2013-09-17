@@ -2,7 +2,7 @@
 (function() {
   define(['angular', 'Admin/Resources/config/routing', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments'], function(angular, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments) {
     var Admin_App, _ref, _ref1;
-    Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2']);
+    Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable']);
     Admin_App.service('AppState', [
       '$rootScope', '$state', function($rootScope, $state) {
         return new Admin_Main_Service_AppState($rootScope, $state);

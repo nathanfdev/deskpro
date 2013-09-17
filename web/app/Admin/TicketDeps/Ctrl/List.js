@@ -17,7 +17,7 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api'];
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
@@ -25,9 +25,23 @@
           _this.initDepList(_this.DepartmentData.deps.values());
           return _this.ngApply();
         });
-        return this.DepartmentData.loadDepList().then(function(departments) {
+        this.DepartmentData.loadDepList().then(function(departments) {
           return _this.initDepList(departments.values());
         });
+        return this.sortedListOptions = {
+          axis: 'y',
+          update: function(ev, data) {
+            var $list, postData, promise;
+            $list = data.item.closest('ul');
+            postData = {
+              display_orders: []
+            };
+            $list.find('li').each(function() {
+              return postData.display_orders.push($(this).data('id'));
+            });
+            return promise = _this.Api.sendPostJson('/ticket_deps/display_order', postData);
+          }
+        };
       };
 
       Admin_TicketDeps_Ctrl_List.prototype.initDepList = function(departments) {

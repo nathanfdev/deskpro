@@ -3,10 +3,12 @@ requirejs.config({
 	urlArgs: "bust=" + (new Date()).getTime(),
     paths: {
 		jquery:             DP_ASSET_URL+'/app/bower_components/jquery/jquery',
+		jqueryUi:           DP_ASSET_URL+'/app/bower_components/jquery-ui/ui/jquery-ui',
 		bootstrap_modal:    DP_ASSET_URL+'/app/bower_components/bootstrap/js/modal',
 		bootstrap_switch:   DP_ASSET_URL+'/app/bower_components/bootstrap-switch/static/js/bootstrap-switch',
 		angular:            DP_ASSET_URL+'/app/bower_components/angular/angular',
 		angularUiRouter:    DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
+		angularUiSortable:  DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
 		angularSanitize:    DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
 		angularBootstrap:   DP_ASSET_URL+'/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
 		angularSelect2:     DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
@@ -16,11 +18,13 @@ requirejs.config({
 	shim: {
 		'angular' : {'exports' : 'angular'},
 		'angularUiRouter': ['angular'],
+		'angularUiSortable': ['angular'],
 		'angularSanitize': ['angular'],
 		'angularSelectize': ['angular'],
 		'angularBootstrap': ['angular'],
 		'angularSelect2': ['angular'],
 		'bootstrap_modal': ['jquery'],
+		'jqueryUi': ['jquery'],
 		'bootstrap_switch': {
 			deps: ['jquery'],
 			exports: 'jQuery.fn.bootstrapSwitch'
@@ -35,9 +39,11 @@ requirejs.config({
 window.name = "NG_DEFER_BOOTSTRAP!";
 
 requirejs([
-	'jquery',
 	'angular',
+	'jquery',
+	'jqueryUi',
 	'bootstrap_switch',
+	'angularUiSortable',
 	'angularUiRouter',
 	'angularSelect2',
 	'select2',
@@ -58,7 +64,7 @@ requirejs([
 	'Admin/Main/Ctrl/NavTwitter',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit'
-], function(jquery, angular) {
+], function(angular) {
 	'use strict';
 
 	window.DP_UID_COUNTER = 0;
