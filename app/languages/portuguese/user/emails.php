@@ -28,7 +28,7 @@
 	'user.emails.register-agent-validation'                                => 'Nota: Antes da sua conta se tornar completamente ativa, os nossos agentes necessitam validar a sua conta. Bilhetes e outros conteúdos que já enviou serão mantidos numa fila de validação até que um agente valide as suas contas.',
 	'user.emails.register-welcome'                                         => 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}',
 	'user.emails.reject_resolved'                                          => 'A sua resposta não foi aceite porque o bilhete já foi marcado como resolvido. Os nossos agentes não vão ler ou responder a esta mensagem.',
-	'user.emails.reject_resolved-new'                                      => 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br/><a href="{{link}}">{{link}}</a>',
+	'user.emails.reject_resolved-new'                                      => 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br /><a href="{{link}}">{{link}}</a>',
 	'user.emails.reject_resolved-newemail'                                 => 'e quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a>',
 	'user.emails.ticket_access_ticket_online'                              => 'Ver e gerir este bilhete online:',
 	'user.emails.ticket_cc-new'                                            => 'Foi incluído em um bilhete iniciado por {{name}}.',
