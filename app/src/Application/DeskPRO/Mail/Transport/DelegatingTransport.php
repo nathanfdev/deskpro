@@ -358,7 +358,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			}
 		}
 
-		if ($evt) {
+		if (isset($evt) && $evt) {
 			$evt->setResult($success ? \Swift_Events_SendEvent::RESULT_SUCCESS : \Swift_Events_SendEvent::RESULT_FAILED);
 			$this->event_dispatcher->dispatchEvent($evt, 'sendPerformed');
 		}
