@@ -225,16 +225,19 @@ a {
 
 
 	.nav {
-
 		a {
 			color: darken(#878787, 15%);
 			padding-left: 13px;
 			padding-top: 10px;
 			padding-bottom: 10px;
-			vertical-align: text-bottom;
-			line-height: 20px;
+			line-height: 100%;
 
 			border-bottom: 1px solid #ccc;
+
+			span {
+				display: inline-block;
+				vertical-align: middle;
+			}
 
 			i.icon-caret-right {
 				position: absolute;
@@ -250,7 +253,6 @@ a {
 				font-size: 11px;
 				margin-left: 3px;
 				vertical-align: middle;
-				line-height: 20px;
 			}
 
 			i {
@@ -259,7 +261,6 @@ a {
 				text-align: center;
 				margin-right: 11px;
 				font-size: 150%;
-				line-height: 20px;
 				vertical-align: middle;
 			}
 		}

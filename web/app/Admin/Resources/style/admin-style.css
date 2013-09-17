@@ -6982,10 +6982,14 @@ a:focus {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 13px;
-  line-height: 20px;
+  line-height: 100%;
   color: #616161;
-  vertical-align: text-bottom;
   border-bottom: 1px solid #ccc;
+}
+
+.dp-section-nav .nav a span {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .dp-section-nav .nav a i.icon-caret-right {
@@ -7001,7 +7005,6 @@ a:focus {
   top: -1px;
   margin-left: 3px;
   font-size: 11px;
-  line-height: 20px;
   vertical-align: middle;
 }
 
@@ -7010,7 +7013,6 @@ a:focus {
   width: 16px;
   margin-right: 11px;
   font-size: 150%;
-  line-height: 20px;
   text-align: center;
   vertical-align: middle;
 }
