@@ -25,7 +25,6 @@
 	'user.feedback.status_closed'                                          => 'Fechado',
 	'user.feedback.status_new'                                             => 'A recolher Comentário',
 	'user.feedback.status_open'                                            => 'Aberto',
-	'user.feedback.status_popular'                                         => 'Popular',
 	'user.feedback.submit_feedback'                                        => 'Submeter Comentário',
 	'user.feedback.title'                                                  => 'Comentário',
 	'user.feedback.title-feedback'                                         => 'Existe 1 comentário|Existem {{count}} comentários',

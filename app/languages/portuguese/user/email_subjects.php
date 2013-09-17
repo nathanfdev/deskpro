@@ -13,10 +13,8 @@
 	'user.email_subjects.feedback_updated'                                 => 'O seu comentário foi atualizado: {{title}}',
 	'user.email_subjects.password_agent-reset'                             => 'Um agente efectuou a reinicialização da sua palavra cháve',
 	'user.email_subjects.password_reset'                                   => 'Reinicializar a palavra cháve',
-	'user.email_subjects.re'                                               => 'RE: {{subject}}',
 	'user.email_subjects.register-welcome'                                 => 'Obrigado por se ter registado',
 	'user.email_subjects.ticket-rate'                                      => 'Avalie a sua experiencia com a equipa de suporte para o seu bilhete "{{ticket.subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Uma nova pessoa foi adicionada ao seu bilhete',
-	'user.email_subjects.tickets_re'                                       => 'RE: {{ticket.subject}}',
 	'user.email_subjects.validate-email'                                   => 'Valide o seu endereço de email',
 );
