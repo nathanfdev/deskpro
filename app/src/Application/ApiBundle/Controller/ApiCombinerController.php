@@ -45,6 +45,10 @@ class ApiCombinerController extends AbstractController
 		$data = array();
 
 		foreach ($this->in->getCleanValueArray('load_data', 'string', 'discard') as $load_data_id) {
+
+			// Cut out everything before the /api/ which will could be the base-path
+			$load_data_id = preg_replace('#^(.*?)\/api\/#', '/api/', $load_data_id);
+
 			try {
 				$route_info = $this->container->getRouter()->match($load_data_id);
 			} catch (\Exception $e) {
