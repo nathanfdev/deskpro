@@ -510,7 +510,7 @@ class TriggerExecutor
 			'UserNotificationNewReplyAgentAction'       => 1000,
 			'UserNotificationNewReplyUserAction'        => 1000,
 			'UserNotificationNewReplyParticipantAction' => 1000,
-			'UserNotificationNewReplyOtherAction'       => 1000,
+			'UserNotificationNewReplyUserOtherAction'   => 1000,
 		));
 
 		#------------------------------
