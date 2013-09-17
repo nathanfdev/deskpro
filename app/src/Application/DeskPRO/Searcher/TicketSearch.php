@@ -1592,7 +1592,9 @@ class TicketSearch extends SearcherAbstract
 							if (strpos($c, '.') !== false) {
 								list ($status, $hstatus) = explode('.', $c, 2);
 								$hidden_status[] = $hstatus;
-								$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $hstatus);
+								if ($status == 'hidden' && $tr->hasPhrase('agent.tickets.hidden_status_' . $hstatus)) {
+									$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $hstatus);
+								}
 								$this->enableArchiveSearch();
 							} else {
 								$show_status[] = $show_status;
