@@ -7217,11 +7217,11 @@ article.pane-content.pad-top {
   padding-top: 15px;
 }
 
-.nav-rows > li.active > a,
-.nav-rows > li.active > a:hover,
-.nav-rows > li.active > a:focus {
-  color: #ffffff;
-  background-color: #428bca;
+.nav-rows > li:hover > a,
+.nav-rows > li:focus > a,
+.nav-rows > li.active > a {
+  color: #3476BE;
+  background: #D4E4FF;
 }
 
 .dp-item-list {

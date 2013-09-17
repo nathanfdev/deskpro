@@ -352,11 +352,9 @@ article.pane-content {
 
 .nav-rows {
 	> li {
-		&.active > a {
-			&, &:hover, &:focus {
-				color: @nav-pills-active-link-hover-color;
-				background-color: @nav-pills-active-link-hover-bg;
-      	}
+		&:hover > a, &:focus > a, &.active > a {
+			color: #3476BE;
+			background: #D4E4FF;
 		}
 	}
 }

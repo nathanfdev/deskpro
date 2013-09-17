@@ -160,7 +160,7 @@
     Admin_App.run([
       '$http', '$templateCache', function($http, $templateCache) {
         var qs, t, templates, _i, _len;
-        templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html'];
+        templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/blank.html'];
         qs = [];
         for (_i = 0, _len = templates.length; _i < _len; _i++) {
           t = templates[_i];
