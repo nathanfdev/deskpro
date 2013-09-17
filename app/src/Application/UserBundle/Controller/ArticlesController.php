@@ -98,7 +98,14 @@ class ArticlesController extends AbstractController
 			}
 
 			$category_path = $category->getTreeParents();
-			$category_children = $structure->getArticleCategoryHelper()->getChildren($category, true);
+			$category_children = array();
+
+			$perm_manager = $this->person->PermissionsManager->get('ArticleCategories');
+			foreach ($category->getChildren() as $subcat) {
+				if ($perm_manager->isCategoryAllowed($subcat->getId())) {
+					$category_children[$subcat->getId()] = $subcat;
+				}
+			}
 
 			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 			$searcher->setPersonContext($this->person);
