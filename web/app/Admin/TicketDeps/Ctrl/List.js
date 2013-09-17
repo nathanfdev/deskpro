@@ -22,12 +22,32 @@
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
-          _this.departments = _this.DepartmentData.deps.values();
+          _this.initDepList(_this.DepartmentData.deps.values());
           return _this.ngApply();
         });
         return this.DepartmentData.loadDepList().then(function(departments) {
-          return _this.departments = departments.values();
+          return _this.initDepList(departments.values());
         });
+      };
+
+      Admin_TicketDeps_Ctrl_List.prototype.initDepList = function(departments) {
+        var dep, _i, _len, _results;
+        this.departments = departments;
+        this.parent_deps = [];
+        this.child_deps = {};
+        _results = [];
+        for (_i = 0, _len = departments.length; _i < _len; _i++) {
+          dep = departments[_i];
+          if (dep.parent_id) {
+            if (!this.child_deps[dep.parent_id]) {
+              this.child_deps[dep.parent_id] = [];
+            }
+            _results.push(this.child_deps[dep.parent_id].push(dep));
+          } else {
+            _results.push(this.parent_deps.push(dep));
+          }
+        }
+        return _results;
       };
 
       /**

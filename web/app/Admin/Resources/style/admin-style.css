@@ -7285,14 +7285,14 @@ article.pane-content.pad-top {
   margin-right: 6px;
 }
 
-.dp-item-list > li .sub-item-indent i,
-.dp-item-list > .dp-itm .sub-item-indent i {
+.dp-item-list > li .sub-item-indent > i,
+.dp-item-list > .dp-itm .sub-item-indent > i {
   font-style: normal;
   color: #888;
 }
 
-.dp-item-list > li.active .sub-item-indent i,
-.dp-item-list > .dp-itm.active .sub-item-indent i {
+.dp-item-list > li.active > a .sub-item-indent > i,
+.dp-item-list > .dp-itm.active > a .sub-item-indent > i {
   color: #3476BE;
 }
 

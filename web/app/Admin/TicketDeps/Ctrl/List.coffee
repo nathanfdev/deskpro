@@ -6,13 +6,28 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
-				@departments = @DepartmentData.deps.values()
+				@initDepList(@DepartmentData.deps.values())
 				@ngApply()
 			)
 
 			@DepartmentData.loadDepList().then( (departments) =>
-				@departments = departments.values()
+				@initDepList(departments.values())
 			)
+
+		initDepList: (departments) ->
+			@departments = departments
+			@parent_deps = []
+			@child_deps = {}
+
+			for dep in departments
+				if dep.parent_id
+					if not @child_deps[dep.parent_id]
+						@child_deps[dep.parent_id] = []
+
+					@child_deps[dep.parent_id].push(dep)
+
+				else
+					@parent_deps.push(dep)
 
 		###*
 		* Get the move dep list for use in the delete/move dlg
