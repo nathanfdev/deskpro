@@ -11,7 +11,13 @@ $collection->add('adm', new Route(
 	array()
 ));
 
-$collection->add('adm_tpl_home', new Route(
+$collection->add('adm_tpl_loadmulti', new Route(
+	'/load-view/multi',
+	array('_controller' => 'AdminInterfaceBundle:Interface:multiLoadView'),
+	array()
+));
+
+$collection->add('adm_tpl_load', new Route(
 	'/load-view/{view_name}',
 	array('_controller' => 'AdminInterfaceBundle:Interface:loadView'),
 	array('view_name' => '.+')

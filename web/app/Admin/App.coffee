@@ -165,6 +165,41 @@ define [
 			$stateProvider.state(id, opts)
 	])
 
+	####################################################################################################################
+	# Preload Nav Templates
+	####################################################################################################################
+
+	Admin_App.run(['$http', '$templateCache', ($http, $templateCache) ->
+		templates = [
+			'Index/app-nav-setup.html',
+			'Index/app-nav-agents.html',
+			'Index/app-nav-tickets.html',
+			'Index/app-nav-crm.html',
+			'Index/app-nav-portal.html',
+			'Index/app-nav-chat.html',
+			'Index/app-nav-twitter.html',
+			'Index/app-nav-apps.html',
+			'Index/app-nav-server.html',
+		]
+
+		qs = []
+		for t in templates
+			qs.push('views[]=' + encodeURIComponent(t))
+
+		qs = qs.join('&')
+
+		$http({
+			method: 'GET',
+			url: DP_BASE_ADMIN_URL+'/load-view/multi?' + qs
+		}).success( (data) ->
+			for tpl in data
+				id = DP_BASE_ADMIN_URL+'/load-view/'+ tpl.id
+				$templateCache.put(id, tpl.source)
+		)
+
+		window.TC = $templateCache
+	])
+
 	if window.parent?.DP_FRAME_OVERLAY_admin
 		window.parent?.DP_FRAME_OVERLAY_admin.callLoaded();
 

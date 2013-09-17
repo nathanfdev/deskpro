@@ -157,6 +157,32 @@
         return _results;
       }
     ]);
+    Admin_App.run([
+      '$http', '$templateCache', function($http, $templateCache) {
+        var qs, t, templates, _i, _len;
+        templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html'];
+        qs = [];
+        for (_i = 0, _len = templates.length; _i < _len; _i++) {
+          t = templates[_i];
+          qs.push('views[]=' + encodeURIComponent(t));
+        }
+        qs = qs.join('&');
+        $http({
+          method: 'GET',
+          url: DP_BASE_ADMIN_URL + '/load-view/multi?' + qs
+        }).success(function(data) {
+          var id, tpl, _j, _len1, _results;
+          _results = [];
+          for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+            tpl = data[_j];
+            id = DP_BASE_ADMIN_URL + '/load-view/' + tpl.id;
+            _results.push($templateCache.put(id, tpl.source));
+          }
+          return _results;
+        });
+        return window.TC = $templateCache;
+      }
+    ]);
     if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {
       if ((_ref1 = window.parent) != null) {
         _ref1.DP_FRAME_OVERLAY_admin.callLoaded();

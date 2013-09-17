@@ -37,10 +37,6 @@ class InterfaceController extends AbstractController
 {
 	public function loadViewAction($view_name)
 	{
-		$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
-		$view_name = str_replace('/', ':', $view_name);
-		$view_name = str_replace('.html', '.html.twig', $view_name);
-
 		$load_data = null;
 
 		// Load data from a route at the same time
@@ -69,11 +65,44 @@ class InterfaceController extends AbstractController
 			}
 		}
 
-		$rendered = $this->renderView("AdminInterfaceBundle:$view_name");
+		$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
+		$view_name = str_replace('/', ':', $view_name);
+		$view_name = str_replace('.html', '.html.twig', $view_name);
+
+		$rendered = null;
+		if ($this->tpl->exists("AdminInterfaceBundle:$view_name")) {
+			$rendered = $this->renderView("AdminInterfaceBundle:$view_name");
+		}
+
 		if ($load_data) {
 			$rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
 		}
 
 		return $this->createResponse($rendered);
+	}
+
+	public function multiLoadViewAction()
+	{
+		$views = array();
+
+		foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
+			$id = $view_name;
+			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
+			$view_name = str_replace('/', ':', $view_name);
+			$view_name = str_replace('.html', '.html.twig', $view_name);
+
+			$rendered = null;
+			if ($this->tpl->exists("AdminInterfaceBundle:$view_name")) {
+				$rendered = $this->renderView("AdminInterfaceBundle:$view_name");
+			}
+
+			$views[] = array(
+				'id'       => $id,
+				'template' => "AdminInterfaceBundle:$view_name",
+				'source'   => $rendered
+			);
+		}
+
+		return $this->createJsonResponse($views);
 	}
 }
