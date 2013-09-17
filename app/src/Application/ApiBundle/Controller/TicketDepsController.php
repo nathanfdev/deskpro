@@ -124,6 +124,15 @@ class TicketDepsController extends AbstractController
 		return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
 	}
 
+	public function saveDisplayOrderAction()
+	{
+		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+		$editor = new TicketDepartmentEditor($this->em, null);
+		$editor->updateDisplayOrders($display_orders);
+
+		return $this->createSuccessResponse();
+	}
+
 	/**
 	 * @param $id
 	 * @return TicketDepartmentEditor

@@ -69,7 +69,7 @@ class TicketDepartmentEditor
 	 * @param $em
 	 * @param $dep
 	 */
-	public function __construct(EntityManager $em, Department $dep)
+	public function __construct(EntityManager $em, Department $dep = null)
 	{
 		$this->em  = $em;
 		$this->db  = $em->getConnection();
@@ -248,5 +248,18 @@ class TicketDepartmentEditor
 	public function getDepartment()
 	{
 		return $this->dep;
+	}
+
+
+	/**
+	 * @param array $orders
+	 */
+	public function updateDisplayOrders($orders)
+	{
+		$x = 10;
+		foreach ($orders as $dep_id) {
+			$this->db->update('departments', array('display_order' => $x), array('id' => $dep_id));
+			$x += 10;
+		}
 	}
 }

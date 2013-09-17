@@ -2219,6 +2219,12 @@ $collection->add('api_ticket_deps', new Route(
 	array('_method' => 'GET')
 ));
 
+$collection->add('api_ticket_deps_order', new Route(
+	'/ticket_deps/display_order',
+	array('_controller' => 'ApiBundle:TicketDeps:saveDisplayOrder'),
+	array('_method' => 'POST')
+));
+
 $collection->add('api_ticket_deps_get', new Route(
 	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:get'),
