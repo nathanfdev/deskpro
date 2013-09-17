@@ -39,8 +39,8 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 				delete @data[k]
 				exist_pos = @order.indexOf(k)
 				@order.splice(exist_pos, 1)
+				@notifyListeners('changed')
 
-			@notifyListeners('changed')
 			return null
 
 		has: (k) ->

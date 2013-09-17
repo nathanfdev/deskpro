@@ -42,6 +42,9 @@
         if (this.DEPS.indexOf('$scope') === -1) {
           this.DEPS.push('$scope');
         }
+        if (this.DEPS.indexOf('$modal') === -1) {
+          this.DEPS.push('$modal');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);
@@ -78,8 +81,12 @@
           this.$scope[this.constructor.CTRL_AS] = this;
         }
         this._managed_listeners = [];
-        this.$scope.$on('$destroy', function() {
+        this.$scope.$on('$destroy', function(ev) {
           var info, _k, _len2, _ref;
+          return;
+          if (ev.targetScope.$id !== _this.$scope.$id) {
+            return;
+          }
           if (!_this._managed_listeners.length) {
             return;
           }
@@ -116,7 +123,11 @@
           } catch (_error) {
             e = _error;
             return window.setTimeout(function() {
-              return _this.ngApply();
+              try {
+                return _this.ngApply();
+              } catch (_error) {
+                e = _error;
+              }
             }, 100);
           }
         }
@@ -173,6 +184,35 @@
 
       Admin_Ctrl_Base.prototype.getTemplatePath = function(path) {
         return DP_BASE_ADMIN_URL + '/load-view/' + path;
+      };
+
+      /**
+      		* Show an alert
+      		*
+        	* @param {String} message The message to show
+        	* @param {String} title   The title to show
+      		* @return {Object}
+      */
+
+
+      Admin_Ctrl_Base.prototype.showAlert = function(message, title) {
+        var inst;
+        if (title == null) {
+          title = 'Alert';
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Index/modal-alert.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.title = title;
+              $scope.message = message;
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst;
       };
 
       return Admin_Ctrl_Base;

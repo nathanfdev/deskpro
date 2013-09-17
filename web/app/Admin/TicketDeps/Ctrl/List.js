@@ -17,7 +17,7 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em'];
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
@@ -27,6 +27,83 @@
         });
         return this.DepartmentData.loadDepList().then(function(departments) {
           return _this.departments = departments.values();
+        });
+      };
+
+      /**
+      		* Get the move dep list for use in the delete/move dlg
+        	* @return {Array}
+      */
+
+
+      Admin_TicketDeps_Ctrl_List.prototype.getMoveDepList = function(for_dep) {
+        var dep, dep_move_list, _i, _len, _ref1;
+        dep_move_list = [];
+        _ref1 = this.departments;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          dep = _ref1[_i];
+          if (for_dep.id !== dep.id) {
+            if (!dep._child_ids) {
+              dep_move_list.push(dep);
+            }
+          }
+        }
+        return dep_move_list;
+      };
+
+      /**
+      		# Show the delete dlg
+      */
+
+
+      Admin_TicketDeps_Ctrl_List.prototype.startDelete = function(for_dep) {
+        var inst,
+          _this = this;
+        if (for_dep._child_ids) {
+          this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
+          return;
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketDeps/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
+              $scope.selected = {
+                move_to_id: "0"
+              };
+              $scope.move_deps_list = move_deps_list;
+              $scope.confirm = function() {
+                console.log($scope.selected.move_to_id);
+                return $modalInstance.close($scope.selected.move_to_id);
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ],
+          resolve: {
+            move_deps_list: function() {
+              return _this.getMoveDepList(for_dep);
+            }
+          }
+        });
+        return inst.result.then(function(move_to) {
+          return _this.deleteDepartment(for_dep, move_to);
+        });
+      };
+
+      /**
+      		# Actually do th edelete
+      */
+
+
+      Admin_TicketDeps_Ctrl_List.prototype.deleteDepartment = function(for_dep, move_to) {
+        var _this = this;
+        return this.Api.sendDelete('/ticket_deps/' + for_dep.id, {
+          move_to: move_to
+        }).success(function() {
+          _this.DepartmentData.deps.remove(for_dep.id);
+          _this.em.removeById('department', for_dep.id);
+          return _this.ngApply();
         });
       };
 

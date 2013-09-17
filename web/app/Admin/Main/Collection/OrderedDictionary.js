@@ -49,8 +49,8 @@
           delete this.data[k];
           exist_pos = this.order.indexOf(k);
           this.order.splice(exist_pos, 1);
+          this.notifyListeners('changed');
         }
-        this.notifyListeners('changed');
         return null;
       };
 

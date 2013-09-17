@@ -28,6 +28,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.push('Api')
 			if @DEPS.indexOf('$scope') == -1
 				@DEPS.push('$scope')
+			if @DEPS.indexOf('$modal') == -1
+				@DEPS.push('$modal')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
@@ -59,7 +61,10 @@ define ['angular', 'Admin/App'], (angular) ->
 				@$scope[@constructor.CTRL_AS] = @
 
 			@_managed_listeners = []
-			@$scope.$on('$destroy', =>
+			@$scope.$on('$destroy', (ev) =>
+				return
+				return if ev.targetScope.$id != @$scope.$id
+
 				if not @_managed_listeners.length then return
 				for info in @_managed_listeners
 					info.object.removeListener(info.event_name, info.fn)
@@ -88,7 +93,10 @@ define ['angular', 'Admin/App'], (angular) ->
 					@$scope.$apply(fn);
 				catch e
 					window.setTimeout(=>
-						@ngApply()
+						try
+							@ngApply()
+						catch e
+							return
 					, 100)
 
 
@@ -130,3 +138,25 @@ define ['angular', 'Admin/App'], (angular) ->
 		###
 		getTemplatePath: (path) ->
 			return DP_BASE_ADMIN_URL+'/load-view/' + path
+
+
+		###*
+		* Show an alert
+		*
+    	* @param {String} message The message to show
+    	* @param {String} title   The title to show
+		* @return {Object}
+		###
+		showAlert: (message, title = 'Alert') ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Index/modal-alert.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.title   = title
+					$scope.message = message
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+				]
+			});
+
+			return inst
