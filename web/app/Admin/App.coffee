@@ -165,4 +165,7 @@ define [
 			$stateProvider.state(id, opts)
 	])
 
+	if window.parent?.DP_FRAME_OVERLAY_admin
+		window.parent?.DP_FRAME_OVERLAY_admin.callLoaded();
+
 	return Admin_App

@@ -11,6 +11,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 		this.frameWrap = null;
 		this.frame = null;
+		this.callback = null;
 
 		this.el.on('click', function(ev) {
 			Orb.cancelEvent(ev);
@@ -38,11 +39,13 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		this.frameWrap.appendTo('body');
 	},
 
-	open: function(with_hash) {
+	open: function(with_hash, callback) {
 		var self = this;
 		if (!this.frame) {
 			this.initFrame(with_hash);
 		}
+
+		this.callback = callback;
 
 		var url = this.frame.attr('src');
 		if (url.indexOf('#') !== -1) {
@@ -76,6 +79,12 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 				iWin.location.hash = '#' + localHash;
 			} catch (e) {}
 		});
+	},
+
+	callLoaded: function() {
+		if (this.callback) {
+			this.callback();
+		}
 	},
 
 	setHash: function (hash) {

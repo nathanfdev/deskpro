@@ -525,9 +525,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('body').addClass('dp-is-retina');
 		}
 
-		$('#dp_loading').remove();
-		$('#page_loading').remove();
-		$('#loading_css').remove();
+		if (!loadAdmin) {
+			$('#dp_loading').remove();
+			$('#page_loading').remove();
+			$('#loading_css').remove();
+		}
 
 		if (!window.DeskPRO_FragmentRouter) {
 			DP.console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
@@ -889,7 +891,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (loadAdmin) {
 			if ($('#admin_interface_trigger').data('handler')) {
 				console.log("Loading admin: " + loadAdmin);
-				$('#admin_interface_trigger').data('handler').open(loadAdmin);
+				$('#admin_interface_trigger').data('handler').open(loadAdmin, function() {
+					$('#dp_loading').remove();
+					$('#page_loading').remove();
+					$('#loading_css').remove();
+				});
 			}
 		} else {
 			if (loadNewTicket) {
