@@ -368,8 +368,12 @@ header.pane-header {
 	h3 {
 		padding: 15px;
 		margin: 0;
-		//font-size: 120%;
 		font-size: 16px;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		text-wrap: none;
 	}
 }
 
@@ -426,6 +430,7 @@ article.pane-content {
 
 	> li {
 		list-style-type: none;
+		background-color: #F5F7FA;
 	}
 
 	> li.title {
@@ -446,10 +451,11 @@ article.pane-content {
 		}
 
 		> a {
+			position: relative;
 			display: block;
 			text-decoration: none;
 			color: @text-color;
-			padding: 9px 15px;
+			padding: 9px 13px 9px 18px;
 			line-height: 100%;
 
 			border-bottom: 1px solid #ccc;
@@ -460,6 +466,11 @@ article.pane-content {
 			}
 			h4 {
 				font-size: @font-size-base;
+				max-width: 70%;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				text-wrap: none;
+				overflow: hidden;
 			}
 		}
 
@@ -474,6 +485,23 @@ article.pane-content {
 		&.active > a .sub-item-indent > i {
 			color: #3476BE;
 		}
+	}
+
+	a:hover > .drag-handle {
+		color: #888;
+	}
+
+	a:hover > h4 > .title-text {
+		text-decoration: underline;
+	}
+
+	.drag-handle {
+		position: absolute;
+		left: 2px;
+		top: 10px;
+		font-size: 11px;
+		color: #ccc;
+		cursor: move;
 	}
 }
 

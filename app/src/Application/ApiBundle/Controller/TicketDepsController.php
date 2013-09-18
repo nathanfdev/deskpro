@@ -140,7 +140,7 @@ class TicketDepsController extends AbstractController
 			);
 		}
 
-		return $this->createApiResponse(array('id' => $editor->getDepartment()->id, 'success' => true));
+		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
 	}
 
 

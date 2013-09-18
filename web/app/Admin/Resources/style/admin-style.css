@@ -7279,9 +7279,14 @@ header.pane-header {
 }
 
 header.pane-header h3 {
+  width: 100%;
   padding: 15px;
   margin: 0;
+  overflow: hidden;
   font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-wrap: none;
 }
 
 header.pane-controls {
@@ -7374,6 +7379,7 @@ article.pane-content.pad-top {
 
 .dp-item-list > li {
   list-style-type: none;
+  background-color: #F5F7FA;
 }
 
 .dp-item-list > li.title {
@@ -7398,8 +7404,9 @@ article.pane-content.pad-top {
 
 .dp-item-list > li > a,
 .dp-item-list > .dp-itm > a {
+  position: relative;
   display: block;
-  padding: 9px 15px;
+  padding: 9px 13px 9px 18px;
   line-height: 100%;
   color: #333333;
   text-decoration: none;
@@ -7418,7 +7425,12 @@ article.pane-content.pad-top {
 
 .dp-item-list > li > a h4,
 .dp-item-list > .dp-itm > a h4 {
+  max-width: 70%;
+  overflow: hidden;
   font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-wrap: none;
 }
 
 .dp-item-list > li .sub-item-indent,
@@ -7435,6 +7447,23 @@ article.pane-content.pad-top {
 .dp-item-list > li.active > a .sub-item-indent > i,
 .dp-item-list > .dp-itm.active > a .sub-item-indent > i {
   color: #3476BE;
+}
+
+.dp-item-list a:hover > .drag-handle {
+  color: #888;
+}
+
+.dp-item-list a:hover > h4 > .title-text {
+  text-decoration: underline;
+}
+
+.dp-item-list .drag-handle {
+  position: absolute;
+  top: 10px;
+  left: 2px;
+  font-size: 11px;
+  color: #ccc;
+  cursor: move;
 }
 
 nav.dp-main-tabs {
