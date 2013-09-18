@@ -21,12 +21,12 @@
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
-        this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
-          _this.initDepList(_this.DepartmentData.deps.values());
-          return _this.ngApply();
-        });
         this.DepartmentData.loadDepList().then(function(departments) {
-          return _this.initDepList(departments.values());
+          _this.initDepList(departments.values());
+          return _this.addManagedListener(_this.DepartmentData.deps, 'changed', function() {
+            _this.initDepList(_this.DepartmentData.deps.values());
+            return _this.ngApply();
+          });
         });
         return this.sortedListOptions = {
           axis: 'y',

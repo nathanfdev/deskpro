@@ -5,13 +5,13 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state']
 
 		init: ->
-			@addManagedListener(@DepartmentData.deps, 'changed', =>
-				@initDepList(@DepartmentData.deps.values())
-				@ngApply()
-			)
-
 			@DepartmentData.loadDepList().then( (departments) =>
 				@initDepList(departments.values())
+
+				@addManagedListener(@DepartmentData.deps, 'changed', =>
+					@initDepList(@DepartmentData.deps.values())
+					@ngApply()
+				)
 			)
 
 			@sortedListOptions = {

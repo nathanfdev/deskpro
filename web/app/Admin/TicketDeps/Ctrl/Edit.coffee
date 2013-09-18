@@ -121,6 +121,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					@dep.id = result.id
 
 					model = @em.createEntity('department', 'id', @dep.getData())
+
+					if not model.parent_id or model.parent_id == "0"
+						model.parent_id = null
+
 					@DepartmentData.addToList(model)
 					@initDeplistData(@DepartmentData.deps)
 					@$state.go('tickets.ticket_deps')

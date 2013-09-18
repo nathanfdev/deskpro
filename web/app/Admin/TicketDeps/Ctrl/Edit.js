@@ -169,6 +169,9 @@
           promise.success(function(result) {
             _this.dep.id = result.id;
             model = _this.em.createEntity('department', 'id', _this.dep.getData());
+            if (!model.parent_id || model.parent_id === "0") {
+              model.parent_id = null;
+            }
             _this.DepartmentData.addToList(model);
             _this.initDeplistData(_this.DepartmentData.deps);
             return _this.$state.go('tickets.ticket_deps');
