@@ -6,11 +6,12 @@
 	</div>
 	<div class="modal-body">
 		<p>
-			Deleting a department cannot be undone. Along with a department
+			Are you sure you want to delete this department? Deleting a department cannot be undone.
 		</p>
 		<p>
 			Any tickets that are currently in this department will be moved to:
 		</p>
+		<p style="margin-bottom: 0;">
 			<select
 				ui-select2
 				ng-model="selected.move_to_id"
@@ -18,6 +19,7 @@
 			>
 				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in move_deps_list">{{ ng_var('dep._full_title') }}</option>
 			</select>
+		</p>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-success" ng-click="dismiss()"><i class="icon-undo"></i> Cancel</button>

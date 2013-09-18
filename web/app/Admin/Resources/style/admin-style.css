@@ -6899,6 +6899,7 @@ a:focus {
 }
 
 .modal-footer {
+  margin-top: 0;
   text-align: center;
 }
 
