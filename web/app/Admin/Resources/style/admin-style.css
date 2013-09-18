@@ -7145,6 +7145,18 @@ a:focus {
   clear: both;
 }
 
+.dp-view-loading {
+  margin-top: 100px;
+}
+
+.dp-view-loading h1 {
+  height: 32px;
+  overflow: hidden;
+  line-height: 1000px;
+  color: transparent;
+  background: url("../../../../images/spinners/loading-big-circle.gif") no-repeat 50% 50%;
+}
+
 header.pane-header {
   padding: 0;
   margin: 0;

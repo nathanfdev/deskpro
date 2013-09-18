@@ -1,8 +1,9 @@
 define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
-		@CTRL_ID = 'Admin_TicketDeps_Ctrl_Edit'
-		@CTRL_AS = 'TicketDepsEdit'
-		@DEPS    = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state']
+		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
+		@CTRL_AS   = 'TicketDepsEdit'
+		@CTRL_TYPE = 'page'
+		@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
@@ -10,8 +11,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@ngApply()
 			)
 
-			@loadDepartment()
-
+		initialLoad: ->
+			return @loadDepartment()
 
 		###*
 		# Load (or reload) the page values
@@ -36,7 +37,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					])
 			]
 
-			@$q.all(waiting).then( (d) =>
+			promise = @$q.all(waiting).then( (d) =>
 				[departments, data_results] = d
 
 				if @$stateParams.id
@@ -57,6 +58,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				)
 			)
 
+			return promise
 
 		###*
 		# Init data from loadDepartment, getting it ready for use

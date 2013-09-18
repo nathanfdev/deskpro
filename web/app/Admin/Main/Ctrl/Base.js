@@ -23,6 +23,8 @@
 
       Admin_Ctrl_Base.CTRL_ID = 'Admin_Main_Ctrl_Base';
 
+      Admin_Ctrl_Base.CTRL_TYPE = null;
+
       Admin_Ctrl_Base.DEPS = [];
 
       /**
@@ -57,7 +59,7 @@
 
 
       function Admin_Ctrl_Base() {
-        var arg, arg_name, args, i, me, _i, _j, _len, _len1,
+        var arg, arg_name, args, i, me, ret, _i, _j, _len, _len1,
           _this = this;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         if (this.constructor.DEPS.length !== args.length) {
@@ -100,7 +102,48 @@
         this.has_init = false;
         this.init();
         this.has_init = true;
+        ret = this.initialLoad();
+        if (ret) {
+          ret.then(function() {
+            return _this.disableViewLoadingState();
+          });
+        } else {
+          this.disableViewLoadingState();
+        }
       }
+
+      /**
+      	* Show this page as "loading"
+      */
+
+
+      Admin_Ctrl_Base.prototype.enableViewLoadingState = function() {
+        if (!this.constructor.CTRL_TYPE) {
+          this.AppState.setLoadingState('dp_section_list', true);
+          return this.AppState.setLoadingState('dp_section_page', true);
+        } else if (this.constructor.CTRL_TYPE === 'list') {
+          return this.AppState.setLoadingState('dp_section_list', true);
+        } else if (this.constructor.CTRL_TYPE === 'page') {
+          return this.AppState.setLoadingState('dp_section_page', true);
+        }
+      };
+
+      /**
+      	* Stop the loading indicator in this pane
+      */
+
+
+      Admin_Ctrl_Base.prototype.disableViewLoadingState = function() {
+        console.log(this.AppState);
+        if (!this.constructor.CTRL_TYPE) {
+          this.AppState.setLoadingState('dp_section_list', false);
+          return this.AppState.setLoadingState('dp_section_page', false);
+        } else if (this.constructor.CTRL_TYPE === 'list') {
+          return this.AppState.setLoadingState('dp_section_list', false);
+        } else if (this.constructor.CTRL_TYPE === 'page') {
+          return this.AppState.setLoadingState('dp_section_page', false);
+        }
+      };
 
       /**
       		* Controllers can implement this init() method to add custom init functionality.
@@ -108,6 +151,13 @@
 
 
       Admin_Ctrl_Base.prototype.init = function() {};
+
+      /**
+      		* Controllers can implement this initialLoad() method to load the data needed for a view
+      */
+
+
+      Admin_Ctrl_Base.prototype.initialLoad = function() {};
 
       /**
       		* Calls $apply on scope only if digest isn't already being processed

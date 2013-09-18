@@ -13,9 +13,10 @@ define ['angular', 'Admin/App'], (angular) ->
     * loader.
 	###
 	class Admin_Ctrl_Base
-		@CTRL_AS = null
-		@CTRL_ID = 'Admin_Main_Ctrl_Base'
-		@DEPS    = []
+		@CTRL_AS   = null
+		@CTRL_ID   = 'Admin_Main_Ctrl_Base'
+		@CTRL_TYPE = null
+		@DEPS      = []
 
 		###*
 		* Exports this controller to the Admin_App angular module
@@ -76,11 +77,53 @@ define ['angular', 'Admin/App'], (angular) ->
 			@init()
 			@has_init = true
 
+			ret = @initialLoad()
+			if ret
+				ret.then(=>
+					@disableViewLoadingState()
+				)
+			else
+				@disableViewLoadingState()
+
+
+		###*
+  	* Show this page as "loading"
+  	###
+		enableViewLoadingState: ->
+			if not @constructor.CTRL_TYPE
+				@AppState.setLoadingState('dp_section_list', true)
+				@AppState.setLoadingState('dp_section_page', true)
+			else if @constructor.CTRL_TYPE == 'list'
+				@AppState.setLoadingState('dp_section_list', true)
+			else if @constructor.CTRL_TYPE == 'page'
+				@AppState.setLoadingState('dp_section_page', true)
+
+
+		###*
+  	* Stop the loading indicator in this pane
+  	###
+		disableViewLoadingState: ->
+			console.log(@AppState)
+			if not @constructor.CTRL_TYPE
+				@AppState.setLoadingState('dp_section_list', false)
+				@AppState.setLoadingState('dp_section_page', false)
+			else if @constructor.CTRL_TYPE == 'list'
+				@AppState.setLoadingState('dp_section_list', false)
+			else if @constructor.CTRL_TYPE == 'page'
+				@AppState.setLoadingState('dp_section_page', false)
+
 
 		###*
 		* Controllers can implement this init() method to add custom init functionality.
 		###
 		init: ->
+			return
+
+
+		###*
+		* Controllers can implement this initialLoad() method to load the data needed for a view
+		###
+		initialLoad: ->
 			return
 
 

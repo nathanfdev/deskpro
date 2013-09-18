@@ -1,12 +1,14 @@
-define ->
+define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 	class AppState
 		constructor: (@$rootScope, @$state) ->
+			EventsMixin(this)
 			@vars = {}
 			@activeState = null
 			@activeStateApp = null
 			@activeStateNav = null
 			@activeStateList = null
 			@sectionState = null
+			@loadingState = {}
 
 			@$rootScope.$on('$viewContentLoaded', () =>
 				if @$state.current
@@ -47,8 +49,14 @@ define ->
 					window.parent?.DP_FRAME_OVERLAY_admin.setHash((window.location.hash+'').substring(1))
 			)
 
+		setLoadingState: (id, val) ->
+			if @loadingState[id] != val
+				@loadingState[id] = val
+				@notifyListeners('statechange', [id, val])
+				@notifyListeners('statechange_' + id, [val])
+
 		isStateActive: (stateId) ->
-			return false if not stateId or not @activeState
+			if not stateId or not @activeState then return false
 
 			stateIdRegex = '^'
 			stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")

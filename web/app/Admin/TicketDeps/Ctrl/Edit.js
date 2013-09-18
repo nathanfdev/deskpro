@@ -17,14 +17,19 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'TicketDepsEdit';
 
+      Admin_TicketDeps_Ctrl_Edit.CTRL_TYPE = 'page';
+
       Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
-        this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
+        return this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
           _this.initDeplistData(_this.DepartmentData.deps);
           return _this.ngApply();
         });
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.initialLoad = function() {
         return this.loadDepartment();
       };
 
@@ -34,10 +39,10 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.loadDepartment = function() {
-        var waiting,
+        var promise, waiting,
           _this = this;
         waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
-        return this.$q.all(waiting).then(function(d) {
+        promise = this.$q.all(waiting).then(function(d) {
           var data_results, dep, dep_data, departments;
           departments = d[0], data_results = d[1];
           if (_this.$stateParams.id) {
@@ -62,6 +67,7 @@
             agents: dep_data.perms_agent_ids
           }, data_results.data.api_agents_list.agents, data_results.data.api_agentgroups_list.agentgroups, data_results.data.api_usergroups_list.usergroups);
         });
+        return promise;
       };
 
       /**

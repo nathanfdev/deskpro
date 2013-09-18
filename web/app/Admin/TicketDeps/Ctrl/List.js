@@ -19,6 +19,8 @@
 
       Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state'];
 
+      Admin_TicketDeps_Ctrl_List.CTRL_TYPE = 'list';
+
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.DepartmentData.loadDepList().then(function(departments) {
