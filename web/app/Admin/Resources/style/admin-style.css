@@ -6781,6 +6781,115 @@ a:focus {
   outline: none;
 }
 
+.btn-default {
+  border: 1px solid #e6e6e6;
+}
+
+.btn-default:hover {
+  border: 1px solid #bfbfbf;
+}
+
+.btn-default:active,
+.btn-default.active {
+  border: 1px solid #adadad;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn-default:hover {
+  color: #333333;
+}
+
+.btn-default {
+  border: 1px solid #e6e6e6;
+}
+
+.btn-default:hover {
+  border: 1px solid #bfbfbf;
+}
+
+.btn-default:active,
+.btn-default.active {
+  border: 1px solid #adadad;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+  border: 1px solid #3071a9;
+}
+
+.btn-primary:hover {
+  border: 1px solid #1f496e;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+  border: 1px solid #173752;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn-success {
+  border: 1px solid #449d44;
+}
+
+.btn-success:hover {
+  border: 1px solid #2d672d;
+}
+
+.btn-success:active,
+.btn-success.active {
+  border: 1px solid #224f22;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn-info {
+  border: 1px solid #31b0d5;
+}
+
+.btn-info:hover {
+  border: 1px solid #1f7e9a;
+}
+
+.btn-info:active,
+.btn-info.active {
+  border: 1px solid #19667d;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn-warning {
+  border: 1px solid #ec971f;
+}
+
+.btn-warning:hover {
+  border: 1px solid #b06d0f;
+}
+
+.btn-warning:active,
+.btn-warning.active {
+  border: 1px solid #8f590c;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn-danger {
+  border: 1px solid #c9302c;
+}
+
+.btn-danger:hover {
+  border: 1px solid #8b211e;
+}
+
+.btn-danger:active,
+.btn-danger.active {
+  border: 1px solid #6d1a18;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
