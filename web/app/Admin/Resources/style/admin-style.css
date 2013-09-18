@@ -6785,8 +6785,8 @@ a:focus {
 }
 
 .dp-app-header .user-profile {
-  width: 236px;
-  height: 40px;
+  width: 234px;
+  height: 41px;
   padding: 3px 5px 3px 3px;
   margin: 4px 0 0 6px;
   overflow: hidden;
@@ -6800,8 +6800,8 @@ a:focus {
 }
 
 .dp-app-header .user-profile .gravatar {
-  width: 31px;
-  height: 31px;
+  width: 33px;
+  height: 33px;
   margin-right: 4px;
   overflow: hidden;
   border: 1px solid #103148;
@@ -6821,13 +6821,15 @@ a:focus {
 
 .dp-app-header .user-profile ul {
   width: 200px;
-  margin-left: 2px;
+  padding: 0;
+  margin: 1px 0 0 0;
   line-height: 15px;
 }
 
 .dp-app-header .user-profile ul li {
   display: inline-block;
-  margin-right: 6px;
+  margin: 0;
+  margin-right: 7px;
   font-size: 11px;
   line-height: 100%;
   color: #ffffff;
