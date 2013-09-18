@@ -16,7 +16,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@$scope.loading.dp_section_list = val
 			)
 
-			@$rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) =>
+			@$rootScope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
+				if ev.defaultPrevented then return
+
 				id_segs = toState.name.split('.')
 				if id_segs.length < 2 then return
 

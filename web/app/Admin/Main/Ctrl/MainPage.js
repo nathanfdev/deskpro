@@ -29,8 +29,11 @@
         this.AppState.addListener('statechange_dp_section_list', function(val) {
           return _this.$scope.loading.dp_section_list = val;
         });
-        return this.$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+        return this.$rootScope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
           var from_group, from_list, from_page, id_segs, to_group, to_list, to_page;
+          if (ev.defaultPrevented) {
+            return;
+          }
           id_segs = toState.name.split('.');
           if (id_segs.length < 2) {
             return;

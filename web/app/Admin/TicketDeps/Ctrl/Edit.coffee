@@ -14,6 +14,15 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		initialLoad: ->
 			return @loadDepartment()
 
+		checkDirtyState: ->
+			if @dep.getChangedFields().length
+				return true
+
+			if not angular.equals(@depPerms, @getPermsData())
+				return true
+
+			return false
+
 		###*
 		# Load (or reload) the page values
 		###
@@ -83,6 +92,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					if perm.agent_id == ag.id
 						ag[perm.perm_name] = true
 
+			@depPerms = @getPermsData()
+
 		initDeplistData: (departments) ->
 			@departments = departments.values()
 
@@ -145,6 +156,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					else
 						@$state.go('tickets.ticket_deps')
 				)
+
+			@dep.setCheckpoint()
+			@depPerms = @getPermsData()
 
 			return promise
 

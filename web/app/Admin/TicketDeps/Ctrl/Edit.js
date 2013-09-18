@@ -33,6 +33,16 @@
         return this.loadDepartment();
       };
 
+      Admin_TicketDeps_Ctrl_Edit.prototype.checkDirtyState = function() {
+        if (this.dep.getChangedFields().length) {
+          return true;
+        }
+        if (!angular.equals(this.depPerms, this.getPermsData())) {
+          return true;
+        }
+        return false;
+      };
+
       /**
       		# Load (or reload) the page values
       */
@@ -76,7 +86,7 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
-        var ag, perm, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
+        var ag, perm, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
         this.agentgroups = agentgroups;
         _ref1 = this.agentgroups;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -103,25 +113,17 @@
         }
         this.agents = agents;
         _ref5 = this.agents;
-        _results = [];
         for (_m = 0, _len4 = _ref5.length; _m < _len4; _m++) {
           ag = _ref5[_m];
-          _results.push((function() {
-            var _len5, _n, _ref6, _results1;
-            _ref6 = department_perms.agents;
-            _results1 = [];
-            for (_n = 0, _len5 = _ref6.length; _n < _len5; _n++) {
-              perm = _ref6[_n];
-              if (perm.agent_id === ag.id) {
-                _results1.push(ag[perm.perm_name] = true);
-              } else {
-                _results1.push(void 0);
-              }
+          _ref6 = department_perms.agents;
+          for (_n = 0, _len5 = _ref6.length; _n < _len5; _n++) {
+            perm = _ref6[_n];
+            if (perm.agent_id === ag.id) {
+              ag[perm.perm_name] = true;
             }
-            return _results1;
-          })());
+          }
         }
-        return _results;
+        return this.depPerms = this.getPermsData();
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initDeplistData = function(departments) {
@@ -197,6 +199,8 @@
             }
           });
         }
+        this.dep.setCheckpoint();
+        this.depPerms = this.getPermsData();
         return promise;
       };
 

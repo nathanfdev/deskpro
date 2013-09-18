@@ -75,6 +75,18 @@ define ['angular', 'Admin/App'], (angular) ->
 				@_managed_listeners = null
 			)
 
+			@$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
+					if ev.defaultPrevented then return
+
+					if not @_state_cont_go and @checkDirtyState()
+						@AppState.setLoadingState('dp_section_page', false)
+						ev.preventDefault();
+
+						@_state_cont_state = toState.name
+						@_state_cont_state_params = toParams
+						@_showStateConfirmLeave()
+			)
+
 			@has_init = false
 			@init()
 			@has_init = true
@@ -87,6 +99,16 @@ define ['angular', 'Admin/App'], (angular) ->
 			else
 				@disableViewLoadingState()
 
+		###*
+  	* A controller may override this method.
+  	*
+  	* Return true if the current state is dirty (unsaved). The user
+  	* will be asked to confirm leaving.
+  	*
+  	* @return {Boolean}
+  	###
+		checkDirtyState: ->
+			return false
 
 		###*
   	* Show this page as "loading"
@@ -183,6 +205,26 @@ define ['angular', 'Admin/App'], (angular) ->
 		getTemplatePath: (path) ->
 			return DP_BASE_ADMIN_URL+'/load-view/' + path
 
+
+		###*
+		* Show an alert
+		###
+		_showStateConfirmLeave: ->
+			parentCtrl = @
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Index/modal-confirm-leavetab.html'),
+				controller: ['$scope', '$modalInstance', '$state', ($scope, $modalInstance, $state) ->
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+
+					$scope.continue = ->
+						parentCtrl._state_cont_go = true
+						$modalInstance.dismiss();
+						$state.go(parentCtrl._state_cont_state, parentCtrl._state_cont_state_params)
+				]
+			});
+
+			return inst
 
 		###*
 		* Show an alert

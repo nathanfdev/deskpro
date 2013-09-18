@@ -50,7 +50,7 @@ define ['angular'], (angular) ->
 		###*
     	# Copy properties from another model
     	###
-		copyProperties: (model) ->
+		copyPropertiesFrom: (model) ->
 			@setData(mode.getData())
 
 
@@ -86,11 +86,15 @@ define ['angular'], (angular) ->
     	*
     	* @param {String} chk_id Optionally provide an ID to refer to the checkpoint later
 		###
-		setCheckpoint: (chk_id = null) ->
+		setCheckpoint: (chk_id = null, deep = false) ->
 			data = {}
 			for own key, value of @
 				if key.substr(0, 1) != '_'
-					data[key] = value
+					if value? and value._is_model
+						if deep
+							value.setCheckpoint(chk_id, true)
+					else
+						data[key] = value
 
 			@_data_checkpoints.push([chk_id, data])
 
@@ -115,7 +119,7 @@ define ['angular'], (angular) ->
     	*
     	* @param {String} chk_id Optionally provide an ID, else the latest checkpoint is returned
 		###
-		revertCheckpoint: (chk_id = null) ->
+		revertCheckpoint: (chk_id = null, deep = false) ->
 			if chk_id
 				for cp, i in @_data_checkpoints
 					if cp[0] == chk_id
@@ -131,22 +135,40 @@ define ['angular'], (angular) ->
 			@setCheckpoint()
 			@setData(data)
 
+			if deep
+				for own key, value of @
+					if key.substr(0,1) != '_'
+						if value? and value._is_model
+							value.revertCheckpoint(chk_id, true)
+
 
 		###*
     	* Revert to the first checkpoint (e.g., the initial data)
 		###
-		revertAllCheckpoints: ->
+		revertAllCheckpoints: (deep = false) ->
 			data = @_data_checkpoints.shift()
 			@clearCheckpoints()
 			@setData(data)
+
+			if deep
+				for own key, value of @
+					if key.substr(0,1) != '_'
+						if value? and value._is_model
+							value.revertAllCheckpoints(true)
 
 
 		###*
     	* Clears all checkpoints. The data set now is considered the initial data.
 		###
-		clearCheckpoints: ->
+		clearCheckpoints: (deep) ->
 			@_data_checkpoints = []
 			@setCheckpoint()
+
+			if deep
+				for own key, value of @
+					if key.substr(0,1) != '_'
+						if value? and value._is_model
+							value.clearCheckpoints(true)
 
 
 		###*
@@ -181,7 +203,7 @@ define ['angular'], (angular) ->
     	*
     	* @return {Array}
 		###
-		getChangedFields: (chk_id = null) ->
+		getChangedFields: (chk_id = null, deep = false) ->
 			changed = []
 
 			last_data = @getCheckpoint(chk_id)
@@ -189,7 +211,19 @@ define ['angular'], (angular) ->
 				throw new Error("No checkpoint to compare against")
 
 			for own key, value of @
-				if value != last_data[key]
-					changed.push(key)
+				if key.substr(0,1) != '_'
+					if value? and value._is_model
+						if deep
+							model_changed = value.getChangedFields(chk_id, true)
+							if model_changed.length
+								for subchange in model_changed
+									changed.push(key + '.' + subchange)
+					else
+						if value != last_data[key]
+							if key == 'id' or key.match(/_id$/)
+								if (parseInt(value)||0) != (parseInt(last_data[key])||0)
+									changed.push(key)
+							else
+								changed.push(key)
 
 			return changed

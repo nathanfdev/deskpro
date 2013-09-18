@@ -65,7 +65,7 @@
       */
 
 
-      Admin_Main_Model_Base.prototype.copyProperties = function(model) {
+      Admin_Main_Model_Base.prototype.copyPropertiesFrom = function(model) {
         return this.setData(mode.getData());
       };
 
@@ -113,17 +113,26 @@
       */
 
 
-      Admin_Main_Model_Base.prototype.setCheckpoint = function(chk_id) {
+      Admin_Main_Model_Base.prototype.setCheckpoint = function(chk_id, deep) {
         var data, key, value;
         if (chk_id == null) {
           chk_id = null;
+        }
+        if (deep == null) {
+          deep = false;
         }
         data = {};
         for (key in this) {
           if (!__hasProp.call(this, key)) continue;
           value = this[key];
           if (key.substr(0, 1) !== '_') {
-            data[key] = value;
+            if ((value != null) && value._is_model) {
+              if (deep) {
+                value.setCheckpoint(chk_id, true);
+              }
+            } else {
+              data[key] = value;
+            }
           }
         }
         return this._data_checkpoints.push([chk_id, data]);
@@ -162,10 +171,13 @@
       */
 
 
-      Admin_Main_Model_Base.prototype.revertCheckpoint = function(chk_id) {
-        var cp, data, i, _i, _len, _ref;
+      Admin_Main_Model_Base.prototype.revertCheckpoint = function(chk_id, deep) {
+        var cp, data, i, key, value, _i, _len, _ref, _results;
         if (chk_id == null) {
           chk_id = null;
+        }
+        if (deep == null) {
+          deep = false;
         }
         if (chk_id) {
           _ref = this._data_checkpoints;
@@ -184,7 +196,24 @@
           data = this._data_checkpoints.pop();
         }
         this.setCheckpoint();
-        return this.setData(data);
+        this.setData(data);
+        if (deep) {
+          _results = [];
+          for (key in this) {
+            if (!__hasProp.call(this, key)) continue;
+            value = this[key];
+            if (key.substr(0, 1) !== '_') {
+              if ((value != null) && value._is_model) {
+                _results.push(value.revertCheckpoint(chk_id, true));
+              } else {
+                _results.push(void 0);
+              }
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        }
       };
 
       /**
@@ -192,11 +221,31 @@
       */
 
 
-      Admin_Main_Model_Base.prototype.revertAllCheckpoints = function() {
-        var data;
+      Admin_Main_Model_Base.prototype.revertAllCheckpoints = function(deep) {
+        var data, key, value, _results;
+        if (deep == null) {
+          deep = false;
+        }
         data = this._data_checkpoints.shift();
         this.clearCheckpoints();
-        return this.setData(data);
+        this.setData(data);
+        if (deep) {
+          _results = [];
+          for (key in this) {
+            if (!__hasProp.call(this, key)) continue;
+            value = this[key];
+            if (key.substr(0, 1) !== '_') {
+              if ((value != null) && value._is_model) {
+                _results.push(value.revertAllCheckpoints(true));
+              } else {
+                _results.push(void 0);
+              }
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        }
       };
 
       /**
@@ -204,9 +253,27 @@
       */
 
 
-      Admin_Main_Model_Base.prototype.clearCheckpoints = function() {
+      Admin_Main_Model_Base.prototype.clearCheckpoints = function(deep) {
+        var key, value, _results;
         this._data_checkpoints = [];
-        return this.setCheckpoint();
+        this.setCheckpoint();
+        if (deep) {
+          _results = [];
+          for (key in this) {
+            if (!__hasProp.call(this, key)) continue;
+            value = this[key];
+            if (key.substr(0, 1) !== '_') {
+              if ((value != null) && value._is_model) {
+                _results.push(value.clearCheckpoints(true));
+              } else {
+                _results.push(void 0);
+              }
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        }
       };
 
       /**
@@ -255,10 +322,13 @@
       */
 
 
-      Admin_Main_Model_Base.prototype.getChangedFields = function(chk_id) {
-        var changed, key, last_data, value;
+      Admin_Main_Model_Base.prototype.getChangedFields = function(chk_id, deep) {
+        var changed, key, last_data, model_changed, subchange, value, _i, _len;
         if (chk_id == null) {
           chk_id = null;
+        }
+        if (deep == null) {
+          deep = false;
         }
         changed = [];
         last_data = this.getCheckpoint(chk_id);
@@ -268,8 +338,28 @@
         for (key in this) {
           if (!__hasProp.call(this, key)) continue;
           value = this[key];
-          if (value !== last_data[key]) {
-            changed.push(key);
+          if (key.substr(0, 1) !== '_') {
+            if ((value != null) && value._is_model) {
+              if (deep) {
+                model_changed = value.getChangedFields(chk_id, true);
+                if (model_changed.length) {
+                  for (_i = 0, _len = model_changed.length; _i < _len; _i++) {
+                    subchange = model_changed[_i];
+                    changed.push(key + '.' + subchange);
+                  }
+                }
+              }
+            } else {
+              if (value !== last_data[key]) {
+                if (key === 'id' || key.match(/_id$/)) {
+                  if ((parseInt(value) || 0) !== (parseInt(last_data[key]) || 0)) {
+                    changed.push(key);
+                  }
+                } else {
+                  changed.push(key);
+                }
+              }
+            }
           }
         }
         return changed;

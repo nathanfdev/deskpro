@@ -249,6 +249,8 @@ define [
 			'Index/app-nav-twitter.html',
 			'Index/app-nav-apps.html',
 			'Index/app-nav-server.html',
+			'Index/modal-alert.html',
+			'Index/modal-confirm-leavetab.html',
 			'Index/blank.html',
 		]
 

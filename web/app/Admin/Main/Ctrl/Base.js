@@ -102,6 +102,18 @@
           }
           return _this._managed_listeners = null;
         });
+        this.$scope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
+          if (ev.defaultPrevented) {
+            return;
+          }
+          if (!_this._state_cont_go && _this.checkDirtyState()) {
+            _this.AppState.setLoadingState('dp_section_page', false);
+            ev.preventDefault();
+            _this._state_cont_state = toState.name;
+            _this._state_cont_state_params = toParams;
+            return _this._showStateConfirmLeave();
+          }
+        });
         this.has_init = false;
         this.init();
         this.has_init = true;
@@ -114,6 +126,20 @@
           this.disableViewLoadingState();
         }
       }
+
+      /**
+      	* A controller may override this method.
+      	*
+      	* Return true if the current state is dirty (unsaved). The user
+      	* will be asked to confirm leaving.
+      	*
+      	* @return {Boolean}
+      */
+
+
+      Admin_Ctrl_Base.prototype.checkDirtyState = function() {
+        return false;
+      };
 
       /**
       	* Show this page as "loading"
@@ -236,6 +262,32 @@
 
       Admin_Ctrl_Base.prototype.getTemplatePath = function(path) {
         return DP_BASE_ADMIN_URL + '/load-view/' + path;
+      };
+
+      /**
+      		* Show an alert
+      */
+
+
+      Admin_Ctrl_Base.prototype._showStateConfirmLeave = function() {
+        var inst, parentCtrl;
+        parentCtrl = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Index/modal-confirm-leavetab.html'),
+          controller: [
+            '$scope', '$modalInstance', '$state', function($scope, $modalInstance, $state) {
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              return $scope["continue"] = function() {
+                parentCtrl._state_cont_go = true;
+                $modalInstance.dismiss();
+                return $state.go(parentCtrl._state_cont_state, parentCtrl._state_cont_state_params);
+              };
+            }
+          ]
+        });
+        return inst;
       };
 
       /**
