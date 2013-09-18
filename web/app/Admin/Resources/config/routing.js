@@ -409,6 +409,15 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tickets.ticket_deps.gocreate',
+		url: '/go-create',
+		page: {
+			template: '',
+			controller: ['$state', function ($state) { $state.go('tickets.ticket_deps.create'); }]
+		}
+	});
+
+	routes.push({
 		id: 'tickets.ticket_deps.create',
 		url: '/create',
 		page: {
@@ -419,7 +428,7 @@ define(function() {
 
 	routes.push({
 		id: 'tickets.ticket_deps.edit',
-		url: '/{id}',
+		url: '/{id:[0-9]+}',
 		page: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/edit.html',
 			controller: 'Admin_TicketDeps_Ctrl_Edit'

@@ -103,15 +103,16 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		###
 		saveAll: ->
 			postData = {
-				properties: @dep.getData(),
-				permissions: @getPermsData('all')
+				properties: @getPropsData(),
+				permissions: @getPermsData()
 			}
 
 			if @dep.id
+				is_new = false
 				promise = @Api.sendPostJson('/ticket_deps/' + @dep.id, postData)
 			else
+				is_new = true
 				promise = @Api.sendPostJson('/ticket_deps/create', postData)
-
 
 			if @dep.parent_id and @dep.parent_id != "0"
 				parent = @DepartmentData.deps.get(@dep.parent_id)
@@ -138,59 +139,25 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					@DepartmentData.addToList(model)
 					@initDeplistData(@DepartmentData.deps)
-					@$state.go('tickets.ticket_deps')
+
+					if is_new
+						@$state.go('tickets.ticket_deps.gocreate')
+					else
+						@$state.go('tickets.ticket_deps')
 				)
 
 			return promise
 
 		###*
-		# Save the Properties part of the form
+		# Gets property data
 		###
-		saveProperties: ->
-			if @dep.id
-				promise = @Api.sendPostJson('/ticket_deps/' + @dep.id, {
-					properties: @dep.getData()
-				})
-			else
-				promise = @Api.sendPostJson('/ticket_deps/create', {
-					properties: @dep.getData()
-				})
-
-			# If the department is new, we need to handle updating the UI
-			# with the newly saved department once the request comes back with an ID
-			if @em.hasById('department', @dep.id)
-				model = @em.getById('department', @dep.id)
-				model.title = @dep.title
-				model.user_title = @dep.user_title
-			else
-				promise.success( (result) =>
-					@dep.id = result.id
-
-					model = @em.createEntity('department', 'id', @dep.getData())
-					@DepartmentData.addToList(model)
-					@initDeplistData(@DepartmentData.deps)
-					@$state.go('tickets.ticket_deps.edit', {id: @dep.id})
-				)
-
-			return promise
-
-
-		###*
-		# Save the Permissions sections of the form
-		###
-		savePermissions: (type = 'all') ->
-
-			perms = @getPermsData(type)
-
-			return @Api.sendPostJson('/ticket_deps/' + @dep.id, {
-				permissions: perms
-			})
-
+		getPropsData: ->
+			return @dep.getData()
 
 		###*
 		# Gets permission data that can be posted for saving
 		###
-		getPermsData: (type = all) ->
+		getPermsData: (type = 'all') ->
 			perms = {}
 
 			if type == 'all' || type == 'agents'

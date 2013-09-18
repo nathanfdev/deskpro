@@ -156,15 +156,17 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var full_title, model, parent, postData, promise,
+        var full_title, is_new, model, parent, postData, promise,
           _this = this;
         postData = {
-          properties: this.dep.getData(),
-          permissions: this.getPermsData('all')
+          properties: this.getPropsData(),
+          permissions: this.getPermsData()
         };
         if (this.dep.id) {
+          is_new = false;
           promise = this.Api.sendPostJson('/ticket_deps/' + this.dep.id, postData);
         } else {
+          is_new = true;
           promise = this.Api.sendPostJson('/ticket_deps/create', postData);
         }
         if (this.dep.parent_id && this.dep.parent_id !== "0") {
@@ -188,61 +190,23 @@
             }
             _this.DepartmentData.addToList(model);
             _this.initDeplistData(_this.DepartmentData.deps);
-            return _this.$state.go('tickets.ticket_deps');
+            if (is_new) {
+              return _this.$state.go('tickets.ticket_deps.gocreate');
+            } else {
+              return _this.$state.go('tickets.ticket_deps');
+            }
           });
         }
         return promise;
       };
 
       /**
-      		# Save the Properties part of the form
+      		# Gets property data
       */
 
 
-      Admin_TicketDeps_Ctrl_Edit.prototype.saveProperties = function() {
-        var model, promise,
-          _this = this;
-        if (this.dep.id) {
-          promise = this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
-            properties: this.dep.getData()
-          });
-        } else {
-          promise = this.Api.sendPostJson('/ticket_deps/create', {
-            properties: this.dep.getData()
-          });
-        }
-        if (this.em.hasById('department', this.dep.id)) {
-          model = this.em.getById('department', this.dep.id);
-          model.title = this.dep.title;
-          model.user_title = this.dep.user_title;
-        } else {
-          promise.success(function(result) {
-            _this.dep.id = result.id;
-            model = _this.em.createEntity('department', 'id', _this.dep.getData());
-            _this.DepartmentData.addToList(model);
-            _this.initDeplistData(_this.DepartmentData.deps);
-            return _this.$state.go('tickets.ticket_deps.edit', {
-              id: _this.dep.id
-            });
-          });
-        }
-        return promise;
-      };
-
-      /**
-      		# Save the Permissions sections of the form
-      */
-
-
-      Admin_TicketDeps_Ctrl_Edit.prototype.savePermissions = function(type) {
-        var perms;
-        if (type == null) {
-          type = 'all';
-        }
-        perms = this.getPermsData(type);
-        return this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
-          permissions: perms
-        });
+      Admin_TicketDeps_Ctrl_Edit.prototype.getPropsData = function() {
+        return this.dep.getData();
       };
 
       /**
@@ -253,7 +217,7 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.getPermsData = function(type) {
         var agent, agentgroup, perms, usergroup, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
         if (type == null) {
-          type = all;
+          type = 'all';
         }
         perms = {};
         if (type === 'all' || type === 'agents') {
