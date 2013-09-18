@@ -19,7 +19,7 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_TYPE = 'page';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
@@ -100,7 +100,7 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
-        var ag, perm, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+        var ag, code, name, perm, tpl, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
         this.agentgroups = agentgroups;
         _ref1 = this.agentgroups;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -137,7 +137,17 @@
             }
           }
         }
-        return this.depPerms = this.getPermsData();
+        this.depPerms = this.getPermsData();
+        console.log(this.$scope);
+        _ref7 = ['link', 'win', 'embed'];
+        _results = [];
+        for (_o = 0, _len6 = _ref7.length; _o < _len6; _o++) {
+          name = _ref7[_o];
+          tpl = this.getTemplatePath("TicketDeps/code-" + name + ".html");
+          code = this.$templateCache.get(tpl).replace(/%DEPID%/g, this.dep.id);
+          _results.push(this.$scope['code_' + name] = code);
+        }
+        return _results;
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initDeplistData = function(departments) {

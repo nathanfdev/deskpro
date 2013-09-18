@@ -9,6 +9,7 @@
 				<li class="active" dp-tab-btn="main.props"><a href="#">Properties</a></li>
 				<li dp-tab-btn="main.perms"><a href="#">Permissions</a></li>
 				<li dp-tab-btn="main.layout"><a href="#">Layout</a></li>
+				<li dp-tab-btn="main.website_embeds"><a href="#">Website Embed</a></li>
 			</ul>
 		</nav>
 
@@ -151,6 +152,51 @@
 			</div>
 			<div class="pane-footer text-center">
 				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
+			</div>
+		</div>
+
+		<div dp-tab-body="main.website_embeds">
+			<div class="panel panel-fill">
+				<div class="panel-body">
+					<p>
+						Website Embeds are code snippets you can copy directly into your website to quickly add
+						a DeskPRO contact form to any page.
+					</p>
+					<form role="form" ng-if="TicketDepsEdit.dep.id">
+						<div class="form-group">
+							<label for="title">Direct Link</label>
+							<div class="row">
+								<div class="col-lg-8">
+									<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="title">Popup Window</label>
+							<div class="row">
+								<div class="col-lg-8">
+									<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="title">Embedded Form</label>
+							<div class="row">
+								<div class="col-lg-8">
+									<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div ng-if="!TicketDepsEdit.dep.id">
+						<p>
+							The Website Embeds code is not available yet because you have not saved this
+							new department. Save the department first then come back to this tab.
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</article>

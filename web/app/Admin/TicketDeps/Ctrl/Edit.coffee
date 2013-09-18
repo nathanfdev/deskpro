@@ -3,7 +3,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'TicketDepsEdit'
 		@CTRL_TYPE = 'page'
-		@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state']
+		@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
@@ -106,6 +106,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 						ag[perm.perm_name] = true
 
 			@depPerms = @getPermsData()
+
+			console.log(@$scope)
+			for name in ['link', 'win', 'embed']
+				tpl = @getTemplatePath("TicketDeps/code-"+name+".html")
+				code = @$templateCache.get(tpl).replace(/%DEPID%/g, @dep.id)
+				@$scope['code_' + name] = code
 
 		initDeplistData: (departments) ->
 			@departments = departments.values()
@@ -235,7 +241,5 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 						})
 
 			return perms
-
-
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

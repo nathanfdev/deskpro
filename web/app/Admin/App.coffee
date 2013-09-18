@@ -251,6 +251,9 @@ define [
 			'Index/app-nav-server.html',
 			'Index/modal-alert.html',
 			'Index/modal-confirm-leavetab.html',
+			'TicketDeps/code-link.html',
+			'TicketDeps/code-win.html',
+			'TicketDeps/code-embed.html',
 			'Index/blank.html',
 		]
 
