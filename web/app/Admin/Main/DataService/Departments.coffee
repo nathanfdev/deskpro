@@ -119,7 +119,6 @@ define [
 						parent_dep._child_ids.push(dep.id)
 						dep._depth = 1
 
-
 		###*
 		* Cleans up models that are sitting in memory
 		###
