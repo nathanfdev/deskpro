@@ -35,23 +35,32 @@
 	display: none;
 }
 
-.dp-section-list {
+.dp-section-body {
 	position: fixed;
 	top: @topHeight;
+	left: @appNavWidth;
+	right: 0;
 	bottom: 0;
-	left: @appNavWidth + @navWidth;
-	width: @listWidth;
+	overflow: hidden;
+}
+
+.dp-section-list {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 44%;
 	background: #F5F7FA;
 	overflow: auto;
 	display: none;
 }
 
 .dp-section-page {
-	position: fixed;
-	top: @topHeight;
+	position: absolute;
+	top: 0;
 	bottom: 0;
-	left: @appNavWidth;
 	right: 0;
+	width: 100%;
 	overflow: auto;
 }
 
@@ -60,7 +69,7 @@
 		display: block;
 	}
 
-	.dp-section-page {
+	.dp-section-body {
 		left: @appNavWidth + @navWidth;
 	}
 }
@@ -72,13 +81,6 @@
 
 	.dp-section-page {
 		border-left: 1px solid #A8ABB2;
-		left: @appNavWidth + @listWidth;
-	}
-}
-
-.with-section-nav.with-section-list {
-	.dp-section-page {
-		border-left: 1px solid #A8ABB2;
-		left: @appNavWidth + @navWidth + @listWidth;
+		width: 56%;
 	}
 }

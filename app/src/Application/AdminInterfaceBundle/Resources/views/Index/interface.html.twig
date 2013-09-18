@@ -52,13 +52,15 @@
 	</nav>
 	<div class="dp-section" ui-view>
 		<nav class="dp-section-nav sections-nav" ui-view="dp_section_nav" id="dp_section_nav"></nav>
-		<div class="dp-section-list" id="dp_section_list">
-			<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_list"><article><h1>Loading</h1></article></div>
-			<div ui-view="dp_section_list" ng-hide="loading.dp_section_list"></div>
-		</div>
-		<div class="dp-section-page" id="dp_section_page">
-			<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_page"><article><h1>Loading</h1></article></div>
-			<div ui-view="dp_section_page" ng-hide="loading.dp_section_page"></div>
+		<div class="dp-section-body">
+			<div class="dp-section-list" id="dp_section_list">
+				<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_list"><article><h1>Loading</h1></article></div>
+				<div ui-view="dp_section_list" ng-hide="loading.dp_section_list"></div>
+			</div>
+			<div class="dp-section-page" id="dp_section_page">
+				<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_page"><article><h1>Loading</h1></article></div>
+				<div ui-view="dp_section_page" ng-hide="loading.dp_section_page"></div>
+			</div>
 		</div>
 	</div>
 </div>
