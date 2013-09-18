@@ -69,6 +69,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				if not dep.parent_id then dep.parent_id = 0
 				@dep = @em.createUnmanagedEntity('department', 'id', dep)
 
+				@dep._enable_user_title = !!@dep.user_title
+
 				@initDeplistData(departments)
 				@initData(
 					{ usergroups: dep_data.perms_usergroup_ids, agentgroups: dep_data.perms_agentgroup_ids, agents: dep_data.perms_agent_ids },
@@ -124,6 +126,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		# Save everything
 		###
 		saveAll: ->
+			if not @dep._enable_user_title
+				@dep.user_title = ''
+
 			props = @getPropsData()
 			props.move_tickets_to = 'self'
 

@@ -83,6 +83,7 @@
             dep.parent_id = 0;
           }
           _this.dep = _this.em.createUnmanagedEntity('department', 'id', dep);
+          _this.dep._enable_user_title = !!_this.dep.user_title;
           _this.initDeplistData(departments);
           return _this.initData({
             usergroups: dep_data.perms_usergroup_ids,
@@ -173,6 +174,9 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
         var full_title, is_new, model, parent, postData, promise, props,
           _this = this;
+        if (!this.dep._enable_user_title) {
+          this.dep.user_title = '';
+        }
         props = this.getPropsData();
         props.move_tickets_to = 'self';
         postData = {

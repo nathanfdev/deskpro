@@ -292,6 +292,8 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 			$data['email_gateway_id'] = null;
 		}
 
+		$data['user_title'] = $this->getRealUserTitle();
+
 		return $data;
 	}
 
