@@ -68,6 +68,39 @@
         return model;
       };
 
+      Admin_Main_DataService_Departments.prototype.resetHierarchy = function() {
+        var dep, parent_dep, _i, _j, _len, _len1, _ref, _ref1;
+        _ref = this.deps.values();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          dep = _ref[_i];
+          delete dep._child_ids;
+          if (!dep.parent_id || dep.parent_id === "0") {
+            dep.parent_id = 0;
+          }
+        }
+        _ref1 = this.deps.values();
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          dep = _ref1[_j];
+          dep._full_title = dep.title;
+          if (dep.parent_id) {
+            parent_dep = this.deps.get(dep.parent_id);
+            if (parent_dep) {
+              dep._full_title = parent_dep.title + " > " + dep.title;
+              if (this.parent_to_children[parent_dep.id] == null) {
+                this.parent_to_children[parent_dep.id] = [];
+              }
+              this.parent_to_children[parent_dep.id].push(dep.id);
+              if (!parent_dep._child_ids) {
+                parent_dep._child_ids = [];
+              }
+              parent_dep._child_ids.push(dep.id);
+              dep._depth = 1;
+            }
+          }
+        }
+        return this.deps.notifyListeners('changed');
+      };
+
       /**
       		* Initialises the models to keep track of department data
         	*

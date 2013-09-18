@@ -23,9 +23,22 @@
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
-        return this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
+        this.addManagedListener(this.DepartmentData.deps, 'changed', function() {
           _this.initDeplistData(_this.DepartmentData.deps);
           return _this.ngApply();
+        });
+        return this.$scope.$watch('TicketDepsEdit.dep.parent_id', function(newVal) {
+          var parent, _ref1;
+          newVal = parseInt(newVal);
+          if (!newVal) {
+            return;
+          }
+          parent = _this.DepartmentData.deps.get(newVal);
+          if (parent && !((_ref1 = parent._child_ids) != null ? _ref1.length : void 0)) {
+            return _this.$scope.show_parent_warning = parent;
+          } else {
+            return _this.$scope.show_parent_warning = false;
+          }
         });
       };
 
@@ -158,10 +171,12 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var full_title, is_new, model, parent, postData, promise,
+        var full_title, is_new, model, parent, postData, promise, props,
           _this = this;
+        props = this.getPropsData();
+        props.move_tickets_to = 'self';
         postData = {
-          properties: this.getPropsData(),
+          properties: props,
           permissions: this.getPermsData()
         };
         if (this.dep.id) {
@@ -182,6 +197,8 @@
           model.title = this.dep.title;
           model._full_title = full_title;
           model.user_title = this.dep.user_title;
+          model.parent_id = this.dep.parent_id;
+          this.DepartmentData.resetHierarchy();
         } else {
           promise.success(function(result) {
             _this.dep.id = result.id;
@@ -191,7 +208,9 @@
               model.parent_id = null;
             }
             _this.DepartmentData.addToList(model);
+            _this.DepartmentData.resetHierarchy();
             _this.initDeplistData(_this.DepartmentData.deps);
+            _this.skipDirtyState();
             if (is_new) {
               return _this.$state.go('tickets.ticket_deps.gocreate');
             } else {

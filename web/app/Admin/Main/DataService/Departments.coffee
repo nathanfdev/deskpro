@@ -65,6 +65,28 @@ define [
 			@deps.set(model.id, model)
 			return model
 
+		resetHierarchy: ->
+			for dep in @deps.values()
+				delete dep._child_ids
+				if not dep.parent_id or dep.parent_id == "0"
+					dep.parent_id = 0
+
+			for dep in @deps.values()
+				dep._full_title = dep.title
+				if dep.parent_id
+					parent_dep = @deps.get(dep.parent_id)
+					if parent_dep
+						dep._full_title = parent_dep.title + " > " + dep.title
+						if not @parent_to_children[parent_dep.id]?
+							@parent_to_children[parent_dep.id] = []
+
+						@parent_to_children[parent_dep.id].push(dep.id)
+						if not parent_dep._child_ids then parent_dep._child_ids = []
+						parent_dep._child_ids.push(dep.id)
+						dep._depth = 1
+
+			@deps.notifyListeners('changed')
+
 
 		###*
 		* Initialises the models to keep track of department data

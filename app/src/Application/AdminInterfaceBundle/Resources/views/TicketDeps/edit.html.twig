@@ -48,6 +48,16 @@
 							</div>
 						</div>
 					</form>
+					<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
+						<p>
+							<strong><em>{{ ng_var('show_parent_warning.title') }}</em> is not currently a parent</strong>
+						</p>
+						<ul>
+							<li>The parent department you have set is not yet a parent.</li>
+							<li>DeskPRO will convert the new parent <em>{{ ng_var('show_parent_warning.title') }}</em> into a parent when you save this form.</li>
+							<li>Any tickets that are currently in <em>{{ ng_var('show_parent_warning.title') }}</em> will be moved into <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em>.</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 			<div class="pane-footer text-center">

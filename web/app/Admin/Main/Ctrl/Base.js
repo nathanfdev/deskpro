@@ -141,6 +141,10 @@
         return false;
       };
 
+      Admin_Ctrl_Base.prototype.skipDirtyState = function() {
+        return this._state_cont_go = true;
+      };
+
       /**
       	* Show this page as "loading"
       */

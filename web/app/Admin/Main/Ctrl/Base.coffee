@@ -110,6 +110,9 @@ define ['angular', 'Admin/App'], (angular) ->
 		checkDirtyState: ->
 			return false
 
+		skipDirtyState: ->
+			@_state_cont_go = true
+
 		###*
   	* Show this page as "loading"
   	###

@@ -11,6 +11,17 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@ngApply()
 			)
 
+			@$scope.$watch('TicketDepsEdit.dep.parent_id', (newVal) =>
+				newVal = parseInt(newVal)
+				if not newVal then return
+
+				parent = @DepartmentData.deps.get(newVal)
+				if parent and not parent._child_ids?.length
+					@$scope.show_parent_warning = parent
+				else
+					@$scope.show_parent_warning = false
+			)
+
 		initialLoad: ->
 			return @loadDepartment()
 
@@ -113,8 +124,11 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		# Save everything
 		###
 		saveAll: ->
+			props = @getPropsData()
+			props.move_tickets_to = 'self'
+
 			postData = {
-				properties: @getPropsData(),
+				properties: props,
 				permissions: @getPermsData()
 			}
 
@@ -138,6 +152,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				model.title = @dep.title
 				model._full_title = full_title
 				model.user_title = @dep.user_title
+				model.parent_id = @dep.parent_id
+				@DepartmentData.resetHierarchy()
 			else
 				promise.success( (result) =>
 					@dep.id = result.id
@@ -149,8 +165,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 						model.parent_id = null
 
 					@DepartmentData.addToList(model)
+					@DepartmentData.resetHierarchy()
 					@initDeplistData(@DepartmentData.deps)
 
+					@skipDirtyState()
 					if is_new
 						@$state.go('tickets.ticket_deps.gocreate')
 					else

@@ -96,32 +96,36 @@ class TicketDepartmentEditor
 	public function editProperties(Department $dep, array $props)
 	{
 		$move_to = null;
+		$set_parent = null;
+		$change_parent = false;
 
-		if ($dep->parent && isset($props['parent_id']) && $props['parent_id'] == $dep->parent->getId()) {
-			unset($props['parent_id']);
-		}
+		if (isset($props['parent_id']) && $props['parent_id'] != $dep->getParentId()) {
+			$change_parent = true;
+			if ($props['parent_id']) {
+				$set_parent = $this->em->find('DeskPRO:Department', $props['parent_id']);
+				if (!$set_parent || !$set_parent->is_tickets_enabled) {
+					throw new \InvalidArgumentException("parent_id does not exist");
+				}
 
-		if (!$dep->parent && isset($props['parent_id']) && !$props['parent_id']) {
-			unset($props['parent_id']);
-		}
+				if (!count($set_parent->children)) {
+					if (!isset($props['move_tickets_to'])) {
+						throw new \InvalidArgumentException("You must supply a move_tickets_to when moving top-level department to become a parent");
+					}
+					if ($props['move_tickets_to'] == 'self') {
+						$move_to = $dep;
+					} else {
+						$move_to = $this->em->find('DeskPRO:Department', $props['move_tickets_to']);
+						if (!$move_to || !$move_to->is_tickets_enabled) {
+							throw new \InvalidArgumentException("move_tickets_to is not a valid department");
+						}
 
-		if (!$dep->parent && isset($props['parent_id'])) {
-			if (!isset($props['move_tickets_to'])) {
-				throw new \InvalidArgumentException("You must supply a move_tickets_to when moving top-level department to become a parent");
-			}
-
-			$move_to = $this->em->find('DeskPRO:Department', $props['move_tickets_to']);
-			if (!$move_to) {
-				throw new \InvalidArgumentException("move_tickets_to is an invalid department id");
-			}
-			if (!$move_to->is_tickets_enabled) {
-				throw new \InvalidArgumentException("move_tickets_to is not a ticket department");
-			}
-			if (count($move_to->children)) {
-				throw new \InvalidArgumentException("move_tickets_to cannot be a parent");
-			}
-			if ($move_to->id == $dep->id) {
-				throw new \InvalidArgumentException("move_tickets_to cannot be itself");
+						if (count($move_to->children)) {
+							throw new \InvalidArgumentException("move_tickets_to cannot be a parent");
+						}
+					}
+				}
+			} else {
+				$set_parent = null;
 			}
 		}
 
@@ -131,23 +135,8 @@ class TicketDepartmentEditor
 		if (isset($props['user_title'])) {
 			$dep->user_title = $props['user_title'];
 		}
-		if (isset($props['parent_id'])) {
-			$new_parent = $this->em->find('DeskPRO:Department', $props['parent_id']);
-			if (!$new_parent) {
-				throw new \InvalidArgumentException("parent_id does not exist");
-			}
-			if (!$new_parent->is_tickets_enabled) {
-				throw new \InvalidArgumentException("parent_id is not a ticket department");
-			}
-			if ($new_parent->parent) {
-				throw new \InvalidArgumentException("parent_id cannot be a child");
-			}
-
-			$dep->parent = $new_parent;
-
-			if ($move_to) {
-				// handle queued moving of tickets
-			}
+		if ($change_parent) {
+			$dep->parent = $set_parent;
 		}
 
 		if (!$dep->getId()) {
@@ -160,6 +149,11 @@ class TicketDepartmentEditor
 
 		$this->em->persist($dep);
 		$this->em->flush();
+
+		if ($change_parent && $move_to) {
+			$this->db->update('tickets', array('department_id' => $move_to->getId()), array('department_id' => $set_parent->getId()));
+			$this->db->update('tickets_search_active', array('department_id' => $move_to->getId()), array('department_id' => $set_parent->getId()));
+		}
 	}
 
 
