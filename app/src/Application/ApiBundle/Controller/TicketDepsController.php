@@ -38,6 +38,10 @@ use Application\DeskPRO\Departments\TicketDepartmentEditor;
 
 class TicketDepsController extends AbstractController
 {
+	####################################################################################################################
+	# list
+	####################################################################################################################
+
 	public function listAction()
 	{
 		$data = array();
@@ -54,6 +58,11 @@ class TicketDepsController extends AbstractController
 
 		return $this->createApiResponse($data);
 	}
+
+
+	####################################################################################################################
+	# get
+	####################################################################################################################
 
 	public function getAction($id)
 	{
@@ -95,6 +104,11 @@ class TicketDepsController extends AbstractController
 		return $this->createApiResponse($data);
 	}
 
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
 	public function saveAction($id)
 	{
 		$editor = $this->_getDepartmentEditor($id);
@@ -114,6 +128,11 @@ class TicketDepsController extends AbstractController
 		return $this->createApiResponse(array('id' => $editor->getDepartment()->id, 'success' => true));
 	}
 
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
 	public function removeAction($id)
 	{
 		$move_to = $this->in->getUint('move_to');
@@ -124,6 +143,11 @@ class TicketDepsController extends AbstractController
 		return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
 	}
 
+
+	####################################################################################################################
+	# save-display-order
+	####################################################################################################################
+
 	public function saveDisplayOrderAction()
 	{
 		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
@@ -132,6 +156,10 @@ class TicketDepsController extends AbstractController
 
 		return $this->createSuccessResponse();
 	}
+
+
+	####################################################################################################################
+
 
 	/**
 	 * @param $id

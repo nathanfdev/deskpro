@@ -138,6 +138,14 @@ class TicketDepartmentEditor
 			}
 		}
 
+		if (!$this->dep->getId()) {
+			// Put new departments at the end
+			$last = $this->db->fetchColumn("SELECT display_order FROM departments ORDER BY display_order DESC");
+			$last += 10;
+
+			$this->dep->display_order = $last;
+		}
+
 		$this->em->persist($this->dep);
 		$this->em->flush();
 	}
@@ -170,13 +178,13 @@ class TicketDepartmentEditor
 			}
 		}
 
-		if ($agentgroup_perms !== null) {
+		if ($agent_perms !== null) {
 			$this->db->executeQuery("
 				DELETE FROM department_permissions
 				WHERE person_id IS NOT NULL AND department_id = ?
 			", array($this->dep->id));
 
-			foreach ($agentgroup_perms as $perm) {
+			foreach ($agent_perms as $perm) {
 				$inserts[] = array(
 					'department_id' => $this->dep->id,
 					'usergroup_id' => null,

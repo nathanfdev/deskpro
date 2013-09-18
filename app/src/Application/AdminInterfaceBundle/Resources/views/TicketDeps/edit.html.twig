@@ -7,8 +7,8 @@
 		<nav class="dp-main-tabs">
 			<ul>
 				<li class="active" dp-tab-btn="main.props"><a href="#">Properties</a></li>
-				<li dp-tab-btn="main.perms" ng-if="TicketDepsEdit.dep.id"><a href="#">Permissions</a></li>
-				<li dp-tab-btn="main.layout" ng-if="TicketDepsEdit.dep.id"><a href="#">Layout</a></li>
+				<li dp-tab-btn="main.perms"><a href="#">Permissions</a></li>
+				<li dp-tab-btn="main.layout"><a href="#">Layout</a></li>
 			</ul>
 		</nav>
 
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 			<div class="pane-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveProperties()">Save</button>
+				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
 			</div>
 		</div>
 
@@ -125,7 +125,7 @@
 			</div>
 
 			<div class="pane-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsEdit.savePermissions()">Save</button>
+				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
 			</div>
 		</div>
 
@@ -137,7 +137,7 @@
 				</div>
 			</div>
 			<div class="pane-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveLayout()">Save</button>
+				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
 			</div>
 		</div>
 	</article>

@@ -97,6 +97,38 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 
 		###*
+		# Save everything
+		###
+		saveAll: ->
+			postData = {
+				properties: @dep.getData(),
+				permissions: @getPermsData('all')
+			}
+
+			if @dep.id
+				promise = @Api.sendPostJson('/ticket_deps/' + @dep.id, postData)
+			else
+				promise = @Api.sendPostJson('/ticket_deps/create', postData)
+
+			# If the department is new, we need to handle updating the UI
+			# with the newly saved department once the request comes back with an ID
+			if @em.hasById('department', @dep.id)
+				model = @em.getById('department', @dep.id)
+				model.title = @dep.title
+				model.user_title = @dep.user_title
+			else
+				promise.success( (result) =>
+					@dep.id = result.id
+
+					model = @em.createEntity('department', 'id', @dep.getData())
+					@DepartmentData.addToList(model)
+					@initDeplistData(@DepartmentData.deps)
+					@$state.go('tickets.ticket_deps')
+				)
+
+			return promise
+
+		###*
 		# Save the Properties part of the form
 		###
 		saveProperties: ->
@@ -133,6 +165,17 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		###
 		savePermissions: (type = 'all') ->
 
+			perms = @getPermsData(type)
+
+			return @Api.sendPostJson('/ticket_deps/' + @dep.id, {
+				permissions: perms
+			})
+
+
+		###*
+		# Gets permission data that can be posted for saving
+		###
+		getPermsData: (type = all) ->
 			perms = {}
 
 			if type == 'all' || type == 'agents'
@@ -172,9 +215,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 							perm_name: 'use'
 						})
 
-			return @Api.sendPostJson('/ticket_deps/' + @dep.id, {
-				permissions: perms
-			})
+			return perms
+
 
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

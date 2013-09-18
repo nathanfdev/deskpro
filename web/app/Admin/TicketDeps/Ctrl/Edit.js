@@ -145,6 +145,39 @@
       };
 
       /**
+      		# Save everything
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
+        var model, postData, promise,
+          _this = this;
+        postData = {
+          properties: this.dep.getData(),
+          permissions: this.getPermsData('all')
+        };
+        if (this.dep.id) {
+          promise = this.Api.sendPostJson('/ticket_deps/' + this.dep.id, postData);
+        } else {
+          promise = this.Api.sendPostJson('/ticket_deps/create', postData);
+        }
+        if (this.em.hasById('department', this.dep.id)) {
+          model = this.em.getById('department', this.dep.id);
+          model.title = this.dep.title;
+          model.user_title = this.dep.user_title;
+        } else {
+          promise.success(function(result) {
+            _this.dep.id = result.id;
+            model = _this.em.createEntity('department', 'id', _this.dep.getData());
+            _this.DepartmentData.addToList(model);
+            _this.initDeplistData(_this.DepartmentData.deps);
+            return _this.$state.go('tickets.ticket_deps');
+          });
+        }
+        return promise;
+      };
+
+      /**
       		# Save the Properties part of the form
       */
 
@@ -185,9 +218,25 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.savePermissions = function(type) {
-        var agent, agentgroup, perms, usergroup, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+        var perms;
         if (type == null) {
           type = 'all';
+        }
+        perms = this.getPermsData(type);
+        return this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
+          permissions: perms
+        });
+      };
+
+      /**
+      		# Gets permission data that can be posted for saving
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.getPermsData = function(type) {
+        var agent, agentgroup, perms, usergroup, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+        if (type == null) {
+          type = all;
         }
         perms = {};
         if (type === 'all' || type === 'agents') {
@@ -239,9 +288,7 @@
             }
           }
         }
-        return this.Api.sendPostJson('/ticket_deps/' + this.dep.id, {
-          permissions: perms
-        });
+        return perms;
       };
 
       return Admin_TicketDeps_Ctrl_Edit;
