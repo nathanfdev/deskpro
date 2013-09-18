@@ -23,13 +23,7 @@
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
-        this.DepartmentData.loadDepList().then(function(departments) {
-          _this.initDepList(departments.values());
-          return _this.addManagedListener(_this.DepartmentData.deps, 'changed', function() {
-            _this.initDepList(_this.DepartmentData.deps.values());
-            return _this.ngApply();
-          });
-        });
+        this.dep_settings = {};
         return this.sortedListOptions = {
           axis: 'y',
           update: function(ev, data) {
@@ -44,6 +38,27 @@
             return promise = _this.Api.sendPostJson('/ticket_deps/display_order', postData);
           }
         };
+      };
+
+      Admin_TicketDeps_Ctrl_List.prototype.initialLoad = function() {
+        var data_promise, dep_promise,
+          _this = this;
+        dep_promise = this.DepartmentData.loadDepList().then(function(departments) {
+          _this.initDepList(departments.values());
+          return _this.addManagedListener(_this.DepartmentData.deps, 'changed', function() {
+            _this.initDepList(_this.DepartmentData.deps.values());
+            return _this.ngApply();
+          });
+        });
+        data_promise = this.Api.sendDataGet(['/ticket_deps/settings']).then(function(res) {
+          var settings;
+          settings = res.data.api_ticket_deps_settings;
+          console.log(settings);
+          _this.dep_settings.default_id = settings['core.default_ticket_dep'];
+          _this.dep_settings.name_singular = settings['core.phrase_department_singular'];
+          return _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
+        });
+        return this.$q.all([dep_promise, data_promise]);
       };
 
       Admin_TicketDeps_Ctrl_List.prototype.initDepList = function(departments) {
@@ -143,6 +158,18 @@
             return _this.$state.go('tickets.ticket_deps');
           }
         });
+      };
+
+      Admin_TicketDeps_Ctrl_List.prototype.saveSettings = function() {
+        var postData;
+        postData = {
+          settings: {
+            'core.default_ticket_dep': this.dep_settings.default_id,
+            'core.phrase_department_singular': this.dep_settings.dep_settings.name_singular,
+            'core.phrase_department_plural': this.dep_settings.dep_settings.name_plural
+          }
+        };
+        return this.Api.sendPostJson('/ticket_deps/settings', postData);
       };
 
       return Admin_TicketDeps_Ctrl_List;

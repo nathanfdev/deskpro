@@ -157,6 +157,105 @@ class TicketDepsController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	####################################################################################################################
+	# get-settings
+	####################################################################################################################
+
+	public function getSettingsAction()
+	{
+		$settings = array(
+			'core.default_ticket_dep'         => $this->container->getSetting('core.default_ticket_dep'),
+			'core.phrase_department_singular' => $this->container->getSetting('core.phrase_department_singular'),
+			'core.phrase_department_plural'   => $this->container->getSetting('core.phrase_department_plural'),
+		);
+
+		return $this->createApiResponse($settings);
+	}
+
+	####################################################################################################################
+	# save-settings
+	####################################################################################################################
+
+	public function saveSettingsAction()
+	{
+		$set_settings = $this->in->getCleanValueArray('settings', 'string', 'string');
+
+		if (isset($set_settings['core.default_ticket_dep']) && $set_settings['core.default_ticket_dep'] != $this->container->getSetting('core.default_ticket_dep')) {
+			$this->container->getSettingsHandler()->setSetting('core.default_ticket_dep', $set_settings['core.default_ticket_dep']);
+		}
+
+		$change_phrase = array();
+		if (isset($set_settings['core.phrase_department_singular']) && $set_settings['core.phrase_department_singular'] != $this->container->getSetting('core.phrase_department_singular')) {
+			$change_phrase['singular'] = $set_settings['core.phrase_department_singular'];
+		}
+		if (isset($set_settings['core.phrase_department_plural']) && $set_settings['core.phrase_department_plural'] != $this->container->getSetting('core.phrase_department_plural')) {
+			$change_phrase['plural'] = $set_settings['core.phrase_department_singular'];
+		}
+
+		if ($change_phrase) {
+			if (!isset($change_phrase['singular'])) {
+				$change_phrase['singular'] = $this->container->getSetting('core.phrase_department_singular');
+			}
+			if (!isset($change_phrase['plural'])) {
+				$change_phrase['plural'] = $this->container->getSetting('core.phrase_department_plural');
+			}
+
+			$phrase_singular   = strtolower($change_phrase['singular']);
+			$phrase_plural     = strtolower($change_phrase['plural']);
+			$phrase_singular_c = ucwords($phrase_singular);
+			$phrase_plural_c   = ucwords($phrase_plural);
+
+			$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+			$phrases = $groups_reader->getAllUserPhrases();
+
+			$batch = array();
+			$ids = array();
+
+			$d = date('Y-m-d H:i:s');
+
+			foreach ($phrases as $phrase_id => $phrase_text) {
+				$new_phrase = str_replace(
+					array('departments', 'Departments', 'department', 'Department'),
+					array($phrase_plural, $phrase_plural_c, $phrase_singular, $phrase_singular_c),
+					$phrase_text
+				);
+
+				if ($new_phrase != $phrase_text) {
+					$group = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
+					$batch[] = array(
+						'language_id' => 1,
+						'name'        => $phrase_id,
+						'groupname'   => $group,
+						'phrase'      => $new_phrase,
+						'created_at'  => $d,
+						'updated_at'  => $d
+					);
+
+					$ids[] = $phrase_id;
+				}
+			}
+
+			if ($ids) {
+				$this->db->beginTransaction();
+				try {
+					$this->db->executeQuery("
+						DELETE FROM phrases
+						WHERE name IN (" . $this->db->quoteIn($ids) . ") AND language_id = 1
+					");
+
+					$this->db->batchInsert('phrases', $batch);
+
+					$this->db->commit();
+				} catch (\Exception $e) {
+					$this->db->rollback();
+					throw $e;
+				}
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
 
 	####################################################################################################################
 

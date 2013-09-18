@@ -6,14 +6,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_TYPE = 'list'
 
 		init: ->
-			@DepartmentData.loadDepList().then( (departments) =>
-				@initDepList(departments.values())
-
-				@addManagedListener(@DepartmentData.deps, 'changed', =>
-					@initDepList(@DepartmentData.deps.values())
-					@ngApply()
-				)
-			)
+			@dep_settings = {}
 
 			@sortedListOptions = {
 				axis: 'y',
@@ -28,6 +21,31 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					promise = @Api.sendPostJson('/ticket_deps/display_order', postData)
 			}
+
+		initialLoad: ->
+
+			dep_promise = @DepartmentData.loadDepList().then( (departments) =>
+				@initDepList(departments.values())
+
+				@addManagedListener(@DepartmentData.deps, 'changed', =>
+					@initDepList(@DepartmentData.deps.values())
+					@ngApply()
+				)
+			)
+
+			data_promise = @Api.sendDataGet([
+					'/ticket_deps/settings'
+			]).then( (res) =>
+				settings = res.data.api_ticket_deps_settings
+				console.log(settings)
+
+				@dep_settings.default_id    = settings['core.default_ticket_dep']
+				@dep_settings.name_singular = settings['core.phrase_department_singular']
+				@dep_settings.name_plural   = settings['core.phrase_department_plural']
+			)
+
+			return @$q.all([dep_promise, data_promise])
+
 
 		initDepList: (departments) ->
 			@departments = departments
@@ -105,5 +123,16 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				if @$state.current.name == 'tickets.ticket_deps.edit' and parseInt(@$state.params.id) == for_dep.id
 					@$state.go('tickets.ticket_deps')
 			)
+
+		saveSettings: ->
+			postData = {
+				settings: {
+					'core.default_ticket_dep':         @dep_settings.default_id,
+					'core.phrase_department_singular': @dep_settings.dep_settings.name_singular,
+					'core.phrase_department_plural':   @dep_settings.dep_settings.name_plural
+				}
+			}
+
+			@Api.sendPostJson('/ticket_deps/settings', postData)
 
 	Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()

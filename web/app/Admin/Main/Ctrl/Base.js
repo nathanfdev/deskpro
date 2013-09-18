@@ -47,6 +47,9 @@
         if (this.DEPS.indexOf('$modal') === -1) {
           this.DEPS.push('$modal');
         }
+        if (this.DEPS.indexOf('$q') === -1) {
+          this.DEPS.push('$q');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);

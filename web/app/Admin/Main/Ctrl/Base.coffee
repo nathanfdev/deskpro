@@ -31,6 +31,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.push('$scope')
 			if @DEPS.indexOf('$modal') == -1
 				@DEPS.push('$modal')
+			if @DEPS.indexOf('$q') == -1
+				@DEPS.push('$q')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)

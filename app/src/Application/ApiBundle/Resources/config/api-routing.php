@@ -2225,6 +2225,18 @@ $collection->add('api_ticket_deps_order', new Route(
 	array('_method' => 'POST')
 ));
 
+$collection->add('api_ticket_deps_settings', new Route(
+	'/ticket_deps/settings',
+	array('_controller' => 'ApiBundle:TicketDeps:getSettings'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_ticket_deps_settingssave', new Route(
+	'/ticket_deps/settings',
+	array('_controller' => 'ApiBundle:TicketDeps:saveSettings'),
+	array('_method' => 'POST')
+));
+
 $collection->add('api_ticket_deps_get', new Route(
 	'/ticket_deps/{id}',
 	array('_controller' => 'ApiBundle:TicketDeps:get'),
