@@ -7467,15 +7467,17 @@ article.pane-content.pad-top {
 }
 
 nav.dp-main-tabs {
-  height: 49px;
+  height: 48px;
+  overflow: hidden;
   background-color: #EEEEEE;
-  border-bottom: 3px solid #999999;
 }
 
 nav.dp-main-tabs ul {
+  height: 48px;
   padding: 0;
   margin: 0;
   list-style-type: none;
+  border-bottom: 3px solid #999999;
 }
 
 nav.dp-main-tabs ul li {
