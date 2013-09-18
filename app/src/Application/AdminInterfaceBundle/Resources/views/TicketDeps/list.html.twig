@@ -37,6 +37,18 @@
 					</ul>
 				</li>
 			</ul>
+
+			<div class="panel-body ng-hide" ng-show="TicketDepsList.departments.length == 1">
+				<div class="alert alert-info">
+					<p>
+						The department field will not be visible to your end-users using the portal because you only
+						have one defined.
+					</p>
+					<p>
+						Define more departments if you want your users to have a choice.
+					</p>
+				</div>
+			</div>
 		</div>
 
 		<div class="panel panel-fill">
