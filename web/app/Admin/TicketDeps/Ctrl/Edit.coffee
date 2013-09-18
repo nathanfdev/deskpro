@@ -112,17 +112,26 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			else
 				promise = @Api.sendPostJson('/ticket_deps/create', postData)
 
+
+			if @dep.parent_id and @dep.parent_id != "0"
+				parent = @DepartmentData.deps.get(@dep.parent_id)
+				full_title = parent.title + ' > ' + @dep.title
+			else
+				full_title = @dep.title
+
 			# If the department is new, we need to handle updating the UI
 			# with the newly saved department once the request comes back with an ID
 			if @em.hasById('department', @dep.id)
 				model = @em.getById('department', @dep.id)
 				model.title = @dep.title
+				model._full_title = full_title
 				model.user_title = @dep.user_title
 			else
 				promise.success( (result) =>
 					@dep.id = result.id
 
 					model = @em.createEntity('department', 'id', @dep.getData())
+					model._full_title = full_title
 
 					if not model.parent_id or model.parent_id == "0"
 						model.parent_id = null

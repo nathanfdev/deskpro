@@ -156,7 +156,7 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var model, postData, promise,
+        var full_title, model, parent, postData, promise,
           _this = this;
         postData = {
           properties: this.dep.getData(),
@@ -167,14 +167,22 @@
         } else {
           promise = this.Api.sendPostJson('/ticket_deps/create', postData);
         }
+        if (this.dep.parent_id && this.dep.parent_id !== "0") {
+          parent = this.DepartmentData.deps.get(this.dep.parent_id);
+          full_title = parent.title + ' > ' + this.dep.title;
+        } else {
+          full_title = this.dep.title;
+        }
         if (this.em.hasById('department', this.dep.id)) {
           model = this.em.getById('department', this.dep.id);
           model.title = this.dep.title;
+          model._full_title = full_title;
           model.user_title = this.dep.user_title;
         } else {
           promise.success(function(result) {
             _this.dep.id = result.id;
             model = _this.em.createEntity('department', 'id', _this.dep.getData());
+            model._full_title = full_title;
             if (!model.parent_id || model.parent_id === "0") {
               model.parent_id = null;
             }

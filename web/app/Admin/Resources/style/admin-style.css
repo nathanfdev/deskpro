@@ -6890,6 +6890,18 @@ a:focus {
           box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
+.btn > i {
+  margin-right: 5px;
+}
+
+.btn.only-icon > i {
+  margin-right: 0;
+}
+
+.modal-footer {
+  text-align: center;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;

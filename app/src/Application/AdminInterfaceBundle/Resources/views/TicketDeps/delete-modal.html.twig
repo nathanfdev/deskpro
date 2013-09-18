@@ -14,14 +14,14 @@
 			<select
 				ui-select2
 				ng-model="selected.move_to_id"
-				style="min-width: 240px"
+				style="width: 240px"
 			>
 				<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in move_deps_list">{{ ng_var('dep._full_title') }}</option>
 			</select>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="confirm()">Delete Department</button>
-		<button class="btn btn-primary" ng-click="dismiss()">Cancel</button>
+		<button class="btn btn-success" ng-click="dismiss()"><i class="icon-undo"></i> Cancel</button>
+		<button class="btn btn-danger" ng-click="confirm()"><i class="icon-trash"></i> Delete Department</button>
 	</div>
 </div>
 </div>

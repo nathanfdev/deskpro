@@ -19,7 +19,7 @@
 						<i class="icon-reorder drag-handle"></i>
 						<div class="pull-right">
 							<span class="badge" ng-hide="delete_mode" style="margin-top: -1px;">ID: {{ ng_var('dep.id') }}</span>
-							<span class="btn btn-danger btn-xs" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
@@ -29,7 +29,7 @@
 								<i class="icon-reorder drag-handle"></i>
 								<div class="pull-right">
 									<span class="badge" ng-hide="delete_mode" style="margin-top: -1px;">ID: {{ ng_var('subdep.id') }}</span>
-									<span class="btn btn-danger btn-xs" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
+									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
 								</div>
 								<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="title-text">{{ ng_var('subdep.title') }}</span></h4>
 							</a>
