@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
 		@CTRL_AS = 'TicketDepsList'
-		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api']
+		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
@@ -74,7 +74,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					$scope.move_deps_list = move_deps_list
 
 					$scope.confirm = ->
-						console.log($scope.selected.move_to_id)
 						$modalInstance.close($scope.selected.move_to_id);
 
 					$scope.dismiss = ->
@@ -100,6 +99,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@DepartmentData.deps.remove(for_dep.id)
 				@em.removeById('department', for_dep.id)
 				@ngApply()
+
+				# if currently viewing the deleted department, then should need to switch state
+				if @$state.current.name == 'tickets.ticket_deps.edit' and parseInt(@$state.params.id) == for_dep.id
+					@$state.go('tickets.ticket_deps')
 			)
 
 	Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()

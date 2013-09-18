@@ -17,7 +17,7 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state'];
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
@@ -106,7 +106,6 @@
               };
               $scope.move_deps_list = move_deps_list;
               $scope.confirm = function() {
-                console.log($scope.selected.move_to_id);
                 return $modalInstance.close($scope.selected.move_to_id);
               };
               return $scope.dismiss = function() {
@@ -137,7 +136,10 @@
         }).success(function() {
           _this.DepartmentData.deps.remove(for_dep.id);
           _this.em.removeById('department', for_dep.id);
-          return _this.ngApply();
+          _this.ngApply();
+          if (_this.$state.current.name === 'tickets.ticket_deps.edit' && parseInt(_this.$state.params.id) === for_dep.id) {
+            return _this.$state.go('tickets.ticket_deps');
+          }
         });
       };
 
