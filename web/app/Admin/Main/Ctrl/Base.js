@@ -137,7 +137,6 @@
 
 
       Admin_Ctrl_Base.prototype.disableViewLoadingState = function() {
-        console.log(this.AppState);
         if (!this.constructor.CTRL_TYPE) {
           this.AppState.setLoadingState('dp_section_list', false);
           return this.AppState.setLoadingState('dp_section_page', false);

@@ -34,8 +34,6 @@
 namespace Application\DeskPRO\Departments;
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\DBAL\Connection;
-use Orb\Util\OptionsArray;
 
 class TicketDepartmentEditor
 {
@@ -56,24 +54,38 @@ class TicketDepartmentEditor
 
 	/**
 	 * @param $em
-	 * @return DepartmentEditor
+	 * @param $dep
 	 */
-	public static function createNew(EntityManager $em)
+	public function __construct(EntityManager $em)
+	{
+		$this->em       = $em;
+		$this->db       = $em->getConnection();
+	}
+
+
+	/**
+	 * @param int $id
+	 * @return null|object
+	 */
+	public function getDepartmentById($id)
+	{
+		$dep = $this->em->find('DeskPRO:Department', $id);
+		if (!$dep || !$dep->is_tickets_enabled) {
+			return null;
+		}
+
+		return $dep;
+	}
+
+
+	/**
+	 * @return Department
+	 */
+	public function createNewDepartment()
 	{
 		$dep = new Department();
 		$dep->is_tickets_enabled = true;
-		return new self($em, $dep);
-	}
-
-	/**
-	 * @param $em
-	 * @param $dep
-	 */
-	public function __construct(EntityManager $em, Department $dep = null)
-	{
-		$this->em  = $em;
-		$this->db  = $em->getConnection();
-		$this->dep = $dep;
+		return $dep;
 	}
 
 
@@ -81,19 +93,19 @@ class TicketDepartmentEditor
 	 * @param array $props
 	 * @throws \InvalidArgumentException
 	 */
-	public function editProperties(array $props)
+	public function editProperties(Department $dep, array $props)
 	{
 		$move_to = null;
 
-		if ($this->dep->parent && isset($props['parent_id']) && $props['parent_id'] == $this->dep->parent->getId()) {
+		if ($dep->parent && isset($props['parent_id']) && $props['parent_id'] == $dep->parent->getId()) {
 			unset($props['parent_id']);
 		}
 
-		if (!$this->dep->parent && isset($props['parent_id']) && !$props['parent_id']) {
+		if (!$dep->parent && isset($props['parent_id']) && !$props['parent_id']) {
 			unset($props['parent_id']);
 		}
 
-		if (!$this->dep->parent && isset($props['parent_id'])) {
+		if (!$dep->parent && isset($props['parent_id'])) {
 			if (!isset($props['move_tickets_to'])) {
 				throw new \InvalidArgumentException("You must supply a move_tickets_to when moving top-level department to become a parent");
 			}
@@ -108,16 +120,16 @@ class TicketDepartmentEditor
 			if (count($move_to->children)) {
 				throw new \InvalidArgumentException("move_tickets_to cannot be a parent");
 			}
-			if ($move_to->id == $this->dep->id) {
+			if ($move_to->id == $dep->id) {
 				throw new \InvalidArgumentException("move_tickets_to cannot be itself");
 			}
 		}
 
 		if (isset($props['title'])) {
-			$this->dep->title = $props['title'];
+			$dep->title = $props['title'];
 		}
 		if (isset($props['user_title'])) {
-			$this->dep->user_title = $props['user_title'];
+			$dep->user_title = $props['user_title'];
 		}
 		if (isset($props['parent_id'])) {
 			$new_parent = $this->em->find('DeskPRO:Department', $props['parent_id']);
@@ -131,22 +143,22 @@ class TicketDepartmentEditor
 				throw new \InvalidArgumentException("parent_id cannot be a child");
 			}
 
-			$this->dep->parent = $new_parent;
+			$dep->parent = $new_parent;
 
 			if ($move_to) {
 				// handle queued moving of tickets
 			}
 		}
 
-		if (!$this->dep->getId()) {
+		if (!$dep->getId()) {
 			// Put new departments at the end
 			$last = $this->db->fetchColumn("SELECT display_order FROM departments ORDER BY display_order DESC");
 			$last += 10;
 
-			$this->dep->display_order = $last;
+			$dep->display_order = $last;
 		}
 
-		$this->em->persist($this->dep);
+		$this->em->persist($dep);
 		$this->em->flush();
 	}
 
@@ -156,7 +168,7 @@ class TicketDepartmentEditor
 	 * @param array $agentgroup_perms
 	 * @param array $usergroup_perms
 	 */
-	public function editPermissions(array $agent_perms = null, array $agentgroup_perms = null, array $usergroup_perms = null)
+	public function editPermissions(Department $dep, array $agent_perms = null, array $agentgroup_perms = null, array $usergroup_perms = null)
 	{
 		$inserts = array();
 
@@ -164,11 +176,11 @@ class TicketDepartmentEditor
 			$this->db->executeQuery("
 				DELETE FROM department_permissions
 				WHERE usergroup_id IS NOT NULL AND department_id = ?
-			", array($this->dep->id));
+			", array($dep->id));
 
 			foreach ($agentgroup_perms as $perm) {
 				$inserts[] = array(
-					'department_id' => $this->dep->id,
+					'department_id' => $dep->id,
 					'usergroup_id' => $perm['usergroup_id'],
 					'person_id' => null,
 					'app' => 'tickets',
@@ -182,11 +194,11 @@ class TicketDepartmentEditor
 			$this->db->executeQuery("
 				DELETE FROM department_permissions
 				WHERE person_id IS NOT NULL AND department_id = ?
-			", array($this->dep->id));
+			", array($dep->id));
 
 			foreach ($agent_perms as $perm) {
 				$inserts[] = array(
-					'department_id' => $this->dep->id,
+					'department_id' => $dep->id,
 					'usergroup_id' => null,
 					'person_id' => $perm['agent_id'],
 					'app' => 'tickets',
@@ -200,11 +212,11 @@ class TicketDepartmentEditor
 			$this->db->executeQuery("
 				DELETE FROM department_permissions
 				WHERE usergroup_id IS NOT NULL AND department_id = ?
-			", array($this->dep->id));
+			", array($dep->id));
 
 			foreach ($usergroup_perms as $perm) {
 				$inserts[] = array(
-					'department_id' => $this->dep->id,
+					'department_id' => $dep->id,
 					'usergroup_id' => $perm['usergroup_id'],
 					'person_id' => null,
 					'app' => 'tickets',
@@ -223,7 +235,7 @@ class TicketDepartmentEditor
 	/**
 	 * Deletes the department
 	 */
-	public function remove($move_to_id)
+	public function remove(Department $dep, $move_to_id)
 	{
 		$move_to = $this->em->find('DeskPRO:Department', $move_to_id);
 
@@ -231,7 +243,7 @@ class TicketDepartmentEditor
 			throw new \InvalidArgumentException("You must specify a department to move to");
 		}
 
-		if ($move_to->id == $this->dep->id) {
+		if ($move_to->id == $dep->id) {
 			throw new \InvalidArgumentException("You must choose a different department");
 		}
 
@@ -239,23 +251,14 @@ class TicketDepartmentEditor
 			throw new \InvalidArgumentException("You must choose a valid department");
 		}
 
-		$old_id = $this->dep->id;
-		$this->em->remove($this->dep);
+		$old_id = $dep->id;
+		$this->em->remove($dep);
 		$this->em->flush();
 
 		$this->db->executeUpdate("UPDATE tickets SET department_id = ? WHERE department_id = ?", array($move_to, $old_id));
 		$this->db->executeUpdate("UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?", array($move_to, $old_id));
 
 		return $old_id;
-	}
-
-
-	/**
-	 * @return Department
-	 */
-	public function getDepartment()
-	{
-		return $this->dep;
 	}
 
 

@@ -105,7 +105,6 @@ define ['angular', 'Admin/App'], (angular) ->
   	* Stop the loading indicator in this pane
   	###
 		disableViewLoadingState: ->
-			console.log(@AppState)
 			if not @constructor.CTRL_TYPE
 				@AppState.setLoadingState('dp_section_list', false)
 				@AppState.setLoadingState('dp_section_page', false)

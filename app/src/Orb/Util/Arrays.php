@@ -876,6 +876,38 @@ class Arrays
 	}
 
 
+	/**
+	 * @param $array
+	 * @param string $order_key
+	 * @param string $parent_id_key
+	 */
+	public static function sortFlatHierarchyArray(&$array, $order_key = 'display_order', $parent_key = 'parent', $keep_keys = false)
+	{
+		$sort_fn = $keep_keys ? 'uasort' : 'usort';
+
+		$sort_fn($array, function($a, $b) use ($order_key, $parent_key) {
+
+			if ($a[$parent_key]) {
+				$a_order = floatval($a[$parent_key][$order_key] . '.' . $a[$order_key]);
+			} else {
+				$a_order = floatval($a[$order_key]);
+			}
+
+			if ($b[$parent_key]) {
+				$b_order = floatval($b[$parent_key][$order_key] . '.' . $b[$order_key]);
+			} else {
+				$b_order = floatval($b[$order_key]);
+			}
+
+			if ($a_order == $b_order) {
+				return 0;
+			}
+
+			return $a_order < $b_order ? -1 : 1;
+		});
+	}
+
+
 
 	/**
 	 * Takes an array hierarchy and converts it into a k=>title array suitable for a flat select box.
@@ -889,7 +921,7 @@ class Arrays
 	public static function selectArrayFromHierarchy($array, $index_key = 'id', $title_key = 'title', $indent = '--')
 	{
 		if (!is_array($array)) {
-			$deps = iterator_to_array($array);
+			$array = iterator_to_array($array);
 		}
 		$flat = self::flattenHierarchy($array);
 

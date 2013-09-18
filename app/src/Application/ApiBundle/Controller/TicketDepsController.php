@@ -35,6 +35,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
+use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
+use Orb\Util\Arrays;
 
 class TicketDepsController extends AbstractController
 {
@@ -52,6 +54,8 @@ class TicketDepsController extends AbstractController
 			WHERE d.is_tickets_enabled = true
 			ORDER BY d.display_order ASC
 		")->execute();
+
+		Arrays::sortFlatHierarchyArray($deps, 'display_order', 'parent');
 
 		$data['departments'] = $this->getApiData($deps, false);
 		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
@@ -111,14 +115,25 @@ class TicketDepsController extends AbstractController
 
 	public function saveAction($id)
 	{
-		$editor = $this->_getDepartmentEditor($id);
+		$editor = $this->_getDepartmentEditor();
+
+		if ($id) {
+			$dep = $editor->getDepartmentById($id);
+		} else {
+			$dep = $editor->createNewDepartment();
+		}
+
+		if (!$dep) {
+			throw $this->createNotFoundException();
+		}
 
 		if ($this->in->checkIsset('properties')) {
-			$editor->editProperties($this->in->getArrayValue('properties'));
+			$editor->editProperties($dep, $this->in->getArrayValue('properties'));
 		}
 
 		if ($this->in->checkIsset('permissions')) {
 			$editor->editPermissions(
+				$dep,
 				$this->in->checkIsset('permissions.agents')      ? $this->in->getCleanValueArray('permissions.agents') : null,
 				$this->in->checkIsset('permissions.agentgroups') ? $this->in->getCleanValueArray('permissions.agentgroups') : null,
 				$this->in->checkIsset('permissions.usergroups')  ? $this->in->getCleanValueArray('permissions.usergroups') : null
@@ -135,10 +150,16 @@ class TicketDepsController extends AbstractController
 
 	public function removeAction($id)
 	{
-		$move_to = $this->in->getUint('move_to');
-		$editor = $this->_getDepartmentEditor($id);
+		$editor = $this->_getDepartmentEditor();
+		$dep = $editor->getDepartmentById($id);
 
-		$old_id = $editor->remove($move_to);
+		if (!$dep) {
+			throw $this->createNotFoundException();
+		}
+
+		$move_to = $this->in->getUint('move_to');
+
+		$old_id = $editor->remove($dep, $move_to);
 
 		return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
 	}
@@ -151,11 +172,13 @@ class TicketDepsController extends AbstractController
 	public function saveDisplayOrderAction()
 	{
 		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
-		$editor = new TicketDepartmentEditor($this->em, null);
+
+		$editor = $this->_getDepartmentEditor();
 		$editor->updateDisplayOrders($display_orders);
 
 		return $this->createSuccessResponse();
 	}
+
 
 	####################################################################################################################
 	# get-settings
@@ -163,14 +186,10 @@ class TicketDepsController extends AbstractController
 
 	public function getSettingsAction()
 	{
-		$settings = array(
-			'core.default_ticket_dep'         => $this->container->getSetting('core.default_ticket_dep'),
-			'core.phrase_department_singular' => $this->container->getSetting('core.phrase_department_singular'),
-			'core.phrase_department_plural'   => $this->container->getSetting('core.phrase_department_plural'),
-		);
-
+		$settings = $this->_getDepartmentSettingHandler()->getSettings();
 		return $this->createApiResponse($settings);
 	}
+
 
 	####################################################################################################################
 	# save-settings
@@ -179,80 +198,7 @@ class TicketDepsController extends AbstractController
 	public function saveSettingsAction()
 	{
 		$set_settings = $this->in->getCleanValueArray('settings', 'string', 'string');
-
-		if (isset($set_settings['core.default_ticket_dep']) && $set_settings['core.default_ticket_dep'] != $this->container->getSetting('core.default_ticket_dep')) {
-			$this->container->getSettingsHandler()->setSetting('core.default_ticket_dep', $set_settings['core.default_ticket_dep']);
-		}
-
-		$change_phrase = array();
-		if (isset($set_settings['core.phrase_department_singular']) && $set_settings['core.phrase_department_singular'] != $this->container->getSetting('core.phrase_department_singular')) {
-			$change_phrase['singular'] = $set_settings['core.phrase_department_singular'];
-		}
-		if (isset($set_settings['core.phrase_department_plural']) && $set_settings['core.phrase_department_plural'] != $this->container->getSetting('core.phrase_department_plural')) {
-			$change_phrase['plural'] = $set_settings['core.phrase_department_singular'];
-		}
-
-		if ($change_phrase) {
-			if (!isset($change_phrase['singular'])) {
-				$change_phrase['singular'] = $this->container->getSetting('core.phrase_department_singular');
-			}
-			if (!isset($change_phrase['plural'])) {
-				$change_phrase['plural'] = $this->container->getSetting('core.phrase_department_plural');
-			}
-
-			$phrase_singular   = strtolower($change_phrase['singular']);
-			$phrase_plural     = strtolower($change_phrase['plural']);
-			$phrase_singular_c = ucwords($phrase_singular);
-			$phrase_plural_c   = ucwords($phrase_plural);
-
-			$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
-			$phrases = $groups_reader->getAllUserPhrases();
-
-			$batch = array();
-			$ids = array();
-
-			$d = date('Y-m-d H:i:s');
-
-			foreach ($phrases as $phrase_id => $phrase_text) {
-				$new_phrase = str_replace(
-					array('departments', 'Departments', 'department', 'Department'),
-					array($phrase_plural, $phrase_plural_c, $phrase_singular, $phrase_singular_c),
-					$phrase_text
-				);
-
-				if ($new_phrase != $phrase_text) {
-					$group = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
-					$batch[] = array(
-						'language_id' => 1,
-						'name'        => $phrase_id,
-						'groupname'   => $group,
-						'phrase'      => $new_phrase,
-						'created_at'  => $d,
-						'updated_at'  => $d
-					);
-
-					$ids[] = $phrase_id;
-				}
-			}
-
-			if ($ids) {
-				$this->db->beginTransaction();
-				try {
-					$this->db->executeQuery("
-						DELETE FROM phrases
-						WHERE name IN (" . $this->db->quoteIn($ids) . ") AND language_id = 1
-					");
-
-					$this->db->batchInsert('phrases', $batch);
-
-					$this->db->commit();
-				} catch (\Exception $e) {
-					$this->db->rollback();
-					throw $e;
-				}
-			}
-		}
-
+		$this->_getDepartmentSettingHandler()->setSettings($set_settings);
 		return $this->createSuccessResponse();
 	}
 
@@ -265,21 +211,23 @@ class TicketDepsController extends AbstractController
 	 * @return TicketDepartmentEditor
 	 * @throws
 	 */
-	private function _getDepartmentEditor($id)
+	private function _getDepartmentEditor()
 	{
-		if ($id) {
-			$dep = $this->em->find('DeskPRO:Department', $id);
-
-			if (!$dep || !$dep->is_tickets_enabled) {
-				throw $this->createNotFoundException();
-			}
-
-			$editor = new TicketDepartmentEditor($this->em, $dep);
-		} else {
-			$editor = TicketDepartmentEditor::createNew($this->em);
-		}
-
-
+		$editor = new TicketDepartmentEditor($this->em);
 		return $editor;
+	}
+
+
+	/**
+	 * @return TicketDepartmentHandler
+	 */
+	public function _getDepartmentSettingHandler()
+	{
+		$ticket_deps_settings = new TicketDepartmentHandler(
+			$this->container->getSettingsHandler(),
+			$this->db
+		);
+
+		return $ticket_deps_settings;
 	}
 }

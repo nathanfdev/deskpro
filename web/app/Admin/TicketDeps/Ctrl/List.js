@@ -53,7 +53,6 @@
         data_promise = this.Api.sendDataGet(['/ticket_deps/settings']).then(function(res) {
           var settings;
           settings = res.data.api_ticket_deps_settings;
-          console.log(settings);
           _this.dep_settings.default_id = settings['core.default_ticket_dep'];
           _this.dep_settings.name_singular = settings['core.phrase_department_singular'];
           return _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
@@ -66,6 +65,7 @@
         this.departments = departments;
         this.parent_deps = [];
         this.child_deps = {};
+        this.default_dep_list = [];
         _results = [];
         for (_i = 0, _len = departments.length; _i < _len; _i++) {
           dep = departments[_i];
@@ -73,9 +73,15 @@
             if (!this.child_deps[dep.parent_id]) {
               this.child_deps[dep.parent_id] = [];
             }
-            _results.push(this.child_deps[dep.parent_id].push(dep));
+            this.child_deps[dep.parent_id].push(dep);
+            _results.push(this.default_dep_list.push(dep));
           } else {
-            _results.push(this.parent_deps.push(dep));
+            this.parent_deps.push(dep);
+            if (!dep._child_ids) {
+              _results.push(this.default_dep_list.push(dep));
+            } else {
+              _results.push(void 0);
+            }
           }
         }
         return _results;
@@ -165,8 +171,8 @@
         postData = {
           settings: {
             'core.default_ticket_dep': this.dep_settings.default_id,
-            'core.phrase_department_singular': this.dep_settings.dep_settings.name_singular,
-            'core.phrase_department_plural': this.dep_settings.dep_settings.name_plural
+            'core.phrase_department_singular': this.dep_settings.name_singular,
+            'core.phrase_department_plural': this.dep_settings.name_plural
           }
         };
         return this.Api.sendPostJson('/ticket_deps/settings', postData);

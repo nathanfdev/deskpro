@@ -53,7 +53,7 @@
 								ng-model="TicketDepsList.dep_settings.default_id"
 								style="min-width: 200px"
 							>
-								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsList.departments">{{ ng_var('dep._full_title') }}</option>
+								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsList.default_dep_list">{{ ng_var('dep._full_title') }}</option>
 							</select>
 						</div>
 					</div>

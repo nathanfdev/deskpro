@@ -37,7 +37,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					'/ticket_deps/settings'
 			]).then( (res) =>
 				settings = res.data.api_ticket_deps_settings
-				console.log(settings)
 
 				@dep_settings.default_id    = settings['core.default_ticket_dep']
 				@dep_settings.name_singular = settings['core.phrase_department_singular']
@@ -51,6 +50,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			@departments = departments
 			@parent_deps = []
 			@child_deps = {}
+			@default_dep_list = []
 
 			for dep in departments
 				if dep.parent_id
@@ -59,8 +59,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					@child_deps[dep.parent_id].push(dep)
 
+					@default_dep_list.push(dep)
+
 				else
 					@parent_deps.push(dep)
+					if not dep._child_ids
+						@default_dep_list.push(dep)
 
 		###*
 		* Get the move dep list for use in the delete/move dlg
@@ -128,8 +132,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			postData = {
 				settings: {
 					'core.default_ticket_dep':         @dep_settings.default_id,
-					'core.phrase_department_singular': @dep_settings.dep_settings.name_singular,
-					'core.phrase_department_plural':   @dep_settings.dep_settings.name_plural
+					'core.phrase_department_singular': @dep_settings.name_singular,
+					'core.phrase_department_plural':   @dep_settings.name_plural
 				}
 			}
 
