@@ -32,6 +32,7 @@
 	left: @appNavWidth;
 	width: @navWidth;
 	overflow: auto;
+	display: none;
 }
 
 .dp-section-list {
@@ -49,9 +50,19 @@
 	position: fixed;
 	top: @topHeight;
 	bottom: 0;
-	left: @appNavWidth + @navWidth;
+	left: @appNavWidth;
 	right: 0;
 	overflow: auto;
+}
+
+.with-section-nav {
+	.dp-section-nav {
+		display: block;
+	}
+
+	.dp-section-page {
+		left: @appNavWidth + @navWidth;
+	}
 }
 
 .with-section-list {
@@ -59,6 +70,13 @@
 		display: block;
 	}
 
+	.dp-section-page {
+		border-left: 1px solid #A8ABB2;
+		left: @appNavWidth + @listWidth;
+	}
+}
+
+.with-section-nav.with-section-list {
 	.dp-section-page {
 		border-left: 1px solid #A8ABB2;
 		left: @appNavWidth + @navWidth + @listWidth;

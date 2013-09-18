@@ -26,6 +26,11 @@
             } else {
               $(document.body).removeClass('with-section-list');
             }
+            if (_this.$state.current.with_nav_view) {
+              $(document.body).addClass('with-section-nav');
+            } else {
+              $(document.body).removeClass('with-section-nav');
+            }
             if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {
               return (_ref1 = window.parent) != null ? _ref1.DP_FRAME_OVERLAY_admin.setHash((window.location.hash + '').substring(1)) : void 0;
             }

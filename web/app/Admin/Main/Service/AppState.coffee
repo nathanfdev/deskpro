@@ -21,6 +21,11 @@ define ->
 					else
 						$(document.body).removeClass('with-section-list')
 
+					if @$state.current.with_nav_view
+						$(document.body).addClass('with-section-nav')
+					else
+						$(document.body).removeClass('with-section-nav')
+
 					if window.parent?.DP_FRAME_OVERLAY_admin
 						window.parent?.DP_FRAME_OVERLAY_admin.setHash((window.location.hash+'').substring(1))
 			)

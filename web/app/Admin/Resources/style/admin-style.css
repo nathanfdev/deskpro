@@ -6725,6 +6725,7 @@ body.modal-open,
   top: 51px;
   bottom: 0;
   left: 55px;
+  display: none;
   width: 235px;
   overflow: auto;
 }
@@ -6745,8 +6746,16 @@ body.modal-open,
   top: 51px;
   right: 0;
   bottom: 0;
-  left: 290px;
+  left: 55px;
   overflow: auto;
+}
+
+.with-section-nav .dp-section-nav {
+  display: block;
+}
+
+.with-section-nav .dp-section-page {
+  left: 290px;
 }
 
 .with-section-list .dp-section-list {
@@ -6754,6 +6763,11 @@ body.modal-open,
 }
 
 .with-section-list .dp-section-page {
+  left: 530px;
+  border-left: 1px solid #A8ABB2;
+}
+
+.with-section-nav.with-section-list .dp-section-page {
   left: 765px;
   border-left: 1px solid #A8ABB2;
 }

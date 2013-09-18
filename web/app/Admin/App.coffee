@@ -213,7 +213,7 @@ define [
 			if route.page?
 				views['dp_section_page@'] = route.page
 
-			opts = {url: url, views: views}
+			opts = {url: url, views: views, with_nav_view: true}
 			if route.with_list_view
 				opts.with_list_view = true
 			else if route.list?
@@ -224,6 +224,9 @@ define [
 
 				if with_lists[segs.join('.')]
 					opts.with_list_view = true
+
+			if route.with_nav_view?
+				opts.with_nav_view = route.with_nav_view
 
 			if opts.with_list_view
 				with_lists[id] = true

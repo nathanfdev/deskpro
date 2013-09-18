@@ -203,7 +203,8 @@
           }
           opts = {
             url: url,
-            views: views
+            views: views,
+            with_nav_view: true
           };
           if (route.with_list_view) {
             opts.with_list_view = true;
@@ -215,6 +216,9 @@
             if (with_lists[segs.join('.')]) {
               opts.with_list_view = true;
             }
+          }
+          if (route.with_nav_view != null) {
+            opts.with_nav_view = route.with_nav_view;
           }
           if (opts.with_list_view) {
             with_lists[id] = true;

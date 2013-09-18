@@ -7,6 +7,17 @@ define(function() {
 	//##################################################################################################################
 
 	routes.push({
+		id: 'home',
+		url: '/',
+		with_list_view: false,
+		with_nav_view: false,
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/home.html',
+			controller: 'Admin_Main_Ctrl_NavSetup'
+		}
+	});
+
+	routes.push({
 		id: 'setup',
 		url: '/setup',
 		nav: {
