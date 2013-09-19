@@ -7395,13 +7395,6 @@ article.pane-content.pad-top {
   background-color: #F5F7FA;
 }
 
-.dp-item-list > li.title {
-  padding: 9px 15px;
-  padding-top: 20px;
-  font-size: 110%;
-  border-bottom: 3px solid #aaa;
-}
-
 .dp-item-list > li,
 .dp-item-list > .dp-itm {
   display: block;
@@ -7415,11 +7408,16 @@ article.pane-content.pad-top {
   background: #D4E4FF;
 }
 
+.dp-item-list > li.with-drag-handle > a,
+.dp-item-list > .dp-itm.with-drag-handle > a {
+  padding-left: 32px;
+}
+
 .dp-item-list > li > a,
 .dp-item-list > .dp-itm > a {
   position: relative;
   display: block;
-  padding: 9px 13px 9px 18px;
+  padding: 9px 13px;
   line-height: 100%;
   color: #333333;
   text-decoration: none;
@@ -7466,17 +7464,37 @@ article.pane-content.pad-top {
   color: #888;
 }
 
+.dp-item-list a > h4 > .title-text {
+  vertical-align: text-bottom;
+}
+
 .dp-item-list a:hover > h4 > .title-text {
   text-decoration: underline;
 }
 
 .dp-item-list .drag-handle {
   position: absolute;
-  top: 10px;
-  left: 2px;
-  font-size: 11px;
+  top: 7px;
+  left: 8px;
+  font-size: 18px;
   color: #ccc;
   cursor: move;
+}
+
+.dp-item-list .tree-char {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  width: 30px;
+  color: #999;
+}
+
+.dp-item-list .tree-char.middle:before {
+  content: "\2514\2500";
+}
+
+.dp-item-list .tree-char.last:before {
+  content: "\2514\2500";
 }
 
 nav.dp-main-tabs {

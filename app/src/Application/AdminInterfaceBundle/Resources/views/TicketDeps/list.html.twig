@@ -14,24 +14,28 @@
 				<h3>{{ ng_var('TicketDepsList.departments.length') }} Departments</h3>
 			</div>
 			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions">
-				<li ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
+				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}">
 						<i class="icon-reorder drag-handle"></i>
 						<div class="pull-right">
-							<span class="badge" ng-hide="delete_mode" style="margin-top: -1px;">ID: {{ ng_var('dep.id') }}</span>
+							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;">ID: {{ ng_var('dep.id') }}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 					<ul class="dp-item-list sublist" ng-if="TicketDepsList.child_deps[dep.id]" ui-sortable="TicketDepsList.sortedListOptions">
-						<li ng-repeat="subdep in TicketDepsList.child_deps[dep.id]" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
+						<li class="with-drag-handle" ng-repeat="subdep in TicketDepsList.child_deps[dep.id]" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
 							<a href="#/tickets/ticket_deps/{{ ng_var('subdep.id') }}">
 								<i class="icon-reorder drag-handle"></i>
 								<div class="pull-right">
-									<span class="badge" ng-hide="delete_mode" style="margin-top: -1px;">ID: {{ ng_var('subdep.id') }}</span>
+									<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;">ID: {{ ng_var('subdep.id') }}</span>
 									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(subdep); $event.preventDefault();"><i class="icon-trash"></i></span>
 								</div>
-								<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="title-text">{{ ng_var('subdep.title') }}</span></h4>
+								<h4>
+									<span class="tree-char middle" ng-if="!$last"></span>
+									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-text">{{ ng_var('subdep.title') }}</span>
+								</h4>
 							</a>
 						</li>
 					</ul>

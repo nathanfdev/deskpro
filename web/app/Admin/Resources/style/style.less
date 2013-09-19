@@ -447,13 +447,6 @@ article.pane-content {
 		background-color: #F5F7FA;
 	}
 
-	> li.title {
-		padding: 9px 15px;
-		padding-top: 20px;
-		border-bottom: 3px solid #aaa;
-		font-size: 110%;
-	}
-
 	> li, > .dp-itm {
 		display: block;
 		padding: 0;
@@ -464,12 +457,16 @@ article.pane-content {
 			background: #D4E4FF;
 		}
 
+		&.with-drag-handle > a {
+			padding-left: 32px;
+		}
+
 		> a {
 			position: relative;
 			display: block;
 			text-decoration: none;
 			color: @text-color;
-			padding: 9px 13px 9px 18px;
+			padding: 9px 13px;
 			line-height: 100%;
 
 			border-bottom: 1px solid #ccc;
@@ -505,17 +502,34 @@ article.pane-content {
 		color: #888;
 	}
 
+	a > h4 > .title-text {
+		vertical-align: text-bottom;
+	}
 	a:hover > h4 > .title-text {
 		text-decoration: underline;
 	}
 
 	.drag-handle {
 		position: absolute;
-		left: 2px;
-		top: 10px;
-		font-size: 11px;
+		left: 8px;
+		top: 7px;
+		font-size: 18px;
 		color: #ccc;
 		cursor: move;
+	}
+
+	.tree-char {
+		position: relative;
+		top: 2px;
+		display: inline-block;
+		width: 30px;
+		color: #999;
+	}
+	.tree-char.middle:before {
+		content: "\2514\2500"
+	}
+	.tree-char.last:before {
+		content: "\2514\2500"
 	}
 }
 
