@@ -78,53 +78,38 @@
 					</form>
 				</div>
 			</div>
-			<div class="pane-footer text-center">
+			<div class="inner-footer text-center">
 				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
 			</div>
 		</div>
 
 		<div dp-tab-body="main.perms">
-			<div class="panel panel-fill">
-				<div class="panel-heading"><h3>Agent Group Permissions</h3></div>
+			<div class="panel panel-innertable">
+				<div class="panel-heading"><h3>Agent Permissions</h3></div>
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th>Agent Group</th>
-							<th>Full Access</th>
-							<th>Assignment</th>
+							<th>&nbsp;</th>
+							<th width="100" class="text-center">Full Access</th>
+							<th width="100" class="text-center">Assignment</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups">
 							<td>{{ ng_var('usergroup.title') }}</td>
-							<td>
+							<td class="text-center">
 								<button dp-toggle-switch ng-model="usergroup.full"></button>
 							</td>
-							<td>
+							<td class="text-center">
 								<button dp-toggle-switch ng-model="usergroup.assign"></button>
 							</td>
 						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="panel panel-fill">
-				<div class="panel-heading"><h3>Agent Permissions</h3></div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>Agent</th>
-							<th>Full Access</th>
-							<th>Assignment</th>
-						</tr>
-					</thead>
-					<tbody>
 						<tr ng-repeat="agent in TicketDepsEdit.agents">
 							<td>{{ ng_var('agent.display_name') }}</td>
-							<td>
+							<td class="text-center">
 								<button dp-toggle-switch ng-model="agent.full"></button>
 							</td>
-							<td>
+							<td class="text-center">
 								<button dp-toggle-switch ng-model="agent.assign"></button>
 							</td>
 						</tr>
@@ -132,19 +117,19 @@
 				</table>
 			</div>
 
-			<div class="panel panel-fill">
+			<div class="panel panel-innertable">
 				<div class="panel-heading"><h3>User Group Permissions</h3></div>
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th>Agent Group</th>
-							<th>Access</th>
+							<th>&nbsp;</th>
+							<th width="100" class="text-center">Access</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
 							<td>{{ ng_var('usergroup.title') }}</td>
-							<td>
+							<td class="text-center">
 								<button dp-toggle-switch ng-model="usergroup.use"></button>
 							</td>
 						</tr>
@@ -152,19 +137,18 @@
 				</table>
 			</div>
 
-			<div class="pane-footer text-center">
+			<div class="inner-footer text-center">
 				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
 			</div>
 		</div>
 
 		<div dp-tab-body="main.layout">
 			<div class="panel panel-fill">
-				<div class="panel-heading"><h3>Layout</h3></div>
 				<div class="panel-body" style="height: 400px;">
 
 				</div>
 			</div>
-			<div class="pane-footer text-center">
+			<div class="inner-footer text-center">
 				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
 			</div>
 		</div>

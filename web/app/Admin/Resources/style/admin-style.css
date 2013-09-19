@@ -7778,6 +7778,53 @@ nav.dp-main-tabs ul li.active {
   border-top: 2px solid #999999;
 }
 
+.panel.panel-innertable {
+  margin: 30px;
+  border: 1px solid #DDD;
+  -webkit-border-radius: 2px;
+     -moz-border-radius: 2px;
+          border-radius: 2px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.panel.panel-innertable td {
+  vertical-align: middle;
+}
+
+.panel.panel-innertable .table tbody > tr > th,
+.panel.panel-innertable .table tbody > tr > td {
+  border-top: 1px dotted #BBB;
+}
+
+.panel.panel-innertable .panel-heading {
+  padding: 10px 8px;
+  margin: 0;
+  background: #EEEEEE;
+  border-bottom: 1px solid #DDD;
+}
+
+.panel.panel-innertable .panel-heading h3 {
+  padding: 0;
+  margin: 0;
+  font-size: 140%;
+  font-weight: normal;
+}
+
+.inner-footer {
+  padding: 15px;
+  margin: 30px;
+  background: #E9E9E9;
+  border: 1px solid #DDD;
+  -webkit-border-radius: 2px;
+     -moz-border-radius: 2px;
+          border-radius: 2px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
 section.dp-help-page {
   margin: 25px;
   font-size: 110%;
