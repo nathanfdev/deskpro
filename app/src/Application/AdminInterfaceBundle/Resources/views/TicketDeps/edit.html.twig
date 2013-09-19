@@ -90,12 +90,12 @@
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th width="100" class="text-center">Full Access</th>
-							<th width="100" class="text-center">Assignment</th>
+							<th width="120" class="text-center">Full Access <span class="help-icon" tooltip-placement="left" tooltip="Full Access means the agent can view tickets in the department as well as create or move tickets into the department."></span></th>
+							<th width="120" class="text-center">Assignment <span class="help-icon" tooltip-placement="left" tooltip="Assignment means that the agent cannot view tickets in the department, but they can create or move tickets into it."></span></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups">
+						<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups" ng-class="{'last-of-type': $last}">
 							<td>{{ ng_var('usergroup.title') }}</td>
 							<td class="text-center">
 								<button dp-toggle-switch ng-model="usergroup.full"></button>
@@ -104,7 +104,7 @@
 								<button dp-toggle-switch ng-model="usergroup.assign"></button>
 							</td>
 						</tr>
-						<tr ng-repeat="agent in TicketDepsEdit.agents">
+						<tr ng-repeat="agent in TicketDepsEdit.agents" ng-class="{'first-of-type': $first}">
 							<td>{{ ng_var('agent.display_name') }}</td>
 							<td class="text-center">
 								<button dp-toggle-switch ng-model="agent.full"></button>
@@ -123,7 +123,7 @@
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th width="100" class="text-center">Access</th>
+							<th width="120" class="text-center">Use <span class="help-icon" tooltip-placement="left" tooltip="When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to."></span></th>
 						</tr>
 					</thead>
 					<tbody>

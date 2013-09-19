@@ -7798,6 +7798,10 @@ nav.dp-main-tabs ul li.active {
   border-top: 1px dotted #BBB;
 }
 
+.panel.panel-innertable .table tbody > tr.first-of-type td {
+  border-top: 2px solid #BBB;
+}
+
 .panel.panel-innertable .panel-heading {
   padding: 10px 8px;
   margin: 0;
@@ -7823,6 +7827,21 @@ nav.dp-main-tabs ul li.active {
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
+}
+
+span.help-icon {
+  font-family: FontAwesome;
+  font-size: 12px;
+  color: #c5c5c5;
+  cursor: help;
+}
+
+span.help-icon:before {
+  content: "\f059";
+}
+
+span.help-icon:hover {
+  color: #66AFE9;
 }
 
 section.dp-help-page {

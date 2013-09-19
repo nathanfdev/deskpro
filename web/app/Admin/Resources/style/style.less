@@ -638,6 +638,9 @@ nav.dp-main-tabs {
 	.table tbody > tr > th, .table tbody > tr > td {
 		border-top: 1px dotted #BBB;
 	}
+	.table tbody > tr.first-of-type td {
+		border-top: 2px solid #BBB;
+	}
 
 	.panel-heading {
 		margin: 0;
@@ -665,6 +668,21 @@ nav.dp-main-tabs {
 //######################################################################################################################
 //# Help
 //######################################################################################################################
+
+span.help-icon {
+	font-family: FontAwesome;
+	font-size: 12px;
+	color: #c5c5c5;
+	cursor: help;
+
+	&:before {
+		content: "\f059";
+	}
+
+	&:hover {
+		color: #66AFE9;
+	}
+}
 
 section.dp-help-page {
 	background: @admin_help_bg;
