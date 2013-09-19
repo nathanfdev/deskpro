@@ -4,27 +4,27 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-    var Admin_Main_Ctrl_Bare, _ref;
-    Admin_Main_Ctrl_Bare = (function(_super) {
-      __extends(Admin_Main_Ctrl_Bare, _super);
+    var Admin_Main_Ctrl_BareList, _ref;
+    Admin_Main_Ctrl_BareList = (function(_super) {
+      __extends(Admin_Main_Ctrl_BareList, _super);
 
-      function Admin_Main_Ctrl_Bare() {
-        _ref = Admin_Main_Ctrl_Bare.__super__.constructor.apply(this, arguments);
+      function Admin_Main_Ctrl_BareList() {
+        _ref = Admin_Main_Ctrl_BareList.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      Admin_Main_Ctrl_Bare.CTRL_ID = 'Admin_Main_Ctrl_Bare';
+      Admin_Main_Ctrl_BareList.CTRL_ID = 'Admin_Main_Ctrl_BareList';
 
-      Admin_Main_Ctrl_Bare.CTRL_TYPE = 'page';
+      Admin_Main_Ctrl_BareList.CTRL_TYPE = 'list';
 
-      return Admin_Main_Ctrl_Bare;
+      return Admin_Main_Ctrl_BareList;
 
     })(Admin_Ctrl_Base);
-    return Admin_Main_Ctrl_Bare.EXPORT_CTRL();
+    return Admin_Main_Ctrl_BareList.EXPORT_CTRL();
   });
 
 }).call(this);
 
 /*
-//@ sourceMappingURL=Bare.map
+//@ sourceMappingURL=BareList.map
 */

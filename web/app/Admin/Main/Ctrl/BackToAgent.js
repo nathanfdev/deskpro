@@ -15,7 +15,7 @@
 
       Admin_Main_Ctrl_BackToAgent.CTRL_ID = 'Admin_Main_Ctrl_BackToAgent';
 
-      Admin_Main_Ctrl_BackToAgent.DEPS = ['$scope'];
+      Admin_Main_Ctrl_BackToAgent.CTRL_TYPE = 'any';
 
       Admin_Main_Ctrl_BackToAgent.prototype.init = function() {
         if (!window.parent) {

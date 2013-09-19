@@ -128,12 +128,12 @@
       }
 
       /**
-      	* A controller may override this method.
-      	*
-      	* Return true if the current state is dirty (unsaved). The user
-      	* will be asked to confirm leaving.
-      	*
-      	* @return {Boolean}
+      		* A controller may override this method.
+      		*
+      		* Return true if the current state is dirty (unsaved). The user
+      		* will be asked to confirm leaving.
+      		*
+      		* @return {Boolean}
       */
 
 
@@ -141,17 +141,29 @@
         return false;
       };
 
-      Admin_Ctrl_Base.prototype.skipDirtyState = function() {
-        return this._state_cont_go = true;
+      /**
+        	* Set dirty state checking feature on this tab. Disabled
+         	* means no dirty state checking is performed when the user
+        	* tries to leave.
+        	*
+        	* @param {Boolean} turn_off True (default) to turn off. Pass false to turn it back on
+      */
+
+
+      Admin_Ctrl_Base.prototype.skipDirtyState = function(turn_off) {
+        if (turn_off == null) {
+          turn_off = true;
+        }
+        return this._state_cont_go = turn_off;
       };
 
       /**
-      	* Show this page as "loading"
+      		* Show this page as "loading"
       */
 
 
       Admin_Ctrl_Base.prototype.enableViewLoadingState = function() {
-        if (!this.constructor.CTRL_TYPE) {
+        if (!this.constructor.CTRL_TYPE === 'any') {
           this.AppState.setLoadingState('dp_section_list', true);
           return this.AppState.setLoadingState('dp_section_page', true);
         } else if (this.constructor.CTRL_TYPE === 'list') {
@@ -162,12 +174,12 @@
       };
 
       /**
-      	* Stop the loading indicator in this pane
+      		* Stop the loading indicator in this pane
       */
 
 
       Admin_Ctrl_Base.prototype.disableViewLoadingState = function() {
-        if (!this.constructor.CTRL_TYPE) {
+        if (!this.constructor.CTRL_TYPE === 'any') {
           this.AppState.setLoadingState('dp_section_list', false);
           return this.AppState.setLoadingState('dp_section_page', false);
         } else if (this.constructor.CTRL_TYPE === 'list') {

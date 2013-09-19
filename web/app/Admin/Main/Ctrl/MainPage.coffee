@@ -32,7 +32,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				from_group = from_list = from_page = null
 
 				if fromState
-					id_segs = toState.name.split('.')
+					id_segs = fromState.name.split('.')
 					if id_segs.length >= 2
 						from_group = id_segs.shift()
 						from_list  = id_segs.shift()

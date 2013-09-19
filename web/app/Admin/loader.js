@@ -51,6 +51,7 @@ requirejs([
 	'Admin/App',
 
 	'Admin/Main/Ctrl/Bare',
+	'Admin/Main/Ctrl/BareList',
 	'Admin/Main/Ctrl/MainPage',
 	'Admin/Main/Ctrl/Home',
 	'Admin/Main/Ctrl/BackToAgent',

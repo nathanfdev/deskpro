@@ -99,25 +99,35 @@ define ['angular', 'Admin/App'], (angular) ->
 			else
 				@disableViewLoadingState()
 
+
 		###*
-  	* A controller may override this method.
-  	*
-  	* Return true if the current state is dirty (unsaved). The user
-  	* will be asked to confirm leaving.
-  	*
-  	* @return {Boolean}
-  	###
+		* A controller may override this method.
+		*
+		* Return true if the current state is dirty (unsaved). The user
+		* will be asked to confirm leaving.
+		*
+		* @return {Boolean}
+		###
 		checkDirtyState: ->
 			return false
 
-		skipDirtyState: ->
-			@_state_cont_go = true
 
 		###*
-  	* Show this page as "loading"
-  	###
+    	* Set dirty state checking feature on this tab. Disabled
+     	* means no dirty state checking is performed when the user
+    	* tries to leave.
+    	*
+    	* @param {Boolean} turn_off True (default) to turn off. Pass false to turn it back on
+    	###
+		skipDirtyState: (turn_off = true) ->
+			@_state_cont_go = turn_off
+
+
+		###*
+		* Show this page as "loading"
+		###
 		enableViewLoadingState: ->
-			if not @constructor.CTRL_TYPE
+			if not @constructor.CTRL_TYPE == 'any'
 				@AppState.setLoadingState('dp_section_list', true)
 				@AppState.setLoadingState('dp_section_page', true)
 			else if @constructor.CTRL_TYPE == 'list'
@@ -127,10 +137,10 @@ define ['angular', 'Admin/App'], (angular) ->
 
 
 		###*
-  	* Stop the loading indicator in this pane
-  	###
+		* Stop the loading indicator in this pane
+		###
 		disableViewLoadingState: ->
-			if not @constructor.CTRL_TYPE
+			if not @constructor.CTRL_TYPE == 'any'
 				@AppState.setLoadingState('dp_section_list', false)
 				@AppState.setLoadingState('dp_section_page', false)
 			else if @constructor.CTRL_TYPE == 'list'

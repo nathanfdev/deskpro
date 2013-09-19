@@ -15,7 +15,7 @@
 
       Admin_Main_Ctrl_Home.CTRL_ID = 'Admin_Main_Ctrl_Home';
 
-      Admin_Main_Ctrl_Home.DEPS = ['$scope'];
+      Admin_Main_Ctrl_Home.CTRL_TYPE = 'any';
 
       Admin_Main_Ctrl_Home.prototype.init = function() {};
 

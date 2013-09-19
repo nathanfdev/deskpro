@@ -15,8 +15,6 @@
 
       Admin_Main_Ctrl_Index.CTRL_ID = 'Admin_Main_Ctrl_Index';
 
-      Admin_Main_Ctrl_Index.DEPS = ['$scope'];
-
       Admin_Main_Ctrl_Index.prototype.init = function() {};
 
       return Admin_Main_Ctrl_Index;
