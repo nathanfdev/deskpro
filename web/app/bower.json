@@ -13,7 +13,6 @@
     "jquery": "2.0",
     "jquery-ui": "latest",
     "bootstrap": "latest",
-    "bootstrap-switch": "latest",
     "select2": "latest",
     "angular-ui-sortable": "latest",
     "toastr": "latest",

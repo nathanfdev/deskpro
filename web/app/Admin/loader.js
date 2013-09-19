@@ -14,7 +14,6 @@ requirejs.config({
 		underscore:             DP_ASSET_URL+'/app/bower_components/underscore/underscore-min',
 
 		bootstrapModal:         DP_ASSET_URL+'/app/bower_components/bootstrap/js/modal',
-		bootstrapSwitch:        DP_ASSET_URL+'/app/bower_components/bootstrap-switch/static/js/bootstrap-switch',
 		select2:                DP_ASSET_URL+'/app/bower_components/select2/select2.min',
 		toastr:                 DP_ASSET_URL+'/app/bower_components/toastr/toastr.min',
 
@@ -31,7 +30,6 @@ requirejs.config({
 		'jqueryUi':             ['jquery'],
 
 		'bootstrapModal':      ['jquery'],
-		'bootstrapSwitch':     ['jquery'],
 		'select2':             ['jquery'],
 		'toastr':              ['jquery'],
 		'underscore':          { expores: '_' }
@@ -54,7 +52,6 @@ requirejs([
 	'jqueryUi',
 	'underscore',
 
-	'bootstrapSwitch',
 	'select2',
 	'toastr',
 
