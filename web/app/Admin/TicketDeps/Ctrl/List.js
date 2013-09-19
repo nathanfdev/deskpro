@@ -26,6 +26,7 @@
         this.dep_settings = {};
         return this.sortedListOptions = {
           axis: 'y',
+          handle: '.drag-handle',
           update: function(ev, data) {
             var $list, postData, promise;
             $list = data.item.closest('ul');

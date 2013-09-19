@@ -10,6 +10,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 			@sortedListOptions = {
 				axis: 'y',
+				handle: '.drag-handle',
 				update: (ev, data) =>
 					$list = data.item.closest('ul')
 
