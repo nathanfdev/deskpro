@@ -93,39 +93,57 @@ define [
 		return {
 			restrict: 'A',
 			require:  'ngModel',
-			template: '<div class="dp-switch" ng-class="{\'switch-on\': model, \'switch-off\': !model}"><label><span></span></label><input type="checkbox" /></div>',
+			template: '<div class="dp-switch"><label><span></span></label></div>',
 			replace: true,
 			scope: {
-				options: '@dpToggleSwitch',
-				model: '=ngModel'
-			}
+				model: '=ngModel',
+				lockedModel: '=lockedModel',
+				change: '=ngChange'
+			},
 			link: (scope, element, attrs, ngModel) ->
-				chk = element.find('input').get(0)
+				updateVal = ->
+					val = scope.model
+
+					ngModel.$setViewValue(val)
+					scope.model = val
+
+					if val
+						element.addClass('switch-on')
+						element.removeClass('switch-off')
+					else
+						element.removeClass('switch-on')
+						element.addClass('switch-off')
+
+					if scope.change
+						scope.$eval(scope.change)
+
 				element.on('click', (ev) ->
 					ev.preventDefault();
 
 					if element.hasClass('locked')
 						return
 
-					chk.checked = !chk.checked;
+					scope.model = !scope.model
 					scope.$apply(->
-						val = !!chk.checked
-						ngModel.$setViewValue(val)
-						scope.model = val
-					);
+						updateVal(updateVal)
+					)
+				)
+
+				scope.$watch('model', ->
+					updateVal()
+				)
+
+				scope.$watch('lockedModel', (newVal) ->
+					if newVal
+						element.addClass('locked')
+					else
+						element.removeClass('locked')
 				)
 
 				if scope.model
-					chk.checked = true
 					ngModel.$setViewValue(true)
-
-				$(chk).on('change', ->
-					scope.$apply(->
-						val = !!chk.checked
-						ngModel.$setViewValue(val)
-						scope.model = val
-					);
-				)
+					element.addClass('switch-on')
+					element.removeClass('switch-off')
 		}
 	)
 

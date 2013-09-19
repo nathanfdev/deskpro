@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Orb\Util\Arrays;
+
 class AgentsController extends AbstractController
 {
 	public function listAction()
@@ -66,6 +68,9 @@ class AgentsController extends AbstractController
 					$agent_data['usergroup_ids'][] = $ug_id;
 				}
 			}
+
+			$agent_data['usergroup_ids']  = Arrays::castToType($agent_data['usergroup_ids'], 'int');
+			$agent_data['agentgroup_ids'] = Arrays::castToType($agent_data['agentgroup_ids'], 'int');
 
 			$data['agents'][] = $agent_data;
 		}

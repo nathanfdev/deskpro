@@ -79,40 +79,56 @@
       return {
         restrict: 'A',
         require: 'ngModel',
-        template: '<div class="dp-switch" ng-class="{\'switch-on\': model, \'switch-off\': !model}"><label><span></span></label><input type="checkbox" /></div>',
+        template: '<div class="dp-switch"><label><span></span></label></div>',
         replace: true,
         scope: {
-          options: '@dpToggleSwitch',
-          model: '=ngModel'
+          model: '=ngModel',
+          lockedModel: '=lockedModel',
+          change: '=ngChange'
         },
         link: function(scope, element, attrs, ngModel) {
-          var chk;
-          chk = element.find('input').get(0);
+          var updateVal;
+          updateVal = function() {
+            var val;
+            val = scope.model;
+            ngModel.$setViewValue(val);
+            scope.model = val;
+            if (val) {
+              element.addClass('switch-on');
+              element.removeClass('switch-off');
+            } else {
+              element.removeClass('switch-on');
+              element.addClass('switch-off');
+            }
+            if (scope.change) {
+              return scope.$eval(scope.change);
+            }
+          };
           element.on('click', function(ev) {
             ev.preventDefault();
             if (element.hasClass('locked')) {
               return;
             }
-            chk.checked = !chk.checked;
+            scope.model = !scope.model;
             return scope.$apply(function() {
-              var val;
-              val = !!chk.checked;
-              ngModel.$setViewValue(val);
-              return scope.model = val;
+              return updateVal(updateVal);
             });
+          });
+          scope.$watch('model', function() {
+            return updateVal();
+          });
+          scope.$watch('lockedModel', function(newVal) {
+            if (newVal) {
+              return element.addClass('locked');
+            } else {
+              return element.removeClass('locked');
+            }
           });
           if (scope.model) {
-            chk.checked = true;
             ngModel.$setViewValue(true);
+            element.addClass('switch-on');
+            return element.removeClass('switch-off');
           }
-          return $(chk).on('change', function() {
-            return scope.$apply(function() {
-              var val;
-              val = !!chk.checked;
-              ngModel.$setViewValue(val);
-              return scope.model = val;
-            });
-          });
         }
       };
     });

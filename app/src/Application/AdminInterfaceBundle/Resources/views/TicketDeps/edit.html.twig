@@ -95,22 +95,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="usergroup in TicketDepsEdit.agentgroups" ng-class="{'last-of-type': $last}">
-							<td>{{ ng_var('usergroup.title') }}</td>
+						<tr ng-repeat="groupObj in TicketDepsEdit.agent_perms.groups">
+							<td>{{ ng_var('groupObj.model.title') }}</td>
 							<td class="text-center">
-								<button dp-toggle-switch ng-model="usergroup.full"></button>
+								<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
 							</td>
 							<td class="text-center">
-								<button dp-toggle-switch ng-model="usergroup.assign"></button>
+								<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')"></button>
 							</td>
 						</tr>
-						<tr ng-repeat="agent in TicketDepsEdit.agents" ng-class="{'first-of-type': $first}">
-							<td>{{ ng_var('agent.display_name') }}</td>
+						<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
+							<td>{{ ng_var('agentObj.model.display_name') }}</td>
 							<td class="text-center">
-								<button dp-toggle-switch ng-model="agent.full"></button>
+								<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')"></button>
 							</td>
 							<td class="text-center">
-								<button dp-toggle-switch ng-model="agent.assign"></button>
+								<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')"></button>
 							</td>
 						</tr>
 					</tbody>
@@ -130,7 +130,7 @@
 						<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
 							<td>{{ ng_var('usergroup.title') }}</td>
 							<td class="text-center">
-								<button dp-toggle-switch ng-model="usergroup.use"></button>
+								<button dp-toggle-switch ng-model="usergroup.use" ng-change="TicketDepsEdit.updatePermission()"></button>
 							</td>
 						</tr>
 					</tbody>

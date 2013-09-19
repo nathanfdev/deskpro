@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base', 'Admin/App'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/Main/Model/DepAgentPermMatrix'], function(Admin_Ctrl_Base, Admin_Main_Model_DepAgentPermMatrix) {
     var Admin_TicketDeps_Ctrl_Edit, _ref;
     Admin_TicketDeps_Ctrl_Edit = (function(_super) {
       __extends(Admin_TicketDeps_Ctrl_Edit, _super);
@@ -48,9 +48,6 @@
 
       Admin_TicketDeps_Ctrl_Edit.prototype.checkDirtyState = function() {
         if (this.dep.getChangedFields().length) {
-          return true;
-        }
-        if (!angular.equals(this.depPerms, this.getPermsData())) {
           return true;
         }
         return false;
@@ -100,49 +97,22 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
-        var ag, code, name, perm, tpl, ug, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
-        this.agentgroups = agentgroups;
-        _ref1 = this.agentgroups;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          ug = _ref1[_i];
-          _ref2 = department_perms.agentgroups;
-          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            perm = _ref2[_j];
-            if (perm.usergroup_id === ug.id) {
-              ug[perm.perm_name] = true;
-            }
-          }
+        var agent, code, group, matrix, name, tpl, _i, _j, _k, _len, _len1, _len2, _ref1, _results;
+        matrix = new Admin_Main_Model_DepAgentPermMatrix();
+        for (_i = 0, _len = agentgroups.length; _i < _len; _i++) {
+          group = agentgroups[_i];
+          matrix.addGroup(group, []);
         }
-        this.usergroups = usergroups;
-        _ref3 = this.usergroups;
-        for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-          ug = _ref3[_k];
-          _ref4 = department_perms.usergroups;
-          for (_l = 0, _len3 = _ref4.length; _l < _len3; _l++) {
-            perm = _ref4[_l];
-            if (perm.usergroup_id === ug.id) {
-              ug[perm.perm_name] = true;
-            }
-          }
+        for (_j = 0, _len1 = agents.length; _j < _len1; _j++) {
+          agent = agents[_j];
+          matrix.addAgent(agent, []);
         }
-        this.agents = agents;
-        _ref5 = this.agents;
-        for (_m = 0, _len4 = _ref5.length; _m < _len4; _m++) {
-          ag = _ref5[_m];
-          _ref6 = department_perms.agents;
-          for (_n = 0, _len5 = _ref6.length; _n < _len5; _n++) {
-            perm = _ref6[_n];
-            if (perm.agent_id === ag.id) {
-              ag[perm.perm_name] = true;
-            }
-          }
-        }
-        this.depPerms = this.getPermsData();
-        console.log(this.$scope);
-        _ref7 = ['link', 'win', 'embed'];
+        matrix.initPerms();
+        this.agent_perms = matrix;
+        _ref1 = ['link', 'win', 'embed'];
         _results = [];
-        for (_o = 0, _len6 = _ref7.length; _o < _len6; _o++) {
-          name = _ref7[_o];
+        for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+          name = _ref1[_k];
           tpl = this.getTemplatePath("TicketDeps/code-" + name + ".html");
           code = this.$templateCache.get(tpl).replace(/%DEPID%/g, this.dep.id);
           _results.push(this.$scope['code_' + name] = code);
@@ -249,6 +219,19 @@
 
       Admin_TicketDeps_Ctrl_Edit.prototype.getPropsData = function() {
         return this.dep.getData();
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.propogatePermission = function(obj, perm) {
+        if (this._propogatePermission_running) {
+          return;
+        }
+        this._propogatePermission_running = true;
+        if (obj.type === 'group') {
+          this.agent_perms.setGroupPerm(obj.model.id, perm, '&');
+        } else {
+          this.agent_perms.setAgentPerm(obj.model.id, perm, '&');
+        }
+        return this._propogatePermission_running = false;
       };
 
       /**

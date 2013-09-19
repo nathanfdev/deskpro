@@ -1,4 +1,10 @@
-define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
+define [
+	'Admin/Main/Ctrl/Base',
+	'Admin/Main/Model/DepAgentPermMatrix'
+], (
+	Admin_Ctrl_Base,
+	Admin_Main_Model_DepAgentPermMatrix
+) ->
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'TicketDepsEdit'
@@ -29,8 +35,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			if @dep.getChangedFields().length
 				return true
 
-			if not angular.equals(@depPerms, @getPermsData())
-				return true
+			#if not angular.equals(@depPerms, @getPermsData())
+			#	return true
 
 			return false
 
@@ -86,28 +92,17 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		# Init data from loadDepartment, getting it ready for use
 		###
 		initData: (department_perms, agents, agentgroups, usergroups) ->
-			@agentgroups = agentgroups
-			for ug in @agentgroups
-				for perm in department_perms.agentgroups
-					if perm.usergroup_id == ug.id
-						ug[perm.perm_name] = true
+			matrix = new Admin_Main_Model_DepAgentPermMatrix()
 
+			for group in agentgroups
+				matrix.addGroup(group, [])
 
-			@usergroups = usergroups
-			for ug in @usergroups
-				for perm in department_perms.usergroups
-					if perm.usergroup_id == ug.id
-						ug[perm.perm_name] = true
+			for agent in agents
+				matrix.addAgent(agent, [])
 
-			@agents = agents
-			for ag in @agents
-				for perm in department_perms.agents
-					if perm.agent_id == ag.id
-						ag[perm.perm_name] = true
+			matrix.initPerms()
+			@agent_perms = matrix
 
-			@depPerms = @getPermsData()
-
-			console.log(@$scope)
 			for name in ['link', 'win', 'embed']
 				tpl = @getTemplatePath("TicketDeps/code-"+name+".html")
 				code = @$templateCache.get(tpl).replace(/%DEPID%/g, @dep.id)
@@ -199,6 +194,15 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		###
 		getPropsData: ->
 			return @dep.getData()
+
+		propogatePermission: (obj, perm) ->
+			if @_propogatePermission_running then return
+			@_propogatePermission_running = true
+			if obj.type == 'group'
+				@agent_perms.setGroupPerm(obj.model.id, perm, '&')
+			else
+				@agent_perms.setAgentPerm(obj.model.id, perm, '&')
+			@_propogatePermission_running = false
 
 		###*
 		# Gets permission data that can be posted for saving
