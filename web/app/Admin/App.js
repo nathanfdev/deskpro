@@ -79,39 +79,36 @@
       return {
         restrict: 'A',
         require: 'ngModel',
-        template: '<div ng-class="{\'switch-on\': model, \'switch-off\': !model}"><input type="checkbox" /></div>',
+        template: '<div class="dp-switch" ng-class="{\'switch-on\': model, \'switch-off\': !model}"><label><span></span></label><input type="checkbox" /></div>',
         replace: true,
         scope: {
           options: '@dpToggleSwitch',
           model: '=ngModel'
         },
         link: function(scope, element, attrs, ngModel) {
-          var $wrap, options;
-          if (scope.options) {
-            options = scope.$eval(scope.options);
-          } else {
-            options = {};
-          }
-          $wrap = jQuery(element);
-          $wrap.attr('data-off-label', options['off-label'] || "<i class='icon-remove'></i>");
-          $wrap.attr('data-on-label', options['on-label'] || "<i class='icon-ok'></i>");
-          $wrap.attr('data-off', options['off-class'] || "danger");
-          $wrap.attr('data-on', options['on-class'] || "success");
-          $wrap.addClass('dp-switch');
-          if (scope["class"]) {
-            $wrap.addClass(scope["class"]);
-          }
-          if (scope.model) {
-            $wrap.find('input').get(0).checked = true;
-            ngModel.$setViewValue(true);
-          }
-          $wrap.bootstrapSwitch();
-          return $wrap.find('input').on('change', function() {
-            var el;
-            el = this;
+          var chk;
+          chk = element.find('input').get(0);
+          element.on('click', function(ev) {
+            ev.preventDefault();
+            if (element.hasClass('locked')) {
+              return;
+            }
+            chk.checked = !chk.checked;
             return scope.$apply(function() {
               var val;
-              val = !!el.checked;
+              val = !!chk.checked;
+              ngModel.$setViewValue(val);
+              return scope.model = val;
+            });
+          });
+          if (scope.model) {
+            chk.checked = true;
+            ngModel.$setViewValue(true);
+          }
+          return $(chk).on('change', function() {
+            return scope.$apply(function() {
+              var val;
+              val = !!chk.checked;
               ngModel.$setViewValue(val);
               return scope.model = val;
             });

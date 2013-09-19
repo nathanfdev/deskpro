@@ -7836,42 +7836,6 @@ section.dp-help-page article dl dt:first-child {
   display: block;
 }
 
-.dp-switch {
-  overflow: hidden;
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
-  -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-          background-clip: padding-box;
-}
-
-.dp-switch.switch-off {
-  background: #E74C3C;
-  border: 2px solid #E74C3C;
-}
-
-.dp-switch.switch-on {
-  background: #1ABC9C;
-  border: 2px solid #1ABC9C;
-}
-
-.dp-switch .has-switch label {
-  top: 0 !important;
-  line-height: 29px !important;
-}
-
-.has-switch label {
-  top: 0 !important;
-  line-height: 19px !important;
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
-  -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-          background-clip: padding-box;
-}
-
 .dp-form {
   margin-right: 30px;
   margin-left: 30px;
@@ -8002,6 +7966,85 @@ section.dp-help-page article dl dt:first-child {
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
+}
+
+.dp-switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 25px;
+  overflow: hidden;
+  text-align: left;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #D9D9D9;
+  -webkit-border-radius: 20px;
+     -moz-border-radius: 20px;
+          border-radius: 20px;
+  -webkit-box-shadow: inset 0 0px 1px 1px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0 0px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-transition: background-color 0.2s ease-out;
+     -moz-transition: background-color 0.2s ease-out;
+       -o-transition: background-color 0.2s ease-out;
+          transition: background-color 0.2s ease-out;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.dp-switch input[type=radio],
+.dp-switch input[type=checkbox] {
+  visibility: hidden;
+}
+
+.dp-switch label {
+  display: block;
+  width: 10px;
+  width: 21px;
+  height: 19px;
+  margin: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #fff;
+  -webkit-border-radius: 20px;
+     -moz-border-radius: 20px;
+          border-radius: 20px;
+  -webkit-box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+          box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+  -webkit-transition: margin 0.2s ease-out;
+     -moz-transition: margin 0.2s ease-out;
+       -o-transition: margin 0.2s ease-out;
+          transition: margin 0.2s ease-out;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.dp-switch.switch-on {
+  background-color: #5DDA70;
+}
+
+.dp-switch.switch-on label {
+  margin-left: 21px;
+}
+
+.dp-switch.locked label span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-family: FontAwesome;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 21px;
+  color: #bbb;
+  text-align: center;
+  text-shadow: 1px 0 0px rgba(0, 0, 0, 0.4);
+  vertical-align: middle;
+}
+
+.dp-switch.locked label span:before {
+  content: "\f023";
 }
 
 .toast-title {

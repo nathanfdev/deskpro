@@ -93,38 +93,35 @@ define [
 		return {
 			restrict: 'A',
 			require:  'ngModel',
-			template: '<div ng-class="{\'switch-on\': model, \'switch-off\': !model}"><input type="checkbox" /></div>',
+			template: '<div class="dp-switch" ng-class="{\'switch-on\': model, \'switch-off\': !model}"><label><span></span></label><input type="checkbox" /></div>',
 			replace: true,
 			scope: {
 				options: '@dpToggleSwitch',
 				model: '=ngModel'
 			}
 			link: (scope, element, attrs, ngModel) ->
-				if scope.options
-					options = scope.$eval(scope.options)
-				else
-					options = {}
+				chk = element.find('input').get(0)
+				element.on('click', (ev) ->
+					ev.preventDefault();
 
-				$wrap = jQuery(element)
-				$wrap.attr('data-off-label', options['off-label'] || "<i class='icon-remove'></i>");
-				$wrap.attr('data-on-label', options['on-label'] || "<i class='icon-ok'></i>");
-				$wrap.attr('data-off', options['off-class'] || "danger");
-				$wrap.attr('data-on', options['on-class'] || "success");
+					if element.hasClass('locked')
+						return
 
-				$wrap.addClass('dp-switch')
-				if scope.class
-					$wrap.addClass(scope.class)
+					chk.checked = !chk.checked;
+					scope.$apply(->
+						val = !!chk.checked
+						ngModel.$setViewValue(val)
+						scope.model = val
+					);
+				)
 
 				if scope.model
-					$wrap.find('input').get(0).checked = true
+					chk.checked = true
 					ngModel.$setViewValue(true)
 
-				$wrap.bootstrapSwitch()
-
-				$wrap.find('input').on('change', ->
-					el = this
+				$(chk).on('change', ->
 					scope.$apply(->
-						val = !!el.checked
+						val = !!chk.checked
 						ngModel.$setViewValue(val)
 						scope.model = val
 					);
