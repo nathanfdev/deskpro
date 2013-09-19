@@ -1,0 +1,25 @@
+.button-variant(@color; @background; @border) {
+	color: @color;
+	.gradient-v(@background, darken(@background, 9%), 30);
+	border-color: darken(@border, 10%);
+
+	&:hover, &:focus, &:active, &.active, .open .dropdown-toggle& {
+		color: @color;
+		background: darken(@background, 8%);
+		border-color: darken(@border, 20%);
+	}
+
+	&:active, &.active, .open .dropdown-toggle& {
+		border: 1px solid darken(@border, 38%);
+		background: darken(@background, 15%);
+		-webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+		box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+	}
+
+	&.disabled, &[disabled], fieldset[disabled] & {
+		&, &:hover, &:focus, &:active, &.active {
+			background-color: @background;
+			border-color: @border
+		}
+	}
+}
