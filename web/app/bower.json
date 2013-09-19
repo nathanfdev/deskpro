@@ -1,20 +1,24 @@
 {
-	"name": "DeskPRO",
-	"version": "1.0.0",
-	"dependencies": {
-		"requirejs": "2.1.8",
-		"angular": "v1.2.0-rc.2",
-		"angular-animate": "v1.2.0-rc.2",
-		"angular-sanitize": "v1.2.0-rc.2",
-		"angular-i18n": "v1.2.0-rc.2",
-		"angular-ui-router": "latest",
-		"angular-ui-select2": "latest",
-		"font-awesome": "3.2.1",
-		"jquery": "latest",
-		"jquery-ui": "latest",
-		"bootstrap": "latest",
-		"bootstrap-switch": "latest",
-		"select2": "latest",
-		"angular-ui-sortable": "latest"
-	}
+  "name": "DeskPRO",
+  "version": "1.0.0",
+  "dependencies": {
+    "requirejs": "2.1.8",
+    "angular": "v1.2.0-rc.2",
+    "angular-animate": "v1.2.0-rc.2",
+    "angular-sanitize": "v1.2.0-rc.2",
+    "angular-i18n": "v1.2.0-rc.2",
+    "angular-ui-router": "latest",
+    "angular-ui-select2": "latest",
+    "font-awesome": "3.2.1",
+    "jquery": "2.0",
+    "jquery-ui": "latest",
+    "bootstrap": "latest",
+    "bootstrap-switch": "latest",
+    "select2": "latest",
+    "angular-ui-sortable": "latest",
+    "toastr": "latest"
+  },
+  "resolutions": {
+    "jquery": "2.0"
+  }
 }
