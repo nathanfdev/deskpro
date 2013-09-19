@@ -42,6 +42,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@dep_settings.default_id    = settings['core.default_ticket_dep']
 				@dep_settings.name_singular = settings['core.phrase_department_singular']
 				@dep_settings.name_plural   = settings['core.phrase_department_plural']
+
+				if @dep_settings.name_singular or @dep_settings.name_plural
+					@dep_settings.do_rename = true
 			)
 
 			return @$q.all([dep_promise, data_promise])
@@ -130,6 +133,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			)
 
 		saveSettings: ->
+			if not @dep_settings.do_rename
+				@dep_settings.name_singular = ''
+				@dep_settings.name_plural = ''
+
 			postData = {
 				settings: {
 					'core.default_ticket_dep':         @dep_settings.default_id,

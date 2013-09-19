@@ -17,51 +17,65 @@
 			<div class="panel panel-fill">
 				<br/>
 				<div class="panel-body">
-					<form role="form">
+					<form class="form-horizontal dp-form" role="form">
 						<div class="form-group">
-							<label for="title">Title</label>
-							<div class="row">
-								<div class="col-lg-5">
-									<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.title">
+							<div class="col-lg-2">
+								<h3>Title</h3>
+							</div>
+							<div class="col-lg-10">
+								<div class="inner-group">
+									<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.title" style="width: 50%;">
+									<span class="help-block">
+										This is the title as it will appear throughout the agent and user interfaces.
+									</span>
+								</div>
+
+								<div class="inner-group">
+									<label>
+										<input type="checkbox" ng-model="TicketDepsEdit.dep._enable_user_title" value="1" />
+										<h4>Show a different title to end-users</h4>
+									</label>
+									<div ng-show="TicketDepsEdit.dep._enable_user_title">
+										<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
+									</div>
+									<span class="help-block">
+										Enter a custom title that will be displayed to your end-users using the portal. Agents will
+										see the default title, but your users will see the custom title.
+									</span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label style="margin-bottom: 0;">
-								<input type="checkbox" ng-model="TicketDepsEdit.dep._enable_user_title" value="1" />
-								Show a different title to end-users
-							</label>
-							<div class="row" ng-show="TicketDepsEdit.dep._enable_user_title" style="margin-top: 5px;">
-								<div class="col-lg-5">
-									<input type="text" class="form-control col-lg-5" ng-model="TicketDepsEdit.dep.user_title">
-								</div>
+							<div class="col-lg-2">
+								<h3>Parent</h3>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="title">Parent</label>
-							<div class="row">
-								<div class="col-lg-10">
-									<select
-										ui-select2
-										ng-model="TicketDepsEdit.dep.parent_id"
-										style="min-width: 240px"
-									>
-										<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
-									</select>
+							<div class="col-lg-10">
+								<select
+									ui-select2
+									ng-model="TicketDepsEdit.dep.parent_id"
+									style="min-width: 240px"
+									class="no-search"
+								>
+									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
+								</select>
+								<span class="help-block">
+									By setting a parent department, this department becomes a child. This is just an organizational feature that helps
+									you create department structures that are easier to use.
+								</span>
+
+								<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
+									<p>
+										<strong><em>{{ ng_var('show_parent_warning.title') }}</em> is not currently a parent</strong>
+									</p>
+									<ul>
+										<li>The parent department you have set is not yet a parent.</li>
+										<li>DeskPRO will convert the new parent <em>{{ ng_var('show_parent_warning.title') }}</em> into a parent when you save this form.</li>
+										<li>Any tickets that are currently in <em>{{ ng_var('show_parent_warning.title') }}</em> will be moved into <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em>.</li>
+									</ul>
 								</div>
 							</div>
 						</div>
 					</form>
-					<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
-						<p>
-							<strong><em>{{ ng_var('show_parent_warning.title') }}</em> is not currently a parent</strong>
-						</p>
-						<ul>
-							<li>The parent department you have set is not yet a parent.</li>
-							<li>DeskPRO will convert the new parent <em>{{ ng_var('show_parent_warning.title') }}</em> into a parent when you save this form.</li>
-							<li>Any tickets that are currently in <em>{{ ng_var('show_parent_warning.title') }}</em> will be moved into <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em>.</li>
-						</ul>
-					</div>
 				</div>
 			</div>
 			<div class="pane-footer text-center">

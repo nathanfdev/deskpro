@@ -56,7 +56,10 @@
           settings = res.data.api_ticket_deps_settings;
           _this.dep_settings.default_id = settings['core.default_ticket_dep'];
           _this.dep_settings.name_singular = settings['core.phrase_department_singular'];
-          return _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
+          _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
+          if (_this.dep_settings.name_singular || _this.dep_settings.name_plural) {
+            return _this.dep_settings.do_rename = true;
+          }
         });
         return this.$q.all([dep_promise, data_promise]);
       };
@@ -169,6 +172,10 @@
 
       Admin_TicketDeps_Ctrl_List.prototype.saveSettings = function() {
         var postData;
+        if (!this.dep_settings.do_rename) {
+          this.dep_settings.name_singular = '';
+          this.dep_settings.name_plural = '';
+        }
         postData = {
           settings: {
             'core.default_ticket_dep': this.dep_settings.default_id,

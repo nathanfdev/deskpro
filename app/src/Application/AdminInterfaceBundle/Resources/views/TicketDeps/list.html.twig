@@ -8,7 +8,7 @@
 				<nav class="dp-controls">
 					<ul>
 						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> Delete</span></li>
-						<li><a class="btn btn-success" href="#/tickets/ticket_deps/create"><i class="icon-plus"></i> Add</a></li>
+						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> Add</a></li>
 					</ul>
 				</nav>
 				<h3>{{ ng_var('TicketDepsList.departments.length') }} Departments</h3>
@@ -60,12 +60,12 @@
 				<h3>Department Settings</h3>
 			</div>
 			<div class="panel-body">
-				<form class="form-horizontal" role="form">
+				<form class="form-horizontal dp-form" role="form">
 					<div class="form-group">
-						<div class="col-sm-4 text-right">
-							<label for="title">Default Department</label>
+						<div class="col-sm-3">
+							<h3>Default</h3>
 						</div>
-						<div class="col-sm-7">
+						<div class="col-sm-9">
 							<select
 								ui-select2
 								ng-model="TicketDepsList.dep_settings.default_id"
@@ -73,33 +73,43 @@
 							>
 								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsList.default_dep_list">{{ ng_var('dep._full_title') }}</option>
 							</select>
+							<span class="help-block">
+								The default department is pre-selected when viewing the new ticket form. It is also used
+								when a new ticket is created by an email from an account that is not linked with a department.
+							</span>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<div class="col-sm-4 text-right">
-							<label for="title">Phrase</label>
+						<div class="col-sm-3">
+							<h3>Field Name</h3>
 						</div>
-						<div class="col-sm-7">
-							<p class="help-block">Change the name of the Department field</p>
-							<table cellspacing="0" cellpadding="2" width="100%">
-								<tbody>
-									<tr>
-										<td class="text-right">Singular:&nbsp;</td>
-										<td width="100%"><input type="text" ng-model="TicketDepsList.dep_settings.name_singular" class="form-control input-sm" style="width: 100%;" /></td>
-									</tr>
-									<tr>
-										<td class="text-right">Plural:&nbsp;</td>
-										<td><input type="text" ng-model="TicketDepsList.dep_settings.name_plural" class="form-control input-sm" style="width: 100%" /></td>
-									</tr>
-								</tbody>
-							</table>
+						<div class="col-sm-9">
+							<label>
+								<input type="checkbox" ng-model="TicketDepsList.dep_settings.do_rename" />
+								<h4>Rename the department field</h4>
+							</label>
+							<span class="help-block">
+								If the word "Department" is not suitable for your helpdesk, you can change it here. Any place
+								in the user interface that refers to departments will instead use your custom word.
+							</span>
+							<div ng-show="TicketDepsList.dep_settings.do_rename">
+								<div class="inner-group">
+									<span>Singular:</span><br/>
+									<input type="text" ng-model="TicketDepsList.dep_settings.name_singular" class="form-control input-sm" style="width: 60%;" placeholder="Ex: Region" />
+								</div>
+								<div class="inner-group">
+									<span>Plural:</span><br/>
+									<input type="text" ng-model="TicketDepsList.dep_settings.name_plural" class="form-control input-sm" style="width: 60%" placeholder="Ex: Regions" />
+								</div>
+							</div>
 						</div>
 					</div>
 				</form>
-			</div>
-			<div class="panel-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsList.saveSettings()">Save Settings</button>
+
+				<div class="text-center">
+					<button class="btn btn-primary" ng-click="TicketDepsList.saveSettings()">Save Settings</button>
+				</div>
 			</div>
 		</div>
 	</article>
