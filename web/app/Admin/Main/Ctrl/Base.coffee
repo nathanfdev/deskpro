@@ -33,6 +33,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.push('$modal')
 			if @DEPS.indexOf('$q') == -1
 				@DEPS.push('$q')
+			if @DEPS.indexOf('$state') == -1
+				@DEPS.push('$state')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
@@ -77,10 +79,26 @@ define ['angular', 'Admin/App'], (angular) ->
 
 			@$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
 					if ev.defaultPrevented then return
+					if @_state_cont_ignore
+						@_state_cont_ignore = false
+						return
 
 					if not @_state_cont_go and @checkDirtyState()
 						@AppState.setLoadingState('dp_section_page', false)
 						ev.preventDefault();
+
+						# - The window hash has changed at this point so we
+						# need to reset it back to what it was
+						# - But we want to ignore the change event next time
+						# or else we'd pop-up unlimited number of boxes
+						# about switching state even though we're "switching"
+						# back to the currently active view
+						resetHash = @$state.href(fromState, fromParams)
+						@_state_cont_ignore = true
+						window.location.hash = resetHash
+						setTimeout(=>
+							@_state_cont_ignore = false
+						, 140)
 
 						@_state_cont_state = toState.name
 						@_state_cont_state_params = toParams

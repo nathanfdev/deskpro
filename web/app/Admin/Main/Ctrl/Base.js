@@ -50,6 +50,9 @@
         if (this.DEPS.indexOf('$q') === -1) {
           this.DEPS.push('$q');
         }
+        if (this.DEPS.indexOf('$state') === -1) {
+          this.DEPS.push('$state');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);
@@ -103,12 +106,23 @@
           return _this._managed_listeners = null;
         });
         this.$scope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
+          var resetHash;
           if (ev.defaultPrevented) {
+            return;
+          }
+          if (_this._state_cont_ignore) {
+            _this._state_cont_ignore = false;
             return;
           }
           if (!_this._state_cont_go && _this.checkDirtyState()) {
             _this.AppState.setLoadingState('dp_section_page', false);
             ev.preventDefault();
+            resetHash = _this.$state.href(fromState, fromParams);
+            _this._state_cont_ignore = true;
+            window.location.hash = resetHash;
+            setTimeout(function() {
+              return _this._state_cont_ignore = false;
+            }, 140);
             _this._state_cont_state = toState.name;
             _this._state_cont_state_params = toParams;
             return _this._showStateConfirmLeave();
