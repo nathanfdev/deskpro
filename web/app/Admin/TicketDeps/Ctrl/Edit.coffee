@@ -3,7 +3,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'TicketDepsEdit'
 		@CTRL_TYPE = 'page'
-		@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache']
+		@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache', 'Growl']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>
@@ -181,6 +181,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					@skipDirtyState()
 					if is_new
+						@Growl.success("Department was created successfully", =>
+							@$state.go('tickets.ticket_deps.edit', {id: @dep.id})
+						)
 						@$state.go('tickets.ticket_deps.gocreate')
 					else
 						@$state.go('tickets.ticket_deps')

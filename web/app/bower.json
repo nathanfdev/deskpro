@@ -16,7 +16,8 @@
     "bootstrap-switch": "latest",
     "select2": "latest",
     "angular-ui-sortable": "latest",
-    "toastr": "latest"
+    "toastr": "latest",
+	"underscore": "latest"
   },
   "resolutions": {
     "jquery": "2.0"

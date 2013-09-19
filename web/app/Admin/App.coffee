@@ -1,8 +1,9 @@
 define [
 	'angular',
-	'Admin/Resources/config/routing'
-	'Admin/Main/Service/AppState'
-	'Admin/Main/Service/DpApi'
+	'Admin/Resources/config/routing',
+	'Admin/Main/Service/AppState',
+	'Admin/Main/Service/DpApi',
+	'Admin/Main/Service/Growl',
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
 ], (
@@ -10,6 +11,7 @@ define [
 	routing,
 	Admin_Main_Service_AppState,
 	Admin_Main_Service_DpApi,
+	Admin_Main_Service_Growl,
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments
 ) ->
@@ -45,6 +47,10 @@ define [
 
 	Admin_App.service('DepartmentData', ['em', 'Api', '$q', (em, Api, $q) ->
 		return new Admin_Main_DataService_Departments(em, Api, $q)
+	])
+
+	Admin_App.service('Growl', [ ->
+		return new Admin_Main_Service_Growl()
 	])
 
 	####################################################################################################################

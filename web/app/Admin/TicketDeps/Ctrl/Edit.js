@@ -19,7 +19,7 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_TYPE = 'page';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache', 'Growl'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
@@ -226,6 +226,11 @@
             _this.initDeplistData(_this.DepartmentData.deps);
             _this.skipDirtyState();
             if (is_new) {
+              _this.Growl.success("Department was created successfully", function() {
+                return _this.$state.go('tickets.ticket_deps.edit', {
+                  id: _this.dep.id
+                });
+              });
               return _this.$state.go('tickets.ticket_deps.gocreate');
             } else {
               return _this.$state.go('tickets.ticket_deps');

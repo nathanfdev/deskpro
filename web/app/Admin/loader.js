@@ -2,34 +2,39 @@ requirejs.config({
 	baseUrl: DP_ASSET_URL,
 	urlArgs: "bust=" + (new Date()).getTime(),
     paths: {
-		jquery:             DP_ASSET_URL+'/app/bower_components/jquery/jquery',
-		jqueryUi:           DP_ASSET_URL+'/app/bower_components/jquery-ui/ui/jquery-ui',
-		bootstrap_modal:    DP_ASSET_URL+'/app/bower_components/bootstrap/js/modal',
-		bootstrap_switch:   DP_ASSET_URL+'/app/bower_components/bootstrap-switch/static/js/bootstrap-switch',
-		angular:            DP_ASSET_URL+'/app/bower_components/angular/angular',
-		angularUiRouter:    DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
-		angularUiSortable:  DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
-		angularSanitize:    DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
-		angularBootstrap:   DP_ASSET_URL+'/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
-		angularSelect2:     DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
-		select2:            DP_ASSET_URL+'/app/bower_components/select2/select2.min',
-		Admin:              DP_ASSET_URL+'/app/Admin'
+		angular:                DP_ASSET_URL+'/app/bower_components/angular/angular',
+		angularBootstrap:       DP_ASSET_URL+'/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
+		angularSanitize:        DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
+		angularSelect2:         DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
+		angularUiRouter:        DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
+		angularUiSortable:      DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
+
+		jquery:                 DP_ASSET_URL+'/app/bower_components/jquery/jquery',
+		jqueryUi:               DP_ASSET_URL+'/app/bower_components/jquery-ui/ui/jquery-ui',
+		underscore:             DP_ASSET_URL+'/app/bower_components/underscore/underscore-min',
+
+		bootstrapModal:         DP_ASSET_URL+'/app/bower_components/bootstrap/js/modal',
+		bootstrapSwitch:        DP_ASSET_URL+'/app/bower_components/bootstrap-switch/static/js/bootstrap-switch',
+		select2:                DP_ASSET_URL+'/app/bower_components/select2/select2.min',
+		toastr:                 DP_ASSET_URL+'/app/bower_components/toastr/toastr.min',
+
+		Admin:                  DP_ASSET_URL+'/app/Admin'
 	},
 	shim: {
-		'angular' : {'exports' : 'angular'},
-		'angularUiRouter': ['angular'],
-		'angularUiSortable': ['angular'],
-		'angularSanitize': ['angular'],
-		'angularSelectize': ['angular'],
-		'angularBootstrap': ['angular'],
-		'angularSelect2': ['angular'],
-		'bootstrap_modal': ['jquery'],
-		'jqueryUi': ['jquery'],
-		'bootstrap_switch': {
-			deps: ['jquery'],
-			exports: 'jQuery.fn.bootstrapSwitch'
-		},
-		select2: ['jquery']
+		'angular':              {'exports' : 'angular'},
+		'angularBootstrap':     ['angular'],
+		'angularSanitize':      ['angular'],
+		'angularSelect2':       ['angular'],
+		'angularUiRouter':      ['angular'],
+		'angularUiSortable':    ['angular'],
+
+		'jqueryUi':             ['jquery'],
+
+		'bootstrapModal':      ['jquery'],
+		'bootstrapSwitch':     ['jquery'],
+		'select2':             ['jquery'],
+		'toastr':              ['jquery'],
+		'underscore':          { expores: '_' }
 	},
 	priority: [
 		"angular"
@@ -40,16 +45,20 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 
 requirejs([
 	'angular',
+	'angularBootstrap',
+	'angularSelect2',
+	'angularUiRouter',
+	'angularUiSortable',
+
 	'jquery',
 	'jqueryUi',
-	'bootstrap_switch',
-	'angularUiSortable',
-	'angularUiRouter',
-	'angularSelect2',
-	'select2',
-	'angularBootstrap',
-	'Admin/App',
+	'underscore',
 
+	'bootstrapSwitch',
+	'select2',
+	'toastr',
+
+	'Admin/App',
 	'Admin/Main/Ctrl/Bare',
 	'Admin/Main/Ctrl/BareList',
 	'Admin/Main/Ctrl/MainPage',
