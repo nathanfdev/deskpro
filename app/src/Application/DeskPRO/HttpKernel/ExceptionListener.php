@@ -36,6 +36,7 @@ namespace Application\DeskPRO\HttpKernel;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Exception\ValidationException;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 
@@ -76,6 +77,9 @@ class ExceptionListener
 				}
 			} catch (\Exception $e) {}
 
+			return;
+		}
+		if ($exception instanceof ValidationException && defined('DP_INTERFACE') && DP_INTERFACE == 'api') {
 			return;
 		}
 

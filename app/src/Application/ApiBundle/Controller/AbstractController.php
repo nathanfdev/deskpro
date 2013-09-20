@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Exception\ValidationException;
 
 /**
  * Base API controller.
@@ -419,5 +420,29 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$message->enableQueueHint();
 			$this->container->getMailer()->send($message);
 		}
+	}
+
+	/**
+	 * @param \Exception $e
+	 * @return Response
+	 */
+	public function handleActionException(\Exception $e)
+	{
+		if ($e instanceof ValidationException) {
+			return $this->createApiResponse(
+				array(
+					'error_code' => 'validation_error',
+					'error_message' => 'There was a validation error while processing your request.',
+					'detail' => array(
+						'code'      => $e->getCode(),
+						'code_name' => $e->getCodeName(),
+						'message'   => $e->getMessage()
+					)
+				),
+				400
+			);
+		}
+
+		return null;
 	}
 }

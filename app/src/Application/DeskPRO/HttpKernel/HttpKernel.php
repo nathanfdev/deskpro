@@ -130,7 +130,15 @@ class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
 
 			// call controller if preaction didnt return a response
 			if (!$response) {
-				$response = call_user_func_array($controller, $arguments);
+				try {
+					$response = call_user_func_array($controller, $arguments);
+				} catch (\Exception $e) {
+					$e_response = $controller[0]->handleActionException($e);
+					if (!$e_response || !($e_response instanceof Response)) {
+						throw $e;
+					}
+					$response = $e_response;
+				}
 			}
 
 			// Run post event

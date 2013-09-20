@@ -94,8 +94,6 @@ define [
 		initData: (department_perms, agents, agentgroups, usergroups) ->
 			matrix = new Admin_Main_Model_DepAgentPermMatrix()
 
-			console.log(department_perms)
-
 			for group in agentgroups
 				matrix.addGroup(group, [])
 
@@ -140,6 +138,9 @@ define [
 		# Save everything
 		###
 		saveAll: ->
+			if not @$scope.form_props.$valid
+				return
+
 			if not @dep._enable_user_title
 				@dep.user_title = ''
 
@@ -163,6 +164,10 @@ define [
 				full_title = parent.title + ' > ' + @dep.title
 			else
 				full_title = @dep.title
+
+			promise.error( (info, code) =>
+				@applyErrorResponseToView(info)
+			)
 
 			# If the department is new, we need to handle updating the UI
 			# with the newly saved department once the request comes back with an ID

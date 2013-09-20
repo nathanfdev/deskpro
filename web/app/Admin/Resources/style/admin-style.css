@@ -7197,6 +7197,11 @@ a:focus {
   vertical-align: middle;
 }
 
+form {
+  padding: 0;
+  margin: 0;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
@@ -7896,6 +7901,11 @@ nav.dp-main-tabs ul li.active {
   box-shadow: none;
 }
 
+.panel.panel-fill.indent .panel-body {
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
 .panel.panel-fill .panel-heading {
   border-bottom: 3px solid #aaa;
 }
@@ -8057,11 +8067,6 @@ section.dp-help-page article dl dt:first-child {
 
 .modal {
   display: block;
-}
-
-.dp-form {
-  margin-right: 30px;
-  margin-left: 30px;
 }
 
 .dp-form h3 {

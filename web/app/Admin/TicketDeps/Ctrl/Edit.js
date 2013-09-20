@@ -99,7 +99,6 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
         var agent, code, group, matrix, name, p, tpl, ugroup, ugroup_map, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _results;
         matrix = new Admin_Main_Model_DepAgentPermMatrix();
-        console.log(department_perms);
         for (_i = 0, _len = agentgroups.length; _i < _len; _i++) {
           group = agentgroups[_i];
           matrix.addGroup(group, []);
@@ -170,6 +169,9 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
         var full_title, is_new, model, parent, postData, promise, props,
           _this = this;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
         if (!this.dep._enable_user_title) {
           this.dep.user_title = '';
         }
@@ -192,6 +194,9 @@
         } else {
           full_title = this.dep.title;
         }
+        promise.error(function(info, code) {
+          return _this.applyErrorResponseToView(info);
+        });
         if (this.em.hasById('department', this.dep.id)) {
           model = this.em.getById('department', this.dep.id);
           model.title = this.dep.title;

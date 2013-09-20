@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Departments;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
 
 class TicketDepartmentEditor
@@ -104,23 +105,23 @@ class TicketDepartmentEditor
 			if ($props['parent_id']) {
 				$set_parent = $this->em->find('DeskPRO:Department', $props['parent_id']);
 				if (!$set_parent || !$set_parent->is_tickets_enabled) {
-					throw new \InvalidArgumentException("parent_id does not exist");
+					throw ValidationException::create("department.parent_id.invalid", "parent_id does not exist");
 				}
 
 				if (!count($set_parent->children)) {
 					if (!isset($props['move_tickets_to'])) {
-						throw new \InvalidArgumentException("You must supply a move_tickets_to when moving top-level department to become a parent");
+						throw ValidationException::create("department.parent_id.move_tickets", "move_tickets_to required when moving to a top-level department");
 					}
 					if ($props['move_tickets_to'] == 'self') {
 						$move_to = $dep;
 					} else {
 						$move_to = $this->em->find('DeskPRO:Department', $props['move_tickets_to']);
 						if (!$move_to || !$move_to->is_tickets_enabled) {
-							throw new \InvalidArgumentException("move_tickets_to is not a valid department");
+							throw ValidationException::create("department.parent_id.move_tickets", "move_tickets_to is not a valid department");
 						}
 
 						if (count($move_to->children)) {
-							throw new \InvalidArgumentException("move_tickets_to cannot be a parent");
+							throw ValidationException::create("department.parent_id.move_tickets", "move_tickets_to cannot be a parent");
 						}
 					}
 				}
@@ -130,6 +131,9 @@ class TicketDepartmentEditor
 		}
 
 		if (isset($props['title'])) {
+			if (!$props['title']) {
+				throw ValidationException::create("department.title.required");
+			}
 			$dep->title = $props['title'];
 		}
 		if (isset($props['user_title'])) {
@@ -234,15 +238,15 @@ class TicketDepartmentEditor
 		$move_to = $this->em->find('DeskPRO:Department', $move_to_id);
 
 		if (!$move_to) {
-			throw new \InvalidArgumentException("You must specify a department to move to");
+			throw ValidationException::create("department.remove.move_tickets", "You must specify a department to move to");
 		}
 
 		if ($move_to->id == $dep->id) {
-			throw new \InvalidArgumentException("You must choose a different department");
+			throw ValidationException::create("department.remove.move_tickets", "You must choose a different department");
 		}
 
 		if (count($move_to->getChildren())) {
-			throw new \InvalidArgumentException("You must choose a valid department");
+			throw ValidationException::create("department.remove.move_tickets", "Department cannot be a parent");
 		}
 
 		$old_id = $dep->id;

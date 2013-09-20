@@ -4,27 +4,27 @@
 		<h3 ng-if="!TicketDepsEdit.dep.id">New Department</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<nav class="dp-main-tabs">
-			<ul>
-				<li class="active" dp-tab-btn="main.props"><a href="#">Properties</a></li>
-				<li dp-tab-btn="main.perms"><a href="#">Permissions</a></li>
-				<li dp-tab-btn="main.layout"><a href="#">Layout</a></li>
-				<li dp-tab-btn="main.website_embeds"><a href="#">Website Embed</a></li>
-			</ul>
-		</nav>
+		<form class="form-horizontal dp-form" role="form" name="form_props">
+			<nav class="dp-main-tabs">
+				<ul>
+					<li class="active" dp-tab-btn="main.props"><a href="#">Properties</a></li>
+					<li dp-tab-btn="main.perms"><a href="#">Permissions</a></li>
+					<li dp-tab-btn="main.layout"><a href="#">Layout</a></li>
+					<li dp-tab-btn="main.website_embeds"><a href="#">Website Embed</a></li>
+				</ul>
+			</nav>
 
-		<div dp-tab-body="main.props">
-			<div class="panel panel-fill">
-				<br/>
-				<div class="panel-body">
-					<form class="form-horizontal dp-form" role="form">
+			<div dp-tab-body="main.props">
+				<div class="panel panel-fill indent">
+					<br/>
+					<div class="panel-body">
 						<div class="form-group">
 							<div class="col-lg-2">
-								<h3>Title</h3>
+								<h3>Title *</h3>
 							</div>
 							<div class="col-lg-10">
-								<div class="inner-group">
-									<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.title" style="width: 50%;">
+								<div class="inner-group" ng-class="{'has-error': form_props.title.$invalid}">
+									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" />
 									<span class="help-block">
 										This is the title as it will appear throughout the agent and user interfaces.
 									</span>
@@ -75,139 +75,143 @@
 								</div>
 							</div>
 						</div>
-					</form>
-				</div>
-			</div>
-			<div class="inner-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
-			</div>
-		</div>
-
-		<div dp-tab-body="main.perms">
-			<div class="panel panel-innertable">
-				<div class="panel-heading"><h3>Agent Permissions</h3></div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>&nbsp;</th>
-							<th width="120" class="text-center">Full Access <span class="help-icon" tooltip-placement="left" tooltip="Full Access means the agent can view tickets in the department as well as create or move tickets into the department."></span></th>
-							<th width="120" class="text-center">Assignment <span class="help-icon" tooltip-placement="left" tooltip="Assignment means that the agent cannot view tickets in the department, but they can create or move tickets into it."></span></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="groupObj in TicketDepsEdit.agent_perms.groups">
-							<td>
-								<i class="icon-group icon-22x text-middle icon-light"></i>
-								&nbsp;
-								<span class="text-middle">{{ ng_var('groupObj.model.title') }}</span>
-							</td>
-							<td class="text-center">
-								<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
-							</td>
-							<td class="text-center">
-								<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
-							</td>
-						</tr>
-						<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
-							<td>
-								<i class="agent-icon agent-icon-22x text-middle" style="background-image: url({{ ng_var('agentObj.model.picture_url_22') }})"></i>
-								&nbsp;
-								<span class="text-middle">{{ ng_var('agentObj.model.display_name') }}</span>
-							</td>
-							<td class="text-center">
-								<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="This permission is locked because this agent belongs to an agent group which has this permission enabled."></button>
-							</td>
-							<td class="text-center">
-								<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="panel panel-innertable">
-				<div class="panel-heading"><h3>User Group Permissions</h3></div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>&nbsp;</th>
-							<th width="120" class="text-center">Use <span class="help-icon" tooltip-placement="left" tooltip="When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to."></span></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
-							<td>
-								<i class="icon-group icon-22x text-middle icon-light"></i>
-								&nbsp;
-								<span class="text-middle">{{ ng_var('usergroup.title') }}</span>
-							</td>
-							<td class="text-center">
-								<button dp-toggle-switch ng-model="usergroup.use"></button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="inner-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
-			</div>
-		</div>
-
-		<div dp-tab-body="main.layout">
-			<div class="panel panel-fill">
-				<div class="panel-body" style="height: 400px;">
-
-				</div>
-			</div>
-			<div class="inner-footer text-center">
-				<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
-			</div>
-		</div>
-
-		<div dp-tab-body="main.website_embeds">
-			<div class="panel panel-fill">
-				<div class="panel-body">
-					<p>
-						Website Embeds are code snippets you can copy directly into your website to quickly add
-						a DeskPRO contact form to any page.
-					</p>
-					<form role="form" ng-if="TicketDepsEdit.dep.id">
-						<div class="form-group">
-							<label for="title">Direct Link</label>
-							<div class="row">
-								<div class="col-lg-8">
-									<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
-								</div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label for="title">Popup Window</label>
-							<div class="row">
-								<div class="col-lg-8">
-									<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
-								</div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label for="title">Embedded Form</label>
-							<div class="row">
-								<div class="col-lg-8">
-									<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
-								</div>
-							</div>
-						</div>
-					</form>
-					<div ng-if="!TicketDepsEdit.dep.id">
-						<p>
-							The Website Embeds code is not available yet because you have not saved this
-							new department. Save the department first then come back to this tab.
-						</p>
 					</div>
 				</div>
 			</div>
-		</div>
+
+			<div dp-tab-body="main.perms">
+				<div class="panel panel-innertable">
+					<div class="panel-heading"><h3>Agent Permissions</h3></div>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>&nbsp;</th>
+								<th width="120" class="text-center">Full Access <span class="help-icon" tooltip-placement="left" tooltip="Full Access means the agent can view tickets in the department as well as create or move tickets into the department."></span></th>
+								<th width="120" class="text-center">Assignment <span class="help-icon" tooltip-placement="left" tooltip="Assignment means that the agent cannot view tickets in the department, but they can create or move tickets into it."></span></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="groupObj in TicketDepsEdit.agent_perms.groups">
+								<td>
+									<i class="icon-group icon-22x text-middle icon-light"></i>
+									&nbsp;
+									<span class="text-middle">{{ ng_var('groupObj.model.title') }}</span>
+								</td>
+								<td class="text-center">
+									<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
+								</td>
+								<td class="text-center">
+									<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
+								</td>
+							</tr>
+							<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
+								<td>
+									<i class="agent-icon agent-icon-22x text-middle" bg-img="agentObj.model.picture_url_22"></i>
+									&nbsp;
+									<span class="text-middle">{{ ng_var('agentObj.model.display_name') }}</span>
+								</td>
+								<td class="text-center">
+									<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="This permission is locked because this agent belongs to an agent group which has this permission enabled."></button>
+								</td>
+								<td class="text-center">
+									<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="panel panel-innertable">
+					<div class="panel-heading"><h3>User Group Permissions</h3></div>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>&nbsp;</th>
+								<th width="120" class="text-center">Use <span class="help-icon" tooltip-placement="left" tooltip="When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to."></span></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
+								<td>
+									<i class="icon-group icon-22x text-middle icon-light"></i>
+									&nbsp;
+									<span class="text-middle">{{ ng_var('usergroup.title') }}</span>
+								</td>
+								<td class="text-center">
+									<button dp-toggle-switch ng-model="usergroup.use"></button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div dp-tab-body="main.layout">
+				<div class="panel panel-fill">
+					<div class="panel-body" style="height: 400px;">
+
+					</div>
+				</div>
+			</div>
+
+			<div dp-tab-body="main.website_embeds">
+				<div class="panel panel-fill">
+					<div class="panel-body">
+						<p>
+							Website Embeds are code snippets you can copy directly into your website to quickly add
+							a DeskPRO contact form to any page.
+						</p>
+						<form role="form" ng-if="TicketDepsEdit.dep.id">
+							<div class="form-group">
+								<label for="title">Direct Link</label>
+								<div class="row">
+									<div class="col-lg-8">
+										<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="title">Popup Window</label>
+								<div class="row">
+									<div class="col-lg-8">
+										<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="title">Embedded Form</label>
+								<div class="row">
+									<div class="col-lg-8">
+										<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
+									</div>
+								</div>
+							</div>
+						</form>
+						<div ng-if="!TicketDepsEdit.dep.id">
+							<p>
+								The Website Embeds code is not available yet because you have not saved this
+								new department. Save the department first then come back to this tab.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="inner-footer">
+				<div class="text-danger ng-hide" ng-show="form_props.$invalid">
+					<p><strong>Please correct the following error(s):</strong></p>
+					<ul>
+						<li ng-show="form_props.title.$error.department_title_test">TEST</li>
+						<li ng-show="form_props.title.$error.required">You must enter a valid title</li>
+					</ul>
+				</div>
+
+				<div class="text-center" ng-hide="form_props.$invalid">
+					<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
+				</div>
+			</div>
+		</form>
 	</article>
 </div>

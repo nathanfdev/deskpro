@@ -182,6 +182,41 @@ define ['angular', 'Admin/App'], (angular) ->
 
 
 		###*
+		* Given an error response from the server, apply it to the view. This is typically
+    	* a validation error that we want to show in the form.
+		###
+		applyErrorResponseToView: (result) ->
+			if result?.error_code != 'validation_error' then return
+
+			error_codes = []
+			error_codes.push(result.detail.code_name)
+
+			handled_codes = []
+
+			for own form_key, form of @$scope
+				if form_key.indexOf('form_') != 0 then continue
+
+				for own field_title, field of form
+					if not field.dpServerValidationKeys? then continue
+					for code in error_codes
+						for check_code in field.dpServerValidationKeys
+							if check_code.indexOf(code) == 0
+								code_segs = code.split('.')
+								last_seg = code_segs.pop();
+
+								switch last_seg
+									when 'required'
+										field.$setValidity('required', false)
+									else
+										code_safe = code.replace(/\./g, '_')
+										field.$setValidity(code_safe, false)
+
+								handled_codes.push(code)
+
+			if error_codes.length != handled_codes.length
+				console.error("One or more unhandled errors: %o", error_codes)
+
+		###*
 		* Calls $apply on scope only if digest isn't already being processed
 		###
 		ngApply: (fn) ->

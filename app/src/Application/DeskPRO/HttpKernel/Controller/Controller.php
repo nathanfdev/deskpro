@@ -147,6 +147,18 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		}
 	}
 
+
+	/**
+	 * @param \Exception $e
+	 * @throws \Exception
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function handleActionException(\Exception $e)
+	{
+		throw $e;
+	}
+
+
 	/**
 	 * Called by the HttpKernel after an action has been executed.
 	 *
