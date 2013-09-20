@@ -18,7 +18,7 @@
 					<a href="#/tickets/ticket_deps/{{ ng_var('dep.id') }}">
 						<i class="icon-reorder drag-handle"></i>
 						<div class="pull-right">
-							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;">ID: {{ ng_var('dep.id') }}</span>
+							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('dep.id') }}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
@@ -28,7 +28,7 @@
 							<a href="#/tickets/ticket_deps/{{ ng_var('subdep.id') }}">
 								<i class="icon-reorder drag-handle"></i>
 								<div class="pull-right">
-									<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;">ID: {{ ng_var('subdep.id') }}</span>
+									<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('subdep.id') }}</span>
 									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(subdep); $event.preventDefault();"><i class="icon-trash"></i></span>
 								</div>
 								<h4>
