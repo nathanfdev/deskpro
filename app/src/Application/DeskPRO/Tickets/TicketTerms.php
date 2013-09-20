@@ -854,9 +854,12 @@ class TicketTerms
 				if ($op == self::OP_IS) $op = self::OP_CONTAINS;
 				elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
 
+				$choice = (array)$choice;
+				$choice = array_pop($choice);
+
 				$any = false;
 				foreach ($ticket->getLabelManager()->getLabelsArray() as $label) {
-					if (strpos(strtolower($label), strtolower($choice)) !== false) {
+					if (strtolower($label) == strtolower($choice)) {
 						$any = true;
 						if ($op == self::OP_NOTCONTAINS) {
 							return false;

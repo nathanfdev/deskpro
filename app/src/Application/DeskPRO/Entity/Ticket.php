@@ -497,6 +497,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $_old_status = null;
 
 	/**
+	 * Sometimes we need to keep track of certain properties on a
+	 * ticket before they have been saved. e.g., labels has a PK on ticket ID and
+	 * we cant save them as managed entities until after the tikcet is first saved,
+	 * but labels added need to be saved somewhere so we can test them during triggers.
+	 *
+	 * @var array
+	 */
+	public $_presave_state = array();
+
+	/**
 	 * To get around scoping issues with TicketSla event callbacks, we set the
 	 * parent ticket log during TriggerExecutor.
 	 */
@@ -2679,6 +2689,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function resetTicketLogger()
 	{
 		$this->_initTicketLogger();
+		$this->_presave_state = array();
 	}
 
 	public function unsetTicketLogger()
