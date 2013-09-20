@@ -94,14 +94,27 @@ define [
 		initData: (department_perms, agents, agentgroups, usergroups) ->
 			matrix = new Admin_Main_Model_DepAgentPermMatrix()
 
+			console.log(department_perms)
+
 			for group in agentgroups
 				matrix.addGroup(group, [])
 
 			for agent in agents
 				matrix.addAgent(agent, [])
 
-			matrix.initPerms()
+			matrix.initPerms(department_perms.agentgroups, department_perms.agents)
 			@agent_perms = matrix
+
+			if department_perms.usergroups
+				ugroup_map = {}
+				for p in department_perms.usergroups
+					ugroup_map[p.usergroup_id] = p
+
+				for ugroup in usergroups
+					if ugroup_map[ugroup.id]
+						ugroup.use = true
+
+			@usergroups = usergroups
 
 			for name in ['link', 'win', 'embed']
 				tpl = @getTemplatePath("TicketDeps/code-"+name+".html")
@@ -212,29 +225,29 @@ define [
 
 			if type == 'all' || type == 'agents'
 				perms.agents = []
-				for agent in @agents
-					if agent.full
+				for agentObj in @agent_perms.agents
+					if agentObj.perms.full.state
 						perms.agents.push({
-							agent_id: agent.id,
+							agent_id: agentObj.model.id,
 							perm_name: 'full'
 						})
-					else if agent.assign
+					else if agentObj.perms.assign.state
 						perms.agents.push({
-							agent_id: agent.id,
+							agent_id: agentObj.model.id,
 							perm_name: 'assign'
 						})
 
 			if type == 'all' || type == 'agentgroups'
 				perms.agentgroups = []
-				for agentgroup in @agentgroups
-					if agentgroup.full
+				for groupObj in @agent_perms.groups
+					if groupObj.perms.full.state
 						perms.agentgroups.push({
-							usergroup_id: agentgroup.id,
+							usergroup_id: groupObj.model.id,
 							perm_name: 'full'
 						})
-					else if agentgroup.assign
+					else if groupObj.perms.full.assign
 						perms.agentgroups.push({
-							usergroup_id: agentgroup.id,
+							usergroup_id: groupObj.model.id,
 							perm_name: 'assign'
 						})
 

@@ -97,8 +97,9 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
-        var agent, code, group, matrix, name, tpl, _i, _j, _k, _len, _len1, _len2, _ref1, _results;
+        var agent, code, group, matrix, name, p, tpl, ugroup, ugroup_map, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _results;
         matrix = new Admin_Main_Model_DepAgentPermMatrix();
+        console.log(department_perms);
         for (_i = 0, _len = agentgroups.length; _i < _len; _i++) {
           group = agentgroups[_i];
           matrix.addGroup(group, []);
@@ -107,12 +108,27 @@
           agent = agents[_j];
           matrix.addAgent(agent, []);
         }
-        matrix.initPerms();
+        matrix.initPerms(department_perms.agentgroups, department_perms.agents);
         this.agent_perms = matrix;
-        _ref1 = ['link', 'win', 'embed'];
+        if (department_perms.usergroups) {
+          ugroup_map = {};
+          _ref1 = department_perms.usergroups;
+          for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+            p = _ref1[_k];
+            ugroup_map[p.usergroup_id] = p;
+          }
+          for (_l = 0, _len3 = usergroups.length; _l < _len3; _l++) {
+            ugroup = usergroups[_l];
+            if (ugroup_map[ugroup.id]) {
+              ugroup.use = true;
+            }
+          }
+        }
+        this.usergroups = usergroups;
+        _ref2 = ['link', 'win', 'embed'];
         _results = [];
-        for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-          name = _ref1[_k];
+        for (_m = 0, _len4 = _ref2.length; _m < _len4; _m++) {
+          name = _ref2[_m];
           tpl = this.getTemplatePath("TicketDeps/code-" + name + ".html");
           code = this.$templateCache.get(tpl).replace(/%DEPID%/g, this.dep.id);
           _results.push(this.$scope['code_' + name] = code);
@@ -240,24 +256,24 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.getPermsData = function(type) {
-        var agent, agentgroup, perms, usergroup, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+        var agentObj, groupObj, perms, usergroup, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
         if (type == null) {
           type = 'all';
         }
         perms = {};
         if (type === 'all' || type === 'agents') {
           perms.agents = [];
-          _ref1 = this.agents;
+          _ref1 = this.agent_perms.agents;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            agent = _ref1[_i];
-            if (agent.full) {
+            agentObj = _ref1[_i];
+            if (agentObj.perms.full.state) {
               perms.agents.push({
-                agent_id: agent.id,
+                agent_id: agentObj.model.id,
                 perm_name: 'full'
               });
-            } else if (agent.assign) {
+            } else if (agentObj.perms.assign.state) {
               perms.agents.push({
-                agent_id: agent.id,
+                agent_id: agentObj.model.id,
                 perm_name: 'assign'
               });
             }
@@ -265,17 +281,17 @@
         }
         if (type === 'all' || type === 'agentgroups') {
           perms.agentgroups = [];
-          _ref2 = this.agentgroups;
+          _ref2 = this.agent_perms.groups;
           for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            agentgroup = _ref2[_j];
-            if (agentgroup.full) {
+            groupObj = _ref2[_j];
+            if (groupObj.perms.full.state) {
               perms.agentgroups.push({
-                usergroup_id: agentgroup.id,
+                usergroup_id: groupObj.model.id,
                 perm_name: 'full'
               });
-            } else if (agentgroup.assign) {
+            } else if (groupObj.perms.full.assign) {
               perms.agentgroups.push({
-                usergroup_id: agentgroup.id,
+                usergroup_id: groupObj.model.id,
                 perm_name: 'assign'
               });
             }

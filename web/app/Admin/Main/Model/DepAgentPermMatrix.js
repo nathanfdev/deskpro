@@ -76,19 +76,53 @@
       */
 
 
-      Admin_Main_Model_DepAgentPermMatrix.prototype.initPerms = function() {
-        var agent, agentObj, agentPerms, aid, gid, group, groupObj, groupPerms, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+      Admin_Main_Model_DepAgentPermMatrix.prototype.initPerms = function(group_perms, agent_perms) {
+        var agent, agentObj, agentPerms, aid, gid, group, groupObj, groupPerms, p, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _results;
+        if (group_perms) {
+          for (_i = 0, _len = group_perms.length; _i < _len; _i++) {
+            p = group_perms[_i];
+            if (this.groups_map[p.usergroup_id] == null) {
+              continue;
+            }
+            if (this.groups_map[p.usergroup_id].perms[p.perm_name] == null) {
+              this.groups_map[p.usergroup_id].perms[p.perm_name] = {
+                state: false,
+                set_state: false,
+                soft_state: false,
+                locked: false
+              };
+            }
+            this.groups_map[p.usergroup_id].perms[p.perm_name].set_state = true;
+          }
+        }
+        if (agent_perms) {
+          for (_j = 0, _len1 = agent_perms.length; _j < _len1; _j++) {
+            p = agent_perms[_j];
+            if (this.agents_map[p.agent_id] == null) {
+              continue;
+            }
+            if (this.agents_map[p.agent_id].perms[p.perm_name] == null) {
+              this.agents_map[p.agent_id].perms[p.perm_name] = {
+                state: false,
+                set_state: false,
+                soft_state: false,
+                locked: false
+              };
+            }
+            this.agents_map[p.agent_id].perms[p.perm_name].set_state = true;
+          }
+        }
         _ref = this.agents;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          agentObj = _ref[_i];
+        for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
+          agentObj = _ref[_k];
           agent = agentObj.model;
           agentPerms = agentObj.perms;
           if (!agent.agentgroup_ids) {
             continue;
           }
           _ref1 = agent.agentgroup_ids;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            gid = _ref1[_j];
+          for (_l = 0, _len3 = _ref1.length; _l < _len3; _l++) {
+            gid = _ref1[_l];
             if (!this.groups_map[gid]) {
               continue;
             }
@@ -127,8 +161,8 @@
         }
         _ref2 = this.groups;
         _results = [];
-        for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-          groupObj = _ref2[_k];
+        for (_m = 0, _len4 = _ref2.length; _m < _len4; _m++) {
+          groupObj = _ref2[_m];
           group = groupObj.model;
           groupPerms = groupObj.perms;
           if (groupPerms.full == null) {
@@ -163,11 +197,11 @@
           }
           if (groupPerms.full.state || groupPerms.assign.state) {
             _results.push((function() {
-              var _l, _len3, _ref3, _results1;
+              var _len5, _n, _ref3, _results1;
               _ref3 = groupObj.aids;
               _results1 = [];
-              for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
-                aid = _ref3[_l];
+              for (_n = 0, _len5 = _ref3.length; _n < _len5; _n++) {
+                aid = _ref3[_n];
                 if (groupPerms.full.state) {
                   this.agents_map[aid].perms.full.soft_state = true;
                   this.agents_map[aid].perms.full.locked = true;

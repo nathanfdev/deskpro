@@ -59,7 +59,23 @@ define ->
     	* this should be called to propogate values from ug's to
     	* agents and set the proper locked state.
 		###
-		initPerms: ->
+		initPerms: (group_perms, agent_perms) ->
+
+			if group_perms
+				for p in group_perms
+					if not @groups_map[p.usergroup_id]? then continue
+					if not @groups_map[p.usergroup_id].perms[p.perm_name]?
+						@groups_map[p.usergroup_id].perms[p.perm_name] = { state: false, set_state: false, soft_state: false, locked: false }
+
+					@groups_map[p.usergroup_id].perms[p.perm_name].set_state = true
+
+			if agent_perms
+				for p in agent_perms
+					if not @agents_map[p.agent_id]? then continue
+					if not @agents_map[p.agent_id].perms[p.perm_name]?
+						@agents_map[p.agent_id].perms[p.perm_name] = { state: false, set_state: false, soft_state: false, locked: false }
+
+					@agents_map[p.agent_id].perms[p.perm_name].set_state = true
 
 			# Init group_to_agents map
 			# And fill/correct missing perms
