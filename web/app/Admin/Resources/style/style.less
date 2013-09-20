@@ -840,7 +840,7 @@ section.dp-help-page {
 	cursor: pointer;
 	position: relative;
 	text-align: left;
-	overflow: hidden;
+	overflow: visible;
 	vertical-align: middle;
 	cursor: pointer;
 	position: relative;
@@ -908,6 +908,54 @@ section.dp-help-page {
 		&:before {
 			content: "\f023";
 		}
+	}
+
+	//----
+	// Bunch of states we can have
+	//-----
+
+	.mouse-target {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background: transparent;
+		border: none;
+		margin: 0;
+		padding: 0;
+		z-index: 1;
+	}
+
+	.show-on-locked-on  { display: none; }
+	.show-off-locked-on { display: none; }
+
+	&.locked {
+		.show-off-locked-on { display: block; }
+
+		&.switch-on {
+			.show-on-locked-on  { display: block; }
+			.show-off-locked-on { display: none; }
+		}
+	}
+
+	.show-on-locked-off  { display: none; }
+	.show-off-locked-off { display: block; }
+
+	&.switch-on {
+		.show-on-locked-off  { display: block; }
+	}
+
+	&.locked {
+		.show-off-locked-off { display: none; }
+		.show-on-locked-off { display: none; }
+	}
+
+	.show-on { display: none; }
+	.show-off { display: block; }
+	&.switch-on {
+		.show-on { display: block; }
+		.show-off { display: none; }
 	}
 }
 

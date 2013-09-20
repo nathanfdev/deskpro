@@ -79,15 +79,16 @@
       return {
         restrict: 'A',
         require: 'ngModel',
-        template: '<div class="dp-switch"><label><span></span></label></div>',
+        template: "<div class=\"dp-switch\">\n	<label><span></span></label>\n</div>",
         replace: true,
         scope: {
           model: '=ngModel',
           lockedModel: '=lockedModel',
-          change: '=ngChange'
+          change: '=ngChange',
+          lockedTip: '@'
         },
         link: function(scope, element, attrs, ngModel) {
-          var updateVal;
+          var tipTarget, updateVal;
           updateVal = function() {
             var val;
             val = scope.model;
@@ -124,6 +125,16 @@
               return element.removeClass('locked');
             }
           });
+          if (scope.lockedTip) {
+            tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>');
+            tipTarget.attr('title', scope.lockedTip);
+            tipTarget.appendTo(element);
+            tipTarget.tooltip({
+              placement: 'auto top',
+              trigger: 'hover',
+              container: 'body'
+            });
+          }
           if (scope.model) {
             ngModel.$setViewValue(true);
             element.addClass('switch-on');

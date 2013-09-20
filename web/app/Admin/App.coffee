@@ -93,14 +93,21 @@ define [
 		return {
 			restrict: 'A',
 			require:  'ngModel',
-			template: '<div class="dp-switch"><label><span></span></label></div>',
+			template: """
+				<div class="dp-switch">
+					<label><span></span></label>
+				</div>
+			""",
 			replace: true,
 			scope: {
 				model: '=ngModel',
 				lockedModel: '=lockedModel',
-				change: '=ngChange'
+				change: '=ngChange',
+				lockedTip: '@'
 			},
 			link: (scope, element, attrs, ngModel) ->
+
+
 				updateVal = ->
 					val = scope.model
 
@@ -139,6 +146,16 @@ define [
 					else
 						element.removeClass('locked')
 				)
+
+				if scope.lockedTip
+					tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
+					tipTarget.attr('title', scope.lockedTip)
+					tipTarget.appendTo(element)
+					tipTarget.tooltip({
+						placement: 'auto top',
+						trigger: 'hover',
+						container: 'body'
+					})
 
 				if scope.model
 					ngModel.$setViewValue(true)

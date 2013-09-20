@@ -101,16 +101,16 @@
 								<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
 							</td>
 							<td class="text-center">
-								<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')"></button>
+								<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
 							</td>
 						</tr>
 						<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
 							<td>{{ ng_var('agentObj.model.display_name') }}</td>
 							<td class="text-center">
-								<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')"></button>
+								<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="This permission is locked because this agent belongs to an agent group which has this permission enabled."></button>
 							</td>
 							<td class="text-center">
-								<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')"></button>
+								<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
 							</td>
 						</tr>
 					</tbody>

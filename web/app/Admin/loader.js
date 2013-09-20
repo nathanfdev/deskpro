@@ -31,7 +31,7 @@ requirejs.config({
 		'jqueryUi':             ['jquery'],
 
 		'bootstrapModal':      ['jquery'],
-		'bootstrapTooltip':    ['jquery'],
+		'bootstrapTooltip':    ['jquery', 'jqueryUi'],
 		'select2':             ['jquery'],
 		'toastr':              ['jquery'],
 		'underscore':          { expores: '_' }
@@ -53,6 +53,8 @@ requirejs([
 	'jquery',
 	'jqueryUi',
 	'underscore',
+
+	'bootstrapTooltip',
 
 	'select2',
 	'toastr',
