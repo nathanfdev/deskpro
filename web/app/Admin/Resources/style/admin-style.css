@@ -7163,6 +7163,40 @@ a:focus {
   text-align: center;
 }
 
+.agent-icon {
+  display: inline-block;
+  vertical-align: baseline;
+  background-color: transparent;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.agent-icon.agent-icon-22x {
+  width: 22px;
+  height: 22px;
+}
+
+.icon-light {
+  color: #888;
+}
+
+.icon-22x {
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.text-middle {
+  display: inline-block;
+  line-height: 100%;
+  vertical-align: middle;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;

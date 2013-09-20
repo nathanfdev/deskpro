@@ -49,6 +49,14 @@ class AgentsController extends AbstractController
 				$agent_data[$k] = $agent[$k];
 			}
 
+			$agent_data['picture_url']    = $agent->getPictureUrl(80);
+			$agent_data['picture_url_64'] = $agent->getPictureUrl(64);
+			$agent_data['picture_url_50'] = $agent->getPictureUrl(50);
+			$agent_data['picture_url_45'] = $agent->getPictureUrl(45);
+			$agent_data['picture_url_32'] = $agent->getPictureUrl(32);
+			$agent_data['picture_url_22'] = $agent->getPictureUrl(22);
+			$agent_data['picture_url_16'] = $agent->getPictureUrl(16);
+
 			$agent_data['primary_email'] = array(
 				'id'    => (int)$agent->primary_email->id,
 				'email' => $agent->primary_email->email

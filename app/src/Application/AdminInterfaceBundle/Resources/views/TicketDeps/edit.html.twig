@@ -96,7 +96,11 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="groupObj in TicketDepsEdit.agent_perms.groups">
-							<td>{{ ng_var('groupObj.model.title') }}</td>
+							<td>
+								<i class="icon-group icon-22x text-middle icon-light"></i>
+								&nbsp;
+								<span class="text-middle">{{ ng_var('groupObj.model.title') }}</span>
+							</td>
 							<td class="text-center">
 								<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
 							</td>
@@ -105,7 +109,11 @@
 							</td>
 						</tr>
 						<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
-							<td>{{ ng_var('agentObj.model.display_name') }}</td>
+							<td>
+								<i class="agent-icon agent-icon-22x text-middle" style="background-image: url({{ ng_var('agentObj.model.picture_url_22') }})"></i>
+								&nbsp;
+								<span class="text-middle">{{ ng_var('agentObj.model.display_name') }}</span>
+							</td>
 							<td class="text-center">
 								<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="This permission is locked because this agent belongs to an agent group which has this permission enabled."></button>
 							</td>
@@ -128,7 +136,11 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
-							<td>{{ ng_var('usergroup.title') }}</td>
+							<td>
+								<i class="icon-group icon-22x text-middle icon-light"></i>
+								&nbsp;
+								<span class="text-middle">{{ ng_var('usergroup.title') }}</span>
+							</td>
 							<td class="text-center">
 								<button dp-toggle-switch ng-model="usergroup.use"></button>
 							</td>
