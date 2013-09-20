@@ -499,6 +499,71 @@ class Translate implements PersonContextInterface
         }
     }
 
+
+	/**
+	 * @param array $phrase_names
+	 */
+	public function getArrayPhraseTexts(array $phrase_names, $language = null)
+	{
+		if ($language === null) $language = $this->_language;
+
+		if (Numbers::isInteger($language)) {
+			$language_id = $language;
+		} else {
+			$language_id = $language['id'];
+		}
+
+		$preload_groups = array();
+
+		$star_patterns  = array();
+		$regex_patterns = array();
+		$phrase_ids     = array();
+
+		foreach ($phrase_names as $phrase_name) {
+			$preload_groups[] = $this->getPhraseGroupFromName($phrase_name);
+
+			// A regex pattern like /admin\.general\.default.*?/
+			if ($phrase_name[0] == '/' && substr($phrase_name, -1, 1) == '/') {
+				$regex_patterns[] = $phrase_name;
+
+			// A simplified star pattern like admin.general.default*
+			} else if (strpos($phrase_name, '*') !== false) {
+				$star_patterns[] = $phrase_name;
+
+			// A fully-qualified phrase name
+			} else {
+				$phrase_ids[] = $phrase_name;
+			}
+		}
+
+		$this->loadPhraseGroups($preload_groups);
+
+		$phrase_texts = array();
+		foreach ($phrase_ids as $phrase_name) {
+			$text = $this->getPhraseText($phrase_name, $language, true);
+			$phrase_texts[$phrase_name] = $text;
+		}
+
+		if ($star_patterns || $regex_patterns) {
+			$this->_loadPendingPhraseGroups();
+			foreach ($this->_phrases[$language_id] as $phrase_name => $text) {
+				foreach ($star_patterns as $pattern) {
+					if (Strings::isStarMatch($pattern, $phrase_name)) {
+						$phrase_texts[$phrase_name] = $text;
+					}
+				}
+				foreach ($regex_patterns as $pattern) {
+					if (preg_match($pattern, $phrase_name)) {
+						$phrase_texts[$phrase_name] = $text;
+					}
+				}
+			}
+		}
+
+		return $phrase_texts;
+	}
+
+
 	/**
 	 * Called when there is no such phrase name. By default this simply
 	 * returns null. But an event might change this.

@@ -7,6 +7,7 @@
     "angular-animate": "v1.2.0-rc.2",
     "angular-sanitize": "v1.2.0-rc.2",
     "angular-i18n": "v1.2.0-rc.2",
+    "angular-translate": "latest",
     "angular-ui-router": "latest",
     "angular-ui-select2": "latest",
     "font-awesome": "3.2.1",

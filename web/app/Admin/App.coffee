@@ -1,5 +1,6 @@
 define [
 	'angular',
+	'DP_LANG',
 	'Admin/Resources/config/routing',
 	'Admin/Main/Service/AppState',
 	'Admin/Main/Service/DpApi',
@@ -8,6 +9,7 @@ define [
 	'Admin/Main/DataService/Departments',
 ], (
 	angular,
+	DP_LANG,
 	routing,
 	Admin_Main_Service_AppState,
 	Admin_Main_Service_DpApi,
@@ -19,7 +21,7 @@ define [
 	# Main services
 	####################################################################################################################
 
-	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable']);
+	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate']);
 
 	Admin_App.service('AppState', ['$rootScope', '$state', ($rootScope, $state) ->
 		return new Admin_Main_Service_AppState($rootScope, $state)
@@ -275,6 +277,75 @@ define [
 				)
 		}
 	)
+
+	####################################################################################################################
+	# Translation
+	####################################################################################################################
+
+	Admin_App.factory('translateDpInterpolation', ->
+		choosePlural = (text, number) ->
+			parts = text.split('|');
+
+			if number == 0 || number != 1
+				return parts[1]
+			else
+				return parts[0]
+
+		regexQuote = (strRegex) ->
+			strRegex.replace(/([.?*+^$[\]\\(){}-])/g, "\\$1")
+
+		return {
+			setLocale: (locale) ->
+				return
+
+			getInterpolationIdentifier: ->
+				return 'dp'
+
+			interpolate: (text, vars) ->
+				if not vars then return text
+
+				if vars.count_length?
+					vars.count = vars.count_length.length
+
+				if vars.count?
+					text = choosePlural(text)
+
+				is_raw = vars.as_raw?
+
+				for own key, value of vars
+					re = new RegExp('\{\{\s*' + regexQuote(key) + '\s*\}\}' , 'g')
+
+					if is_raw
+						text = text.replace(re, value)
+					else
+						text = text.replace(re, _.escape(value))
+
+				return text;
+		}
+	)
+
+	Admin_App.factory('xxxtranslateDpStorage', ->
+		return {
+			DP_LANG: DP_LANG,
+			set: (name, value) ->
+				DP_LANG[name] = value
+
+			get: (name) ->
+				if name == 'NG_TRANSLATE_LANG_KEY'
+					return 'en'
+
+				if DP_LANG[name]?
+					return DP_LANG[name]
+				else
+					return ''
+		}
+	)
+
+	Admin_App.config(['$translateProvider', ($translateProvider) ->
+		$translateProvider.translations('default', DP_LANG)
+		$translateProvider.preferredLanguage('default')
+		$translateProvider.useInterpolation('translateDpInterpolation')
+	])
 
 	####################################################################################################################
 	# Routing

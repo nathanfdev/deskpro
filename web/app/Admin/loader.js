@@ -6,6 +6,7 @@ requirejs.config({
 		angularBootstrap:       DP_ASSET_URL+'/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
 		angularSanitize:        DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
 		angularSelect2:         DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
+		angularTranslate:       DP_ASSET_URL+'/app/bower_components/angular-translate/angular-translate',
 		angularUiRouter:        DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
 		angularUiSortable:      DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
 
@@ -18,6 +19,7 @@ requirejs.config({
 		select2:                DP_ASSET_URL+'/app/bower_components/select2/select2.min',
 		toastr:                 DP_ASSET_URL+'/app/bower_components/toastr/toastr.min',
 
+		DP_LANG:                DP_BASE_ADMIN_URL + '/load-lang.js?varname=define',
 		Admin:                  DP_ASSET_URL+'/app/Admin'
 	},
 	shim: {
@@ -25,6 +27,7 @@ requirejs.config({
 		'angularBootstrap':     ['angular'],
 		'angularSanitize':      ['angular'],
 		'angularSelect2':       ['angular'],
+		'angularTranslate':     ['angular'],
 		'angularUiRouter':      ['angular'],
 		'angularUiSortable':    ['angular'],
 
@@ -34,7 +37,7 @@ requirejs.config({
 		'bootstrapTooltip':    ['jquery', 'jqueryUi'],
 		'select2':             ['jquery'],
 		'toastr':              ['jquery'],
-		'underscore':          { expores: '_' }
+		'underscore':          { exports: '_' }
 	},
 	priority: [
 		"angular"
@@ -47,6 +50,7 @@ requirejs([
 	'angular',
 	'angularBootstrap',
 	'angularSelect2',
+	'angularTranslate',
 	'angularUiRouter',
 	'angularUiSortable',
 
@@ -60,6 +64,7 @@ requirejs([
 	'toastr',
 
 	'Admin/App',
+	'DP_LANG',
 	'Admin/Main/Ctrl/Bare',
 	'Admin/Main/Ctrl/BareList',
 	'Admin/Main/Ctrl/MainPage',

@@ -23,4 +23,10 @@ $collection->add('adm_tpl_load', new Route(
 	array('view_name' => '.+')
 ));
 
+$collection->add('adm_lang_load', new Route(
+	'/load-lang.{_format}',
+	array('_controller' => 'AdminInterfaceBundle:Interface:loadLang'),
+	array()
+));
+
 return $collection;

@@ -2,9 +2,9 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'Admin/Resources/config/routing', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments'], function(angular, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments) {
+  define(['angular', 'DP_LANG', 'Admin/Resources/config/routing', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments'], function(angular, DP_LANG, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments) {
     var Admin_App, _ref, _ref1;
-    Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable']);
+    Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate']);
     Admin_App.service('AppState', [
       '$rootScope', '$state', function($rootScope, $state) {
         return new Admin_Main_Service_AppState($rootScope, $state);
@@ -265,6 +265,76 @@
         }
       };
     });
+    Admin_App.factory('translateDpInterpolation', function() {
+      var choosePlural, regexQuote;
+      choosePlural = function(text, number) {
+        var parts;
+        parts = text.split('|');
+        if (number === 0 || number !== 1) {
+          return parts[1];
+        } else {
+          return parts[0];
+        }
+      };
+      regexQuote = function(strRegex) {
+        return strRegex.replace(/([.?*+^$[\]\\(){}-])/g, "\\$1");
+      };
+      return {
+        setLocale: function(locale) {},
+        getInterpolationIdentifier: function() {
+          return 'dp';
+        },
+        interpolate: function(text, vars) {
+          var is_raw, key, re, value;
+          if (!vars) {
+            return text;
+          }
+          if (vars.count_length != null) {
+            vars.count = vars.count_length.length;
+          }
+          if (vars.count != null) {
+            text = choosePlural(text);
+          }
+          is_raw = vars.as_raw != null;
+          for (key in vars) {
+            if (!__hasProp.call(vars, key)) continue;
+            value = vars[key];
+            re = new RegExp('\{\{\s*' + regexQuote(key) + '\s*\}\}', 'g');
+            if (is_raw) {
+              text = text.replace(re, value);
+            } else {
+              text = text.replace(re, _.escape(value));
+            }
+          }
+          return text;
+        }
+      };
+    });
+    Admin_App.factory('xxxtranslateDpStorage', function() {
+      return {
+        DP_LANG: DP_LANG,
+        set: function(name, value) {
+          return DP_LANG[name] = value;
+        },
+        get: function(name) {
+          if (name === 'NG_TRANSLATE_LANG_KEY') {
+            return 'en';
+          }
+          if (DP_LANG[name] != null) {
+            return DP_LANG[name];
+          } else {
+            return '';
+          }
+        }
+      };
+    });
+    Admin_App.config([
+      '$translateProvider', function($translateProvider) {
+        $translateProvider.translations('default', DP_LANG);
+        $translateProvider.preferredLanguage('default');
+        return $translateProvider.useInterpolation('translateDpInterpolation');
+      }
+    ]);
     Admin_App.config([
       '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
         var id, opts, route, segs, url, views, with_lists, _i, _len, _results;

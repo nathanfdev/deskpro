@@ -17,12 +17,13 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate'];
 
       Admin_TicketDeps_Ctrl_List.CTRL_TYPE = 'list';
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
+        this.departments_count = 0;
         this.dep_settings = {};
         return this.sortedListOptions = {
           axis: 'y',
@@ -67,6 +68,7 @@
       Admin_TicketDeps_Ctrl_List.prototype.initDepList = function(departments) {
         var dep, _i, _len, _results;
         this.departments = departments;
+        this.departments_count = departments.lenght;
         this.parent_deps = [];
         this.child_deps = {};
         this.default_dep_list = [];

@@ -31,6 +31,7 @@
 	'admin.general.default_specify'                     => 'Specify Default Value',
 	'admin.general.default_value'                       => 'Default Value',
 	'admin.general.departments'                         => 'Departments',
+	'admin.general.x_departments'                       => '{{count}} Department|{{count}} Departments',
 	'admin.general.deskpro_admin_interface'             => 'DeskPRO Admin Interface',
 	'admin.general.deskpro_version'                     => 'DeskPRO Version',
 	'admin.general.download_raw_source'                 => 'Download Raw Source',

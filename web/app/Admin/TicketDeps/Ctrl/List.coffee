@@ -2,10 +2,11 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
 		@CTRL_AS = 'TicketDepsList'
-		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state']
+		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate']
 		@CTRL_TYPE = 'list'
 
 		init: ->
+			@departments_count = 0;
 			@dep_settings = {}
 
 			@sortedListOptions = {
@@ -52,6 +53,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		initDepList: (departments) ->
 			@departments = departments
+			@departments_count = departments.lenght
 			@parent_deps = []
 			@child_deps = {}
 			@default_dep_list = []

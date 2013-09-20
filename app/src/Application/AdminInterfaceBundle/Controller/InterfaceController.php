@@ -33,8 +33,15 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
+use Application\DeskPRO\Translate\JsExporter;
+use Symfony\Component\HttpFoundation\Response;
+
 class InterfaceController extends AbstractController
 {
+	####################################################################################################################
+	# load-view
+	####################################################################################################################
+
 	public function loadViewAction($view_name)
 	{
 		$load_data = null;
@@ -81,6 +88,11 @@ class InterfaceController extends AbstractController
 		return $this->createResponse($rendered);
 	}
 
+
+	####################################################################################################################
+	# multi-load-view
+	####################################################################################################################
+
 	public function multiLoadViewAction()
 	{
 		$views = array();
@@ -104,5 +116,39 @@ class InterfaceController extends AbstractController
 		}
 
 		return $this->createJsonResponse($views);
+	}
+
+
+	####################################################################################################################
+	# load-lang
+	####################################################################################################################
+
+	public function loadLangAction($_format)
+	{
+		$js_exporter = new JsExporter($this->container->getTranslator());
+
+		$get_phrases = include(DP_ROOT.'/languages/expose-js.php');
+		$get_phrases = $get_phrases['admin'];
+
+		if ($_format == 'js') {
+			$varname = 'DP_LANG';
+			if ($this->in->getString('varname')) {
+				$varname = $this->in->getString('varname');
+			}
+
+			$res = new Response(
+				$js_exporter->exportToJsFile($varname, $get_phrases),
+				200,
+				array('Content-Type' => 'text/javascript')
+			);
+		} else {
+			$res = new Response(
+				$js_exporter->exportToJson($get_phrases),
+				200,
+				array('Content-Type' => 'application/json')
+			);
+		}
+
+		return $res;
 	}
 }
