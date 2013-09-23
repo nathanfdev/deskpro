@@ -280,8 +280,8 @@ define(function() {
 		url: '/fields',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketFields/list.html',
+			controller: 'Admin_TicketFields_Ctrl_List'
 		},
 		page: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',

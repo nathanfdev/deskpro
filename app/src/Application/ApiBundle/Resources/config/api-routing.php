@@ -2261,4 +2261,14 @@ $collection->add('api_ticket_deps_remove', new Route(
 	array('_method' => 'DELETE')
 ));
 
+########################################################################################################################
+# TICKET FIELDS
+########################################################################################################################
+
+$collection->add('api_ticket_fields', new Route(
+	'/ticket_fields',
+	array('_controller' => 'ApiBundle:TicketFields:list'),
+	array('_method' => 'GET')
+));
+
 return $collection;
