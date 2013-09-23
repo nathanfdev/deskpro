@@ -140,6 +140,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				move_to: move_to
 			}).success( =>
 				@DepartmentData.deps.remove(for_dep.id)
+				@DepartmentData.resetHierarchy()
 				@em.removeById('department', for_dep.id)
 				@ngApply()
 

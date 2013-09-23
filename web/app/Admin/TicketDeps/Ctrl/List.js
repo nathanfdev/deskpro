@@ -184,6 +184,7 @@
           move_to: move_to
         }).success(function() {
           _this.DepartmentData.deps.remove(for_dep.id);
+          _this.DepartmentData.resetHierarchy();
           _this.em.removeById('department', for_dep.id);
           _this.ngApply();
           if (_this.$state.current.name === 'tickets.ticket_deps.edit' && parseInt(_this.$state.params.id) === for_dep.id) {
