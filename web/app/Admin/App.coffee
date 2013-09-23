@@ -91,6 +91,21 @@ define [
 		}
 	])
 
+	Admin_App.directive('dpNavSubnav', ['$rootScope', '$state', ($rootScope, $state) ->
+		return {
+			restrict: 'A',
+			link: (scope, element, attrs) ->
+				$toggler = element.parent().find('> a');
+				$toggler.on('click', (ev) ->
+					ev.preventDefault();
+					ev.stopPropagation();
+
+					element.slideToggle();
+				)
+				return
+		}
+	])
+
 	Admin_App.directive('dpToggleSwitch', ->
 		return {
 			restrict: 'A',

@@ -2,12 +2,38 @@
 	<h3>Portal</h3>
 </header>
 <ul class="nav nav-rows">
-	<li dp-state-mark="portal.portal_editor"><a href="#/portal/portal_editor">Portal Editor</a></li>
-	<li dp-state-mark="portal.embed"><a href="#/portal/embed">Embed</a></li>
-	<li dp-state-mark="portal.theme"><a href="#/portal/theme">Theme</a></li>
-	<li dp-state-mark="portal.settings"><a href="#/portal/settings">Settings</a></li>
-	<li dp-state-mark="portal.kb"><a href="#/portal/kb">Knowledgebase</a></li>
-	<li dp-state-mark="portal.downloads"><a href="#/portal/downloads">Downloads</a></li>
-	<li dp-state-mark="portal.news"><a href="#/portal/news">News</a></li>
-	<li dp-state-mark="portal.feedback"><a href="#/portal/c">Feedback</a></li>
+	<li dp-state-mark="portal.portal_editor"><a href="#/portal/portal_editor"><i class="icon-columns"></i> <span>Portal Editor</span><i class="icon-caret-right"></i></a></li>
+	<li dp-state-mark="portal.embed"><a href="#/portal/embed"><i class="icon-code"></i> <span>Embed</span><i class="icon-caret-right"></i></a></li>
+	<li dp-state-mark="portal.theme"><a href="#/portal/theme"><i class="icon-picture"></i> <span>Theme</span><i class="icon-caret-right"></i></a></li>
+	<li dp-state-mark="portal.kb">
+		<a href="#"><i class="icon-folder-close-alt"></i> <span>Knowledgebase</span><i class="icon-caret-down"></i></a>
+		<ul class="nav nav-rows sub-nav" dp-nav-subnav>
+			<li dp-state-mark="portal.kb_settings"><a href="#/portal/kb/settings"><i class="icon-cog"></i> <span>Settings</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.kb_labels"><a href="#/portal/kb/labels"><i class="icon-tag"></i> <span>Labels</span><i class="icon-caret-right"></i></a></li>
+		</ul>
+	</li>
+	<li>
+		<a href="#"><i class="icon-download-alt"></i> Downloads<i class="icon-caret-down"></i></a>
+		<ul class="nav nav-rows sub-nav" dp-nav-subnav>
+			<li dp-state-mark="portal.downloads_settings"><a href="#/portal/downloads/settings"><i class="icon-cog"></i> <span>Settings</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.downloads_labels"><a href="#/portal/downloads/labels"><i class="icon-tag"></i> <span>Labels</span><i class="icon-caret-right"></i></a></li>
+		</ul>
+	</li>
+	<li>
+		<a href="#"><i class="icon-file-text"></i> News<i class="icon-caret-down"></i></a>
+		<ul class="nav nav-rows sub-nav" dp-nav-subnav>
+			<li dp-state-mark="portal.news_settings"><a href="#/portal/news/settings"><i class="icon-cog"></i> <span>Settings</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.news_labels"><a href="#/portal/news/labels"><i class="icon-tag"></i> <span>Labels</span><i class="icon-caret-right"></i></a></li>
+		</ul>
+	</li>
+	<li>
+		<a href="#"><i class="icon-pencil"></i> Feedback<i class="icon-caret-down"></i></a>
+		<ul class="nav nav-rows sub-nav" dp-nav-subnav>
+			<li dp-state-mark="portal.feedback_settings"><a href="#/portal/feedback/settings"><i class="icon-cog"></i> <span>Settings</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.feedback_statuses"><a href="#/portal/feedback/statuses"><i class="icon-ticket"></i> <span>Statuses</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.feedback_types"><a href="#/portal/feedback/types"><i class="icon-sitemap"></i> <span>Types</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.feedback_categories"><a href="#/portal/feedback/categories"><i class="icon-folder-open"></i> <span>Categories</span><i class="icon-caret-right"></i></a></li>
+			<li dp-state-mark="portal.feedback_labels"><a href="#/portal/feedback/labels"><i class="icon-tag"></i> <span>Labels</span><i class="icon-caret-right"></i></a></li>
+		</ul>
+	</li>
 </ul>

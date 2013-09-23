@@ -239,6 +239,40 @@ define(function() {
 	});
 
 	//###
+	//# Statuses
+	//###
+	routes.push({
+		id: 'tickets.statuses',
+		url: '/statuses',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Urgency
+	//###
+	routes.push({
+		id: 'tickets.urgency',
+		url: '/urgency',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
 	//# Fields
 	//###
 	routes.push({
@@ -261,6 +295,57 @@ define(function() {
 	routes.push({
 		id: 'tickets.triggers',
 		url: '/triggers',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Snippets
+	//###
+	routes.push({
+		id: 'tickets.snippets',
+		url: '/snippets',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Filters
+	//###
+	routes.push({
+		id: 'tickets.filters',
+		url: '/filters',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Feedback
+	//###
+	routes.push({
+		id: 'tickets.feedback',
+		url: '/feedback',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -307,11 +392,11 @@ define(function() {
 	});
 
 	//###
-	//# Filters
+	//# Labels
 	//###
 	routes.push({
-		id: 'tickets.filters',
-		url: '/filters',
+		id: 'tickets.labels',
+		url: '/labels',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -324,11 +409,11 @@ define(function() {
 	});
 
 	//###
-	//# Labels
+	//# Billing
 	//###
 	routes.push({
-		id: 'tickets.labels',
-		url: '/labels',
+		id: 'tickets.billing',
+		url: '/billing',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -486,11 +571,28 @@ define(function() {
 	});
 
 	//###
-	//# Fields
+	//# Fields::Users
 	//###
 	routes.push({
-		id: 'crm.fields',
-		url: '/fields',
+		id: 'crm.user_fields',
+		url: '/user_fields',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Fields::Orgs
+	//###
+	routes.push({
+		id: 'crm.org_fields',
+		url: '/org_fields',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -508,6 +610,40 @@ define(function() {
 	routes.push({
 		id: 'crm.rules',
 		url: '/rules',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Labels::Users
+	//###
+	routes.push({
+		id: 'crm.user_labels',
+		url: '/user_labels',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Labels::Orgs
+	//###
+	routes.push({
+		id: 'crm.org_labels',
+		url: '/org_labels',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -580,7 +716,7 @@ define(function() {
 	//# Theme
 	//###
 	routes.push({
-		id: 'crm.theme',
+		id: 'portal.theme',
 		url: '/theme',
 		with_list_view: true,
 		list: {
@@ -597,7 +733,7 @@ define(function() {
 	//# Settings
 	//###
 	routes.push({
-		id: 'crm.settings',
+		id: 'portal.settings',
 		url: '/theme',
 		with_list_view: true,
 		list: {
@@ -611,11 +747,11 @@ define(function() {
 	});
 
 	//###
-	//# Kb
+	//# Kb::Settings
 	//###
 	routes.push({
-		id: 'crm.kb',
-		url: '/kb',
+		id: 'portal.kb_settings',
+		url: '/kb/settings',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -628,11 +764,11 @@ define(function() {
 	});
 
 	//###
-	//# Downloads
+	//# Kb::Labels
 	//###
 	routes.push({
-		id: 'crm.downloads',
-		url: '/downloads',
+		id: 'portal.kb_labels',
+		url: '/kb/labels',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -645,11 +781,11 @@ define(function() {
 	});
 
 	//###
-	//# News
+	//# Downloads::Settings
 	//###
 	routes.push({
-		id: 'crm.news',
-		url: '/news',
+		id: 'portal.downloads_settings',
+		url: '/downloads/settings',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -662,11 +798,130 @@ define(function() {
 	});
 
 	//###
-	//# Feedback
+	//# Downloads::Labels
 	//###
 	routes.push({
-		id: 'crm.feedback',
-		url: '/feedback',
+		id: 'portal.downloads_labels',
+		url: '/downloads/labels',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# News::Settings
+	//###
+	routes.push({
+		id: 'portal.news_settings',
+		url: '/news/settings',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# News::Labels
+	//###
+	routes.push({
+		id: 'portal.news_labels',
+		url: '/news/labels',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Feedback::Settings
+	//###
+	routes.push({
+		id: 'portal.feedback_settings',
+		url: '/feedback/settings',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Feedback::Statuses
+	//###
+	routes.push({
+		id: 'portal.feedback_statuses',
+		url: '/feedback/statuses',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Feedback::Types
+	//###
+	routes.push({
+		id: 'portal.feedback_types',
+		url: '/feedback/types',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Feedback::Categories
+	//###
+	routes.push({
+		id: 'portal.feedback_categories',
+		url: '/feedback/categories',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Feedback::Labels
+	//###
+	routes.push({
+		id: 'portal.feedback_labels',
+		url: '/feedback/labels',
 		with_list_view: true,
 		list: {
 			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
@@ -727,6 +982,24 @@ define(function() {
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
+
+	//###
+	//# Labels
+	//###
+	routes.push({
+		id: 'chat.labels',
+		url: '/labels',
+		with_list_view: true,
+		list: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
 
 	//##################################################################################################################
 	// Twitter

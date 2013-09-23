@@ -7458,6 +7458,10 @@ form {
   vertical-align: middle;
 }
 
+.dp-section-nav .nav.sub-nav {
+  display: none;
+}
+
 .dp-section-nav .nav.sub-nav a {
   padding-left: 35px;
 }

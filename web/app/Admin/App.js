@@ -77,6 +77,22 @@
         };
       }
     ]);
+    Admin_App.directive('dpNavSubnav', [
+      '$rootScope', '$state', function($rootScope, $state) {
+        return {
+          restrict: 'A',
+          link: function(scope, element, attrs) {
+            var $toggler;
+            $toggler = element.parent().find('> a');
+            $toggler.on('click', function(ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              return element.slideToggle();
+            });
+          }
+        };
+      }
+    ]);
     Admin_App.directive('dpToggleSwitch', function() {
       return {
         restrict: 'A',
