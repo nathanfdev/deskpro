@@ -358,8 +358,17 @@ class TicketDepartmentEditor
 	public function updateDisplayOrders($orders)
 	{
 		$x = 10;
+		$deps = $this->em->getRepository('DeskPRO:Department')->getByIds($orders);
+
 		foreach ($orders as $dep_id) {
-			$this->db->update('departments', array('display_order' => $x), array('id' => $dep_id));
+			if (!isset($deps[$dep_id])) {
+				continue;
+			}
+
+			$dep = $deps[$dep_id];
+			$dep->display_order = $x;
+			$this->em->persist($dep);
+
 			$x += 10;
 		}
 	}

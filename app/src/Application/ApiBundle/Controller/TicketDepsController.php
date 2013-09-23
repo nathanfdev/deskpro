@@ -178,6 +178,8 @@ class TicketDepsController extends AbstractController
 		$editor = $this->_getDepartmentEditor();
 		$editor->updateDisplayOrders($display_orders);
 
+		$this->em->flush();
+
 		return $this->createSuccessResponse();
 	}
 

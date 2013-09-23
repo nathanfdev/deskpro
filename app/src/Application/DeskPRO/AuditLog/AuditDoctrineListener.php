@@ -264,7 +264,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 			return $str;
 		} else {
-			if (is_string($value) || ctype_digit($value)) {
+			if (is_string($value) || is_scalar($value) || ctype_digit($value)) {
 				return (string)$value;
 			} else if (is_array($value)) {
 				return print_r($value, true);
