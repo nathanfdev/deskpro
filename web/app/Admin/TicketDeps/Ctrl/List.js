@@ -37,7 +37,8 @@
             $list.find('li').each(function() {
               return postData.display_orders.push($(this).data('id'));
             });
-            return promise = _this.Api.sendPostJson('/ticket_deps/display_order', postData);
+            promise = _this.Api.sendPostJson('/ticket_deps/display_order', postData);
+            return _this.pingElement('display_orders');
           }
         };
       };

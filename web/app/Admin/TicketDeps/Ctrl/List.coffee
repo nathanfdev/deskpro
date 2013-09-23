@@ -22,6 +22,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					)
 
 					promise = @Api.sendPostJson('/ticket_deps/display_order', postData)
+					@pingElement('display_orders')
 			}
 
 		initialLoad: ->

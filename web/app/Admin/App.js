@@ -93,6 +93,31 @@
         };
       }
     ]);
+    Admin_App.directive('dpPingFlash', [
+      function() {
+        return {
+          restrict: 'A',
+          scope: false,
+          link: function(scope, element, attrs) {
+            var id;
+            element.addClass('dp-ping-flash');
+            id = '_ctrl_elemnt_ping.' + attrs['dpPingFlash'];
+            scope.$watch(id, function(newVal) {
+              if (!newVal) {
+                return;
+              }
+              return element.stop().fadeIn(500, function() {
+                return window.setTimeout(function() {
+                  if (element) {
+                    return element.stop().fadeOut(400);
+                  }
+                }, 400);
+              });
+            });
+          }
+        };
+      }
+    ]);
     Admin_App.directive('dpToggleSwitch', function() {
       return {
         restrict: 'A',

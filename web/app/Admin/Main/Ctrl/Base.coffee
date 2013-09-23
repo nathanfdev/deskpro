@@ -105,6 +105,8 @@ define ['angular', 'Admin/App'], (angular) ->
 						@_showStateConfirmLeave()
 			)
 
+			@$scope._ctrl_elemnt_ping = {}
+
 			@has_init = false
 			@init()
 			@has_init = true
@@ -117,6 +119,15 @@ define ['angular', 'Admin/App'], (angular) ->
 			else
 				@disableViewLoadingState()
 
+
+		###*
+		* Ping a var. This handled differently depending on which
+    	* directive is watching the id.
+    	*
+    	* @param {String} id
+		###
+		pingElement: (id) ->
+			@$scope._ctrl_elemnt_ping[id] = (new Date()).getTime()
 
 		###*
 		* A controller may override this method.

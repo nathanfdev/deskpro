@@ -7202,6 +7202,15 @@ form {
   margin: 0;
 }
 
+.dp-ping-flash {
+  display: none;
+}
+
+.saved-ping {
+  margin-right: 5px;
+  color: #888;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;

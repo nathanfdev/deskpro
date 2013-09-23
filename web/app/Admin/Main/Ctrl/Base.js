@@ -129,6 +129,7 @@
             return _this._showStateConfirmLeave();
           }
         });
+        this.$scope._ctrl_elemnt_ping = {};
         this.has_init = false;
         this.init();
         this.has_init = true;
@@ -141,6 +142,18 @@
           this.disableViewLoadingState();
         }
       }
+
+      /**
+      		* Ping a var. This handled differently depending on which
+        	* directive is watching the id.
+        	*
+        	* @param {String} id
+      */
+
+
+      Admin_Ctrl_Base.prototype.pingElement = function(id) {
+        return this.$scope._ctrl_elemnt_ping[id] = (new Date()).getTime();
+      };
 
       /**
       		* A controller may override this method.
