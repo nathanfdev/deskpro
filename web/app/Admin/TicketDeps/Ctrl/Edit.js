@@ -31,6 +31,7 @@
           var parent, _ref1;
           newVal = parseInt(newVal);
           if (!newVal) {
+            _this.$scope.show_parent_warning = false;
             return;
           }
           parent = _this.DepartmentData.deps.get(newVal);
@@ -40,6 +41,11 @@
             return _this.$scope.show_parent_warning = false;
           }
         });
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.resetForm = function() {
+        this.restoreState();
+        return this.saveState('dep', 'agent_perms', 'usergroups');
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initialLoad = function() {
@@ -82,11 +88,12 @@
           _this.dep = _this.em.createUnmanagedEntity('department', 'id', dep);
           _this.dep._enable_user_title = !!_this.dep.user_title;
           _this.initDeplistData(departments);
-          return _this.initData({
+          _this.initData({
             usergroups: dep_data.perms_usergroup_ids,
             agentgroups: dep_data.perms_agentgroup_ids,
             agents: dep_data.perms_agent_ids
           }, data_results.data.api_agents_list.agents, data_results.data.api_agentgroups_list.agentgroups, data_results.data.api_usergroups_list.usergroups);
+          return _this.saveState('dep', 'agent_perms', 'usergroups');
         });
         return promise;
       };

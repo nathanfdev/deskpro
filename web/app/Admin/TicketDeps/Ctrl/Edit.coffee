@@ -19,7 +19,9 @@ define [
 
 			@$scope.$watch('TicketDepsEdit.dep.parent_id', (newVal) =>
 				newVal = parseInt(newVal)
-				if not newVal then return
+				if not newVal
+					@$scope.show_parent_warning = false
+					return
 
 				parent = @DepartmentData.deps.get(newVal)
 				if parent and not parent._child_ids?.length
@@ -27,6 +29,10 @@ define [
 				else
 					@$scope.show_parent_warning = false
 			)
+
+		resetForm: ->
+			@restoreState()
+			@saveState('dep', 'agent_perms', 'usergroups')
 
 		initialLoad: ->
 			return @loadDepartment()
@@ -84,6 +90,8 @@ define [
 					data_results.data.api_agentgroups_list.agentgroups,
 					data_results.data.api_usergroups_list.usergroups
 				)
+
+				@saveState('dep', 'agent_perms', 'usergroups')
 			)
 
 			return promise

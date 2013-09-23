@@ -144,6 +144,11 @@
               element.removeClass('switch-on');
               element.addClass('switch-off');
             }
+            if (scope.lockedModel) {
+              element.addClass('locked');
+            } else {
+              element.removeClass('locked');
+            }
             if (scope.change) {
               return scope.$eval(scope.change);
             }

@@ -106,6 +106,7 @@ define ['angular', 'Admin/App'], (angular) ->
 			)
 
 			@$scope._ctrl_elemnt_ping = {}
+			@_saved_state = {}
 
 			@has_init = false
 			@init()
@@ -323,3 +324,34 @@ define ['angular', 'Admin/App'], (angular) ->
 			});
 
 			return inst
+
+
+		###*
+    	* Saves a copy of current state (usually so it can be restored on 'reset')
+    	*
+    	* @param {String} ids...
+		###
+		saveState: (ids...) ->
+			for id in ids
+				if @[id]?
+					@_saved_state[id] = angular.copy(@[id], @_saved_state[id])
+
+
+		###*
+    	* Restore saved saved
+		*
+    	* @param {String} id Optionally only restore this
+		###
+		restoreState: (ids = null) ->
+			if ids
+				for id in ids
+					if @_saved_state[id]?
+						angular.copy(@_saved_state[id], @[id])
+						delete @_saved_state[id]
+			else
+				for own id, value of @_saved_state
+					angular.copy(@_saved_state[id], @[id])
+					@[id] = value
+					delete @_saved_state[id]
+
+			return

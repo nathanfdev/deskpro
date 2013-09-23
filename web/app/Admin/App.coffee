@@ -145,7 +145,6 @@ define [
 			},
 			link: (scope, element, attrs, ngModel) ->
 
-
 				updateVal = ->
 					val = scope.model
 
@@ -158,6 +157,11 @@ define [
 					else
 						element.removeClass('switch-on')
 						element.addClass('switch-off')
+
+					if scope.lockedModel
+						element.addClass('locked')
+					else
+						element.removeClass('locked')
 
 					if scope.change
 						scope.$eval(scope.change)

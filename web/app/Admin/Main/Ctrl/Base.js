@@ -130,6 +130,7 @@
           }
         });
         this.$scope._ctrl_elemnt_ping = {};
+        this._saved_state = {};
         this.has_init = false;
         this.init();
         this.has_init = true;
@@ -415,6 +416,60 @@
           ]
         });
         return inst;
+      };
+
+      /**
+        	* Saves a copy of current state (usually so it can be restored on 'reset')
+        	*
+        	* @param {String} ids...
+      */
+
+
+      Admin_Ctrl_Base.prototype.saveState = function() {
+        var id, ids, _i, _len, _results;
+        ids = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        _results = [];
+        for (_i = 0, _len = ids.length; _i < _len; _i++) {
+          id = ids[_i];
+          if (this[id] != null) {
+            _results.push(this._saved_state[id] = angular.copy(this[id], this._saved_state[id]));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      /**
+        	* Restore saved saved
+      		*
+        	* @param {String} id Optionally only restore this
+      */
+
+
+      Admin_Ctrl_Base.prototype.restoreState = function(ids) {
+        var id, value, _i, _len, _ref;
+        if (ids == null) {
+          ids = null;
+        }
+        if (ids) {
+          for (_i = 0, _len = ids.length; _i < _len; _i++) {
+            id = ids[_i];
+            if (this._saved_state[id] != null) {
+              angular.copy(this._saved_state[id], this[id]);
+              delete this._saved_state[id];
+            }
+          }
+        } else {
+          _ref = this._saved_state;
+          for (id in _ref) {
+            if (!__hasProp.call(_ref, id)) continue;
+            value = _ref[id];
+            angular.copy(this._saved_state[id], this[id]);
+            this[id] = value;
+            delete this._saved_state[id];
+          }
+        }
       };
 
       return Admin_Ctrl_Base;
