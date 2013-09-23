@@ -26,42 +26,20 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
 
-namespace Application\ApiBundle;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\ApiBundle\DependencyInjection\AuditWriterPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
-class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+class Build1379928444 extends AbstractBuild
 {
-	public function registerCommands(Application $application)
+	public function run()
 	{
-
-	}
-
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
-
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
-	}
-
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
-
-	public function getPath()
-	{
-		return __DIR__;
+		$this->out("Add audit log");
+		$this->execMutateSql("CREATE TABLE auditlog (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, person_name VARCHAR(255) NOT NULL, op VARCHAR(20) NOT NULL, object_type VARCHAR(255) NOT NULL, object_id VARCHAR(255) NOT NULL, data LONGBLOB NULL COMMENT '(DC2Type:array)', date_created DATETIME NOT NULL, INDEX IDX_54575EAC217BBB47 (person_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE auditlog ADD CONSTRAINT FK_54575EAC217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL");
 	}
 }

@@ -250,7 +250,7 @@ define [
 							usergroup_id: groupObj.model.id,
 							perm_name: 'full'
 						})
-					else if groupObj.perms.full.assign
+					else if groupObj.perms.assign.state
 						perms.agentgroups.push({
 							usergroup_id: groupObj.model.id,
 							perm_name: 'assign'

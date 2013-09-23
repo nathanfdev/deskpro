@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Departments;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
 
@@ -152,7 +153,6 @@ class TicketDepartmentEditor
 		}
 
 		$this->em->persist($dep);
-		$this->em->flush();
 
 		if ($change_parent && $move_to) {
 			$this->db->update('tickets', array('department_id' => $move_to->getId()), array('department_id' => $set_parent->getId()));
@@ -168,64 +168,156 @@ class TicketDepartmentEditor
 	 */
 	public function editPermissions(Department $dep, array $agent_perms = null, array $agentgroup_perms = null, array $usergroup_perms = null)
 	{
-		$inserts = array();
+		#------------------------------
+		# Get curent perms
+		#------------------------------
 
-		if ($agentgroup_perms !== null) {
-			$this->db->executeQuery("
-				DELETE FROM department_permissions
-				WHERE usergroup_id IS NOT NULL AND department_id = ?
-			", array($dep->id));
+		$exist_agent_perms      = array('full' => array(), 'assign' => array());
+		$exist_agentgroup_perms = array('full' => array(), 'assign' => array());
+		$exist_usergroup_perms  = array('use'  => array());
 
-			foreach ($agentgroup_perms as $perm) {
-				$inserts[] = array(
-					'department_id' => $dep->id,
-					'usergroup_id' => $perm['usergroup_id'],
-					'person_id' => null,
-					'app' => 'tickets',
-					'name' => $perm['perm_name'],
-					'value' => 1,
-				);
+		if ($dep->getId()) {
+			$current_permissions = $this->em->createQuery("
+				SELECT perm
+				FROM DeskPRO:DepartmentPermission perm
+				LEFT JOIN perm.usergroup ug
+				LEFT JOIN perm.person p
+				WHERE perm.department = ?0
+			")->setParameters(array($dep))->execute();
+
+			foreach ($current_permissions as $perm) {
+				if ($perm->person) {
+					$exist_agent_perms[$perm->name][$perm->person->getId()] = $perm;
+				} else if ($perm->usergroup) {
+					if ($perm->usergroup->is_agent_group) {
+						$exist_agentgroup_perms[$perm->name][$perm->usergroup->getId()] = $perm;
+					} else {
+						$exist_usergroup_perms[$perm->name][$perm->usergroup->getId()] = $perm;
+					}
+				}
 			}
 		}
 
-		if ($agent_perms !== null) {
-			$this->db->executeQuery("
-				DELETE FROM department_permissions
-				WHERE person_id IS NOT NULL AND department_id = ?
-			", array($dep->id));
+		#------------------------------
+		# Get passed perms
+		#------------------------------
 
+		$set_agent_perms      = array('full' => array(), 'assign' => array());
+		$set_agentgroup_perms = array('full' => array(), 'assign' => array());
+		$set_usergroup_perms  = array('use'  => array());
+
+		if ($agent_perms !== null) {
 			foreach ($agent_perms as $perm) {
-				$inserts[] = array(
-					'department_id' => $dep->id,
-					'usergroup_id' => null,
-					'person_id' => $perm['agent_id'],
-					'app' => 'tickets',
-					'name' => $perm['perm_name'],
-					'value' => 1,
-				);
+				$set_agent_perms[$perm['perm_name']][] = $perm['agent_id'];
+			}
+		}
+
+		if ($agentgroup_perms !== null) {
+			foreach ($agentgroup_perms as $perm) {
+				$set_agentgroup_perms[$perm['perm_name']][] = $perm['usergroup_id'];
 			}
 		}
 
 		if ($usergroup_perms !== null) {
-			$this->db->executeQuery("
-				DELETE FROM department_permissions
-				WHERE usergroup_id IS NOT NULL AND department_id = ?
-			", array($dep->id));
-
 			foreach ($usergroup_perms as $perm) {
-				$inserts[] = array(
-					'department_id' => $dep->id,
-					'usergroup_id' => $perm['usergroup_id'],
-					'person_id' => null,
-					'app' => 'tickets',
-					'name' => 'use',
-					'value' => 1,
-				);
+				$set_usergroup_perms[$perm['perm_name']][] = $perm['usergroup_id'];
 			}
 		}
 
-		if ($inserts) {
-			$this->db->batchInsert('department_permissions', $inserts);
+		#------------------------------
+		# Update agent perms
+		#------------------------------
+
+		if ($agent_perms !== null) {
+			foreach (array('full', 'assign') as $perm_name) {
+				$new_ids = array_diff($set_agent_perms[$perm_name], array_keys($exist_agent_perms[$perm_name]));
+				$rem_ids = array_diff(array_keys($exist_agent_perms[$perm_name]), $set_agent_perms[$perm_name]);
+
+				if ($new_ids) {
+					$people = $this->em->getRepository('DeskPRO:Person')->getByIds($new_ids);
+					foreach ($people as $person) {
+						$perm = new DepartmentPermission();
+						$perm->department = $dep;
+						$perm->person     = $person;
+						$perm->app        = 'tickets';
+						$perm->name       =  $perm_name;
+						$perm->value      = true;
+
+						$this->em->persist($perm);
+					}
+				}
+
+				if ($rem_ids) {
+					foreach ($rem_ids as $person_id) {
+						$perm = $exist_agent_perms[$perm_name][$person_id];
+						$this->em->remove($perm);
+					}
+				}
+			}
+		}
+
+		#------------------------------
+		# Update agent group perms
+		#------------------------------
+
+		if ($agentgroup_perms !== null) {
+			foreach (array('full', 'assign') as $perm_name) {
+				$new_ids = array_diff($set_agentgroup_perms[$perm_name], array_keys($exist_agentgroup_perms[$perm_name]));
+				$rem_ids = array_diff(array_keys($exist_agentgroup_perms[$perm_name]), $set_agentgroup_perms[$perm_name]);
+
+				if ($new_ids) {
+					$groups = $this->em->getRepository('DeskPRO:Usergroup')->getByIds($new_ids);
+					foreach ($groups as $group) {
+						$perm = new DepartmentPermission();
+						$perm->department = $dep;
+						$perm->usergroup  = $group;
+						$perm->app        = 'tickets';
+						$perm->name       =  $perm_name;
+						$perm->value      = true;
+
+						$this->em->persist($perm);
+					}
+				}
+
+				if ($rem_ids) {
+					foreach ($rem_ids as $group_id) {
+						$perm = $exist_agentgroup_perms[$perm_name][$group_id];
+						$this->em->remove($perm);
+					}
+				}
+			}
+		}
+
+		#------------------------------
+		# Update user group perms
+		#------------------------------
+
+		if ($usergroup_perms !== null) {
+			foreach (array('use') as $perm_name) {
+				$new_ids = array_diff($set_usergroup_perms[$perm_name], array_keys($exist_usergroup_perms[$perm_name]));
+				$rem_ids = array_diff(array_keys($exist_usergroup_perms[$perm_name]), $set_usergroup_perms[$perm_name]);
+
+				if ($new_ids) {
+					$groups = $this->em->getRepository('DeskPRO:Usergroup')->getByIds($new_ids);
+					foreach ($groups as $group) {
+						$perm = new DepartmentPermission();
+						$perm->department = $dep;
+						$perm->usergroup  = $group;
+						$perm->app        = 'tickets';
+						$perm->name       =  $perm_name;
+						$perm->value      = true;
+
+						$this->em->persist($perm);
+					}
+				}
+
+				if ($rem_ids) {
+					foreach ($rem_ids as $group_id) {
+						$perm = $exist_usergroup_perms[$perm_name][$group_id];
+						$this->em->remove($perm);
+					}
+				}
+			}
 		}
 	}
 

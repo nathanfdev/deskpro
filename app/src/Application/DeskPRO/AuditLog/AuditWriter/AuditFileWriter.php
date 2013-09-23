@@ -26,42 +26,73 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
-namespace Application\ApiBundle;
+namespace Application\DeskPRO\AuditLog\AuditWriter;
 
-use Application\ApiBundle\DependencyInjection\AuditWriterPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Application\DeskPRO\Entity\AuditLog;
 
-class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+class AuditFileWriter implements AuditWriterInterface
 {
-	public function registerCommands(Application $application)
-	{
+	/**
+	 * @var string
+	 */
+	private $file_path;
 
+	/**
+	 * @param string $file_path
+	 */
+	public function __construct($file_path)
+	{
+		$this->file_path = $file_path;
 	}
 
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
 
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
+	/**
+	 * Write a log entry
+	 *
+	 * @param \Application\DeskPRO\Entity\AuditLog[] $log
+	 * @throws \Exception
+	 * @return void
+	 */
+	public function writeLogs(array $logs)
+	{
+		$fp = fopen($this->file_path, 'a');
+		if (!$fp) {
+			throw new \Exception("Could not open log file for writing: " . $this->file_path);
+		}
+
+		foreach ($logs as $log) {
+			$str = $this->_formatLog($log);
+			fwrite($fp, $str);
+			fwrite($fp, "\n");
+		}
+
+		fclose($fp);
 	}
 
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
 
-	public function getPath()
+	/**
+	 * @param AuditLog $log
+	 * @return string
+	 */
+	private function _formatLog(AuditLog $log)
 	{
-		return __DIR__;
+		$str = '[' . date('Y-m-d H:i:s') . '] ' . $log->getObjectName() . ' ' . $log->op . ' by ' . $log->person_name;
+		if ($log->data) {
+			foreach ($log->data as $row) {
+				$new_val = isset($row['new_val']) && $row['new_val'] ? $row['new_val'] : 'none';
+				if ($row['type'] == AuditLog::UPDATE && $row['old_val']) {
+					$str .= "\n\t{$row['field_id']} = {$new_val} (from {$row['old_val']})";
+				} else if ($row['type'] == AuditLog::UPDATE) {
+					$str .= "\n\t{$row['field_id']} = {$new_val}";
+				}
+			}
+		}
+		$str = trim($str);
+		return $str;
 	}
 }

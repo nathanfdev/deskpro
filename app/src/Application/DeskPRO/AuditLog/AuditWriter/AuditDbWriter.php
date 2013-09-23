@@ -26,42 +26,46 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
-namespace Application\ApiBundle;
+namespace Application\DeskPRO\AuditLog\AuditWriter;
 
-use Application\ApiBundle\DependencyInjection\AuditWriterPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\AuditLog;
 
-class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+class AuditDbWriter implements AuditWriterInterface
 {
-	public function registerCommands(Application $application)
+	/**
+	 * Write a log entry
+	 *
+	 * @param \Application\DeskPRO\Entity\AuditLog[] $logs
+	 * @throws \Exception
+	 * @return void
+	 */
+	public function writeLogs(array $logs)
 	{
+		$batch = array();
 
-	}
+		foreach ($logs as $log) {
+			$r = array(
+				'person_id'      => $log->person ? $log->person->getId() : null,
+				'person_name'    => $log->person_name ?: '',
+				'op'             => $log->op,
+				'object_type'    => $log->object_type,
+				'object_id'      => $log->object_id,
+				'data'           => $log->data ? serialize($log->data) : null,
+				'date_created'   => $log->date_created->format('Y-m-d H:i:s')
+			);
 
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
+			$batch[] = $r;
+		}
 
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
-	}
-
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
-
-	public function getPath()
-	{
-		return __DIR__;
+		if ($batch) {
+			App::getDb()->batchInsert('auditlog', $batch);
+		}
 	}
 }

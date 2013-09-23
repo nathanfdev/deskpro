@@ -134,6 +134,18 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		return $this->title;
 	}
 
+	public function setUserTitle($title)
+	{
+		$old = $this->getRealUserTitle();
+		$this->user_title = $title;
+
+		if ($title == $old) {
+			return;
+		}
+
+		$this->_onPropertyChanged('user_title', $old, $title);
+	}
+
 	public function getParentId()
 	{
 		if ($this->parent) {

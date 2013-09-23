@@ -26,42 +26,34 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
-namespace Application\ApiBundle;
+namespace Application\ApiBundle\DependencyInjection;
 
-use Application\ApiBundle\DependencyInjection\AuditWriterPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Reference;
 
-class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+class AuditWriterPass implements CompilerPassInterface
 {
-	public function registerCommands(Application $application)
+	public function process(ContainerBuilder $container)
 	{
 
-	}
+		if (!$container->hasDefinition('deskpro.auditlog.manager')) {
+			return;
+		}
+		if (!$container->hasDefinition('deskpro.auditlog.doctrine_listener')) {
+			return;
+		}
 
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
+		$audit_def = $container->getDefinition('deskpro.auditlog.manager');
 
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
-	}
-
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
-
-	public function getPath()
-	{
-		return __DIR__;
+		$taggedServices = $container->findTaggedServiceIds('deskpro.auditlog.writers');
+		foreach ($taggedServices as $id => $attributes) {
+			$audit_def->addMethodCall('addWriter', array(new Reference($id)));
+		}
 	}
 }

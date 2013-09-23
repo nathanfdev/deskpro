@@ -26,42 +26,48 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
-namespace Application\ApiBundle;
+namespace Application\DeskPRO\AuditLog;
 
-use Application\ApiBundle\DependencyInjection\AuditWriterPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Application\DeskPRO\AuditLog\AuditWriter\AuditDbWriter;
+use Application\DeskPRO\AuditLog\AuditWriter\AuditFileWriter;
+use Application\DeskPRO\DBAL\Connection;
+use Symfony\Component\DependencyInjection\Container;
 
-class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+class AuditManagerFactory
 {
-	public function registerCommands(Application $application)
+	public static function getAuditManager()
 	{
+		$audit_manager  = new AuditManager();
 
+		if (dp_get_config('debug.write_audit_log_file')) {
+			$audit_writer   = new AuditFileWriter(dp_get_log_dir() . '/audit.log');
+			$audit_manager->addWriter($audit_writer);
+		}
+
+		if (class_exists('DpShutdown', false)) {
+			\DpShutdown::add(function() use ($audit_manager) {
+				$audit_manager->flushLogs();
+			});
+		}
+
+		return $audit_manager;
 	}
 
-	public function build(ContainerBuilder $container)
+	public static function getAuditDbWriter()
 	{
-		parent::build($container);
-
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
+		return new AuditDbWriter();
 	}
 
-	public function getNamespace()
+	public static function getAuditListener(AuditManager $audit_manager)
 	{
-		return __NAMESPACE__;
-	}
+		$audit_defs     = require(DP_ROOT.'/sys/config/auditlog-defs.php');
+		$audit_listener = new AuditDoctrineListener($audit_manager, $audit_defs);
 
-	public function getPath()
-	{
-		return __DIR__;
+		return $audit_listener;
 	}
 }

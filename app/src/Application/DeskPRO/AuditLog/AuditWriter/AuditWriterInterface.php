@@ -26,42 +26,20 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
-namespace Application\ApiBundle;
+namespace Application\DeskPRO\AuditLog\AuditWriter;
 
-use Application\ApiBundle\DependencyInjection\AuditWriterPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
-class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+interface AuditWriterInterface
 {
-	public function registerCommands(Application $application)
-	{
-
-	}
-
-	public function build(ContainerBuilder $container)
-	{
-		parent::build($container);
-
-		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-		$container->addCompilerPass(new AuditWriterPass());
-	}
-
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
-
-	public function getPath()
-	{
-		return __DIR__;
-	}
+	/**
+	 * Write a log entry
+	 *
+	 * @param \Application\DeskPRO\Entity\AuditLog[] $log
+	 * @return void
+	 */
+	public function writeLogs(array $logs);
 }
