@@ -81,11 +81,57 @@
 
 			<div dp-tab-body="main.perms">
 				<div class="panel panel-innertable">
-					<div class="panel-heading"><h3>Agent Permissions</h3></div>
+					<div class="panel-heading"><h3>User Group Permissions</h3></div>
+					<div class="panel-help">
+						<p>
+							User Group permissions control which of your end-users can select a department when submitting or editing their tickets from the web portal.
+						</p>
+						<p>
+							Note that it is still possible for agents to change the department to one that a user would not normally have access to. Triggers can also be used to assign any department regardless of user permissions.
+							User group permissions are therefore very much about what the user can select <em>themselves</em>.
+						</p>
+					</div>
 					<table class="table table-hover">
 						<thead>
 							<tr>
-								<th>&nbsp;</th>
+								<th>User Group</th>
+								<th width="120" class="text-center">Use <span class="help-icon" tooltip-placement="left" tooltip="When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to."></span></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
+								<td>
+									<i class="icon-group icon-22x text-middle icon-light"></i>
+									&nbsp;
+									<span class="text-middle">{{ ng_var('usergroup.title') }}</span>
+								</td>
+								<td class="text-center">
+									<button dp-toggle-switch ng-model="usergroup.use"></button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="panel panel-innertable">
+					<div class="panel-heading"><h3>Agent Permissions</h3></div>
+					<div class="panel-help">
+						<p>
+							Agent permissions control which of your agents have permission to use a department. There are two different types of permissions:
+						</p>
+						<ol>
+							<li>The <strong>assign</strong> permission lets agents assign tickets to a department, but <em>not view</em> tickets within the department.</li>
+							<li>The <strong>full access</strong> permission gives agents full access to the department including viewing and assigning tickets.</li>
+						</ol>
+						<p>
+							Note that agents will always be able to see tickets assigned to them or their team, or that they are a follower of. So it is still possible
+							an agent might see a ticket in a department they do not have access to if they are somehow added to the ticket.
+						</p>
+					</div>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Agent / Agent Group</th>
 								<th width="120" class="text-center">Full Access <span class="help-icon" tooltip-placement="left" tooltip="Full Access means the agent can view tickets in the department as well as create or move tickets into the department."></span></th>
 								<th width="120" class="text-center">Assignment <span class="help-icon" tooltip-placement="left" tooltip="Assignment means that the agent cannot view tickets in the department, but they can create or move tickets into it."></span></th>
 							</tr>
@@ -115,30 +161,6 @@
 								</td>
 								<td class="text-center">
 									<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div class="panel panel-innertable">
-					<div class="panel-heading"><h3>User Group Permissions</h3></div>
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>&nbsp;</th>
-								<th width="120" class="text-center">Use <span class="help-icon" tooltip-placement="left" tooltip="When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to."></span></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
-								<td>
-									<i class="icon-group icon-22x text-middle icon-light"></i>
-									&nbsp;
-									<span class="text-middle">{{ ng_var('usergroup.title') }}</span>
-								</td>
-								<td class="text-center">
-									<button dp-toggle-switch ng-model="usergroup.use"></button>
 								</td>
 							</tr>
 						</tbody>

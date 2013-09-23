@@ -7960,33 +7960,73 @@ nav.dp-main-tabs ul li.active {
 
 .panel.panel-innertable {
   margin: 30px;
-  border: 1px solid #DDD;
   -webkit-border-radius: 2px;
      -moz-border-radius: 2px;
           border-radius: 2px;
+  box-shadow: none;
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
+}
+
+.panel.panel-innertable .panel-help {
+  padding: 10px;
+  margin: 10px 0 10px 0;
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border: 1px solid transparent;
+  border-color: #bce8f1;
+  border-radius: 4px;
+}
+
+.panel.panel-innertable .panel-help hr {
+  border-top-color: #a6e1ec;
+}
+
+.panel.panel-innertable .panel-help .alert-link {
+  color: #2d6987;
 }
 
 .panel.panel-innertable td {
   vertical-align: middle;
 }
 
-.panel.panel-innertable .table tbody > tr > th,
-.panel.panel-innertable .table tbody > tr > td {
-  border-top: 1px dotted #BBB;
+.panel.panel-innertable .table {
+  border: none;
 }
 
-.panel.panel-innertable .table tbody > tr.first-of-type td {
+.panel.panel-innertable .table > thead > tr > th {
+  background: #fff;
+  border: none;
+}
+
+.panel.panel-innertable .table tbody > tr:last-child > td {
+  border-bottom: 1px solid #BBB;
+}
+
+.panel.panel-innertable .table tbody > tr:first-child > td {
+  border-top: 1px solid #BBB;
+}
+
+.panel.panel-innertable .table tbody > tr > td:first-child {
+  border-left: 1px solid #BBB;
+}
+
+.panel.panel-innertable .table tbody > tr > td:last-child {
+  border-right: 1px solid #BBB;
+}
+
+.panel.panel-innertable .table tbody > tr > td {
+  border-top: 1px solid #BBB;
+}
+
+.panel.panel-innertable .table > tbody > tr.first-of-type td {
   border-top: 2px solid #BBB;
 }
 
 .panel.panel-innertable .panel-heading {
-  padding: 10px 8px;
+  padding: 10px 0;
   margin: 0;
-  background: #EEEEEE;
-  border-bottom: 1px solid #DDD;
 }
 
 .panel.panel-innertable .panel-heading h3 {
@@ -7994,6 +8034,11 @@ nav.dp-main-tabs ul li.active {
   margin: 0;
   font-size: 140%;
   font-weight: normal;
+}
+
+.panel.panel-innertable + .panel.panel-innertable {
+  padding-top: 10px;
+  border-top: 1px dotted #bbb;
 }
 
 .inner-footer {
