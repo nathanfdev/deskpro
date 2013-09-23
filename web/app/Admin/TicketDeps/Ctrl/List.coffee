@@ -111,10 +111,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketDeps/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance, move_deps_list) ->
-					$scope.selected = {
-						move_to_id: "0"
-					}
 					$scope.move_deps_list = move_deps_list
+					$scope.selected = {
+						move_to_id: move_deps_list[0].id
+					}
 
 					$scope.confirm = ->
 						$modalInstance.close($scope.selected.move_to_id);

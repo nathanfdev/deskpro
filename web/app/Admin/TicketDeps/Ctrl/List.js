@@ -150,10 +150,10 @@
           templateUrl: this.getTemplatePath('TicketDeps/delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
-              $scope.selected = {
-                move_to_id: "0"
-              };
               $scope.move_deps_list = move_deps_list;
+              $scope.selected = {
+                move_to_id: move_deps_list[0].id
+              };
               $scope.confirm = function() {
                 return $modalInstance.close($scope.selected.move_to_id);
               };
