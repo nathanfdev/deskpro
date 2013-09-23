@@ -8139,6 +8139,15 @@ section.dp-help-page article dl dt:first-child {
   text-wrap: none;
 }
 
+.select2-container-active .select2-choice {
+  border-color: #CCCCCC;
+  box-shadow: none;
+}
+
+.select2-container {
+  margin-bottom: 5px;
+}
+
 .select2-container .select2-choice {
   line-height: 24px;
   background: #fff;
