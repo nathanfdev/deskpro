@@ -334,7 +334,7 @@
             vars.count = vars.count_length.length;
           }
           if (vars.count != null) {
-            text = choosePlural(text);
+            text = choosePlural(text, parseInt(vars.count));
           }
           is_raw = vars.as_raw != null;
           for (key in vars) {
