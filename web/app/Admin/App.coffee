@@ -127,6 +127,127 @@ define [
 		}
 	])
 
+	Admin_App.directive('dpHelpPage', ['$rootScope', '$state', ($rootScope, $state) ->
+		return {
+			restrict: 'A',
+			scope: false,
+			link: (scope, element, attrs) ->
+				element.addClass('dp-help-page').hide()
+				isOpen = false
+
+				$button = element.closest('.dp-section-list').find('.help-page-trigger').first()
+				$border = angular.element('<div class="help-min-frame"></div>').hide().appendTo('body')
+
+				$page = $('#dp_section_page')
+
+				buttonW = $button.outerWidth()
+				buttonH = $button.outerHeight()
+				btnMod = -6
+
+				element.detach().appendTo('body').css({
+					position: 'absolute',
+					'z-index': '10000',
+					'overflow': 'auto'
+				})
+
+				if $state.current?.views['dp_section_page@']?.controller == 'Admin_Main_Ctrl_Bare'
+					isOpen = true
+					pageH = $page.height()
+					pageW = $page.width()
+					pageOffset = $page.offset()
+					element.css({
+						width:  pageW,
+						right:  0,
+						top:    51,
+						bottom: 0,
+					}).addClass('full').show()
+					$button.hide()
+
+				openFn = ->
+					if isOpen then return
+					isOpen = true
+					pageH = $page.height()
+					pageW = $page.width()
+					pageOffset = $page.offset()
+
+					buttonOffset = $button.offset()
+					$border.css({
+						width:  buttonW + btnMod,
+						height: buttonH + btnMod,
+						left:   buttonOffset.left + btnMod,
+						top:    buttonOffset.height + btnMod
+					})
+
+					$border.show()
+					$border.animate({
+						height: pageH,
+						width:  pageW,
+						left:   pageOffset.left,
+						top:    pageOffset.top
+					}, 250, ->
+
+						if $state.current?.views['dp_section_page@']?.controller == 'Admin_Main_Ctrl_Bare'
+							element.addClass('full')
+						else
+							element.removeClass('full')
+
+						$border.hide()
+						element.css({
+							width:  pageW,
+							right:  0,
+							top:    51,
+							bottom: 0,
+						}).fadeIn(100)
+					)
+					$button.fadeOut(200)
+
+				closeFn = ->
+					if not isOpen then return
+					isOpen = false
+					pageH = $page.height()
+					pageW = $page.width()
+					pageOffset = $page.offset()
+
+					$border.css({
+						height: pageH,
+						width:  pageW,
+						left:   pageOffset.left,
+						top:    pageOffset.top
+					})
+
+					$button.fadeIn(200)
+					buttonOffset = $button.offset()
+
+					$border.show()
+					element.hide()
+					$border.animate({
+						width:  buttonW + btnMod,
+						height: buttonH + btnMod,
+						left:   buttonOffset.left + btnMod,
+						top:    buttonOffset.height + btnMod
+					}, 250, ->
+						$border.hide()
+					)
+
+				$button.on('click', (ev) ->
+					ev.preventDefault();
+					if isOpen then closeFn()
+					else openFn()
+				)
+
+				element.find('.close-btn').on('click', (ev) ->
+					ev.preventDefault();
+					closeFn()
+				)
+
+				$rootScope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) ->
+					closeFn()
+				)
+
+				return
+		}
+	])
+
 	Admin_App.directive('dpToggleSwitch', ->
 		return {
 			restrict: 'A',

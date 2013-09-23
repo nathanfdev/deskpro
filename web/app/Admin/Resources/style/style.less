@@ -61,6 +61,49 @@ form {
 	color: #888;
 }
 
+.help-min-frame {
+	border: 3px solid #555;
+	position: absolute;
+	z-index: 200;
+}
+
+.btn.help-page-trigger {
+	.rounded(30px);
+	background: #fff;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 100%;
+	position: absolute;
+	top: 9px;
+	right: 13px;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	margin: 0;
+	font-size: 155%;
+	color: #888;
+	border: 1px solid transparent;
+
+	&:focus, &:active {
+		outline: none;
+	}
+
+	&:hover {
+		border: 1px solid #888;
+		color: #555;
+	}
+
+	i {
+		text-align: center;
+		vertical-align: middle;
+		line-height: 100%;
+		margin: 0;
+		padding: 0;
+		position: relative;
+		top: -1px;
+	}
+}
+
 //######################################################################################################################
 //# Page Header
 //######################################################################################################################
@@ -769,12 +812,50 @@ span.help-icon {
 }
 
 section.dp-help-page {
-	background: @admin_help_bg;
-	border: 1px solid darken(@admin_help_bg, 18%);
-	margin: 25px;
 	line-height: 160%;
 	font-size: 110%;
-	.rounded(5px);
+	overflow: auto;
+	background: rgba(0, 0, 0, 0.4);
+
+	&.full {
+		background: #fff;
+		.close-btn {
+			display: none;
+		}
+
+		> .inner {
+			margin: 25px;
+		}
+	}
+
+	.close-btn {
+		position: absolute;
+		font-size: 150%;
+		top: 36px;
+		right: 36px;
+		cursor: pointer;
+		background: #fff;
+		.rounded(20px);
+		width: 30px;
+		height: 30px;
+		border: 1px solid #888;
+		text-align: center;
+		i {
+			margin: 0;
+			padding: 0;
+			vertical-align: middle;
+			line-height: 100%;
+			position: relative;
+			top: 2px;
+		}
+	}
+
+	> .inner {
+		margin: 45px;
+		background: @admin_help_bg;
+		border: 1px solid darken(@admin_help_bg, 18%);
+		.rounded(5px);
+	}
 
 	article {
 		padding: 30px;

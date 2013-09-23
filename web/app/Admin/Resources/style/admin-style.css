@@ -7211,6 +7211,55 @@ form {
   color: #888;
 }
 
+.help-min-frame {
+  position: absolute;
+  z-index: 200;
+  border: 3px solid #555;
+}
+
+.btn.help-page-trigger {
+  position: absolute;
+  top: 9px;
+  right: 13px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  font-size: 155%;
+  line-height: 100%;
+  color: #888;
+  text-align: center;
+  vertical-align: middle;
+  background: #fff;
+  border: 1px solid transparent;
+  -webkit-border-radius: 30px;
+     -moz-border-radius: 30px;
+          border-radius: 30px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.btn.help-page-trigger:focus,
+.btn.help-page-trigger:active {
+  outline: none;
+}
+
+.btn.help-page-trigger:hover {
+  color: #555;
+  border: 1px solid #888;
+}
+
+.btn.help-page-trigger i {
+  position: relative;
+  top: -1px;
+  padding: 0;
+  margin: 0;
+  line-height: 100%;
+  text-align: center;
+  vertical-align: middle;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
@@ -8070,9 +8119,54 @@ span.help-icon:hover {
 }
 
 section.dp-help-page {
-  margin: 25px;
+  overflow: auto;
   font-size: 110%;
   line-height: 160%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+section.dp-help-page.full {
+  background: #fff;
+}
+
+section.dp-help-page.full .close-btn {
+  display: none;
+}
+
+section.dp-help-page.full > .inner {
+  margin: 25px;
+}
+
+section.dp-help-page .close-btn {
+  position: absolute;
+  top: 36px;
+  right: 36px;
+  width: 30px;
+  height: 30px;
+  font-size: 150%;
+  text-align: center;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #888;
+  -webkit-border-radius: 20px;
+     -moz-border-radius: 20px;
+          border-radius: 20px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+section.dp-help-page .close-btn i {
+  position: relative;
+  top: 2px;
+  padding: 0;
+  margin: 0;
+  line-height: 100%;
+  vertical-align: middle;
+}
+
+section.dp-help-page > .inner {
+  margin: 45px;
   background: #fcf8e3;
   border: 1px solid #f3e390;
   -webkit-border-radius: 5px;

@@ -118,6 +118,125 @@
         };
       }
     ]);
+    Admin_App.directive('dpHelpPage', [
+      '$rootScope', '$state', function($rootScope, $state) {
+        return {
+          restrict: 'A',
+          scope: false,
+          link: function(scope, element, attrs) {
+            var $border, $button, $page, btnMod, buttonH, buttonW, closeFn, isOpen, openFn, pageH, pageOffset, pageW, _ref, _ref1;
+            element.addClass('dp-help-page').hide();
+            isOpen = false;
+            $button = element.closest('.dp-section-list').find('.help-page-trigger').first();
+            $border = angular.element('<div class="help-min-frame"></div>').hide().appendTo('body');
+            $page = $('#dp_section_page');
+            buttonW = $button.outerWidth();
+            buttonH = $button.outerHeight();
+            btnMod = -6;
+            element.detach().appendTo('body').css({
+              position: 'absolute',
+              'z-index': '10000',
+              'overflow': 'auto'
+            });
+            if (((_ref = $state.current) != null ? (_ref1 = _ref.views['dp_section_page@']) != null ? _ref1.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
+              isOpen = true;
+              pageH = $page.height();
+              pageW = $page.width();
+              pageOffset = $page.offset();
+              element.css({
+                width: pageW,
+                right: 0,
+                top: 51,
+                bottom: 0
+              }).addClass('full').show();
+              $button.hide();
+            }
+            openFn = function() {
+              var buttonOffset;
+              if (isOpen) {
+                return;
+              }
+              isOpen = true;
+              pageH = $page.height();
+              pageW = $page.width();
+              pageOffset = $page.offset();
+              buttonOffset = $button.offset();
+              $border.css({
+                width: buttonW + btnMod,
+                height: buttonH + btnMod,
+                left: buttonOffset.left + btnMod,
+                top: buttonOffset.height + btnMod
+              });
+              $border.show();
+              $border.animate({
+                height: pageH,
+                width: pageW,
+                left: pageOffset.left,
+                top: pageOffset.top
+              }, 250, function() {
+                var _ref2, _ref3;
+                if (((_ref2 = $state.current) != null ? (_ref3 = _ref2.views['dp_section_page@']) != null ? _ref3.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
+                  element.addClass('full');
+                } else {
+                  element.removeClass('full');
+                }
+                $border.hide();
+                return element.css({
+                  width: pageW,
+                  right: 0,
+                  top: 51,
+                  bottom: 0
+                }).fadeIn(100);
+              });
+              return $button.fadeOut(200);
+            };
+            closeFn = function() {
+              var buttonOffset;
+              if (!isOpen) {
+                return;
+              }
+              isOpen = false;
+              pageH = $page.height();
+              pageW = $page.width();
+              pageOffset = $page.offset();
+              $border.css({
+                height: pageH,
+                width: pageW,
+                left: pageOffset.left,
+                top: pageOffset.top
+              });
+              $button.fadeIn(200);
+              buttonOffset = $button.offset();
+              $border.show();
+              element.hide();
+              return $border.animate({
+                width: buttonW + btnMod,
+                height: buttonH + btnMod,
+                left: buttonOffset.left + btnMod,
+                top: buttonOffset.height + btnMod
+              }, 250, function() {
+                return $border.hide();
+              });
+            };
+            $button.on('click', function(ev) {
+              ev.preventDefault();
+              if (isOpen) {
+                return closeFn();
+              } else {
+                return openFn();
+              }
+            });
+            element.find('.close-btn').on('click', function(ev) {
+              ev.preventDefault();
+              return closeFn();
+            });
+            $rootScope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
+              return closeFn();
+            });
+          }
+        };
+      }
+    ]);
     Admin_App.directive('dpToggleSwitch', function() {
       return {
         restrict: 'A',
