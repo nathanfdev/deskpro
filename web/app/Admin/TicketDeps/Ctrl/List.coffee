@@ -41,7 +41,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			]).then( (res) =>
 				settings = res.data.api_ticket_deps_settings
 
-				@dep_settings.default_id    = settings['core.default_ticket_dep']
+				@dep_settings.default_id    = parseInt(settings['core.default_ticket_dep']) || 0
 				@dep_settings.name_singular = settings['core.phrase_department_singular']
 				@dep_settings.name_plural   = settings['core.phrase_department_plural']
 
@@ -49,7 +49,20 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					@dep_settings.do_rename = true
 			)
 
-			return @$q.all([dep_promise, data_promise])
+			return @$q.all([dep_promise, data_promise]).then(=>
+				if @dep_settings.default_id
+					found = false
+					for d in @default_dep_list
+						if d.id == @dep_settings.default_id
+							found = true
+							break
+
+					if not found
+						@dep_settings.default_id = 0
+
+				if not @dep_settings.default_id or @dep_settings.default_id == 0
+					@dep_settings.default_id = @default_dep_list[0].id
+			)
 
 
 		initDepList: (departments) ->

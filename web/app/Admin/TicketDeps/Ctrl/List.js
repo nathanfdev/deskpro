@@ -56,14 +56,33 @@
         data_promise = this.Api.sendDataGet(['/ticket_deps/settings']).then(function(res) {
           var settings;
           settings = res.data.api_ticket_deps_settings;
-          _this.dep_settings.default_id = settings['core.default_ticket_dep'];
+          _this.dep_settings.default_id = parseInt(settings['core.default_ticket_dep']) || 0;
           _this.dep_settings.name_singular = settings['core.phrase_department_singular'];
           _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
           if (_this.dep_settings.name_singular || _this.dep_settings.name_plural) {
             return _this.dep_settings.do_rename = true;
           }
         });
-        return this.$q.all([dep_promise, data_promise]);
+        return this.$q.all([dep_promise, data_promise]).then(function() {
+          var d, found, _i, _len, _ref1;
+          if (_this.dep_settings.default_id) {
+            found = false;
+            _ref1 = _this.default_dep_list;
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              d = _ref1[_i];
+              if (d.id === _this.dep_settings.default_id) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              _this.dep_settings.default_id = 0;
+            }
+          }
+          if (!_this.dep_settings.default_id || _this.dep_settings.default_id === 0) {
+            return _this.dep_settings.default_id = _this.default_dep_list[0].id;
+          }
+        });
       };
 
       Admin_TicketDeps_Ctrl_List.prototype.initDepList = function(departments) {
