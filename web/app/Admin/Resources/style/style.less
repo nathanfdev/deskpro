@@ -748,7 +748,7 @@ nav.dp-main-tabs {
 }
 
 .panel.panel-innertable {
-	margin: 30px;
+	margin: 15px 30px 30px 30px;
 	.rounded(2px);
 	box-shadow: none;
 
@@ -763,6 +763,7 @@ nav.dp-main-tabs {
 	.table > thead > tr > th {
 		border: none;
 		background: #fff;
+		font-weight: bold;
 	}
 
 	.table tbody > tr:last-child > td {
@@ -793,13 +794,18 @@ nav.dp-main-tabs {
 			padding: 0;
 			font-weight: normal;
 			font-size: 140%;
+
+			span {
+				display: inline-block;
+				border-bottom: 3px solid #aaa;
+				padding-bottom: 2px;
+			}
 		}
 	}
 }
 
 .panel.panel-innertable + .panel.panel-innertable {
-	border-top: 1px dotted #bbb;
-	padding-top: 10px;
+
 }
 
 .inner-footer {
