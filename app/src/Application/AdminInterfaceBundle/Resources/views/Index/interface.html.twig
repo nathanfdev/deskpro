@@ -50,7 +50,7 @@
 	</nav>
 	<div class="dp-section" ui-view>
 		<nav class="dp-section-nav sections-nav" ui-view="dp_section_nav" id="dp_section_nav"></nav>
-		<div class="dp-section-body">
+		<div class="dp-section-body" id="dp_section_body">
 			<div class="dp-section-list" id="dp_section_list">
 				<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_list"><article><h1>{{ phrase('agent.general.loading') }}</h1></article></div>
 				<div ui-view="dp_section_list" ng-hide="loading.dp_section_list"></div>
