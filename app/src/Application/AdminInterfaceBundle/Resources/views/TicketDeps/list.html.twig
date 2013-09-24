@@ -1,6 +1,6 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-briefcase"></i> Tickets &rarr; Departments</h3>
+		<h3><i class="icon-briefcase"></i> {{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }}</h3>
 		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
 	</header>
 	<article class="pane-content no-pad">
@@ -9,10 +9,10 @@
 				<nav class="dp-controls">
 					<ul>
 						<li>
-							<span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> Saved</span>
+							<span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> Delete</span></li>
-						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> Add</a></li>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
 				<h3 ng-if="TicketDepsList.departments" translate="admin.general.x_departments" translate-values="{ count_length: TicketDepsList.departments }">{{ ng_var('admin.general.x_departments') }}</h3>
@@ -49,11 +49,7 @@
 			<div class="panel-body ng-hide" ng-show="TicketDepsList.departments.length == 1">
 				<div class="alert alert-info">
 					<p>
-						The department field will not be visible to your end-users using the portal because you only
-						have one defined.
-					</p>
-					<p>
-						Define more departments if you want your users to have a choice.
+						{{ phrase('admin.departments.not_user_visible') }}
 					</p>
 				</div>
 			</div>
@@ -61,13 +57,13 @@
 
 		<div class="panel panel-fill">
 			<div class="panel-heading">
-				<h3>Department Settings</h3>
+				<h3>{{ phrase('admin.departments.department_settings') }}</h3>
 			</div>
 			<div class="panel-body">
 				<form class="form-horizontal dp-form" role="form">
 					<div class="form-group">
 						<div class="col-sm-3">
-							<h3>Default</h3>
+							<h3>{{ phrase('agent.general.default') }}</h3>
 						</div>
 						<div class="col-sm-9">
 							<select
@@ -78,32 +74,30 @@
 								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsList.default_dep_list">{{ ng_var('dep._full_title') }}</option>
 							</select>
 							<span class="help-block">
-								The default department is pre-selected when viewing the new ticket form. It is also used
-								when a new ticket is created by an email from an account that is not linked with a department.
+								{{ phrase('admin.departments.default_explain') }}
 							</span>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<div class="col-sm-3">
-							<h3>Field Name</h3>
+							<h3>{{ phrase('agent.general.field_name_title') }}</h3>
 						</div>
 						<div class="col-sm-9">
 							<label>
 								<input type="checkbox" ng-model="TicketDepsList.dep_settings.do_rename" />
-								<h4>Rename the department field</h4>
+								<h4>{{ phrase('admin.departments.rename_department_field') }}</h4>
 							</label>
 							<span class="help-block">
-								If the word "Department" is not suitable for your helpdesk, you can change it here. Any place
-								in the user interface that refers to departments will instead use your custom word.
+								{{ phrase('admin.departments.rename_department_field_explain') }}
 							</span>
 							<div ng-show="TicketDepsList.dep_settings.do_rename">
 								<div class="inner-group">
-									<span>Singular:</span><br/>
+									<span>{{ phrase('admin.departments.singular') }}:</span><br/>
 									<input type="text" ng-model="TicketDepsList.dep_settings.name_singular" class="form-control input-sm" style="width: 60%;" placeholder="Ex: Region" />
 								</div>
 								<div class="inner-group">
-									<span>Plural:</span><br/>
+									<span>{{ phrase('admin.departments.singular') }}</span><br/>
 									<input type="text" ng-model="TicketDepsList.dep_settings.name_plural" class="form-control input-sm" style="width: 60%" placeholder="Ex: Regions" />
 								</div>
 							</div>

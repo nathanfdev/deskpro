@@ -1,16 +1,16 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3 ng-if="TicketDepsEdit.dep.id">Tickets &rarr; Departments &rarr; Edit <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
-		<h3 ng-if="!TicketDepsEdit.dep.id">New Department</h3>
+		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
+		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('admin.departments.new_department') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
 		<form class="form-horizontal dp-form" role="form" name="form_props">
 			<nav class="dp-main-tabs">
 				<ul>
-					<li class="active" dp-tab-btn="main.props"><a href="#">Properties</a></li>
-					<li dp-tab-btn="main.perms"><a href="#">Permissions</a></li>
-					<li dp-tab-btn="main.layout"><a href="#">Layout</a></li>
-					<li dp-tab-btn="main.website_embeds"><a href="#">Website Embed</a></li>
+					<li class="active" dp-tab-btn="main.props"><a href="#">{{ phrase('agent.general.properties') }}</a></li>
+					<li dp-tab-btn="main.perms"><a href="#">{{ phrase('agent.general.permissions') }}</a></li>
+					<li dp-tab-btn="main.layout"><a href="#">{{ phrase('admin.general.layout') }}</a></li>
+					<li dp-tab-btn="main.website_embeds"><a href="#">{{ phrase('admin.general.website_embed') }}</a></li>
 				</ul>
 			</nav>
 
@@ -20,34 +20,33 @@
 					<div class="panel-body">
 						<div class="form-group">
 							<div class="col-lg-2">
-								<h3>Title *</h3>
+								<h3>{{ phrase('agent.general.title') }} *</h3>
 							</div>
 							<div class="col-lg-10">
 								<div class="inner-group" ng-class="{'has-error': form_props.title.$invalid}">
 									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" />
 									<span class="help-block">
-										This is the title as it will appear throughout the agent and user interfaces.
+										{{ phrase('admin.departments.title_explain') }}
 									</span>
 								</div>
 
 								<div class="inner-group">
 									<label>
 										<input type="checkbox" ng-model="TicketDepsEdit.dep._enable_user_title" value="1" />
-										<h4>Show a different title to end-users</h4>
+										<h4>{{ phrase('admin.departments.user_title') }}</h4>
 									</label>
 									<div ng-show="TicketDepsEdit.dep._enable_user_title">
 										<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
 									</div>
 									<span class="help-block">
-										Enter a custom title that will be displayed to your end-users using the portal. Agents will
-										see the default title, but your users will see the custom title.
+
 									</span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-lg-2">
-								<h3>Parent</h3>
+								<h3>{{ phrase('agent.general.parent') }}</h3>
 							</div>
 							<div class="col-lg-10">
 								<select
@@ -59,8 +58,7 @@
 									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
 								</select>
 								<span class="help-block">
-									By setting a parent department, this department becomes a child. This is just an organizational feature that helps
-									you create department structures that are easier to use.
+									{{ phrase('admin.departments.parent_explain') }}
 								</span>
 
 								<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
@@ -68,9 +66,9 @@
 										<strong><em>{{ ng_var('show_parent_warning.title') }}</em> is not currently a parent</strong>
 									</p>
 									<ul>
-										<li>The parent department you have set is not yet a parent.</li>
-										<li>DeskPRO will convert the new parent <em>{{ ng_var('show_parent_warning.title') }}</em> into a parent when you save this form.</li>
-										<li>Any tickets that are currently in <em>{{ ng_var('show_parent_warning.title') }}</em> will be moved into <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em>.</li>
+										<li>{{ phrase('admin.departments.parent_not_parent') }}</li>
+										<li>{{ phrase('admin.departments.parent_convert', {title: ng_var('show_parent_warning.title')}) }}</li>
+										<li>{{ phrase('admin.departments.parent_convert_move', {title: ng_var('show_parent_warning.title'), title2: ng_var('TicketDepsEdit.dep.title')}) }}</li>
 									</ul>
 								</div>
 							</div>
@@ -81,21 +79,20 @@
 
 			<div dp-tab-body="main.perms">
 				<div class="panel panel-innertable">
-					<div class="panel-heading"><h3>User Group Permissions</h3></div>
+					<div class="panel-heading"><h3>{{ phrase('admin.general.usergroup_perms') }}</h3></div>
 					<div class="panel-help">
 						<p>
-							User Group permissions control which of your end-users can select a department when submitting or editing their tickets from the web portal.
+							{{ phrase('admin.departments.usergroup_perms_explain') }}
 						</p>
 						<p>
-							Note that it is still possible for agents to change the department to one that a user would not normally have access to. Triggers can also be used to assign any department regardless of user permissions.
-							User group permissions are therefore very much about what the user can select <em>themselves</em>.
+							{{ phrase('admin.departments.usergroup_perms_explain2') }}
 						</p>
 					</div>
 					<table class="table table-hover">
 						<thead>
 							<tr>
-								<th>User Group</th>
-								<th width="120" class="text-center">Use <span class="help-icon" tooltip-placement="left" tooltip="When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to."></span></th>
+								<th>{{ phrase('agent.general.usergroup') }}</th>
+								<th width="120" class="text-center">{{ phrase('admin.general.perm_use') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('admin.departments.usergroup_perm_toggle') }}"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -114,26 +111,25 @@
 				</div>
 
 				<div class="panel panel-innertable">
-					<div class="panel-heading"><h3>Agent Permissions</h3></div>
+					<div class="panel-heading"><h3>{{ phrase('admin.general.agent_perms') }}</h3></div>
 					<div class="panel-help">
 						<p>
-							Agent permissions control which of your agents have permission to use a department. There are two different types of permissions:
+							{{ phrase('admin.departments.agent_perms_explain') }}
 						</p>
 						<ol>
-							<li>The <strong>assign</strong> permission lets agents assign tickets to a department, but <em>not view</em> tickets within the department.</li>
-							<li>The <strong>full access</strong> permission gives agents full access to the department including viewing and assigning tickets.</li>
+							<li>{{ phrase('admin.departments.agent_perms_explain_assign') }}</li>
+							<li>{{ phrase('admin.departments.agent_perms_explain_full') }}</li>
 						</ol>
 						<p>
-							Note that agents will always be able to see tickets assigned to them or their team, or that they are a follower of. So it is still possible
-							an agent might see a ticket in a department they do not have access to if they are somehow added to the ticket.
+							{{ phrase('admin.departments.agent_perms_explain_participant') }}
 						</p>
 					</div>
 					<table class="table table-hover">
 						<thead>
 							<tr>
-								<th>Agent / Agent Group</th>
-								<th width="120" class="text-center">Full Access <span class="help-icon" tooltip-placement="left" tooltip="Full Access means the agent can view tickets in the department as well as create or move tickets into the department."></span></th>
-								<th width="120" class="text-center">Assignment <span class="help-icon" tooltip-placement="left" tooltip="Assignment means that the agent cannot view tickets in the department, but they can create or move tickets into it."></span></th>
+								<th>{{ phrase('admin.departments.agent_agent_group') }}</th>
+								<th width="120" class="text-center">{{ phrase('admin.general.perm_assign') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('admin.departments.perm_assign_tip') }}"></span></th>
+								<th width="120" class="text-center">{{ phrase('admin.general.perm_full_access') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('admin.departments.perm_full_tip') }}"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -144,10 +140,10 @@
 									<span class="text-middle">{{ ng_var('groupObj.model.title') }}</span>
 								</td>
 								<td class="text-center">
-									<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
+									<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('admin.departments.perm_assign_locked_tip') }}"></button>
 								</td>
 								<td class="text-center">
-									<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
+									<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
 								</td>
 							</tr>
 							<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
@@ -157,10 +153,10 @@
 									<span class="text-middle">{{ ng_var('agentObj.model.display_name') }}</span>
 								</td>
 								<td class="text-center">
-									<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="This permission is locked because this agent belongs to an agent group which has this permission enabled."></button>
+									<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('admin.departments.perm_assign_locked_tip') }}"></button>
 								</td>
 								<td class="text-center">
-									<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="This permission is locked because the 'Full' permission is enabled which always includes the 'Assign' permission."></button>
+									<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('admin.departments.perm_group_locked_tip') }}"></button>
 								</td>
 							</tr>
 						</tbody>
@@ -180,12 +176,11 @@
 				<div class="panel panel-fill">
 					<div class="panel-body">
 						<p>
-							Website Embeds are code snippets you can copy directly into your website to quickly add
-							a DeskPRO contact form to any page.
+							{{ phrase('admin.departments.embed_explain') }}
 						</p>
 						<form role="form" ng-if="TicketDepsEdit.dep.id">
 							<div class="form-group">
-								<label for="title">Direct Link</label>
+								<label for="title">{{ phrase('admin.departments.embed_direct_link') }}</label>
 								<div class="row">
 									<div class="col-lg-8">
 										<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
@@ -194,7 +189,7 @@
 							</div>
 
 							<div class="form-group">
-								<label for="title">Popup Window</label>
+								<label for="title">{{ phrase('admin.departments.embed_popup_window') }}</label>
 								<div class="row">
 									<div class="col-lg-8">
 										<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
@@ -203,7 +198,7 @@
 							</div>
 
 							<div class="form-group">
-								<label for="title">Embedded Form</label>
+								<label for="title">{{ phrase('admin.departments.embed_form') }}</label>
 								<div class="row">
 									<div class="col-lg-8">
 										<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
@@ -213,8 +208,7 @@
 						</form>
 						<div ng-if="!TicketDepsEdit.dep.id">
 							<p>
-								The Website Embeds code is not available yet because you have not saved this
-								new department. Save the department first then come back to this tab.
+								{{ phrase('admin.departments.embed_unavailable') }}
 							</p>
 						</div>
 					</div>
@@ -223,16 +217,15 @@
 
 			<div class="inner-footer">
 				<div class="text-danger ng-hide" ng-show="form_props.$invalid">
-					<p><strong>Please correct the following error(s):</strong></p>
+					<p><strong>{{ phrase('admin.general.please_correct_errors') }}</strong></p>
 					<ul>
-						<li ng-show="form_props.title.$error.department_title_test">TEST</li>
-						<li ng-show="form_props.title.$error.required">You must enter a valid title</li>
+						<li ng-show="form_props.title.$error.required">{{ phrase('admin.departments.title_error') }}</li>
 					</ul>
 				</div>
 
 				<div class="text-center" ng-hide="form_props.$invalid">
-					<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">Save</button>
-					<button class="btn" ng-click="TicketDepsEdit.resetForm()">Reset</button>
+					<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">{{ phrase('agent.general.save') }}</button>
+					<button class="btn" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 				</div>
 			</div>
 		</form>
