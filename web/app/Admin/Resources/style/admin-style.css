@@ -3329,11 +3329,15 @@ fieldset[disabled] .btn {
 
 .btn-default {
   color: #333333;
-  background: #ffffff url("../../../file.php/gradient?size=30&start_color=ffffff&end_color=e8e8e8") repeat-x bottom left /*gradient_v:30:ffffff:e8e8e8*/;
-  background: #ffffff url("../../../../../file.php/gradient?size=30&start_color=ffffff&end_color=e8e8e8") repeat-x bottom left /*gradient_v:30:ffffff:e8e8e8*/;
+  text-shadow: 0 -1px 0 #d9d9d9;
+  background: #ffffff url("../../../file.php/gradient?size=30&start_color=ffffff&end_color=e0e0e0") repeat-x bottom left /*gradient_v:30:ffffff:e0e0e0*/;
+  background: #ffffff url("../../../../../file.php/gradient?size=30&start_color=ffffff&end_color=e0e0e0") repeat-x bottom left /*gradient_v:30:ffffff:e0e0e0*/;
   background-color: #ffffff;
   border-color: #cccccc;
-  border-color: #b3b3b3;
+  border-color: #bababa;
+  border-bottom-color: #bdbdbd;
+  -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
+          box-shadow: inset 0 1px 0 0 #ffffff;
 }
 
 .btn-default:hover,
@@ -3377,17 +3381,19 @@ fieldset[disabled] .btn-default.active {
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
   color: #333333;
-  background: #ebebeb;
-  border-color: #999999;
+  background: #fafafa url("../../../file.php/gradient?size=30&start_color=fafafa&end_color=d9d9d9") repeat-x bottom left /*gradient_v:30:fafafa:d9d9d9*/;
+  background: #fafafa url("../../../../../file.php/gradient?size=30&start_color=fafafa&end_color=d9d9d9") repeat-x bottom left /*gradient_v:30:fafafa:d9d9d9*/;
+  border-color: #a6a6a6;
 }
 
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
   background: #d9d9d9;
-  border: 1px solid #6b6b6b;
-  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 1px solid #808080;
+  outline: none;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 .btn-default.disabled,
@@ -3411,11 +3417,15 @@ fieldset[disabled] .btn-default.active {
 
 .btn-primary {
   color: #ffffff;
-  background: #428bca url("../../../file.php/gradient?size=30&start_color=428bca&end_color=3174ad") repeat-x bottom left /*gradient_v:30:428bca:3174ad*/;
-  background: #428bca url("../../../../../file.php/gradient?size=30&start_color=428bca&end_color=3174ad") repeat-x bottom left /*gradient_v:30:428bca:3174ad*/;
+  text-shadow: 0 -1px 0 #2a6496;
+  background: #4a90cc url("../../../file.php/gradient?size=30&start_color=4a90cc&end_color=2d6ca2") repeat-x bottom left /*gradient_v:30:4a90cc:2d6ca2*/;
+  background: #4a90cc url("../../../../../file.php/gradient?size=30&start_color=4a90cc&end_color=2d6ca2") repeat-x bottom left /*gradient_v:30:4a90cc:2d6ca2*/;
   background-color: #428bca;
   border-color: #357ebd;
-  border-color: #2a6496;
+  border-color: #2d6ca2;
+  border-bottom-color: #2e6ea5;
+  -webkit-box-shadow: inset 0 1px 0 0 #72a8d7;
+          box-shadow: inset 0 1px 0 0 #72a8d7;
 }
 
 .btn-primary:hover,
@@ -3459,17 +3469,19 @@ fieldset[disabled] .btn-primary.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #ffffff;
-  background: #3276b1;
-  border-color: #1f496e;
+  background: #3a86c8 url("../../../file.php/gradient?size=30&start_color=3a86c8&end_color=2a6496") repeat-x bottom left /*gradient_v:30:3a86c8:2a6496*/;
+  background: #3a86c8 url("../../../../../file.php/gradient?size=30&start_color=3a86c8&end_color=2a6496") repeat-x bottom left /*gradient_v:30:3a86c8:2a6496*/;
+  border-color: #245682;
 }
 
 .btn-primary:active,
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   background: #2a6496;
-  border: 1px solid #0b1926;
-  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 1px solid #142f46;
+  outline: none;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary.disabled,
@@ -3493,11 +3505,15 @@ fieldset[disabled] .btn-primary.active {
 
 .btn-warning {
   color: #ffffff;
-  background: #f0ad4e url("../../../file.php/gradient?size=30&start_color=f0ad4e&end_color=ec9924") repeat-x bottom left /*gradient_v:30:f0ad4e:ec9924*/;
-  background: #f0ad4e url("../../../../../file.php/gradient?size=30&start_color=f0ad4e&end_color=ec9924") repeat-x bottom left /*gradient_v:30:f0ad4e:ec9924*/;
+  text-shadow: 0 -1px 0 #df8a13;
+  background: #f1b157 url("../../../file.php/gradient?size=30&start_color=f1b157&end_color=eb9316") repeat-x bottom left /*gradient_v:30:f1b157:eb9316*/;
+  background: #f1b157 url("../../../../../file.php/gradient?size=30&start_color=f1b157&end_color=eb9316") repeat-x bottom left /*gradient_v:30:f1b157:eb9316*/;
   background-color: #f0ad4e;
   border-color: #eea236;
-  border-color: #df8a13;
+  border-color: #eb9316;
+  border-bottom-color: #ec951a;
+  -webkit-box-shadow: inset 0 1px 0 0 #f5c786;
+          box-shadow: inset 0 1px 0 0 #f5c786;
 }
 
 .btn-warning:hover,
@@ -3541,17 +3557,19 @@ fieldset[disabled] .btn-warning.active {
 .btn-warning.active,
 .open .dropdown-toggle.btn-warning {
   color: #ffffff;
-  background: #ed9c28;
-  border-color: #b06d0f;
+  background: #efa945 url("../../../file.php/gradient?size=30&start_color=efa945&end_color=df8a13") repeat-x bottom left /*gradient_v:30:efa945:df8a13*/;
+  background: #efa945 url("../../../../../file.php/gradient?size=30&start_color=efa945&end_color=df8a13") repeat-x bottom left /*gradient_v:30:efa945:df8a13*/;
+  border-color: #c77c11;
 }
 
 .btn-warning:active,
 .btn-warning.active,
 .open .dropdown-toggle.btn-warning {
   background: #df8a13;
-  border: 1px solid #5b3908;
-  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 1px solid #81500b;
+  outline: none;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 .btn-warning.disabled,
@@ -3575,11 +3593,15 @@ fieldset[disabled] .btn-warning.active {
 
 .btn-danger {
   color: #ffffff;
-  background: #d9534f url("../../../file.php/gradient?size=30&start_color=d9534f&end_color=ce312c") repeat-x bottom left /*gradient_v:30:d9534f:ce312c*/;
-  background: #d9534f url("../../../../../file.php/gradient?size=30&start_color=d9534f&end_color=ce312c") repeat-x bottom left /*gradient_v:30:d9534f:ce312c*/;
+  text-shadow: 0 -1px 0 #b52b27;
+  background: #db5b57 url("../../../file.php/gradient?size=30&start_color=db5b57&end_color=c12e2a") repeat-x bottom left /*gradient_v:30:db5b57:c12e2a*/;
+  background: #db5b57 url("../../../../../file.php/gradient?size=30&start_color=db5b57&end_color=c12e2a") repeat-x bottom left /*gradient_v:30:db5b57:c12e2a*/;
   background-color: #d9534f;
   border-color: #d43f3a;
-  border-color: #b52b27;
+  border-color: #c12e2a;
+  border-bottom-color: #c52f2b;
+  -webkit-box-shadow: inset 0 1px 0 0 #e48481;
+          box-shadow: inset 0 1px 0 0 #e48481;
 }
 
 .btn-danger:hover,
@@ -3623,17 +3645,19 @@ fieldset[disabled] .btn-danger.active {
 .btn-danger.active,
 .open .dropdown-toggle.btn-danger {
   color: #ffffff;
-  background: #d2322d;
-  border-color: #8b211e;
+  background: #d74b47 url("../../../file.php/gradient?size=30&start_color=d74b47&end_color=b52b27") repeat-x bottom left /*gradient_v:30:d74b47:b52b27*/;
+  background: #d74b47 url("../../../../../file.php/gradient?size=30&start_color=d74b47&end_color=b52b27") repeat-x bottom left /*gradient_v:30:d74b47:b52b27*/;
+  border-color: #a02622;
 }
 
 .btn-danger:active,
 .btn-danger.active,
 .open .dropdown-toggle.btn-danger {
   background: #b52b27;
-  border: 1px solid #3f0f0e;
-  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 1px solid #611715;
+  outline: none;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 .btn-danger.disabled,
@@ -3657,11 +3681,15 @@ fieldset[disabled] .btn-danger.active {
 
 .btn-success {
   color: #ffffff;
-  background: #5cb85c url("../../../file.php/gradient?size=30&start_color=5cb85c&end_color=46a046") repeat-x bottom left /*gradient_v:30:5cb85c:46a046*/;
-  background: #5cb85c url("../../../../../file.php/gradient?size=30&start_color=5cb85c&end_color=46a046") repeat-x bottom left /*gradient_v:30:5cb85c:46a046*/;
+  text-shadow: 0 -1px 0 #3d8b3d;
+  background: #63bb63 url("../../../file.php/gradient?size=30&start_color=63bb63&end_color=419641") repeat-x bottom left /*gradient_v:30:63bb63:419641*/;
+  background: #63bb63 url("../../../../../file.php/gradient?size=30&start_color=63bb63&end_color=419641") repeat-x bottom left /*gradient_v:30:63bb63:419641*/;
   background-color: #5cb85c;
   border-color: #4cae4c;
-  border-color: #3d8b3d;
+  border-color: #419641;
+  border-bottom-color: #439943;
+  -webkit-box-shadow: inset 0 1px 0 0 #87cb87;
+          box-shadow: inset 0 1px 0 0 #87cb87;
 }
 
 .btn-success:hover,
@@ -3705,17 +3733,19 @@ fieldset[disabled] .btn-success.active {
 .btn-success.active,
 .open .dropdown-toggle.btn-success {
   color: #ffffff;
-  background: #47a447;
-  border-color: #2d672d;
+  background: #55b555 url("../../../file.php/gradient?size=30&start_color=55b555&end_color=3d8b3d") repeat-x bottom left /*gradient_v:30:55b555:3d8b3d*/;
+  background: #55b555 url("../../../../../file.php/gradient?size=30&start_color=55b555&end_color=3d8b3d") repeat-x bottom left /*gradient_v:30:55b555:3d8b3d*/;
+  border-color: #357935;
 }
 
 .btn-success:active,
 .btn-success.active,
 .open .dropdown-toggle.btn-success {
   background: #3d8b3d;
-  border: 1px solid #112711;
-  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 1px solid #1e441e;
+  outline: none;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 .btn-success.disabled,
@@ -3739,11 +3769,15 @@ fieldset[disabled] .btn-success.active {
 
 .btn-info {
   color: #ffffff;
-  background: #5bc0de url("../../../file.php/gradient?size=30&start_color=5bc0de&end_color=35b1d6") repeat-x bottom left /*gradient_v:30:5bc0de:35b1d6*/;
-  background: #5bc0de url("../../../../../file.php/gradient?size=30&start_color=5bc0de&end_color=35b1d6") repeat-x bottom left /*gradient_v:30:5bc0de:35b1d6*/;
+  text-shadow: 0 -1px 0 #28a1c5;
+  background: #63c3e0 url("../../../file.php/gradient?size=30&start_color=63c3e0&end_color=2aabd2") repeat-x bottom left /*gradient_v:30:63c3e0:2aabd2*/;
+  background: #63c3e0 url("../../../../../file.php/gradient?size=30&start_color=63c3e0&end_color=2aabd2") repeat-x bottom left /*gradient_v:30:63c3e0:2aabd2*/;
   background-color: #5bc0de;
   border-color: #46b8da;
-  border-color: #28a1c5;
+  border-color: #2aabd2;
+  border-bottom-color: #2caed5;
+  -webkit-box-shadow: inset 0 1px 0 0 #8ed4e8;
+          box-shadow: inset 0 1px 0 0 #8ed4e8;
 }
 
 .btn-info:hover,
@@ -3787,17 +3821,19 @@ fieldset[disabled] .btn-info.active {
 .btn-info.active,
 .open .dropdown-toggle.btn-info {
   color: #ffffff;
-  background: #39b3d7;
-  border-color: #1f7e9a;
+  background: #53bddc url("../../../file.php/gradient?size=30&start_color=53bddc&end_color=28a1c5") repeat-x bottom left /*gradient_v:30:53bddc:28a1c5*/;
+  background: #53bddc url("../../../../../file.php/gradient?size=30&start_color=53bddc&end_color=28a1c5") repeat-x bottom left /*gradient_v:30:53bddc:28a1c5*/;
+  border-color: #2390b0;
 }
 
 .btn-info:active,
 .btn-info.active,
 .open .dropdown-toggle.btn-info {
   background: #28a1c5;
-  border: 1px solid #10404e;
-  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
-          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 1px solid #175b70;
+  outline: none;
+  -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+          box-shadow: inset 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 .btn-info.disabled,
@@ -7215,6 +7251,20 @@ form {
   position: absolute;
   z-index: 200;
   border: 3px solid #555;
+}
+
+.btn {
+  padding: 6px 14px 5px 14px;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.btn:focus {
+  outline: none;
 }
 
 .btn.help-page-trigger {
