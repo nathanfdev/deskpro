@@ -791,6 +791,14 @@ class Translate implements PersonContextInterface
 			}
 		}
 
+		// Pass to detect which should be output as ng_Vars
+		$m = null;
+		if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phrase_text, $m, \PREG_SET_ORDER)) {
+			foreach ($m as $match) {
+				$phrase_text = str_replace($match[0], '{{' . $match[1] . '}}', $phrase_text);
+			}
+		}
+
 		if ($debug == 'double_length') {
 			return $phrase_text . ' ' . $phrase_text;
 		} else if ($debug == 'half_length') {

@@ -314,6 +314,40 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param bool $primary
+	 * @param bool $deep
+	 * @param array $visited
+	 * @return array
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		if ($deep) {
+			$data['department'] = null;
+			if ($this->department) {
+				$data['department'] = $this->department->toApiData(false, false);
+			}
+
+			$data['linked_transport'] = null;
+			if ($this->linked_transport) {
+				$data['linked_transport'] = $this->linked_transport->toApiData(false, false);
+			}
+
+			$data['addresses'] = array();
+			$data['primary_address'] = null;
+			if ($this->addresses) {
+				$data['primary_address'] = $this->getPrimaryEmailAddress(true)->toApiData(false, false);
+				foreach ($this->addresses as $addr) {
+					$data['addresses'][] = $addr->toApiData(false, false);
+				}
+			}
+		}
+
+		return $data;
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

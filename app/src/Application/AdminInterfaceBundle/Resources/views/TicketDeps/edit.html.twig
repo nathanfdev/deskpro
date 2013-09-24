@@ -63,14 +63,35 @@
 
 								<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
 									<p>
-										<strong><em>{{ ng_var('show_parent_warning.title') }}</em> is not currently a parent</strong>
+										<strong>{{ phrase('admin.departments.parent_not_parent') }}</strong>
 									</p>
 									<ul>
-										<li>{{ phrase('admin.departments.parent_not_parent') }}</li>
-										<li>{{ phrase('admin.departments.parent_convert', {title: ng_var('show_parent_warning.title')}) }}</li>
-										<li>{{ phrase('admin.departments.parent_convert_move', {title: ng_var('show_parent_warning.title'), title2: ng_var('TicketDepsEdit.dep.title')}) }}</li>
+										<li>{{ phrase('admin.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}</li>
+										<li>{{ phrase('admin.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(TicketDepsEdit.dep.title)' }) }}</li>
 									</ul>
 								</div>
+							</div>
+						</div>
+						<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length || TicketDepsEdit.email_accounts_inuse.length">
+							<div class="col-lg-2">
+								<h3>{{ phrase('admin.departments.linked_account') }}</h3>
+							</div>
+							<div class="col-lg-10">
+								<select
+									ui-select2
+									ng-model="TicketDepsEdit.dep.email_gateway_id"
+									style="min-width: 240px"
+									class="no-search"
+								>
+									<option value="0">{{ phrase('agent.general.none') }}</option>
+									<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts">{{ ng_var('account.primary_address.match_pattern') }}</option>
+									<optgroup label="Already in use" ng-if="TicketDepsEdit.email_accounts_inuse.length">
+										<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts_inuse" disabled>{{ ng_var('account.primary_address.match_pattern') }}</option>
+									</optgroup>
+								</select>
+								<span class="help-block">
+									{{ phrase('admin.departments.linked_account_explain') }}
+								</span>
 							</div>
 						</div>
 					</div>

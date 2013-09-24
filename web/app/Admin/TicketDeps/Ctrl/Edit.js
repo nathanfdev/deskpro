@@ -67,7 +67,7 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.loadDepartment = function() {
         var promise, waiting,
           _this = this;
-        waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
+        waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts', '/email_accounts/tickets']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts', '/email_accounts/tickets'])];
         promise = this.$q.all(waiting).then(function(d) {
           var data_results, dep, dep_data, departments;
           departments = d[0], data_results = d[1];
@@ -85,9 +85,13 @@
           if (!dep.parent_id) {
             dep.parent_id = 0;
           }
+          if (!dep.email_gateway_id) {
+            dep.email_gateway_id = 0;
+          }
           _this.dep = _this.em.createUnmanagedEntity('department', 'id', dep);
           _this.dep._enable_user_title = !!_this.dep.user_title;
           _this.initDeplistData(departments);
+          _this.initEmailAccountsData(data_results.data.api_emailaccounts.email_accounts);
           _this.initData({
             usergroups: dep_data.perms_usergroup_ids,
             agentgroups: dep_data.perms_agentgroup_ids,
@@ -166,6 +170,29 @@
           }
         }
         return _results;
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.initEmailAccountsData = function(accounts) {
+        var account, any, _i, _len, _ref1;
+        this.email_accounts = [];
+        this.email_accounts_inuse = [];
+        any = false;
+        for (_i = 0, _len = accounts.length; _i < _len; _i++) {
+          account = accounts[_i];
+          if (!account.is_enabled) {
+            continue;
+          }
+          if (!account.department || ((_ref1 = account.department) != null ? _ref1.id : void 0) === this.dep.id) {
+            this.email_accounts.push(account);
+          } else {
+            this.email_accounts_inuse.push(account);
+          }
+        }
+        if (!this.email_accounts.length) {
+          return this.show_no_emailaccount = true;
+        } else {
+          return this.show_no_emailaccount = false;
+        }
       };
 
       /**

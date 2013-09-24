@@ -58,14 +58,16 @@ define [
 						'/agents',
 						'/agentgroups',
 						'/usergroups',
-						'/ticket_accounts'
+						'/ticket_accounts',
+						'/email_accounts/tickets'
 					])
 				else
 					@Api.sendDataGet([
 						'/agents',
 						'/agentgroups',
 						'/usergroups',
-						'/ticket_accounts'
+						'/ticket_accounts',
+						'/email_accounts/tickets'
 					])
 			]
 
@@ -79,11 +81,13 @@ define [
 
 				dep = dep_data.department
 				if not dep.parent_id then dep.parent_id = 0
+				if not dep.email_gateway_id then dep.email_gateway_id = 0
 				@dep = @em.createUnmanagedEntity('department', 'id', dep)
 
 				@dep._enable_user_title = !!@dep.user_title
 
 				@initDeplistData(departments)
+				@initEmailAccountsData(data_results.data.api_emailaccounts.email_accounts)
 				@initData(
 					{ usergroups: dep_data.perms_usergroup_ids, agentgroups: dep_data.perms_agentgroup_ids, agents: dep_data.perms_agent_ids },
 					data_results.data.api_agents_list.agents,
@@ -141,6 +145,24 @@ define [
 				if @dep.id != dep.id and not dep.parent_id
 					 @dep_parent_list.push(dep)
 
+
+		initEmailAccountsData: (accounts) ->
+			@email_accounts = []
+			@email_accounts_inuse = []
+
+			any = false
+			for account in accounts
+				if not account.is_enabled then continue
+
+				if not account.department or account.department?.id == @dep.id
+					@email_accounts.push(account)
+				else
+					@email_accounts_inuse.push(account)
+
+			if not @email_accounts.length
+				@show_no_emailaccount = true
+			else
+				@show_no_emailaccount = false
 
 		###*
 		# Save everything

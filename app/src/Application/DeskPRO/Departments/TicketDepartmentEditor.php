@@ -97,6 +97,8 @@ class TicketDepartmentEditor
 	 */
 	public function editProperties(Department $dep, array $props)
 	{
+		$this->em->persist($dep);
+
 		$move_to = null;
 		$set_parent = null;
 		$change_parent = false;
@@ -140,6 +142,47 @@ class TicketDepartmentEditor
 		if (isset($props['user_title'])) {
 			$dep->user_title = $props['user_title'];
 		}
+
+		if (isset($props['email_gateway_id']) && $dep->email_gateway) {
+			if ($dep->email_gateway->getId() == $props['email_gateway_id']) {
+				unset($props['email_gateway_id']);
+			}
+		}
+
+		if (isset($props['email_gateway_id'])) {
+
+			// Unset existing
+			if ($dep->email_gateway) {
+				$exist_gateway = $dep->email_gateway;
+				$exist_gateway->department = null;
+				$dep->email_gateway = null;
+
+				$this->em->persist($exist_gateway);
+			}
+
+			if ($props['email_gateway_id']) {
+				$gateway = $this->em->find('DeskPRO:EmailGateway', $props['email_gateway_id']);
+				if (!$gateway || $gateway->gateway_type != 'tickets' || !$gateway->is_enabled) {
+					throw ValidationException::create("department.email_gateway_id.invalid", "Invalid email gateway");
+				}
+
+				$gateway->department = $dep;
+				$dep->email_gateway = $gateway;
+				$this->em->persist($gateway);
+
+				// Make sure other deps are not linked
+				$exist_deps = $this->em->createQuery("
+					SELECT d
+					FROM DeskPRO:Department d
+					WHERE d.email_gateway = ?0
+				")->setParameters(array($gateway))->execute();
+				foreach ($exist_deps as $d) {
+					$d->email_gateway = null;
+					$this->em->persist($d);
+				}
+
+			}
+		}
 		if ($change_parent) {
 			$dep->parent = $set_parent;
 		}
@@ -151,8 +194,6 @@ class TicketDepartmentEditor
 
 			$dep->display_order = $last;
 		}
-
-		$this->em->persist($dep);
 
 		if ($change_parent && $move_to) {
 			$this->db->update('tickets', array('department_id' => $move_to->getId()), array('department_id' => $set_parent->getId()));

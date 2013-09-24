@@ -8328,6 +8328,11 @@ section.dp-help-page article dl dt:first-child {
   text-wrap: none;
 }
 
+.select2-results .select2-disabled {
+  font-style: italic;
+  color: #888;
+}
+
 .select2-container-active .select2-choice {
   border-color: #CCCCCC;
   box-shadow: none;

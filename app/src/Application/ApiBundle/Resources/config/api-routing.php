@@ -2271,4 +2271,14 @@ $collection->add('api_ticket_fields', new Route(
 	array('_method' => 'GET')
 ));
 
+########################################################################################################################
+# EMAIL ACCOUNTS
+########################################################################################################################
+
+$collection->add('api_emailaccounts', new Route(
+	'/email_accounts/{type}',
+	array('_controller' => 'ApiBundle:EmailAccounts:list'),
+	array('_method' => 'GET')
+));
+
 return $collection;
