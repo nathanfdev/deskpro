@@ -37,22 +37,22 @@
       Admin_Ctrl_Base.EXPORT_CTRL = function() {
         var ctrl_def;
         if (this.DEPS.indexOf('AppState') === -1) {
-          this.DEPS.push('AppState');
+          this.DEPS.unshift('AppState');
         }
         if (this.DEPS.indexOf('Api') === -1) {
-          this.DEPS.push('Api');
+          this.DEPS.unshift('Api');
         }
         if (this.DEPS.indexOf('$scope') === -1) {
-          this.DEPS.push('$scope');
+          this.DEPS.unshift('$scope');
         }
         if (this.DEPS.indexOf('$modal') === -1) {
-          this.DEPS.push('$modal');
+          this.DEPS.unshift('$modal');
         }
         if (this.DEPS.indexOf('$q') === -1) {
-          this.DEPS.push('$q');
+          this.DEPS.unshift('$q');
         }
         if (this.DEPS.indexOf('$state') === -1) {
-          this.DEPS.push('$state');
+          this.DEPS.unshift('$state');
         }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
@@ -69,6 +69,7 @@
         var arg, arg_name, args, i, me, ret, _i, _j, _len, _len1,
           _this = this;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        this.ctrl_is_loading = true;
         if (this.constructor.DEPS.length !== args.length) {
           console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
           return;
@@ -192,6 +193,7 @@
 
 
       Admin_Ctrl_Base.prototype.enableViewLoadingState = function() {
+        this.ctrl_is_loading = true;
         if (!this.constructor.CTRL_TYPE === 'any') {
           this.AppState.setLoadingState('dp_section_list', true);
           return this.AppState.setLoadingState('dp_section_page', true);
@@ -208,6 +210,7 @@
 
 
       Admin_Ctrl_Base.prototype.disableViewLoadingState = function() {
+        this.ctrl_is_loading = false;
         if (!this.constructor.CTRL_TYPE === 'any') {
           this.AppState.setLoadingState('dp_section_list', false);
           return this.AppState.setLoadingState('dp_section_page', false);

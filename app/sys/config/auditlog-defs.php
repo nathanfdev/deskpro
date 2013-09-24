@@ -96,7 +96,7 @@
 			}
 		)
 	),
-	'phrases' => array(
+	'phrasesxxx' => array(
 		'fields' => array('language', 'name', 'phrase'),
 		'save_as_change'      => array(
 			'object_field_id' => 'language',

@@ -2281,4 +2281,26 @@ $collection->add('api_emailaccounts', new Route(
 	array('_method' => 'GET')
 ));
 
+########################################################################################################################
+# LANGUAGES
+########################################################################################################################
+
+$collection->add('api_langs', new Route(
+	'/langs',
+	array('_controller' => 'ApiBundle:Languages:list'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_langs_getphrase', new Route(
+	'/langs/phrases/{phrase_id}/{for_lang}',
+	array('_controller' => 'ApiBundle:Languages:getPhrase', 'for_lang' => '-1'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_langs_savephrase', new Route(
+	'/langs/phrases/{phrase_id}',
+	array('_controller' => 'ApiBundle:Languages:savePhrase'),
+	array('_method' => 'POST')
+));
+
 return $collection;

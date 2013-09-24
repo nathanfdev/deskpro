@@ -518,6 +518,28 @@ define [
 		}
 	)
 
+	Admin_App.directive('dpOpenPhraseEditor', ['$modal', '$controller', ($modal, $controller) ->
+		return {
+			restrict: 'A',
+			link: (scope, element, attrs) ->
+				element.on('click', (ev) ->
+					ev.preventDefault()
+
+					editorOptions = scope.$eval(attrs.dpOpenPhraseEditor)
+
+					modalInstance = $modal.open({
+						templateUrl: DP_BASE_ADMIN_URL+'/load-view/Languages/modal-translate-phrase.html',
+						controller: 'Admin_Languages_Ctrl_TranslateModal',
+						resolve: {
+							phraseId: ->
+								return editorOptions.phraseId || null
+						}
+					})
+				)
+				return
+		}
+	])
+
 	####################################################################################################################
 	# Translation
 	####################################################################################################################
@@ -646,6 +668,7 @@ define [
 			'Index/app-nav-server.html',
 			'Index/modal-alert.html',
 			'Index/modal-confirm-leavetab.html',
+			'Languages/modal-translate-phrase.html',
 			'TicketDeps/code-link.html',
 			'TicketDeps/code-win.html',
 			'TicketDeps/code-embed.html',

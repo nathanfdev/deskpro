@@ -24,17 +24,17 @@ define ['angular', 'Admin/App'], (angular) ->
 		###
 		@EXPORT_CTRL: () ->
 			if @DEPS.indexOf('AppState') == -1
-				@DEPS.push('AppState')
+				@DEPS.unshift('AppState')
 			if @DEPS.indexOf('Api') == -1
-				@DEPS.push('Api')
+				@DEPS.unshift('Api')
 			if @DEPS.indexOf('$scope') == -1
-				@DEPS.push('$scope')
+				@DEPS.unshift('$scope')
 			if @DEPS.indexOf('$modal') == -1
-				@DEPS.push('$modal')
+				@DEPS.unshift('$modal')
 			if @DEPS.indexOf('$q') == -1
-				@DEPS.push('$q')
+				@DEPS.unshift('$q')
 			if @DEPS.indexOf('$state') == -1
-				@DEPS.push('$state')
+				@DEPS.unshift('$state')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
@@ -46,6 +46,7 @@ define ['angular', 'Admin/App'], (angular) ->
 		* The constructor will assign all passed-in dependencies to class vars
 		###
 		constructor: (args...) ->
+			@ctrl_is_loading = true
 			if @constructor.DEPS.length != args.length
 				console.error("Dependencies are not the same as passed args: %o != %o", @constructor.DEPS, args)
 				return
@@ -157,6 +158,7 @@ define ['angular', 'Admin/App'], (angular) ->
 		* Show this page as "loading"
 		###
 		enableViewLoadingState: ->
+			@ctrl_is_loading = true
 			if not @constructor.CTRL_TYPE == 'any'
 				@AppState.setLoadingState('dp_section_list', true)
 				@AppState.setLoadingState('dp_section_page', true)
@@ -170,6 +172,7 @@ define ['angular', 'Admin/App'], (angular) ->
 		* Stop the loading indicator in this pane
 		###
 		disableViewLoadingState: ->
+			@ctrl_is_loading = false
 			if not @constructor.CTRL_TYPE == 'any'
 				@AppState.setLoadingState('dp_section_list', false)
 				@AppState.setLoadingState('dp_section_page', false)

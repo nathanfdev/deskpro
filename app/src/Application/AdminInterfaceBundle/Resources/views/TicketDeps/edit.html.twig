@@ -25,6 +25,7 @@
 							<div class="col-lg-10">
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" />
+									{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('admin.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id }"></span>{% endif %}
 									<span class="help-block">
 										{{ phrase('admin.departments.title_explain') }}
 									</span>
@@ -37,6 +38,7 @@
 									</label>
 									<div ng-show="TicketDepsEdit.dep._enable_user_title">
 										<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
+										{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('admin.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id + '_user' }"></span>{% endif %}
 									</div>
 									<span class="help-block">
 

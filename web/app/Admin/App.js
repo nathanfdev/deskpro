@@ -518,6 +518,29 @@
         }
       };
     });
+    Admin_App.directive('dpOpenPhraseEditor', [
+      '$modal', '$controller', function($modal, $controller) {
+        return {
+          restrict: 'A',
+          link: function(scope, element, attrs) {
+            element.on('click', function(ev) {
+              var editorOptions, modalInstance;
+              ev.preventDefault();
+              editorOptions = scope.$eval(attrs.dpOpenPhraseEditor);
+              return modalInstance = $modal.open({
+                templateUrl: DP_BASE_ADMIN_URL + '/load-view/Languages/modal-translate-phrase.html',
+                controller: 'Admin_Languages_Ctrl_TranslateModal',
+                resolve: {
+                  phraseId: function() {
+                    return editorOptions.phraseId || null;
+                  }
+                }
+              });
+            });
+          }
+        };
+      }
+    ]);
     Admin_App.factory('translateDpInterpolation', function() {
       var choosePlural, regexQuote;
       choosePlural = function(text, number) {
@@ -638,7 +661,7 @@
     Admin_App.run([
       '$http', '$templateCache', function($http, $templateCache) {
         var qs, t, templates, _i, _len;
-        templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'TicketDeps/code-link.html', 'TicketDeps/code-win.html', 'TicketDeps/code-embed.html', 'Index/blank.html'];
+        templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'Languages/modal-translate-phrase.html', 'TicketDeps/code-link.html', 'TicketDeps/code-win.html', 'TicketDeps/code-embed.html', 'Index/blank.html'];
         qs = [];
         for (_i = 0, _len = templates.length; _i < _len; _i++) {
           t = templates[_i];

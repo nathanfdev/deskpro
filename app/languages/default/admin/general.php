@@ -150,4 +150,5 @@
 	'admin.general.you_have_not_created_categories'     => 'You have not created any categories yet. Click the "Add New Category" button to create one now.',
 	'admin.general.you_have_not_created_filters'        => 'You have not created any filters yet. Click the "Add New Filter" button to create one now.',
 	'admin.general.your_current_deskpro_build'          => 'Your current DeskPRO version:',
+	'admin.general.translate'                           => 'Translate',
 );

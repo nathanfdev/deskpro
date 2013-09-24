@@ -80,6 +80,7 @@ requirejs([
 	'Admin/Main/Ctrl/NavSetup',
 	'Admin/Main/Ctrl/NavTickets',
 	'Admin/Main/Ctrl/NavTwitter',
+	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit',
 	'Admin/TicketFields/Ctrl/List'

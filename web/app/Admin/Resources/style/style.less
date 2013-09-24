@@ -331,7 +331,8 @@ form {
 }
 
 .dp-view-loading {
-	margin-top: 100px;
+	margin-top: 60px;
+	margin-bottom: 60px;
 	h1 {
 		line-height: 1000px;
 		color: transparent;
@@ -910,6 +911,43 @@ section.dp-help-page {
 
 .btn.btn-xs {
 	padding: 1px 5px;
+}
+
+.translate-button {
+	font-family: FontAwesome;
+	font-size: 19px;
+	color: #888;
+	cursor: pointer;
+	margin: 0 5px 0 5px;
+	vertical-align: middle;
+
+	-webkit-transition: color 0.3s ease-out;
+	-moz-transition: color 0.3s ease-out;
+	-o-transition: color 0.3s ease-out;
+	transition: color 0.3s ease-out;
+
+	&:hover {
+		color: darken(#66AFE9, 8%);
+	}
+
+	&:after {
+		content: '\f0ac'
+	}
+}
+
+//######################################################################################################################
+//# Tooltips
+//######################################################################################################################
+
+.tooltip {
+	font-size: 12px;
+	font-weight: normal;
+
+	.tooltip-inner {
+		padding: 5px 12px;
+		font-weight: normal;
+		border-radius: 3px;
+	}
 }
 
 //######################################################################################################################
