@@ -74,7 +74,14 @@ form {
 	&:focus {
 		outline: none;
 	}
+}
 
+.btn + .btn {
+	margin-left: 10px;
+}
+
+.btn.btn-xs {
+	padding: 1px 5px;
 }
 
 .btn.help-page-trigger {
@@ -86,9 +93,7 @@ form {
 	position: absolute;
 	top: 9px;
 	right: 13px;
-	width: 30px;
-	height: 30px;
-	padding: 0;
+	padding: 5px 6px;
 	margin: 0;
 	font-size: 155%;
 	color: #888;
@@ -105,12 +110,10 @@ form {
 
 	i {
 		text-align: center;
-		vertical-align: middle;
-		line-height: 100%;
+		vertical-align: baseline;
+		line-height: 17px;
 		margin: 0;
 		padding: 0;
-		position: relative;
-		top: -1px;
 	}
 }
 
@@ -361,10 +364,11 @@ form {
 
 			i.icon-caret-down {
 				position: relative;
-				top: -1px;
+				top: 0px;
 				font-size: 11px;
 				margin-left: 3px;
 				vertical-align: middle;
+				display: none;
 			}
 
 			i {
@@ -375,6 +379,10 @@ form {
 				font-size: 150%;
 				vertical-align: middle;
 			}
+		}
+
+		.sublist-open > a i.icon-caret-down {
+			display: inline-block;
 		}
 	}
 
@@ -482,7 +490,7 @@ article.pane-content {
 
 .nav-rows {
 	> li {
-		&:hover > a, &:focus > a, &.active > a {
+		> a:hover, &:focus > a, &.active > a {
 			color: #3476BE;
 			background: #D4E4FF;
 		}

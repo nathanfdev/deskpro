@@ -95,12 +95,19 @@ define [
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
-				$toggler = element.parent().find('> a');
+				$parent = element.parent();
+				$toggler = $parent.find('> a');
 				$toggler.on('click', (ev) ->
 					ev.preventDefault();
 					ev.stopPropagation();
 
-					element.slideToggle();
+					if $parent.hasClass('sublist-open')
+						$parent.removeClass('sublist-open')
+						element.slideUp();
+					else
+						$parent.addClass('sublist-open')
+						element.slideDown();
+
 				)
 				return
 		}
