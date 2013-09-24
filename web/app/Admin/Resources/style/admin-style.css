@@ -8057,18 +8057,12 @@ nav.dp-main-tabs ul li.active {
   border-top: 2px solid #999999;
 }
 
-.panel.panel-innertable {
-  margin: 30px;
-  -webkit-border-radius: 2px;
-     -moz-border-radius: 2px;
-          border-radius: 2px;
-  box-shadow: none;
-  -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-          background-clip: padding-box;
+.indent .panel-help {
+  margin-right: 30px;
+  margin-left: 30px;
 }
 
-.panel.panel-innertable .panel-help {
+.panel-help {
   padding: 10px;
   margin: 10px 0 10px 0;
   color: #3a87ad;
@@ -8078,12 +8072,27 @@ nav.dp-main-tabs ul li.active {
   border-radius: 4px;
 }
 
-.panel.panel-innertable .panel-help hr {
+.panel-help hr {
   border-top-color: #a6e1ec;
 }
 
-.panel.panel-innertable .panel-help .alert-link {
+.panel-help .alert-link {
   color: #2d6987;
+}
+
+.panel-help p:last-child {
+  margin-bottom: 0;
+}
+
+.panel.panel-innertable {
+  margin: 30px;
+  -webkit-border-radius: 2px;
+     -moz-border-radius: 2px;
+          border-radius: 2px;
+  box-shadow: none;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
 }
 
 .panel.panel-innertable td {

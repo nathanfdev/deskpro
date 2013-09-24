@@ -730,19 +730,27 @@ nav.dp-main-tabs {
 	padding: 20px;
 }
 
+.indent .panel-help {
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+.panel-help {
+	padding: 10px;
+	.alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
+	border: 1px solid transparent;
+	border-radius: @alert-border-radius;
+	margin: 10px 0 10px 0;
+
+	p:last-child {
+		margin-bottom: 0;
+	}
+}
 
 .panel.panel-innertable {
 	margin: 30px;
 	.rounded(2px);
 	box-shadow: none;
-
-	.panel-help {
-		padding: 10px;
-		.alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
-		border: 1px solid transparent;
-  		border-radius: @alert-border-radius;
-		margin: 10px 0 10px 0;
-	}
 
 	td {
 		vertical-align: middle;
