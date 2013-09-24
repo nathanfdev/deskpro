@@ -4,7 +4,7 @@
 		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('admin.departments.new_department') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketDepsEdit.saveAll()">
 			<nav class="dp-main-tabs">
 				<ul>
 					<li class="active" dp-tab-btn="main.props"><a href="#">{{ phrase('agent.general.properties') }}</a></li>
@@ -23,7 +23,7 @@
 								<h3>{{ phrase('agent.general.title') }} *</h3>
 							</div>
 							<div class="col-lg-10">
-								<div class="inner-group" ng-class="{'has-error': form_props.title.$invalid}">
+								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" />
 									<span class="help-block">
 										{{ phrase('admin.departments.title_explain') }}
@@ -201,7 +201,6 @@
 						</p>
 					</div>
 					<div class="panel-body">
-						<form role="form" ng-if="TicketDepsEdit.dep.id">
 							<div class="form-group">
 								<label for="title">{{ phrase('admin.departments.embed_direct_link') }}</label>
 								<div class="row">
@@ -228,7 +227,6 @@
 									</div>
 								</div>
 							</div>
-						</form>
 						<div ng-if="!TicketDepsEdit.dep.id">
 							<p>
 								{{ phrase('admin.departments.embed_unavailable') }}
@@ -239,16 +237,16 @@
 			</div>
 
 			<div class="inner-footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$invalid">
+				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 					<p><strong>{{ phrase('admin.general.please_correct_errors') }}</strong></p>
 					<ul>
 						<li ng-show="form_props.title.$error.required">{{ phrase('admin.departments.title_error') }}</li>
 					</ul>
 				</div>
 
-				<div class="text-center" ng-hide="form_props.$invalid">
-					<button class="btn btn-primary" ng-click="TicketDepsEdit.saveAll()">{{ phrase('agent.general.save') }}</button>
-					<button class="btn btn-reset" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
+					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+					<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 				</div>
 			</div>
 		</form>

@@ -460,6 +460,64 @@ define [
 		}
 	)
 
+	Admin_App.directive('dpErrorClass', ->
+		return {
+			restrict: 'A',
+			link: (scope, element, attrs) ->
+				updateClass = ->
+					formProp = scope.$eval(attrs.dpErrorClass)
+					if not formProp then return
+
+					set_errorclass = false
+					if formProp.$invalid and (formProp.$dirty or formProp.$attempted)
+						set_errorclass = true
+
+					if set_errorclass
+						element.addClass('has-error')
+					else
+						element.removeClass('has-error')
+
+				watch_vars = [
+					attrs.dpErrorClass+'.$invalid',
+					attrs.dpErrorClass+'.$dirty',
+					attrs.dpErrorClass+'.$attempted'
+				]
+				scope.$watch('dpErrorClass', ->
+					for varname in watch_vars
+						scope.$watch(varname, ->
+							updateClass()
+						, true)
+				)
+		}
+	)
+
+	Admin_App.directive('dpSubmitForm', ->
+		return {
+			restrict: 'A',
+			link: (scope, element, attrs) ->
+				element.on('click', (ev) ->
+					ev.preventDefault()
+					ev.stopPropagation()
+
+					form = element.closest('form')
+					form.on('submit', (ev) ->
+						ev.preventDefault()
+					)
+					formName = form.attr('name')
+					form.submit()
+					scope[formName].$attempted = true
+
+					for own k, v of scope[formName]
+						if k.substring(0, 1) == '$' then continue
+						if not v.$name or not v.$viewChangeListeners then continue
+
+						v.$attempted = true
+
+					scope.$apply()
+				)
+		}
+	)
+
 	####################################################################################################################
 	# Translation
 	####################################################################################################################

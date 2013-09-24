@@ -53,6 +53,9 @@
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.checkDirtyState = function() {
+        if (!this.dep.id) {
+          return false;
+        }
         if (this.dep.getChangedFields().length) {
           return true;
         }
