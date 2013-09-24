@@ -1,44 +1,11 @@
+//######################################################################################################################
+//# Standard
+//######################################################################################################################
+
 a {
 	&, &:focus {
 		outline: none;
 	}
-}
-
-.btn {
-	> i {
-		margin-right: 5px;
-	}
-	&.only-icon > i {
-		margin-right: 0;
-	}
-}
-
-.modal-footer {
-	margin-top: 0;
-	text-align: center;
-}
-
-.agent-icon {
-	display: inline-block;
-	background-color: transparent;
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	.rounded(3px);
-	vertical-align: baseline;
-
-	&.agent-icon-22x {
-		width: 22px;
-		height: 22px;
-	}
-}
-
-.icon-light {
-	color: #888;
-}
-
-.icon-22x {
-	font-size: 18px;
-	font-weight: normal;
 }
 
 .text-middle {
@@ -59,62 +26,6 @@ form {
 .saved-ping {
 	margin-right: 5px;
 	color: #888;
-}
-
-.help-min-frame {
-	border: 3px solid #555;
-	position: absolute;
-	z-index: 200;
-}
-
-.btn {
-	.rounded(3px);
-	padding: 6px 14px 5px 14px;
-
-	&:focus {
-		outline: none;
-	}
-}
-
-.btn + .btn {
-	margin-left: 10px;
-}
-
-.btn.btn-xs {
-	padding: 1px 5px;
-}
-
-.btn.help-page-trigger {
-	.rounded(30px);
-	background: #fff;
-	text-align: center;
-	vertical-align: middle;
-	line-height: 100%;
-	position: absolute;
-	top: 9px;
-	right: 13px;
-	padding: 5px 6px;
-	margin: 0;
-	font-size: 155%;
-	color: #888;
-	border: 1px solid transparent;
-
-	&:focus, &:active {
-		outline: none;
-	}
-
-	&:hover {
-		border: 1px solid #888;
-		color: #555;
-	}
-
-	i {
-		text-align: center;
-		vertical-align: baseline;
-		line-height: 17px;
-		margin: 0;
-		padding: 0;
-	}
 }
 
 //######################################################################################################################
@@ -828,6 +739,45 @@ nav.dp-main-tabs {
 //# Help
 //######################################################################################################################
 
+.help-min-frame {
+	border: 3px solid #555;
+	position: absolute;
+	z-index: 200;
+}
+
+.btn.help-page-trigger {
+	.rounded(30px);
+	background: #fff;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 100%;
+	position: absolute;
+	top: 9px;
+	right: 13px;
+	padding: 5px 6px;
+	margin: 0;
+	font-size: 155%;
+	color: #888;
+	border: 1px solid transparent;
+
+	&:focus, &:active {
+		outline: none;
+	}
+
+	&:hover {
+		border: 1px solid #888;
+		color: #555;
+	}
+
+	i {
+		text-align: center;
+		vertical-align: baseline;
+		line-height: 17px;
+		margin: 0;
+		padding: 0;
+	}
+}
+
 span.help-icon {
 	font-family: FontAwesome;
 	font-size: 12px;
@@ -918,8 +868,75 @@ section.dp-help-page {
 	}
 }
 
+//######################################################################################################################
+//# Modal
+//######################################################################################################################
+
+.modal-footer {
+	margin-top: 0;
+	text-align: center;
+}
+
+
 .modal {
 	display: block;
+}
+
+//######################################################################################################################
+//# Buttons
+//######################################################################################################################
+
+.btn {
+	> i {
+		margin-right: 5px;
+	}
+	&.only-icon > i {
+		margin-right: 0;
+	}
+}
+
+.btn {
+	.rounded(3px);
+	padding: 6px 14px 5px 14px;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.btn + .btn {
+	margin-left: 10px;
+}
+
+.btn.btn-xs {
+	padding: 1px 5px;
+}
+
+//######################################################################################################################
+//# Icons
+//######################################################################################################################
+
+.agent-icon {
+	display: inline-block;
+	background-color: transparent;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	.rounded(3px);
+	vertical-align: baseline;
+
+	&.agent-icon-22x {
+		width: 22px;
+		height: 22px;
+	}
+}
+
+.icon-light {
+	color: #888;
+}
+
+.icon-22x {
+	font-size: 18px;
+	font-weight: normal;
 }
 
 //######################################################################################################################
@@ -937,6 +954,10 @@ section.dp-help-page {
 	h4 {
 		font-weight: normal;
 		font-size: 110%;
+	}
+
+	.form-control {
+		display: inline-block;
 	}
 
 	.form-group {
@@ -965,6 +986,10 @@ section.dp-help-page {
 	padding-right: 8px;
 	.rounded(2px);
 }
+
+//######################################################################################################################
+//# Select2
+//######################################################################################################################
 
 .select2-results {
 	margin: 0;
