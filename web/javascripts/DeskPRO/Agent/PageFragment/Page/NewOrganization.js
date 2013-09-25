@@ -48,6 +48,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 	},
 
 	submit: function() {
+		var self = this;
 		var formData = this.form.serializeArray();
 
 		$.ajax({
@@ -59,6 +60,15 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 			success: function(data) {
 				if (data.success) {
 					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/organizations/' + data.org_id);
+
+					$('select.dp-org-select').each(function() {
+						var opt = $('<option />');
+						opt.val(data.org_id);
+						opt.text(self.getEl('name').val());
+
+						$(this).append(opt);
+					});
+
 					this.closeSelf();
 				} else {
 					if (data && data.error_code && data.error_code == 'invalid_name') {
