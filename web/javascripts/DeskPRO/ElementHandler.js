@@ -20,8 +20,12 @@ DeskPRO.ElementHandler_Exec = function(context) {
 			el.attr('id', Orb.getUniqueId('dp_'));
 		}
 
-		var obj = new classObj(el);
-		el.addClass('with-handler');
+		try {
+			var obj = new classObj(el);
+			el.addClass('with-handler');
+		} catch (e) {
+			console.error("Failed created element-handler (%o) : %o", className, e);
+		}
 	});
 };
 
