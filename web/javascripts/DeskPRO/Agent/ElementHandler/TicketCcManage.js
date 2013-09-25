@@ -61,7 +61,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 						addRow.find('input').val('');
 
-						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
+						self.el.find('ul.cc-row-list').each(function() {
 							$(this).empty().html(data.cc_list || '');
 							$(this).find('li').each(function() {
 								self.initRow($(this));
@@ -91,6 +91,12 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 					success: function(data) {
 						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
 							$(this).empty().html(data.cc_list || '');
+							self.el.find('ul.cc-row-list').each(function() {
+								$(this).empty().html(data.cc_list || '');
+								$(this).find('li').each(function() {
+									self.initRow($(this));
+								});
+							});
 						});
 					},
 					error: function() {
