@@ -1060,6 +1060,10 @@ class TicketSearch extends SearcherAbstract
 							$choice = array($choice);
 						}
 
+						if (!$choice) {
+							$choice = array(0);
+						}
+
 						if ($op == self::OP_IS) {
 							$wheres[] = "$tickets_table.id IN (" . implode(',', $choice) . ")";
 						} else {
