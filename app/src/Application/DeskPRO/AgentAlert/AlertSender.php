@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\AgentAlert;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\DBAL\Connection;
@@ -128,7 +129,11 @@ class AlertSender
 					unset($sub);
 				} else {
 					$data[$k] = $this->em->getRepository($type)->find($val);
-					$data[$k] = $data[$k]->toApiData();
+					if ($data[$k] && $data[$k] instanceof DomainObject) {
+						$data[$k] = $data[$k]->toApiData();
+					} else {
+						unset($data[$k]);
+					}
 				}
 			}
 		}
