@@ -1,3 +1,4 @@
+if (!DpChatWidget) {
 if (window.console) {
 	var DpConsole = window.console;
 } else {
@@ -963,3 +964,4 @@ var DpVis = {
 		window.DpChatWidget.initVisitorCode(visitor_code, user_token);
 	}
 };
+}
