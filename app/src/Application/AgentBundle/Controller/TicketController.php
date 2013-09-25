@@ -1899,11 +1899,47 @@ class TicketController extends AbstractController
 			$old_page = $ticket_display->getDepartmentPage($old_department_id);
 			$new_page = $ticket_display->getDepartmentPage($new_department_id);
 
+			// - We only care about fields that have validation
+			// - The actual field show/hide changes are handled in JS on the client
+			// - So only when the current validation scheme changes do
+			// we need to resort to re-loading the ticket tab
+			$fn_check_has_validator = function($x) use ($field_manager) {
+				switch ($x['field_type']) {
+					case 'ticket_product':
+						return App::getSetting('core_tickets.field_validation_ticket_prod_agent_required');
+						break;
+
+					case 'ticket_category':
+						return App::getSetting('core_tickets.field_validation_ticket_cat_agent_required');
+						break;
+
+					case 'ticket_priority':
+						return App::getSetting('core_tickets.field_validation_ticket_pri_agent_required');
+						break;
+
+					case 'ticket_workflow':
+						return App::getSetting('core_tickets.field_validation_ticket_work_agent_required');
+						break;
+
+					case 'ticket_field':
+						$field = $field_manager->getFieldFromId($x['field_id']);
+						if (!$field) return false;
+						return $field->getOption('agent_required');
+						break;
+				}
+
+				return false;
+			};
+
 			foreach ($old_page->getPageDisplay('default')->data as $x) {
-				$old_page_ids[$x['id']] = $x['id'];
+				if ($fn_check_has_validator($x)) {
+					$old_page_ids[$x['id']] = $x['id'];
+				}
 			}
 			foreach ($new_page->getPageDisplay('default')->data as $x) {
-				$new_page_ids[$x['id']] = $x['id'];
+				if ($fn_check_has_validator($x)) {
+					$new_page_ids[$x['id']] = $x['id'];
+				}
 			}
 
 			if (count($old_page_ids) != count($new_page_ids) || array_diff($old_page_ids, $new_page_ids) || array_diff($new_page_ids, $old_page_ids)) {
