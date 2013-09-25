@@ -95,6 +95,12 @@ class Usergroup extends AbstractEntityRepository
         }
 
         $ret = array();
+		if (in_array(1, $for_ids)) {
+			$ret[1] = App::getTranslator()->phrase('agent.general.everyone');
+		}
+		if (in_array(2, $for_ids)) {
+			$ret[2] = App::getTranslator()->phrase('agent.general.registered');
+		}
         foreach ($for_ids as $id) {
 			if (isset($this->_usergroup_names[$id])) {
 				$ret[$id] = $this->_usergroup_names[$id];

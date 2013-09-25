@@ -257,8 +257,8 @@ class TermSummary
 					}
 				}
 
-				$choice_str = implode($tr->phrase('agent.general.or_sep'), $choice_str);
-				$summary = $tr->phrase('agent.general.status_is', array('status' => $choice_str));
+				$choice_str = implode(' ' . $tr->phrase('agent.general.or_sep') . ' ', $choice_str);
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.status'), $op, $choice_str);
 				break;
 
 			case 'ticket_status_hidden':
@@ -294,16 +294,16 @@ class TermSummary
 
 			case 'sla':
 				$sla = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
-				$summary = "Ticket has SLA " . ($sla ? $sla->title : '[unknown]');
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.sla'), $op, ($sla ? $sla->title : '[unknown]'));
 				break;
 
 			case 'sla_status':
 				// todo: phrase the status
 				if (empty($choice['sla_id'])) {
-					$summary = "Ticket has SLA status " . $choice['sla_status'] . " for any SLA";
+					$summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status'] . " for any SLA");
 				} else {
 					$sla = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
-					$summary = "Ticket has SLA status " . $choice['sla_status'] . " for SLA " . ($sla ? $sla->title : '[unknown]');
+					$summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status'] . " for SLA " . ($sla ? $sla->title : '[unknown]'));
 				}
 				break;
 
@@ -327,17 +327,17 @@ class TermSummary
 
 			case 'email':
 				$name = array_pop($choice);
-				$summary = $tr->phrase('agent.general.email_is_summary', array('email' => $name));
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.email'), $op, $name);
 				break;
 
 			case 'email_domain':
 				$name = array_pop($choice);
-				$summary = $tr->phrase('agent.general.domain_is_summary', array('domain' => $name));
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.email_domain'), $op, $name);
 				break;
 
 			case 'name':
 				$name = array_pop($choice);
-				$summary = $tr->phrase('agent.general.name_is_summary', array('name' => $name));
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.name'), $op, $name);
 				break;
 
 			case 'ticket_participant':
@@ -862,6 +862,16 @@ class TermSummary
 			));
 		} elseif ($op == self::OP_GTE) {
 			$summary = App::getTranslator()->phrase('agent.general.x_is_greater_than_y', array(
+				'field' => $field,
+				'value' => $range1,
+			));
+		} elseif ($op == self::OP_NOT) {
+			$summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array(
+				'field' => $field,
+				'value' => $range1,
+			));
+		} elseif ($op == self::OP_IS) {
+			$summary = App::getTranslator()->phrase('agent.general.x_is_y', array(
 				'field' => $field,
 				'value' => $range1,
 			));
