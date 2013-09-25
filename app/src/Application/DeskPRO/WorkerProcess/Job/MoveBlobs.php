@@ -49,15 +49,26 @@ class MoveBlobs extends AbstractJob
 		$mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
 		$mover->setLogger($this->getLogger());
 		$mover->setIgnoreErrors();
-		$mover->setLimit(500);
+		$mover->setLimit(10);
 		$mover->setLimitTime(60);
 
 		$count = $mover->getCount();
 		if (!$count) {
+			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
+
 			// Nothing to do
 			return;
 		}
 
+		$this->logStatus("$count blobs moved");
+
 		$mover->run();
+
+		$next_id = App::getDb()->fetchColumn("SELECT id FROM blobs WHERE storage_loc_pref IS NOT NULL ORDER BY id ASC LIMIT 1");
+		if ($next_id) {
+			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', $next_id);
+		} else {
+			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
+		}
 	}
 }

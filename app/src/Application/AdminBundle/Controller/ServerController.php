@@ -763,8 +763,18 @@ class ServerController extends AbstractController
 		$use_fs = ($this->container->getSetting('core.filestorage_method') == 'fs');
 		if ($use_fs) {
 			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'db');
+			$this->db->executeUpdate("
+				UPDATE blobs
+				SET storage_loc_pref = 'db'
+				WHERE storage_loc != 'db'
+			");
 		} else {
 			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'fs');
+			$this->db->executeUpdate("
+				UPDATE blobs
+				SET storage_loc_pref = 'fs'
+				WHERE storage_loc != 'fs'
+			");
 		}
 
 		$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', '-1');
