@@ -623,7 +623,7 @@ class TicketsController extends AbstractController
 		);
 
 		if (!$is_participant AND !$is_org_manager AND !isset($this->session_allowed[$ticket['id']])) {
-			return $this->renderStandardError(null, null, 403);
+			throw $this->createNotFoundException();
 		}
 
 		if (isset($this->session_allowed[$ticket['id']])) {
