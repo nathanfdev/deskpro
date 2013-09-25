@@ -103,6 +103,7 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		$vars['access_code'] = $ticket->getAccessCode();
 
 		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
+		$ticketdisplay->setPersonContext($person, 'user');
 		$vars['ticketdisplay'] = $ticketdisplay;
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 

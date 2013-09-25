@@ -61,11 +61,15 @@ class TicketDisplay implements PersonContextInterface
 		$this->setPersonContext($person);
 	}
 
-	public function setPersonContext(Person $person)
+	public function setPersonContext(Person $person, $set_type = null)
 	{
 		$this->person_context = $person;
 		if ($person['is_agent']) {
 			$this->person_type = 'agent';
+		}
+
+		if ($set_type) {
+			$this->person_type = $set_type;
 		}
 	}
 
