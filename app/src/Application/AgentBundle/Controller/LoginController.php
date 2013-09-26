@@ -122,10 +122,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
-		if (isset($browser_warnings['chrome_29_unstable']) && License::getLicense()->isDemo()) {
-			unset($browser_warnings['chrome_29_unstable']);
-		}
-
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $url,
 			'route_prefix'       => $this->route_prefix,
