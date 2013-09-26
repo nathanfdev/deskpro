@@ -93,14 +93,12 @@
 	</footer>
 </section>
 
-{% if app.getSetting('user.publish_comments') %}
-	{% include 'UserBundle:Common:comments-box.html.twig' with {
-		'type': 'feedback',
-		'comments': comments,
-		'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id}),
-		'check_perm': 'feedback.comment',
-		'no_comment_form': (feedback.status == 'closed')
-	} %}
-{% endif %}
+{% include 'UserBundle:Common:comments-box.html.twig' with {
+	'type': 'feedback',
+	'comments': comments,
+	'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id}),
+	'check_perm': 'feedback.comment',
+	'no_comment_form': (feedback.status == 'closed')
+} %}
 
 {% endblock %}
