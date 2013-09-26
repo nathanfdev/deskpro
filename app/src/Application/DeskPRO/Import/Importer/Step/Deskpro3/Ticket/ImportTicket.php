@@ -187,7 +187,6 @@ class ImportTicket
 				if (strtolower($address_info['match_pattern']) == $old_address) {
 					$insert_ticket['email_gateway_id'] = $address_info['email_gateway_id'];
 					$insert_ticket['email_gateway_address_id'] = $address_info['id'];
-					$insert_ticket['notify_email'] = $address_info['match_pattern'];
 					break;
 				}
 			}

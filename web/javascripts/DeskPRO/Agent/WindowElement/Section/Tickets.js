@@ -349,7 +349,24 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	_initFilters: function() {
 		var self = this;
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-sys-filters-data'}],
+			function() {
+				var filters_data_counts = {};
+				Object.each(self.filterTicketIds, function(v, k) {
+					filters_data_counts[k] = v.length;
+				});
+				Object.each(self.filterCounts, function(v, k) {
+					if (!filters_data_counts[k]) {
+						filters_data_counts[k] = v;
+					}
+				});
+
+				filters_data_counts = JSON.stringify(filters_data_counts);
+
+				return [
+					{name: 'do[]', value: 'get-sys-filters-data'},
+					{name: 'filters_data_counts', value: filters_data_counts}
+				]
+			},
 			'filters.filter_data',
 			{recurring: true, minDelay: 33000/*33sec*/ }
 		);
@@ -545,6 +562,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				refreshUrl = this.listPage.meta.refreshUrl;
 			}
 		}
+
+		// The message only contains a list when the counts are off
+		// So unchanged filters dont send a large payload
+		Object.each(this.filterTicketIds, function(v, k) {
+			if (!data[k]) {
+				data[k] = v;
+			}
+		});
 
 		Object.each(data, function(ticketIds, filterId) {
 			filterId = parseInt(filterId);

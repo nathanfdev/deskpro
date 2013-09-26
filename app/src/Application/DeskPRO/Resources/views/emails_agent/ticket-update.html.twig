@@ -35,7 +35,7 @@
 		{{ phrase('agent.general.system_user') }}
 	{% endif %}
 {%- endset -%}
-{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject}) }}
+{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
 {% if type_flag == 'assigned' %}
 	{{ phrase('agent.emails.updated_ticket_assigned') }}
 {% elseif type_flag == 'assigned_team' %}

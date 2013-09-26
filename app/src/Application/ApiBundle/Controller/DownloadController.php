@@ -45,6 +45,7 @@ use Application\AgentBundle\Controller\Helper\DownloadResults;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Orb\Util\Numbers;
 
 class DownloadController extends AbstractController
 {

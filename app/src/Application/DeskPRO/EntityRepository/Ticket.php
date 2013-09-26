@@ -270,7 +270,7 @@ class Ticket extends AbstractEntityRepository
 				SELECT id
 				FROM tickets
 				WHERE id IN (" . implode(',', $ids) . ")
-				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, tickets.urgency DESC, tickets.id DESC
+				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
 			");
 		} else {
 			sort($ids, \SORT_NUMERIC);
@@ -576,6 +576,9 @@ class Ticket extends AbstractEntityRepository
 			FROM tickets
 			WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved')
 		");
+
+		$this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.last_searchtables_refill', value = '".time()."'");
+		$this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.do_searchtables_refill', value = '0'");
 	}
 
 

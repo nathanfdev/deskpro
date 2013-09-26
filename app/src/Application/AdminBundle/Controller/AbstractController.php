@@ -44,6 +44,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public $person;
 
+	/**
+	 * @var \Application\AdminBundle\SetupGuide
+	 */
+	protected $setup_guide;
+
 	protected function init()
 	{
 		parent::init();
@@ -113,7 +118,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $this->renderStandardPermissionError('You do not have permission to use the admin interface.');
 		}
 
-		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
+		$this->setup_guide = $setup_guide;
+
+		if ($setup_guide->hasDoneInitialSetup() && $this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
 			if ($this->request->isXmlHttpRequest()) {
 				$data = array(
 					'error' => 'invalid_request_token',
@@ -125,9 +133,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
 			}
 		}
-
-		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
-		$this->setup_guide = $setup_guide;
 
 		if ($setup_guide->hasDoneInitialSetup() && !$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
 			return $this->redirect($this->request->getUriForPath('/agent/browser-requirements'));
@@ -227,5 +232,21 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$this->em->persist($cm);
 		$this->em->flush();
+	}
+
+	/**
+	 * Checks a request token in a form
+	 *
+	 * @param string $name
+	 * @param string $field_name
+	 * @return bool
+	 */
+	public function checkRequestToken($name = '', $field_name = '_dp_security_token')
+	{
+		if (!$this->setup_guide->hasDoneInitialSetup()) {
+			return true;
+		}
+
+		return parent::checkRequestToken($name, $field_name);
 	}
 }

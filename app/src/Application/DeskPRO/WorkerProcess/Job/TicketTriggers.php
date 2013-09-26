@@ -61,9 +61,11 @@ class TicketTriggers extends AbstractJob
 			return;
 		}
 
+		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
 		foreach ($escalations as $esc) {
 			$this->runEscalation($esc);
 		}
+		unset($GLOBALS['DP_ESCALATION_RUNNING']);
 	}
 
 	protected function runEscalation(TicketTrigger $trigger)

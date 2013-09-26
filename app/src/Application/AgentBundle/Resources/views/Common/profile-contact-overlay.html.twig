@@ -123,13 +123,13 @@
 							</div>
 							<div class="input">
 								<select name="contact_data[{{ contact.id }}][service]">
-									<option {% if contact.service == 'aim' %} {% endif %} value="aim">{{ phrase('agent.general.aim') }}</option>
-									<option {% if contact.service == 'msn' %} {% endif %} value="msn">{{ phrase('agent.general.msn') }}</option>
-									<option {% if contact.service == 'yim' %} {% endif %} value="yim">{{ phrase('agent.general.yim') }}</option>
-									<option {% if contact.service == 'icq' %} {% endif %} value="icq">{{ phrase('agent.general.icq') }}</option>
-									<option {% if contact.service == 'skype' %} {% endif %} value="icq">{{ phrase('agent.general.skype') }}</option>
-									<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.general.gtalk') }}</option>
-									<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.general.other') }}</option>
+									<option {% if contact.service == 'aim' %}selected="selected"{% endif %} value="aim">{{ phrase('agent.general.aim') }}</option>
+									<option {% if contact.service == 'msn' %}selected="selected"{% endif %} value="msn">{{ phrase('agent.general.msn') }}</option>
+									<option {% if contact.service == 'yim' %}selected="selected"{% endif %} value="yim">{{ phrase('agent.general.yim') }}</option>
+									<option {% if contact.service == 'icq' %}selected="selected"{% endif %} value="icq">{{ phrase('agent.general.icq') }}</option>
+									<option {% if contact.service == 'skype' %}selected="selected"{% endif %} value="skype">{{ phrase('agent.general.skype') }}</option>
+									<option {% if contact.service == 'gtalk' %}selected="selected"{% endif %} value="gtalk">{{ phrase('agent.general.gtalk') }}</option>
+									<option {% if contact.service == 'other' %}selected="selected"{% endif %} value="other">{{ phrase('agent.general.other') }}</option>
 								</select>
 								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.username }}" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 							</div>
@@ -155,7 +155,7 @@
 							<option {% if contact.service == 'msn' %} {% endif %} value="msn">{{ phrase('agent.general.msn') }}</option>
 							<option {% if contact.service == 'yim' %} {% endif %} value="yim">{{ phrase('agent.general.yim') }}</option>
 							<option {% if contact.service == 'icq' %} {% endif %} value="icq">{{ phrase('agent.general.icq') }}</option>
-							<option {% if contact.service == 'skype' %} {% endif %} value="icq">{{ phrase('agent.general.skype') }}</option>
+							<option {% if contact.service == 'skype' %} {% endif %} value="skype">{{ phrase('agent.general.skype') }}</option>
 							<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.general.gtalk') }}</option>
 							<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.general.other') }}</option>
 						</select>

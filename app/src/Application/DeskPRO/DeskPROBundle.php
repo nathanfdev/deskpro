@@ -103,6 +103,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
 			'Application\\DeskPRO\\Command\\UpgradeCommand',
 			'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
+			'Application\\DeskPRO\\Command\\VerifySearchTablesCommand',
 			'Application\\DeskPRO\\Command\\WorkerJobCommand',
 		);
 

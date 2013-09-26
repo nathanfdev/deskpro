@@ -2600,8 +2600,14 @@ var RLANG = {
 
 				if (sel.collapse && sel.extend)
 				{
-					sel.collapse(orgn, orgo);
-					sel.extend(focn, foco);
+					// DESKPRO EDIT
+					// - This can fail sometimes when redactor is init'ing and setting
+					// a default value from the underlying textarea (eg after a refresh)
+					// - Dont know why but better to discard it than to break the rest of the tab.
+					try {
+						sel.collapse(orgn, orgo);
+						sel.extend(focn, foco);
+					} catch (e) {}
 				}
 				else // IE9
 				{

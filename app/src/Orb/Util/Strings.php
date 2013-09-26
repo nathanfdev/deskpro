@@ -82,6 +82,12 @@ class Strings
 	const BOUNDARY_FIRST = 3;
 	/**#@-*/
 
+	/**#@+
+	 * Some helpful Unicode characters
+	 */
+	const ZERO_WIDTH_SPACE = "\xE2\x80\x8B";
+	const SOFT_HYPHEN = "\xC2\xAD";
+	/**#@-*/
 
 	/**
 	 * When a dupe key is encountered, overwrite the old key.
@@ -839,6 +845,47 @@ class Strings
 		}
 
 		return isset($matches[$index]) ? $matches[$index] : null;
+	}
+
+
+	/**
+	 * This only wraps long words within a string (e.g., to prevent text-overflow in a browser).
+	 * Use PHP's wordwrap() for normal word-wrapping at a speciifc column.
+	 *
+	 * For $break, check out Strings::ZERO_WIDTH_SPACE or Strings::SOFT_HYPHEN which might be useful.
+	 *
+	 * UTF-8 safe.
+	 *
+	 * @param string $string       The string to work on
+	 * @param int    $length       The max length of a word before it wraps
+	 * @param string $break        The character to insert at break points
+	 * @param string $split_cahrs  The characters that separate words
+	 * @return string
+	 */
+	static public function smartWordWrap($string, $max_len = 75, $break = ' ', $split_chars = " \t\n")
+	{
+		$string = self::standardEol($string);
+
+		$r_split_chars = preg_quote($split_chars, '#');
+		$segs = preg_split('#([' . $r_split_chars . '])#', $string, -1, \PREG_SPLIT_DELIM_CAPTURE);
+		$string = '';
+
+		foreach ($segs as $seg) {
+			if (strlen($seg) > $max_len && self::utf8_strlen($seg) > $max_len) {
+				$chars = self::utf8_str_split($seg);
+				$chars = array_chunk($chars, $max_len);
+
+				foreach ($chars as $chunk) {
+					$string .= implode('', $chunk) . $break;
+				}
+			} else {
+				$string .= $seg;
+			}
+		}
+
+		$string = preg_replace('#' . $r_split_chars . '$#', '', $string);
+
+		return $string;
 	}
 
 

@@ -671,12 +671,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		});
 
 		// assignment
-		this.content.on('click', '.opt-trigger.agent > label, .opt-trigger.agent span', function() {
+		this.content.on('click', '.opt-trigger.agent > label, .opt-trigger.agent span', function(ev) {
 			var li = $(this).closest('li');
 			var row = $(this).closest('article.twitter-status');
 
 			var select = li.find('select');
-			if (!select.hasClass('with-select2')) {
+			if (!select.data('select2')) {
 				DP.select(select);
 
 				select.on('change', function() {
@@ -711,9 +711,26 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 						}
 					});
 				});
+
+				li.find('.select2-container').css({
+					height: 5,
+					overflow: 'hidden'
+				})
 			}
 
-			select.select2("open");
+			var oldOpen = select.data('select2').open;
+			var oldClose = select.data('select2').close;
+			var s2 = select.data('select2');
+			s2.open = function() {
+				oldOpen.call(s2);
+				select.data('select2').container.addClass('select2-dropdown-open');
+			};
+			s2.close = function() {
+				select.data('select2').container.addClass('select2-dropdown-open');
+				oldClose.call(s2);
+			};
+
+			s2.open();
 		});
 	},
 

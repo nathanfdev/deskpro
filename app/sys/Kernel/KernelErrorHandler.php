@@ -113,11 +113,14 @@ class KernelErrorHandler
 		self::logErrorInfo($errinfo);
 
 		if ($errinfo['display']) {
-			// Prevent outputting of APC warnings
-			// These are logged and a warning about APC is displayed to the admin,
-			// but until that is fixed these warnings themselves can cause issues (e.g., cause JSON results to become invalid)
-			if (strpos($errinfo['summary'], 'Unable to allocate memory for pool') === false) {
-				echo $errinfo['summary'];
+			$display_errors = @ini_get('display_errors');
+			if (isset($GLOBALS['DP_IS_IN_CLI']) || $display_errors == "1" || strtolower($display_errors) == "on" || strtolower($display_errors) == "true" || strtolower($display_errors) == "yes") {
+				// Prevent outputting of APC warnings
+				// These are logged and a warning about APC is displayed to the admin,
+				// but until that is fixed these warnings themselves can cause issues (e.g., cause JSON results to become invalid)
+				if (strpos($errinfo['summary'], 'Unable to allocate memory for pool') === false) {
+					echo $errinfo['summary'];
+				}
 			}
 
 			if (isset($GLOBALS['DP_IS_IN_CLI'])) {
@@ -532,6 +535,10 @@ class KernelErrorHandler
 			if (!empty($exception->_dp_query_params)) {
 				$context_data .= "\n\n" . self::varToString($exception->_dp_query_params);
 			}
+		}
+
+		if (!$context_data && isset($exception->_dp_context_data)) {
+			$context_data = $exception->_dp_context_data;
 		}
 
 		$type = get_class($exception);

@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\UI\RuleBuilder;
+use Orb\Util\Numbers;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Publish\RelatedContentUpdate;

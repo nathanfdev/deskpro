@@ -31,7 +31,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		if (this.tabBtn) {
 			if (this.getMetaData('orgPicIcon')) {
-				this.tabBtn.find('a').css('background-image', 'url(' + this.getMetaData('orgPicIcon') + ')').css('background-position', '2px 50%');
+				this.tabBtn.find('a').find('i').attr('class', '').addClass('image-icon').css('background-image', 'url("' + this.getMetaData('orgPicIcon') + '")').css('background-position', '50% 50%');
 			}
 		}
 
@@ -330,6 +330,27 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				fieldsForm.hide();
 				fieldsRendered.show();
 			} else {
+				if (!fieldsForm.hasClass('dp-has-init')) {
+					fieldsForm.addClass('dp-has-init');
+					fieldsForm.find('.Date.customfield input').datepicker({
+						dateFormat: 'yy-mm-dd',
+						showButtonPanel: true,
+						beforeShow: function(input) {
+							setTimeout(function() {
+								var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
+
+								buttonPane.find('button:first').remove();
+
+								var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
+								btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
+								btn.appendTo( buttonPane );
+
+								$(input).datepicker("widget").css('z-index', 30001);
+							},1);
+						}
+					});
+				}
+
 				$('.prop-edit-trigger', box).hide();
 				$('.is-loading', box).hide();
 				$('.save', box).show();

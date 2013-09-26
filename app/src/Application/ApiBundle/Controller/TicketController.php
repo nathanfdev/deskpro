@@ -203,7 +203,14 @@ class TicketController extends AbstractController
 				$this->em->persist($person);
 				$this->em->flush();
 			}
+
 			$this->em->persist($ticket);
+
+			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
+			if ($labels) {
+				$ticket->getLabelManager()->preSetLabelsArray($labels, $this->em);
+			}
+
 			$this->em->flush();
 			$this->em->persist($message);
 			$this->em->flush();
@@ -216,13 +223,11 @@ class TicketController extends AbstractController
 				$field_manager->saveFormToObject($post_custom_fields, $ticket);
 			}
 
-			$this->em->flush();
-
-			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			if ($labels) {
 				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
-				$this->em->flush();
 			}
+
+			$this->em->flush();
 
 			$this->db->commit();
 		} catch (\Exception $e) {

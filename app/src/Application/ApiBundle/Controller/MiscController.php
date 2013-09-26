@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\LoginProcessor;
 
 class MiscController extends AbstractController
 {
@@ -80,11 +81,57 @@ class MiscController extends AbstractController
 		return $this->createApiResponse($data);
 	}
 
+	private function _authLocalInput($email, $password)
+	{
+		#------------------------------
+		# Auth local
+		#------------------------------
+
+		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+		$adapter->setCredentials($email, $password);
+		$result = $adapter->authenticate();
+
+		if ($result->isValid()) {
+			return $result;
+		}
+
+		#------------------------------
+		# Auth usersources that accept local input
+		#------------------------------
+
+		$usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+		foreach ($usersources as $us) {
+
+			/** @var $us \Application\DeskPRO\Entity\Usersource */
+			$adapter = $us->getAdapter()->getAuthAdapter();
+			$adapter->setFormData(array(
+				'username' => $email,
+				'password' => $password
+			));
+
+			try {
+				$result = $adapter->authenticate();
+			} catch (\Exception $e) {
+				continue;
+			}
+
+			if ($result->isValid()) {
+				$login_processor = new LoginProcessor($us, $result->getIdentity());
+				$person = $login_processor->getPerson();
+
+				$identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
+				$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+
+				return $result;
+			}
+		}
+
+		return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE_INVALID_CREDS);
+	}
+
 	public function tokenExchangeAction()
 	{
-		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
-		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
-		$result = $adapter->authenticate();
+		$result = $this->_authLocalInput($this->in->getString('email'), $this->in->getString('password'));
 
 		if (!$result->isValid()) {
 
@@ -162,7 +209,7 @@ class MiscController extends AbstractController
 			$api_url = App::getSetting('core.deskpro_url');
 			$api_url .= 'index.php/';
 
-			if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0) {
+			if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
 				$api_url = preg_replace('#^http://#', 'https://', $api_url);
 			}
 

@@ -161,7 +161,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 
 		$blob = $this->getContainer()->getBlobStorage()->createBlobRecordFromString(
 			$file,
-			$record['filename'],
+			\Orb\Util\Util::coalesce($record['filename'], 'file'),
 			$filetype
 		);
 		$new_blob_id = $blob->getId();

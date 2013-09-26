@@ -322,31 +322,17 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el };
 		this.fireEvent('beforeModCount', ev);
 
-		if (op == '=') {
-			var newcount = count || 0;
-			el.text(newcount);
-			el2.text(newcount);
-		} else {
-			var newcount = parseInt(el.text().trim());
-			if (op == '+') {
-				newcount += (count || 1);
-			} else {
-				newcount -= (count || 1);
-			}
-
-			if (newcount < 0) newcount = 0;
-
-			el.text(newcount || '0');
-			el2.text(newcount || '0');
-		}
+		newcount = list.find('#dp_notify_list').find('li').length;
+		el.text(newcount);
+		el2.text(newcount);
 
 		// <3 because the dismiss button and the help note are li's
-		if ($('#dp_notify_list').find('> li.msg-row').length) {
-			$('#dp_notify_list_none').hide();
-			$('#dp_notify_list_dismiss').show();
+		if (list.find('#dp_notify_list').find('li').length) {
+			list.find('#dp_notify_list_none').hide();
+			list.find('#dp_notify_list_dismiss').show();
 		} else {
-			$('#dp_notify_list_none').show();
-			$('#dp_notify_list_dismiss').hide();
+			list.find('#dp_notify_list_none').show();
+			list.find('#dp_notify_list_dismiss').hide();
 		}
 
 		if (newcount < 1) {

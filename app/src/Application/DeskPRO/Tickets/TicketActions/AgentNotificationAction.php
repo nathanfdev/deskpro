@@ -129,33 +129,16 @@ class AgentNotificationAction extends AbstractAction
 
 	public function getFromAddress(Ticket $ticket)
 	{
-		if ($ticket->notify_email_agent) {
-			return $ticket->notify_email_agent;
-		} elseif ($ticket->email_gateway && $ticket->email_gateway->getPrimaryEmailAddress()) {
-			return $ticket->email_gateway->getPrimaryEmailAddress();
-		}
-
-		$from_email = App::getSetting('core.default_from_email');
-		$default_address = App::getOrm()->getRepository('DeskPRO:EmailGatewayAddress')->getDefaultTicketAddress();
-
-		if ($default_address) {
-			$from_email = $default_address;
-		}
-
-		return $from_email;
+		$info = $ticket->getFromAddress();
+		return $info['email'];
 	}
 
 	public function getFromName(Ticket $ticket)
 	{
-		if ($ticket->notify_email_name_agent) {
-			return $ticket->notify_email_name_agent;
-		}
-
-		if ($this->tracker->isExtraSet('set_initial_from_toagent')) {
-			return $this->tracker->getExtra('set_initial_from_toagent');
-		}
-
-		return null;
+		$info = $ticket->getFromAddress('agent', array(
+			'default_from' => $this->tracker->isExtraSet('set_initial_from_toagent') ? $this->tracker->getExtra('set_initial_from_toagent') : null
+		));
+		return $info['name'];
 	}
 
 	/**

@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Entity\Organization;
+use Orb\Util\Numbers;
 
 class OrganizationController extends AbstractController
 {

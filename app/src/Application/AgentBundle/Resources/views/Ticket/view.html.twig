@@ -135,7 +135,7 @@ pageMeta.lang = {{ {
 	</div>
 	<div class="row author last">
 		<div class="dp-btn-group dp-dropdown">
-			<a class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover preload user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 					{{ ticket.person.getNameWithTitle() }}
 					<span class="email" id="{{ baseId }}_user_email_text">({{ ticket.person_email.email|default(ticket.person_email_address) }})</span>
@@ -460,7 +460,7 @@ pageMeta.lang = {{ {
 		</li>
 		<li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>
 			<i class="icon-lock"></i>
-			{{ phrase('agent.tickets.unlock') }}
+			{{ phrase('agent.tickets.lock') }}
 		</li>
 		{% if ticket_perms.modify_merge %}
 			<li class="merge-menu-trigger noedit-hide">

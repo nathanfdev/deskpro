@@ -453,7 +453,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						backEl = $('<div/>');
 						backEl.addClass('dp-popover-backdrop');
 
-						tmp = $('<div/>').html('<section><header><strong>'+self.meta.lang.find_ticket+'</strong></header><article style="padding: 6px;"><button class="trigger-search dp-btn dp-btn-small">'+self.meta.lang.serch+'</button></article></section>');
+						tmp = $('<div/>').html('<section><header><strong>'+self.meta.lang.find_ticket+'</strong></header><article style="padding: 6px;"><button class="trigger-search dp-btn dp-btn-small">'+self.meta.lang.search+'</button></article></section>');
 						tmp.addClass('search-tickets');
 						tmp.appendTo(menuElInner);
 

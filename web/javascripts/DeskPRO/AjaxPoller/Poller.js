@@ -31,7 +31,8 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			ajaxUrl: null,
 			interval: 6000,
 			alwaysRequest: false,
-			ajaxType: 'POST'
+			ajaxType: 'SMART',
+			postTypes: []
 		};
 
 		this.disabled = false;
@@ -145,6 +146,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 		var send_data = [];
 		var sent_info = [];
+		var hasPostType = false;
 
 		var filterdData = this.filterdData;
 		this.filterdData = [];
@@ -172,6 +174,10 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 			if (!item_data) continue;
 
+			if (!hasPostType && this.options.postTypes.indexOf(item_name) !== -1) {
+				hasPostType = true;
+			}
+
 			if (typeOf(item_data) == 'array') {
 				send_data.append(item_data);
 			} else {
@@ -190,9 +196,18 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		// Send data
 		//------------------------------
 
+		type = this.options.ajaxType;
+		if (type == 'SMART') {
+			if (hasPostType) {
+				type = 'POST';
+			} else {
+				type = 'GET';
+			}
+		}
+
 		$.ajax({
 			cache: false,
-			type: this.options.ajaxType,
+			type: type,
 			url: this.options.ajaxUrl,
 			context: this,
 			data: send_data,

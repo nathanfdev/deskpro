@@ -159,7 +159,9 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					if ($this->person_name) {
 						$person->name = $this->person_name;
 					}
-					$this->require_login = true;
+					if (App::getSetting('core.existing_account_login') && $person->is_user) {
+						$this->require_login = true;
+					}
 					$email_validating = null;
 
 				// Email doesnt exist,

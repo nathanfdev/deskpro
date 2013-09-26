@@ -185,10 +185,6 @@ class TicketViewController extends AbstractController
 			return $this->renderStandardError(null, null, 403);
 		}
 
-		if ($is_org_manager && !$this->person->getPermissionsManager()->Departments->isAllowed($ticket->getDepartmentId(), 'tickets')) {
-			return $this->renderStandardError(null, null, 403);
-		}
-
 		$ticket_display = new TicketDisplay($ticket, $this->person);
 		$vars = $ticket_display->getDisplayArray();
 

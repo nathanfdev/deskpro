@@ -1714,6 +1714,8 @@ class TicketController extends AbstractController
 	public function ajaxSaveActionsAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify');
+		$old_department_id = $ticket->getDepartmentId();
+		$new_department_id = $ticket->getDepartmentId();
 
 		$language = $ticket->language;
 
@@ -1770,16 +1772,23 @@ class TicketController extends AbstractController
 			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
 			$validator->setPageData($default_page->getPageDisplay('default')->data);
 
-			if (!$validator->isValid($newticket)) {
-				$free = array();
-				foreach ($validator->getErrorsInfo() as $info) {
-					$free[] = htmlspecialchars($info['message']);
-				}
+			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
+			if (count($actions) == 1 && isset($actions['department_id'])) {
+				// Validation not on dep changes,
+				// because changing dep could change validation options
+				$new_department_id = $actions['department_id'];
+			} else {
+				if (!$validator->isValid($newticket)) {
+					$free = array();
+					foreach ($validator->getErrorsInfo() as $info) {
+						$free[] = htmlspecialchars($info['message']);
+					}
 
-				return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
+					return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
+				}
 			}
 
-			$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
+			$result = $ticket_edit->applyActions($actions);
 
 			// If department is changed,
 			// then we re-output the holder template
@@ -1874,6 +1883,68 @@ class TicketController extends AbstractController
 
 		if ($was_hidden && $ticket->status != 'hidden') {
 			$data['data']['refresh'] = true;
+		}
+
+		// If the department changed and we have new field options,
+		// then we'll need to refresh the ticket so those new validation options
+		// are enforced
+		if (!isset($data['data']['refresh']) && $old_department_id != $ticket->getDepartmentId()) {
+			$ticket_display = new TicketPageZoneCollection('create');
+			$ticket_display->setPersonContext($this->person);
+			$ticket_display->addPagesFromDb();
+
+			$old_page_ids = array();
+			$new_page_ids = array();
+
+			$old_page = $ticket_display->getDepartmentPage($old_department_id);
+			$new_page = $ticket_display->getDepartmentPage($new_department_id);
+
+			// - We only care about fields that have validation
+			// - The actual field show/hide changes are handled in JS on the client
+			// - So only when the current validation scheme changes do
+			// we need to resort to re-loading the ticket tab
+			$fn_check_has_validator = function($x) use ($field_manager) {
+				switch ($x['field_type']) {
+					case 'ticket_product':
+						return App::getSetting('core_tickets.field_validation_ticket_prod_agent_required');
+						break;
+
+					case 'ticket_category':
+						return App::getSetting('core_tickets.field_validation_ticket_cat_agent_required');
+						break;
+
+					case 'ticket_priority':
+						return App::getSetting('core_tickets.field_validation_ticket_pri_agent_required');
+						break;
+
+					case 'ticket_workflow':
+						return App::getSetting('core_tickets.field_validation_ticket_work_agent_required');
+						break;
+
+					case 'ticket_field':
+						$field = $field_manager->getFieldFromId($x['field_id']);
+						if (!$field) return false;
+						return $field->getOption('agent_required');
+						break;
+				}
+
+				return false;
+			};
+
+			foreach ($old_page->getPageDisplay('default')->data as $x) {
+				if ($fn_check_has_validator($x)) {
+					$old_page_ids[$x['id']] = $x['id'];
+				}
+			}
+			foreach ($new_page->getPageDisplay('default')->data as $x) {
+				if ($fn_check_has_validator($x)) {
+					$new_page_ids[$x['id']] = $x['id'];
+				}
+			}
+
+			if (count($old_page_ids) != count($new_page_ids) || array_diff($old_page_ids, $new_page_ids) || array_diff($new_page_ids, $old_page_ids)) {
+				$data['data']['refresh'] = true;
+			}
 		}
 
 		return $this->createJsonResponse($data);

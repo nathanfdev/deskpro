@@ -58,6 +58,8 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	private $_no_persist = false;
 
+	public $_presave_state = array();
+
 
 	/**
 	 * @return \Doctrine\ORM\EntityRepository

@@ -33,6 +33,8 @@
 
 namespace Application\DeskPRO\Command;
 
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,6 +58,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		$this->addOption('cause-php-exception', null, InputOption::VALUE_NONE, "Throws a new PHP exception (test for error reporting)");
 		$this->addOption('cause-php-error', null, InputOption::VALUE_NONE, "Causes a PHP error (test for error reporting)");
 		$this->addOption('always', null, InputOption::VALUE_REQUIRED, "With cause php error/exception, a number from 0-100 for line");
+		$this->addOption('load-newreply-notifs', null, InputOption::VALUE_REQUIRED, "Send loads of new reply notifications to the browser");
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -113,6 +116,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			return $this->executeCausePhpError($input, $output);
 		} else if ($input->getOption('find-unused-templates')) {
 			return $this->executeFindUnusedTemplates($input, $output);
+		} else if ($input->getOption('load-newreply-notifs')) {
+			return $this->loadNewreplyNotifs($input, $output, $input->getOption('load-newreply-notifs'));
 		}
 
 		$output->writeln("Unknown command, try --help");
@@ -177,6 +182,114 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 					echo "\n";
 				}
 			}
+		}
+
+		return 0;
+	}
+
+	public function loadNewreplyNotifs(InputInterface $input, OutputInterface $output, $count)
+	{
+		$agents = App::getContainer()->getAgentData()->getAgents();
+
+		$online_accounts = App::getDb()->fetchAllCol("
+			SELECT person_id
+			FROM sessions
+			WHERE interface = 'agent' AND person_id IS NOT NULL AND date_last > ?
+		", array(date('Y-m-d H:i:s', strtotime('-10 minutes'))));
+
+		if (!$online_accounts) {
+			echo "No agents online\n";
+			return 0;
+		}
+
+		for ($i = 0; $i < $count; $i++) {
+			$ticket_id = App::getDb()->fetchColumn("
+				SELECT id
+				FROM tickets
+				WHERE status IN ('awaiting_user', 'awaiting_agent', 'resolved')
+				ORDER BY RAND()
+				LIMIT 1
+			");
+
+			if (!$ticket_id) {
+				echo "No tickets to use\n";
+				break;
+			}
+
+			$ticket = App::getOrm()->find('DeskPRO:Ticket', $ticket_id);
+
+			if (mt_rand(0,10) < 5) {
+				$person = $ticket->person;
+			} else {
+				$person = $agents[array_rand($agents)];
+			}
+
+			echo "Sending notifs for ticket {$ticket->id} ...\n";
+
+			$notif = array(
+				'@fetch_types' => array(
+					'ticket' => 'DeskPRO:Ticket',
+					'performer' => 'DeskPRO:Person',
+					'log_items' => 'DeskPRO:TicketLog',
+				),
+				'browser_rendered' => '
+					<li
+						class="inside ticket new-reply ticket-row-'.$ticket->id.' ticket-'.$ticket->id.'"
+						data-class-id="ticket-row-'.$ticket->id.'"
+						data-type="tickets"
+						data-route="ticket:/agent/tickets/'.$ticket->id.'"
+						data-route-notabreload="1"
+						>
+						<div class="dismiss"><i class="icon-ban-circle"></i></div>
+						<time datetime="'.date('r').'"></time>
+						<big>
+							<span class="row-id">#'.$ticket->id.'</span>
+							' . $ticket->subject . '
+						</big>q
+						<small>
+							New reply by ' . $person->getDisplayContact() . '
+						</small>
+					</li>
+				',
+				'ticket' => $ticket->id,
+				'performer' => $person->id,
+				'is_new_ticket' => false,
+				'is_new_agent_reply' => false,
+				'is_new_agent_note' => (bool)$person->is_agent,
+				'is_new_user_reply' => (bool)(!$person->is_agent),
+				'log_items' => array(),
+				'@target_maps' => array (
+					'browser' => array('browser_rendered'),
+				),
+			);
+
+			foreach ($online_accounts as $aid) {
+				$notif_x = $notif;
+				App::getDb()->insert('agent_alerts', array(
+					'person_id'    => $aid,
+					'typename'     => 'ticket',
+					'data'         => serialize($notif_x),
+					'date_created' => date('Y-m-d H:i:s'),
+					'is_dismissed' => 0
+				));
+				$alert_id = App::getDb()->lastInsertId();
+
+				$alert = array(
+					'type' => 'tickets',
+					'alert_id' => $alert_id,
+					'row' => $notif['browser_rendered']
+				);
+
+				App::getDb()->insert('client_messages', array(
+					'for_person_id' => $aid,
+					'channel'       => 'agent-notify.tickets',
+					'auth'          => Strings::random(15, Strings::CHARS_ALPHANUM_I),
+					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
+					'data'          => serialize($alert),
+					'date_created'  => date('Y-m-d H:i:s'),
+				));
+			}
+
 		}
 
 		return 0;

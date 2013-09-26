@@ -57,6 +57,8 @@ class Environment extends \Twig_Environment
 			stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
 		}
 
+		$options['base_template_class'] = '\\Application\\DeskPRO\\Twig\\Template';
+
 		parent::__construct($loader, $options);
 	}
 
@@ -99,6 +101,26 @@ class Environment extends \Twig_Environment
 	}
 
 	public function loadTemplate($name, $index = null)
+	{
+		$name_str = (string)$name;
+		if (!$this->isCustomTemplate($name_str)) {
+			return $this->doLoadTemplate($name, $index);
+		} else {
+			try {
+				return $this->doLoadTemplate($name, $index);
+			} catch (\Exception $e) {
+				$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				$errinfo['no_send_error'] = true;
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+
+				$this->markCustomTemplateAsCrashed($name_str);
+
+				return $this->loadTemplate($name, $index);
+			}
+		}
+	}
+
+	private function doLoadTemplate($name, $index = null)
     {
 		if (!isset($GLOBALS['DP_RENDERED_TEMPLATES'])) {
 			$GLOBALS['DP_RENDERED_TEMPLATES'] = array();
@@ -139,9 +161,12 @@ class Environment extends \Twig_Environment
 									$prev = $e;
 								}
 
-								if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
-									$e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
-									KernelErrorHandler::logException($e, false, 'twig_write_failed');
+								$name_str = (string)$name;
+								if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|BillingBundle|InstallBundle|ReportBundle|CloudAdminBundle|CloudBillingBundle):#', $name_str)) {
+									if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
+										$e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
+										KernelErrorHandler::logException($e, false, 'twig_write_failed');
+									}
 								}
 							}
 
@@ -185,7 +210,11 @@ class Environment extends \Twig_Environment
 	 */
 	public function isCustomTemplate($name)
 	{
-		return $this->loader->dbHasTemplate((string)$name);
+		if ($this->loader instanceof HybridLoader && $this->loader->dbHasTemplate($name)) {
+			return true;
+		}
+
+		return false;
 	}
 
 

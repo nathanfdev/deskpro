@@ -497,6 +497,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $_old_status = null;
 
 	/**
+	 * Sometimes we need to keep track of certain properties on a
+	 * ticket before they have been saved. e.g., labels has a PK on ticket ID and
+	 * we cant save them as managed entities until after the tikcet is first saved,
+	 * but labels added need to be saved somewhere so we can test them during triggers.
+	 *
+	 * @var array
+	 */
+	public $_presave_state = array();
+
+	/**
 	 * To get around scoping issues with TicketSla event callbacks, we set the
 	 * parent ticket log during TriggerExecutor.
 	 */
@@ -2167,7 +2177,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getStatusCode()
 	{
 		if ($this->status == 'hidden') {
-			return 'hidden.' . $this->hidden_status;
+			return 'hidden.' . ($this->hidden_status ?: 'validating');
 		} else {
 			return $this->status;
 		}
@@ -2679,6 +2689,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function resetTicketLogger()
 	{
 		$this->_initTicketLogger();
+		$this->_presave_state = array();
 	}
 
 	public function unsetTicketLogger()
@@ -3032,11 +3043,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		", array($this->id));
 	}
 
-	public function getFromAddress()
+	public function getFromAddress($context = 'user', array $options = null)
 	{
-		if ($this->notify_email) {
+		if ($context == 'user' && $this->notify_email) {
 			$from_email = $this->notify_email;
-		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress()) {
+		} elseif ($context == 'agent' && $this->notify_email_agent) {
+			$from_email = $this->notify_email_agent;
+		} elseif ($this->email_gateway && $this->email_gateway->getPrimaryEmailAddress() && $this->email_gateway->is_enabled) {
 			$from_email = $this->email_gateway->getPrimaryEmailAddress();
 		} else {
 			$from_email = App::getSetting('core.default_from_email');
@@ -3053,10 +3066,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if ($this->notify_email_name) {
+		if ($context == 'user' && $this->notify_email_name) {
 			$from_name = $this->notify_email_name;
+		} elseif ($context == 'agent' && $this->notify_email_name_agent) {
+			$from_name = $this->notify_email_name_agent;
 		} else {
 			$from_name = App::getSetting('core.deskpro_name');
+
+			if ($options && isset($options['default_from']) && $options['default_from']) {
+				$from_name = $options['default_from'];
+			}
 		}
 
 		return array(

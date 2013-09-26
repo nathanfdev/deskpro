@@ -37,6 +37,7 @@ namespace DeskPRO\Kernel;
 
 if (!defined('DP_ROOT')) exit('No access');
 
+use Orb\Util\Strings;
 use Orb\Util\Util;
 use Orb\Util\Web;
 
@@ -837,7 +838,16 @@ class DpLoader extends LoaderAbstract
 			if (file_exists($cache_file)) {
 				$data = @unserialize(@file_get_contents($cache_file));
 				if (is_string($data)) {
-					$js = $data;
+					$js = trim($data);
+
+					if (defined('DP_BUILD_TIME')) {
+						$last_line = Strings::getLastLine($js);
+						if ($version = Strings::extractRegexMatch('#DP_BUILD\((.*?)\)#', $last_line)) {
+							if ($version < DP_BUILD_TIME) {
+								$js = null;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -912,6 +922,9 @@ class DpLoader extends LoaderAbstract
 			}
 
 			$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+			if (defined('DP_BUILD_TIME')) {
+				$js .= "\n/* DP_BUILD(" . DP_BUILD_TIME . ") */\n";
+			}
 
 			if (!$no_cache) {
 				$cache_slam_file = $cache_file . '.slam';
@@ -919,6 +932,7 @@ class DpLoader extends LoaderAbstract
 					$slam_fp = @fopen($cache_slam_file, 'w');
 					if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
 						@file_put_contents($cache_file, serialize($js), \LOCK_EX);
+						@chmod($cache_file, 0777);
 						@flock($slam_fp, \LOCK_UN);
 						@fclose($slam_fp);
 						@unlink($cache_slam_file);
@@ -949,6 +963,15 @@ class DpLoader extends LoaderAbstract
 				$data = @unserialize(@file_get_contents($cache_file));
 				if (is_string($data)) {
 					$js = $data;
+
+					if (defined('DP_BUILD_TIME')) {
+						$last_line = Strings::getLastLine($js);
+						if ($version = Strings::extractRegexMatch('#DP_BUILD\((.*?)\)#', $last_line)) {
+							if ($version < DP_BUILD_TIME) {
+								$js = null;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -998,6 +1021,9 @@ class DpLoader extends LoaderAbstract
 			}
 
 			$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+			if (defined('DP_BUILD_TIME')) {
+				$js .= "\n/* DP_BUILD(" . DP_BUILD_TIME . ") */\n";
+			}
 
 			if (!$no_cache) {
 				$cache_slam_file = $cache_file . '.slam';
@@ -1005,6 +1031,7 @@ class DpLoader extends LoaderAbstract
 					$slam_fp = @fopen($cache_slam_file, 'w');
 					if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
 						@file_put_contents($cache_file, serialize($js), \LOCK_EX);
+						@chmod($cache_file, 0777);
 						@flock($slam_fp, \LOCK_UN);
 						@fclose($slam_fp);
 						@unlink($cache_slam_file);

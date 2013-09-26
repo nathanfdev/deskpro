@@ -140,6 +140,8 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			return 0;
 		}
 
+		App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
+
 		$mover->run();
 
 		return 0;

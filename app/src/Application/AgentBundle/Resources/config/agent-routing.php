@@ -1212,6 +1212,13 @@ $collection->add('agent_ticket_ajax_save_actions', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_message_raw', new Route(
+	'/tickets/{ticket_id}/message-details/{message_id}/view-raw',
+	array('_controller' => 'AgentBundle:Ticket:viewRawMessage'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_message_window', new Route(
 	'/tickets/{ticket_id}/message-details/{message_id}/window/{type}',
 	array('_controller' => 'AgentBundle:Ticket:viewMessageWindow', 'type' => 'normal'),

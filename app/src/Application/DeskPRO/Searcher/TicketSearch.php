@@ -854,7 +854,7 @@ class TicketSearch extends SearcherAbstract
 		switch ($type) {
 			case 'ticket.urgency':
 				if($this->needsUrgency()) {
-					$this->add_raw_selects[] = "IF(status = 'awaiting_agent', tickets.urgency, IF(status = 'awaiting_user', 1, 0)) AS status_order";
+					$this->add_raw_selects[] = "IF(tickets.status = 'awaiting_agent', tickets.urgency, IF(tickets.status = 'awaiting_user', 1, 0)) AS status_order";
 				} else {
 					$this->add_raw_selects[] = "tickets.urgency AS status_order";
 				}
@@ -1058,6 +1058,10 @@ class TicketSearch extends SearcherAbstract
 						$choice = is_array($choice) && isset($choice['ticket_id']) ? $choice['ticket_id'] : $choice;
 						if (!is_array($choice)) {
 							$choice = array($choice);
+						}
+
+						if (!$choice) {
+							$choice = array(0);
 						}
 
 						if ($op == self::OP_IS) {
@@ -1592,7 +1596,9 @@ class TicketSearch extends SearcherAbstract
 							if (strpos($c, '.') !== false) {
 								list ($status, $hstatus) = explode('.', $c, 2);
 								$hidden_status[] = $hstatus;
-								$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $hstatus);
+								if ($status == 'hidden' && $tr->hasPhrase('agent.tickets.hidden_status_' . $hstatus)) {
+									$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $hstatus);
+								}
 								$this->enableArchiveSearch();
 							} else {
 								$show_status[] = $show_status;

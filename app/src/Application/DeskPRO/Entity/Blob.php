@@ -208,6 +208,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setFilename($filename)
 	{
+		if ($filename[0] == '.') {
+			$filename = '_' . substr($filename, 1);
+		}
+
 		$old = $this->filename;
 		$this->filename = $filename;
 		$this->_onPropertyChanged('filename', $old, $this->filename);

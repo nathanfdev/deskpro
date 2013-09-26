@@ -375,8 +375,11 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		var el = $('.auto-load-route', this.sectionEl).first();
-		if (!el.length) {
-			return;
+		if (!el[0]) {
+			el = this.sectionEl.find('.is-nav-item').first().addClass('auto-load-route');
+			if (!el[0]) {
+				return;
+			}
 		}
 
 
