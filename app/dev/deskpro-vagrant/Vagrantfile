@@ -1,0 +1,43 @@
+require 'json'
+require 'uri'
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "precise64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+
+  config.vm.network :private_network, ip: "10.11.12.13"
+  config.vm.network :forwarded_port, guest: 80, host: 8888
+  config.vm.network :forwarded_port, guest: 3306, host: 3307
+
+  config.vm.synced_folder "deskpro", "/deskpro"
+  config.vm.synced_folder "vm_conf", "/vm_conf"
+
+  config.vm.guest = :ubuntu
+
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--cpus", "1"]
+
+    vb.customize ["modifyvm", :id, "--acpi", "on"]
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, "--vram", "16"]
+
+    vb.customize ["storageattach", :id, "--storagectl", "SATA Controller", '--port', '0', '--nonrotational', 'on']
+  end
+
+  config.vm.provision :puppet do |puppet|
+    git_info = JSON.parse(IO.read('github_config.json'))
+    git_info['repos_auth'] = git_info['repos'].sub(/^(https?):\/\//i, "\\1://#{git_info['username']}:#{URI.escape(git_info['password'])}@\\2")
+
+    script = IO.read('vm_conf/scripts/checkout_deskpro.sh')
+    script = script.sub(/###DP_CONFIG_BEGIN###(.*?)###DP_CONFIG_END###/m, "###DP_CONFIG_BEGIN###\n$REPOS_URL = '#{git_info['repos_auth']}'\n###DP_CONFIG_END###")
+    IO.write('vm_conf/scripts/checkout_deskpro.sh', script)
+
+    puppet.manifests_path = "vm_conf/puppet/manifests"
+    puppet.module_path    = "vm_conf/puppet/modules"
+    puppet.options        = ['--verbose']
+    puppet.manifest_file  = "default.pp"
+  end
+end
