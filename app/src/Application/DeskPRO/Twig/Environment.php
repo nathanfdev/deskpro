@@ -210,7 +210,11 @@ class Environment extends \Twig_Environment
 	 */
 	public function isCustomTemplate($name)
 	{
-		return $this->loader->dbHasTemplate((string)$name);
+		if ($this->loader instanceof HybridLoader && $this->loader->dbHasTemplate($name)) {
+			return true;
+		}
+
+		return false;
 	}
 
 
