@@ -38,10 +38,10 @@ abstract class Template extends \Twig_Template
 	public function display(array $context, array $blocks = array())
     {
 		if (!$this->env->isCustomTemplate($this->getTemplateName())) {
-			parent::displayWithErrorHandling($context, $blocks);
+			parent::display($context, $blocks);
 		} else {
 			try {
-				parent::displayWithErrorHandling($context, $blocks);
+				parent::display($context, $blocks);
 			} catch (\Exception $e) {
 				if (preg_match('#\.html\.twig$#', $this->getTemplateName())) {
 					echo "<div style='background-color: #ccc; border: 3px solid red; color: #000; padding: 10px; border-radius: 3px; margin: 10px;'>";

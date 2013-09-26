@@ -57,7 +57,7 @@ class Environment extends \Twig_Environment
 			stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
 		}
 
-		$options['base_template_class'] = 'Application\\DeskPRO\\Twig\\Template';
+		$options['base_template_class'] = '\\Application\\DeskPRO\\Twig\\Template';
 
 		parent::__construct($loader, $options);
 	}
