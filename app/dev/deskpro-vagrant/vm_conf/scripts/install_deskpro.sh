@@ -4,7 +4,7 @@ cd /deskpro/www
 
 cp /vagrant/vm_conf/scripts/deskpro_config.php config.php
 
-php cmd.php dp:install --verbose --insert-initial --admin-email=CONFIG
+php cmd.php dp:install --verbose
 
 cd /deskpro/www/web/app
 npm install grunt --save-dev

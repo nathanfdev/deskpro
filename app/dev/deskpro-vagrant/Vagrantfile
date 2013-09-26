@@ -48,4 +48,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.options        = ['--verbose']
     puppet.manifest_file  = "default.pp"
   end
+
+  config.vm.provision "shell", inline: "/bin/bash /vagrant/vm_conf/scripts/post.sh"
 end

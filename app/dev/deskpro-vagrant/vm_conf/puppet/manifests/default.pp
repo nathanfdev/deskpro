@@ -7,26 +7,6 @@ exec { 'apt-get-update':
 	tries   => 3,
 }
 
-class prepare {
-	class { 'apt': }
-	apt::ppa { 'ppa:chris-lea/node.js': }
-}
-include prepare
-
-
-class nodePackages {
-	package {'nodejs':
-		ensure       => present,
-		require      => Class['prepare'],
-	}
-
-	package {['grunt-cli', 'bower']:
-		ensure       => present,
-		provider     => 'npm',
-		require      => Package['nodejs'],
-	}
-}
-
 class php ($version = 'latest') {
 	package { [ "php5", "php5-cli", "php5-dev", "php5-fpm", "php5-mysql", "php5-curl", "php5-gd", "php-apc", "php5-xdebug", "php5-intl", "php5-mcrypt", "php5-imagick"]:
 		ensure       => $version,
@@ -62,6 +42,7 @@ class php ($version = 'latest') {
 
 	exec { 'install-composer':
 		command     => 'curl -sS https://getcomposer.org/installer | php && /bin/mv composer.phar /usr/local/bin/composer',
+		unless      => 'test -f /usr/local/bin/composer',
 		path        => '/usr/bin',
 		require     => Package['php5-cli', 'curl'],
 	}
@@ -79,22 +60,25 @@ class nginx ($version = 'latest') {
 		before      => Package['nginx']
 	}
 
-
 	file {'/etc/nginx/nginx.conf':
 		ensure        => file,
 		owner         => 'www-data'
 	}
 
-	file {'/etc/nginx/sites-enabled/deskpro':
+	file {'/etc/nginx/sites-available/default':
 		ensure        => present,
 		require       => Package['nginx', 'php5-fpm'],
-		content       => template("config/nginx-virtual-host.ini"),
+		content       => template("config/nginx-default-host.ini"),
+	}
+
+	file {'/deskpro/www':
+		ensure        => "directory"
 	}
 
 	service {'nginx':
 		ensure        => running,
 		enable        => true,
-		subscribe     => File['/etc/nginx/nginx.conf', '/etc/nginx/sites-enabled/deskpro'],
+		subscribe     => File['/etc/nginx/nginx.conf', '/etc/nginx/sites-available/default'],
 	}
 }
 
@@ -117,20 +101,12 @@ class mysql5 ($version = 'latest') {
 	service {'mysql':
 		ensure        => running,
 		enable        => true,
-		subscribe     => File['/etc/mysql/my.cnf'],
-	}
-
-	exec { "Set initial server users":
-		subscribe     => [ Package["mysql-server"], Package["mysql-client"], Package["mysql-common"] ],
-		refreshonly   => true,
-		unless        => "mysqladmin -uroot -pdeskpro status",
-		path          => "/bin:/usr/bin",
-		command       => "mysqladmin -uroot password deskpro && mysql -uroot -pdeskpro -r \"CREATE DATABASE IF NOT EXISTS `deskpro`;\"",
+		subscribe     => File['/etc/mysql/my.cnf']
 	}
 }
 
 class dev ($version = 'latest') {
-	$devPackages = [ "curl", "git", "capistrano", "rubygems", "openjdk-7-jdk", "libaugeas-ruby", "mc", "htop", "imagemagick", "ruby", "python" ]
+	$devPackages = [ "curl", "git", "rubygems", "htop", "imagemagick", "ruby", "python" ]
 
 	package { $devPackages:
 		ensure => installed,
@@ -138,25 +114,8 @@ class dev ($version = 'latest') {
 	}
 }
 
-class deskpro {
-	exec { "Checkout DeskPRO files":
-		require       => Package['mysql-server', 'php5-cli', 'php5-fpm'],
-		unless        => "test -d /deskpro/www",
-		path          => "/bin:/usr/bin",
-		command       => "/bin/bash /vm_conf/scripts/checkout_deskpro.sh",
-	}
-
-	exec { "Install DeskPRO":
-		require       => Package['mysql-server', 'php5-cli', 'php5-fpm'],
-		unless        => "test -f /deskpro/www/config.php",
-		path          => "/bin:/usr/bin",
-		command       => "/bin/bash /vm_conf/scripts/checkout_deskpro.sh",
-	}
-}
-
 include mysql5
 include nginx
 include php
-include nodePackages
 include dev
-include deskpro
+include nodePackages
