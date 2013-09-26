@@ -31,7 +31,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		if (this.tabBtn) {
 			if (this.getMetaData('orgPicIcon')) {
-				this.tabBtn.find('a').css('background-image', 'url(' + this.getMetaData('orgPicIcon') + ')').css('background-position', '2px 50%');
+				this.tabBtn.find('a').find('i').attr('class', '').addClass('image-icon').css('background-image', 'url("' + this.getMetaData('orgPicIcon') + '")').css('background-position', '50% 50%');
 			}
 		}
 
