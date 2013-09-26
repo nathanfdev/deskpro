@@ -28,7 +28,7 @@ class nodePackages {
 }
 
 class php ($version = 'latest') {
-	package { [ "php5", "php5-cli", "php5-dev", "php5-fpm", "php5-mysql", "php5-curl", "php5-gd", "php-apc", "php5-xdebug", "php5-intl", "php5-mcrypt", "php5-imagick", "php5-sqlite3"]:
+	package { [ "php5", "php5-cli", "php5-dev", "php5-fpm", "php5-mysql", "php5-curl", "php5-gd", "php-apc", "php5-xdebug", "php5-intl", "php5-mcrypt", "php5-imagick"]:
 		ensure       => $version,
 		before       => File['/etc/php5/cli/php.ini'],
 		require      => Exec['apt-get-update'],
@@ -120,19 +120,12 @@ class mysql5 ($version = 'latest') {
 		subscribe     => File['/etc/mysql/my.cnf'],
 	}
 
-	mysql::db { 'deskpro':
-		user          => 'deskpro',
-		password      => 'deskpro',
-		host          => 'localhost',
-		grant         => ['all'],
-	}
-
-	exec { "Set MySQL server root password":
-		subscribe     => [ Package["MySQL-server"], Package["MySQL-client"], Package["MySQL-shared"] ],
+	exec { "Set initial server users":
+		subscribe     => [ Package["mysql-server"], Package["mysql-client"], Package["mysql-common"] ],
 		refreshonly   => true,
 		unless        => "mysqladmin -uroot -pdeskpro status",
 		path          => "/bin:/usr/bin",
-		command       => "mysqladmin -uroot password deskpro",
+		command       => "mysqladmin -uroot password deskpro && mysql -uroot -pdeskpro -r \"CREATE DATABASE IF NOT EXISTS `deskpro`;\"",
 	}
 }
 
@@ -145,8 +138,25 @@ class dev ($version = 'latest') {
 	}
 }
 
+class deskpro {
+	exec { "Checkout DeskPRO files":
+		require       => Package['mysql-server', 'php5-cli', 'php5-fpm'],
+		unless        => "test -d /deskpro/www",
+		path          => "/bin:/usr/bin",
+		command       => "/bin/bash /vm_conf/scripts/checkout_deskpro.sh",
+	}
+
+	exec { "Install DeskPRO":
+		require       => Package['mysql-server', 'php5-cli', 'php5-fpm'],
+		unless        => "test -f /deskpro/www/config.php",
+		path          => "/bin:/usr/bin",
+		command       => "/bin/bash /vm_conf/scripts/checkout_deskpro.sh",
+	}
+}
+
 include mysql5
 include nginx
 include php
 include nodePackages
 include dev
+include deskpro

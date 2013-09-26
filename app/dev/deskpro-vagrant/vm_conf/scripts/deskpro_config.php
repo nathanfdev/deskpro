@@ -15,7 +15,7 @@
 define('DP_DATABASE_HOST', 'localhost');
 
 // The database username
-define('DP_DATABASE_USER', 'deskpro');
+define('DP_DATABASE_USER', 'root');
 
 // The password for the database user
 define('DP_DATABASE_PASSWORD', 'deskpro');
@@ -25,7 +25,9 @@ define('DP_DATABASE_NAME', 'deskpro');
 
 // Specify an email address to receive reports of any
 // database problems that prevent DeskPRO from working
-define('DP_TECHNICAL_EMAIL', 'team@deskpro.com');
+###DP_CONFIG_BEGIN###
+define('DP_TECHNICAL_EMAIL', 'your_email@deskpro.com');
+###DP_CONFIG_END###
 
 
 
@@ -371,4 +373,26 @@ $DP_CONFIG['db_read']['user'] = '';
 $DP_CONFIG['db_read']['password'] = '';
 $DP_CONFIG['db_read']['dbname'] = '';
 
-$DP_CONFIG['debug']['']
+
+######################################################
+######################################################
+######################################################
+######################################################
+####             DESKPRO DEV OPTIONS              ####
+######################################################
+######################################################
+######################################################
+######################################################
+
+$DP_CONFIG['debug']['dev']                     = true;
+$DP_CONFIG['debug']['raw_assets']              = array('all');
+$DP_CONFIG['debug']['no_report_errors']        = true;
+$DP_CONFIG['cache']['page_cache']['enable']    = false;
+$DP_CONFIG['debug']['mail']['save_to_file']    = true;
+$DP_CONFIG['debug']['mail']['enable_mail_log'] = true;
+$DP_CONFIG['debug']['mail']['disable_send']    = false;
+
+$DP_CONFIG['SETTINGS'] = array();
+$DP_CONFIG['SETTINGS']['core.use_mail_queue']    = 'never';
+$DP_CONFIG['SETTINGS']['core.show_share_widget'] = false;
+$DP_CONFIG['SETTINGS']['core.use_gravatar']      = false;
