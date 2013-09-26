@@ -1,7 +1,7 @@
 define [
 	'angular',
 	'DP_LANG',
-	'Admin/Resources/config/routing',
+	'AdminRouting',
 	'Admin/Main/Service/AppState',
 	'Admin/Main/Service/DpApi',
 	'Admin/Main/Service/Growl',

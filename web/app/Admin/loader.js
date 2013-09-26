@@ -20,7 +20,8 @@ requirejs.config({
 		toastr:                 DP_ASSET_URL+'/app/bower_components/toastr/toastr.min',
 
 		DP_LANG:                DP_BASE_ADMIN_URL + '/load-lang.js?varname=define',
-		Admin:                  DP_ASSET_URL+'/app/Admin'
+		Admin:                  DP_ASSET_URL+'/app/Admin/build/js',
+		AdminRouting:           DP_ASSET_URL+'/app/Admin/Resources/config/routing'
 	},
 	shim: {
 		'angular':              {'exports' : 'angular'},
