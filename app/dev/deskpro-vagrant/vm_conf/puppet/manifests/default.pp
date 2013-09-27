@@ -118,4 +118,3 @@ include mysql5
 include nginx
 include php
 include dev
-include nodePackages

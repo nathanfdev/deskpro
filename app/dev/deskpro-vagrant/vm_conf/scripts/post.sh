@@ -1,9 +1,10 @@
 #!/bin/bash
 
-sudo apt-get install python-software-properties
-sudo add-apt-repository ppa:chris-lea/node.js
 sudo apt-get update
-sudo apt-get install nodejs nodejs-dev npm
+sudo apt-get install --yes python-software-properties
+sudo add-apt-repository --yes ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install --yes nodejs nodejs-dev npm
 
 npm install -g grunt-cli
 npm install -g bower

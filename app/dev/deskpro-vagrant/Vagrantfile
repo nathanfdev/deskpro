@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 80, host: 8888
   config.vm.network :forwarded_port, guest: 3306, host: 3307
 
-  config.vm.synced_folder "deskpro", "/deskpro"
+  config.vm.synced_folder "deskpro", "/deskpro", :mount_options => ['dmode=777', 'fmode=777']
 
   config.vm.guest = :ubuntu
 
