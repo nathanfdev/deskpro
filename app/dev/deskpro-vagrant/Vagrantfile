@@ -40,6 +40,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     script = IO.read('vm_conf/scripts/deskpro_config.php')
     script = script.sub(/###DP_CONFIG_BEGIN###(.*?)###DP_CONFIG_END###/m, "###DP_CONFIG_BEGIN###\ndefine('DP_TECHNICAL_EMAIL', '#{config_info['email']}');\n###DP_CONFIG_END###")
     IO.write('vm_conf/scripts/deskpro_config.php', script)
+
+    if config_info['username'] == 'your_username' || config_info['password'] == 'your_password' || config_info['email'] == 'your_email@deskpro.com'
+      puts "!!!!!!!!!!\n"
+      puts "You need to edit config.json with your GitHub account credentials.\n"
+      puts "!!!!!!!!!!\n\n"
+      exit
+    end
   end
 
   config.vm.provision :puppet do |puppet|
@@ -49,5 +56,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifest_file  = "default.pp"
   end
 
-  config.vm.provision "shell", inline: "/bin/bash /vagrant/vm_conf/scripts/post.sh"
+  config.vm.provision "shell", inline: "fromdos /vagrant/vm_conf/scripts/post.sh && /bin/bash /vagrant/vm_conf/scripts/post.sh"
 end

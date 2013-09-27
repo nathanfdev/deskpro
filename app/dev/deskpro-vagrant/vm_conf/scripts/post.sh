@@ -1,5 +1,8 @@
 #!/bin/bash
 
+fromdos /vagrant/vm_conf/scripts/checkout_deskpro.sh
+fromdos /vagrant/vm_conf/scripts/install_deskpro.sh
+
 sudo apt-get update
 sudo apt-get install --yes python-software-properties
 sudo add-apt-repository --yes ppa:chris-lea/node.js
