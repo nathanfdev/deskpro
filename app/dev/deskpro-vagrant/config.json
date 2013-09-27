@@ -1,6 +1,7 @@
 {
-	"repos":    "https://github.com/DeskPRO/DeskPRO.git",
-	"username": "your_username",
-	"password": "your_password",
-	"email":    "your_email@deskpro.com"
+	"repos":      "https://github.com/DeskPRO/DeskPRO.git",
+	"username":   "your_username",
+	"password":   "your_password",
+	"email":      "your_email@deskpro.com",
+	"private_ip": false
 }

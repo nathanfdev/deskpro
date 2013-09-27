@@ -4,16 +4,39 @@ require 'uri'
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config_info = JSON.parse(IO.read('config.json'))
+  config_info['repos_auth'] = config_info['repos'].sub(/^(https?):\/\//i, "\\1://#{config_info['username']}:#{URI.escape(config_info['password'])}@\\2")
+
+  # Update checkout script with repos/creds
+  script = IO.read('vm_conf/scripts/checkout_deskpro.sh')
+  script = script.sub(/###DP_CONFIG_BEGIN###(.*?)###DP_CONFIG_END###/m, "###DP_CONFIG_BEGIN###\nREPOS_URL='#{config_info['repos_auth']}'\n###DP_CONFIG_END###")
+  IO.write('vm_conf/scripts/checkout_deskpro.sh', script)
+
+  # Update deskpro config with email address
+  script = IO.read('vm_conf/scripts/deskpro_config.php')
+  script = script.sub(/###DP_CONFIG_BEGIN###(.*?)###DP_CONFIG_END###/m, "###DP_CONFIG_BEGIN###\ndefine('DP_TECHNICAL_EMAIL', '#{config_info['email']}');\n###DP_CONFIG_END###")
+  IO.write('vm_conf/scripts/deskpro_config.php', script)
+
+  if config_info['username'] == 'your_username' || config_info['password'] == 'your_password' || config_info['email'] == 'your_email@deskpro.com'
+    puts "!!!!!!!!!!\n"
+    puts "You need to edit config.json with your GitHub account credentials.\n"
+    puts "!!!!!!!!!!\n\n"
+    exit
+  end
+
   config.vm.box = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-
-  #config.vm.network :private_network, ip: "10.11.12.13"
-  config.vm.network :forwarded_port, guest: 80, host: 8888
+  config.vm.network :forwarded_port, guest: 8888, host: 8888
   config.vm.network :forwarded_port, guest: 3306, host: 3307
-
-  config.vm.synced_folder "deskpro", "/deskpro", :mount_options => ['dmode=777', 'fmode=777']
-
   config.vm.guest = :ubuntu
+
+  if config_info['private_ip']
+    config.vm.synced_folder "deskpro", "/deskpro", :nfs => true
+    config.vm.network :private_network, ip: config_info['private_ip']
+  else
+    config.vm.synced_folder "deskpro", "/deskpro", :mount_options => ['dmode=777', 'fmode=777']
+  end
 
   config.vm.provider :virtualbox do |vb|
     #vb.gui = true
@@ -27,26 +50,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--vram", "16"]
 
     vb.customize ["storageattach", :id, "--storagectl", "SATA Controller", '--port', '0', '--nonrotational', 'on']
-
-    config_info = JSON.parse(IO.read('config.json'))
-    config_info['repos_auth'] = config_info['repos'].sub(/^(https?):\/\//i, "\\1://#{config_info['username']}:#{URI.escape(config_info['password'])}@\\2")
-
-    # Update checkout script with repos/creds
-    script = IO.read('vm_conf/scripts/checkout_deskpro.sh')
-    script = script.sub(/###DP_CONFIG_BEGIN###(.*?)###DP_CONFIG_END###/m, "###DP_CONFIG_BEGIN###\nREPOS_URL='#{config_info['repos_auth']}'\n###DP_CONFIG_END###")
-    IO.write('vm_conf/scripts/checkout_deskpro.sh', script)
-
-    # Update deskpro config with email address
-    script = IO.read('vm_conf/scripts/deskpro_config.php')
-    script = script.sub(/###DP_CONFIG_BEGIN###(.*?)###DP_CONFIG_END###/m, "###DP_CONFIG_BEGIN###\ndefine('DP_TECHNICAL_EMAIL', '#{config_info['email']}');\n###DP_CONFIG_END###")
-    IO.write('vm_conf/scripts/deskpro_config.php', script)
-
-    if config_info['username'] == 'your_username' || config_info['password'] == 'your_password' || config_info['email'] == 'your_email@deskpro.com'
-      puts "!!!!!!!!!!\n"
-      puts "You need to edit config.json with your GitHub account credentials.\n"
-      puts "!!!!!!!!!!\n\n"
-      exit
-    end
   end
 
   config.vm.provision :puppet do |puppet|

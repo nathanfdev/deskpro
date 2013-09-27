@@ -9,6 +9,6 @@ php cmd.php dp:install --verbose
 cd /deskpro/www/web/app
 npm install grunt --save-dev
 
-chown -R vagrant:vagrant /deskpro/www
-chmod -R 0777 /deskpro/www/data
-chmod -R 0777 /deskpro/www/app/sys/cache
+chown --silent -R vagrant:vagrant /deskpro/www
+chmod --silent -R 0777 /deskpro/www/data
+chmod --silent -R 0777 /deskpro/www/app/sys/cache

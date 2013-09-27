@@ -392,6 +392,8 @@ $DP_CONFIG['debug']['mail']['save_to_file']    = true;
 $DP_CONFIG['debug']['mail']['enable_mail_log'] = true;
 $DP_CONFIG['debug']['mail']['disable_send']    = false;
 
+$DP_CONFIG['rewrite_urls'] = true;
+
 $DP_CONFIG['SETTINGS'] = array();
 $DP_CONFIG['SETTINGS']['core.use_mail_queue']    = 'never';
 $DP_CONFIG['SETTINGS']['core.show_share_widget'] = false;
