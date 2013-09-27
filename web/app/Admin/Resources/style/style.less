@@ -655,18 +655,6 @@ nav.dp-main-tabs {
 	margin-right: 30px;
 }
 
-.panel-help {
-	padding: 10px;
-	.alert-variant(@alert-info-bg; @alert-info-border; @alert-info-text);
-	border: 1px solid transparent;
-	border-radius: @alert-border-radius;
-	margin: 10px 0 10px 0;
-
-	p:last-child {
-		margin-bottom: 0;
-	}
-}
-
 .panel.panel-innertable {
 	margin: 15px 30px 30px 30px;
 	.rounded(2px);
@@ -865,6 +853,88 @@ section.dp-help-page {
 					margin-top: 0;
 				}
 			}
+		}
+	}
+}
+
+//######################################################################################################################
+//# Inline Help
+//######################################################################################################################
+
+.panel-help {
+	padding: 10px 25px 10px 10px;
+	background: #FDFAE8;
+	border: 1px solid darken(#FDFAE8, 10%);
+	border-left: 3px solid darken(#FDFAE8, 10%);
+	margin: 10px 0 10px 0;
+	color: #444;
+
+	p:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.inhelp-trigger {
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: transparent;
+	outline: none;
+	box-shadow: none;
+	cursor: pointer;
+	display: inline-block;
+
+	font-size: 14px;
+	color: #999;
+
+	&:hover {
+		color: #444;
+	}
+
+	i {
+		display: block;
+		font-family: FontAwesome;
+		font-style: normal;
+		font-weight: normal;
+
+		&:before {
+			content: "\f059";
+		}
+	}
+}
+
+.inhelp-body {
+	position: relative;
+}
+
+.inhelp-body-closebtn {
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: transparent;
+	outline: none;
+	box-shadow: none;
+	position: absolute;
+	top: 0;
+	right: 4px;
+	cursor: pointer;
+	display: block;
+
+	font-size: 14px;
+	color: #918462;
+
+	&:hover {
+		color: #444;
+	}
+
+	i {
+		display: block;
+		font-family: FontAwesome;
+		font-style: normal;
+		font-weight: normal;
+
+		&:before {
+			content: "\f00d";
 		}
 	}
 }

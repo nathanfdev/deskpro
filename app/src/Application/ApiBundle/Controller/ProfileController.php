@@ -26,45 +26,25 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
 
-namespace Application\AdminInterfaceBundle\Controller;
+namespace Application\ApiBundle\Controller;
 
-class IndexController extends AbstractController
+class ProfileController extends AbstractController
 {
-	public function interfaceAction()
+	public function saveInhelpStateAction($id, $state)
 	{
-		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($this->person);
-		if (!$token) {
-			$token = new \Application\DeskPRO\Entity\ApiToken();
-			$token->person = $this->person;
-		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
-			$token->regenerateToken();
-		}
-		$token->date_expires = null;
-
-		$this->em->persist($token);
-		$this->em->flush();
-
-		// Default help states
-		$help_states = $this->db->fetchAllKeyValue("
-			SELECT name, value_str
-			FROM people_prefs
-			WHERE name LIKE 'inhelp.%'
-		");
-
-		$inhelp_states = array();
-		foreach ($help_states as $k => $v) {
-			$k = preg_replace('#^inhelp\.#', '', $k);
-			$inhelp_states[$k] = $v;
-		}
-
-		return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
-			'api_token'     => $token,
-			'inhelp_states' => $inhelp_states,
+		//TODO refactor+test
+		$this->db->replace('people_prefs', array(
+			'person_id'   => $this->person->getId(),
+			'name'        => 'inhelp.' . $id,
+			'value_str'   => $state,
+			'value_array' => 'N;',
 		));
+
+		return $this->createSuccessResponse();
 	}
 }

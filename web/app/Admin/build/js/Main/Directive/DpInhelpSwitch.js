@@ -18,7 +18,15 @@
        #
        # Example View
        # ------------
-       # <
+       # <div class="panel-heading">
+    	#     <h3>
+    	#         <span>Permissions</span>
+    	#         <button class="btn inhelp-trigger" dp-inhelp-switch="admin.ticket_deps.edit.usergroup_perms"><i></i></button>
+    	#     </h3>
+    	# </div>
+    	# <div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
+    	#     ...
+    	# </div>
     */
 
     var Admin_Main_Directive_DpInhelpSwitch;
@@ -26,7 +34,15 @@
       function() {
         return {
           restrict: 'A',
-          link: function(scope, element, attrs) {}
+          link: function(scope, element, attrs) {
+            var bodyId, btnId, defaultState, id;
+            defaultState = attrs['defaultState'] || 'open';
+            id = '_ctrl_inhelp_state.' + attrs['dpInhelpSwitch'];
+            bodyId = 'dp_inhelp_' + id.replace(/\./, '_');
+            btnId = bodyId += '_bt';
+            element.attr('id', btnId);
+            scope.$watch(id, function(newVal) {});
+          }
         };
       }
     ];

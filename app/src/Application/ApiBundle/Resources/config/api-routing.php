@@ -2303,4 +2303,14 @@ $collection->add('api_langs_savephrase', new Route(
 	array('_method' => 'POST')
 ));
 
+########################################################################################################################
+# PROFILE
+########################################################################################################################
+
+$collection->add('api_profile_inhelpstate', new Route(
+	'/profile/inhelp/{id}/{state}',
+	array('_controller' => 'ApiBundle:Profile:saveInhelpState'),
+	array('_method' => 'POST')
+));
+
 return $collection;

@@ -102,8 +102,13 @@
 
 			<div dp-tab-body="main.perms">
 				<div class="panel panel-innertable">
-					<div class="panel-heading"><h3><span>{{ phrase('admin.general.usergroup_perms') }}</span></h3></div>
-					<div class="panel-help">
+					<div class="panel-heading">
+						<h3>
+							<span>{{ phrase('admin.general.usergroup_perms') }}</span>
+							<button dp-inhelp-btn="admin.ticket_deps.edit.usergroup_perms"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
 						<p>
 							{{ phrase('admin.departments.usergroup_perms_explain') }}
 						</p>
@@ -134,8 +139,13 @@
 				</div>
 
 				<div class="panel panel-innertable">
-					<div class="panel-heading"><h3><span>{{ phrase('admin.general.agent_perms') }}</span></h3></div>
-					<div class="panel-help">
+					<div class="panel-heading">
+						<h3>
+							<span>{{ phrase('admin.general.agent_perms') }}</span>
+							<button dp-inhelp-btn="admin.ticket_deps.edit.agent_perms"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.agent_perms">
 						<p>
 							{{ phrase('admin.departments.agent_perms_explain') }}
 						</p>

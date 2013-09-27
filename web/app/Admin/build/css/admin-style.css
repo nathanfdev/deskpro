@@ -7964,28 +7964,6 @@ nav.dp-main-tabs ul li.active {
   margin-left: 30px;
 }
 
-.panel-help {
-  padding: 10px;
-  margin: 10px 0 10px 0;
-  color: #3a87ad;
-  background-color: #d9edf7;
-  border: 1px solid transparent;
-  border-color: #bce8f1;
-  border-radius: 4px;
-}
-
-.panel-help hr {
-  border-top-color: #a6e1ec;
-}
-
-.panel-help .alert-link {
-  color: #2d6987;
-}
-
-.panel-help p:last-child {
-  margin-bottom: 0;
-}
-
 .panel.panel-innertable {
   margin: 15px 30px 30px 30px;
   -webkit-border-radius: 2px;
@@ -8223,6 +8201,82 @@ section.dp-help-page article dl dt {
 
 section.dp-help-page article dl dt:first-child {
   margin-top: 0;
+}
+
+.panel-help {
+  padding: 10px 25px 10px 10px;
+  margin: 10px 0 10px 0;
+  color: #444;
+  background: #FDFAE8;
+  border: 1px solid #f9f0b9;
+  border-left: 3px solid #f9f0b9;
+}
+
+.panel-help p:last-child {
+  margin-bottom: 0;
+}
+
+.inhelp-trigger {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.inhelp-trigger:hover {
+  color: #444;
+}
+
+.inhelp-trigger i {
+  display: block;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.inhelp-trigger i:before {
+  content: "\f059";
+}
+
+.inhelp-body {
+  position: relative;
+}
+
+.inhelp-body-closebtn {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  display: block;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: #918462;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.inhelp-body-closebtn:hover {
+  color: #444;
+}
+
+.inhelp-body-closebtn i {
+  display: block;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.inhelp-body-closebtn i:before {
+  content: "\f00d";
 }
 
 .modal-footer {

@@ -6,14 +6,15 @@ define [
 	'Admin/Main/Service/AppState',
 	'Admin/Main/Service/DpApi',
 	'Admin/Main/Service/Growl',
+	'Admin/Main/Service/InhelpState',
 
 	'Admin/Main/Translate/DpInterpolation',
 
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
-	'Admin/Main/Directive/DpInhelpContent',
-	'Admin/Main/Directive/DpInhelpSwitch',
+	'Admin/Main/Directive/DpInhelpBody',
+	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpNavSubnav',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpPingFlash',
@@ -34,12 +35,15 @@ define [
 	Admin_Main_Service_AppState,
 	Admin_Main_Service_DpApi,
 	Admin_Main_Service_Growl,
+	Admin_Main_Service_InhelpState,
 
 	Admin_Main_Translate_DpInterpolation,
 
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpHelpPage,
+	Admin_Main_Directive_DpInhelpBody,
+	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpNavSubnav,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpPingFlash,
@@ -75,6 +79,10 @@ define [
 			throw exception
 	])
 
+	Admin_App.service('InhelpState', ['Api', (Api) ->
+		return new Admin_Main_Service_InhelpState(Api)
+	])
+
 	####################################################################################################################
 	# Data services
 	####################################################################################################################
@@ -98,8 +106,8 @@ define [
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)
 	Admin_App.directive('dpErrorClass',       Admin_Main_Directive_DpErrorClass)
 	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)
-	Admin_App.directive('dpInhelpContent',    Admin_Main_Directive_DpInhelpContent)
-	Admin_App.directive('dpInhelpSwitch',     Admin_Main_Directive_DpInhelpSwitch)
+	Admin_App.directive('dpInhelpBody',       Admin_Main_Directive_DpInhelpBody)
+	Admin_App.directive('dpInhelpBtn',        Admin_Main_Directive_DpInhelpBtn)
 	Admin_App.directive('dpNavSubnav',        Admin_Main_Directive_DpNavSubnav)
 	Admin_App.directive('dpOpenPhraseEditor', Admin_Main_Directive_DpOpenPhraseEditor)
 	Admin_App.directive('dpPingFlash',        Admin_Main_Directive_DpPingFlash)

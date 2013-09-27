@@ -70,6 +70,10 @@ window.DP_BASE_API_URL   = '{{ path('user')|rtrim('/') }}/api';
 window.DP_BASE_ADMIN_URL = '{{ path('adm')|rtrim('/') }}';
 window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
 window.DP_PERSON_ID      = '{{ person.id }}';
+
+{% if inhelp_states %}
+window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
+{% endif %}
 </script>
 <script
 	type="text/javascript"
