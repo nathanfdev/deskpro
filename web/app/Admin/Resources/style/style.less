@@ -28,6 +28,49 @@ form {
 	color: #888;
 }
 
+.dp-grayed-placeholder {
+	min-height: 300px;
+	position: relative;
+	display: block;
+
+	&.fill {
+		position: absolute;
+		top:    0;
+		right:  26px;
+		bottom: 0;
+		left:   26px;
+	}
+
+	.bg {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+
+		.rounded(3px);
+		overflow: hidden;
+
+		background-color: rgb(207, 207, 207);
+		background-image: ~'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.5) 35px, rgba(255,255,255,0.5) 70px)';
+		border: 1px solid #CCC;
+
+		z-index: 1;
+		.opacity(0.8);
+	}
+
+	p {
+		position: relative;
+		z-index: 2;
+		background: #fff;
+		padding: 20px;
+		margin: 25px;
+		.rounded(3px);
+		top: 25px;
+		border: 1px solid #888;
+	}
+}
+
 //######################################################################################################################
 //# Page Header
 //######################################################################################################################
@@ -1030,7 +1073,6 @@ section.dp-help-page {
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 	.rounded(3px);
-	vertical-align: baseline;
 
 	&.agent-icon-22x {
 		width: 22px;
