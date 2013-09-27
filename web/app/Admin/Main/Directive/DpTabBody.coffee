@@ -1,4 +1,17 @@
 define ->
+	###
+    # Description
+    # -----------
+    #
+    # This should be applied to the body portion of a tabbed interface. When the dp-tab-btn with this ID
+    # is enabled, this body is displayed and others are removed.
+    #
+    # See dp-tab-btn for a full example.
+    #
+    # Example View
+    # ------------
+    # <section dp-tab-body="edit.main">...</section>
+    ###
 	Admin_Main_Directive_DpTabBody = [ ->
 		return {
 			restrict: 'A',

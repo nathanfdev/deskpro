@@ -2,6 +2,19 @@
   var __hasProp = {}.hasOwnProperty;
 
   define(function() {
+    /*
+       # Description
+       # -----------
+       #
+       # This should be used to submit any forms within the DeskPRO interface. It has special
+       # logic to add the "attempted" state to models which is used to show correct error state
+       # in the UI.
+       #
+       # Example View
+       # ------------
+       # <button dp-submit-form>Save</button>
+    */
+
     var Admin_Main_Directive_DpSubmitForm;
     Admin_Main_Directive_DpSubmitForm = [
       function() {

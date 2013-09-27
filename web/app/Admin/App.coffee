@@ -12,6 +12,8 @@ define [
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
+	'Admin/Main/Directive/DpInhelpContent',
+	'Admin/Main/Directive/DpInhelpSwitch',
 	'Admin/Main/Directive/DpNavSubnav',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpPingFlash',
@@ -93,18 +95,20 @@ define [
 	# Main directives
 	####################################################################################################################
 
-	Admin_App.directive('dpStateMark',        Admin_Main_Directive_DpStateMark)
-	Admin_App.directive('dpNavSubnav',        Admin_Main_Directive_DpNavSubnav)
-	Admin_App.directive('dpPingFlash',        Admin_Main_Directive_DpPingFlash)
-	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)
-	Admin_App.directive('dpToggleSwitch',     Admin_Main_Directive_DpToggleSwitch)
-	Admin_App.directive('dpTabBtn',           Admin_Main_Directive_DpTabBtn)
-	Admin_App.directive('dpTabBody',          Admin_Main_Directive_DpTabBody)
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)
-	Admin_App.directive('dpServerValidation', Admin_Main_Directive_DpServerValidation)
 	Admin_App.directive('dpErrorClass',       Admin_Main_Directive_DpErrorClass)
-	Admin_App.directive('dpSubmitForm',       Admin_Main_Directive_DpSubmitForm)
+	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)
+	Admin_App.directive('dpInhelpContent',    Admin_Main_Directive_DpInhelpContent)
+	Admin_App.directive('dpInhelpSwitch',     Admin_Main_Directive_DpInhelpSwitch)
+	Admin_App.directive('dpNavSubnav',        Admin_Main_Directive_DpNavSubnav)
 	Admin_App.directive('dpOpenPhraseEditor', Admin_Main_Directive_DpOpenPhraseEditor)
+	Admin_App.directive('dpPingFlash',        Admin_Main_Directive_DpPingFlash)
+	Admin_App.directive('dpServerValidation', Admin_Main_Directive_DpServerValidation)
+	Admin_App.directive('dpStateMark',        Admin_Main_Directive_DpStateMark)
+	Admin_App.directive('dpSubmitForm',       Admin_Main_Directive_DpSubmitForm)
+	Admin_App.directive('dpTabBody',          Admin_Main_Directive_DpTabBody)
+	Admin_App.directive('dpTabBtn',           Admin_Main_Directive_DpTabBtn)
+	Admin_App.directive('dpToggleSwitch',     Admin_Main_Directive_DpToggleSwitch)
 
 	####################################################################################################################
 	# Translation

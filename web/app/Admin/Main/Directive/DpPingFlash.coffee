@@ -1,4 +1,21 @@
 define ->
+	###
+    # Description
+    # -----------
+    #
+    # This adds an element that can be flashed from the controller when it is pinged.
+    #
+    # Example View
+    # ------------
+    # <span dp-ping-flash="order_saved">Saved</button>
+    #
+    # Example Controller
+    # ------------------
+    # someAction: ->
+    #     @pingElement('order_saved')
+    #
+    # @see Admin_Main_Ctrl_Base.pingElement()
+    ###
 	Admin_Main_Directive_DpPingFlash = [ ->
 		return {
 			restrict: 'A',

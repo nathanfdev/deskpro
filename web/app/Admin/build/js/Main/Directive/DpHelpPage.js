@@ -1,5 +1,22 @@
 (function() {
   define(function() {
+    /*
+       # Description
+       # -----------
+       #
+       # This element defines the "help page" for a section. The help page is detached and re-positioned into the
+       # right-most pane and has the ability to minimise into the section help icon.
+       #
+       # Example
+       # -------
+       # <dp-help-page>
+       #    .....
+       # </dp-help-page>
+       #
+       # <!-- In the list content we need the trigger as well: -->
+       # <button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+    */
+
     var Admin_Main_Directive_DpHelpPage;
     Admin_Main_Directive_DpHelpPage = [
       '$rootScope', '$state', function($rootScope, $state) {

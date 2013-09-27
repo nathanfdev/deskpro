@@ -1,5 +1,16 @@
 (function() {
   define(function() {
+    /*
+       # Description
+       # -----------
+       #
+       # This attaches a click handler to the element that opens up a phrase editor for the specified phrase.
+       #
+       # Example
+       # -------
+       # <button dp-open-phrase-editor="agent.general.departments">Edit Phrase</button>
+    */
+
     var Admin_Main_Directive_DpOpenPhraseEditor;
     Admin_Main_Directive_DpOpenPhraseEditor = [
       '$modal', '$controller', function($modal, $controller) {

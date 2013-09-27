@@ -1,5 +1,30 @@
 (function() {
   define(function() {
+    /*
+       # Description
+       # -----------
+       #
+       # This turns an element into an iOS7-style toggle on/off switch. It toggles the connected
+       # model to true or false.
+       #
+       # Additional Attributes
+       # ---------------------
+       #
+       # * locked-model: The model which indicates if the toggle is current locked
+       # * ng-change:    A callback to fire when the model changes
+       # * locked-tip:   A tooltip to display when the toggle is currently locked (locked-model is true)
+       #
+       # Example View
+       # ------------
+       # <button
+       #     dp-toggle-switch
+       #     locked-model="groupObj.perms.assign.locked"
+       #     ng-model="groupObj.perms.assign.state"
+       #     ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')"
+       #     locked-tip="This is locked because the 'full' permission is enabled"
+       # ></button>
+    */
+
     var Admin_Main_Directive_DpToggleSwitch;
     Admin_Main_Directive_DpToggleSwitch = [
       function() {

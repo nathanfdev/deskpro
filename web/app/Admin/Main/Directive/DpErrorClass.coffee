@@ -1,4 +1,25 @@
 define ->
+	###
+    # Description
+    # -----------
+    #
+    # This adds a has-error class to the element when the specified model becomes
+    # invalid.
+    #
+    # This only applies the has-error class if:
+    # * The model is invalid AND
+    # * The user has changed the value, or the form the model is a part of has been submitted
+    #
+    # E.g., this differs from just using ng-class in that it's an easy way to only show an error
+    # when the error state actually matters. Like if you just load up a form and the default
+    # value of a required field is blank, we shouldn't be showing a red 'invalid' error next to it.
+    #
+    # Example
+    # -------
+    # <div dp-error-class="myform.myfield">
+    #    <input type="text" ng-model="myfield" name="myfield" required />
+    # </div>
+	###
 	Admin_Main_Directive_DpErrorClass = [ ->
 		return {
 			restrict: 'A',

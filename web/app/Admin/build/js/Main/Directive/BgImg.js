@@ -1,5 +1,16 @@
 (function() {
   define(function() {
+    /*
+       # Description
+       # -----------
+       #
+       # This just adds a style background-image to an element using the evaluated value.
+       #
+       # Example
+       # -------
+       # <span bg-img="{{agent.picture_url}}"></span>
+    */
+
     var Admin_Main_Directive_BgImg;
     Admin_Main_Directive_BgImg = [
       function() {
