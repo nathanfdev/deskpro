@@ -30,36 +30,31 @@
       function() {
         return {
           restrict: 'A',
-          require: 'ngModel',
+          require: ['ngModel', '^?form'],
           template: "<div class=\"dp-switch\">\n	<label><span></span></label>\n</div>",
           replace: true,
-          scope: {
-            model: '=ngModel',
-            lockedModel: '=lockedModel',
-            change: '=ngChange',
-            lockedTip: '@'
-          },
-          link: function(scope, element, attrs, ngModel) {
-            var tipTarget, updateVal;
-            updateVal = function() {
+          link: function(scope, element, attrs, ctrls) {
+            var formCtrl, ngModel, tipTarget;
+            ngModel = ctrls[0];
+            formCtrl = ctrls[1] || null;
+            if (formCtrl) {
+              formCtrl.$addControl(ngModel);
+              element.on('$destroy', function() {
+                return formCtrl.$removeControl(ngModel);
+              });
+            }
+            ngModel.$viewChangeListeners.push(function() {
+              return ngModel.$render();
+            });
+            ngModel.$render = function() {
               var val;
-              val = scope.model;
-              ngModel.$setViewValue(val);
-              scope.model = val;
+              val = ngModel.$viewValue;
               if (val) {
                 element.addClass('switch-on');
-                element.removeClass('switch-off');
+                return element.removeClass('switch-off');
               } else {
                 element.removeClass('switch-on');
-                element.addClass('switch-off');
-              }
-              if (scope.lockedModel) {
-                element.addClass('locked');
-              } else {
-                element.removeClass('locked');
-              }
-              if (scope.change) {
-                return scope.$eval(scope.change);
+                return element.addClass('switch-off');
               }
             };
             element.on('click', function(ev) {
@@ -67,35 +62,28 @@
               if (element.hasClass('locked')) {
                 return;
               }
-              scope.model = !scope.model;
               return scope.$apply(function() {
-                return updateVal(updateVal);
+                return ngModel.$setViewValue(!ngModel.$viewValue);
               });
             });
-            scope.$watch('model', function() {
-              return updateVal();
-            });
-            scope.$watch('lockedModel', function(newVal) {
-              if (newVal) {
-                return element.addClass('locked');
-              } else {
-                return element.removeClass('locked');
-              }
-            });
-            if (scope.lockedTip) {
+            if (attrs.lockedModel) {
+              scope.$watch(attrs.lockedModel, function(newVal) {
+                if (newVal) {
+                  return element.addClass('locked');
+                } else {
+                  return element.removeClass('locked');
+                }
+              });
+            }
+            if (attrs.lockedTip) {
               tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>');
-              tipTarget.attr('title', scope.lockedTip);
+              tipTarget.attr('title', attrs.lockedTip);
               tipTarget.appendTo(element);
-              tipTarget.tooltip({
+              return tipTarget.tooltip({
                 placement: 'auto top',
                 trigger: 'hover',
                 container: 'body'
               });
-            }
-            if (scope.model) {
-              ngModel.$setViewValue(true);
-              element.addClass('switch-on');
-              return element.removeClass('switch-off');
             }
           }
         };

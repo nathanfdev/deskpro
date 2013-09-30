@@ -26,27 +26,31 @@ define ->
 	Admin_Main_Directive_DpToggleSwitch = [ ->
 		return {
 			restrict: 'A',
-			require:  'ngModel',
+			require:  ['ngModel', '^?form'],
 			template: """
 				<div class="dp-switch">
 					<label><span></span></label>
 				</div>
 			""",
 			replace: true,
-			scope: {
-				model: '=ngModel',
-				lockedModel: '=lockedModel',
-				change: '=ngChange',
-				lockedTip: '@'
-			},
-			link: (scope, element, attrs, ngModel) ->
+			link: (scope, element, attrs, ctrls) ->
 
-				updateVal = ->
-					val = scope.model
+				ngModel = ctrls[0]
+				formCtrl = ctrls[1] || null
 
-					ngModel.$setViewValue(val)
-					scope.model = val
+				if formCtrl
+					formCtrl.$addControl(ngModel);
 
+					element.on('$destroy', ->
+						formCtrl.$removeControl(ngModel);
+					)
+
+				ngModel.$viewChangeListeners.push(->
+					ngModel.$render()
+				);
+
+				ngModel.$render = ->
+					val = ngModel.$viewValue
 					if val
 						element.addClass('switch-on')
 						element.removeClass('switch-off')
@@ -54,51 +58,34 @@ define ->
 						element.removeClass('switch-on')
 						element.addClass('switch-off')
 
-					if scope.lockedModel
-						element.addClass('locked')
-					else
-						element.removeClass('locked')
-
-					if scope.change
-						scope.$eval(scope.change)
-
 				element.on('click', (ev) ->
 					ev.preventDefault();
 
 					if element.hasClass('locked')
 						return
 
-					scope.model = !scope.model
 					scope.$apply(->
-						updateVal(updateVal)
+						ngModel.$setViewValue(!ngModel.$viewValue)
 					)
 				)
 
-				scope.$watch('model', ->
-					updateVal()
-				)
+				if attrs.lockedModel
+					scope.$watch(attrs.lockedModel, (newVal) ->
+						if newVal
+							element.addClass('locked')
+						else
+							element.removeClass('locked')
+					)
 
-				scope.$watch('lockedModel', (newVal) ->
-					if newVal
-						element.addClass('locked')
-					else
-						element.removeClass('locked')
-				)
-
-				if scope.lockedTip
+				if attrs.lockedTip
 					tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
-					tipTarget.attr('title', scope.lockedTip)
+					tipTarget.attr('title', attrs.lockedTip)
 					tipTarget.appendTo(element)
 					tipTarget.tooltip({
 						placement: 'auto top',
 						trigger: 'hover',
 						container: 'body'
 					})
-
-				if scope.model
-					ngModel.$setViewValue(true)
-					element.addClass('switch-on')
-					element.removeClass('switch-off')
 		}
 	]
 
