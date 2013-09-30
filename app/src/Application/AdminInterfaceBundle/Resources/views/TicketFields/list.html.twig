@@ -1,6 +1,6 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-terminal"></i> {{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.general.fields') }}</h3>
+		<h3><i class="icon-terminal"></i> {{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.general.builtin_fields') }}</h3>
 		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
 	</header>
 	<article class="pane-content no-pad">
@@ -11,11 +11,9 @@
 						<li>
 							<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3>{{ phrase('admin.general.ticket_fields') }}</h3>
+				<h3>{{ phrase('admin.general.builtin_fields') }}</h3>
 			</div>
 			<ul class="dp-item-list">
 				<li>
@@ -38,6 +36,25 @@
 						<h4><span class="title-text">{{ phrase('agent.general.workflows') }}</span></h4>
 					</a>
 				</li>
+			</ul>
+		</div>
+
+
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+						</li>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+					</ul>
+				</nav>
+				<h3 ng-if="TicketFieldsList.custom_fields.length" translate="admin.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
+				<h3 ng-if="!TicketFieldsList.custom_fields.length" translate="admin.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
+			</div>
+			<ul class="dp-item-list">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.ticket_fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
 					<a href="#/tickets/ticket_fields/{{ ng_var('field.id') }}">
 						<div class="pull-right">
