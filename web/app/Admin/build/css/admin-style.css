@@ -7894,6 +7894,13 @@ article.pane-content.pad-top {
   content: "\2514\2500";
 }
 
+.dp-item-list .dp-switch {
+  position: relative;
+  top: -5px;
+  left: -8px;
+  float: left;
+}
+
 nav.dp-main-tabs {
   height: 49px;
   overflow: hidden;

@@ -54,7 +54,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			FROM {$this->_entityName} f INDEX BY f.id
 			ORDER BY f.display_order ASC, f.title
 		");
-		$q->useResultCache(true, null, static::getCacheId('getfields'));
 
 		return $q->execute();
 	}
@@ -67,7 +66,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			WHERE f.is_enabled = true
 			ORDER BY f.display_order ASC, f.title
 		");
-		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
 
 		return $q->execute();
 	}
@@ -80,7 +78,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			WHERE f.is_enabled = true AND f.is_agent_field = false
 			ORDER BY f.display_order ASC, f.title
 		");
-		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
 
 		return $q->execute();
 	}
@@ -97,8 +94,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			ORDER BY f.display_order ASC, f.title
 		");
 
-		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
-
 		return $q->execute();
 	}
 
@@ -110,8 +105,6 @@ class CustomDefAbstract extends AbstractEntityRepository
 			WHERE f.parent IS NULL AND f.is_enabled = true
 			ORDER BY f.display_order ASC, f.title
 		");
-
-		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
 
 		return $q->execute();
 	}

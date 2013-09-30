@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class TicketFieldsController extends AbstractController
 {
@@ -48,15 +49,29 @@ class TicketFieldsController extends AbstractController
 	{
 		$data = array();
 
-		$custom_fields = $this->em->createQuery("
-			SELECT f
-			FROM DeskPRO:CustomDefTicket f
-			WHERE f.parent IS NULL
-			ORDER BY f.title ASC
-		")->execute();
+		/** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		$data['custom_fields'] = $this->getApiData($custom_fields, false);
+		$custom_fields = $field_manager->getDefinedFields();
+		$data['custom_fields']  = $this->getApiData($custom_fields, false);
+
+		$data['product_enabled']  = $field_manager->isProductEnabled();
+		$data['category_enabled'] = $field_manager->isCategoryEnabled();
+		$data['priority_enabled'] = $field_manager->isPriorityEnabled();
+		$data['workflow_enabled'] = $field_manager->isWorkflowEnabled();
 
 		return $this->createApiResponse($data);
+	}
+
+	####################################################################################################################
+	# toggleField
+	####################################################################################################################
+
+	public function toggleFieldAction($field_id, $is_enabled)
+	{
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$field_manager->setFieldEnabledById($field_id, $is_enabled);
+
+		return $this->createSuccessResponse();
 	}
 }

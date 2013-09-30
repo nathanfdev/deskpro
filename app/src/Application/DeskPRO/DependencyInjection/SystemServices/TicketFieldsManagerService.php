@@ -44,6 +44,7 @@ class TicketFieldsManagerService
 		$m = new TicketFieldManager(
 			$container->get('doctrine.orm.entity_manager'),
 			array(
+				'settings_handler'   => $container->getSettingsHandler(),
 				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
 				'entity_name'        => 'DeskPRO:CustomDefTicket',
 				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataTicket',

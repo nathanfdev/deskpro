@@ -17,23 +17,27 @@
 			</div>
 			<ul class="dp-item-list">
 				<li>
-					<a href="#/tickets/ticket_fields/products">
-						<h4><span class="title-text">{{ phrase('agent.general.products') }}</span></h4>
-					</a>
-				</li>
-				<li>
 					<a href="#/tickets/ticket_fields/cats">
+						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.category" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('category')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.categories') }}</span></h4>
 					</a>
 				</li>
 				<li>
 					<a href="#/tickets/ticket_fields/pris">
+						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.priority" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('priority')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.priorities') }}</span></h4>
 					</a>
 				</li>
 				<li>
 					<a href="#/tickets/ticket_fields/works">
+						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.workflow" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('workflow')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.workflows') }}</span></h4>
+					</a>
+				</li>
+				<li>
+					<a href="#/tickets/ticket_fields/products">
+						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.product" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('product')"></button>
+						<h4><span class="title-text">{{ phrase('agent.general.products') }}</span></h4>
 					</a>
 				</li>
 			</ul>
@@ -57,6 +61,7 @@
 			<ul class="dp-item-list">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.ticket_fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
 					<a href="#/tickets/ticket_fields/{{ ng_var('field.id') }}">
+						<button dp-toggle-switch ng-model="field.is_enabled" ng-change="TicketFieldsList.updateCustomFieldEnabledState(field)"></button>
 						<div class="pull-right">
 							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('field.id') }}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketFieldsList.startDelete(field); $event.preventDefault();"><i class="icon-trash"></i></span>

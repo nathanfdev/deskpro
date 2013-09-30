@@ -2271,6 +2271,12 @@ $collection->add('api_ticket_fields', new Route(
 	array('_method' => 'GET')
 ));
 
+$collection->add('api_ticket_fields_setenabled', new Route(
+	'/ticket_fields/set-enabled/{field_id}/{is_enabled}',
+	array('_controller' => 'ApiBundle:TicketFields:toggleField'),
+	array('_method' => 'POST')
+));
+
 ########################################################################################################################
 # EMAIL ACCOUNTS
 ########################################################################################################################

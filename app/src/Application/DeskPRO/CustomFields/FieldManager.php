@@ -120,7 +120,11 @@ class FieldManager
 		$this->options->setArrayDefault(array(
 			'custom_data_property' => 'custom_data'
 		));
+
+		$this->init();
 	}
+
+	protected function init() {}
 
 	/**
 	 * Get a collection of all top-level (parent) fields
