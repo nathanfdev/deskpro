@@ -253,17 +253,17 @@
             _this.initDeplistData(_this.DepartmentData.deps);
             _this.skipDirtyState();
             if (is_new) {
-              _this.Growl.success("Department was created successfully", function() {
-                return _this.$state.go('tickets.ticket_deps.edit', {
-                  id: _this.dep.id
-                });
-              });
               return _this.$state.go('tickets.ticket_deps.gocreate');
             } else {
               return _this.$state.go('tickets.ticket_deps');
             }
           });
         }
+        this.Growl.success(this.getRegisteredMessage('saved_dep'), function() {
+          return _this.$state.go('tickets.ticket_deps.edit', {
+            id: _this.dep.id
+          });
+        });
         this.dep.setCheckpoint();
         this.depPerms = this.getPermsData();
         return promise;

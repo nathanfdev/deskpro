@@ -226,13 +226,14 @@ define [
 
 					@skipDirtyState()
 					if is_new
-						@Growl.success("Department was created successfully", =>
-							@$state.go('tickets.ticket_deps.edit', {id: @dep.id})
-						)
 						@$state.go('tickets.ticket_deps.gocreate')
 					else
 						@$state.go('tickets.ticket_deps')
 				)
+
+			@Growl.success(@getRegisteredMessage('saved_dep'), =>
+				@$state.go('tickets.ticket_deps.edit', {id: @dep.id})
+			)
 
 			@dep.setCheckpoint()
 			@depPerms = @getPermsData()

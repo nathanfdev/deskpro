@@ -54,4 +54,5 @@
 	'admin.departments.linked_account'                             => 'Email Account',
 	'admin.departments.linked_account_explain'                     => 'You can define a 1-to-1 link between this department and one of your email accounts. When an email arrives in the email account, this department will be set and when any ticket is in this department, the "From" address will be set to the email account.',
 	'admin.departments.linked_account_none_explain'                => 'All of your email accounts are currently linked to other departments.',
+	'admin.departments.saved_dep_x_success'                        => 'Saved department "{{title}}" successfully',
 );

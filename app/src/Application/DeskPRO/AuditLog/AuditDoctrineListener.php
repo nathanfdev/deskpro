@@ -106,7 +106,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 			if (isset($this->defs[$table]['save_as_change'])) {
 				$save_as     = $this->defs[$table]['save_as_change'];
-				$save_obj    = is_string($entity[$save_as['object_field_id']]) ? $entity[$save_as['object_field_id']] : $entity[$save_as['object_field_id']]($entity);
+				$save_obj    = is_string($save_as['object_field_id']) ? $entity[$save_as['object_field_id']] : $save_as['object_field_id']($entity);
 				$save_field  = $save_as['as_field_id'];
 			} else {
 				$save_obj    = $entity;
@@ -160,7 +160,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 		} else {
 			$save_as     = $this->defs[$table]['save_as_change'];
-			$save_obj    = is_string($entity[$save_as['object_field_id']]) ? $entity[$save_as['object_field_id']] : $entity[$save_as['object_field_id']]($entity);
+			$save_obj    = is_string($save_as['object_field_id']) ? $entity[$save_as['object_field_id']] : $save_as['object_field_id']($entity);
 			$save_field  = $save_as['as_field_id'];
 			$save_table  = $save_obj->getTableName();
 
@@ -218,7 +218,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 
 		} else {
 			$save_as     = $this->defs[$table]['save_as_change'];
-			$save_obj    = is_string($entity[$save_as['object_field_id']]) ? $entity[$save_as['object_field_id']] : $entity[$save_as['object_field_id']]($entity);
+			$save_obj    = is_string($save_as['object_field_id']) ? $entity[$save_as['object_field_id']] : $save_as['object_field_id']($entity);
 			$save_field  = $save_as['as_field_id'];
 			$save_table  = $save_obj->getTableName();
 

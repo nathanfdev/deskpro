@@ -288,6 +288,24 @@
         }
       };
 
+      /*
+        	# Gets a message from a registered message.
+        	# Generally these are registered with the dp-message directive in a view.
+        	#
+        	# @param {String} id The message ID
+        	# @return {String}
+      */
+
+
+      Admin_Ctrl_Base.prototype.getRegisteredMessage = function(id) {
+        var content, _ref;
+        content = ((_ref = this.$scope) != null ? _ref._element_messages[id] : void 0) || '';
+        if (_.isFunction(content)) {
+          content = content() || '';
+        }
+        return content;
+      };
+
       /**
       		* Calls $apply on scope only if digest isn't already being processed
       */

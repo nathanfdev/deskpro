@@ -231,6 +231,23 @@ define ['angular', 'Admin/App'], (angular) ->
 			if error_codes.length != handled_codes.length
 				console.error("One or more unhandled errors: %o", error_codes)
 
+
+		###
+    	# Gets a message from a registered message.
+    	# Generally these are registered with the dp-message directive in a view.
+    	#
+    	# @param {String} id The message ID
+    	# @return {String}
+    	###
+		getRegisteredMessage: (id) ->
+			content = @$scope?._element_messages[id] || ''
+
+			if _.isFunction(content)
+				content = content() || ''
+
+			return content
+
+
 		###*
 		* Calls $apply on scope only if digest isn't already being processed
 		###
