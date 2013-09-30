@@ -71,7 +71,7 @@ class Engine extends BaseEngine
 		}
 
 		$tf = new TemplateFiles(true);
-		$this->_template_files_map = $tf->genTemplateMap();
+		$this->_template_files_map = $tf->getTemplateMap();
 	}
 
 	/**
