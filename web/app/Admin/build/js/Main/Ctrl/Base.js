@@ -53,6 +53,9 @@
         if (this.DEPS.indexOf('$state') === -1) {
           this.DEPS.unshift('$state');
         }
+        if (this.DEPS.indexOf('$timeout') === -1) {
+          this.DEPS.unshift('$timeout');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);
@@ -154,6 +157,87 @@
 
       Admin_Ctrl_Base.prototype.pingElement = function(id) {
         return this.$scope._ctrl_elemnt_ping[id] = (new Date()).getTime();
+      };
+
+      /*
+        	# Enables a 'spinner' state in the view which will
+        	# last for at least minTime time.
+        	#
+        	# If a spinner already exists, then it will be restarted.
+        	#
+        	# @param {String} id The ID of the spinner
+        	# @param {Integer} minTime The min time the spinner should be visible for
+        	# @return {promise} A promise that resolves once the spinner stops
+      */
+
+
+      Admin_Ctrl_Base.prototype.startSpinner = function(id, minTime) {
+        var deferred, desc,
+          _this = this;
+        if (minTime == null) {
+          minTime = 1050;
+        }
+        if (!this.$scope._spin_els) {
+          this.$scope._spin_els = {};
+        }
+        if (this.$scope._spin_els[id]) {
+          this.stopSpinner(id, true);
+        }
+        deferred = this.$q.defer();
+        desc = {
+          doneTime: false,
+          doneSpin: false,
+          setTimeoutDone: function() {
+            desc.doneTime = true;
+            if (desc._timeout) {
+              _this.$timeout.cancel(desc._timeout);
+            }
+            if (desc.doneSpin) {
+              return deferred.resolve();
+            }
+          },
+          setSpinDone: function() {
+            desc.doneSpin = true;
+            if (desc.doneTime) {
+              return deferred.resolve();
+            }
+          },
+          _promise: deferred.promise,
+          _timeout: this.$timeout(function() {
+            return desc.setTimeoutDone();
+          }, minTime)
+        };
+        this.$scope._spin_els[id] = desc;
+        return desc._promise;
+      };
+
+      /*
+        	# Stops a 'spinner' state in the view. This by default
+        	# only marks the manual spinner state as off. The timer may stil
+        	# be going which means the spinner will still be visible until that
+        	# ends too. Pass force=true to stop the spinner (disregarding the min time)
+        	#
+        	# @param {String} id The ID of the spinner
+        	# @param {Boolean} force True to stop the spinner even if the minTime timer is still going
+      		# @return {promise} A promise that resolves once the spinner stops
+      */
+
+
+      Admin_Ctrl_Base.prototype.stopSpinner = function(id, force) {
+        var d, _ref;
+        if (force == null) {
+          force = false;
+        }
+        if (!((_ref = this.$scope._spin_els) != null ? _ref[id] : void 0)) {
+          d = this.$q.defer();
+          d.resolve();
+          return d.promise();
+        }
+        this.$scope._spin_els[id].setSpinDone();
+        if (force) {
+          this.$scope._spin_els[id].setTimeoutDone();
+        }
+        return this.$scope._spin_els[id]._promise;
       };
 
       /**

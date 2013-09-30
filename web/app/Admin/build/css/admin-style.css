@@ -7652,6 +7652,34 @@ form {
   background: url("../../../../images/spinners/loading-big-circle.gif") no-repeat 50% 50%;
 }
 
+i.spinner-flat {
+  display: inline-block;
+  width: 16px;
+  height: 11px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  line-height: 100%;
+  text-indent: -100px;
+  background-image: url('../../../../images/spinners/loading-small-flat.gif');
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+i.spinner-xsmall {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  line-height: 100%;
+  text-indent: -100px;
+  background: url('../../../../images/spinners/loading-arrows-xsmall-whitebg.gif');
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
 header.pane-header {
   padding: 0;
   margin: 0;

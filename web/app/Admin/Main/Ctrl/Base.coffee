@@ -35,6 +35,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.unshift('$q')
 			if @DEPS.indexOf('$state') == -1
 				@DEPS.unshift('$state')
+			if @DEPS.indexOf('$timeout') == -1
+				@DEPS.unshift('$timeout')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
@@ -130,6 +132,75 @@ define ['angular', 'Admin/App'], (angular) ->
 		###
 		pingElement: (id) ->
 			@$scope._ctrl_elemnt_ping[id] = (new Date()).getTime()
+
+
+		###
+    	# Enables a 'spinner' state in the view which will
+    	# last for at least minTime time.
+    	#
+    	# If a spinner already exists, then it will be restarted.
+    	#
+    	# @param {String} id The ID of the spinner
+    	# @param {Integer} minTime The min time the spinner should be visible for
+    	# @return {promise} A promise that resolves once the spinner stops
+    	###
+		startSpinner: (id, minTime = 1050) ->
+			if not @$scope._spin_els then @$scope._spin_els = {}
+
+			if @$scope._spin_els[id]
+				@stopSpinner(id, true)
+
+			deferred = @$q.defer()
+
+			desc = {
+				doneTime: false,
+				doneSpin: false,
+				setTimeoutDone: =>
+					desc.doneTime = true
+					if desc._timeout
+						@$timeout.cancel(desc._timeout)
+
+					if desc.doneSpin
+						deferred.resolve()
+				,
+				setSpinDone: =>
+					desc.doneSpin = true
+					if desc.doneTime
+						deferred.resolve()
+				,
+				_promise: deferred.promise,
+				_timeout: @$timeout(=>
+					desc.setTimeoutDone()
+				, minTime)
+			}
+
+			@$scope._spin_els[id] = desc
+			return desc._promise
+
+
+		###
+    	# Stops a 'spinner' state in the view. This by default
+    	# only marks the manual spinner state as off. The timer may stil
+    	# be going which means the spinner will still be visible until that
+    	# ends too. Pass force=true to stop the spinner (disregarding the min time)
+    	#
+    	# @param {String} id The ID of the spinner
+    	# @param {Boolean} force True to stop the spinner even if the minTime timer is still going
+		# @return {promise} A promise that resolves once the spinner stops
+    	###
+		stopSpinner: (id, force = false) ->
+			if not @$scope._spin_els?[id]
+				d = @$q.defer()
+				d.resolve()
+				return d.promise()
+
+			@$scope._spin_els[id].setSpinDone()
+
+			if force
+				@$scope._spin_els[id].setTimeoutDone()
+
+			return @$scope._spin_els[id]._promise
+
 
 		###*
 		* A controller may override this method.

@@ -184,6 +184,8 @@ define [
 				permissions: @getPermsData()
 			}
 
+			@startSpinner('saving_dep')
+
 			if @dep.id
 				is_new = false
 				promise = @Api.sendPostJson('/ticket_deps/' + @dep.id, postData)
@@ -197,6 +199,13 @@ define [
 			else
 				full_title = @dep.title
 
+			promise.then(=>
+				@stopSpinner('saving_dep').then(=>
+					@Growl.success(@getRegisteredMessage('saved_dep'), =>
+						@$state.go('tickets.ticket_deps.edit', {id: @dep.id})
+					)
+				)
+			)
 			promise.error( (info, code) =>
 				@applyErrorResponseToView(info)
 			)
@@ -230,10 +239,6 @@ define [
 					else
 						@$state.go('tickets.ticket_deps')
 				)
-
-			@Growl.success(@getRegisteredMessage('saved_dep'), =>
-				@$state.go('tickets.ticket_deps.edit', {id: @dep.id})
-			)
 
 			@dep.setCheckpoint()
 			@depPerms = @getPermsData()

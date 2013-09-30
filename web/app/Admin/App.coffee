@@ -13,6 +13,7 @@ define [
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
+	'Admin/Main/Directive/DpHideSpinning',
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpNavSubnav',
@@ -20,6 +21,7 @@ define [
 	'Admin/Main/Directive/DpPingFlash',
 	'Admin/Main/Directive/DpRegisterMessage',
 	'Admin/Main/Directive/DpServerValidation',
+	'Admin/Main/Directive/DpShowSpinning',
 	'Admin/Main/Directive/DpStateMark',
 	'Admin/Main/Directive/DpSubmitForm',
 	'Admin/Main/Directive/DpTabBody',
@@ -43,6 +45,7 @@ define [
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpHelpPage,
+	Admin_Main_Directive_DpHideSpinning,
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpNavSubnav,
@@ -50,6 +53,7 @@ define [
 	Admin_Main_Directive_DpPingFlash,
 	Admin_Main_Directive_DpRegisterMessage,
 	Admin_Main_Directive_DpServerValidation,
+	Admin_Main_Directive_DpShowSpinning,
 	Admin_Main_Directive_DpStateMark,
 	Admin_Main_Directive_DpSubmitForm,
 	Admin_Main_Directive_DpTabBody,
@@ -108,6 +112,7 @@ define [
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)
 	Admin_App.directive('dpErrorClass',       Admin_Main_Directive_DpErrorClass)
 	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)
+	Admin_App.directive('dpHideSpinning',     Admin_Main_Directive_DpHideSpinning)
 	Admin_App.directive('dpInhelpBody',       Admin_Main_Directive_DpInhelpBody)
 	Admin_App.directive('dpInhelpBtn',        Admin_Main_Directive_DpInhelpBtn)
 	Admin_App.directive('dpNavSubnav',        Admin_Main_Directive_DpNavSubnav)
@@ -115,6 +120,7 @@ define [
 	Admin_App.directive('dpPingFlash',        Admin_Main_Directive_DpPingFlash)
 	Admin_App.directive('dpRegisterMessage',  Admin_Main_Directive_DpRegisterMessage)
 	Admin_App.directive('dpServerValidation', Admin_Main_Directive_DpServerValidation)
+	Admin_App.directive('dpShowSpinning',     Admin_Main_Directive_DpShowSpinning)
 	Admin_App.directive('dpStateMark',        Admin_Main_Directive_DpStateMark)
 	Admin_App.directive('dpSubmitForm',       Admin_Main_Directive_DpSubmitForm)
 	Admin_App.directive('dpTabBody',          Admin_Main_Directive_DpTabBody)

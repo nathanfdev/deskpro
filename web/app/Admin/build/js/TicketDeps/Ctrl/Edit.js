@@ -217,6 +217,7 @@
           properties: props,
           permissions: this.getPermsData()
         };
+        this.startSpinner('saving_dep');
         if (this.dep.id) {
           is_new = false;
           promise = this.Api.sendPostJson('/ticket_deps/' + this.dep.id, postData);
@@ -230,6 +231,15 @@
         } else {
           full_title = this.dep.title;
         }
+        promise.then(function() {
+          return _this.stopSpinner('saving_dep').then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_dep'), function() {
+              return _this.$state.go('tickets.ticket_deps.edit', {
+                id: _this.dep.id
+              });
+            });
+          });
+        });
         promise.error(function(info, code) {
           return _this.applyErrorResponseToView(info);
         });
@@ -259,11 +269,6 @@
             }
           });
         }
-        this.Growl.success(this.getRegisteredMessage('saved_dep'), function() {
-          return _this.$state.go('tickets.ticket_deps.edit', {
-            id: _this.dep.id
-          });
-        });
         this.dep.setCheckpoint();
         this.depPerms = this.getPermsData();
         return promise;

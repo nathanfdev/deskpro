@@ -263,8 +263,13 @@
 				</div>
 
 				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-					<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+					<div dp-hide-spinning="saving_dep">
+						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+					</div>
+					<div dp-show-spinning="saving_dep">
+						<i class="spinner-flat"></i>
+					</div>
 				</div>
 			</div>
 		</form>
