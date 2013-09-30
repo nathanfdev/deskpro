@@ -69,6 +69,7 @@
               return updateState(newVal);
             });
             element.on('click', function(ev) {
+              ev.preventDefault();
               return scope.$apply(function() {
                 var _ref, _ref1;
                 if ((_ref = $rootScope._ctrl_inhelp_state) != null ? _ref[id] : void 0) {

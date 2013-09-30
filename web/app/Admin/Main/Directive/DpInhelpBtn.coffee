@@ -78,6 +78,7 @@ define ['jquery'], ($) ->
 				)
 
 				element.on('click', (ev) ->
+					ev.preventDefault()
 					scope.$apply(->
 						if $rootScope._ctrl_inhelp_state?[id]
 							$rootScope._ctrl_inhelp_state[id] = false
