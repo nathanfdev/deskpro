@@ -17,7 +17,7 @@
 						{% endif %}
 						{{ snippet.snippet_use.show }}
 						{% for snippet_info in snippet.snippet %}
-							<textarea style="display: none;" class="lang-{{ snippet_info.language_id }} snippet-value" data-language-id="{{ snippet_info.language_id }}">{{ snippet_info.value }}</textarea>
+							<textarea style="display: none;" class="lang-{{ snippet_info.language_id }} snippet-value" data-language-id="{{ snippet_info.language_id }}">{{ snippet_info.value|default("")|escape }}</textarea>
 						{% endfor %}
 					</div>
 					<div class="fadeaway"></div>
