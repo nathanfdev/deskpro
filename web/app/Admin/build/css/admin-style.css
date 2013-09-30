@@ -7897,11 +7897,11 @@ article.pane-content.pad-top {
 nav.dp-main-tabs {
   height: 49px;
   overflow: hidden;
-  background-color: #EEEEEE;
+  background-color: #fff;
 }
 
 nav.dp-main-tabs ul {
-  height: 49px;
+  height: 48px;
   padding: 0;
   margin: 0;
   list-style-type: none;
@@ -7915,8 +7915,9 @@ nav.dp-main-tabs ul li {
   padding-left: 15px;
   margin-top: 8px;
   margin-left: 13px;
-  line-height: 37px;
+  line-height: 35px;
   cursor: pointer;
+  background: #eee;
   border: 1px solid #999999;
   border-bottom: none;
   -webkit-border-top-right-radius: 4px;
