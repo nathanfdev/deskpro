@@ -3,6 +3,10 @@
 fromdos /vagrant/vm_conf/scripts/checkout_deskpro.sh
 fromdos /vagrant/vm_conf/scripts/install_deskpro.sh
 
+echo "Increasing apc memory"
+echo "" >> /etc/php5/conf.d/apc.ini
+echo "apc.shm_size = 100M" >> /etc/php5/conf.d/apc.ini
+
 echo "Installing nodejs"
 sudo apt-get update
 sudo apt-get install --yes python-software-properties
@@ -32,5 +36,6 @@ fi
 echo "Installing DeskPRO cron job"
 echo "* * * * * www-data php /deskpro/www/cron.php" >> /etc/crontab
 
-echo "Restarting nginx"
+echo "Restarting webserver"
 service nginx restart
+service php5-fpm restart
