@@ -244,10 +244,19 @@ class Message extends \Orb\Mail\Message
 				continue;
 			}
 
+			$type = $blob->content_type;
+
+			// Bug in attaching message/rfc822 messages
+			// results in invalid emails.
+			// See open bug: https://github.com/swiftmailer/swiftmailer/issues/258
+			if ($type == 'message/rfc822') {
+				$type = 'application/octet-stream';
+			}
+
 			$this->attach(\Swift_Attachment::newInstance(
 				App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
 				$blob->filename,
-				$blob->content_type
+				$type
 			));
 		}
 		$this->attach_blobs = null;
