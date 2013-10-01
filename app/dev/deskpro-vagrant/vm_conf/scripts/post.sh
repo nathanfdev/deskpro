@@ -1,7 +1,7 @@
 #!/bin/bash
 
-fromdos /vagrant/vm_conf/scripts/checkout_deskpro.sh
-fromdos /vagrant/vm_conf/scripts/install_deskpro.sh
+fromdos /vm_conf/scripts/checkout_deskpro.sh
+fromdos /vm_conf/scripts/install_deskpro.sh
 
 echo "Increasing apc memory"
 echo "" >> /etc/php5/conf.d/apc.ini
@@ -25,12 +25,12 @@ mysql -uroot -e "CREATE DATABASE IF NOT EXISTS deskpro; GRANT ALL PRIVILEGES ON 
 
 echo "Checking out DesKPRO files"
 if [ ! -d /deskpro/www/app ];then
-	/bin/bash /vagrant/vm_conf/scripts/checkout_deskpro.sh
+	/bin/bash /vm_conf/scripts/checkout_deskpro.sh
 fi
 
 echo "Installing DeskPRO"
 if [ ! -f /deskpro/www/config ];then
-	/bin/bash /vagrant/vm_conf/scripts/install_deskpro.sh
+	/bin/bash /vm_conf/scripts/install_deskpro.sh
 fi
 
 echo "Installing DeskPRO cron job"
