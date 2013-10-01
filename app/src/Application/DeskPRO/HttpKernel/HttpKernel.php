@@ -286,7 +286,7 @@ class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
      *
      * @return string An internal URI
      */
-    public function generateInternalUri($controller, array $attributes = array(), array $query = array())
+	public function generateInternalUri($controller, array $attributes = array(), array $query = array(), $secure = true)
     {
         if (0 === strpos($controller, '/')) {
             return $controller;

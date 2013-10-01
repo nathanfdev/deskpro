@@ -265,7 +265,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return array(
 			'Application'        => DP_ROOT.'/src/Application',
 			'Bundle'             => DP_ROOT.'/src/Bundle',
-			'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle',
 		);
 	}
 
@@ -339,7 +338,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\MonologBundle\MonologBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
-			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\UserBundle\UserBundle(),
@@ -349,9 +348,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		if ($this->isDebug()) {
 			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-			$bundles[] = new \Elao\WebProfilerExtraBundle\WebProfilerExtraBundle();
 			$bundles[] = new \Application\DevBundle\DevBundle();
-			$bundles[] = new \Profiler\LiveBundle\ProfilerLiveBundle();
 		}
 
 		return $bundles;

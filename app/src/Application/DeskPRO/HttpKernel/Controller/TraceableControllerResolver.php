@@ -29,37 +29,54 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Queue
+ * @subpackage HttpKernel
  */
 
-namespace Application\DeskPRO\Queue;
+namespace Application\DeskPRO\HttpKernel\Controller;
 
-use Orb\Util\Strings;
-use Orb\Util\Util;
-use Application\DeskPRO\Entity\QueueItem;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
+use Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
+
 
 /**
- * Automatically load the body from a QI item
+ * This controller resolver changes instantiation of controllers to pass in the container
+ * to the constructor.
  */
-class Message extends \ZendQueue\Message
+class TraceableControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\TraceableControllerResolver
 {
-	protected $_has_init_qi = false;
+    protected function createController($controller)
+    {
+        if (false === strpos($controller, '::')) {
+            $count = substr_count($controller, ':');
+            if (2 == $count) {
+                                $controller = $this->parser->parse($controller);
+            } elseif (1 == $count) {
+                                list($service, $method) = explode(':', $controller);
+                return array($this->container->get($service), $method);
+            } else {
+                throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
+            }
+        }
 
-	public function __get($key)
-	{
-		if ($this->_has_init_qi) {
-			return parent::__get($key);
-		}
+        list($class, $method) = explode('::', $controller);
 
-		if ($key == 'body') {
-			$this->_has_init_qi = true;
-			$match = null;
-			if (preg_match('#^<QueueItem:([0-9]+)>$#', $this->_data['body'])) {
-				$db = $this->getAdapter()->getDb();
-				$this->_data['body'] = $db->fetchColumn("SELECT data FROM queue_item WHERE id = ?", array($match[1]));
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+        }
+
+		if (is_subclass_of($class, 'Application\\DeskPRO\\HttpKernel\\Controller\\Controller')) {
+			$controller = new $class($this->container);
+		} else {
+			$controller = new $class();
+			if (is_subclass_of($class, 'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface')) {
+			//if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
+				$controller->setContainer($this->container);
+			} else {
+				die($class);
 			}
 		}
 
-		return parent::__get($key);
-	}
+        return array($controller, $method);
+    }
 }

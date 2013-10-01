@@ -10,6 +10,7 @@
 *.komodoproject
 *.sublime*
 *.map
+vendor/**/.git
 
 # cache and log files
 /app/sys/cache/*

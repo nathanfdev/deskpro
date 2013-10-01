@@ -12,14 +12,13 @@ define('DP_ROOT', realpath(__DIR__ . '/../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
-require DP_ROOT . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
 
 $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array('Orb' => DP_ROOT.'/src'));
-$loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor/symfony/src'));
 $loader->register();
 
 $file = DP_ROOT.'/sys/bootstrap.php';

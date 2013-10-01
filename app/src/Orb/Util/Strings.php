@@ -2332,7 +2332,7 @@ class Strings
 
 			$time = time();
 
-			// see app/vendor/php-utf8/utils/bad.php
+			// see app/vendor-src/php-utf8/utils/bad.php
 			$UTF8_BAD =
 				'([\x00-\x7F]'.                          # ASCII (including control chars)
 				'|[\xC2-\xDF][\x80-\xBF]'.               # non-overlong 2-byte

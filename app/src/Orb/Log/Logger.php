@@ -170,7 +170,7 @@ class Logger
 	 * should not be logged. So in this way filters act dually to transform or actually
 	 * filter out items.
 	 *
-	 * @param \Zend\Filter\Filter $filter
+	 * @param \Zend\Filter\FilterInterface $filter
 	 */
 	public function addFilter(\Orb\Filter\FilterInterface $filter)
 	{

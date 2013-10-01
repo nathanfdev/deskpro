@@ -70,17 +70,17 @@ ini_set('default_charset', 'UTF-8');
 require_once DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
 require_once DP_ROOT . '/sys/load_config.php';
 
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Finder.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Glob.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/SplFileInfo.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Filesystem/Filesystem.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Finder.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Glob.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/SplFileInfo.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
 require_once DP_ROOT.'/src/Orb/Util/Numbers.php';
 require_once DP_ROOT.'/src/Orb/Util/Env.php';
 require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
@@ -2345,13 +2345,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Load the required Symfony libs
 		#------------------------------
 
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/Helper.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
-		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/Helper.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
+		require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
 
 		#------------------------------
 		# Create helpers
@@ -3224,7 +3224,7 @@ class Zip_PclZip implements DpZip
 {
 	public function __construct()
 	{
-		require_once(DP_ROOT . '/vendor/pclzip/pclzip.lib.php');
+		require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
 	}
 
 	public function compressFile($path)

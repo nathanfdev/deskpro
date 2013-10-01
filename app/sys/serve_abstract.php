@@ -73,11 +73,11 @@ abstract class LoaderAbstract
 		ini_set('default_charset', 'UTF-8');
 
 		if (!defined('ORB_STRINGS_UTF8_DIR')) {
-			define('ORB_STRINGS_UTF8_DIR', DP_ROOT.'/vendor/php-utf8');
+			define('ORB_STRINGS_UTF8_DIR', DP_ROOT.'/vendor-src/php-utf8');
 		}
 
 		if (!defined('GEOIP_API_INC_PATH')) {
-			define('GEOIP_API_INC_PATH', DP_ROOT.'/vendor/geoip-api');
+			define('GEOIP_API_INC_PATH', DP_ROOT.'/vendor-src/geoip-api');
 		}
 
 		spl_autoload_register(function($class) {

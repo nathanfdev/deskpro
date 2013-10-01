@@ -47,7 +47,7 @@ date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 set_time_limit(0);
 
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 require DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
 require_once DP_ROOT.'/sys/autoload.php';

@@ -410,7 +410,7 @@ class DpLoader extends LoaderAbstract
 					$geoip = new \Orb\GeoIp\GeoIpExtension();
 				} else {
 					$geoip = new \Orb\GeoIp\GeoIpPhp();
-					$geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor/geoip-db/GeoIP.dat');
+					$geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
 				}
 			}
 

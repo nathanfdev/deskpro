@@ -16,21 +16,11 @@ require DP_ROOT.'/sys/system.php';
 
 $dirs = array(
 	DP_ROOT.'/src',
-	DP_ROOT.'/vendor/doctrine/lib',
-	DP_ROOT.'/vendor/doctrine-common/lib',
-	DP_ROOT.'/vendor/doctrine-dbal/lib',
-	DP_ROOT.'/vendor/doctrine-migrations/lib',
-	DP_ROOT.'/vendor/metadata/src',
-	DP_ROOT.'/vendor/monolog/src',
-	DP_ROOT.'/vendor/swiftmailer/lib/classes',
-	DP_ROOT.'/vendor/symfony/src',
-	DP_ROOT.'/vendor/twig/lib',
-	DP_ROOT.'/vendor/zend/library',
+	DP_ROOT.'/vendor-src/metadata/src',
 );
 
 $no_ns = array(
-	DP_ROOT.'/vendor/twig/lib',
-	DP_ROOT.'/vendor/swiftmailer/lib/classes',
+	DP_ROOT.'/vendor-src/swiftmailer/lib/classes',
 );
 
 $map = array("<?php return array(");

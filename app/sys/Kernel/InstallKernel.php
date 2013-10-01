@@ -52,7 +52,7 @@ class InstallKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 	{
 		$bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\InstallBundle\InstallBundle(),
 		);

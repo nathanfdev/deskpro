@@ -67,7 +67,7 @@ if (!empty($argv[1])) {
 		session_write_close();
 	}
 } else {
-	require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+	require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 	require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 	require DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
 	require_once DP_ROOT.'/sys/autoload.php';

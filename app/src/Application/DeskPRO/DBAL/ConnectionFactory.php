@@ -46,7 +46,7 @@ use Doctrine\DBAL\Types\Type;
 /**
  * Custom loading database creds from config.php
  */
-class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
+class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
 {
 	/**
 	 * @var \Symfony\Component\DependencyInjection\ContainerInterface

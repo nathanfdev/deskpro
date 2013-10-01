@@ -1,0 +1,36 @@
+{
+	"require": {
+		"kriswallsmith/assetic": "1.1.*",
+		"aws/aws-sdk-php": "2.3.*",
+		"doctrine/common": "2.2.*",
+		"doctrine/dbal": "2.2.*",
+		"doctrine/orm": "2.2.*",
+		"doctrine/migrations": "dev-master",
+		"facebook/php-sdk": "3.2.*",
+		"guzzle/guzzle": "3.4.*",
+		"imagine/imagine": "0.4.*",
+		"mockery/mockery": "dev-master",
+		"monolog/monolog": ">=1.0.0",
+		"pda/pheanstalk": "2.1.*",
+		"leth/ip-address": "dev-master",
+		"kriswallsmith/spork": "dev-master",
+		"symfony/symfony": "2.1.*",
+		"symfony/monolog-bundle": "*",
+		"doctrine/doctrine-bundle": "*",
+		"symfony/swiftmailer-bundle": "*",
+		"swiftmailer/swiftmailer": ">=4.3",
+		"twig/twig": "1.12.*",
+		"zendframework/zendframework": "2.0.*",
+		"zendframework/zend-queue": "dev-master",
+
+		"phpunit/phpunit": "3.7.*",
+		"behat/behat": "2.4.*@stable",
+        "behat/mink": "1.4.*@stable",
+        "behat/mink-extension": "*",
+        "behat/mink-goutte-driver": "*",
+        "behat/mink-selenium2-driver": "*"
+	},
+	"config": {
+        "bin-dir": "bin/"
+    }
+}

@@ -14,6 +14,7 @@ use Symfony\Component\Config\Resource\FileResource;
 $container->setParameter('kernel.include_core_classes', false);
 $container->setParameter('http_kernel.class', 'Application\\DeskPRO\\HttpKernel\\HttpKernel');
 $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\ControllerResolver');
+$container->setParameter('debug.controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\TraceableControllerResolver');
 $container->setParameter('session.class', 'Application\\DeskPRO\\HttpFoundation\\Session');
 $container->setParameter('swiftmailer.class', 'Application\\DeskPRO\\Mail\\Mailer');
 $container->setParameter('twig.loader.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
@@ -31,12 +32,11 @@ $container->setParameter('router.options.generator_dumper_class', 'Application\\
 $container->setParameter('router.options.matcher_dumper_class', 'Application\\DeskPRO\\Routing\\Matcher\\Dumper\\PhpMatcherDumper');
 $container->setParameter('router.options.generator_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
-$container->setParameter('doctrine.data_collector.class', 'Application\\DeskPRO\\Profiler\\DataCollector\\DoctrineDataCollector');
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
 $container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
 $container->setParameter('doctrine_migrations.dir_name', '%kernel.root_dir%/Resources/DoctrineMigrations');
 $container->setParameter('doctrine_migrations.table_name', 'dev_migration_versions');
-$container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
+//$container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
@@ -78,14 +78,14 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
-// session.storage
+// session.handler
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
 $definition->setArguments(array(
 	new Reference('doctrine.orm.entity_manager'),
 	'%session.storage.options%'
 ));
-$container->setDefinition('session.storage', $definition);
+$container->setDefinition('session.handler', $definition);
 
 // deskpro.mail_logger
 $definition = new Definition();
@@ -113,9 +113,9 @@ if (defined('DPC_IS_CLOUD')) {
 	$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
 }
 $definition->setArguments(array(
-	new Reference('swiftmailer.transport.eventdispatcher')
+	new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
 ));
-$container->setDefinition('swiftmailer.transport.dp_delegating', $definition);
+$container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
 
 // doctrine.dbal.connection_factory
 $definition = new Definition();
@@ -140,11 +140,6 @@ $definition = new Definition();
 $definition->setClass('Application\DeskPRO\HttpKernel\ExceptionListener');
 $definition->addTag('kernel.event_listener', array('event' => 'kernel.exception', 'method' => 'onKernelException', 'priority' => -128));
 $container->setDefinition('deskpro.exception_logger', $definition);
-
-// deskpro.profiler.request_matcher
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Profiler\\RequestMatcher');
-$container->setDefinition('deskpro.profiler.request_matcher', $definition);
 
 // deskpro.interface_value
 $definition = new Definition();
@@ -195,7 +190,6 @@ $container->setDefinition('deskpro.service_urls', $definition);
 ############################################################################
 
 $container->loadFromExtension('framework', array(
-	'charset' => 'UTF-8',
 	'secret' => 'mube224etsmhxky1gvwixc4b',
 	'templating' => array(
 		'engines' => array('twig', 'php', 'jsonphp'),
@@ -203,9 +197,7 @@ $container->loadFromExtension('framework', array(
 	),
 	'validation' => array('enabled' => true),
 	'session' => array(
-		'default_locale' => 'en',
-		'lifetime' => 3600,
-		'auto_start' => true
+		'lifetime' => 3600
 	),
 	'form' => array('enabled' => true)
 ));
@@ -259,7 +251,7 @@ $container->loadFromExtension('doctrine', array(
 ############################################################################
 
 $container->loadFromExtension('swiftmailer', array(
-	'transport' => 'swiftmailer.transport.dp_delegating'
+	'transport' => 'dp_delegating'
 ));
 
 

@@ -14,13 +14,13 @@ define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 require DP_ROOT . '/bin/build/php-path.php';
 
-require DP_ROOT . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
 
 $loader = new UniversalClassLoader();
-$loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor/symfony/src'));
+$loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor-src/symfony/src'));
 $loader->register();
 
 $output_realtime = function($type, $buffer) {

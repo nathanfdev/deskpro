@@ -2802,7 +2802,7 @@ class TicketController extends AbstractController
 			}
 		}
 
-		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+		require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
 		if ($this->in->getBool('raw')) {
 			$this->ensureAuthToken('view_raw', $this->in->getString('raw'));
@@ -2853,7 +2853,7 @@ class TicketController extends AbstractController
 
 		switch ($type) {
 			case 'raw':
-				require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+				require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 				$purifier = new \HTMLPurifier();
 				$config = \HTMLPurifier_Config::createDefault();
 				$config->set('Cache.DefinitionImpl', null);

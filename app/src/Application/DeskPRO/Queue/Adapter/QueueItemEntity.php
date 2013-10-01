@@ -39,14 +39,14 @@ use Orb\Util\Util;
 use Application\DeskPRO\Entity\QueueItem;
 
 
-use \Zend\Queue\Queue;
-use \Zend\Queue\Exception as QueueException;
-use \Zend\Queue\Message;
+use \ZendQueue\Queue;
+use \ZendQueue\Exception as QueueException;
+use \ZendQueue\Message;
 
 /**
  * Adapter to use the QueueItemEntity
  */
-class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
+class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
 {
 	/**
 	 * Plain database connection for raw queries

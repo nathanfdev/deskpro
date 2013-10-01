@@ -1,10 +1,10 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/Request.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/ParameterBag.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/ServerBag.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/HeaderBag.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/FileBag.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/Request.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/ParameterBag.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/ServerBag.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/HeaderBag.php';
+require DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/FileBag.php';
 
 $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $pathinfo = $request->getPathInfo();

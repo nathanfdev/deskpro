@@ -43,7 +43,7 @@ use Orb\Util\Util;
 /**
  * This storage uses the Session entity for storing session info.
  */
-class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface
+class SessionEntityStorage implements \SessionHandlerInterface
 {
 	static protected $sessionIdRegenerated = false;
     static protected $sessionStarted       = false;
@@ -183,7 +183,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      *
      * @return boolean true, if the session was opened, otherwise an exception is thrown
      */
-    public function sessionOpen($path = null, $name = null)
+    public function open($path = null, $name = null)
     {
         return true;
     }
@@ -195,7 +195,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      *
      * @return boolean true, if the session was closed, otherwise false
      */
-    public function sessionClose()
+    public function close()
     {
         return true;
     }
@@ -211,7 +211,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      *
      * @throws \RuntimeException If the session cannot be destroyed
      */
-    public function sessionDestroy($id)
+    public function destroy($id)
     {
 		if ($this->session && $this->session->getSessionCode() == $id) {
 			$session = $this->session;
@@ -234,7 +234,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      * @return bool true
      * @throws \RuntimeException If any old sessions cannot be cleaned
      */
-    public function sessionGC($lifetime)
+    public function gc($lifetime)
     {
         return true;
     }
@@ -250,7 +250,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      *
      * @throws \RuntimeException If the session cannot be read
      */
-    public function sessionRead($id)
+    public function read($id)
     {
 		$sid = self::getIdFromCode($id);
 		if ($this->session && $this->session->getSessionCode() == $id) {
@@ -279,7 +279,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      *
      * @throws \RuntimeException If the session data cannot be written
      */
-    public function sessionWrite($id, $data)
+    public function write($id, $data)
     {
 		// Because of when the session is written, we cant use the ORM here,
 		// because the manager has lost its reference to the session state
@@ -387,75 +387,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 
 		return $this->session;
 	}
-
-    /**
-     * Reads data from this storage.
-     *
-     * The preferred format for a key is directory style so naming conflicts can be avoided.
-     *
-     * @param string $key A unique key identifying your data
-     *
-     * @return mixed Data associated with the key
-     */
-    public function read($key, $default = null)
-    {
-        return array_key_exists($key, $_SESSION) ? $_SESSION[$key] : $default;
-    }
-
-    /**
-     * Removes data from this storage.
-     *
-     * The preferred format for a key is directory style so naming conflicts can be avoided.
-     *
-     * @param  string $key  A unique key identifying your data
-     *
-     * @return mixed Data associated with the key
-     */
-    public function remove($key)
-    {
-        $retval = null;
-
-        if (isset($_SESSION[$key])) {
-            $retval = $_SESSION[$key];
-            unset($_SESSION[$key]);
-        }
-
-        return $retval;
-    }
-
-    /**
-     * Writes data to this storage.
-     *
-     * The preferred format for a key is directory style so naming conflicts can be avoided.
-     *
-     * @param string $key   A unique key identifying your data
-     * @param mixed  $data  Data associated with your key
-     *
-     */
-    public function write($key, $data)
-    {
-        $_SESSION[$key] = $data;
-    }
-
-    /**
-     * Regenerates id that represents this storage.
-     *
-     * @param  Boolean $destroy Destroy session when regenerating?
-     *
-     * @return Boolean True if session regenerated, false if error
-     *
-     */
-    public function regenerate($destroy = false)
-    {
-        if (self::$sessionIdRegenerated) {
-            return;
-        }
-
-        session_regenerate_id($destroy);
-
-        self::$sessionIdRegenerated = true;
-    }
-
 
 	/**
 	 * @static

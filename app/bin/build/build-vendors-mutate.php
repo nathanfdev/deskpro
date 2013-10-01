@@ -30,7 +30,7 @@ class VendorMutate
 	{
 		$do_unprivate_classes = array(
 			array(
-				'class_file' => DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/Proxy/ProxyFactory.php',
+				'class_file' => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/Proxy/ProxyFactory.php',
 				'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateProxyFactory.php',
 				'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
 				'target_classname' => 'UnprivateProxyFactory',
@@ -39,7 +39,7 @@ class VendorMutate
 				)
 			),
 			array(
-				'class_file' => DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/EntityManager.php',
+				'class_file' => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/EntityManager.php',
 				'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateEntityManager.php',
 				'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
 				'target_classname' => 'UnprivateEntityManager',
@@ -49,7 +49,7 @@ class VendorMutate
 				'callback' => array($this, '_doctrineEmFixCreate'),
 			),
 			array(
-				'class_file' => DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/UnitOfWork.php',
+				'class_file' => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php',
 				'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateUnitOfWork.php',
 				'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
 				'target_classname' => 'UnprivateUnitOfWork',
@@ -116,18 +116,18 @@ class VendorMutate
 
 	public function mutateGeoipApi()
 	{
-		$path = DP_ROOT.'/vendor/geoip-api/geoipcity.inc';
+		$path = DP_ROOT.'/vendor-src/geoip-api/geoipcity.inc';
 		$file = file_get_contents($path);
 
-		$file = str_replace("require_once 'geoip.inc';", "require_once DP_ROOT.'/vendor/geoip-api/geoip.inc';", $file);
-		$file = str_replace("require_once 'geoipregionvars.php';", "require_once DP_ROOT.'/vendor/geoip-api/geoipregionvars.php';", $file);
+		$file = str_replace("require_once 'geoip.inc';", "require_once DP_ROOT.'/vendor-src/geoip-api/geoip.inc';", $file);
+		$file = str_replace("require_once 'geoipregionvars.php';", "require_once DP_ROOT.'/vendor-src/geoip-api/geoipregionvars.php';", $file);
 
 		file_put_contents($path, $file);
 	}
 
 	public function mutateSymfony()
 	{
-		$path = DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpFoundation/File/MimeType/FileBinaryMimeTypeGuesser.php';
+		$path = DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/MimeType/FileBinaryMimeTypeGuesser.php';
 		$file = file_get_contents($path);
 		$file = str_replace('passthru(', '@passthru(', $file);
 		file_put_contents($path, $file);

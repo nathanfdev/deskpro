@@ -44,7 +44,7 @@ use Orb\Util\Web;
 /**
  * Session is able to load up a user, their language etc.
  */
-class Session extends \Symfony\Component\HttpFoundation\Session implements \ArrayAccess, \IteratorAggregate
+class Session extends \Symfony\Component\HttpFoundation\Session\Session implements \ArrayAccess, \IteratorAggregate
 {
 	/**
 	 * The person this session belongs to
@@ -603,8 +603,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 	public function getEntityId()
     {
-		if ($this->storage instanceof \Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage) {
-        	return $this->storage->getEntityId();
+		if ($this->storage->getSaveHandler() instanceof \Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage) {
+        	return $this->storage->getSaveHandler()->getEntityId();
 		} else {
 			return 0;
 		}
