@@ -21,7 +21,7 @@ echo "Installing bower"
 npm install -g bower
 
 echo "Setting MySQL root password to 'deskpro' and creating initial 'deskpro' database"
-mysql -uroot -e "CREATE DATABASE IF NOT EXISTS deskpro; UPDATE mysql.user SET password = PASSWORD('deskpro') WHERE User = 'root'; FLUSH PRIVILEGES;"
+mysql -uroot -e "CREATE DATABASE IF NOT EXISTS deskpro; GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'deskpro' WITH GRANT OPTION; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'deskpro' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
 echo "Checking out DesKPRO files"
 if [ ! -d /deskpro/www/app ];then
