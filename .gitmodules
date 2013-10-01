@@ -1,0 +1,21 @@
+[submodule "app/vendor/doctrine/migrations"]
+	path = app/vendor/doctrine/migrations
+	url = git://github.com/doctrine/migrations.git
+[submodule "app/vendor/kriswallsmith/assetic"]
+	path = app/vendor/kriswallsmith/assetic
+	url = git://github.com/kriswallsmith/assetic.git
+[submodule "app/vendor/kriswallsmith/spork"]
+	path = app/vendor/kriswallsmith/spork
+	url = git://github.com/kriswallsmith/spork.git
+[submodule "app/vendor/leth/ip-address"]
+	path = app/vendor/leth/ip-address
+	url = git://github.com/leth/PHP-IPAddress.git
+[submodule "app/vendor/mockery/mockery"]
+	path = app/vendor/mockery/mockery
+	url = git://github.com/padraic/mockery.git
+[submodule "app/vendor/symfony/symfony"]
+	path = app/vendor/symfony/symfony
+	url = git://github.com/symfony/symfony.git
+[submodule "app/vendor/zendframework/zend-queue"]
+	path = app/vendor/zendframework/zend-queue
+	url = git://github.com/zendframework/ZendQueue.git
