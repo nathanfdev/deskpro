@@ -1,5 +1,8 @@
 #!/bin/bash
 
+touch /var/log/php_errors.log
+chmod 0777 /var/log/php_errors.log
+
 fromdos /vm_conf/scripts/checkout_deskpro.sh
 fromdos /vm_conf/scripts/install_deskpro.sh
 
