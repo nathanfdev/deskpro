@@ -518,6 +518,16 @@ class TriggerExecutor
 		#------------------------------
 
 		$flood_check = true;
+		$is_email = false;
+		if ($this->tracker->isNewTicket()) {
+			if (strpos($this->ticket->creation_system, 'gateway') !== false) {
+				$is_email = true;
+			}
+		} else if ($reply = $this->tracker->getNewReply()) {
+			if (strpos($reply ->creation_system, 'gateway') !== false) {
+				$is_email = true;
+			}
+		}
 
 		if (
 			($this->tracker->isNewTicket() && $this->tracker->getTicket()->person->disable_autoresponses)
@@ -526,7 +536,7 @@ class TriggerExecutor
 			$flood_check = false;
 		}
 
-		if ($flood_check && !App::getSetting('core.disable_gateway_floodcheck')) {
+		if ($is_email && $flood_check && !App::getSetting('core.disable_gateway_floodcheck')) {
 			$is_autoreply = false;
 
 			if ($is_newticket) {
