@@ -11,6 +11,16 @@ echo "Installing PHPUnit"
 sudo pear config-set auto_discover 1
 sudo pear install pear.phpunit.de/PHPUnit
 
+echo "Install behat"
+mkdir -p /usr/local/bin/behat-src
+cd /usr/local/bin/behat-src
+wget https://github.com/downloads/Behat/Behat/behat.phar
+
+echo "#!/bin/bash" > /usr/local/bin/behat
+echo "" >> /usr/local/bin/behat
+echo 'php /usr/local/bin/behat/behat.phar "$@"' >> /usr/local/bin/behat
+chmod 0755 /usr/local/bin/behat
+
 echo "Installing nodejs"
 sudo apt-get update
 sudo apt-get install --yes python-software-properties
