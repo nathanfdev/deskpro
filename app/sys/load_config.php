@@ -53,7 +53,7 @@ function dp_load_config()
 		}
 
 		if (file_exists($config_file)) {
-			require DP_CONFIG_FILE;
+			require $config_file;
 
 			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
 				$DP_CONFIG = array();

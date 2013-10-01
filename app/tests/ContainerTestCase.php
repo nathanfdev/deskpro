@@ -25,65 +25,12 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-class DatabaseTestCase extends PHPUnit_Framework_TestCase
+class ContainerTestCase extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
 		parent::setUp();
-
-		$db = DpTestConfig::getContainer()->getDb();
-		$db->exec("SET FOREIGN_KEY_CHECKS = 0");
-
-		#------------------------------
-		# Clear database
-		#------------------------------
-
-		printf("\nClearing database ...\n");
-		$t_start = microtime(true);
-
-		foreach ($db->fetchAllCol("SHOW TABLES") as $t) {
-			$db->exec("DROP TABLE $t");
-			echo ".";
-		}
-		printf("\nDone in %.4fs", microtime(true)-$t_start);
-
-
-		#------------------------------
-		# Create tables
-		#------------------------------
-
-		printf("Creating tables ...\n");
-		$t_start = microtime(true);
-
-		$gs = new \Application\InstallBundle\Data\GenerateSchema(DpTestConfig::getContainer()->getEm());
-
-		printf("Creates -- ");
-
-		// Manually create install_data
-		// Its used by the installer to test that we have create perms, so its
-		// not part of the schema
-		$db->exec("
-			CREATE TABLE `install_data` (
-			  `build` varchar(30) NOT NULL,
-			  `name` varchar(75) NOT NULL DEFAULT '',
-			  `data` blob NOT NULL,
-			  PRIMARY KEY (`build`,`name`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1
-		");
-		foreach ($gs->getCreates() as $q) {
-			$db->exec($q);
-		}
-		printf("Done\n");
-
-		printf("Alters -- ");
-		foreach ($gs->getAlters() as $q) {
-			$db->exec($q);
-		}
-		printf("Done\n");
-		printf("\nDone in %.4fs", microtime(true)-$t_start);
-
-
-		$db->exec("SET FOREIGN_KEY_CHECKS = 1");
+		DpTestConfig::getContainer();
 	}
 
 	public function tearDown()
@@ -92,10 +39,10 @@ class DatabaseTestCase extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
-	protected function getDb()
+	protected function getContainer()
 	{
-		return DpTestConfig::getContainer()->getDb();
+		return DpTestConfig::getContainer();
 	}
 }

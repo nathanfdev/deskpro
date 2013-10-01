@@ -45,6 +45,8 @@ use Application\DeskPRO\App;
 
 abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 {
+	private $has_booted = false;
+
 	public function __construct($environment, $debug)
 	{
 		parent::__construct($environment, $debug);
@@ -72,9 +74,8 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function boot()
 	{
-		static $has_booted = false;
-		if ($has_booted) return;
-		$has_booted = true;
+		if ($this->has_booted) return;
+		$this->has_booted = true;
 
 		parent::boot();
 

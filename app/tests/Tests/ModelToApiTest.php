@@ -1,6 +1,6 @@
 <?php
 
-class ModelToApiTest extends PHPUnit_Framework_TestCase
+class ModelToApiTest extends ContainerTestCase
 {
 	public function testTicketDepartment()
 	{
@@ -25,6 +25,7 @@ class ModelToApiTest extends PHPUnit_Framework_TestCase
 			'is_chat_enabled'    => false,
 			'display_order'      => 0,
 			'parent_id'          => null,
+			'email_gateway_id'   => null,
 		), $output);
 
 		#------------------------------
@@ -49,6 +50,7 @@ class ModelToApiTest extends PHPUnit_Framework_TestCase
 			'is_chat_enabled'    => false,
 			'display_order'      => 0,
 			'parent_id'          => 1,
+			'email_gateway_id'   => null,
 		), $output);
 	}
 }

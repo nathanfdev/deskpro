@@ -2,7 +2,7 @@
 
 class InstallTest extends DatabaseTestCase
 {
-	public function testTables()
+	public function testSchema()
 	{
 		$expect_tables = array(
 			'agent_activity', 'agent_alerts', 'agent_team_members', 'agent_teams', 'api_key_rate_limit', 'api_keys',
