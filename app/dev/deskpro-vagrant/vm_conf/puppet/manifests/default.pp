@@ -8,7 +8,7 @@ exec { 'apt-get-update':
 }
 
 class php ($version = 'latest') {
-	package { [ "php5", "php5-cli", "php5-dev", "php5-fpm", "php5-mysql", "php5-curl", "php5-gd", "php-apc", "php5-xdebug", "php5-intl", "php5-mcrypt", "php5-imagick"]:
+	package { [ "php5", "php5-cli", "php5-dev", "php5-fpm", "php5-mysql", "php5-curl", "php5-gd", "php-apc", "php5-xdebug", "php5-intl", "php5-mcrypt", "php5-imagick", "php-pear"]:
 		ensure       => $version,
 		before       => File['/etc/php5/cli/php.ini'],
 		require      => Exec['apt-get-update'],

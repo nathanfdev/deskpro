@@ -7,6 +7,10 @@ echo "Increasing apc memory"
 echo "" >> /etc/php5/conf.d/apc.ini
 echo "apc.shm_size = 100M" >> /etc/php5/conf.d/apc.ini
 
+echo "Installing PHPUnit"
+sudo pear config-set auto_discover 1
+sudo pear install pear.phpunit.de/PHPUnit
+
 echo "Installing nodejs"
 sudo apt-get update
 sudo apt-get install --yes python-software-properties
