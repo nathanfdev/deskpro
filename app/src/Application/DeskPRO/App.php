@@ -195,9 +195,9 @@ class App
 	 * @param ContainerInterface $container The container
 	 * @param string             $name      A name for the container to reference it (such as 'default')
 	 */
-	public static function setContainer(ContainerInterface $container, $name)
+	public static function setContainer(ContainerInterface $container, $name, $force = false)
 	{
-		if (isset(self::$_containers[$name])) {
+		if (isset(self::$_containers[$name]) && !$force) {
 			throw new \InvalidArgumentException("The container with `$name` has already been set");
 		}
 

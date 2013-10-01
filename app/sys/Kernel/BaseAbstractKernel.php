@@ -77,7 +77,13 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$has_booted = true;
 
 		parent::boot();
-		App::setContainer($this->container, 'default');
+
+		if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing') {
+			App::setContainer($this->container, 'default', true);
+		} else {
+			App::setContainer($this->container, 'default');
+		}
+
 		$this->container->kernel = $this;
 
 		if ($this->container->has('deskpro.sys_events_loader')) {

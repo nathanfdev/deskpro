@@ -14,6 +14,7 @@
     <testsuites>
         <testsuite name="DeskPRO Test Suite">
 			<file>app/tests/Tests/ModelToApiTest.php</file>
+			<file>app/tests/Tests/InstallTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

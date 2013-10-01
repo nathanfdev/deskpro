@@ -738,9 +738,6 @@ class KernelBooter
 		KernelBooter::bootstrapConfig();
 		KernelBooter::bootstrapLib(true);
 		KernelBooter::bootstrapEnv();
-
-		$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
-		$kernel->boot('cli');
 	}
 
 
