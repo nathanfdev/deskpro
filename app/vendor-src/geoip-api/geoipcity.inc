@@ -30,8 +30,8 @@
 
 define("FULL_RECORD_LENGTH",50);
 
-require_once DP_ROOT.'/vendor/geoip-api/geoip.inc';
-require_once DP_ROOT.'/vendor/geoip-api/geoipregionvars.php';
+require_once DP_ROOT.'/vendor-src/geoip-api/geoip.inc';
+require_once DP_ROOT.'/vendor-src/geoip-api/geoipregionvars.php';
 
 class geoiprecord {
   var $country_code;
