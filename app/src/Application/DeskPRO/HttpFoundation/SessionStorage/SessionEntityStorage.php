@@ -314,8 +314,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 			return true;
 		}
 
-		error_log(print_r($_SESSION,1));
-
 		$this->last_save_hash = $save_hash;
 
 		$sess_rec = array();
