@@ -78,14 +78,14 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
-// session.handler
+// session.storage
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
 $definition->setArguments(array(
 	new Reference('doctrine.orm.entity_manager'),
 	'%session.storage.options%'
 ));
-$container->setDefinition('session.handler', $definition);
+$container->setDefinition('session.storage', $definition);
 
 // deskpro.mail_logger
 $definition = new Definition();
