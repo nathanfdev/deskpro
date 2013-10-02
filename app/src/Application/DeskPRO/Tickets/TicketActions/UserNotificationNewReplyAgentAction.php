@@ -117,7 +117,7 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 				$data['my_tac'] = $ticket->getAccessCode();
 				$data['my_reply_service'] = App::getRouter()->generateUrl('user') . 'api/open/tickets/new-ticket-message';
 
-				$client->getRequest()->post()->fromArray($data);
+				$client->getRequest()->getPost()->fromArray($data);
 				$r = $client->send();
 				$r = $r->getBody();
 

@@ -388,7 +388,7 @@ class ErrorReporter
 
 			$url = \DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json';
 			$client->setUri($url);
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 
 			if (!$r->isSuccess()) {
@@ -428,7 +428,7 @@ class ErrorReporter
 			$client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/heartbeat.json');
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 			return $r->getBody();
 		} catch (\Exception $e) {
@@ -454,7 +454,7 @@ class ErrorReporter
 			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 		} catch (\Exception $e) {
 			error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
@@ -485,7 +485,7 @@ class ErrorReporter
 			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
-			$client->getRequest()->post()->fromArray($data);
+			$client->getRequest()->getPost()->fromArray($data);
 			$r = $client->send();
 		} catch (\Exception $e) {}
 	}

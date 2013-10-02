@@ -110,16 +110,16 @@ class LicenseController extends AbstractController
 					$data = array_merge($instance_data, $data);
 				}
 
-				$client->getRequest()->post()->fromArray($data);
+				$client->getRequest()->getPost()->fromArray($data);
 
 				$hostname = gethostname();
 
 				if ($hostname) {
-					$client->getRequest()->post()->set('hostname', $hostname);
+					$client->getRequest()->getPost()->set('hostname', $hostname);
 
 					$ip_address = gethostbyname($hostname);
 					if ($ip_address) {
-						$client->getRequest()->post()->set('ip_address', $ip_address);
+						$client->getRequest()->getPost()->set('ip_address', $ip_address);
 					}
 				}
 

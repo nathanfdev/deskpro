@@ -83,10 +83,10 @@ class Recaptcha extends CaptchaAbstract
 
 		$client = new \Zend\Http\Client(self::RECAPTCHA_VERIFY_URL);
 		$client->setMethod(\Zend\Http\Request::METHOD_POST);
-		$client->getRequest()->post()->set('privatekey', $this->private_key);
-		$client->getRequest()->post()->set('remoteip', $remote_ip);
-		$client->getRequest()->post()->set('challenge', $challenge);
-		$client->getRequest()->post()->set('response', $response);
+		$client->getRequest()->getPost()->set('privatekey', $this->private_key);
+		$client->getRequest()->getPost()->set('remoteip', $remote_ip);
+		$client->getRequest()->getPost()->set('challenge', $challenge);
+		$client->getRequest()->getPost()->set('response', $response);
 
 		try {
 			$r_response = $client->send();

@@ -118,7 +118,7 @@ class LicenseService
 			$client = new \Zend\Http\Client(null, array('timeout' => 8, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/'));
-			$client->getRequest()->post()->fromArray($post_data);
+			$client->getRequest()->getPost()->fromArray($post_data);
 			$r = $client->send();
 			$result = $r->getBody();
 		} catch (\Exception $e) {
