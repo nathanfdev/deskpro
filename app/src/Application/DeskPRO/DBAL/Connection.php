@@ -426,7 +426,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$e->_dp_query = $query;
 			$e->_dp_query_params = $params;
 			throw $e;
@@ -447,7 +447,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		try {
 			return parent::executeUpdate($query, $params, $types);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 
 			if ($is_retry <= 2 && stripos($e->getMessage(), 'deadlock') !== false) {
 				usleep(500000);
@@ -587,7 +587,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::exec($statement);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$e->_dp_query = is_string($statement) ? $statement : null;
 			$e->_dp_query_params = array();
 			throw $e;

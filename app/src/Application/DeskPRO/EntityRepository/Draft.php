@@ -152,7 +152,7 @@ class Draft extends AbstractEntityRepository
 
 			$this->getEntityManager()->persist($draft);
 			$this->getEntityManager()->flush($draft);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			return null;
 		}
 

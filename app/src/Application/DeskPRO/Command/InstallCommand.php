@@ -238,7 +238,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         try {
             App::getDb()->connect();
-        } catch (\PDOException $e) {
+        } catch (\Doctrine\DBAL\DBALException $e) {
             if ($e->getCode() == '1049') {
 
                 // Attempt to create an empty database

@@ -399,7 +399,7 @@ class TicketSearch extends SearcherAbstract
 
 		try {
 			$ticket_ids = $db->fetchAllCol($sql);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$ticket_ids = array();
 			KernelErrorHandler::logException($e, true);
 
@@ -596,7 +596,7 @@ class TicketSearch extends SearcherAbstract
 
 		try {
 			$result = $db->fetchColumn($count_sql);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			$result = 0;
 			KernelErrorHandler::logException($e, true);
 

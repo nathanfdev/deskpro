@@ -197,7 +197,7 @@ class ImportZendeskCommand extends ImportCommand
 			$e = error_reporting(E_ALL ^ E_WARNING);
 			$db->connect();
 			error_reporting($e);
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			error_reporting($e);
 			if ($e->getCode() == '1049') {
 

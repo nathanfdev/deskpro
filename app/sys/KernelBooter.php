@@ -326,7 +326,7 @@ class KernelBooter
 				} catch (\Exception $e) {}
 			}
 			$response->send();
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				// This will show an error page if already installed, so the redirect to install wont happen
 				deskpro_handle_boot_db_exception($e);
@@ -836,7 +836,7 @@ class KernelBooter
 					return null;
 				}
 			}
-		} catch (\PDOException $e) {
+		} catch (\Doctrine\DBAL\DBALException $e) {
 			global $DP_CONFIG;
 			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
 				echo "DeskPRO is not yet installed. If you believe this a mistake, check your config.php\n";

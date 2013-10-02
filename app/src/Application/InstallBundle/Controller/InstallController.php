@@ -170,7 +170,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 				try {
 					$this->getDb()->connect();
-				} catch (\PDOException $e) {
+				} catch (\Doctrine\DBAL\DBALException $e) {
 					if ($e->getCode() == '1049') {
 
 						// Attempt to create an empty database
