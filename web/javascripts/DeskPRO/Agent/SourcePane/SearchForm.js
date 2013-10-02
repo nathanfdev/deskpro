@@ -230,12 +230,8 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 					new_row.remove();
 				});
 			});
-			$('.add-term', critList).data('add-count', 0).on('click', function() {
-				var count = parseInt($(this).data('add-count'));
-				var basename = 'terms['+count+']';
-
-				$(this).data('add-count', count+1);
-
+			$('.add-term', critList).on('click', function() {
+				var basename = 'terms['+Orb.uuid()+']';
 				editor.addNewRow($('.search-terms', critList), basename);
 			});
 		});
