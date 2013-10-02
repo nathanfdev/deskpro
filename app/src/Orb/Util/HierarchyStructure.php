@@ -159,8 +159,8 @@ class HierarchyStructure
 
 		$that = $this;
 		uasort($ids, function ($a, $b) use ($that) {
-			$a_depth = $that->cats[$a];
-			$b_depth = $that->cats[$b];
+			$a_depth = isset($that->cats[$a]) ? $that->cats[$a] : 0;
+			$b_depth = isset($that->cats[$b]) ? $that->cats[$b] : 0;
 
 			return ($a_depth < $b_depth) ? -1 : 1;
 		});
