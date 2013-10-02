@@ -46,13 +46,31 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.name = "DeskPRO Dev"
 
     vb.customize ["modifyvm", :id, "--memory", config_info['memory']]
-    vb.customize ["modifyvm", :id, "--cpus", "1"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
 
     vb.customize ["modifyvm", :id, "--acpi", "on"]
     vb.customize ["modifyvm", :id, "--ioapic", "on"]
     vb.customize ["modifyvm", :id, "--vram", "16"]
 
     vb.customize ["storageattach", :id, "--storagectl", "SATA Controller", '--port', '0', '--nonrotational', 'on']
+  end
+
+  config.vm.provider "vmware_fusion" do |vmware, override|
+  	#vmware.gui = true
+    override.vm.box = "precise64_fusion"
+    override.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+
+    vmware.vmx["memsize"] = config_info['memory']
+    vmware.vmx["numvcpus"] = "2"
+  end
+
+  config.vm.provider "vmware_workstation" do |vmware, override|
+  	#vmware.gui = true
+    override.vm.box = "precise64_fusion"
+    override.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+
+    vmware.vmx["memsize"] = config_info['memory']
+    vmware.vmx["numvcpus"] = "2"
   end
 
   config.vm.provision :puppet do |puppet|
