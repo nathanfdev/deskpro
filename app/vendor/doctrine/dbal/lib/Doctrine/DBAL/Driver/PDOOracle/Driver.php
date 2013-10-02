@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -22,15 +22,18 @@ namespace Doctrine\DBAL\Driver\PDOOracle;
 use Doctrine\DBAL\Platforms;
 
 /**
- * PDO Oracle driver
+ * PDO Oracle driver.
  *
- * WARNING: This driver gives us segfauls in our testsuites on CLOB and other
+ * WARNING: This driver gives us segfaults in our testsuites on CLOB and other
  * stuff. PDO Oracle is not maintained by Oracle or anyone in the PHP community,
  * which leads us to the recommendation to use the "oci8" driver to connect
  * to Oracle instead.
  */
 class Driver implements \Doctrine\DBAL\Driver
 {
+    /**
+     * {@inheritdoc}
+     */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
         return new \Doctrine\DBAL\Driver\PDOConnection(
@@ -44,12 +47,14 @@ class Driver implements \Doctrine\DBAL\Driver
     /**
      * Constructs the Oracle PDO DSN.
      *
-     * @return string  The DSN.
+     * @param array $params
+     *
+     * @return string The DSN.
      */
     private function _constructPdoDsn(array $params)
     {
         $dsn = 'oci:';
-        if (isset($params['host'])) {
+        if (isset($params['host']) && $params['host'] != '') {
             $dsn .= 'dbname=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)' .
                    '(HOST=' . $params['host'] . ')';
 
@@ -75,24 +80,37 @@ class Driver implements \Doctrine\DBAL\Driver
         return $dsn;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDatabasePlatform()
     {
         return new \Doctrine\DBAL\Platforms\OraclePlatform();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSchemaManager(\Doctrine\DBAL\Connection $conn)
     {
         return new \Doctrine\DBAL\Schema\OracleSchemaManager($conn);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'pdo_oracle';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDatabase(\Doctrine\DBAL\Connection $conn)
     {
         $params = $conn->getParams();
+
         return $params['user'];
     }
 }

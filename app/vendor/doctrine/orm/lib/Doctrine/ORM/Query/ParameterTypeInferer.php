@@ -13,19 +13,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\ORM\Query;
 
-use Doctrine\DBAL\Connection,
-    Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 
 /**
- * Provides an enclosed support for parameter infering.
+ * Provides an enclosed support for parameter inferring.
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link    www.doctrine-project.org
  * @since   2.0
  * @author  Benjamin Eberlei <kontakt@beberlei.de>
@@ -36,35 +35,32 @@ use Doctrine\DBAL\Connection,
 class ParameterTypeInferer
 {
     /**
-     * Infer type of a given value, returning a compatible constant:
+     * Infers type of a given value, returning a compatible constant:
      * - Type (\Doctrine\DBAL\Types\Type::*)
      * - Connection (\Doctrine\DBAL\Connection::PARAM_*)
      *
-     * @param mixed $value Parameter value
+     * @param mixed $value Parameter value.
      *
-     * @return mixed Parameter type constant
+     * @return mixed Parameter type constant.
      */
     public static function inferType($value)
     {
-        switch (true) {
-            case is_integer($value):
-                return Type::INTEGER;
+        if (is_integer($value)) {
+            return Type::INTEGER;
+        }
 
-            case ($value instanceof \DateTime):
-                return Type::DATETIME;
+        if (is_bool($value)) {
+            return Type::BOOLEAN;
+        }
 
-            case is_array($value):
-                $key = key($value);
+        if ($value instanceof \DateTime) {
+            return Type::DATETIME;
+        }
 
-                if (is_integer($value[$key])) {
-                    return Connection::PARAM_INT_ARRAY;
-                }
-
-                return Connection::PARAM_STR_ARRAY;
-
-            default:
-                // Do nothing
-                break;
+        if (is_array($value)) {
+            return is_integer(current($value))
+                ? Connection::PARAM_INT_ARRAY
+                : Connection::PARAM_STR_ARRAY;
         }
 
         return \PDO::PARAM_STR;

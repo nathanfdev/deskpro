@@ -1,7 +1,5 @@
 <?php
 /*
- *  $Id$
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -15,15 +13,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\DBAL;
 
-use PDO,
-    Doctrine\DBAL\Types\Type,
-    Doctrine\DBAL\Driver\Statement as DriverStatement;
+use PDO;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Driver\Statement as DriverStatement;
 
 /**
  * A thin wrapper around a Doctrine\DBAL\Driver\Statement that adds support
@@ -35,31 +33,52 @@ use PDO,
 class Statement implements \IteratorAggregate, DriverStatement
 {
     /**
-     * @var string The SQL statement.
+     * The SQL statement.
+     *
+     * @var string
      */
     protected $sql;
+
     /**
-     * @var array The bound parameters.
+     * The bound parameters.
+     *
+     * @var array
      */
     protected $params = array();
+
     /**
-     * @var Doctrine\DBAL\Driver\Statement The underlying driver statement.
+     * The parameter types.
+     *
+     * @var array
+     */
+    protected $types = array();
+
+    /**
+     * The underlying driver statement.
+     *
+     * @var \Doctrine\DBAL\Driver\Statement
      */
     protected $stmt;
+
     /**
-     * @var Doctrine\DBAL\Platforms\AbstractPlatform The underlying database platform.
+     * The underlying database platform.
+     *
+     * @var \Doctrine\DBAL\Platforms\AbstractPlatform
      */
     protected $platform;
+
     /**
-     * @var Doctrine\DBAL\Connection The connection this statement is bound to and executed on.
+     * The connection this statement is bound to and executed on.
+     *
+     * @var \Doctrine\DBAL\Connection
      */
     protected $conn;
 
     /**
      * Creates a new <tt>Statement</tt> for the given SQL and <tt>Connection</tt>.
      *
-     * @param string $sql The SQL of the statement.
-     * @param Doctrine\DBAL\Connection The connection on which the statement should be executed.
+     * @param string                    $sql  The SQL of the statement.
+     * @param \Doctrine\DBAL\Connection $conn The connection on which the statement should be executed.
      */
     public function __construct($sql, Connection $conn)
     {
@@ -77,14 +96,16 @@ class Statement implements \IteratorAggregate, DriverStatement
      * type and the value undergoes the conversion routines of the mapping type before
      * being bound.
      *
-     * @param $name The name or position of the parameter.
-     * @param $value The value of the parameter.
-     * @param mixed $type Either a PDO binding type or a DBAL mapping type name or instance.
+     * @param string $name  The name or position of the parameter.
+     * @param mixed  $value The value of the parameter.
+     * @param mixed  $type  Either a PDO binding type or a DBAL mapping type name or instance.
+     *
      * @return boolean TRUE on success, FALSE on failure.
      */
     public function bindValue($name, $value, $type = null)
     {
         $this->params[$name] = $value;
+        $this->types[$name] = $type;
         if ($type !== null) {
             if (is_string($type)) {
                 $type = Type::getType($type);
@@ -95,6 +116,7 @@ class Statement implements \IteratorAggregate, DriverStatement
             } else {
                 $bindingType = $type; // PDO::PARAM_* constants
             }
+
             return $this->stmt->bindValue($name, $value, $bindingType);
         } else {
             return $this->stmt->bindValue($name, $value);
@@ -106,34 +128,51 @@ class Statement implements \IteratorAggregate, DriverStatement
      *
      * Binding a parameter by reference does not support DBAL mapping types.
      *
-     * @param string $name The name or position of the parameter.
-     * @param mixed $value The reference to the variable to bind
-     * @param integer $type The PDO binding type.
+     * @param string       $name   The name or position of the parameter.
+     * @param mixed        $var    The reference to the variable to bind.
+     * @param integer      $type   The PDO binding type.
+     * @param integer|null $length Must be specified when using an OUT bind
+     *                             so that PHP allocates enough memory to hold the returned value.
+     *
      * @return boolean TRUE on success, FALSE on failure.
      */
-    public function bindParam($name, &$var, $type = PDO::PARAM_STR)
+    public function bindParam($name, &$var, $type = PDO::PARAM_STR, $length = null)
     {
-        return $this->stmt->bindParam($name, $var, $type);
+        return $this->stmt->bindParam($name, $var, $type, $length);
     }
 
     /**
      * Executes the statement with the currently bound parameters.
      *
+     * @param array|null $params
+     *
      * @return boolean TRUE on success, FALSE on failure.
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function execute($params = null)
     {
-        $hasLogger = $this->conn->getConfiguration()->getSQLLogger();
-        if ($hasLogger) {
-            $this->conn->getConfiguration()->getSQLLogger()->startQuery($this->sql, $this->params);
+        if (is_array($params)) {
+            $this->params = $params;
         }
 
-        $stmt = $this->stmt->execute($params);
+        $logger = $this->conn->getConfiguration()->getSQLLogger();
+        if ($logger) {
+            $logger->startQuery($this->sql, $this->params, $this->types);
+        }
 
-        if ($hasLogger) {
-            $this->conn->getConfiguration()->getSQLLogger()->stopQuery();
+        try {
+            $stmt = $this->stmt->execute($params);
+        } catch (\Exception $ex) {
+            throw DBALException::driverExceptionDuringQuery($ex, $this->sql, $this->conn->resolveParams($this->params, $this->types));
+        }
+
+        if ($logger) {
+            $logger->stopQuery();
         }
         $this->params = array();
+        $this->types = array();
+
         return $stmt;
     }
 
@@ -177,11 +216,25 @@ class Statement implements \IteratorAggregate, DriverStatement
         return $this->stmt->errorInfo();
     }
 
-    public function setFetchMode($fetchStyle)
+    /**
+     * {@inheritdoc}
+     */
+    public function setFetchMode($fetchMode, $arg2 = null, $arg3 = null)
     {
-        return $this->stmt->setFetchMode($fetchStyle);
+        if ($arg2 === null) {
+            return $this->stmt->setFetchMode($fetchMode);
+        } else if ($arg3 === null) {
+            return $this->stmt->setFetchMode($fetchMode, $arg2);
+        }
+
+        return $this->stmt->setFetchMode($fetchMode, $arg2, $arg3);
     }
 
+    /**
+     * Required by interface IteratorAggregate.
+     *
+     * {@inheritdoc}
+     */
     public function getIterator()
     {
         return $this->stmt;
@@ -190,34 +243,38 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * Fetches the next row from a result set.
      *
-     * @param integer $fetchStyle
+     * @param integer|null $fetchMode
+     *
      * @return mixed The return value of this function on success depends on the fetch type.
      *               In all cases, FALSE is returned on failure.
      */
-    public function fetch($fetchStyle = PDO::FETCH_BOTH)
+    public function fetch($fetchMode = null)
     {
-        return $this->stmt->fetch($fetchStyle);
+        return $this->stmt->fetch($fetchMode);
     }
 
     /**
      * Returns an array containing all of the result set rows.
      *
-     * @param integer $fetchStyle
-     * @param mixed $fetchArgument
+     * @param integer|null $fetchMode
+     * @param mixed        $fetchArgument
+     *
      * @return array An array containing all of the remaining rows in the result set.
      */
-    public function fetchAll($fetchStyle = PDO::FETCH_BOTH, $fetchArgument = 0)
+    public function fetchAll($fetchMode = null, $fetchArgument = 0)
     {
         if ($fetchArgument !== 0) {
-            return $this->stmt->fetchAll($fetchStyle, $fetchArgument);
+            return $this->stmt->fetchAll($fetchMode, $fetchArgument);
         }
-        return $this->stmt->fetchAll($fetchStyle);
+
+        return $this->stmt->fetchAll($fetchMode);
     }
 
     /**
      * Returns a single column from the next row of a result set.
      *
      * @param integer $columnIndex
+     *
      * @return mixed A single column from the next row of a result set or FALSE if there are no more rows.
      */
     public function fetchColumn($columnIndex = 0)
@@ -238,7 +295,7 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * Gets the wrapped driver statement.
      *
-     * @return Doctrine\DBAL\Driver\Statement
+     * @return \Doctrine\DBAL\Driver\Statement
      */
     public function getWrappedStatement()
     {

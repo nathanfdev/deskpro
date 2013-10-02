@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -26,6 +26,9 @@ namespace Doctrine\DBAL\Driver\PDOSqlsrv;
  */
 class Driver implements \Doctrine\DBAL\Driver
 {
+    /**
+     * {@inheritdoc}
+     */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
         return new Connection(
@@ -39,7 +42,9 @@ class Driver implements \Doctrine\DBAL\Driver
     /**
      * Constructs the Sqlsrv PDO DSN.
      *
-     * @return string  The DSN.
+     * @param array $params
+     *
+     * @return string The DSN.
      */
     private function _constructPdoDsn(array $params)
     {
@@ -64,25 +69,37 @@ class Driver implements \Doctrine\DBAL\Driver
         return $dsn;
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function getDatabasePlatform()
     {
         return new \Doctrine\DBAL\Platforms\SQLServer2008Platform();
     }
+    /**
+     * {@inheritdoc}
+     */
 
     public function getSchemaManager(\Doctrine\DBAL\Connection $conn)
     {
         return new \Doctrine\DBAL\Schema\SQLServerSchemaManager($conn);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'pdo_sqlsrv';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDatabase(\Doctrine\DBAL\Connection $conn)
     {
         $params = $conn->getParams();
+
         return $params['dbname'];
     }
 }

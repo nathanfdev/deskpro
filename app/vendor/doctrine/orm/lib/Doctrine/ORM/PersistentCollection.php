@@ -13,16 +13,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\ORM;
 
-use Doctrine\ORM\Mapping\ClassMetadata,
-    Doctrine\Common\Collections\Collection,
-    Doctrine\Common\Collections\ArrayCollection,
-    Closure;
+use Doctrine\ORM\Mapping\ClassMetadata;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Selectable;
+use Doctrine\Common\Collections\Criteria;
+
+use Closure;
 
 /**
  * A PersistentCollection represents a collection of elements that have persistent state.
@@ -37,9 +41,10 @@ use Doctrine\ORM\Mapping\ClassMetadata,
  * @author    Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author    Roman Borschel <roman@code-factory.org>
  * @author    Giorgio Sironi <piccoloprincipeazzurro@gmail.com>
- * @todo Design for inheritance to allow custom implementations?
+ * @author    Stefano Rodriguez <stefano.rodriguez@fubles.com>
+ * @todo      Design for inheritance to allow custom implementations?
  */
-final class PersistentCollection implements Collection
+final class PersistentCollection implements Collection, Selectable
 {
     /**
      * A snapshot of the collection at the moment it was fetched from the database.
@@ -81,6 +86,8 @@ final class PersistentCollection implements Collection
 
     /**
      * The class descriptor of the collection's entity type.
+     *
+     * @var ClassMetadata
      */
     private $typeClass;
 
@@ -109,9 +116,9 @@ final class PersistentCollection implements Collection
     /**
      * Creates a new persistent collection.
      *
-     * @param EntityManager $em The EntityManager the collection will be associated with.
+     * @param EntityManager $em    The EntityManager the collection will be associated with.
      * @param ClassMetadata $class The class descriptor of the entity type of this collection.
-     * @param array The collection elements.
+     * @param array         $coll  The collection elements.
      */
     public function __construct(EntityManager $em, $class, $coll)
     {
@@ -126,7 +133,9 @@ final class PersistentCollection implements Collection
      * describes the association between the owner and the elements of the collection.
      *
      * @param object $entity
-     * @param AssociationMapping $assoc
+     * @param array  $assoc
+     *
+     * @return void
      */
     public function setOwner($entity, array $assoc)
     {
@@ -146,6 +155,9 @@ final class PersistentCollection implements Collection
         return $this->owner;
     }
 
+    /**
+     * @return Mapping\ClassMetadata
+     */
     public function getTypeClass()
     {
         return $this->typeClass;
@@ -157,6 +169,8 @@ final class PersistentCollection implements Collection
      * complete bidirectional associations in the case of a one-to-many association.
      *
      * @param mixed $element The element to add.
+     *
+     * @return void
      */
     public function hydrateAdd($element)
     {
@@ -180,8 +194,10 @@ final class PersistentCollection implements Collection
      * INTERNAL:
      * Sets a keyed element in the collection during hydration.
      *
-     * @param mixed $key The key to set.
-     * $param mixed $value The element to set.
+     * @param mixed $key     The key to set.
+     * @param mixed $element The element to set.
+     *
+     * @return void
      */
     public function hydrateSet($key, $element)
     {
@@ -200,6 +216,8 @@ final class PersistentCollection implements Collection
     /**
      * Initializes the collection by loading its contents from the database
      * if the collection is not yet initialized.
+     *
+     * @return void
      */
     public function initialize()
     {
@@ -233,6 +251,8 @@ final class PersistentCollection implements Collection
     /**
      * INTERNAL:
      * Tells this collection to take a snapshot of its current state.
+     *
+     * @return void
      */
     public function takeSnapshot()
     {
@@ -293,6 +313,8 @@ final class PersistentCollection implements Collection
 
     /**
      * Marks this collection as changed/dirty.
+     *
+     * @return void
      */
     private function changed()
     {
@@ -326,6 +348,8 @@ final class PersistentCollection implements Collection
      * Sets a boolean flag, indicating whether this collection is dirty.
      *
      * @param boolean $dirty Whether the collection should be marked dirty or not.
+     *
+     * @return void
      */
     public function setDirty($dirty)
     {
@@ -336,6 +360,8 @@ final class PersistentCollection implements Collection
      * Sets the initialized flag of the collection, forcing it into that state.
      *
      * @param boolean $bool
+     *
+     * @return void
      */
     public function setInitialized($bool)
     {
@@ -352,7 +378,9 @@ final class PersistentCollection implements Collection
         return $this->initialized;
     }
 
-    /** {@inheritdoc} */
+    /**
+     * {@inheritdoc}
+     */
     public function first()
     {
         $this->initialize();
@@ -360,7 +388,9 @@ final class PersistentCollection implements Collection
         return $this->coll->first();
     }
 
-    /** {@inheritdoc} */
+    /**
+     * {@inheritdoc}
+     */
     public function last()
     {
         $this->initialize();
@@ -487,6 +517,18 @@ final class PersistentCollection implements Collection
      */
     public function get($key)
     {
+        if ( ! $this->initialized
+            && $this->association['type'] === Mapping\ClassMetadataInfo::ONE_TO_MANY
+            && $this->association['fetch'] === Mapping\ClassMetadataInfo::FETCH_EXTRA_LAZY
+            && isset($this->association['indexBy'])
+        ) {
+            if (!$this->typeClass->isIdentifierComposite && $this->typeClass->isIdentifier($this->association['indexBy'])) {
+                return $this->em->find($this->typeClass->name, $key);
+            }
+
+            return $this->em->getUnitOfWork()->getCollectionPersister($this->association)->get($this, $key);
+        }
+
         $this->initialize();
 
         return $this->coll->get($key);
@@ -649,7 +691,7 @@ final class PersistentCollection implements Collection
 
         $this->initialized = true; // direct call, {@link initialize()} is too expensive
 
-        if ($this->association['isOwningSide']) {
+        if ($this->association['isOwningSide'] && $this->owner) {
             $this->changed();
 
             $uow->scheduleCollectionDeletion($this);
@@ -662,6 +704,8 @@ final class PersistentCollection implements Collection
      * Called by PHP when this collection is serialized. Ensures that only the
      * elements are properly serialized.
      *
+     * @return array
+     *
      * @internal Tried to implement Serializable first but that did not work well
      *           with circular references. This solution seems simpler and works well.
      */
@@ -673,7 +717,7 @@ final class PersistentCollection implements Collection
     /* ArrayAccess implementation */
 
     /**
-     * @see containsKey()
+     * {@inheritdoc}
      */
     public function offsetExists($offset)
     {
@@ -681,7 +725,7 @@ final class PersistentCollection implements Collection
     }
 
     /**
-     * @see get()
+     * {@inheritdoc}
      */
     public function offsetGet($offset)
     {
@@ -689,8 +733,7 @@ final class PersistentCollection implements Collection
     }
 
     /**
-     * @see add()
-     * @see set()
+     * {@inheritdoc}
      */
     public function offsetSet($offset, $value)
     {
@@ -702,31 +745,40 @@ final class PersistentCollection implements Collection
     }
 
     /**
-     * @see remove()
+     * {@inheritdoc}
      */
     public function offsetUnset($offset)
     {
         return $this->remove($offset);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function key()
     {
+        $this->initialize();
+
         return $this->coll->key();
     }
 
     /**
-     * Gets the element of the collection at the current iterator position.
+     * {@inheritdoc}
      */
     public function current()
     {
+        $this->initialize();
+
         return $this->coll->current();
     }
 
     /**
-     * Moves the internal iterator position to the next element.
+     * {@inheritdoc}
      */
     public function next()
     {
+        $this->initialize();
+        
         return $this->coll->next();
     }
 
@@ -741,14 +793,14 @@ final class PersistentCollection implements Collection
     }
 
     /**
-     * Extract a slice of $length elements starting at position $offset from the Collection.
+     * Extracts a slice of $length elements starting at position $offset from the Collection.
      *
      * If $length is null it returns all elements from $offset to the end of the Collection.
      * Keys have to be preserved by this method. Calling this method will only return the
      * selected slice and NOT change the elements contained in the collection slice is called on.
      *
-     * @param int $offset
-     * @param int $length
+     * @param int      $offset
+     * @param int|null $length
      *
      * @return array
      */
@@ -766,7 +818,7 @@ final class PersistentCollection implements Collection
     }
 
     /**
-     * Cleanup internal state of cloned persistent collection.
+     * Cleans up internal state of cloned persistent collection.
      *
      * The following problems have to be prevented:
      * 1. Added entities are added to old PC
@@ -775,6 +827,8 @@ final class PersistentCollection implements Collection
      * 3. Snapshot leads to invalid diffs being generated.
      * 4. Lazy loading grabs entities from old owner object.
      * 5. New collection is connected to old owner and leads to duplicate keys.
+     *
+     * @return void
      */
     public function __clone()
     {
@@ -783,10 +837,46 @@ final class PersistentCollection implements Collection
         }
 
         $this->initialize();
-        $this->owner = null;
 
+        $this->owner    = null;
         $this->snapshot = array();
 
         $this->changed();
+    }
+
+    /**
+     * Selects all elements from a selectable that match the expression and
+     * return a new collection containing these elements.
+     *
+     * @param \Doctrine\Common\Collections\Criteria $criteria
+     *
+     * @return Collection
+     *
+     * @throws \RuntimeException
+     */
+    public function matching(Criteria $criteria)
+    {
+        if ($this->isDirty) {
+            $this->initialize();
+        }
+
+        if ($this->initialized) {
+            return $this->coll->matching($criteria);
+        }
+
+        if ($this->association['type'] !== ClassMetadata::ONE_TO_MANY) {
+            throw new \RuntimeException("Matching Criteria on PersistentCollection only works on OneToMany associations at the moment.");
+        }
+
+        $builder         = Criteria::expr();
+        $ownerExpression = $builder->eq($this->backRefFieldName, $this->owner);
+        $expression      = $criteria->getWhereExpression();
+        $expression      = $expression ? $builder->andX($expression, $ownerExpression) : $ownerExpression;
+
+        $criteria->where($expression);
+
+        $persister = $this->em->getUnitOfWork()->getEntityPersister($this->association['targetEntity']);
+
+        return new ArrayCollection($persister->loadCriteria($criteria));
     }
 }

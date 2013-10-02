@@ -13,36 +13,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
-
 namespace Doctrine\DBAL\Tools\Console\Command;
 
-use Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Input\InputOption,
-    Symfony\Component\Console\Command\Command,
-    Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\DBAL\Platforms\Keywords\ReservedKeywordsValidator;
 
 class ReservedWordsCommand extends Command
 {
+    /**
+     * @var array
+     */
     private $keywordListClasses = array(
-        'mysql'     => 'Doctrine\DBAL\Platforms\Keywords\MySQLKeywords',
-        'mssql'     => 'Doctrine\DBAL\Platforms\Keywords\MsSQLKeywords',
-        'sqlite'    => 'Doctrine\DBAL\Platforms\Keywords\SQLiteKeywords',
-        'pgsql'     => 'Doctrine\DBAL\Platforms\Keywords\PostgreSQLKeywords',
-        'oracle'    => 'Doctrine\DBAL\Platforms\Keywords\OracleKeywords',
-        'db2'       => 'Doctrine\DBAL\Platforms\Keywords\DB2Keywords',
+        'mysql'         => 'Doctrine\DBAL\Platforms\Keywords\MySQLKeywords',
+        'sqlserver'     => 'Doctrine\DBAL\Platforms\Keywords\SQLServerKeywords',
+        'sqlserver2005' => 'Doctrine\DBAL\Platforms\Keywords\SQLServer2005Keywords',
+        'sqlserver2008' => 'Doctrine\DBAL\Platforms\Keywords\SQLServer2008Keywords',
+        'sqlserver2012' => 'Doctrine\DBAL\Platforms\Keywords\SQLServer2012Keywords',
+        'sqlite'        => 'Doctrine\DBAL\Platforms\Keywords\SQLiteKeywords',
+        'pgsql'         => 'Doctrine\DBAL\Platforms\Keywords\PostgreSQLKeywords',
+        'oracle'        => 'Doctrine\DBAL\Platforms\Keywords\OracleKeywords',
+        'db2'           => 'Doctrine\DBAL\Platforms\Keywords\DB2Keywords',
     );
 
     /**
-     * If you want to add or replace a keywords list use this command
+     * If you want to add or replace a keywords list use this command.
      *
      * @param string $name
      * @param string $class
+     *
+     * @return void
      */
     public function setKeywordListClass($name, $class)
     {
@@ -50,7 +57,7 @@ class ReservedWordsCommand extends Command
     }
 
     /**
-     * @see Console\Command\Command
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -66,15 +73,15 @@ class ReservedWordsCommand extends Command
 Checks if the current database contains tables and columns
 with names that are identifiers in this dialect or in other SQL dialects.
 
-By default SQLite, MySQL, PostgreSQL, MsSQL and Oracle
+By default SQLite, MySQL, PostgreSQL, Microsoft SQL Server and Oracle
 keywords are checked:
 
-    <info>doctrine dbal:reserved-words</info>
+    <info>%command.full_name%</info>
 
 If you want to check against specific dialects you can
 pass them to the command:
 
-    <info>doctrine dbal:reserved-words mysql pgsql</info>
+    <info>%command.full_name% mysql pgsql</info>
 
 The following keyword lists are currently shipped with Doctrine:
 
@@ -82,27 +89,39 @@ The following keyword lists are currently shipped with Doctrine:
     * pgsql
     * sqlite
     * oracle
-    * mssql
+    * sqlserver
+    * sqlserver2005
+    * sqlserver2008
+    * sqlserver2012
     * db2 (Not checked by default)
 EOT
         );
     }
 
     /**
-     * @see Console\Command\Command
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /* @var $conn Doctrine\DBAL\Connection */
+        /* @var $conn \Doctrine\DBAL\Connection */
         $conn = $this->getHelper('db')->getConnection();
 
         $keywordLists = (array)$input->getOption('list');
-        if (!$keywordLists) {
-            $keywordLists = array('mysql', 'pgsql', 'sqlite', 'oracle', 'mssql');
+        if ( ! $keywordLists) {
+            $keywordLists = array(
+                'mysql',
+                'pgsql',
+                'sqlite',
+                'oracle',
+                'sqlserver',
+                'sqlserver2005',
+                'sqlserver2008',
+                'sqlserver2012'
+            );
         }
 
         $keywords = array();
-        foreach ($keywordLists AS $keywordList) {
+        foreach ($keywordLists as $keywordList) {
             if (!isset($this->keywordListClasses[$keywordList])) {
                 throw new \InvalidArgumentException(
                     "There exists no keyword list with name '" . $keywordList . "'. ".
@@ -125,9 +144,11 @@ EOT
             $output->write("No reserved keywords violations have been found!", true);
         } else {
             $output->write('There are <error>' . count($violations) . '</error> reserved keyword violations in your database schema:', true);
-            foreach ($violations AS $violation) {
+            foreach ($violations as $violation) {
                 $output->write('  - ' . $violation, true);
             }
+
+            return 1;
         }
     }
 }

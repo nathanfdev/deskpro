@@ -13,14 +13,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\DBAL\Platforms;
 
 /**
- * Platform to ensure compatibility of Doctrine with SQLServer2005 version and
+ * Platform to ensure compatibility of Doctrine with Microsoft SQL Server 2005 version and
  * higher.
  *
  * Differences to SQL Server 2008 are:
@@ -36,17 +36,28 @@ namespace Doctrine\DBAL\Platforms;
 class SQLServer2005Platform extends SQLServerPlatform
 {
     /**
-     * @override
+     * {@inheritDoc}
      */
     public function supportsLimitOffset()
     {
         return true;
     }
-	
-    /** @override */
+
+    /**
+     * {@inheritDoc}
+     */
     public function getClobTypeDeclarationSQL(array $field)
     {
         return 'VARCHAR(MAX)';
     }
-}
 
+    /**
+     * {@inheritdoc}
+     *
+     * Returns Microsoft SQL Server 2005 specific keywords class
+     */
+    protected function getReservedKeywordsClass()
+    {
+        return 'Doctrine\DBAL\Platforms\Keywords\SQLServer2005Keywords';
+    }
+}

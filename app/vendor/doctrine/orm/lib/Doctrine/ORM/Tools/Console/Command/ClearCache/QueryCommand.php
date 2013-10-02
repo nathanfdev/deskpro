@@ -13,21 +13,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\ORM\Tools\Console\Command\ClearCache;
 
-use Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Input\InputOption,
-    Symfony\Component\Console,
-    Doctrine\Common\Cache;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Doctrine\Common\Cache\ApcCache;
 
 /**
  * Command to clear the query cache of the various cache drivers.
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link    www.doctrine-project.org
  * @since   2.0
  * @author  Benjamin Eberlei <kontakt@beberlei.de>
@@ -35,10 +35,10 @@ use Symfony\Component\Console\Input\InputArgument,
  * @author  Jonathan Wage <jonwage@gmail.com>
  * @author  Roman Borschel <roman@code-factory.org>
  */
-class QueryCommand extends Console\Command\Command
+class QueryCommand extends Command
 {
     /**
-     * @see Console\Command\Command
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -52,20 +52,19 @@ class QueryCommand extends Console\Command\Command
             )
         ));
 
-        $fullName = $this->getName();
         $this->setHelp(<<<EOT
-The <info>$fullName</info> command is meant to clear the query cache of associated Entity Manager.
+The <info>%command.name%</info> command is meant to clear the query cache of associated Entity Manager.
 It is possible to invalidate all cache entries at once - called delete -, or flushes the cache provider
 instance completely.
 
 The execution type differ on how you execute the command.
 If you want to invalidate the entries (and not delete from cache instance), this command would do the work:
 
-<info>$fullName</info>
+<info>%command.name%</info>
 
 Alternatively, if you want to flush the cache provider using this command:
 
-<info>$fullName --flush</info>
+<info>%command.name% --flush</info>
 
 Finally, be aware that if <info>--flush</info> option is passed, not all cache providers are able to flush entries,
 because of a limitation of its execution nature.
@@ -74,9 +73,9 @@ EOT
     }
 
     /**
-     * @see Console\Command\Command
+     * {@inheritdoc}
      */
-    protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $em = $this->getHelper('em')->getEntityManager();
         $cacheDriver = $em->getConfiguration()->getQueryCacheImpl();
@@ -85,7 +84,7 @@ EOT
             throw new \InvalidArgumentException('No Query cache driver is configured on given EntityManager.');
         }
 
-        if ($cacheDriver instanceof Cache\ApcCache) {
+        if ($cacheDriver instanceof ApcCache) {
             throw new \LogicException("Cannot clear APC Cache from Console, its shared in the Webserver memory and not accessible from the CLI.");
         }
 

@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -25,7 +25,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 /**
  * "TRIM" "(" [["LEADING" | "TRAILING" | "BOTH"] [char] "FROM"] StringPrimary ")"
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * 
  * @link    www.doctrine-project.org
  * @since   2.0
  * @author  Guilherme Blanco <guilhermeblanco@hotmail.com>
@@ -35,10 +35,26 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  */
 class TrimFunction extends FunctionNode
 {
+    /**
+     * @var bool
+     */
     public $leading;
+
+    /**
+     * @var bool
+     */
     public $trailing;
+
+    /**
+     * @var bool
+     */
     public $both;
+
+    /**
+     * @var bool
+     */
     public $trimChar = false;
+
     public $stringPrimary;
 
     /**
@@ -96,5 +112,4 @@ class TrimFunction extends FunctionNode
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
-
 }

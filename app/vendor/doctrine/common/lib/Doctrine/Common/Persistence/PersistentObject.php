@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -29,7 +29,6 @@ use Doctrine\Common\Collections\Collection;
  *
  * This class is a forward compatible implementation of the PersistentObject trait.
  *
- *
  * Limitations:
  *
  * 1. All persistent objects have to be associated with a single ObjectManager, multiple
@@ -38,7 +37,7 @@ use Doctrine\Common\Collections\Collection;
  *    This is either done on `postLoad` of an object or by accessing the global object manager.
  * 3. There are no hooks for setters/getters. Just implement the method yourself instead of relying on __call().
  * 4. Slower than handcoded implementations: An average of 7 method calls per access to a field and 11 for an association.
- * 5. Only the inverse side associations get autoset on the owning side aswell. Setting objects on the owning side
+ * 5. Only the inverse side associations get autoset on the owning side as well. Setting objects on the owning side
  *    will not set the inverse side associations.
  *
  * @example
@@ -58,19 +57,21 @@ use Doctrine\Common\Collections\Collection;
 abstract class PersistentObject implements ObjectManagerAware
 {
     /**
-     * @var ObjectManager
+     * @var ObjectManager|null
      */
-    private static $objectManager;
+    private static $objectManager = null;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata|null
      */
-    private $cm;
+    private $cm = null;
 
     /**
-     * Set the object manager responsible for all persistent object base classes.
+     * Sets the object manager responsible for all persistent object base classes.
      *
-     * @param ObjectManager $objectManager
+     * @param ObjectManager|null $objectManager
+     *
+     * @return void
      */
     static public function setObjectManager(ObjectManager $objectManager = null)
     {
@@ -78,7 +79,7 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * @return ObjectManager
+     * @return ObjectManager|null
      */
     static public function getObjectManager()
     {
@@ -86,10 +87,14 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * Inject Doctrine Object Manager
+     * Injects the Doctrine Object Manager.
      *
      * @param ObjectManager $objectManager
      * @param ClassMetadata $classMetadata
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
      */
     public function injectObjectManager(ObjectManager $objectManager, ClassMetadata $classMetadata)
     {
@@ -104,11 +109,13 @@ abstract class PersistentObject implements ObjectManagerAware
     /**
      * Sets a persistent fields value.
      *
-     * @throws InvalidArgumentException - When the wrong target object type is passed to an association
-     * @throws BadMethodCallException - When no persistent field exists by that name.
      * @param string $field
-     * @param array $args
+     * @param array  $args
+     *
      * @return void
+     *
+     * @throws \BadMethodCallException   When no persistent field exists by that name.
+     * @throws \InvalidArgumentException When the wrong target object type is passed to an association.
      */
     private function set($field, $args)
     {
@@ -129,11 +136,13 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * Get persistent field value.
+     * Gets a persistent field value.
      *
-     * @throws BadMethodCallException - When no persistent field exists by that name.
      * @param string $field
+     *
      * @return mixed
+     *
+     * @throws \BadMethodCallException When no persistent field exists by that name.
      */
     private function get($field)
     {
@@ -147,15 +156,17 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * If this is an inverse side association complete the owning side.
+     * If this is an inverse side association, completes the owning side.
      *
-     * @param string $field
+     * @param string        $field
      * @param ClassMetadata $targetClass
-     * @param object $targetObject
+     * @param object        $targetObject
+     *
+     * @return void
      */
     private function completeOwningSide($field, $targetClass, $targetObject)
     {
-        // add this object on the owning side aswell, for obvious infinite recursion
+        // add this object on the owning side as well, for obvious infinite recursion
         // reasons this is only done when called on the inverse side.
         if ($this->cm->isAssociationInverseSide($field)) {
             $mappedByField = $this->cm->getAssociationMappedByTargetField($field);
@@ -167,10 +178,15 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * Add an object to a collection
+     * Adds an object to a collection.
      *
-     * @param type $field
-     * @param assoc $args
+     * @param string $field
+     * @param array  $args
+     *
+     * @return void
+     *
+     * @throws \BadMethodCallException
+     * @throws \InvalidArgumentException
      */
     private function add($field, $args)
     {
@@ -192,9 +208,11 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * Initialize Doctrine Metadata for this class.
+     * Initializes Doctrine Metadata for this class.
      *
      * @return void
+     *
+     * @throws \RuntimeException
      */
     private function initializeDoctrine()
     {
@@ -210,11 +228,14 @@ abstract class PersistentObject implements ObjectManagerAware
     }
 
     /**
-     * Magic method that implements
+     * Magic methods.
      *
      * @param string $method
-     * @param array $args
+     * @param array  $args
+     *
      * @return mixed
+     *
+     * @throws \BadMethodCallException
      */
     public function __call($method, $args)
     {

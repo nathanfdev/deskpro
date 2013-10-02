@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -31,22 +31,24 @@ use Doctrine\Common\Cache\Cache;
 class QueryCacheProfile
 {
     /**
-     * @var Cache
+     * @var \Doctrine\Common\Cache\Cache|null
      */
     private $resultCacheDriver;
+
     /**
-     * @var int
+     * @var integer
      */
     private $lifetime = 0;
+
     /**
-     * @var string
+     * @var string|null
      */
     private $cacheKey;
 
     /**
-     * @param int $lifetime
-     * @param string $cacheKey
-     * @param Cache $resultCache
+     * @param integer                           $lifetime
+     * @param string|null                       $cacheKey
+     * @param \Doctrine\Common\Cache\Cache|null $resultCache
      */
     public function __construct($lifetime = 0, $cacheKey = null, Cache $resultCache = null)
     {
@@ -56,7 +58,7 @@ class QueryCacheProfile
     }
 
     /**
-     * @return Cache
+     * @return \Doctrine\Common\Cache\Cache|null
      */
     public function getResultCacheDriver()
     {
@@ -64,7 +66,7 @@ class QueryCacheProfile
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getLifetime()
     {
@@ -73,21 +75,25 @@ class QueryCacheProfile
 
     /**
      * @return string
+     *
+     * @throws \Doctrine\DBAL\Cache\CacheException
      */
     public function getCacheKey()
     {
         if ($this->cacheKey === null) {
             throw CacheException::noCacheKey();
         }
+
         return $this->cacheKey;
     }
 
     /**
-     * Generate the real cache key from query, params and types.
+     * Generates the real cache key from query, params and types.
      *
      * @param string $query
-     * @param array $params
-     * @param array $types
+     * @param array  $params
+     * @param array  $types
+     *
      * @return array
      */
     public function generateCacheKeys($query, $params, $types)
@@ -99,12 +105,14 @@ class QueryCacheProfile
         } else {
             $cacheKey = $this->cacheKey;
         }
+
         return array($cacheKey, $realCacheKey);
     }
 
     /**
-     * @param Cache $cache
-     * @return QueryCacheProfile
+     * @param \Doctrine\Common\Cache\Cache $cache
+     *
+     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
      */
     public function setResultCacheDriver(Cache $cache)
     {
@@ -113,7 +121,8 @@ class QueryCacheProfile
 
     /**
      * @param string|null $cacheKey
-     * @return QueryCacheProfile
+     *
+     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
      */
     public function setCacheKey($cacheKey)
     {
@@ -121,8 +130,9 @@ class QueryCacheProfile
     }
 
     /**
-     * @param  int $lifetime
-     * @return QueryCacheProfile
+     * @param integer $lifetime
+     *
+     * @return \Doctrine\DBAL\Cache\QueryCacheProfile
      */
     public function setLifetime($lifetime)
     {

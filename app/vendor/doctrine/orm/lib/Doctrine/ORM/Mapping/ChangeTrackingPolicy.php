@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -25,6 +25,12 @@ namespace Doctrine\ORM\Mapping;
  */
 final class ChangeTrackingPolicy implements Annotation
 {
-    /** @var string */
+    /**
+     * The change tracking policy.
+     *
+     * @var string
+     *
+     * @Enum({"DEFERRED_IMPLICIT", "DEFERRED_EXPLICIT", "NOTIFY"})
+     */
     public $value;
 }

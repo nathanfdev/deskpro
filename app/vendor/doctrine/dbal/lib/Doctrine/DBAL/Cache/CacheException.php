@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -25,11 +25,17 @@ namespace Doctrine\DBAL\Cache;
  */
 class CacheException extends \Doctrine\DBAL\DBALException
 {
+    /**
+     * @return \Doctrine\DBAL\Cache\CacheException
+     */
     static public function noCacheKey()
     {
         return new self("No cache key was set.");
     }
 
+    /**
+     * @return \Doctrine\DBAL\Cache\CacheException
+     */
     static public function noResultDriverConfigured()
     {
         return new self("Trying to cache a query but no result driver is configured.");

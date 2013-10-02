@@ -13,28 +13,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\DBAL\Logging;
 
 /**
- * Chains multiple SQLLogger
+ * Chains multiple SQLLogger.
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link    www.doctrine-project.org
- * @since   2.2
- * @author  Christophe Coevoet <stof@notk.org>
+ * @link   www.doctrine-project.org
+ * @since  2.2
+ * @author Christophe Coevoet <stof@notk.org>
  */
 class LoggerChain implements SQLLogger
 {
+    /**
+     * @var \Doctrine\DBAL\Logging\SQLLogger[]
+     */
     private $loggers = array();
 
     /**
-     * Adds a logger in the chain
+     * Adds a logger in the chain.
      *
-     * @param SQLLogger $logger
+     * @param \Doctrine\DBAL\Logging\SQLLogger $logger
+     *
+     * @return void
      */
     public function addLogger(SQLLogger $logger)
     {
@@ -61,4 +65,3 @@ class LoggerChain implements SQLLogger
         }
     }
 }
-

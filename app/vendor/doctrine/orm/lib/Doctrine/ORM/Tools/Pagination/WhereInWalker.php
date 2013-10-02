@@ -17,22 +17,22 @@
 
 namespace Doctrine\ORM\Tools\Pagination;
 
-use Doctrine\ORM\Query\AST\ArithmeticExpression,
-    Doctrine\ORM\Query\AST\SimpleArithmeticExpression,
-    Doctrine\ORM\Query\TreeWalkerAdapter,
-    Doctrine\ORM\Query\AST\SelectStatement,
-    Doctrine\ORM\Query\AST\PathExpression,
-    Doctrine\ORM\Query\AST\InExpression,
-    Doctrine\ORM\Query\AST\NullComparisonExpression,
-    Doctrine\ORM\Query\AST\InputParameter,
-    Doctrine\ORM\Query\AST\ConditionalPrimary,
-    Doctrine\ORM\Query\AST\ConditionalTerm,
-    Doctrine\ORM\Query\AST\ConditionalExpression,
-    Doctrine\ORM\Query\AST\ConditionalFactor,
-    Doctrine\ORM\Query\AST\WhereClause;
+use Doctrine\ORM\Query\AST\ArithmeticExpression;
+use Doctrine\ORM\Query\AST\SimpleArithmeticExpression;
+use Doctrine\ORM\Query\TreeWalkerAdapter;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\PathExpression;
+use Doctrine\ORM\Query\AST\InExpression;
+use Doctrine\ORM\Query\AST\NullComparisonExpression;
+use Doctrine\ORM\Query\AST\InputParameter;
+use Doctrine\ORM\Query\AST\ConditionalPrimary;
+use Doctrine\ORM\Query\AST\ConditionalTerm;
+use Doctrine\ORM\Query\AST\ConditionalExpression;
+use Doctrine\ORM\Query\AST\ConditionalFactor;
+use Doctrine\ORM\Query\AST\WhereClause;
 
 /**
- * Replaces the whereClause of the AST with a WHERE id IN (:foo_1, :foo_2) equivalent
+ * Replaces the whereClause of the AST with a WHERE id IN (:foo_1, :foo_2) equivalent.
  *
  * @category    DoctrineExtensions
  * @package     DoctrineExtensions\Paginate
@@ -43,17 +43,17 @@ use Doctrine\ORM\Query\AST\ArithmeticExpression,
 class WhereInWalker extends TreeWalkerAdapter
 {
     /**
-     * ID Count hint name
+     * ID Count hint name.
      */
     const HINT_PAGINATOR_ID_COUNT = 'doctrine.id.count';
 
     /**
-     * Primary key alias for query
+     * Primary key alias for query.
      */
     const PAGINATOR_ID_ALIAS = 'dpid';
 
     /**
-     * Replaces the whereClause in the AST
+     * Replaces the whereClause in the AST.
      *
      * Generates a clause equivalent to WHERE IN (:dpid_1, :dpid_2, ...)
      *
@@ -61,15 +61,18 @@ class WhereInWalker extends TreeWalkerAdapter
      * the PAGINATOR_ID_ALIAS
      *
      * The total number of parameters is retrieved from
-     * the HINT_PAGINATOR_ID_COUNT query hint
+     * the HINT_PAGINATOR_ID_COUNT query hint.
      *
-     * @param  SelectStatement $AST
+     * @param SelectStatement $AST
+     *
      * @return void
+     *
+     * @throws \RuntimeException
      */
     public function walkSelectStatement(SelectStatement $AST)
     {
         $rootComponents = array();
-        foreach ($this->_getQueryComponents() AS $dqlAlias => $qComp) {
+        foreach ($this->_getQueryComponents() as $dqlAlias => $qComp) {
             $isParent = array_key_exists('parent', $qComp)
                 && $qComp['parent'] === null
                 && $qComp['nestingLevel'] == 0
@@ -81,14 +84,18 @@ class WhereInWalker extends TreeWalkerAdapter
         if (count($rootComponents) > 1) {
             throw new \RuntimeException("Cannot count query which selects two FROM components, cannot make distinction");
         }
-        $root = reset($rootComponents);
-        $parentName = key($root);
-        $parent = current($root);
+        $root                = reset($rootComponents);
+        $parentName          = key($root);
+        $parent              = current($root);
+        $identifierFieldName = $parent['metadata']->getSingleIdentifierFieldName();
 
-        $pathExpression = new PathExpression(
-            PathExpression::TYPE_STATE_FIELD, $parentName, $parent['metadata']->getSingleIdentifierFieldName()
-        );
-        $pathExpression->type = PathExpression::TYPE_STATE_FIELD;
+        $pathType = PathExpression::TYPE_STATE_FIELD;
+        if (isset($parent['metadata']->associationMappings[$identifierFieldName])) {
+            $pathType = PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION;
+        }
+
+        $pathExpression       = new PathExpression(PathExpression::TYPE_STATE_FIELD | PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION, $parentName, $identifierFieldName);
+        $pathExpression->type = $pathType;
 
         $count = $this->_getQuery()->getHint(self::HINT_PAGINATOR_ID_COUNT);
 
@@ -98,11 +105,8 @@ class WhereInWalker extends TreeWalkerAdapter
                 array($pathExpression)
             );
             $expression = new InExpression($arithmeticExpression);
-            $ns = self::PAGINATOR_ID_ALIAS;
+            $expression->literals[] = new InputParameter(":" . self::PAGINATOR_ID_ALIAS);
 
-            for ($i = 1; $i <= $count; $i++) {
-                $expression->literals[] = new InputParameter(":{$ns}_$i");
-            }
         } else {
             $expression = new NullComparisonExpression($pathExpression);
             $expression->not = false;
@@ -120,7 +124,9 @@ class WhereInWalker extends TreeWalkerAdapter
                         $conditionalPrimary
                     ))
                 ));
-            } elseif ($AST->whereClause->conditionalExpression instanceof ConditionalExpression) {
+            } elseif ($AST->whereClause->conditionalExpression instanceof ConditionalExpression
+                || $AST->whereClause->conditionalExpression instanceof ConditionalFactor
+            ) {
                 $tmpPrimary = new ConditionalPrimary;
                 $tmpPrimary->conditionalExpression = $AST->whereClause->conditionalExpression;
                 $AST->whereClause->conditionalExpression = new ConditionalTerm(array(
@@ -139,4 +145,3 @@ class WhereInWalker extends TreeWalkerAdapter
         }
     }
 }
-

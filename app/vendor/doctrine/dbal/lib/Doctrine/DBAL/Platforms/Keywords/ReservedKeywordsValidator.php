@@ -13,10 +13,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
 
 namespace Doctrine\DBAL\Platforms\Keywords;
 
@@ -40,11 +39,17 @@ class ReservedKeywordsValidator implements Visitor
      */
     private $violations = array();
 
+    /**
+     * @param \Doctrine\DBAL\Platforms\Keywords\KeywordList[] $keywordLists
+     */
     public function __construct(array $keywordLists)
     {
         $this->keywordLists = $keywordLists;
     }
 
+    /**
+     * @return array
+     */
     public function getViolations()
     {
         return $this->violations;
@@ -52,6 +57,7 @@ class ReservedKeywordsValidator implements Visitor
 
     /**
      * @param string $word
+     *
      * @return array
      */
     private function isReservedWord($word)
@@ -61,7 +67,7 @@ class ReservedKeywordsValidator implements Visitor
         }
 
         $keywordLists = array();
-        foreach ($this->keywordLists AS $keywordList) {
+        foreach ($this->keywordLists as $keywordList) {
             if ($keywordList->isKeyword($word)) {
                 $keywordLists[] = $keywordList->getName();
             }
@@ -69,15 +75,24 @@ class ReservedKeywordsValidator implements Visitor
         return $keywordLists;
     }
 
+    /**
+     * @param string $asset
+     * @param array  $violatedPlatforms
+     *
+     * @return void
+     */
     private function addViolation($asset, $violatedPlatforms)
     {
-        if (!$violatedPlatforms) {
+        if ( ! $violatedPlatforms) {
             return;
         }
 
         $this->violations[] = $asset . ' keyword violations: ' . implode(', ', $violatedPlatforms);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function acceptColumn(Table $table, Column $column)
     {
         $this->addViolation(
@@ -86,26 +101,37 @@ class ReservedKeywordsValidator implements Visitor
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function acceptForeignKey(Table $localTable, ForeignKeyConstraint $fkConstraint)
     {
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function acceptIndex(Table $table, Index $index)
     {
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function acceptSchema(Schema $schema)
     {
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function acceptSequence(Sequence $sequence)
     {
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function acceptTable(Table $table)
     {
         $this->addViolation(

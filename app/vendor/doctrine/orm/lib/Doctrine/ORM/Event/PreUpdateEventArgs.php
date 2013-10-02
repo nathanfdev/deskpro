@@ -1,7 +1,5 @@
 <?php
 /*
- *  $Id$
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -15,14 +13,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\ORM\Event;
 
-use Doctrine\Common\EventArgs,
-    Doctrine\ORM\EntityManager;
+use Doctrine\Common\EventArgs;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class that holds event arguments for a preInsert/preUpdate event.
@@ -42,9 +40,9 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     /**
      * Constructor.
      *
-     * @param object $entity
-     * @param \Doctrine\ORM\EntityManager $em
-     * @param array $changeSet
+     * @param object        $entity
+     * @param EntityManager $em
+     * @param array         $changeSet
      */
     public function __construct($entity, EntityManager $em, array &$changeSet)
     {
@@ -54,7 +52,7 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     }
 
     /**
-     * Retrieve entity changeset.
+     * Retrieves entity changeset.
      *
      * @return array
      */
@@ -64,7 +62,9 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     }
 
     /**
-     * Check if field has a changeset.
+     * Checks if field has a changeset.
+     *
+     * @param string $field
      *
      * @return boolean
      */
@@ -74,22 +74,24 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     }
 
     /**
-     * Get the old value of the changeset of the changed field.
+     * Gets the old value of the changeset of the changed field.
      *
-     * @param  string $field
+     * @param string $field
+     *
      * @return mixed
      */
     public function getOldValue($field)
     {
-    	$this->assertValidField($field);
+        $this->assertValidField($field);
 
         return $this->entityChangeSet[$field][0];
     }
 
     /**
-     * Get the new value of the changeset of the changed field.
+     * Gets the new value of the changeset of the changed field.
      *
-     * @param  string $field
+     * @param string $field
+     *
      * @return mixed
      */
     public function getNewValue($field)
@@ -100,10 +102,12 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     }
 
     /**
-     * Set the new value of this field.
+     * Sets the new value of this field.
      *
      * @param string $field
-     * @param mixed $value
+     * @param mixed  $value
+     *
+     * @return void
      */
     public function setNewValue($field, $value)
     {
@@ -113,13 +117,17 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     }
 
     /**
-     * Assert the field exists in changeset.
+     * Asserts the field exists in changeset.
      *
      * @param string $field
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     private function assertValidField($field)
     {
-    	if ( ! isset($this->entityChangeSet[$field])) {
+        if ( ! isset($this->entityChangeSet[$field])) {
             throw new \InvalidArgumentException(sprintf(
                 'Field "%s" is not a valid field of the entity "%s" in PreUpdateEventArgs.',
                 $field,
@@ -128,4 +136,3 @@ class PreUpdateEventArgs extends LifecycleEventArgs
         }
     }
 }
-

@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -29,13 +29,12 @@ use Doctrine\Common\Persistence\Mapping\MappingException;
  * file per class and the file names of the mapping files must correspond to the full
  * class name, including namespace, with the namespace delimiters '\', replaced by dots '.'.
  *
- * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.doctrine-project.com
- * @since       2.2
- * @author      Benjamin Eberlei <kontakt@beberlei.de>
- * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
- * @author      Jonathan H. Wage <jonwage@gmail.com>
- * @author      Roman Borschel <roman@code-factory.org>
+ * @link   www.doctrine-project.org
+ * @since  2.2
+ * @author Benjamin Eberlei <kontakt@beberlei.de>
+ * @author Guilherme Blanco <guilhermeblanco@hotmail.com>
+ * @author Jonathan H. Wage <jonwage@gmail.com>
+ * @author Roman Borschel <roman@code-factory.org>
  */
 abstract class FileDriver implements MappingDriver
 {
@@ -45,12 +44,12 @@ abstract class FileDriver implements MappingDriver
     protected $locator;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $classCache;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $globalBasename;
 
@@ -58,8 +57,9 @@ abstract class FileDriver implements MappingDriver
      * Initializes a new FileDriver that looks in the given path(s) for mapping
      * documents and operates in the specified operating mode.
      *
-     * @param string|array|FileLocator $paths A FileLocator or one/multiple paths where mapping documents can be found.
-     * @param string $fileExtension
+     * @param string|array|FileLocator $locator       A FileLocator or one/multiple paths
+     *                                                where mapping documents can be found.
+     * @param string|null              $fileExtension
      */
     public function __construct($locator, $fileExtension = null)
     {
@@ -70,21 +70,37 @@ abstract class FileDriver implements MappingDriver
         }
     }
 
+    /**
+     * Sets the global basename.
+     *
+     * @param string $file
+     *
+     * @return void
+     */
     public function setGlobalBasename($file)
     {
         $this->globalBasename = $file;
     }
 
+    /**
+     * Retrieves the global basename.
+     *
+     * @return string|null
+     */
     public function getGlobalBasename()
     {
         return $this->globalBasename;
     }
 
     /**
-     * Get the element of schema meta data for the class from the mapping file.
-     * This will lazily load the mapping file if it is not loaded yet
+     * Gets the element of schema meta data for the class from the mapping file.
+     * This will lazily load the mapping file if it is not loaded yet.
      *
-     * @return array $element  The element of schema meta data
+     * @param string $className
+     *
+     * @return array The element of schema meta data.
+     *
+     * @throws MappingException
      */
     public function getElement($className)
     {
@@ -97,17 +113,15 @@ abstract class FileDriver implements MappingDriver
         }
 
         $result = $this->loadMappingFile($this->locator->findMappingFile($className));
+        if (!isset($result[$className])) {
+            throw MappingException::invalidMappingFile($className, str_replace('\\', '.', $className) . $this->locator->getFileExtension());
+        }
 
         return $result[$className];
     }
 
     /**
-     * Whether the class with the specified name should have its metadata loaded.
-     * This is only the case if it is either mapped as an Entity or a
-     * MappedSuperclass.
-     *
-     * @param string $className
-     * @return boolean
+     * {@inheritDoc}
      */
     public function isTransient($className)
     {
@@ -123,9 +137,7 @@ abstract class FileDriver implements MappingDriver
     }
 
     /**
-     * Gets the names of all mapped classes known to this driver.
-     *
-     * @return array The names of all mapped classes known to this driver.
+     * {@inheritDoc}
      */
     public function getAllClassNames()
     {
@@ -145,12 +157,13 @@ abstract class FileDriver implements MappingDriver
      * from class/entity names to their corresponding file driver elements.
      *
      * @param string $file The mapping file to load.
+     *
      * @return array
      */
     abstract protected function loadMappingFile($file);
 
     /**
-     * Initialize the class cache from all the global files.
+     * Initializes the class cache from all the global files.
      *
      * Using this feature adds a substantial performance hit to file drivers as
      * more metadata has to be loaded into memory than might actually be
@@ -174,5 +187,25 @@ abstract class FileDriver implements MappingDriver
                 }
             }
         }
+    }
+
+    /**
+     * Retrieves the locator used to discover mapping files by className.
+     *
+     * @return FileLocator
+     */
+    public function getLocator()
+    {
+        return $this->locator;
+    }
+
+    /**
+     * Sets the locator used to discover mapping files by className.
+     *
+     * @param FileLocator $locator
+     */
+    public function setLocator(FileLocator $locator)
+    {
+        $this->locator = $locator;
     }
 }

@@ -1,7 +1,5 @@
 <?php
 /*
- *  $Id$
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -15,19 +13,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
 namespace Doctrine\ORM\Query\Expr;
 
 /**
- * Expression class for DQL from
+ * Expression class for DQL from.
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link    www.doctrine-project.org
  * @since   2.0
- * @version $Revision$
  * @author  Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author  Jonathan Wage <jonwage@gmail.com>
  * @author  Roman Borschel <roman@code-factory.org>
@@ -37,28 +33,28 @@ class From
     /**
      * @var string
      */
-    private $_from;
+    protected $from;
 
     /**
      * @var string
      */
-    private $_alias;
+    protected $alias;
 
     /**
      * @var string
      */
-    private $_indexBy;
+    protected $indexBy;
 
     /**
-     * @param string $from      The class name.
-     * @param string $alias     The alias of the class.
-     * @param string $indexBy   The index for the from.
+     * @param string $from    The class name.
+     * @param string $alias   The alias of the class.
+     * @param string $indexBy The index for the from.
      */
     public function __construct($from, $alias, $indexBy = null)
     {
-        $this->_from    = $from;
-        $this->_alias   = $alias;
-        $this->_indexBy = $indexBy;
+        $this->from    = $from;
+        $this->alias   = $alias;
+        $this->indexBy = $indexBy;
     }
 
     /**
@@ -66,7 +62,7 @@ class From
      */
     public function getFrom()
     {
-        return $this->_from;
+        return $this->from;
     }
 
     /**
@@ -74,7 +70,15 @@ class From
      */
     public function getAlias()
     {
-        return $this->_alias;
+        return $this->alias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndexBy()
+    {
+        return $this->indexBy;
     }
 
     /**
@@ -82,7 +86,7 @@ class From
      */
     public function __toString()
     {
-        return $this->_from . ' ' . $this->_alias .
-                ($this->_indexBy ? ' INDEX BY ' . $this->_indexBy : '');
+        return $this->from . ' ' . $this->alias .
+                ($this->indexBy ? ' INDEX BY ' . $this->indexBy : '');
     }
 }

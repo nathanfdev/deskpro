@@ -2,13 +2,13 @@
 	"require": {
 		"kriswallsmith/assetic": "1.1.*",
 		"aws/aws-sdk-php": "2.3.*",
-		"doctrine/common": "2.2.*",
-		"doctrine/dbal": "2.2.*",
-		"doctrine/orm": "2.2.*",
+		"doctrine/common": "~2.4",
+		"doctrine/dbal": "~2.4",
+		"doctrine/orm": "~2.4",
 		"doctrine/migrations": "dev-master",
 		"facebook/php-sdk": "3.2.*",
 		"guzzle/guzzle": "3.4.*",
-		"imagine/imagine": "0.4.*",
+		"imagine/imagine": "0.5.*",
 		"mockery/mockery": "dev-master",
 		"monolog/monolog": ">=1.0.0",
 		"pda/pheanstalk": "2.1.*",
@@ -19,7 +19,7 @@
 		"doctrine/doctrine-bundle": "*",
 		"symfony/swiftmailer-bundle": "*",
 		"swiftmailer/swiftmailer": ">=4.3",
-		"twig/twig": "1.12.*",
+		"twig/twig": "1.13.2",
 		"zendframework/zendframework": "2.0.*",
 		"zendframework/zend-queue": "dev-master",
 
@@ -33,5 +33,10 @@
 	"config": {
         "bin-dir": "bin/"
     },
+	"scripts": {
+		"pre-update-cmd":   ["rm -rf vendor/", "mkdir vendor"],
+		"post-update-cmd":  ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git"],
+ 		"post-install-cmd": ["rm -rf vendor/**/.git", "rm -rf vendor/**/**/.git", "rm -rf vendor/**/**/**.git"]
+	},
 	"preferred-install": "dist"
 }

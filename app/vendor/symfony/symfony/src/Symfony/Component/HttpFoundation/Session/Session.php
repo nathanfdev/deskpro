@@ -176,16 +176,6 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
         return $this->storage->regenerate($destroy, $lifetime);
     }
 
-	public function setFlash($id, $value)
-	{
-		$this->getFlashBag()->add($id, $value);
-	}
-
-	public function getFlash($id)
-	{
-		return $this->getFlashBag()->get($id);
-	}
-
     /**
      * {@inheritdoc}
      */

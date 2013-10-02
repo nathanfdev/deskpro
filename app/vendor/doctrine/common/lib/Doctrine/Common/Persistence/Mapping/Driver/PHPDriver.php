@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -23,21 +23,19 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * The PHPDriver includes php files which just populate ClassMetadataInfo
- * instances with plain php code
+ * instances with plain PHP code.
  *
- * @license 	http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link    	www.doctrine-project.org
- * @since   	2.0
- * @version     $Revision$
- * @author      Benjamin Eberlei <kontakt@beberlei.de>
- * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
- * @author      Jonathan H. Wage <jonwage@gmail.com>
- * @author      Roman Borschel <roman@code-factory.org>
+ * @link   www.doctrine-project.org
+ * @since  2.0
+ * @author Benjamin Eberlei <kontakt@beberlei.de>
+ * @author Guilherme Blanco <guilhermeblanco@hotmail.com>
+ * @author Jonathan H. Wage <jonwage@gmail.com>
+ * @author Roman Borschel <roman@code-factory.org>
  */
 class PHPDriver extends FileDriver
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected $metadata;
 
@@ -51,7 +49,7 @@ class PHPDriver extends FileDriver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
@@ -60,11 +58,13 @@ class PHPDriver extends FileDriver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function loadMappingFile($file)
     {
         $metadata = $this->metadata;
         include $file;
+
+        return array($metadata->getName() => $metadata);
     }
 }

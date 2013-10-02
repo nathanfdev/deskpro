@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -25,16 +25,37 @@ namespace Doctrine\ORM\Mapping;
  */
 final class OneToOne implements Annotation
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $targetEntity;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $mappedBy;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $inversedBy;
-    /** @var array<string> */
+
+    /**
+     * @var array<string>
+     */
     public $cascade;
-    /** @var string */
+
+    /**
+     * The fetching strategy to use for the association.
+     *
+     * @var string
+     *
+     * @Enum({"LAZY", "EAGER", "EXTRA_LAZY"})
+     */
     public $fetch = 'LAZY';
-    /** @var boolean */
+
+    /**
+     * @var boolean
+     */
     public $orphanRemoval = false;
 }
