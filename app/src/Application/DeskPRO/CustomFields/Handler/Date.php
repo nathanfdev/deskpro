@@ -107,7 +107,7 @@ class Date extends HandlerAbstract
 			}
 		}
 
-		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array(
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
 			'required' => false
 		));
 

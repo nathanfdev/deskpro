@@ -1227,7 +1227,7 @@ class PersonController extends AbstractController
 
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newperson[custom_fields]');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('newperson_custom_fields', 'form');
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
 
 		$timezone_options = \DateTimeZone::listIdentifiers();

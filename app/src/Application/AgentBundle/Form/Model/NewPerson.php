@@ -71,7 +71,7 @@ class NewPerson
 
 	public function setCustomFieldForm(array $form)
 	{
-		$this->custom_fields = isset($form['newperson']['custom_fields']) ? $form['newperson']['custom_fields'] : array();
+		$this->custom_fields = isset($form['newperson_custom_fields']) ? $form['newperson_custom_fields'] : array();
 	}
 
 	public function save()

@@ -136,12 +136,12 @@ class NewTicketController extends AbstractController
 		// Custom fields
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
 
 		/** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
 		$fm = $this->container->getSystemService('TicketFieldsManager');
-		if (isset($_POST['newticket']['custom_ticket_fields'])) {
-			$field_data = $fm->getStrucutredDataFromForm($_POST['newticket']['custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
+		if (isset($_POST['newticket_custom_ticket_fields'])) {
+			$field_data = $fm->getStrucutredDataFromForm($_POST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
 
 			$field_form_data = $fm->createFieldDataFromArray($field_data);
 			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
@@ -175,7 +175,7 @@ class NewTicketController extends AbstractController
 			$form->handleRequest($this->get('request'));
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
-			$newticket->custom_ticket_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
+			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
 
 			$trap_fail = false;
 			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {

@@ -293,7 +293,7 @@ abstract class HandlerAbstract
 		$templating = $this->getTemplateEngine();
 
 		if (!empty($template_vars['field_group'])) {
-			$field_group = App::get('form.factory')->createNamedBuilder('form', $template_vars['field_group']);
+			$field_group = App::get('form.factory')->createNamedBuilder($template_vars['field_group'], 'form');
 			$field_group->add($this->getFormField());
 			$form = $field_group->getForm();
 			$groupView = $form->createView();

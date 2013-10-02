@@ -48,7 +48,7 @@ class Textarea extends Text
 		if ($data AND !empty($data['value'])) {
 			$setData = $data['value'];
 		}
-		$field = App::getFormFactory()->createNamedBuilder('textarea', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'textarea', $setData, array('required' => false));
 
 		return $field;
 	}

@@ -61,7 +61,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 		// Custom fields
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('custom_fields', 'form');
 
 		/** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
 		$fm = $this->container->getSystemService('PersonFieldsManager');

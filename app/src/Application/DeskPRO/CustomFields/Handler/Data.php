@@ -52,7 +52,7 @@ class Data extends HandlerAbstract
 			$setData = $data['value'];
 		}
 
-		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array('required' => false));
+		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array('required' => false));
 
 		return $field;
 	}
