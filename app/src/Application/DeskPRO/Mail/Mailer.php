@@ -41,7 +41,7 @@ use Orb\Log\Loggable;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-require_once(DP_ROOT . '/vendor-src/swiftmailer/lib/swift_required.php');
+require_once(DP_ROOT . '/vendor/swiftmailer/swiftmailer/lib/swift_required.php');
 
 /**
  * This transport takes care of initializing any other transports based on settings
