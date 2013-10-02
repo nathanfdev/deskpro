@@ -71,7 +71,7 @@ class VendorMutate
 			$unp->enableStripComments();
 
 			$source = $unp->getCode();
-			$source = preg_replace('#<\?php#', "$0\n\n/* This file has been auto-generated. See build-vendors-mutate.php */\n\n", $source, 1);
+			$source = preg_replace('#<\?php#', "$0\n\n/* This file has been auto-generated (" . date('Y-m-d') . "). See build-vendors-mutate.php */\n\n", $source, 1);
 
 			if ($unprivate_class['custom_pre']) {
 				$unprivate_class['custom_pre'] = "\n" . implode("\n", $unprivate_class['custom_pre']) . "\n";
@@ -87,6 +87,7 @@ class VendorMutate
 				// proxy factory needs to create proxies that implement the doctrine Proxy class
 				$source = preg_replace('#\s+implements.*#', '', $source, 1);
 			}
+			$source = preg_replace('#(extends [a-zA-Z0-9_\\\\]+) (extends [a-zA-Z0-9_\\\\]+)#', '$2', $source);
 			$source = preg_replace('#namespace(.*?);#', "namespace {$unprivate_class['target_namespace']};{$unprivate_class['custom_pre']}", $source, 1);
 
 			if (isset($unprivate_class['callback'])) {
@@ -103,6 +104,13 @@ class VendorMutate
 
 			$source = implode("\n", $source);
 			$source = preg_replace("#\n{2,}#", "\n", $source);
+
+			// Rename generator class
+			$source = str_replace(
+				'use Doctrine\Common\Proxy\ProxyGenerator;',
+				'use Application\DeskPRO\ORM\Proxy\ProxyGenerator;',
+				$source
+			);
 
 			file_put_contents($unprivate_class['target_file'], $source);
 		}
@@ -146,6 +154,7 @@ class VendorMutate
 				$target_dir  = dirname($target_file);
 
 				if (!is_dir($target_dir)) {
+					echo "Creating $target_dir\n";
 					mkdir($target_dir, 0644, true);
 				}
 
@@ -154,7 +163,7 @@ class VendorMutate
 		}
 
 		// Add the driver to the driver map
-		$driver_map_file = DP_ROOT . '/vendor/doctrine-dbal/lib/Doctrine/DBAL/DriverManager.php';
+		$driver_map_file = DP_ROOT . '/vendor/doctrine/dbal/lib/Doctrine/DBAL/DriverManager.php';
 		$file_contents = file_get_contents($driver_map_file);
 		$file_contents = str_replace('$_driverMap = array(', '$_driverMap = array(' . "\n            'pdo_dblib' => 'Doctrine\\DBAL\\Driver\\PDODblib\\Driver',", $file_contents);
 		file_put_contents($driver_map_file, $file_contents);
