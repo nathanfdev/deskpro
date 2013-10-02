@@ -43,7 +43,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
  * This controller resolver changes instantiation of controllers to pass in the container
  * to the constructor.
  */
-class TraceableControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\TraceableControllerResolver
+class TraceableControllerResolver extends \Symfony\Component\HttpKernel\Controller\TraceableControllerResolver
 {
     protected function createController($controller)
     {

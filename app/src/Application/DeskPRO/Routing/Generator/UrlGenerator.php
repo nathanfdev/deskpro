@@ -140,9 +140,9 @@ class UrlGenerator extends BaseUrlGenerator
 		return $url;
 	}
 
-	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
+	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens)
 	{
-		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);
+		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens);
 
 		// /file.php/ is a hint to say that we want to serve through the file loader,
 		// Any route that is prefixed with /file.php/ has this magic below applied

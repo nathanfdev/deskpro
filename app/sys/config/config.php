@@ -196,9 +196,7 @@ $container->loadFromExtension('framework', array(
 		'assets_base_urls' => 'CONFIG_HTTP'
 	),
 	'validation' => array('enabled' => true),
-	'session' => array(
-		'lifetime' => 3600
-	),
+	'session' => array(),
 	'form' => array('enabled' => true)
 ));
 

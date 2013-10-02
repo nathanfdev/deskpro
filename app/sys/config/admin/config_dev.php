@@ -12,7 +12,7 @@ $container->setParameter('kernel.debug', true);
 
 $container->loadFromExtension('framework', array(
 	'router' => array(
-		'resource' => DP_ROOT.'/sys/config/admin/routing_dev.php'
+		'resource' => DP_ROOT.'/sys/config/admin/routing.php'
 	),
 ));
 

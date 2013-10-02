@@ -36,6 +36,7 @@ namespace Application\DeskPRO\HttpKernel;
 
 use Application\DeskPRO\App;
 
+use Symfony\Component\HttpKernel\HttpKernel as BaseHttpKernel;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -57,7 +58,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * that can be used to perform actions before or after an action, and can override the response object
  * in those cases.
  */
-class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
+class HttpKernel extends BaseHttpKernel
 {
 	protected $dispatcher;
 	protected $resolver;
