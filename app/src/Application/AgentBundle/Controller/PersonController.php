@@ -1275,7 +1275,7 @@ class PersonController extends AbstractController
 		$form = $this->get('form.factory')->create($formType, $newperson);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			$newperson->setCustomFieldForm($_POST);

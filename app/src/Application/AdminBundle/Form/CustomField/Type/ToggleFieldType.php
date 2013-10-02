@@ -35,11 +35,11 @@
 namespace Application\AdminBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class ToggleFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
+	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('default_value', 'checkbox', array('required' => false));
 		$builder->add('label_text', 'text', array('required' => false));

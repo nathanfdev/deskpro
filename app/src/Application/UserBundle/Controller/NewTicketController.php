@@ -172,7 +172,7 @@ class NewTicketController extends AbstractController
 				return $this->redirectRoute('user');
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();

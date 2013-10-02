@@ -387,7 +387,7 @@ class UserRegController extends AbstractController
 			$this->em->getConnection()->beginTransaction();
 
 			try {
-				$form->bindRequest($this->get('request'));
+				$form->handleRequest($this->get('request'));
 				$editfield->save($this->em);
 				$this->em->getConnection()->commit();
 			} catch (\Exception $e) {

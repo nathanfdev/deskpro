@@ -61,7 +61,7 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 		$edit_profile->new_emails = $this->in->getCleanValueArray('new_emails', 'string', 'discard');
 		$edit_profile->remove_emails = $this->in->getCleanValueArray('remove_emails', 'uint', 'discard');
 

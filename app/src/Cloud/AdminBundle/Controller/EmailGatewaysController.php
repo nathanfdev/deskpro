@@ -272,7 +272,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		$form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
 
 		$this->ensureRequestToken('edit_transport');
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$edittrans->save();
 
@@ -328,7 +328,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 
 		$edittrans = new EditEmailTransportModel($transport);
 		$trans_form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
-		$trans_form->bindRequest($this->get('request'));
+		$trans_form->handleRequest($this->get('request'));
 
 		$transport->transport_type = $edittrans->transport_type;
 		if ($edittrans->transport_type == 'smtp') {

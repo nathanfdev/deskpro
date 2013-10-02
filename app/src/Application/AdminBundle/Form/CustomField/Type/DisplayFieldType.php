@@ -35,11 +35,11 @@
 namespace Application\AdminBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class DisplayFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
+	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('html', 'textarea', array('required' => true));
 	}

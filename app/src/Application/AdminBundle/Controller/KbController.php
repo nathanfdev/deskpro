@@ -110,7 +110,7 @@ class KbController extends AbstractController
 
 		if ($this->request->isPost()) {
 			$this->ensureRequestToken('edit_gateway');
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			$editgateway->apply();
 

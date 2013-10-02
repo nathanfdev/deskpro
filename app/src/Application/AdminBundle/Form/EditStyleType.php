@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 abstract class EditStyleType extends AbstractType
 {
@@ -51,7 +51,7 @@ abstract class EditStyleType extends AbstractType
 		$this->style = $style;
 	}
 
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('title', 'text');
 		$builder->add('note', 'text');

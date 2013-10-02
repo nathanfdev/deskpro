@@ -438,7 +438,7 @@ class DownloadsController extends AbstractController
 		$form = $this->get('form.factory')->create($formType, $newdownload);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			$validator = new \Application\AgentBundle\Validator\NewDownloadValidator();

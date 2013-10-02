@@ -35,11 +35,11 @@
 namespace Application\AdminBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class TextFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
+	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('default_value', 'text', array('required' => false));
 		$builder->add('min_length', 'text', array('required' => false));

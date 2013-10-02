@@ -292,7 +292,7 @@ class TicketsController extends AbstractController
 		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
 		$validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$newreply->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 		$newreply->attach_ids_authed = true;
@@ -352,7 +352,7 @@ class TicketsController extends AbstractController
 		$newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType(), $newpart);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$newpart_form->bindRequest($this->get('request'));
+			$newpart_form->handleRequest($this->get('request'));
 
 			if ($newpart_form->isValid()) {
 				$newpart->save();

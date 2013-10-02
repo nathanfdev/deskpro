@@ -90,7 +90,7 @@ class DealController extends AbstractController
         $form = $this->get('form.factory')->create($formtype, $newdeal);
 
         if ($this->get('request')->getMethod() == 'POST') {
-            $form->bindRequest($this->get('request'));
+            $form->handleRequest($this->get('request'));
             $form->isValid();
             $newdeal->save();
 

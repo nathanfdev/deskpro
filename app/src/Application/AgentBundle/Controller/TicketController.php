@@ -2977,7 +2977,7 @@ class TicketController extends AbstractController
 				}
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			#------------------------------

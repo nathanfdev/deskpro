@@ -99,7 +99,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 		$error_fields = null;
 		$errors = null;
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$register->custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 
 			$validator = new \Application\UserBundle\Validator\RegisterValidator();

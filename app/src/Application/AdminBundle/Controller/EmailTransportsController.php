@@ -109,7 +109,7 @@ class EmailTransportsController extends AbstractController
 
 		if ($this->request->isPost()) {
 			$this->ensureRequestToken('edit_transport');
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			if ($form->isValid()) {
 
@@ -172,7 +172,7 @@ class EmailTransportsController extends AbstractController
 
 		$edittrans = new EditEmailTransportModel($transport);
 		$form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 		$edittrans->apply();
 
 		try {

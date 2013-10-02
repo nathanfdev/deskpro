@@ -140,8 +140,8 @@ class EmailGatewaysController extends AbstractController
 
 		if ($this->request->isPost()) {
 			$this->ensureRequestToken('edit_gateway');
-			$form->bindRequest($this->get('request'));
-			$trans_form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
+			$trans_form->handleRequest($this->get('request'));
 
 			$editgateway->apply();
 
@@ -346,7 +346,7 @@ class EmailGatewaysController extends AbstractController
 
 		$editgateway = new EditEmailGatewayModel($gateway);
 		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 		$editgateway->apply();
 
 		$logger = new \Orb\Log\Logger();

@@ -61,7 +61,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$profile_saved = false;
 		$invalid_custom_fields = array();
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			$is_valid = true;
 			if (!$this->person->first_name) {

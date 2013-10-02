@@ -35,11 +35,11 @@
 namespace Application\AdminBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 abstract class CustomFieldTypeAbstract extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
     {
 		#------------------------------
 		# Basic fields
@@ -58,7 +58,7 @@ abstract class CustomFieldTypeAbstract extends AbstractType
 		$this->buildCustomFieldForm($builder, $options);
     }
 
-	protected function buildCustomFieldForm(FormBuilder $builder, array $options) {}
+	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options) {}
 
     public function getName()
     {

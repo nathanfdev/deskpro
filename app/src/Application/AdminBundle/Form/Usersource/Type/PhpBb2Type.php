@@ -36,11 +36,11 @@ namespace Application\AdminBundle\Form\Usersource\Type;
 
 use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class PhpBb2Type extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('lost_password_url', 'text', array('required' => false));

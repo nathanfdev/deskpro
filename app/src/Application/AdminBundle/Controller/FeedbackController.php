@@ -204,7 +204,7 @@ class FeedbackController extends AbstractController
 				$do_move = $this->db->fetchColumn("SELECT COUNT(*) FROM feedback_categories c WHERE c.parent_id = ?", array($this->in->getUint('feedback_cat.parent')));
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			$this->em->getConnection()->beginTransaction();
 

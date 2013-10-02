@@ -222,7 +222,7 @@ class WidgetController extends AbstractController
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 		$newticket->ticket->attach_ids_authed = true;
@@ -264,7 +264,7 @@ class WidgetController extends AbstractController
 		$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
-		$form->bindRequest($this->get('request'));
+		$form->handleRequest($this->get('request'));
 
 		$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 

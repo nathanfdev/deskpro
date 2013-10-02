@@ -40,11 +40,11 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class TicketMessageTemplateType extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('department_id', 'text', array('required' => false));
 		$builder->add('title', 'text', array('required' => true));

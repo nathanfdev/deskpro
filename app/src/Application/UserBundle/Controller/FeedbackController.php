@@ -237,7 +237,7 @@ class FeedbackController extends AbstractController
 			}
 
 			$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			// Try to set a default name from usersource
 			// This allows sites that user usersources to edit the template to remove the 'name' field
@@ -561,7 +561,7 @@ class FeedbackController extends AbstractController
 				));
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {
 				$this->session->setFlash('comment_error', $validator->getErrors(true));

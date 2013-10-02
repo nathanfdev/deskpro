@@ -40,13 +40,13 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
 
 class EditAgentType extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('name', 'text');
 		$builder->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));

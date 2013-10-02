@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * The new ticket form
@@ -73,7 +73,7 @@ class NewTicketType extends AbstractType
 		$this->mode = $mode;
 	}
 
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$this->buildPersonForm($builder);
 		$this->buildTicketForm($builder);

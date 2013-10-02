@@ -68,7 +68,7 @@ class TicketMessageTemplatesController extends AbstractController
 		$form = $this->get('form.factory')->create(new TicketMessageTemplateType(), $message_template);
 
 		if ($this->request->isPost()) {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			$this->db->beginTransaction();
 			try {

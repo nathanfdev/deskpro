@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 /**
@@ -48,7 +48,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
  */
 class NewTicketParticipantType extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('first_name', 'text');
 		$builder->add('last_name', 'text');

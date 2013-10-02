@@ -35,13 +35,13 @@
 namespace Application\AdminBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 use Application\DeskPRO\App;
 
 class DataFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
+	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
 	{
 		$choices = array();
 		foreach (App::getDataService('Usersource')->getAllUsersources() as $us) {

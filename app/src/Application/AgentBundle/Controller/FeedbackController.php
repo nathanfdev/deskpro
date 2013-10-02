@@ -873,7 +873,7 @@ class FeedbackController extends AbstractController
 		$form = $this->get('form.factory')->create($formType, $newfeedback);
 
 		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 			$form->isValid();
 
 			$validator = new \Application\AgentBundle\Validator\NewFeedbackValidator();

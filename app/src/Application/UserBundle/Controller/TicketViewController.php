@@ -297,7 +297,7 @@ class TicketViewController extends AbstractController
 
 				$validator = new \Application\UserBundle\Validator\NewTicketValidator();
 				$validator->setPageData($default_page_data);
-				$form->bindRequest($this->get('request'));
+				$form->handleRequest($this->get('request'));
 
 				if ($validator->isValid($newticket)) {
 					$newticket->save();

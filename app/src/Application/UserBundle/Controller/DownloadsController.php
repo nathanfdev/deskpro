@@ -305,7 +305,7 @@ class DownloadsController extends AbstractController
 				));
 			}
 
-			$form->bindRequest($this->get('request'));
+			$form->handleRequest($this->get('request'));
 
 			if (!$validator->isValid($new_comment)) {
 				$this->session->setFlash('comment_error', $validator->getErrors(true));

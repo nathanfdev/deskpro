@@ -133,7 +133,7 @@ abstract class CustomDefAbstractController extends AbstractController
 						$editfield->default_option = $this->in->getString('default_option');
 					}
 
-					$form->bindRequest($this->get('request'));
+					$form->handleRequest($this->get('request'));
 
 					$editfield->is_agent_field = $this->in->getBool('fielddef.is_agent_field');
 					$editfield->save();

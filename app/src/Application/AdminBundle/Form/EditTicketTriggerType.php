@@ -38,7 +38,7 @@ use Symfony\Component\Form;
 use Application\DeskPRO\Entity\TicketTrigger;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class EditTicketTriggerType extends AbstractType
 {
@@ -52,7 +52,7 @@ class EditTicketTriggerType extends AbstractType
 		$this->trigger = $trigger;
 	}
 
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('title', 'text', array('required' => false));
 		$builder->add('event_trigger', 'hidden');

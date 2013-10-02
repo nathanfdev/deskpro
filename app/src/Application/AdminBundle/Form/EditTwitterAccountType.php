@@ -38,11 +38,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 
 abstract class EditTwitterAccountType extends AbstractType
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('oauth_token', 'text');
 		$builder->add('oauth_token_secret', 'text');
