@@ -61,6 +61,7 @@ class ArrayFileCacheFactory
 		if ($cache_name == 'dql') {
 			// Filters out queries with 'IN' components that can pollute the cache
 			$cache->setFilter(function($data) {
+				if (!is_object($data)) return false;
 				/** @var $data \Doctrine\ORM\Query\ParserResult */
 				$s = $data->getSqlExecutor()->getSqlStatements();
 				if (is_string($s)) {

@@ -87,12 +87,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 				case 'dp':
 					break;
 
-				// CLI etc
-				// Some code still makes calls to get the "current language" and
-				// the like. For these, we dont want to save a real session
-				// so lets use this bogus storage that doesnt save anything.
 				default:
-					$this->storage = new MockArraySessionStorage();
+					$this->storage->noSave = true;
 					break;
 			}
 		}
@@ -630,12 +626,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	public function getEntityId()
     {
 		if (!$this->isStarted()) $this->start();
-
-		if ($this->storage instanceof \Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage) {
-        	return $this->storage->getEntityId();
-		} else {
-			return 0;
-		}
+        return $this->storage->getEntityId();
     }
 
 

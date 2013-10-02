@@ -46,6 +46,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
  */
 class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface
 {
+	public $noSave = false;
 	protected $started = false;
 	protected $closed = false;
 
@@ -303,6 +304,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 	 */
 	public function write($id, $data)
 	{
+		if ($this->noSave) {
+			return;
+		}
 		// Because of when the session is written, we cant use the ORM here,
 		// because the manager has lost its reference to the session state
 		$id = self::getIdFromCode($id);
