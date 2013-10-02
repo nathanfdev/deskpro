@@ -40,6 +40,7 @@ use Orb\Util\Util;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Web;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * Session is able to load up a user, their language etc.
@@ -69,6 +70,33 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 * @var bool
 	 */
 	protected $is_first_page = false;
+
+	public function __construct(
+		\Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface $storage = null,
+		\Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $attributes = null,
+		\Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashes = null
+	)
+	{
+		parent::__construct($storage, $attributes, $flashes);
+
+		if (defined('DP_INTERFACE')) {
+			switch (DP_INTERFACE) {
+				case 'admin':
+				case 'agent':
+				case 'user':
+				case 'dp':
+					break;
+
+				// CLI etc
+				// Some code still makes calls to get the "current language" and
+				// the like. For these, we dont want to save a real session
+				// so lets use this bogus storage that doesnt save anything.
+				default:
+					$this->storage = new MockArraySessionStorage();
+					break;
+			}
+		}
+	}
 
 	/**
 	 * Starts the session storage.
