@@ -89,6 +89,15 @@ class InstanceAbility
 		return false;
 	}
 
+	public function isIis()
+	{
+		if ($this->isWindows() && strpos(strtolower(@$_SERVER['SERVER_SOFTWARE'] ?: ''), "iis") !== false) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function __call($method, array $args = array())
 	{
 		return false;
