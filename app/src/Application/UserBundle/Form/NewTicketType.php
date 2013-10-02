@@ -84,7 +84,7 @@ class NewTicketType extends AbstractType
 	/**
 	 * Configures the person form
 	 */
-	protected function buildPersonForm(FormBuilder $builder)
+	protected function buildPersonForm(FormBuilderInterface $builder)
 	{
 		if ($this->person AND $this->person['id']) {
 			$this->mock_person = $this->person;
@@ -107,7 +107,7 @@ class NewTicketType extends AbstractType
 	/**
 	 * Configures the ticket form
 	 */
-	protected function buildTicketForm(FormBuilder $builder)
+	protected function buildTicketForm(FormBuilderInterface $builder)
 	{
 		$ticket_builder = $builder->create('ticket', 'form');
 

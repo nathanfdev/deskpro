@@ -38,8 +38,10 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 
-class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
+class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	protected static $prop_names = array('person' => 1, 'ticket' => 1, 'custom_ticket_fields' => 1);
+
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
 	 */
@@ -205,4 +207,9 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 		return $cc_person;
 	}
+
+    public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

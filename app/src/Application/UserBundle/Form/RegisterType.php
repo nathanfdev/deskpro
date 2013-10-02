@@ -54,7 +54,7 @@ class RegisterType extends AbstractType
 	/**
 	 * Configures the person form
 	 */
-	protected function buildPersonForm(FormBuilder $builder)
+	protected function buildPersonForm(FormBuilderInterface $builder)
 	{
 		$builder->add('name', 'text', array('required' => false));
 		$builder->add('email', 'text', array('required' => false));

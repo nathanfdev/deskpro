@@ -52,7 +52,7 @@ class NewTicketReplyType extends AbstractType
 	/**
 	 * @option array tmp_files Add new checkboxes for tmp files
 	 *
-	 * @param \Symfony\Component\Form\FormBuilder $builder
+	 * @param \Symfony\Component\Form\FormBuilderInterface $builder
 	 * @param array $options
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options)

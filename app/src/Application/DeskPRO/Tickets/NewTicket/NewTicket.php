@@ -45,8 +45,15 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
  * NOTE: New users are always created with 'validating' email addresses. If validation is disabled
  * then the ticket trigger will automatically convert the validating address into a real address.
  */
-class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
+class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	protected static $prop_names = array(
+		'person' => 1, 'ticket' => 1, 'language' => 1,
+		'custom_ticket_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
+		'require_login' => 1, 'attach_blobs' => 1, 'blobs_inline_ids' => 1, 'gateway' => 1, 'gateway_address' => 1,
+		'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1
+	);
+
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
 	 */
@@ -535,4 +542,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 		return $cc_person;
 	}
+
+	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }
