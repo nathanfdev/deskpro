@@ -14,7 +14,7 @@
 		"pda/pheanstalk": "2.1.*",
 		"leth/ip-address": "dev-master",
 		"kriswallsmith/spork": "dev-master",
-		"symfony/symfony": "2.1.*",
+		"symfony/symfony": "~2.3",
 		"symfony/monolog-bundle": "*",
 		"doctrine/doctrine-bundle": "*",
 		"symfony/swiftmailer-bundle": "*",
@@ -32,5 +32,6 @@
 	},
 	"config": {
         "bin-dir": "bin/"
-    }
+    },
+	"preferred-install": "dist"
 }
