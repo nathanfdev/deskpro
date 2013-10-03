@@ -46,7 +46,7 @@ class PhraseFinder
     {
         $twig = Language::GetTwigLexer($this->container);
         $templates = Language::GetFileFinder()->getTwigFileList($bundle);
-        $cache_path = DP_ROOT.'/sys/cache/twig.phrase.cache';
+        $cache_path = dp_get_cache_dir().'/twig.phrase.cache';
 
         if(file_exists($cache_path)) {
             $cache = json_decode(file_get_contents($cache_path), true);

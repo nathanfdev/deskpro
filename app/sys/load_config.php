@@ -300,6 +300,19 @@ function dp_get_tmp_dir()
 
 
 /**
+ * @return string
+ */
+function dp_get_cache_dir()
+{
+	if (defined('DP_CACHE_DIR')) {
+		return DP_CACHE_DIR;
+	}
+
+	return DP_ROOT.'/sys/cache';
+}
+
+
+/**
  * Check to see if some action should be throttled based on a filesystem
  * marker.
  *

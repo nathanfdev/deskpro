@@ -213,11 +213,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		static $cache_dir = null;
 
 		if ($cache_dir === null) {
-			$cache_dir = DP_ROOT . '/sys/cache/%env%/';
 			if (defined('DPC_IS_CLOUD')) {
-				$cache_dir = DP_ROOT . '/sys/cache/'.$this->environment.'-cloud/';
+				$cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud/';
 			} else {
-				$cache_dir = DP_ROOT . '/sys/cache/'.$this->environment.'/';
+				$cache_dir = dp_get_cache_dir().'/'.$this->environment.'/';
 			}
 		}
 

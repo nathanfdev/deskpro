@@ -128,14 +128,14 @@ class CacheCleaner
 
 		$this->gen_files = array();
 		foreach (array('Admin','Agent','Api','User','Install','Billing','Cli','Report') as $k) {
-			$this->gen_files[] = DP_ROOT.'/sys/cache/dev/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/dev/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/prod/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/prod/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/dev-cloud/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/dev-cloud/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/prod-cloud/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache/prod-cloud/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KerneldevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KerneldevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KerneldevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KerneldevUrlGenerator.php';
+			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KerneldevUrlMatcher.php';
 		}
 
 		return $this->gen_files;
