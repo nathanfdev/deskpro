@@ -4,8 +4,6 @@
 	'agent.login.apple_safari'               => 'Apple Safari',
 	'agent.login.back_to_login'              => 'Back to login form',
 	'agent.login.browser_requirements'       => 'Browser Requirements',
-	'agent.login.chrome_29_info'             => 'Some users have reported instability issues while using DeskPRO with Chrome v29.',
-	'agent.login.chrome_29_title'            => 'We have detected that you are using Google Chrome v29.',
 	'agent.login.email_instructions'         => 'Email Instructions',
 	'agent.login.enter_new_password'         => 'Enter New Password',
 	'agent.login.enter_password'             => 'Enter your password',

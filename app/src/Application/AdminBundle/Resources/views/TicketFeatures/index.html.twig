@@ -12,14 +12,13 @@
 	</div>
 {% endif %}
 
-<form action="{{ path('admin_settings_saveform', {type: 'ticket_features', auth: security_token('settings_ticket_features') }) }}" method="post">
+<form action="{{ path('admin_settings_saveform', {type: 'ticket_features', auth: security_token('settings_ticket_features') }) }}" method="post" id="settings_form">
 <input type="hidden" name="return" value="{{ path('admin_features') }}" />
 
 <input type="hidden" name="set_settings[]" value="core.tickets.enable_feedback" />
 <input type="hidden" name="set_settings[]" value="core.tickets.feedback_agents_read" />
 <input type="hidden" name="set_settings_falseable[]" value="core.show_ticket_suggestions" />
 <input type="hidden" name="set_settings[]" value="core.ref_pattern" />
-<input type="hidden" name="set_settings[]" value="core.tickets.use_ref" />
 <input type="hidden" name="set_settings[]" value="core.tickets.use_ref" />
 <input type="hidden" name="set_settings[]" value="core_tickets.use_archive" />
 <input type="hidden" name="set_settings[]" value="core_tickets.auto_archive_time" />
@@ -370,8 +369,8 @@
 
 			<div id="ref_options" {% if not app.getSetting('core.tickets.use_ref') %}style="display: none"{% endif %}>
 				<div style="padding-top: 5px; padding-bottom: 5px;">
-					<input type="text" name="settings[core.ref_pattern]" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 350px; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
-					and append <select name="settings[core.ref_append_counter]">
+					<input type="text" name="settings[core.ref_pattern]" id="ref_format" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 350px; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
+					and append <select name="settings[core.ref_append_counter]" id="ref_format_digits">
 						{% for i in [0,1,2,3,4,5,6,7,8] %}
 							<option value="{{ i }}" {% if i == app.getSetting('core.ref_append_counter') %}selected="selected"{% endif %}>
 								{% if i == 1 %}1 Digit
@@ -380,6 +379,16 @@
 						{% endfor %}
 					</select>
 					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This will append a counter to the end of your pattern. For example, if you based it on the year, you might choose 5 digits and get refs like 2012-00001 and 2012-00002, counting upwards.<br /><br />If your pattern has a low number of possibilities, then it is highly recommended to use a counter to avoid collisions."></span>
+				</div>
+
+				<div class="alert-message block-message error" id="ref_format_err_len" style="display: none;">
+					This ref code is too long. Remove some segments and try again.
+				</div>
+				<div class="alert-message block-message error" id="ref_format_err_regex" style="display: none;">
+					Ref codes can only contain:<br/>
+					&middot; The tokens below<br/>
+					&middot; Letters and numbers (A-Z and 0-9)<br/>
+					&middot; Dashes and underscores (- and _)
 				</div>
 
 				<p>Your pattern can use tokens surrounded by &lt;brackets&gt;. Here are the available tokens:</p>
@@ -602,6 +611,56 @@ $(document).ready(function() {
 			$('#billing_dependencies').slideDown();
 		} else {
 			$('#billing_dependencies').slideUp();
+		}
+	});
+
+	function validateRefFormat()
+	{
+		if (!$('#ref_options_toggle').is(':checked')) {
+			$('#ref_format').val('');
+			return true;
+		}
+
+		var format   = $.trim($('#ref_format').val());
+		var digitLen = parseInt($('#ref_format_digits').find(':selected').val() || 0);
+
+		if (!format) {
+			$('#ref_options_toggle').prop('checked', false);
+			return true;
+		}
+
+		$('#ref_format_err_len').hide();
+		$('#ref_format_err_regex').hide();
+
+		if (format.length + digitLen > 80) {
+			console.log("Ref: Bad length");
+			$('#ref_format_err_len').show();
+			return false;
+		}
+
+		if (!format.match(/^[a-zA-Z0-9_\-<>#\?]+$/)) {
+			console.log("Ref: Bad format");
+			$('#ref_format_err_regex').show();
+			return false;
+		}
+
+		return true;
+	}
+
+	$('#ref_format').on('blur', validateRefFormat);
+	$('#ref_format_digits').on('change', validateRefFormat);
+
+	$('#settings_form').on('submit', function(ev) {
+		if (!validateRefFormat()) {
+			ev.preventDefault();
+			var offset = $('#ref_format').offset();
+			offset.top -= 30;
+
+			$('html, body').animate({
+				scrollTop: offset.top
+			});
+
+			return;
 		}
 	});
 });

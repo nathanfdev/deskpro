@@ -216,7 +216,7 @@
 	'agent.general.drop_here_to_attach'                     => 'Drop your file here to attach it to your reply',
 	'agent.general.drop_here_to_insert_image'               => 'Drop your <strong>image</strong> here to insert it into your reply',
 	'agent.general.drop_here_to_upload'                     => 'Drop your file here to upload a new picture',
-	'agent.general.edit'                                    => 'edit',
+	'agent.general.edit'                                    => 'Edit',
 	'agent.general.edit_categories'                         => 'Edit Categories',
 	'agent.general.edit_comment'                            => 'Edit Comment',
 	'agent.general.edit_properties'                         => 'Edit Properties',

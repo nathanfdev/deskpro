@@ -3119,7 +3119,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_autoSaveTicketLogs', 'postUpdate');
 		$metadata->addLifecycleCallback('_markRemoved', 'preRemove');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
+		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
 		$metadata->mapField(array( 'fieldName' => 'sent_to_address', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sent_to_address', ));
 		$metadata->mapField(array( 'fieldName' => 'notify_email', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email', ));

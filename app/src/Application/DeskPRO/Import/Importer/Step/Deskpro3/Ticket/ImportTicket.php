@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\TicketsRerunStep;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\TicketsStep;
 use Application\DeskPRO\Import\Importer\Step\Deskpro3\User\ImportUser;
+use Orb\Util\Arrays;
 
 class ImportTicket
 {
@@ -527,6 +528,12 @@ class ImportTicket
 
 			if ($attach_info['messageid']) {
 				$insert_attach['message_id'] = isset($message_map[$attach_info['messageid']]) ? $message_map[$attach_info['messageid']] : null;
+			}
+
+			// If the message is invalid or is unset (v3 bug would save "temp attachments" forever)
+			// then just add it to first message
+			if (!isset($insert_attach['message_id']) || !$insert_attach['message_id']) {
+				$insert_attach['message_id'] = Arrays::getFirstItem($message_map);
 			}
 
 			if (!$insert_attach['message_id']) {

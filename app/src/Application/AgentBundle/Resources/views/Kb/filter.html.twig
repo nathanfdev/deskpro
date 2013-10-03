@@ -29,7 +29,7 @@
 		{% endif %}
 
 		{% if category %}
-			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> {{ category.title }}</li>
+			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> <span>{{ category.title }}</span></li>
 		{% endif %}
 	</ul>
 {% endblock pane_header %}

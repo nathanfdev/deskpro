@@ -109,6 +109,12 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				complete: function() {
 					$('.result', el).removeClass('loading');
 				},
+				error: function() {
+					$('.success', el).hide();
+					$('.error', el).show();
+					$('.error-msg .error-msg-text', el).text('We could not connect to the SMTP server. Check the server hostname and port are set correctly and that you have enabled any required security options.');
+					$('.error-msg .error-msg-log', el).text('timeout');
+				},
 				success: function(data) {
 					if (data.success) {
 						$('.error', el).hide();

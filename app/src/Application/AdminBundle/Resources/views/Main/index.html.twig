@@ -170,7 +170,7 @@
 				{% if notice_items.apc_check %}
 					<tr>
 						<td>
-							{% if get_instance_ability('isWindows') %}
+							{% if get_instance_ability('isWindows') and get_instance_ability('isIis') %}
 								We recommend installing the <a href="http://www.php.net/manual/en/wincache.installation.php">WinCache extension</a> to dramatically improve performance.
 							{% else %}
 								We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.

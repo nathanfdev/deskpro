@@ -282,7 +282,13 @@ class CustomRef implements RefGeneratorInterface
 			$ref[] = sprintf("%0{$length}d", $count);
 		}
 
-		return implode('', $ref);
+		$ref = implode('', $ref);
+
+		if (strlen($ref) > 100) {
+			$ref = substr($ref, 0, 100);
+		}
+
+		return $ref;
 	}
 
 	public function getRegexString()

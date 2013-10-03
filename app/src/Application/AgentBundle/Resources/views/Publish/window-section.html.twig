@@ -76,7 +76,7 @@
 					</li>
 				</ul>
 
-				{% if kb_translate_queue[0] %}
+				{% if app.getLanguages().isMultiLang() and kb_translate_queue[0] %}
 					<nav class="pane-section-tabs border-top" style="margin: 15px 0 3px 0;">
 						<ul>
 							<li class="on"><span>{{ phrase('agent.general.translations') }}</span></li>

@@ -52,6 +52,8 @@ class TicketSlas extends AbstractJob
 
 	public function run()
 	{
+		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
+
 		$em = App::getOrm();
 
 		$count_failed = 0;
@@ -88,5 +90,7 @@ class TicketSlas extends AbstractJob
 		if ($count_warning || $count_failed) {
 			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
 		}
+
+		unset($GLOBALS['DP_ESCALATION_RUNNING']);
 	}
 }

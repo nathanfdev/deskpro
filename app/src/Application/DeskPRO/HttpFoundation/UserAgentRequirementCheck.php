@@ -76,13 +76,6 @@ class UserAgentRequirementCheck
 
 		$warnings = array();
 
-		$browser_name = strtolower($browser->getBrowser());
-		$version      = intval($browser->getVersion());
-
-		if ($browser_name == 'chrome' && $version == 29) {
-			$warnings['chrome_29_unstable'] = true;
-		}
-
 		return $warnings;
 	}
 

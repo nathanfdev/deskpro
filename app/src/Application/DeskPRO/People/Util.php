@@ -236,8 +236,6 @@ class Util
 
 		$overrides = self::resolveOverridePermissions($ug_perm_matrix, $usergroups, $all_ug_perms);
 
-		error_log(print_r($overrides,1));
-
 		return $overrides;
 	}
 }

@@ -466,7 +466,7 @@ class TicketController extends AbstractController
 			SELECT id
 			FROM tickets_messages
 			WHERE ticket_id = ?
-			ORDER BY id DESC
+			ORDER BY date_created DESC
 		", array($ticket->getId()));
 
 		$message_numbers = array();
@@ -480,6 +480,14 @@ class TicketController extends AbstractController
 		$message_ids = array_slice($all_message_ids, ($page-1)*$per_page, $per_page);
 
 		$ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getByIds($message_ids);
+
+		usort($ticket_messages, function($a, $b) {
+			$ts_a = $a->date_created->getTimestamp();
+			$ts_b = $b->date_created->getTimestamp();
+
+			if ($ts_a == $ts_b) return 0;
+			return ($ts_a < $ts_b) ? -1 : 1;
+		});
 
 		if ($ticket_attachments === null) {
 			$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);

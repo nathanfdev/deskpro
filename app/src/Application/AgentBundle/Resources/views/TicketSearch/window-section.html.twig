@@ -37,7 +37,10 @@
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
-											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>
+											{% if app.getSetting('core.use_product') %}<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>{% endif %}
+											{% if app.getSetting('core.use_ticket_category') %}<option {% if initial_inbox_grouping[filter.id] == "category" %}selected="selected"{% endif %} value="category">{{ phrase('agent.general.category') }}</option>{% endif %}
+											{% if app.getSetting('core.use_ticket_workflow') %}<option {% if initial_inbox_grouping[filter.id] == "workflow" %}selected="selected"{% endif %} value="workflow">{{ phrase('agent.general.workflow') }}</option>{% endif %}
+											{% if app.getSetting('core.use_ticket_priority') %}<option {% if initial_inbox_grouping[filter.id] == "priority" %}selected="selected"{% endif %} value="priority">{{ phrase('agent.general.priority') }}</option>{% endif %}
 											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">{{ phrase('agent.general.organization') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">{{ phrase('agent.general.person') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">{{ phrase('agent.general.language') }}</option>
@@ -84,7 +87,10 @@
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
-											<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>
+											{% if app.getSetting('core.use_product') %}<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>{% endif %}
+											{% if app.getSetting('core.use_ticket_category') %}<option {% if initial_inbox_grouping[filter.id] == "category" %}selected="selected"{% endif %} value="category">{{ phrase('agent.general.category') }}</option>{% endif %}
+											{% if app.getSetting('core.use_ticket_workflow') %}<option {% if initial_inbox_grouping[filter.id] == "workflow" %}selected="selected"{% endif %} value="workflow">{{ phrase('agent.general.workflow') }}</option>{% endif %}
+											{% if app.getSetting('core.use_ticket_priority') %}<option {% if initial_inbox_grouping[filter.id] == "priority" %}selected="selected"{% endif %} value="priority">{{ phrase('agent.general.priority') }}</option>{% endif %}
 											<option {% if initial_inbox_grouping[filter.id] == "organization" %}selected="selected"{% endif %} value="organization">{{ phrase('agent.general.organization') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "person" %}selected="selected"{% endif %} value="person">{{ phrase('agent.general.person') }}</option>
 											<option {% if initial_inbox_grouping[filter.id] == "language" %}selected="selected"{% endif %} value="language">{{ phrase('agent.general.language') }}</option>

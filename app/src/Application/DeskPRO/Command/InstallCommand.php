@@ -51,6 +51,8 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         $this->setName('dp:install');
 		$this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Inserts initial data with initial admin account");
+		$this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "(With insert-initial) The initial admin email");
+		$this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "(With insert-initial) The initial admin password");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -118,11 +120,29 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
 		if ($input->getOption('insert-initial')) {
 
+			$initial_password = 'password';
+			$initial_email    = 'admin@example.com';
+
+			if ($input->getOption('admin-email')) {
+				$initial_email = $input->getOption('admin-email');
+			}
+			if ($input->getOption('admin-password')) {
+				$initial_password = $input->getOption('admin-password');
+			}
+
+			if ($initial_email == 'CONFIG') {
+				if (defined('DP_TECHNICAL_EMAIL')) {
+					$initial_email = DP_TECHNICAL_EMAIL;
+				} else {
+					$initial_email = 'admin@example.com';
+				}
+			}
+
 			$agent = new \Application\DeskPRO\Entity\Person();
 			$agent->first_name = 'Admin';
 			$agent->last_name = 'Admin';
-			$agent->setEmail('admin@example.com', true);
-			$agent->setPassword('pass');
+			$agent->setEmail($initial_email, true);
+			$agent->setPassword($initial_password);
 			$agent->is_user = true;
 			$agent->is_confirmed = true;
 			$agent->is_agent_confirmed = true;

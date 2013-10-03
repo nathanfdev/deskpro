@@ -76,16 +76,6 @@
 	</div>
 	<div class="content">
 		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
-				{% if browser_warnings['chrome_29_unstable'] %}
-					<div class="warning">
-						{{ phrase('agent.login.chrome_29_title') }}
-						<br/><br/>
-						{{ phrase('agent.login.chrome_29_info') }}
-						<br/><br/>
-						<a href="https://support.deskpro.com/kb/articles/171" target="_blank">{{ phrase('agent.general.click_learn_more') }} &rarr;</a>
-					</div>
-				{% endif %}
-
 				<input type="hidden" name="agent_login" value="1" />
 				{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 				{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}

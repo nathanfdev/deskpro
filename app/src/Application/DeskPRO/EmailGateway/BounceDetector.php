@@ -123,12 +123,6 @@ class BounceDetector
 			}
 		}
 
-		// Standard autoreply headers
-		if ($this->reader->isFromRobot()) {
-			if ($this->logger) $this->logger->logDebug('Is bounced based on isFromRobot');
-			return true;
-		}
-
 		$failed = $this->reader->getHeader('X-Failed-Recipients');
 		if ($failed && $failed->getHeader()) {
 			if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
