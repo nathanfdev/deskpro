@@ -1,0 +1,13 @@
+default:
+  context:
+    class: DeskproContext
+
+  paths:
+    features: features
+    bootstrap: features/bootstrap
+
+  extensions:
+    Behat\MinkExtension\Extension:
+      base_url: http://localhost:8888
+      goutte: ~
+      selenium2: ~

@@ -617,6 +617,11 @@ class KernelBooter
 			return;
 		}
 
+		if (isset($GLOBALS['DP_USING_TESTING_CONFIG'])) {
+			echo "(Tests are running)\n";
+			return;
+		}
+
 		$lock_file = dp_get_tmp_dir() . '/cron.lock';
 		$lock_fp = null;
 

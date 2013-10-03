@@ -40,7 +40,11 @@ function dp_load_config()
 	if (!is_array($DP_CONFIG)) {
 
 		$config_file = DP_CONFIG_FILE;
-		if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing') {
+		if (
+			(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing')
+			||
+			(file_exists(DP_CONFIG_FILE) && file_exists(dirname(DP_CONFIG_FILE).DIRECTORY_SEPARATOR.'running_tests.trigger'))
+		) {
 			$config_file = str_replace('.php', '.testing.php', $config_file);
 			if (!file_exists($config_file)) {
 				echo "!!!!!!!!!!!!!!!!!!!!!!\n";
@@ -50,6 +54,7 @@ function dp_load_config()
 				echo "!!!!!!!!!!!!!!!!!!!!!!\n\n";
 				exit(1);
 			}
+			$GLOBALS['DP_USING_TESTING_CONFIG'] = true;
 		}
 
 		if (file_exists($config_file)) {
