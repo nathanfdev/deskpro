@@ -218,9 +218,9 @@ define [
 			for tpl in data
 				id = DP_BASE_ADMIN_URL+'/load-view/'+ tpl.id
 				$templateCache.put(id, tpl.source)
-		)
 
-		window.TC = $templateCache
+			window.DP_IS_BOOTED = true
+		)
 	])
 
 	if window.parent?.DP_FRAME_OVERLAY_admin

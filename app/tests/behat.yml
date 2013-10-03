@@ -10,4 +10,6 @@ default:
     Behat\MinkExtension\Extension:
       base_url: http://localhost:8888
       goutte: ~
-      selenium2: ~
+      selenium2:
+        capabilities:
+          browser: "firefox"

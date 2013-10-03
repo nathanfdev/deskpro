@@ -121,20 +121,18 @@
           qs.push('views[]=' + encodeURIComponent(t));
         }
         qs = qs.join('&');
-        $http({
+        return $http({
           method: 'GET',
           url: DP_BASE_ADMIN_URL + '/load-view/multi?' + qs
         }).success(function(data) {
-          var id, tpl, _j, _len1, _results;
-          _results = [];
+          var id, tpl, _j, _len1;
           for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
             tpl = data[_j];
             id = DP_BASE_ADMIN_URL + '/load-view/' + tpl.id;
-            _results.push($templateCache.put(id, tpl.source));
+            $templateCache.put(id, tpl.source);
           }
-          return _results;
+          return window.DP_IS_BOOTED = true;
         });
-        return window.TC = $templateCache;
       }
     ]);
     if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {

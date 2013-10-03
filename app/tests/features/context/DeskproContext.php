@@ -170,4 +170,21 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 			new \Behat\Behat\Context\Step\Then("I should see \"Loading Interface\""),
 		);
 	}
+
+	/**
+	 *@When /^admin page is loaded$/
+	 */
+	public function adminPageIsLoaded()
+	{
+
+		$this->getSession()->wait(5000, "window.DP_IS_BOOTED");
+	}
+
+	/**
+	 *@When /^admin sections are loaded$/
+	 */
+	public function adminSectionsAreLoaded()
+	{
+		$this->getSession()->wait(5000, "window.DP_SECTION_LOADING_STATE && !window.DP_SECTION_LOADING_STATE.dp_section_list && !window.DP_SECTION_LOADING_STATE.dp_section_page");
+	}
 }

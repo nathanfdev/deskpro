@@ -56,6 +56,10 @@
       }
 
       AppState.prototype.setLoadingState = function(id, val) {
+        if (!window.DP_SECTION_LOADING_STATE) {
+          window.DP_SECTION_LOADING_STATE = {};
+        }
+        window.DP_SECTION_LOADING_STATE[id] = val;
         if (this.loadingState[id] !== val) {
           this.loadingState[id] = val;
           this.notifyListeners('statechange', [id, val]);

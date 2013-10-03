@@ -50,6 +50,11 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 			)
 
 		setLoadingState: (id, val) ->
+			if not window.DP_SECTION_LOADING_STATE
+				window.DP_SECTION_LOADING_STATE = {}
+
+			window.DP_SECTION_LOADING_STATE[id] = val
+
 			if @loadingState[id] != val
 				@loadingState[id] = val
 				@notifyListeners('statechange', [id, val])
