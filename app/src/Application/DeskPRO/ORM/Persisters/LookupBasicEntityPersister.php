@@ -40,7 +40,7 @@ use Doctrine\ORM\PersistentCollection;
 
 class LookupBasicEntityPersister extends BasicEntityPersister
 {
-	public function load(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null, array $orderBy = null)
+	public function xload(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null, array $orderBy = null)
 	{
 		$uof = $this->em->getUnitOfWork();
 		$classname = $this->class->getName();
@@ -75,7 +75,7 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit, $orderBy);
 	}
 
-	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
+	public function xloadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
     {
 		if ($sourceEntity->__dp_is_preloaded_repos && isset($assoc['fieldName']) && $assoc['fieldName'] == 'children') {
 			$repos = $sourceEntity->__dp_is_preloaded_repos;

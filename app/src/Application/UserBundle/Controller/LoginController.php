@@ -259,7 +259,6 @@ HTML;
 
 		// Form wasnt inputted (eg direct url)
 		if (!$this->in->getString('email') || !$this->in->getString('password')) {
-
 			if ($this->getRequest()->getMethod() == 'POST') {
 				$this->session->set('failed_login_name', true);
 				$this->session->save();
@@ -270,7 +269,6 @@ HTML;
 		}
 
 		if (!$result->isValid()) {
-
 			// If this is an agent or admin and its an ldap error, show them an actual error page
 			if (isset($GLOBALS['DP_AUTH_EXCEPTION']) && isset($GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'])) {
 				$adapter = $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'];

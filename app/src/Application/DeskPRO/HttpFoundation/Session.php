@@ -71,6 +71,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	protected $is_first_page = false;
 
+	/**
+	 * @var array
+	 */
+	protected $autostart_interfaces = array(
+		'admin', 'agent', 'user', 'dp'
+	);
+
 	public function __construct(
 		\Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface $storage = null,
 		\Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $attributes = null,
@@ -78,20 +85,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	)
 	{
 		parent::__construct($storage, $attributes, $flashes);
-
-		if (defined('DP_INTERFACE')) {
-			switch (DP_INTERFACE) {
-				case 'admin':
-				case 'agent':
-				case 'user':
-				case 'dp':
-					break;
-
-				default:
-					$this->storage->noSave = true;
-					break;
-			}
-		}
 	}
 
 	/**
@@ -100,7 +93,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	public function start()
 	{
 		if ($this->storage->isStarted()) return;
-		parent::start();
+		$this->storage->start();
 
 		$this->is_first_page = empty($_SESSION);
 
@@ -472,8 +465,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function getVisitor()
 	{
-		if (!$this->isStarted()) $this->start();
-
 		return $this->visitor;
 	}
 
@@ -486,18 +477,27 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function getPerson()
 	{
-		if (!$this->isStarted()) $this->start();
 		if ($this->person !== null) return $this->person;
 
-		$person_id = $this->get('auth_person_id');
-		$person = false;
-
-		if ($person_id) {
-			$person = $this->getEntity()->person;
+		if (defined('DP_INTERFACE') && in_array(DP_INTERFACE, $this->autostart_interfaces)) {
+			$this->start();
 		}
 
-		if (DP_INTERFACE == 'user' && $person && $person->is_disabled) {
-			$person = false;
+		$person = false;
+		if ($this->isStarted()) {
+			$person_id = $this->get('auth_person_id');
+
+			if (App::getCurrentPerson() && App::getCurrentPerson()->getId() == $person_id) {
+				$person = App::getCurrentPerson();
+			} else {
+				if ($person_id) {
+					$person = $this->getEntity()->person;
+				}
+			}
+
+			if (DP_INTERFACE == 'user' && $person && $person->is_disabled) {
+				$person = false;
+			}
 		}
 
 		if (!$person) {
@@ -520,7 +520,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function getLocale()
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->getLanguage()->getLocale();
 	}
 
@@ -532,13 +531,12 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function getLanguage()
 	{
-		if (!$this->isStarted()) $this->start();
 		if ($this->language !== null) return $this->language;
 
 		$person = $this->getPerson();
 		if ($person && !$person->isGuest()) {
 			$this->language = $person->getLanguage();
-		} elseif ($this->get('language_id')) {
+		} elseif ($this->isStarted() && $this->get('language_id')) {
 			$this->language = App::getDataService('Language')->get($this->get('language_id'));
 		} elseif (isset($_COOKIE['dplid'])) {
 			$this->language = App::getDataService('Language')->get($_COOKIE['dplid']);
@@ -612,21 +610,25 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function isFirstPage()
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->is_first_page;
 	}
 
 
+	/**
+	 * Clears all data in the session
+	 */
 	public function clear()
 	{
-		//$this->attributes = array('_flash' => $this->attributes['_flash'], '_locale' => $this->attributes['_locale']);
+		$this->storage->clear();
 	}
 
 
+	/**
+	 * @return int
+	 */
 	public function getEntityId()
     {
-		if (!$this->isStarted()) $this->start();
-        return $this->storage->getEntityId();
+        return $this->getEntity()->getId();
     }
 
 
@@ -638,7 +640,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function getSessionSecret($secret = '')
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->getEntity()->getSessionSecret($secret);
 	}
 
@@ -652,7 +653,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function checkSecurityToken($name, $token)
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->getEntity()->checkSecurityToken($name, $token);
 	}
 
@@ -666,7 +666,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function generateSecurityToken($name, $timeout = 43200)
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->getEntity()->generateSecurityToken($name, $timeout);
 	}
 
@@ -687,7 +686,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 */
 	public function set($k, $v)
 	{
-		if (!$this->isStarted()) $this->start();
 		if ($k == 'language_id') {
 			$this->language = null;
 			$this->getLanguage();
@@ -698,31 +696,26 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
 	public function getIterator()
 	{
-		if (!$this->isStarted()) $this->start();
 		return new \ArrayIterator($this->attributes);
 	}
 
 	public function offsetUnset($offset)
 	{
-		if (!$this->isStarted()) $this->start();
 		$this->remove($offset);
 	}
 
 	public function offsetSet($offset, $value)
 	{
-		if (!$this->isStarted()) $this->start();
 		$this->set($offset, $value);
 	}
 
 	public function offsetGet($offset)
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->get($offset);
 	}
 
 	public function offsetExists($offset)
 	{
-		if (!$this->isStarted()) $this->start();
 		return $this->has($offset);
 	}
 

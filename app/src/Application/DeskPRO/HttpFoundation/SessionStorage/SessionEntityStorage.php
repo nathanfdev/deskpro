@@ -182,18 +182,16 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
 			$this->em->persist($session);
 			$this->em->flush();
-
-			session_id($session->getSessionCode());
 		}
 
-		if ($session) {
-			$this->session = $session;
-		}
+		session_id($session->getSessionCode());
+		$this->session = $session;
 
 		session_start();
 		$this->loadSession();
 
 		$this->started = true;
+		$this->closed = false;
 	}
 
 
@@ -407,6 +405,14 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
 	public function getEntityId()
 	{
+		if (!$this->started) {
+			throw new \RuntimeException('The session must be started before reading its ID');
+		}
+
+		if ($this->session) {
+			return $this->session->getId();
+		}
+
 		$id = $this->getId();
 		list($entity_id, ) = explode('-', $id, 2);
 		$entity_id = Util::baseDecode($entity_id, 'base36');
@@ -416,6 +422,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
 	public function getEntity()
 	{
+		if (!$this->started) {
+			throw new \RuntimeException('The session must be started before reading its ID');
+		}
+
 		if (!$this->session) {
 			$this->session = App::getEntityRepository('DeskPRO:Session')->find($this->getEntityId());
 		}
@@ -490,6 +500,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 		}
 
 		$ret = session_regenerate_id($destroy);
+		$this->loadSession();
 
 		return $ret;
 	}
@@ -499,7 +510,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 	 */
 	public function save()
 	{
-		session_write_close();
+		// Dont close the session here, we do it on shutdown automatically
+		return;
 	}
 
 	/**
@@ -536,9 +548,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 			throw new \InvalidArgumentException(sprintf('The SessionBagInterface %s is not registered.', $name));
 		}
 
-		if (!$this->started) {
+		if ($this->started) {
 			$this->loadSession();
-		} elseif (!$this->started) {
+		} else {
 			$this->start();
 		}
 
@@ -601,9 +613,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 			$session[$key] = isset($session[$key]) ? $session[$key] : array();
 			$bag->initialize($session[$key]);
 		}
-
-		$this->started = true;
-		$this->closed = false;
 	}
 
 	/**
