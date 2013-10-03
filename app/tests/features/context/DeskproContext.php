@@ -103,4 +103,71 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 
 		return true;
 	}
+
+	/**
+	 * @Given /^I have an agent "([^"]*)" with password "([^"]*)"$/
+	 */
+	public function iHaveAnAgentWithPassword($email, $password)
+	{
+		$this->iHaveAUserWithPassword($email, $password);
+
+		$person_id = $this->getDb()->fetchColumn("SELECT person_id FROM people_emails WHERE email = ?", array($email));
+		$this->getDb()->update('people', array(
+			'is_agent'    => 1,
+			'can_reports' => 1,
+		), array('id' => $person_id));
+
+		return true;
+	}
+
+	/**
+	 * @Given /^I have an admin "([^"]*)" with password "([^"]*)"$/
+	 */
+	public function iHaveAnAdminWithPassword($email, $password)
+	{
+		$this->iHaveAUserWithPassword($email, $password);
+
+		$person_id = $this->getDb()->fetchColumn("SELECT person_id FROM people_emails WHERE email = ?", array($email));
+		$this->getDb()->update('people', array(
+			'is_agent'    => 1,
+			'can_admin'   => 1,
+			'can_billing' => 1,
+			'can_reports' => 1,
+		), array('id' => $person_id));
+
+		return true;
+	}
+
+	/**
+	 * @Given /^I am logged in as agent "([^"]*)"$/
+	 */
+	public function iAmLoggedInAsAgent($email)
+	{
+		$this->getSession()->reset();
+		return array(
+			new \Behat\Behat\Context\Step\Given("I have an agent \"$email\" with password \"password\""),
+			new \Behat\Behat\Context\Step\Given("I am on \"/agent/login?return=/agent/\""),
+			new \Behat\Behat\Context\Step\When("I fill in \"email\" with \"$email\""),
+			new \Behat\Behat\Context\Step\When("I fill in \"password\" with \"password\""),
+			new \Behat\Behat\Context\Step\When("I press \"Log In\""),
+			new \Behat\Behat\Context\Step\Then("I should see \"Loading Interface\""),
+		);
+	}
+
+
+	/**
+	 * @Given /^I am logged in as admin "([^"]*)"$/
+	 */
+	public function iAmLoggedInAsAdmin($email)
+	{
+		$this->getSession()->reset();
+		return array(
+			new \Behat\Behat\Context\Step\Given("I have an admin \"$email\" with password \"password\""),
+			new \Behat\Behat\Context\Step\Given("I am on \"/agent/login?return=/agent/\""),
+			new \Behat\Behat\Context\Step\When("I fill in \"email\" with \"$email\""),
+			new \Behat\Behat\Context\Step\When("I fill in \"password\" with \"password\""),
+			new \Behat\Behat\Context\Step\When("I press \"Log In\""),
+			new \Behat\Behat\Context\Step\Then("I should see \"Loading Interface\""),
+		);
+	}
 }
