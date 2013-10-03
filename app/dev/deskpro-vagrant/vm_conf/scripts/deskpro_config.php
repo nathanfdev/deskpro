@@ -384,6 +384,8 @@ $DP_CONFIG['db_read']['dbname'] = '';
 ######################################################
 ######################################################
 
+define('DP_CACHE_DIR', '/deskpro-cache');
+
 $DP_CONFIG['debug']['dev']                     = true;
 $DP_CONFIG['debug']['raw_assets']              = array('all');
 $DP_CONFIG['debug']['no_report_errors']        = true;
