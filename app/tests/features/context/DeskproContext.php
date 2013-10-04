@@ -142,9 +142,9 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 	 */
 	public function iAmLoggedInAsAgent($email)
 	{
+		$this->iHaveAnAgentWithPassword($email, "password");
 		$this->getSession()->reset();
 		return array(
-			new \Behat\Behat\Context\Step\Given("I have an agent \"$email\" with password \"password\""),
 			new \Behat\Behat\Context\Step\Given("I am on \"/agent/login?return=/agent/\""),
 			new \Behat\Behat\Context\Step\When("I fill in \"email\" with \"$email\""),
 			new \Behat\Behat\Context\Step\When("I fill in \"password\" with \"password\""),
@@ -159,9 +159,9 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 	 */
 	public function iAmLoggedInAsAdmin($email)
 	{
+		$this->iHaveAnAdminWithPassword($email, "password");
 		$this->getSession()->reset();
 		return array(
-			new \Behat\Behat\Context\Step\Given("I have an admin \"$email\" with password \"password\""),
 			new \Behat\Behat\Context\Step\Given("I am on \"/agent/login?return=/agent/\""),
 			new \Behat\Behat\Context\Step\When("I fill in \"email\" with \"$email\""),
 			new \Behat\Behat\Context\Step\When("I fill in \"password\" with \"password\""),
