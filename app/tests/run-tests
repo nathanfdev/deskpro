@@ -27,7 +27,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 	../bin/behat
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Behat Test Failure !!!"
-		exit 1
+		IS_ERROR=1
 	fi
 fi
 
@@ -37,7 +37,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "Error Detected - Here are some interesting log files"
 	echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
-	if [ -f ../../data/logs/error.log ] ; then
+	if [ -e ../../data/logs/error.log ] ; then
 		echo ""
 		echo "[DeskPRO] error.log"
 		echo "======================================================="
@@ -45,7 +45,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat ../../data/logs/error.log
 	fi
 
-	if [ -f ../../data/logs/install.log ] ; then
+	if [ -e ../../data/logs/install.log ] ; then
 		echo ""
 		echo "[DeskPRO] install.log"
 		echo "======================================================="
@@ -53,7 +53,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat ../../data/logs/install.log
 	fi
 
-	if [ -f /var/log/dp-install-log.log ] ; then
+	if [ -e /var/log/dp-install-log.log ] ; then
 		echo ""
 		echo "[System] dp-install-log.log"
 		echo "======================================================="
@@ -61,7 +61,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat /var/log/dp-install-log.log
 	fi
 
-	if [ -f /var/log/php_errors.log ] ; then
+	if [ -e /var/log/php_errors.log ] ; then
 		echo ""
 		echo "[System] /var/log/php_errors.log"
 		echo "======================================================="
@@ -69,7 +69,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat /var/log/php_errors.log
 	fi
 
-	if [ -f /var/log/firefox.log ] ; then
+	if [ -e /var/log/firefox.log ] ; then
 		echo ""
 		echo "[System] /var/log/firefox.log"
 		echo "======================================================="
@@ -77,7 +77,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat /var/log/firefox.log
 	fi
 
-	if [ -f /var/log/Xvfb.log ] ; then
+	if [ -e /var/log/Xvfb.log ] ; then
 		echo ""
 		echo "[System] /var/log/Xvfb.log"
 		echo "======================================================="
@@ -85,7 +85,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat /var/log/Xvfb.log
 	fi
 
-	if [ -f /var/log/selenium-hub.log ] ; then
+	if [ -e /var/log/selenium-hub.log ] ; then
 		echo ""
 		echo "[System] /var/log/selenium-hub.log"
 		echo "======================================================="
@@ -93,7 +93,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 		cat /var/log/selenium-hub.log
 	fi
 
-	if [ -f /var/log/selenium-node.log ] ; then
+	if [ -e /var/log/selenium-node.log ] ; then
 		echo ""
 		echo "[System] /var/log/selenium-node.log"
 		echo "======================================================="

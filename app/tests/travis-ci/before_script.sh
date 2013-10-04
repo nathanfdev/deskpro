@@ -34,6 +34,11 @@ echo "Installing Default Tables"
 php cmd.php dp:install > /var/log/dp-install-log.log
 echo "--> Done"
 
+echo "Ensuring permissions"
+chmod -R 0777 data
+chmod -R 0777 app/sys/cache
+echo "--> Done"
+
 echo "Installing Apache"
 sudo apt-get update
 sudo apt-get install -y apache2
