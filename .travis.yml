@@ -5,7 +5,12 @@ before_script: app/tests/travis-ci/before_script.sh
 after_failure: app/tests/travis-ci/after_failure.sh
 script: app/tests/run-tests
 addons:
-  firefox: "21.0"
+  firefox: '21.0'
+notifications:
+  hipchat:
+    rooms:
+      secure: Q7RP9xIDTI+Xfom+8DD9oPW8RGcLzpIkCFWMW2amP7wFs0j1xzVU6pXwAOuvuum4iLImkNOMD1RZuIpyYBz8V2hc62BlacrPMfHlAw4/NTEGUoesdPyQLBK7uEnnUJ1avOHZSabrIH66sO0Ve7peRIF5BsZl2knpSF4ZbgMK/8Y=
+    template:
+    - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}'
 branches:
-  only:
-    feature/adminui
+  only: feature/adminui
