@@ -30,8 +30,8 @@ echo "Creating config.testing.php"
 echo '<?php require("config.php");' > config.testing.php
 echo "--> Done"
 
-echo "Installing Default Tables"
-php cmd.php dp:install > /var/log/dp-install-log.log
+echo "Installing Clean Test DB"
+app/tests/bin/clean-testing-db
 echo "--> Done"
 
 echo "Ensuring permissions"
@@ -60,17 +60,17 @@ firefox > /var/log/firefox.log 2>&1 &
 echo "--> Done"
 
 echo "Downloading Selenium"
-wget http://selenium.googlecode.com/files/selenium-server-standalone-2.31.0.jar
+wget -O /tmp/selenium-server-standalone-2.31.0.jar http://selenium.googlecode.com/files/selenium-server-standalone-2.31.0.jar
 echo "--> Done"
 
 echo "Starting Selenium Hub"
-java -jar /usr/local/bin/selenium/selenium-server-standalone-2.31.0.jar -role hub > /var/log/selenium-hub.log 2>&1 &
+java -jar /tmp/selenium-server-standalone-2.31.0.jar -role hub > /var/log/selenium-hub.log 2>&1 &
 echo "."
 sleep 3
 echo "--> Done"
 
 echo "Starting Selenium Node"
-java -jar /usr/local/bin/selenium/selenium-server-standalone-2.31.0.jar -role node -hub http://localhost:4444/grid/register > /var/log/selenium-node.log 2>&1 &
+java -jar /tmp/selenium-server-standalone-2.31.0.jar -role node -hub http://localhost:4444/grid/register > /var/log/selenium-node.log 2>&1 &
 echo "."
 sleep 3
 echo "--> Done"

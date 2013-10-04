@@ -11,7 +11,7 @@ echo "Running phpUnit Test Suite"
 echo "=========================="
 echo ""
 
-../bin/phpunit
+bin/phpunit
 if [[ $? -ne 0 ]] ; then
 	echo "!!! phpUnit Test Failure !!!"
 	IS_ERROR=1
@@ -24,7 +24,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "========================"
 	echo ""
 
-	../bin/behat
+	bin/behat
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Behat Test Failure !!!"
 		IS_ERROR=1
