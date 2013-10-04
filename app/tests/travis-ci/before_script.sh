@@ -1,33 +1,37 @@
 #!/bin/bash
 
+echo "Ensuring log files"
+sudo touch /var/log/Xvfb.log
+sudo touch /var/log/firefox.log
+sudo touch /var/log/selenium-hub.log
+sudo touch /var/log/selenium-node.log
+sudo touch /var/log/dp-install-log.log
+sudo touch /var/log/php_errors.log
+sudo chmod 0777 /var/log/Xvfb.log
+sudo chmod 0777 /var/log/firefox.log
+sudo chmod 0777 /var/log/selenium-hub.log
+sudo chmod 0777 /var/log/selenium-node.log
+sudo chmod 0777 /var/log/dp-install-log.log
+sudo chmod 0777 /var/log/php_errors.log
+echo "--> Done"
+
 echo "Creating test database"
+mysql -u root -e "CREATE USER 'deskpro'@'localhost' IDENTIFIED BY 'deskpro';"
+mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'localhost' WITH GRANT OPTION;"
 mysql -e "CREATE DATABASE deskpro;"
 echo "--> Done"
 
 echo "Creating config.php"
 rm config.php
-cp config.new.php config.php
-
-sed -i tmp "s/define('DP_DATABASE_HOST', 'localhost')/define('DP_DATABASE_HOST', '127.0.0.1')/g" config.php
-sed -i tmp "s/define('DP_DATABASE_USER', 'root')/define('DP_DATABASE_USER', 'travis')/" config.php
-
-echo '$DP_CONFIG['"'"'debug'"'"']['"'"'dev'"'"']                     = true;' >> config.php
-echo '$DP_CONFIG['"'"'debug'"'"']['"'"'raw_assets'"'"']              = array('"'"'all'"'"');' >> config.php
-echo '$DP_CONFIG['"'"'debug'"'"']['"'"'no_report_errors'"'"']        = true;' >> config.php
-echo '$DP_CONFIG['"'"'cache'"'"']['"'"'page_cache'"'"']['"'"'enable'"'"']    = false;' >> config.php
-echo '$DP_CONFIG['"'"'debug'"'"']['"'"'mail'"'"']['"'"'save_to_file'"'"']    = true;' >> config.php
-echo '$DP_CONFIG['"'"'debug'"'"']['"'"'mail'"'"']['"'"'enable_mail_log'"'"'] = true;' >> config.php
-echo '$DP_CONFIG['"'"'debug'"'"']['"'"'mail'"'"']['"'"'disable_send'"'"']    = true;' >> config.php
-echo '$DP_CONFIG['"'"'rewrite_urls'"'"'] = true;' >> config.php
-echo '$DP_CONFIG['"'"'SETTINGS'"'"'] = array();' >> config.php
-echo '$DP_CONFIG['"'"'SETTINGS'"'"']['"'"'core.use_mail_queue'"'"']    = '"'"'never'"'"';' >> config.php
-echo '$DP_CONFIG['"'"'SETTINGS'"'"']['"'"'core.show_share_widget'"'"'] = false;' >> config.php
-echo '$DP_CONFIG['"'"'SETTINGS'"'"']['"'"'core.use_gravatar'"'"']      = false;' >> config.php
-
+cp app/tests/travis-ci/deskpro-config.php config.php
 echo "--> Done"
 
 echo "Creating config.testing.php"
 echo '<?php require("config.php");' > config.testing.php
+echo "--> Done"
+
+echo "Installing Default Tables"
+php cmd.php dp:install > /var/log/dp-install-log.log
 echo "--> Done"
 
 echo "Installing Apache"
@@ -38,17 +42,8 @@ sudo a2enmod rewrite
 echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
 echo cat app/tests/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
 echo cat app/tests/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
-echo "Listen 8888" >> /etc/apache2/ports.conf
+sudo echo "Listen 8888" >> /etc/apache2/ports.conf
 sudo service apache2 restart
-
-sudo touch /var/log/Xvfb.log
-sudo touch /var/log/firefox.log
-sudo touch /var/log/selenium-hub.log
-sudo touch /var/log/selenium-node.log
-sudo chmod 0777 /var/log/Xvfb.log
-sudo chmod 0777 /var/log/firefox.log
-sudo chmod 0777 /var/log/selenium-hub.log
-sudo chmod 0777 /var/log/selenium-node.log
 
 echo "Starting xvfb"
 export DISPLAY=:99
