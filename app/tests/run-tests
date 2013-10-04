@@ -3,6 +3,10 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 
+if [ ! -d app/tests/build ]; then
+	mkdir app/tests/build
+fi
+
 IS_ERROR=0
 
 echo ""
