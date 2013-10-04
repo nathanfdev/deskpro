@@ -42,7 +42,7 @@ sudo a2enmod rewrite
 echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
 cat app/tests/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
 cat app/tests/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
-sudo echo "Listen 8888" | sudo tee -a /etc/apache2/ports.conf
+echo "Listen 8888" | sudo tee -a /etc/apache2/ports.conf
 sudo service apache2 restart
 
 echo "Starting xvfb"

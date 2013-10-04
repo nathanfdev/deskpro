@@ -3,6 +3,8 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 
+IS_ERROR=0
+
 echo ""
 echo "=========================="
 echo "Running phpUnit Test Suite"
@@ -12,17 +14,93 @@ echo ""
 ../bin/phpunit
 if [[ $? -ne 0 ]] ; then
 	echo "!!! phpUnit Test Failure !!!"
-    exit 1
+	IS_ERROR=1
 fi
 
-echo ""
-echo "========================"
-echo "Running Behat Test Suite"
-echo "========================"
-echo ""
+if [ $IS_ERROR -ne 1 ] ; then
+	echo ""
+	echo "========================"
+	echo "Running Behat Test Suite"
+	echo "========================"
+	echo ""
 
-../bin/behat
-if [[ $? -ne 0 ]] ; then
-	echo "!!! Behat Test Failure !!!"
-    exit 1
+	../bin/behat
+	if [[ $? -ne 0 ]] ; then
+		echo "!!! Behat Test Failure !!!"
+		exit 1
+	fi
 fi
+
+if [ $IS_ERROR -ne 1 ] ; then
+	echo ""
+	echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+	echo "Error Detected - Here are some interesting log files"
+	echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+	if [ -f ../../data/logs/error.log ] ; then
+		echo ""
+		echo "[DeskPRO] error.log"
+		echo "======================================================="
+		echo ""
+		cat ../../data/logs/error.log
+	fi
+
+	if [ -f ../../data/logs/install.log ] ; then
+		echo ""
+		echo "[DeskPRO] install.log"
+		echo "======================================================="
+		echo ""
+		cat ../../data/logs/install.log
+	fi
+
+	if [ -f /var/log/dp-install-log.log ] ; then
+		echo ""
+		echo "[System] dp-install-log.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/dp-install-log.log
+	fi
+
+	if [ -f /var/log/php_errors.log ] ; then
+		echo ""
+		echo "[System] /var/log/php_errors.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/php_errors.log
+	fi
+
+	if [ -f /var/log/firefox.log ] ; then
+		echo ""
+		echo "[System] /var/log/firefox.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/firefox.log
+	fi
+
+	if [ -f /var/log/Xvfb.log ] ; then
+		echo ""
+		echo "[System] /var/log/Xvfb.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/Xvfb.log
+	fi
+
+	if [ -f /var/log/selenium-hub.log ] ; then
+		echo ""
+		echo "[System] /var/log/selenium-hub.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/selenium-hub.log
+	fi
+
+	if [ -f /var/log/selenium-node.log ] ; then
+		echo ""
+		echo "[System] /var/log/selenium-node.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/selenium-node.log
+	fi
+
+	exit 1
+fi
+exit 0

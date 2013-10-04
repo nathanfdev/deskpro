@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('error_log', '/var/log/php_errors.log');
+
 define('DP_DATABASE_HOST', 'localhost');
 define('DP_DATABASE_USER', 'deskpro');
 define('DP_DATABASE_PASSWORD', 'deskpro');
