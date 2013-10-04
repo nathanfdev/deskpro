@@ -31,7 +31,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 	fi
 fi
 
-if [ $IS_ERROR -ne 1 ] ; then
+if [ $IS_ERROR -ne 0 ] ; then
 	echo ""
 	echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 	echo "Error Detected - Here are some interesting log files"
@@ -99,6 +99,22 @@ if [ $IS_ERROR -ne 1 ] ; then
 		echo "======================================================="
 		echo ""
 		cat /var/log/selenium-node.log
+	fi
+
+	if [ -e /var/log/apache2/access.log ] ; then
+		echo ""
+		echo "[System] /var/log/apache2/access.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/apache2/access.log
+	fi
+
+	if [ -e /var/log/apache2/error.log ] ; then
+		echo ""
+		echo "[System] /var/log/apache2/error.log"
+		echo "======================================================="
+		echo ""
+		cat /var/log/apache2/error.log
 	fi
 
 	exit 1
