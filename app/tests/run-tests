@@ -1,0 +1,28 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+
+echo ""
+echo "=========================="
+echo "Running phpUnit Test Suite"
+echo "=========================="
+echo ""
+
+../bin/phpunit
+if [[ $? -ne 0 ]] ; then
+	echo "!!! phpUnit Test Failure !!!"
+    exit 1
+fi
+
+echo ""
+echo "========================"
+echo "Running Behat Test Suite"
+echo "========================"
+echo ""
+
+../bin/behat
+if [[ $? -ne 0 ]] ; then
+	echo "!!! Behat Test Failure !!!"
+    exit 1
+fi

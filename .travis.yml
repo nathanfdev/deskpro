@@ -1,0 +1,10 @@
+language: php
+php:
+  - 5.4
+before_script: app/tests/travis-ci/before_script.sh
+script: app/tests/run-tests
+addons:
+  firefox: "21.0"
+branches:
+  only:
+    feature/adminui
