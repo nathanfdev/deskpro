@@ -3,6 +3,8 @@
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
+$collection = new RouteCollection();
+
 $col = $loader->import(DP_ROOT.'/src/Application/InstallBundle/Resources/config/install-routing.php');
 $col->addPrefix('/install');
 $collection->addCollection($col);
