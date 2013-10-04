@@ -68,7 +68,7 @@ class DpTestConfig
 	/**
 	 * Resets the test database
 	 */
-	public static function initTestDb()
+	public static function initTestDb($verbose = false)
 	{
 		$em = self::getContainer()->getEm();
 		$db = self::getContainer()->getDb();
@@ -78,26 +78,26 @@ class DpTestConfig
 		# Clear database
 		#------------------------------
 
-		printf("\nClearing database ...\n");
+		if ($verbose) printf("\nClearing database ...\n");
 		$t_start = microtime(true);
 
 		foreach ($db->fetchAllCol("SHOW TABLES") as $t) {
 			$db->exec("DROP TABLE $t");
-			echo ".";
+			if ($verbose) echo ".";
 		}
-		printf("\nDone in %.4fs", microtime(true)-$t_start);
+		if ($verbose) printf("\nDone in %.4fs", microtime(true)-$t_start);
 
 
 		#------------------------------
 		# Create tables
 		#------------------------------
 
-		printf("Creating tables ...\n");
+		if ($verbose) printf("Creating tables ...\n");
 		$t_start = microtime(true);
 
 		$gs = new \Application\InstallBundle\Data\GenerateSchema(DpTestConfig::getContainer()->getEm());
 
-		printf("Creates -- ");
+		if ($verbose) printf("Creates -- ");
 
 		// Manually create install_data
 		// Its used by the installer to test that we have create perms, so its
@@ -113,14 +113,14 @@ class DpTestConfig
 		foreach ($gs->getCreates() as $q) {
 			$db->exec($q);
 		}
-		printf("Done\n");
+		if ($verbose) printf("Done\n");
 
-		printf("Alters -- ");
+		if ($verbose) printf("Alters -- ");
 		foreach ($gs->getAlters() as $q) {
 			$db->exec($q);
 		}
-		printf("Done\n");
-		printf("\nDone in %.4fs", microtime(true)-$t_start);
+		if ($verbose) printf("Done\n");
+		if ($verbose) printf("\nDone in %.4fs", microtime(true)-$t_start);
 
 		$db->exec("SET FOREIGN_KEY_CHECKS = 1");
 

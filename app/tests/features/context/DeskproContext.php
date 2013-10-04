@@ -57,7 +57,6 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 		return DpTestConfig::getContainer()->getDb();
 	}
 
-
 	/**
 	 * @Given /^I have a user "([^"]*)" with password "([^"]*)"$/
 	 */
