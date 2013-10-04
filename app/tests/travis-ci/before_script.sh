@@ -31,6 +31,7 @@ echo '<?php require("config.php");' > config.testing.php
 echo "--> Done"
 
 echo "Installing Apache"
+sudo apt-get update
 sudo apt-get install -y apache2
 sudo a2enmod actions
 sudo a2enmod rewrite
@@ -40,13 +41,22 @@ echo cat app/tests/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" |
 echo "Listen 8888" >> /etc/apache2/ports.conf
 sudo service apache2 restart
 
+sudo touch /var/log/Xvfb.log
+sudo touch /var/log/firefox.log
+sudo touch /var/log/selenium-hub.log
+sudo touch /var/log/selenium-node.log
+sudo chmod 0777 /var/log/Xvfb.log
+sudo chmod 0777 /var/log/firefox.log
+sudo chmod 0777 /var/log/selenium-hub.log
+sudo chmod 0777 /var/log/selenium-node.log
+
 echo "Starting xvfb"
 export DISPLAY=:99
-/usr/bin/Xvfb :99 -ac -screen 0 1280x800x8
+/usr/bin/Xvfb :99 -ac -screen 0 1280x800x8 > /var/log/Xvfb.log 2>&1 &
 echo "--> Done"
 
 echo "Starting firefox"
-firefox
+firefox > /var/log/firefox.log 2>&1 &
 echo "--> Done"
 
 echo "Downloading Selenium"
