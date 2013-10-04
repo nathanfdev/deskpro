@@ -149,7 +149,7 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 			new \Behat\Behat\Context\Step\When("I fill in \"email\" with \"$email\""),
 			new \Behat\Behat\Context\Step\When("I fill in \"password\" with \"password\""),
 			new \Behat\Behat\Context\Step\When("I press \"Log In\""),
-			new \Behat\Behat\Context\Step\Then("I should see \"Loading Interface\""),
+			new \Behat\Behat\Context\Step\Then("I should see \"Hello,\""),
 		);
 	}
 
@@ -166,7 +166,7 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 			new \Behat\Behat\Context\Step\When("I fill in \"email\" with \"$email\""),
 			new \Behat\Behat\Context\Step\When("I fill in \"password\" with \"password\""),
 			new \Behat\Behat\Context\Step\When("I press \"Log In\""),
-			new \Behat\Behat\Context\Step\Then("I should see \"Loading Interface\""),
+			new \Behat\Behat\Context\Step\Then("I should see \"Hello,\""),
 		);
 	}
 

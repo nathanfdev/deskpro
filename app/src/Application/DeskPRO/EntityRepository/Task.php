@@ -139,10 +139,8 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('person', $person);
 		}
 
-		$qb->setParameters(array(
-			'd1' => $d1,
-			'd2' => $d2
-		));
+		$qb->setParameter('d1', $d1);
+		$qb->setParameter('d2', $d2);
 
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -176,9 +174,7 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('person', $person);
 		}
 
-		$qb->setParameters(array(
-			'today' => $today,
-		));
+		$qb->setParameter('today', $today);
 
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -202,9 +198,7 @@ class Task extends AbstractEntityRepository
 		   ->orWhere('aa.id = :person_id')
 		   ->andWhere('t.is_completed = false');
 
-		$qb->setParameters(array(
-			'person_id'=> $person['id'],
-		));
+		$qb->setParameter('person_id', $person['id']);
 
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -578,9 +572,7 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('date_due', $today);
 		}
 
-		$qb->setParameters(array(
-			'person_id'=> $person['id'],
-		));
+		$qb->setParameter('person_id', $person['id']);
 		$query = $qb->getQuery();
 		return $query->getResult();
 	}
@@ -622,7 +614,7 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('date_due', $today);
 		}
 
-		$qb->setParameters(array('person_id'=> $person['id']));
+		$qb->setParameter('person_id', $person['id']);
 
 		$query = $qb->getQuery();
 		return $query->getResult();
@@ -666,7 +658,7 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('today', $today);
 		}
 
-		$qb->setParameters(array('person_id'=> $person['id']));
+		$qb->setParameters('person_id', $person['id']);
 		$query = $qb->getQuery();
 		return $query->getResult();
 	}
