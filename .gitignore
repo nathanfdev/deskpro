@@ -10,6 +10,7 @@
 *.komodoproject
 *.sublime*
 *.map
+/running_tests.trigger
 
 # cache and log files
 /app/sys/cache/*
