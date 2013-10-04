@@ -4,10 +4,12 @@
 # Correct line endings
 ###############################################
 
-fromdos /vm_conf/scripts/checkout_deskpro.sh
-fromdos /vm_conf/scripts/install_deskpro.sh
-fromdos /vm_conf/scripts/start-selenium.sh
-fromdos /vm_conf/scripts/stop-selenium.sh
+fromdos /vm_local/init/checkout_deskpro.sh
+fromdos /vm_local/init/install_deskpro.sh
+
+cp /vm_local/dpcmd /usr/bin/dpcmd
+fromdos /usr/bin/dpcmd
+chmod +x /usr/bin/dpcmd
 
 ###############################################
 # Make log files / directories writable
@@ -20,6 +22,9 @@ mkdir /deskpro-cache
 chmod 0777 /deskpro-cache
 chown root:vagrant /deskpro-cache
 chmod g+s /deskpro-cache
+
+sudo usermod -a -G vagrant www-data
+sudo usermod -a -G www-data vagrant
 
 ###############################################
 # Small changes to config
@@ -59,7 +64,9 @@ add-apt-repository -y ppa:webupd8team/java
 apt-get update
 
 # xvfb is a virtual display required by firefox
-apt-get install -y xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic xvfb x11-apps imagemagick
+# we're installing firefox itself here too so the appropriate dependencies are installed
+# but we still fetch version 21 specifically below
+apt-get install -y xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic xvfb x11-apps imagemagick firefox
 
 # Pre-accept Oracle's licensing
 echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
@@ -72,6 +79,7 @@ apt-get install -y oracle-java7-installer
 cd /usr/local/bin
 wget -O firefox-21.tar.bz2 'https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/21.0/linux-x86_64/en-US/firefox-21.0.tar.bz2'
 tar jxvf firefox-21.tar.bz2
+rm /usr/bin/firefox
 ln -s /usr/local/bin/firefox/firefox /usr/bin/firefox
 
 # Download and install selenium
@@ -84,7 +92,7 @@ wget http://selenium.googlecode.com/files/selenium-server-standalone-2.31.0.jar
 ###############################################
 
 echo "Setting MySQL root password to 'deskpro' and creating initial 'deskpro' database"
-mysql -uroot -e "CREATE DATABASE IF NOT EXISTS deskpro; GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'deskpro' WITH GRANT OPTION; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'deskpro' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+mysql -uroot -e "CREATE DATABASE IF NOT EXISTS deskpro; CREATE DATABASE IF NOT EXISTS deskpro_testing; GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'deskpro' WITH GRANT OPTION; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'deskpro' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
 ###############################################
 # Init'ing DeskPRO
@@ -92,12 +100,12 @@ mysql -uroot -e "CREATE DATABASE IF NOT EXISTS deskpro; GRANT ALL PRIVILEGES ON 
 
 echo "Checking out DesKPRO files"
 if [ ! -d /deskpro/www/app ];then
-	/bin/bash /vm_conf/scripts/checkout_deskpro.sh
+	/bin/bash /vm_local/init/checkout_deskpro.sh
 fi
 
 echo "Installing DeskPRO"
 if [ ! -f /deskpro/www/config ];then
-	/bin/bash /vm_conf/scripts/install_deskpro.sh
+	/bin/bash /vm_local/init/install_deskpro.sh
 fi
 
 echo "Installing DeskPRO cron job"

@@ -13,13 +13,11 @@ sudo chmod 0777 /var/log/selenium-node.log
 
 echo "Starting Xvfb..."
 sudo /usr/bin/Xvfb :99 -ac -screen 0 1280x800x8 > /var/log/Xvfb.log 2>&1 &
-sleep 2
 echo "--> Done"
 
 echo "Starting Firefox..."
 export DISPLAY=":99"
 /usr/local/bin/firefox/firefox > /var/log/firefox.log 2>&1 &
-sleep 2
 echo "--> Done"
 
 echo "Starting Selenium Hub..."
