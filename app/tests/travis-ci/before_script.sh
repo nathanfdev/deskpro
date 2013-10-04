@@ -5,20 +5,18 @@ sudo touch /var/log/Xvfb.log
 sudo touch /var/log/firefox.log
 sudo touch /var/log/selenium-hub.log
 sudo touch /var/log/selenium-node.log
-sudo touch /var/log/dp-install-log.log
 sudo touch /var/log/php_errors.log
 sudo chmod 0777 /var/log/Xvfb.log
 sudo chmod 0777 /var/log/firefox.log
 sudo chmod 0777 /var/log/selenium-hub.log
 sudo chmod 0777 /var/log/selenium-node.log
-sudo chmod 0777 /var/log/dp-install-log.log
 sudo chmod 0777 /var/log/php_errors.log
 echo "--> Done"
 
 echo "Creating test database"
-mysql -u root -e "CREATE USER 'deskpro'@'localhost' IDENTIFIED BY 'deskpro';"
-mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'localhost' WITH GRANT OPTION;"
 mysql -e "CREATE DATABASE deskpro;"
+mysql -u root -e "CREATE USER 'deskpro'@'localhost' IDENTIFIED BY 'deskpro'; CREATE USER 'deskpro'@'%' IDENTIFIED BY 'deskpro';"
+mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'localhost' WITH GRANT OPTION; GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 echo "--> Done"
 
 echo "Creating config.php"
@@ -27,7 +25,7 @@ cp app/tests/travis-ci/deskpro-config.php config.php
 echo "--> Done"
 
 echo "Creating config.testing.php"
-echo '<?php require("config.php");' > config.testing.php
+cp app/tests/travis-ci/deskpro-config.php config.testing.php
 echo "--> Done"
 
 echo "Installing Clean Test DB"

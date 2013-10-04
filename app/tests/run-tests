@@ -53,14 +53,6 @@ if [ $IS_ERROR -ne 0 ] ; then
 		cat ../../data/logs/install.log
 	fi
 
-	if [ -e /var/log/dp-install-log.log ] ; then
-		echo ""
-		echo "[System] dp-install-log.log"
-		echo "======================================================="
-		echo ""
-		cat /var/log/dp-install-log.log
-	fi
-
 	if [ -e /var/log/php_errors.log ] ; then
 		echo ""
 		echo "[System] /var/log/php_errors.log"
