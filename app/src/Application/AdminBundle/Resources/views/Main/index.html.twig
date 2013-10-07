@@ -10,17 +10,19 @@
 
 	<div data-element-handler="DeskPRO.Admin.ElementHandler.DashNotice"></div>
 
-	<div class="dp-page-box">
-		<div class="resource-item-list">
-			<header>
-				<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
-			</header>
-			<article data-element-handler="DeskPRO.Admin.ElementHandler.DashVersion">
-				You are using DeskPRO build <span class="tipped" title="Built on {{ constant('DP_BUILD_TIME')|date('Y-m-d') }}">#{{ constant('DP_BUILD_NUM') }}</span>.
-				<div id="version_info_expanded"></div>
-			</article>
+	{% if not app.isDebug() %}
+		<div class="dp-page-box">
+			<div class="resource-item-list">
+				<header>
+					<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
+				</header>
+				<article data-element-handler="DeskPRO.Admin.ElementHandler.DashVersion">
+					You are using DeskPRO build <span class="tipped" title="Built on {{ constant('DP_BUILD_TIME')|date('Y-m-d') }}">#{{ constant('DP_BUILD_NUM') }}</span>.
+					<div id="version_info_expanded"></div>
+				</article>
+			</div>
 		</div>
-	</div>
+	{% endif %}
 
 	{% include 'AdminBundle:Main:agents-box.html.twig' %}
 
