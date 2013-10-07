@@ -205,13 +205,26 @@ define [
 			'Index/blank.html',
 		]
 
+		for own _, route of routing
+			if route.page? and route.page.templateUrl
+				templates.push(route.page.templateUrl)
+			if route.nav? and route.nav.templateUrl
+				templates.push(route.nav.templateUrl)
+			if route.list? and route.list.templateUrl
+				templates.push(route.list.templateUrl)
+
+		done = {}
 		qs = []
 		for t in templates
+			t = t.replace(/\/adm\/load\-view\//g, '')
+			if done[t] then continue
+
+			done[t] = true
 			qs.push('views[]=' + encodeURIComponent(t))
 
 		qs = qs.join('&')
 
-		$http({
+		p = $http({
 			method: 'GET',
 			url: DP_BASE_ADMIN_URL+'/load-view/multi?' + qs
 		}).success( (data) ->
@@ -221,6 +234,8 @@ define [
 
 			window.DP_IS_BOOTED = true
 		)
+
+		return p
 	])
 
 	if window.parent?.DP_FRAME_OVERLAY_admin
