@@ -17,6 +17,7 @@ echo "Creating test database"
 mysql -e "CREATE DATABASE deskpro;"
 mysql -u root -e "CREATE USER 'deskpro'@'localhost' IDENTIFIED BY 'deskpro'; CREATE USER 'deskpro'@'%' IDENTIFIED BY 'deskpro';"
 mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'localhost' WITH GRANT OPTION; GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+mysql -u root -e "SET GLOBAL wait_timeout=600;"
 echo "--> Done"
 
 echo "Creating config.php"
