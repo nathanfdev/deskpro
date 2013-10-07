@@ -30,6 +30,11 @@
           restrict: 'A',
           link: function(scope, element, attrs) {
             var checkState, current_state_id, _ref;
+            element.on('click', function() {
+              element.closest('#dp_section_nav').find('.state-on').removeClass('state-on active');
+              element.closest('#dp_section_list').find('.state-on').removeClass('state-on active');
+              return element.addClass('state-on active');
+            });
             checkState = function(stateId, newStateId) {
               var stateIdRegex;
               if (!stateId || !newStateId) {

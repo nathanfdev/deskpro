@@ -25,6 +25,16 @@ define ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
+
+				# This sets the active state immediately on click
+				# which makes the UI feel faster
+				element.on('click', ->
+					element.closest('#dp_section_nav').find('.state-on').removeClass('state-on active')
+					element.closest('#dp_section_list').find('.state-on').removeClass('state-on active')
+
+					element.addClass('state-on active')
+				)
+
 				checkState = (stateId, newStateId) ->
 					return if not stateId or not newStateId
 					stateIdRegex = '^'
