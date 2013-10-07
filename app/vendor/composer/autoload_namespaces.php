@@ -35,6 +35,8 @@ return array(
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib'),
     'Doctrine\\Bundle\\DoctrineBundle' => array($vendorDir . '/doctrine/doctrine-bundle'),
+    'Contrib\\Component' => array($vendorDir . '/satooshi/php-coveralls/src'),
+    'Contrib\\Bundle' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Behat\\Mink\\Driver' => array($vendorDir . '/behat/mink-browserkit-driver/src', $vendorDir . '/behat/mink-goutte-driver/src', $vendorDir . '/behat/mink-selenium2-driver/src'),
     'Behat\\MinkExtension' => array($vendorDir . '/behat/mink-extension/src'),
     'Behat\\Mink' => array($vendorDir . '/behat/mink/src'),
