@@ -3,7 +3,9 @@ php:
   - 5.4
 before_script: app/tests/travis-ci/before_script.sh
 after_failure: app/tests/travis-ci/after_failure.sh
-after_success: app/tests/travis-ci/after_success.sh
+after_success:
+  - app/tests/travis-ci/after_success.sh
+  - app/tests/bin/coveralls --config="tests/.coveralls.yml"
 script: app/tests/run-tests
 addons:
   firefox: '21.0'
