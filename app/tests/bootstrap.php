@@ -6,7 +6,7 @@ require(__DIR__ . '/DatabaseTestCase.php');
 
 @file_put_contents(__DIR__.'/../../running_tests.trigger', time());
 register_shutdown_function(function() {
-	unlink(__DIR__.'/../../running_tests.trigger');
+	@unlink(__DIR__.'/../../running_tests.trigger');
 });
 
 class DpTestConfig
