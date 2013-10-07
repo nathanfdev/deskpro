@@ -25,24 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-class DatabaseTestCase extends PHPUnit_Framework_TestCase
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DeskPRO\Tests\DbSet;
+
+use Application\DeskPRO\ORM\EntityManager;
+use Orb\Util\Util;
+
+class FreshDb extends AbstractDbSet
 {
-	public function setUp()
-	{
-		parent::setUp();
-		DpTestConfig::initTestDb('FreshDb', true);
-	}
-
-	public function tearDown()
-	{
-		DpTestConfig::resetContainer();
-	}
-
 	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
+	 * Nothing. The Fresh DB doesn't add any additional data.
+	 *
+	 * @return int
 	 */
-	protected function getDb()
+	protected function installSet()
 	{
-		return DpTestConfig::getContainer()->getDb();
+		return 0;
 	}
 }

@@ -3,9 +3,12 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
 
-if [ ! -d app/tests/build ]; then
-	mkdir app/tests/build
+if [ -d app/tests/build ]; then
+	echo "Resetting build files"
+	rm -rf app/tests/build
 fi
+
+mkdir app/tests/build
 
 IS_ERROR=0
 

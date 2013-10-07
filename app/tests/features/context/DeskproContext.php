@@ -35,20 +35,6 @@ use Behat\Behat\Context\BehatContext;
 
 class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 {
-	private $has_reset_db = false;
-
-	/**
-	 * Resets the database
-	 */
-	protected function initTestDb()
-	{
-		if ($this->has_reset_db) return;
-		$this->has_reset_db = true;
-
-		DpTestConfig::initTestDb();
-	}
-
-
 	/**
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
@@ -62,7 +48,6 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 	 */
 	public function iHaveAUserWithPassword($email, $password)
 	{
-		$this->initTestDb();
 		$person_id = $this->getDb()->fetchColumn("SELECT person_id FROM people_emails WHERE email = ?", array($email));
 
 		if (!$person_id) {
