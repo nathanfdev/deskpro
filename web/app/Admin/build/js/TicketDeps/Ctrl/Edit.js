@@ -99,7 +99,10 @@
             agentgroups: dep_data.perms_agentgroup_ids,
             agents: dep_data.perms_agent_ids
           }, data_results.data.api_agents_list.agents, data_results.data.api_agentgroups_list.agentgroups, data_results.data.api_usergroups_list.usergroups);
-          return _this.saveState('dep', 'agent_perms', 'usergroups');
+          _this.saveState('dep', 'agent_perms', 'usergroups');
+          if (_this.dep.id) {
+            return _this.resolveWaitEntityPromise();
+          }
         });
         return promise;
       };
@@ -263,6 +266,9 @@
             _this.initDeplistData(_this.DepartmentData.deps);
             _this.skipDirtyState();
             if (is_new) {
+              if (_this.dep.id) {
+                _this.resolveWaitEntityPromise();
+              }
               return _this.$state.go('tickets.ticket_deps.gocreate');
             } else {
               return _this.$state.go('tickets.ticket_deps');

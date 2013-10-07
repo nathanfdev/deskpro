@@ -98,6 +98,9 @@ define [
 				)
 
 				@saveState('dep', 'agent_perms', 'usergroups')
+
+				if @dep.id
+					@resolveWaitEntityPromise()
 			)
 
 			return promise
@@ -235,6 +238,9 @@ define [
 
 					@skipDirtyState()
 					if is_new
+						if @dep.id
+							@resolveWaitEntityPromise()
+
 						@$state.go('tickets.ticket_deps.gocreate')
 					else
 						@$state.go('tickets.ticket_deps')

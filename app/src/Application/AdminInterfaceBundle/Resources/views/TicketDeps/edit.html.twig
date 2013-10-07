@@ -25,7 +25,15 @@
 							<div class="col-lg-10">
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" />
-									{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('admin.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id }"></span>{% endif %}
+									{% if app.getLanguages().isMultiLang() %}
+										<span
+											class="translate-button"
+											tooltip="{{ phrase('admin.general.translate') }}"
+											dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.%depid%' }"
+											dp-save-phrase-promise="TicketDepsEdit.getWaitEntityPromiseView()"
+											dp-phrase-id-gen="{ 'depid': TicketDepsEdit.dep.id }"
+										></span>
+									{% endif %}
 									<span class="help-block">
 										{{ phrase('admin.departments.title_explain') }}
 									</span>

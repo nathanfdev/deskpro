@@ -59,7 +59,7 @@ define ['angular', 'Admin/App'], (angular) ->
 
 			me = @
 			for arg, i in args
-				if arg._is_ds_class?
+				if arg and arg._is_ds_class?
 					arg.registerCtrl(@)
 					@$scope.$on('$destroy', ->
 						#arg.unregisterCtrl(me)
@@ -446,3 +446,32 @@ define ['angular', 'Admin/App'], (angular) ->
 					delete @_saved_state[id]
 
 			return
+
+		getWaitEntityPromiseView: (id) ->
+			return =>
+				@getWaitEntityPromise(id)
+
+		getWaitEntityPromise: (id) ->
+			if not id then id = 'default'
+
+			if not @_wait_ent_promise
+				@_wait_ent_promise = {}
+
+			if @_wait_ent_promise[id]
+				return @_wait_ent_promise[id].promise
+
+			@_wait_ent_promise[id] = @$q.defer()
+
+			promise = @_wait_ent_promise[id].promise
+			return promise
+
+		resolveWaitEntityPromise: (id) ->
+			if not id then id = 'default'
+
+			if not @_wait_ent_promise
+				@_wait_ent_promise = {}
+
+			if not @_wait_ent_promise[id]
+				@_wait_ent_promise[id] = @$q.defer()
+
+			@_wait_ent_promise[id].resolve(true)

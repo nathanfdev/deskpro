@@ -1,14 +1,15 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 	class Admin_Languages_Ctrl_TranslateModal extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal'
 		@CTRL_TYPE = 'modal'
 		@CTRL_AS   = 'TranslateModal'
-		@DEPS      = ['$timeout', '$modalInstance', 'phraseId']
+		@DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen']
 
 		init: ->
 			@phrase_map = {}
 			@active_lang = null
 			@active_trans = null
+			@hasPendingPromise = false
 
 			@$scope.dismiss = =>
 				@$modalInstance.dismiss('cancel')
@@ -64,15 +65,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return p
 
 		savePhrases: ->
+			promise = @getWaitOnPromise()
+			if not promise
+				@doSavePhrases()
+
+			# It's already queued to save
+			if @hasPendingPromise
+				return
+
+			@hasPendingPromise = true
+			promise.then(=>
+				@doSavePhrases()
+			).finally(=>
+				@hasPendingPromise = false
+			)
+
+		doSavePhrases: ->
+			phrase_map = angular.copy(@phrase_map)
+			phrase_id = @phraseId
+
+			phraseIdGen = @getPhraseIdGen()
+			if phraseIdGen
+				phrase_id = phraseIdGen(phrase_id)
+
 			postData = {'lang_phrases': []}
 
-			for own k, v of @phrase_map
+			for own k, v of phrase_map
 				postData.lang_phrases.push({
 					phrase: v || '',
 					language_id: k
 				})
 
-			promise = @Api.sendPostJson('/langs/phrases/' + @phraseId, postData)
+			promise = @Api.sendPostJson('/langs/phrases/' + phrase_id, postData)
 
 			return promise
 

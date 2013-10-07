@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
     var Admin_Languages_Ctrl_TranslateModal, _ref;
     Admin_Languages_Ctrl_TranslateModal = (function(_super) {
       __extends(Admin_Languages_Ctrl_TranslateModal, _super);
@@ -18,13 +18,14 @@
 
       Admin_Languages_Ctrl_TranslateModal.CTRL_AS = 'TranslateModal';
 
-      Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId'];
+      Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen'];
 
       Admin_Languages_Ctrl_TranslateModal.prototype.init = function() {
         var _this = this;
         this.phrase_map = {};
         this.active_lang = null;
         this.active_trans = null;
+        this.hasPendingPromise = false;
         this.$scope.dismiss = function() {
           return _this.$modalInstance.dismiss('cancel');
         };
@@ -86,20 +87,43 @@
       };
 
       Admin_Languages_Ctrl_TranslateModal.prototype.savePhrases = function() {
-        var k, postData, promise, v, _ref1;
+        var promise,
+          _this = this;
+        promise = this.getWaitOnPromise();
+        if (!promise) {
+          this.doSavePhrases();
+        }
+        if (this.hasPendingPromise) {
+          return;
+        }
+        this.hasPendingPromise = true;
+        return promise.then(function() {
+          return _this.doSavePhrases();
+        })["finally"](function() {
+          return _this.hasPendingPromise = false;
+        });
+      };
+
+      Admin_Languages_Ctrl_TranslateModal.prototype.doSavePhrases = function() {
+        var k, phraseIdGen, phrase_id, phrase_map, postData, promise, v;
+        phrase_map = angular.copy(this.phrase_map);
+        phrase_id = this.phraseId;
+        phraseIdGen = this.getPhraseIdGen();
+        if (phraseIdGen) {
+          phrase_id = phraseIdGen(phrase_id);
+        }
         postData = {
           'lang_phrases': []
         };
-        _ref1 = this.phrase_map;
-        for (k in _ref1) {
-          if (!__hasProp.call(_ref1, k)) continue;
-          v = _ref1[k];
+        for (k in phrase_map) {
+          if (!__hasProp.call(phrase_map, k)) continue;
+          v = phrase_map[k];
           postData.lang_phrases.push({
             phrase: v || '',
             language_id: k
           });
         }
-        promise = this.Api.sendPostJson('/langs/phrases/' + this.phraseId, postData);
+        promise = this.Api.sendPostJson('/langs/phrases/' + phrase_id, postData);
         return promise;
       };
 

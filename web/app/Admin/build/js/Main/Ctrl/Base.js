@@ -84,7 +84,7 @@
         me = this;
         for (i = _j = 0, _len1 = args.length; _j < _len1; i = ++_j) {
           arg = args[i];
-          if (arg._is_ds_class != null) {
+          if (arg && (arg._is_ds_class != null)) {
             arg.registerCtrl(this);
             this.$scope.$on('$destroy', function() {});
           }
@@ -574,6 +574,42 @@
             delete this._saved_state[id];
           }
         }
+      };
+
+      Admin_Ctrl_Base.prototype.getWaitEntityPromiseView = function(id) {
+        var _this = this;
+        return function() {
+          return _this.getWaitEntityPromise(id);
+        };
+      };
+
+      Admin_Ctrl_Base.prototype.getWaitEntityPromise = function(id) {
+        var promise;
+        if (!id) {
+          id = 'default';
+        }
+        if (!this._wait_ent_promise) {
+          this._wait_ent_promise = {};
+        }
+        if (this._wait_ent_promise[id]) {
+          return this._wait_ent_promise[id].promise;
+        }
+        this._wait_ent_promise[id] = this.$q.defer();
+        promise = this._wait_ent_promise[id].promise;
+        return promise;
+      };
+
+      Admin_Ctrl_Base.prototype.resolveWaitEntityPromise = function(id) {
+        if (!id) {
+          id = 'default';
+        }
+        if (!this._wait_ent_promise) {
+          this._wait_ent_promise = {};
+        }
+        if (!this._wait_ent_promise[id]) {
+          this._wait_ent_promise[id] = this.$q.defer();
+        }
+        return this._wait_ent_promise[id].resolve(true);
       };
 
       return Admin_Ctrl_Base;
