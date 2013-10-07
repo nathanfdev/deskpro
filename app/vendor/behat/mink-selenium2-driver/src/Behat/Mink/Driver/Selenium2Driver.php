@@ -148,6 +148,7 @@ class Selenium2Driver implements DriverInterface
      */
     public static function getDefaultCapabilities()
     {
+		return array();
         return array(
             'browserName'       => 'firefox',
             'version'           => '9',
