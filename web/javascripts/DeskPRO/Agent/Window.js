@@ -2286,7 +2286,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + data.errorMessage + '</div>'));
 				return;
 			} else {
-				this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+				// All 403's should be json responses that are caught above,
+				// but this is to catch other edge cases (e.g., an agent was just made a non-agent)
+				if (xhr.responseText && xhr.responseText.indexOf('DeskPRO')) {
+					this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+
+				// This would mean the actual server responded with a 403--DeskPRO was not involved
+				} else {
+					// On cloud, a 403 generally means CF is blocking the request because it thinks we are a bot.
+					if (DPC_IS_CLOUD) {
+						if (DpErrorLog) {
+							DpErrorLog.hasSentReport = true; // dont ask to report, just send it
+							DpErrorLog.logError(
+								"CloudFlare Network Error: " + message,
+								'URL: ' + ajaxOptions.url,
+								'agent',
+								1
+							);
+						}
+						// Try reloading the interface
+						// In case of CF blocks, this would result in the user seeing a "challenge" response
+						// which will let them whitelist themselves
+						this.util.reloadInterface();
+					} else {
+						this.showAlert($('<div><strong>Server Error</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+					}
+				}
+
 				return;
 			}
 		}
