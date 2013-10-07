@@ -12,7 +12,7 @@ if [ -e $SCRIPT_DIR/../../../data/logs/error.log ] ; then
 	echo "[DeskPRO] error.log"
 	echo "======================================================="
 	echo ""
-	cat ../../data/logs/error.log
+	cat $SCRIPT_DIR/../../../data/logs/error.log
 fi
 
 if [ -e $SCRIPT_DIR/../../../data/logs/install.log ] ; then
@@ -20,7 +20,7 @@ if [ -e $SCRIPT_DIR/../../../data/logs/install.log ] ; then
 	echo "[DeskPRO] install.log"
 	echo "======================================================="
 	echo ""
-	cat ../../data/logs/install.log
+	cat $SCRIPT_DIR/../../../data/logs/install.log
 fi
 
 if [ -e /var/log/php_errors.log ] ; then
