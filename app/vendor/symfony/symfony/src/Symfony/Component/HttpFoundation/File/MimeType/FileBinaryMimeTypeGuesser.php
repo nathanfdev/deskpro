@@ -68,7 +68,7 @@ class FileBinaryMimeTypeGuesser implements MimeTypeGuesserInterface
         ob_start();
 
         // need to use --mime instead of -i. see #6641
-        @passthru(sprintf($this->cmd, escapeshellarg($path)), $return);
+        passthru(sprintf($this->cmd, escapeshellarg($path)), $return);
         if ($return > 0) {
             ob_end_clean();
 

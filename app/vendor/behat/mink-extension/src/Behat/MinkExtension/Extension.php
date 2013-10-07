@@ -272,8 +272,38 @@ class Extension implements ExtensionInterface
                         end()->
                         arrayNode('capabilities')->
                             children()->
+                                scalarNode('browserName')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['browserName']) ? $config['selenium2']['capabilities']['browserName'] : 'firefox')->
+                                end()->
+                                scalarNode('version')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['version']) ? $config['selenium2']['capabilities']['version'] : "9")->
+                                end()->
+                                scalarNode('platform')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['platform']) ? $config['selenium2']['capabilities']['platform'] : 'ANY')->
+                                end()->
+                                scalarNode('browserVersion')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['browserVersion']) ? $config['selenium2']['capabilities']['browserVersion'] : "9")->
+                                end()->
                                 scalarNode('browser')->
                                     defaultValue(isset($config['selenium2']['capabilities']['browser']) ? $config['selenium2']['capabilities']['browser'] : 'firefox')->
+                                end()->
+                                scalarNode('ignoreZoomSetting')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['ignoreZoomSetting']) ? $config['selenium2']['capabilities']['ignoreZoomSetting'] : 'false')->
+                                end()->
+                                scalarNode('name')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['name']) ? $config['selenium2']['capabilities']['name'] : 'Behat Test')->
+                                end()->
+                                scalarNode('deviceOrientation')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['deviceOrientation']) ? $config['selenium2']['capabilities']['deviceOrientation'] : 'portrait')->
+                                end()->
+                                scalarNode('deviceType')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['deviceType']) ? $config['selenium2']['capabilities']['deviceType'] : 'tablet')->
+                                end()->
+                                scalarNode('selenium-version')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['selenium-version']) ? $config['selenium2']['capabilities']['selenium-version'] : '2.31.0')->
+                                end()->
+                                scalarNode('max-duration')->
+                                    defaultValue(isset($config['selenium2']['capabilities']['max-duration']) ? $config['selenium2']['capabilities']['max-duration'] : '300')->
                                 end()->
                                 booleanNode('javascriptEnabled')->end()->
                                 booleanNode('databaseEnabled')->end()->
