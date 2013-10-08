@@ -1,5 +1,5 @@
 repo_token: csalmmB0NCw41vSRBeWy6NoEWNs5iMquh
-service_name: travis-pro
+service_name: travis-ci
 
 coverage_clover: tests/build/clover.xml
 json_path: tests/build/coveralls-upload.json

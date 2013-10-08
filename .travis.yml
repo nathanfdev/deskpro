@@ -12,8 +12,6 @@ addons:
 notifications:
   hipchat:
     rooms:
-      secure: Q7RP9xIDTI+Xfom+8DD9oPW8RGcLzpIkCFWMW2amP7wFs0j1xzVU6pXwAOuvuum4iLImkNOMD1RZuIpyYBz8V2hc62BlacrPMfHlAw4/NTEGUoesdPyQLBK7uEnnUJ1avOHZSabrIH66sO0Ve7peRIF5BsZl2knpSF4ZbgMK/8Y=
-    template:
-    - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}'
+      secure: bqrfROrUT4nmOdLkMRRS09BgIJ6CwGUcND76j5dRkwdGzKrsDYU/FyvLr3sjMZ611ehHOGz/cScBY1ZyuYNBAdqzBL8K1RtbvdukX0Ktt+BUJPepIXfV1T8wtvce0DhVvc2ILzoBynoCsmts1/qQNcKDI+4/5z0rA1GK8m9u7ao=
 branches:
   only: feature/adminui
