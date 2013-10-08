@@ -1,0 +1,21 @@
+<div class="pane">
+	<div class="pane-header">Labels</div>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<ul class="list">
+					<li ng-repeat="label in TicketLabelsList.labels">
+						<div class="pull-right">
+							<span class="btn btn-danger btn-xs only-icon" style="margin-top: -3px;" 
+								ng-show="delete_mode"  
+								ng-click="TicketLabelsList.startDelete(label)">
+								<i class="icon-trash"></i>
+							</span>
+						</div>
+						<h4><span class="title-text">{{ ng_var('label.label') }} - <strong>{{ ng_var('label.count') }}</strong></span></h4>												
+					</li>
+				</ul>
+			</div>
+		</div>
+	</article>
+</div>
