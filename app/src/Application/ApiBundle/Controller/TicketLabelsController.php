@@ -8,7 +8,7 @@ use Application\DeskPRO\Labels\LabelManager;
 class TicketLabelsController extends AbstractController
 {
 	private $labels_type = array('ticket');
-	
+
 	public function listAction()
 	{
 		$manager = $this->_getLabelsManager();
@@ -23,7 +23,12 @@ class TicketLabelsController extends AbstractController
 		$existing_labels = $manager->getLabels($this->labels_type);
 		if (!in_array(strtolower($label), $existing_labels) && !in_array($label, $existing_labels)) {
 			$manager->createLabelDef($label, $this->labels_type);
+			$status = 200;
 		}
+		else {
+			$status = 201;
+		}
+		return $this->createApiResponse(array(), $status);
 	}
 
 	public function removeAction($label)
