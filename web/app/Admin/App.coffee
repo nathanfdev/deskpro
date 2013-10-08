@@ -11,6 +11,7 @@ define [
 
 	'Admin/Main/Translate/DpInterpolation',
 
+	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
@@ -44,6 +45,7 @@ define [
 
 	Admin_Main_Translate_DpInterpolation,
 
+	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpHelpPage,
@@ -111,6 +113,7 @@ define [
 	# Main directives
 	####################################################################################################################
 
+	Admin_App.directive('autofocus',          Admin_Main_Directive_Autofocus)
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)
 	Admin_App.directive('dpErrorClass',       Admin_Main_Directive_DpErrorClass)
 	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)

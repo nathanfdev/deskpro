@@ -24,7 +24,7 @@
 							</div>
 							<div class="col-lg-10">
 								<div class="inner-group" dp-error-class="form_props.title">
-									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" />
+									<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" autofocus />
 									{% if app.getLanguages().isMultiLang() %}
 										<span
 											class="translate-button"
