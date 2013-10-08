@@ -34,6 +34,7 @@
           _results = [];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             label = _ref1[_i];
+            _this.labels.push(label);
             _results.push(_this.labels.push(label));
           }
           return _results;

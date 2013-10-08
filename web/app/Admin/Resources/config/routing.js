@@ -414,12 +414,12 @@ define(function() {
 		url: '/labels',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
+			templateName: 'TicketLabels/list.html',
+			controller: 'Admin_TicketLabels_Ctrl_List'
 		},
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			templateName: 'TicketLabels/list.html',
+			controller: 'Admin_TicketLabels_Ctrl_List'
 		}
 	});
 
