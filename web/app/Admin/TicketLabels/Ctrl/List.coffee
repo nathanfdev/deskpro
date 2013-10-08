@@ -16,7 +16,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			]).then( (res) =>
 				for label in res.data.api_ticket_labels.labels
 					@labels.push(label)
-					@labels.push(label)
 			)
 
 			return @$q.all([data_promise])

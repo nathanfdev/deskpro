@@ -84,7 +84,8 @@ requirejs([
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit',
-	'Admin/TicketFields/Ctrl/List'
+	'Admin/TicketFields/Ctrl/List',
+	'Admin/TicketLabels/Ctrl/List'
 ], function(angular) {
 	'use strict';
 
