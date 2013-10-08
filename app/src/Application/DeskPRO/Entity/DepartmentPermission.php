@@ -114,6 +114,24 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	/**
+	 * A name that identifies this permission (eg could be used as an map key)
+	 *
+	 * @return string
+	 */
+	public function getPermissionSysId()
+	{
+		$x = $this->department->id . '.' . $this->app . '.';
+		if ($this->usergroup) {
+			$x .= 'ug' . $this->usergroup->id;
+		} else if ($this->person) {
+			$x .= 'p' . $this->person->id;
+		}
+		$x .= '.' . $this->name . '.1';
+
+		return $x;
+	}
+
 
 
 	############################################################################

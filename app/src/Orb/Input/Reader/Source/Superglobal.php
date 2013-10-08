@@ -70,6 +70,16 @@ class Superglobal implements SourceInterface
 	}
 
 
+	/**
+	 * Get all data
+	 *
+	 * @return array|null
+	 */
+	public function getAll()
+	{
+		return $this->array;
+	}
+
 
 	/**
 	 * Get the value of some variable
