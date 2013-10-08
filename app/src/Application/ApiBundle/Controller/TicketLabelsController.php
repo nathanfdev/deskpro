@@ -7,47 +7,29 @@ use Application\DeskPRO\Labels\LabelManager;
 
 class TicketLabelsController extends AbstractController
 {
+	private $labels_type = array('ticket');
+	
 	public function listAction()
 	{
-		$data = array();
-
-		$labels = $this->em->createQuery("
-			SELECT label
-			FROM DeskPRO:LabelTicket label
-		")->execute();
-
+		$manager = $this->_getLabelsManager();
+		$labels = $manager->getLabelsAndCounts($this->labels_type);
 		$data['labels'] = $this->getApiData($labels, false);
-
-		return $this->createApiResponse($data);
-	}
-
-	public function getAction($id)
-	{
-		$label = $this->em->find('DeskPRO:LabelTicket', $id);
-
-		if (!$label) {
-			throw new $this->createNotFoundException();
-		}
-
-		$data = array();
-		$data['label'] = $this->getApiData($label);
-
 		return $this->createApiResponse($data);
 	}
 
 	public function saveAction($label)
 	{
 		$manager = $this->_getLabelsManager();
-		$existing_labels = $manager->getLabels(['ticket']);
+		$existing_labels = $manager->getLabels($this->labels_type);
 		if (!in_array(strtolower($label), $existing_labels) && !in_array($label, $existing_labels)) {
-			$manager->createLabelDef($label,['ticket']);
+			$manager->createLabelDef($label, $this->labels_type);
 		}
 	}
 
 	public function removeAction($label)
 	{
 		$manager = $this->_getLabelsManager();
-		if (!$manager->deleteLabelDef($label)) {
+		if (!$manager->deleteLabelDef($label, $this->labels_type)) {
 			throw $this->createNotFoundException();
 		}
 
