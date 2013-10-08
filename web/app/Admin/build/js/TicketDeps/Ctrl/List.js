@@ -16,7 +16,7 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate', 'Growl'];
 
       Admin_TicketDeps_Ctrl_List.CTRL_TYPE = 'list';
 
@@ -193,7 +193,8 @@
       };
 
       Admin_TicketDeps_Ctrl_List.prototype.saveSettings = function() {
-        var postData;
+        var postData,
+          _this = this;
         if (!this.dep_settings.do_rename) {
           this.dep_settings.name_singular = '';
           this.dep_settings.name_plural = '';
@@ -205,7 +206,12 @@
             'core.phrase_department_plural': this.dep_settings.name_plural
           }
         };
-        return this.Api.sendPostJson('/ticket_deps/settings', postData);
+        this.startSpinner('saving_settings');
+        return this.Api.sendPostJson('/ticket_deps/settings', postData).then(function() {
+          return _this.stopSpinner('saving_settings').then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+          });
+        });
       };
 
       return Admin_TicketDeps_Ctrl_List;
