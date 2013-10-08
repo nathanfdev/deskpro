@@ -111,6 +111,22 @@ class EmailGateway extends AbstractEntityRepository
 		")->execute();
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getTicketAccounts()
+	{
+		$this->_em->createQuery("
+			SELECT acc
+			FROM DeskPRO:EmailGateway acc
+			LEFT JOIN acc.linked_transport tr
+			LEFT JOIN acc.department dep
+			LEFT JOIN acc.addresses addr
+			WHERE acc.gateway_type = 'tickets'
+			ORDER BY title ASC
+		")->execute();
+	}
+
 
 	/**
 	 * Get all gateway accounts that are enabled
