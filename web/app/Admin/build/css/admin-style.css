@@ -8182,8 +8182,11 @@ nav.dp-main-tabs ul li.active {
 }
 
 span.help-icon {
+  position: relative;
+  top: 1px;
+  margin-left: 1px;
   font-family: FontAwesome;
-  font-size: 12px;
+  font-size: 16px;
   color: #c5c5c5;
   cursor: help;
 }
