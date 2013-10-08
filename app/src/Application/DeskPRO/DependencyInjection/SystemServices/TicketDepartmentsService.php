@@ -25,34 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-class DatabaseTestCase extends PHPUnit_Framework_TestCase
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category DependencyInjection
+ */
+
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
+
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Departments\TicketDepartments;
+
+class TicketDepartmentsService
 {
-	protected $dbSetName = 'FreshDb';
-
-	public function setUp()
+	public static function create(DeskproContainer $container)
 	{
-		parent::setUp();
-		DpTestConfig::initTestDb($this->dbSetName, true);
-	}
-
-	public function tearDown()
-	{
-		DpTestConfig::resetContainer();
-	}
-
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	protected function getDb()
-	{
-		return DpTestConfig::getContainer()->getDb();
-	}
-
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	protected function getEm()
-	{
-		return DpTestConfig::getContainer()->getEm();
+		$x = new TicketDepartments($container->getEm());
+		$x->setDefaultDepartmentPreference($container->getSetting('core.tickets.default_department'));
+		return $x;
 	}
 }

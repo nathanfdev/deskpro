@@ -48,6 +48,20 @@ class Department extends AbstractCategoryRepository
 
 
 	/**
+	 * @return \Application\DeskPRO\Entity\Department[]
+	 */
+	public function getTicketDepartments()
+	{
+		return $this->_em->createQuery("
+			SELECT d
+			FROM DeskPRO:Department d
+			WHERE d.is_tickets_enabled = true
+			ORDER BY d.display_order ASC
+		")->execute();
+	}
+
+
+	/**
 	 * Get the default ticket department for a given context (ticket, chat)
 	 *
 	 * @param string $context

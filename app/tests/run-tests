@@ -19,7 +19,7 @@ echo "Running phpUnit Test Suite"
 echo "=========================="
 echo ""
 
-bin/phpunit
+bin/phpunit --coverage-clover build/clover.xml
 if [[ $? -ne 0 ]] ; then
 	echo "!!! phpUnit Test Failure !!!"
 	IS_ERROR=1

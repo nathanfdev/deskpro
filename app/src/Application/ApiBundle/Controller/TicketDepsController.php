@@ -48,14 +48,13 @@ class TicketDepsController extends AbstractController
 	{
 		$data = array();
 
-		$deps = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.is_tickets_enabled = true
-			ORDER BY d.display_order ASC
-		")->execute();
+		$ticket_deps = $this->container->getSystemService('ticket_departments');
+		$flat_array = $ticket_deps->getFlatArray();
 
-		Arrays::sortFlatHierarchyArray($deps, 'display_order', 'parent');
+		$deps = array();
+		foreach ($flat_array as $row) {
+			$deps[] = $row['object'];
+		}
 
 		$data['departments'] = $this->getApiData($deps, false);
 		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
@@ -70,7 +69,7 @@ class TicketDepsController extends AbstractController
 
 	public function getAction($id)
 	{
-		$dep = $this->em->find('DeskPRO:Department', $id);
+		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 		if (!$dep || !$dep->is_tickets_enabled) {
 			throw new $this->createNotFoundException();
