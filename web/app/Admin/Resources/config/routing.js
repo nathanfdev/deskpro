@@ -12,7 +12,7 @@ define(function() {
 		with_list_view: false,
 		with_nav_view: false,
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/dev-ui.html',
+			templateName: 'Index/dev-ui.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -27,7 +27,7 @@ define(function() {
 		with_list_view: false,
 		with_nav_view: false,
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/home.html',
+			templateName: 'Index/home.html',
 			controller: 'Admin_Main_Ctrl_NavSetup'
 		}
 	});
@@ -36,7 +36,7 @@ define(function() {
 		id: 'setup',
 		url: '/setup',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-setup.html',
+			templateName: 'Index/app-nav-setup.html',
 			controller: 'Admin_Main_Ctrl_NavSetup'
 		}
 	});
@@ -45,7 +45,7 @@ define(function() {
 		id: 'agents',
 		url: '/agents',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-agents.html',
+			templateName: 'Index/app-nav-agents.html',
 			controller: 'Admin_Main_Ctrl_NavAgents'
 		}
 	});
@@ -54,7 +54,7 @@ define(function() {
 		id: 'tickets',
 		url: '/tickets',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-tickets.html',
+			templateName: 'Index/app-nav-tickets.html',
 			controller: 'Admin_Main_Ctrl_NavTickets'
 		}
 	});
@@ -63,7 +63,7 @@ define(function() {
 		id: 'crm',
 		url: '/crm',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-crm.html',
+			templateName: 'Index/app-nav-crm.html',
 			controller: 'Admin_Main_Ctrl_NavCrm'
 		}
 	});
@@ -72,7 +72,7 @@ define(function() {
 		id: 'portal',
 		url: '/portal',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-portal.html',
+			templateName: 'Index/app-nav-portal.html',
 			controller: 'Admin_Main_Ctrl_NavPortal'
 		}
 	});
@@ -81,7 +81,7 @@ define(function() {
 		id: 'chat',
 		url: '/chat',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-chat.html',
+			templateName: 'Index/app-nav-chat.html',
 			controller: 'Admin_Main_Ctrl_NavChat'
 		}
 	});
@@ -90,7 +90,7 @@ define(function() {
 		id: 'twitter',
 		url: '/twitter',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-twitter.html',
+			templateName: 'Index/app-nav-twitter.html',
 			controller: 'Admin_Main_Ctrl_NavTwitter'
 		}
 	});
@@ -99,7 +99,7 @@ define(function() {
 		id: 'apps',
 		url: '/apps',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-apps.html',
+			templateName: 'Index/app-nav-apps.html',
 			controller: 'Admin_Main_Ctrl_NavApps'
 		}
 	});
@@ -108,7 +108,7 @@ define(function() {
 		id: 'server',
 		url: '/server',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/app-nav-server.html',
+			templateName: 'Index/app-nav-server.html',
 			controller: 'Admin_Main_Ctrl_NavServer'
 		}
 	});
@@ -121,7 +121,7 @@ define(function() {
 		id: 'back_to_agent',
 		url: '/back_to_agent',
 		nav: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/back-to-agent.html',
+			templateName: 'Index/back-to-agent.html',
 			controller: 'Admin_Main_Ctrl_BackToAgent'
 		}
 	});
@@ -138,7 +138,7 @@ define(function() {
 		url: '/settings',
 		with_list_view: false,
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -151,11 +151,11 @@ define(function() {
 		url: '/languages',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -168,11 +168,11 @@ define(function() {
 		url: '/setup',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -189,11 +189,11 @@ define(function() {
 		url: '/agents',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -206,11 +206,11 @@ define(function() {
 		url: '/teams',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -223,11 +223,11 @@ define(function() {
 		url: '/groups',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -244,11 +244,11 @@ define(function() {
 		url: '/email_accounts',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -261,11 +261,11 @@ define(function() {
 		url: '/statuses',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -278,11 +278,11 @@ define(function() {
 		url: '/urgency',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -295,11 +295,11 @@ define(function() {
 		url: '/fields',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketFields/list.html',
+			templateName: 'TicketFields/list.html',
 			controller: 'Admin_TicketFields_Ctrl_List'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -312,11 +312,11 @@ define(function() {
 		url: '/triggers',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -329,11 +329,11 @@ define(function() {
 		url: '/snippets',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -346,11 +346,11 @@ define(function() {
 		url: '/filters',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -363,11 +363,11 @@ define(function() {
 		url: '/feedback',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -380,11 +380,11 @@ define(function() {
 		url: '/escalations',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -397,11 +397,11 @@ define(function() {
 		url: '/slas',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -414,11 +414,11 @@ define(function() {
 		url: '/labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -431,11 +431,11 @@ define(function() {
 		url: '/billing',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -448,11 +448,11 @@ define(function() {
 		url: '/email_templates',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -465,11 +465,11 @@ define(function() {
 		url: '/message_presets',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -482,11 +482,11 @@ define(function() {
 		url: '/settings',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -499,11 +499,11 @@ define(function() {
 		url: '/ticket_deps',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/list.html',
+			templateName: 'TicketDeps/list.html',
 			controller: 'Admin_TicketDeps_Ctrl_List'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -521,7 +521,7 @@ define(function() {
 		id: 'tickets.ticket_deps.create',
 		url: '/create',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/edit.html',
+			templateName: 'TicketDeps/edit.html',
 			controller: 'Admin_TicketDeps_Ctrl_Edit'
 		}
 	});
@@ -530,7 +530,7 @@ define(function() {
 		id: 'tickets.ticket_deps.edit',
 		url: '/{id:[0-9]+}',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/TicketDeps/edit.html',
+			templateName: 'TicketDeps/edit.html',
 			controller: 'Admin_TicketDeps_Ctrl_Edit'
 		}
 	});
@@ -546,7 +546,7 @@ define(function() {
 		id: 'crm.reg',
 		url: '/reg',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -559,11 +559,11 @@ define(function() {
 		url: '/usersources',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -576,11 +576,11 @@ define(function() {
 		url: '/groups',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -593,11 +593,11 @@ define(function() {
 		url: '/user_fields',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -610,11 +610,11 @@ define(function() {
 		url: '/org_fields',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -627,11 +627,11 @@ define(function() {
 		url: '/rules',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -644,11 +644,11 @@ define(function() {
 		url: '/user_labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -661,11 +661,11 @@ define(function() {
 		url: '/org_labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -678,11 +678,11 @@ define(function() {
 		url: '/banning',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -694,7 +694,7 @@ define(function() {
 		id: 'crm.import',
 		url: '/import',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -710,7 +710,7 @@ define(function() {
 		id: 'portal.portal_editor',
 		url: '/portal_editor',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -722,7 +722,7 @@ define(function() {
 		id: 'portal.embed',
 		url: '/embed',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -735,11 +735,11 @@ define(function() {
 		url: '/theme',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -752,11 +752,11 @@ define(function() {
 		url: '/theme',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -769,11 +769,11 @@ define(function() {
 		url: '/kb/settings',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -786,11 +786,11 @@ define(function() {
 		url: '/kb/labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -803,11 +803,11 @@ define(function() {
 		url: '/downloads/settings',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -820,11 +820,11 @@ define(function() {
 		url: '/downloads/labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -837,11 +837,11 @@ define(function() {
 		url: '/news/settings',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -854,11 +854,11 @@ define(function() {
 		url: '/news/labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -871,11 +871,11 @@ define(function() {
 		url: '/feedback/settings',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -888,11 +888,11 @@ define(function() {
 		url: '/feedback/statuses',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -905,11 +905,11 @@ define(function() {
 		url: '/feedback/types',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -922,11 +922,11 @@ define(function() {
 		url: '/feedback/categories',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -939,11 +939,11 @@ define(function() {
 		url: '/feedback/labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -959,7 +959,7 @@ define(function() {
 		id: 'chat.setup',
 		url: '/setup',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -972,11 +972,11 @@ define(function() {
 		url: '/chat_deps',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -989,11 +989,11 @@ define(function() {
 		url: '/fields',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1006,11 +1006,11 @@ define(function() {
 		url: '/labels',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1027,7 +1027,7 @@ define(function() {
 		id: 'twitter.setup',
 		url: '/setup',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1040,11 +1040,11 @@ define(function() {
 		url: '/accounts',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1061,11 +1061,11 @@ define(function() {
 		url: '/apps',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1078,11 +1078,11 @@ define(function() {
 		url: '/api_keys',
 		with_list_view: true,
 		list: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_BareList'
 		},
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1098,7 +1098,7 @@ define(function() {
 		id: 'server.server_reqs',
 		url: '/server_reqs',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1110,7 +1110,7 @@ define(function() {
 		id: 'server.file_check',
 		url: '/file_check',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1122,7 +1122,7 @@ define(function() {
 		id: 'server.test_file_ups',
 		url: '/test_file_ups',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1134,7 +1134,7 @@ define(function() {
 		id: 'server.cron',
 		url: '/cron',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1146,7 +1146,7 @@ define(function() {
 		id: 'server.php_info',
 		url: '/php_info',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1158,7 +1158,7 @@ define(function() {
 		id: 'server.mysql_info',
 		url: '/mysql_info',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1170,7 +1170,7 @@ define(function() {
 		id: 'server.mysql_status',
 		url: '/mysql_status',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1182,7 +1182,7 @@ define(function() {
 		id: 'server.test_email',
 		url: '/test_email',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1194,7 +1194,7 @@ define(function() {
 		id: 'server.mysql_sort_order',
 		url: '/mysql_sort_order',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1206,7 +1206,7 @@ define(function() {
 		id: 'server.error_logs',
 		url: '/error_logs',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1218,7 +1218,7 @@ define(function() {
 		id: 'server.sendmail_queue',
 		url: '/sendmail_queue',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
@@ -1230,7 +1230,7 @@ define(function() {
 		id: 'server.task_queue',
 		url: '/task_queue',
 		page: {
-			templateUrl: DP_BASE_ADMIN_URL+'/load-view/Index/blank.html',
+			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});

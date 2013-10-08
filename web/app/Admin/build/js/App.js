@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'DP_LANG', 'AdminRouting', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState', 'Admin/Main/Translate/DpInterpolation', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments'], function(angular, DP_LANG, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState, Admin_Main_Translate_DpInterpolation, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments) {
+  define(['angular', 'DP_LANG', 'AdminRouting', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState', 'Admin/Main/Service/TemplateManager', 'Admin/Main/Translate/DpInterpolation', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments'], function(angular, DP_LANG, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState, Admin_Main_Service_TemplateManager, Admin_Main_Translate_DpInterpolation, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments) {
     var Admin_App, _ref, _ref1;
     Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate']);
     Admin_App.service('AppState', [
@@ -68,9 +68,16 @@
     ]);
     Admin_App.config([
       '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-        var id, opts, route, segs, url, views, with_lists, _i, _len, _results;
+        var id, makeProvider, opts, route, segs, url, views, with_lists, _i, _len, _ref, _ref1, _ref2, _results;
         $urlRouterProvider.otherwise("/");
         with_lists = {};
+        makeProvider = function(view) {
+          return [
+            'dpTemplateManager', function(dpTemplateManager) {
+              return dpTemplateManager.get(view);
+            }
+          ];
+        };
         _results = [];
         for (_i = 0, _len = routing.length; _i < _len; _i++) {
           route = routing[_i];
@@ -85,6 +92,15 @@
           }
           if (route.page != null) {
             views['dp_section_page@'] = route.page;
+          }
+          if (((_ref = route.page) != null ? _ref.templateName : void 0) != null) {
+            route.page.templateProvider = makeProvider(route.page.templateName);
+          }
+          if (((_ref1 = route.list) != null ? _ref1.templateName : void 0) != null) {
+            route.list.templateProvider = makeProvider(route.list.templateName);
+          }
+          if (((_ref2 = route.nav) != null ? _ref2.templateName : void 0) != null) {
+            route.nav.templateProvider = makeProvider(route.nav.templateName);
           }
           opts = {
             url: url,
@@ -113,48 +129,54 @@
         return _results;
       }
     ]);
+    Admin_App.service('dpTemplateManager', [
+      '$templateCache', '$http', '$q', function($templateCache, $http, $q) {
+        return new Admin_Main_Service_TemplateManager($templateCache, $http, $q);
+      }
+    ]);
+    Admin_App.config([
+      '$provide', function($provide) {
+        return $provide.decorator('$templateCache', [
+          '$delegate', '$http', function($delegate, $http) {
+            $delegate.ngGet = $delegate.get;
+            $delegate.get = function(view) {
+              view = view.replace(/^.*?\/adm\/load\-view\//g, '');
+              return $delegate.ngGet(view);
+            };
+            $delegate.ngPut = $delegate.put;
+            $delegate.put = function(view, value) {
+              view = view.replace(/^.*?\/adm\/load\-view\//g, '');
+              return $delegate.ngPut(view, value);
+            };
+            return $delegate;
+          }
+        ]);
+      }
+    ]);
     Admin_App.run([
-      '$http', '$templateCache', function($http, $templateCache) {
-        var done, p, qs, route, t, templates, _, _i, _len;
+      'dpTemplateManager', function(dpTemplateManager) {
+        var route, t, templates, _, _i, _len;
         templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'Languages/modal-translate-phrase.html', 'TicketDeps/code-link.html', 'TicketDeps/code-win.html', 'TicketDeps/code-embed.html', 'Index/blank.html'];
         for (_ in routing) {
           if (!__hasProp.call(routing, _)) continue;
           route = routing[_];
-          if ((route.page != null) && route.page.templateUrl) {
-            templates.push(route.page.templateUrl);
+          if ((route.page != null) && route.page.templateName) {
+            templates.push(route.page.templateName);
           }
-          if ((route.nav != null) && route.nav.templateUrl) {
-            templates.push(route.nav.templateUrl);
+          if ((route.nav != null) && route.nav.templateName) {
+            templates.push(route.nav.templateName);
           }
-          if ((route.list != null) && route.list.templateUrl) {
-            templates.push(route.list.templateUrl);
+          if ((route.list != null) && route.list.templateName) {
+            templates.push(route.list.templateName);
           }
         }
-        done = {};
-        qs = [];
         for (_i = 0, _len = templates.length; _i < _len; _i++) {
           t = templates[_i];
-          t = t.replace(/\/adm\/load\-view\//g, '');
-          if (done[t]) {
-            continue;
-          }
-          done[t] = true;
-          qs.push('views[]=' + encodeURIComponent(t));
+          dpTemplateManager.load(t);
         }
-        qs = qs.join('&');
-        p = $http({
-          method: 'GET',
-          url: DP_BASE_ADMIN_URL + '/load-view/multi?' + qs
-        }).success(function(data) {
-          var id, tpl, _j, _len1;
-          for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
-            tpl = data[_j];
-            id = DP_BASE_ADMIN_URL + '/load-view/' + tpl.id;
-            $templateCache.put(id, tpl.source);
-          }
+        return dpTemplateManager.loadPending().then(function() {
           return window.DP_IS_BOOTED = true;
         });
-        return p;
       }
     ]);
     if ((_ref = window.parent) != null ? _ref.DP_FRAME_OVERLAY_admin : void 0) {

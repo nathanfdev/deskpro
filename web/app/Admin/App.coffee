@@ -7,6 +7,7 @@ define [
 	'Admin/Main/Service/DpApi',
 	'Admin/Main/Service/Growl',
 	'Admin/Main/Service/InhelpState',
+	'Admin/Main/Service/TemplateManager',
 
 	'Admin/Main/Translate/DpInterpolation',
 
@@ -39,6 +40,7 @@ define [
 	Admin_Main_Service_DpApi,
 	Admin_Main_Service_Growl,
 	Admin_Main_Service_InhelpState,
+	Admin_Main_Service_TemplateManager,
 
 	Admin_Main_Translate_DpInterpolation,
 
@@ -148,6 +150,13 @@ define [
 
 		with_lists = {}
 
+		# Load templates through the dpTemplateManager
+		# so we can take advantage of our preloading scheme
+		makeProvider = (view) ->
+			return ['dpTemplateManager', (dpTemplateManager) ->
+				return dpTemplateManager.get(view)
+			]
+
 		for route in routing
 			id = route.id
 			url = route.url
@@ -159,6 +168,13 @@ define [
 				views['dp_section_list@'] = route.list
 			if route.page?
 				views['dp_section_page@'] = route.page
+
+			if route.page?.templateName?
+				route.page.templateProvider = makeProvider(route.page.templateName)
+			if route.list?.templateName?
+				route.list.templateProvider = makeProvider(route.list.templateName)
+			if route.nav?.templateName?
+				route.nav.templateProvider = makeProvider(route.nav.templateName)
 
 			opts = {url: url, views: views, with_nav_view: true}
 			if route.with_list_view
@@ -182,10 +198,33 @@ define [
 	])
 
 	####################################################################################################################
-	# Preload Nav Templates
+	# Templates and pre-load templates
 	####################################################################################################################
 
-	Admin_App.run(['$http', '$templateCache', ($http, $templateCache) ->
+	Admin_App.service('dpTemplateManager', ['$templateCache', '$http', '$q', ($templateCache, $http, $q) ->
+		return new Admin_Main_Service_TemplateManager($templateCache, $http, $q)
+	])
+
+	# Decorate the $templateCache so view names are always the 'short' names
+	# and not URLs
+	# e.g.  /deskpro/adm/load-view/Index/blank.html -> Index/blank.html
+	Admin_App.config(['$provide', ($provide) ->
+		$provide.decorator('$templateCache', ['$delegate', '$http', ($delegate, $http) ->
+			$delegate.ngGet = $delegate.get
+			$delegate.get = (view) ->
+				view = view.replace(/^.*?\/adm\/load\-view\//g, '')
+				return $delegate.ngGet(view)
+
+			$delegate.ngPut = $delegate.put
+			$delegate.put = (view, value) ->
+				view = view.replace(/^.*?\/adm\/load\-view\//g, '')
+				return $delegate.ngPut(view, value)
+
+			return $delegate
+		])
+	])
+
+	Admin_App.run(['dpTemplateManager', (dpTemplateManager) ->
 		templates = [
 			'Index/app-nav-setup.html',
 			'Index/app-nav-agents.html',
@@ -206,36 +245,19 @@ define [
 		]
 
 		for own _, route of routing
-			if route.page? and route.page.templateUrl
-				templates.push(route.page.templateUrl)
-			if route.nav? and route.nav.templateUrl
-				templates.push(route.nav.templateUrl)
-			if route.list? and route.list.templateUrl
-				templates.push(route.list.templateUrl)
+			if route.page? and route.page.templateName
+				templates.push(route.page.templateName)
+			if route.nav? and route.nav.templateName
+				templates.push(route.nav.templateName)
+			if route.list? and route.list.templateName
+				templates.push(route.list.templateName)
 
-		done = {}
-		qs = []
 		for t in templates
-			t = t.replace(/\/adm\/load\-view\//g, '')
-			if done[t] then continue
+			dpTemplateManager.load(t)
 
-			done[t] = true
-			qs.push('views[]=' + encodeURIComponent(t))
-
-		qs = qs.join('&')
-
-		p = $http({
-			method: 'GET',
-			url: DP_BASE_ADMIN_URL+'/load-view/multi?' + qs
-		}).success( (data) ->
-			for tpl in data
-				id = DP_BASE_ADMIN_URL+'/load-view/'+ tpl.id
-				$templateCache.put(id, tpl.source)
-
+		dpTemplateManager.loadPending().then(->
 			window.DP_IS_BOOTED = true
 		)
-
-		return p
 	])
 
 	if window.parent?.DP_FRAME_OVERLAY_admin
