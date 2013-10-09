@@ -63,7 +63,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
-	protected $title = '';
+	protected $email_address = '';
 
 	/**
 	 * The type of connection this class represents
@@ -129,6 +129,17 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_fetcher = null;
 
+	/**
+	 * @return EmailGateway
+	 */
+	public static function createTicketAccount()
+	{
+		$acc = new self();
+		$acc->gateway_type = self::GATEWAY_TICKETS;
+
+		return $acc;
+	}
+
 	public function __construct()
 	{
 		$this->addresses = new \Doctrine\Common\Collections\ArrayCollection();
@@ -140,6 +151,15 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	public function getId()
 	{
 		return $this->id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->email_address;
 	}
 
 
@@ -336,9 +356,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			$data['addresses'] = array();
-			$data['primary_address'] = null;
 			if ($this->addresses) {
-				$data['primary_address'] = $this->getPrimaryEmailAddress(true)->toApiData(false, false);
 				foreach ($this->addresses as $addr) {
 					$data['addresses'][] = $addr->toApiData(false, false);
 				}
@@ -360,7 +378,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'email_gateways', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'email_address', 'type' => 'text', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_address', ));
 		$metadata->mapField(array( 'fieldName' => 'connection_type', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'connection_type', ));
 		$metadata->mapField(array( 'fieldName' => 'connection_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'connection_options', ));
 		$metadata->mapField(array( 'fieldName' => 'gateway_type', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gateway_type', ));

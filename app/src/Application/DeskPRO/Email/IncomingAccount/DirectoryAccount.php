@@ -31,116 +31,41 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts;
+namespace Application\DeskPRO\Email\IncomingAccount;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\EmailGateway;
-
-class TicketAccounts
+class DirectoryAccount implements IncomingAccountInterface
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+	public $directory;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
+	 * {@inheritDoc}
 	 */
-	private $accounts;
-
-	public function __construct(EntityManager $em)
+	public function setOptions(array $options)
 	{
-		$this->em = $em;
-	}
-
-	private function preload()
-	{
-		if ($this->accounts !== null) {
-			return;
-		}
-
-		$accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
-		$this->accounts = array();
-
-		foreach ($accounts as $acc) {
-			$this->accounts[$acc->id] = $acc;
-		}
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getAllAccounts()
-	{
-		$this->preload();
-		return array_values($this->accounts);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getEnabledAccounts()
-	{
-		$this->preload();
-
-		$ret = array();
-		foreach ($this->accounts as $acc) {
-			if ($acc->is_enabled) {
-				$ret[] = $acc;
+		foreach ($options as $k => $v) {
+			switch ($k) {
+				case 'directory':
+					$this->$k = $v ?: null;
+					break;
 			}
 		}
-		return $ret;
 	}
 
-
 	/**
-	 * Get an email gateway by ID
-	 *
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
+	 * {@inheritDoc}
 	 */
-	public function getById($id)
+	public function getOptions()
 	{
-		$this->preload();
-
-		return isset($this->accounts[$id]) ? $this->accounts[$id] : null;
+		return array(
+			'directory' => $this->directory ?: null,
+		);
 	}
 
-
 	/**
-	 * Get an email gateway by ID, but only if its enabled
-	 *
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
+	 * {@inheritDoc}
 	 */
-	public function getEnabledById($id)
+	public function getTypeName()
 	{
-		$acc = $this->getById($id);
-		if (!$acc || !$acc->is_enabled) {
-			return null;
-		}
-
-		return $acc;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		$this->preload();
-		return count($this->accounts);
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function countEnabled()
-	{
-		$this->preload();
-		return count($this->getEnabledAccounts());
+		return 'directory';
 	}
 }

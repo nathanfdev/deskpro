@@ -31,116 +31,39 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts;
+namespace Application\DeskPRO\TicketAccounts\Form\Type;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Email\Form\Type\EmailTransportType;
+use Application\DeskPRO\Email\IncomingAccount\Form\Type\GmailAccountType;
+use Application\DeskPRO\Email\IncomingAccount\Form\Type\Pop3AccountType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TicketAccounts
+class TicketAccountType extends AbstractType
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	private $accounts;
-
-	public function __construct(EntityManager $em)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$this->em = $em;
+		$builder->add('email_address', 'text', array(
+			'required'      => true,
+		));
+		$builder->add('connection_type', 'text', array(
+			'required'      => true,
+		));
+		$builder->add('in_gmail_account', new GmailAccountType());
+		$builder->add('in_pop3_account', new Pop3AccountType());
+		$builder->add('email_transport', new EmailTransportType());
 	}
 
-	private function preload()
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		if ($this->accounts !== null) {
-			return;
-		}
-
-		$accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
-		$this->accounts = array();
-
-		foreach ($accounts as $acc) {
-			$this->accounts[$acc->id] = $acc;
-		}
+		$resolver->setDefaults(array(
+			'data_class' => 'Application\\DeskPRO\\TicketAccounts\\EditTicketAccount',
+		));
 	}
 
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getAllAccounts()
+	public function getName()
 	{
-		$this->preload();
-		return array_values($this->accounts);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getEnabledAccounts()
-	{
-		$this->preload();
-
-		$ret = array();
-		foreach ($this->accounts as $acc) {
-			if ($acc->is_enabled) {
-				$ret[] = $acc;
-			}
-		}
-		return $ret;
-	}
-
-
-	/**
-	 * Get an email gateway by ID
-	 *
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getById($id)
-	{
-		$this->preload();
-
-		return isset($this->accounts[$id]) ? $this->accounts[$id] : null;
-	}
-
-
-	/**
-	 * Get an email gateway by ID, but only if its enabled
-	 *
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getEnabledById($id)
-	{
-		$acc = $this->getById($id);
-		if (!$acc || !$acc->is_enabled) {
-			return null;
-		}
-
-		return $acc;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		$this->preload();
-		return count($this->accounts);
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function countEnabled()
-	{
-		$this->preload();
-		return count($this->getEnabledAccounts());
+		return 'email_transport';
 	}
 }

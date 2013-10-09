@@ -8516,6 +8516,27 @@ section.dp-help-page article dl dt:first-child {
           background-clip: padding-box;
 }
 
+table.inner-form-table th {
+  padding: 6px 8px;
+  font-weight: normal;
+  line-height: 120%;
+  text-align: right;
+}
+
+table.inner-form-table td {
+  padding: 6px 8px;
+  line-height: 120%;
+  vertical-align: middle;
+}
+
+table.inner-form-table td label {
+  display: block;
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+  line-height: 120%;
+}
+
 .select2-results {
   padding: 0;
   margin: 0;

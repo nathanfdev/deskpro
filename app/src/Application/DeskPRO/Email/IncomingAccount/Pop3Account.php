@@ -31,116 +31,81 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts;
+namespace Application\DeskPRO\Email\IncomingAccount;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\EmailGateway;
-
-class TicketAccounts
+class Pop3Account implements IncomingAccountInterface
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+	public $username = '';
+	public $password = '';
+	public $host     = 'localhost';
+	public $port     = 110;
+	public $secure   = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
+	 * {@inheritDoc}
 	 */
-	private $accounts;
-
-	public function __construct(EntityManager $em)
+	public function setOptions(array $options)
 	{
-		$this->em = $em;
-	}
+		foreach ($options as $k => $v) {
+			switch ($k) {
+				case 'username':
+				case 'password':
+					$this->$k = $v ?: null;
+					break;
 
-	private function preload()
-	{
-		if ($this->accounts !== null) {
-			return;
-		}
+				case 'host':
+					$this->host = $v ?: null;
+					break;
 
-		$accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
-		$this->accounts = array();
+				case 'port':
+					$this->port = $v ?: null;
+					break;
 
-		foreach ($accounts as $acc) {
-			$this->accounts[$acc->id] = $acc;
-		}
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getAllAccounts()
-	{
-		$this->preload();
-		return array_values($this->accounts);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getEnabledAccounts()
-	{
-		$this->preload();
-
-		$ret = array();
-		foreach ($this->accounts as $acc) {
-			if ($acc->is_enabled) {
-				$ret[] = $acc;
+				case 'secure':
+					if ($v === true || $v === 'ssl') {
+						$this->secure = 'ssl';
+					}
 			}
 		}
-		return $ret;
+
+		$this->_fillDefaults();
 	}
 
-
-	/**
-	 * Get an email gateway by ID
-	 *
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getById($id)
+	private function _fillDefaults()
 	{
-		$this->preload();
-
-		return isset($this->accounts[$id]) ? $this->accounts[$id] : null;
-	}
-
-
-	/**
-	 * Get an email gateway by ID, but only if its enabled
-	 *
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getEnabledById($id)
-	{
-		$acc = $this->getById($id);
-		if (!$acc || !$acc->is_enabled) {
-			return null;
+		if ($this->host === null) {
+			$this->host = 'localhost';
 		}
 
-		return $acc;
+		if ($this->port === null) {
+			if ($this->secure === 'ssl') {
+				$this->port = 995;
+			} else {
+				$this->port = 110;
+			}
+		}
 	}
 
-
 	/**
-	 * @return int
+	 * {@inheritDoc}
 	 */
-	public function count()
+	public function getOptions()
 	{
-		$this->preload();
-		return count($this->accounts);
+		$this->_fillDefaults();
+		return array(
+			'username' => $this->username ?: null,
+			'password' => $this->password ?: null,
+			'host'     => $this->host,
+			'port'     => $this->port,
+			'secure'   => $this->secure
+		);
 	}
 
-
 	/**
-	 * @return int
+	 * {@inheritDoc}
 	 */
-	public function countEnabled()
+	public function getTypeName()
 	{
-		$this->preload();
-		return count($this->getEnabledAccounts());
+		return 'pop3';
 	}
 }

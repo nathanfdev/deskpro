@@ -29,118 +29,27 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketAccounts;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\EmailGateway;
-
-class TicketAccounts
+class Build1381333886 extends AbstractBuild
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	private $accounts;
-
-	public function __construct(EntityManager $em)
+	public function run()
 	{
-		$this->em = $em;
-	}
+		$this->out("Add email_gateways.email_address");
+		$this->execMutateSql("ALTER TABLE email_gateways CHANGE title email_address TINYTEXT NOT NULL");
 
-	private function preload()
-	{
-		if ($this->accounts !== null) {
-			return;
+		$this->out("Take the 'primary' address on each gateway account and set it to the address");
+		$em = $this->container->getEm();
+		$gateways = $em->getRepository('DeskPRO:EmailGateway')->findAll();
+		foreach ($gateways as $g) {
+			$primary_acc = $g->getPrimaryEmailAddress(true);
+			$g->email_address = $primary_acc->match_pattern;
+			$em->persist($g);
+			$em->remove($primary_acc);
 		}
-
-		$accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
-		$this->accounts = array();
-
-		foreach ($accounts as $acc) {
-			$this->accounts[$acc->id] = $acc;
-		}
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getAllAccounts()
-	{
-		$this->preload();
-		return array_values($this->accounts);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getEnabledAccounts()
-	{
-		$this->preload();
-
-		$ret = array();
-		foreach ($this->accounts as $acc) {
-			if ($acc->is_enabled) {
-				$ret[] = $acc;
-			}
-		}
-		return $ret;
-	}
-
-
-	/**
-	 * Get an email gateway by ID
-	 *
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getById($id)
-	{
-		$this->preload();
-
-		return isset($this->accounts[$id]) ? $this->accounts[$id] : null;
-	}
-
-
-	/**
-	 * Get an email gateway by ID, but only if its enabled
-	 *
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getEnabledById($id)
-	{
-		$acc = $this->getById($id);
-		if (!$acc || !$acc->is_enabled) {
-			return null;
-		}
-
-		return $acc;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		$this->preload();
-		return count($this->accounts);
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function countEnabled()
-	{
-		$this->preload();
-		return count($this->getEnabledAccounts());
+		$em->flush();
 	}
 }

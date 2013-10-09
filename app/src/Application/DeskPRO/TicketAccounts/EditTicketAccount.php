@@ -33,114 +33,83 @@
 
 namespace Application\DeskPRO\TicketAccounts;
 
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Email\EditTransport;
 use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Entity\EmailGatewayAddress;
+use Application\DeskPRO\Entity\EmailTransport;
 
-class TicketAccounts
+class EditTicketAccount
 {
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var string
 	 */
-	private $em;
+	public $email_address;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
+	 * @var string
 	 */
-	private $accounts;
+	public $connection_type;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+	/**
+	 * @var \Application\DeskPRO\Email\IncomingAccount\GmailAccount
+	 */
+	public $in_gmail_account;
 
-	private function preload()
+	/**
+	 * @var \Application\DeskPRO\Email\IncomingAccount\Pop3Account
+	 */
+	public $in_pop3_account;
+
+	/**
+	 * @var \Application\DeskPRO\Email\EditTransport
+	 */
+	public $email_transport;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 */
+	private $gateway;
+
+	public function __construct(EmailGateway $gateway)
 	{
-		if ($this->accounts !== null) {
-			return;
+		$this->gateway = $gateway;
+
+		if ($gateway->linked_transport) {
+			$tr = $gateway->linked_transport;
+		} else {
+			$tr = new EmailTransport();
+			$gateway->linked_transport = $tr;
 		}
 
-		$accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
-		$this->accounts = array();
+		$this->email_transport = new EditTransport($tr);
+	}
 
-		foreach ($accounts as $acc) {
-			$this->accounts[$acc->id] = $acc;
+	public function apply()
+	{
+		$this->gateway->email_address = $this->email_address;
+
+		$this->gateway->connection_options = array();
+		$this->gateway->connection_type = '';
+
+		if ($this->connection_type == 'pop3') {
+			$this->gateway->connection_type = 'pop3';
+			$this->gateway->connection_options = $this->in_pop3_account->getOptions();
+		} else if ($this->connection_type == 'gmail') {
+			$this->gateway->connection_type = 'gmail';
+			$this->gateway->connection_options = $this->in_gmail_account->getOptions();
 		}
 	}
 
 	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
+	 * @return \Application\DeskPRO\Email\IncomingAccount\IncomingAccountInterface
 	 */
-	public function getAllAccounts()
+	public function getIncomingAccount()
 	{
-		$this->preload();
-		return array_values($this->accounts);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getEnabledAccounts()
-	{
-		$this->preload();
-
-		$ret = array();
-		foreach ($this->accounts as $acc) {
-			if ($acc->is_enabled) {
-				$ret[] = $acc;
-			}
+		if ($this->connection_type == 'pop3') {
+			return $this->in_pop3_account;
+		} else if ($this->connection_type == 'gmail') {
+			return $this->in_gmail_account;
 		}
-		return $ret;
-	}
-
-
-	/**
-	 * Get an email gateway by ID
-	 *
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getById($id)
-	{
-		$this->preload();
-
-		return isset($this->accounts[$id]) ? $this->accounts[$id] : null;
-	}
-
-
-	/**
-	 * Get an email gateway by ID, but only if its enabled
-	 *
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getEnabledById($id)
-	{
-		$acc = $this->getById($id);
-		if (!$acc || !$acc->is_enabled) {
-			return null;
-		}
-
-		return $acc;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		$this->preload();
-		return count($this->accounts);
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function countEnabled()
-	{
-		$this->preload();
-		return count($this->getEnabledAccounts());
+		return null;
 	}
 }

@@ -16,19 +16,67 @@
 
       Admin_TicketAccounts_Ctrl_List.CTRL_AS = 'TicketAccountsList';
 
-      Admin_TicketAccounts_Ctrl_List.DEPS = ['$rootScope', '$scope', 'Api', 'Growl'];
+      Admin_TicketAccounts_Ctrl_List.DEPS = ['TicketAccountsData'];
 
       Admin_TicketAccounts_Ctrl_List.CTRL_TYPE = 'list';
 
-      Admin_TicketAccounts_Ctrl_List.prototype.init = function() {};
+      Admin_TicketAccounts_Ctrl_List.prototype.init = function() {
+        return this.accounts = [];
+      };
 
       Admin_TicketAccounts_Ctrl_List.prototype.initialLoad = function() {
-        var data_promise,
+        var list_promise,
           _this = this;
-        data_promise = this.Api.sendDataGet(['/ticket_accounts']).then(function(res) {
-          return _this.accounts = res.data.api_ticket_accounts;
+        list_promise = this.TicketAccountsData.loadList().then(function(recs) {
+          _this.accounts = recs.values();
+          return _this.addManagedListener(_this.TicketAccountsData.recs, 'changed', function() {
+            _this.accounts = _this.TicketAccountsData.recs.values();
+            return _this.ngApply();
+          });
         });
-        return this.$q.all([data_promise]);
+        return this.$q.all([list_promise]);
+      };
+
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Admin_TicketAccounts_Ctrl_List.prototype.startDelete = function(for_acc) {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketAccounts/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.deleteAccount(for_acc);
+        });
+      };
+
+      /*for_acc
+      		# Actually do th edelete
+      */
+
+
+      Admin_TicketAccounts_Ctrl_List.prototype.deleteAccount = function(acc) {
+        var _this = this;
+        return this.Api.sendDelete('/ticket_accounts/' + acc.id).success(function() {
+          _this.TicketAccountsData.remove(acc.id);
+          _this.ngApply();
+          if (_this.$state.current.name === 'tickets.ticket_accounts.edit' && parseInt(_this.$state.params.id) === acc.id) {
+            return _this.$state.go('tickets.ticket_accounts');
+          }
+        });
       };
 
       return Admin_TicketAccounts_Ctrl_List;

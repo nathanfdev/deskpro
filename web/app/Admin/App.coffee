@@ -32,6 +32,7 @@ define [
 
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
+	'Admin/TicketAccounts/DataService/TicketAccounts',
 ], (
 	angular,
 	DP_LANG,
@@ -65,7 +66,8 @@ define [
 	Admin_Main_Directive_DpToggleSwitch,
 
 	Admin_Main_DataService_EntityManager,
-	Admin_Main_DataService_Departments
+	Admin_Main_DataService_Departments,
+	Admin_TicketAccounts_DataService_TicketAccounts
 ) ->
 	####################################################################################################################
 	# Main services
@@ -103,6 +105,10 @@ define [
 
 	Admin_App.service('DepartmentData', ['em', 'Api', '$q', (em, Api, $q) ->
 		return new Admin_Main_DataService_Departments(em, Api, $q)
+	])
+
+	Admin_App.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
 	])
 
 	Admin_App.service('Growl', [ ->

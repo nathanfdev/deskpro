@@ -847,17 +847,6 @@ $collection->add('api_combiner', new Route(
 ));
 
 ################################################################################
-# Email Gateways
-################################################################################
-
-$collection->add('api_ticketaccounts_list', new Route(
-	'/ticket_accounts',
-	array('_controller' => 'ApiBundle:EmailGateway:list', 'type' => 'ticket'),
-	array('_method' => 'GET'),
-	array()
-));
-
-################################################################################
 # Organizations
 ################################################################################
 
@@ -2285,6 +2274,42 @@ $collection->add('api_ticket_accounts', new Route(
 	'/ticket_accounts',
 	array('_controller' => 'ApiBundle:TicketAccounts:list'),
 	array('_method' => 'GET')
+));
+
+$collection->add('api_ticket_accounts_test', new Route(
+	'/ticket_accounts/test-account',
+	array('_controller' => 'ApiBundle:TicketAccounts:testAccount'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_accounts_testoutgoing', new Route(
+	'/ticket_accounts/test-outgoing-account',
+	array('_controller' => 'ApiBundle:TicketAccounts:testOutgoingAccount'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_accounts_get', new Route(
+	'/ticket_accounts/{id}',
+	array('_controller' => 'ApiBundle:TicketAccounts:get'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_ticket_accounts_remove', new Route(
+	'/ticket_accounts/{id}',
+	array('_controller' => 'ApiBundle:TicketAccounts:remove'),
+	array('_method' => 'DELETE')
+));
+
+$collection->add('api_ticket_accounts_create', new Route(
+	'/ticket_accounts/create',
+	array('_controller' => 'ApiBundle:TicketAccounts:save', 'id' => '0'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_accounts_save', new Route(
+	'/ticket_accounts/{id}',
+	array('_controller' => 'ApiBundle:TicketAccounts:save'),
+	array('_method' => 'POST')
 ));
 
 ########################################################################################################################

@@ -1,0 +1,220 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.email_accounts') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
+		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.email_accounts') }} &rarr; {{ phrase('admin.tickets.new_account') }}</h3>
+	</header>
+	<article class="pane-content no-pad">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAll()">
+			<div class="panel panel-fill indent">
+				<br/>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3>{{ phrase('agent.general.email_address') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" dp-error-class="form_props.title">
+								<input type="text" class="form-control" name="title" ng-model="form.email_address" style="width: 50%;" required autofocus />
+								<span class="help-block">
+									{{ phrase('admin.departments.title_explain') }}
+								</span>
+							</div>
+						</div>
+					</div>
+
+
+					{##################################################################################################}
+					{# Account Details #}
+					{##################################################################################################}
+
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3>{{ phrase('admin.tickets.account_details') }} *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" style="padding-top: 3px;">
+								<select
+									ui-select2
+									ng-model="form.connection_type"
+									style="min-width: 240px"
+								>
+									<option value="pop3">POP3</option>
+									<option value="gmail">GMail or Google Apps</option>
+								</select>
+							</div>
+							<div class="ng-hide" ng-show="form.connection_type == 'pop3'">
+								<div class="inner-group">
+									<table width="100%" class="inner-form-table">
+										<tr>
+											<th width="75">Host</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.host" style="width: 50%;" placeholder="localhost" required /></td>
+										</tr>
+										<tr>
+											<th>Port</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.port" style="width: 80px;" placeholder="110" required /></td>
+										</tr>
+										<tr>
+											<th>Secure</th>
+											<td>
+												<label>
+													<input type="checkbox" /> Enable secure network connection (SSL)
+												</label>
+											</td>
+										</tr>
+										<tr>
+											<th>Username</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.username" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>Password</th>
+											<td><input type="password" class="form-control" name="title" ng-model="form.in_pop3_account.password" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+											<td>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="ng-hide" ng-show="form.connection_type == 'gmail'">
+								<div class="inner-group">
+									<table width="100%" class="inner-form-table">
+										<tr>
+											<th width="100">Email Address</th>
+											<td>
+												{{ ng_var('TicketAccountsEdit.account.email_address') }}
+											</td>
+										</tr>
+										<tr>
+											<th>Password</th>
+											<td><input type="password" class="form-control" name="title" ng-model="form.in_gmail_account.password" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+											<td>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{##################################################################################################}
+					{# Transport Details #}
+					{##################################################################################################}
+
+					<div class="form-group" ng-hide="form.connection_type == 'gmail'">
+						<div class="col-lg-2">
+							<h3>Outgoing Email *</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="inner-group" style="padding-top: 3px;">
+								<select
+									ui-select2
+									ng-model="form.email_transport.transport_type"
+									style="min-width: 240px"
+								>
+									<option value="mail">Send mail using PHP mail()</option>
+									<option value="smtp">SMTP</option>
+									<option value="gmail">GMail or Google Apps</option>
+								</select>
+							</div>
+							<div class="ng-hide" ng-show="form.email_transport.transport_type == 'mail'">
+								<div class="inner-group">
+									Send mail through the basic server mail() function with PHP.
+								</div>
+							</div>
+							<div class="ng-hide" ng-show="form.email_transport.transport_type == 'smtp'">
+								<div class="inner-group">
+									<table width="100%" class="inner-form-table">
+										<tr>
+											<th width="75">Host</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.host" style="width: 50%;" placeholder="localhost" required /></td>
+										</tr>
+										<tr>
+											<th>Port</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.port" style="width: 80px;" placeholder="25" required /></td>
+										</tr>
+										<tr>
+											<th>Secure</th>
+											<td>
+												<select
+													ui-select2
+													ng-model="form.email_transport.out_smtp_account.secure"
+													style="min-width: 240px"
+												>
+													<option value="">None</option>
+													<option value="tls">TLS</option>
+													<option value="ssl">SSL</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th>Username</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.username" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>Password</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.password" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+											<td>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="ng-hide" ng-show="form.email_transport.transport_type == 'gmail'">
+								<div class="inner-group">
+									<table width="100%" class="inner-form-table">
+										<tr>
+											<th width="100">Email Address</th>
+											<td>
+												{{ ng_var('TicketAccountsEdit.account.email_address') }}
+											</td>
+										</tr>
+										<tr>
+											<th>Password</th>
+											<td><input type="password" class="form-control" name="title" ng-model="form.email_transport.out_gmail_account.password" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+											<td>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="inner-footer">
+				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+					<p><strong>{{ phrase('admin.general.please_correct_errors') }}</strong></p>
+					<ul>
+						<li ng-show="form_props.title.$error.required">{{ phrase('admin.departments.title_error') }}</li>
+					</ul>
+				</div>
+
+				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div dp-hide-spinning="saving_dep">
+						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						<button class="btn btn-default" ng-click="TicketAccountsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+					</div>
+					<div dp-show-spinning="saving_dep">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</form>
+	</article>
+</div>

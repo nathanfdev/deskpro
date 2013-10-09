@@ -138,6 +138,7 @@ class TemplatingExtension extends \Twig_Extension
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1467,6 +1468,21 @@ class TemplatingExtension extends \Twig_Extension
 	public function ngVar($var)
 	{
 		return '{{' . $var . '}}';
+	}
+
+	public function ngIncTpl($context, $tpl_name)
+	{
+		$name = 'AdminInterfaceBundle:' . $tpl_name;
+
+		$tpl = App::getContainer()->getTemplating();
+		if (!$tpl->exists($name)) {
+			return '<!-- No such template exists: ' . $name . ' -->';
+		}
+
+		$rendered = $tpl->render($name, $context);
+
+		$html = '<script type="text/ng-template" id="'.$tpl_name.'">' . htmlspecialchars($rendered, \ENT_QUOTES, 'UTF-8') . '</script>';
+		return $html;
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)

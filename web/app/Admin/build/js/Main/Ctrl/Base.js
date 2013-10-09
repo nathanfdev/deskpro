@@ -41,6 +41,9 @@
         if (this.DEPS.indexOf('Api') === -1) {
           this.DEPS.unshift('Api');
         }
+        if (this.DEPS.indexOf('Growl') === -1) {
+          this.DEPS.unshift('Growl');
+        }
         if (this.DEPS.indexOf('$scope') === -1) {
           this.DEPS.unshift('$scope');
         }

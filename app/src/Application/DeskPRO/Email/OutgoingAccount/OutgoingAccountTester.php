@@ -31,116 +31,115 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts;
+namespace Application\DeskPRO\Email\OutgoingAccount;
 
-use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\EmailGateway;
+use Orb\Log\Logger;
+use Orb\Log\Writer\ArrayWriter;
+use Orb\Util\Arrays;
 
-class TicketAccounts
+class OutgoingAccountTester
 {
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var \Application\DeskPRO\Email\OutgoingAccount\OutgoingAccountInterface
 	 */
-	private $em;
+	private $account;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGateway[]
+	 * @var \Orb\Log\Logger
 	 */
-	private $accounts;
+	private $logger;
 
-	public function __construct(EntityManager $em)
+	/**
+	 * @var \Orb\Log\Writer\ArrayWriter
+	 */
+	private $logger_writer;
+
+	/**
+	 * @var
+	 */
+	private $exception;
+
+	/**
+	 * @var bool
+	 */
+	private $is_success = false;
+
+	public function __construct(OutgoingAccountInterface $account)
 	{
-		$this->em = $em;
-	}
+		$this->account = $account;
 
-	private function preload()
-	{
-		if ($this->accounts !== null) {
-			return;
-		}
-
-		$accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
-		$this->accounts = array();
-
-		foreach ($accounts as $acc) {
-			$this->accounts[$acc->id] = $acc;
-		}
+		$this->logger        = new Logger();
+		$this->logger_writer = new ArrayWriter();
+		$this->logger->addWriter($this->logger_writer);
 	}
 
 	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getAllAccounts()
-	{
-		$this->preload();
-		return array_values($this->accounts);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\EmailGateway[]
-	 */
-	public function getEnabledAccounts()
-	{
-		$this->preload();
-
-		$ret = array();
-		foreach ($this->accounts as $acc) {
-			if ($acc->is_enabled) {
-				$ret[] = $acc;
-			}
-		}
-		return $ret;
-	}
-
-
-	/**
-	 * Get an email gateway by ID
+	 * Run the test
 	 *
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
+	 * @return bool
 	 */
-	public function getById($id)
+	public function test($to_address, $from_address, $subject, $message)
 	{
-		$this->preload();
-
-		return isset($this->accounts[$id]) ? $this->accounts[$id] : null;
-	}
-
-
-	/**
-	 * Get an email gateway by ID, but only if its enabled
-	 *
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\EmailGateway
-	 */
-	public function getEnabledById($id)
-	{
-		$acc = $this->getById($id);
-		if (!$acc || !$acc->is_enabled) {
-			return null;
+		if ($this->account instanceof SmtpAccount) {
+			$this->_testPop3($this->account, $to_address, $from_address, $subject, $message);
+		} else if ($this->account) {
+			$this->_testGmail($this->account, $to_address, $from_address, $subject, $message);
 		}
 
-		return $acc;
+		return $this->is_success;
 	}
 
 
 	/**
-	 * @return int
+	 * @return bool
 	 */
-	public function count()
+	public function isSuccess()
 	{
-		$this->preload();
-		return count($this->accounts);
+		return $this->is_success;
 	}
 
 
 	/**
-	 * @return int
+	 * @return \Exception
 	 */
-	public function countEnabled()
+	public function getException()
 	{
-		$this->preload();
-		return count($this->getEnabledAccounts());
+		return $this->exception;
+	}
+
+
+	/**
+	 * @param SmtpAccount $account
+	 */
+	private function _testSmtp(SmtpAccount $account, $to_address, $from_address, $subject, $message)
+	{
+		$this->logger->logInfo('Testing SmtpAccount');
+	}
+
+
+	/**
+	 * @param GmailAccount $account
+	 */
+	private function _testGmail(GmailAccount $account, $to_address, $from_address, $subject, $message)
+	{
+		$this->logger->logInfo('Testing GmailAccount');
+		$smtp = new SmtpAccount();
+		$smtp->setOptions(array(
+			'username' => $account->username,
+			'password' => $account->password,
+			'host'     => 'smtp.gmail.com',
+			'port'     => 465,
+			'secure'   => 'ssl'
+		));
+		$this->_testSmtp($smtp, $to_address, $from_address, $subject, $message);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLog()
+	{
+		return $this->logger_writer->getMessagesAsString();
 	}
 }

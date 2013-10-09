@@ -552,6 +552,24 @@ define(function() {
 		}
 	});
 
+	routes.push({
+		id: 'tickets.ticket_accounts.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketAccounts/edit.html',
+			controller: 'Admin_TicketAccounts_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.ticket_accounts.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'TicketAccounts/edit.html',
+			controller: 'Admin_TicketAccounts_Ctrl_Edit'
+		}
+	});
+
 	//##################################################################################################################
 	// CRM
 	//##################################################################################################################

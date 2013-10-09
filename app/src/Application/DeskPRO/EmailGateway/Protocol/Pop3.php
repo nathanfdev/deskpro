@@ -91,25 +91,25 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 
         $errno  =  0;
         $errstr = '';
-        $this->_socket = fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
-        if (!$this->_socket) {
+        $this->socket = fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
+        if (!$this->socket) {
             throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
         }
-		stream_set_timeout($this->_socket, $this->stream_timeout);
+		stream_set_timeout($this->socket, $this->stream_timeout);
 
         $welcome = $this->readResponse();
 
         strtok($welcome, '<');
-        $this->_timestamp = strtok('>');
-        if (!strpos($this->_timestamp, '@')) {
-            $this->_timestamp = null;
+        $this->timestamp = strtok('>');
+        if (!strpos($this->timestamp, '@')) {
+            $this->timestamp = null;
         } else {
-            $this->_timestamp = '<' . $this->_timestamp . '>';
+            $this->timestamp = '<' . $this->timestamp . '>';
         }
 
         if ($ssl === 'TLS') {
             $this->request('STLS');
-            $result = stream_socket_enable_crypto($this->_socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            $result = stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
             if (!$result) {
                 throw new Exception\RuntimeException('cannot enable TLS');
             }
@@ -165,9 +165,9 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 	{
 		if ($this->logger) {
 			if (strpos($request, 'PASS ') === 0) {
-				$this->logger->logDebug("[Request] PASS xxxxxx");
+				$this->logger->logDebug("==> PASS xxxxxx");
 			} else {
-				$this->logger->logDebug("[Request] " . $request);
+				$this->logger->logDebug("==> " . $request);
 			}
 		}
 
@@ -182,9 +182,9 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 	 */
 	public function readResponse($multiline = false)
 	{
-		$result = @fgets($this->_socket);
+		$result = @fgets($this->socket);
         if (!is_string($result)) {
-			if ($this->logger) $this->logger->logDebug("[Response] read failed - connection closed?");
+			if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
@@ -197,25 +197,25 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
         }
 
         if ($status != '+OK') {
-			if ($this->logger) $this->logger->logDebug("[Response] $status");
+			if ($this->logger) $this->logger->logDebug("<== $status");
             throw new Exception\RuntimeException('last request failed');
         }
 
         if ($multiline) {
             $message = '';
-            $line = fgets($this->_socket);
+            $line = fgets($this->socket);
 			$log_msg = '';
             while ($line && rtrim($line, "\r\n") != '.') {
                 if ($line[0] == '.') {
                     $line = substr($line, 1);
                 }
                 $message .= $line;
-                $line = fgets($this->_socket);
+                $line = fgets($this->socket);
 				if ($this->logger && !isset($log_msg[350])) {
 					$log_msg .= $line;
 				}
             }
-			if ($this->logger) $this->logger->logDebug("[Response] $status $log_msg");
+			if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
         }
 
         return $message;
@@ -231,9 +231,9 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 	 */
 	public function readResponseToStream($stream)
 	{
-		$result = @fgets($this->_socket);
+		$result = @fgets($this->socket);
         if (!is_string($result)) {
-			if ($this->logger) $this->logger->logDebug("[Response] read failed - connection closed?");
+			if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
@@ -245,24 +245,24 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
         }
 
         if ($status != '+OK') {
-			if ($this->logger) $this->logger->logDebug("[Response] $status");
+			if ($this->logger) $this->logger->logDebug("<== $status");
             throw new Exception\RuntimeException('last request failed');
         }
 
 		$bytes = 0;
-		$line = fgets($this->_socket);
+		$line = fgets($this->socket);
 		$log_msg = '';
 		while ($line && rtrim($line, "\r\n") != '.') {
 			if ($line[0] == '.') {
 				$line = substr($line, 1);
 			}
 			$bytes += fwrite($stream, $line);
-			$line = fgets($this->_socket);
+			$line = fgets($this->socket);
 			if ($this->logger && !isset($log_msg[350])) {
 				$log_msg .= $line;
 			}
 		}
-		if ($this->logger) $this->logger->logDebug("[Response] $status $log_msg");
+		if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
 
         return $bytes;
 	}

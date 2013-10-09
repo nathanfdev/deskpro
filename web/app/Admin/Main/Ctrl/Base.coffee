@@ -27,6 +27,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.unshift('AppState')
 			if @DEPS.indexOf('Api') == -1
 				@DEPS.unshift('Api')
+			if @DEPS.indexOf('Growl') == -1
+				@DEPS.unshift('Growl')
 			if @DEPS.indexOf('$scope') == -1
 				@DEPS.unshift('$scope')
 			if @DEPS.indexOf('$modal') == -1

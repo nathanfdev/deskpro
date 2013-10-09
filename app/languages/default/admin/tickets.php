@@ -178,4 +178,9 @@
 	'admin.tickets.email_accounts' => 'Email Accounts',
 	'admin.tickets.x_email_accounts' => '{{count}} Email Account|{{count}} Email Accounts',
 	'admin.tickets.no_email_accounts' => 'You have not created any email accounts yet.',
+	'admin.tickets.delete_account' => 'Delete Ticket Account',
+	'admin.tickets.delete_account_confirm' => 'Are you sure you want to delete this email account? DeskPRO will stop processing emails from this account.',
+	'admin.tickets.edit_account' => 'Edit Account',
+	'admin.tickets.new_account' => 'New Account',
+	'admin.tickets.account_details' => 'Account Details',
 );
