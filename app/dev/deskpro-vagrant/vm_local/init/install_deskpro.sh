@@ -10,7 +10,7 @@ php cmd.php dp:install --verbose
 # New adminui currently only branch that uses grunt
 git checkout feature/adminui
 cd /deskpro/www/web/app
-npm install grunt --save-dev
+npm install --save-dev
 
 # Then after that, pop them back into the default develop branch
 cd /deskpro/www

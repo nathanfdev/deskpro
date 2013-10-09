@@ -51,6 +51,13 @@ npm install -g grunt-cli
 echo "Installing bower"
 npm install -g bower
 
+echo "Installing logio"
+npm install -g log.io
+cp -R /root/.log.io /home/vagrant
+chown -R vagrant:vagrant /home/vagrant/.log.io
+rm /home/vagrant/.log.io/harvester.conf
+cp /vm_local/init/conf/logio-harvester.conf /home/vagrant/.log.io/harvester.conf
+
 ###############################################
 # Installing Selenium, Firefox and xvfb
 ###############################################

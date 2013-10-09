@@ -19,6 +19,16 @@ case "$1" in
         /bin/bash $VM_LOCAL/stop-selenium
         exit $?
         ;;
+    start-logio)
+        fromdos $VM_LOCAL/start-logio
+        /bin/bash $VM_LOCAL/start-logio
+        exit $?
+        ;;
+    stop-logio)
+        fromdos $VM_LOCAL/stop-logio
+        /bin/bash $VM_LOCAL/stop-logio
+        exit $?
+        ;;
     *)
 		echo "Usage: dpcmd <cmd>"
         echo "Where <cmd> is one of:"

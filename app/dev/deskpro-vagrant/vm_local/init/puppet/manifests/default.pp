@@ -62,7 +62,8 @@ class nginx ($version = 'latest') {
 
 	file {'/etc/nginx/nginx.conf':
 		ensure        => file,
-		owner         => 'www-data'
+		owner         => 'www-data',
+		content       => template("config/nginx.conf"),
 	}
 
 	file {'/etc/nginx/sites-available/default':
