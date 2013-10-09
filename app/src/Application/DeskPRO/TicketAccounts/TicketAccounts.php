@@ -29,72 +29,62 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\TicketAccounts;
 
-use Orb\Util\Arrays;
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\EmailGateway;
 
-use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
-use Orb\Util\Numbers;
-
-class DepartmentPermission extends AbstractEntityRepository
+class TicketAccounts
 {
 	/**
-	 * Get an array of department IDs this user has permission to see
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return int[]
+	 * @var \Doctrine\ORM\EntityManager
 	 */
-	public function getDepartmentIdsForPerson(PersonEntity $person)
+	private $em;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailGateway[]
+	 */
+	private $accounts;
+
+	public function __construct(EntityManager $em)
 	{
-		$wheres = array();
-		$params = array();
+		$this->em = $em;
+	}
 
-		$wheres[] = "person_id = ?";
-		$params[] = $person->id;
+	private function preload()
+	{
+		if ($this->accounts !== null) {
+			return;
+		}
 
-		$wheres[] = "name = 'full'";
-		$wheres[] = "value = 1";
-
-		$wheres = implode(' AND ', $wheres);
-		$sql = "
-			SELECT department_id
-			FROM department_permissions
-			WHERE $wheres
-		";
-
-		return $this->getEntityManager()->getConnection()->fetchAllCol($sql);
+		$this->accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getTicketAccounts();
 	}
 
 	/**
-	 * @return array
+	 * @return \Application\DeskPRO\Entity\EmailGateway[]
 	 */
-	public function getAllPersonPermissionsForAllDepartments($app, $name, $value)
+	public function getAllAccounts()
 	{
-		return App::getDb()->fetchAllGrouped("
-			SELECT department_id, person_id
-			FROM department_permissions
-			WHERE app = ? AND person_id IS NOT NULL
-				AND name = ? AND value = ?
-		", array($app, $name, $value), 'department_id', null, 'person_id');
+		$this->preload();
+		return array_values($this->accounts);
 	}
 
+
 	/**
-	 * @param DepartmentEntity $dep
-	 * @param $app
-	 * @return mixed
+	 * @return \Application\DeskPRO\Entity\EmailGateway[]
 	 */
-	public function getRecordsForDepartment(DepartmentEntity $dep, $app)
+	public function getEnabledAccounts()
 	{
-		return $this->_em->createQuery("
-			SELECT p
-			FROM DeskPRO:DepartmentPermission p
-			WHERE p.department = ?0 AND p.app = ?1
-		")->execute(array($dep, $app));
+		$this->preload();
+
+		$ret = array();
+		foreach ($this->accounts as $acc) {
+			if ($acc->is_enabled) {
+				$ret[] = $acc;
+			}
+		}
+		return $ret;
 	}
 }

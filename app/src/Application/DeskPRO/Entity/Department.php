@@ -34,6 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
+
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -95,6 +100,17 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	 * @var int
 	 */
 	protected $display_order = 0;
+
+	/**
+	 * @return Department
+	 */
+	public static function createTicketDepartment()
+	{
+		$dep = new self();
+		$dep->is_tickets_enabled = true;
+		$dep->is_chat_enabled = false;
+		return $dep;
+	}
 
 	public function __construct()
 	{
@@ -172,6 +188,11 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	public function getRealTitle()
 	{
 		return $this->title;
+	}
+
+	public function setRealTitle($title)
+	{
+		$this->title = $title;
 	}
 
 
@@ -309,6 +330,26 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		return $data;
 	}
 
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public function validateParent(ExecutionContextInterface $context)
+	{
+		if (!$this->parent) return;
+		if ($this->parent == $this) {
+			$context->addViolationAt('parent', 'Parent cannot be set to self');
+		}
+	}
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new NotBlank());
+		$metadata->addPropertyConstraint('parent', new Callback(array(
+			'methods' => array('validateParent')
+		)));
+	}
 
 
 	############################################################################

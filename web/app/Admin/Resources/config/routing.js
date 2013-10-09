@@ -535,6 +535,23 @@ define(function() {
 		}
 	});
 
+	//###
+	//# Ticket Accounts
+	//###
+	routes.push({
+		id: 'tickets.ticket_accounts',
+		url: '/ticket_accounts',
+		with_list_view: true,
+		list: {
+			templateName: 'TicketAccounts/list.html',
+			controller: 'Admin_TicketAccounts_Ctrl_List'
+		},
+		page: {
+			templateName: 'Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
 	//##################################################################################################################
 	// CRM
 	//##################################################################################################################

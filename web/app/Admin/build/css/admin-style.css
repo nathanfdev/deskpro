@@ -8182,8 +8182,11 @@ nav.dp-main-tabs ul li.active {
 }
 
 span.help-icon {
+  position: relative;
+  top: 1;
+  margin-left: 1px;
   font-family: FontAwesome;
-  font-size: 12px;
+  font-size: 16px;
   color: #c5c5c5;
   cursor: help;
 }
@@ -8569,6 +8572,10 @@ section.dp-help-page article dl dt:first-child {
 
 .select2-container .select2-choice .select2-arrow b {
   background-position: 0 0;
+}
+
+.select2-container.select2-container-active a {
+  border-color: #66AFE9;
 }
 
 .select2-dropdown-open .select2-choice {

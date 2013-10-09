@@ -29,72 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\ApiBundle\Controller;
 
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
-use Orb\Util\Numbers;
-
-class DepartmentPermission extends AbstractEntityRepository
+class TicketAccountsController extends AbstractController
 {
-	/**
-	 * Get an array of department IDs this user has permission to see
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return int[]
-	 */
-	public function getDepartmentIdsForPerson(PersonEntity $person)
+	####################################################################################################################
+	# list
+	####################################################################################################################
+
+	public function listAction($type)
 	{
-		$wheres = array();
-		$params = array();
+		$data = array();
+		$email_accounts = $this->container->getSystemService('ticket_accounts')->getAllAccounts();
+		$data['email_accounts'] = $this->getApiData($email_accounts, true);
 
-		$wheres[] = "person_id = ?";
-		$params[] = $person->id;
-
-		$wheres[] = "name = 'full'";
-		$wheres[] = "value = 1";
-
-		$wheres = implode(' AND ', $wheres);
-		$sql = "
-			SELECT department_id
-			FROM department_permissions
-			WHERE $wheres
-		";
-
-		return $this->getEntityManager()->getConnection()->fetchAllCol($sql);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getAllPersonPermissionsForAllDepartments($app, $name, $value)
-	{
-		return App::getDb()->fetchAllGrouped("
-			SELECT department_id, person_id
-			FROM department_permissions
-			WHERE app = ? AND person_id IS NOT NULL
-				AND name = ? AND value = ?
-		", array($app, $name, $value), 'department_id', null, 'person_id');
-	}
-
-	/**
-	 * @param DepartmentEntity $dep
-	 * @param $app
-	 * @return mixed
-	 */
-	public function getRecordsForDepartment(DepartmentEntity $dep, $app)
-	{
-		return $this->_em->createQuery("
-			SELECT p
-			FROM DeskPRO:DepartmentPermission p
-			WHERE p.department = ?0 AND p.app = ?1
-		")->execute(array($dep, $app));
+		return $this->createApiResponse($data);
 	}
 }

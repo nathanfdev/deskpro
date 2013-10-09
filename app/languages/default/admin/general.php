@@ -112,6 +112,7 @@
 	'admin.general.revert'                              => 'revert',
 	'admin.general.save_changes'                        => 'Save Changes',
 	'admin.general.save_settings'                       => 'Save Settings',
+	'admin.general.save_settings_success'               => 'Your settings were saved successfully.',
 	'admin.general.scheduled_tasks'                     => 'Scheduled Tasks',
 	'admin.general.secure'                              => 'Secure',
 	'admin.general.send_a_test_email_to'                => 'Send a test email to',

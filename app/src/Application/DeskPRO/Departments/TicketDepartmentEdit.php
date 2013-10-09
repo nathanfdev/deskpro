@@ -29,72 +29,86 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Departments;
 
-use Orb\Util\Arrays;
+use Application\DeskPRO\Entity\Department;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
-use Orb\Util\Numbers;
-
-class DepartmentPermission extends AbstractEntityRepository
+class TicketDepartmentEdit
 {
 	/**
-	 * Get an array of department IDs this user has permission to see
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return int[]
+	 * @var \Application\DeskPRO\Entity\Department
 	 */
-	public function getDepartmentIdsForPerson(PersonEntity $person)
+	public $department;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Department
+	 */
+	public $move_department;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Department|null
+	 */
+	private $old_parent;
+
+	public function __construct(Department $department)
 	{
-		$wheres = array();
-		$params = array();
+		$this->department = $department;
 
-		$wheres[] = "person_id = ?";
-		$params[] = $person->id;
-
-		$wheres[] = "name = 'full'";
-		$wheres[] = "value = 1";
-
-		$wheres = implode(' AND ', $wheres);
-		$sql = "
-			SELECT department_id
-			FROM department_permissions
-			WHERE $wheres
-		";
-
-		return $this->getEntityManager()->getConnection()->fetchAllCol($sql);
+		if ($department->parent) {
+			$this->old_parent = $department->parent;
+		}
 	}
 
 	/**
-	 * @return array
+	 * @return bool
 	 */
-	public function getAllPersonPermissionsForAllDepartments($app, $name, $value)
+	private function doesNeedMove()
 	{
-		return App::getDb()->fetchAllGrouped("
-			SELECT department_id, person_id
-			FROM department_permissions
-			WHERE app = ? AND person_id IS NOT NULL
-				AND name = ? AND value = ?
-		", array($app, $name, $value), 'department_id', null, 'person_id');
+		// No parent, nothing to verify
+		if (!$new) {
+			return false;
+		// Not changed, nothing to verify
+		} else if ( ($old && $new && $old == $new) || (!$old && !$new)) {
+			return false;
+		// New enabled
+		} else if (!$old && $new) {
+			return true;
+
+		// Changed
+		} else if ($old != $new) {
+			return true;
+		}
+
+		return false;
 	}
 
-	/**
-	 * @param DepartmentEntity $dep
-	 * @param $app
-	 * @return mixed
-	 */
-	public function getRecordsForDepartment(DepartmentEntity $dep, $app)
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public function validateParent(ExecutionContextInterface $context)
 	{
-		return $this->_em->createQuery("
-			SELECT p
-			FROM DeskPRO:DepartmentPermission p
-			WHERE p.department = ?0 AND p.app = ?1
-		")->execute(array($dep, $app));
+		$old = $this->old_parent;
+		$new = $this->department->parent;
+
+		if ($this->doesNeedMove()) {
+			if (!$this->old_parent) {
+				$context->addViolationAt('move_department', 'Setting a new parent, must specify new department to move existing tickets to');
+			} else if (count($this->old_parent->children)) {
+				$context->addViolationAt('move_department', 'New department must not be a parent itself');
+			}
+		}
+	}
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('move_department', new Callback(array(
+			'methods' => array('validateParent')
+		)));
 	}
 }

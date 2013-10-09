@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
 		@CTRL_AS = 'TicketDepsList'
-		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate']
+		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate', 'Growl']
 		@CTRL_TYPE = 'list'
 
 		init: ->
@@ -162,6 +162,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				}
 			}
 
-			@Api.sendPostJson('/ticket_deps/settings', postData)
+			@startSpinner('saving_settings')
+
+			@Api.sendPostJson('/ticket_deps/settings', postData).then(=>
+				@stopSpinner('saving_settings').then(=>
+					@Growl.success(@getRegisteredMessage('saved_settings'))
+				)
+			)
 
 	Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()
