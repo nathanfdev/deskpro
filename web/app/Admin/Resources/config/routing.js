@@ -413,11 +413,8 @@ define(function() {
 		id: 'tickets.labels',
 		url: '/labels',
 		with_list_view: true,
+		with_nav_view: true,
 		list: {
-			templateName: 'TicketLabels/list.html',
-			controller: 'Admin_TicketLabels_Ctrl_List'
-		},
-		page: {
 			templateName: 'TicketLabels/list.html',
 			controller: 'Admin_TicketLabels_Ctrl_List'
 		}

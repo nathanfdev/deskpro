@@ -1,21 +1,60 @@
 <div class="pane">
-	<div class="pane-header">Labels</div>
+	<header class="pane-header">
+		<h3><i class="icon-tags"></i> {{phrase('admin.general.apps_tickets')}} &rarr; {{phrase('admin.general.labels')}}</h3>
+	</header>
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
 			<div class="panel-heading">
-				<ul class="list">
-					<li ng-repeat="label in TicketLabelsList.labels">
-						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" style="margin-top: -3px;" 
-								ng-show="delete_mode"  
-								ng-click="TicketLabelsList.startDelete(label)">
-								<i class="icon-trash"></i>
-							</span>
-						</div>
-						<h4><span class="title-text">{{ ng_var('label.label') }} - <strong>{{ ng_var('label.count') }}</strong></span></h4>												
-					</li>
-				</ul>
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="icon-check-sign"></i> {{phrase('agent.general.saved')}}</span>
+						</li>
+						<li>
+							<div class="form-inline">
+								<div class="form-group">
+									<input class="form-control" ng-model="TicketLabelsList.new_label" placeholder="{{phrase('admin.general.new_label')}}"/>
+								</div>
+								<div class="form-group">
+									<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
+									</a>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</nav>
+				<h3 ng-if="TicketLabelsList.labels.length" translate="admin.general.count_labels" translate-values="{ count: TicketLabelsList.labels.length }"></h3>
+
+				<h3 ng-if="!TicketLabelsList.labels.length">{{phrase('admin.general.no_labels_yet')}}</h3>
 			</div>
+			<ul class="dp-item-list">
+				<li ng-repeat="label in TicketLabelsList.labels">
+					<a href="">
+						<div class="pull-right">
+							<span class="badge">{{ng_var('label.count')}}</span>&nbsp;
+							<span class="btn btn-danger btn-xs only-icon" style="margin-top: -3px;"
+								ng-click="TicketLabelsList.startDelete(label)">
+															<i class="icon-trash"></i>
+														</span>
+						</div>
+						<h4>
+							<div class="form-inline">
+								<div ng-hide="label.edit_mode" class="form-group">
+									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" class="icon-edit btn btn-xs btn-primary only-icon"></button>
+								</div>
+								<div class="form-group">
+									<span ng-hide="label.edit_mode" class="title-text">{{ng_var('label.label')}}</span>
+									<input ng-show="label.edit_mode" ng-model="label.new_label" class="form-control input-sm"/>
+									&nbsp;
+								</div>
+								<div ng-show="label.edit_mode" class="form-group">
+									<button ng-click="TicketLabelsList.saveLabel(label)" class="btn btn-sm btn-primary">Save</button>
+								</div>
+							</div>
+						</h4>
+					</a>
+				</li>
+			</ul>
 		</div>
 	</article>
 </div>

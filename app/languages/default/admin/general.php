@@ -155,4 +155,8 @@
 	'admin.general.you_have_not_created_filters'        => 'You have not created any filters yet. Click the "Add New Filter" button to create one now.',
 	'admin.general.your_current_deskpro_build'          => 'Your current DeskPRO version:',
 	'admin.general.translate'                           => 'Translate',
+	'admin.general.count_labels'                        => '{{count}} Label|{{count}} Labels',
+	'admin.general.labels'                              => 'Labels',
+	'admin.general.new_label'                           => 'New Label',
+	'admin.general.no_labels_yet'                       => 'No labels yet',
 );

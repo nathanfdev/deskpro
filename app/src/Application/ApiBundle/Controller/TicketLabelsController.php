@@ -7,19 +7,25 @@ use Application\DeskPRO\Labels\LabelManager;
 
 class TicketLabelsController extends AbstractController
 {
-	private $labels_type = array('ticket');
+	private $labels_type = array('tickets');
 
 	public function listAction()
 	{
-		$manager            = $this->_getLabelsManager();
-		$labels             = $manager->getLabelsAndCounts($this->labels_type);
-		$data['labels']     = $this->getApiData($labels, false);
+		$manager             = $this->_getLabelsManager();
+		$labels              = $manager->getLabelsAndCounts($this->labels_type);
+		$labels              = array('test_me' => 1, 'label test' => 0, 'zzz' => 15);
+		$api_response_labels = array();
+		if (!empty($labels)) {
+			foreach ($labels as $label => $count) {
+				$api_response_labels[] = array('label' => $label, 'count' => $count);
+			}
+		}
+		$data['labels']     = $api_response_labels;
 		$data['labels_raw'] = $labels;
-		$data['debug']      = 'test';
 		return $this->createApiResponse($data);
 	}
 
-	public function saveAction($label)
+	public function addAction($label)
 	{
 		$manager         = $this->_getLabelsManager();
 		$existing_labels = $manager->getLabels($this->labels_type);
@@ -31,6 +37,14 @@ class TicketLabelsController extends AbstractController
 			$status = 201;
 		}
 		return $this->createApiResponse(array(), $status);
+	}
+
+	public function saveAction()
+	{
+		$status    = 200;
+		$label_old = $this->in->getValue('label_old');
+		$label_new = $this->in->getValue('label_new');
+		return $this->createApiResponse(array('old' => $label_old, 'new' => $label_new), $status);
 	}
 
 	public function removeAction($label)

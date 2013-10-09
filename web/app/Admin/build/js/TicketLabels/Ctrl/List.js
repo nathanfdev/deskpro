@@ -23,13 +23,22 @@
       Admin_TicketLabels_Ctrl_List.prototype.init = function() {
         this.labels = [];
         this.delete_mode = false;
+        this.new_label = '';
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.initialLoad = function() {
         var data_promise,
           _this = this;
         data_promise = this.Api.sendDataGet(['/ticket_labels']).then(function(res) {
-          return console.log(res.data);
+          var label, _i, _len, _ref1, _results;
+          console.log(res.data.api_ticket_labels);
+          _ref1 = res.data.api_ticket_labels.labels;
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            label = _ref1[_i];
+            _results.push(_this.labels.push(label));
+          }
+          return _results;
         });
         return this.$q.all([data_promise]);
       };
@@ -41,7 +50,35 @@
           label: label.label
         }).success(function() {
           return _this.labels.remove(label);
-        }).always(this.delete_mode = false);
+        })["finally"](function() {
+          return _this.delete_mode = false;
+        });
+      };
+
+      Admin_TicketLabels_Ctrl_List.prototype.addNewLabel = function() {
+        if (!this.new_label) {
+          return false;
+        }
+        return this.Api.sendPost('/ticket_labels/', {
+          label: this.new_label
+        });
+      };
+
+      Admin_TicketLabels_Ctrl_List.prototype.saveLabel = function(label) {
+        var _this = this;
+        if (!label.new_label) {
+          return false;
+        }
+        return this.Api.sendPut('/ticket_labels/', {
+          label_old: label.label,
+          label_new: label.new_label
+        }).success(function() {
+          return label.label = label.new_label;
+        }).error(function() {
+          return label.new_label = label.label;
+        })["finally"](function() {
+          return label.edit_mode = false;
+        });
       };
 
       return Admin_TicketLabels_Ctrl_List;
