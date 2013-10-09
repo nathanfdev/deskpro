@@ -63,7 +63,8 @@
         if (this.loadingState[id] !== val) {
           this.loadingState[id] = val;
           this.notifyListeners('statechange', [id, val]);
-          return this.notifyListeners('statechange_' + id, [val]);
+          this.notifyListeners('statechange_' + id, [val]);
+          return this.$rootScope.$broadcast('dp_loadingstate_change', id, val);
         }
       };
 

@@ -7252,14 +7252,10 @@ form {
   z-index: 2;
   padding: 20px;
   margin: 25px;
-  background: #fff;
-  border: 1px solid #888;
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
-  -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-          background-clip: padding-box;
+  color: #444;
+  background: #FDFAE8;
+  border: 1px solid #f5e68a;
+  border-left: 3px solid #f5e68a;
 }
 
 .dp-app-header {

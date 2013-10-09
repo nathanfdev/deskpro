@@ -9,22 +9,19 @@ define ->
     # -------
     # <input autofocus>
 	###
-	Admin_Main_Directive_Autofocus = [ '$timeout', ($timeout) ->
+	Admin_Main_Directive_Autofocus = [ '$rootScope', '$timeout', ($rootScope, $timeout) ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
-				# There is no 'post render' callback with angular
-				# to know when the element is actually in the page
-				# so lets just focus after some time
-				$timeout(->
-					element.focus()
-				, 50)
-				$timeout(->
-					element.focus()
-				, 150)
-				$timeout(->
-					element.focus()
-				, 200)
+				element.focus()
+
+				done = false
+				scope.$on('dp_loadingstate_change', (evt, id, is_loading) ->
+					if not done and id == 'dp_section_page' and not is_loading
+						$timeout(->
+							element.focus()
+						, 150)
+				)
 		}
 	]
 

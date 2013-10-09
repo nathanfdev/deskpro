@@ -4,5 +4,6 @@
 		'agent.tickets.*',
 		'admin.general.*',
 		'admin.departments.*',
+		'admin.tickets.*',
 	)
 );

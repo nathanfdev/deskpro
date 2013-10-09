@@ -215,16 +215,18 @@
 
 			<div dp-tab-body="main.website_embeds">
 				<div class="panel panel-fill indent" style="position: relative">
-
-					<div class="panel-help inhelp-body" ng-if="!TicketDepsEdit.dep.id">
+					<div class="dp-grayed-placeholder fill" ng-if="!TicketDepsEdit.dep.id">
+						<div class="bg"></div>
 						<p>
 							{{ phrase('admin.departments.embed_unavailable') }}
 						</p>
+					</div>
+					<div class="panel-help">
 						<p>
 							{{ phrase('admin.departments.embed_explain') }}
 						</p>
 					</div>
-					<div class="panel-body" ng-if="TicketDepsEdit.dep.id">
+					<div class="panel-body">
 							<div class="form-group">
 								<label for="title">{{ phrase('admin.departments.embed_direct_link') }}</label>
 								<div class="row">

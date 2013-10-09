@@ -13,19 +13,20 @@
 
     var Admin_Main_Directive_Autofocus;
     Admin_Main_Directive_Autofocus = [
-      '$timeout', function($timeout) {
+      '$rootScope', '$timeout', function($rootScope, $timeout) {
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            $timeout(function() {
-              return element.focus();
-            }, 50);
-            $timeout(function() {
-              return element.focus();
-            }, 150);
-            return $timeout(function() {
-              return element.focus();
-            }, 200);
+            var done;
+            element.focus();
+            done = false;
+            return scope.$on('dp_loadingstate_change', function(evt, id, is_loading) {
+              if (!done && id === 'dp_section_page' && !is_loading) {
+                return $timeout(function() {
+                  return element.focus();
+                }, 150);
+              }
+            });
           }
         };
       }

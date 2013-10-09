@@ -1,6 +1,6 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-briefcase"></i> Tickets &rarr; Email Accounts</h3>
+		<h3><i class="icon-briefcase"></i> {{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.email_accounts') }}</h3>
 		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
 	</header>
 	<article class="pane-content no-pad">
@@ -15,9 +15,10 @@
 						<li><a class="btn btn-success" href="#/tickets/ticket_accounts/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketAccountList.accounts" translate="admin.general.x_departments" translate-values="{ count_length: TicketAccountList.accounts }"></h3>
+				<h3 ng-if="TicketAccountList.accounts" translate="admin.tickets.x_email_accounts" translate-values="{ count_length: TicketAccountList.accounts }"></h3>
+				<h3 ng-if="!TicketAccountList.accounts" translate="admin.tickets.x_email_accounts" translate-values="{ count: 0 }"></h3>
 			</div>
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" ng-if="TicketAccountList.accounts.length">
 				<li ng-repeat="acc in TicketAccountList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
 					<a href="#/tickets/ticket_accounts/{{ ng_var('acc.id') }}">
 						<div class="pull-right">
@@ -29,7 +30,10 @@
 					</a>
 				</li>
 			</ul>
+			<p ng-if="!TicketAccountList.accounts.length" style="padding: 15px;">
+				{{ phrase('admin.tickets.no_email_accounts') }}
+			</p>
 	</article>
 </div>
 <div dp-register-message="saved_settings">{{ phrase('admin.general.save_settings_success') }}</div>
-{% include 'AdminInterfaceBundle:TicketDeps:help-page.html.twig' %}
+{% include 'AdminInterfaceBundle:TicketAccounts:help-page.html.twig' %}

@@ -59,6 +59,7 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 				@loadingState[id] = val
 				@notifyListeners('statechange', [id, val])
 				@notifyListeners('statechange_' + id, [val])
+				@$rootScope.$broadcast('dp_loadingstate_change', id, val)
 
 		isStateActive: (stateId) ->
 			if not stateId or not @activeState then return false
