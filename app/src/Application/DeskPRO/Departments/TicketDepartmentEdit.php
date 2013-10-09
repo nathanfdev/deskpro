@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
@@ -49,6 +50,11 @@ class TicketDepartmentEdit
 	 * @var \Application\DeskPRO\Entity\Department
 	 */
 	public $move_department;
+
+	/**
+	 * @var array
+	 */
+	public $permissions;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department|null
@@ -69,6 +75,9 @@ class TicketDepartmentEdit
 	 */
 	private function doesNeedMove()
 	{
+		$old = $this->old_parent;
+		$new = $this->department->parent;
+
 		// No parent, nothing to verify
 		if (!$new) {
 			return false;
@@ -87,15 +96,22 @@ class TicketDepartmentEdit
 		return false;
 	}
 
+
+	/**
+	 * @param EntityManager $em
+	 */
+	public function save(EntityManager $em)
+	{
+		$em->persist($this->department);
+		$em->flush();
+	}
+
 	############################################################################
 	# Validation Metadata
 	############################################################################
 
 	public function validateParent(ExecutionContextInterface $context)
 	{
-		$old = $this->old_parent;
-		$new = $this->department->parent;
-
 		if ($this->doesNeedMove()) {
 			if (!$this->old_parent) {
 				$context->addViolationAt('move_department', 'Setting a new parent, must specify new department to move existing tickets to');

@@ -162,6 +162,11 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		$this->_onPropertyChanged('user_title', $old, $title);
 	}
 
+	public function getParent()
+	{
+		return $this->parent;
+	}
+
 	public function getParentId()
 	{
 		if ($this->parent) {
@@ -182,6 +187,9 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 
 	public function getTitle()
 	{
+		return $this->title;
+
+		//TODO: getX should always be the actual values
 		return App::getTranslator()->getPhraseObject($this, 'title');
 	}
 
@@ -335,8 +343,9 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	# Validation Metadata
 	############################################################################
 
-	public function validateParent(ExecutionContextInterface $context)
+	public function _validateParent(ExecutionContextInterface $context)
 	{
+		$context->addViolationAt('parent', 'Parent cannot be set to self');
 		if (!$this->parent) return;
 		if ($this->parent == $this) {
 			$context->addViolationAt('parent', 'Parent cannot be set to self');
@@ -346,8 +355,8 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
 		$metadata->addPropertyConstraint('title', new NotBlank());
-		$metadata->addPropertyConstraint('parent', new Callback(array(
-			'methods' => array('validateParent')
+		$metadata->addConstraint(new Callback(array(
+			'methods' => array('_validateParent')
 		)));
 	}
 

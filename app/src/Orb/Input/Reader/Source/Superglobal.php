@@ -77,6 +77,7 @@ class Superglobal implements SourceInterface
 	 */
 	public function getAll()
 	{
+		$this->_initArray();
 		return $this->array;
 	}
 

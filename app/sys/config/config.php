@@ -43,6 +43,7 @@ $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\
 $container->setParameter('twig.cache_warmer.class', 'Application\\DeskPRO\\Twig\\CacheWarmer\\TemplateCacheCacheWarmer');
 $container->setParameter('twig.extension.trans.class', 'Application\\DeskPRO\\Twig\\Extension\\TranslationExtension');
 $container->setParameter('templating.engine.delegating.class', 'Application\\DeskPRO\\Templating\\Engine');
+$container->setParameter('form.type_extension.csrf.enabled', false);
 
 ############################################################################
 # Services

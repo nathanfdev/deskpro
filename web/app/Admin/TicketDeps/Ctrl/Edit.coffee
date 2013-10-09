@@ -183,7 +183,7 @@ define [
 			props.move_tickets_to = 'self'
 
 			postData = {
-				properties: props,
+				department: props,
 				permissions: @getPermsData()
 			}
 
@@ -210,6 +210,7 @@ define [
 				)
 			)
 			promise.error( (info, code) =>
+				@stopSpinner('saving_dep')
 				@applyErrorResponseToView(info)
 			)
 
@@ -270,43 +271,45 @@ define [
 		# Gets permission data that can be posted for saving
 		###
 		getPermsData: (type = 'all') ->
-			perms = {}
+			perms = []
 
 			if type == 'all' || type == 'agents'
-				perms.agents = []
 				for agentObj in @agent_perms.agents
 					if agentObj.perms.full.state
-						perms.agents.push({
-							agent_id: agentObj.model.id,
-							perm_name: 'full'
+						perms.push({
+							person_id: agentObj.model.id,
+							name: 'full',
+							value: 1
 						})
 					else if agentObj.perms.assign.state
-						perms.agents.push({
-							agent_id: agentObj.model.id,
-							perm_name: 'assign'
+						perms.push({
+							person_id: agentObj.model.id,
+							name: 'assign',
+							value: 1
 						})
 
 			if type == 'all' || type == 'agentgroups'
-				perms.agentgroups = []
 				for groupObj in @agent_perms.groups
 					if groupObj.perms.full.state
-						perms.agentgroups.push({
+						perms.push({
 							usergroup_id: groupObj.model.id,
-							perm_name: 'full'
+							name: 'full',
+							value: 1
 						})
 					else if groupObj.perms.assign.state
-						perms.agentgroups.push({
+						perms.push({
 							usergroup_id: groupObj.model.id,
-							perm_name: 'assign'
+							name: 'assign',
+							value: 1
 						})
 
 			if type == 'all' || type == 'usergroups'
-				perms.usergroups = []
 				for usergroup in @usergroups
 					if usergroup.use
-						perms.usergroups.push({
+						perms.push({
 							usergroup_id: usergroup.id,
-							perm_name: 'use'
+							name: 'use',
+							value: 1
 						})
 
 			return perms

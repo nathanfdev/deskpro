@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
+use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 use Orb\Util\Arrays;
@@ -114,32 +116,28 @@ class TicketDepsController extends AbstractController
 
 	public function saveAction($id)
 	{
-		$editor = $this->_getDepartmentEditor();
+		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
-		if ($id) {
-			$dep = $editor->getDepartmentById($id);
-		} else {
-			$dep = $editor->createNewDepartment();
+		if (!$dep || !$dep->is_tickets_enabled) {
+			throw new $this->createNotFoundException();
 		}
 
-		if (!$dep) {
-			throw $this->createNotFoundException();
-		}
+		$ticket_edit = new TicketDepartmentEdit($dep);
 
-		if ($this->in->checkIsset('properties')) {
-			$editor->editProperties($dep, $this->in->getArrayValue('properties'));
-		}
+		$form = $this->createForm(
+			new TicketDepartmentType(),
+			$ticket_edit,
+			array(
+				'cascade_validation' => true
+			)
+		);
 
-		if ($this->in->checkIsset('permissions')) {
-			$editor->editPermissions(
-				$dep,
-				$this->in->checkIsset('permissions.agents')      ? $this->in->getCleanValueArray('permissions.agents') : null,
-				$this->in->checkIsset('permissions.agentgroups') ? $this->in->getCleanValueArray('permissions.agentgroups') : null,
-				$this->in->checkIsset('permissions.usergroups')  ? $this->in->getCleanValueArray('permissions.usergroups') : null
-			);
-		}
+		$data = $this->in->getAll('post');
+		$form->submit($data);
 
-		$this->em->flush();
+		if ($form->isValid()) {
+			$ticket_edit->save($this->em);
+		}
 
 		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
 	}
