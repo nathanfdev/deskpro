@@ -2278,6 +2278,28 @@ $collection->add('api_ticket_fields_setenabled', new Route(
 ));
 
 ########################################################################################################################
+# TICKET LABELS
+########################################################################################################################
+
+$collection->add('api_ticket_labels', new Route(
+	'/ticket_labels',
+	array('_controller' => 'ApiBundle:TicketLabels:list'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_ticket_labels_save', new Route(
+	'/ticket_labels',
+	array('_controller' => 'ApiBundle:TicketLabels:save'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_labels_remove', new Route(
+	'/ticket_labels/{label}',
+	array('_controller' => 'ApiBundle:TicketLabels:remove'),
+	array('_method' => 'DELETE')
+));
+
+########################################################################################################################
 # EMAIL ACCOUNTS
 ########################################################################################################################
 

@@ -11,15 +11,17 @@ class TicketLabelsController extends AbstractController
 
 	public function listAction()
 	{
-		$manager = $this->_getLabelsManager();
-		$labels = $manager->getLabelsAndCounts($this->labels_type);
-		$data['labels'] = $this->getApiData($labels, false);
+		$manager            = $this->_getLabelsManager();
+		$labels             = $manager->getLabelsAndCounts($this->labels_type);
+		$data['labels']     = $this->getApiData($labels, false);
+		$data['labels_raw'] = $labels;
+		$data['debug']      = 'test';
 		return $this->createApiResponse($data);
 	}
 
 	public function saveAction($label)
 	{
-		$manager = $this->_getLabelsManager();
+		$manager         = $this->_getLabelsManager();
 		$existing_labels = $manager->getLabels($this->labels_type);
 		if (!in_array(strtolower($label), $existing_labels) && !in_array($label, $existing_labels)) {
 			$manager->createLabelDef($label, $this->labels_type);

@@ -28,15 +28,8 @@
       Admin_TicketLabels_Ctrl_List.prototype.initialLoad = function() {
         var data_promise,
           _this = this;
-        data_promise = this.Api.sendDataGet(['/labels']).then(function(res) {
-          var label, _i, _len, _ref1, _results;
-          _ref1 = res.data.api_ticket_labels.labels;
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            label = _ref1[_i];
-            _results.push(_this.labels.push(label));
-          }
-          return _results;
+        data_promise = this.Api.sendDataGet(['/ticket_labels']).then(function(res) {
+          return console.log(res.data);
         });
         return this.$q.all([data_promise]);
       };
@@ -44,7 +37,7 @@
       Admin_TicketLabels_Ctrl_List.prototype.startDelete = function(label) {
         var _this = this;
         this.delete_mode = true;
-        return this.Api.sendDelete('/labels/', {
+        return this.Api.sendDelete('/ticket_labels/', {
           label: label.label
         }).success(function() {
           return _this.labels.remove(label);

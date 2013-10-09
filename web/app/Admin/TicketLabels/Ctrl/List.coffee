@@ -12,17 +12,18 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet([
-					'/labels'
+					'/ticket_labels'
 			]).then( (res) =>
-				for label in res.data.api_ticket_labels.labels
-					@labels.push(label)
+				console.log res.data
+#				for label in res.data.api_ticket_labels.labels
+#					@labels.push(label)
 			)
 
 			return @$q.all([data_promise])
 			
 		startDelete: (label) ->
 			@delete_mode = true
-			@Api.sendDelete('/labels/',{
+			@Api.sendDelete('/ticket_labels/',{
 				label:label.label
 			}).success( =>
 				@labels.remove(label)
