@@ -13,7 +13,7 @@
 						<li>
 							<div class="form-inline">
 								<div class="form-group">
-									<input class="form-control" ng-model="TicketLabelsList.new_label" placeholder="{{phrase('admin.general.new_label')}}"/>
+									<input class="form-control" ng-model="TicketLabelsList.new_label" ng-disabled="TicketLabelsList.add_mode" placeholder="{{phrase('admin.general.new_label')}}"/>
 								</div>
 								<div class="form-group">
 									<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()" ng-class="{'active':TicketLabelsList.add_mode}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
@@ -59,7 +59,7 @@
 									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" ng-class="{'active':label.edit_mode}" class="icon-edit btn btn-xs btn-primary only-icon"></button>
 								</div>								
 								<div class="form-group">
-									&nbsp;&nbsp;<input ng-model="label.new_label" class="form-control input-sm"/>
+									&nbsp;&nbsp;<input ng-model="label.new_label" ng-disabled="label.save_mode" class="form-control input-sm"/>
 								</div>
 							</div>
 						</h4>
