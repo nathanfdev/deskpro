@@ -16,7 +16,7 @@
 									<input class="form-control" ng-model="TicketLabelsList.new_label" placeholder="{{phrase('admin.general.new_label')}}"/>
 								</div>
 								<div class="form-group">
-									<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
+									<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()" ng-class="{'active':TicketLabelsList.add_mode}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
 									</a>
 								</div>
 							</div>
@@ -29,26 +29,37 @@
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="label in TicketLabelsList.labels">
-					<a href="">
+					<a href="" ng-hide="label.edit_mode">
 						<div class="pull-right">
 							<span class="badge">{{ng_var('label.count')}}</span>&nbsp;
 							<span class="btn btn-danger btn-xs only-icon" style="margin-top: -3px;"
+								ng-class="{'active':label.delete_mode}"
 								ng-click="TicketLabelsList.startDelete(label)">
 															<i class="icon-trash"></i>
 														</span>
 						</div>
 						<h4>
 							<div class="form-inline">
-								<div ng-hide="label.edit_mode" class="form-group">
-									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" class="icon-edit btn btn-xs btn-primary only-icon"></button>
+								<div class="form-group">
+									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" ng-class="{'active':label.edit_mode}" class="icon-edit btn btn-xs btn-primary only-icon"></button>
 								</div>
 								<div class="form-group">
-									<span ng-hide="label.edit_mode" class="title-text">{{ng_var('label.label')}}</span>
-									<input ng-show="label.edit_mode" ng-model="label.new_label" class="form-control input-sm"/>
-									&nbsp;
+									&nbsp;&nbsp;<span class="title-text">{{ng_var('label.label')}}</span>
 								</div>
-								<div ng-show="label.edit_mode" class="form-group">
-									<button ng-click="TicketLabelsList.saveLabel(label)" class="btn btn-sm btn-primary">Save</button>
+							</div>
+						</h4>
+					</a>
+					<a href="" ng-show="label.edit_mode" style="padding: 5px 13px;">
+						<div class="pull-right">
+							<button ng-click="TicketLabelsList.saveLabel(label)" ng-class="{'active':label.save_mode}" class="btn btn-sm btn-primary">Save</button>
+						</div>
+						<h4>
+							<div class="form-inline">
+								<div class="form-group">
+									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" ng-class="{'active':label.edit_mode}" class="icon-edit btn btn-xs btn-primary only-icon"></button>
+								</div>								
+								<div class="form-group">
+									&nbsp;&nbsp;<input ng-model="label.new_label" class="form-control input-sm"/>
 								</div>
 							</div>
 						</h4>

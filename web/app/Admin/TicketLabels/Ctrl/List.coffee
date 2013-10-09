@@ -7,8 +7,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@labels = []
-			@delete_mode = false
-			@new_label = '';
+			@new_label = ''
+			@add_mode = false
 			return
 
 		initialLoad: ->
@@ -23,21 +23,27 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			return @$q.all([data_promise])
 
 		startDelete: (label) ->
-			@delete_mode = true
+			label.delete_mode = true
 			@Api.sendDelete('/ticket_labels/', {
 				label: label.label
 			}).success(=>
 				@labels.remove(label)
 			).finally(=>
-				@delete_mode = false;
+				label.delete_mode = false
 			)
 
 		addNewLabel: ->
 			return false if not @new_label
+			@add_mode = true
 			@Api.sendPost('/ticket_labels/', {label: @new_label})
+			.finally(=>
+					@add_mode = false
+				)
+
 
 		saveLabel: (label) ->
 			return false if not label.new_label
+			label.save_mode = true
 			@Api.sendPut('/ticket_labels/', {
 				label_old: label.label, label_new: label.new_label
 			}).success(=>
@@ -46,6 +52,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				label.new_label = label.label
 			).finally(=>
 				label.edit_mode = false
+				label.save_mode = false
 			)
 
 

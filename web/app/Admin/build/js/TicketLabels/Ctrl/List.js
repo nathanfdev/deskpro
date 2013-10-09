@@ -22,8 +22,8 @@
 
       Admin_TicketLabels_Ctrl_List.prototype.init = function() {
         this.labels = [];
-        this.delete_mode = false;
         this.new_label = '';
+        this.add_mode = false;
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.initialLoad = function() {
@@ -45,22 +45,26 @@
 
       Admin_TicketLabels_Ctrl_List.prototype.startDelete = function(label) {
         var _this = this;
-        this.delete_mode = true;
+        label.delete_mode = true;
         return this.Api.sendDelete('/ticket_labels/', {
           label: label.label
         }).success(function() {
           return _this.labels.remove(label);
         })["finally"](function() {
-          return _this.delete_mode = false;
+          return label.delete_mode = false;
         });
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.addNewLabel = function() {
+        var _this = this;
         if (!this.new_label) {
           return false;
         }
+        this.add_mode = true;
         return this.Api.sendPost('/ticket_labels/', {
           label: this.new_label
+        })["finally"](function() {
+          return _this.add_mode = false;
         });
       };
 
@@ -69,6 +73,7 @@
         if (!label.new_label) {
           return false;
         }
+        label.save_mode = true;
         return this.Api.sendPut('/ticket_labels/', {
           label_old: label.label,
           label_new: label.new_label
@@ -77,7 +82,8 @@
         }).error(function() {
           return label.new_label = label.label;
         })["finally"](function() {
-          return label.edit_mode = false;
+          label.edit_mode = false;
+          return label.save_mode = false;
         });
       };
 
