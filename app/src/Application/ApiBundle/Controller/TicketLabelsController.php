@@ -12,40 +12,43 @@ class TicketLabelsController extends AbstractController
 
 	public function listAction()
 	{
-		$manager             = $this->_getLabelsManager();
-		$labels              = $manager->getLabelsAndCounts($this->labels_type);
-		$labels              = array('test_me' => 1, 'label test' => 0, 'zzz' => 15);
+		$manager = $this->_getLabelsManager();
+		$labels  = $manager->getLabelsAndCounts($this->labels_type);
+		// debug
+		if (empty($labels)) {
+			$labels = array('test_me' => 1, 'label test' => 18, 'zzz' => 15, 'xxxx' => 4);
+		}
 		$api_response_labels = array();
 		if (!empty($labels)) {
 			foreach ($labels as $label => $count) {
 				$api_response_labels[] = array('label' => $label, 'count' => $count);
 			}
 		}
-		$data['labels']     = $api_response_labels;
-		$data['labels_raw'] = $labels;
+		$data['labels'] = $api_response_labels;
 		return $this->createApiResponse($data);
 	}
 
-	public function addAction($label)
+	public function addAction()
 	{
+		$label           = $this->in->getString('label');
 		$manager         = $this->_getLabelsManager();
 		$existing_labels = $manager->getLabels($this->labels_type);
 		if (!in_array(strtolower($label), $existing_labels) && !in_array($label, $existing_labels)) {
 			$manager->createLabelDef($label, $this->labels_type);
-			$status = 200;
+			return $this->createApiResponse(array(), 200);
 		}
 		else {
-			$status = 201;
+			return $this->createApiResponse(array('labels' => $existing_labels, 'label' => $label), 400);
 		}
-		return $this->createApiResponse(array(), $status);
 	}
 
 	public function saveAction()
 	{
+		$manager   = $this->_getLabelsManager();
 		$label_old = $this->in->getString('label_old');
-		$label_new = $this->in->getCleanValue('label_new','string');
-
-		return $this->createApiResponse(array('old' => $label_old, 'new' => $label_new));
+		$label_new = $this->in->getCleanValue('label_new', 'string');
+		$manager->renameLabelDef($label_old, $label_new, $this->labels_type);
+		return $this->createApiResponse(array('old' => $label_old, 'new' => $label_new), 200);
 	}
 
 	public function removeAction($label)

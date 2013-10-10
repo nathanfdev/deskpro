@@ -76,7 +76,7 @@ class LabelDefManager
 	 *
 	 * @param mixed $types
 	 * @param string $order_by
-	 * @return string
+	 * @return array
 	 */
 	public function getLabelsAndCounts($types = null, $order_by = 'alpha')
 	{

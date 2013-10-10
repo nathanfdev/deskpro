@@ -5,30 +5,44 @@
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
 			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li>
-							<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="icon-check-sign"></i> {{phrase('agent.general.saved')}}</span>
-						</li>
-						<li>
-							<div class="form-inline">
-								<div class="form-group">
-									<input class="form-control" ng-model="TicketLabelsList.new_label" ng-disabled="TicketLabelsList.add_mode" placeholder="{{phrase('admin.general.new_label')}}"/>
-								</div>
-								<div class="form-group">
-									<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()" ng-class="{'active':TicketLabelsList.add_mode}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
-									</a>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</nav>
+				<div class="pull-right">
+					Sort:&nbsp;
+					<button ng-click="TicketLabelsList.switchSortOrder('label')"
+						ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
+						Alphabetical
+										<span ng-show="order=='label'">
+										&nbsp;
+										<i class="icon-chevron-down" ng-hide="orderReverse"></i>
+										<i class="icon-chevron-up" ng-show="orderReverse"></i>
+										</span>
+					</button>
+					<button ng-click="TicketLabelsList.switchSortOrder('count')"
+						ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
+						Usage Count
+										<span ng-show="order=='count'">
+										&nbsp;
+										<i class="icon-chevron-down" ng-hide="orderReverse"></i>
+										<i class="icon-chevron-up" ng-show="orderReverse"></i>
+										</span>
+					</button>
+				</div>
 				<h3 ng-if="TicketLabelsList.labels.length" translate="admin.general.count_labels" translate-values="{ count: TicketLabelsList.labels.length }"></h3>
 
 				<h3 ng-if="!TicketLabelsList.labels.length">{{phrase('admin.general.no_labels_yet')}}</h3>
 			</div>
+			<div class="panel-heading">
+				<div class="form-inline row">
+					<div class="form-group col-xs-10">
+						<input class="form-control" ng-model="TicketLabelsList.new_label" ng-disabled="TicketLabelsList.add_mode" placeholder="{{phrase('admin.general.new_label')}}"/>
+					</div>
+					<div class="form-group col-xs-2 row">
+						<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()" ng-class="{'active':TicketLabelsList.add_mode}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
+						</a>
+					</div>
+				</div>
+			</div>
 			<ul class="dp-item-list">
-				<li ng-repeat="label in TicketLabelsList.labels">
+				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">
 					<a href="" ng-hide="label.edit_mode">
 						<div class="pull-right">
 							<span class="badge">{{ng_var('label.count')}}</span>&nbsp;
@@ -57,7 +71,7 @@
 							<div class="form-inline">
 								<div class="form-group">
 									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" ng-class="{'active':label.edit_mode}" class="icon-edit btn btn-xs btn-primary only-icon"></button>
-								</div>								
+								</div>
 								<div class="form-group">
 									&nbsp;&nbsp;<input ng-model="label.new_label" ng-disabled="label.save_mode" class="form-control input-sm"/>
 								</div>

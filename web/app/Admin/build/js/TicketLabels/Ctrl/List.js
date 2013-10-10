@@ -16,7 +16,7 @@
 
       Admin_TicketLabels_Ctrl_List.CTRL_AS = 'TicketLabelsList';
 
-      Admin_TicketLabels_Ctrl_List.DEPS = [];
+      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope'];
 
       Admin_TicketLabels_Ctrl_List.CTRL_TYPE = 'list';
 
@@ -48,9 +48,7 @@
         label.delete_mode = true;
         return this.Api.sendDelete('/ticket_labels/' + label.label).success(function() {
           return _this.labels.remove(label);
-        })["finally"](function() {
-          return label.delete_mode = false;
-        });
+        })["finally"](function() {}, label.delete_mode = false);
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.addNewLabel = function() {
@@ -59,8 +57,13 @@
           return false;
         }
         this.add_mode = true;
-        return this.Api.sendPost('/ticket_labels/add', {
+        return this.Api.sendPost('/ticket_labels', {
           label: this.new_label
+        }).success(function() {
+          return _this.labels.push({
+            label: _this.new_label,
+            count: 0
+          });
         })["finally"](function() {
           return _this.add_mode = false;
         });
@@ -72,7 +75,7 @@
           return false;
         }
         label.save_mode = true;
-        return this.Api.sendPut('/ticket_labels/save', {
+        return this.Api.sendPut('/ticket_labels', {
           label_old: label.label,
           label_new: label.new_label
         }).success(function() {
@@ -83,6 +86,17 @@
           label.edit_mode = false;
           return label.save_mode = false;
         });
+      };
+
+      Admin_TicketLabels_Ctrl_List.prototype.switchSortOrder = function(to) {
+        var from;
+        from = this.$scope.order;
+        if (from === to) {
+          this.$scope.orderReverse = !this.$scope.orderReverse;
+        } else {
+          this.$scope.orderReverse = to === 'label';
+        }
+        return this.$scope.order = to;
       };
 
       return Admin_TicketLabels_Ctrl_List;

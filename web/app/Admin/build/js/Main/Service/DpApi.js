@@ -123,10 +123,10 @@
       };
 
       /*
-        	* Sends a POST request
+        	* Sends a POST request with post_data as an encoded form.
         	*
         	* @param {String} endpoint
-        	* @param {Object/Array} post_data Params to send as the POST data
+        	* @param {Object/Array} post_data Params to send as the POST data (must be k:v object, or array of {name:k, value:v}
         	* @param {Object/Array} params to send in th query string
         	* @param {Object} http_params Params that will be written to
         	* @return {Promise}
@@ -203,10 +203,10 @@
       };
 
       /*
-        	* Sends a PUT request
+        	* Sends a PUT request with post_data as an encoded form
         	*
         	* @param {String} endpoint
-        	* @param {Object/Array} post_data Params to send as the POST data
+        	* @param {Object/Array} post_data Params to send as the POST data (must be k:v object, or array of {name:k, value:v}
         	* @param {Object/Array} params to send in th query string
         	* @param {Object} http_params Params that will be written to
         	* @return {Promise}
@@ -249,6 +249,36 @@
         if (post_data) {
           http_params.data = data_str;
         }
+        this.prepareHttpParams(http_params);
+        return this.$http(http_params);
+      };
+
+      /*
+        	* Sends a PUT request with a JSON payload
+        	*
+        	* @param {String} endpoint
+        	* @param {Object/Array} post_data Params to send as the POST data
+        	* @param {Object/Array} params to send in th query string
+        	* @param {Object} http_params Params that will be written to
+        	* @return {Promise}
+      */
+
+
+      DpApi.prototype.sendPutJson = function(endpoint, post_data, params, http_params) {
+        var url;
+        if (post_data == null) {
+          post_data = null;
+        }
+        if (params == null) {
+          params = null;
+        }
+        if (http_params == null) {
+          http_params = {};
+        }
+        url = this.formatUrl(endpoint, params);
+        http_params.method = 'PUT';
+        http_params.url = url;
+        http_params.data = post_data;
         this.prepareHttpParams(http_params);
         return this.$http(http_params);
       };
