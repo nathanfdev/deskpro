@@ -84,7 +84,6 @@ requirejs([
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
-	'Admin/TicketAccounts/Ctrl/TestIncomingAccount',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit',
 	'Admin/TicketFields/Ctrl/List',
