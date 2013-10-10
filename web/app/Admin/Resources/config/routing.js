@@ -550,6 +550,15 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tickets.ticket_accounts.gocreate',
+		url: '/go-create',
+		page: {
+			template: '',
+			controller: ['$state', function ($state) { $state.go('tickets.ticket_accounts.create'); }]
+		}
+	});
+
+	routes.push({
 		id: 'tickets.ticket_accounts.create',
 		url: '/create',
 		page: {
