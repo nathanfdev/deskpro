@@ -6,6 +6,7 @@ define ->
 			@form.connection_type  = 'pop3'
 			@form.in_gmail_account = {}
 			@form.in_pop3_account  = {}
+			@form.in_imap_account  = {}
 
 			@form.email_transport = {
 				transport_type: 'mail',
@@ -26,6 +27,12 @@ define ->
 					@form.in_pop3_account.secure   = @account.linked_transport.transport_options.secure
 					@form.in_pop3_account.username = @account.linked_transport.transport_options.username
 					@form.in_pop3_account.password = @account.linked_transport.transport_options.password
+				else if @form.connection_type == 'pop3'
+					@form.in_imap_account.host     = @account.linked_transport.transport_options.host
+					@form.in_imap_account.port     = @account.linked_transport.transport_options.port
+					@form.in_imap_account.secure   = @account.linked_transport.transport_options.secure
+					@form.in_imap_account.username = @account.linked_transport.transport_options.username
+					@form.in_imap_account.password = @account.linked_transport.transport_options.password
 				else if @form.connection_type == 'gmail'
 					@form.in_gmail_account.password = @account.linked_transport.transport_options.password
 

@@ -34,10 +34,11 @@
 
 namespace Application\DeskPRO\EmailGateway\Protocol;
 
+use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Zend\Mail\Protocol\Exception;
 
-class Pop3 extends \Zend\Mail\Protocol\Pop3
+class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 {
 	/**
 	 * @var \Orb\Log\Logger
@@ -125,6 +126,15 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 	public function setLogger(Logger $logger = null)
 	{
 		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
 	}
 
 

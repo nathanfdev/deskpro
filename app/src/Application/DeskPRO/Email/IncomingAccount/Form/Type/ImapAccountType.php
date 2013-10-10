@@ -31,41 +31,45 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts\Form\Type;
+namespace Application\DeskPRO\Email\IncomingAccount\Form\Type;
 
-use Application\DeskPRO\Email\Form\Type\EmailTransportType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\GmailAccountType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\ImapAccountType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\Pop3AccountType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TicketAccountType extends AbstractType
+
+class ImapAccountType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('email_address', 'text', array(
+		$builder->add('username', 'text', array(
+			'required'      => false,
+		));
+		$builder->add('password', 'password', array(
+			'required'      => false,
+		));
+		$builder->add('host', 'text', array(
 			'required'      => true,
 		));
-		$builder->add('connection_type', 'text', array(
+		$builder->add('port', 'text', array(
 			'required'      => true,
 		));
-		$builder->add('in_gmail_account', new GmailAccountType());
-		$builder->add('in_pop3_account', new Pop3AccountType());
-		$builder->add('in_imap_account', new ImapAccountType());
-		$builder->add('email_transport', new EmailTransportType());
+		$builder->add('secure', 'choice', array(
+			'required'      => false,
+			'choices'       => array('ssl' => 'ssl'),
+			'empty_value'   => true,
+		));
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\TicketAccounts\\EditTicketAccount',
+			'data_class' => 'Application\\DeskPRO\\Email\\IncomingAccount\\ImapAccount',
 		));
 	}
 
 	public function getName()
 	{
-		return 'email_transport';
+		return 'in_imap_account';
 	}
 }

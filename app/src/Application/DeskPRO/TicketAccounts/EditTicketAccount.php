@@ -61,6 +61,11 @@ class EditTicketAccount
 	public $in_pop3_account;
 
 	/**
+	 * @var \Application\DeskPRO\Email\IncomingAccount\ImapAccount
+	 */
+	public $in_imap_account;
+
+	/**
 	 * @var \Application\DeskPRO\Email\EditTransport
 	 */
 	public $email_transport;
@@ -94,6 +99,9 @@ class EditTicketAccount
 		if ($this->connection_type == 'pop3') {
 			$this->gateway->connection_type = 'pop3';
 			$this->gateway->connection_options = $this->in_pop3_account->getOptions();
+		} else if ($this->connection_type == 'imap') {
+			$this->gateway->connection_type = 'imap';
+			$this->gateway->connection_options = $this->in_imap_account->getOptions();
 		} else if ($this->connection_type == 'gmail') {
 			$this->gateway->connection_type = 'gmail';
 			$this->gateway->connection_options = $this->in_gmail_account->getOptions();
@@ -107,6 +115,8 @@ class EditTicketAccount
 	{
 		if ($this->connection_type == 'pop3') {
 			return $this->in_pop3_account;
+		} else if ($this->connection_type == 'imap') {
+			return $this->in_imap_account;
 		} else if ($this->connection_type == 'gmail') {
 			return $this->in_gmail_account;
 		}

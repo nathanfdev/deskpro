@@ -31,41 +31,81 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\TicketAccounts\Form\Type;
+namespace Application\DeskPRO\Email\IncomingAccount;
 
-use Application\DeskPRO\Email\Form\Type\EmailTransportType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\GmailAccountType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\ImapAccountType;
-use Application\DeskPRO\Email\IncomingAccount\Form\Type\Pop3AccountType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class TicketAccountType extends AbstractType
+class ImapAccount implements IncomingAccountInterface
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	public $username = '';
+	public $password = '';
+	public $host     = 'localhost';
+	public $port     = 143;
+	public $secure   = null;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setOptions(array $options)
 	{
-		$builder->add('email_address', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('connection_type', 'text', array(
-			'required'      => true,
-		));
-		$builder->add('in_gmail_account', new GmailAccountType());
-		$builder->add('in_pop3_account', new Pop3AccountType());
-		$builder->add('in_imap_account', new ImapAccountType());
-		$builder->add('email_transport', new EmailTransportType());
+		foreach ($options as $k => $v) {
+			switch ($k) {
+				case 'username':
+				case 'password':
+					$this->$k = $v ?: null;
+					break;
+
+				case 'host':
+					$this->host = $v ?: null;
+					break;
+
+				case 'port':
+					$this->port = $v ?: null;
+					break;
+
+				case 'secure':
+					if ($v === true || $v === 'ssl' || $v === 'tls') {
+						$this->secure = 'ssl';
+					}
+			}
+		}
+
+		$this->_fillDefaults();
 	}
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	private function _fillDefaults()
 	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\TicketAccounts\\EditTicketAccount',
-		));
+		if ($this->host === null) {
+			$this->host = 'localhost';
+		}
+
+		if ($this->port === null) {
+			if ($this->secure === 'ssl') {
+				$this->port = 993;
+			} else {
+				$this->port = 110;
+			}
+		}
 	}
 
-	public function getName()
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getOptions()
 	{
-		return 'email_transport';
+		$this->_fillDefaults();
+		return array(
+			'username' => $this->username ?: null,
+			'password' => $this->password ?: null,
+			'host'     => $this->host,
+			'port'     => $this->port,
+			'secure'   => $this->secure
+		);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getTypeName()
+	{
+		return 'pop3';
 	}
 }

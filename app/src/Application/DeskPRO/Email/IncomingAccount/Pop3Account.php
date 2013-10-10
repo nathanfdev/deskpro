@@ -62,7 +62,7 @@ class Pop3Account implements IncomingAccountInterface
 					break;
 
 				case 'secure':
-					if ($v === true || $v === 'ssl') {
+					if ($v === true || $v === 'ssl' || $v === 'tls') {
 						$this->secure = 'ssl';
 					}
 			}

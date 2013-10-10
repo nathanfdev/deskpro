@@ -88,7 +88,9 @@ class IncomingAccountTester
 	{
 		if ($this->account instanceof Pop3Account) {
 			$this->_testPop3($this->account);
-		} else if ($this->account) {
+		} else if ($this->account instanceof ImapAccount) {
+			$this->_testImap($this->account);
+		} else if ($this->account instanceof GmailAccount) {
 			$this->_testGmail($this->account);
 		}
 
@@ -143,6 +145,33 @@ class IncomingAccountTester
 			));
 
 			$this->message_count = $storage->countMessages();
+
+			$this->is_success = true;
+		} catch (\Exception $e) {
+			$this->logger->logError(sprintf("An exception occurred: [%s:%s] %s", get_class($e), $e->getCode(), $e->getMessage()));
+			$this->is_success = false;
+		}
+	}
+
+
+	/**
+	 * @param ImapAccount $account
+	 */
+	private function _testImap(ImapAccount $account)
+	{
+		$this->logger->logInfo('Testing ImapAccount');
+
+		try {
+			$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
+				'host'     => $account->host,
+				'user'     => $account->username,
+				'password' => $account->password,
+				'port'     => $account->port,
+				'ssl'      => $account->secure,
+				'logger'   => $this->logger
+			));
+
+			$this->message_count = $storage->countUnseenMessages();
 
 			$this->is_success = true;
 		} catch (\Exception $e) {

@@ -35,21 +35,106 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Numbers;
 
 /**
- * Fetches mail from an imap server
+ * Fetches mail from a imap server
  */
 class Imap extends AbstractFetcher
 {
+	protected $read_count = 0;
+
+	/**
+	 * @var array
+	 */
+	protected $message_list = null;
+
+	/**
+	 * @var array
+	 */
+	protected $message_list_ids = array();
+
+	/**
+	 * @var array
+	 */
+	protected $message_files = array();
+
+	public function init()
+	{
+		$this->memory_protection_size = 3670016;
+	}
+
 	/**
 	 * Initiates the connection
 	 *
-	 * @return \Zend\Mail\Storage\Imap
+	 * @return \Zend\Mail\Storage\Pop3
 	 */
 	protected function _initConnection()
 	{
-		$storage = new Imap($this->gateway['connection_options']);
+		$options = array();
+		$options['host']     = isset($this->gateway['connection_options']['host'])     ? $this->gateway['connection_options']['host']     : 'localhost';
+		$options['port']     = isset($this->gateway['connection_options']['port'])     ? $this->gateway['connection_options']['port']     : '110';
+		$options['user']     = isset($this->gateway['connection_options']['username']) ? $this->gateway['connection_options']['username'] : '';
+		$options['password'] = isset($this->gateway['connection_options']['password']) ? $this->gateway['connection_options']['password'] : '';
+
+		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+
+		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
+			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
+			$this->logger->log('SSL Enabled', 'debug');
+		}
+
+		$options['logger'] = $this->logger;
+
+		$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap($options);
 		return $storage;
+	}
+
+
+	/**
+	 * Closes the connection
+	 */
+	public function close()
+	{
+		if ($this->storage) {
+			$this->storage->close();
+			$this->storage = null;
+		}
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\EmailGateway\Storage\Imap
+	 */
+	public function getStorage($reconnect = false)
+	{
+		return parent::getStorage($reconnect);
+	}
+
+
+	/**
+	 * Get a list of message IDs
+	 */
+	protected function _initMessageList($reload = false)
+	{
+		if (!$reload && $this->message_list !== null) {
+			return;
+		}
+
+		$this->message_list = array();
+
+		$message_ids = $this->getStorage()->getUnseenMessageUids();
+		if ($message_ids) {
+			return;
+		}
+
+		$message_sizes = $this->getStorage()->getMessageSizesByUids($message_ids);
+		foreach ($message_sizes as $uid => $size) {
+			$this->message_list[] = array('num' => $uid, 'size' => $size, 'uid' => null);
+		}
+
+		$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
 	}
 
 	/**
@@ -59,17 +144,66 @@ class Imap extends AbstractFetcher
 	 */
 	protected function _readNext()
 	{
-		try {
-			$headers = $this->getStorage()->getRawHeader(1);
-		} catch (\Zend\Mail\Storage\Exception $e) {
-			// means there is none
+		$this->getStorage();
+		$this->_initMessageList();
+
+		$this->read_count++;
+		$this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
+
+		$next = array_shift($this->message_list);
+		if (!$next) {
 			return null;
 		}
 
+		$message_size = $next['size'];
+		$message_num  = $next['num'];
+		$message_id   = $next['uid'];
+
+		$start_time = microtime(true);
+
+		$this->logger->log("Fetching message #$message_num", 'debug');
+
 		$raw_message = new RawMessage();
-		$raw_message->id = 1;
+		$raw_message->id   = $message_num;
+		$raw_message->uid  = $message_id;
+		$raw_message->size = $message_size;
+
+		if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
+			$raw_message->content = $this->getStorage()->getMessageHeadersByUid($message_num);
+		} else {
+			$raw_message->content = $this->getStorage()->getRawMessageByUid($message_num);
+		}
+		$headers = null;
+
+		$this->logger->log(sprintf("Message size: %s bytes", $message_size), 'debug');
+
+		if ($raw_message->uid) {
+			$this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
+		}
+
+		$EOL = "\n";
+		if (strpos($raw_message->content, $EOL . $EOL)) {
+			list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+		} else if ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
+			list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+		} else if ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
+			list($headers, ) = explode("\n\n", $raw_message->content, 2);
+		} else {
+			@list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+		}
+
 		$raw_message->headers = $headers;
-		$raw_message->content = $headers . "\n\n" . $this->storage->getRawContent(1);
+
+		if (!$raw_message->size) {
+			$raw_message->size = strlen($raw_message->content);
+		}
+
+		if ($this->max_size && $raw_message->size > $this->max_size) {
+			$raw_message->too_big = true;
+			$this->logger->log("Setting too_big flag", 'debug');
+		}
+
+		$this->logger->log(sprintf("Got message %d %s. Took %0.2f seconds.", $message_num, $message_id, microtime(true) - $start_time), 'debug');
 
 		return $raw_message;
 	}
@@ -81,11 +215,30 @@ class Imap extends AbstractFetcher
 	 */
 	protected function _doneRead($id)
 	{
-		$move_to = isset($this->gateway['connection_options']['delete_move']) ? $this->gateway['connection_options']['delete_move'] : false;
-		if ($move_to) {
-			$this->getStorage()->moveMessage($id, $move_to);
-		} else {
-			$this->getStorage()->removeMessage($id);
+		$this->logger->log("Marking message as read: $id", 'debug');
+		try {
+			$storage->markReadByUids(array($id));
+		} catch (\Exception $e) {
+			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
+			throw $e;
 		}
+	}
+
+
+	/**
+	 * Tests the connection and returns the number of messages on success
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function test()
+	{
+		try {
+			$x = $this->getStorage()->setFlags();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		return $x;
 	}
 }

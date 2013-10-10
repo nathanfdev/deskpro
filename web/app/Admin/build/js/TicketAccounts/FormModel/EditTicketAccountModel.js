@@ -9,6 +9,7 @@
         this.form.connection_type = 'pop3';
         this.form.in_gmail_account = {};
         this.form.in_pop3_account = {};
+        this.form.in_imap_account = {};
         this.form.email_transport = {
           transport_type: 'mail',
           out_gmail_account: {},
@@ -22,6 +23,12 @@
             this.form.in_pop3_account.secure = this.account.linked_transport.transport_options.secure;
             this.form.in_pop3_account.username = this.account.linked_transport.transport_options.username;
             this.form.in_pop3_account.password = this.account.linked_transport.transport_options.password;
+          } else if (this.form.connection_type === 'pop3') {
+            this.form.in_imap_account.host = this.account.linked_transport.transport_options.host;
+            this.form.in_imap_account.port = this.account.linked_transport.transport_options.port;
+            this.form.in_imap_account.secure = this.account.linked_transport.transport_options.secure;
+            this.form.in_imap_account.username = this.account.linked_transport.transport_options.username;
+            this.form.in_imap_account.password = this.account.linked_transport.transport_options.password;
           } else if (this.form.connection_type === 'gmail') {
             this.form.in_gmail_account.password = this.account.linked_transport.transport_options.password;
           }

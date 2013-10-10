@@ -39,6 +39,7 @@
 									style="min-width: 240px"
 								>
 									<option value="pop3">POP3</option>
+									<option value="imap">IMAP</option>
 									<option value="gmail">GMail or Google Apps</option>
 								</select>
 							</div>
@@ -57,7 +58,7 @@
 											<th>Secure</th>
 											<td>
 												<label>
-													<input type="checkbox" /> Enable secure network connection (SSL)
+													<input type="checkbox" ng-true-value="ssl" ng-model="form.in_pop3_account.secure" /> Enable secure network connection (SSL)
 												</label>
 											</td>
 										</tr>
@@ -68,6 +69,42 @@
 										<tr>
 											<th>Password</th>
 											<td><input type="password" class="form-control" name="title" ng-model="form.in_pop3_account.password" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+											<td>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="ng-hide" ng-show="form.connection_type == 'imap'">
+								<div class="inner-group">
+									<table width="100%" class="inner-form-table">
+										<tr>
+											<th width="75">Host</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.host" style="width: 50%;" placeholder="localhost" required /></td>
+										</tr>
+										<tr>
+											<th>Port</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.port" style="width: 80px;" placeholder="110" required /></td>
+										</tr>
+										<tr>
+											<th>Secure</th>
+											<td>
+												<label>
+													<input type="checkbox" ng-true-value="ssl" ng-model="form.in_imap_account.secure" /> Enable secure network connection (SSL)
+												</label>
+											</td>
+										</tr>
+										<tr>
+											<th>Username</th>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.username" style="width: 50%;" /></td>
+										</tr>
+										<tr>
+											<th>Password</th>
+											<td><input type="password" class="form-control" name="title" ng-model="form.in_imap_account.password" style="width: 50%;" /></td>
 										</tr>
 										<tr>
 											<th>&nbsp;</th>
@@ -142,15 +179,9 @@
 										<tr>
 											<th>Secure</th>
 											<td>
-												<select
-													ui-select2
-													ng-model="form.email_transport.out_smtp_account.secure"
-													style="min-width: 240px"
-												>
-													<option value="">None</option>
-													<option value="tls">TLS</option>
-													<option value="ssl">SSL</option>
-												</select>
+												<label>
+													<input type="checkbox" ng-true-value="ssl" ng-model="form.out_smtp_account.secure" /> Enable secure network connection (SSL)
+												</label>
 											</td>
 										</tr>
 										<tr>

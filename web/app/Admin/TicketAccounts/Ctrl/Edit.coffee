@@ -26,6 +26,7 @@ define [
 					email_address: '',
 					connection_type: 'pop3',
 					in_pop3_account: {},
+					in_imap_account: {},
 					in_gmial_account: {},
 					linked_transport: {
 						transport_type: 'smtp',

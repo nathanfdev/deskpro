@@ -34,32 +34,38 @@
 
 namespace Application\DeskPRO\EmailGateway\Storage;
 
-use Application\DeskPRO\EmailGateway\Protocol\Pop3 as Pop3Protocol;
+use Application\DeskPRO\EmailGateway\Protocol\Imap as ImapProtocol;
 use Orb\Util\Arrays;
 use Zend\Mail\Protocol\Exception;
 
-class Pop3 extends \Zend\Mail\Storage\Pop3
+class Imap extends \Zend\Mail\Storage\Imap
 {
 	const ERR_CONNECT = 1;
 	const ERR_LOGIN = 2;
 
 	/**
-	 * @var array
+	 * @var \Application\DeskPRO\EmailGateway\Protocol\Imap
 	 */
-	protected $capa_res = null;
+	protected $protocol;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function __construct($params)
     {
         if (is_array($params)) {
-            $params = (object)$params;
+            $params = (object) $params;
         }
 
-        $this->has['fetchPart'] = false;
-        $this->has['top']       = null;
-        $this->has['uniqueid']  = null;
+        $this->has['flags'] = true;
 
-        if ($params instanceof Pop3Protocol) {
+        if ($params instanceof \Zend\Mail\Protocol\Imap) {
             $this->protocol = $params;
+            try {
+                $this->selectFolder('INBOX');
+            } catch (Exception\ExceptionInterface $e) {
+                throw new Exception\RuntimeException('cannot select INBOX, is this a valid transport?', 0, $e);
+            }
             return;
         }
 
@@ -70,10 +76,11 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         $host     = isset($params->host)     ? $params->host     : 'localhost';
         $password = isset($params->password) ? $params->password : '';
         $port     = isset($params->port)     ? $params->port     : null;
-        $ssl      = isset($params->ssl)      ? strtoupper($params->ssl) : false;
+        $ssl      = isset($params->ssl)      ? $params->ssl      : false;
 		$logger   = isset($params->logger)   ? $params->logger   : null;
 
-        $this->protocol = new Pop3Protocol();
+		$this->protocol = new ImapProtocol();
+
 		if ($logger) {
 			$this->protocol->setLogger($logger);
 
@@ -87,7 +94,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 		}
 
 		try {
-			$this->protocol->connect($host, $port, $ssl, $logger);
+			$this->protocol->connect($host, $port, $ssl);
 			if ($logger) {
 				$logger->logDebug("[protocol] connect okay");
 			}
@@ -100,7 +107,11 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 		}
 
 		try {
-			$this->protocol->login($params->user, $password);
+			if (!$this->protocol->login($params->user, $password)) {
+				$logger->logError("[error:protocol] " . $e->getMessage());
+				$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN);
+				throw $new_e;
+			}
 			if ($logger) {
 				$logger->logDebug("[protocol] login okay");
 			}
@@ -111,28 +122,125 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 			$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
 			throw $new_e;
 		}
+
+        $this->selectFolder(isset($params->folder) ? $params->folder : 'INBOX');
     }
 
-	public function getProtocolCapabilities()
+
+	/**
+     * Count all unseen messages in mailbox
+     *
+     * @throws Exception\RuntimeException
+     * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     * @return int number of messages
+     */
+    public function countUnseenMessages()
+    {
+        if (!$this->currentFolder) {
+            throw new Exception\RuntimeException('No selected folder to count');
+        }
+
+        $params = array('UNSEEN');
+        return count($this->protocol->search($params));
+    }
+
+
+	/**
+	 * Return array of unseen message UIDs.
+	 *
+	 * @return array|mixed
+	 */
+	public function getUnseenMessageUids()
 	{
-		if ($this->capa_res !== null) {
-			return $this->capa_res;
+		$response = $this->protocol->requestAndResponse('UID SEARCH UNSEEN UNDELETED');
+        if (!$response) {
+            return $response;
+        }
+
+        foreach ($response as $ids) {
+            if ($ids[0] == 'SEARCH') {
+                array_shift($ids);
+                return $ids;
+            }
+        }
+        return array();
+	}
+
+
+	/**
+	 * @param array $uids
+	 * @return array
+	 */
+	public function getMessageSizesByUids(array $uids)
+	{
+		$data = $this->protocol->fetchByUid(array('UID', 'RFC822.SIZE'), $uids);
+
+		$map = array();
+		foreach ($data as $r) {
+			$map[$r['UID']] = $r['RFC822.SIZE'];
 		}
 
-		$this->capa_res = $this->getProtocol()->capa();
-		$this->capa_res = \Orb\Util\Arrays::func($this->capa_res, 'trim');
-		$this->capa_res = \Orb\Util\Arrays::removeFalsey($this->capa_res);
-
-		return $this->capa_res;
+		return $map;
 	}
 
-	public function canUniqueId()
+
+	/**
+	 * Gets email message in Message wrapper
+	 *
+	 * @param mixed $uid
+	 * @return \Zend\Mail\Storage\Message
+	 */
+	public function getMessageByUid($uid)
+    {
+        $data = $this->protocol->fetchByUid(array('FLAGS', 'RFC822'), $uid);
+
+        $flags = array();
+        foreach ($data['FLAGS'] as $flag) {
+            $flags[] = isset(static::$knownFlags[$flag]) ? static::$knownFlags[$flag] : $flag;
+        }
+
+        return new $this->messageClass(array(
+			'handler' => $this,
+			'id'      => $uid,
+			'flags'   => $flags,
+			'raw'     => $data['RFC822']
+		));
+    }
+
+
+	/**
+	 * Gets raw email message
+	 *
+	 * @param mixed $uid
+	 * @return string
+	 */
+	public function getRawMessageByUid($uid)
 	{
-		return in_array('UIDL', $this->getProtocolCapabilities());
+		$data = $this->protocol->fetchByUid(array('RFC822'), $uid);
+		return $data;
 	}
 
-	public function getProtocol()
+
+	/**
+	 * Return just the headers of the message
+	 *
+	 * @param $uid
+	 * @return string
+	 */
+	public function getMessageHeadersByUid($uid)
 	{
-		return $this->protocol;
+		$data = $this->protocol->fetchByUid(array('RFC822.HEADER'), $uid);
+		return $data;
+	}
+
+
+	/**
+	 * Mark messages as 'seen'
+	 *
+	 * @param array $uids
+	 */
+	public function markReadByUids(array $uids)
+	{
+		return $this->protocol->storeById(array('\Seen'), $uids);
 	}
 }
