@@ -108,7 +108,7 @@ class Imap extends \Zend\Mail\Storage\Imap
 
 		try {
 			if (!$this->protocol->login($params->user, $password)) {
-				$logger->logError("[error:protocol] " . $e->getMessage());
+				$logger->logError("[error:protocol] login failed");
 				$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN);
 				throw $new_e;
 			}
@@ -125,6 +125,15 @@ class Imap extends \Zend\Mail\Storage\Imap
 
         $this->selectFolder(isset($params->folder) ? $params->folder : 'INBOX');
     }
+
+
+	/**
+	 * @return ImapProtocol
+	 */
+	public function getProtocol()
+	{
+		return $this->protocol;
+	}
 
 
 	/**

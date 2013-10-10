@@ -74,7 +74,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
 		$this->logger = $logger;
 		$this->connect_timeout = $connect_timeout;
 		$this->stream_timeout = $stream_timeout;
-		parent::__construct($host, $port, $ssl);
+		parent::__construct($host, $port, $ssl ? strtoupper($ssl) : $ssl);
 	}
 
 
@@ -83,6 +83,8 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
 	 */
 	public function connect($host, $port = null, $ssl = false)
     {
+		$ssl = $ssl ? strtoupper($ssl) : $ssl;
+
         if ($ssl == 'SSL') {
             $host = 'ssl://' . $host;
         }
