@@ -46,7 +46,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		saveLabel: (label) ->
 			return false if not label.new_label
 			label.save_mode = true
-			@Api.sendPut('/ticket_labels', {
+			@Api.sendPost('/ticket_labels/save', {
 				label_old: label.label, label_new: label.new_label
 			}).success(=>
 				label.label = label.new_label

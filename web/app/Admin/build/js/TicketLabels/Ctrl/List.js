@@ -75,7 +75,7 @@
           return false;
         }
         label.save_mode = true;
-        return this.Api.sendPut('/ticket_labels', {
+        return this.Api.sendPost('/ticket_labels/save', {
           label_old: label.label,
           label_new: label.new_label
         }).success(function() {
