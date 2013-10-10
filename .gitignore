@@ -55,11 +55,14 @@
 /web/stylesheets/admin
 /web/stylesheets/report
 /app/sys/config/changed-files.php
+/web/app/node_modules
+/web/app/build
 
 # Place devs can use as scratch space
 /_dev
 
 # Per-site files
 /config.php
+/config.testing.php
 /app/src/Cloud/Resources/cloud_serve/_sys/config.php
 /app/src/Cloud/Resources/cloud_serve/_sys/dp-config.php
