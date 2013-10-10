@@ -13,7 +13,6 @@
 /app/sys/cache/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php
-/app/sys/config/build-time.php
 /app/sys/config/build-num.php
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php

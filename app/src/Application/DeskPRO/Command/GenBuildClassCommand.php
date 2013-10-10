@@ -127,7 +127,11 @@ CODE;
 		} else {
 			file_put_contents($path, $tpl);
 
+			$build_file = DP_ROOT.'/sys/config/build-time.php';
+			file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
+
 			echo "Wrote file: $path\n";
+			echo "Updated: $build_file\n";
 		}
 
 		return 0;
