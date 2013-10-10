@@ -4,6 +4,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\DependencyInjection\SystemServices\LabelDefManagerService;
 use Application\DeskPRO\Labels\LabelDefManager;
 use Application\DeskPRO\Labels\LabelManager;
+use Symfony\Component\HttpFoundation\Request;
 
 class TicketLabelsController extends AbstractController
 {
@@ -41,10 +42,10 @@ class TicketLabelsController extends AbstractController
 
 	public function saveAction()
 	{
-		$status    = 200;
-		$label_old = $this->in->getValue('label_old');
-		$label_new = $this->in->getValue('label_new');
-		return $this->createApiResponse(array('old' => $label_old, 'new' => $label_new), $status);
+		$label_old = $this->in->getString('label_old');
+		$label_new = $this->in->getCleanValue('label_new','string');
+
+		return $this->createApiResponse(array('old' => $label_old, 'new' => $label_new));
 	}
 
 	public function removeAction($label)

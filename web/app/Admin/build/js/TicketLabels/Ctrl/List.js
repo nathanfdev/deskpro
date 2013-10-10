@@ -46,9 +46,7 @@
       Admin_TicketLabels_Ctrl_List.prototype.startDelete = function(label) {
         var _this = this;
         label.delete_mode = true;
-        return this.Api.sendDelete('/ticket_labels/', {
-          label: label.label
-        }).success(function() {
+        return this.Api.sendDelete('/ticket_labels/' + label.label).success(function() {
           return _this.labels.remove(label);
         })["finally"](function() {
           return label.delete_mode = false;
@@ -61,7 +59,7 @@
           return false;
         }
         this.add_mode = true;
-        return this.Api.sendPost('/ticket_labels/', {
+        return this.Api.sendPost('/ticket_labels/add', {
           label: this.new_label
         })["finally"](function() {
           return _this.add_mode = false;
@@ -74,7 +72,7 @@
           return false;
         }
         label.save_mode = true;
-        return this.Api.sendPut('/ticket_labels/', {
+        return this.Api.sendPut('/ticket_labels/save', {
           label_old: label.label,
           label_new: label.new_label
         }).success(function() {

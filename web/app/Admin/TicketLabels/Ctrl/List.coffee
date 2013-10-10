@@ -24,9 +24,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		startDelete: (label) ->
 			label.delete_mode = true
-			@Api.sendDelete('/ticket_labels/', {
-				label: label.label
-			}).success(=>
+			@Api.sendDelete('/ticket_labels/'+label.label)
+			.success(=>
 				@labels.remove(label)
 			).finally(=>
 				label.delete_mode = false
@@ -35,7 +34,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		addNewLabel: ->
 			return false if not @new_label
 			@add_mode = true
-			@Api.sendPost('/ticket_labels/', {label: @new_label})
+			@Api.sendPost('/ticket_labels/add', {label: @new_label})
 			.finally(=>
 					@add_mode = false
 				)
@@ -44,7 +43,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		saveLabel: (label) ->
 			return false if not label.new_label
 			label.save_mode = true
-			@Api.sendPut('/ticket_labels/', {
+			@Api.sendPut('/ticket_labels/save', {
 				label_old: label.label, label_new: label.new_label
 			}).success(=>
 				label.label = label.new_label

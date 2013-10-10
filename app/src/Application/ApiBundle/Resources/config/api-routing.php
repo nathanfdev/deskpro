@@ -2325,11 +2325,11 @@ $collection->add('api_ticket_labels', new Route(
 $collection->add('api_ticket_labels_save', new Route(
 	'/ticket_labels/save',
 	array('_controller' => 'ApiBundle:TicketLabels:save'),
-	array('_method' => 'POST')
+	array('_method' => 'PUT')
 ));
 
 $collection->add('api_ticket_labels_add', new Route(
-	'/ticket_labels/add',
+	'/ticket_labels/add/{label}',
 	array('_controller' => 'ApiBundle:TicketLabels:add'),
 	array('_method' => 'POST')
 ));
