@@ -175,7 +175,7 @@ class Reader extends BaseReader
 	 */
 	public function getArrayOfInts($name, $source_name = null)
 	{
-		return $this->getCleanValueArray($name, 'discard', 'int', $source_name);
+		return $this->getCleanValueArray($name, 'int', 'discard', $source_name);
 	}
 
 
@@ -188,7 +188,7 @@ class Reader extends BaseReader
 	 */
 	public function getArrayOfUInts($name, $source_name = null)
 	{
-		return $this->getCleanValueArray($name, 'discard', 'uint', $source_name);
+		return $this->getCleanValueArray($name, 'uint', 'discard', $source_name);
 	}
 
 
@@ -201,7 +201,7 @@ class Reader extends BaseReader
 	 */
 	public function getArrayOfStrings($name, $source_name = null)
 	{
-		return $this->getCleanValueArray($name, 'discard', 'str', $source_name);
+		return $this->getCleanValueArray($name, 'str', 'discard', $source_name);
 	}
 
 
@@ -214,7 +214,7 @@ class Reader extends BaseReader
 	 */
 	public function getIdMappedStrings($name, $source_name = null)
 	{
-		return $this->getCleanValueArray($name, 'uint', 'str', $source_name);
+		return $this->getCleanValueArray($name, 'str', 'uint', $source_name);
 	}
 
 
@@ -227,7 +227,7 @@ class Reader extends BaseReader
 	 */
 	public function getIdMappedInts($name, $source_name = null)
 	{
-		return $this->getCleanValueArray($name, 'uint', 'int', $source_name);
+		return $this->getCleanValueArray($name, 'int', 'uint', $source_name);
 	}
 
 

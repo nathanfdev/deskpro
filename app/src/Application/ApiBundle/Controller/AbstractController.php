@@ -74,7 +74,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	/**
 	 * Input reader
-	 * @var \Orb\Input\Reader\Reader
+	 * @var \Application\DeskPRO\Input\Reader
 	 */
 	public $in;
 

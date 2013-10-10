@@ -139,7 +139,6 @@ class TicketAccountsController extends AbstractController
 		$tester = new IncomingAccountTester($edit_account->getIncomingAccount());
 		$tester->test();
 
-
 		return $this->createApiResponse(array(
 			'is_success'    => $tester->isSuccess(),
 			'log'           => $tester->getLog(),

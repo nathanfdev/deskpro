@@ -937,7 +937,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	}
 
 	/**
-	 * @return \Orb\Input\Reader\Reader
+	 * @return \Application\DeskPRO\Input\Reader
 	 */
 	public function getIn()
 	{

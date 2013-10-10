@@ -89,7 +89,7 @@ class InstallExtension extends Extension
 		$container->setDefinition('deskpro.core.input_cleaner', $definition);
 
 		// Init reader
-		$definition = new Definition('Orb\Input\Reader\Reader', array(new Reference('deskpro.core.input_cleaner')));
+		$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
 		$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
 		$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
 		$definition->addMethodCall('addSource',array('get', new Reference('deskpro.core.input_reader_get')));

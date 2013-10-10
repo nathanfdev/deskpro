@@ -207,7 +207,7 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \Orb\Input\Reader\Reader
+	 * @return \Application\DeskPRO\Input\Reader
 	 */
 	public function getIn()
 	{

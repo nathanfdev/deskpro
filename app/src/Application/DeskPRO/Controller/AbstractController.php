@@ -43,7 +43,7 @@ use Application\DeskPRO\App;
  *
  * @property \Doctrine\ORM\EntityManager $em
  * @property \Application\DeskPRO\DBAL\Connection $db
- * @property \Orb\Input\Reader\Reader $in
+ * @property \Application\DeskPRO\Input\Reader $in
  * @property \Orb\Input\Cleaner\Cleaner $cleaner
  * @property \Application\DeskPRO\Templating\Engine $tpl
  * @property \Application\DeskPRO\Settings\Settings $settings
