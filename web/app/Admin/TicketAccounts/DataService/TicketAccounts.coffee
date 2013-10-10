@@ -52,6 +52,15 @@ define [
 				model.retain()
 				@recs.set(model.id, model)
 
+		###
+    	# Updates the first-class model (title, etc)
+    	# with account provided. Or adds it to the list if it doesnt exist.
+    	###
+		updateModel: (account) ->
+			new_model = @em.createEntity('ticket_account', 'id', account)
+			@recs.set(new_model.id, new_model)
+			return new_model
+
 		###*
 		* Adds a new model to the existing list (eg was just created)
     	*

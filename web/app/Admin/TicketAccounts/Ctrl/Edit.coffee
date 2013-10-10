@@ -56,6 +56,46 @@ define [
 
 
 		###
+    	# Saves the current form
+    	#
+    	# @return {promise}
+		###
+		saveAccount: ->
+			postData = @form_model.getFormData()
+
+			@startSpinner('saving_account')
+			if @account.id
+				is_new = false
+				promise = @Api.sendPostJson('/ticket_accounts/' + @account.id, postData)
+			else
+				is_new = true
+				promise = @Api.sendPutJson('/ticket_accounts', postData)
+
+			promise.success( (result) =>
+				@account.id = result.id
+				@account.is_enabled = true
+				@stopSpinner('saving_account', true).then(=>
+					@Growl.success(@getRegisteredMessage('saved_account'))
+				)
+
+				@form_model.apply()
+				@TicketAccountsData.updateModel(@account)
+
+				@skipDirtyState()
+				if is_new
+					@$state.go('tickets.ticket_accounts.gocreate')
+				else
+					@$state.go('tickets.ticket_accounts')
+			)
+			promise.error( (info, code) =>
+				@stopSpinner('saving_account', true)
+				@applyErrorResponseToView(info)
+			)
+
+			return promise
+
+
+		###
     	# Test current account settings
     	#
     	# @return {promise}

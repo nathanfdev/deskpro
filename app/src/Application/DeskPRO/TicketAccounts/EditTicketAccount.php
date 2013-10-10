@@ -37,6 +37,7 @@ use Application\DeskPRO\Email\EditTransport;
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailGatewayAddress;
 use Application\DeskPRO\Entity\EmailTransport;
+use Doctrine\ORM\EntityManager;
 
 class EditTicketAccount
 {
@@ -44,6 +45,11 @@ class EditTicketAccount
 	 * @var string
 	 */
 	public $email_address;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Department
+	 */
+	public $department;
 
 	/**
 	 * @var string
@@ -89,10 +95,18 @@ class EditTicketAccount
 		$this->email_transport = new EditTransport($tr);
 	}
 
+
+	/**
+	 * Applies form to the entities.
+	 */
 	public function apply()
 	{
+		$this->email_transport->email_address = $this->email_address;
+		$this->email_transport->apply();
+
 		$this->gateway->email_address = $this->email_address;
 
+		$this->gateway->department = $this->department;
 		$this->gateway->connection_options = array();
 		$this->gateway->connection_type = '';
 
@@ -107,6 +121,7 @@ class EditTicketAccount
 			$this->gateway->connection_options = $this->in_gmail_account->getOptions();
 		}
 	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Email\IncomingAccount\IncomingAccountInterface

@@ -4,7 +4,7 @@
 		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.email_accounts') }} &rarr; {{ phrase('admin.tickets.new_account') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAll()">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAccount()">
 			<div class="panel panel-fill indent">
 				<br/>
 				<div class="panel-body">
@@ -48,11 +48,11 @@
 									<table width="100%" class="inner-form-table">
 										<tr>
 											<th width="75">Host</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.host" style="width: 50%;" placeholder="localhost" required /></td>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.host" style="width: 50%;" placeholder="localhost" ></td>
 										</tr>
 										<tr>
 											<th>Port</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.port" style="width: 80px;" placeholder="110" required /></td>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.port" style="width: 80px;" placeholder="110" /></td>
 										</tr>
 										<tr>
 											<th>Secure</th>
@@ -84,11 +84,11 @@
 									<table width="100%" class="inner-form-table">
 										<tr>
 											<th width="75">Host</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.host" style="width: 50%;" placeholder="localhost" required /></td>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.host" style="width: 50%;" placeholder="localhost" /></td>
 										</tr>
 										<tr>
 											<th>Port</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.port" style="width: 80px;" placeholder="110" required /></td>
+											<td><input type="text" class="form-control" name="title" ng-model="form.in_imap_account.port" style="width: 80px;" placeholder="110" /></td>
 										</tr>
 										<tr>
 											<th>Secure</th>
@@ -121,7 +121,8 @@
 										<tr>
 											<th width="100">Email Address</th>
 											<td>
-												{{ ng_var('form.email_address') }}
+												<span ng-show="form.email_address">{{ ng_var('form.email_address') }}</span>
+												<span ng-hide="form.email_address">Enter your email address above</span>
 											</td>
 										</tr>
 										<tr>
@@ -183,11 +184,11 @@
 									<table width="100%" class="inner-form-table">
 										<tr>
 											<th width="75">Host</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.host" style="width: 50%;" placeholder="localhost" required /></td>
+											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.host" style="width: 50%;" placeholder="localhost" /></td>
 										</tr>
 										<tr>
 											<th>Port</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.port" style="width: 80px;" placeholder="25" required /></td>
+											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.port" style="width: 80px;" placeholder="25" /></td>
 										</tr>
 										<tr>
 											<th>Secure</th>
@@ -238,6 +239,27 @@
 							</div>
 						</div>
 					</div>
+
+					{##################################################################################################}
+					{# Linked Department #}
+					{##################################################################################################}
+
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3>Linked Department *</h3>
+						</div>
+						<div class="col-lg-9">
+							<div class="inner-group" style="padding-top: 3px;">
+								<select
+									ui-select2
+									ng-model="form.department"
+									style="min-width: 240px"
+								>
+									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketAccountsEdit.deps">{{ ng_var('dep._full_title') }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -250,11 +272,11 @@
 				</div>
 
 				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving_dep">
+					<div dp-hide-spinning="saving_account">
 						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
 						<button class="btn btn-default" ng-click="TicketAccountsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 					</div>
-					<div dp-show-spinning="saving_dep">
+					<div dp-show-spinning="saving_account">
 						<i class="spinner-flat"></i>
 					</div>
 				</div>
@@ -264,4 +286,6 @@
 
 	{{ ng_tpl('TicketAccounts/test-account-modal.html') }}
 	{{ ng_tpl('TicketAccounts/test-outgoing-modal.html') }}
+
+	<div dp-register-message="saved_account">{{ ng_var('form.email_address') }} was saved successfully</div>
 </div>

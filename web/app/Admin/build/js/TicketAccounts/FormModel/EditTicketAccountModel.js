@@ -3,8 +3,10 @@
     var Admin_TicketAccounts_Form_EditTicketAccountModel;
     return Admin_TicketAccounts_Form_EditTicketAccountModel = (function() {
       function Admin_TicketAccounts_Form_EditTicketAccountModel(account) {
+        var _ref;
         this.account = account;
         this.form = {};
+        this.form.department = ((_ref = this.account.department) != null ? _ref.id : void 0) || 0;
         this.form.email_address = this.account.email_address;
         this.form.connection_type = 'pop3';
         this.form.in_gmail_account = {};
@@ -55,6 +57,10 @@
           this.form.email_transport.out_gmail_account.username = this.form.email_address;
         }
         return this.form;
+      };
+
+      Admin_TicketAccounts_Form_EditTicketAccountModel.prototype.apply = function() {
+        return this.account.email_address = this.form.email_address;
       };
 
       return Admin_TicketAccounts_Form_EditTicketAccountModel;

@@ -167,20 +167,4 @@ class UrlGenerator extends BaseUrlGenerator
 	{
 		return $this->getObjectUrlGenerator()->generateObjectUrl($object, $params, $context);
 	}
-
-	/*
-    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
-    {
-		if (isset($variables['_locale']) && empty($defaults['_locale'])) {
-			App::getTranslator()->getLocale()->getLocale();
-
-			// Default
-			if ($defaults['_locale'] == 'en_US') {
-				unset($defaults['_locale']);
-			}
-		}
-
-		return parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);
-    }
-	*/
 }

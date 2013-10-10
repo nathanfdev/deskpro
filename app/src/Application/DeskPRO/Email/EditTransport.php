@@ -101,6 +101,7 @@ class EditTransport
 	 */
 	public function apply()
 	{
+		$this->transport->title = $this->email_address;
 		$this->transport->transport_type = '';
 		$this->transport->transport_options = array();
 

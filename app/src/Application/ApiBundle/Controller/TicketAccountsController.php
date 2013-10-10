@@ -93,7 +93,28 @@ class TicketAccountsController extends AbstractController
 			$account = EmailGateway::createTicketAccount();
 		}
 
+		$edit_account = new EditTicketAccount($account);
 
+		$form = $this->createForm(
+			new TicketAccountType(),
+			$edit_account
+		);
+
+		$data = $this->in->getAll('post');
+
+		// Copy gmail config into the transport
+		if ($data['connection_type'] == 'gmail') {
+			$data['email_transport'] = array(
+				'transport_type'    => 'gmail',
+				'out_gmail_account' => $data['in_gmail_account']
+			);
+		}
+
+		$form->submit($data);
+		$edit_account->apply();
+
+		$this->em->persist($account);
+		$this->em->flush();
 
 		return $this->createApiResponse(array('id' => $account->id, 'success' => true));
 	}

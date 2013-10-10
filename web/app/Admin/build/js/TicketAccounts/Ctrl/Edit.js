@@ -64,6 +64,47 @@
       };
 
       /*
+        	# Saves the current form
+        	#
+        	# @return {promise}
+      */
+
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.saveAccount = function() {
+        var is_new, postData, promise,
+          _this = this;
+        postData = this.form_model.getFormData();
+        this.startSpinner('saving_account');
+        if (this.account.id) {
+          is_new = false;
+          promise = this.Api.sendPostJson('/ticket_accounts/' + this.account.id, postData);
+        } else {
+          is_new = true;
+          promise = this.Api.sendPutJson('/ticket_accounts', postData);
+        }
+        promise.success(function(result) {
+          _this.account.id = result.id;
+          _this.account.is_enabled = true;
+          _this.stopSpinner('saving_account', true).then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_account'));
+          });
+          _this.form_model.apply();
+          _this.TicketAccountsData.updateModel(_this.account);
+          _this.skipDirtyState();
+          if (is_new) {
+            return _this.$state.go('tickets.ticket_accounts.gocreate');
+          } else {
+            return _this.$state.go('tickets.ticket_accounts');
+          }
+        });
+        promise.error(function(info, code) {
+          _this.stopSpinner('saving_account', true);
+          return _this.applyErrorResponseToView(info);
+        });
+        return promise;
+      };
+
+      /*
         	# Test current account settings
         	#
         	# @return {promise}

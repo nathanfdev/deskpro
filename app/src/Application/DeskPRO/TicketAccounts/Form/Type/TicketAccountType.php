@@ -37,6 +37,7 @@ use Application\DeskPRO\Email\Form\Type\EmailTransportType;
 use Application\DeskPRO\Email\IncomingAccount\Form\Type\GmailAccountType;
 use Application\DeskPRO\Email\IncomingAccount\Form\Type\ImapAccountType;
 use Application\DeskPRO\Email\IncomingAccount\Form\Type\Pop3AccountType;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -45,6 +46,14 @@ class TicketAccountType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
+		$builder->add('department', 'entity', array(
+			'class'         => 'DeskPRO:Department',
+			'required'      => true,
+			'query_builder' => function(EntityRepository $er) {
+				return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true')->orderBy('d.display_order', 'ASC');
+			}
+		));
+
 		$builder->add('email_address', 'text', array(
 			'required'      => true,
 		));

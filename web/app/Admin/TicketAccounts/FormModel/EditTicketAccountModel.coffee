@@ -2,7 +2,8 @@ define ->
 	class Admin_TicketAccounts_Form_EditTicketAccountModel
 		constructor: (@account) ->
 			@form = {}
-			@form.email_address = @account.email_address
+			@form.department       = @account.department?.id || 0
+			@form.email_address    = @account.email_address
 			@form.connection_type  = 'pop3'
 			@form.in_gmail_account = {}
 			@form.in_pop3_account  = {}
@@ -59,3 +60,6 @@ define ->
 				@form.email_transport.out_gmail_account.username = @form.email_address
 
 			return @form
+
+		apply: ->
+			@account.email_address = @form.email_address

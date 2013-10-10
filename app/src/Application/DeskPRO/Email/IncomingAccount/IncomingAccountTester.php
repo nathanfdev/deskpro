@@ -194,7 +194,7 @@ class IncomingAccountTester
 				'user'     => $account->username,
 				'password' => $account->password,
 				'port'     => 995,
-				'ssl'      => true,
+				'ssl'      => 'ssl',
 				'logger'   => $this->logger
 			));
 
