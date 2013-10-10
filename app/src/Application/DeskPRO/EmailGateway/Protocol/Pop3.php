@@ -69,7 +69,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 		$this->logger = $logger;
 		$this->connect_timeout = $connect_timeout;
 		$this->stream_timeout = $stream_timeout;
-		parent::__construct($host, $port, $ssl = $ssl ? strtoupper($ssl) : $ssl;);
+		parent::__construct($host, $port, $ssl = $ssl ? strtoupper($ssl) : $ssl);
 	}
 
 
