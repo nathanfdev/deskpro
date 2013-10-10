@@ -45,16 +45,6 @@ class OutgoingAccountTester
 	private $account;
 
 	/**
-	 * @var \Orb\Log\Logger
-	 */
-	private $logger;
-
-	/**
-	 * @var \Orb\Log\Writer\ArrayWriter
-	 */
-	private $logger_writer;
-
-	/**
 	 * @var
 	 */
 	private $exception;
@@ -64,13 +54,20 @@ class OutgoingAccountTester
 	 */
 	private $is_success = false;
 
+	/**
+	 * @var \Swift_Plugins_Loggers_ArrayLogger
+	 */
+	private $swift_arraylogger;
+
+	/**
+	 * @var \Swift_Message
+	 */
+	private $swift_message;
+
 	public function __construct(OutgoingAccountInterface $account)
 	{
+		$this->swift_arraylogger = new \Swift_Plugins_Loggers_ArrayLogger();
 		$this->account = $account;
-
-		$this->logger        = new Logger();
-		$this->logger_writer = new ArrayWriter();
-		$this->logger->addWriter($this->logger_writer);
 	}
 
 	/**
@@ -80,10 +77,22 @@ class OutgoingAccountTester
 	 */
 	public function test($to_address, $from_address, $subject, $message)
 	{
-		if ($this->account instanceof SmtpAccount) {
-			$this->_testPop3($this->account, $to_address, $from_address, $subject, $message);
-		} else if ($this->account) {
-			$this->_testGmail($this->account, $to_address, $from_address, $subject, $message);
+		$this->swift_message = \Swift_Message::newInstance()
+			->setSubject($subject)
+			->setBody($message)
+			->setFrom($from_address)
+			->setTo($to_address);
+
+		try {
+			if ($this->account instanceof SmtpAccount) {
+				$this->_testSmtp($this->account);
+			} else if ($this->account instanceof GmailAccount) {
+				$this->_testGmail($this->account);
+			} else if ($this->account instanceof PhpMailAccount) {
+				$this->_testMail($this->account);
+			}
+		} catch (\Exception $e) {
+			$this->swift_arraylogger->add("[error] " . $e->getMessage());
 		}
 
 		return $this->is_success;
@@ -109,20 +118,56 @@ class OutgoingAccountTester
 
 
 	/**
+	 * @param \Swift_SmtpTransport $transport
+	 */
+	private function sendWithTransport(\Swift_Transport $transport)
+	{
+		$mailer = \Swift_Mailer::newInstance($transport);
+
+		$mailer->registerPlugin(new \Swift_Plugins_LoggerPlugin($this->swift_arraylogger));
+
+		$failed = null;
+		if (!$mailer->send($this->swift_message, $failed)) {
+			$this->is_success = false;
+		} else {
+			$this->is_success = true;
+		}
+	}
+
+
+	/**
 	 * @param SmtpAccount $account
 	 */
-	private function _testSmtp(SmtpAccount $account, $to_address, $from_address, $subject, $message)
+	private function _testSmtp(SmtpAccount $account)
 	{
-		$this->logger->logInfo('Testing SmtpAccount');
+		$this->swift_arraylogger->add("Testing SmtpAccount");
+
+		$this->swift_arraylogger->add("[options] host: {$account->host}");
+		$this->swift_arraylogger->add("[options] port: {$account->port}");
+		$this->swift_arraylogger->add("[options] secure: {$account->secure}");
+		$this->swift_arraylogger->add("[options] username: {$account->username}");
+		$this->swift_arraylogger->add("[options] password: {$account->password}");
+
+		$transport = \Swift_SmtpTransport::newInstance(
+			$account->host,
+			$account->port,
+			$account->secure
+		);
+		if ($account->username) {
+			$transport->setUsername($account->username);
+			$transport->setPassword($account->password);
+		}
+
+		$this->sendWithTransport($transport);
 	}
 
 
 	/**
 	 * @param GmailAccount $account
 	 */
-	private function _testGmail(GmailAccount $account, $to_address, $from_address, $subject, $message)
+	private function _testGmail(GmailAccount $account)
 	{
-		$this->logger->logInfo('Testing GmailAccount');
+		$this->swift_arraylogger->add("Testing GmailAccount");
 		$smtp = new SmtpAccount();
 		$smtp->setOptions(array(
 			'username' => $account->username,
@@ -131,7 +176,19 @@ class OutgoingAccountTester
 			'port'     => 465,
 			'secure'   => 'ssl'
 		));
-		$this->_testSmtp($smtp, $to_address, $from_address, $subject, $message);
+		$this->_testSmtp($smtp);
+	}
+
+
+	/**
+	 * @param PhpMailAccount $account
+	 */
+	public function _testMail(PhpMailAccount $account)
+	{
+		$this->swift_arraylogger->add("Testing PhpMailAccount");
+		$this->swift_arraylogger->add("(No detailed logging is available using the PHP mail() transport.)");
+		$transport = \Swift_MailTransport::newInstance();
+		$this->sendWithTransport($transport);
 	}
 
 
@@ -140,6 +197,6 @@ class OutgoingAccountTester
 	 */
 	public function getLog()
 	{
-		return $this->logger_writer->getMessagesAsString();
+		return $this->swift_arraylogger->dump();
 	}
 }

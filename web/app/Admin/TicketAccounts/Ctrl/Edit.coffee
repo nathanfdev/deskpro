@@ -15,6 +15,12 @@ define [
 			@didPassTest = false
 			@testMessageCount = 0
 			@didConfirmExistingMessages = false
+			@test_email = {
+				to: window.DP_PERSON_EMAIL,
+				from: '',
+				subject: 'Test email',
+				message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+			}
 
 		initialLoad: ->
 			dep_promise = @DepartmentData.loadDepList().then( (departments) =>
@@ -48,7 +54,36 @@ define [
 
 				return @$q.all([dep_promise, data_promise]);
 
-		testAccount: ->
+
+		###
+    	# Test current account settings
+    	#
+    	# @return {promise}
+		###
+		loadAccountTest: ->
+			return @Api.sendPostJson('/ticket_accounts/test-account', @form_model.getFormData()).success( (result) =>
+				@didPassTest = result.is_success
+			)
+
+
+		###
+    	# Test current outgoing settings with message details from @test_email object.
+    	#
+    	# @return {promise}
+		###
+		loadOutgoingAccountTest: ->
+			@test_email.from = @form_model.form.email_address
+
+			form_data = @form_model.getFormData().email_transport
+			form_data.test_email = @test_email
+
+			return @Api.sendPostJson('/ticket_accounts/test-outgoing-account', form_data)
+
+
+		###
+    	# Show the test account modal
+		###
+		testAccountModal: ->
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketAccounts/test-account-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
@@ -81,9 +116,53 @@ define [
 				]
 			});
 
-		loadAccountTest: ->
-			return @Api.sendPostJson('/ticket_accounts/test-account', @form_model.getFormData()).success( (result) =>
-				@didPassTest = result.is_success
-			)
+
+		###
+    	# Show the test account modal
+		###
+		testOutgoingModal: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
+				resolve: {
+					test_email: =>
+						@test_email.from = @form_model.form.email_address
+						return @test_email
+				},
+				controller: ['$scope', '$modalInstance', 'test_email', ($scope, $modalInstance, test_email) =>
+					$scope.dismiss = =>
+						$modalInstance.dismiss();
+
+					$scope.showLog = =>
+						$scope.showing_log = true
+
+					console.log(test_email)
+					$scope.test_email = test_email
+
+					testNow = =>
+						$scope.testing_started = true
+						$scope.showing_log = false
+						$scope.is_testing = true
+						@loadOutgoingAccountTest().success( (result) =>
+							$scope.is_testing    = false
+							$scope.is_success    = result.is_success
+							$scope.log           = result.log
+							$scope.message_count = result.message_count
+						).error(=>
+							$scope.showing_log   = true
+							$scope.is_testing    = false
+							$scope.is_success    = false
+							$scope.log           = "Server Error"
+							$scope.message_count = 0
+						)
+
+					resetTest = =>
+						$scope.testing_started = false
+
+					$scope.testNow = ->
+						testNow()
+					$scope.resetTest = ->
+						resetTest()
+				]
+			});
 
 	Admin_TicketAccounts_Ctrl_Edit.EXPORT_CTRL()

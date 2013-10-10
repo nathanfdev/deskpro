@@ -23,7 +23,13 @@
       Admin_TicketAccounts_Ctrl_Edit.prototype.init = function() {
         this.didPassTest = false;
         this.testMessageCount = 0;
-        return this.didConfirmExistingMessages = false;
+        this.didConfirmExistingMessages = false;
+        return this.test_email = {
+          to: window.DP_PERSON_EMAIL,
+          from: '',
+          subject: 'Test email',
+          message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+        };
       };
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
@@ -57,7 +63,41 @@
         }
       };
 
-      Admin_TicketAccounts_Ctrl_Edit.prototype.testAccount = function() {
+      /*
+        	# Test current account settings
+        	#
+        	# @return {promise}
+      */
+
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.loadAccountTest = function() {
+        var _this = this;
+        return this.Api.sendPostJson('/ticket_accounts/test-account', this.form_model.getFormData()).success(function(result) {
+          return _this.didPassTest = result.is_success;
+        });
+      };
+
+      /*
+        	# Test current outgoing settings with message details from @test_email object.
+        	#
+        	# @return {promise}
+      */
+
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.loadOutgoingAccountTest = function() {
+        var form_data;
+        this.test_email.from = this.form_model.form.email_address;
+        form_data = this.form_model.getFormData().email_transport;
+        form_data.test_email = this.test_email;
+        return this.Api.sendPostJson('/ticket_accounts/test-outgoing-account', form_data);
+      };
+
+      /*
+        	# Show the test account modal
+      */
+
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.testAccountModal = function() {
         var inst,
           _this = this;
         return inst = this.$modal.open({
@@ -96,10 +136,61 @@
         });
       };
 
-      Admin_TicketAccounts_Ctrl_Edit.prototype.loadAccountTest = function() {
-        var _this = this;
-        return this.Api.sendPostJson('/ticket_accounts/test-account', this.form_model.getFormData()).success(function(result) {
-          return _this.didPassTest = result.is_success;
+      /*
+        	# Show the test account modal
+      */
+
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.testOutgoingModal = function() {
+        var inst,
+          _this = this;
+        return inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
+          resolve: {
+            test_email: function() {
+              _this.test_email.from = _this.form_model.form.email_address;
+              return _this.test_email;
+            }
+          },
+          controller: [
+            '$scope', '$modalInstance', 'test_email', function($scope, $modalInstance, test_email) {
+              var resetTest, testNow;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              $scope.showLog = function() {
+                return $scope.showing_log = true;
+              };
+              console.log(test_email);
+              $scope.test_email = test_email;
+              testNow = function() {
+                $scope.testing_started = true;
+                $scope.showing_log = false;
+                $scope.is_testing = true;
+                return _this.loadOutgoingAccountTest().success(function(result) {
+                  $scope.is_testing = false;
+                  $scope.is_success = result.is_success;
+                  $scope.log = result.log;
+                  return $scope.message_count = result.message_count;
+                }).error(function() {
+                  $scope.showing_log = true;
+                  $scope.is_testing = false;
+                  $scope.is_success = false;
+                  $scope.log = "Server Error";
+                  return $scope.message_count = 0;
+                });
+              };
+              resetTest = function() {
+                return $scope.testing_started = false;
+              };
+              $scope.testNow = function() {
+                return testNow();
+              };
+              return $scope.resetTest = function() {
+                return resetTest();
+              };
+            }
+          ]
         });
       };
 

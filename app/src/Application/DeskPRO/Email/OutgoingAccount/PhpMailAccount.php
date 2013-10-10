@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,58 +25,37 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Email\OutgoingAccount;
 
-use Orb\Log\Logger;
-use Orb\Log\Writer\ArrayWriter;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class PhpMailAccount implements OutgoingAccountInterface
 {
-	protected function configure()
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setOptions(array $options)
 	{
-		$this->setDefinition(array(
-		))->setName('dp:test');
+
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getOptions()
 	{
-		$logger = new Logger();
-		$wr = new ArrayWriter();
-		$logger->addWriter($wr);
+		return array();
+	}
 
-		$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
-			'host'     => 'imap.gmail.com',
-			'port'     => '993',
-			'user'     => 'dpug@nadeau.ws',
-			'password' => 'dp!!ug!!',
-			'ssl'      => 'SSL',
-			'logger'   => $logger
-		));
-
-		echo $wr->getMessagesAsString();
-
-		echo "\n\n";
-
-		echo "\n\n";
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getTypeName()
+	{
+		return 'mail';
 	}
 }

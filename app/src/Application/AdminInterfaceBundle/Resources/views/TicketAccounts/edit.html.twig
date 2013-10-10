@@ -162,7 +162,20 @@
 							</div>
 							<div class="ng-hide" ng-show="form.email_transport.transport_type == 'mail'">
 								<div class="inner-group">
-									Send mail through the basic server mail() function with PHP.
+									<table width="100%" class="inner-form-table">
+										<tr>
+											<th width="75">PHP Mail</th>
+											<td>
+												Send mail through the server <code><a href="http://www.php.net/mail">mail()</a></code> function.
+											</td>
+										</tr>
+										<tr>
+											<th>&nbsp;</th>
+											<td>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+											</td>
+										</tr>
+									</table>
 								</div>
 							</div>
 							<div class="ng-hide" ng-show="form.email_transport.transport_type == 'smtp'">
@@ -180,7 +193,7 @@
 											<th>Secure</th>
 											<td>
 												<label>
-													<input type="checkbox" ng-true-value="ssl" ng-model="form.out_smtp_account.secure" /> Enable secure network connection (SSL)
+													<input type="checkbox" ng-true-value="ssl" ng-model="form.email_transport.out_smtp_account.secure" /> Enable secure network connection (SSL)
 												</label>
 											</td>
 										</tr>
@@ -190,12 +203,12 @@
 										</tr>
 										<tr>
 											<th>Password</th>
-											<td><input type="text" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.password" style="width: 50%;" /></td>
+											<td><input type="password" class="form-control" name="title" ng-model="form.email_transport.out_smtp_account.password" style="width: 50%;" /></td>
 										</tr>
 										<tr>
 											<th>&nbsp;</th>
 											<td>
-												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
 											</td>
 										</tr>
 									</table>
@@ -217,7 +230,7 @@
 										<tr>
 											<th>&nbsp;</th>
 											<td>
-												<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccount(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
+												<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="icon-bolt"></i> Test Account Settings</button>
 											</td>
 										</tr>
 									</table>
@@ -248,4 +261,7 @@
 			</div>
 		</form>
 	</article>
+
+	{{ ng_tpl('TicketAccounts/test-account-modal.html') }}
+	{{ ng_tpl('TicketAccounts/test-outgoing-modal.html') }}
 </div>

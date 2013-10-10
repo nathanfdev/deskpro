@@ -164,12 +164,16 @@ class TicketAccountsController extends AbstractController
 		$form->submit($data);
 
 		$tester = new OutgoingAccountTester($edit_transport->getOutgoingAccount());
-		$tester->test();
+		$tester->test(
+			$this->in->getString('test_email.to'),
+			$this->in->getString('test_email.from'),
+			$this->in->getString('test_email.subject'),
+			$this->in->getString('test_email.message')
+		);
 
 		return $this->createApiResponse(array(
 			'is_success'    => $tester->isSuccess(),
 			'log'           => $tester->getLog(),
-			'message_count' => $tester->getMessageCount()
 		));
 	}
 }

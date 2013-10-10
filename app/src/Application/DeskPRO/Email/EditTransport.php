@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Email;
 
 use Application\DeskPRO\Email\OutgoingAccount\GmailAccount;
+use Application\DeskPRO\Email\OutgoingAccount\PhpMailAccount;
 use Application\DeskPRO\Email\OutgoingAccount\SmtpAccount;
 use Application\DeskPRO\Entity\EmailTransport;
 
@@ -48,6 +49,11 @@ class EditTransport
 	 * @var string
 	 */
 	public $transport_type;
+
+	/**
+	 * @var \Application\DeskPRO\Email\OutgoingAccount\PhpMailAccount
+	 */
+	public $out_phpmail_account;
 
 	/**
 	 * @var \Application\DeskPRO\Email\OutgoingAccount\GmailAccount
@@ -85,6 +91,9 @@ class EditTransport
 			$this->out_gmail_account = new GmailAccount();
 			$this->out_gmail_account->setOptions($this->transport->transport_options);
 		}
+
+		// Just init the object, its empty
+		$this->out_phpmail_account = new PhpMailAccount();
 	}
 
 	/**
@@ -104,6 +113,8 @@ class EditTransport
 		} else if ($this->transport_type == 'smtp') {
 			$this->transport->transport_type = 'smtp';
 			$this->transport->transport_options = $this->out_smtp_account->getOptions();
+		} else if ($this->transport_type == 'mail') {
+			$this->transport->transport_type = 'mail';
 		}
 	}
 
@@ -113,10 +124,12 @@ class EditTransport
 	 */
 	public function getOutgoingAccount()
 	{
-		if ($this->transport == 'gmail') {
+		if ($this->transport_type == 'gmail') {
 			return $this->out_gmail_account;
-		} else if ($this->transport == 'smtp') {
+		} else if ($this->transport_type == 'smtp') {
 			return $this->out_smtp_account;
+		} else if ($this->transport_type == 'mail') {
+			return $this->out_phpmail_account;
 		}
 
 		return null;
