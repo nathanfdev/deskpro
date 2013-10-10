@@ -169,6 +169,7 @@
         http_params.url = url;
         http_params.data = data_str;
         this.prepareHttpParams(http_params);
+        http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         return this.$http(http_params);
       };
 
@@ -250,6 +251,7 @@
           http_params.data = data_str;
         }
         this.prepareHttpParams(http_params);
+        http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         return this.$http(http_params);
       };
 

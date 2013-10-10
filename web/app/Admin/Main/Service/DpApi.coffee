@@ -120,6 +120,8 @@ define ['angular'], (angular) ->
 			http_params.data   = data_str
 			@prepareHttpParams(http_params)
 
+			http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+
 			return @$http(http_params)
 
 
@@ -173,6 +175,8 @@ define ['angular'], (angular) ->
 			http_params.url    = url
 			http_params.data   = data_str if post_data
 			@prepareHttpParams(http_params)
+
+			http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
 			return @$http(http_params)
 
