@@ -178,7 +178,7 @@
 				</select>
 			</div>
 			<div class="builder-options">
-				<select name="department">
+				<select name="department[]" multiple="multiple">
 					{% for dep in app.departments.getPersonDepartments(app.user, 'tickets') %}
 						{% if dep.children|length %}
 							<optgroup label="{{ dep.title }}">
