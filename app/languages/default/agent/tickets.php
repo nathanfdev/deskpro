@@ -383,4 +383,6 @@
 	'agent.tickets.you_have_locked'                     => 'You have locked this ticket. Other agents will not be able to edit the ticket until it is unlocked.',
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
+	'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
+	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
 );

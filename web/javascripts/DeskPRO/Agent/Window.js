@@ -2644,11 +2644,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
+			var self = this;
 			this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/tickets/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
 				autostart: autostart
 			});
+			this.newTicketLoader.newLinkedTicket = function(ticket_id, message_id) {
+				self.newTicketLoader.nextParams = {
+					ticket_id: ticket_id,
+					message_id: message_id || 0
+				};
+				self.newTicketLoader.open();
+			};
 			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
 		}
 

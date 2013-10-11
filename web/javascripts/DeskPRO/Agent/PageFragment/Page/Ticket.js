@@ -39,6 +39,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('replybox_wrap').data('page', this);
 		this.hasReplyFocused = false;
 
+		if (this.getEl('linked_count').data('count') == "0") {
+			this.getEl('linked_wrap_tab').hide();
+		}
+
 		try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
@@ -1703,6 +1707,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						self.setHold(false);
 						break;
 
+					case 'linked_ticket':
+						DeskPRO_Window.newTicketLoader.newLinkedTicket(self.meta.ticket_id);
+						break;
+
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
 							var el = self.getEl('pending_add');
@@ -2015,6 +2023,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'split':
 				this.showSplitOverlay(messageId);
+				break;
+
+			case 'linked_ticket':
+				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
 				break;
 
 			case 'fwd':

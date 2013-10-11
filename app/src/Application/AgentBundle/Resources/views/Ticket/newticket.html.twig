@@ -21,6 +21,7 @@ pageMeta.baseId = '{{ baseId }}';
 <input type="hidden" name="for_comment_type" id="{{baseId}}_for_comment_type" value="" />
 <input type="hidden" name="for_comment_id" id="{{baseId}}_for_comment_id" value="" />
 <input type="hidden" name="for_chat_id" id="{{baseId}}_for_chat_id" value="" />
+<input type="hidden" name="parent_ticket_id" id="{{baseId}}_parent_ticket_id" value="{{ ticket.id|default(0) }}" />
 <input type="hidden" id="{{baseId}}_action" name="options[action]" value="" />
 
 <div class="pending-info comment" style="display: none;">
@@ -152,7 +153,7 @@ pageMeta.baseId = '{{ baseId }}';
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
 							'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
-							'selected': app.getSetting('core.default_ticket_dep'),
+							'selected': ticket.department_id|default(app.getSetting('core.default_ticket_dep')),
 							with_blank: true
 						} %}
 					</td>
@@ -167,7 +168,7 @@ pageMeta.baseId = '{{ baseId }}';
 									'name': "newticket[category_id]",
 									'id': baseId ~ '_cat',
 									'categories': ticket_options.ticket_categories_hierarchy,
-									'selected': app.getSetting('core.default_ticket_cat'),
+									'selected': ticket.category_id|default(app.getSetting('core.default_ticket_cat')),
 									'with_blank': true
 								} %}
 							</div>
@@ -183,7 +184,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[priority_id]",
 								'id': baseId ~ '_pri',
 								'add_classname': 'ticket_priority',
-								'selected': app.getSetting('core.default_ticket_pri'),
+								'selected': ticket.priority_id|default(app.getSetting('core.default_ticket_pri')),
 								'priorities': ticket_options.ticket_priorities,
 								'with_blank': true
 							} %}
@@ -199,7 +200,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[workflow_id]",
 								'id': baseId ~ '_work',
 								'add_classname': 'ticket_workflow',
-								'selected': app.getSetting('core.default_ticket_work'),
+								'selected': ticket.workflow_id|default(app.getSetting('core.default_ticket_work')),
 								'workflows': ticket_options.ticket_workflows,
 								'with_blank': true
 							} %}
@@ -216,7 +217,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'id': baseId ~ '_prod',
 								'add_classname': 'ticket_product',
 								'products': ticket_options.products_hierarchy,
-								'selected': app.getSetting('core.default_prod_id'),
+								'selected': ticket.product_id|default(app.getSetting('core.default_prod_id')),
 								'with_blank': true
 							} %}
 						</td>
@@ -366,7 +367,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<li class="subject-row">
 							<label>{{ phrase('agent.general.subject') }}:</label>
 							<div>
-								<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
+								<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="{{ ticket.subject }}" />
 							</div>
 						</li>
 						<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
@@ -380,7 +381,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 				</div>
 				<div class="input-wrap unreset">
-					<textarea id="{{baseId}}_message" name="newticket[message]"></textarea>
+					<textarea id="{{baseId}}_message" name="newticket[message]">{{ message.getMessageHtml() }}</textarea>
 					<textarea id="{{baseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
 					<textarea id="{{baseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
 					<input type="hidden" id="{{baseId}}_is_html_reply" name="newticket[is_html_reply]" value="0" />
@@ -415,7 +416,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</td><td valign="middle" style="vertical-align: middle;">
 				<div style="padding-top: 1px; line-height: 100%; margin-left: 10px; float:left;">
 					<label class="hide-note">
-						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') %}checked="checked"{% endif %} />
+						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') or ticket.id %}checked="checked"{% endif %} />
 						<span class="opt-label-text">
 							{{ phrase('agent.general.email_user') }}
 							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_newticket_info') }}"></span>
