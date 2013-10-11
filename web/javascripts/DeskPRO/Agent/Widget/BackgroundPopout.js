@@ -67,6 +67,13 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		 */
 		this.doReset = false;
 
+		/**
+		 * Next time the window is opened, the request will be sent with these params.
+		 *
+		 * @type {null}
+		 */
+		this.nextParams = null;
+
 		if (this.options.autostart) {
 			this.startTimeout();
 		}
@@ -110,6 +117,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 
 		this.xhr = $.ajax({
 			url: this.options.loadUrl,
+			data: this.nextParams || null,
 			type: 'GET',
 			dataType: 'html',
 			context: this,
@@ -120,6 +128,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				this.startTimeout();
 			},
 			success: function(html) {
+				this.nextParams = null;
 				this.template = html;
 
 				if (callback) {
@@ -161,6 +170,14 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	 */
 	open: function(callback) {
 
+		var self = this;
+		var withNextParams = false;
+
+		if (this.nextParams) {
+			withNextParams = true;
+			this.clear();
+		}
+
 		if (this.options.tabRoute && !DeskPRO_Window.paneVis.list) {
 			DeskPRO_Window.runPageRoute(this.options.tabRoute);
 			return;
@@ -201,6 +218,10 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		} else {
 			this.loadTemplate(function(html) {
 				pop.setHtml(html);
+
+				if (withNextParams) {
+					self.template = null;
+				}
 			});
 		}
 

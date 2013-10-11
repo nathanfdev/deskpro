@@ -746,4 +746,21 @@ class Ticket extends AbstractEntityRepository
 
 		return null;
 	}
+
+
+	/**
+	 * Find all linked tickets
+	 *
+	 * @param TicketEntity $parent_ticket
+	 * @return array
+	 */
+	public function getLinkedTickets(TicketEntity $parent_ticket)
+	{
+		return $this->_em->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t
+			WHERE t.parent_ticket = ?0 AND t.status != 'hidden'
+			ORDER BY t.id ASC
+		")->execute(array($parent_ticket));
+	}
 }

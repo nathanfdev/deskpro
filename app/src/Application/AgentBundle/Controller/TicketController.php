@@ -50,6 +50,7 @@ use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -271,6 +272,38 @@ class TicketController extends AbstractController
 		}
 
 		#------------------------------
+		# Linked tickets
+		#------------------------------
+
+		$linked_tickets = array(
+			'parent'   => null,
+			'siblings' => array(),
+			'children' => array(),
+			'count'    => 0
+		);
+
+		if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
+			$linked_tickets['parent'] = $ticket->parent_ticket;
+
+			// Find siblings
+			$linked_tickets['siblings'] = $this->permCheckArray(
+				$this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket->parent_ticket),
+				'view'
+			);
+		}
+
+		$linked_tickets['children'] = $this->permCheckArray(
+			$this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket),
+			'view'
+		);
+
+		$linked_tickets['count'] = array_sum(array(
+			$linked_tickets['parent'] ? 1 : 0,
+			count($linked_tickets['siblings']),
+			count($linked_tickets['children'])
+		));
+
+		#------------------------------
 		# Pre-load person and org
 		#------------------------------
 
@@ -309,6 +342,7 @@ class TicketController extends AbstractController
 			'custom_fields'              => $custom_fields,
 
 			'show_related_content'       => $show_related_content,
+			'linked_tickets'             => $linked_tickets,
 
 			'ticket_messages_block'      => $ticket_messages_block,
 			'logs_block'                 => $logs_block_info['rendered'],
@@ -2915,17 +2949,33 @@ class TicketController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		$ticket = new \Application\DeskPRO\Entity\Ticket();
+		if ($this->in->getUint('ticket_id')) {
+			$ticket = $this->getTicketOr404($this->in->getUint('ticket_id'));
+
+			$message = null;
+			if ($this->in->getUint('message_id')) {
+				$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($this->in->getUint('message_id'));
+			}
+			if (!$message || $message->ticket != $ticket) {
+				$message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+			}
+		} else {
+			$ticket = new \Application\DeskPRO\Entity\Ticket();
+			$message = null;
+		}
+
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
-			'agents' => $agents,
-			'agent_signature' => $this->person->getSignature(),
-	        'agent_signature_html' => $this->person->getSignatureHtml(),
-			'agent_teams' => $agent_teams,
-			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields,
+			'ticket'                 => $ticket,
+			'message'                => $message,
+			'agents'                 => $agents,
+			'agent_signature'        => $this->person->getSignature(),
+	        'agent_signature_html'   => $this->person->getSignatureHtml(),
+			'agent_teams'            => $agent_teams,
+			'ticket_options'         => $ticket_options,
+			'custom_fields'          => $custom_fields,
 		));
 	}
 
@@ -3094,6 +3144,15 @@ class TicketController extends AbstractController
 
 				$newticket->save();
 				$ticket = $newticket->getTicket();
+
+				if ($this->in->getUint('parent_ticket_id')) {
+					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
+					if ($parent_ticket) {
+						$ticket->parent_ticket = $parent_ticket;
+						$this->em->flush($ticket);
+						$this->em->flush();
+					}
+				}
 
 				$this->em->flush();
 
@@ -3519,6 +3578,18 @@ class TicketController extends AbstractController
 		}
 
 		return true;
+	}
+
+	public function permCheckArray($tickets, $check_perm)
+	{
+		if ($tickets instanceof ArrayCollection) {
+			$tickets = $tickets->toArray();
+		}
+
+		$self = $this;
+		return array_filter($tickets, function($t) use ($self, $check_perm) {
+			return $self->checkPerm($t, $check_perm);
+		});
 	}
 
 	/**
