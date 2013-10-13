@@ -413,12 +413,33 @@ define(function() {
 		id: 'tickets.labels',
 		url: '/labels',
 		with_list_view: true,
-		with_nav_view: true,
 		list: {
 			templateName: 'TicketLabels/list.html',
 			controller: 'Admin_TicketLabels_Ctrl_List'
-		}
+		},
+    page: {
+      templateName: 'Index/blank.html',
+      controller: 'Admin_Main_Ctrl_Bare'
+    }
 	});
+  
+  routes.push({
+ 		id: 'tickets.labels.create',
+ 		url: '/go-create',
+ 		page: {
+ 			templateName: 'TicketLabels/edit.html',
+ 			controller: 'Admin_TicketLabels_Ctrl_Edit'
+ 		}
+ 	});
+ 
+ 	routes.push({
+ 		id: 'tickets.labels.edit',
+ 		url: '/{label}',
+ 		page: {
+ 			templateName: 'TicketLabels/edit.html',
+ 			controller: 'Admin_TicketLabels_Ctrl_Edit'
+ 		}
+ 	});  
 
 	//###
 	//# Billing

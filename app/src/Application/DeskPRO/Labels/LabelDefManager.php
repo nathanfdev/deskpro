@@ -254,7 +254,7 @@ class LabelDefManager
 	 * Delete a label definition, and all its usages.
 	 *
 	 * @param $label
-	 * @param null $types
+	 * @param array $types
 	 */
 	public function deleteLabelDef($label, $types = null)
 	{
@@ -279,6 +279,7 @@ class LabelDefManager
 			$this->db->rollback();
 			throw $e;
 		}
+		return true;
 	}
 
 

@@ -5,77 +5,44 @@
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
 			<div class="panel-heading">
-				<div class="pull-right">
-					Sort:&nbsp;
-					<button ng-click="TicketLabelsList.switchSortOrder('label')"
-						ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
-						Alphabetical
-										<span ng-show="order=='label'">
-										&nbsp;
-										<i class="icon-chevron-down" ng-hide="orderReverse"></i>
-										<i class="icon-chevron-up" ng-show="orderReverse"></i>
-										</span>
-					</button>
-					<button ng-click="TicketLabelsList.switchSortOrder('count')"
-						ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
-						Usage Count
-										<span ng-show="order=='count'">
-										&nbsp;
-										<i class="icon-chevron-down" ng-hide="orderReverse"></i>
-										<i class="icon-chevron-up" ng-show="orderReverse"></i>
-										</span>
-					</button>
-				</div>
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{phrase('agent.general.delete')}}</span>
+						</li>
+						<li><a class="btn btn-success" href="#/tickets/labels/go-create"><i class="icon-plus"></i> {{phrase('agent.general.add')}}</a>
+						</li>
+						<li>
+							<button ng-click="TicketLabelsList.switchSortOrder('label')"
+								ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
+								<i class="icon-sort-by-alphabet" ng-hide="orderReverse"></i>
+								<i class="icon-sort-by-alphabet-alt" ng-show="orderReverse"></i>
+							</button>
+						</li>
+						<li>
+							<button ng-click="TicketLabelsList.switchSortOrder('count')"
+								ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
+								<i class="icon-sort-by-order" ng-hide="orderReverse"></i>
+								<i class="icon-sort-by-order-alt" ng-show="orderReverse"></i>
+							</button>
+						</li>
+					</ul>
+				</nav>
 				<h3 ng-if="TicketLabelsList.labels.length" translate="admin.general.count_labels" translate-values="{ count: TicketLabelsList.labels.length }"></h3>
 
 				<h3 ng-if="!TicketLabelsList.labels.length">{{phrase('admin.general.no_labels_yet')}}</h3>
 			</div>
-			<div class="panel-heading">
-				<div class="form-inline row">
-					<div class="form-group col-xs-10">
-						<input class="form-control" ng-model="TicketLabelsList.new_label" ng-disabled="TicketLabelsList.add_mode" placeholder="{{phrase('admin.general.new_label')}}"/>
-					</div>
-					<div class="form-group col-xs-2 row">
-						<a class="btn btn-success" href="" ng-click="TicketLabelsList.addNewLabel()" ng-class="{'active':TicketLabelsList.add_mode}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
-						</a>
-					</div>
-				</div>
-			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">
-					<a href="" ng-hide="label.edit_mode">
+					<a href="#/tickets/labels/{{ng_var('label.label')}}">
 						<div class="pull-right">
-							<span class="badge">{{ng_var('label.count')}}</span>&nbsp;
-							<span class="btn btn-danger btn-xs only-icon" style="margin-top: -3px;"
+							<span class="badge" ng-show="!delete_mode">{{ng_var('label.count')}}</span>&nbsp;
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
 								ng-class="{'active':label.delete_mode}"
-								ng-click="TicketLabelsList.startDelete(label)">
-															<i class="icon-trash"></i>
-														</span>
+								ng-click="TicketLabelsList.startDelete(label)"><i class="icon-trash"></i></span>
 						</div>
 						<h4>
-							<div class="form-inline">
-								<div class="form-group">
-									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" ng-class="{'active':label.edit_mode}" class="icon-edit btn btn-xs btn-primary only-icon"></button>
-								</div>
-								<div class="form-group">
-									&nbsp;&nbsp;<span class="title-text">{{ng_var('label.label')}}</span>
-								</div>
-							</div>
-						</h4>
-					</a>
-					<a href="" ng-show="label.edit_mode" style="padding: 5px 13px;">
-						<div class="pull-right">
-							<button ng-click="TicketLabelsList.saveLabel(label)" ng-class="{'active':label.save_mode}" class="btn btn-sm btn-primary">Save</button>
-						</div>
-						<h4>
-							<div class="form-inline">
-								<div class="form-group">
-									<button ng-click="label.edit_mode=!label.edit_mode;label.new_label=label.label;" ng-class="{'active':label.edit_mode}" class="icon-edit btn btn-xs btn-primary only-icon"></button>
-								</div>
-								<div class="form-group">
-									&nbsp;&nbsp;<input ng-model="label.new_label" ng-disabled="label.save_mode" class="form-control input-sm"/>
-								</div>
-							</div>
+							<span class="title-text">{{ng_var('label.label')}}</span>
 						</h4>
 					</a>
 				</li>

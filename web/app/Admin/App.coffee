@@ -33,6 +33,7 @@ define [
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
+	'Admin/TicketLabels/DataService/TicketLabels',
 ], (
 	angular,
 	DP_LANG,
@@ -67,7 +68,8 @@ define [
 
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
-	Admin_TicketAccounts_DataService_TicketAccounts
+	Admin_TicketAccounts_DataService_TicketAccounts,
+	Admin_TicketLabels_DataService_TicketLabels
 ) ->
 	####################################################################################################################
 	# Main services
@@ -109,6 +111,10 @@ define [
 
 	Admin_App.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->
 		return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
+	])
+
+	Admin_App.service('TicketLabelsData', ['Api', '$q', (Api, $q) ->
+		return new Admin_TicketLabels_DataService_TicketLabels(Api, $q)
 	])
 
 	Admin_App.service('Growl', [ ->

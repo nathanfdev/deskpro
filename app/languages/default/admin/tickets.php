@@ -183,4 +183,6 @@
 	'admin.tickets.edit_account' => 'Edit Account',
 	'admin.tickets.new_account' => 'New Account',
 	'admin.tickets.account_details' => 'Account Details',
+	'admin.tickets.delete_label' => 'Delete Ticket Label',
+	'admin.tickets.delete_label_confirm' => 'Are you sure you want to delete this label?',
 );

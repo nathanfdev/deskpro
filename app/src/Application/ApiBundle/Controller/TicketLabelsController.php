@@ -54,11 +54,16 @@ class TicketLabelsController extends AbstractController
 	public function removeAction($label)
 	{
 		$manager = $this->_getLabelsManager();
-		if (!$manager->deleteLabelDef($label, $this->labels_type)) {
+		try {
+			if (!$manager->deleteLabelDef($label, $this->labels_type)) {
+				throw $this->createNotFoundException();
+			}
+		}
+		catch (\Exception $e) {
 			throw $this->createNotFoundException();
 		}
 
-		return $this->createApiResponse(array(), 201);
+		return $this->createApiResponse(array(), 200);
 	}
 
 	/**

@@ -1,0 +1,42 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3 ng-if="TicketLabelsEdit.label_object.label">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.general.labels') }}  &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketLabelsEdit.label_object.label') }}</em></h3>
+		<h3 ng-if="!TicketLabelsEdit.label_object.label">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.general.labels') }} &rarr; {{ phrase('admin.general.new_label') }}</h3>
+	</header>
+	<article class="pane-content no-pad">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketLabelsEdit.saveLabel()">
+			<div class="panel panel-fill indent">			
+				<br/>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3>{{ phrase('agent.general.label') }} *</h3>
+						</div>
+						<div class="col-lg-9">
+							<div class="inner-group">
+								<input type="text" class="form-control" ng-model="form.label" style="width: 50%;" required autofocus />
+								<span class="help-block">
+									{{ phrase('admin.departments.title_explain') }}
+								</span>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="inner-footer">
+				<div class="text-center">
+					<div dp-hide-spinning="saving_label">
+						<button class="btn btn-primary" ng-disabled="!form.label" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving_label">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</form>
+	</article>
+
+	<div dp-register-message="saved_label">Label {{ ng_var('form.label') }} was saved successfully</div>
+</div>

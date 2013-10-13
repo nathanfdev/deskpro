@@ -16,7 +16,7 @@
 
       Admin_TicketLabels_Ctrl_List.CTRL_AS = 'TicketLabelsList';
 
-      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope'];
+      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope', 'TicketLabelsData'];
 
       Admin_TicketLabels_Ctrl_List.CTRL_TYPE = 'list';
 
@@ -27,64 +27,49 @@
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.initialLoad = function() {
-        var data_promise,
+        var list_promise,
           _this = this;
-        data_promise = this.Api.sendDataGet(['/ticket_labels']).then(function(res) {
-          var label, _i, _len, _ref1, _results;
-          console.log(res.data.api_ticket_labels);
-          _ref1 = res.data.api_ticket_labels.labels;
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            label = _ref1[_i];
-            _results.push(_this.labels.push(label));
-          }
-          return _results;
+        list_promise = this.TicketLabelsData.loadList().then(function(recs) {
+          return _this.labels = recs;
         });
-        return this.$q.all([data_promise]);
+        return this.$q.all([list_promise]);
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.startDelete = function(label) {
-        var _this = this;
+        var inst,
+          _this = this;
         label.delete_mode = true;
-        return this.Api.sendDelete('/ticket_labels/' + label.label).success(function() {
-          return _this.labels.remove(label);
-        })["finally"](function() {}, label.delete_mode = false);
-      };
-
-      Admin_TicketLabels_Ctrl_List.prototype.addNewLabel = function() {
-        var _this = this;
-        if (!this.new_label) {
-          return false;
-        }
-        this.add_mode = true;
-        return this.Api.sendPost('/ticket_labels', {
-          label: this.new_label
-        }).success(function() {
-          return _this.labels.push({
-            label: _this.new_label,
-            count: 0
-          });
-        })["finally"](function() {
-          return _this.add_mode = false;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketLabels/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                $modalInstance.dismiss();
+                return label.delete_mode = false;
+              };
+            }
+          ]
+        });
+        inst.result.then(function() {
+          return _this.deleteLabel(label);
+        });
+        return inst.result["catch"](function() {
+          return label.delete_mode = false;
         });
       };
 
-      Admin_TicketLabels_Ctrl_List.prototype.saveLabel = function(label) {
+      Admin_TicketLabels_Ctrl_List.prototype.deleteLabel = function(label) {
         var _this = this;
-        if (!label.new_label) {
-          return false;
-        }
-        label.save_mode = true;
-        return this.Api.sendPost('/ticket_labels/save', {
-          label_old: label.label,
-          label_new: label.new_label
-        }).success(function() {
-          return label.label = label.new_label;
-        }).error(function() {
-          return label.new_label = label.label;
+        return this.Api.sendDelete('/ticket_labels/' + label.label).success(function() {
+          _this.TicketLabelsData.remove(label);
+          if (_this.$state.current.name === 'tickets.labels.edit' && _this.$state.params.label === label.label) {
+            return _this.$state.go('tickets.labels');
+          }
         })["finally"](function() {
-          label.edit_mode = false;
-          return label.save_mode = false;
+          return label.delete_mode = false;
         });
       };
 
@@ -94,7 +79,7 @@
         if (from === to) {
           this.$scope.orderReverse = !this.$scope.orderReverse;
         } else {
-          this.$scope.orderReverse = to === 'label';
+          this.$scope.orderReverse = !(to === 'label');
         }
         return this.$scope.order = to;
       };
