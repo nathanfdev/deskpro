@@ -299,7 +299,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</label>
 							<div>
 								{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
-								{% else %}{% set agent_id = ticket.agent %}{% endif %}
+								{% else %}{% set agent_id = ticket.agent.id %}{% endif %}
 
 								<select name="newticket[agent_id]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 									<option {% if not app.getSetting('core_tickets.new_assign') %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>
