@@ -1141,7 +1141,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.getEl('signature_value_html').val() || "";
 			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
-			if (sig && !this.getEl('parent_ticket_id').val()) {
+			if (sig && parseInt(this.getEl('parent_ticket_id').val()) === 0) {
 				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
 			}
 
