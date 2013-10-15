@@ -675,7 +675,7 @@ class TicketTerms
 
 				$match = false;
 				foreach ($header as $h) {
-					if ($this->_testChoiceMatch($h, $op, $choice['header_value'])) {
+					if ($this->_testStringMatch($h, $op, $choice['header_value'])) {
 						$match = true;
 						break;
 					}
