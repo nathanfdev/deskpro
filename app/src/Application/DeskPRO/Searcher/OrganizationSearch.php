@@ -390,7 +390,7 @@ class OrganizationSearch extends SearcherAbstract
 								case self::OP_IS:
 									$joins[] = array(
 										'custom_data_organizations',
-										"LEFT JOIN custom_data_person AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
+										"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
 									);
 									$wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
 									break;
@@ -399,7 +399,7 @@ class OrganizationSearch extends SearcherAbstract
 								case self::OP_NOT:
 									$joins[] = array(
 										'custom_data_organizations',
-										"LEFT JOIN custom_data_person AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
+										"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
 									);
 									$wheres[] = "custom_data_organizations_$join_id.id IS NULL";
 									break;
