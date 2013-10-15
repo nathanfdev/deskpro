@@ -1361,7 +1361,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->setPersonContext($person);
 		$newticket->gateway = $this->gateway;
 		$newticket->gateway_address = $this->gateway_address;
-		if ($this->gateway->department) {
+		if ($this->gateway->department && !count($this->gateway->department->getChildren())) {
 			$newticket->ticket->department_id = $this->gateway->department->getId();
 		}
 		$newticket->sent_to = $this->sent_to;
