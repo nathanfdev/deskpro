@@ -19,5 +19,5 @@ Feature: Admin Tickets Labels page
 		And admin sections are loaded
 		And I fill in "label" with "Behat Label"
 		And I press "Save"
-		Then I should see "Label Behat Label was saved successfully"
+		Then I should see "Behat Label"
           
