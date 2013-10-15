@@ -368,6 +368,8 @@ class NewsController extends AbstractController
 		$formType = new \Application\AgentBundle\Form\Type\NewNews();
 		$form = $this->get('form.factory')->create($formType, $newnews);
 
+		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", array($this->person->id));
+
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 			$form->isValid();

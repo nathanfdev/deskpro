@@ -437,6 +437,8 @@ class DownloadsController extends AbstractController
 		$formType = new \Application\AgentBundle\Form\Type\NewDownload();
 		$form = $this->get('form.factory')->create($formType, $newdownload);
 
+		$this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newdownload' AND person_id = ?", array($this->person->id));
+
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
