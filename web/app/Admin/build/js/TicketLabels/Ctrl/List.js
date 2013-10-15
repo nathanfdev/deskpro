@@ -16,7 +16,7 @@
 
       Admin_TicketLabels_Ctrl_List.CTRL_AS = 'TicketLabelsList';
 
-      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope', 'TicketLabelsData', 'TicketLabelsFilterEncodeURIComponent'];
+      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope', 'TicketLabelsData'];
 
       Admin_TicketLabels_Ctrl_List.CTRL_TYPE = 'list';
 
@@ -24,6 +24,10 @@
         this.labels = [];
         this.new_label = '';
         this.add_mode = false;
+        this.$scope.escape_url = function(text) {
+          return encodeURIComponent(text);
+        };
+        console.log(this.$scope);
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.initialLoad = function() {

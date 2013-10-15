@@ -425,10 +425,19 @@ define(function() {
 
   routes.push({
  		id: 'tickets.labels.create',
- 		url: '/go-create',
+ 		url: '/create',
  		page: {
  			templateName: 'TicketLabels/edit.html',
  			controller: 'Admin_TicketLabels_Ctrl_Edit'
+ 		}
+ 	});
+
+  routes.push({
+ 		id: 'tickets.labels.gocreate',
+ 		url: '/go-create',
+ 		page: {
+ 			templateName: 'TicketLabels/edit.html',
+      controller: ['$state', function ($state) { $state.go('tickets.labels.create'); }]
  		}
  	});
 
@@ -572,7 +581,7 @@ define(function() {
 
 	routes.push({
 		id: 'tickets.ticket_accounts.gocreate',
-		url: '/go-create',
+		url: '/labecreate',
 		page: {
 			template: '',
 			controller: ['$state', function ($state) { $state.go('tickets.ticket_accounts.create'); }]

@@ -67,7 +67,10 @@
           _this.stopSpinner('saving_label', true).then(function() {
             return _this.Growl.success(_this.getRegisteredMessage('saved_label'));
           });
-          return _this.$state.go('tickets.labels.go-create');
+          _this.skipDirtyState();
+          return _this.$state.go('tickets.labels.gocreate');
+        }).error(function() {
+          return _this.Growl.error(_this.getRegisteredMessage('not_created_label'));
         })["finally"](function() {
           return _this.stopSpinner('saving_label', true);
         });
@@ -90,10 +93,26 @@
           _this.stopSpinner('saving_label', true).then(function() {
             return _this.Growl.success(_this.getRegisteredMessage('saved_label'));
           });
+          _this.skipDirtyState();
           return _this.$state.go('tickets.labels');
-        }).error(function() {})["finally"](function() {
+        }).error(function() {
+          return _this.Growl.error(_this.getRegisteredMessage('not_saved_label'));
+        })["finally"](function() {
           return _this.stopSpinner('saving_label', true);
         });
+      };
+
+      Admin_TicketLabels_Ctrl_Edit.prototype.checkDirtyState = function() {
+        if (this.label_object.label && !this.form.label) {
+          return true;
+        }
+        if (this.label_object.label && this.form.label && this.label_object.label !== this.form.label) {
+          return true;
+        }
+        if (!this.label_object.label && this.form.label) {
+          return true;
+        }
+        return false;
       };
 
       return Admin_TicketLabels_Ctrl_Edit;

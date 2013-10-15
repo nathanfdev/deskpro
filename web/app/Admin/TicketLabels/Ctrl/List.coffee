@@ -2,13 +2,18 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketLabels_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketLabels_Ctrl_List'
 		@CTRL_AS = 'TicketLabelsList'
-		@DEPS = ['$scope', 'TicketLabelsData','TicketLabelsFilterEncodeURIComponent']
+		@DEPS = ['$scope', 'TicketLabelsData']
 		@CTRL_TYPE = 'list'
 
 		init: ->
 			@labels = []
 			@new_label = ''
 			@add_mode = false
+			@$scope.escape_url = (text)->
+				return encodeURIComponent(text)
+			
+			console.log @$scope
+				
 			return
 
 		initialLoad: ->

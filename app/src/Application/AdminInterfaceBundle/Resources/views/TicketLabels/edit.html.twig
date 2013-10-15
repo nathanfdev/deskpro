@@ -17,7 +17,7 @@
 						</div>
 						<div class="col-lg-9">
 							<div class="inner-group" dp-error-class="form_props.title">
-								<input type="text" class="form-control" ng-model="form.label" style="width: 50%;" required autofocus/>
+								<input type="text" class="form-control" name="label"  ng-model="form.label" style="width: 50%;" required autofocus/>
 								<span class="help-block">
 									{{phrase('admin.departments.title_explain')}}
 								</span>
@@ -32,10 +32,10 @@
 				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 					<p><strong>{{phrase('admin.general.please_correct_errors')}}</strong></p>
 					<ul>
-						<li ng-show="form_props.title.$error.required">{{phrase('admin.general.label_edit_error')}}</li>
+						<li ng-show="form_props.label.$error.required">{{phrase('admin.general.label_edit_error')}}</li>
 					</ul>
 				</div>
-				<div class="text-center">
+				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
 					<div dp-hide-spinning="saving_label">
 						<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 					</div>
@@ -48,4 +48,6 @@
 	</article>
 
 	<div dp-register-message="saved_label">Label {{ng_var('form.label')}} was saved successfully</div>
+	<div dp-register-message="not_saved_label">Label {{ng_var('form.label')}} was not saved</div>
+	<div dp-register-message="not_created_label">Label {{ng_var('form.label')}} was not created</div>
 </div>

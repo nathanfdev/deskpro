@@ -36,7 +36,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 						@Growl.success(@getRegisteredMessage('saved_label'))
 					)
 					@skipDirtyState()
-					@$state.go('tickets.labels.go-create')
+					@$state.go('tickets.labels.gocreate')
+				)
+			.error(=>
+					@Growl.error(@getRegisteredMessage('not_created_label'))
 				)
 			.finally(=>
 					@stopSpinner('saving_label', true)
@@ -58,13 +61,14 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@skipDirtyState()
 				@$state.go('tickets.labels')
 			).error(=>
-
+				@Growl.error(@getRegisteredMessage('not_saved_label'))
 			).finally(=>
 				@stopSpinner('saving_label', true)
 			)
 
 		checkDirtyState: ->
 			if (@label_object.label and !@form.label) then return true
+			if (@label_object.label and @form.label and @label_object.label!=@form.label) then return true
 			if (!@label_object.label and @form.label) then return true
 			return false
 
