@@ -34,7 +34,7 @@ class TicketLabelsController extends AbstractController
 			return $this->createApiResponse(array(), 200);
 		}
 		else {
-			return $this->createApiResponse(array('labels' => $existing_labels, 'label' => $label), 400);
+			return $this->createApiResponse(array(), 400);
 		}
 	}
 
@@ -44,7 +44,7 @@ class TicketLabelsController extends AbstractController
 		$label_old = $this->in->getString('label_old');
 		$label_new = $this->in->getCleanValue('label_new', 'string');
 		$manager->renameLabelDef($label_old, $label_new, $this->labels_type);
-		return $this->createApiResponse(array('old' => $label_old, 'new' => $label_new), 200);
+		return $this->createApiResponse(array(), 200);
 	}
 
 	public function removeAction($label)

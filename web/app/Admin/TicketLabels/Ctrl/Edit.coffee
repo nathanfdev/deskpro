@@ -35,6 +35,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					@stopSpinner('saving_label', true).then(=>
 						@Growl.success(@getRegisteredMessage('saved_label'))
 					)
+					@skipDirtyState()
+					@$state.go('tickets.labels.go-create')
 				)
 			.finally(=>
 					@stopSpinner('saving_label', true)
@@ -53,10 +55,17 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@stopSpinner('saving_label', true).then(=>
 					@Growl.success(@getRegisteredMessage('saved_label'))
 				)
+				@skipDirtyState()
+				@$state.go('tickets.labels')
 			).error(=>
 
 			).finally(=>
 				@stopSpinner('saving_label', true)
 			)
+
+		checkDirtyState: ->
+			if (@label_object.label and !@form.label) then return true
+			if (!@label_object.label and @form.label) then return true
+			return false
 
 	Admin_TicketLabels_Ctrl_Edit.EXPORT_CTRL()

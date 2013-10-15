@@ -64,9 +64,10 @@
             count: 0
           });
           _this.label_object = _this.TicketLabelsData.getObjectByLabel(_this.form.label);
-          return _this.stopSpinner('saving_label', true).then(function() {
+          _this.stopSpinner('saving_label', true).then(function() {
             return _this.Growl.success(_this.getRegisteredMessage('saved_label'));
           });
+          return _this.$state.go('tickets.labels.go-create');
         })["finally"](function() {
           return _this.stopSpinner('saving_label', true);
         });
@@ -86,9 +87,10 @@
           label_new: this.form.label
         }).success(function() {
           _this.label_object.label = _this.form.label;
-          return _this.stopSpinner('saving_label', true).then(function() {
+          _this.stopSpinner('saving_label', true).then(function() {
             return _this.Growl.success(_this.getRegisteredMessage('saved_label'));
           });
+          return _this.$state.go('tickets.labels');
         }).error(function() {})["finally"](function() {
           return _this.stopSpinner('saving_label', true);
         });

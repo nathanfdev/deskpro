@@ -159,4 +159,5 @@
 	'admin.general.labels'                              => 'Labels',
 	'admin.general.new_label'                           => 'New Label',
 	'admin.general.no_labels_yet'                       => 'No labels yet',
+	'admin.general.label_edit_error'                    => 'You must enter a valid label',
 );
