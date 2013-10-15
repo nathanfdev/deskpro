@@ -75,7 +75,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 	 * @var array
 	 */
 	protected $autostart_interfaces = array(
-		'admin', 'agent', 'user', 'dp'
+		'admin', 'agent', 'reports', 'user', 'dp'
 	);
 
 	public function __construct(

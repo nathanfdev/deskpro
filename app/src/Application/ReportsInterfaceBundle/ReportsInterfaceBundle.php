@@ -26,40 +26,29 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace DeskPRO\Kernel;
+namespace Application\ReportsInterfaceBundle;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
+use Symfony\Component\Console\Application;
 
-use Application\DeskPRO\App;
-
-class ReportKernel extends AbstractKernel
+class ReportsInterfaceBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	protected function registerAdditionalBundles()
+	public function registerCommands(Application $application)
 	{
-		$bundles = array(
-			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
-			new \Application\ReportBundle\ReportBundle(),
-		);
 
-		return $bundles;
 	}
 
-	public function registerContainerConfiguration(LoaderInterface $loader)
+	public function getNamespace()
 	{
-		$loader->load(DP_ROOT.'/sys/config/report/config_'.$this->getEnvironment().'.php');
+		return __NAMESPACE__;
+	}
+
+	public function getPath()
+	{
+		return __DIR__;
 	}
 }

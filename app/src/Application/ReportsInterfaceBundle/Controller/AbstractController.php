@@ -26,40 +26,89 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace DeskPRO\Kernel;
-
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
+namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
-class ReportKernel extends AbstractKernel
+abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
-	protected function registerAdditionalBundles()
-	{
-		$bundles = array(
-			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
-			new \Application\ReportBundle\ReportBundle(),
-		);
+	/**
+	 * The currently logged in person.
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	public $person;
 
-		return $bundles;
+	protected function init()
+	{
+		parent::init();
+		$this->person = $this->session->getPerson();
 	}
 
-	public function registerContainerConfiguration(LoaderInterface $loader)
+	/**
+	 * Check if the global request token check is required for the request
+	 */
+	public function requireRequestToken($action, $arguments = null)
 	{
-		$loader->load(DP_ROOT.'/sys/config/report/config_'.$this->getEnvironment().'.php');
+		if ($this->request->getMethod() == 'POST') {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Force a login
+	 */
+	public function preAction($action, $arguments = null)
+	{
+		if (!$this->person['id']) {
+			if ($this->isPostRequest()) {
+				$return = $this->get('router')->generate('reports');
+			} else {
+				$return = $this->request->getRequestUri();
+			}
+
+			if ($this->request->isXmlHttpRequest()) {
+				$data = array(
+					'error' => 'session_expired'
+				);
+
+				return $this->createJsonResponse($data, 403);
+			}
+		}
+
+		if (!$this->_userHasPermissions()) {
+			return $this->redirectRoute('agent');
+		}
+
+		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+			if ($this->request->isXmlHttpRequest()) {
+				$data = array(
+					'error' => 'invalid_request_token',
+					'redirect_login' => $this->generateUrl('agent_login')
+				);
+
+				return $this->createJsonResponse($data, 403);
+			} else {
+				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
+			}
+		}
+
+		return null;
+	}
+
+	protected function _userHasPermissions()
+	{
+		if ($this->person->is_agent && $this->person->can_reports) {
+			return true;
+		}
+
+		return false;
 	}
 }

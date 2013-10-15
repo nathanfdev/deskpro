@@ -27,7 +27,7 @@ $collection->add('report_login_authenticate_local', new Route(
 ));
 
 $collection->add('report', new Route(
-	'/',
+	'/old_home',
 	array('_controller' => 'ReportBundle:Overview:index'),
 	array(),
 	array()

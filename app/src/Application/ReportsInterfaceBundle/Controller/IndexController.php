@@ -26,40 +26,31 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace DeskPRO\Kernel;
+namespace Application\ReportsInterfaceBundle\Controller;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
-
-use Application\DeskPRO\App;
-
-class ReportKernel extends AbstractKernel
+class IndexController extends AbstractController
 {
-	protected function registerAdditionalBundles()
+	public function interfaceAction()
 	{
-		$bundles = array(
-			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
-			new \Application\ReportBundle\ReportBundle(),
-		);
+		$token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($this->person);
+		if (!$token) {
+			$token = new \Application\DeskPRO\Entity\ApiToken();
+			$token->person = $this->person;
+		} else if ($token->date_expires && $token->date_expires->getTimestamp() < time()) {
+			$token->regenerateToken();
+		}
+		$token->date_expires = null;
 
-		return $bundles;
-	}
+		$this->em->persist($token);
+		$this->em->flush();
 
-	public function registerContainerConfiguration(LoaderInterface $loader)
-	{
-		$loader->load(DP_ROOT.'/sys/config/report/config_'.$this->getEnvironment().'.php');
+		return $this->render('ReportsInterfaceBundle:Index:interface.html.twig', array(
+			'api_token'     => $token,
+		));
 	}
 }
