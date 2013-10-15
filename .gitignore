@@ -51,6 +51,7 @@
 /data/emailstore
 
 /web/build
+/web/app/Admin/build
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report
