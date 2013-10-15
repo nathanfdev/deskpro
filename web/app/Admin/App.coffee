@@ -34,6 +34,7 @@ define [
 	'Admin/Main/DataService/Departments',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
 	'Admin/TicketLabels/DataService/TicketLabels',
+	'Admin/TicketLabels/Filter/encodeURIComponent',
 ], (
 	angular,
 	DP_LANG,
@@ -69,7 +70,8 @@ define [
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
 	Admin_TicketAccounts_DataService_TicketAccounts,
-	Admin_TicketLabels_DataService_TicketLabels
+	Admin_TicketLabels_DataService_TicketLabels,
+	Admin_TicketLabels_Filter_encodeURIComponent
 ) ->
 	####################################################################################################################
 	# Main services
@@ -115,6 +117,10 @@ define [
 
 	Admin_App.service('TicketLabelsData', ['Api', '$q', (Api, $q) ->
 		return new Admin_TicketLabels_DataService_TicketLabels(Api, $q)
+	])
+
+	Admin_App.filter('TicketLabelsFilterEncodeURIComponent', [ ->
+		return new Admin_TicketLabels_Filter_encodeURIComponent()
 	])
 
 	Admin_App.service('Growl', [ ->

@@ -34,7 +34,7 @@
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">
-					<a href="#/tickets/labels/{{ng_var('label.label')}}">
+					<a href="#/tickets/labels/{{ng_var('label.label | TicketLabelsFilterEncodeURIComponent')}}">
 						<div class="pull-right">
 							<span class="badge" ng-show="!delete_mode">{{ng_var('label.count')}}</span>&nbsp;
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"

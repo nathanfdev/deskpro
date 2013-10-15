@@ -16,7 +16,7 @@
 
       Admin_TicketLabels_Ctrl_List.CTRL_AS = 'TicketLabelsList';
 
-      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope', 'TicketLabelsData'];
+      Admin_TicketLabels_Ctrl_List.DEPS = ['$scope', 'TicketLabelsData', 'TicketLabelsFilterEncodeURIComponent'];
 
       Admin_TicketLabels_Ctrl_List.CTRL_TYPE = 'list';
 

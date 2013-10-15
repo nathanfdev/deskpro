@@ -12,12 +12,8 @@ class TicketLabelsController extends AbstractController
 
 	public function listAction()
 	{
-		$manager = $this->_getLabelsManager();
-		$labels  = $manager->getLabelsAndCounts($this->labels_type);
-		// debug
-		if (empty($labels)) {
-			$labels = array('test_me' => 1, 'label test' => 18, 'zzz' => 15, 'xxxx' => 4);
-		}
+		$manager             = $this->_getLabelsManager();
+		$labels              = $manager->getLabelsAndCounts($this->labels_type);
 		$api_response_labels = array();
 		if (!empty($labels)) {
 			foreach ($labels as $label => $count) {
