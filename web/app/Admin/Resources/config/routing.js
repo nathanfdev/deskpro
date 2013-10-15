@@ -422,7 +422,7 @@ define(function() {
       controller: 'Admin_Main_Ctrl_Bare'
     }
 	});
-  
+
   routes.push({
  		id: 'tickets.labels.create',
  		url: '/go-create',
@@ -431,15 +431,15 @@ define(function() {
  			controller: 'Admin_TicketLabels_Ctrl_Edit'
  		}
  	});
- 
+
  	routes.push({
  		id: 'tickets.labels.edit',
- 		url: '/{label}',
+ 		url: '/{label:.*}',
  		page: {
  			templateName: 'TicketLabels/edit.html',
  			controller: 'Admin_TicketLabels_Ctrl_Edit'
  		}
- 	});  
+ 	});
 
 	//###
 	//# Billing
