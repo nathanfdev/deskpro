@@ -2993,6 +2993,22 @@ class TicketController extends AbstractController
 		} else {
 			$ticket = new \Application\DeskPRO\Entity\Ticket();
 			$message = null;
+
+			if ($this->settings->get('core.default_ticket_dep')) {
+				$ticket->setDepartmentId($this->settings->get('core.default_ticket_dep'));
+			}
+			if ($this->settings->get('core.default_ticket_cat')) {
+				$ticket->setCategoryId($this->settings->get('core.default_ticket_cat'));
+			}
+			if ($this->settings->get('core.default_ticket_pri')) {
+				$ticket->setPriorityId($this->settings->get('core.default_ticket_pri'));
+			}
+			if ($this->settings->get('core.default_ticket_work')) {
+				$ticket->setWorkflowId($this->settings->get('core.default_ticket_work'));
+			}
+			if ($this->settings->get('core.default_prod_id')) {
+				$ticket->setProductId($this->settings->get('core.default_prod_id'));
+			}
 		}
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');

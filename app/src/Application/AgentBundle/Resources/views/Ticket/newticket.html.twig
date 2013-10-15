@@ -153,7 +153,7 @@ pageMeta.baseId = '{{ baseId }}';
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
 							'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
-							'selected': ticket.department_id|default(app.getSetting('core.default_ticket_dep')),
+							'selected': ticket.department_id,
 							with_blank: true
 						} %}
 					</td>
@@ -168,7 +168,7 @@ pageMeta.baseId = '{{ baseId }}';
 									'name': "newticket[category_id]",
 									'id': baseId ~ '_cat',
 									'categories': ticket_options.ticket_categories_hierarchy,
-									'selected': ticket.category_id|default(app.getSetting('core.default_ticket_cat')),
+									'selected': ticket.category_id,
 									'with_blank': true
 								} %}
 							</div>
@@ -184,7 +184,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[priority_id]",
 								'id': baseId ~ '_pri',
 								'add_classname': 'ticket_priority',
-								'selected': ticket.priority_id|default(app.getSetting('core.default_ticket_pri')),
+								'selected': ticket.priority_id,
 								'priorities': ticket_options.ticket_priorities,
 								'with_blank': true
 							} %}
@@ -200,7 +200,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[workflow_id]",
 								'id': baseId ~ '_work',
 								'add_classname': 'ticket_workflow',
-								'selected': ticket.workflow_id|default(app.getSetting('core.default_ticket_work')),
+								'selected': ticket.workflow_id,
 								'workflows': ticket_options.ticket_workflows,
 								'with_blank': true
 							} %}
@@ -217,7 +217,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'id': baseId ~ '_prod',
 								'add_classname': 'ticket_product',
 								'products': ticket_options.products_hierarchy,
-								'selected': ticket.product_id|default(app.getSetting('core.default_prod_id')),
+								'selected': ticket.product_id,
 								'with_blank': true
 							} %}
 						</td>
