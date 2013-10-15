@@ -52,7 +52,8 @@
 	'admin.departments.usergroup_perms_explain2'                   => 'Note that it is still possible for agents to change the department to one that a user would not normally have access to. Triggers can also be used to assign any department regardless of user permissions. User group permissions are therefore very much about what the user can select themselves.',
 	'admin.departments.widgets'                                    => 'Widgets',
 	'admin.departments.linked_account'                             => 'Email Account',
-	'admin.departments.linked_account_explain'                     => 'You can define a 1-to-1 link between this department and one of your email accounts. When an email arrives in the email account, this department will be set and when any ticket is in this department, the "From" address will be set to the email account.',
+	'admin.departments.linked_account_explain'                     => 'When this department is selected, send email notifications "From" the selected email account.',
 	'admin.departments.linked_account_none_explain'                => 'All of your email accounts are currently linked to other departments.',
 	'admin.departments.saved_dep_x_success'                        => 'Saved department "{{title}}" successfully',
+	'admin.departments.email_account_required'                     => 'Please select an email account to use with this department.',
 );

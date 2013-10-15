@@ -99,6 +99,9 @@
             agentgroups: dep_data.perms_agentgroup_ids,
             agents: dep_data.perms_agent_ids
           }, data_results.data.api_agents_list.agents, data_results.data.api_agentgroups_list.agentgroups, data_results.data.api_usergroups_list.usergroups);
+          if (_this.dep.email_gateway_id === 0 && _this.email_accounts.length) {
+            _this.dep.email_gateway_id = _.first(_this.email_accounts).id;
+          }
           _this.saveState('dep', 'agent_perms', 'usergroups');
           if (_this.dep.id) {
             return _this.resolveWaitEntityPromise();
@@ -178,26 +181,7 @@
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initEmailAccountsData = function(accounts) {
-        var account, any, _i, _len, _ref1;
-        this.email_accounts = [];
-        this.email_accounts_inuse = [];
-        any = false;
-        for (_i = 0, _len = accounts.length; _i < _len; _i++) {
-          account = accounts[_i];
-          if (!account.is_enabled) {
-            continue;
-          }
-          if (!account.department || ((_ref1 = account.department) != null ? _ref1.id : void 0) === this.dep.id) {
-            this.email_accounts.push(account);
-          } else {
-            this.email_accounts_inuse.push(account);
-          }
-        }
-        if (!this.email_accounts.length) {
-          return this.show_no_emailaccount = true;
-        } else {
-          return this.show_no_emailaccount = false;
-        }
+        return this.email_accounts = accounts;
       };
 
       /**
@@ -287,7 +271,10 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.getPropsData = function() {
-        return this.dep.getData();
+        var data;
+        data = this.dep.getData();
+        data.email_gateway = this.dep.email_gateway_id;
+        return data;
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.propogatePermission = function(obj, perm) {

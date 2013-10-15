@@ -82,22 +82,20 @@
 								</div>
 							</div>
 						</div>
-						<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length || TicketDepsEdit.email_accounts_inuse.length">
+						<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length" dp-error-class="form_props.email_gateway_id">
 							<div class="col-lg-2">
 								<h3>{{ phrase('admin.departments.linked_account') }}</h3>
 							</div>
 							<div class="col-lg-10">
 								<select
+									name="email_gateway_id"
 									ui-select2
 									ng-model="TicketDepsEdit.dep.email_gateway_id"
 									style="min-width: 240px"
 									class="no-search"
+									required
 								>
-									<option value="0">{{ phrase('agent.general.none') }}</option>
-									<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts">{{ ng_var('account.primary_address.match_pattern') }}</option>
-									<optgroup label="Already in use" ng-if="TicketDepsEdit.email_accounts_inuse.length">
-										<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts_inuse" disabled>{{ ng_var('account.primary_address.match_pattern') }}</option>
-									</optgroup>
+									<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts">{{ ng_var('account.email_address') }}</option>
 								</select>
 								<span class="help-block">
 									{{ phrase('admin.departments.linked_account_explain') }}
@@ -267,6 +265,7 @@
 					<p><strong>{{ phrase('admin.general.please_correct_errors') }}</strong></p>
 					<ul>
 						<li ng-show="form_props.title.$error.required">{{ phrase('admin.departments.title_error') }}</li>
+						<li ng-show="form_props.email_gateway_id.$error">{{ phrase('admin.departments.email_account_required') }}</li>
 					</ul>
 				</div>
 

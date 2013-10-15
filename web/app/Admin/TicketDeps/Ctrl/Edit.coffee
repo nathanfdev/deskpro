@@ -97,6 +97,9 @@ define [
 					data_results.data.api_usergroups_list.usergroups
 				)
 
+				if @dep.email_gateway_id == 0 and @email_accounts.length
+					@dep.email_gateway_id = _.first(@email_accounts).id
+
 				@saveState('dep', 'agent_perms', 'usergroups')
 
 				if @dep.id
@@ -152,22 +155,7 @@ define [
 
 
 		initEmailAccountsData: (accounts) ->
-			@email_accounts = []
-			@email_accounts_inuse = []
-
-			any = false
-			for account in accounts
-				if not account.is_enabled then continue
-
-				if not account.department or account.department?.id == @dep.id
-					@email_accounts.push(account)
-				else
-					@email_accounts_inuse.push(account)
-
-			if not @email_accounts.length
-				@show_no_emailaccount = true
-			else
-				@show_no_emailaccount = false
+			@email_accounts = accounts
 
 		###*
 		# Save everything
@@ -256,7 +244,9 @@ define [
 		# Gets property data
 		###
 		getPropsData: ->
-			return @dep.getData()
+			data = @dep.getData()
+			data.email_gateway = @dep.email_gateway_id
+			return data
 
 		propogatePermission: (obj, perm) ->
 			if @_propogatePermission_running then return
