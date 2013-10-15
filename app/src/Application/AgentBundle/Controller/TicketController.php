@@ -997,7 +997,11 @@ class TicketController extends AbstractController
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
 
-		$ticket = $this->getTicketOr404($ticket_id, 'reply');
+		if ($this->in->getBool('options.is_note')) {
+			$ticket = $this->getTicketOr404($ticket_id, 'modify_notes');
+		} else {
+			$ticket = $this->getTicketOr404($ticket_id, 'reply');
+		}
 
 		$action_type = $this->in->getString('options.action');
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);

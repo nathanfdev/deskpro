@@ -1112,6 +1112,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				statusMacroListMap[macro_id] = this;
 			});
 		}
+
+		// Depending on perms, the note tab might be already on
+		// And we need ot run certain other hide/show actions
+		if (this.el.hasClass('dp-note-on')) {
+			this.getElById('replybox_notetab_btn').click();
+		}
 	},
 
 	setReplyAsOptionName: function(name) {

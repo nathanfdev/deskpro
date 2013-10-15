@@ -528,7 +528,7 @@ pageMeta.lang = {{ {
 {{ dp_widgets(baseId, 'ticket', 'messages', 'above', ticket_api) }}
 
 {% if app.user.getPref('agent.ticket_reverse_order') %}
-	{% if ticket_perms.reply or ticket_perms.modify_note %}
+	{% if ticket_perms.reply or ticket_perms.modify_notes %}
 	<div style="position:relative;" class="ticket_reverse_order">
 		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
@@ -718,7 +718,7 @@ pageMeta.lang = {{ {
 {{ dp_widgets(baseId, 'ticket', 'reply', 'above', ticket_api) }}
 
 {% if not app.user.getPref('agent.ticket_reverse_order') %}
-	{% if ticket_perms.reply or ticket_perms.modify_note %}
+	{% if ticket_perms.reply or ticket_perms.modify_notes %}
 	<div style="position:relative;">
 		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
