@@ -1261,7 +1261,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.doScrollBottom = false;
 			} else if (toReplyHeight) {
 				var oWrap = this.wrapper.find('div.layout-content').first();
-				oWrap.trigger('goscrollto', toReplyHeight+10);
+				if (oWrap.height() < oWrap.data('dp-scroll-height')) {
+					oWrap.trigger('goscrollto', toReplyHeight+10);
+				}
 			}
 
 			this.getEl('labels_wrap').find('.select2-input').width('95%');
