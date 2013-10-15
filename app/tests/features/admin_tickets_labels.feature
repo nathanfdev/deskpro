@@ -19,6 +19,7 @@ Feature: Admin Tickets Labels page
 		And admin sections are loaded
 		And I fill in "label" with "Behat Label"
 		And I press "Save"
+		And I reload the page
 		And admin sections are loaded
 		And admin page is loaded
 		Then I should see "Behat Label"
@@ -31,6 +32,7 @@ Feature: Admin Tickets Labels page
 		And admin sections are loaded
 		And I fill in "label" with "B-e-h-a-t L-a-b-e-l"
 		And I press "Save"
+		And I reload the page
 		And admin sections are loaded
 		And admin page is loaded
 		Then I should see "B-e-h-a-t L-a-b-e-l"
