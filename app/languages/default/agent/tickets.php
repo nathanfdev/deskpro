@@ -77,7 +77,7 @@
 	'agent.tickets.date_opened_newerolder'              => 'Date Opened (Newer-Older)',
 	'agent.tickets.date_opened_oldernewer'              => 'Date Opened (Older-Newer)',
 	'agent.tickets.debug_file'                          => 'Debug File',
-	'agent.tickets.debug_file_download'                 => 'Downlaod Debug File',
+	'agent.tickets.debug_file_download'                 => 'Download Debug File',
 	'agent.tickets.debug_file_explain'                  => 'A DeskPRO support agent may ask you to provide this file to help diagnose issues.',
 	'agent.tickets.decrease_urgency_action'             => 'Decrease urgency by {{amount}}',
 	'agent.tickets.delete_attach'                       => 'Delete Attachments',
