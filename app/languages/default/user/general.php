@@ -41,6 +41,7 @@
 	'user.general.set_as_unhelpful'              => 'This page was unhelpful',
 	'user.general.signing_in'                    => 'Signing in...',
 	'user.general.signing_in_please_wait'        => 'Signing in. Please wait.',
+	'user.general.title'                         => 'Title',
 	'user.general.upload'                        => 'Upload',
 	'user.general.upload-drag'                   => 'Drop your file here to upload it',
 	'user.general.upload_a_file'                 => 'Upload a file',

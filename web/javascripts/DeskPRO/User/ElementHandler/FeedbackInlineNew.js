@@ -33,6 +33,13 @@ DeskPRO.User.ElementHandler.FeedbackInlineNew = new Orb.Class({
 		this.inlineLogin = new DeskPRO.User.InlineLoginForm({
 			context: this.el
 		});
+
+		$('#feedback_title').on('keyup change', function() {
+			$('#new_suggest_title').val($(this).val());
+		});
+		$('#new_suggest_title').on('keyup change', function() {
+			$('#feedback_title').val($(this).val());
+		});
 	},
 
 	updateSuggestions: function() {
