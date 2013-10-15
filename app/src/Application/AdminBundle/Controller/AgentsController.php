@@ -1614,7 +1614,7 @@ class AgentsController extends AbstractController
 			WHERE person_id = ?
 		", array($agent->getId()));
 
-		$my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
+		$my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $agent->id, true);
 
 		return $this->createJsonResponse(array(
 			'ticket_filters' => $prefs,
