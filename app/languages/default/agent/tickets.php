@@ -30,6 +30,7 @@
 	'agent.tickets.assign_to_agent_action'              => 'Assign agent to {{agent}}',
 	'agent.tickets.assignments'                         => 'Assignments',
 	'agent.tickets.attachment'                          => 'Attachment',
+	'agent.tickets.attachments'                         => 'Attachments',
 	'agent.tickets.attachment_deleted'                  => 'Attachment deleted',
 	'agent.tickets.billing'                             => 'Billing',
 	'agent.tickets.billing_add_charge'                  => 'Add Charge',

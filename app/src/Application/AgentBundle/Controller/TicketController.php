@@ -444,6 +444,32 @@ class TicketController extends AbstractController
 		return $this->createResponse($info['rendered']);
 	}
 
+	public function loadAttachListAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
+		$attach_to_message = array();
+
+		foreach ($ticket_attachments as $attach) {
+			if ($attach->message) {
+				$attach_to_message[$attach->id] = $attach->message;
+			}
+		}
+
+		$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket, array());
+		$counts = $this->em->getRepository('DeskPRO:TicketLog')->countTicketLogTypes($all_ticket_logs);
+		$counts['attach'] = count($ticket_attachments);
+
+		return $this->render('AgentBundle:Ticket:ticket-attach-list.html.twig', array(
+			'ticket'              => $ticket,
+			'filter'              => 'attach',
+			'counts'              => $counts,
+			'attachments'         => $ticket_attachments,
+			'attach_to_message'   => $attach_to_message,
+		));
+	}
+
 	protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false)
 	{
 		if ($filter) {
@@ -459,6 +485,7 @@ class TicketController extends AbstractController
 		$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket, $options);
 
 		$counts = $this->em->getRepository('DeskPRO:TicketLog')->countTicketLogTypes($all_ticket_logs);
+		$counts['attach'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets_attachments WHERE ticket_id = ?", array($ticket->id));
 
 		if ($filter) {
 			$all_ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->filterTicketLogs($all_ticket_logs, $filter);

@@ -672,17 +672,31 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			postData.push({name: 'page', value: 1});
 
 			logsNav.addClass('dp-loading-on');
-			$.ajax({
-				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
-				data: postData,
-				complete: function() {
-					logsNav.removeClass('dp-loading-on');
-				},
-				success: function(html) {
-					logsWrap.html(html);
-					self.updateUi();
-				}
-			});
+			if (filter == 'attach') {
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-attach-list',
+					data: postData,
+					complete: function() {
+						logsNav.removeClass('dp-loading-on');
+					},
+					success: function(html) {
+						logsWrap.html(html);
+						self.updateUi();
+					}
+				});
+			} else {
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
+					data: postData,
+					complete: function() {
+						logsNav.removeClass('dp-loading-on');
+					},
+					success: function(html) {
+						logsWrap.html(html);
+						self.updateUi();
+					}
+				});
+			}
 		});
 
 		logsWrap.on('click', '.trigger-next-page', function(ev) {
