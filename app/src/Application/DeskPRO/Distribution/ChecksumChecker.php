@@ -57,6 +57,7 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
 			->exclude('sys/cache/dev')
 			->exclude('.settings')
 			->exclude('.idea')
+			->exclude('.travis.yml')
 			->exclude('data')
 			->exclude('.feedback');
 	}
