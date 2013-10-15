@@ -486,6 +486,7 @@ class ErrorReporter
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
 			$client->getRequest()->post()->fromArray($data);
+			$client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
 			$r = $client->send();
 		} catch (\Exception $e) {}
 	}
