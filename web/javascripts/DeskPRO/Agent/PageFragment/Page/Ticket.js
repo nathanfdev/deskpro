@@ -1226,7 +1226,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.refreshLogTypes();
 	},
 
-	updateUi: function() {
+	updateUi: function(toReplyHeight) {
 		var x;
 		if (!this.IS_ACTIVE) {
 			return;
@@ -1245,6 +1245,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (this.doScrollBottom) {
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
+			} else if (toReplyHeight) {
+				var oWrap = this.wrapper.find('div.layout-content').first();
+				oWrap.trigger('goscrollto', toReplyHeight+10);
 			}
 
 			this.getEl('labels_wrap').find('.select2-input').width('95%');
