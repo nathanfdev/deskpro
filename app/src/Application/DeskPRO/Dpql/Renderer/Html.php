@@ -961,6 +961,16 @@ class Html extends AbstractRenderer
 				$chartData = $this->_fillInGraphValues($chartData);
 			}
 
+			$is_percent = false;
+			$percent_code = '';
+			if (isset($selectColumns[0]) && isset($selectColumns[0]['renderer']) && $selectColumns[0]['renderer'] == 'percent') {
+				$is_percent = true;
+				$percent_code = '
+					valueAxis.maximum = 100;
+					valueAxis.minimum = 0;
+				';
+			}
+
 			$id = 'report_chart_' . md5(uniqid());
 			$output = '
 				<div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
@@ -975,7 +985,10 @@ class Html extends AbstractRenderer
 					chart.categoryAxis.title = \'' . $this->_jsEscapeValue($categoryAxisTitle) . '\';
 					' . $verticalLabels . '
 
-					chart.addValueAxis(new AmCharts.ValueAxis());
+					var valueAxis = new AmCharts.ValueAxis();
+					'.$percent_code.'
+
+					chart.addValueAxis(valueAxis);
 					chart.valueAxes[0].integersOnly = true;
 					chart.valueAxes[0].title = \'' . $this->_jsEscapeValue($valueAxisTitle) . '\';
 					' . $stacked . '
@@ -1034,7 +1047,7 @@ class Html extends AbstractRenderer
 	protected function _filterGraphValue($value)
 	{
 		if (preg_match('/^((\d+,)*\d+)(\.\d+)?%?$/', $value)) {
-			return round(str_replace(array(',', '%'), '', $value) + 0, 1);
+			return round(str_replace(array(',', '%'), '', $value) + 0, 1) * 100;
 		} else {
 			return $value;
 		}

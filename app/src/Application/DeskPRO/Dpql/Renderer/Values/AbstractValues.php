@@ -135,6 +135,10 @@ abstract class AbstractValues
 					return $this->escapeValue($value);
 				}
 
+			case 'percent':
+				return $this->escapeValue(number_format($value * 100, 2) . '%');
+				break;
+
 			case 'string':
 			default:
 				return $this->escapeValue($value);
