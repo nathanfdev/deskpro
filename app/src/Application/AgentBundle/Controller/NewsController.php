@@ -65,6 +65,11 @@ class NewsController extends AbstractController
 	public function viewAction($news_id)
 	{
 		$news = $this->em->find('DeskPRO:News', $news_id);
+
+		if (!$news) {
+			throw $this->createNotFoundException();
+		}
+
 		$news_comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
 		$related_finder = new RelatedContentFinder($this->person, $news);

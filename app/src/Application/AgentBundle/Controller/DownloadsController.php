@@ -62,6 +62,11 @@ class DownloadsController extends AbstractController
 	public function viewAction($download_id)
 	{
 		$download = $this->em->find('DeskPRO:Download', $download_id);
+
+		if (!$download) {
+			return $this->createNotFoundException();
+		}
+
 		$download_comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 
 		$related_finder = new RelatedContentFinder($this->person, $download);
