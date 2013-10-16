@@ -581,7 +581,7 @@ define(function() {
 
 	routes.push({
 		id: 'tickets.ticket_accounts.gocreate',
-		url: '/labecreate',
+		url: '/go-create',
 		page: {
 			template: '',
 			controller: ['$state', function ($state) { $state.go('tickets.ticket_accounts.create'); }]
