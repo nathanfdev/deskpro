@@ -18,13 +18,62 @@ chmod +x /usr/bin/dpcmd
 touch /var/log/php_errors.log
 chmod 0777 /var/log/php_errors.log
 
-mkdir /deskpro-cache
-chmod 0777 /deskpro-cache
-chown root:vagrant /deskpro-cache
-chmod g+s /deskpro-cache
+# Dirs on /dev/shm
+mkdir /dev/shm/deskpro-cache
+mkdir /dev/shm/deskpro-logs
+mkdir /dev/shm/deskpro-tmp
+
+chown root:vagrant /dev/shm/deskpro-cache
+chmod 0777 /dev/shm/deskpro-cache
+chmod g+s /dev/shm/deskpro-cache
+
+chown root:vagrant /dev/shm/deskpro-logs
+chmod 0777 /dev/shm/deskpro-logs
+chmod g+s /dev/shm/deskpro-logs
+
+chown root:vagrant /dev/shm/deskpro-tmp
+chmod 0777 /dev/shm/deskpro-tmp
+chmod g+s /dev/shm/deskpro-tmp
+
+mkdir /deskpro-data
+mkdir /deskpro-data/backups
+mkdir /deskpro-data/debug
+mkdir /deskpro-data/files
+
+chown -R root:vagrant /deskpro-data
+chmod -R 0777 /deskpro-data
+chmod g+s /deskpro-data /deskpro-data/backups /deskpro-data/debug /deskpro-data/files
+
+# Links paths to /dev/shm
+ln -s /dev/shm/deskpro-cache /deskpro-cache
+ln -s /dev/shm/deskpro-logs /deskpro-data/logs
+ln -s /dev/shm/deskpro-tmp /deskpro-data/tmp
 
 sudo usermod -a -G vagrant www-data
 sudo usermod -a -G www-data vagrant
+
+###############################################
+# Write /etc/rc.local to re-create /dev/shm dirs on boot
+###############################################
+
+echo "#!/bin/sh -e" > /etc/rc.local
+
+echo "mkdir /dev/shm/deskpro-cache" >> /etc/rc.local
+echo "chown root:vagrant /deskpro-cache" >> /etc/rc.local
+echo "chmod 0777 /dev/shm/deskpro-cache" >> /etc/rc.local
+echo "chmod g+s /dev/shm/deskpro-cache" >> /etc/rc.local
+
+echo "mkdir /dev/shm/deskpro-logs" >> /etc/rc.local
+echo "chown root:vagrant /dev/shm/deskpro-logs" >> /etc/rc.local
+echo "chmod 0777 /dev/shm/deskpro-logs" >> /etc/rc.local
+echo "chmod g+s /dev/shm/deskpro-logs" >> /etc/rc.local
+
+echo "mkdir /dev/shm/deskpro-tmp" >> /etc/rc.local
+echo "chown root:vagrant /dev/shm/deskpro-tmp" >> /etc/rc.local
+echo "chmod 0777 /dev/shm/deskpro-tmp" >> /etc/rc.local
+echo "chmod g+s /dev/shm/deskpro-tmp" >> /etc/rc.local
+
+echo "exit 0" >> /etc/rc.local
 
 ###############################################
 # Small changes to config

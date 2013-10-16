@@ -131,7 +131,7 @@ $DP_CONFIG['mysql_path'] = '';
 # directory.                                         #
 ######################################################
 
-$DP_CONFIG['dir_data'] = '';
+$DP_CONFIG['dir_data'] = '/deskpro-data';
 
 # ~~~~~~~~~~~~~~~~ DESKPRO IMPORT ~~~~~~~~~~~~~~~~~~~~
 
