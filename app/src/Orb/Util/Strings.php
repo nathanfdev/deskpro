@@ -1929,6 +1929,21 @@ class Strings
 
 
 	/**
+	 * Reduces a mutli-line string to a single line.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function implodeLines($string)
+	{
+		$string = self::trimLines($string);
+		$string = preg_replace("#[\n\r]+#", ' ', $string);
+
+		return $string;
+	}
+
+
+	/**
 	 * Does a "real" trim, triming other whitespace like non-breaking spaces.
 	 *
 	 * @param $string
