@@ -91,7 +91,7 @@ class DpTestConfig
 
 		$cache_path = DP_ROOT.'/tests/build/db-sets';
 		if (!is_dir($cache_path)) {
-			mkdir($cache_path);
+			mkdir($cache_path, 0777, true);
 			chmod($cache_path, 0777);
 		}
 
