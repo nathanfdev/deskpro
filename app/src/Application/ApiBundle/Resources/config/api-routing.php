@@ -2400,6 +2400,28 @@ $collection->add('api_langs_savephrase', new Route(
 	array('_method' => 'POST')
 ));
 
+################################################################################
+# TEMPLATES
+################################################################################
+
+$collection->add('api_templates_get', new Route(
+	'/templates/{name}',
+	array('_controller' => 'ApiBundle:Templates:getTemplate'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_templates_update', new Route(
+	'/templates/{name}',
+	array('_controller' => 'ApiBundle:Templates:setTemplate'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_templates_create_random_variant', new Route(
+	'/templates/{name}/create-random-variant',
+	array('_controller' => 'ApiBundle:Templates:createRandomVariant'),
+	array('_method' => 'POST')
+));
+
 ########################################################################################################################
 # PROFILE
 ########################################################################################################################

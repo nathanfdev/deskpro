@@ -26,7 +26,7 @@
           _this.initDeplistData(_this.DepartmentData.deps);
           return _this.ngApply();
         });
-        return this.$scope.$watch('TicketDepsEdit.dep.parent_id', function(newVal) {
+        this.$scope.$watch('TicketDepsEdit.dep.parent_id', function(newVal) {
           var parent, _ref1;
           newVal = parseInt(newVal);
           if (!newVal) {
@@ -40,6 +40,24 @@
             return _this.$scope.show_parent_warning = false;
           }
         });
+        return this.trigger = {
+          user_send_newuserticket_response: {
+            enabled: false,
+            template_name: ""
+          },
+          user_send_newagentreply_response: {
+            enabled: false,
+            template_name: ""
+          },
+          user_send_newuserreply_response: {
+            enabled: false,
+            template_name: ""
+          },
+          set_from_name: {
+            enabled: false,
+            preset: ""
+          }
+        };
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.resetForm = function() {
@@ -290,7 +308,7 @@
         return this._propogatePermission_running = false;
       };
 
-      /**
+      /*
       		# Gets permission data that can be posted for saving
       */
 
@@ -353,6 +371,28 @@
           }
         }
         return perms;
+      };
+
+      /*
+      		# Open the email editor
+      */
+
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.showEmailEditor = function(template_name, custom_name) {
+        var modalInstance;
+        modalInstance = this.$modal.open({
+          templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+          resolve: {
+            templateName: function() {
+              return custom_name;
+            },
+            variantOf: function() {
+              return template_name;
+            }
+          }
+        });
+        return modalInstance;
       };
 
       return Admin_TicketDeps_Ctrl_Edit;

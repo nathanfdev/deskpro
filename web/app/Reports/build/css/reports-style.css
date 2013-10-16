@@ -8984,6 +8984,27 @@ button.toast-close-button {
   }
 }
 
+.modal-dialog.dp-codeeditor-modal {
+  width: 80%;
+}
+
+.editor-row {
+  margin: 10px 0;
+}
+
+.editor-row label {
+  padding: 0;
+  margin: 10px 0;
+  font-size: 13pt;
+  font-weight: bold;
+}
+
+.editor-wrap {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
 a,
 a:focus {
   outline: none;
@@ -10785,4 +10806,25 @@ button.toast-close-button {
     width: 25em;
     padding: 15px 15px 15px 50px;
   }
+}
+
+.modal-dialog.dp-codeeditor-modal {
+  width: 80%;
+}
+
+.editor-row {
+  margin: 10px 0;
+}
+
+.editor-row label {
+  padding: 0;
+  margin: 10px 0;
+  font-size: 13pt;
+  font-weight: bold;
+}
+
+.editor-wrap {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 2px;
 }

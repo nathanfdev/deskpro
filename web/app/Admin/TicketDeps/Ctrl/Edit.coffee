@@ -30,6 +30,25 @@ define [
 					@$scope.show_parent_warning = false
 			)
 
+			@trigger = {
+				user_send_newuserticket_response: {
+					enabled: false,
+					template_name: ""
+				},
+				user_send_newagentreply_response: {
+					enabled: false,
+					template_name: ""
+				},
+				user_send_newuserreply_response: {
+					enabled: false,
+					template_name: ""
+				},
+				set_from_name: {
+					enabled: false,
+					preset: ""
+				}
+			}
+
 		resetForm: ->
 			@restoreState()
 			@saveState('dep', 'agent_perms', 'usergroups')
@@ -257,7 +276,7 @@ define [
 				@agent_perms.setAgentPerm(obj.model.id, perm, '&')
 			@_propogatePermission_running = false
 
-		###*
+		###
 		# Gets permission data that can be posted for saving
 		###
 		getPermsData: (type = 'all') ->
@@ -303,5 +322,23 @@ define [
 						})
 
 			return perms
+
+		###
+		# Open the email editor
+		###
+		showEmailEditor: (template_name, custom_name) ->
+			modalInstance = @$modal.open({
+				templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+				controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+				resolve: {
+					templateName: ->
+						return custom_name
+
+					variantOf: ->
+						return template_name
+				}
+			})
+
+			return modalInstance
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

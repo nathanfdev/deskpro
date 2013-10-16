@@ -7,8 +7,11 @@ requirejs.config({
 		angularSanitize:        DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
 		angularSelect2:         DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
 		angularTranslate:       DP_ASSET_URL+'/app/bower_components/angular-translate/angular-translate',
+		angularUiAce:           DP_ASSET_URL+'/app/bower_components/angular-ui-ace/ui-ace',
 		angularUiRouter:        DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
 		angularUiSortable:      DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
+
+		aceEditor:              DP_ASSET_URL+'/app/bower_components/ace-builds/src-min-noconflict/ace',
 
 		jquery:                 DP_ASSET_URL+'/app/bower_components/jquery/jquery',
 		jqueryUi:               DP_ASSET_URL+'/app/bower_components/jquery-ui/ui/jquery-ui',
@@ -29,6 +32,7 @@ requirejs.config({
 		'angularSanitize':      ['angular'],
 		'angularSelect2':       ['angular'],
 		'angularTranslate':     ['angular'],
+		'angularUiAce':         ['angular'],
 		'angularUiRouter':      ['angular'],
 		'angularUiSortable':    ['angular'],
 
@@ -52,8 +56,11 @@ requirejs([
 	'angularBootstrap',
 	'angularSelect2',
 	'angularTranslate',
+	'angularUiAce',
 	'angularUiRouter',
 	'angularUiSortable',
+
+	'aceEditor',
 
 	'jquery',
 	'jqueryUi',
@@ -82,6 +89,7 @@ requirejs([
 	'Admin/Main/Ctrl/NavTickets',
 	'Admin/Main/Ctrl/NavTwitter',
 	'Admin/Languages/Ctrl/TranslateModal',
+	'Admin/Templates/Ctrl/EmailTemplateEditor',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketDeps/Ctrl/List',
