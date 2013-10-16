@@ -139,10 +139,15 @@
 
 
       Admin_TicketDeps_Ctrl_List.prototype.startDelete = function(for_dep) {
-        var inst,
+        var inst, move_dep_list,
           _this = this;
         if (for_dep._child_ids) {
           this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
+          return;
+        }
+        move_dep_list = this.getMoveDepList(for_dep);
+        if (!move_dep_list.length) {
+          this.showAlert('@no_delete_last');
           return;
         }
         inst = this.$modal.open({
@@ -163,7 +168,7 @@
           ],
           resolve: {
             move_deps_list: function() {
-              return _this.getMoveDepList(for_dep);
+              return move_dep_list;
             }
           }
         });

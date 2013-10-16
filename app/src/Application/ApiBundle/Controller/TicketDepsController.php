@@ -38,6 +38,7 @@ use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
+use Application\DeskPRO\Exception\ValidationException;
 use Orb\Util\Arrays;
 
 class TicketDepsController extends AbstractController
@@ -161,9 +162,12 @@ class TicketDepsController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$move_to = $this->in->getUint('move_to');
+		$move_to = $this->em->find('DeskPRO:Department', $this->in->getUint('move_to'));
+		if (!$move_to) {
+			throw ValidationException::create("department.remove.move_tickets", "You must select a department to move existing tickets into");
+		}
 
-		$old_id = $editor->remove($dep, $move_to);
+		$old_id = $editor->removeDepartment($dep, $move_to);
 
 		return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
 	}
@@ -179,8 +183,6 @@ class TicketDepsController extends AbstractController
 
 		$editor = $this->_getDepartmentEditor();
 		$editor->updateDisplayOrders($display_orders);
-
-		$this->em->flush();
 
 		return $this->createSuccessResponse();
 	}

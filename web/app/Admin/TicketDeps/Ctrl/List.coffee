@@ -108,6 +108,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.")
 				return
 
+			move_dep_list = @getMoveDepList(for_dep)
+
+			if not move_dep_list.length
+				@showAlert('@no_delete_last');
+				return
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketDeps/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance, move_deps_list) ->
@@ -124,7 +130,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				],
 				resolve: {
 					move_deps_list: =>
-						return @getMoveDepList(for_dep)
+						return move_dep_list
 				}
 			});
 

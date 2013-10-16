@@ -56,4 +56,5 @@
 	'admin.departments.linked_account_none_explain'                => 'All of your email accounts are currently linked to other departments.',
 	'admin.departments.saved_dep_x_success'                        => 'Saved department "{{title}}" successfully',
 	'admin.departments.email_account_required'                     => 'Please select an email account to use with this department.',
+	'admin.departments.no_delete_last'                             => 'At least one department must always exist. You cannot delete the last department.',
 );

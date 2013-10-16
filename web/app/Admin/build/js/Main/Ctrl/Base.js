@@ -510,6 +510,12 @@
         if (title == null) {
           title = 'Alert';
         }
+        if (message.match(/^@[a-zA-Z0-9\._]+$/)) {
+          message = this.getRegisteredMessage(message.substr(1));
+        }
+        if (title && title.match(/^@[a-zA-Z0-9\._]+$/)) {
+          title = this.getRegisteredMessage(title.substr(1));
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('Index/modal-alert.html'),
           controller: [

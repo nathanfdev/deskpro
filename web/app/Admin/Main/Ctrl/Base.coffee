@@ -405,6 +405,13 @@ define ['angular', 'Admin/App'], (angular) ->
 		* @return {Object}
 		###
 		showAlert: (message, title = 'Alert') ->
+
+			if message.match(/^@[a-zA-Z0-9\._]+$/)
+				message = @getRegisteredMessage(message.substr(1))
+
+			if title and title.match(/^@[a-zA-Z0-9\._]+$/)
+				title = @getRegisteredMessage(title.substr(1))
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('Index/modal-alert.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
