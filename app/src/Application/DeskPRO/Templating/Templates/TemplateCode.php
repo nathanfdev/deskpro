@@ -29,70 +29,43 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Templating\Templates;
 
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
-
-class Template extends AbstractEntityRepository
+/**
+ * Represents any template code
+ *
+ * @package Application\DeskPRO\Templating\Templates
+ */
+class TemplateCode
 {
-	/**
-	 * @param $name
-	 * @return null|\Application\DeskPRO\Entity\Template
-	 */
-	public function getTemplateByName($name)
-	{
-		return $this->findOneBy(array('name' => $name));
-	}
+	private $code;
 
-	public function getTemplateForStyle($template_name, $style = null)
+	public function __construct($code = null)
 	{
-		try {
-			if ($style === null OR $style === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.name = ?1
-				")->setParameters(array(1=>$template_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.name = ?2
-				")->setParameters(array(1=>$style, 2=>$template_name));
-			}
+		$this->code = '';
 
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
-			return null;
+		if ($code) {
+			$this->setCode($code);
 		}
 	}
 
-	public function getCustomTemplateNamesInStyle($style)
-	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']));
 
-		return $names;
+	/**
+	 * @return string
+	 */
+	public function getCode()
+	{
+		return $this->code;
 	}
 
-	public function getCustomTemplateInfoInStyle($style)
-	{
-		$names = App::getDb()->fetchAllKeyed("
-			SELECT name, date_updated
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']), 'name');
 
-		return $names;
+	/**
+	 * @param $code
+	 */
+	public function setCode($code)
+	{
+		$this->code = trim($code);
 	}
 }

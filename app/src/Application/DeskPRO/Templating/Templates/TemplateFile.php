@@ -29,70 +29,130 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Templating\Templates;
 
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
-
-class Template extends AbstractEntityRepository
+class TemplateFile extends Template
 {
 	/**
-	 * @param $name
-	 * @return null|\Application\DeskPRO\Entity\Template
+	 * @var string
 	 */
-	public function getTemplateByName($name)
+	private $file_path;
+
+	/**
+	 * @var string
+	 */
+	private $content;
+
+	/**
+	 * @var string
+	 */
+	private $type;
+
+	public function __construct($name)
 	{
-		return $this->findOneBy(array('name' => $name));
+		parent::__construct($name);
+		$this->initFilePath();
 	}
 
-	public function getTemplateForStyle($template_name, $style = null)
+	private function initFilePath()
 	{
-		try {
-			if ($style === null OR $style === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.name = ?1
-				")->setParameters(array(1=>$template_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.name = ?2
-				")->setParameters(array(1=>$style, 2=>$template_name));
-			}
+		$parts = explode(':', $this->getName());
+		if (count($parts) != 3) {
+			throw new \InvalidArgumentException("Invalid template name: {$this->getName()}");
+		}
 
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
+		list ($bundle, $dir, $file) = $parts;
+
+		$path = DP_ROOT . "/src/Application/$bundle/Resources/views";
+		if ($dir) {
+			$path .= "/$dir/";
+		}
+		$path .= $file;
+
+		$this->file_path = $path;
+	}
+
+	/**
+	 * Check if the template file exists
+	 *
+	 * @return bool
+	 */
+	public function exists()
+	{
+		return file_exists($this->file_path);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isCustom()
+	{
+		return false;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getFilePath()
+	{
+		return $this->file_path;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getContent()
+	{
+		if (!$this->exists()) {
 			return null;
 		}
+
+		if ($this->content === null) {
+			$this->content = file_get_contents($this->file_path);
+		}
+
+		return $this->content;
 	}
 
-	public function getCustomTemplateNamesInStyle($style)
-	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']));
 
-		return $names;
+	/**
+	 * @return null
+	 */
+	public function getOriginalName()
+	{
+		return null;
 	}
 
-	public function getCustomTemplateInfoInStyle($style)
-	{
-		$names = App::getDb()->fetchAllKeyed("
-			SELECT name, date_updated
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']), 'name');
 
-		return $names;
+	/**
+	 * @return null
+	 */
+	public function getOriginalContent()
+	{
+		return null;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		if ($this->type !== null) {
+			return $this->type;
+		}
+
+		if (strpos($this->getContent(), '<dp:subject') !== false) {
+			$this->type = 'email';
+		} else {
+			$this->type = 'normal';
+		}
+
+		return $this->type;
 	}
 }

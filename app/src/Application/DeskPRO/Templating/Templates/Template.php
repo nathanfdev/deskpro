@@ -29,70 +29,118 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Templating\Templates;
 
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
-
-class Template extends AbstractEntityRepository
+abstract class Template
 {
 	/**
-	 * @param $name
-	 * @return null|\Application\DeskPRO\Entity\Template
+	 * @var string
 	 */
-	public function getTemplateByName($name)
+	private $name;
+
+	/**
+	 * @var \Application\DeskPRO\Templating\Templates\TemplateCode
+	 */
+	private $template_code;
+
+	/**
+	 * @var \Application\DeskPRO\Templating\Templates\TemplateCode
+	 */
+	private $orig_template_code;
+
+	/**
+	 * @param $name
+	 */
+	public function __construct($name)
 	{
-		return $this->findOneBy(array('name' => $name));
+		$this->name = $name;
 	}
 
-	public function getTemplateForStyle($template_name, $style = null)
-	{
-		try {
-			if ($style === null OR $style === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.name = ?1
-				")->setParameters(array(1=>$template_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.name = ?2
-				")->setParameters(array(1=>$style, 2=>$template_name));
-			}
 
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
+	abstract public function exists();
+
+
+	/**
+	 * @return string
+	 */
+	abstract public function isCustom();
+
+
+	/**
+	 * @return string
+	 */
+	abstract public function getContent();
+
+
+	/**
+	 * @return string
+	 */
+	abstract public function getOriginalContent();
+
+
+	/**
+	 * @return mixed
+	 */
+	abstract public function getOriginalName();
+
+
+	/**
+	 * @return string
+	 */
+	abstract public function getType();
+
+
+	/**
+	 * @return EmailTemplateCode|TemplateCode
+	 */
+	public function getTemplateCode()
+	{
+		if ($this->template_code !== null) {
+			return $this->template_code;
+		}
+
+		if ($this->getType() == 'email') {
+			$this->template_code = new EmailTemplateCode($this->getContent());
+		} else {
+			$this->template_code = new TemplateCode($this->getContent());
+		}
+
+		return $this->template_code;
+	}
+
+
+	/**
+	 * @return EmailTemplateCode|TemplateCode
+	 */
+	public function getOriginalTemplateCode()
+	{
+		if (!$this->isCustom()) {
 			return null;
 		}
-	}
 
-	public function getCustomTemplateNamesInStyle($style)
-	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']));
+		if ($this->orig_template_code !== null) {
+			return $this->orig_template_code;
+		}
 
-		return $names;
-	}
+		if ($this->getType() == 'email') {
+			$this->orig_template_code = new EmailTemplateCode($this->getOriginalContent());
+		} else {
+			$this->orig_template_code = new TemplateCode($this->getOriginalContent());
+		}
 
-	public function getCustomTemplateInfoInStyle($style)
-	{
-		$names = App::getDb()->fetchAllKeyed("
-			SELECT name, date_updated
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']), 'name');
-
-		return $names;
+		return $this->orig_template_code;
 	}
 }

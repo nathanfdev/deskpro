@@ -29,70 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Templating\Templates;
 
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
-
-class Template extends AbstractEntityRepository
+class EmailTemplateFile extends TemplateFile
 {
 	/**
-	 * @param $name
-	 * @return null|\Application\DeskPRO\Entity\Template
+	 * @var \Application\DeskPRO\Templating\Templates\EmailTemplateCode
 	 */
-	public function getTemplateByName($name)
-	{
-		return $this->findOneBy(array('name' => $name));
-	}
+	private $email_code;
 
-	public function getTemplateForStyle($template_name, $style = null)
+	private function initCode()
 	{
-		try {
-			if ($style === null OR $style === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.name = ?1
-				")->setParameters(array(1=>$template_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.name = ?2
-				")->setParameters(array(1=>$style, 2=>$template_name));
-			}
-
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
-			return null;
+		if ($this->email_code !== null) {
+			return;
 		}
+
+		$this->email_code = new EmailTemplateCode($this->getContent());
 	}
 
-	public function getCustomTemplateNamesInStyle($style)
+	public function getSubject()
 	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']));
-
-		return $names;
+		$this->initCode();
+		return $this->email_code->getSubject();
 	}
 
-	public function getCustomTemplateInfoInStyle($style)
+	public function getBody()
 	{
-		$names = App::getDb()->fetchAllKeyed("
-			SELECT name, date_updated
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']), 'name');
-
-		return $names;
+		$this->initCode();
+		return $this->email_code->getBody();
 	}
 }
