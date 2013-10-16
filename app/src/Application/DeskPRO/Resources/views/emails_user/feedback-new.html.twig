@@ -17,5 +17,5 @@
 
 {% if validating %}
 	{{ phrase('user.emails.feedback_validate-email') }}
-	{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+	{{ url_full('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 {% endif %}

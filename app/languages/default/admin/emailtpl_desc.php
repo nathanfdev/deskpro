@@ -71,6 +71,8 @@
 	'admin.emailtpl_desc.deskpro_emails_user_register-welcome_html_twig_title'             => 'Register Welcome Email',
 	'admin.emailtpl_desc.deskpro_emails_user_reset-password_html_twig_desc'                => 'This email is sent to the user when they request a password reset.',
 	'admin.emailtpl_desc.deskpro_emails_user_reset-password_html_twig_title'               => 'Reset Password',
+	'admin.emailtpl_desc.deskpro_emails_user_agent-changed-password_html_twig_desc'        => 'This email is sent to the user when an agent has reset their password.',
+	'admin.emailtpl_desc.deskpro_emails_user_agent-changed-password_html_twig_title'       => 'Agent Reset Password',
 	'admin.emailtpl_desc.deskpro_emails_user_ticket-autoclose-warn_html_twig_desc'         => 'The email sent to the user to warn them that their ticket will be automatically closed if they do not reply.',
 	'admin.emailtpl_desc.deskpro_emails_user_ticket-autoclose-warn_html_twig_title'        => 'Ticket Auto-Close Warning',
 	'admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_desc'                   => 'This is the email sent to the user after their ticket has been resolved to ask them to rate their support and submit feedback.',
