@@ -52,6 +52,8 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 		foreach ($this->getPermsArray() as $row) {
 			$rec = new DepartmentPermission();
 			$rec->department = $department;
+			$rec->name       = $row['name'];
+			$rec->value      = 1;
 
 			if (!empty($row['usergroup_id']) && $row['usergroup_id'] && isset($this->agent_groups[$row['usergroup_id']])) {
 				$rec->usergroup = $this->agent_groups[$row['usergroup_id']];
@@ -62,6 +64,14 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 			} else {
 				continue;
 			}
+
+			if ($department->is_tickets_enabled) {
+				$rec->app = 'tickets';
+			} else if ($department->is_chat_enabled) {
+				$rec->app = 'chat';
+			}
+
+			$recs[] = $rec;
 		}
 
 		return $recs;
@@ -87,7 +97,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 			$recs[$rec->getPermissionSysId()] = $rec;
 		}
 
-		$existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment($department, 'ticket');
+		$existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment($department, 'tickets');
 		$remove = array();
 
 		foreach ($existing as $rec) {
@@ -116,7 +126,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 	 * @param Department $department
 	 * @param EntityManager $em
 	 */
-	public function apply(Department $department, EntityManager $em)
+	public function save(Department $department, EntityManager $em)
 	{
 		$diff = $this->getDiff($department, $em);
 

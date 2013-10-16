@@ -133,11 +133,14 @@ define ->
 					for aid in groupObj.aids
 						if groupPerms.full.state
 							@agents_map[aid].perms.full.soft_state   = true
+							@agents_map[aid].perms.full.state        = true
 							@agents_map[aid].perms.full.locked       = true
 							@agents_map[aid].perms.assign.soft_state = true
+							@agents_map[aid].perms.assign.state      = true
 							@agents_map[aid].perms.assign.locked     = true
 						else if groupPerms.assign
 							@agents_map[aid].perms.assign.soft_state  = true
+							@agents_map[aid].perms.assign.state       = true
 							@agents_map[aid].perms.assign.locked      = true
 
 

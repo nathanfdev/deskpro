@@ -137,6 +137,11 @@ class TicketDepsController extends AbstractController
 
 		if ($form->isValid()) {
 			$ticket_edit->save($this->em);
+			$ticket_edit->savePermissions(
+				$this->em,
+				$this->container->getAgentData()->getAgents(),
+				$this->container->getDataService('Usergroup')->getAll()
+			);
 		}
 
 		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));

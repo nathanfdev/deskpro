@@ -95,11 +95,12 @@ class PermissionMatrix
 		}
 
 		foreach ($agents as $a) {
+			$this->agents[$a->id] = $a;
 			$this->agent_to_groups[$a->id] = array();
 
 			foreach ($this->agent_groups as $g) {
 				if ($a->hasUsergroup($g)) {
-					$this->agent_to_agentgroups[$a->id]p$g->id] = $g->id;
+					$this->agent_to_agentgroups[$a->id][$g->id] = $g->id;
 					$this->agentgroup_to_agents[$g->id][$a->id] = $a->id;
 				}
 			}
@@ -121,8 +122,9 @@ class PermissionMatrix
 	 */
 	public function setPermArray(array $records)
 	{
-		$this->agent_perms = array();
+		$this->agent_perms      = array();
 		$this->agentgroup_perms = array();
+		$this->usergroup_perms  = array();
 
 		foreach($records as $rec) {
 			if (empty($rec['value']) || !$rec['value']) {
@@ -141,7 +143,7 @@ class PermissionMatrix
 					}
 					$this->agentgroup_perms[$g->id][$rec['name']] = 1;
 				} elseif (isset($this->user_groups[$rec['usergroup_id']])) {
-					$g = $this->agent_groups[$rec['usergroup_id']];
+					$g = $this->user_groups[$rec['usergroup_id']];
 
 					if (!isset($this->usergroup_perms[$g->id])) {
 						$this->usergroup_perms[$g->id] = array();
@@ -198,18 +200,18 @@ class PermissionMatrix
 		$set_perms = array();
 
 		foreach ($this->agentgroup_perms as $ugid => $perms) {
-			foreach ($perms as $perm_name) {
+			foreach ($perms as $perm_name => $perm_value) {
 				$set_perms[] = array('usergroup_id' => $ugid, 'name' => $perm_name, 'value' => 1);
 			}
 		}
 		foreach ($this->usergroup_perms as $ugid => $perms) {
-			foreach ($perms as $perm_name) {
+			foreach ($perms as $perm_name => $perm_value) {
 				$set_perms[] = array('usergroup_id' => $ugid, 'name' => $perm_name, 'value' => 1);
 			}
 		}
 
 		foreach ($this->agent_perms as $aid => $perms) {
-			foreach ($perms as $perm_name) {
+			foreach ($perms as $perm_name => $perm_value) {
 				$has = false;
 				foreach ($this->agent_to_agentgroups[$aid] as $ugid) {
 					if (isset($this->agentgroup_perms[$ugid][$perm_name])) {
@@ -223,5 +225,7 @@ class PermissionMatrix
 				}
 			}
 		}
+
+		return $set_perms;
 	}
 }

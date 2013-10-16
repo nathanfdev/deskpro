@@ -203,11 +203,14 @@
                 aid = _ref3[_n];
                 if (groupPerms.full.state) {
                   this.agents_map[aid].perms.full.soft_state = true;
+                  this.agents_map[aid].perms.full.state = true;
                   this.agents_map[aid].perms.full.locked = true;
                   this.agents_map[aid].perms.assign.soft_state = true;
+                  this.agents_map[aid].perms.assign.state = true;
                   _results1.push(this.agents_map[aid].perms.assign.locked = true);
                 } else if (groupPerms.assign) {
                   this.agents_map[aid].perms.assign.soft_state = true;
+                  this.agents_map[aid].perms.assign.state = true;
                   _results1.push(this.agents_map[aid].perms.assign.locked = true);
                 } else {
                   _results1.push(void 0);

@@ -106,6 +106,19 @@ class TicketDepartmentEdit
 		$em->flush();
 	}
 
+
+	/**
+	 * @param EntityManager $em
+	 * @param \Application\DeskPRO\Entity\Person[] $agents
+	 * @param \Application\DeskPRO\Entity\Usergroup[] $groups
+	 */
+	public function savePermissions(EntityManager $em, array $agents, array $groups)
+	{
+		$matrix = new DepartmentPermissionMatrix($agents, $groups);
+		$matrix->setPermArray($this->permissions);
+		$matrix->save($this->department, $em);
+	}
+
 	############################################################################
 	# Validation Metadata
 	############################################################################
