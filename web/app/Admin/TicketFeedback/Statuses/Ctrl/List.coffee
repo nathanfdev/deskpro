@@ -7,8 +7,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@statuses = []
-			@active_statuses_length = ''
-			@closed_statuses_length = ''
+			@active_statuses_length = 0
+			@closed_statuses_length = 0
 			@add_mode = false
 			@$scope.escape_url = (text)->
 				return encodeURIComponent(text)
