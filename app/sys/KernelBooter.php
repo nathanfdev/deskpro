@@ -194,6 +194,16 @@ class KernelBooter
 
 		$kernel = false;
 
+		if (preg_match('#^/dp\-ping(/|\?|$)#', $path)) {
+			header("Content-type: application/json");
+			echo '{"deskpro": true, "interface": "user"}';
+			exit;
+		} elseif (preg_match('#^/(agent|admin|api|reports|billing)/dp-ping(/|\?|$)#', $path, $m)) {
+			header("Content-type: application/json");
+			echo '{"deskpro": true, "interface": "'.$m[1].'"}';
+			exit;
+		}
+
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
