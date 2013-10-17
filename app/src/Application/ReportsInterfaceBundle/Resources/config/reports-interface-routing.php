@@ -1,32 +1,32 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
+use Application\DeskPRO\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('reports', new Route(
-	'/',
-	array('_controller' => 'ReportsInterfaceBundle:Index:interface'),
-	array()
+$collection->create('reports', array(
+	'path'        => '/',
+	'controller'  => 'ReportsInterfaceBundle:Index:interface',
 ));
 
-$collection->add('reports_tpl_loadmulti', new Route(
-	'/load-view/multi',
-	array('_controller' => 'ReportsInterfaceBundle:Interface:multiLoadView'),
-	array()
+$collection->create('reports_tpl_loadmulti', array(
+	'path'        => '/load-view/multi',
+	'controller'  => 'ReportsInterfaceBundle:Interface:multiLoadView',
 ));
 
-$collection->add('reports_tpl_load', new Route(
-	'/load-view/{view_name}',
-	array('_controller' => 'ReportsInterfaceBundle:Interface:loadView'),
-	array('view_name' => '.+')
+$collection->create('reports_tpl_load', array(
+	'path'          => '/load-view/{view_name}',
+	'controller'    => 'ReportsInterfaceBundle:Interface:loadView',
+	'requirements'  => array('view_name' => '.+'),
 ));
 
-$collection->add('reports_lang_load', new Route(
-	'/load-lang.{_format}',
-	array('_controller' => 'ReportsInterfaceBundle:Interface:loadLang'),
-	array()
+$collection->create('reports_lang_load', array(
+	'path'        => '/load-lang.{_format}',
+	'controller'  => 'ReportsInterfaceBundle:Interface:loadLang',
 ));
 
 return $collection;

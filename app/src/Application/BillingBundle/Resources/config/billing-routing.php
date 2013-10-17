@@ -1,68 +1,52 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
+use Application\DeskPRO\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('billing', new Route(
-	'/',
-	array('_controller' => 'BillingBundle:Main:index'),
-	array(),
-	array()
+$collection->create('billing', array(
+	'path'        => '/',
+	'controller'  => 'BillingBundle:Main:index',
 ));
 
-$collection->add('billing_login', new Route(
-	'/login',
-	array('_controller' => 'BillingBundle:Login:index'),
-	array(),
-	array()
+$collection->create('billing_login', array(
+	'path'        => '/login',
+	'controller'  => 'BillingBundle:Login:index',
 ));
 
-$collection->add('billing_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'BillingBundle:Login:logout'),
-	array(),
-	array()
+$collection->create('billing_logout', array(
+	'path'        => '/logout/{auth}',
+	'controller'  => 'BillingBundle:Login:logout',
 ));
 
-$collection->add('billing_login_authenticate_local', new Route(
-	'/login/authenticate-password',
-	array('_controller' => 'BillingBundle:Login:authenticateLocal', 'usersource_id' => 0),
-	array(),
-	array()
+$collection->create('billing_login_authenticate_local', array(
+	'path'        => '/login/authenticate-password',
+	'controller'  => 'BillingBundle:Login:authenticateLocal',
+	'defaults'    => array('usersource_id' => 0),
 ));
 
-$collection->add('billing_login_ma_login', new Route(
-	'/login/verity-ma-login/{license_id}/{code}',
-	array('_controller' => 'BillingBundle:Login:verifyMaLoginRequest'),
-	array(),
-	array()
+$collection->create('billing_login_ma_login', array(
+	'path'        => '/login/verity-ma-login/{license_id}/{code}',
+	'controller'  => 'BillingBundle:Login:verifyMaLoginRequest',
 ));
 
-################################################################################
-# License
-################################################################################
-
-$collection->add('billing_license_reqdemo', new Route(
-	'/license/generate-demo',
-	array('_controller' => 'BillingBundle:License:requestDemo'),
-	array(),
-	array()
+$collection->create('billing_license_reqdemo', array(
+	'path'        => '/license/generate-demo',
+	'controller'  => 'BillingBundle:License:requestDemo',
 ));
 
-$collection->add('billing_license_input_save', new Route(
-	'/license/input/save',
-	array('_controller' => 'BillingBundle:License:saveNewLicense'),
-	array(),
-	array()
+$collection->create('billing_license_input_save', array(
+	'path'        => '/license/input/save',
+	'controller'  => 'BillingBundle:License:saveNewLicense',
 ));
 
-$collection->add('billing_license_keyfile', new Route(
-	'/license/download/deskpro-license-sign.key',
-	array('_controller' => 'BillingBundle:License:keyFile'),
-	array(),
-	array()
+$collection->create('billing_license_keyfile', array(
+	'path'        => '/license/download/deskpro-license-sign.key',
+	'controller'  => 'BillingBundle:License:keyFile',
 ));
 
 return $collection;

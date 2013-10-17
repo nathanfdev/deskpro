@@ -1,186 +1,130 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
+use Application\DeskPRO\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('report_login', new Route(
-	'/login',
-	array('_controller' => 'ReportBundle:Login:index'),
-	array(),
-	array()
+$collection->create('report_login', array(
+	'path'        => '/login',
+	'controller'  => 'ReportBundle:Login:index',
 ));
 
-$collection->add('report_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'ReportBundle:Login:logout'),
-	array(),
-	array()
+$collection->create('report_logout', array(
+	'path'        => '/logout/{auth}',
+	'controller'  => 'ReportBundle:Login:logout',
 ));
 
-$collection->add('report_login_authenticate_local', new Route(
-	'/login/authenticate-password',
-	array('_controller' => 'ReportBundle:Login:authenticateLocal', 'usersource_id' => 0),
-	array(),
-	array()
+$collection->create('report_login_authenticate_local', array(
+	'path'        => '/login/authenticate-password',
+	'controller'  => 'ReportBundle:Login:authenticateLocal',
+	'defaults'    => array('usersource_id' => 0),
 ));
 
-$collection->add('report', new Route(
-	'/old_home',
-	array('_controller' => 'ReportBundle:Overview:index'),
-	array(),
-	array()
+$collection->create('report', array(
+	'path'        => '/old_home',
+	'controller'  => 'ReportBundle:Overview:index',
 ));
 
-$collection->add('report_overview_update_stat', new Route(
-	'/overview/update-stat/{type}',
-	array('_controller' => 'ReportBundle:Overview:updateStat'),
-	array(),
-	array()
+$collection->create('report_overview_update_stat', array(
+	'path'        => '/overview/update-stat/{type}',
+	'controller'  => 'ReportBundle:Overview:updateStat',
 ));
 
-################################################################################
-# Agent Hours
-################################################################################
-
-$collection->add('report_agent_hours_index', new Route(
-    '/agent-hours',
-    array('_controller' => 'ReportBundle:AgentHours:index'),
-    array(),
-    array()
+$collection->create('report_agent_hours_index', array(
+	'path'        => '/agent-hours',
+	'controller'  => 'ReportBundle:AgentHours:index',
 ));
 
-$collection->add('report_agent_hours_list_date', new Route(
-    '/agent-hours/{date}/{date2}',
-    array('_controller' => 'ReportBundle:AgentHours:list', 'date2' => ''),
-    array(),
-    array()
+$collection->create('report_agent_hours_list_date', array(
+	'path'        => '/agent-hours/{date}/{date2}',
+	'controller'  => 'ReportBundle:AgentHours:list',
+	'defaults'    => array('date2' => ''),
 ));
 
-################################################################################
-# Agent Activity
-################################################################################
-
-$collection->add('report_agent_activity_index', new Route(
-    '/agent-activity',
-    array('_controller' => 'ReportBundle:AgentActivity:index'),
-    array(),
-    array()
+$collection->create('report_agent_activity_index', array(
+	'path'        => '/agent-activity',
+	'controller'  => 'ReportBundle:AgentActivity:index',
 ));
 
-$collection->add('report_agent_activity_list', new Route(
-    '/agent-activity/list/{agent_or_team_id}/{date}',
-    array('_controller' => 'ReportBundle:AgentActivity:list'),
-    array(),
-    array()
+$collection->create('report_agent_activity_list', array(
+	'path'        => '/agent-activity/list/{agent_or_team_id}/{date}',
+	'controller'  => 'ReportBundle:AgentActivity:list',
 ));
 
-################################################################################
-# Agent Feedback
-################################################################################
-
-$collection->add('report_agent_feedback_summary', new Route(
-    '/agent-feedback/summary/{date}',
-    array('_controller' => 'ReportBundle:AgentFeedback:summary', 'date' => ''),
-    array(),
-    array()
+$collection->create('report_agent_feedback_summary', array(
+	'path'        => '/agent-feedback/summary/{date}',
+	'controller'  => 'ReportBundle:AgentFeedback:summary',
+	'defaults'    => array('date' => ''),
 ));
 
-$collection->add('report_agent_feedback_feed', new Route(
-	'/agent-feedback/{page}',
-	array('_controller' => 'ReportBundle:AgentFeedback:feed', 'page' => '0'),
-	array(),
-	array()
+$collection->create('report_agent_feedback_feed', array(
+	'path'        => '/agent-feedback/{page}',
+	'controller'  => 'ReportBundle:AgentFeedback:feed',
+	'defaults'    => array('page' => '0'),
 ));
 
-################################################################################
-# Publish
-################################################################################
-
-$collection->add('report_publish', new Route(
-	'/publish',
-	array('_controller' => 'ReportBundle:ReportBuilder:index'),
-	array(),
-	array()
+$collection->create('report_publish', array(
+	'path'        => '/publish',
+	'controller'  => 'ReportBundle:ReportBuilder:index',
 ));
 
-################################################################################
-# Report Builder
-################################################################################
-
-$collection->add('report_builder', new Route(
-	'/report-builder',
-	array('_controller' => 'ReportBundle:ReportBuilder:index'),
-	array(),
-	array()
+$collection->create('report_builder', array(
+	'path'        => '/report-builder',
+	'controller'  => 'ReportBundle:ReportBuilder:index',
 ));
 
-$collection->add('report_builder_query', new Route(
-	'/report-builder/query',
-	array('_controller' => 'ReportBundle:ReportBuilder:query'),
-	array(),
-	array()
+$collection->create('report_builder_query', array(
+	'path'        => '/report-builder/query',
+	'controller'  => 'ReportBundle:ReportBuilder:query',
 ));
 
-$collection->add('report_builder_parse', new Route(
-	'/report-builder/parse',
-	array('_controller' => 'ReportBundle:ReportBuilder:parse'),
-	array(),
-	array()
+$collection->create('report_builder_parse', array(
+	'path'        => '/report-builder/parse',
+	'controller'  => 'ReportBundle:ReportBuilder:parse',
 ));
 
-$collection->add('report_builder_new', new Route(
-	'/report-builder/new',
-	array('_controller' => 'ReportBundle:ReportBuilder:edit', 'report_builder_id' => 0),
-	array(),
-	array()
+$collection->create('report_builder_new', array(
+	'path'        => '/report-builder/new',
+	'controller'  => 'ReportBundle:ReportBuilder:edit',
+	'defaults'    => array('report_builder_id' => 0),
 ));
 
-$collection->add('report_builder_report', new Route(
-	'/report-builder/{report_builder_id}/',
-	array('_controller' => 'ReportBundle:ReportBuilder:report'),
-	array('report_builder_id' => '\\d+'),
-	array()
+$collection->create('report_builder_report', array(
+	'path'          => '/report-builder/{report_builder_id}/',
+	'controller'    => 'ReportBundle:ReportBuilder:report',
+	'requirements'  => array('report_builder_id' => '\\d+'),
 ));
 
-$collection->add('report_builder_edit', new Route(
-	'/report-builder/{report_builder_id}/edit',
-	array('_controller' => 'ReportBundle:ReportBuilder:edit'),
-	array('report_builder_id' => '\\d+'),
-	array()
+$collection->create('report_builder_edit', array(
+	'path'          => '/report-builder/{report_builder_id}/edit',
+	'controller'    => 'ReportBundle:ReportBuilder:edit',
+	'requirements'  => array('report_builder_id' => '\\d+'),
 ));
 
-$collection->add('report_builder_delete', new Route(
-	'/report-builder/{report_builder_id}/delete',
-	array('_controller' => 'ReportBundle:ReportBuilder:delete'),
-	array('report_builder_id' => '\\d+'),
-	array()
+$collection->create('report_builder_delete', array(
+	'path'          => '/report-builder/{report_builder_id}/delete',
+	'controller'    => 'ReportBundle:ReportBuilder:delete',
+	'requirements'  => array('report_builder_id' => '\\d+'),
 ));
 
-$collection->add('report_builder_favorite', new Route(
-	'/report-builder/{report_builder_id}/favorite',
-	array('_controller' => 'ReportBundle:ReportBuilder:favorite'),
-	array('report_builder_id' => '\\d+'),
-	array()
+$collection->create('report_builder_favorite', array(
+	'path'          => '/report-builder/{report_builder_id}/favorite',
+	'controller'    => 'ReportBundle:ReportBuilder:favorite',
+	'requirements'  => array('report_builder_id' => '\\d+'),
 ));
 
-################################################################################
-# Billing
-################################################################################
-
-$collection->add('report_billing', new Route(
-	'/billing',
-	array('_controller' => 'ReportBundle:Billing:index'),
-	array(),
-	array()
+$collection->create('report_billing', array(
+	'path'        => '/billing',
+	'controller'  => 'ReportBundle:Billing:index',
 ));
 
-$collection->add('report_billing_report', new Route(
-	'/billing/{report_id}',
-	array('_controller' => 'ReportBundle:Billing:report'),
-	array(),
-	array()
+$collection->create('report_billing_report', array(
+	'path'        => '/billing/{report_id}',
+	'controller'  => 'ReportBundle:Billing:report',
 ));
 
 return $collection;

@@ -62,58 +62,90 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		//$mode = "copy";
-		$mode = "rename";
+		require(DP_ROOT.'/MockRoute.php');
+		$files = array(
+			DP_ROOT.'/src/Application/AdminBundle/Resources/config/admin-routing.php',
+			DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
+			DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php',
+			DP_ROOT.'/src/Application/ApiBundle/Resources/config/api-routing.php',
+			DP_ROOT.'/src/Application/BillingBundle/Resources/config/billing-routing.php',
+			DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php',
+			DP_ROOT.'/src/Application/InstallBundle/Resources/config/install-routing.php',
+			DP_ROOT.'/src/Application/ReportBundle/Resources/config/reports-routing.php',
+			DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php',
+			DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php',
+		);
 
-		$lang_path = '/deskpro/www/app/languages/default/adm';
-		$interface_path = '/deskpro/www/app/src/Application/AdminInterfaceBundle/Resources';
-		$interface_files = iterator_to_array(Finder::create()->files()->name('*.twig')->in($interface_path));
+		foreach ($files as $f) {
+			$contents = file_get_contents($f);
+			$contents = str_replace('use Symfony\Component\Routing\Route;', 'use MockRoute as Route;', $contents);
+			file_put_contents($f, $contents);
 
-		if ($mode == "copy") {
-			foreach (array('departments.php', 'general.php', 'tickets.php') as $lang_file) {
-				$lang_file_path = $lang_path."/$lang_file";
-				$lang_outfile_path = $lang_path."/new.$lang_file";
-				$phrases = require($lang_file_path);
+			/** @var \Symfony\Component\Routing\RouteCollection $collection */
+			$collection = require($f);
 
-				$out_phrases = array();
-				foreach ($interface_files as $f) {
-					$content = file_get_contents($f->getRealPath());
+			$output = array();
 
-					foreach ($phrases as $id => $name) {
-						if (isset($out_phrases[$id])) continue;
-						if (strpos($content, $id) !== false) {
-							$out_phrases[$id] = $name;
+			foreach ($collection as $name => $route) {
+				if ($route->arg3 != -1) {
+					$arg3 = $route->arg3;
+					$method = null;
+					if (isset($arg3['_method'])) {
+						$method = $arg3['_method'];
+						unset($route->arg3['_method']);
+
+						if ($route->arg7 == -1) {
+							$route->arg7 = array();
 						}
+
+						$route->arg7[] = $method;
 					}
 				}
 
-				ksort($out_phrases, \SORT_STRING);
-				$out_phrases = Arrays::prettyDump($out_phrases);
-
-				file_put_contents($lang_outfile_path, "<?php return " . $out_phrases . ";");
-			}
-		} elseif ($mode == "rename") {
-			$phrase_ids = array();
-			foreach (array('departments.php', 'general.php', 'tickets.php') as $lang_file) {
-				$file_phrases = require($lang_path."/$lang_file");
-				$phrase_ids = array_merge($phrase_ids, array_keys($file_phrases));
-			}
-
-			$find_arr = array();
-			$repl_arr = array();
-			foreach ($phrase_ids as $k) {
-				$find_arr[] = preg_replace('#^adm\.#', 'admin.', $k);
-				$repl_arr[] = $k;
-			}
-
-			foreach ($interface_files as $f) {
-				$old_content = file_get_contents($f->getRealPath());
-				$new_content = str_replace($find_arr, $repl_arr, $old_content);
-
-				if ($old_content != $new_content) {
-					file_put_contents($f->getRealPath(), $new_content);
+				$info = array('path' => $route->arg1);
+				if ($route->arg2 != -1 && $route->arg2) {
+					if (isset($route->arg2['_controller'])) {
+						$info['controller'] = $route->arg2['_controller'];
+						unset($route->arg2['_controller']);
+					}
+					if ($route->arg2 != -1 && $route->arg2) {
+						$info['defaults'] = $route->arg2;
+					}
 				}
+				if ($route->arg3 != -1 && $route->arg3) {
+					$info['requirements'] = $route->arg3;
+				}
+				if ($route->arg4 != -1 && $route->arg4) {
+					$info['options'] = $route->arg4;
+				}
+				if ($route->arg5 != -1 && $route->arg5) {
+					$info['host'] = $route->arg5;
+				}
+				if ($route->arg6 != -1 && $route->arg6) {
+					$info['schemes'] = $route->arg6;
+				}
+				if ($route->arg7 != -1 && $route->arg7) {
+					$info['methods'] = $route->arg7;
+				}
+
+				$block = "\$collection->create('$name', " . Arrays::prettyDump($info) . ");";
+
+				$output[] = $block;
 			}
+
+			$output = implode("\n\n", $output);
+			$output = "<?php if (!defined('DP_ROOT')) exit('No access');\n\n"
+				. "require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');\n"
+				. "require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');\n\n"
+				. "use Application\DeskPRO\Routing\RouteCollection;\n"
+				. "use Application\DeskPRO\Routing\Route;\n\n"
+				. "\$collection = new RouteCollection();\n\n"
+				. $output
+				. "\n\n"
+				. "return \$collection;"
+				. "\n";
+
+			file_put_contents($f, $output);
 		}
 	}
 }
