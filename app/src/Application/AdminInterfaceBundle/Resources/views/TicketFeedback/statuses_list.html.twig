@@ -1,0 +1,73 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-smile"></i> {{phrase('admin.general.apps_tickets')}} &rarr; {{phrase('admin.feedback.feedback_statuses')}}</h3>
+		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+	</header>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span dp-ping-flash="statuses_enabled" class="saved-ping"><i class="icon-check-sign"></i> {{phrase('agent.general.saved')}}</span>
+						</li>
+						<li>
+							<span class="btn btn-danger" ng-class="{active: active_statuses.delete_mode}" ng-click="active_statuses.delete_mode = !active_statuses.delete_mode;"><i class="icon-trash"></i> {{phrase('agent.general.delete')}}</span>
+						</li>
+						<li>
+							<a class="btn btn-success" href="#/tickets/feedback/statuses/create/active"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
+							</a></li>
+					</ul>
+				</nav>
+				<h3 translate="admin.feedback.count_active_statuses" translate-values="{ count: TicketFeedbackStatusesList.active_statuses_length }"></h3>
+			</div>
+			<ul class="dp-item-list" ui-sortable="TicketFeedbackStatusesList.sortedListOptions">
+				<li ng-repeat="status in TicketFeedbackStatusesList.statuses | filter:{'is_active':true}" class="with-drag-handle">
+					<a href="#/tickets/feedback/statuses/{{ng_var('status.id')}}">
+						<i class="icon-reorder drag-handle"></i>
+						<button dp-toggle-switch ng-model="status.is_enabled" ng-change="TicketFeedbackStatusesList.updateEnabledState(status)"></button>
+						<div class="pull-right">
+							<span class="badge" ng-hide="active_statuses.delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ng_var('status.id')}}</span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="active_statuses.delete_mode" style="margin-top: -3px;" ng-click="TicketFeedbackStatusesList.startDelete(status); $event.preventDefault();"><i class="icon-trash"></i></span>
+						</div>
+						<h4><span class="title-text">{{ng_var('status.title')}}</span></h4>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span dp-ping-flash="statuses_enabled" class="saved-ping"><i class="icon-check-sign"></i> {{phrase('agent.general.saved')}}</span>
+							<span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+						</li>
+						<li>
+							<span class="btn btn-danger" ng-class="{active: closed_statuses.delete_mode}" ng-click="closed_statuses.delete_mode = !closed_statuses.delete_mode;"><i class="icon-trash"></i> {{phrase('agent.general.delete')}}</span>
+						</li>
+						<li>
+							<a class="btn btn-success" href="#/tickets/feedback/statuses/create/closed"><i class="icon-plus"></i> {{phrase('agent.general.add')}}
+							</a></li>
+					</ul>
+				</nav>
+				<h3 translate="admin.feedback.count_closed_statuses" translate-values="{ count: TicketFeedbackStatusesList.closed_statuses_length }"></h3>
+			</div>
+			<ul class="dp-item-list" ui-sortable="TicketFeedbackStatusesList.sortedListOptions">
+				<li ng-repeat="status in TicketFeedbackStatusesList.statuses | filter:{'is_active':false}" class="with-drag-handle">
+					<a href="#/tickets/feedback/statuses/{{ng_var('status.id')}}">
+						<i class="icon-reorder drag-handle"></i>
+						<button dp-toggle-switch ng-model="status.is_enabled" ng-change="TicketFeedbackStatusesList.updateEnabledState(status)"></button>
+						<div class="pull-right">
+							<span class="badge" ng-hide="closed_statuses.delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ng_var('status.id')}}</span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="closed_statuses.delete_mode" style="margin-top: -3px;" ng-click="TicketFeedbackStatusesList.startDelete(status); $event.preventDefault();"><i class="icon-trash"></i></span>
+						</div>
+						<h4><span class="title-text">{{ng_var('status.title')}}</span></h4>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</article>
+</div>
+{% include 'AdminInterfaceBundle:TicketFeedback:Statuses:help-page.html.twig' %}

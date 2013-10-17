@@ -39,7 +39,7 @@
 							<span class="badge" ng-show="!delete_mode">{{ng_var('label.count')}}</span>&nbsp;
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
 								ng-class="{'active':label.delete_mode}"
-								ng-click="TicketLabelsList.startDelete(label)"><i class="icon-trash"></i></span>
+								ng-click="TicketLabelsList.startDelete(label); $event.preventDefault();"><i class="icon-trash"></i></span>
 						</div>
 						<h4>
 							<span class="title-text">{{ng_var('label.label')}}</span>

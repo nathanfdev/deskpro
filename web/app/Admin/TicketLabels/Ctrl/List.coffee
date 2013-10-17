@@ -38,7 +38,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			});
 
 			inst.result.then(=>
-				@deleteLabel(label)
+				@deleteStatus(label)
 			)
 
 			inst.result.catch(=>

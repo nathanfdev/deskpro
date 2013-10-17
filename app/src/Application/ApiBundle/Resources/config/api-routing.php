@@ -2369,6 +2369,46 @@ $collection->add('api_ticket_labels_remove', new Route(
 ));
 
 ########################################################################################################################
+# TICKET FEEDBACK STATUSES
+########################################################################################################################
+
+$collection->add('api_ticket_feedback_statuses', new Route(
+	'/feedback/statuses',
+	array('_controller' => 'ApiBundle:TicketFeedbackStatuses:list'),
+	array('_method' => 'GET')
+));
+
+$collection->add('api_ticket_feedback_statuses_save', new Route(
+	'/feedback/statuses/save',
+	array('_controller' => 'ApiBundle:TicketFeedbackStatuses:save'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_feedback_statuses_add', new Route(
+	'/feedback/statuses',
+	array('_controller' => 'ApiBundle:TicketFeedbackStatuses:add'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_feedback_statuses_remove', new Route(
+	'/feedback/statuses/{id}',
+	array('_controller' => 'ApiBundle:TicketFeedbackStatuses:remove'),
+	array('_method' => 'DELETE')
+));
+
+$collection->add('api_ticket_feedback_statuses_switch', new Route(
+	'/feedback/statuses/switch/{id}',
+	array('_controller' => 'ApiBundle:TicketFeedbackStatuses:switch'),
+	array('_method' => 'POST')
+));
+
+$collection->add('api_ticket_feedback_statuses_order', new Route(
+	'/feedback/statuses/order/{id}',
+	array('_controller' => 'ApiBundle:TicketFeedbackStatuses:order'),
+	array('_method' => 'POST')
+));
+
+########################################################################################################################
 # EMAIL ACCOUNTS
 ########################################################################################################################
 

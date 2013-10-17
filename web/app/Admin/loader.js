@@ -96,7 +96,9 @@ requirejs([
 	'Admin/TicketDeps/Ctrl/Edit',
 	'Admin/TicketFields/Ctrl/List',
 	'Admin/TicketLabels/Ctrl/List',
-	'Admin/TicketLabels/Ctrl/Edit'
+	'Admin/TicketLabels/Ctrl/Edit',
+	'Admin/TicketFeedback/Statuses/Ctrl/List',
+	'Admin/TicketFeedback/Statuses/Ctrl/Edit'
 ], function(angular) {
 	'use strict';
 

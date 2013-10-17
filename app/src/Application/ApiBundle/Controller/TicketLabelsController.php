@@ -1,9 +1,7 @@
 <?php
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\DependencyInjection\SystemServices\LabelDefManagerService;
 use Application\DeskPRO\Labels\LabelDefManager;
-use Application\DeskPRO\Labels\LabelManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TicketLabelsController extends AbstractController

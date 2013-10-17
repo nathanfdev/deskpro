@@ -58,7 +58,7 @@
           ]
         });
         inst.result.then(function() {
-          return _this.deleteLabel(label);
+          return _this.deleteStatus(label);
         });
         return inst.result["catch"](function() {
           return label.delete_mode = false;
