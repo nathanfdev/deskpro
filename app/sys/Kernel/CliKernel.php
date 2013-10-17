@@ -46,13 +46,21 @@ use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 use Application\DeskPRO\App;
 
-class CliKernel extends AgentKernel
+class CliKernel extends AbstractKernel
 {
 	protected function registerAdditionalBundles()
 	{
-		$bundles = parent::registerAdditionalBundles();
+		$bundles = array(
+			new \Application\AgentBundle\AgentBundle(),
+			new \FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+		);
 
 		return $bundles;
+	}
+
+	public function registerContainerConfiguration(LoaderInterface $loader)
+	{
+		$loader->load(DP_ROOT.'/sys/config/cli/config_'.$this->getEnvironment().'.php');
 	}
 
 	public function boot($mode = 'cli')
