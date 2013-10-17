@@ -1,0 +1,36 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }}</h3>
+		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+	</header>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span dp-ping-flash="run_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+						</li>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="#/tickets/triggers/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+					</ul>
+				</nav>
+				<h3 ng-if="TicketTriggersList.triggers" translate="BEEEEEEEP" translate-values="{ count_length: TicketTriggersList.triggers }"></h3>
+			</div>
+			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions">
+				<li class="with-drag-handle with-row-toggle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
+					<a href="#/tickets/triggers/{{ ng_var('trigger.id') }}">
+						<i class="icon-reorder drag-handle"></i>
+						<div class="pull-right">
+							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('trigger.id') }}</span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="icon-trash"></i></span>
+						</div>
+						<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="TicketTriggersList.toggleTriggerEnabledState(trigger)"></button>
+						<h4><span class="title-text">{{ ng_var('trigger.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</article>
+</div>
+{% include 'AdminInterfaceBundle:TicketTriggers:help-page.html.twig' %}

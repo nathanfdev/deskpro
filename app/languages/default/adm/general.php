@@ -32,4 +32,5 @@
 	'adm.general.usergroup_perms'                    => 'User Group Permissions',
 	'adm.general.website_embed'                      => 'Website Embed',
 	'adm.general.x_departments'                      => '{{count}} Department|{{count}} Departments',
+	'adm.general.action_cannot_be_undone'            => 'This action cannot be undone.',
 );

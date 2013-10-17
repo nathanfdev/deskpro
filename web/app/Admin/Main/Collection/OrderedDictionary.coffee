@@ -13,6 +13,11 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 		count: ->
 			return @order.length
 
+		addArray: (array, id_prop = 'id') ->
+			for r in array
+				id = r[id_prop]
+				if id? then @set(id, r)
+
 		set: (k, v) ->
 			@_touch = (new Date()).getTime();
 

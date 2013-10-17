@@ -1,0 +1,92 @@
+define [
+	'Admin/Main/Ctrl/Base',
+	'Admin/Main/Collection/OrderedDictionary',
+], (
+	Admin_Ctrl_Base,
+	OrderedDictionary
+) ->
+	class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base
+		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
+		@CTRL_AS = 'TicketTriggersList'
+		@DEPS = ['$state']
+		@CTRL_TYPE = 'list'
+
+		init: ->
+			@triggers = null
+			@triggersCollection = null
+
+			@sortedListOptions = {
+				axis: 'y',
+				handle: '.drag-handle',
+				update: (ev, data) =>
+					$list = data.item.closest('ul')
+
+					postData = {run_orders: []}
+
+					$list.find('li').each(->
+						postData.run_orders.push($(this).data('id'))
+					)
+
+					promise = @Api.sendPostJson('/ticket_triggers/run_order', postData)
+					@pingElement('run_orders')
+			}
+
+		###
+		# Loads the triggers list
+		###
+		initialLoad: ->
+			promise = @Api.sendGet('/ticket_triggers').success( (data) =>
+				@triggersCollection = new OrderedDictionary();
+				@triggersCollection.addArray(data.triggers)
+				@triggers = data.triggers
+			);
+
+			return promise
+
+
+		###
+		# Toggle the enabled state of a trigger
+		###
+		toggleTriggerEnabledState: (trigger) ->
+			trigger.is_enabled = !trigger.is_enabled
+
+			if trigger.is_enabled
+				@Api.sendPost("/ticket_triggers/#{trigger.id}/enable")
+			else
+				@Api.sendPost("/ticket_triggers/#{trigger.id}/disable")
+
+
+		###
+		# Show the delete dlg
+		###
+		startTriggerDelete: (trigger) ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketTriggers/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.confirm = ->
+						$modalInstance.close();
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+				]
+			});
+
+			inst.result.then( =>
+				@deleteTrigger(trigger)
+			)
+
+		###
+		# Actually do the delete
+		###
+		deleteTrigger: (trigger) ->
+
+			@triggersCollection.remove(trigger.id)
+			@triggers = @triggersCollection.values()
+
+			@Api.sendDelete('/ticket_triggers/' + trigger.id).success( =>
+				# if currently viewing the deleted department, then should need to switch state
+				if @$state.current.name == 'tickets.ticket_triggers.edit' and parseInt(@$state.params.id) == trigger.id
+					@$state.go('tickets.ticket_triggers')
+			)
+
+	Admin_TicketTriggers_Ctrl_List.EXPORT_CTRL()

@@ -44,6 +44,64 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 class TicketTrigger extends AbstractEntityRepository
 {
 	/**
+	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
+	 */
+	public function getTriggers()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:TicketTrigger t
+			WHERE t.event_trigger NOT LIKE 'time.%'
+			ORDER BY t.run_order, t.title ASC
+		")->execute();
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
+	 */
+	public function getEscalations()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:TicketTrigger t
+			WHERE t.event_trigger LIKE 'time.%'
+			ORDER BY t.run_order, t.title ASC
+		")->execute();
+	}
+
+	/**
+	 * Updates run orders
+	 *
+	 * @param array $orders An array of IDs to order the collection by. Items NOT in the collection are not reordered.
+	 * @return void
+	 */
+	public function updateRunOrders($orders)
+	{
+		$orders = array_values($orders);
+		if (!$orders) {
+			return;
+		}
+
+		$coll = $this->getEntityManager()->createQuery("
+			SELECT PARTIAL t.{id, run_order}
+			FROM DeskPRO:TicketTrigger t INDEX BY t.id
+			WHERE t IN (?0)
+		")->execute(array($orders));
+
+		$x = 0;
+		foreach ($orders as $id) {
+			$x += 10;
+			if (isset($coll[$id])) {
+				$coll[$id]->run_order = $x;
+				$this->_em->persist($coll[$id]);
+			}
+		}
+
+		$this->_em->flush();
+		return;
+	}
+
+	/**
 	 * Get all event-based triggers (that is, not time-based)
 	 *
 	 * @param bool $only_enabeld

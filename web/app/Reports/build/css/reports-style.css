@@ -7806,6 +7806,11 @@ article.pane-content.pad-top {
   padding-left: 34px;
 }
 
+.dp-item-list > li.with-drag-handle.with-row-toggle > a,
+.dp-item-list > .dp-itm.with-drag-handle.with-row-toggle > a {
+  padding-left: 42px;
+}
+
 .dp-item-list > li > a,
 .dp-item-list > .dp-itm > a {
   position: relative;
@@ -9636,6 +9641,11 @@ article.pane-content.pad-top {
 .dp-item-list > li.with-drag-handle > a,
 .dp-item-list > .dp-itm.with-drag-handle > a {
   padding-left: 34px;
+}
+
+.dp-item-list > li.with-drag-handle.with-row-toggle > a,
+.dp-item-list > .dp-itm.with-drag-handle.with-row-toggle > a {
+  padding-left: 42px;
 }
 
 .dp-item-list > li > a,

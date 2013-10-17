@@ -312,14 +312,38 @@ define(function() {
 		url: '/triggers',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
-		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			templateName: 'TicketTriggers/list.html',
+			controller: 'Admin_TicketTriggers_Ctrl_List'
 		}
 	});
+
+	routes.push({
+		id: 'tickets.triggers.gocreate',
+		url: '/go-create',
+		page: {
+			template: '',
+			controller: ['$state', function ($state) { $state.go('tickets.triggers.create'); }]
+		}
+	});
+
+	routes.push({
+		id: 'tickets.triggers.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketTriggers/edit.html',
+			controller: 'Admin_TicketTriggers_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.triggers.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'TicketTriggers/edit.html',
+			controller: 'Admin_TicketTriggers_Ctrl_Edit'
+		}
+	});
+
 
 	//###
 	//# Snippets

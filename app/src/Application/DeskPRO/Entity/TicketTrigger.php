@@ -758,6 +758,17 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $actions;
 	}
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		if (empty($data['title'])) {
+			$data['title'] = 'Trigger ' . $data['id'];
+		}
+
+		return $data;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

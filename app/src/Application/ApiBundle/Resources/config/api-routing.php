@@ -50,6 +50,16 @@ $collection->create('api_token_renew', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_profile_inhelpstate', array(
+	'path'        => '/profile/inhelp/{id}/{state}',
+	'controller'  => 'ApiBundle:Profile:saveInhelpState',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# General
+########################################################################################################################
+
 $collection->create('api_misc_upload', array(
 	'path'        => '/misc/upload',
 	'controller'  => 'ApiBundle:Misc:upload',
@@ -2038,6 +2048,10 @@ $collection->create('api_get_activity', array(
 	'methods'       => array('GET'),
 ));
 
+########################################################################################################################
+# Ticket Departments
+########################################################################################################################
+
 $collection->create('api_ticket_deps', array(
 	'path'        => '/ticket_deps',
 	'controller'  => 'ApiBundle:TicketDeps:list',
@@ -2087,6 +2101,10 @@ $collection->create('api_ticket_deps_remove', array(
 	'methods'     => array('DELETE'),
 ));
 
+########################################################################################################################
+# Ticket Fields
+########################################################################################################################
+
 $collection->create('api_ticket_fields', array(
 	'path'        => '/ticket_fields',
 	'controller'  => 'ApiBundle:TicketFields:list',
@@ -2098,6 +2116,10 @@ $collection->create('api_ticket_fields_setenabled', array(
 	'controller'  => 'ApiBundle:TicketFields:toggleField',
 	'methods'     => array('POST'),
 ));
+
+########################################################################################################################
+# Ticket Email Accounts
+########################################################################################################################
 
 $collection->create('api_ticket_accounts', array(
 	'path'        => '/ticket_accounts',
@@ -2141,6 +2163,65 @@ $collection->create('api_ticket_accounts_save', array(
 	'controller'  => 'ApiBundle:TicketAccounts:save',
 	'methods'     => array('POST'),
 ));
+
+########################################################################################################################
+# Ticket Triggers
+########################################################################################################################
+
+$collection->create('api_ticket_triggers', array(
+	'path'        => '/ticket_triggers',
+	'controller'  => 'ApiBundle:TicketTriggers:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_triggers_updateorder', array(
+	'path'        => '/ticket_triggers/run_order',
+	'controller'  => 'ApiBundle:TicketTriggers:saveRunOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_triggers_create', array(
+	'path'        => '/ticket_triggers',
+	'controller'  => 'ApiBundle:TicketTriggers:edit',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_ticket_triggers_get', array(
+	'path'        => '/ticket_triggers/{id}',
+	'controller'  => 'ApiBundle:TicketTriggers:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_triggers_update', array(
+	'path'        => '/ticket_triggers/{id}',
+	'controller'  => 'ApiBundle:TicketTriggers:edit',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_triggers_delete', array(
+	'path'        => '/ticket_triggers/{id}',
+	'controller'  => 'ApiBundle:TicketTriggers:delete',
+	'methods'     => array('DELETE'),
+));
+
+$collection->create('api_ticket_triggers_enabletrigger', array(
+	'path'        => '/ticket_triggers/{id}/enable',
+	'defaults'    => array('is_enabled' => true),
+	'controller'  => 'ApiBundle:TicketTriggers:toggleTrigger',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_triggers_disabletrigger', array(
+	'path'        => '/ticket_triggers/{id}/disable',
+	'defaults'    => array('is_enabled' => false),
+	'controller'  => 'ApiBundle:TicketTriggers:toggleTrigger',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# Ticket Labels
+########################################################################################################################
 
 $collection->create('api_ticket_labels', array(
 	'path'        => '/ticket_labels',
@@ -2208,6 +2289,10 @@ $collection->create('api_emailaccounts', array(
 	'methods'     => array('GET'),
 ));
 
+########################################################################################################################
+# Languages
+########################################################################################################################
+
 $collection->create('api_langs', array(
 	'path'        => '/langs',
 	'controller'  => 'ApiBundle:Languages:list',
@@ -2227,6 +2312,10 @@ $collection->create('api_langs_savephrase', array(
 	'methods'     => array('POST'),
 ));
 
+########################################################################################################################
+# Templates
+########################################################################################################################
+
 $collection->create('api_templates_get', array(
 	'path'        => '/templates/{name}',
 	'controller'  => 'ApiBundle:Templates:getTemplate',
@@ -2242,12 +2331,6 @@ $collection->create('api_templates_update', array(
 $collection->create('api_templates_create_random_variant', array(
 	'path'        => '/templates/{name}/create-random-variant',
 	'controller'  => 'ApiBundle:Templates:createRandomVariant',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_profile_inhelpstate', array(
-	'path'        => '/profile/inhelp/{id}/{state}',
-	'controller'  => 'ApiBundle:Profile:saveInhelpState',
 	'methods'     => array('POST'),
 ));
 

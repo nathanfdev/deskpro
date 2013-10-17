@@ -97,6 +97,8 @@ requirejs([
 	'Admin/TicketFields/Ctrl/List',
 	'Admin/TicketLabels/Ctrl/List',
 	'Admin/TicketLabels/Ctrl/Edit',
+	'Admin/TicketTriggers/Ctrl/Edit',
+	'Admin/TicketTriggers/Ctrl/List',
 	'Admin/TicketFeedback/Statuses/Ctrl/List',
 	'Admin/TicketFeedback/Statuses/Ctrl/Edit'
 ], function(angular) {

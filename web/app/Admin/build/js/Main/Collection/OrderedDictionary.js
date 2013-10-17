@@ -18,6 +18,24 @@
         return this.order.length;
       };
 
+      Admin_Main_Collection_OrderedDictionary.prototype.addArray = function(array, id_prop) {
+        var id, r, _i, _len, _results;
+        if (id_prop == null) {
+          id_prop = 'id';
+        }
+        _results = [];
+        for (_i = 0, _len = array.length; _i < _len; _i++) {
+          r = array[_i];
+          id = r[id_prop];
+          if (id != null) {
+            _results.push(this.set(id, r));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
       Admin_Main_Collection_OrderedDictionary.prototype.set = function(k, v) {
         var exist_pos;
         this._touch = (new Date()).getTime();
