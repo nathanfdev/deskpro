@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "dependencies": {
     "requirejs": "2.1.8",
-    "angular": "v1.2.0-rc.2",
-    "angular-animate": "v1.2.0-rc.2",
-    "angular-sanitize": "v1.2.0-rc.2",
-    "angular-i18n": "v1.2.0-rc.2",
+    "angular": "v1.2.0-rc.3",
+    "angular-animate": "v1.2.0-rc.3",
+    "angular-sanitize": "v1.2.0-rc.3",
+    "angular-i18n": "1.2.0-rc.3",
     "angular-translate": "latest",
     "angular-ui-ace": "latest",
     "angular-ui-router": "latest",
@@ -21,7 +21,6 @@
     "underscore": "latest"
   },
   "resolutions": {
-    "jquery": "2.0",
-    "angular": "v1.2.0-rc.2"
+    "angular": "v1.2.0-rc.3"
   }
 }
