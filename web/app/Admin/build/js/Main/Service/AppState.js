@@ -22,6 +22,11 @@
               current_state_id += '.' + $state.params.id;
             }
             _this.setActiveState(current_state_id);
+            if (_this.$state.current.with_page_view) {
+              $(document.body).addClass('with-section-page');
+            } else {
+              $(document.body).removeClass('with-section-page');
+            }
             if (_this.$state.current.with_list_view) {
               $(document.body).addClass('with-section-list');
             } else {
@@ -44,6 +49,11 @@
             full += '.' + toParams.id;
           }
           _this.setActiveState(full);
+          if (_this.$state.current.with_page_view) {
+            $(document.body).addClass('with-section-page');
+          } else {
+            $(document.body).removeClass('with-section-page');
+          }
           if (_this.$state.current.with_list_view) {
             $(document.body).addClass('with-section-list');
           } else {

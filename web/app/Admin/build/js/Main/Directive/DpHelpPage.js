@@ -22,7 +22,7 @@
       '$rootScope', '$state', function($rootScope, $state) {
         return {
           restrict: 'AE',
-          scope: false,
+          scope: {},
           replace: true,
           transclude: true,
           template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="icon-remove"></i></div><div ng-transclude></div></div></section>',
@@ -41,7 +41,7 @@
               'z-index': '10000',
               'overflow': 'auto'
             });
-            scope.$on('destroy', function() {
+            scope.$on('$destroy', function() {
               element.remove();
               return $border.remove();
             });
@@ -53,7 +53,7 @@
               }
               my_state = state_segs.join('.');
             }
-            if (((_ref1 = $state.current) != null ? (_ref2 = _ref1.views['dp_section_page@']) != null ? _ref2.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
+            if (!$state.with_page_view || ((_ref1 = $state.current) != null ? (_ref2 = _ref1.views['dp_section_page@']) != null ? _ref2.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
               isOpen = true;
               element.show();
               $button.hide();
@@ -89,12 +89,18 @@
               }, 210);
               return $button.fadeOut(200);
             };
-            closeFn = function() {
+            closeFn = function(instantly) {
               var buttonOffset, pageH, pageOffset, pageW;
               if (!isOpen) {
                 return;
               }
               isOpen = false;
+              if (instantly) {
+                element.hide();
+                $border.hide();
+                $button.show();
+                return;
+              }
               pageH = $page.height();
               pageW = $page.width();
               pageOffset = $page.offset();
@@ -138,7 +144,7 @@
                 }
                 new_state = state_segs.join('.');
                 if (new_state !== my_state) {
-                  return element.hide();
+                  return closeFn(true);
                 } else {
                   return closeFn();
                 }

@@ -444,7 +444,7 @@ define(function() {
       controller: 'Admin_TicketFeedbackStatuses_Ctrl_List'
  		}
  	});
-  
+
 	//###
 	//# Feedback Statuses
 	//###
@@ -567,10 +567,6 @@ define(function() {
 		list: {
 			templateName: 'TicketDeps/list.html',
 			controller: 'Admin_TicketDeps_Ctrl_List'
-		},
-		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
 
@@ -611,10 +607,6 @@ define(function() {
 		list: {
 			templateName: 'TicketAccounts/list.html',
 			controller: 'Admin_TicketAccounts_Ctrl_List'
-		},
-		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
 		}
 	});
 

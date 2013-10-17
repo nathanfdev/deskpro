@@ -214,6 +214,9 @@ define [
 				if with_lists[segs.join('.')]
 					opts.with_list_view = true
 
+			if route.page?
+				opts.with_page_view = true
+
 			if route.with_nav_view?
 				opts.with_nav_view = route.with_nav_view
 

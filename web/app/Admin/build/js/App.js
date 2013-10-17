@@ -141,6 +141,9 @@
               opts.with_list_view = true;
             }
           }
+          if (route.page != null) {
+            opts.with_page_view = true;
+          }
           if (route.with_nav_view != null) {
             opts.with_nav_view = route.with_nav_view;
           }

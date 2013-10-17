@@ -18,6 +18,11 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 
 					@setActiveState(current_state_id)
 
+					if @$state.current.with_page_view
+						$(document.body).addClass('with-section-page')
+					else
+						$(document.body).removeClass('with-section-page')
+
 					if @$state.current.with_list_view
 						$(document.body).addClass('with-section-list')
 					else
@@ -39,6 +44,11 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 					full += '.' + toParams.id
 
 				@setActiveState(full)
+
+				if @$state.current.with_page_view
+					$(document.body).addClass('with-section-page')
+				else
+					$(document.body).removeClass('with-section-page')
 
 				if @$state.current.with_list_view
 					$(document.body).addClass('with-section-list')

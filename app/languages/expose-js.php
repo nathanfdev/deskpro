@@ -2,16 +2,16 @@
 	'admin' => array(
 		'agent.general.*',
 		'agent.tickets.*',
-		'admin.general.*',
-		'admin.departments.*',
-		'admin.tickets.*',
+		'adm.general.*',
+		'adm.departments.*',
+		'adm.tickets.*',
 	),
 
 	'reports' => array(
 		'agent.general.*',
 		'agent.tickets.*',
-		'admin.general.*',
-		'admin.departments.*',
-		'admin.tickets.*'
+		'adm.general.*',
+		'adm.departments.*',
+		'adm.tickets.*'
 	)
 );

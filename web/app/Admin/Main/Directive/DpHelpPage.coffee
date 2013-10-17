@@ -18,7 +18,7 @@ define ->
 	Admin_Main_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) ->
 		return {
 			restrict: 'AE',
-			scope: false,
+			scope: {},
 			replace: true,
 			transclude: true,
 			template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="icon-remove"></i></div><div ng-transclude></div></div></section>',
@@ -41,7 +41,7 @@ define ->
 					'overflow': 'auto'
 				})
 
-				scope.$on('destroy', ->
+				scope.$on('$destroy', ->
 					element.remove()
 					$border.remove()
 				)
@@ -54,7 +54,7 @@ define ->
 
 					my_state = state_segs.join('.')
 
-				if $state.current?.views['dp_section_page@']?.controller == 'Admin_Main_Ctrl_Bare'
+				if not $state.with_page_view or $state.current?.views['dp_section_page@']?.controller == 'Admin_Main_Ctrl_Bare'
 					isOpen = true
 					element.show()
 					$button.hide()
@@ -90,9 +90,15 @@ define ->
 					, 210)
 					$button.fadeOut(200)
 
-				closeFn = ->
+				closeFn = (instantly) ->
 					if not isOpen then return
 					isOpen = false
+
+					if instantly
+						element.hide()
+						$border.hide()
+						$button.show()
+						return
 
 					pageH = $page.height()
 					pageW = $page.width()
@@ -139,7 +145,7 @@ define ->
 						new_state = state_segs.join('.')
 
 						if new_state != my_state
-							element.hide()
+							closeFn(true)
 						else
 							closeFn()
 					else

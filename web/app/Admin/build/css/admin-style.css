@@ -8195,11 +8195,18 @@ span.help-icon:hover {
   color: #66AFE9;
 }
 
+.with-section-page section.dp-help-page {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.with-section-page section.dp-help-page .close-btn {
+  display: block;
+}
+
 section.dp-help-page {
   overflow: auto;
   font-size: 110%;
   line-height: 160%;
-  background: rgba(0, 0, 0, 0.4);
 }
 
 section.dp-help-page.full {
@@ -8218,6 +8225,7 @@ section.dp-help-page .close-btn {
   position: absolute;
   top: 36px;
   right: 36px;
+  display: none;
   width: 30px;
   height: 30px;
   font-size: 150%;

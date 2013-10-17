@@ -849,11 +849,18 @@ span.help-icon {
 	}
 }
 
+.with-section-page section.dp-help-page {
+	background: rgba(0, 0, 0, 0.4);
+
+	.close-btn {
+		display: block;
+	}
+}
+
 section.dp-help-page {
 	line-height: 160%;
 	font-size: 110%;
 	overflow: auto;
-	background: rgba(0, 0, 0, 0.4);
 
 	&.full {
 		background: #fff;
@@ -867,6 +874,7 @@ section.dp-help-page {
 	}
 
 	.close-btn {
+		display: none;
 		position: absolute;
 		font-size: 150%;
 		top: 36px;
