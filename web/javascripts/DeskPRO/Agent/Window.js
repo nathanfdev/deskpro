@@ -908,7 +908,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.onloadStack.push(fn);
 	},
 
-	loadHashPath: function(browserHash) {
+	loadHashPath: function(browserHash, force) {
 
 		if (this.DEBUG.disableUrlFragments) return;
 
@@ -920,7 +920,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (this.cancelHashLoad < 0) {
 				this.cancelHashLoad = 0;
 			}
-			return;
+
+			if (!force) {
+				return;
+			}
 		}
 
 		if (!browserHash.length) {
