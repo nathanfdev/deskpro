@@ -757,6 +757,62 @@ class Arrays
 	}
 
 
+	/**
+	 * Like var_export except the result is prettier.
+	 *
+	 * @param array $array
+	 * @return string
+	 */
+	public static function prettyDump(array $array, $_level = 0)
+	{
+		if (!count($array)) {
+			return 'array()';
+		}
+
+		if (isset($array[0])) {
+			$is_numeric_array = true;
+			$max_keylen = 0;
+		} else {
+			$is_numeric_array = false;
+			$max_keylen = 0;
+
+			foreach ($array as $k => $v) {
+				$len = strlen($k);
+				if ($len > $max_keylen) {
+					$max_keylen = $len;
+				}
+			}
+
+			$max_keylen += 3;
+		}
+
+		$rows = array();
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$v = self::prettyDump($v, $_level+1);
+				$v = ltrim($v);
+			} else {
+				$v = var_export($v, true);
+			}
+
+			if ($is_numeric_array) {
+				$row = str_repeat("\t", $_level+1) . $v;
+			} else {
+				$row = sprintf("%s%-{$max_keylen}s => %s", str_repeat("\t", $_level+1), var_export($k, true), $v);
+			}
+
+			$rows[] = $row;
+		}
+
+		$rows = implode(",\n", $rows);
+		$rows .= ',';
+
+		$output = str_repeat("\t", $_level) . "array(\n" . $rows . "\n" . str_repeat("\t", $_level) . ')';
+
+		return $output;
+	}
+
+
 
 	/**
 	 * Take an array of id=>array(data) items and create a hierarchy based on a parent_id element
