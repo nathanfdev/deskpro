@@ -1,6 +1,6 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-tags"></i> {{phrase('admin.general.apps_tickets')}} &rarr; {{phrase('admin.general.labels')}}</h3>
+		<h3><i class="icon-tags"></i> {{phrase('adm.general.apps_tickets')}} &rarr; {{phrase('adm.general.labels')}}</h3>
 	</header>
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
@@ -28,9 +28,9 @@
 						</li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketLabelsList.labels.length" translate="admin.general.count_labels" translate-values="{ count: TicketLabelsList.labels.length }"></h3>
+				<h3 ng-if="TicketLabelsList.labels.length" translate="adm.general.count_labels" translate-values="{ count: TicketLabelsList.labels.length }"></h3>
 
-				<h3 ng-if="!TicketLabelsList.labels.length">{{phrase('admin.general.no_labels_yet')}}</h3>
+				<h3 ng-if="!TicketLabelsList.labels.length">{{phrase('adm.general.no_labels_yet')}}</h3>
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">

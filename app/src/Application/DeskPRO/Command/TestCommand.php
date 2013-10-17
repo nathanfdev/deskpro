@@ -48,6 +48,7 @@ use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Routing\Route;
 
@@ -61,23 +62,58 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$logger = new Logger();
-		$wr = new ArrayWriter();
-		$logger->addWriter($wr);
+		//$mode = "copy";
+		$mode = "rename";
 
-		$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
-			'host'     => 'imap.gmail.com',
-			'port'     => '993',
-			'user'     => 'dpug@nadeau.ws',
-			'password' => 'dp!!ug!!',
-			'ssl'      => 'SSL',
-			'logger'   => $logger
-		));
+		$lang_path = '/deskpro/www/app/languages/default/adm';
+		$interface_path = '/deskpro/www/app/src/Application/AdminInterfaceBundle/Resources';
+		$interface_files = iterator_to_array(Finder::create()->files()->name('*.twig')->in($interface_path));
 
-		echo $wr->getMessagesAsString();
+		if ($mode == "copy") {
+			foreach (array('departments.php', 'general.php', 'tickets.php') as $lang_file) {
+				$lang_file_path = $lang_path."/$lang_file";
+				$lang_outfile_path = $lang_path."/new.$lang_file";
+				$phrases = require($lang_file_path);
 
-		echo "\n\n";
+				$out_phrases = array();
+				foreach ($interface_files as $f) {
+					$content = file_get_contents($f->getRealPath());
 
-		echo "\n\n";
+					foreach ($phrases as $id => $name) {
+						if (isset($out_phrases[$id])) continue;
+						if (strpos($content, $id) !== false) {
+							$out_phrases[$id] = $name;
+						}
+					}
+				}
+
+				ksort($out_phrases, \SORT_STRING);
+				$out_phrases = Arrays::prettyDump($out_phrases);
+
+				file_put_contents($lang_outfile_path, "<?php return " . $out_phrases . ";");
+			}
+		} elseif ($mode == "rename") {
+			$phrase_ids = array();
+			foreach (array('departments.php', 'general.php', 'tickets.php') as $lang_file) {
+				$file_phrases = require($lang_path."/$lang_file");
+				$phrase_ids = array_merge($phrase_ids, array_keys($file_phrases));
+			}
+
+			$find_arr = array();
+			$repl_arr = array();
+			foreach ($phrase_ids as $k) {
+				$find_arr[] = preg_replace('#^adm\.#', 'admin.', $k);
+				$repl_arr[] = $k;
+			}
+
+			foreach ($interface_files as $f) {
+				$old_content = file_get_contents($f->getRealPath());
+				$new_content = str_replace($find_arr, $repl_arr, $old_content);
+
+				if ($old_content != $new_content) {
+					file_put_contents($f->getRealPath(), $new_content);
+				}
+			}
+		}
 	}
 }

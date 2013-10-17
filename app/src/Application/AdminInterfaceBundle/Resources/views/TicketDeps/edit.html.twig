@@ -1,7 +1,7 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
-		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('admin.departments.new_department') }}</h3>
+		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
+		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('adm.departments.new_department') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
 		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketDepsEdit.saveAll()">
@@ -9,8 +9,8 @@
 				<ul>
 					<li class="active" dp-tab-btn="main.props"><a href="#">{{ phrase('agent.general.properties') }}</a></li>
 					<li dp-tab-btn="main.perms"><a href="#">{{ phrase('agent.general.permissions') }}</a></li>
-					<li dp-tab-btn="main.layout"><a href="#">{{ phrase('admin.general.layout') }}</a></li>
-					<li dp-tab-btn="main.website_embeds"><a href="#">{{ phrase('admin.general.website_embed') }}</a></li>
+					<li dp-tab-btn="main.layout"><a href="#">{{ phrase('adm.general.layout') }}</a></li>
+					<li dp-tab-btn="main.website_embeds"><a href="#">{{ phrase('adm.general.website_embed') }}</a></li>
 				</ul>
 			</nav>
 
@@ -28,25 +28,25 @@
 									{% if app.getLanguages().isMultiLang() %}
 										<span
 											class="translate-button"
-											tooltip="{{ phrase('admin.general.translate') }}"
+											tooltip="{{ phrase('adm.general.translate') }}"
 											dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.%depid%' }"
 											dp-save-phrase-promise="TicketDepsEdit.getWaitEntityPromiseView()"
 											dp-phrase-id-gen="{ 'depid': TicketDepsEdit.dep.id }"
 										></span>
 									{% endif %}
 									<span class="help-block">
-										{{ phrase('admin.departments.title_explain') }}
+										{{ phrase('adm.departments.title_explain') }}
 									</span>
 								</div>
 
 								<div class="inner-group">
 									<label>
 										<input type="checkbox" ng-model="TicketDepsEdit.dep._enable_user_title" value="1" />
-										<h4>{{ phrase('admin.departments.user_title') }}</h4>
+										<h4>{{ phrase('adm.departments.user_title') }}</h4>
 									</label>
 									<div ng-show="TicketDepsEdit.dep._enable_user_title">
 										<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
-										{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('admin.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id + '_user' }"></span>{% endif %}
+										{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('adm.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id + '_user' }"></span>{% endif %}
 									</div>
 									<span class="help-block">
 
@@ -68,23 +68,23 @@
 									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
 								</select>
 								<span class="help-block">
-									{{ phrase('admin.departments.parent_explain') }}
+									{{ phrase('adm.departments.parent_explain') }}
 								</span>
 
 								<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
 									<p>
-										<strong>{{ phrase('admin.departments.parent_not_parent') }}</strong>
+										<strong>{{ phrase('adm.departments.parent_not_parent') }}</strong>
 									</p>
 									<ul>
-										<li>{{ phrase('admin.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}</li>
-										<li>{{ phrase('admin.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(TicketDepsEdit.dep.title)' }) }}</li>
+										<li>{{ phrase('adm.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}</li>
+										<li>{{ phrase('adm.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(TicketDepsEdit.dep.title)' }) }}</li>
 									</ul>
 								</div>
 							</div>
 						</div>
 						<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length" dp-error-class="form_props.email_gateway_id">
 							<div class="col-lg-2">
-								<h3>{{ phrase('admin.departments.linked_account') }}</h3>
+								<h3>{{ phrase('adm.departments.linked_account') }}</h3>
 							</div>
 							<div class="col-lg-10">
 								<select
@@ -98,7 +98,7 @@
 									<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts">{{ ng_var('account.email_address') }}</option>
 								</select>
 								<span class="help-block">
-									{{ phrase('admin.departments.linked_account_explain') }}
+									{{ phrase('adm.departments.linked_account_explain') }}
 								</span>
 							</div>
 						</div>
@@ -200,23 +200,23 @@
 				<div class="panel panel-innertable">
 					<div class="panel-heading">
 						<h3>
-							<span>{{ phrase('admin.general.usergroup_perms') }}</span>
+							<span>{{ phrase('adm.general.usergroup_perms') }}</span>
 							<button dp-inhelp-btn="admin.ticket_deps.edit.usergroup_perms"></button>
 						</h3>
 					</div>
 					<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
 						<p>
-							{{ phrase('admin.departments.usergroup_perms_explain') }}
+							{{ phrase('adm.departments.usergroup_perms_explain') }}
 						</p>
 						<p>
-							{{ phrase('admin.departments.usergroup_perms_explain2') }}
+							{{ phrase('adm.departments.usergroup_perms_explain2') }}
 						</p>
 					</div>
 					<table class="table table-hover">
 						<thead>
 							<tr>
 								<th>{{ phrase('agent.general.usergroup') }}</th>
-								<th width="120" class="text-center">{{ phrase('admin.general.perm_use') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('admin.departments.usergroup_perm_toggle') }}"></span></th>
+								<th width="120" class="text-center">{{ phrase('adm.general.perm_use') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.usergroup_perm_toggle') }}"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -237,28 +237,28 @@
 				<div class="panel panel-innertable">
 					<div class="panel-heading">
 						<h3>
-							<span>{{ phrase('admin.general.agent_perms') }}</span>
+							<span>{{ phrase('adm.general.agent_perms') }}</span>
 							<button dp-inhelp-btn="admin.ticket_deps.edit.agent_perms"></button>
 						</h3>
 					</div>
 					<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.agent_perms">
 						<p>
-							{{ phrase('admin.departments.agent_perms_explain') }}
+							{{ phrase('adm.departments.agent_perms_explain') }}
 						</p>
 						<ol>
-							<li>{{ phrase('admin.departments.agent_perms_explain_assign') }}</li>
-							<li>{{ phrase('admin.departments.agent_perms_explain_full') }}</li>
+							<li>{{ phrase('adm.departments.agent_perms_explain_assign') }}</li>
+							<li>{{ phrase('adm.departments.agent_perms_explain_full') }}</li>
 						</ol>
 						<p>
-							{{ phrase('admin.departments.agent_perms_explain_participant') }}
+							{{ phrase('adm.departments.agent_perms_explain_participant') }}
 						</p>
 					</div>
 					<table class="table table-hover">
 						<thead>
 							<tr>
-								<th>{{ phrase('admin.departments.agent_agent_group') }}</th>
-								<th width="120" class="text-center">{{ phrase('admin.general.perm_assign') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('admin.departments.perm_assign_tip') }}"></span></th>
-								<th width="120" class="text-center">{{ phrase('admin.general.perm_full_access') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('admin.departments.perm_full_tip') }}"></span></th>
+								<th>{{ phrase('adm.departments.agent_agent_group') }}</th>
+								<th width="120" class="text-center">{{ phrase('adm.general.perm_assign') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.perm_assign_tip') }}"></span></th>
+								<th width="120" class="text-center">{{ phrase('adm.general.perm_full_access') }} <span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.perm_full_tip') }}"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -269,7 +269,7 @@
 									<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
 								</td>
 								<td class="text-center">
-									<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('admin.departments.perm_assign_locked_tip') }}"></button>
+									<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
 								</td>
 								<td class="text-center">
 									<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
@@ -282,10 +282,10 @@
 									<span class="text-middle"><a href="#">{{ ng_var('agentObj.model.display_name') }}</a></span>
 								</td>
 								<td class="text-center">
-									<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('admin.departments.perm_assign_locked_tip') }}"></button>
+									<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
 								</td>
 								<td class="text-center">
-									<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('admin.departments.perm_group_locked_tip') }}"></button>
+									<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') }}"></button>
 								</td>
 							</tr>
 						</tbody>
@@ -306,17 +306,17 @@
 					<div class="dp-grayed-placeholder fill" ng-if="!TicketDepsEdit.dep.id">
 						<div class="bg"></div>
 						<p>
-							{{ phrase('admin.departments.embed_unavailable') }}
+							{{ phrase('adm.departments.embed_unavailable') }}
 						</p>
 					</div>
 					<div class="panel-help">
 						<p>
-							{{ phrase('admin.departments.embed_explain') }}
+							{{ phrase('adm.departments.embed_explain') }}
 						</p>
 					</div>
 					<div class="panel-body">
 							<div class="form-group">
-								<label for="title">{{ phrase('admin.departments.embed_direct_link') }}</label>
+								<label for="title">{{ phrase('adm.departments.embed_direct_link') }}</label>
 								<div class="row">
 									<div class="col-lg-8">
 										<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
@@ -325,7 +325,7 @@
 							</div>
 
 							<div class="form-group">
-								<label for="title">{{ phrase('admin.departments.embed_popup_window') }}</label>
+								<label for="title">{{ phrase('adm.departments.embed_popup_window') }}</label>
 								<div class="row">
 									<div class="col-lg-8">
 										<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
@@ -334,7 +334,7 @@
 							</div>
 
 							<div class="form-group">
-								<label for="title">{{ phrase('admin.departments.embed_form') }}</label>
+								<label for="title">{{ phrase('adm.departments.embed_form') }}</label>
 								<div class="row">
 									<div class="col-lg-8">
 										<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
@@ -343,7 +343,7 @@
 							</div>
 						<div ng-if="!TicketDepsEdit.dep.id">
 							<p>
-								{{ phrase('admin.departments.embed_unavailable') }}
+								{{ phrase('adm.departments.embed_unavailable') }}
 							</p>
 						</div>
 					</div>
@@ -352,10 +352,10 @@
 
 			<div class="inner-footer">
 				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{ phrase('admin.general.please_correct_errors') }}</strong></p>
+					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 					<ul>
-						<li ng-show="form_props.title.$error.required">{{ phrase('admin.departments.title_error') }}</li>
-						<li ng-show="form_props.email_gateway_id.$error">{{ phrase('admin.departments.email_account_required') }}</li>
+						<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+						<li ng-show="form_props.email_gateway_id.$error">{{ phrase('adm.departments.email_account_required') }}</li>
 					</ul>
 				</div>
 
@@ -373,4 +373,4 @@
 	</article>
 </div>
 
-<div dp-register-message="saved_dep">{{ phrase('admin.departments.saved_dep_x_success', {title: 'ng_var(TicketDepsEdit.dep.title)'}) }}</div>
+<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(TicketDepsEdit.dep.title)'}) }}</div>

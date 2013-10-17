@@ -1,6 +1,6 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-briefcase"></i> {{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }}</h3>
+		<h3><i class="icon-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }}</h3>
 		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
 	</header>
 	<article class="pane-content no-pad">
@@ -15,7 +15,7 @@
 						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketDepsList.departments" translate="admin.general.x_departments" translate-values="{ count_length: TicketDepsList.departments }"></h3>
+				<h3 ng-if="TicketDepsList.departments" translate="adm.general.x_departments" translate-values="{ count_length: TicketDepsList.departments }"></h3>
 			</div>
 			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
@@ -49,7 +49,7 @@
 			<div class="panel-body ng-hide" ng-show="TicketDepsList.departments.length == 1">
 				<div class="alert alert-info">
 					<p>
-						{{ phrase('admin.departments.not_user_visible') }}
+						{{ phrase('adm.departments.not_user_visible') }}
 					</p>
 				</div>
 			</div>
@@ -57,7 +57,7 @@
 
 		<div class="panel panel-fill">
 			<div class="panel-heading">
-				<h3>{{ phrase('admin.departments.department_settings') }}</h3>
+				<h3>{{ phrase('adm.departments.department_settings') }}</h3>
 			</div>
 			<div class="panel-body">
 				<form class="form-horizontal dp-form" role="form">
@@ -74,7 +74,7 @@
 								<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsList.default_dep_list">{{ ng_var('dep._full_title') }}</option>
 							</select>
 							<span class="help-block">
-								{{ phrase('admin.departments.default_explain') }}
+								{{ phrase('adm.departments.default_explain') }}
 							</span>
 						</div>
 					</div>
@@ -86,18 +86,18 @@
 						<div class="col-sm-9">
 							<label>
 								<input type="checkbox" ng-model="TicketDepsList.dep_settings.do_rename" />
-								<h4>{{ phrase('admin.departments.rename_department_field') }}</h4>
+								<h4>{{ phrase('adm.departments.rename_department_field') }}</h4>
 							</label>
 							<span class="help-block">
-								{{ phrase('admin.departments.rename_department_field_explain') }}
+								{{ phrase('adm.departments.rename_department_field_explain') }}
 							</span>
 							<div ng-show="TicketDepsList.dep_settings.do_rename">
 								<div class="inner-group">
-									<span>{{ phrase('admin.departments.singular') }}:</span><br/>
+									<span>{{ phrase('adm.departments.singular') }}:</span><br/>
 									<input type="text" ng-model="TicketDepsList.dep_settings.name_singular" class="form-control input-sm" style="width: 60%;" placeholder="Ex: Region" />
 								</div>
 								<div class="inner-group">
-									<span>{{ phrase('admin.departments.singular') }}</span><br/>
+									<span>{{ phrase('adm.departments.singular') }}</span><br/>
 									<input type="text" ng-model="TicketDepsList.dep_settings.name_plural" class="form-control input-sm" style="width: 60%" placeholder="Ex: Regions" />
 								</div>
 							</div>
@@ -118,6 +118,6 @@
 		</div>
 	</article>
 </div>
-<div dp-register-message="saved_settings">{{ phrase('admin.general.save_settings_success') }}</div>
-<div dp-register-message="no_delete_last">{{ phrase('admin.departments.no_delete_last') }}</div>
+<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
 {% include 'AdminInterfaceBundle:TicketDeps:help-page.html.twig' %}

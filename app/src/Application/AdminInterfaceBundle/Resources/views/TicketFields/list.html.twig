@@ -1,6 +1,6 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-terminal"></i> {{ phrase('admin.general.apps_tickets') }} &rarr; {{ phrase('admin.general.builtin_fields') }}</h3>
+		<h3><i class="icon-terminal"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.general.builtin_fields') }}</h3>
 		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
 	</header>
 	<article class="pane-content no-pad">
@@ -13,7 +13,7 @@
 						</li>
 					</ul>
 				</nav>
-				<h3>{{ phrase('admin.general.builtin_fields') }}</h3>
+				<h3>{{ phrase('adm.general.builtin_fields') }}</h3>
 			</div>
 			<ul class="dp-item-list">
 				<li>
@@ -55,8 +55,8 @@
 						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketFieldsList.custom_fields.length" translate="admin.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
-				<h3 ng-if="!TicketFieldsList.custom_fields.length" translate="admin.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
+				<h3 ng-if="TicketFieldsList.custom_fields.length" translate="adm.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
+				<h3 ng-if="!TicketFieldsList.custom_fields.length" translate="adm.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.ticket_fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
