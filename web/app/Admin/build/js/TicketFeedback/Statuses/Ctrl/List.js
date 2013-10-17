@@ -23,8 +23,8 @@
       Admin_TicketFeedbackStatuses_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.statuses = [];
-        this.active_statuses_length = '';
-        this.closed_statuses_length = '';
+        this.active_statuses_length = 0;
+        this.closed_statuses_length = 0;
         this.add_mode = false;
         this.$scope.escape_url = function(text) {
           return encodeURIComponent(text);
