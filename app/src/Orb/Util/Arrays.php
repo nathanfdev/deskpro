@@ -791,6 +791,17 @@ class Arrays
 			if (is_array($v)) {
 				$v = self::prettyDump($v, $_level+1);
 				$v = ltrim($v);
+
+				if (strlen($v) < 80) {
+					$v = str_replace("\n", " ", $v);
+					$v = preg_replace('#\s*=>\s*#', ' => ', $v);
+					$v = preg_replace("#',\s*'#", '\', \'', $v);
+					$v = trim($v);
+					$v = preg_replace('#^array\(\s*#', 'array(', $v);
+					$v = preg_replace('#\s*\)$#', ')', $v);
+					$v = preg_replace('#,\)$#', ')', $v);
+				}
+
 			} else {
 				$v = var_export($v, true);
 			}
