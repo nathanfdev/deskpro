@@ -31,8 +31,11 @@
       };
 
       Admin_TicketLabels_Ctrl_Edit.prototype.initialLoad = function() {
-        var list_promise,
+        var get_label, list_promise,
           _this = this;
+        get_label = this.Api.sendGet('/ticket_labels/get', {
+          label: this.$stateParams.label
+        });
         list_promise = this.TicketLabelsData.loadList().then(function(recs) {
           _this.labels = recs;
           if (_this.$stateParams.label) {
@@ -47,7 +50,7 @@
             }
           }
         });
-        return this.$q.all([list_promise]);
+        return this.$q.all([get_label, list_promise]);
       };
 
       Admin_TicketLabels_Ctrl_Edit.prototype.addNewLabel = function() {
@@ -93,8 +96,7 @@
           _this.stopSpinner('saving_label', true).then(function() {
             return _this.Growl.success(_this.getRegisteredMessage('saved_label'));
           });
-          _this.skipDirtyState();
-          return _this.$state.go('tickets.labels');
+          return _this.skipDirtyState();
         }).error(function() {
           return _this.Growl.error(_this.getRegisteredMessage('not_saved_label'));
         })["finally"](function() {

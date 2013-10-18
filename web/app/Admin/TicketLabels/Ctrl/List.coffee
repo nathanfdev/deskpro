@@ -11,9 +11,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			@add_mode = false
 			@$scope.escape_url = (text)->
 				return encodeURIComponent(text)
-			
+
 			console.log @$scope
-				
+
 			return
 
 		initialLoad: ->
@@ -38,7 +38,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			});
 
 			inst.result.then(=>
-				@deleteStatus(label)
+				@deleteLabel(label)
 			)
 
 			inst.result.catch(=>
@@ -66,6 +66,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@$scope.orderReverse = !(to=='label')
 
 			@$scope.order = to
-		
+
 
 	Admin_TicketLabels_Ctrl_List.EXPORT_CTRL()

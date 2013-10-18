@@ -34,7 +34,7 @@
 				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">
 					<a href="#/tickets/labels/{{ng_var('label.label | escape_url')}}">
 						<div class="pull-right">
-							<span class="badge" ng-show="!delete_mode">{{ng_var('label.count')}}</span>&nbsp;
+							<span class="badge" ng-show="!delete_mode" tooltip="The number of tickets with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
 								ng-class="{'active':label.delete_mode}"
 								ng-click="TicketLabelsList.startDelete(label); $event.preventDefault();"><i class="icon-trash"></i></span>
@@ -47,4 +47,5 @@
 			</ul>
 		</div>
 	</article>
+	{{ ng_tpl('TicketLabels/delete-modal.html') }}
 </div>

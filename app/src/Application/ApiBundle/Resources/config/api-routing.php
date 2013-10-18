@@ -2230,6 +2230,12 @@ $collection->create('api_ticket_labels', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_labels_get', array(
+	'path'        => '/ticket_labels/get',
+	'controller'  => 'ApiBundle:TicketLabels:get',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_ticket_labels_save', array(
 	'path'        => '/ticket_labels/save',
 	'controller'  => 'ApiBundle:TicketLabels:save',

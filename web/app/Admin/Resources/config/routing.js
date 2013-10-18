@@ -464,32 +464,32 @@ define(function() {
     }
 	});
 
-  routes.push({
- 		id: 'tickets.labels.create',
- 		url: '/create',
- 		page: {
- 			templateName: 'TicketLabels/edit.html',
- 			controller: 'Admin_TicketLabels_Ctrl_Edit'
- 		}
- 	});
+	routes.push({
+		id: 'tickets.labels.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketLabels/edit.html',
+			controller: 'Admin_TicketLabels_Ctrl_Edit'
+		}
+	});
 
-  routes.push({
- 		id: 'tickets.labels.gocreate',
- 		url: '/go-create',
- 		page: {
- 			templateName: 'TicketLabels/edit.html',
-      controller: ['$state', function ($state) { $state.go('tickets.labels.create'); }]
- 		}
- 	});
+	routes.push({
+		id: 'tickets.labels.gocreate',
+		url: '/go-create',
+		page: {
+			templateName: 'TicketLabels/edit.html',
+			controller: ['$state', function ($state) { $state.go('tickets.labels.create'); }]
+		}
+	});
 
- 	routes.push({
- 		id: 'tickets.labels.edit',
- 		url: '/{label:.*}',
- 		page: {
- 			templateName: 'TicketLabels/edit.html',
- 			controller: 'Admin_TicketLabels_Ctrl_Edit'
- 		}
- 	});
+	routes.push({
+		id: 'tickets.labels.edit',
+		url: '/{label:.*}',
+		page: {
+			templateName: 'TicketLabels/edit.html',
+			controller: 'Admin_TicketLabels_Ctrl_Edit'
+		}
+	});
 
 	//###
 	//# Billing

@@ -13,6 +13,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			return
 
 		initialLoad: ->
+			get_label = @Api.sendGet('/ticket_labels/get', {
+				label: @$stateParams.label
+			})
 			list_promise = @TicketLabelsData.loadList().then((recs) =>
 				@labels = recs
 				if @$stateParams.label
@@ -23,7 +26,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 						@label_object = {label: '', count: 0}
 			)
 
-			return @$q.all([list_promise]);
+			return @$q.all([get_label, list_promise])
 
 		addNewLabel: ->
 			return false if not @form.label
@@ -59,7 +62,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					@Growl.success(@getRegisteredMessage('saved_label'))
 				)
 				@skipDirtyState()
-				@$state.go('tickets.labels')
 			).error(=>
 				@Growl.error(@getRegisteredMessage('not_saved_label'))
 			).finally(=>

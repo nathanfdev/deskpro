@@ -22,6 +22,14 @@ class TicketLabelsController extends AbstractController
 		return $this->createApiResponse($data);
 	}
 
+	public function getAction()
+	{
+		$label = $this->in->getString('label');
+		return $this->createApiResponse(array(
+			'label' => $label
+		));
+	}
+
 	public function addAction()
 	{
 		$label           = $this->in->getString('label');
