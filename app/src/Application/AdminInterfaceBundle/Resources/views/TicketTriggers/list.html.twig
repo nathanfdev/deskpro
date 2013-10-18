@@ -22,11 +22,15 @@
 					<a href="#/tickets/triggers/{{ ng_var('TicketTriggersList.eventType') }}/{{ ng_var('trigger.id') }}">
 						<i class="icon-reorder drag-handle"></i>
 						<div class="pull-right">
+							<em class="tag" ng-if="trigger.by_agent">agent</em>
+							<em class="tag" ng-if="trigger.by_user">user</em>
 							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('trigger.id') }}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="icon-trash"></i></span>
 						</div>
 						<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="TicketTriggersList.toggleTriggerEnabledState(trigger)"></button>
-						<h4><span class="title-text">{{ ng_var('trigger.display_title') }}</span></h4>
+						<h4>
+							<span class="title-text">{{ ng_var('trigger.display_title') }}</span>
+						</h4>
 					</a>
 				</li>
 			</ul>

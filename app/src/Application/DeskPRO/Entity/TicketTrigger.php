@@ -76,6 +76,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_UPDATE_AGENT          = 'update.agent';
 	const EVENT_UPDATE_USER           = 'update.user';
 	const EVENT_UPDATE_API            = 'update.api';
+	const EVENT_TIME_OPEN                  = 'time.open';
+	const EVENT_TIME_USER_WAITING          = 'time.user_waiting';
+	const EVENT_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
+	const EVENT_TIME_AGENT_WAITING         = 'time.agent_waiting';
+	const EVENT_TIME_RESOLVED              = 'time.resolved';
 	const EVENT_SLA_WARNING           = 'sla.warning';
 	const EVENT_SLA_FAIL              = 'sla.fail';
 	//==== OLD: TODO REMOVE  /\

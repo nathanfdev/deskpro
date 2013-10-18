@@ -7795,6 +7795,16 @@ article.pane-content.pad-top {
   margin: 0;
 }
 
+.dp-item-list > li em.tag,
+.dp-item-list > .dp-itm em.tag {
+  display: inline-block;
+  padding: 1px 4px;
+  font-style: normal;
+  color: #444;
+  background: #D4E4FF;
+  border-radius: 2px;
+}
+
 .dp-item-list > li.active > a,
 .dp-item-list > .dp-itm.active > a {
   color: #3476BE;
