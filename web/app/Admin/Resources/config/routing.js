@@ -322,7 +322,7 @@ define(function() {
 		url: '/go-create',
 		page: {
 			template: '',
-			controller: ['$state', function ($state) { $state.go('tickets.triggers.create'); }]
+			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.triggers.create', $stateParams); }]
 		}
 	});
 

@@ -9,15 +9,77 @@
 				<br/>
 				<div class="panel-body">
 					<div class="form-group">
-						<div class="col-lg-3">
+						<div class="col-lg-2">
 							<h3>{{ phrase('agent.general.title') }} *</h3>
 						</div>
-						<div class="col-lg-9">
+						<div class="col-lg-10">
 							<div class="inner-group" dp-error-class="form_props.title">
 								<input type="text" class="form-control" name="title" ng-model="form.title" style="width: 50%;" required autofocus />
 								<span class="help-block">
 									{{ phrase('adm.ticket_triggers.title_explain') }}
 								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3>Event</h3>
+						</div>
+						<div class="col-lg-10">
+							<p ng-if="triggerType == 'newticket'">When a new ticket is created</p>
+							<p ng-if="triggerType == 'newreply'">When a new reply is submitted</p>
+							<p ng-if="triggerType == 'update'">When a property on a ticket is changed</p>
+
+							<div>
+								<div style="float: left; margin-right: 10px; width: 35%">
+									<label style="font-weight: normal;">
+										<input type="checkbox" ng-model="form.by_agent" value="1" />
+										By an agent
+									</label>
+									<div ng-show="form.by_agent">
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_agent_opt.web" value="1" />
+											via the agent interface
+										</label><br/>
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_agent_opt.email" value="1" />
+											 via email
+										</label><br/>
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_agent_opt.api" value="1" />
+											via the API
+										</label>
+									</div>
+								</div>
+								<div style="float: left; width: 55%">
+									<label style="font-weight: normal;">
+										<input type="checkbox" ng-model="form.by_user" value="1" />
+										By a user
+									</label>
+									<div ng-show="form.by_user">
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_user_opt.web" value="1" />
+											via the web
+										</label>
+										<div style="display: inline" ng-show="form.by_user_opt.web">
+											: <label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_portal" value="1" /> Portal</label>
+											&nbsp;
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_widget" value="1" /> Widget</label>
+											&nbsp;
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_form" value="1" /> Ticket Form</label>
+										</div>
+										<br/>
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_user_opt.email" value="1" />
+											via email
+										</label><br/>
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_user_opt.api" value="1" />
+											via the API
+										</label>
+									</div>
+								</div>
+								<br class="clear;" />
 							</div>
 						</div>
 					</div>
@@ -77,6 +139,24 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="inner-footer">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
+
+						</ul>
+					</div>
+					<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_label">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+						</div>
+						<div dp-show-spinning="saving_label">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</form>
 	</article>

@@ -24,6 +24,7 @@
         var _this = this;
         this.triggers = null;
         this.triggersCollection = null;
+        this.eventType = this.$stateParams.type;
         return this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',

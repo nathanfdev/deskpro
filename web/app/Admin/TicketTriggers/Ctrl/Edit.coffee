@@ -12,9 +12,13 @@ define [
 		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria']
 
 		init: ->
-			@trigger = null
-			@triggerId = @$stateParams.id
-			@options = {}
+			@triggerType = @$stateParams.type
+			@trigger     = null
+			@triggerId   = @$stateParams.id
+			@options     = {}
+
+			@$scope.triggerType = @$stateParams.type
+			@$scope.triggerId   = @$stateParams.id
 
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
 
@@ -24,13 +28,18 @@ define [
 		# Load the trigger
 		###
 		initialLoad: ->
-			promise = @Api.sendGet("/ticket_triggers/#{@triggerId}").success( (data) =>
-				@trigger = data.trigger
-				@form = {
-					title: @trigger.title
-				}
-			)
+			if @triggerId
+				promise = @Api.sendGet("/ticket_triggers/#{@triggerId}").success( (data) =>
+					@trigger = data.trigger
+					@form = {
+						title: @trigger.title
+					}
+				)
 
-			return promise
+				return promise
+
+			@trigger = {}
+
+			return null
 
 	Admin_TicketTriggers_Ctrl_Edit.EXPORT_CTRL()

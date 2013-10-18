@@ -14,6 +14,7 @@ define [
 		init: ->
 			@triggers = null
 			@triggersCollection = null
+			@eventType = @$stateParams.type
 
 			@sortedListOptions = {
 				axis: 'y',

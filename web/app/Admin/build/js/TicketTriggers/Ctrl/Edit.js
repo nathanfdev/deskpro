@@ -21,9 +21,12 @@
       Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {
+        this.triggerType = this.$stateParams.type;
         this.trigger = null;
         this.triggerId = this.$stateParams.id;
         this.options = {};
+        this.$scope.triggerType = this.$stateParams.type;
+        this.$scope.triggerId = this.$stateParams.id;
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
       };
 
@@ -35,13 +38,17 @@
       Admin_TicketTriggers_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet("/ticket_triggers/" + this.triggerId).success(function(data) {
-          _this.trigger = data.trigger;
-          return _this.form = {
-            title: _this.trigger.title
-          };
-        });
-        return promise;
+        if (this.triggerId) {
+          promise = this.Api.sendGet("/ticket_triggers/" + this.triggerId).success(function(data) {
+            _this.trigger = data.trigger;
+            return _this.form = {
+              title: _this.trigger.title
+            };
+          });
+          return promise;
+        }
+        this.trigger = {};
+        return null;
       };
 
       return Admin_TicketTriggers_Ctrl_Edit;

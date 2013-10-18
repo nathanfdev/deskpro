@@ -34,11 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1382100377 extends AbstractBuild
+class Build1382106065 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Add ticket_triggers.event_performer");
-		$this->execMutateSql("ALTER TABLE ticket_triggers ADD event_performer VARCHAR(50) DEFAULT NULL");
+		$this->out("Add ticket_triggers.by_agent and ticket_triggers.by_user");
+		$this->execMutateSql("ALTER TABLE ticket_triggers ADD by_agent TINYINT(1) NOT NULL, ADD by_user TINYINT(1) NOT NULL");
 	}
 }

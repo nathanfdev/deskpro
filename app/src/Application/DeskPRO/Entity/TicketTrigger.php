@@ -59,11 +59,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_TYPE_SLA_WARNING                = 'sla.warning';
 	const EVENT_TYPE_SLA_FAIL                   = 'sla.fail';
 
-	const EVENT_PERFORMER_ANY                   = null;
-	const EVENT_PERFORMER_AGENT                 = 'agent';
-	const EVENT_PERFORMER_USER                  = 'user';
-	const EVENT_PERFORMER_API                   = 'api';
-
 	//==== OLD: TODO REMOVE  \/
 	const EVENT_NEW                   = 'new';
 	const EVENT_NEW_EMAIL             = 'new.email';
@@ -113,7 +108,12 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $event_performer = null;
+	protected $by_agent = false;
+
+	/**
+	 * @var string
+	 */
+	protected $by_user = false;
 
 	/**
 	 * @var array
@@ -818,7 +818,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'event_trigger', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_trigger', ));
-		$metadata->mapField(array( 'fieldName' => 'event_performer', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'event_performer', ));
+		$metadata->mapField(array( 'fieldName' => 'by_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'by_agent', ));
+		$metadata->mapField(array( 'fieldName' => 'by_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'by_user', ));
 		$metadata->mapField(array( 'fieldName' => 'event_trigger_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'event_trigger_options', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'is_uneditable', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_uneditable', ));
