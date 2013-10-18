@@ -50,9 +50,12 @@ define ->
 					current_state_id = $state.current.name
 					if $state.params.id
 						current_state_id += '.' + $state.params.id
+					else if $state.params.type
+						current_state_id += '.' + $state.params.type
 
 					if checkState(attrs.dpStateMark, current_state_id)
 						element.addClass('state-on active')
+						element.closest('.sub-nav').show().closest('li').addClass('sublist-open')
 
 				$rootScope.$on('dp_activeStateChange', (ev, newStateId) ->
 					if checkState(attrs.dpStateMark, newStateId)

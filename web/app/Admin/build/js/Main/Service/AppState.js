@@ -20,6 +20,8 @@
             current_state_id = $state.current.name;
             if ($state.params.id) {
               current_state_id += '.' + $state.params.id;
+            } else if ($state.params.type) {
+              current_state_id += '.' + $state.params.type;
             }
             _this.setActiveState(current_state_id);
             if (_this.$state.current.with_page_view) {
@@ -47,6 +49,8 @@
           full = toState.name;
           if (toParams.id != null) {
             full += '.' + toParams.id;
+          } else if (toParams.type != null) {
+            full += '.' + toParams.type;
           }
           _this.setActiveState(full);
           if (_this.$state.current.with_page_view) {

@@ -15,6 +15,8 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 					current_state_id = $state.current.name
 					if $state.params.id
 						current_state_id += '.' + $state.params.id
+					else if $state.params.type
+						current_state_id += '.' + $state.params.type
 
 					@setActiveState(current_state_id)
 
@@ -42,6 +44,8 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 
 				if toParams.id?
 					full += '.' + toParams.id
+				else if toParams.type?
+					full += '.' + toParams.type
 
 				@setActiveState(full)
 
