@@ -8,7 +8,7 @@ define [
 	class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
 		@CTRL_AS = 'TicketTriggersList'
-		@DEPS = ['$state']
+		@DEPS = ['$state', '$stateParams']
 		@CTRL_TYPE = 'list'
 
 		init: ->
@@ -35,7 +35,7 @@ define [
 		# Loads the triggers list
 		###
 		initialLoad: ->
-			promise = @Api.sendGet('/ticket_triggers').success( (data) =>
+			promise = @Api.sendGet("/ticket_triggers/#{@$stateParams.type}").success( (data) =>
 				@triggersCollection = new OrderedDictionary();
 				@triggersCollection.addArray(data.triggers)
 				@triggers = data.triggers

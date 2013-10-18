@@ -309,7 +309,7 @@ define(function() {
 	//###
 	routes.push({
 		id: 'tickets.triggers',
-		url: '/triggers',
+		url: '/triggers/{type:(?:newticket|newreply|update)}',
 		with_list_view: true,
 		list: {
 			templateName: 'TicketTriggers/list.html',

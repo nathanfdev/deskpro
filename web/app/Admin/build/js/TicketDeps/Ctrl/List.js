@@ -16,7 +16,7 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
 
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', '$translate', 'Growl'];
+      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', 'Growl'];
 
       Admin_TicketDeps_Ctrl_List.CTRL_TYPE = 'list';
 

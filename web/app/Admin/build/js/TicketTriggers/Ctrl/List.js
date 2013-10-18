@@ -16,7 +16,7 @@
 
       Admin_TicketTriggers_Ctrl_List.CTRL_AS = 'TicketTriggersList';
 
-      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state'];
+      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams'];
 
       Admin_TicketTriggers_Ctrl_List.CTRL_TYPE = 'list';
 
@@ -50,7 +50,7 @@
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet('/ticket_triggers').success(function(data) {
+        promise = this.Api.sendGet("/ticket_triggers/" + this.$stateParams.type).success(function(data) {
           _this.triggersCollection = new OrderedDictionary();
           _this.triggersCollection.addArray(data.triggers);
           return _this.triggers = data.triggers;

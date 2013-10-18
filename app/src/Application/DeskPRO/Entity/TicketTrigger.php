@@ -46,6 +46,25 @@ use Orb\Util\Dates;
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 {
+	const EVENT_TYPE_NEWTICKET                  = 'newticket';
+	const EVENT_TYPE_NEWREPLY                   = 'newreply';
+	const EVENT_TYPE_UPDATE                     = 'update';
+
+	const EVENT_TYPE_TIME_OPEN                  = 'time.open';
+	const EVENT_TYPE_TIME_USER_WAITING          = 'time.user_waiting';
+	const EVENT_TYPE_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
+	const EVENT_TYPE_TIME_AGENT_WAITING         = 'time.agent_waiting';
+	const EVENT_TYPE_TIME_RESOLVED              = 'time.resolved';
+
+	const EVENT_TYPE_SLA_WARNING                = 'sla.warning';
+	const EVENT_TYPE_SLA_FAIL                   = 'sla.fail';
+
+	const EVENT_PERFORMER_ANY                   = null;
+	const EVENT_PERFORMER_AGENT                 = 'agent';
+	const EVENT_PERFORMER_USER                  = 'user';
+	const EVENT_PERFORMER_API                   = 'api';
+
+	//==== OLD: TODO REMOVE  \/
 	const EVENT_NEW                   = 'new';
 	const EVENT_NEW_EMAIL             = 'new.email';
 	const EVENT_NEW_EMAIL_USER        = 'new.email.user';
@@ -62,15 +81,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_UPDATE_AGENT          = 'update.agent';
 	const EVENT_UPDATE_USER           = 'update.user';
 	const EVENT_UPDATE_API            = 'update.api';
-
-	const EVENT_TIME_OPEN                  = 'time.open';
-	const EVENT_TIME_USER_WAITING          = 'time.user_waiting';
-	const EVENT_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
-	const EVENT_TIME_AGENT_WAITING         = 'time.agent_waiting';
-	const EVENT_TIME_RESOLVED              = 'time.resolved';
-
-	const EVENT_SLA_WARNING = 'sla.warning';
-	const EVENT_SLA_FAIL    = 'sla.fail';
+	const EVENT_SLA_WARNING           = 'sla.warning';
+	const EVENT_SLA_FAIL              = 'sla.fail';
+	//==== OLD: TODO REMOVE  /\
 
 	/**
 	 * @var int
@@ -96,6 +109,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $event_trigger;
+
+	/**
+	 * @var string
+	 */
+	protected $event_performer = null;
 
 	/**
 	 * @var array
@@ -296,6 +314,27 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDisplayTitle()
+	{
+		$title = $this->title;
+		if (!$title) {
+			$title = 'Trigger ' . ($this->id ?: ' (New)');
+		}
+
+		if (preg_match('#^([a-z0-9_]+)$#', $title)) {
+			$tr = App::getTranslator();
+			if ($tr->hasPhrase($title)) {
+				$title = $tr->phrase($title);
+			}
+		}
+
+		return $title;
 	}
 
 
@@ -761,10 +800,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
-
-		if (empty($data['title'])) {
-			$data['title'] = 'Trigger ' . $data['id'];
-		}
+		$data['display_title'] = $this->getDisplayTitle();
 
 		return $data;
 	}
@@ -782,6 +818,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'event_trigger', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_trigger', ));
+		$metadata->mapField(array( 'fieldName' => 'event_performer', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'event_performer', ));
 		$metadata->mapField(array( 'fieldName' => 'event_trigger_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'event_trigger_options', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'is_uneditable', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_uneditable', ));

@@ -17,7 +17,6 @@ define ->
 					'/ticket_deps'
 				]).then( (result) =>
 					data = result.data
-					console.log(data)
 					@options_data['departments'] = data.api_ticket_deps.departments
 				)
 

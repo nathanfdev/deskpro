@@ -44,16 +44,26 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 class TicketTrigger extends AbstractEntityRepository
 {
 	/**
+	 * @param string $type newticket, newreply or update (or null to get all)
 	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
 	 */
-	public function getTriggers()
+	public function getTriggers($type = null)
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:TicketTrigger t
-			WHERE t.event_trigger NOT LIKE 'time.%'
-			ORDER BY t.run_order, t.title ASC
-		")->execute();
+		if (!$type) {
+			return $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketTrigger t
+				WHERE t.event_trigger NOT LIKE 'time.%'
+				ORDER BY t.run_order, t.title ASC
+			")->execute();
+		} else {
+			return $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketTrigger t
+				WHERE t.event_trigger = ?0
+				ORDER BY t.run_order, t.title ASC
+			")->execute(array($type));
+		}
 	}
 
 	/**

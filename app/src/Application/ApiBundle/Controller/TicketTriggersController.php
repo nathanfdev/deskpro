@@ -43,9 +43,13 @@ class TicketTriggersController extends AbstractController
 	# list
 	####################################################################################################################
 
-	public function listAction()
+	public function listAction($type = null)
 	{
-		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
+		if (!$type || $type == 'all') {
+			$type = null;
+		}
+
+		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers($type);
 
 		$data = $this->getApiData($triggers);
 

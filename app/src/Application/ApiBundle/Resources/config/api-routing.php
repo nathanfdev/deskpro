@@ -2169,9 +2169,10 @@ $collection->create('api_ticket_accounts_save', array(
 ########################################################################################################################
 
 $collection->create('api_ticket_triggers', array(
-	'path'        => '/ticket_triggers',
-	'controller'  => 'ApiBundle:TicketTriggers:list',
-	'methods'     => array('GET'),
+	'path'         => '/ticket_triggers/{type}',
+	'controller'   => 'ApiBundle:TicketTriggers:list',
+	'requirements' => array('type' => '(all|newticket|newreply|update)'),
+	'methods'      => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_updateorder', array(

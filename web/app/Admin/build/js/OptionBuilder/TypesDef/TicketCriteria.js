@@ -24,7 +24,6 @@
           p = this.Api.sendDataGet(['/ticket_deps']).then(function(result) {
             var data;
             data = result.data;
-            console.log(data);
             return _this.options_data['departments'] = data.api_ticket_deps.departments;
           });
         }
