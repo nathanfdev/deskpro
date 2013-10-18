@@ -54,7 +54,7 @@ define ->
 
 					my_state = state_segs.join('.')
 
-				if not $state.with_page_view or $state.current?.views['dp_section_page@']?.controller == 'Admin_Main_Ctrl_Bare'
+				if not $state.current?.with_page_view or $state.current?.views['dp_section_page@']?.controller == 'Admin_Main_Ctrl_Bare'
 					isOpen = true
 					element.show()
 					$button.hide()

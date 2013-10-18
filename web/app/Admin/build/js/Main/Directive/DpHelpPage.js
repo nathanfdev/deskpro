@@ -27,7 +27,7 @@
           transclude: true,
           template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="icon-remove"></i></div><div ng-transclude></div></div></section>',
           link: function(scope, element, attrs) {
-            var $border, $button, $page, btnMod, buttonH, buttonW, closeFn, isOpen, my_state, openFn, state_segs, _ref, _ref1, _ref2;
+            var $border, $button, $page, btnMod, buttonH, buttonW, closeFn, isOpen, my_state, openFn, state_segs, _ref, _ref1, _ref2, _ref3;
             element.hide();
             isOpen = false;
             $button = element.closest('.dp-section-list').find('.help-page-trigger').first();
@@ -53,7 +53,7 @@
               }
               my_state = state_segs.join('.');
             }
-            if (!$state.with_page_view || ((_ref1 = $state.current) != null ? (_ref2 = _ref1.views['dp_section_page@']) != null ? _ref2.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
+            if (!((_ref1 = $state.current) != null ? _ref1.with_page_view : void 0) || ((_ref2 = $state.current) != null ? (_ref3 = _ref2.views['dp_section_page@']) != null ? _ref3.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
               isOpen = true;
               element.show();
               $button.hide();
