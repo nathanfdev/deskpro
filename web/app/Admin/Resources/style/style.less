@@ -1224,6 +1224,11 @@ table.inner-form-table {
 		text-wrap: none;
 	}
 
+	.select2-no-results {
+		padding: 6px;
+		background: transparent;
+	}
+
 	.select2-disabled {
 		font-style: italic;
 		color: #888;
@@ -1251,6 +1256,39 @@ table.inner-form-table {
 			b {
 				background-position: 0 0;
 			}
+		}
+	}
+}
+
+.select2-container.select2-container-multi {
+	.select2-choices {
+		border-color: #CCCCCC;
+		border-radius: 2px;
+		line-height: 100%;
+		.select2-search-choice {
+			&:first-child {
+				margin-left: 2px;
+			}
+			margin: 2px 0 2px 5px;
+			line-height: 14px;
+			box-shadow: none;
+			background: lighten(#E3E3E3, 30%);
+			border-radius: 2px;
+
+			&.select2-search-choice {
+				background: #E3E3E3;
+			}
+		}
+
+		.select2-search-choice-close {
+			top: 3px;
+		}
+	}
+
+	&.select2-container-active {
+		.select2-choices {
+			box-shadow: none;
+			border-color: #66AFE9;
 		}
 	}
 }
