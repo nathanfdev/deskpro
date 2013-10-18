@@ -380,6 +380,23 @@ define(function() {
 	});
 
 	//###
+	//# Feedback
+	//###
+	routes.push({
+		id: 'tickets.feedback',
+		url: '/feedback',
+		with_list_view: true,
+		list: {
+			templateName: 'Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateName: 'Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
 	//# Escalations
 	//###
 	routes.push({
@@ -456,62 +473,6 @@ define(function() {
  			controller: 'Admin_TicketLabels_Ctrl_Edit'
  		}
  	});
-
-	//###
-	//# Feedback
-	//###
-  routes.push({
- 		id: 'tickets.feedback',
- 		url: '/feedback',
- 		page: {
- 			templateName: 'TicketFeedback/statuses_list.html',
-      controller: 'Admin_TicketFeedbackStatuses_Ctrl_List'
- 		}
- 	});
-
-	//###
-	//# Feedback Statuses
-	//###
-	routes.push({
-		id: 'tickets.feedback.statuses',
-		url: '/statuses',
-		with_list_view: true,
-		list: {
-			templateName: 'TicketFeedback/statuses_list.html',
-			controller: 'Admin_TicketFeedbackStatuses_Ctrl_List'
-		},
-    page: {
-      templateName: 'Index/blank.html',
-      controller: 'Admin_Main_Ctrl_Bare'
-    }
-	});
-
-  routes.push({
-		id: 'tickets.feedback.statuses.create',
-		url: '/create',
-		page: {
-			templateName: 'TicketFeedback/statuses_edit.html',
-			controller: 'Admin_TicketFeedbackStatuses_Ctrl_Edit'
-		}
-	});
-
-  routes.push({
-		id: 'tickets.feedback.statuses.gocreate',
-		url: '/go-create',
-		page: {
-			templateName: 'TicketFeedback/statuses_edit.html',
-      controller: ['$state', function ($state) { $state.go('tickets.feedback.statuses.create'); }]
-		}
-	});
-
-	routes.push({
-		id: 'tickets.feedback.statuses.edit',
-		url: '/{id:[0-9]+}/{type:.*}',
-		page: {
-			templateName: 'TicketFeedback/statuses_edit.html',
-			controller: 'Admin_TicketFeedbackStatuses_Ctrl_Edit'
-		}
-	});
 
 	//###
 	//# Billing

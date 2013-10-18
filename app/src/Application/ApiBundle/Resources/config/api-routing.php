@@ -2247,42 +2247,6 @@ $collection->create('api_ticket_labels_remove', array(
 	'methods'     => array('DELETE'),
 ));
 
-$collection->create('api_ticket_feedback_statuses', array(
-	'path'        => '/feedback/statuses',
-	'controller'  => 'ApiBundle:TicketFeedbackStatuses:list',
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_ticket_feedback_statuses_save', array(
-	'path'        => '/feedback/statuses/save',
-	'controller'  => 'ApiBundle:TicketFeedbackStatuses:save',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_ticket_feedback_statuses_add', array(
-	'path'        => '/feedback/statuses',
-	'controller'  => 'ApiBundle:TicketFeedbackStatuses:add',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_ticket_feedback_statuses_remove', array(
-	'path'        => '/feedback/statuses/{id}',
-	'controller'  => 'ApiBundle:TicketFeedbackStatuses:remove',
-	'methods'     => array('DELETE'),
-));
-
-$collection->create('api_ticket_feedback_statuses_switch', array(
-	'path'        => '/feedback/statuses/switch/{id}',
-	'controller'  => 'ApiBundle:TicketFeedbackStatuses:switch',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_ticket_feedback_statuses_order', array(
-	'path'        => '/feedback/statuses/order/{id}',
-	'controller'  => 'ApiBundle:TicketFeedbackStatuses:order',
-	'methods'     => array('POST'),
-));
-
 $collection->create('api_emailaccounts', array(
 	'path'        => '/email_accounts/{type}',
 	'controller'  => 'ApiBundle:EmailAccounts:list',
