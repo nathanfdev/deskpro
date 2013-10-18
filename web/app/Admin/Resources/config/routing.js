@@ -363,6 +363,23 @@ define(function() {
 	});
 
 	//###
+	//# Macros
+	//###
+	routes.push({
+		id: 'tickets.macros',
+		url: '/macros',
+		with_list_view: true,
+		list: {
+			templateName: 'Index/blank.html',
+			controller: 'Admin_Main_Ctrl_BareList'
+		},
+		page: {
+			templateName: 'Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
 	//# Filters
 	//###
 	routes.push({
