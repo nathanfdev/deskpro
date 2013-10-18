@@ -60,12 +60,11 @@
       };
 
       /*
-      		# Toggle the enabled state of a trigger
+      		# Update the enabled state of a trigger
       */
 
 
-      Admin_TicketTriggers_Ctrl_List.prototype.toggleTriggerEnabledState = function(trigger) {
-        trigger.is_enabled = !trigger.is_enabled;
+      Admin_TicketTriggers_Ctrl_List.prototype.updateTriggerEnabledState = function(trigger) {
         if (trigger.is_enabled) {
           return this.Api.sendPost("/ticket_triggers/" + trigger.id + "/enable");
         } else {

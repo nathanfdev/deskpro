@@ -61,7 +61,7 @@ define ->
 			@rowsCount         = 0
 			@$q                = $q
 			@typesDef          = @$scope.getTypesDef()
-			@options           = @$scope.getOptions()
+			@options           = @$scope.getOptions() || {}
 
 			@els = {}
 
@@ -136,7 +136,6 @@ define ->
 				if option_row[0]
 					option_title = option_row.text()
 
-				@rowsCount++
 				rowScope = @$scope.$new()
 				rowScope.type = type
 				rowScope.type_title = option_title
@@ -158,6 +157,11 @@ define ->
 					for own k, v of data
 						rowScope[k] = v
 
+				if @options.tag_first and not @rowsCount
+					rowScope.tag = @options.tag_first
+				if @options.tag_after and @rowsCount
+					rowScope.tag = @options.tag_after
+
 				element = @$compile(tpl)(rowScope)
 				element.find('.remove-row-trigger').on('click', (ev) =>
 					ev.preventDefault()
@@ -168,6 +172,7 @@ define ->
 				@els.loadingOptionMessage.hide()
 				@els.noOptionsMessage.hide()
 				@els.optionList.append(element)
+				@rowsCount++
 				@rows[rowScope.$id] = {
 					element: element,
 					scope: rowScope

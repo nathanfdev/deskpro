@@ -27,10 +27,21 @@ define [
 				template: """
 					<div class="dp-ob-row">
 						<div class="remove-row-trigger"><i class="icon-remove-sign"></i></div>
-						<div class="dp-ob-row-content" ng-transclude></div>
+						<table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
+							<tr>
+								<td style="vertical-align: middle; padding: 0; margin: 0;"><div class="dp-ob-row-tag-wrap"></div></td>
+								<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
+									<div class="dp-ob-row-content" ng-transclude></div>
+								</td>
+							</tr>
+						</table>
 					</div>
 				""",
 				replace: true,
-				transclude: true
+				transclude: true,
+				link: (scope, element, attrs) ->
+					if scope.tag?
+						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag)
+						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'))
 			}
 		])

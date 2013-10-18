@@ -46,11 +46,9 @@ define [
 
 
 		###
-		# Toggle the enabled state of a trigger
+		# Update the enabled state of a trigger
 		###
-		toggleTriggerEnabledState: (trigger) ->
-			trigger.is_enabled = !trigger.is_enabled
-
+		updateTriggerEnabledState: (trigger) ->
 			if trigger.is_enabled
 				@Api.sendPost("/ticket_triggers/#{trigger.id}/enable")
 			else

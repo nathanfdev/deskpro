@@ -39,15 +39,15 @@ define ->
 				formCtrl = ctrls[1] || null
 
 				if formCtrl
-					formCtrl.$addControl(ngModel);
+					formCtrl.$addControl(ngModel)
 
 					element.on('$destroy', ->
-						formCtrl.$removeControl(ngModel);
+						formCtrl.$removeControl(ngModel)
 					)
 
 				ngModel.$viewChangeListeners.push(->
 					ngModel.$render()
-				);
+				)
 
 				ngModel.$render = ->
 					val = ngModel.$viewValue
@@ -59,7 +59,8 @@ define ->
 						element.addClass('switch-off')
 
 				element.on('click', (ev) ->
-					ev.preventDefault();
+					ev.preventDefault()
+					ev.stopPropagation()
 
 					if element.hasClass('locked')
 						return

@@ -20,6 +20,23 @@ define [
 			@$scope.triggerType = @$stateParams.type
 			@$scope.triggerId   = @$stateParams.id
 
+			@$scope.form = {
+				by_user: true,
+				by_agent: false,
+				by_agent_opt: {
+					web: true,
+					email: true,
+					api: true
+				},
+				by_user_opt: {
+					web_portal: true,
+					web_widget: true,
+					web_form: true,
+					email: true,
+					api: true
+				}
+			}
+
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
 
 			return

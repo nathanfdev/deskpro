@@ -11,6 +11,7 @@ define [
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
+	'Admin/Main/Directive/DpCommaSeparated',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
 	'Admin/Main/Directive/DpHideSpinning',
@@ -27,6 +28,7 @@ define [
 	'Admin/Main/Directive/DpTabBody',
 	'Admin/Main/Directive/DpTabBtn',
 	'Admin/Main/Directive/DpToggleSwitch',
+	'Admin/Main/Directive/DpTristateCheck',
 
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
@@ -45,6 +47,7 @@ define [
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
+	Admin_Main_Directive_DpCommaSeparated,
 	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpHelpPage,
 	Admin_Main_Directive_DpHideSpinning,
@@ -61,6 +64,7 @@ define [
 	Admin_Main_Directive_DpTabBody,
 	Admin_Main_Directive_DpTabBtn,
 	Admin_Main_Directive_DpToggleSwitch,
+	Admin_Main_Directive_DpTristateCheck,
 
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
@@ -132,6 +136,7 @@ define [
 
 	Admin_App.directive('autofocus',          Admin_Main_Directive_Autofocus)
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)
+	Admin_App.directive('dpCommaSeparated',   Admin_Main_Directive_DpCommaSeparated)
 	Admin_App.directive('dpErrorClass',       Admin_Main_Directive_DpErrorClass)
 	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)
 	Admin_App.directive('dpHideSpinning',     Admin_Main_Directive_DpHideSpinning)
@@ -148,6 +153,7 @@ define [
 	Admin_App.directive('dpTabBody',          Admin_Main_Directive_DpTabBody)
 	Admin_App.directive('dpTabBtn',           Admin_Main_Directive_DpTabBtn)
 	Admin_App.directive('dpToggleSwitch',     Admin_Main_Directive_DpToggleSwitch)
+	Admin_App.directive('dpTristateCheck',    Admin_Main_Directive_DpTristateCheck)
 
 	####################################################################################################################
 	# Routing

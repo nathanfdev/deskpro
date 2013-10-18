@@ -7258,6 +7258,10 @@ form {
   border-left: 3px solid #f5e68a;
 }
 
+.dp-comma {
+  margin-right: 3px;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
@@ -7677,6 +7681,7 @@ i.spinner-xsmall {
 }
 
 header.pane-header {
+  height: 48px;
   padding: 0;
   margin: 0;
   color: #5a5f68;
@@ -7684,8 +7689,30 @@ header.pane-header {
   border-bottom: 1px solid #b6b9bf;
 }
 
+header.pane-header .obj-id {
+  position: relative;
+  top: 14px;
+  right: 14px;
+  display: inline-block;
+  float: right;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12pt;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #999999;
+  border-radius: 10px;
+}
+
 header.pane-header h3 {
-  width: 100%;
+  float: left;
+  max-width: 80%;
   padding: 15px;
   margin: 0;
   overflow: hidden;
@@ -7802,6 +7829,7 @@ article.pane-content.pad-top {
   font-style: normal;
   color: #444;
   background: #D4E4FF;
+  border: 1px solid #bbd4ff;
   border-radius: 2px;
 }
 
@@ -7866,6 +7894,13 @@ article.pane-content.pad-top {
 .dp-item-list > li.active > a .sub-item-indent > i,
 .dp-item-list > .dp-itm.active > a .sub-item-indent > i {
   color: #3476BE;
+}
+
+.dp-item-list > li .pull-right.toggle-wrapper .dp-switch,
+.dp-item-list > .dp-itm .pull-right.toggle-wrapper .dp-switch {
+  right: -6px;
+  left: auto;
+  float: none;
 }
 
 .dp-item-list a:hover > .drag-handle {
@@ -9079,16 +9114,16 @@ button.toast-close-button {
 
 .dp-ob-newrule {
   position: relative;
-  height: 31px;
+  height: 35px;
   border-top: 1px solid #ccc;
 }
 
 .dp-ob-newrule .select2-wrap {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  bottom: 3px;
-  left: 28px;
+  top: 5px;
+  right: 5px;
+  bottom: 5px;
+  left: 32px;
   background: #eee;
 }
 
@@ -9103,15 +9138,14 @@ button.toast-close-button {
 }
 
 .dp-ob-newrule .select2-wrap .select2-container .select2-choice .select2-arrow {
-  background: transparent;
-  border: none;
+  display: none;
 }
 
 .dp-ob-newrule .btn-wrap {
   position: absolute;
-  top: 3px;
-  bottom: 3px;
-  left: 3px;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
   width: 25px;
   cursor: pointer;
 }
@@ -9133,6 +9167,38 @@ button.toast-close-button {
 
 .dp-ob-row:last-of-type {
   border-bottom: none;
+}
+
+.dp-ob-row .with-tag.dp-ob-row-tag-wrap {
+  padding: 0 8px;
+}
+
+.dp-ob-row em.dp-ob-row-tag {
+  display: block;
+  width: 50px;
+  padding: 0;
+  font-style: normal;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 2px;
+  text-wrap: none;
+}
+
+.dp-ob-row em.dp-ob-row-tag.if {
+  background: #209BFA;
+}
+
+.dp-ob-row em.dp-ob-row-tag.and {
+  background: #7BB51E;
+}
+
+.dp-ob-row em.dp-ob-row-tag.or {
+  background: #BCB333;
+}
+
+.dp-ob-row em.dp-ob-row-tag.then {
+  background: #873FA5;
 }
 
 .dp-ob-row .remove-row-trigger {
@@ -9161,14 +9227,21 @@ button.toast-close-button {
   color: #444;
 }
 
+.dp-ob-row label,
+.dp-ob-row select,
+.dp-ob-row input,
+.dp-ob-row .select2-container {
+  float: none;
+  width: auto;
+  margin: 0;
+}
+
 .dp-ob-standard-row {
   padding: 8px;
 }
 
 .dp-ob-standard-row label {
-  float: left;
-  min-width: 130px;
-  margin-right: 8px;
+  width: 100px;
 }
 
 .dp-ob-set {
@@ -9217,4 +9290,31 @@ button.toast-close-button {
 
 .dp-ob-set .dp-ob-setrow > header em.then {
   background: #873FA5;
+}
+
+table.display-table {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+}
+
+table.display-table.valign-middle > tbody > tr > td,
+table.display-table.valign-middle > tr > td {
+  vertical-align: middle;
+}
+
+table.display-table > tbody > tr > td,
+table.display-table > tr > td {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+}
+
+table.display-table > tbody > tr > td.nowrap,
+table.display-table > tr > td.nowrap {
+  white-space: nowrap;
+  text-wrap: none;
 }

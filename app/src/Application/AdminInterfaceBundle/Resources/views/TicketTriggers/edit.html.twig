@@ -1,7 +1,10 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketTriggersEdit.trigger.title') }}</em></h3>
-		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }} &rarr; {{ phrase('adm.ticket_triggers.new_trigger') }}</h3>
+		<em class="obj-id" ng-if="TicketTriggersEdit.trigger.id" tooltip="This ID can be used in the API" tooltip-placement="left">
+			ID: {{ ng_var('TicketTriggersEdit.trigger.id') }}
+		</em>
+		<h3 ng-if="TicketTriggersEdit.trigger.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketTriggersEdit.trigger.title') }}</em></h3>
+		<h3 ng-if="!TicketTriggersEdit.trigger.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }} &rarr; {{ phrase('adm.ticket_triggers.new_trigger') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
 		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketTriggersEdit.saveTrigger()">
@@ -31,7 +34,36 @@
 							<p ng-if="triggerType == 'update'">When a property on a ticket is changed</p>
 
 							<div>
-								<div style="float: left; margin-right: 10px; width: 35%">
+								<div style="float: left; width: 55%">
+									<label style="font-weight: normal;">
+										<input type="checkbox" ng-model="form.by_user" value="1" />
+										By a user
+									</label>
+									<div ng-show="form.by_user">
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" dp-tristate-check="form.by_user_opt.web_portal, form.by_user_opt.web_widget, form.by_user_opt.web_form" />
+											via the web
+										</label>
+										<i class="icon-cog" ng-click="show_byuser_web = !show_byuser_web" style="cursor: pointer; color: #888"></i>
+										<div style="margin-left: 11px; background: #efefef; border-radius: 2px; padding: 5px; padding-bottom: 0;" ng-show="show_byuser_web">
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_portal" value="1" /> Portal</label>
+											&nbsp;
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_widget" value="1" /> Widget</label>
+											&nbsp;
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_form" value="1" /> Ticket Form</label>
+										</div>
+										<br/>
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_user_opt.email" value="1" />
+											via email
+										</label><br/>
+										&mdash; <label style="font-weight: normal;">
+											<input type="checkbox" ng-model="form.by_user_opt.api" value="1" />
+											via the API
+										</label>
+									</div>
+								</div>
+								<div style="float: left; margin-left: 10px; width: 35%">
 									<label style="font-weight: normal;">
 										<input type="checkbox" ng-model="form.by_agent" value="1" />
 										By an agent
@@ -51,90 +83,76 @@
 										</label>
 									</div>
 								</div>
-								<div style="float: left; width: 55%">
-									<label style="font-weight: normal;">
-										<input type="checkbox" ng-model="form.by_user" value="1" />
-										By a user
-									</label>
-									<div ng-show="form.by_user">
-										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_user_opt.web" value="1" />
-											via the web
-										</label>
-										<div style="display: inline" ng-show="form.by_user_opt.web">
-											: <label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_portal" value="1" /> Portal</label>
-											&nbsp;
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_widget" value="1" /> Widget</label>
-											&nbsp;
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_form" value="1" /> Ticket Form</label>
-										</div>
-										<br/>
-										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_user_opt.email" value="1" />
-											via email
-										</label><br/>
-										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_user_opt.api" value="1" />
-											via the API
-										</label>
-									</div>
-								</div>
 								<br class="clear;" />
 							</div>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="dp-ob-set">
-							<div class="dp-ob-setrow">
-								<header>
-									<em class="if">If</em> All of the following conditions are met:
-								</header>
-								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria">
-										<select>
-											<option value="0">Add criteria</option>
-											<option value="department">Department</option>
-											<option value="product">Product</option>
-											<option value="category">Category</option>
-											<option value="workflow">Workflow</option>
-											<option value="priority">Priority</option>
-										</select>
-									</dp-option-builder>
-								</article>
+						<div class="col-lg-2">
+							<h3>Criteria</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="dp-ob-set">
+								<div class="dp-ob-setrow">
+									<header>
+										When all of the following conditions are met:
+									</header>
+									<article>
+										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria" options="{tag_first: 'if', tag_after: 'and'}">
+											<select>
+												<option value="0">Add criteria</option>
+												<option value="department">Department</option>
+												<option value="product">Product</option>
+												<option value="category">Category</option>
+												<option value="workflow">Workflow</option>
+												<option value="priority">Priority</option>
+											</select>
+										</dp-option-builder>
+									</article>
+								</div>
+								<div class="dp-ob-setrow">
+									<header>
+										With any one of the following conditions are met:
+									</header>
+									<article>
+										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria_any" options="{tag_first: 'and', tag_after: 'or'}">
+											<select>
+												<option value="0">Add criteria</option>
+												<option value="department">Department</option>
+												<option value="product">Product</option>
+												<option value="category">Category</option>
+												<option value="workflow">Workflow</option>
+												<option value="priority">Priority</option>
+											</select>
+										</dp-option-builder>
+									</article>
+								</div>
 							</div>
-							<div class="dp-ob-setrow">
-								<header>
-									<em class="and">And</em> Any of the following conditions are met:
-								</header>
-								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria_any">
-										<select>
-											<option value="0">Add criteria</option>
-											<option value="department">Department</option>
-											<option value="product">Product</option>
-											<option value="category">Category</option>
-											<option value="workflow">Workflow</option>
-											<option value="priority">Priority</option>
-										</select>
-									</dp-option-builder>
-								</article>
-							</div>
-							<div class="dp-ob-setrow">
-								<header>
-									<em class="then">Then</em> The following actions will run:
-								</header>
-								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_actions">
-										<select>
-											<option value="0">Add action</option>
-											<option value="department">Department</option>
-											<option value="product">Product</option>
-											<option value="category">Category</option>
-											<option value="workflow">Workflow</option>
-											<option value="priority">Priority</option>
-										</select>
-									</dp-option-builder>
-								</article>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-2">
+							<h3>Actions</h3>
+						</div>
+						<div class="col-lg-10">
+							<div class="dp-ob-set">
+								<div class="dp-ob-setrow">
+									<header>
+										The following conditions are met:
+									</header>
+									<article>
+										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_actions" options="{tag_first: 'then', tag_after: 'and'}">
+											<select>
+												<option value="0">Add action</option>
+												<option value="department">Department</option>
+												<option value="product">Product</option>
+												<option value="category">Category</option>
+												<option value="workflow">Workflow</option>
+												<option value="priority">Priority</option>
+											</select>
+										</dp-option-builder>
+									</article>
+								</div>
 							</div>
 						</div>
 					</div>

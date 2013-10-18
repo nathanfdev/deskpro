@@ -67,7 +67,7 @@
         this.rowsCount = 0;
         this.$q = $q;
         this.typesDef = this.$scope.getTypesDef();
-        this.options = this.$scope.getOptions();
+        this.options = this.$scope.getOptions() || {};
         this.els = {};
         $transclude(function(clone) {
           clone.css('width', '100%');
@@ -130,7 +130,6 @@
           if (option_row[0]) {
             option_title = option_row.text();
           }
-          _this.rowsCount++;
           rowScope = _this.$scope.$new();
           rowScope.type = type;
           rowScope.type_title = option_title;
@@ -151,6 +150,12 @@
               rowScope[k] = v;
             }
           }
+          if (_this.options.tag_first && !_this.rowsCount) {
+            rowScope.tag = _this.options.tag_first;
+          }
+          if (_this.options.tag_after && _this.rowsCount) {
+            rowScope.tag = _this.options.tag_after;
+          }
           element = _this.$compile(tpl)(rowScope);
           element.find('.remove-row-trigger').on('click', function(ev) {
             ev.preventDefault();
@@ -160,6 +165,7 @@
           _this.els.loadingOptionMessage.hide();
           _this.els.noOptionsMessage.hide();
           _this.els.optionList.append(element);
+          _this.rowsCount++;
           return _this.rows[rowScope.$id] = {
             element: element,
             scope: rowScope

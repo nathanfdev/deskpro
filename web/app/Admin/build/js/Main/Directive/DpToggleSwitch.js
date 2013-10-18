@@ -59,6 +59,7 @@
             };
             element.on('click', function(ev) {
               ev.preventDefault();
+              ev.stopPropagation();
               if (element.hasClass('locked')) {
                 return;
               }
