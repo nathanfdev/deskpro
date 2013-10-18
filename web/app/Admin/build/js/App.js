@@ -1,9 +1,9 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'DP_LANG', 'AdminRouting', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState', 'Admin/Main/Service/TemplateManager', 'Admin/Main/Translate/DpInterpolation', 'Admin/Main/Directive/Autofocus', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments', 'Admin/TicketAccounts/DataService/TicketAccounts', 'Admin/TicketLabels/DataService/TicketLabels', 'Admin/TicketFeedback/Statuses/DataService/Statuses'], function(angular, DP_LANG, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState, Admin_Main_Service_TemplateManager, Admin_Main_Translate_DpInterpolation, Admin_Main_Directive_Autofocus, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments, Admin_TicketAccounts_DataService_TicketAccounts, Admin_TicketLabels_DataService_TicketLabels, Admin_TicketFeedbackStatuses_DataService) {
+  define(['angular', 'DP_LANG', 'AdminRouting', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState', 'Admin/Main/Service/TemplateManager', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/Main/Translate/DpInterpolation', 'Admin/Main/Directive/Autofocus', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments', 'Admin/TicketAccounts/DataService/TicketAccounts', 'Admin/TicketLabels/DataService/TicketLabels', 'Admin/TicketFeedback/Statuses/DataService/Statuses'], function(angular, DP_LANG, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState, Admin_Main_Service_TemplateManager, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_Main_Translate_DpInterpolation, Admin_Main_Directive_Autofocus, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments, Admin_TicketAccounts_DataService_TicketAccounts, Admin_TicketLabels_DataService_TicketLabels, Admin_TicketFeedbackStatuses_DataService) {
     var Admin_App, _ref, _ref1;
-    Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate', 'ui.ace']);
+    Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate', 'ui.ace', 'deskpro.option_builder']);
     Admin_App.service('AppState', [
       '$rootScope', '$state', function($rootScope, $state) {
         return new Admin_Main_Service_AppState($rootScope, $state);
@@ -61,6 +61,11 @@
     Admin_App.service('Growl', [
       function() {
         return new Admin_Main_Service_Growl();
+      }
+    ]);
+    Admin_App.factory('dpObTypesDefTicketCriteria', [
+      '$q', 'Api', 'dpTemplateManager', function($q, Api, dpTemplateManager) {
+        return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager);
       }
     ]);
     Admin_App.directive('autofocus', Admin_Main_Directive_Autofocus);
@@ -163,7 +168,7 @@
     Admin_App.config([
       '$provide', function($provide) {
         return $provide.decorator('$templateCache', [
-          '$delegate', '$http', function($delegate, $http) {
+          '$delegate', function($delegate) {
             $delegate.ngGet = $delegate.get;
             $delegate.get = function(view) {
               view = view.replace(/^.*?\/adm\/load\-view\//g, '');
@@ -173,6 +178,24 @@
             $delegate.put = function(view, value) {
               view = view.replace(/^.*?\/adm\/load\-view\//g, '');
               return $delegate.ngPut(view, value);
+            };
+            return $delegate;
+          }
+        ]);
+      }
+    ]);
+    Admin_App.config([
+      '$provide', function($provide) {
+        return $provide.decorator('$q', [
+          '$delegate', function($delegate) {
+            $delegate.fcall = function(fn) {
+              var d;
+              d = $delegate.defer();
+              d.resolve(fn());
+              return d.promise;
+            };
+            $delegate.isPromise = function(val) {
+              return val.then != null;
             };
             return $delegate;
           }

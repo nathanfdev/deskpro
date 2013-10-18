@@ -8,6 +8,7 @@ define [
 	'Admin/Main/Service/Growl',
 	'Admin/Main/Service/InhelpState',
 	'Admin/Main/Service/TemplateManager',
+	'Admin/OptionBuilder/TypesDef/TicketCriteria',
 
 	'Admin/Main/Translate/DpInterpolation',
 
@@ -34,7 +35,7 @@ define [
 	'Admin/Main/DataService/Departments',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
 	'Admin/TicketLabels/DataService/TicketLabels',
-	'Admin/TicketFeedback/Statuses/DataService/Statuses',
+	'Admin/TicketFeedback/Statuses/DataService/Statuses'
 ], (
 	angular,
 	DP_LANG,
@@ -45,6 +46,7 @@ define [
 	Admin_Main_Service_Growl,
 	Admin_Main_Service_InhelpState,
 	Admin_Main_Service_TemplateManager,
+	Admin_OptionBuilder_TypesDef_TicketCriteria,
 
 	Admin_Main_Translate_DpInterpolation,
 
@@ -77,7 +79,7 @@ define [
 	# Main services
 	####################################################################################################################
 
-	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate', 'ui.ace']);
+	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate', 'ui.ace', 'deskpro.option_builder']);
 
 	Admin_App.service('AppState', ['$rootScope', '$state', ($rootScope, $state) ->
 		return new Admin_Main_Service_AppState($rootScope, $state)
@@ -130,6 +132,10 @@ define [
 
 	Admin_App.service('Growl', [ ->
 		return new Admin_Main_Service_Growl()
+	])
+
+	Admin_App.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
+		return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
 	])
 
 	####################################################################################################################
@@ -238,7 +244,7 @@ define [
 	# and not URLs
 	# e.g.  /deskpro/adm/load-view/Index/blank.html -> Index/blank.html
 	Admin_App.config(['$provide', ($provide) ->
-		$provide.decorator('$templateCache', ['$delegate', '$http', ($delegate, $http) ->
+		$provide.decorator('$templateCache', ['$delegate', ($delegate) ->
 			$delegate.ngGet = $delegate.get
 			$delegate.get = (view) ->
 				view = view.replace(/^.*?\/adm\/load\-view\//g, '')
@@ -248,6 +254,22 @@ define [
 			$delegate.put = (view, value) ->
 				view = view.replace(/^.*?\/adm\/load\-view\//g, '')
 				return $delegate.ngPut(view, value)
+
+			return $delegate
+		])
+	])
+
+	# Add fcall() to $q service (like Kris Kowal's Q: https://github.com/kriskowal/q)
+	# Add isPromise
+	Admin_App.config(['$provide', ($provide) ->
+		$provide.decorator('$q', ['$delegate', ($delegate) ->
+			$delegate.fcall = (fn) ->
+				d = $delegate.defer()
+				d.resolve(fn())
+				return d.promise
+
+			$delegate.isPromise = (val) ->
+				return val.then?
 
 			return $delegate
 		])

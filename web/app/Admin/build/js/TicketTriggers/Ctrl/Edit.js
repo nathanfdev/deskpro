@@ -18,11 +18,13 @@
 
       Admin_TicketTriggers_Ctrl_Edit.CTRL_TYPE = 'page';
 
-      Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams'];
+      Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {
         this.trigger = null;
         this.triggerId = this.$stateParams.id;
+        this.options = {};
+        this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
       };
 
       /*

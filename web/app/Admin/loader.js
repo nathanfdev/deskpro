@@ -23,6 +23,7 @@ requirejs.config({
 		toastr:                 DP_ASSET_URL+'/app/bower_components/toastr/toastr.min',
 
 		DP_LANG:                DP_BASE_ADMIN_URL + '/load-lang.js?varname=define',
+		DeskPRO:                DP_ASSET_URL+'/app/DeskPRO/build/js',
 		Admin:                  DP_ASSET_URL+'/app/Admin/build/js',
 		AdminRouting:           DP_ASSET_URL+'/app/Admin/Resources/config/routing'
 	},
@@ -70,6 +71,8 @@ requirejs([
 
 	'select2',
 	'toastr',
+
+	'DeskPRO/OptionBuilder/Module',
 
 	'Admin/App',
 	'DP_LANG',

@@ -9,11 +9,15 @@ define [
 		@CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit'
 		@CTRL_AS   = 'TicketTriggersEdit'
 		@CTRL_TYPE = 'page'
-		@DEPS      = ['em', '$stateParams']
+		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria']
 
 		init: ->
 			@trigger = null
 			@triggerId = @$stateParams.id
+			@options = {}
+
+			@criteraTypeDef = @dpObTypesDefTicketCriteria
+
 			return
 
 		###

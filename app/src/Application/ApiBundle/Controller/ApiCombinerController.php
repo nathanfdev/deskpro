@@ -44,6 +44,8 @@ class ApiCombinerController extends AbstractController
 
 		$data = array();
 
+		$returned_data = array();
+
 		foreach ($this->in->getCleanValueArray('load_data', 'string', 'discard') as $load_data_id) {
 
 			// Cut out everything before the /api/ which will could be the base-path
@@ -74,9 +76,12 @@ class ApiCombinerController extends AbstractController
 			}
 
 			if ($load_data) {
+				$returned_data[] = $route_id;
 				$data[$route_id] = $load_data;
 			}
 		}
+
+		$data['returned_data'] = $returned_data;
 
 		return $this->createApiResponse($data);
 	}

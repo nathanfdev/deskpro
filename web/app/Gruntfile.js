@@ -27,6 +27,16 @@ module.exports = function(grunt) {
 			options: {
 				sourceMap: true
 			},
+			common_js: {
+				files: [{
+					expand: true,
+					flatten: false,
+					cwd: 'DeskPRO/',
+					src: ['**/*.coffee'],
+					dest: 'DeskPRO/build/js',
+					ext: '.js'
+				}]
+			},
 			admin_js: {
 				files: [{
 					expand: true,
@@ -53,6 +63,10 @@ module.exports = function(grunt) {
 			admin_recess: {
 				files: 'Admin/Resources/style/*.less',
 				tasks: ['recess']
+			},
+			common_js: {
+				files: 'DeskPRO/**/*.coffee',
+				tasks: ['coffee']
 			},
 			admin_js: {
 				files: 'Admin/**/*.coffee',
