@@ -53,7 +53,8 @@ define ->
 							opt_name = me.type_to_data[prop_name]
 							defer.resolve({
 								operators: operators,
-								options: me.options_data[opt_name]
+								options: me.options_data[opt_name],
+								multiselect: true
 							})
 						)
 

@@ -65,7 +65,8 @@
                 opt_name = me.type_to_data[prop_name];
                 return defer.resolve({
                   operators: operators,
-                  options: me.options_data[opt_name]
+                  options: me.options_data[opt_name],
+                  multiselect: true
                 });
               });
               return defer.promise;
