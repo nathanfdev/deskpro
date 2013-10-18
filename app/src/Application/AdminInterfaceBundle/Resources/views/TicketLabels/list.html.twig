@@ -28,9 +28,7 @@
 						</li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketLabelsList.labels.length" translate="adm.general.count_labels" translate-values="{ count: TicketLabelsList.labels.length }"></h3>
-
-				<h3 ng-if="!TicketLabelsList.labels.length">{{phrase('adm.general.no_labels_yet')}}</h3>
+				<h3 ng-pluralize count="TicketLabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">

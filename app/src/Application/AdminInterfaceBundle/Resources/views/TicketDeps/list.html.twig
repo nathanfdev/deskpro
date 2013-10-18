@@ -15,7 +15,7 @@
 						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketDepsList.departments" translate="adm.general.x_departments" translate-values="{ count_length: TicketDepsList.departments }"></h3>
+				<h3 ng-pluralize count="TicketDepsList.departments.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
 			</div>
 			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">

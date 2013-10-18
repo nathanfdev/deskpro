@@ -152,6 +152,10 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 
 	public function setUserTitle($title)
 	{
+		if (!$title) {
+			$title = '';
+		}
+
 		$old = $this->getRealUserTitle();
 		$this->user_title = $title;
 

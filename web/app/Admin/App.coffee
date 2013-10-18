@@ -1,6 +1,5 @@
 define [
 	'angular',
-	'DP_LANG',
 	'AdminRouting',
 
 	'Admin/Main/Service/AppState',
@@ -9,8 +8,6 @@ define [
 	'Admin/Main/Service/InhelpState',
 	'Admin/Main/Service/TemplateManager',
 	'Admin/OptionBuilder/TypesDef/TicketCriteria',
-
-	'Admin/Main/Translate/DpInterpolation',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -37,7 +34,6 @@ define [
 	'Admin/TicketLabels/DataService/TicketLabels'
 ], (
 	angular,
-	DP_LANG,
 	routing,
 
 	Admin_Main_Service_AppState,
@@ -46,8 +42,6 @@ define [
 	Admin_Main_Service_InhelpState,
 	Admin_Main_Service_TemplateManager,
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
-
-	Admin_Main_Translate_DpInterpolation,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -77,7 +71,7 @@ define [
 	# Main services
 	####################################################################################################################
 
-	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'pascalprecht.translate', 'ui.ace', 'deskpro.option_builder']);
+	Admin_App = angular.module('Admin_App', ['ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'ui.ace', 'deskpro.option_builder']);
 
 	Admin_App.service('AppState', ['$rootScope', '$state', ($rootScope, $state) ->
 		return new Admin_Main_Service_AppState($rootScope, $state)
@@ -154,18 +148,6 @@ define [
 	Admin_App.directive('dpTabBody',          Admin_Main_Directive_DpTabBody)
 	Admin_App.directive('dpTabBtn',           Admin_Main_Directive_DpTabBtn)
 	Admin_App.directive('dpToggleSwitch',     Admin_Main_Directive_DpToggleSwitch)
-
-	####################################################################################################################
-	# Translation
-	####################################################################################################################
-
-	Admin_App.factory('translateDpInterpolation', Admin_Main_Translate_DpInterpolation)
-
-	Admin_App.config(['$translateProvider', ($translateProvider) ->
-		$translateProvider.translations('default', DP_LANG)
-		$translateProvider.preferredLanguage('default')
-		$translateProvider.useInterpolation('translateDpInterpolation')
-	])
 
 	####################################################################################################################
 	# Routing

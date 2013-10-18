@@ -55,8 +55,8 @@
 						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketFieldsList.custom_fields.length" translate="adm.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
-				<h3 ng-if="!TicketFieldsList.custom_fields.length" translate="adm.general.count_custom_fields" translate-values="{ count: TicketFieldsList.custom_fields.length }"></h3>
+
+				<h3 ng-pluralize count="TicketFieldsList.custom_fields.length || 0" when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.ticket_fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">

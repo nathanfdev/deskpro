@@ -15,8 +15,7 @@
 						<li><a class="btn btn-success" href="#/tickets/ticket_accounts/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
-				<h3 ng-if="TicketAccountsList.accounts.length" translate="adm.tickets.x_email_accounts" translate-values="{ count_length: TicketAccountsList.accounts }"></h3>
-				<h3 ng-if="!TicketAccountsList.accounts.length" translate="adm.tickets.x_email_accounts" translate-values="{ count: '0' }"></h3>
+				<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
 			</div>
 			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
 				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">

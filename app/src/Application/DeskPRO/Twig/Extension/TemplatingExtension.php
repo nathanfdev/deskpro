@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Orb\Data\Countries;
+use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Application\DeskPRO\App;
@@ -138,6 +139,7 @@ class TemplatingExtension extends \Twig_Extension
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
+			'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 
 			// override so we can suppress errors where templates are out of date
@@ -1468,6 +1470,35 @@ class TemplatingExtension extends \Twig_Extension
 	public function ngVar($var)
 	{
 		return '{{' . $var . '}}';
+	}
+
+	public function ngPluralPhrase($phrase_name)
+	{
+		$positions = array();
+
+		for ($i = 0; $i < 5; $i++) {
+			$text = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
+			$text = str_replace('{{count}}', '{}', $text);
+			$positions[$i] = $text;
+		}
+
+		$positions = array_unique($positions);
+
+		if (count($positions) == 2) {
+			$positions['other'] = $positions[0];
+			unset($positions[0]);
+		} else {
+			if (!isset($positions[0])) {
+				Arrays::unshiftAssoc(
+					$positions,
+					'0',
+					Arrays::getFirstItem($positions)
+				);
+			}
+			$positions['other'] = Arrays::getLastItem($positions);
+		}
+
+		return json_encode($positions);
 	}
 
 	public function ngIncTpl($context, $tpl_name)

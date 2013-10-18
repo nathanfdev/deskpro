@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 use Application\DeskPRO\Exception\ValidationException;
 use Orb\Util\Arrays;
@@ -117,10 +118,14 @@ class TicketDepsController extends AbstractController
 
 	public function saveAction($id)
 	{
-		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
+		if ($id) {
+			$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
-		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
+			if (!$dep || !$dep->is_tickets_enabled) {
+				throw new $this->createNotFoundException();
+			}
+		} else {
+			$dep = Department::createTicketDepartment();
 		}
 
 		$ticket_edit = new TicketDepartmentEdit($dep);
