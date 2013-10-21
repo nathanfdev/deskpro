@@ -1033,6 +1033,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] = nl2br(htmlspecialchars($this->email_body_text));
 		}
 
+		// Fix empty body_full that might result if a trim was made
+		// that caused the domdocument to become invalid, and the html cleaners might
+		// fail. In these cases, fall back on text
+		if (!trim($email_info['body_full'])) {
+			$email_info['body_full'] = nl2br(htmlspecialchars($this->email_body_text));
+		}
+
 		return $email_info;
 	}
 
