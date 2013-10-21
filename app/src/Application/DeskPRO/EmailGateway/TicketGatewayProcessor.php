@@ -776,7 +776,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
 			$email_info['body'] = $this->email_body_html;
 			if (!$email_info['body']) {
-				$email_info['body'] = $this->email_body_html;
+				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
@@ -841,7 +841,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->email_body_text;
 			if (!$txt && $this->email_body_text) {
-				$txt = $this->email_body_text;
+				$txt = $this->reader->getBodyText()->getBody();
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
@@ -1049,7 +1049,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->email_body_text;
 			if (!$txt && $this->email_body_text) {
-				$txt = $this->email_body_text;
+				$txt = $this->reader->getBodyText()->getBody();
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
@@ -1058,7 +1058,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
 			$email_info['body'] = $this->email_body_html;
 			if (!$email_info['body']) {
-				$email_info['body'] = strip_tags($this->email_body_html);
+				$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBodyUtf8());
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 
@@ -1253,7 +1253,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
 				$email_info['body'] = $this->email_body_html;
 				if (!$email_info['body']) {
-					$email_info['body'] = $this->email_body_html;
+					$email_info['body'] = $this->reader->getBodyHtml()->getBody();
 					$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 				}
 
@@ -1275,7 +1275,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
 				$txt = $this->email_body_text;
 				if (!$txt && $this->email_body_text) {
-					$txt = $this->email_body_text;
+					$txt = $this->reader->getBodyText()->getBody();
 					$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 				}
 
