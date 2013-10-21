@@ -35,6 +35,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
@@ -759,6 +760,17 @@ class PublishController extends AbstractController
 				} elseif ($action == 'publish') {
 					$r->setStatusCode('published');
 					$affected_content[] = array('typename' => $type, 'contentId' => $r->id);
+				}
+
+				if ($r instanceof Article && !count($r->categories)) {
+					$cat = $this->em->createQuery("
+						SELECT c
+						FROM DeskPRO:ArticleCategory c
+						ORDER BY c.id ASC
+					")->setMaxResults(1)->getOneOrNullResult();
+					if ($cat) {
+						$r->addToCategory($cat);
+					}
 				}
 			}
 		}

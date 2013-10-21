@@ -141,6 +141,14 @@ class KbController extends AbstractController
 
 		$trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
 
+		if (!count($article->categories)) {
+			$first = Arrays::getFirstKey($article_categories);
+			$cat = $this->em->getRepository('DeskPRO:ArticleCategory')->find($first);
+			$article->addToCategory($cat);
+			$this->em->persist($article);
+			$this->em->flush($article);
+		}
+
         $vars = array(
             'article'              => $article,
 			'trans_langs'          => $trans_langs,
