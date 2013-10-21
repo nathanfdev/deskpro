@@ -298,13 +298,11 @@ class TriggerExecutor
 				'has_user_reply'  => $this->tracker->hasNewUserReply(),
 			);
 
-			App::getOrm()->persist($ticket_log);
 			$this->tracker->recordExtra('primary_ticket_log', $ticket_log);
 
 			if ($this->ticket->inserted_log_row_batch) {
 				foreach ($this->ticket->inserted_log_row_batch as $l) {
 					$l['parent'] = $ticket_log;
-					App::getOrm()->persist($l);
 				}
 			}
 		}

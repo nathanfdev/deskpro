@@ -555,10 +555,10 @@ class Log
 			}
 
 			if (!$has_log) {
-				$e = new \RuntimeException("Ticket log group without changes");
-				$e->_dp_context_data = $this->tracker->getLogMessagesAsString();
-				KernelErrorHandler::logException($e, false);
+				return;
 			}
+
+			App::getOrm()->persist($this->tracker->getExtra('primary_ticket_log'));
 		}
 
 		foreach ($this->getTicketLogs() as $log_item) {
