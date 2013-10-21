@@ -516,7 +516,7 @@ pageMeta.lang = {{ {
 	<li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold" data-action="set-hold">{{ phrase('agent.tickets.hold_btn') }}</li>
 	<li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold" data-action="unset-hold">{{ phrase('agent.tickets.unhold_btn') }}</li>
 	{% if ticket_perms.modify_merge %}<li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
-	<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>
+	{% if app.user.hasPerm('agent_tickets.create') %}<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
 	<li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'view_print': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.print') }}</a></li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.download_pdf') }}</a></li>
@@ -789,7 +789,7 @@ pageMeta.lang = {{ {
 	<li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
 	<li class="set-as-message" data-option-id="setnote.message">{{ phrase('agent.tickets.set_as_normal_message') }}</li>
 	{% if ticket_perms.modify_merge %}<li data-option-id="split">{{ phrase('agent.tickets.split_message_btn') }}</li>{% endif %}
-	<li data-option-id="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>
+	{% if app.user.hasPerm('agent_tickets.create') %}<li data-option-id="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
 	{% if ticket_perms.modify_messages %}<li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>{% endif %}
 	{% if app.user.can_admin %}<li data-option-id="debug" data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</li>{% endif %}
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
