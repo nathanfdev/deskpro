@@ -1690,7 +1690,20 @@ class Strings
 	 */
 	public static function convertToUtf8($string, $from_charset)
 	{
-		if (strtoupper($from_charset) == 'UTF-8') {
+		// Some missing aliases in iconv
+		static $charset_map = array(
+			'KS_C_5601-1987' => 'CP949',
+        	'ISO-8859-8-I'   => 'ISO-8859-8'
+		);
+
+		$from_charset_u = strtoupper($from_charset);
+
+		if (isset($charset_map[$from_charset_u])) {
+			$from_charset   = $charset_map[$from_charset_u];
+			$from_charset_u = $charset_map[$from_charset_u];
+		}
+
+		if ($from_charset_u == 'UTF-8') {
 			$string = self::utf8_bad_strip($string);
 			return $string;
 		}
