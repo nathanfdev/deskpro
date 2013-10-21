@@ -178,12 +178,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 								}
 
 								var focus = textarea.getObject().getFocus();
-								if (
-									(focus && focus[0] && focus[0].nextSibling && !focus[0].nextSibling.nextSibling && $(focus[0].nextSibling).is('br, p'))
-									|| ((focus && focus[0] && $(focus[0]).is('.redactor_with-redactor')) && $(focus[0]).contents().length <= (focus[1]+1))
-								) {
-									// Only move the scroll when cursor is at the end
-									self.page.updateUi(newH);
+								if (focus && focus[0]) {
+									if (focus[0].nodeType == 3) {
+										var focusEl = $(focus[0].parentNode);
+									} else {
+										var focusEl = $(focus[0]);
+									}
+									var focusPos = focusEl.offset();
+									if (focusPos.top+focusEl.height() > $('#dp_window').height()) {
+										self.page.updateUi(newH);
+									}
 								} else {
 									self.page.updateUi();
 								}
