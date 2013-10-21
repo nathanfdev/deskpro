@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class CategoryAction extends AbstractAction
+class CategoryAction extends AbstractAction implements PermissionableAction
 {
 	protected $category_id;
 
@@ -58,6 +58,23 @@ class CategoryAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$ticket['category_id'] = $this->category_id;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getCategoryId() == $this->category_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

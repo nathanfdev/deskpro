@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class ProductAction extends AbstractAction
+class ProductAction extends AbstractAction implements PermissionableAction
 {
 	protected $product_id;
 
@@ -58,6 +58,23 @@ class ProductAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$ticket['product_id'] = $this->product_id;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getProductId() == $this->product_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

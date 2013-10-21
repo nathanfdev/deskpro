@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class WorkflowAction extends AbstractAction
+class WorkflowAction extends AbstractAction implements PermissionableAction
 {
 	protected $workflow_id;
 
@@ -75,6 +75,23 @@ class WorkflowAction extends AbstractAction
 		return array(
 			array('action' => 'workflow', 'workflow_id' => $this->workflow_id)
 		);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getWorkflowId() == $this->workflow_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -45,7 +46,7 @@ use Orb\Util\Numbers;
 /**
  * Modifies the ticket urgency
  */
-class UrgencyAction extends AbstractAction
+class UrgencyAction extends AbstractAction implements PermissionableAction
 {
 	protected $num;
 
@@ -63,6 +64,19 @@ class UrgencyAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$ticket['urgency'] = $ticket['urgency'] + $this->num;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

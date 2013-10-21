@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\App;
@@ -43,7 +44,7 @@ use Orb\Util\Arrays;
 /**
  * Adds labels
  */
-class AddLabelsAction extends AbstractAction
+class AddLabelsAction extends AbstractAction implements PermissionableAction
 {
 	protected $add_labels;
 
@@ -75,6 +76,19 @@ class AddLabelsAction extends AbstractAction
 		}
 
 		$ticket->getLabelManager()->addLabels($this->add_labels);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'labels')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

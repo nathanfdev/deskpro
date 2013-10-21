@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 
@@ -42,7 +43,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 
 use Application\DeskPRO\App;
 
-class TicketFieldAction extends AbstractAction
+class TicketFieldAction extends AbstractAction implements PermissionableAction
 {
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
@@ -93,6 +94,19 @@ class TicketFieldAction extends AbstractAction
 	public function apply(Ticket $ticket)
 	{
 		$this->field_manager->saveFormToObject($this->set_value['custom_fields'], $ticket, true);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+			return false;
+		}
+
+		return true;
 	}
 
 
