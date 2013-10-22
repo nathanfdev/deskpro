@@ -261,12 +261,82 @@ define(function() {
 		url: '/statuses',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
+			templateName: 'TicketStatuses/list.html',
+			controller: 'Admin_TicketStatuses_Ctrl_List'
 		},
 		page: {
 			templateName: 'Index/blank.html',
 			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.awaiting_agent',
+		url: '/statuses/awaiting_agent',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-awaiting-agent.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditAwaitingAgent'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.awaiting_user',
+		url: '/statuses/awaiting_user',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-awaiting-user.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditAwaitingUser'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.resolved',
+		url: '/statuses/resolved',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-resolved.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditResolved'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.closed',
+		url: '/statuses/closed',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-closed.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditClosed'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.hidden_validating',
+		url: '/statuses/validating',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-hidden-validating.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditHiddenValidating'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.hidden_deleted',
+		url: '/statuses/deleted',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-hidden-deleted.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditHiddenDeleted'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.statuses.hidden_spam',
+		url: '/statuses/spam',
+		with_list_view: true,
+		page: {
+			templateName: 'TicketStatuses/status-hidden-spam.html',
+			controller: 'Admin_TicketStatuses_Ctrl_EditHiddenSpam'
 		}
 	});
 
@@ -278,8 +348,8 @@ define(function() {
 		url: '/urgency',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
+			templateName: 'TicketUrgencies/list.html',
+			controller: 'Admin_TicketUrgencies_Ctrl_List'
 		},
 		page: {
 			templateName: 'Index/blank.html',

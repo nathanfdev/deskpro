@@ -185,4 +185,7 @@
 	'admin.tickets.account_details' => 'Account Details',
 	'admin.tickets.delete_label' => 'Delete Ticket Label',
 	'admin.tickets.delete_label_confirm' => 'Are you sure you want to delete this label?',
+	'admin.tickets.statuses' => 'Statuses',
+	'admin.tickets.hidden_statuses' => 'Hidden Statuses',
+	'admin.tickets.urgency' => 'Urgency',
 );

@@ -1,0 +1,43 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-terminal"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.statuses') }}</h3>
+		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+	</header>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<h3>{{ phrase('admin.tickets.statuses') }}</h3>
+			</div>
+			<ul class="dp-item-list">
+				<li>
+					<a href="{{ ng_href('tickets.statuses.awaiting_agent') }}">{{ phrase('agent.tickets.status_awaiting_agent') }}</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.statuses.awaiting_user') }}">{{ phrase('agent.tickets.status_awaiting_user') }}</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.statuses.resolved') }}">{{ phrase('agent.tickets.status_resolved') }}</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.statuses.closed') }}">{{ phrase('agent.tickets.status_closed') }}</a>
+				</li>
+			</ul>
+
+			<div class="panel-heading">
+				<h3>{{ phrase('admin.tickets.hidden_statuses') }}</h3>
+			</div>
+			<ul class="dp-item-list">
+				<li>
+					<a href="{{ ng_href('tickets.statuses.hidden_validating') }}">{{ phrase('agent.tickets.status_hidden_validating') }}</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.statuses.hidden_deleted') }}">{{ phrase('agent.tickets.status_hidden_deleted') }}</a>
+				</li>
+				<li>
+					<a href="{{ ng_href('tickets.statuses.hidden_spam') }}">{{ phrase('agent.tickets.status_hidden_spam') }}</a>
+				</li>
+			</ul>
+		</div>
+	</article>
+</div>
+{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}

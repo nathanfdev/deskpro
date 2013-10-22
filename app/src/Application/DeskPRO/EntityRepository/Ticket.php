@@ -746,4 +746,22 @@ class Ticket extends AbstractEntityRepository
 
 		return null;
 	}
+
+	/**
+	 * Runs a COUNT query against all awaiting_agent tickets and returns the number of tickets
+	 * in each urgency.
+	 *
+	 * @return array
+	 */
+	public function countTicketsByUrgency()
+	{
+		$counts = App::getDb()->fetchAllKeyValue("
+			SELECT urgency, COUNT(*) AS count
+			FROM tickets
+			WHERE status = 'awaiting_agent'
+			GROUP BY urgency
+		");
+
+		return $counts;
+	}
 }

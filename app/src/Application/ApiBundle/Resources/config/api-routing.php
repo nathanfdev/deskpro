@@ -2102,6 +2102,38 @@ $collection->create('api_ticket_deps_remove', array(
 ));
 
 ########################################################################################################################
+# Ticket Urgencies
+########################################################################################################################
+
+$collection->create('api_ticket_statuses_closed', array(
+	'path'        => '/ticket_statuses/closed',
+	'controller'  => 'ApiBundle:TicketStatuses:getClosedInfo',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_statuses_deleted', array(
+	'path'        => '/ticket_statuses/deleted',
+	'controller'  => 'ApiBundle:TicketStatuses:getDeletedInfo',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_statuses_spam', array(
+	'path'        => '/ticket_statuses/spam',
+	'controller'  => 'ApiBundle:TicketStatuses:getSpamInfo',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Ticket Urgencies
+########################################################################################################################
+
+$collection->create('api_ticket_urgencies', array(
+	'path'        => '/ticket_urgencies',
+	'controller'  => 'ApiBundle:TicketUrgencies:list',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
 # Ticket Fields
 ########################################################################################################################
 

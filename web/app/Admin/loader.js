@@ -95,8 +95,17 @@ requirejs([
 	'Admin/TicketFields/Ctrl/List',
 	'Admin/TicketLabels/Ctrl/List',
 	'Admin/TicketLabels/Ctrl/Edit',
+	'Admin/TicketStatuses/Ctrl/List',
+	'Admin/TicketStatuses/Ctrl/EditAwaitingAgent',
+	'Admin/TicketStatuses/Ctrl/EditAwaitingUser',
+	'Admin/TicketStatuses/Ctrl/EditClosed',
+	'Admin/TicketStatuses/Ctrl/EditHiddenDeleted',
+	'Admin/TicketStatuses/Ctrl/EditHiddenSpam',
+	'Admin/TicketStatuses/Ctrl/EditHiddenValidating',
+	'Admin/TicketStatuses/Ctrl/EditResolved',
 	'Admin/TicketTriggers/Ctrl/Edit',
 	'Admin/TicketTriggers/Ctrl/List',
+	'Admin/TicketUrgencies/Ctrl/List'
 ], function(angular) {
 	'use strict';
 

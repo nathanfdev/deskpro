@@ -1901,3 +1901,82 @@ table.display-table {
 		}
 	}
 }
+
+//######################################################################################################################
+//# Urgency Tag
+//######################################################################################################################
+
+
+@urgency_user_color: #AAF9AC;
+@urgency_user_borderColor: #639564;
+@urgency_user_textColor: #385739;
+
+@urgency_resolved_color: #90D591;
+@urgency_resolved_borderColor: #669966;
+@urgency_resolved_textColor: #385739;
+
+@urgency_closed_color: #75AF76;
+@urgency_closed_borderColor: #4F7950;
+@urgency_closed_textColor: #1B2E1C;
+
+@urgency_hidden_color: #B0B4C4;
+@urgency_hidden_borderColor: #979BA8;
+@urgency_hidden_textColor: #60626B;
+
+@urgency1_color: #F4F4A9;
+@urgency1_borderColor: #E2DE9C;
+@urgency1_textColor: #4D4938;
+
+@urgency2_color: #FFE491;
+@urgency2_borderColor: #B9A567;
+@urgency2_textColor: #4D4938;
+
+@urgency3_color: #FFCB81;
+@urgency3_borderColor: #B6905A;
+@urgency3_textColor: #3D2E19;
+
+@urgency4_color: #FFB171;
+@urgency4_borderColor: #BF8452;
+@urgency4_textColor: #3D2E19;
+
+@urgency5_color: #FF9962;
+@urgency5_borderColor: #B66B43;
+@urgency5_textColor: #3D2E19;
+
+@urgency6_color: #FF8052;
+@urgency6_borderColor: #C05E3A;
+@urgency6_textColor: #311207;
+
+@urgency7_color: #FF6851;
+@urgency7_borderColor: #A54031;
+@urgency7_textColor: #311207;
+
+@urgency8_color: #FF5351;
+@urgency8_borderColor: #9C2F2D;
+@urgency8_textColor: #311207;
+
+@urgency9_color: #FD3C51;
+@urgency9_borderColor: #A12230;
+@urgency9_textColor: #FFF;
+
+@urgency10_color: #F92851;
+@urgency10_borderColor: #A12230;
+@urgency10_textColor: #FFF;
+
+.lib-urgency-tag(@color, @borderColor, @textColor) {
+	.gradient-v(lighten(@color, 10%), @color);
+	border: 1px solid @borderColor;
+	.rounded(4px); padding: 1px 4px; line-height: 18px;
+	color: @textColor;
+}
+
+.urgency-tag.urgency-1  { .lib-urgency-tag(@urgency1_color, @urgency1_borderColor, @urgency1_textColor); }
+.urgency-tag.urgency-2  { .lib-urgency-tag(@urgency2_color, @urgency2_borderColor, @urgency2_textColor); }
+.urgency-tag.urgency-3  { .lib-urgency-tag(@urgency3_color, @urgency3_borderColor, @urgency3_textColor); }
+.urgency-tag.urgency-4  { .lib-urgency-tag(@urgency4_color, @urgency4_borderColor, @urgency4_textColor); }
+.urgency-tag.urgency-5  { .lib-urgency-tag(@urgency5_color, @urgency5_borderColor, @urgency5_textColor); }
+.urgency-tag.urgency-6  { .lib-urgency-tag(@urgency6_color, @urgency6_borderColor, @urgency6_textColor); }
+.urgency-tag.urgency-7  { .lib-urgency-tag(@urgency7_color, @urgency7_borderColor, @urgency7_textColor); }
+.urgency-tag.urgency-8  { .lib-urgency-tag(@urgency8_color, @urgency8_borderColor, @urgency8_textColor); }
+.urgency-tag.urgency-9  { .lib-urgency-tag(@urgency9_color, @urgency9_borderColor, @urgency9_textColor); }
+.urgency-tag.urgency-10 { .lib-urgency-tag(@urgency10_color, @urgency10_borderColor, @urgency10_textColor); }

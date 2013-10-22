@@ -1,0 +1,26 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-terminal"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.urgency') }}</h3>
+		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+	</header>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<h3>{{ phrase('admin.tickets.urgency') }}</h3>
+			</div>
+			<ul class="dp-item-list">
+				<li ng-repeat="urgency in TicketUrgenciesList.urgencies">
+					<a>
+						<div class="pull-right">
+							<span class="badge" style="margin-top: -2px;" tooltip="The number of tickets with this urgency" tooltip-placement="left">Tickets: {{ ng_var('urgency.ticket_count') }}</span>
+						</div>
+						<span class="urgency-tag urgency-{{ ng_var('urgency.num') }}">
+							Urgency {{ ng_var('urgency.num') }}
+						</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</article>
+</div>
+{% include 'AdminInterfaceBundle:TicketUrgencies:help-page.html.twig' %}

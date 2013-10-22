@@ -9319,3 +9319,153 @@ table.display-table > tr > td.nowrap {
   white-space: nowrap;
   text-wrap: none;
 }
+
+.urgency-tag.urgency-1 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #4d4938;
+  background: #fafad6 url("../../../file.php/gradient?size=20&start_color=fafad6&end_color=f4f4a9") repeat-x bottom left /*gradient_v:20:fafad6:f4f4a9*/;
+  background: #fafad6 url("../../../../../file.php/gradient?size=20&start_color=fafad6&end_color=f4f4a9") repeat-x bottom left /*gradient_v:20:fafad6:f4f4a9*/;
+  border: 1px solid #e2de9c;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-2 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #4d4938;
+  background: #fff1c4 url("../../../file.php/gradient?size=20&start_color=fff1c4&end_color=ffe491") repeat-x bottom left /*gradient_v:20:fff1c4:ffe491*/;
+  background: #fff1c4 url("../../../../../file.php/gradient?size=20&start_color=fff1c4&end_color=ffe491") repeat-x bottom left /*gradient_v:20:fff1c4:ffe491*/;
+  border: 1px solid #b9a567;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-3 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #3d2e19;
+  background: #ffe0b4 url("../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=ffcb81") repeat-x bottom left /*gradient_v:20:ffe0b4:ffcb81*/;
+  background: #ffe0b4 url("../../../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=ffcb81") repeat-x bottom left /*gradient_v:20:ffe0b4:ffcb81*/;
+  border: 1px solid #b6905a;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-4 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #3d2e19;
+  background: #ffcda4 url("../../../file.php/gradient?size=20&start_color=ffcda4&end_color=ffb171") repeat-x bottom left /*gradient_v:20:ffcda4:ffb171*/;
+  background: #ffcda4 url("../../../../../file.php/gradient?size=20&start_color=ffcda4&end_color=ffb171") repeat-x bottom left /*gradient_v:20:ffcda4:ffb171*/;
+  border: 1px solid #bf8452;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-5 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #3d2e19;
+  background: #ffba95 url("../../../file.php/gradient?size=20&start_color=ffba95&end_color=ff9962") repeat-x bottom left /*gradient_v:20:ffba95:ff9962*/;
+  background: #ffba95 url("../../../../../file.php/gradient?size=20&start_color=ffba95&end_color=ff9962") repeat-x bottom left /*gradient_v:20:ffba95:ff9962*/;
+  border: 1px solid #b66b43;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-6 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #311207;
+  background: #ffa585 url("../../../file.php/gradient?size=20&start_color=ffa585&end_color=ff8052") repeat-x bottom left /*gradient_v:20:ffa585:ff8052*/;
+  background: #ffa585 url("../../../../../file.php/gradient?size=20&start_color=ffa585&end_color=ff8052") repeat-x bottom left /*gradient_v:20:ffa585:ff8052*/;
+  border: 1px solid #c05e3a;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-7 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #311207;
+  background: #ff9484 url("../../../file.php/gradient?size=20&start_color=ff9484&end_color=ff6851") repeat-x bottom left /*gradient_v:20:ff9484:ff6851*/;
+  background: #ff9484 url("../../../../../file.php/gradient?size=20&start_color=ff9484&end_color=ff6851") repeat-x bottom left /*gradient_v:20:ff9484:ff6851*/;
+  border: 1px solid #a54031;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-8 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #311207;
+  background: #ff8584 url("../../../file.php/gradient?size=20&start_color=ff8584&end_color=ff5351") repeat-x bottom left /*gradient_v:20:ff8584:ff5351*/;
+  background: #ff8584 url("../../../../../file.php/gradient?size=20&start_color=ff8584&end_color=ff5351") repeat-x bottom left /*gradient_v:20:ff8584:ff5351*/;
+  border: 1px solid #9c2f2d;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-9 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #ffffff;
+  background: #fe6e7e url("../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=fd3c51") repeat-x bottom left /*gradient_v:20:fe6e7e:fd3c51*/;
+  background: #fe6e7e url("../../../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=fd3c51") repeat-x bottom left /*gradient_v:20:fe6e7e:fd3c51*/;
+  border: 1px solid #a12230;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.urgency-tag.urgency-10 {
+  padding: 1px 4px;
+  line-height: 18px;
+  color: #ffffff;
+  background: #fa5a79 url("../../../file.php/gradient?size=20&start_color=fa5a79&end_color=f92851") repeat-x bottom left /*gradient_v:20:fa5a79:f92851*/;
+  background: #fa5a79 url("../../../../../file.php/gradient?size=20&start_color=fa5a79&end_color=f92851") repeat-x bottom left /*gradient_v:20:fa5a79:f92851*/;
+  border: 1px solid #a12230;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
