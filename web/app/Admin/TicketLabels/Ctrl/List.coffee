@@ -12,8 +12,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			@$scope.escape_url = (text)->
 				return encodeURIComponent(text)
 
-			console.log @$scope
-
 			return
 
 		initialLoad: ->
