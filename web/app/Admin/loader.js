@@ -105,7 +105,8 @@ requirejs([
 	'Admin/TicketStatuses/Ctrl/EditResolved',
 	'Admin/TicketTriggers/Ctrl/Edit',
 	'Admin/TicketTriggers/Ctrl/List',
-	'Admin/TicketUrgencies/Ctrl/List'
+	'Admin/TicketUrgencies/Ctrl/List',
+	'Admin/FeedbackStatuses/Ctrl/List'
 ], function(angular) {
 	'use strict';
 
