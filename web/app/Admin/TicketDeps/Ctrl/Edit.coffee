@@ -57,7 +57,7 @@ define [
 			return @loadDepartment()
 
 		checkDirtyState: ->
-			if not @dep.id then return false
+			if not @dep?.id then return false
 
 			if @dep.getChangedFields().length
 				return true

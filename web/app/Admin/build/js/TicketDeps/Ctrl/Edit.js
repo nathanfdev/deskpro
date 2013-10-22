@@ -70,7 +70,8 @@
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.checkDirtyState = function() {
-        if (!this.dep.id) {
+        var _ref1;
+        if (!((_ref1 = this.dep) != null ? _ref1.id : void 0)) {
           return false;
         }
         if (this.dep.getChangedFields().length) {

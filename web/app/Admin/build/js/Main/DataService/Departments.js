@@ -34,6 +34,7 @@
         }
         deferred = this.$q.defer();
         if (!reload && this.deps.count()) {
+          this.resetHierarchy();
           deferred.resolve(this.deps);
           return deferred.promise;
         }
@@ -41,9 +42,11 @@
           _this._setDepData(data.departments);
           _this.default_dep = new Admin_Main_Model_Base();
           _this.default_dep.default_id = data.default_id;
-          return deferred.resolve(_this.deps);
+          deferred.resolve(_this.deps);
+          return _this.loadDepListPromise = null;
         }, function(data, status, headers, config) {
-          return deferred.reject();
+          deferred.reject();
+          return this.loadDepListPromise = null;
         });
         this.loadDepListPromise = deferred.promise;
         return this.loadDepListPromise;
@@ -69,6 +72,17 @@
 
       Admin_Main_DataService_Departments.prototype.resetHierarchy = function() {
         var dep, parent_dep, _i, _j, _len, _len1, _ref, _ref1;
+        this.deps.reorder(function(a, b) {
+          var order1, order2, _ref;
+          order1 = a.display_order || 0;
+          order2 = b.display_order || 0;
+          if (order1 === order2) {
+            return 0;
+          }
+          return (_ref = order1 < order2) != null ? _ref : -{
+            1: 1
+          };
+        });
         _ref = this.deps.values();
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           dep = _ref[_i];

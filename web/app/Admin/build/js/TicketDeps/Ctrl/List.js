@@ -28,13 +28,24 @@
           axis: 'y',
           handle: '.drag-handle',
           update: function(ev, data) {
-            var $list, postData, promise;
+            var $list, em, postData, promise, x;
             $list = data.item.closest('ul');
             postData = {
               display_orders: []
             };
+            x = 0;
+            em = _this.em;
             $list.find('li').each(function() {
-              return postData.display_orders.push($(this).data('id'));
+              var dep, dep_id;
+              x += 10;
+              dep_id = parseInt($(this).data('id'));
+              if (dep_id) {
+                dep = em.getById('department', dep_id);
+                if (dep) {
+                  dep.display_order = x;
+                }
+              }
+              return postData.display_orders.push(dep_id);
             });
             promise = _this.Api.sendPostJson('/ticket_deps/display_order', postData);
             return _this.pingElement('display_orders');

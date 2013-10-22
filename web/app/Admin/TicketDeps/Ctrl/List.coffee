@@ -17,8 +17,18 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					postData = {display_orders: []}
 
+					x = 0
+					em = @em
 					$list.find('li').each(->
-						postData.display_orders.push($(this).data('id'))
+						x += 10
+						dep_id = parseInt($(this).data('id'))
+
+						if dep_id
+							dep = em.getById('department', dep_id)
+							if dep
+								dep.display_order = x
+
+						postData.display_orders.push(dep_id)
 					)
 
 					promise = @Api.sendPostJson('/ticket_deps/display_order', postData)

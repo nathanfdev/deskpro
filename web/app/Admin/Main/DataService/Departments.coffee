@@ -33,6 +33,7 @@ define [
 
 			deferred = @$q.defer()
 			if not reload and @deps.count()
+				@resetHierarchy()
 				deferred.resolve(@deps)
 				return deferred.promise
 
@@ -42,8 +43,10 @@ define [
 				@default_dep.default_id = data.default_id
 
 				deferred.resolve(@deps)
+				@loadDepListPromise = null
 			, (data, status, headers, config) ->
 				deferred.reject()
+				@loadDepListPromise = null
 			)
 
 			@loadDepListPromise = deferred.promise
@@ -66,6 +69,17 @@ define [
 			return model
 
 		resetHierarchy: ->
+
+			@deps.reorder( (a, b) ->
+				order1 = a.display_order || 0
+				order2 = b.display_order || 0
+
+				if order1 == order2
+					return 0
+
+				return (order1 < order2) ? -1 : 1
+			)
+
 			for dep in @deps.values()
 				delete dep._child_ids
 				if not dep.parent_id or dep.parent_id == "0"
