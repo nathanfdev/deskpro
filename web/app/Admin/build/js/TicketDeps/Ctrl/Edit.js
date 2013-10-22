@@ -293,6 +293,7 @@
         var data;
         data = this.dep.getData();
         data.email_gateway = this.dep.email_gateway_id;
+        data.parent = this.dep.parent_id;
         return data;
       };
 

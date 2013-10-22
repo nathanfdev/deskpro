@@ -265,6 +265,7 @@ define [
 		getPropsData: ->
 			data = @dep.getData()
 			data.email_gateway = @dep.email_gateway_id
+			data.parent = @dep.parent_id
 			return data
 
 		propogatePermission: (obj, perm) ->
