@@ -141,6 +141,7 @@ class TemplatingExtension extends \Twig_Extension
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 			'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
+			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1514,6 +1515,11 @@ class TemplatingExtension extends \Twig_Extension
 
 		$html = '<script type="text/ng-template" id="'.$tpl_name.'">' . htmlspecialchars($rendered, \ENT_QUOTES, 'UTF-8') . '</script>';
 		return $html;
+	}
+
+	public function ngHref($route, $params = '{}')
+	{
+		return '{{ state_path(\'' . addslashes($route) . '\', ' . $params . ') }}';
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)

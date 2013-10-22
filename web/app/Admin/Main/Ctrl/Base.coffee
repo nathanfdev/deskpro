@@ -82,6 +82,9 @@ define ['angular', 'Admin/App'], (angular) ->
 				@_managed_listeners = null
 			)
 
+			@$scope.state_path = (route, params = {}) =>
+				return @$state.href(route, params)
+
 			@$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
 					if ev.defaultPrevented then return
 					if @_state_cont_ignore

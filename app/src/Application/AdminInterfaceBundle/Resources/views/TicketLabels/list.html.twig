@@ -10,7 +10,7 @@
 						<li>
 							<span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{phrase('agent.general.delete')}}</span>
 						</li>
-						<li><a class="btn btn-success" href="#/tickets/labels/create"><i class="icon-plus"></i> {{phrase('agent.general.add')}}</a>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.labels.gocreate') }}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}</a>
 						</li>
 						<li>
 							<button ng-click="TicketLabelsList.switchSortOrder('label')"
@@ -32,7 +32,7 @@
 			</div>
 			<ul class="dp-item-list">
 				<li ng-repeat="label in TicketLabelsList.labels | orderBy:order:orderReverse">
-					<a href="#/tickets/labels/{{ng_var('label.label | escape_url')}}">
+					<a href="{{ ng_href('tickets.labels.edit', '{label: label.label}') }}">
 						<div class="pull-right">
 							<span class="badge" ng-show="!delete_mode" tooltip="The number of tickets with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"

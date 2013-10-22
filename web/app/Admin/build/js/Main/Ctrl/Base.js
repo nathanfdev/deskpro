@@ -112,6 +112,12 @@
           }
           return _this._managed_listeners = null;
         });
+        this.$scope.state_path = function(route, params) {
+          if (params == null) {
+            params = {};
+          }
+          return _this.$state.href(route, params);
+        };
         this.$scope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
           var resetHash;
           if (ev.defaultPrevented) {

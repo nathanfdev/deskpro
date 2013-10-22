@@ -12,14 +12,14 @@
 							<span dp-ping-flash="run_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
 						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="#/tickets/triggers/{{ ng_var('TicketTriggersList.eventType') }}/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
 				<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
 			</div>
 			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions" ng-if="TicketTriggersList.triggers.length">
 				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
-					<a href="#/tickets/triggers/{{ ng_var('TicketTriggersList.eventType') }}/{{ ng_var('trigger.id') }}">
+					<a href="{{ ng_href('tickets.triggers.edit', '{type: TicketTriggersList.eventType, id: trigger.id}') }}">
 						<i class="icon-reorder drag-handle"></i>
 						<div class="pull-right toggle-wrapper" ng-hide="delete_mode">
 							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="TicketTriggersList.updateTriggerEnabledState(trigger);"></button>

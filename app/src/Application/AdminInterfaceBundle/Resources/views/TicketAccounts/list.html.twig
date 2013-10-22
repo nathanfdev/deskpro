@@ -12,14 +12,14 @@
 							<span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
 						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="#/tickets/ticket_accounts/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.ticket_accounts.gocreate') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
 				<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
 			</div>
 			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
 				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
-					<a href="#/tickets/ticket_accounts/{{ ng_var('acc.id') }}">
+					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
 						<div class="pull-right">
 							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('acc.id') }}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketAccountsList.startDelete(acc); $event.preventDefault();"><i class="icon-trash"></i></span>
