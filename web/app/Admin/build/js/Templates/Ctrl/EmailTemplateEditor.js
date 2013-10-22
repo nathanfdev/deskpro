@@ -44,7 +44,8 @@
             return editor.resize();
           };
           updateH();
-          return editor.getSession().on('change', updateH);
+          editor.getSession().on('change', updateH);
+          return editor.setShowPrintMargin(false);
         };
       };
 

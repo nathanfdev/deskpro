@@ -27,7 +27,6 @@
         this.$scope.escape_url = function(text) {
           return encodeURIComponent(text);
         };
-        console.log(this.$scope);
       };
 
       Admin_TicketLabels_Ctrl_List.prototype.initialLoad = function() {

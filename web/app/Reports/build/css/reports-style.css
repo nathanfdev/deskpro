@@ -9080,6 +9080,7 @@ button.toast-close-button {
 
 .modal-dialog.dp-codeeditor-modal {
   width: 80%;
+  max-width: 820px;
 }
 
 .editor-row {
@@ -11218,6 +11219,7 @@ button.toast-close-button {
 
 .modal-dialog.dp-codeeditor-modal {
   width: 80%;
+  max-width: 820px;
 }
 
 .editor-row {

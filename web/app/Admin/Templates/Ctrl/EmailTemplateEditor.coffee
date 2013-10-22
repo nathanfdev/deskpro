@@ -26,6 +26,7 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 
 				updateH()
 				editor.getSession().on('change', updateH);
+				editor.setShowPrintMargin(false)
 
 		initialLoad: ->
 			if @templateName
