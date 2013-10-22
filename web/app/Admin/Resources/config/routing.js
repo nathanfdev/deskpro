@@ -1062,12 +1062,8 @@ define(function() {
 		url: '/feedback/statuses',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
-		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+            templateName: 'FeedbackStatuses/list.html',
+            controller: 'Admin_FeedbackStatuses_Ctrl_List'
 		}
 	});
 
