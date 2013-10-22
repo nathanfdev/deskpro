@@ -15,7 +15,7 @@
 
       /*
         	# Converts a template path into a common template name
-        	# Eg: /deskpro/adm/load-view/Index/blank.html -> Index/blank.html
+        	# Eg: /deskpro/admin/load-view/Index/blank.html -> Index/blank.html
         	#
         	# @param {String} view
         	# @return {String}
@@ -23,7 +23,7 @@
 
 
       Admin_Main_Service_TemplateManager.prototype.commonName = function(view) {
-        view = view.replace(/^.*?\/adm\/load\-view\//g, '');
+        view = view.replace(/^.*?\/admin\/load\-view\//g, '');
         return view;
       };
 

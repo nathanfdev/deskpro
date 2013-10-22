@@ -8,23 +8,23 @@ use Application\DeskPRO\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->create('adm', array(
+$collection->create('admin', array(
 	'path'        => '/',
 	'controller'  => 'AdminInterfaceBundle:Index:interface',
 ));
 
-$collection->create('adm_tpl_loadmulti', array(
+$collection->create('admin_tpl_loadmulti', array(
 	'path'        => '/load-view/multi',
 	'controller'  => 'AdminInterfaceBundle:Interface:multiLoadView',
 ));
 
-$collection->create('adm_tpl_load', array(
+$collection->create('admin_tpl_load', array(
 	'path'          => '/load-view/{view_name}',
 	'controller'    => 'AdminInterfaceBundle:Interface:loadView',
 	'requirements'  => array('view_name' => '.+'),
 ));
 
-$collection->create('adm_lang_load', array(
+$collection->create('admin_lang_load', array(
 	'path'        => '/load-lang.{_format}',
 	'controller'  => 'AdminInterfaceBundle:Interface:loadLang',
 ));

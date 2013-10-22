@@ -12,7 +12,7 @@ $col->addPrefix('/admin');
 $collection->addCollection($col);
 
 $col = $loader->import(DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php');
-$col->addPrefix('/adm');
+$col->addPrefix('/admin');
 $collection->addCollection($col);
 
 $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');

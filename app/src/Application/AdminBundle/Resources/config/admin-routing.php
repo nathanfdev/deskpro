@@ -80,8 +80,8 @@ $collection->create('admin_skip_setup_todo', array(
 	'controller'  => 'AdminBundle:Main:skipSetupStep',
 ));
 
-$collection->create('admin', array(
-	'path'        => '/',
+$collection->create('admin_old', array(
+	'path'        => '/old',
 	'controller'  => 'AdminBundle:Main:index',
 ));
 

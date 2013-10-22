@@ -160,12 +160,12 @@
           '$delegate', function($delegate) {
             $delegate.ngGet = $delegate.get;
             $delegate.get = function(view) {
-              view = view.replace(/^.*?\/adm\/load\-view\//g, '');
+              view = view.replace(/^.*?\/admin\/load\-view\//g, '');
               return $delegate.ngGet(view);
             };
             $delegate.ngPut = $delegate.put;
             $delegate.put = function(view, value) {
-              view = view.replace(/^.*?\/adm\/load\-view\//g, '');
+              view = view.replace(/^.*?\/admin\/load\-view\//g, '');
               return $delegate.ngPut(view, value);
             };
             return $delegate;

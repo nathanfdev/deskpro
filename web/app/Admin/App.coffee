@@ -224,17 +224,17 @@ define [
 
 	# Decorate the $templateCache so view names are always the 'short' names
 	# and not URLs
-	# e.g.  /deskpro/adm/load-view/Index/blank.html -> Index/blank.html
+	# e.g.  /deskpro/admin/load-view/Index/blank.html -> Index/blank.html
 	Admin_App.config(['$provide', ($provide) ->
 		$provide.decorator('$templateCache', ['$delegate', ($delegate) ->
 			$delegate.ngGet = $delegate.get
 			$delegate.get = (view) ->
-				view = view.replace(/^.*?\/adm\/load\-view\//g, '')
+				view = view.replace(/^.*?\/admin\/load\-view\//g, '')
 				return $delegate.ngGet(view)
 
 			$delegate.ngPut = $delegate.put
 			$delegate.put = (view, value) ->
-				view = view.replace(/^.*?\/adm\/load\-view\//g, '')
+				view = view.replace(/^.*?\/admin\/load\-view\//g, '')
 				return $delegate.ngPut(view, value)
 
 			return $delegate

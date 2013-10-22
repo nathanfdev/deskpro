@@ -67,7 +67,7 @@
 
 			{% if app.user.can_admin %}
 				<li id="settings_section" class="no-click-switch">
-					<a id="admin_interface_trigger" title="{{ phrase('agent.chrome.nav_admin_settings') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/adm/" data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame" data-frame-id="admin"><span class="settingsNavIcon"></span></a>
+					<a id="admin_interface_trigger" title="{{ phrase('agent.chrome.nav_admin_settings') }}" target="_blank" href="{{ app.request.getBaseUrl() }}/admin/" data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame" data-frame-id="admin"><span class="settingsNavIcon"></span></a>
 				</li>
 			{% endif %}
 			<li id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">

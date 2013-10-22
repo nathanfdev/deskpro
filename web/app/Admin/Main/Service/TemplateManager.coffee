@@ -7,13 +7,13 @@ define ->
 
 		###
     	# Converts a template path into a common template name
-    	# Eg: /deskpro/adm/load-view/Index/blank.html -> Index/blank.html
+    	# Eg: /deskpro/admin/load-view/Index/blank.html -> Index/blank.html
     	#
     	# @param {String} view
     	# @return {String}
 		###
 		commonName: (view) ->
-			view = view.replace(/^.*?\/adm\/load\-view\//g, '')
+			view = view.replace(/^.*?\/admin\/load\-view\//g, '')
 			return view
 
 
