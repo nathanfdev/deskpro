@@ -184,7 +184,7 @@ class TicketDepsController extends AbstractController
 
 	public function saveDisplayOrderAction()
 	{
-		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+		$display_orders = $this->in->getArrayOfUInts('display_orders');
 
 		$editor = $this->_getDepartmentEditor();
 		$editor->updateDisplayOrders($display_orders);

@@ -107,5 +107,7 @@ class TicketDepartmentEditor
 
 			$x += 10;
 		}
+
+		$this->em->flush();
 	}
 }
