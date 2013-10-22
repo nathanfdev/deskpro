@@ -161,13 +161,14 @@ class TicketDepsController extends AbstractController
 	public function removeAction($id)
 	{
 		$editor = $this->_getDepartmentEditor();
-		$dep = $editor->getDepartmentById($id);
+		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
+
 
 		if (!$dep) {
 			throw $this->createNotFoundException();
 		}
 
-		$move_to = $this->em->find('DeskPRO:Department', $this->in->getUint('move_to'));
+		$move_to = $this->container->getSystemService('ticket_departments')->getById($this->in->getUint('move_to'));
 		if (!$move_to) {
 			throw ValidationException::create("department.remove.move_tickets", "You must select a department to move existing tickets into");
 		}
