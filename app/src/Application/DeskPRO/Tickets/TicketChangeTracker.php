@@ -881,8 +881,10 @@ class TicketChangeTracker extends ChangeTracker
 			// Broadcast a change event
 			$person_id = 0;
 			try {
-				if (App::has('session') && App::get('session')->getEntity()->person) {
-					$person_id = App::get('session')->getEntity()->person->getId();
+				if (defined('DP_INTERFACE') && in_array(DP_INTERFACE, array('admin', 'agent', 'user'))) {
+					if (App::has('session') && App::get('session')->getEntity()->person) {
+						$person_id = App::get('session')->getEntity()->person->getId();
+					}
 				}
 			} catch (\Exception $e) {}
 
