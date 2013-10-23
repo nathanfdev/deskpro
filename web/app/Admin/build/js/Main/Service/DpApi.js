@@ -60,17 +60,28 @@
 
 
       DpApi.prototype.sendDataGet = function(paths, http_params) {
-        var params, path, _i, _len;
+        var params, path, save_key, _i, _len;
         if (http_params == null) {
           http_params = {};
         }
         params = [];
-        for (_i = 0, _len = paths.length; _i < _len; _i++) {
-          path = paths[_i];
-          params.push({
-            name: 'load_data[]',
-            value: this.formatUrl(path)
-          });
+        if (_.isArray(paths)) {
+          for (_i = 0, _len = paths.length; _i < _len; _i++) {
+            path = paths[_i];
+            params.push({
+              name: 'load_data[]',
+              value: this.formatUrl(path)
+            });
+          }
+        } else {
+          for (save_key in paths) {
+            if (!__hasProp.call(paths, save_key)) continue;
+            path = paths[save_key];
+            params.push({
+              name: 'load_data[' + encodeURIComponent(save_key) + ']',
+              value: this.formatUrl(path)
+            });
+          }
         }
         return this.sendGet('api_caller', params, http_params);
       };

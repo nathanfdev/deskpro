@@ -45,11 +45,18 @@ define ['angular'], (angular) ->
 		###
 		sendDataGet: (paths, http_params = {}) ->
 			params = []
-			for path in paths
-				params.push({
-					name: 'load_data[]',
-					value: @formatUrl(path)
-				})
+			if _.isArray(paths)
+				for path in paths
+					params.push({
+						name: 'load_data[]',
+						value: @formatUrl(path)
+					})
+			else
+				for own save_key, path of paths
+					params.push({
+						name: 'load_data[' + encodeURIComponent(save_key) + ']',
+						value: @formatUrl(path)
+					})
 
 			return @sendGet('api_caller', params, http_params)
 

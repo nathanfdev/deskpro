@@ -46,7 +46,7 @@ class ApiCombinerController extends AbstractController
 
 		$returned_data = array();
 
-		foreach ($this->in->getCleanValueArray('load_data', 'string', 'discard') as $load_data_id) {
+		foreach ($this->in->getCleanValueArray('load_data', 'string', 'string') as $k => $load_data_id) {
 
 			// Cut out everything before the /api/ which will could be the base-path
 			$load_data_id = preg_replace('#^(.*?)\/api\/#', '/api/', $load_data_id);
@@ -76,8 +76,12 @@ class ApiCombinerController extends AbstractController
 			}
 
 			if ($load_data) {
-				$returned_data[] = $route_id;
-				$data[$route_id] = $load_data;
+				$save_key = $k;
+				if (is_numeric($save_key)) {
+					$save_key = $route_id;
+				}
+				$returned_data[] = $save_key;
+				$data[$save_key] = $load_data;
 			}
 		}
 
