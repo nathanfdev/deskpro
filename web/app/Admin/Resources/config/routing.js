@@ -1123,6 +1123,35 @@ define(function() {
 		}
 	});
 
+	routes.push({
+		id: 'portal.feedback_statuses.gocreate',
+		url: '/go-create',
+		page: {
+			template: '',
+			controller: ['$state', function ($state) {
+				$state.go('portal.feedback_statuses.create');
+			}]
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_statuses.create',
+		url: '/create',
+		page: {
+			templateName: 'FeedbackStatuses/edit.html',
+			controller: 'Admin_FeedbackStatuses_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_statuses.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'FeedbackStatuses/edit.html',
+			controller: 'Admin_FeedbackStatuses_Ctrl_Edit'
+		}
+	});
+
 	//###
 	//# Feedback::Types
 	//###
