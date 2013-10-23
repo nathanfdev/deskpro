@@ -51,7 +51,9 @@ class LanguagesController extends AbstractController
 			ORDER BY l.title ASC
 		")->execute();
 
-		$data['languages'] = $this->getApiData($langs);
+		$data['languages']       = $this->getApiData($langs);
+		$data['default_lang_id'] = $this->container->getLanguageData()->getDefaultId();
+		$data['is_multi_lang']   = $this->container->getLanguageData()->isMultiLang();
 
 		return $this->createApiResponse($data);
 	}
