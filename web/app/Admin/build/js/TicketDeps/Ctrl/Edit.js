@@ -40,7 +40,7 @@
             return _this.$scope.show_parent_warning = false;
           }
         });
-        return this.trigger = {
+        this.trigger = {
           user_send_newuserticket_response: {
             enabled: false,
             template_name: ""
@@ -58,6 +58,7 @@
             preset: ""
           }
         };
+        return this.$scope.embed_code_type = 'department';
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.resetForm = function() {
@@ -135,7 +136,7 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.initData = function(department_perms, agents, agentgroups, usergroups) {
-        var agent, code, group, matrix, name, p, tpl, ugroup, ugroup_map, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _results;
+        var agent, code, code_all, group, matrix, name, p, tpl, ugroup, ugroup_map, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref1, _ref2, _results;
         matrix = new Admin_Main_Model_DepAgentPermMatrix();
         for (_i = 0, _len = agentgroups.length; _i < _len; _i++) {
           group = agentgroups[_i];
@@ -162,13 +163,15 @@
           }
         }
         this.usergroups = usergroups;
-        _ref2 = ['link', 'win', 'embed'];
+        _ref2 = ['link', 'win', 'embed', 'phpapi'];
         _results = [];
         for (_m = 0, _len4 = _ref2.length; _m < _len4; _m++) {
           name = _ref2[_m];
           tpl = this.getTemplatePath("TicketDeps/code-" + name + ".html");
           code = this.$templateCache.get(tpl).replace(/%DEPID%/g, this.dep.id);
-          _results.push(this.$scope['code_' + name] = code);
+          code_all = this.$templateCache.get(tpl).replace(/%DEPID%/g, 0);
+          this.$scope['code_' + name] = code;
+          _results.push(this.$scope['code_all_' + name] = code_all);
         }
         return _results;
       };

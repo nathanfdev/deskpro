@@ -49,6 +49,8 @@ define [
 				}
 			}
 
+			@$scope.embed_code_type = 'department'
+
 		resetForm: ->
 			@restoreState()
 			@saveState('dep', 'agent_perms', 'usergroups')
@@ -151,10 +153,12 @@ define [
 
 			@usergroups = usergroups
 
-			for name in ['link', 'win', 'embed']
+			for name in ['link', 'win', 'embed', 'phpapi']
 				tpl = @getTemplatePath("TicketDeps/code-"+name+".html")
 				code = @$templateCache.get(tpl).replace(/%DEPID%/g, @dep.id)
+				code_all = @$templateCache.get(tpl).replace(/%DEPID%/g, 0)
 				@$scope['code_' + name] = code
+				@$scope['code_all_' + name] = code_all
 
 		initDeplistData: (departments) ->
 			@departments = departments.values()

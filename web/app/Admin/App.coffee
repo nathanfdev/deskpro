@@ -277,6 +277,7 @@ define [
 			'Index/modal-alert.html',
 			'Index/modal-confirm-leavetab.html',
 			'Languages/modal-translate-phrase.html',
+			'TicketDeps/code-phpapi.html',
 			'TicketDeps/code-link.html',
 			'TicketDeps/code-win.html',
 			'TicketDeps/code-embed.html',

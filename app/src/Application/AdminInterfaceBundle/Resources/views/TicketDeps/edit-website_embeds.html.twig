@@ -5,12 +5,29 @@
 			{{ phrase('adm.departments.embed_unavailable') }}
 		</p>
 	</div>
-	<div class="panel-help">
-		<p>
-			{{ phrase('adm.departments.embed_explain') }}
-		</p>
-	</div>
 	<div class="panel-body">
+		<div class="form-group">
+			<div class="row">
+				<div class="col-lg-12">
+					<p>
+						{{ phrase('adm.departments.embed_explain') }}
+					</p>
+					<p>
+						<label style="font-weight: normal">
+							<input type="radio" name="embed_code_type" ng-model="embed_code_type" value="department" />
+							Show code snippets for forms specifically for this department.
+						</label>
+
+						<label style="font-weight: normal">
+							<input type="radio" name="embed_code_type" ng-model="embed_code_type" value="all" />
+							Show code snippets for forms where the user can change the department
+						</label>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="embed_code_type == 'department'">
 			<div class="form-group">
 				<label for="title">{{ phrase('adm.departments.embed_direct_link') }}</label>
 				<div class="row">
@@ -23,8 +40,15 @@
 			<div class="form-group">
 				<label for="title">{{ phrase('adm.departments.embed_popup_window') }}</label>
 				<div class="row">
-					<div class="col-lg-8">
-						<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
+					<div class="editor-row">
+						<div class="editor-wrap">
+							<div class="editor" ng-model="code_win" ui-ace="{
+								mode: 'html',
+								useWrapMode: false,
+								showGutter: true,
+								theme: 'textmate'
+							}" style="height: 110px;"></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -32,11 +56,79 @@
 			<div class="form-group">
 				<label for="title">{{ phrase('adm.departments.embed_form') }}</label>
 				<div class="row">
-					<div class="col-lg-8">
-						<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
+					<div class="editor-row">
+						<div class="editor-wrap">
+							<div class="editor" ng-model="code_embed" ui-ace="{
+								mode: 'html',
+								useWrapMode: false,
+								showGutter: true,
+								theme: 'textmate'
+							}" style="height: 220px;"></div>
+						</div>
 					</div>
 				</div>
 			</div>
+
+			<div class="form-group">
+				<label for="title">Using the API</label>
+				<div class="row">
+					<div class="editor-row">
+						<div class="editor-wrap">
+							<div class="editor" ng-model="code_phpapi" ui-ace="{
+								mode: 'php',
+								useWrapMode: false,
+								showGutter: true,
+								theme: 'textmate'
+							}" style="height: 220px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="embed_code_type == 'all'">
+			<div class="form-group">
+				<label for="title">{{ phrase('adm.departments.embed_direct_link') }}</label>
+				<div class="row">
+					<div class="col-lg-8">
+						<input type="text" class="form-control" value="{{ ng_var("code_all_link") }}" />
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ phrase('adm.departments.embed_popup_window') }}</label>
+				<div class="row">
+					<div class="editor-row">
+						<div class="editor-wrap">
+							<div class="editor" ng-model="code_all_win" ui-ace="{
+								mode: 'html',
+								useWrapMode: false,
+								showGutter: true,
+								theme: 'textmate'
+							}" style="height: 110px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ phrase('adm.departments.embed_form') }}</label>
+				<div class="row">
+					<div class="editor-row">
+						<div class="editor-wrap">
+							<div class="editor" ng-model="code_all_embed" ui-ace="{
+								mode: 'html',
+								useWrapMode: false,
+								showGutter: true,
+								theme: 'textmate'
+							}" style="height: 220px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div ng-if="!TicketDepsEdit.dep.id">
 			<p>
 				{{ phrase('adm.departments.embed_unavailable') }}
