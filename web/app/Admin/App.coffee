@@ -32,6 +32,7 @@ define [
 
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
+	'Admin/FeedbackStatuses/DataService/FeedbackStatuses'
 	'Admin/TicketAccounts/DataService/TicketAccounts',
 	'Admin/TicketLabels/DataService/TicketLabels'
 ], (
@@ -68,6 +69,7 @@ define [
 
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
+	Admin_FeedbackStatuses_DataService_FeedbackStatuses,
 	Admin_TicketAccounts_DataService_TicketAccounts,
 	Admin_TicketLabels_DataService_TicketLabels
 ) ->
@@ -107,6 +109,10 @@ define [
 
 	Admin_App.service('DepartmentData', ['em', 'Api', '$q', (em, Api, $q) ->
 		return new Admin_Main_DataService_Departments(em, Api, $q)
+	])
+
+	Admin_App.service('FeedbackStatusesData', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_FeedbackStatuses_DataService_FeedbackStatuses(em, Api, $q)
 	])
 
 	Admin_App.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->

@@ -16,13 +16,40 @@
 
       Admin_FeedbackStatuses_Ctrl_List.CTRL_AS = 'FeedbackStatusesList';
 
-      Admin_FeedbackStatuses_Ctrl_List.DEPS = ['$rootScope', '$scope', 'em', 'Api', '$state', 'Growl'];
+      Admin_FeedbackStatuses_Ctrl_List.DEPS = ['$rootScope', '$scope', 'FeedbackStatusesData', 'em', 'Api', '$state', 'Growl'];
 
       Admin_FeedbackStatuses_Ctrl_List.CTRL_TYPE = 'list';
 
       Admin_FeedbackStatuses_Ctrl_List.prototype.init = function() {
-        this.feedback_statuses_count = 0;
-        return this.feedback_stasus_settings = {};
+        var _this = this;
+        this.feedback_active_statuses = [];
+        this.feedback_closed_statuses = [];
+        return this.sortedListOptions = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: function(ev, data) {
+            var $list, postData, promise;
+            $list = data.item.closest('ul');
+            postData = {
+              display_orders: []
+            };
+            $list.find('li').each(function() {
+              return postData.display_orders.push($(this).data('id'));
+            });
+            promise = _this.Api.sendPostJson('/feedback_statuses/display_order', postData);
+            return _this.pingElement('display_orders');
+          }
+        };
+      };
+
+      Admin_FeedbackStatuses_Ctrl_List.prototype.initialLoad = function() {
+        var statuses_list_promise,
+          _this = this;
+        statuses_list_promise = this.FeedbackStatusesData.loadStatusesList().then(function(statuses) {
+          _this.feedback_active_statuses = statuses.active_statuses;
+          return _this.feedback_closed_statuses = statuses.closed_statuses;
+        });
+        return this.$q.all([statuses_list_promise]);
       };
 
       return Admin_FeedbackStatuses_Ctrl_List;
