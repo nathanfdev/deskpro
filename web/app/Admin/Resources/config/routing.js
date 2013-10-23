@@ -525,21 +525,21 @@ define(function() {
 		url: '/labels',
 		with_list_view: true,
 		list: {
-			templateName: 'TicketLabels/list.html',
-			controller: 'Admin_TicketLabels_Ctrl_List'
+			templateName: 'Labels/Ticket/list.html',
+			controller: 'Admin_Labels_Ticket_Ctrl_List'
 		},
-    page: {
-      templateName: 'Index/blank.html',
-      controller: 'Admin_Main_Ctrl_Bare'
-    }
+		page: {
+		  templateName: 'Index/blank.html',
+		  controller: 'Admin_Main_Ctrl_Bare'
+		}
 	});
 
 	routes.push({
 		id: 'tickets.labels.create',
 		url: '/create',
 		page: {
-			templateName: 'TicketLabels/edit.html',
-			controller: 'Admin_TicketLabels_Ctrl_Edit'
+			templateName: 'Labels/Ticket/edit.html',
+			controller: 'Admin_Labels_Ticket_Ctrl_Edit'
 		}
 	});
 
@@ -547,7 +547,7 @@ define(function() {
 		id: 'tickets.labels.gocreate',
 		url: '/go-create',
 		page: {
-			templateName: 'TicketLabels/edit.html',
+			templateName: 'Labels/Ticket/edit.html',
 			controller: ['$state', function ($state) { $state.go('tickets.labels.create'); }]
 		}
 	});
@@ -556,8 +556,8 @@ define(function() {
 		id: 'tickets.labels.edit',
 		url: '/{label:.*}',
 		page: {
-			templateName: 'TicketLabels/edit.html',
-			controller: 'Admin_TicketLabels_Ctrl_Edit'
+			templateName: 'Labels/Ticket/edit.html',
+			controller: 'Admin_Labels_Ticket_Ctrl_Edit'
 		}
 	});
 
@@ -813,34 +813,90 @@ define(function() {
 	//###
 	//# Labels::Users
 	//###
+
 	routes.push({
 		id: 'crm.user_labels',
 		url: '/user_labels',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
+			templateName: 'Labels/Person/list.html',
+			controller: 'Admin_Labels_Person_Ctrl_List'
 		},
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+		  templateName: 'Index/blank.html',
+		  controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	routes.push({
+		id: 'crm.user_labels.create',
+		url: '/create',
+		page: {
+			templateName: 'Labels/Person/edit.html',
+			controller: 'Admin_Labels_Person_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'crm.user_labels.gocreate',
+		url: '/go-create',
+		page: {
+			templateName: 'Labels/Person/edit.html',
+			controller: ['$state', function ($state) { $state.go('crm.user_labels.create'); }]
+		}
+	});
+
+	routes.push({
+		id: 'crm.user_labels.edit',
+		url: '/{label:.*}',
+		page: {
+			templateName: 'Labels/Person/edit.html',
+			controller: 'Admin_Labels_Person_Ctrl_Edit'
 		}
 	});
 
 	//###
 	//# Labels::Orgs
 	//###
+
 	routes.push({
 		id: 'crm.org_labels',
 		url: '/org_labels',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
+			templateName: 'Labels/Org/list.html',
+			controller: 'Admin_Labels_Org_Ctrl_List'
 		},
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+		  templateName: 'Index/blank.html',
+		  controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	routes.push({
+		id: 'crm.org_labels.create',
+		url: '/create',
+		page: {
+			templateName: 'Labels/Org/edit.html',
+			controller: 'Admin_Labels_Org_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'crm.org_labels.gocreate',
+		url: '/go-create',
+		page: {
+			templateName: 'Labels/Org/edit.html',
+			controller: ['$state', function ($state) { $state.go('crm.org_labels.create'); }]
+		}
+	});
+
+	routes.push({
+		id: 'crm.org_labels.edit',
+		url: '/{label:.*}',
+		page: {
+			templateName: 'Labels/Org/edit.html',
+			controller: 'Admin_Labels_Org_Ctrl_Edit'
 		}
 	});
 

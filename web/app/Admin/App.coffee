@@ -34,7 +34,7 @@ define [
 	'Admin/Main/DataService/Departments',
 	'Admin/FeedbackStatuses/DataService/FeedbackStatuses'
 	'Admin/TicketAccounts/DataService/TicketAccounts',
-	'Admin/TicketLabels/DataService/TicketLabels'
+	'Admin/Labels/Service/LabelManager'
 ], (
 	angular,
 	routing,
@@ -71,7 +71,7 @@ define [
 	Admin_Main_DataService_Departments,
 	Admin_FeedbackStatuses_DataService_FeedbackStatuses,
 	Admin_TicketAccounts_DataService_TicketAccounts,
-	Admin_TicketLabels_DataService_TicketLabels
+	Admin_Labels_Service_LabelManager
 ) ->
 	####################################################################################################################
 	# Main services
@@ -119,8 +119,8 @@ define [
 		return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
 	])
 
-	Admin_App.service('TicketLabelsData', ['Api', '$q', (Api, $q) ->
-		return new Admin_TicketLabels_DataService_TicketLabels(Api, $q)
+	Admin_App.service('LabelManager', ['Api', '$q', (Api, $q) ->
+		return new Admin_Labels_Service_LabelManager(Api, $q)
 	])
 
 	Admin_App.filter('escape_url', [ ->

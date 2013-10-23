@@ -1,0 +1,51 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-tags"></i> {{phrase('adm.general.apps_crm')}} &rarr; Users &rarr; {{phrase('adm.general.labels')}}</h3>
+	</header>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li>
+							<span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{phrase('agent.general.delete')}}</span>
+						</li>
+						<li><a class="btn btn-success" href="{{ ng_href('crm.user_labels.gocreate') }}"><i class="icon-plus"></i> {{phrase('agent.general.add')}}</a>
+						</li>
+						<li>
+							<button ng-click="LabelsList.switchSortOrder('label')"
+								ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
+								<i class="icon-sort-by-alphabet" ng-hide="orderReverse"></i>
+								<i class="icon-sort-by-alphabet-alt" ng-show="orderReverse"></i>
+							</button>
+						</li>
+						<li>
+							<button ng-click="LabelsList.switchSortOrder('count')"
+								ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
+								<i class="icon-sort-by-order" ng-hide="orderReverse"></i>
+								<i class="icon-sort-by-order-alt" ng-show="orderReverse"></i>
+							</button>
+						</li>
+					</ul>
+				</nav>
+				<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+			</div>
+			<ul class="dp-item-list">
+				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse">
+					<a href="{{ ng_href('crm.user_labels.edit', '{label: label.label}') }}">
+						<div class="pull-right">
+							<span class="badge" ng-show="!delete_mode" tooltip="The number of tickets with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
+								ng-class="{'active':label.delete_mode}"
+								ng-click="LabelsList.startDelete(label); $event.preventDefault();"><i class="icon-trash"></i></span>
+						</div>
+						<h4>
+							<span class="title-text">{{ng_var('label.label')}}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</article>
+	{{ ng_tpl('TicketLabels/delete-modal.html') }}
+</div>

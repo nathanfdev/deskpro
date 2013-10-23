@@ -2049,6 +2049,48 @@ $collection->create('api_get_activity', array(
 ));
 
 ########################################################################################################################
+# Label Management
+########################################################################################################################
+
+$label_types = array(
+	array('route' => 'ticket', 'route_url' => 'ticket', 'controller' => 'TicketLabels'),
+	array('route' => 'person', 'route_url' => 'person', 'controller' => 'PersonLabels'),
+	array('route' => 'org',    'route_url' => 'org',    'controller' => 'OrgLabels'),
+);
+
+foreach ($label_types as $info) {
+	$collection->create("api_{$info['route']}_labels", array(
+		'path'        => "/{$info['route_url']}_labels",
+		'controller'  => "ApiBundle:{$info['controller']}:list",
+		'methods'     => array('GET'),
+	));
+
+	$collection->create("api_{$info['route']}_labels_get", array(
+		'path'        => "/{$info['route_url']}_labels/get",
+		'controller'  => "ApiBundle:{$info['controller']}:get",
+		'methods'     => array('GET'),
+	));
+
+	$collection->create("api_{$info['route']}_labels_save", array(
+		'path'        => "/{$info['route_url']}_labels/save",
+		'controller'  => "ApiBundle:{$info['controller']}:save",
+		'methods'     => array('POST'),
+	));
+
+	$collection->create("api_{$info['route']}_labels_add", array(
+		'path'        => "/{$info['route_url']}_labels",
+		'controller'  => "ApiBundle:{$info['controller']}:add",
+		'methods'     => array('POST'),
+	));
+
+	$collection->create("api_{$info['route']}_labels_remove", array(
+		'path'        => "/{$info['route_url']}_labels",
+		'controller'  => "ApiBundle:{$info['controller']}:remove",
+		'methods'     => array('DELETE'),
+	));
+}
+
+########################################################################################################################
 # Settings
 ########################################################################################################################
 
@@ -2279,46 +2321,6 @@ $collection->create('api_ticket_triggers_disabletrigger', array(
 	'defaults'    => array('is_enabled' => false),
 	'controller'  => 'ApiBundle:TicketTriggers:toggleTrigger',
 	'methods'     => array('POST'),
-));
-
-########################################################################################################################
-# Ticket Labels
-########################################################################################################################
-
-$collection->create('api_ticket_labels', array(
-	'path'        => '/ticket_labels',
-	'controller'  => 'ApiBundle:TicketLabels:list',
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_ticket_labels_get', array(
-	'path'        => '/ticket_labels/get',
-	'controller'  => 'ApiBundle:TicketLabels:get',
-	'methods'     => array('GET'),
-));
-
-$collection->create('api_ticket_labels_save', array(
-	'path'        => '/ticket_labels/save',
-	'controller'  => 'ApiBundle:TicketLabels:save',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_ticket_labels_add', array(
-	'path'        => '/ticket_labels',
-	'controller'  => 'ApiBundle:TicketLabels:add',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_ticket_labels_remove', array(
-	'path'        => '/ticket_labels/{label}',
-	'controller'  => 'ApiBundle:TicketLabels:remove',
-	'methods'     => array('DELETE'),
-));
-
-$collection->create('api_emailaccounts', array(
-	'path'        => '/email_accounts/{type}',
-	'controller'  => 'ApiBundle:EmailAccounts:list',
-	'methods'     => array('GET'),
 ));
 
 ########################################################################################################################

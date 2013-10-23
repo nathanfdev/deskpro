@@ -34,6 +34,7 @@
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Translate\JsExporter;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;
 
 class InterfaceController extends AbstractController
@@ -100,7 +101,7 @@ class InterfaceController extends AbstractController
 		foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
 			$id = $view_name;
 			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
-			$view_name = str_replace('/', ':', $view_name);
+			$view_name = Strings::strReplaceOne('/', ':', $view_name);
 			$view_name = str_replace('.html', '.html.twig', $view_name);
 
 			$rendered = null;

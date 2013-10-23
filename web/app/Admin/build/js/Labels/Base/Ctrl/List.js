@@ -1,0 +1,107 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/Main/Ctrl/Base', 'Admin/App'], function(Admin_Ctrl_Base) {
+    var Admin_Labels_Base_Ctrl_List, _ref;
+    return Admin_Labels_Base_Ctrl_List = (function(_super) {
+      __extends(Admin_Labels_Base_Ctrl_List, _super);
+
+      function Admin_Labels_Base_Ctrl_List() {
+        _ref = Admin_Labels_Base_Ctrl_List.__super__.constructor.apply(this, arguments);
+        return _ref;
+      }
+
+      Admin_Labels_Base_Ctrl_List.DEPS = ['em', '$rootScope', 'LabelManager'];
+
+      Admin_Labels_Base_Ctrl_List.CTRL_AS = 'LabelsList';
+
+      Admin_Labels_Base_Ctrl_List.CTRL_TYPE = 'list';
+
+      Admin_Labels_Base_Ctrl_List.prototype.init = function() {
+        var _this = this;
+        this.api_endpoint = '';
+        this.ng_route = '';
+        this.typename = '';
+        this.labels = [];
+        this.new_label = '';
+        this.add_mode = false;
+        this.$scope.order = 'label';
+        this.$scope.orderReverse = false;
+        return this.$rootScope.$on("" + this.api_endpoint + "_new", function(rec) {
+          if (_this.labels.indexOf(rec) === -1) {
+            return _this.labels.push(rec);
+          }
+        });
+      };
+
+      Admin_Labels_Base_Ctrl_List.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        promise = this.LabelManager.loadLabels(this.api_endpoint).then(function(labels) {
+          return _this.labels = labels;
+        });
+        return promise;
+      };
+
+      Admin_Labels_Base_Ctrl_List.prototype.startDelete = function(label) {
+        var inst,
+          _this = this;
+        label.delete_mode = true;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Labels/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                $modalInstance.dismiss();
+                return label.delete_mode = false;
+              };
+            }
+          ]
+        });
+        inst.result.then(function() {
+          return _this.deleteLabel(label);
+        });
+        return inst.result["catch"](function() {
+          return label.delete_mode = false;
+        });
+      };
+
+      Admin_Labels_Base_Ctrl_List.prototype.deleteLabel = function(label) {
+        var _this = this;
+        this.LabelManager.removeLabel(this.api_endpoint, label.label);
+        return this.Api.sendDelete(this.api_endpoint, {
+          label: label.label
+        }).success(function() {
+          if (_this.$state.current.name === ("" + _this.ng_route + ".edit") && _this.$state.params.label === label.label) {
+            return _this.$state.go(_this.ng_route);
+          }
+        })["finally"](function() {
+          return label.delete_mode = false;
+        });
+      };
+
+      Admin_Labels_Base_Ctrl_List.prototype.switchSortOrder = function(to) {
+        var from;
+        from = this.$scope.order;
+        if (from === to) {
+          this.$scope.orderReverse = !this.$scope.orderReverse;
+        } else {
+          this.$scope.orderReverse = !(to === 'label');
+        }
+        return this.$scope.order = to;
+      };
+
+      return Admin_Labels_Base_Ctrl_List;
+
+    })(Admin_Ctrl_Base);
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=List.js.map
+*/

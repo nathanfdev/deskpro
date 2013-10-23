@@ -33,13 +33,13 @@
 
 namespace Application\ApiBundle\Controller;
 
-class TicketLabelsController extends AbstractLabelsController
+class PersonLabelsController extends AbstractLabelsController
 {
 	/**
 	 * @return array
 	 */
 	protected function getLabelsTypes()
 	{
-		return array('tickets');
+		return array('people');
 	}
 }

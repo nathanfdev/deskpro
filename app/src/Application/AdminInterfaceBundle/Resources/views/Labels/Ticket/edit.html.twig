@@ -1,12 +1,12 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3 ng-if="TicketLabelsEdit.label_object.label">{{phrase('adm.general.apps_tickets')}} &rarr; {{phrase('adm.general.labels')}}  &rarr; {{phrase('agent.general.edit')}}
-			<em>{{ng_var('TicketLabelsEdit.label_object.label')}}</em></h3>
+		<h3 ng-if="LabelsEdit.label_object.label">{{phrase('adm.general.apps_tickets')}} &rarr; {{phrase('adm.general.labels')}}  &rarr; {{phrase('agent.general.edit')}}
+			<em>{{ng_var('LabelsEdit.old_label')}}</em></h3>
 
-		<h3 ng-if="!TicketLabelsEdit.label_object.label">{{phrase('adm.general.apps_tickets')}} &rarr; {{phrase('adm.general.labels')}} &rarr; {{phrase('adm.general.new_label')}}</h3>
+		<h3 ng-if="!LabelsEdit.label_object.label">{{phrase('adm.general.apps_tickets')}} &rarr; {{phrase('adm.general.labels')}} &rarr; {{phrase('adm.general.new_label')}}</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketLabelsEdit.saveLabel()">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="LabelsEdit.saveLabel()">
 			<div class="panel panel-fill indent">
 				<br/>
 
