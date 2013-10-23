@@ -69,8 +69,9 @@ window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
 window.DP_BASE_API_URL   = '{{ path('user')|rtrim('/') }}/api';
 window.DP_BASE_ADMIN_URL = '{{ path('admin')|rtrim('/') }}';
 window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
-window.DP_PERSON_ID      = '{{ app.user.id }}';
+window.DP_PERSON_ID      = {{ app.user.id }};
 window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
+window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
 
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};

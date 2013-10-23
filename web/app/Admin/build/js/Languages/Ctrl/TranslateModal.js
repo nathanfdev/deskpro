@@ -18,7 +18,7 @@
 
       Admin_Languages_Ctrl_TranslateModal.CTRL_AS = 'TranslateModal';
 
-      Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen'];
+      Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen', 'editorOptions'];
 
       Admin_Languages_Ctrl_TranslateModal.prototype.init = function() {
         var _this = this;
@@ -26,6 +26,7 @@
         this.active_lang = null;
         this.active_trans = null;
         this.hasPendingPromise = false;
+        this.options = this.editorOptions;
         this.$scope.dismiss = function() {
           return _this.$modalInstance.dismiss('cancel');
         };
@@ -63,12 +64,27 @@
         var p,
           _this = this;
         p = this.Api.sendDataGet(['/langs', '/langs/phrases/' + this.phraseId]).success(function(data) {
-          var first, lang_id, phrase, _i, _len, _ref1;
-          _this.langs = data.api_langs.languages;
+          var first, l, lang_id, phrase, _i, _j, _len, _len1, _ref1, _ref2;
+          if (_this.options.exclude_own || _this.options.exclude_default) {
+            _this.langs = [];
+            _ref1 = data.api_langs.languages;
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              l = _ref1[_i];
+              if (_this.options.exclude_own && DP_PERSON_LANG_ID === l.id) {
+                continue;
+              }
+              if (_this.options.exclude_default && l.id === data.api_langs.default_lang_id) {
+                continue;
+              }
+              _this.langs.push(l);
+            }
+          } else {
+            _this.langs = data.api_langs.languages;
+          }
           first = null;
-          _ref1 = data.api_langs_getphrase.lang_phrases;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            phrase = _ref1[_i];
+          _ref2 = data.api_langs_getphrase.lang_phrases;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            phrase = _ref2[_j];
             if (!first) {
               first = phrase;
             }

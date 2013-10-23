@@ -32,6 +32,9 @@ define ->
 								else
 									return null
 
+							editorOptions: ->
+								return editorOptions
+
 							getPhraseIdGen: ->
 								->
 									if attrs.dpPhraseIdGen

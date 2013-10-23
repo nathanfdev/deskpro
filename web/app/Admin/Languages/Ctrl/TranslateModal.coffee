@@ -3,13 +3,14 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 		@CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal'
 		@CTRL_TYPE = 'modal'
 		@CTRL_AS   = 'TranslateModal'
-		@DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen']
+		@DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen', 'editorOptions']
 
 		init: ->
 			@phrase_map = {}
 			@active_lang = null
 			@active_trans = null
 			@hasPendingPromise = false
+			@options = @editorOptions
 
 			@$scope.dismiss = =>
 				@$modalInstance.dismiss('cancel')
@@ -46,7 +47,17 @@ define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 				'/langs',
 				'/langs/phrases/' + @phraseId
 			]).success( (data) =>
-				@langs = data.api_langs.languages
+				if @options.exclude_own or @options.exclude_default
+					@langs = []
+					for l in data.api_langs.languages
+						if @options.exclude_own and DP_PERSON_LANG_ID == l.id
+							continue
+						if @options.exclude_default and l.id == data.api_langs.default_lang_id
+							continue;
+
+						@langs.push(l)
+				else
+					@langs = data.api_langs.languages
 
 				first = null
 				for phrase in data.api_langs_getphrase.lang_phrases

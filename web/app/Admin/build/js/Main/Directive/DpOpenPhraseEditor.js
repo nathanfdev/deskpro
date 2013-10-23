@@ -39,6 +39,9 @@
                       return null;
                     }
                   },
+                  editorOptions: function() {
+                    return editorOptions;
+                  },
                   getPhraseIdGen: function() {
                     return function() {
                       if (attrs.dpPhraseIdGen) {
