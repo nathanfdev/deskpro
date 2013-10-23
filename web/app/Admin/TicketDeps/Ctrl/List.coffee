@@ -46,10 +46,13 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				)
 			)
 
-			data_promise = @Api.sendDataGet([
-					'/ticket_deps/settings'
-			]).then( (res) =>
-				settings = res.data.api_ticket_deps_settings
+			data_promise = @Api.sendDataGet({
+				'ticket_settings': '/ticket_deps/settings',
+				'lang_info': '/langs'
+			}).then( (res) =>
+				settings = res.data.ticket_settings
+
+				@can_rename_department = !res.data.lang_info.is_multi_lang and res.data.lang_info.default_lang_id == 1
 
 				@dep_settings.default_id    = parseInt(settings['core.default_ticket_dep']) || 0
 				@dep_settings.name_singular = settings['core.phrase_department_singular']
@@ -177,6 +180,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					'core.phrase_department_plural':   @dep_settings.name_plural
 				}
 			}
+
+			if not @can_rename_department
+				postData.settings['core.phrase_department_singular'] = ''
+				postData.settings['core.phrase_department_plural'] = ''
 
 			@startSpinner('saving_settings')
 

@@ -63,9 +63,13 @@
             return _this.ngApply();
           });
         });
-        data_promise = this.Api.sendDataGet(['/ticket_deps/settings']).then(function(res) {
+        data_promise = this.Api.sendDataGet({
+          'ticket_settings': '/ticket_deps/settings',
+          'lang_info': '/langs'
+        }).then(function(res) {
           var settings;
-          settings = res.data.api_ticket_deps_settings;
+          settings = res.data.ticket_settings;
+          _this.can_rename_department = !res.data.lang_info.is_multi_lang && res.data.lang_info.default_lang_id === 1;
           _this.dep_settings.default_id = parseInt(settings['core.default_ticket_dep']) || 0;
           _this.dep_settings.name_singular = settings['core.phrase_department_singular'];
           _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
@@ -222,6 +226,10 @@
             'core.phrase_department_plural': this.dep_settings.name_plural
           }
         };
+        if (!this.can_rename_department) {
+          postData.settings['core.phrase_department_singular'] = '';
+          postData.settings['core.phrase_department_plural'] = '';
+        }
         this.startSpinner('saving_settings');
         return this.Api.sendPostJson('/ticket_deps/settings', postData).then(function() {
           return _this.stopSpinner('saving_settings').then(function() {
