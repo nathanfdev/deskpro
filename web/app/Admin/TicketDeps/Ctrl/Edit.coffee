@@ -51,6 +51,9 @@ define [
 
 			@$scope.embed_code_type = 'department'
 
+			@$scope.embedEditorLoaded = (editor) ->
+				$(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor')
+
 		resetForm: ->
 			@restoreState()
 			@saveState('dep', 'agent_perms', 'usergroups')

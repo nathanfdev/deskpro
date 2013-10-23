@@ -37,6 +37,15 @@ define ->
 				, (newVal) ->
 					if newVal == tab_val
 						element.show()
+
+						# If the ace editor is display:none (eg hidden tab) when the view
+						# is loaded, then its possible it may be blank when trying to load it.
+						# This is a workaround to the bug that refreshes the ui when the tab becomes
+						# active.
+						element.find('.with-ace-editor').each(->
+							editor = $(this).data('ace-editor')
+							editor.renderer.updateFull()
+						)
 					else
 						element.hide()
 				)

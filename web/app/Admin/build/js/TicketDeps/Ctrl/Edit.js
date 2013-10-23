@@ -58,7 +58,10 @@
             preset: ""
           }
         };
-        return this.$scope.embed_code_type = 'department';
+        this.$scope.embed_code_type = 'department';
+        return this.$scope.embedEditorLoaded = function(editor) {
+          return $(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor');
+        };
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.resetForm = function() {

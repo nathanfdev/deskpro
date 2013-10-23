@@ -40,7 +40,12 @@
               return scope.dp_tab_ids[tab_group];
             }, function(newVal) {
               if (newVal === tab_val) {
-                return element.show();
+                element.show();
+                return element.find('.with-ace-editor').each(function() {
+                  var editor;
+                  editor = $(this).data('ace-editor');
+                  return editor.renderer.updateFull();
+                });
               } else {
                 return element.hide();
               }
