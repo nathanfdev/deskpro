@@ -6,7 +6,7 @@ Feature: Admin Tickets Labels page
 	@javascript
 	Scenario: Loading tickets labels
 		Given I am logged in as admin "admin@example.com"
-		And I am on "/adm/#/tickets/labels"
+		And I am on "/admin/#/tickets/labels"
 		When admin page is loaded
 		And admin sections are loaded
 		Then I should see "Labels"
