@@ -1,0 +1,46 @@
+<div class="panel panel-fill indent" style="position: relative">
+	<div class="dp-grayed-placeholder fill" ng-if="!TicketDepsEdit.dep.id">
+		<div class="bg"></div>
+		<p>
+			{{ phrase('adm.departments.embed_unavailable') }}
+		</p>
+	</div>
+	<div class="panel-help">
+		<p>
+			{{ phrase('adm.departments.embed_explain') }}
+		</p>
+	</div>
+	<div class="panel-body">
+			<div class="form-group">
+				<label for="title">{{ phrase('adm.departments.embed_direct_link') }}</label>
+				<div class="row">
+					<div class="col-lg-8">
+						<input type="text" class="form-control" value="{{ ng_var("code_link") }}" />
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ phrase('adm.departments.embed_popup_window') }}</label>
+				<div class="row">
+					<div class="col-lg-8">
+						<textarea style="height:150px;" class="form-control">{{ ng_var("code_win") }}</textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="title">{{ phrase('adm.departments.embed_form') }}</label>
+				<div class="row">
+					<div class="col-lg-8">
+						<textarea style="height:150px;" class="form-control">{{ ng_var("code_embed") }}</textarea>
+					</div>
+				</div>
+			</div>
+		<div ng-if="!TicketDepsEdit.dep.id">
+			<p>
+				{{ phrase('adm.departments.embed_unavailable') }}
+			</p>
+		</div>
+	</div>
+</div>

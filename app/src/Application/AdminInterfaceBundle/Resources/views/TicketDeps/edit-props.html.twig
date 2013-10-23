@@ -1,0 +1,179 @@
+<div class="panel panel-fill indent">
+	<br/>
+	<div class="panel-body">
+		<div class="form-group">
+			<div class="col-lg-2">
+				<h3>{{ phrase('agent.general.title') }} *</h3>
+			</div>
+			<div class="col-lg-10">
+				<div class="inner-group" dp-error-class="form_props.title">
+					<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" autofocus />
+					{% if app.getLanguages().isMultiLang() %}
+						<span
+							class="translate-button"
+							tooltip="{{ phrase('adm.general.translate') }}"
+							dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.%depid%' }"
+							dp-save-phrase-promise="TicketDepsEdit.getWaitEntityPromiseView()"
+							dp-phrase-id-gen="{ 'depid': TicketDepsEdit.dep.id }"
+						></span>
+					{% endif %}
+					<span class="help-block">
+						{{ phrase('adm.departments.title_explain') }}
+					</span>
+				</div>
+
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="TicketDepsEdit.dep._enable_user_title" value="1" />
+						<h4>{{ phrase('adm.departments.user_title') }}</h4>
+					</label>
+					<div ng-show="TicketDepsEdit.dep._enable_user_title">
+						<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
+						{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('adm.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id + '_user' }"></span>{% endif %}
+					</div>
+					<span class="help-block">
+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-2">
+				<h3>{{ phrase('agent.general.parent') }}</h3>
+			</div>
+			<div class="col-lg-10">
+				<select
+					ui-select2
+					ng-model="TicketDepsEdit.dep.parent_id"
+					style="min-width: 240px"
+					class="no-search"
+				>
+					<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
+				</select>
+				<span class="help-block">
+					{{ phrase('adm.departments.parent_explain') }}
+				</span>
+
+				<div class="alert alert-info ng-hide" ng-show="show_parent_warning">
+					<p>
+						<strong>{{ phrase('adm.departments.parent_not_parent') }}</strong>
+					</p>
+					<ul>
+						<li>{{ phrase('adm.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}</li>
+						<li>{{ phrase('adm.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(TicketDepsEdit.dep.title)' }) }}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length" dp-error-class="form_props.email_gateway_id">
+			<div class="col-lg-2">
+				<h3>{{ phrase('adm.departments.linked_account') }}</h3>
+			</div>
+			<div class="col-lg-10">
+				<select
+					name="email_gateway_id"
+					ui-select2
+					ng-model="TicketDepsEdit.dep.email_gateway_id"
+					style="min-width: 240px"
+					class="no-search"
+					required
+				>
+					<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts">{{ ng_var('account.email_address') }}</option>
+				</select>
+				<span class="help-block">
+					{{ phrase('adm.departments.linked_account_explain') }}
+				</span>
+			</div>
+		</div>
+
+		{##############################################################################################}
+
+		<div class="form-group">
+			<div class="col-lg-2">
+				<h3>Actions</h3>
+			</div>
+			<div class="col-lg-10">
+				{# Send newticket auto-response #}
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled" value="1" />
+						<h4>New Ticket: Send user an auto-response confirming their new ticket</h4>
+					</label>
+					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled">
+						<select
+							ui-select2
+							ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name"
+							style="min-width: 240px"
+							class="no-search"
+						>
+							<option value="">Default template</option>
+							<option value="CUSTOM">Custom template</option>
+						</select>
+						<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-ticket.html.twig'); $event.preventDefault();">Edit Template</button>
+					</div>
+				</div>
+
+				{# Send newreply auto-response #}
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserreply_response.enabled" value="1" />
+						<h4>User Reply: Send user an auto-response confirming their reply</h4>
+					</label>
+					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserreply_response.enabled">
+						<select
+							ui-select2
+							ng-model="TicketDepsEdit.trigger.user_send_newuserreply_response.template_name"
+							style="min-width: 240px"
+							class="no-search"
+						>
+							<option value="">Default template</option>
+							<option value="CUSTOM">Custom template</option>
+						</select>
+						<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserreply_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-reply-user.html.twig'); $event.preventDefault();">Edit Template</button>
+					</div>
+				</div>
+
+				{# Send newagentreply auto-response #}
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newagentreply_response.enabled" value="1" />
+						<h4>Agent Reply: Send the user an email with the agent reply</h4>
+					</label>
+					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newagentreply_response.enabled">
+						<select
+							ui-select2
+							ng-model="TicketDepsEdit.trigger.user_send_newagentreply_response.template_name"
+							style="min-width: 240px"
+							class="no-search"
+						>
+							<option value="">Default template</option>
+							<option value="CUSTOM">Custom template</option>
+						</select>
+						<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newagentreply_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-reply-agent.html.twig'); $event.preventDefault();">Edit Template</button>
+					</div>
+				</div>
+
+				{# Send From #}
+				<div class="inner-group">
+					<label>
+						<input type="checkbox" ng-model="TicketDepsEdit.trigger.set_from_name.enabled" value="1" />
+						<h4>Set the "From" name on email notifications</h4>
+					</label>
+					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.set_from_name.enabled">
+						<select
+							ui-select2
+							ng-model="TicketDepsEdit.trigger.set_from_name.preset"
+							style="min-width: 240px"
+							class="no-search"
+						>
+							<option value="">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
+							<option value="department">Department Name ({{ ng_var('TicketDepsEdit.dep.title') }})</option>
+							<option value="CUSTOM">Custom</option>
+						</select>
+						<input ng-show="TicketDepsEdit.trigger.set_from_name.preset == 'CUSTOM'" type="text" class="form-control ng-hide" ng-model="TicketDepsEdit.trigger.set_from_name.custom" style="width: 240px;" placeholder="Enter a custom From name" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

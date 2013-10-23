@@ -88,7 +88,7 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.loadDepartment = function() {
         var promise, waiting,
           _this = this;
-        waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts', '/email_accounts/tickets']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts', '/email_accounts/tickets'])];
+        waiting = [this.DepartmentData.loadDepList(), this.$stateParams.id ? this.Api.sendDataGet(['/ticket_deps/' + this.$stateParams.id, '/agents', '/agentgroups', '/usergroups', '/ticket_accounts']) : this.Api.sendDataGet(['/agents', '/agentgroups', '/usergroups', '/ticket_accounts'])];
         promise = this.$q.all(waiting).then(function(d) {
           var data_results, dep, dep_data, departments;
           departments = d[0], data_results = d[1];
@@ -112,7 +112,7 @@
           _this.dep = _this.em.createUnmanagedEntity('department', 'id', dep);
           _this.dep._enable_user_title = !!_this.dep.user_title;
           _this.initDeplistData(departments);
-          _this.initEmailAccountsData(data_results.data.api_emailaccounts.email_accounts);
+          _this.initEmailAccountsData(data_results.data.api_ticket_accounts.ticket_accounts);
           _this.initData({
             usergroups: dep_data.perms_usergroup_ids,
             agentgroups: dep_data.perms_agentgroup_ids,

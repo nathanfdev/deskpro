@@ -80,7 +80,6 @@ define [
 						'/agentgroups',
 						'/usergroups',
 						'/ticket_accounts',
-						'/email_accounts/tickets'
 					])
 				else
 					@Api.sendDataGet([
@@ -88,7 +87,6 @@ define [
 						'/agentgroups',
 						'/usergroups',
 						'/ticket_accounts',
-						'/email_accounts/tickets'
 					])
 			]
 
@@ -108,7 +106,7 @@ define [
 				@dep._enable_user_title = !!@dep.user_title
 
 				@initDeplistData(departments)
-				@initEmailAccountsData(data_results.data.api_emailaccounts.email_accounts)
+				@initEmailAccountsData(data_results.data.api_ticket_accounts.ticket_accounts)
 				@initData(
 					{ usergroups: dep_data.perms_usergroup_ids, agentgroups: dep_data.perms_agentgroup_ids, agents: dep_data.perms_agent_ids },
 					data_results.data.api_agents_list.agents,
