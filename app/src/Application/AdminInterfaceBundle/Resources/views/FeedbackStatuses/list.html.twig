@@ -15,7 +15,7 @@
                             <span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span>
                         </li>
                         <li>
-                            <a class="btn btn-success" href="#/portal/feedback/statuses/go-create">
+                            <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate') }}">
                                 <i class="icon-plus"></i> {{ phrase('agent.general.add') }}
                             </a>
                         </li>
@@ -25,7 +25,7 @@
             </div>
             <ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
                 <li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_active_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
-                    <a href="#portal/feedback/statuses/{{ ng_var('status.id') }}">
+                    <a href="{{ ng_href('portal.feedback_statuses.edit', '{id: status.id}') }}">
                         <i class="icon-reorder drag-handle"></i>
                         <div class="pull-right">
                             <span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">
@@ -51,16 +51,15 @@
                             <span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span>
                         </li>
                         <li>
-                            <a class="btn btn-success" href="#/portal/feedback/statuses/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a>
+                            <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a>
                         </li>
                     </ul>
                 </nav>
                 <h3 ng-pluralize count="FeedbackStatusesList.feedback_closed_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_closed_statuses') }}"></h3>
             </div>
             <ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
-                <li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_closed_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}"
-                    data-id="{{ ng_var('status.id') }}">
-                    <a href="#portal/feedback/statuses/{{ ng_var('status.id') }}">
+                <li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_closed_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+                    <a href="{{ ng_href('portal.feedback_statuses.edit', '{id: status.id}') }}">
                         <i class="icon-reorder drag-handle"></i>
                         <div class="pull-right">
                             <span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">
