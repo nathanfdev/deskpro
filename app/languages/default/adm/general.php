@@ -33,4 +33,7 @@
 	'adm.general.website_embed'                      => 'Website Embed',
 	'adm.general.x_departments'                      => '{{count}} Department|{{count}} Departments',
 	'adm.general.action_cannot_be_undone'            => 'This action cannot be undone.',
+    'adm.general.x_feedback_statuses'                => '{{count}} Feedback Status|{{count}} Feedback Statuses',
+    'adm.general.x_feedback_active_statuses'         => '{{count}} Feedback Active Status|{{count}} Feedback Active Statuses',
+    'adm.general.x_feedback_closed_statuses'         => '{{count}} Feedback Closed Status|{{count}} Feedback Closed Statuses',
 );
