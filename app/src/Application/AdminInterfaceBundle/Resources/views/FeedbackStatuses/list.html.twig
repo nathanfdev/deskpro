@@ -1,0 +1,82 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-ticket"></i> {{ phrase('adm.general.apps_portal') }} &rarr; {{ phrase('agent.general.feedback') }} &rarr; {{ phrase('agent.general.statuses') }}</h3>
+		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+	</header>
+    <article class="pane-content no-pad">
+        <div class="panel panel-fill">
+            <div class="panel-heading">
+                <nav class="dp-controls">
+                    <ul>
+                        <li>
+                            <span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+                        </li>
+                        <li>
+                            <span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span>
+                        </li>
+                        <li>
+                            <a class="btn btn-success" href="#/portal/feedback/statuses/go-create">
+                                <i class="icon-plus"></i> {{ phrase('agent.general.add') }}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <h3 ng-pluralize count="FeedbackStatusesList.feedback_active_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_active_statuses') }}"></h3>
+            </div>
+            <ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
+                <li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_active_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+                    <a href="#portal/feedback/statuses/{{ ng_var('status.id') }}">
+                        <i class="icon-reorder drag-handle"></i>
+                        <div class="pull-right">
+                            <span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">
+                                ID: {{ ng_var('status.id') }}
+                            </span>
+                            <span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="FeedbackStatusesList.startDelete(status); $event.preventDefault();">
+                                <i class="icon-trash"></i>
+                            </span>
+                        </div>
+                        <h4><span class="title-text">{{ ng_var('status.title') }}</span></h4>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="panel panel-fill">
+            <div class="panel-heading">
+                <nav class="dp-controls">
+                    <ul>
+                        <li>
+                            <span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+                        </li>
+                        <li>
+                            <span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span>
+                        </li>
+                        <li>
+                            <a class="btn btn-success" href="#/portal/feedback/statuses/go-create"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a>
+                        </li>
+                    </ul>
+                </nav>
+                <h3 ng-pluralize count="FeedbackStatusesList.feedback_closed_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_closed_statuses') }}"></h3>
+            </div>
+            <ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
+                <li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_closed_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}"
+                    data-id="{{ ng_var('status.id') }}">
+                    <a href="#portal/feedback/statuses/{{ ng_var('status.id') }}">
+                        <i class="icon-reorder drag-handle"></i>
+                        <div class="pull-right">
+                            <span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">
+                                ID: {{ ng_var('status.id') }}
+                            </span>
+                            <span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="FeedbackStatusesList.startDelete(status); $event.preventDefault();">
+                                <i class="icon-trash"></i>
+                            </span>
+                        </div>
+                        <h4><span class="title-text">{{ ng_var('status.title') }}</span></h4>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </article>
+</div>
+<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+<div dp-register-message="no_delete_last">{{ phrase('adm.feedback_statuses.no_delete_last') }}</div>
+{% include 'AdminInterfaceBundle:FeedbackStatuses:help-page.html.twig' %}
