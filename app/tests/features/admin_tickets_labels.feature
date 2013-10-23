@@ -10,11 +10,11 @@ Feature: Admin Tickets Labels page
 		When admin page is loaded
 		And admin sections are loaded
 		Then I should see "Labels"
-	
+
 	@javascript
 	Scenario: Create new label
 		Given I am logged in as admin "admin@example.com"
-		And I am on "/adm/#/tickets/labels/create"
+		And I am on "/admin/#/tickets/labels/create"
 		When admin page is loaded
 		And admin sections are loaded
 		And I fill in "label" with "Behat Label"
@@ -23,11 +23,11 @@ Feature: Admin Tickets Labels page
 		And admin sections are loaded
 		And admin page is loaded
 		Then I should see "Behat Label"
-    		
+
 	@javascript
 	Scenario: Edit label
 		Given I am logged in as admin "admin@example.com"
-		And I am on "/adm/#/tickets/labels/Behat%20Label"
+		And I am on "/admin/#/tickets/labels/Behat%20Label"
 		When admin page is loaded
 		And admin sections are loaded
 		And I fill in "label" with "B-e-h-a-t L-a-b-e-l"

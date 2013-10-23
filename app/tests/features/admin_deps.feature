@@ -6,7 +6,7 @@ Feature: Admin Departments List
 	@javascript
 	Scenario: Loading departments
 		Given I am logged in as admin "admin@example.com"
-		Given I am on "/adm/#/tickets/ticket_deps"
+		Given I am on "/admin/#/tickets/ticket_deps"
 		When admin page is loaded
 		When admin sections are loaded
 		Then I should see "2 Departments"
