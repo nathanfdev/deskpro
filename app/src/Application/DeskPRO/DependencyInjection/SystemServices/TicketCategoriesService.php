@@ -29,24 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Tickets\TicketCategories;
 
-use Orb\Util\Arrays;
-
-class TicketCategory extends AbstractCategoryRepository
+class TicketCategoriesService
 {
-	public function getCategories()
+	public static function create(DeskproContainer $container)
 	{
-		return $this->_em->createQuery("
-			SELECT c
-			FROM DeskPRO:TicketCategory c
-			ORDER BY c.display_order ASC
-		")->execute();
+		$x = new TicketCategories($container->getEm());
+		$x->setDefaultCategoryPreference($container->getSetting('core.default_ticket_cat'));
+		return $x;
 	}
 }

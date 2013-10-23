@@ -31,11 +31,11 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Departments;
+namespace Application\DeskPRO\Products;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
 
-class TicketDepartments extends LazyPreloadedHierarchy
+class Products extends LazyPreloadedHierarchy
 {
 	/**
 	 * @var int
@@ -48,35 +48,25 @@ class TicketDepartments extends LazyPreloadedHierarchy
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:Department')->getTicketDepartments();
+		return $this->em->getRepository('DeskPRO:TicketProduct')->findAll();
 	}
 
-
-	/**
-	 * This sets the 'default department' preference.
-	 * Note that setting an invalid or bogus ID here will not result in an exception.
-	 *
-	 * With an invalid pref, getDefaultDepartment will return the first selectable department.
-	 * Use getById() to check if a department exists before calling this.
-	 *
-	 * @param int $dep_or_id
-	 */
-	public function setDefaultDepartmentPreference($dep_or_id)
+	public function setDefaultProductPreference($obj_or_id)
 	{
-		if ($dep_or_id === null) {
+		if ($obj_or_id === null) {
 			$this->default_id = null;
-		} else if (is_object($dep_or_id)) {
-			$this->default_id = $dep_or_id->id;
+		} else if (is_object($obj_or_id)) {
+			$this->default_id = $obj_or_id->id;
 		} else {
-			$this->default_id = intval($dep_or_id);
+			$this->default_id = intval($obj_or_id);
 		}
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department
+	 * @return \Application\DeskPRO\Entity\Product
 	 */
-	public function getDefaultDepartment()
+	public function getDefaultProduct()
 	{
 		if (!$this->default_id || !$this->getById($this->default_id) || $this->hasChildren($this->default_id)) {
 			foreach ($this->getAll() as $dep) {
@@ -90,12 +80,13 @@ class TicketDepartments extends LazyPreloadedHierarchy
 		return $this->getById($this->default_id);
 	}
 
+
 	####################################################################################################################
 	// implementing these just for better auto-complete in the IDE (due to @return) :-)
 
 	/**
 	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getById($id)
 	{
@@ -104,7 +95,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 	/**
 	 * @param array $ids
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getByIds(array $ids)
 	{
@@ -113,7 +104,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 	/**
 	 * @param $obj_or_id
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getParent($obj_or_id)
 	{
@@ -122,7 +113,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getParentPath($obj_or_id, $keyed = false)
 	{
@@ -131,7 +122,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getChildren($obj_or_id)
 	{
@@ -139,7 +130,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 	}
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getRoots()
 	{
@@ -148,7 +139,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\Product[]
 	 */
 	public function getAll()
 	{

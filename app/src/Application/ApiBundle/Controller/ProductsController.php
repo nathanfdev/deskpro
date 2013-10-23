@@ -29,24 +29,34 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
-
-use Orb\Util\Arrays;
-
-class TicketCategory extends AbstractCategoryRepository
+class TicketFieldsController extends AbstractController
 {
-	public function getCategories()
+	####################################################################################################################
+	# list
+	####################################################################################################################
+
+	public function listAction()
 	{
-		return $this->_em->createQuery("
-			SELECT c
-			FROM DeskPRO:TicketCategory c
-			ORDER BY c.display_order ASC
-		")->execute();
+		$data = array();
+
+		$prods = $this->container->getSystemService('products');
+		$flat_array = $prods->getFlatArray();
+
+		$cats = array();
+		foreach ($flat_array as $row) {
+			$cats[] = $row['object'];
+		}
+
+		$data['products']       = $this->getApiData($cats, false);
+		$data['default_id']     = $prods->count() ? $prods->getDefaultProduct()->getId() : 0;
+		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
+		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
+
+		return $this->createApiResponse($data);
 	}
 }

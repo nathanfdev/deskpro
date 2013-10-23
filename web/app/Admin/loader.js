@@ -69,6 +69,7 @@ requirejs([
 	'toastr',
 
 	'DeskPRO/OptionBuilder/Module',
+	'DeskPRO/CategoryBuilder/Module',
 
 	'Admin/App',
 	'Admin/Main/Ctrl/Bare',
@@ -100,6 +101,9 @@ requirejs([
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketDeps/Ctrl/List',
 	'Admin/TicketDeps/Ctrl/Edit',
+	'Admin/TicketFields/Ctrl/EditCategories',
+	'Admin/TicketFields/Ctrl/EditPriorities',
+	'Admin/TicketFields/Ctrl/EditWorkflows',
 	'Admin/TicketFields/Ctrl/List',
 	'Admin/TicketStatuses/Ctrl/List',
 	'Admin/TicketStatuses/Ctrl/EditAwaitingAgent',

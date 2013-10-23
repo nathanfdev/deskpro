@@ -1980,3 +1980,40 @@ table.display-table {
 .urgency-tag.urgency-8  { .lib-urgency-tag(@urgency8_color, @urgency8_borderColor, @urgency8_textColor); }
 .urgency-tag.urgency-9  { .lib-urgency-tag(@urgency9_color, @urgency9_borderColor, @urgency9_textColor); }
 .urgency-tag.urgency-10 { .lib-urgency-tag(@urgency10_color, @urgency10_borderColor, @urgency10_textColor); }
+
+
+//######################################################################################################################
+//# Category Builder
+//######################################################################################################################
+
+.dp-category-builder {
+	border: 1px solid #ccc;
+	border-radius: 2px;
+
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		li {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+	}
+
+
+
+	.dp-cb-addrow .dp-cb-rowwrap {
+		padding: 3px;
+		input {
+			width: 200px;
+		}
+	}
+
+	@indent_width: 20px;
+	ul ul li { padding-left: @indent_width; }
+	ul ul ul li { padding-left: @indent_width; }
+	ul ul ul ul li { padding-left: @indent_width; }
+	ul ul ul ul ul li { padding-left: @indent_width; }
+	ul ul ul ul ul ul li { padding-left: @indent_width; }
+}

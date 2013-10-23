@@ -358,23 +358,6 @@ define(function() {
 	});
 
 	//###
-	//# Fields
-	//###
-	routes.push({
-		id: 'tickets.fields',
-		url: '/fields',
-		with_list_view: true,
-		list: {
-			templateName: 'TicketFields/list.html',
-			controller: 'Admin_TicketFields_Ctrl_List'
-		},
-		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
-		}
-	});
-
-	//###
 	//# Triggers
 	//###
 	routes.push({
@@ -666,6 +649,59 @@ define(function() {
 		page: {
 			templateName: 'TicketDeps/edit.html',
 			controller: 'Admin_TicketDeps_Ctrl_Edit'
+		}
+	});
+
+	//###
+	//# Fields
+	//###
+	routes.push({
+		id: 'tickets.fields',
+		url: '/fields',
+		with_list_view: true,
+		list: {
+			templateName: 'TicketFields/list.html',
+			controller: 'Admin_TicketFields_Ctrl_List'
+		},
+		page: {
+			templateName: 'Index/blank.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
+	//###
+	//# Ticket Categories
+	//###
+	routes.push({
+		id: 'tickets.fields.categories',
+		url: '/categories',
+		page: {
+			templateName: 'TicketFields/Cats/ticket-cats.html',
+			controller: 'Admin_TicketFields_Ctrl_EditCategories'
+		}
+	});
+
+	//###
+	//# Ticket Workflows
+	//###
+	routes.push({
+		id: 'tickets.fields.workflows',
+		url: '/workflows',
+		page: {
+			templateName: 'TicketFields/Works/ticket-workflows.html',
+			controller: 'Admin_TicketFields_Ctrl_EditWorkflows'
+		}
+	});
+
+	//###
+	//# Ticket Priorities
+	//###
+	routes.push({
+		id: 'tickets.fields.priorities',
+		url: '/priorities',
+		page: {
+			templateName: 'TicketFields/Pris/ticket-priorities.html',
+			controller: 'Admin_TicketFields_Ctrl_EditPriorities'
 		}
 	});
 

@@ -34,11 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Departments\TicketDepartmentEditor;
-use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
 class TicketFieldsController extends AbstractController
 {
 	####################################################################################################################
@@ -63,6 +58,7 @@ class TicketFieldsController extends AbstractController
 		return $this->createApiResponse($data);
 	}
 
+
 	####################################################################################################################
 	# toggleField
 	####################################################################################################################
@@ -73,5 +69,68 @@ class TicketFieldsController extends AbstractController
 		$field_manager->setFieldEnabledById($field_id, $is_enabled);
 
 		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# list-categories
+	####################################################################################################################
+
+	public function listCategoriesAction()
+	{
+		$data = array();
+
+		$ticket_cats = $this->container->getSystemService('ticket_categories');
+		$flat_array = $ticket_cats->getFlatArray();
+
+		$cats = array();
+		foreach ($flat_array as $row) {
+			$cats[] = $row['object'];
+		}
+
+		$data['categories']     = $this->getApiData($cats, false);
+		$data['default_id']     = $ticket_cats->count() ? $ticket_cats->getDefaultCategory()->getId() : 0;
+		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_cat_user_required') ? true : false;
+		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_cat_agent_required') ? true : false;
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# list-workflows
+	####################################################################################################################
+
+	public function listWorkflowsAction()
+	{
+		$data = array();
+
+		$ticket_works = $this->container->getSystemService('ticket_workflows');
+
+		$data['categories']     = $this->getApiData($ticket_works->getAll(), false);
+		$data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
+		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
+		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# list-priorities
+	####################################################################################################################
+
+	public function listPrioritiesAction()
+	{
+		$data = array();
+
+		$ticket_pris = $this->container->getSystemService('ticket_priorities');
+
+		$data['categories']     = $this->getApiData($ticket_pris->getAll(), false);
+		$data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
+		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
+		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
+
+		return $this->createApiResponse($data);
 	}
 }

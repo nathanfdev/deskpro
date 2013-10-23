@@ -29,24 +29,95 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Application\DeskPRO\Collection\LazyCollection;
 
-use Orb\Util\Arrays;
-
-class TicketCategory extends AbstractCategoryRepository
+class TicketPriorities extends LazyCollection
 {
-	public function getCategories()
+	/**
+	 * @var int
+	 */
+	private $default_id;
+
+
+	/**
+	 * @return array
+	 */
+	protected function loadRecords()
 	{
-		return $this->_em->createQuery("
-			SELECT c
-			FROM DeskPRO:TicketCategory c
-			ORDER BY c.display_order ASC
-		")->execute();
+		return $this->em->getRepository('DeskPRO:TicketPriority')->findAll();
+	}
+
+
+	/**
+	 * This sets the 'default' preference.
+	 * Note that setting an invalid or bogus ID here will not result in an exception.
+	 *
+	 * With an invalid pref, getDefaultPriority() will return the first selectable option.
+	 * Use getById() to check if a exists before calling this.
+	 *
+	 * @param int $obj_or_id
+	 */
+	public function setDefaultPriorityPreference($obj_or_id)
+	{
+		if ($obj_or_id === null) {
+			$this->default_id = null;
+		} else if (is_object($obj_or_id)) {
+			$this->default_id = $obj_or_id->id;
+		} else {
+			$this->default_id = intval($obj_or_id);
+		}
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\TicketWorkflow
+	 */
+	public function getDefaultPriority()
+	{
+		if (!$this->default_id || !$this->getById($this->default_id)) {
+			foreach ($this->getAll() as $dep) {
+				$this->default_id = $dep->getId();
+				break;
+			}
+		}
+
+		return $this->getById($this->default_id);
+	}
+
+
+	####################################################################################################################
+	// implementing these just for better auto-complete in the IDE (due to @return) :-)
+
+	/**
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\TicketWorkflow[]
+	 */
+	public function getById($id)
+	{
+		return parent::getById($id);
+	}
+
+
+	/**
+	 * @param array $ids
+	 * @param bool $keyed
+	 * @return \Application\DeskPRO\Entity\TicketWorkflow[]
+	 */
+	public function getByIds(array $ids, $keyed = false)
+	{
+		return parent::getByIds($ids, $keyed);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\TicketWorkflow[]
+	 */
+	public function getAll()
+	{
+		return parent::getAll();
 	}
 }

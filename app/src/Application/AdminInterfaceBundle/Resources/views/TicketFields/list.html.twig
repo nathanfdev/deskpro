@@ -17,19 +17,19 @@
 			</div>
 			<ul class="dp-item-list">
 				<li>
-					<a href="#/tickets/ticket_fields/cats">
+					<a href="{{ ng_href('tickets.fields.categories') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.category" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('category')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.categories') }}</span></h4>
 					</a>
 				</li>
 				<li>
-					<a href="#/tickets/ticket_fields/pris">
+					<a href="{{ ng_href('tickets.fields.priorities') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.priority" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('priority')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.priorities') }}</span></h4>
 					</a>
 				</li>
 				<li>
-					<a href="#/tickets/ticket_fields/works">
+					<a href="{{ ng_href('tickets.fields.workflows') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.workflow" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('workflow')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.workflows') }}</span></h4>
 					</a>

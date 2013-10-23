@@ -31,11 +31,11 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Departments;
+namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
 
-class TicketDepartments extends LazyPreloadedHierarchy
+class TicketCategories extends LazyPreloadedHierarchy
 {
 	/**
 	 * @var int
@@ -48,7 +48,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:Department')->getTicketDepartments();
+		return $this->em->getRepository('DeskPRO:TicketCategory')->getCategories();
 	}
 
 
@@ -61,22 +61,22 @@ class TicketDepartments extends LazyPreloadedHierarchy
 	 *
 	 * @param int $dep_or_id
 	 */
-	public function setDefaultDepartmentPreference($dep_or_id)
+	public function setDefaultCategoryPreference($obj_or_id)
 	{
-		if ($dep_or_id === null) {
+		if ($obj_or_id === null) {
 			$this->default_id = null;
-		} else if (is_object($dep_or_id)) {
-			$this->default_id = $dep_or_id->id;
+		} else if (is_object($obj_or_id)) {
+			$this->default_id = $obj_or_id->id;
 		} else {
-			$this->default_id = intval($dep_or_id);
+			$this->default_id = intval($obj_or_id);
 		}
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department
+	 * @return \Application\DeskPRO\Entity\TicketCategory
 	 */
-	public function getDefaultDepartment()
+	public function getDefaultCategory()
 	{
 		if (!$this->default_id || !$this->getById($this->default_id) || $this->hasChildren($this->default_id)) {
 			foreach ($this->getAll() as $dep) {
@@ -90,12 +90,13 @@ class TicketDepartments extends LazyPreloadedHierarchy
 		return $this->getById($this->default_id);
 	}
 
+
 	####################################################################################################################
 	// implementing these just for better auto-complete in the IDE (due to @return) :-)
 
 	/**
 	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getById($id)
 	{
@@ -104,7 +105,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 	/**
 	 * @param array $ids
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getByIds(array $ids)
 	{
@@ -113,7 +114,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 	/**
 	 * @param $obj_or_id
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getParent($obj_or_id)
 	{
@@ -122,7 +123,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getParentPath($obj_or_id, $keyed = false)
 	{
@@ -131,7 +132,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getChildren($obj_or_id)
 	{
@@ -139,7 +140,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 	}
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getRoots()
 	{
@@ -148,7 +149,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
+	 * @return \Application\DeskPRO\Entity\TicketCategory[]
 	 */
 	public function getAll()
 	{

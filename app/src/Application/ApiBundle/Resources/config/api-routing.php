@@ -2100,6 +2100,15 @@ $collection->create('api_settings_values_get', array(
 	'methods'     => array('GET'),
 ));
 
+########################################################################################################################
+# Products
+########################################################################################################################
+
+$collection->create('api_products', array(
+	'path'        => '/products',
+	'controller'  => 'ApiBundle:TicketFields:listPriorities',
+	'methods'     => array('GET'),
+));
 
 ########################################################################################################################
 # Ticket Departments
@@ -2152,6 +2161,36 @@ $collection->create('api_ticket_deps_remove', array(
 	'path'        => '/ticket_deps/{id}',
 	'controller'  => 'ApiBundle:TicketDeps:remove',
 	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
+# Ticket Categories
+########################################################################################################################
+
+$collection->create('api_ticket_cats', array(
+	'path'        => '/ticket_cats',
+	'controller'  => 'ApiBundle:TicketFields:listCategories',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Ticket Workflows
+########################################################################################################################
+
+$collection->create('api_ticket_works', array(
+	'path'        => '/ticket_works',
+	'controller'  => 'ApiBundle:TicketFields:listWorkflows',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Ticket Priorities
+########################################################################################################################
+
+$collection->create('api_ticket_pris', array(
+	'path'        => '/ticket_pris',
+	'controller'  => 'ApiBundle:TicketFields:listPriorities',
+	'methods'     => array('GET'),
 ));
 
 ########################################################################################################################
