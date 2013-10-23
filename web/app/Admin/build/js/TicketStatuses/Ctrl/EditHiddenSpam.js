@@ -21,14 +21,26 @@
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.CTRL_TYPE = 'page';
 
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.prototype.init = function() {
-        this.auto_purge_time = 604800;
+        this.$scope.settings = {
+          auto_purge_time: 604800
+        };
       };
 
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.prototype.initialLoad = function() {
         var promise,
           _this = this;
         promise = this.Api.sendGet("/ticket_statuses/spam").success(function(data) {
-          return _this.auto_purge_time = data.spam_info.auto_purge_time;
+          return _this.$scope.settings.auto_purge_time = data.spam_info.auto_purge_time;
+        });
+        return promise;
+      };
+
+      Admin_TicketStatuses_Ctrl_EditHiddenSpam.prototype.saveSettings = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('saving_settings');
+        promise = this.Api.sendPostJson('/ticket_statuses/spam/settings', this.$scope.settings).then(function() {
+          return _this.stopSpinner('saving_settings');
         });
         return promise;
       };

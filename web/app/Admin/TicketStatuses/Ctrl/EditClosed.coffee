@@ -6,14 +6,25 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_TYPE = 'page'
 
 		init: ->
-			@auto_purge_time = 604800
+			@$scope.settings = {
+				enabled: false,
+				auto_archive_time: "2419000"
+			}
 			return
 
 		initialLoad: ->
 			promise = @Api.sendGet("/ticket_statuses/closed").success( (data) =>
-				@enabled = data.closed_info.enabled
-				@auto_archive_time = data.closed_info.auto_archive_time
+				@$scope.settings.enabled = data.closed_info.enabled
+				@$scope.settings.auto_archive_time = parseInt(data.closed_info.auto_archive_time)
 			);
+
+			return promise
+
+		saveSettings: ->
+			@startSpinner('saving_settings')
+			promise = @Api.sendPostJson('/ticket_statuses/closed/settings', @$scope.settings).then( =>
+				@stopSpinner('saving_settings')
+			)
 
 			return promise
 

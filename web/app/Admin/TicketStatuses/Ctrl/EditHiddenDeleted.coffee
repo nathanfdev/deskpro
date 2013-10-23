@@ -6,13 +6,23 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_TYPE = 'page'
 
 		init: ->
-			@auto_purge_time = 604800
+			@$scope.settings = {
+				auto_purge_time: 604800
+			}
 			return
 
 		initialLoad: ->
 			promise = @Api.sendGet("/ticket_statuses/deleted").success( (data) =>
-				@auto_purge_time = data.deleted_info.auto_purge_time
-			);
+				@$scope.settings.auto_purge_time = data.deleted_info.auto_purge_time
+			)
+
+			return promise
+
+		saveSettings: ->
+			@startSpinner('saving_settings')
+			promise = @Api.sendPostJson('/ticket_statuses/deleted/settings', @$scope.settings).then( =>
+				@stopSpinner('saving_settings')
+			)
 
 			return promise
 

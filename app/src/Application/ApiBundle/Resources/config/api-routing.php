@@ -2102,7 +2102,7 @@ $collection->create('api_ticket_deps_remove', array(
 ));
 
 ########################################################################################################################
-# Ticket Urgencies
+# Ticket Statuses
 ########################################################################################################################
 
 $collection->create('api_ticket_statuses_closed', array(
@@ -2111,16 +2111,34 @@ $collection->create('api_ticket_statuses_closed', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_statuses_closed_savesettings', array(
+	'path'        => '/ticket_statuses/closed/settings',
+	'controller'  => 'ApiBundle:TicketStatuses:saveClosedSettings',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_ticket_statuses_deleted', array(
 	'path'        => '/ticket_statuses/deleted',
 	'controller'  => 'ApiBundle:TicketStatuses:getDeletedInfo',
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_statuses_deleted_savesettings', array(
+	'path'        => '/ticket_statuses/deleted/settings',
+	'controller'  => 'ApiBundle:TicketStatuses:saveDeletedSettings',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_ticket_statuses_spam', array(
 	'path'        => '/ticket_statuses/spam',
 	'controller'  => 'ApiBundle:TicketStatuses:getSpamInfo',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_statuses_spam_savesettings', array(
+	'path'        => '/ticket_statuses/spam/settings',
+	'controller'  => 'ApiBundle:TicketStatuses:saveSpamSettings',
+	'methods'     => array('POST'),
 ));
 
 ########################################################################################################################

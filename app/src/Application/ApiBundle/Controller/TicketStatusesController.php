@@ -51,13 +51,25 @@ class TicketStatusesController extends AbstractController
 	public function getClosedInfoAction()
 	{
 		$info = array(
-			'enabled'           => $this->settings->get('core_tickets.use_archive'),
-			'auto_archive_time' => $this->settings->get('core_tickets.auto_archive_time'),
+			'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
+			'auto_archive_time' => (int)$this->settings->get('core_tickets.auto_archive_time'),
 		);
 
 		return $this->createApiResponse(array(
 			'closed_info' => $info
 		));
+	}
+
+	####################################################################################################################
+	# save-closed-settings
+	####################################################################################################################
+
+	public function saveClosedSettingsAction()
+	{
+		$this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
+		$this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
+
+		return $this->createSuccessResponse();
 	}
 
 	####################################################################################################################
@@ -67,12 +79,23 @@ class TicketStatusesController extends AbstractController
 	public function getDeletedInfoAction()
 	{
 		$info = array(
-			'auto_purge_time' => $this->settings->get('core_tickets.hard_delete_time'),
+			'auto_purge_time' => (int)$this->settings->get('core_tickets.hard_delete_time'),
 		);
 
 		return $this->createApiResponse(array(
 			'deleted_info' => $info
 		));
+	}
+
+	####################################################################################################################
+	# save-deleted-settings
+	####################################################################################################################
+
+	public function saveDeletedSettingsAction()
+	{
+		$this->settings->setSetting('core_tickets.hard_delete_time', $this->in->getUint('auto_purge_time'));
+
+		return $this->createSuccessResponse();
 	}
 
 	####################################################################################################################
@@ -82,11 +105,22 @@ class TicketStatusesController extends AbstractController
 	public function getSpamInfoAction()
 	{
 		$info = array(
-			'auto_purge_time' => $this->settings->get('core_tickets.spam_delete_time'),
+			'auto_purge_time' => (int)$this->settings->get('core_tickets.spam_delete_time'),
 		);
 
 		return $this->createApiResponse(array(
 			'spam_info' => $info
 		));
+	}
+
+	####################################################################################################################
+	# save-spam-settings
+	####################################################################################################################
+
+	public function saveSpamSettingsAction()
+	{
+		$this->settings->setSetting('core_tickets.spam_delete_time', $this->in->getUint('auto_purge_time'));
+
+		return $this->createSuccessResponse();
 	}
 }

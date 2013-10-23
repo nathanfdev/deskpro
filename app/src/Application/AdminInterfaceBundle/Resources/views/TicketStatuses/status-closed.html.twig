@@ -3,7 +3,7 @@
 		<h3>{{ phrase('agent.tickets.status_closed') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveSettings()">
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
 					<div class="form-group">
@@ -21,7 +21,7 @@
 							<h3>Enabled</h3>
 						</div>
 						<div class="col-lg-9">
-							<button dp-toggle-switch ng-model="TicketStatusEdit.enabled"></button>
+							<button dp-toggle-switch ng-model="settings.enabled"></button>
 						</div>
 					</div>
 
@@ -33,22 +33,22 @@
 							Automatically move resolved ticket to the archive after
 							<select
 								ui-select2
-								ng-model="TicketStatusEdit.auto_archive_time"
+								ng-model="settings.auto_archive_time"
 								style="min-width: 240px"
 							>
-								<option value="86400" >1 day</option>
-								<option value="259200" >3 days</option>
-								<option value="432000" >5 days</option>
-								<option value="604800" >1 week</option>
-								<option value="1209600" >2 weeks</option>
-								<option value="1814400" >3 weeks</option>
+								<option value="86400">1 day</option>
+								<option value="259200">3 days</option>
+								<option value="432000">5 days</option>
+								<option value="604800">1 week</option>
+								<option value="1209600">2 weeks</option>
+								<option value="1814400">3 weeks</option>
 								<option value="2419000">1 month</option>
-								<option value="4838000" >2 months</option>
-								<option value="7257000" >3 months</option>
-								<option value="14514000" >6 months</option>
-								<option value="21771000" >9 months</option>
-								<option value="29028000" >1 year</option>
-								<option value="58056000" >2 years</option>
+								<option value="4838000">2 months</option>
+								<option value="7257000">3 months</option>
+								<option value="14514000">6 months</option>
+								<option value="21771000">9 months</option>
+								<option value="29028000">1 year</option>
+								<option value="58056000">2 years</option>
 							</select>
 						</div>
 					</div>
@@ -56,17 +56,11 @@
 			</div>
 
 			<div class="inner-footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
-					<ul>
-						<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
-					</ul>
-				</div>
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving_label">
+				<div class="text-center">
+					<div dp-hide-spinning="saving_settings">
 						<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 					</div>
-					<div dp-show-spinning="saving_label">
+					<div dp-show-spinning="saving_settings">
 						<i class="spinner-flat"></i>
 					</div>
 				</div>

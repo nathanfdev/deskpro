@@ -21,14 +21,26 @@
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.CTRL_TYPE = 'page';
 
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.prototype.init = function() {
-        this.auto_purge_time = 604800;
+        this.$scope.settings = {
+          auto_purge_time: 604800
+        };
       };
 
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.prototype.initialLoad = function() {
         var promise,
           _this = this;
         promise = this.Api.sendGet("/ticket_statuses/deleted").success(function(data) {
-          return _this.auto_purge_time = data.deleted_info.auto_purge_time;
+          return _this.$scope.settings.auto_purge_time = data.deleted_info.auto_purge_time;
+        });
+        return promise;
+      };
+
+      Admin_TicketStatuses_Ctrl_EditHiddenDeleted.prototype.saveSettings = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('saving_settings');
+        promise = this.Api.sendPostJson('/ticket_statuses/deleted/settings', this.$scope.settings).then(function() {
+          return _this.stopSpinner('saving_settings');
         });
         return promise;
       };

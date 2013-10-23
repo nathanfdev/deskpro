@@ -3,7 +3,7 @@
 		<h3>{{ phrase('agent.tickets.status_hidden_deleted') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveSettings()">
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
 					<div class="form-group">
@@ -23,7 +23,7 @@
 							Deleted tickets are automatically purged from the system after
 							<select
 								ui-select2
-								ng-model="TicketStatusEdit.auto_purge_time"
+								ng-model="settings.auto_purge_time"
 								style="min-width: 240px"
 							>
 								<option value="86400" >1 day</option>
@@ -46,17 +46,11 @@
 			</div>
 
 			<div class="inner-footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
-					<ul>
-						<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
-					</ul>
-				</div>
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving_label">
+				<div class="text-center">
+					<div dp-hide-spinning="saving_settings">
 						<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 					</div>
-					<div dp-show-spinning="saving_label">
+					<div dp-show-spinning="saving_settings">
 						<i class="spinner-flat"></i>
 					</div>
 				</div>

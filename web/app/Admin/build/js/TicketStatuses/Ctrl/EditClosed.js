@@ -21,15 +21,28 @@
       Admin_TicketStatuses_Ctrl_EditClosed.CTRL_TYPE = 'page';
 
       Admin_TicketStatuses_Ctrl_EditClosed.prototype.init = function() {
-        this.auto_purge_time = 604800;
+        this.$scope.settings = {
+          enabled: false,
+          auto_archive_time: "2419000"
+        };
       };
 
       Admin_TicketStatuses_Ctrl_EditClosed.prototype.initialLoad = function() {
         var promise,
           _this = this;
         promise = this.Api.sendGet("/ticket_statuses/closed").success(function(data) {
-          _this.enabled = data.closed_info.enabled;
-          return _this.auto_archive_time = data.closed_info.auto_archive_time;
+          _this.$scope.settings.enabled = data.closed_info.enabled;
+          return _this.$scope.settings.auto_archive_time = parseInt(data.closed_info.auto_archive_time);
+        });
+        return promise;
+      };
+
+      Admin_TicketStatuses_Ctrl_EditClosed.prototype.saveSettings = function() {
+        var promise,
+          _this = this;
+        this.startSpinner('saving_settings');
+        promise = this.Api.sendPostJson('/ticket_statuses/closed/settings', this.$scope.settings).then(function() {
+          return _this.stopSpinner('saving_settings');
         });
         return promise;
       };
