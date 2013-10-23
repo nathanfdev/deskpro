@@ -60,6 +60,9 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
+			options: {
+				spawn: false
+			},
 			admin_recess: {
 				files: 'Admin/Resources/style/*.less',
 				tasks: ['recess']
@@ -82,6 +85,73 @@ module.exports = function(grunt) {
 			}
 		}
 	});
+
+	//------------------------------
+	// This makes `grunt watch` only compile *changed* files.
+	// Otherwise it will always run the full tasks, which re-compile everything
+	// which is very slow since we have so many source files
+	//------------------------------
+
+	var changedFiles = {
+		'coffee.common_js':     [],
+		'coffee.admin_js':      [],
+		'coffee.reports_js':    [],
+		'recess.admin_style':   [],
+		'recess.reports_style': []
+	};
+	var onChange = grunt.util._.debounce(function() {
+
+		var getFilesCfg = function(files, baseDest) {
+			config_files = {};
+
+			for (var i = 0; i < files.length; i++) {
+				dest = files[i];
+				dest = dest.replace(/^[A-Za-z]+\//, '/');
+				dest = dest.replace(/\.coffee$/, '.js');
+				dest = baseDest + dest;
+
+				config_files[dest] = files[i];
+			}
+
+			return config_files;
+		};
+
+		grunt.config('coffee.common_js.files',  getFilesCfg(changedFiles['coffee.common_js'],  'DeskPRO/build/js'));
+		grunt.config('coffee.admin_js.files',   getFilesCfg(changedFiles['coffee.admin_js'],   'Admin/build/js'));
+		grunt.config('coffee.reports_js.files', getFilesCfg(changedFiles['coffee.reports_js'], 'Reports/build/js'));
+
+		changedFiles['coffee.common_js']     = [];
+		changedFiles['coffee.admin_js']      = [];
+		changedFiles['coffee.reports_js']    = [];
+		changedFiles['recess.admin_style']   = [];
+		changedFiles['recess.reports_style'] = [];
+	}, 200);
+	grunt.event.on('watch', function(action, filepath) {
+		if (filepath.indexOf('.coffee') !== -1) {
+			if (filepath.indexOf('DeskPRO/') === 0 && changedFiles['coffee.common_js'].indexOf(filepath) === -1) {
+				changedFiles['coffee.common_js'].push(filepath)
+			}
+			if (filepath.indexOf('Admin/') === 0 && changedFiles['coffee.admin_js'].indexOf(filepath) === -1) {
+				changedFiles['coffee.admin_js'].push(filepath)
+			}
+			if (filepath.indexOf('Reports/') === 0 && changedFiles['coffee.reports_js'].indexOf(filepath) === -1) {
+				changedFiles['coffee.reports_js'].push(filepath)
+			}
+		}
+		if (filepath.indexOf('.less') !== -1) {
+			if (filepath.indexOf('Admin/Resources/style/') === 0 && changedFiles['recess.admin_style'].indexOf(filepath) === -1) {
+				changedFiles['recess.admin_style'].push(filepath);
+			}
+			if (filepath.indexOf('Reports/Resources/style/') === 0 && changedFiles['recess.reports_style'].indexOf(filepath) === -1) {
+				changedFiles['recess.reports_style'].push(filepath);
+			}
+		}
+		onChange();
+	});
+
+	//------------------------------
+	// Register our standard tasks
+	//------------------------------
 
 	grunt.registerTask('build', ['coffee', 'recess']);
 	grunt.registerTask('default', ['coffee', 'recess']);
