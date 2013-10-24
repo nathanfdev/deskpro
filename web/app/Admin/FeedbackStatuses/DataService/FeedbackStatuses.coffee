@@ -13,8 +13,11 @@ define [
 			@$q   = $q
 			@Api  = Api
 
-			@loadStatusesListPromise = null
-			@statuses = new Admin_Main_Collection_OrderedDictionary()
+			@loadListPromise = null
+			@recs = {
+				active_statuses: new Admin_Main_Collection_OrderedDictionary(),
+				closed_statuses: new Admin_Main_Collection_OrderedDictionary()
+			}
 
 		###*
 		* Loads all feedback statuses
@@ -22,24 +25,62 @@ define [
     	*
     	* @return {Promise}
 		###
-		loadStatusesList: (reload) ->
+		loadList: (reload) ->
 
-			if @loadStatusesListPromise
-				return @loadStatusesListPromise
+			if @loadListPromise
+				return @loadListPromise
 
 			deferred = @$q.defer()
-			if not reload and @statuses.count()
-				deferred.resolve(@statuses)
+
+			if not reload and @recs.active_statuses.count() and @recs.closed_statuses.count()
+
+				deferred.resolve(@recs)
 				return deferred.promise
 
 			http_def = @Api.sendGet('/feedback_statuses').success( (data, status, headers, config) =>
-				@statuses = data.statuses
 
-				deferred.resolve(@statuses)
+				@_setListData(data.statuses)
+				deferred.resolve(@recs)
 			, (data, status, headers, config) ->
 				deferred.reject()
 			)
 
-			@loadStatusesListPromise = deferred.promise
+			@loadListPromise = deferred.promise
 
-			return @loadStatusesListPromise
+			return @loadListPromise
+
+		###*
+				* Creates entities for feedback statuses raw data
+				* The thing is that it creates entities for both active and closed statuses
+				*
+				* @return {Promise}
+		###
+		_setListData: (raw_recs) ->
+
+			for rec in raw_recs.active_statuses
+
+				model = @em.createEntity('feedback_status', 'id', rec)
+				model.retain()
+				@recs.active_statuses.set(model.id, model)
+
+			for rec in raw_recs.closed_statuses
+
+				model = @em.createEntity('feedback_status', 'id', rec)
+				model.retain()
+				@recs.closed_statuses.set(model.id, model)
+
+		###
+				# Updates entity with new model data provided
+				# with new model provided. Or adds it to the list if it doesnt exist.
+				###
+		updateModel: (model) ->
+
+			new_model = @em.createEntity('feedback_status', 'id', model)
+
+			if model.status_type? and model.status_type == 'active'
+				@recs.active_statuses.set(new_model.id, new_model)
+
+			if model.status_type? and model.status_type == 'closed'
+				@recs.closed_statuses.set(new_model.id, new_model)
+
+			return new_model

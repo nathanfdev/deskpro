@@ -29,11 +29,24 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		initialLoad: ->
 
-			statuses_list_promise = @FeedbackStatusesData.loadStatusesList().then((statuses) =>
-				@feedback_active_statuses = statuses.active_statuses
-				@feedback_closed_statuses = statuses.closed_statuses
+			list_promise = @FeedbackStatusesData.loadList().then( (recs) =>
+
+				@feedback_active_statuses = recs.active_statuses.values()
+				@feedback_closed_statuses = recs.closed_statuses.values()
+
+				@addManagedListener(@FeedbackStatusesData.recs.active_statuses, 'changed', =>
+
+					@feedback_active_statuses = @FeedbackStatusesData.recs.active_statuses.values()
+					@ngApply()
+				)
+
+				@addManagedListener(@FeedbackStatusesData.recs.closed_statuses, 'changed', =>
+
+					@feedback_active_statuses = @FeedbackStatusesData.recs.closed_statuses.values()
+					@ngApply()
+				)
 			)
 
-			return @$q.all([statuses_list_promise])
+			return @$q.all([list_promise])
 
 	Admin_FeedbackStatuses_Ctrl_List.EXPORT_CTRL()

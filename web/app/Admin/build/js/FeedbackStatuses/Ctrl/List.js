@@ -43,13 +43,21 @@
       };
 
       Admin_FeedbackStatuses_Ctrl_List.prototype.initialLoad = function() {
-        var statuses_list_promise,
+        var list_promise,
           _this = this;
-        statuses_list_promise = this.FeedbackStatusesData.loadStatusesList().then(function(statuses) {
-          _this.feedback_active_statuses = statuses.active_statuses;
-          return _this.feedback_closed_statuses = statuses.closed_statuses;
+        list_promise = this.FeedbackStatusesData.loadList().then(function(recs) {
+          _this.feedback_active_statuses = recs.active_statuses.values();
+          _this.feedback_closed_statuses = recs.closed_statuses.values();
+          _this.addManagedListener(_this.FeedbackStatusesData.recs.active_statuses, 'changed', function() {
+            _this.feedback_active_statuses = _this.FeedbackStatusesData.recs.active_statuses.values();
+            return _this.ngApply();
+          });
+          return _this.addManagedListener(_this.FeedbackStatusesData.recs.closed_statuses, 'changed', function() {
+            _this.feedback_active_statuses = _this.FeedbackStatusesData.recs.closed_statuses.values();
+            return _this.ngApply();
+          });
         });
-        return this.$q.all([statuses_list_promise]);
+        return this.$q.all([list_promise]);
       };
 
       return Admin_FeedbackStatuses_Ctrl_List;
