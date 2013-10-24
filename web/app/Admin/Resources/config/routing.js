@@ -450,19 +450,15 @@ define(function() {
 	});
 
 	//###
-	//# Feedback
+	//# Satisfaction
 	//###
 	routes.push({
-		id: 'tickets.feedback',
-		url: '/feedback',
-		with_list_view: true,
-		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+		id: 'tickets.satisfaction',
+		url: '/satisfaction',
+		with_list_view: false,
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			templateName: 'TicketSettings/satisfaction-settings.html',
+			controller: 'Admin_TicketSettings_Ctrl_TicketSettings'
 		}
 	});
 
@@ -548,16 +544,11 @@ define(function() {
 	//# Billing
 	//###
 	routes.push({
-		id: 'tickets.billing',
-		url: '/billing',
-		with_list_view: true,
-		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+		id: 'tickets.timelog_billing',
+		url: '/timelog_billing',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			templateName: 'TicketSettings/timelog-billing-settings.html',
+			controller: 'Admin_TicketSettings_Ctrl_TicketSettings'
 		}
 	});
 
