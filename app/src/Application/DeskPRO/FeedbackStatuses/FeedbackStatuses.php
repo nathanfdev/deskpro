@@ -90,12 +90,7 @@ class FeedbackStatuses
 	 */
 	public function getById($id)
 	{
-		$this->preload();
-
-        if(isset($this->active_statuses[$id])) return $this->active_statuses[$id];
-        if(isset($this->closed_statuses[$id])) return $this->closed_statuses[$id];
-
-        return null;
+		return $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->get($id);
 	}
 
 	/**
