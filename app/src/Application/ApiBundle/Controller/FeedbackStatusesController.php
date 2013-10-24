@@ -62,4 +62,24 @@ class FeedbackStatusesController extends AbstractController
             )
         );
 	}
+
+	###################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+		 */
+
+		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
+		$feedback_status   = $feedback_statuses->getById($id);
+
+		if (!$feedback_status) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array('feedback_status' => $this->getApiData($feedback_status)));
+	}
 }
