@@ -41,6 +41,9 @@ define ['angular'], (angular) ->
 		###*
 		* Uses the api-caller endpoint to fetch multiple data points at once.
     	*
+    	* @param {Array/Object} paths An array of paths, or a hash of paths. The returned data will be keyed by API endpoint
+    	*                             name (if `paths` was an array), or by a string ID (the keys of `paths` if it was an object)
+    	* @param {Object} http_params The HTTP params to send with the request
     	* @return {Promise}
 		###
 		sendDataGet: (paths, http_params = {}) ->

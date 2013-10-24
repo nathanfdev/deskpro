@@ -482,6 +482,41 @@ article.pane-content {
 }
 
 //######################################################################################################################
+//# Pane Styles
+//######################################################################################################################
+
+.pane-fullpage {
+	background: #F5F7FA;
+	padding: 15px;
+
+	> article {
+		background: #fff;
+		border: 1px solid darken(#F5F7FA, 10%);
+		border-radius: 2px;
+		max-width: 900px;
+	}
+
+	> article > section {
+		border-bottom: 1px dotted #aaa;
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		.form-group {
+			border-bottom: none;
+			padding-bottom: 0;
+		}
+
+		&.footer {
+			background: #efefef;
+			text-align: center;
+			padding: 20px;
+		}
+	}
+}
+
+//######################################################################################################################
 //# Nav Style
 //######################################################################################################################
 
@@ -1033,6 +1068,10 @@ section.dp-help-page {
 	position: relative;
 }
 
+.inhelp-body + .form-group {
+	margin-top: 22px;
+}
+
 .inhelp-body-closebtn {
 	margin: 0;
 	padding: 0;
@@ -1211,6 +1250,10 @@ section.dp-help-page {
 		margin-bottom: 0;
 		margin-left: 3px;
 	}
+}
+
+.panel-innertable .form-group {
+	margin: 0;
 }
 
 .form-control, .form-control:focus {

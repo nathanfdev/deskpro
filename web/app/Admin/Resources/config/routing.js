@@ -601,14 +601,10 @@ define(function() {
 	routes.push({
 		id: 'tickets.settings',
 		url: '/settings',
-		with_list_view: true,
-		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+		with_list_view: false,
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			templateName: 'TicketSettings/ticket-settings.html',
+			controller: 'Admin_TicketSettings_Ctrl_TicketSettings'
 		}
 	});
 

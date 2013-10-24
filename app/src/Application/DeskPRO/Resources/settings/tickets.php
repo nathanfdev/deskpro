@@ -9,6 +9,7 @@
 	'core_tickets.enable_feedback' => 1,
 	'core_tickets.feedback_agents_read' => 1,
 
+	'core_tickets.enable_timelog' => 0,
 	'core_tickets.enable_billing' => 0,
 	'core_tickets.billing_on_reply' => 0,
 	'core_tickets.billing_auto_timer' => 0,

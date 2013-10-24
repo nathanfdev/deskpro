@@ -105,6 +105,7 @@ requirejs([
 	'Admin/TicketFields/Ctrl/EditPriorities',
 	'Admin/TicketFields/Ctrl/EditWorkflows',
 	'Admin/TicketFields/Ctrl/List',
+	'Admin/TicketSettings/Ctrl/TicketSettings',
 	'Admin/TicketStatuses/Ctrl/List',
 	'Admin/TicketStatuses/Ctrl/EditAwaitingAgent',
 	'Admin/TicketStatuses/Ctrl/EditAwaitingUser',

@@ -2101,6 +2101,22 @@ $collection->create('api_settings_values_get', array(
 ));
 
 ########################################################################################################################
+# Ticket Settings
+########################################################################################################################
+
+$collection->create('api_ticket_settings', array(
+	'path'        => '/ticket_settings',
+	'controller'  => 'ApiBundle:Settings:ticketSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_settings_save', array(
+	'path'        => '/ticket_settings',
+	'controller'  => 'ApiBundle:Settings:saveTicketSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Products
 ########################################################################################################################
 

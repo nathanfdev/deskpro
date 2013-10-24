@@ -33,8 +33,14 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Settings\TicketSettings;
+
 class SettingsController extends AbstractController
 {
+	####################################################################################################################
+	# get-value
+	####################################################################################################################
+
 	public function getValueAction($name)
 	{
 		$value = $this->settings->get($name);
@@ -43,5 +49,32 @@ class SettingsController extends AbstractController
 			'name'  => $name,
 			'value' => $value,
 		));
+	}
+
+
+	####################################################################################################################
+	# ticket-settings
+	####################################################################################################################
+
+	public function ticketSettingsAction()
+	{
+		$ticket_settings = new TicketSettings($this->settings);
+
+		return $this->createApiResponse(array(
+			'ticket_settings' => $ticket_settings->toArray(),
+		));
+	}
+
+	####################################################################################################################
+	# save-ticket-settings
+	####################################################################################################################
+
+	public function saveTicketSettingsAction()
+	{
+		$ticket_settings = new TicketSettings($this->settings);
+		$ticket_settings->setArray($this->in->getArrayValue('ticket_settings'));
+		$ticket_settings->saveSettings();
+
+		return $this->createSuccessResponse();
 	}
 }

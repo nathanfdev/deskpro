@@ -7798,6 +7798,37 @@ article.pane-content.pad-top {
   padding-top: 15px;
 }
 
+.pane-fullpage {
+  padding: 15px;
+  background: #F5F7FA;
+}
+
+.pane-fullpage > article {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid #d3dce9;
+  border-radius: 2px;
+}
+
+.pane-fullpage > article > section {
+  border-bottom: 1px dotted #aaa;
+}
+
+.pane-fullpage > article > section:last-child {
+  border-bottom: none;
+}
+
+.pane-fullpage > article > section .form-group {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.pane-fullpage > article > section.footer {
+  padding: 20px;
+  text-align: center;
+  background: #efefef;
+}
+
 .nav-rows > li > a:hover,
 .nav-rows > li:focus > a,
 .nav-rows > li.active > a {
@@ -8397,6 +8428,10 @@ section.dp-help-page article dl dt:first-child {
   position: relative;
 }
 
+.inhelp-body + .form-group {
+  margin-top: 22px;
+}
+
 .inhelp-body-closebtn {
   position: absolute;
   top: 0;
@@ -8559,6 +8594,10 @@ section.dp-help-page article dl dt:first-child {
   display: inline-block;
   margin-bottom: 0;
   margin-left: 3px;
+}
+
+.panel-innertable .form-group {
+  margin: 0;
 }
 
 .form-control,
@@ -10132,6 +10171,37 @@ article.pane-content.pad-top {
   padding-top: 15px;
 }
 
+.pane-fullpage {
+  padding: 15px;
+  background: #F5F7FA;
+}
+
+.pane-fullpage > article {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid #d3dce9;
+  border-radius: 2px;
+}
+
+.pane-fullpage > article > section {
+  border-bottom: 1px dotted #aaa;
+}
+
+.pane-fullpage > article > section:last-child {
+  border-bottom: none;
+}
+
+.pane-fullpage > article > section .form-group {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.pane-fullpage > article > section.footer {
+  padding: 20px;
+  text-align: center;
+  background: #efefef;
+}
+
 .nav-rows > li > a:hover,
 .nav-rows > li:focus > a,
 .nav-rows > li.active > a {
@@ -10731,6 +10801,10 @@ section.dp-help-page article dl dt:first-child {
   position: relative;
 }
 
+.inhelp-body + .form-group {
+  margin-top: 22px;
+}
+
 .inhelp-body-closebtn {
   position: absolute;
   top: 0;
@@ -10893,6 +10967,10 @@ section.dp-help-page article dl dt:first-child {
   display: inline-block;
   margin-bottom: 0;
   margin-left: 3px;
+}
+
+.panel-innertable .form-group {
+  margin: 0;
 }
 
 .form-control,
