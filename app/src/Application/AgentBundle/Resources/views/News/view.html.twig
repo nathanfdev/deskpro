@@ -158,6 +158,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="full-tab-content">
 						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
 							{% for comment in news_comments %}
+								{% set comment_num = loop.index %}
 								{% include 'AgentBundle:News:view-comment.html.twig' %}
 							{% endfor %}
 						</div>

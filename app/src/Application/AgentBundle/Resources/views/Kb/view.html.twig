@@ -307,6 +307,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="full-deskpro-tab-item">
 						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
 							{% for comment in article_comments %}
+								{% set comment_num = loop.index %}
 								{% include 'AgentBundle:Kb:view-comment.html.twig' %}
 							{% endfor %}
 						</div>
