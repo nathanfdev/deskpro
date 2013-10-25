@@ -97,12 +97,15 @@ class LoginProcessor
 			$this->identity->getIdentity()
 		);
 
-		// If we dont have one yet, we're have to create the assoc and maybe a new user too
-		if (!$this->assoc) {
+		$mapped_fields = $this->usersource->getFieldsFromIdentity($this->identity);
+		$mapped_fields = Arrays::removeEmptyString($mapped_fields);
+		$mapped_fields = new \Orb\Util\OptionsArray($mapped_fields);
 
-			$mapped_fields = $this->usersource->getFieldsFromIdentity($this->identity);
-			$mapped_fields = Arrays::removeEmptyString($mapped_fields);
-			$mapped_fields = new \Orb\Util\OptionsArray($mapped_fields);
+		#------------------------------
+		# If we dont have one yet, we're have to create the assoc and maybe a new user too
+		#------------------------------
+
+		if (!$this->assoc) {
 
 			$this->person = null;
 
@@ -231,8 +234,28 @@ class LoginProcessor
 			$this->assoc['data']              = $this->identity->getRawData();
 			$em->persist($this->assoc);
 			$em->flush();
+
+		#------------------------------
+		# The assoc exists
+		#------------------------------
+
 		} else {
 			$this->person = $this->assoc['person'];
+
+			// Need to make sure the email address on the local account matches that of the
+			// identity (it could have been updated).
+			if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
+				if (!$this->person->hasEmailAddress($mapped_fields->get('email'))) {
+					$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
+					if (!$email) {
+						$email_obj = $this->person->addEmailAddressString($mapped_fields->get('email'));
+						$em->persist($email_obj);
+						$this->person->primary_email = $email_obj;
+						$em->persist($this->person);
+						$em->flush();
+					}
+				}
+			}
 		}
 
 		// Update custom field data
