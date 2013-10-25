@@ -36,10 +36,30 @@
           _this.works = res.data.info.workflows;
           _this.default_id = res.data.info.default_id;
           _this.agent_required = res.data.info.agent_required;
-          _this.user_required = res.data.info.user_required;
-          return _this.builder_model = {};
+          return _this.user_required = res.data.info.user_required;
         });
         return data_promise;
+      };
+
+      Admin_TicketFields_Ctrl_EditWorkflows.prototype.save = function() {
+        var postData, promise,
+          _this = this;
+        postData = {
+          priorities: this.works,
+          default_id: this.default_id,
+          user_required: this.user_required,
+          agent_required: this.agent_required
+        };
+        this.startSpinner('saving');
+        return promise = this.Api.sendPostJson('/ticket_works', postData).success(function() {
+          _this.settings = angular.copy(_this.$scope.settings);
+          return _this.stopSpinner('saving').then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+          });
+        }).error(function(info, code) {
+          _this.stopSpinner('saving', true);
+          return _this.applyErrorResponseToView(info);
+        });
       };
 
       return Admin_TicketFields_Ctrl_EditWorkflows;

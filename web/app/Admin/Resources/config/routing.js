@@ -669,6 +669,18 @@ define(function() {
 	});
 
 	//###
+	//# Ticket Products
+	//###
+	routes.push({
+		id: 'tickets.fields.products',
+		url: '/products',
+		page: {
+			templateName: 'TicketFields/Prods/ticket-products.html',
+			controller: 'Admin_TicketFields_Ctrl_EditProducts'
+		}
+	});
+
+	//###
 	//# Ticket Workflows
 	//###
 	routes.push({

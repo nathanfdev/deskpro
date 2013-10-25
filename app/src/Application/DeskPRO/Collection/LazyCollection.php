@@ -116,7 +116,7 @@ abstract class LazyCollection
 	public function getById($id)
 	{
 		$this->preload();
-		return $this->records[$id] ?: null;
+		return isset($this->records[$id]) ? $this->records[$id] : null;
 	}
 
 

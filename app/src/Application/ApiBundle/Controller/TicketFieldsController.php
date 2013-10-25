@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
+
 class TicketFieldsController extends AbstractController
 {
 	####################################################################################################################
@@ -98,6 +100,116 @@ class TicketFieldsController extends AbstractController
 
 
 	####################################################################################################################
+	# save-categories
+	####################################################################################################################
+
+	public function saveCategoriesAction()
+	{
+		$structure  = $this->in->getArrayValue('categories');
+
+		#------------------------------
+		# Save structure
+		#------------------------------
+
+		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketCategory');
+		$recs = $proc->getRecords($structure);
+		$proc->saveRecords($recs, true);
+
+		#------------------------------
+		# Save default
+		#------------------------------
+
+		$default_id = $this->in->getString('default_id');
+
+		if (isset($recs[$default_id])) {
+			// Get id from $recs since the id might've been one
+			// generated on the client
+			$id = $recs[$default_id]->id;
+		} else {
+			$id = '0';
+		}
+
+		$this->settings->setSetting('core.default_ticket_cat', $id);
+
+		#------------------------------
+		# Save validation settings
+		#------------------------------
+
+		$this->settings->setSetting('core_tickets.field_validation_ticket_cat_user_required', $this->in->getBoolInt('user_required'));
+		$this->settings->setSetting('core_tickets.field_validation_ticket_cat_agent_required', $this->in->getBoolInt('agent_required'));
+
+		return $this->createSuccessResponse();
+	}
+
+	####################################################################################################################
+	# list-products
+	####################################################################################################################
+
+	public function listProductsAction()
+	{
+		$data = array();
+
+		$ticket_prods = $this->container->getSystemService('products');
+		$flat_array = $ticket_prods->getFlatArray();
+
+		$cats = array();
+		foreach ($flat_array as $row) {
+			$cats[] = $row['object'];
+		}
+
+		$data['products']       = $this->getApiData($cats, false);
+		$data['default_id']     = $ticket_prods->count() ? $ticket_prods->getDefaultProduct()->getId() : 0;
+		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_prod_user_required') ? true : false;
+		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_prod_agent_required') ? true : false;
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# save-products
+	####################################################################################################################
+
+	public function saveProductsAction()
+	{
+		$structure  = $this->in->getArrayValue('products');
+
+		#------------------------------
+		# Save structure
+		#------------------------------
+
+		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:Product');
+		$recs = $proc->getRecords($structure);
+		$proc->saveRecords($recs, true);
+
+		#------------------------------
+		# Save default
+		#------------------------------
+
+		$default_id = $this->in->getString('default_id');
+
+		if (isset($recs[$default_id])) {
+			// Get id from $recs since the id might've been one
+			// generated on the client
+			$id = $recs[$default_id]->id;
+		} else {
+			$id = '0';
+		}
+
+		$this->settings->setSetting('core.default_prod_id', $id);
+
+		#------------------------------
+		# Save validation settings
+		#------------------------------
+
+		$this->settings->setSetting('core_tickets.field_validation_ticket_prod_user_required', $this->in->getBoolInt('user_required'));
+		$this->settings->setSetting('core_tickets.field_validation_ticket_prod_agent_required', $this->in->getBoolInt('agent_required'));
+
+		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
 	# list-workflows
 	####################################################################################################################
 
@@ -107,12 +219,55 @@ class TicketFieldsController extends AbstractController
 
 		$ticket_works = $this->container->getSystemService('ticket_workflows');
 
-		$data['categories']     = $this->getApiData($ticket_works->getAll(), false);
+		$data['workflows']      = $this->getApiData($ticket_works->getAll(), false);
 		$data['default_id']     = $ticket_works->count() ? $ticket_works->getDefaultWorkflow()->getId() : 0;
 		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_work_user_required') ? true : false;
 		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_work_agent_required') ? true : false;
 
 		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# save-workflows
+	####################################################################################################################
+
+	public function saveWorkflowsAction()
+	{
+		$structure  = $this->in->getArrayValue('workflows');
+
+		#------------------------------
+		# Save structure
+		#------------------------------
+
+		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketWorkflow');
+		$recs = $proc->getRecords($structure);
+		$proc->saveRecords($recs, true);
+
+		#------------------------------
+		# Save default
+		#------------------------------
+
+		$default_id = $this->in->getString('default_id');
+
+		if (isset($recs[$default_id])) {
+			// Get id from $recs since the id might've been one
+			// generated on the client
+			$id = $recs[$default_id]->id;
+		} else {
+			$id = '0';
+		}
+
+		$this->settings->setSetting('core.default_ticket_work', $id);
+
+		#------------------------------
+		# Save validation settings
+		#------------------------------
+
+		$this->settings->setSetting('core_tickets.field_validation_ticket_work_user_required', $this->in->getBoolInt('user_required'));
+		$this->settings->setSetting('core_tickets.field_validation_ticket_work_agent_required', $this->in->getBoolInt('agent_required'));
+
+		return $this->createSuccessResponse();
 	}
 
 
@@ -126,11 +281,54 @@ class TicketFieldsController extends AbstractController
 
 		$ticket_pris = $this->container->getSystemService('ticket_priorities');
 
-		$data['categories']     = $this->getApiData($ticket_pris->getAll(), false);
+		$data['priorities']     = $this->getApiData($ticket_pris->getAll(), false);
 		$data['default_id']     = $ticket_pris->count() ? $ticket_pris->getDefaultPriority()->getId() : 0;
 		$data['user_required']  = $this->settings->get('core_tickets.field_validation_ticket_pri_user_required') ? true : false;
 		$data['agent_required'] = $this->settings->get('core_tickets.field_validation_ticket_pri_agent_required') ? true : false;
 
 		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# save-priorities
+	####################################################################################################################
+
+	public function savePrioritiesAction()
+	{
+		$structure  = $this->in->getArrayValue('priorities');
+
+		#------------------------------
+		# Save structure
+		#------------------------------
+
+		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority');
+		$recs = $proc->getRecords($structure);
+		$proc->saveRecords($recs, true);
+
+		#------------------------------
+		# Save default
+		#------------------------------
+
+		$default_id = $this->in->getString('default_id');
+
+		if (isset($recs[$default_id])) {
+			// Get id from $recs since the id might've been one
+			// generated on the client
+			$id = $recs[$default_id]->id;
+		} else {
+			$id = '0';
+		}
+
+		$this->settings->setSetting('core.default_ticket_pri', $id);
+
+		#------------------------------
+		# Save validation settings
+		#------------------------------
+
+		$this->settings->setSetting('core_tickets.field_validation_ticket_pri_user_required', $this->in->getBoolInt('user_required'));
+		$this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
+
+		return $this->createSuccessResponse();
 	}
 }

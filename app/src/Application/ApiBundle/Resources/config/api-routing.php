@@ -2180,6 +2180,22 @@ $collection->create('api_ticket_deps_remove', array(
 ));
 
 ########################################################################################################################
+# Products
+########################################################################################################################
+
+$collection->create('api_products', array(
+	'path'        => '/ticket_prods',
+	'controller'  => 'ApiBundle:TicketFields:listProducts',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_products', array(
+	'path'        => '/ticket_prods',
+	'controller'  => 'ApiBundle:TicketFields:saveProducts',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Ticket Categories
 ########################################################################################################################
 
@@ -2187,6 +2203,12 @@ $collection->create('api_ticket_cats', array(
 	'path'        => '/ticket_cats',
 	'controller'  => 'ApiBundle:TicketFields:listCategories',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_cats_save', array(
+	'path'        => '/ticket_cats',
+	'controller'  => 'ApiBundle:TicketFields:saveCategories',
+	'methods'     => array('POST'),
 ));
 
 ########################################################################################################################
@@ -2199,6 +2221,12 @@ $collection->create('api_ticket_works', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_cats_save', array(
+	'path'        => '/ticket_works',
+	'controller'  => 'ApiBundle:TicketFields:saveWorkflows',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Ticket Priorities
 ########################################################################################################################
@@ -2207,6 +2235,12 @@ $collection->create('api_ticket_pris', array(
 	'path'        => '/ticket_pris',
 	'controller'  => 'ApiBundle:TicketFields:listPriorities',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_pris_save', array(
+	'path'        => '/ticket_pris',
+	'controller'  => 'ApiBundle:TicketFields:savePriorities',
+	'methods'     => array('POST'),
 ));
 
 ########################################################################################################################

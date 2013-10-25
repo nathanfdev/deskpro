@@ -6,10 +6,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_TYPE = 'page'
 
 		init: ->
-			@pris           = []
-			@default_id     = 0
-			@agent_required = false
-			@user_required  = false
+			@pris             = []
+			@default_id       = 0
+			@agent_required   = false
+			@user_required    = false
 			return
 
 		initialLoad: ->
@@ -20,10 +20,28 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
-
-				@builder_model = {}
 			)
 
 			return data_promise
+
+		save: ->
+			postData = {
+				priorities:     @pris,
+				default_id:     @default_id,
+				user_required:  @user_required,
+				agent_required: @agent_required
+			}
+
+			@startSpinner('saving')
+			promise = @Api.sendPostJson('/ticket_pris', postData).success( =>
+				@settings = angular.copy(@$scope.settings)
+
+				@stopSpinner('saving').then(=>
+					@Growl.success(@getRegisteredMessage('saved_settings'))
+				)
+			).error( (info, code) =>
+				@stopSpinner('saving', true)
+				@applyErrorResponseToView(info)
+			)
 
 	Admin_TicketFields_Ctrl_EditPriorities.EXPORT_CTRL()

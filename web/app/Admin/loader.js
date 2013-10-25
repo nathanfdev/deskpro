@@ -103,6 +103,7 @@ requirejs([
 	'Admin/TicketDeps/Ctrl/Edit',
 	'Admin/TicketFields/Ctrl/EditCategories',
 	'Admin/TicketFields/Ctrl/EditPriorities',
+	'Admin/TicketFields/Ctrl/EditProducts',
 	'Admin/TicketFields/Ctrl/EditWorkflows',
 	'Admin/TicketFields/Ctrl/List',
 	'Admin/TicketSettings/Ctrl/TicketSettings',

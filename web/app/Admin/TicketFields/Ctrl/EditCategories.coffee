@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
 	class Admin_TicketFields_Ctrl_EditCategories extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditCategories'
 		@CTRL_AS = 'TicketCats'
@@ -6,11 +6,39 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_TYPE = 'page'
 
 		init: ->
-			@cats           = []
-			@default_id     = 0
-			@agent_required = false
-			@user_required  = false
+			@cats             = []
+			@default_id       = 0
+			@agent_required   = false
+			@user_required    = false
+			@cat_parent_list  = []
+
+			@$scope.$watchCollection('TicketCats.cats.length', =>
+				@updateCatParentList()
+			)
+			@$scope.$watchCollection('TicketCats.cats', =>
+				@updateCatParentList()
+			)
 			return
+
+		updateCatParentList: ->
+			@cat_parent_list.length = 0
+			@cat_parent_list.push({
+				id: 0,
+				title: 'No Default'
+			})
+
+			flat = Arrays.analyzeFlatCatStructure(@cats)
+			valid_ids = []
+			for cat in flat
+				if not cat.child_ids.length
+					valid_ids.push(cat.id)
+					@cat_parent_list.push({
+						id: cat.id,
+						title: cat.full_title
+					})
+
+			if valid_ids.indexOf(@default_id) == -1
+				@default_id = 0
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
@@ -21,9 +49,29 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
 
-				@builder_model = {}
+				@updateCatParentList()
 			)
 
 			return data_promise
+
+		save: ->
+			postData = {
+				categories:     @cats,
+				default_id:     @default_id,
+				user_required:  @user_required,
+				agent_required: @agent_required
+			}
+
+			@startSpinner('saving')
+			promise = @Api.sendPostJson('/ticket_cats', postData).success( =>
+				@settings = angular.copy(@$scope.settings)
+
+				@stopSpinner('saving').then(=>
+					@Growl.success(@getRegisteredMessage('saved_settings'))
+				)
+			).error( (info, code) =>
+				@stopSpinner('saving', true)
+				@applyErrorResponseToView(info)
+			)
 
 	Admin_TicketFields_Ctrl_EditCategories.EXPORT_CTRL()

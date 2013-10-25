@@ -5,7 +5,7 @@
         return {
           restrict: 'E',
           require: 'ngModel',
-          template: "<div class=\"dp-category-builder\">\n	<ul class=\"dp-cb-root\">\n		<li class=\"dp-cb-addrow\">\n			<div class=\"dp-cb-rowwrap\">\n				<input type=\"text\" class=\"form-control input-sm\" />\n				<button class=\"btn btn-xs dp-cb-addbtn\">Add</button>\n			</div>\n		</li>\n	</ul>\n</div>",
+          template: "<div class=\"dp-category-builder\"></div>",
           replace: true,
           controller: DeskPRO_CategoryBuilder_Controller.FACTORY,
           controllerAs: 'CategoryBuilder',

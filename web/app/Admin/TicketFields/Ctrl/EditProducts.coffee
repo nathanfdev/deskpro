@@ -1,29 +1,77 @@
 define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 	class Admin_TicketFields_Ctrl_EditProducts extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditProducts'
-		@CTRL_AS = 'Prods'
+		@CTRL_AS = 'TicketProds'
 		@DEPS    = []
 		@CTRL_TYPE = 'page'
 
 		init: ->
-			@works          = []
-			@default_id     = 0
-			@agent_required = false
-			@user_required  = false
+			@products             = []
+			@default_id       = 0
+			@agent_required   = false
+			@user_required    = false
+			@cat_parent_list  = []
+
+			@$scope.$watchCollection('TicketProds.products.length', =>
+				@updateCatParentList()
+			)
+			@$scope.$watchCollection('TicketProds.products', =>
+				@updateCatParentList()
+			)
 			return
+
+		updateCatParentList: ->
+			@cat_parent_list.length = 0
+			@cat_parent_list.push({
+				id: 0,
+				title: 'No Default'
+			})
+
+			flat = Arrays.analyzeFlatCatStructure(@products)
+			valid_ids = []
+			for cat in flat
+				if not cat.child_ids.length
+					valid_ids.push(cat.id)
+					@cat_parent_list.push({
+						id: cat.id,
+						title: cat.full_title
+					})
+
+			if valid_ids.indexOf(@default_id) == -1
+				@default_id = 0
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				'info': '/ticket_works'
+				'info': '/v'
 			}).then( (res) =>
-				@works           = res.data.info.workflows
+				@products       = res.data.info.products
 				@default_id     = res.data.info.default_id
 				@agent_required = res.data.info.agent_required
 				@user_required  = res.data.info.user_required
 
-				@builder_model = {}
+				@updateCatParentList()
 			)
 
 			return data_promise
+
+		save: ->
+			postData = {
+				products:       @products,
+				default_id:     @default_id,
+				user_required:  @user_required,
+				agent_required: @agent_required
+			}
+
+			@startSpinner('saving')
+			promise = @Api.sendPostJson('/ticket_prods', postData).success( =>
+				@settings = angular.copy(@$scope.settings)
+
+				@stopSpinner('saving').then(=>
+					@Growl.success(@getRegisteredMessage('saved_settings'))
+				)
+			).error( (info, code) =>
+				@stopSpinner('saving', true)
+				@applyErrorResponseToView(info)
+			)
 
 	Admin_TicketFields_Ctrl_EditProducts.EXPORT_CTRL()

@@ -234,6 +234,23 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		if ($this->parent) {
+			$data['parent_id'] = $this->parent->getId();
+		} else {
+			$data['parent_id'] = null;
+		}
+
+		return $data;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata

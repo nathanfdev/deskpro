@@ -10,18 +10,7 @@ define [
 			return {
 				restrict: 'E',
 				require: 'ngModel',
-				template: """
-					<div class="dp-category-builder">
-						<ul class="dp-cb-root">
-							<li class="dp-cb-addrow">
-								<div class="dp-cb-rowwrap">
-									<input type="text" class="form-control input-sm" />
-									<button class="btn btn-xs dp-cb-addbtn">Add</button>
-								</div>
-							</li>
-						</ul>
-					</div>
-				""",
+				template: """<div class="dp-category-builder"></div>""",
 				replace: true,
 				controller: DeskPRO_CategoryBuilder_Controller.FACTORY,
 				controllerAs: 'CategoryBuilder',
