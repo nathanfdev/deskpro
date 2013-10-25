@@ -120,7 +120,7 @@ class TicketSlaStatus extends AbstractTableOverviewStat
 			INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
 			INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
 			$where
-			GROUP BY ticket_slas.sla_id, ticket_slas.sla_status
+			GROUP BY ticket_slas.sla_status
 		";
 
 		$this->logger->logDebug("[TicketSlaStatus] $sql");
