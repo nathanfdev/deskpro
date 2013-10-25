@@ -290,6 +290,13 @@ class TicketController extends AbstractController
 				$this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket->parent_ticket),
 				'view'
 			);
+			$linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function($t) use ($ticket) {
+				if ($t->id == $ticket->id) {
+					return false;
+				} else {
+					return true;
+				}
+			});
 		}
 
 		$linked_tickets['children'] = $this->permCheckArray(
