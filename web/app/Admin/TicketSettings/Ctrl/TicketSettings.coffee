@@ -20,7 +20,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		checkDirtyState: ->
 			if not @settings then return false
-			if angular.equals(@settings, @$scope.settings)
+			if not angular.equals(@settings, @$scope.settings)
 				return true
 			else
 				return false
@@ -31,11 +31,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			}
 
 			@startSpinner('saving')
-			promise = @Api.sendPostJson('/ticket_settings', postData).success(
-				@stopSpinner('saving').then(->
+			promise = @Api.sendPostJson('/ticket_settings', postData).success( =>
+				@settings = angular.copy(@$scope.settings)
+
+				@stopSpinner('saving').then(=>
 					@Growl.success(@getRegisteredMessage('saved_settings'))
 				)
-			).error( (info, code) ->
+			).error( (info, code) =>
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(info)
 			)

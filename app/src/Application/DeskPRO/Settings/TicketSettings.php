@@ -187,9 +187,15 @@ class TicketSettings
 		$this->settings->setSetting('core.show_ticket_suggestions',      (int)$this->kbsuggest_web_enabled);
 
 		$this->settings->setSetting('core_tickets.enable_timelog',       (int)$this->timelog_enabled);
-		$this->settings->setSetting('core_tickets.billing_auto_timer',   (int)$this->timelog_autostart);
+
+		if ($this->timelog_enabled) {
+			$this->settings->setSetting('core_tickets.billing_auto_timer',   (int)$this->timelog_autostart);
+		} else {
+			$this->settings->setSetting('core_tickets.billing_auto_timer',   0);
+		}
+
 		$this->settings->setSetting('core_tickets.enable_billing',       (int)$this->billinglog_enabled);
-		$this->settings->setSetting('core_tickets.billing_currency',     (int)$this->billinglog_currency);
+		$this->settings->setSetting('core_tickets.billing_currency',     $this->billinglog_currency);
 
 		$this->settings->setSetting('core_tickets.lock_on_view',         (int)$this->lock_auto_enabled);
 		$this->settings->setSetting('core_tickets.unlock_on_close',      (int)$this->lock_autorelease_enabled);
@@ -198,11 +204,17 @@ class TicketSettings
 		$this->settings->setSetting('core_tickets.use_ref',              (int)$this->ref_enabled);
 
 		if ($this->ref_enabled) {
-			$this->settings->setSetting('core.ref_pattern',              $this->ref_custom_pattern);
-			$this->settings->setSetting('core.ref_append_counter',       $this->ref_custom_pattern_digits);
+			if ($this->ref_custom_enabled) {
+				$this->settings->setSetting('core.ref_pattern', $this->ref_custom_pattern);
+
+				$this->settings->setSetting('core.ref_append_counter', $this->ref_custom_pattern_digits);
+			} else {
+				$this->settings->setSetting('core.ref_pattern', '');
+				$this->settings->setSetting('core.ref_append_counter', 0);
+			}
 		} else {
-			$this->settings->setSetting('core.ref_pattern',              '');
-			$this->settings->setSetting('core.ref_append_counter',       '0');
+			$this->settings->setSetting('core.ref_pattern', '');
+			$this->settings->setSetting('core.ref_append_counter', '0');
 		}
 
 		$this->settings->setSetting('core_tickets.new_status',                    $this->agent_defaults['newticket_status']);

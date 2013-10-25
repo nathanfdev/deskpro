@@ -40,7 +40,7 @@
         if (!this.settings) {
           return false;
         }
-        if (angular.equals(this.settings, this.$scope.settings)) {
+        if (!angular.equals(this.settings, this.$scope.settings)) {
           return true;
         } else {
           return false;
@@ -48,16 +48,20 @@
       };
 
       Admin_TicketSettings_Ctrl_TicketSettings.prototype.save = function() {
-        var postData, promise;
+        var postData, promise,
+          _this = this;
         postData = {
           ticket_settings: this.$scope.settings
         };
         this.startSpinner('saving');
-        return promise = this.Api.sendPostJson('/ticket_settings', postData).success(this.stopSpinner('saving').then(function() {
-          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-        })).error(function(info, code) {
-          this.stopSpinner('saving', true);
-          return this.applyErrorResponseToView(info);
+        return promise = this.Api.sendPostJson('/ticket_settings', postData).success(function() {
+          _this.settings = angular.copy(_this.$scope.settings);
+          return _this.stopSpinner('saving').then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+          });
+        }).error(function(info, code) {
+          _this.stopSpinner('saving', true);
+          return _this.applyErrorResponseToView(info);
         });
       };
 
