@@ -2642,6 +2642,8 @@ class TicketController extends AbstractController
 			$merge = new TicketMerge($this->person, $ticket, $other_ticket);
 			$merge->merge();
 			$this->em->commit();
+		} catch (\InvalidArgumentException $e) {
+			throw $this->createNotFoundException("You cannot merge a ticket with itself");
 		} catch (\Exception $e) {
 			$this->em->rollback();
 
