@@ -148,14 +148,15 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			$standard_prop_names = array(
-				'agent' => 'name',
-				'agent_team' => 'name',
-				'department' => 'full_title',
-				'language' => 'title',
-				'category' => 'title',
-				'product' => 'title',
-				'workflow' => 'title',
-				'priority' => 'title'
+				'agent'         => 'name',
+				'agent_team'    => 'name',
+				'department'    => 'full_title',
+				'language'      => 'title',
+				'category'      => 'title',
+				'product'       => 'title',
+				'workflow'      => 'title',
+				'priority'      => 'title',
+				'parent_ticket' => 'subject',
 			);
 			foreach ($standard_prop_names as $prop_name => $title_field) {
 				if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {
