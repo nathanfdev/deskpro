@@ -1,6 +1,6 @@
 <?php
 
-class DepartmentsTest extends DatabaseTestCase
+class TicketDepartmentsTest extends DatabaseTestCase
 {
 	/**
 	 * @var \Application\DeskPRO\Departments\TicketDepartments
@@ -89,6 +89,7 @@ class DepartmentsTest extends DatabaseTestCase
 			$this->deps[2]
 		);
 	}
+
 
 	public function testSetDefault()
 	{
