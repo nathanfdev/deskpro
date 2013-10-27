@@ -77,6 +77,25 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 		return $this->id;
 	}
 
+	/**
+	 * @return FeedBackStatusCategory
+	 */
+	
+	public static function createFeedbackStatusCategory()
+	{
+		$status_category = new self();
+		return $status_category;
+	}
+
+	/**
+	 * @return string
+	 */
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
 	public function getStatusCode()
 	{
 		return $this->status_type . '.' . $this->id;
