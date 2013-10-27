@@ -29,14 +29,7 @@ class TicketDepartmentPropsTypeTest extends DatabaseTestCase
 
 		$department = $em->find('DeskPRO:Department', 1);
 
-		/**
-		 * @var \Symfony\Component\Form\Form $form
-		 */
-
-		$form = DpTestConfig::getContainer()->get('form.factory')->create(
-			new TicketDepartmentPropsType(),
-			$department
-		);
+		$form = $this->createForm(new TicketDepartmentPropsType(), $department);
 
 		$form->submit(array('title' => 'some title'));
 
@@ -57,14 +50,7 @@ class TicketDepartmentPropsTypeTest extends DatabaseTestCase
 
 		$department = $em->find('DeskPRO:Department', 1);
 
-		/**
-		 * @var \Symfony\Component\Form\Form $form
-		 */
-
-		$form = DpTestConfig::getContainer()->get('form.factory')->create(
-			new TicketDepartmentPropsType(),
-			$department
-		);
+		$form = $this->createForm(new TicketDepartmentPropsType(), $department);
 
 		$form->submit(array('title' => ''));
 

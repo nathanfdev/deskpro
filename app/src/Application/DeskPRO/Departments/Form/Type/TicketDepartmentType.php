@@ -60,9 +60,12 @@ class TicketDepartmentType extends AbstractType
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Departments\\TicketDepartmentEdit',
-		));
+		$resolver->setDefaults(
+			array(
+				 'data_class'         => 'Application\\DeskPRO\\Departments\\TicketDepartmentEdit',
+				 'cascade_validation' => true
+			)
+		);
 	}
 
 	public function getName()

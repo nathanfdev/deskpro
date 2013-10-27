@@ -137,7 +137,10 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		$metadata->addPropertyConstraint('move_department', new Callback(array(
+		// Symfony\Component\Validator\Exception\ConstraintDefinitionException:
+		// The constraint Symfony\Component\Validator\Constraints\Callback cannot be put on properties or getters
+
+		$metadata->addConstraint(new Callback(array(
 			'methods' => array('validateParent')
 		)));
 	}

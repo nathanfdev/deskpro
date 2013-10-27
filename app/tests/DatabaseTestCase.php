@@ -66,6 +66,19 @@ class DatabaseTestCase extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @param string|\Symfony\Component\Form\FormTypeInterface $type
+	 * @param mixed $data
+	 * @param array $options
+	 *
+	 * @return \Symfony\Component\Form\Form
+	 */
+
+	protected function createForm($type, $data = null, array $options = array())
+	{
+		return DpTestConfig::getContainer()->get('form.factory')->create($type, $data, $options);
+	}
+
+	/**
 	 * @param $obj
 	 *
 	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
