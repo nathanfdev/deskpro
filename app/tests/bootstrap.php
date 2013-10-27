@@ -3,6 +3,7 @@ define('DP_BOOT_MODE', 'testing');
 require(realpath(__DIR__. '/../../index.php'));
 require(__DIR__ . '/ContainerTestCase.php');
 require(__DIR__ . '/DatabaseTestCase.php');
+require(__DIR__ . '/ControllerTestCase.php');
 
 @file_put_contents(__DIR__.'/../../running_tests.trigger', time());
 register_shutdown_function(function() {

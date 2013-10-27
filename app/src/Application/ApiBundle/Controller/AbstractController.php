@@ -314,7 +314,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		return false;
 	}
 
+	/**
+	 * @param $entity
+	 *
+	 * @return bool
+	 */
 
+	public function isEntityValid($entity)
+	{
+		return sizeof($this->get('validator')->validate($entity)) == 0;
+	}
 
 	public function getApiSearchResult($type, array $terms, array $extra, $cache_id, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
 	{
