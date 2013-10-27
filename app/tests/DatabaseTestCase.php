@@ -55,4 +55,25 @@ class DatabaseTestCase extends PHPUnit_Framework_TestCase
 	{
 		return DpTestConfig::getContainer()->getEm();
 	}
+
+	/**
+	 * @return Symfony\Component\Validator\Validator
+	 */
+
+	protected function getValidator()
+	{
+		return DpTestConfig::getContainer()->get('validator');
+	}
+
+	/**
+	 * @param $obj
+	 *
+	 * @return \Symfony\Component\Validator\ConstraintViolationList[]
+	 */
+
+	protected function validateObject($obj)
+	{
+		$validator = $this->getValidator();
+		return $validator->validate($obj);
+	}
 }

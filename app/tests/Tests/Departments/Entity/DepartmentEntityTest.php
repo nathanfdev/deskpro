@@ -22,6 +22,47 @@ class DepartmentEntityTest extends DatabaseTestCase
 		DpTestConfig::resetContainer();
 	}
 
+	public function testDepartmentNotValidatedInCaseOfEmptyTitle()
+	{
+		$em = $this->getEm();
+
+		$department = $em->find('DeskPRO:Department', 1);
+		$department->setTitle('');
+
+		$errors = $this->validateObject($department);
+
+		$this->assertEquals(1, count($errors));
+		$this->assertNotSame(false, strpos($errors[0]->getMessage(), 'should not be blank'));
+	}
+
+	public function testDepartmentNotValidatedInCaseOfInvalidParent()
+	{
+		$em = $this->getEm();
+
+		$department = $em->find('DeskPRO:Department', 1);
+		$department->setParent($department);
+
+		$errors = $this->validateObject($department);
+
+		$this->assertEquals(1, count($errors));
+		$this->assertNotSame(false, strpos($errors[0]->getMessage(), 'Parent cannot be set to self'));
+	}
+
+	public function testDepartmentNotValidatedInCaseOfEmptyTitleAndInvalidParent()
+	{
+		$em = $this->getEm();
+
+		$department = $em->find('DeskPRO:Department', 1);
+		$department->setTitle('');
+		$department->setParent($department);
+
+		$errors = $this->validateObject($department);
+
+		$this->assertEquals(2, count($errors));
+		$this->assertNotSame(false, strpos($errors[0]->getMessage(), 'Parent cannot be set to self'));
+		$this->assertNotSame(false, strpos($errors[1]->getMessage(), 'should not be blank'));
+	}
+
 	public function testDepartmentCreate()
 	{
 		$em = $this->getEm();

@@ -349,7 +349,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 
 	public function _validateParent(ExecutionContextInterface $context)
 	{
-		$context->addViolationAt('parent', 'Parent cannot be set to self');
 		if (!$this->parent) return;
 		if ($this->parent == $this) {
 			$context->addViolationAt('parent', 'Parent cannot be set to self');
