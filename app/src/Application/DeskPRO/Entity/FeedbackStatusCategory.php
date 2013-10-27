@@ -36,15 +36,22 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
+
 use Orb\Util\Util;
 
 /**
  * Feedback status types for accepted/declined statuses
  *
  */
-class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, HasValidationMetadataInterface
 {
 	const STATUS_ACTIVE = 'active';
 	const STATUS_CLOSED = 'closed';
@@ -94,6 +101,33 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 	public function getTitle()
 	{
 		return $this->title;
+	}
+
+	/**
+	 * @param string $title
+	 */
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	/**
+	 * @return string
+	 */
+
+	public function getStatusType()
+	{
+		return $this->status_type;
+	}
+
+	/**
+	 * @param string $status_type
+	 */
+
+	public function setStatusType($status_type)
+	{
+		$this->status_type = $status_type;
 	}
 
 	public function getStatusCode()
@@ -148,6 +182,23 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 	}
 
 
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new NotBlank());
+		$metadata->addPropertyConstraint(
+			'status_type',
+			new Choice(
+				array(
+					 'choices' => array('active', 'closed'),
+					 'message' => 'Choose a valid status type',
+				)
+			)
+		);
+	}
 
 	############################################################################
 	# Doctrine Metadata
