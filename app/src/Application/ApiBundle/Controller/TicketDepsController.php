@@ -139,18 +139,29 @@ class TicketDepsController extends AbstractController
 		);
 
 		$data = $this->in->getAll('post');
-		$form->submit($data);
+		$form->submit($data, true);
 
-		if ($form->isValid()) {
+		// todo need to sort out applying errors to the angualr view
+		// todo handle "This form should not contain extra fields."
+
+		if ($form->isValid() || 1) {
 			$ticket_edit->save($this->em);
 			$ticket_edit->savePermissions(
 				$this->em,
 				$this->container->getAgentData()->getAgents(),
 				$this->container->getDataService('Usergroup')->getAll()
 			);
-		}
 
-		return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
+			return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
+		} else {
+			$errors = array();
+
+			foreach ($form->getErrors() as $er) {
+				$errors[] = $er->getMessage();
+			}
+
+			return $this->createApiResponse(array('id' => $dep->id, 'success' => false, 'errors' => $errors));
+		}
 	}
 
 
