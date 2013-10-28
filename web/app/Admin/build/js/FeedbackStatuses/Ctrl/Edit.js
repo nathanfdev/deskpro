@@ -45,7 +45,7 @@
 
 
       Admin_FeedbackStatuses_Ctrl_Edit.prototype.saveFeedbackStatus = function() {
-        var is_new,
+        var is_new, promise,
           _this = this;
         if (!this.$scope.form_props.$valid) {
           return;
@@ -53,19 +53,33 @@
         this.startSpinner('saving_feedback_status');
         if (this.feedback_status.id) {
           is_new = false;
+          promise = this.Api.sendPostJson('/feedback_statuses/' + this.feedback_status.id, {
+            feedback_status: this.feedback_status
+          });
         } else {
           is_new = true;
+          promise = this.Api.sendPutJson('/feedback_statuses', this.feedback_status, {
+            feedback_status: this.feedback_status
+          });
         }
-        this.stopSpinner('saving_feedback_status', true).then(function() {
-          return _this.Growl.success(_this.getRegisteredMessage('saved_feedback_status'));
+        promise.success(function(result) {
+          _this.feedback_status.id = result.id;
+          _this.stopSpinner('saving_feedback_status', true).then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_feedback_status'));
+          });
+          _this.FeedbackStatusesData.updateModel(_this.feedback_status);
+          _this.skipDirtyState();
+          if (is_new) {
+            return _this.$state.go('portal.feedback_statuses.gocreate');
+          } else {
+            return _this.$state.go('portal.feedback_statuses');
+          }
         });
-        this.FeedbackStatusesData.updateModel(this.feedback_status);
-        this.skipDirtyState();
-        if (is_new) {
-          this.$state.go('portal.feedback_statuses.gocreate');
-        } else {
-          this.$state.go('portal.feedback_statuses');
-        }
+        promise.error(function(info, code) {
+          _this.stopSpinner('saving_feedback_status', true);
+          return _this.applyErrorResponseToView(info);
+        });
+        return promise;
       };
 
       return Admin_FeedbackStatuses_Ctrl_Edit;

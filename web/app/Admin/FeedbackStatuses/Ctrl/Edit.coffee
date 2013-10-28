@@ -43,22 +43,33 @@ define [
 
 			if @feedback_status.id
 				is_new = false
+				promise = @Api.sendPostJson('/feedback_statuses/' + @feedback_status.id, {feedback_status: @feedback_status})
 			else
 				is_new = true
+				promise = @Api.sendPutJson('/feedback_statuses', @feedback_status, {feedback_status: @feedback_status})
 
-			@stopSpinner('saving_feedback_status', true).then(=>
-				@Growl.success(@getRegisteredMessage('saved_feedback_status'))
+			promise.success((result) =>
+
+				@feedback_status.id = result.id
+
+				@stopSpinner('saving_feedback_status', true).then(=>
+					@Growl.success(@getRegisteredMessage('saved_feedback_status'))
+				)
+
+				@FeedbackStatusesData.updateModel(@feedback_status)
+
+				@skipDirtyState()
+
+				if is_new
+					@$state.go('portal.feedback_statuses.gocreate')
+				else
+					@$state.go('portal.feedback_statuses')
+			)
+			promise.error((info, code) =>
+				@stopSpinner('saving_feedback_status', true)
+				@applyErrorResponseToView(info)
 			)
 
-			@FeedbackStatusesData.updateModel(@feedback_status)
-
-			@skipDirtyState()
-
-			if is_new
-				@$state.go('portal.feedback_statuses.gocreate')
-			else
-				@$state.go('portal.feedback_statuses')
-
-			return
+			return promise
 
 	Admin_FeedbackStatuses_Ctrl_Edit.EXPORT_CTRL()
