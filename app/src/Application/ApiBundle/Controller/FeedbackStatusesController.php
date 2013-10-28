@@ -38,6 +38,8 @@ use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
 use Application\DeskPRO\FeedbackStatuses\FeedbackStatuses;
 use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
+use Application\DeskPRO\Exception\ValidationException;
+
 use Orb\Util\Arrays;
 
 class FeedbackStatusesController extends AbstractController
@@ -112,22 +114,25 @@ class FeedbackStatusesController extends AbstractController
 
 		$feedback_status_edit = new FeedbackStatusEdit($feedback_status);
 
-		$form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit);
+		$form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
 
 		$data = $this->in->getAll('post');
 		$form->submit($data);
 
-		if ($form->isValid() && $this->isEntityValid($feedback_status_edit)) {
+		if ($form->isValid() && $this->isEntityValid($feedback_status)) {
 
 			$feedback_status_edit->save($this->em);
 		}
 		else {
 
-			//$this->handleActionException($e);
-
-			// do error handling
+			throw ValidationException::create("feedback_status.save", "Validation errors occurred");
 		}
 
-		return $this->createApiResponse(array('id' => $feedback_status->getId(), 'success' => true));
+		return $this->createApiResponse(
+			array(
+				 'success'     => true,
+				 'id'          => $feedback_status->getId(),
+			)
+		);
 	}
 }

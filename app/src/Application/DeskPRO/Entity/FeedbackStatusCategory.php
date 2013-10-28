@@ -104,30 +104,12 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 	}
 
 	/**
-	 * @param string $title
-	 */
-
-	public function setTitle($title)
-	{
-		$this->title = $title;
-	}
-
-	/**
 	 * @return string
 	 */
 
 	public function getStatusType()
 	{
 		return $this->status_type;
-	}
-
-	/**
-	 * @param string $status_type
-	 */
-
-	public function setStatusType($status_type)
-	{
-		$this->status_type = $status_type;
 	}
 
 	public function getStatusCode()
