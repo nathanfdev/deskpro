@@ -34,118 +34,29 @@
 namespace Application\DeskPRO\FeedbackStatuses;
 
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+
 use Doctrine\ORM\EntityManager;
 
-class FeedbackStatuses
+class FeedbackStatusEdit
 {
 	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
+	 * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
 	 */
-	protected $em;
 
-    /**
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory[]
-     */
+	public $feedback_status;
 
-    protected $active_statuses;
-
-    /**
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory[]
-     */
-
-    protected $closed_statuses;
-
-	public function __construct(EntityManager $em)
+	public function __construct(FeedbackStatusCategory $feedback_status)
 	{
-		$this->em = $em;
+		$this->feedback_status = $feedback_status;
 	}
 
 	/**
-	 * Loads feedback statuses data from the database
+	 * @param EntityManager $em
 	 */
 
-	private function preload()
+	public function save(EntityManager $em)
 	{
-		if ($this->active_statuses !== null && $this->closed_statuses !== null) {
-			return;
-		}
-
-		$this->active_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $this->closed_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
-	}
-
-
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
-
-	public function reset()
-	{
-		$this->active_statuses = null;
-        $this->closed_statuses = null;
-	}
-
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
-	 */
-
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->get($id);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
-	 */
-
-	public function getAll()
-	{
-		$this->preload();
-
-		return $this->active_statuses + $this->closed_statuses;
-	}
-
-    /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
-     */
-
-    public function getActiveStatuses()
-    {
-        $this->preload();
-
-        return $this->active_statuses;
-    }
-
-    /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
-     */
-
-    public function getClosedStatuses()
-    {
-        $this->preload();
-
-        return $this->closed_statuses;
-    }
-
-	/**
-	 * @return int
-	 */
-
-	public function count()
-	{
-		$this->preload();
-
-		return count($this->active_statuses) + count($this->closed_statuses);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
-	 */
-
-	public function createNew()
-	{
-		return FeedbackStatusCategory::createFeedbackStatusCategory();
+		$em->persist($this->feedback_status);
+		$em->flush();
 	}
 }
