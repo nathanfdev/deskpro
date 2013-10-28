@@ -170,7 +170,7 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		$metadata->addPropertyConstraint('title', new NotBlank());
+		$metadata->addPropertyConstraint('title', new NotBlank(array('message' => 'Title should not be blank.')));
 		$metadata->addPropertyConstraint(
 			'status_type',
 			new Choice(
