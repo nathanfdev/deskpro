@@ -325,6 +325,28 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		return sizeof($this->get('validator')->validate($entity)) == 0;
 	}
 
+	/**
+	 * @param $entity
+	 *
+	 * @return string
+	 */
+
+	public function getEntityValidationString($entity)
+	{
+		$result = '';
+		$errors = $this->get('validator')->validate($entity);
+
+		if (sizeof($errors) > 0) {
+
+			foreach ($errors as $error) {
+
+				$result .= '<li>' . $error->getMessage() .'</li>';
+			}
+		}
+
+		return $result;
+	}
+
 	public function getApiSearchResult($type, array $terms, array $extra, $cache_id, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
 	{
 		if ($cache_id) {

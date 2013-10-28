@@ -125,7 +125,7 @@ class FeedbackStatusesController extends AbstractController
 		}
 		else {
 
-			throw ValidationException::create("feedback_status.save", "Validation errors occurred");
+			throw ValidationException::create("feedback_status.save", $this->getEntityValidationString($feedback_status));
 		}
 
 		return $this->createApiResponse(
