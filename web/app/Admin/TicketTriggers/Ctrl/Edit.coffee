@@ -39,6 +39,11 @@ define [
 
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
 
+			@$scope.trigger_criteria_set = {
+				first: {},
+				second: {}
+			}
+
 			return
 
 		###

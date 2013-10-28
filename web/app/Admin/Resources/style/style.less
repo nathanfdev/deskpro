@@ -1808,32 +1808,6 @@ button.toast-close-button {
 	.with-tag.dp-ob-row-tag-wrap {
 		padding: 0 8px;
 	}
-
-	em.dp-ob-row-tag {
-		display: block;
-		font-style: normal;
-		padding: 0;
-		color: #fff;
-		width: 50px;
-		text-align: center;
-		border-radius: 2px;
-		white-space: nowrap;
-		text-wrap: none;
-
-		&.if {
-			background: #209BFA;
-		}
-		&.and {
-			background: #7BB51E;
-		}
-		&.or {
-			background: #BCB333;
-		}
-		&.then {
-			background: #873FA5;
-		}
-	}
-
 	.remove-row-trigger {
 		position: absolute;
 		top: 0;
@@ -1915,6 +1889,84 @@ button.toast-close-button {
 			&.then {
 				background: #873FA5;
 			}
+		}
+	}
+
+	header em.dp-ob-row-tag {
+		float: left;
+	}
+
+	em.dp-ob-row-tag {
+		display: block;
+		font-style: normal;
+		padding: 0;
+		color: #fff;
+		width: 50px;
+		text-align: center;
+		border-radius: 2px;
+		white-space: nowrap;
+		text-wrap: none;
+
+		&.if {
+			background: #209BFA;
+		}
+		&.and {
+			background: #7BB51E;
+		}
+		&.or {
+			background: #BCB333;
+		}
+		&.then {
+			background: #873FA5;
+		}
+	}
+
+	.dp-ob-add-setrow {
+		border-top: 1px solid #ccc;
+		position: relative;
+		height: 35px;
+		background: #e9e9e9;
+
+		label {
+			margin-left: 40px;
+			line-height: 33px;
+			font-weight: normal;
+		}
+
+		.btn-wrap {
+			position: absolute;
+			top: 5px; left: 5px; bottom: 5px;
+			width: 25px;
+			cursor: pointer;
+
+			> span {
+				border-radius: 2px;
+				display: block;
+				background: #209BFA;
+				color: #fff;
+				text-align: center;
+				line-height: 25px;
+				font-size: 15px;
+			}
+		}
+	}
+
+	.remove-btn-wrap {
+		float: right;
+		width: 18px;
+		cursor: pointer;
+
+		> span {
+			border-radius: 2px;
+			display: block;
+			background: #209BFA;
+			color: #fff;
+			text-align: center;
+			line-height: 18px;
+			font-size: 12px;
+			position: relative;
+			top: 1px;
+			right: -1px;
 		}
 	}
 }

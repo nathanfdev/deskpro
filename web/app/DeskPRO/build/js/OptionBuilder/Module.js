@@ -32,6 +32,40 @@
           }
         };
       }
+    ]).directive('dpOptionBuilderSet', [
+      '$compile', '$templateCache', function($compile, $templateCache) {
+        return {
+          restrict: 'A',
+          link: function(scope, iElement, iAttrs) {
+            var addRow, opts;
+            opts = scope.$eval(iAttrs.dpOptionBuilderSet);
+            addRow = function() {
+              var containRow, element, rowScope, setId, tpl;
+              containRow = iElement.find('.dp-ob-addition-setrow');
+              setId = _.uniqueId('set');
+              opts.setsObject[setId] = {};
+              tpl = $templateCache.get(opts.template);
+              rowScope = scope.$new();
+              rowScope.criteria_typedef = opts.typedef;
+              rowScope.criteria_set_row = opts.setsObject[setId];
+              element = $compile(tpl)(rowScope);
+              element.find('.removerow_btn').on('click', function(ev) {
+                ev.preventDefault();
+                rowScope.$destroy();
+                return element.slideUp(200, function() {
+                  return element.remove();
+                });
+              });
+              return containRow.append(element);
+            };
+            iElement.find('.add_btn').on('click', function(ev) {
+              ev.preventDefault();
+              return addRow();
+            });
+            return addRow();
+          }
+        };
+      }
     ]);
   });
 

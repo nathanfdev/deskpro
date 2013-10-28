@@ -92,13 +92,14 @@
 							<h3>Criteria</h3>
 						</div>
 						<div class="col-lg-10">
-							<div class="dp-ob-set">
+							<div class="dp-ob-set" dp-option-builder-set="{typedef: TicketTriggersEdit.criteraTypeDef, setsObject: trigger_criteria_set, template: 'ticket_deps_criteria_setrow' }">
 								<div class="dp-ob-setrow">
 									<header>
-										When all of the following conditions are met:
+										<em class="dp-ob-row-tag if">if</em>
+										When following conditions are met:
 									</header>
 									<article>
-										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria" options="{tag_first: 'if', tag_after: 'and'}">
+										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria_set.first" options="{tag_first: false, tag_after: 'and'}">
 											<select>
 												<option value="0">Add criteria</option>
 												<option value="department">Department</option>
@@ -110,22 +111,36 @@
 										</dp-option-builder>
 									</article>
 								</div>
-								<div class="dp-ob-setrow">
-									<header>
-										With any one of the following conditions are met:
-									</header>
-									<article>
-										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria_any" options="{tag_first: 'and', tag_after: 'or'}">
-											<select>
-												<option value="0">Add criteria</option>
-												<option value="department">Department</option>
-												<option value="product">Product</option>
-												<option value="category">Category</option>
-												<option value="workflow">Workflow</option>
-												<option value="priority">Priority</option>
-											</select>
-										</dp-option-builder>
-									</article>
+								<div class="dp-ob-addition-setrow">
+									<script type="text/ng-template" id="ticket_deps_criteria_setrow">
+										<div class="dp-ob-setrow">
+											<header>
+												<div class="remove-btn-wrap">
+													<span class="removerow_btn"><i class="icon-remove"></i></span>
+												</div>
+												<em class="dp-ob-row-tag if">or</em>
+												When following conditions are met:
+											</header>
+											<article>
+												<dp-option-builder types-def="criteria_typedef" ng-model="criteria_set_row" options="{tag_first: false, tag_after: 'and'}">
+													<select>
+														<option value="0">Add criteria</option>
+														<option value="department">Department</option>
+														<option value="product">Product</option>
+														<option value="category">Category</option>
+														<option value="workflow">Workflow</option>
+														<option value="priority">Priority</option>
+													</select>
+												</dp-option-builder>
+											</article>
+										</div>
+									</script>
+								</div>
+								<div class="dp-ob-add-setrow">
+									<div class="btn-wrap">
+										<span><i class="add_btn icon-plus-sign"></i></span>
+									</div>
+									<label>Add another set of criteria</label>
 								</div>
 							</div>
 						</div>

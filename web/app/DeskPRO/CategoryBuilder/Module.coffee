@@ -17,4 +17,4 @@ define [
 				link: (scope, iElement, iAttrs, ngModel) ->
 					scope.categoryBuilder.setModel(ngModel)
 			}
-		])
+	])

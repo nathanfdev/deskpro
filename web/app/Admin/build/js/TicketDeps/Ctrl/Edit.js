@@ -43,19 +43,21 @@
         this.trigger = {
           user_send_newuserticket_response: {
             enabled: false,
-            template_name: ""
+            template_name: "",
+            from_name: 'department_title',
+            from_name_custom: ''
           },
           user_send_newagentreply_response: {
             enabled: false,
-            template_name: ""
+            template_name: "",
+            from_name: 'performer',
+            from_name_custom: ''
           },
           user_send_newuserreply_response: {
             enabled: false,
-            template_name: ""
-          },
-          set_from_name: {
-            enabled: false,
-            preset: ""
+            template_name: "",
+            from_name: 'department_title',
+            from_name_custom: ''
           }
         };
         this.$scope.embed_code_type = 'department';

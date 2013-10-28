@@ -44,4 +44,40 @@ define [
 						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag)
 						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'))
 			}
+		]).directive('dpOptionBuilderSet', [ '$compile', '$templateCache', ($compile, $templateCache) ->
+			return {
+			restrict: 'A',
+			link: (scope, iElement, iAttrs) ->
+				opts = scope.$eval(iAttrs.dpOptionBuilderSet)
+
+				addRow = ->
+					containRow = iElement.find('.dp-ob-addition-setrow')
+
+					setId = _.uniqueId('set')
+					opts.setsObject[setId] = {}
+
+					tpl = $templateCache.get(opts.template)
+					rowScope = scope.$new()
+					rowScope.criteria_typedef = opts.typedef
+					rowScope.criteria_set_row = opts.setsObject[setId]
+
+					element = $compile(tpl)(rowScope)
+
+					element.find('.removerow_btn').on('click', (ev) ->
+						ev.preventDefault()
+						rowScope.$destroy()
+						element.slideUp(200, ->
+							element.remove()
+						)
+					)
+
+					containRow.append(element)
+
+				iElement.find('.add_btn').on('click', (ev) ->
+					ev.preventDefault()
+					addRow()
+				)
+
+				addRow()
+			}
 		])

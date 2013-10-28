@@ -44,6 +44,10 @@
           }
         };
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
+        this.$scope.trigger_criteria_set = {
+          first: {},
+          second: {}
+        };
       };
 
       /*
