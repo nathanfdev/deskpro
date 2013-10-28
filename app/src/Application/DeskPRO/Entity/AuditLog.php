@@ -219,7 +219,11 @@ class AuditLog extends DomainObject
 	public static function getObjectIdFromVar($object)
 	{
 		if (is_object($object) && $object instanceof DomainObject) {
-			return $object->getId();
+			if ($object instanceof Setting) {
+				return $object->name;
+			} else {
+				return $object->getId();
+			}
 		} else if (is_array($object) && isset($object['type']) && isset($object['id'])) {
 			return $object['id'];
 		} else if (is_string($object) && $id = Strings::extractRegexMatch('#@(\d+)$#', $object)) {

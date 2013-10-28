@@ -223,7 +223,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
 			$save_table  = $save_obj->getTableName();
 
 			if (isset($this->defs[$save_table]['do_log_check'])) {
-				if (!$this->defs[$table['do_log_check']]($save_obj, AuditLog::CREATE)) {
+				if (!$this->defs[$save_table]['do_log_check']($save_obj, AuditLog::CREATE)) {
 					return;
 				}
 			}
