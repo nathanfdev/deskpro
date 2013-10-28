@@ -34,6 +34,10 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
+use Application\DeskPRO\FeedbackStatuses\FeedbackStatuses;
+use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
 use Orb\Util\Arrays;
 
 class FeedbackStatusesController extends AbstractController
@@ -81,5 +85,49 @@ class FeedbackStatusesController extends AbstractController
 		}
 
 		return $this->createApiResponse(array('feedback_status' => $this->getApiData($feedback_status)));
+	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+		 */
+
+		if ($id) {
+
+			$feedback_statuses = $this->container->getSystemService('feedback_statuses');
+			$feedback_status   = $feedback_statuses->getById($id);
+
+			if (!$feedback_status) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$feedback_status = $feedback_statuses->createNew();
+		}
+
+		$feedback_status_edit = new FeedbackStatusEdit($feedback_status);
+
+		$form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit);
+
+		$data = $this->in->getAll('post');
+		$form->submit($data);
+
+		if ($form->isValid() && $this->isEntityValid($feedback_status_edit)) {
+
+			$feedback_status_edit->save($this->em);
+		}
+		else {
+
+			//$this->handleActionException($e);
+
+			// do error handling
+		}
+
+		return $this->createApiResponse(array('id' => $feedback_status->getId(), 'success' => true));
 	}
 }

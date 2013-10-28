@@ -2428,6 +2428,12 @@ $collection->create('api_feedback_statuses_get', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_feedback_statuses_save', array(
+	'path'        => '/feedback_statuses/{id}',
+	'controller'  => 'ApiBundle:FeedbackStatuses:save',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################
