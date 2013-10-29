@@ -99,9 +99,10 @@ class FeedbackStatusesController extends AbstractController
 		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
 		 */
 
+		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
+
 		if ($id) {
 
-			$feedback_statuses = $this->container->getSystemService('feedback_statuses');
 			$feedback_status   = $feedback_statuses->getById($id);
 
 			if (!$feedback_status) {
