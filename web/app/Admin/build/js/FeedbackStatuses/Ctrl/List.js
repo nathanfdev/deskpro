@@ -53,7 +53,7 @@
             return _this.ngApply();
           });
           return _this.addManagedListener(_this.FeedbackStatusesData.recs.closed_statuses, 'changed', function() {
-            _this.feedback_active_statuses = _this.FeedbackStatusesData.recs.closed_statuses.values();
+            _this.feedback_closed_statuses = _this.FeedbackStatusesData.recs.closed_statuses.values();
             return _this.ngApply();
           });
         });

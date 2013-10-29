@@ -42,7 +42,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 				@addManagedListener(@FeedbackStatusesData.recs.closed_statuses, 'changed', =>
 
-					@feedback_active_statuses = @FeedbackStatusesData.recs.closed_statuses.values()
+					@feedback_closed_statuses = @FeedbackStatusesData.recs.closed_statuses.values()
 					@ngApply()
 				)
 			)
