@@ -53,4 +53,41 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 			return @$q.all([list_promise])
 
+		###
+  # Show the delete dlg
+  ###
+
+		startDelete: (feedback_status) ->
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('FeedbackStatuses/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.confirm = ->
+						$modalInstance.close();
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+				]
+			});
+
+			inst.result.then(=>
+				@deleteFeedbackStatus(feedback_status)
+			)
+
+		###
+		# Actually do the delete
+		###
+
+		deleteFeedbackStatus: (feedback_status) ->
+
+			@Api.sendDelete('/feedback_statuses/' + feedback_status.id).success(=>
+
+				@FeedbackStatusesData.remove(feedback_status.id)
+				@ngApply()
+
+				# if currently viewing the deleted feedback status, then should need to switch state
+				if @$state.current.name == 'portal.feedback_statuses.edit' and parseInt(@$state.params.id) == feedback_status.id
+					@$state.go('portal.feedback_statuses')
+			)
+
 	Admin_FeedbackStatuses_Ctrl_List.EXPORT_CTRL()

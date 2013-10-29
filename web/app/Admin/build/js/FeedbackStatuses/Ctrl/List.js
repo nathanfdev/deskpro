@@ -62,6 +62,48 @@
         return this.$q.all([list_promise]);
       };
 
+      /*
+      # Show the delete dlg
+      */
+
+
+      Admin_FeedbackStatuses_Ctrl_List.prototype.startDelete = function(feedback_status) {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('FeedbackStatuses/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.deleteFeedbackStatus(feedback_status);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackStatus = function(feedback_status) {
+        var _this = this;
+        return this.Api.sendDelete('/feedback_statuses/' + feedback_status.id).success(function() {
+          _this.FeedbackStatusesData.remove(feedback_status.id);
+          _this.ngApply();
+          if (_this.$state.current.name === 'portal.feedback_statuses.edit' && parseInt(_this.$state.params.id) === feedback_status.id) {
+            return _this.$state.go('portal.feedback_statuses');
+          }
+        });
+      };
+
       return Admin_FeedbackStatuses_Ctrl_List;
 
     })(Admin_Ctrl_Base);

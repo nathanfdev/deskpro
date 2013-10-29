@@ -48,6 +48,22 @@
       };
 
       /**
+      				* Removed entity from entity manager
+      		  *
+      		  * @param id
+      */
+
+
+      Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.remove = function(id) {
+        var model;
+        model = this.em.getById('feedback_status', id);
+        if ((model != null) && (model.status_type != null)) {
+          this.recs[model.status_type + '_statuses'].remove(id);
+          return this.em.removeById('feedback_status', 'id');
+        }
+      };
+
+      /**
       				* Creates entities for feedback statuses raw data
       				* The thing is that it creates entities for both active and closed statuses
       				*

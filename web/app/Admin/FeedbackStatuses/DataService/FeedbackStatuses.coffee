@@ -50,6 +50,20 @@ define [
 			return @loadListPromise
 
 		###*
+				* Removed entity from entity manager
+		  *
+		  * @param id
+		###
+
+		remove: (id) ->
+
+			model = @em.getById('feedback_status', id)
+
+			if model? and model.status_type?
+				@recs[model.status_type + '_statuses'].remove(id)
+				@em.removeById('feedback_status', 'id')
+
+		###*
 				* Creates entities for feedback statuses raw data
 				* The thing is that it creates entities for both active and closed statuses
 				*
