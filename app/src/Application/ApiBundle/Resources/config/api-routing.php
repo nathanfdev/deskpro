@@ -2441,6 +2441,12 @@ $collection->create('api_feedback_statuses_save', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_feedback_statuses_delete', array(
+	'path'        => '/feedback_statuses/{id}',
+	'controller'  => 'ApiBundle:FeedbackStatuses:remove',
+	'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

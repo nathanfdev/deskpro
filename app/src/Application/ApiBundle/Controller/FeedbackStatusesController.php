@@ -136,4 +136,30 @@ class FeedbackStatusesController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+		 */
+
+		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
+		$feedback_status   = $feedback_statuses->getById($id);
+
+		if (!$feedback_status) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $feedback_status->id;
+
+		$this->em->remove($feedback_status);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }
