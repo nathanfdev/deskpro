@@ -125,6 +125,7 @@ define ->
     	###
 		updateOptionTypes: ->
 			@els.select.empty()
+			@els.select.append($('<option value="0" />'));
 			for item in @$scope.optionTypes
 				if item.subOptions?
 					optgroup = $('<optgroup/>').attr('label', item.title)
@@ -135,7 +136,6 @@ define ->
 				else
 					opt = $('<option/>').val(item.value).text(item.title)
 					@els.select.append(opt)
-
 
 		###
     	# Add a new row to the form

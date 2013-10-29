@@ -9223,6 +9223,15 @@ button.toast-close-button {
   margin-top: -35px;
 }
 
+.dp-ob-select2.select2-drop-above {
+  margin-top: 30px;
+  margin-left: 11px;
+}
+
+.dp-ob-select2 .select2-results > li:first-child {
+  display: none;
+}
+
 .dp-ob-select2 li.select2-result-with-children > .select2-result-label {
   font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
