@@ -59,7 +59,7 @@
           ]
         });
         return inst.result.then(function() {
-          return _this.deleteFeedbackStatus(for_acc);
+          return _this.deleteAccount(for_acc);
         });
       };
 
@@ -68,7 +68,7 @@
       */
 
 
-      Admin_TicketAccounts_Ctrl_List.prototype.deleteFeedbackStatus = function(acc) {
+      Admin_TicketAccounts_Ctrl_List.prototype.deleteAccount = function(acc) {
         var _this = this;
         return this.Api.sendDelete('/ticket_accounts/' + acc.id).success(function() {
           _this.TicketAccountsData.remove(acc.id);

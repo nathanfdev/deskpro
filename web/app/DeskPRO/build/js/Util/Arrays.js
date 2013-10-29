@@ -1,7 +1,27 @@
 (function() {
   define(function() {
-    return {
-      analyzeFlatCatStructure: function(cats) {
+    var DeskPRO_Util_Arrays;
+    DeskPRO_Util_Arrays = (function() {
+      function DeskPRO_Util_Arrays() {}
+
+      /*
+        	# Analyze a flat array of categories that have structure defined like:
+        	# - id: the unique ID
+        	# - parent_id: The parent, or 0/null for no parent
+        	# - title: The title of the category
+        	#
+        	# Returns a new flat array with additional information:
+        	# - parent_ids: An array of parents
+        	# - child_ids: An array of any chilcren
+        	# - depth: How deep the category is in the structure
+        	# - title_segs: An array of parent titles and this title (eg to generate a breadcrumb)
+        	# - full_title: A string of all titles separated by a ' > '
+        	#
+        	# @return {Array}
+      */
+
+
+      DeskPRO_Util_Arrays.prototype.analyzeFlatCatStructure = function(cats) {
         var fnProc, ret;
         ret = [];
         fnProc = function(parent_id, parent_ids, title_segs) {
@@ -31,6 +51,7 @@
             copy.depth = parent_ids.length;
             title_segs.push(copy.title);
             copy.full_title = title_segs.join(' > ');
+            copy.title_segs = title_segs.slice(0);
             ret.push(copy);
             parent_ids.push(copy.id);
             copy.child_ids = fnProc(copy.id, parent_ids, title_segs);
@@ -42,8 +63,44 @@
         };
         fnProc(null, [], []);
         return ret;
-      }
-    };
+      };
+
+      /*
+        	# Pushes value on to array only if value does not already exist in array.
+        	#
+        	# @param  {Array} array
+        	@ @param  mixed   value
+        	# @return {Array}
+      */
+
+
+      DeskPRO_Util_Arrays.prototype.pushUnique = function(array, value) {
+        if (array.indexOf(value) === -1) {
+          array.push(value);
+        }
+        return array;
+      };
+
+      /*
+      		# Pushes value on to array only if value does not already exist in array.
+      		#
+      		# @param  {Array} array
+      		@ @param  mixed   value
+      		# @return {Array}
+      */
+
+
+      DeskPRO_Util_Arrays.prototype.unshiftUnique = function(array, value) {
+        if (array.indexOf(value) === -1) {
+          array.push(value);
+        }
+        return array;
+      };
+
+      return DeskPRO_Util_Arrays;
+
+    })();
+    return new DeskPRO_Util_Arrays();
   });
 
 }).call(this);

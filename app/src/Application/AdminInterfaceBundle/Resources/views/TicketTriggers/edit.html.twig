@@ -36,49 +36,49 @@
 							<div>
 								<div style="float: left; width: 55%">
 									<label style="font-weight: normal;">
-										<input type="checkbox" ng-model="form.by_user" value="1" />
+										<input type="checkbox" ng-model="typeForm.by_user" value="1" />
 										By a user
 									</label>
-									<div ng-show="form.by_user">
+									<div ng-show="typeForm.by_user">
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" dp-tristate-check="form.by_user_opt.web_portal, form.by_user_opt.web_widget, form.by_user_opt.web_form" />
+											<input type="checkbox" dp-tristate-check="typeForm.by_user_opt.web_portal, typeForm.by_user_opt.web_widget, typeForm.by_user_opt.web_form" />
 											via the web
 										</label>
 										<i class="icon-cog" ng-click="show_byuser_web = !show_byuser_web" style="cursor: pointer; color: #888"></i>
 										<div style="margin-left: 11px; background: #efefef; border-radius: 2px; padding: 5px; padding-bottom: 0;" ng-show="show_byuser_web">
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_portal" value="1" /> Portal</label>
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_opt.web_portal" value="1" /> Portal</label>
 											&nbsp;
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_widget" value="1" /> Widget</label>
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_opt.web_widget" value="1" /> Widget</label>
 											&nbsp;
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="form.by_user_opt.web_form" value="1" /> Ticket Form</label>
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_opt.web_form" value="1" /> Ticket Form</label>
 										</div>
 										<br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_user_opt.email" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_user_opt.email" value="1" />
 											via email
 										</label><br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_user_opt.api" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_user_opt.api" value="1" />
 											via the API
 										</label>
 									</div>
 								</div>
 								<div style="float: left; margin-left: 10px; width: 35%">
 									<label style="font-weight: normal;">
-										<input type="checkbox" ng-model="form.by_agent" value="1" />
+										<input type="checkbox" ng-model="typeForm.by_agent" value="1" />
 										By an agent
 									</label>
-									<div ng-show="form.by_agent">
+									<div ng-show="typeForm.by_agent">
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_agent_opt.web" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_agent_opt.web" value="1" />
 											via the agent interface
 										</label><br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_agent_opt.email" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_agent_opt.email" value="1" />
 											 via email
 										</label><br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="form.by_agent_opt.api" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_agent_opt.api" value="1" />
 											via the API
 										</label>
 									</div>
@@ -92,22 +92,15 @@
 							<h3>Criteria</h3>
 						</div>
 						<div class="col-lg-10">
-							<div class="dp-ob-set" dp-option-builder-set="{typedef: TicketTriggersEdit.criteraTypeDef, setsObject: trigger_criteria_set, template: 'ticket_deps_criteria_setrow' }">
+							<div class="dp-ob-set" dp-option-builder-set="{typedef: TicketTriggersEdit.criteraTypeDef, setsObject: trigger_criteria_set, template: 'ticket_deps_criteria_setrow', option_types: criteriaOptionTypes }">
 								<div class="dp-ob-setrow">
 									<header>
 										<em class="dp-ob-row-tag if">if</em>
 										When following conditions are met:
 									</header>
 									<article>
-										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria_set.first" options="{tag_first: false, tag_after: 'and'}">
-											<select>
-												<option value="0">Add criteria</option>
-												<option value="department">Department</option>
-												<option value="product">Product</option>
-												<option value="category">Category</option>
-												<option value="workflow">Workflow</option>
-												<option value="priority">Priority</option>
-											</select>
+										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_criteria_set.first" options="{tag_first: false, tag_after: 'and'}" option-types="criteriaOptionTypes">
+											<add-btn-label>Add action</add-btn-label>
 										</dp-option-builder>
 									</article>
 								</div>
@@ -122,15 +115,8 @@
 												When following conditions are met:
 											</header>
 											<article>
-												<dp-option-builder types-def="criteria_typedef" ng-model="criteria_set_row" options="{tag_first: false, tag_after: 'and'}">
-													<select>
-														<option value="0">Add criteria</option>
-														<option value="department">Department</option>
-														<option value="product">Product</option>
-														<option value="category">Category</option>
-														<option value="workflow">Workflow</option>
-														<option value="priority">Priority</option>
-													</select>
+												<dp-option-builder types-def="criteria_typedef" ng-model="criteria_set_row" options="{tag_first: false, tag_after: 'and'}" option-types="option_types">
+													<add-btn-label>Add action</add-btn-label>
 												</dp-option-builder>
 											</article>
 										</div>
@@ -156,15 +142,8 @@
 										The followings actions will run:
 									</header>
 									<article>
-										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_actions" options="{tag_first: 'then', tag_after: 'and'}">
-											<select>
-												<option value="0">Add action</option>
-												<option value="department">Department</option>
-												<option value="product">Product</option>
-												<option value="category">Category</option>
-												<option value="workflow">Workflow</option>
-												<option value="priority">Priority</option>
-											</select>
+										<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_actions" options="{tag_first: 'then', tag_after: 'and'}" option-types="criteriaOptionTypes">
+											<add-btn-label>Add action</add-btn-label>
 										</dp-option-builder>
 									</article>
 								</div>

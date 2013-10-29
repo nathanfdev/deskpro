@@ -68,15 +68,23 @@
         this.$q = $q;
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
+        this.addBtnText = 'Add';
         this.els = {};
         $transclude(function(clone) {
-          clone.css('width', '100%');
-          return _this.element.find('.select2-wrap').append(clone);
+          var addBtnLabel, select;
+          select = $('<select/>').css('width', '100%');
+          addBtnLabel = clone.filter('add-btn-label');
+          if (addBtnLabel[0]) {
+            _this.addBtnText = addBtnLabel.text();
+          }
+          return _this.element.find('.select2-wrap').append(select);
         });
         this.els.select = this.element.find('.select2-wrap').find('select').first();
+        this.updateOptionTypes();
         this.els.select.select2();
         this.els.select.on('change', function() {
-          return _this.els.addBtn.click();
+          _this.els.addBtn.click();
+          return _this.els.select.select2('val', '0');
         });
         this.els.optionList = this.element.find('.dp-ob-options');
         this.els.noOptionsMessage = this.els.optionList.find('.dp-ob-no-options');
@@ -92,7 +100,40 @@
           }
           return _this.addRow(selected_opt.val(), {});
         });
+        this.$scope.$watchCollection('optionTypes', function() {
+          return _this.updateOptionTypes();
+        });
       }
+
+      /*
+        	# Updates the option types available in the select box
+      */
+
+
+      DeskPRO_OptionBuilder_Controller.prototype.updateOptionTypes = function() {
+        var item, opt, optgroup, subItem, _i, _j, _len, _len1, _ref, _ref1, _results;
+        this.els.select.empty();
+        $('<option/>').val('0').text(this.addBtnText).appendTo(this.els.select);
+        _ref = this.$scope.optionTypes;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          item = _ref[_i];
+          if (item.subOptions != null) {
+            optgroup = $('<optgroup/>').attr('label', item.title);
+            _ref1 = item.subOptions;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              subItem = _ref1[_j];
+              opt = $('<option/>').val(subItem.value).text(subItem.title);
+              optgroup.append(opt);
+            }
+            _results.push(this.els.select.append(optgroup));
+          } else {
+            opt = $('<option/>').val(item.value).text(item.title);
+            _results.push(this.els.select.append(opt));
+          }
+        }
+        return _results;
+      };
 
       /*
         	# Add a new row to the form

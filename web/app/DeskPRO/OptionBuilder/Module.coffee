@@ -17,7 +17,8 @@ define [
 				controllerAs: 'OptionBuilder',
 				scope: {
 					getTypesDef: '&typesDef',
-					getOptions: '&options'
+					getOptions:  '&options',
+					optionTypes: '=optionTypes'
 				}
 			}
 		])
@@ -60,6 +61,7 @@ define [
 					rowScope = scope.$new()
 					rowScope.criteria_typedef = opts.typedef
 					rowScope.criteria_set_row = opts.setsObject[setId]
+					rowScope.option_types     = opts.option_types
 
 					element = $compile(tpl)(rowScope)
 

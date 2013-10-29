@@ -62,19 +62,28 @@ define ->
 			@$q                = $q
 			@typesDef          = @$scope.getTypesDef()
 			@options           = @$scope.getOptions() || {}
+			@addBtnText        = 'Add'
 
 			@els = {}
 
 			$transclude( (clone) =>
-				clone.css('width', '100%')
-				@element.find('.select2-wrap').append(clone)
+				select = $('<select/>').css('width', '100%')
+
+				addBtnLabel = clone.filter('add-btn-label')
+				if addBtnLabel[0]
+					@addBtnText = addBtnLabel.text()
+
+				@element.find('.select2-wrap').append(select)
 			)
 
 			# Select box
 			@els.select = @element.find('.select2-wrap').find('select').first()
+			@updateOptionTypes()
 			@els.select.select2()
 			@els.select.on('change', =>
 				@els.addBtn.click()
+
+				@els.select.select2('val', '0')
 			)
 
 			# The list to append options to
@@ -98,6 +107,29 @@ define ->
 
 				@addRow(selected_opt.val(), {})
 			)
+
+			@$scope.$watchCollection('optionTypes', =>
+				@updateOptionTypes()
+			)
+
+		###
+    	# Updates the option types available in the select box
+    	###
+		updateOptionTypes: ->
+			@els.select.empty()
+
+			$('<option/>').val('0').text(@addBtnText).appendTo(@els.select)
+
+			for item in @$scope.optionTypes
+				if item.subOptions?
+					optgroup = $('<optgroup/>').attr('label', item.title)
+					for subItem in item.subOptions
+						opt = $('<option/>').val(subItem.value).text(subItem.title)
+						optgroup.append(opt)
+					@els.select.append(optgroup)
+				else
+					opt = $('<option/>').val(item.value).text(item.title)
+					@els.select.append(opt)
 
 
 		###

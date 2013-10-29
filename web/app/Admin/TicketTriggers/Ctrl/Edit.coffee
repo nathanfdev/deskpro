@@ -1,7 +1,9 @@
 define [
+	'DeskPRO/Util/Arrays'
 	'Admin/Main/Ctrl/Base',
 	'Admin/Main/Model/DepAgentPermMatrix'
 ], (
+	Arrays,
 	Admin_Ctrl_Base,
 	Admin_Main_Model_DepAgentPermMatrix
 ) ->
@@ -20,7 +22,7 @@ define [
 			@$scope.triggerType = @$stateParams.type
 			@$scope.triggerId   = @$stateParams.id
 
-			@$scope.form = {
+			@$scope.typeForm = {
 				by_user: true,
 				by_agent: false,
 				by_agent_opt: {
@@ -39,12 +41,50 @@ define [
 
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
 
+			@$scope.criteriaOptionTypes = []
+			@updateCriteriaOptionTypes()
+
 			@$scope.trigger_criteria_set = {
 				first: {},
 				second: {}
 			}
 
+			@$scope.$watch('typeForm', =>
+				@updateCriteriaOptionTypes()
+			, true)
+
 			return
+
+		updateCriteriaOptionTypes: ->
+			types = []
+
+			if @$scope.typeForm.by_user
+				if @$scope.typeForm.by_user_opt.web_portal or @$scope.typeForm.by_user_opt.web_widget or @$scope.typeForm.by_user_opt.web_form
+					Arrays.pushUnique(types, 'web')
+					Arrays.pushUnique(types, 'web.user')
+				if @$scope.typeForm.by_user_opt.email
+					Arrays.pushUnique(types, 'email')
+					Arrays.pushUnique(types, 'email.user')
+				if @$scope.typeForm.by_user_opt.api
+					Arrays.pushUnique(types, 'api')
+					Arrays.pushUnique(types, 'api.user')
+
+			if @$scope.typeForm.by_agent
+				if @$scope.typeForm.by_agent_opt.web
+					Arrays.pushUnique(types, 'web')
+					Arrays.pushUnique(types, 'web.agent')
+				if @$scope.typeForm.by_user_opt.email
+					Arrays.pushUnique(types, 'email')
+					Arrays.pushUnique(types, 'email.agent')
+				if @$scope.typeForm.by_user_opt.api
+					Arrays.pushUnique(types, 'api')
+					Arrays.pushUnique(types, 'api.agent')
+
+			setOptions = @criteraTypeDef.getOptionsForTypes(types)
+
+			@$scope.criteriaOptionTypes.length = 0
+			for opt in setOptions
+				@$scope.criteriaOptionTypes.push(opt)
 
 		###
 		# Load the trigger
