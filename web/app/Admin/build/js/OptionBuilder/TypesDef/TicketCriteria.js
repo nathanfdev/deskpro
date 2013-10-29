@@ -218,10 +218,14 @@
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDef = function(type, options) {
         var me, typeFunc, typeName;
+        if (options == null) {
+          options = {};
+        }
         typeName = type.toLowerCase().replace(/_(.)/g, function(match, group1) {
           return group1.toUpperCase();
         });
         typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+        options.type = type;
         typeFunc = "get" + typeName;
         if (this[typeFunc] != null) {
           return this[typeFunc](options);
@@ -256,7 +260,8 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getStandardSelect = function(options) {
-        var data_name, form_type, me, operators, options_formatter, prop_name;
+        var data_name, form_type, me, operators, options_formatter, prop_name, type;
+        type = options.type;
         prop_name = options.propName;
         data_name = options.dataName;
         form_type = options.formType || 'select';
@@ -338,8 +343,10 @@
                   model = {};
                 }
                 value = {};
-                value[prop_name] = model.value;
+                value.type = type;
                 value.op = model.op;
+                value.options = {};
+                value.options[prop_name] = model.value;
                 return value;
               }
             };
@@ -348,7 +355,8 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getStandardIs = function(options) {
-        var me, prop_name;
+        var me, prop_name, type;
+        type = options.type;
         prop_name = options.propName;
         me = this;
         return {
@@ -375,8 +383,10 @@
                   model = {};
                 }
                 value = {};
-                value[prop_name] = true;
+                value.type = type;
                 value.op = 'is';
+                value.options = {};
+                value.options[prop_name] = true;
                 return value;
               }
             };
@@ -385,7 +395,8 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getStandardInput = function(options) {
-        var me, operators, prop_name;
+        var me, operators, prop_name, type;
+        type = options.type;
         prop_name = options.propName;
         operators = options.operators || ['is', 'not'];
         me = this;
@@ -415,8 +426,10 @@
                   model = {};
                 }
                 value = {};
-                value[prop_name] = model.value;
+                value.type = type;
                 value.op = model.op;
+                value.options = {};
+                value.options[prop_name] = model.value;
                 return value;
               }
             };

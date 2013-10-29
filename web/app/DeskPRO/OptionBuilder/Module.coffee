@@ -9,7 +9,6 @@ define [
 		.directive('dpOptionBuilder', [ ->
 			return {
 				restrict: 'E',
-				require: 'ngModel',
 				templateUrl: DP_BASE_ADMIN_URL+'/load-view/OptionBuilder/control.html',
 				replace: true,
 				transclude: true,
@@ -18,7 +17,8 @@ define [
 				scope: {
 					getTypesDef: '&typesDef',
 					getOptions:  '&options',
-					optionTypes: '=optionTypes'
+					optionTypes: '=optionTypes',
+					saveTarget: '=saveTarget'
 				}
 			}
 		])
@@ -44,36 +44,64 @@ define [
 					if scope.tag?
 						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag)
 						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'))
+					else
+						tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag')
+						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('without-tag'))
 			}
 		]).directive('dpOptionBuilderSet', [ '$compile', '$templateCache', ($compile, $templateCache) ->
 			return {
 			restrict: 'A',
 			link: (scope, iElement, iAttrs) ->
 				opts = scope.$eval(iAttrs.dpOptionBuilderSet)
+				scope.setCount = 0
+
+				lastEmpty = null
 
 				addRow = ->
 					containRow = iElement.find('.dp-ob-addition-setrow')
-
-					setId = _.uniqueId('set')
 					opts.setsObject[setId] = {}
 
 					tpl = $templateCache.get(opts.template)
 					rowScope = scope.$new()
+					setId = rowScope.$id
+					opts.setsObject[setId] = {}
 					rowScope.criteria_typedef = opts.typedef
 					rowScope.criteria_set_row = opts.setsObject[setId]
 					rowScope.option_types     = opts.option_types
 
+					rowScope.$on('rowAdded', ->
+						if element.hasClass('empty') and lastEmpty = element
+							addRow()
+
+						element.removeClass('empty')
+					)
+					rowScope.$on('rowRemoved', (ev, ctrl, e, s, rowsCount) ->
+						console.log('removed')
+						console.log(rowsCount)
+						if rowsCount == 0
+							if scope.setCount == 1
+								element.addClass('empty')
+					)
+
 					element = $compile(tpl)(rowScope)
+
+					element.addClass('empty')
 
 					element.find('.removerow_btn').on('click', (ev) ->
 						ev.preventDefault()
 						rowScope.$destroy()
 						element.slideUp(200, ->
 							element.remove()
+
+							if scope.setCount == 0
+								addRow()
 						)
+						scope.setCount -= 1
 					)
 
 					containRow.append(element)
+					scope.setCount += 1
+					lastEmpty = element
 
 				iElement.find('.add_btn').on('click', (ev) ->
 					ev.preventDefault()

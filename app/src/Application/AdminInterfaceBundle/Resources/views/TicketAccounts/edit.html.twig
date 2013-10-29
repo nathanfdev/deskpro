@@ -260,6 +260,82 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3>From Address</h3>
+						</div>
+						<div class="col-lg-9">
+							<div class="inner-group" style="padding-top: 3px;">
+								<select ui-select2 style="min-width: 240px;">
+									<option value="auto">Automatic: Use the email address linked to the department of the ticket</option>
+									<option value="set">Set: Save this email address on the ticket</option>
+								</select> <span class="help-icon" tooltip-placement="left" tooltip="When 'automatic' is chosen, then From email address is always the email address of linked to the tickets current department. This means that if you change the department, the From email address may change as well. With 'set', you are setting this email address on the ticket specifically, and it will not change unless changed by triggers or manually updated by an agent."></span>
+								<span class="help-block">
+									This determines the "From" email address on outgoing email notifications sent to users and agents.
+								</span>
+							</div>
+						</div>
+					</div>
+
+					{##################################################################################################}
+					{# Actions #}
+					{##################################################################################################}
+
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3>New Email Actions</h3>
+						</div>
+						<div class="col-lg-9">
+							{# Send newticket auto-response #}
+							<div class="inner-group">
+								<label style="font-weight: normal">
+									<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled" value="1" />
+									Send user an auto-response confirming their new ticket
+								</label>
+								<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled">
+									<table class="display-table">
+										<tr>
+											<td>Template:</td>
+											<td>
+												<select
+														ui-select2
+														ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name"
+														style="min-width: 240px"
+														class="no-search"
+														>
+													<option value="">Default template</option>
+													<option value="CUSTOM">Custom template</option>
+												</select>
+												<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-ticket.html.twig'); $event.preventDefault();">Edit Template</button>
+											</td>
+										</tr>
+
+										<tr>
+											<td>From Name:</td>
+											<td>
+												<select
+														ui-select2
+														ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name"
+														style="min-width: 240px"
+														class="no-search"
+														>
+													<option value="department_title">Department title</option>
+													<option value="helpdesk_name">Helpdesk name</option>
+													<option value="website_name">Website name</option>
+													<option value="CUSTOM">Custom</option>
+												</select>
+												<div ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name == 'CUSTOM'">
+													<input type="text" class="form-control" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name_custom" />
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 

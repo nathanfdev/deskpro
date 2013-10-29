@@ -266,11 +266,13 @@ define ->
 
 			return p
 
-		getDef: (type, options) ->
+		getDef: (type, options = {}) ->
 			typeName = type.toLowerCase().replace(/_(.)/g, (match, group1) ->
 				return group1.toUpperCase()
 			)
 			typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1)
+
+			options.type = type
 
 			typeFunc = "get#{typeName}"
 			if @[typeFunc]?
@@ -293,6 +295,7 @@ define ->
 				}
 
 		getStandardSelect: (options) ->
+			type      = options.type
 			prop_name = options.propName
 			data_name = options.dataName
 			form_type = options.formType || 'select'
@@ -362,13 +365,16 @@ define ->
 							}
 						getValue: (model = {}, data) ->
 							value = {}
-							value[prop_name] = model.value
+							value.type = type
 							value.op = model.op
+							value.options = {}
+							value.options[prop_name] = model.value
 							return value
 					}
 			}
 
 		getStandardIs: (options) ->
+			type      = options.type
 			prop_name = options.propName
 
 			me = @
@@ -388,13 +394,16 @@ define ->
 							}
 						getValue: (model = {}, data) ->
 							value = {}
-							value[prop_name] = true
+							value.type = type
 							value.op = 'is'
+							value.options = {}
+							value.options[prop_name] = true
 							return value
 					}
 			}
 
 		getStandardInput: (options) ->
+			type      = options.type
 			prop_name = options.propName
 			operators = options.operators || ['is', 'not']
 
@@ -417,8 +426,10 @@ define ->
 						}
 					getValue: (model = {}, data) ->
 						value = {}
-						value[prop_name] = model.value
+						value.type = type
 						value.op = model.op
+						value.options = {}
+						value.options[prop_name] = model.value
 						return value
 					}
 			}

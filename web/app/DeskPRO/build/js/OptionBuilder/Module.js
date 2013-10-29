@@ -4,7 +4,6 @@
       function() {
         return {
           restrict: 'E',
-          require: 'ngModel',
           templateUrl: DP_BASE_ADMIN_URL + '/load-view/OptionBuilder/control.html',
           replace: true,
           transclude: true,
@@ -13,7 +12,8 @@
           scope: {
             getTypesDef: '&typesDef',
             getOptions: '&options',
-            optionTypes: '=optionTypes'
+            optionTypes: '=optionTypes',
+            saveTarget: '=saveTarget'
           }
         };
       }
@@ -29,6 +29,9 @@
             if (scope.tag != null) {
               tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag);
               return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'));
+            } else {
+              tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag');
+              return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('without-tag'));
             }
           }
         };
@@ -38,27 +41,52 @@
         return {
           restrict: 'A',
           link: function(scope, iElement, iAttrs) {
-            var addRow, opts;
+            var addRow, lastEmpty, opts;
             opts = scope.$eval(iAttrs.dpOptionBuilderSet);
+            scope.setCount = 0;
+            lastEmpty = null;
             addRow = function() {
               var containRow, element, rowScope, setId, tpl;
               containRow = iElement.find('.dp-ob-addition-setrow');
-              setId = _.uniqueId('set');
               opts.setsObject[setId] = {};
               tpl = $templateCache.get(opts.template);
               rowScope = scope.$new();
+              setId = rowScope.$id;
+              opts.setsObject[setId] = {};
               rowScope.criteria_typedef = opts.typedef;
               rowScope.criteria_set_row = opts.setsObject[setId];
               rowScope.option_types = opts.option_types;
+              rowScope.$on('rowAdded', function() {
+                if (element.hasClass('empty') && (lastEmpty = element)) {
+                  addRow();
+                }
+                return element.removeClass('empty');
+              });
+              rowScope.$on('rowRemoved', function(ev, ctrl, e, s, rowsCount) {
+                console.log('removed');
+                console.log(rowsCount);
+                if (rowsCount === 0) {
+                  if (scope.setCount === 1) {
+                    return element.addClass('empty');
+                  }
+                }
+              });
               element = $compile(tpl)(rowScope);
+              element.addClass('empty');
               element.find('.removerow_btn').on('click', function(ev) {
                 ev.preventDefault();
                 rowScope.$destroy();
-                return element.slideUp(200, function() {
-                  return element.remove();
+                element.slideUp(200, function() {
+                  element.remove();
+                  if (scope.setCount === 0) {
+                    return addRow();
+                  }
                 });
+                return scope.setCount -= 1;
               });
-              return containRow.append(element);
+              containRow.append(element);
+              scope.setCount += 1;
+              return lastEmpty = element;
             };
             iElement.find('.add_btn').on('click', function(ev) {
               ev.preventDefault();

@@ -68,20 +68,28 @@
         this.$q = $q;
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
-        this.addBtnText = 'Add';
+        this.saveTarget = this.$scope.saveTarget;
+        if (!window.SAVE_TARGETS) {
+          window.SAVE_TARGETS = [];
+        }
+        window.SAVE_TARGETS.push(this.saveTarget);
         this.els = {};
         $transclude(function(clone) {
-          var addBtnLabel, select;
+          var addBtnLabel, addBtnText, select;
           select = $('<select/>').css('width', '100%');
           addBtnLabel = clone.filter('add-btn-label');
+          addBtnText = 'Add';
           if (addBtnLabel[0]) {
-            _this.addBtnText = addBtnLabel.text();
+            addBtnText = addBtnLabel.text();
           }
-          return _this.element.find('.select2-wrap').append(select);
+          _this.element.find('.select2-wrap').append(select);
+          return _this.element.find('.add_btn').find('label').text(addBtnText);
         });
         this.els.select = this.element.find('.select2-wrap').find('select').first();
         this.updateOptionTypes();
-        this.els.select.select2();
+        this.els.select.select2({
+          dropdownCssClass: 'dp-ob-select2'
+        });
         this.els.select.on('change', function() {
           _this.els.addBtn.click();
           return _this.els.select.select2('val', '0');
@@ -113,7 +121,6 @@
       DeskPRO_OptionBuilder_Controller.prototype.updateOptionTypes = function() {
         var item, opt, optgroup, subItem, _i, _j, _len, _len1, _ref, _ref1, _results;
         this.els.select.empty();
-        $('<option/>').val('0').text(this.addBtnText).appendTo(this.els.select);
         _ref = this.$scope.optionTypes;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -177,12 +184,17 @@
           if (dataFormatter) {
             rowScope.value = value || {};
             rowScope.model = dataFormatter.getViewValue(rowScope.value, data);
-            rowScope.$watch(rowScope.model, function(newModel) {
-              return rowScope.value = dataFormatter.getValue(newModel, data);
-            });
+            rowScope.$watch('model', function() {
+              rowScope.value = dataFormatter.getValue(rowScope.model, data);
+              return _this.saveTarget[rowScope.$id] = rowScope.value;
+            }, true);
           } else {
             rowScope.model = {};
             rowScope.value = rowScope.model;
+            rowScope.$watch('model', function() {
+              rowScope.value = rowScope.model;
+              return _this.saveTarget[rowScope.$id] = rowScope.value;
+            }, true);
           }
           if (data) {
             for (k in data) {
@@ -202,15 +214,17 @@
             ev.preventDefault();
             return _this.removeRow(element);
           });
+          rowScope.$emit('rowAdded', _this, element, rowScope);
           element.data('scopeId', rowScope.$id);
           _this.els.loadingOptionMessage.hide();
           _this.els.noOptionsMessage.hide();
           _this.els.optionList.append(element);
           _this.rowsCount++;
-          return _this.rows[rowScope.$id] = {
+          _this.rows[rowScope.$id] = {
             element: element,
             scope: rowScope
           };
+          return _this.saveTarget[rowScope.$id] = rowScope.value;
         });
       };
 
@@ -238,6 +252,8 @@
         var row;
         row = this.rows[scopeId];
         delete this.rows[scopeId];
+        delete this.saveTarget[scopeId];
+        row.scope.$emit('rowRemoved', this, row.element, row.scope, this.rowsCount - 1);
         row.element.remove();
         row.scope.$destroy();
         this.rowsCount--;
@@ -245,28 +261,6 @@
           this.els.noOptionsMessage.show();
         }
         return true;
-      };
-
-      /*
-        	# Collect all data from all rows in the builder
-        	#
-        	# @return {Array}
-      */
-
-
-      DeskPRO_OptionBuilder_Controller.prototype.collectData = function() {
-        var data, r, row, scopeId, _ref;
-        data = [];
-        _ref = this.rows;
-        for (scopeId in _ref) {
-          if (!__hasProp.call(_ref, scopeId)) continue;
-          row = _ref[scopeId];
-          r = row.scope.value;
-          if (r) {
-            data.push(r);
-          }
-        }
-        return data;
       };
 
       DeskPRO_OptionBuilder_Controller.FACTORY = [

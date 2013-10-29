@@ -2,10 +2,10 @@
 	<br/>
 	<div class="panel-body">
 		<div class="form-group">
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<h3>{{ phrase('agent.general.title') }} *</h3>
 			</div>
-			<div class="col-lg-10">
+			<div class="col-lg-9">
 				<div class="inner-group" dp-error-class="form_props.title">
 					<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" autofocus />
 					{% if app.getLanguages().isMultiLang() %}
@@ -38,10 +38,10 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<h3>{{ phrase('agent.general.parent') }}</h3>
 			</div>
-			<div class="col-lg-10">
+			<div class="col-lg-9">
 				<select
 					ui-select2
 					ng-model="TicketDepsEdit.dep.parent_id"
@@ -66,10 +66,10 @@
 			</div>
 		</div>
 		<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length" dp-error-class="form_props.email_gateway_id">
-			<div class="col-lg-2">
+			<div class="col-lg-3">
 				<h3>{{ phrase('adm.departments.linked_account') }}</h3>
 			</div>
-			<div class="col-lg-10">
+			<div class="col-lg-9">
 				<select
 					name="email_gateway_id"
 					ui-select2
@@ -89,15 +89,15 @@
 		{##############################################################################################}
 
 		<div class="form-group">
-			<div class="col-lg-2">
-				<h3>New Ticket</h3>
+			<div class="col-lg-3">
+				<h3>New Ticket Actions</h3>
 			</div>
-			<div class="col-lg-10">
+			<div class="col-lg-9">
 				{# Send newticket auto-response #}
 				<div class="inner-group">
-					<label>
+					<label style="font-weight: normal">
 						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled" value="1" />
-						<h4>Send user an auto-response confirming their new ticket</h4>
+						Send user an auto-response confirming their new ticket
 					</label>
 					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled">
 						<table class="display-table">
@@ -141,120 +141,6 @@
 				</div>
 			</div>
 		</div>
-
-		{##############################################################################################}
-
-		<div class="form-group">
-			<div class="col-lg-2">
-				<h3>User Reply</h3>
-			</div>
-			<div class="col-lg-10">
-				{# Send newreply auto-response #}
-				<div class="inner-group">
-					<label>
-						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserreply_response.enabled" value="1" />
-						<h4>Send user an auto-response confirming their reply</h4>
-					</label>
-					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserreply_response.enabled">
-						<table class="display-table">
-							<tr>
-								<td>Template:</td>
-								<td>
-									<select
-											ui-select2
-											ng-model="TicketDepsEdit.trigger.user_send_newuserreply_response.template_name"
-											style="min-width: 240px"
-											class="no-search"
-											>
-										<option value="">Default template</option>
-										<option value="CUSTOM">Custom template</option>
-									</select>
-									<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserreply_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-reply-user.html.twig'); $event.preventDefault();">Edit Template</button>
-								</td>
-							</tr>
-
-							<tr>
-								<td>From Name:</td>
-								<td>
-									<select
-											ui-select2
-											ng-model="TicketDepsEdit.trigger.user_send_newuserreply_response.from_name"
-											style="min-width: 240px"
-											class="no-search"
-											>
-										<option value="department_title">Department title</option>
-										<option value="helpdesk_name">Helpdesk name</option>
-										<option value="website_name">Website name</option>
-										<option value="CUSTOM">Custom</option>
-									</select>
-									<div ng-show="TicketDepsEdit.trigger.user_send_newuserreply_response.from_name == 'CUSTOM'">
-										<input type="text" class="form-control" ng-model="TicketDepsEdit.trigger.user_send_newuserreply_response.from_name_custom" />
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		{##############################################################################################}
-
-		<div class="form-group">
-			<div class="col-lg-2">
-				<h3>Agent Reply</h3>
-			</div>
-			<div class="col-lg-10">
-				{# Send newagentreply auto-response #}
-				<div class="inner-group">
-					<label>
-						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newagentreply_response.enabled" value="1" />
-						<h4>Send the user an email with the agent reply</h4>
-					</label>
-					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newagentreply_response.enabled">
-						<table class="display-table">
-							<tr>
-								<td>Template:</td>
-								<td>
-									<select
-											ui-select2
-											ng-model="TicketDepsEdit.trigger.user_send_newagentreply_response.template_name"
-											style="min-width: 240px"
-											class="no-search"
-											>
-										<option value="">Default template</option>
-										<option value="CUSTOM">Custom template</option>
-									</select>
-									<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newagentreply_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-reply-agent.html.twig'); $event.preventDefault();">Edit Template</button>
-								</td>
-							</tr>
-
-							<tr>
-								<td>From Name:</td>
-								<td>
-									<select
-											ui-select2
-											ng-model="TicketDepsEdit.trigger.user_send_newagentreply_response.from_name"
-											style="min-width: 240px"
-											class="no-search"
-											>
-										<option value="performer">Agent name</option>
-										<option value="department_title">Department title</option>
-										<option value="helpdesk_name">Helpdesk name</option>
-										<option value="website_name">Website name</option>
-										<option value="CUSTOM">Custom</option>
-									</select>
-									<div ng-show="TicketDepsEdit.trigger.user_send_newagentreply_response.from_name == 'CUSTOM'">
-										<input type="text" class="form-control" ng-model="TicketDepsEdit.trigger.user_send_newagentreply_response.from_name_custom" />
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-
 
 	</div>
 </div>

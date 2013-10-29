@@ -62,7 +62,11 @@ define ->
 			@$q                = $q
 			@typesDef          = @$scope.getTypesDef()
 			@options           = @$scope.getOptions() || {}
-			@addBtnText        = 'Add'
+			@saveTarget        = @$scope.saveTarget
+
+			if not window.SAVE_TARGETS
+				window.SAVE_TARGETS = []
+			window.SAVE_TARGETS.push(@saveTarget)
 
 			@els = {}
 
@@ -70,16 +74,20 @@ define ->
 				select = $('<select/>').css('width', '100%')
 
 				addBtnLabel = clone.filter('add-btn-label')
+				addBtnText = 'Add'
 				if addBtnLabel[0]
-					@addBtnText = addBtnLabel.text()
+					addBtnText = addBtnLabel.text()
 
 				@element.find('.select2-wrap').append(select)
+				@element.find('.add_btn').find('label').text(addBtnText);
 			)
 
 			# Select box
 			@els.select = @element.find('.select2-wrap').find('select').first()
 			@updateOptionTypes()
-			@els.select.select2()
+			@els.select.select2({
+				dropdownCssClass: 'dp-ob-select2'
+			})
 			@els.select.on('change', =>
 				@els.addBtn.click()
 
@@ -117,9 +125,6 @@ define ->
     	###
 		updateOptionTypes: ->
 			@els.select.empty()
-
-			$('<option/>').val('0').text(@addBtnText).appendTo(@els.select)
-
 			for item in @$scope.optionTypes
 				if item.subOptions?
 					optgroup = $('<optgroup/>').attr('label', item.title)
@@ -177,13 +182,19 @@ define ->
 
 					rowScope.model = dataFormatter.getViewValue(rowScope.value, data)
 
-					rowScope.$watch(rowScope.model, (newModel) ->
-						rowScope.value = dataFormatter.getValue(newModel, data)
-					)
+					rowScope.$watch('model', =>
+						rowScope.value = dataFormatter.getValue(rowScope.model, data)
+						@saveTarget[rowScope.$id] = rowScope.value
+					, true)
 
 				else
 					rowScope.model = {}
 					rowScope.value = rowScope.model
+
+					rowScope.$watch('model', =>
+						rowScope.value = rowScope.model
+						@saveTarget[rowScope.$id] = rowScope.value
+					, true)
 
 				if data
 					for own k, v of data
@@ -200,6 +211,8 @@ define ->
 					@removeRow(element)
 				)
 
+				rowScope.$emit('rowAdded', this, element, rowScope)
+
 				element.data('scopeId', rowScope.$id)
 				@els.loadingOptionMessage.hide()
 				@els.noOptionsMessage.hide()
@@ -209,6 +222,8 @@ define ->
 					element: element,
 					scope: rowScope
 				}
+				@saveTarget[rowScope.$id] = rowScope.value
+
 			)
 
 		###
@@ -230,6 +245,10 @@ define ->
 			row = @rows[scopeId]
 
 			delete @rows[scopeId]
+			delete @saveTarget[scopeId]
+
+			row.scope.$emit('rowRemoved', this, row.element, row.scope, @rowsCount-1)
+
 			row.element.remove()
 			row.scope.$destroy()
 
@@ -238,22 +257,6 @@ define ->
 				@els.noOptionsMessage.show()
 
 			return true
-
-
-		###
-    	# Collect all data from all rows in the builder
-    	#
-    	# @return {Array}
-		###
-		collectData: ->
-			data = []
-
-			for own scopeId, row of @rows
-				r = row.scope.value
-				if r
-					data.push(r)
-
-			return data
 
 		@FACTORY = [ '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q) ->
 			return new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q)
