@@ -114,18 +114,18 @@ class FeedbackStatusesController extends AbstractController
 
 		$feedback_status_edit = new FeedbackStatusEdit($feedback_status);
 
+		$postData      = $this->in->getAll('post');
+
 		$form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
 
-		$data = $this->in->getAll('post');
-		$form->submit($data);
-
-		if ($form->isValid() && $this->isEntityValid($feedback_status)) {
+		if ($form->isValid()) {
 
 			$feedback_status_edit->save($this->em);
 		}
 		else {
 
-			throw ValidationException::create("feedback_status.save", $this->getEntityValidationString($feedback_status));
+			throw ValidationException::create("feedback_status.save", $this->getFormValidationErrorsString($form));
 		}
 
 		return $this->createApiResponse(

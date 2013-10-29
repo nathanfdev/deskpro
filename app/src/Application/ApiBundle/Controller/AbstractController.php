@@ -326,12 +326,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 	/**
+	 * @TODO provide tests for this method
+	 *
 	 * @param $entity
 	 *
 	 * @return string
 	 */
 
-	public function getEntityValidationString($entity)
+	public function getEntityValidationErrorsString($entity)
 	{
 		$result = '';
 		$errors = $this->get('validator')->validate($entity);
@@ -345,6 +347,61 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @TODO provide tests for this method
+	 *
+	 * @param $form
+	 *
+	 * @return string
+	 */
+
+	public function getFormValidationErrorsString($form)
+	{
+		$result = '';
+		$errors = $this->get('validator')->validate($form);
+
+		if (sizeof($errors) > 0) {
+
+			foreach ($errors as $error) {
+
+				$result .= '<li>' . $error->getMessage() . '</li>';
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * If we have some form and data from request we get rid off unnecessary data
+	 * in order not to have 'This form should not contain extra fields'
+	 *
+	 * @TODO provide tests for this method
+	 *
+	 * @param \Symfony\Component\Form\Form  $form
+	 * @param array $requestData
+	 * @param null  $key
+	 *
+	 * @return array
+	 */
+
+	public function deleteExtraDataFromRequest(\Symfony\Component\Form\Form $form, array $requestData, $key = null)
+	{
+		if (is_null($key)) {
+
+			$form_data = $form->all();
+			$requestData  = array_intersect_key($requestData, $form_data);
+
+			return $requestData;
+
+		} else {
+
+			$form_data = $form->get($key)->all();
+			$requestData  = array_intersect_key($requestData[$key], $form_data);
+
+			return array($key => $requestData);
+		}
 	}
 
 	public function getApiSearchResult($type, array $terms, array $extra, $cache_id, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
