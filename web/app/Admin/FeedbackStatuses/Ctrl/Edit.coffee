@@ -13,6 +13,13 @@ define [
 
 			@feedback_status = {}
 
+			# @$stateParams.type will be defined in case of creation of new feedback status
+
+			@statusType = @$stateParams.type
+
+			if @statusType
+				@feedback_status.status_type = @statusType
+
 			return
 
 		initialLoad: ->
@@ -46,7 +53,7 @@ define [
 				promise = @Api.sendPostJson('/feedback_statuses/' + @feedback_status.id, {feedback_status: @feedback_status})
 			else
 				is_new = true
-				promise = @Api.sendPutJson('/feedback_statuses', @feedback_status, {feedback_status: @feedback_status})
+				promise = @Api.sendPutJson('/feedback_statuses', {feedback_status: @feedback_status})
 
 			promise.success((result) =>
 
@@ -61,7 +68,7 @@ define [
 				@skipDirtyState()
 
 				if is_new
-					@$state.go('portal.feedback_statuses.gocreate')
+					@$state.go('portal.feedback_statuses.gocreate', {type: @statusType})
 				else
 					@$state.go('portal.feedback_statuses')
 			)

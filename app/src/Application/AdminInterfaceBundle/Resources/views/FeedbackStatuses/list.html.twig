@@ -15,7 +15,7 @@
                             <span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span>
                         </li>
                         <li>
-                            <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate') }}">
+                            <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate', '{type: activeType}') }}">
                                 <i class="icon-plus"></i> {{ phrase('agent.general.add') }}
                             </a>
                         </li>
@@ -51,7 +51,7 @@
                             <span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span>
                         </li>
                         <li>
-                            <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a>
+                            <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate', '{type: closedType}') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a>
                         </li>
                     </ul>
                 </nav>

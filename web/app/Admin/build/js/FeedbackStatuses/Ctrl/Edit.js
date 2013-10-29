@@ -22,6 +22,10 @@
 
       Admin_FeedbackStatuses_Ctrl_Edit.prototype.init = function() {
         this.feedback_status = {};
+        this.statusType = this.$stateParams.type;
+        if (this.statusType) {
+          this.feedback_status.status_type = this.statusType;
+        }
       };
 
       Admin_FeedbackStatuses_Ctrl_Edit.prototype.initialLoad = function() {
@@ -58,7 +62,7 @@
           });
         } else {
           is_new = true;
-          promise = this.Api.sendPutJson('/feedback_statuses', this.feedback_status, {
+          promise = this.Api.sendPutJson('/feedback_statuses', {
             feedback_status: this.feedback_status
           });
         }
@@ -70,7 +74,9 @@
           _this.FeedbackStatusesData.updateModel(_this.feedback_status);
           _this.skipDirtyState();
           if (is_new) {
-            return _this.$state.go('portal.feedback_statuses.gocreate');
+            return _this.$state.go('portal.feedback_statuses.gocreate', {
+              type: _this.statusType
+            });
           } else {
             return _this.$state.go('portal.feedback_statuses');
           }

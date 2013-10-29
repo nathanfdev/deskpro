@@ -22,6 +22,8 @@
 
       Admin_FeedbackStatuses_Ctrl_List.prototype.init = function() {
         var _this = this;
+        this.$scope.activeType = 'active';
+        this.$scope.closedType = 'closed';
         this.feedback_active_statuses = [];
         this.feedback_closed_statuses = [];
         return this.sortedListOptions = {

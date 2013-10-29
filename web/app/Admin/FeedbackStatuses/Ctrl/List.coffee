@@ -6,6 +6,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_TYPE = 'list'
 
 		init: ->
+
+			@$scope.activeType = 'active'
+			@$scope.closedType = 'closed'
+
 			@feedback_active_statuses = [];
 			@feedback_closed_statuses = [];
 

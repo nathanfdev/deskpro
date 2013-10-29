@@ -1160,18 +1160,18 @@ define(function() {
 
 	routes.push({
 		id: 'portal.feedback_statuses.gocreate',
-		url: '/go-create',
+		url: '/go-create/{type:(?:active|closed)}',
 		page: {
 			template: '',
-			controller: ['$state', function ($state) {
-				$state.go('portal.feedback_statuses.create');
+			controller: ['$state', '$stateParams', function ($state, $stateParams) {
+				$state.go('portal.feedback_statuses.create', {type: $stateParams.type});
 			}]
 		}
 	});
 
 	routes.push({
 		id: 'portal.feedback_statuses.create',
-		url: '/create',
+		url: '/create/{type:(?:active|closed)}',
 		page: {
 			templateName: 'FeedbackStatuses/edit.html',
 			controller: 'Admin_FeedbackStatuses_Ctrl_Edit'
