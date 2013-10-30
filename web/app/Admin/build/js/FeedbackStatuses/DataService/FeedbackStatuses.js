@@ -59,8 +59,28 @@
         model = this.em.getById('feedback_status', id);
         if ((model != null) && (model.status_type != null)) {
           this.recs[model.status_type + '_statuses'].remove(id);
-          return this.em.removeById('feedback_status', 'id');
+          this.em.removeById('feedback_status', 'id');
         }
+        return this._updateOrderOfData();
+      };
+
+      /*
+      		# Updates entity with new model data provided
+       	# with new model provided. Or adds it to the list if it doesnt exist.
+      */
+
+
+      Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.updateModel = function(model) {
+        var new_model;
+        new_model = this.em.createEntity('feedback_status', 'id', model);
+        if ((model.status_type != null) && model.status_type === 'active') {
+          this.recs.active_statuses.set(new_model.id, new_model);
+        }
+        if ((model.status_type != null) && model.status_type === 'closed') {
+          this.recs.closed_statuses.set(new_model.id, new_model);
+        }
+        this._updateOrderOfData();
+        return new_model;
       };
 
       /**
@@ -91,22 +111,31 @@
         return _results;
       };
 
-      /*
-      				# Updates entity with new model data provided
-      				# with new model provided. Or adds it to the list if it doesnt exist.
-      */
-
-
-      Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.updateModel = function(model) {
-        var new_model;
-        new_model = this.em.createEntity('feedback_status', 'id', model);
-        if ((model.status_type != null) && model.status_type === 'active') {
-          this.recs.active_statuses.set(new_model.id, new_model);
-        }
-        if ((model.status_type != null) && model.status_type === 'closed') {
-          this.recs.closed_statuses.set(new_model.id, new_model);
-        }
-        return new_model;
+      Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype._updateOrderOfData = function() {
+        this.recs.active_statuses.reorder(function(a, b) {
+          var order1, order2, _ref;
+          order1 = a.display_order || 0;
+          order2 = b.display_order || 0;
+          if (order1 === order2) {
+            return 0;
+          }
+          return (_ref = order1 < order2) != null ? _ref : -{
+            1: 1
+          };
+        });
+        this.recs.active_statuses.notifyListeners('changed');
+        this.recs.closed_statuses.reorder(function(a, b) {
+          var order1, order2, _ref;
+          order1 = a.display_order || 0;
+          order2 = b.display_order || 0;
+          if (order1 === order2) {
+            return 0;
+          }
+          return (_ref = order1 < order2) != null ? _ref : -{
+            1: 1
+          };
+        });
+        return this.recs.closed_statuses.notifyListeners('changed');
       };
 
       return Admin_FeedbackStatuses_DataService_FeedbackStatuses;

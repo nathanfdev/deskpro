@@ -162,4 +162,22 @@ class FeedbackStatusesController extends AbstractController
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
+
+	####################################################################################################################
+	# save-display-order
+	####################################################################################################################
+
+	public function saveDisplayOrderAction()
+	{
+		$display_orders = $this->in->getArrayOfUInts('display_orders');
+
+		/**
+		 * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+		 */
+
+		$feedback_statuses = $this->container->getSystemService('feedback_statuses');
+		$feedback_statuses->updateDisplayOrders($display_orders);
+
+		return $this->createSuccessResponse();
+	}
 }

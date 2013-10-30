@@ -30,16 +30,29 @@
           axis: 'y',
           handle: '.drag-handle',
           update: function(ev, data) {
-            var $list, postData, promise;
+            var $list, em, postData, promise, status_type, x;
             $list = data.item.closest('ul');
             postData = {
               display_orders: []
             };
+            x = 0;
+            em = _this.em;
+            status_type = 'active';
             $list.find('li').each(function() {
-              return postData.display_orders.push($(this).data('id'));
+              var feedback_status, feedback_status_id;
+              x += 10;
+              feedback_status_id = parseInt($(this).data('id'));
+              if (feedback_status_id) {
+                feedback_status = em.getById('feedback_status', feedback_status_id);
+                if (feedback_status) {
+                  feedback_status.display_order = x;
+                  status_type = feedback_status.status_type;
+                }
+              }
+              return postData.display_orders.push(feedback_status_id);
             });
             promise = _this.Api.sendPostJson('/feedback_statuses/display_order', postData);
-            return _this.pingElement('display_orders');
+            return _this.pingElement('display_orders_' + status_type);
           }
         };
       };

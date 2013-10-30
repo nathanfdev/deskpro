@@ -148,4 +148,32 @@ class FeedbackStatuses
 	{
 		return FeedbackStatusCategory::createFeedbackStatusCategory();
 	}
+
+	/**
+	 * @param array $newOrders
+	 */
+
+	public function updateDisplayOrders($newOrders)
+	{
+		$x = 10;
+
+		$feedback_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getByIds($newOrders);
+
+		foreach ($newOrders as $id) {
+
+			if (!isset($feedback_statuses[$id])) {
+
+				continue;
+			}
+
+			$feedback_status                = $feedback_statuses[$id];
+			$feedback_status->display_order = $x;
+
+			$this->em->persist($feedback_status);
+
+			$x += 10;
+		}
+
+		$this->em->flush();
+	}
 }

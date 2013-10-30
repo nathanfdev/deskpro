@@ -63,6 +63,26 @@ define [
 				@recs[model.status_type + '_statuses'].remove(id)
 				@em.removeById('feedback_status', 'id')
 
+			@_updateOrderOfData()
+
+		###
+		# Updates entity with new model data provided
+ 	# with new model provided. Or adds it to the list if it doesnt exist.
+ 	###
+		updateModel: (model) ->
+
+			new_model = @em.createEntity('feedback_status', 'id', model)
+
+			if model.status_type? and model.status_type == 'active'
+				@recs.active_statuses.set(new_model.id, new_model)
+
+			if model.status_type? and model.status_type == 'closed'
+				@recs.closed_statuses.set(new_model.id, new_model)
+
+			@_updateOrderOfData()
+
+			return new_model
+
 		###*
 				* Creates entities for feedback statuses raw data
 				* The thing is that it creates entities for both active and closed statuses
@@ -83,18 +103,28 @@ define [
 				model.retain()
 				@recs.closed_statuses.set(model.id, model)
 
-		###
-				# Updates entity with new model data provided
-				# with new model provided. Or adds it to the list if it doesnt exist.
-				###
-		updateModel: (model) ->
+		_updateOrderOfData: ->
 
-			new_model = @em.createEntity('feedback_status', 'id', model)
+			@recs.active_statuses.reorder((a, b) ->
+				order1 = a.display_order || 0
+				order2 = b.display_order || 0
 
-			if model.status_type? and model.status_type == 'active'
-				@recs.active_statuses.set(new_model.id, new_model)
+				if order1 == order2
+					return 0
 
-			if model.status_type? and model.status_type == 'closed'
-				@recs.closed_statuses.set(new_model.id, new_model)
+				return (order1 < order2) ? -1: 1
+			)
 
-			return new_model
+			@recs.active_statuses.notifyListeners('changed')
+
+			@recs.closed_statuses.reorder((a, b) ->
+				order1 = a.display_order || 0
+				order2 = b.display_order || 0
+
+				if order1 == order2
+					return 0
+
+				return (order1 < order2) ? -1: 1
+			)
+
+			@recs.closed_statuses.notifyListeners('changed')

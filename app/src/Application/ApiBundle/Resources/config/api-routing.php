@@ -2438,6 +2438,13 @@ $collection->create('api_feedback_statuses', array(
 	'methods'    => array('GET'),
 ));
 
+
+$collection->create('api_feedback_statuses_order', array(
+	'path'        => '/feedback_statuses/display_order',
+	'controller'  => 'ApiBundle:FeedbackStatuses:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_feedback_statuses_get', array(
 	'path'        => '/feedback_statuses/{id}',
 	'controller'  => 'ApiBundle:FeedbackStatuses:get',

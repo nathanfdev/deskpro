@@ -21,14 +21,28 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					postData = {display_orders: []}
 
+					x = 0
+					em = @em
+
+					status_type = 'active'
+
 					$list.find('li').each(->
-						postData.display_orders.push($(this).data('id'))
+
+						x += 10
+						feedback_status_id = parseInt($(this).data('id'))
+
+						if feedback_status_id
+							feedback_status = em.getById('feedback_status', feedback_status_id)
+
+							if feedback_status
+								feedback_status.display_order = x
+								status_type = feedback_status.status_type
+
+						postData.display_orders.push(feedback_status_id)
 					)
 
-					# @TODO implement ordering
-
 					promise = @Api.sendPostJson('/feedback_statuses/display_order', postData)
-					@pingElement('display_orders')
+					@pingElement('display_orders_' + status_type)
 			}
 
 		initialLoad: ->

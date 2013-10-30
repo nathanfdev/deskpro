@@ -67,4 +67,14 @@ class FeedbackStatusesTest extends DatabaseTestCase
 			$this->feedbackStatuses->getById(1)
 		);
 	}
+
+	public function testUpdateDisplayOrders()
+	{
+		$new_display_order = array(3, 2, 1, 4);
+
+		$this->feedbackStatuses->updateDisplayOrders($new_display_order);
+		$records = $this->feedbackStatuses->getAll();
+
+		// @todo implement this
+	}
 }
