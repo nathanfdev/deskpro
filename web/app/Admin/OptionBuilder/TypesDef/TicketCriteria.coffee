@@ -636,19 +636,73 @@ define ->
 			return def
 
 		getDayOfWeek: (options = {}) ->
-			options.propName = 'day_of_week'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html')
+
+			getData: ->
+				return {
+
+				}
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					return {
+						op: value.op || 'is'
+					}
+
+				getValue: (model = {}, data) ->
+					value = {}
+					return value
+				}
+			}
 
 		getTimeOfDay: (options = {}) ->
-			options.propName = 'time_of_week'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html')
+
+			getData: ->
+				return {
+
+				}
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					return {
+					op: value.op || 'is'
+					}
+
+				getValue: (model = {}, data) ->
+					value = {}
+					return value
+				}
+			}
 
 		getWithinWorkingHours: (options = {}) ->
-			options.propName = 'working_hours'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-workinghours.html')
+
+				getData: ->
+					return {
+
+					}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								op: value.op || 'is'
+							}
+
+					getValue: (model = {}, data) ->
+						value = {}
+						return value
+					}
+			}

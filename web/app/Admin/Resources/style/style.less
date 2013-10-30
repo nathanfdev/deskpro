@@ -2235,3 +2235,89 @@ table.display-table {
 	ul ul ul ul ul li .dp-cb-titlewrap { padding-left: @indent_width+@indent_base; .dp-cb-row-indent { width: @marker_w*4; } }
 	ul ul ul ul ul ul li .dp-cb-titlewrap { padding-left: @indent_width+@indent_base; .dp-cb-row-indent { width: @marker_w*5; } }
 }
+
+
+//######################################################################################################################
+//# Working Hours widget
+//######################################################################################################################
+
+.dp-workhours {
+
+	.select2-container {
+		margin: 0;
+	}
+
+	h4 {
+		margin-bottom: 3px;
+	}
+
+	.dp-wh-time-wrap {
+		float: left;
+		.start-time-wrap, .sep-time-wrap, .end-time-wrap {
+			display: inline;
+		}
+	}
+
+	.dp-wh-tz-wrap {
+		float: left;
+		margin-left: 25px;
+	}
+
+	.dp-wh-days-wrap {
+		clear: left;
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
+	.days-wrap {
+		.day-opt { display: inline; margin-right: 10px; }
+		label { font-weight: normal; margin: 0; padding: 0; width: auto; }
+	}
+
+	.dp-wh-holiday-wrap {
+		.holiday-add-btnwrap, .holiday-add-expanded {
+			display: inline;
+		}
+
+		.btn {
+			padding: 5px 14px 4px 14px;
+		}
+
+		.holiday-new-day { margin: 0 2px; }
+		.holiday-new-name { width: 130px; }
+		label { display: inline; font-weight: normal; }
+
+		.cancel-btn {
+			font-size: 12px;
+			cursor: pointer;
+			color: #999;
+		}
+	}
+
+	.holiday-rows {
+		background: #ededed;
+		border: 1px solid darken(#ededed, 10%);
+		max-width: 340px;
+		border-radius: 3px;
+		margin-top: 2px;
+	}
+
+	.hol-row {
+		padding: 4px 8px;
+
+		.remove-btn {
+			display: inline;
+			font-size: 12px;
+			color: #999;
+			cursor: pointer;
+			&:hover {
+				color: #f00;
+			}
+		}
+
+		.date-txt {
+			font-weight: bold;
+			color: #666;
+			margin: 0 8px 0 8px;
+		}
+	}
+}

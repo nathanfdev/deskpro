@@ -793,36 +793,111 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDayOfWeek = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'day_of_week';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getTimeOfDay = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'time_of_week';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithinWorkingHours = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'working_hours';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-workinghours.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                return value;
+              }
+            };
+          }
+        };
       };
 
       return Admin_OptionBuilder_TypesDef_TicketCriteria;

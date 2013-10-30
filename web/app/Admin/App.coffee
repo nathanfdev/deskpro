@@ -29,6 +29,7 @@ define [
 	'Admin/Main/Directive/DpTabBtn',
 	'Admin/Main/Directive/DpToggleSwitch',
 	'Admin/Main/Directive/DpTristateCheck',
+	'Admin/Main/Directive/DpWorkingHours',
 
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
@@ -66,6 +67,7 @@ define [
 	Admin_Main_Directive_DpTabBtn,
 	Admin_Main_Directive_DpToggleSwitch,
 	Admin_Main_Directive_DpTristateCheck,
+	Admin_Main_Directive_DpWorkingHours,
 
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
@@ -168,6 +170,7 @@ define [
 	Admin_App.directive('dpTabBtn',           Admin_Main_Directive_DpTabBtn)
 	Admin_App.directive('dpToggleSwitch',     Admin_Main_Directive_DpToggleSwitch)
 	Admin_App.directive('dpTristateCheck',    Admin_Main_Directive_DpTristateCheck)
+	Admin_App.directive('dpWorkingHours',     Admin_Main_Directive_DpWorkingHours)
 
 	####################################################################################################################
 	# Routing
@@ -290,6 +293,7 @@ define [
 			'TicketDeps/code-win.html',
 			'TicketDeps/code-embed.html',
 			'Index/blank.html',
+			'Common/work-hours-directive.html',
 		]
 
 		for own _, route of routing

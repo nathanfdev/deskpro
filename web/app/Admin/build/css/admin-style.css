@@ -9762,3 +9762,101 @@ table.display-table > tr > td.nowrap {
 .dp-category-builder ul ul ul ul ul ul li .dp-cb-titlewrap .dp-cb-row-indent {
   width: 90px;
 }
+
+.dp-workhours .select2-container {
+  margin: 0;
+}
+
+.dp-workhours h4 {
+  margin-bottom: 3px;
+}
+
+.dp-workhours .dp-wh-time-wrap {
+  float: left;
+}
+
+.dp-workhours .dp-wh-time-wrap .start-time-wrap,
+.dp-workhours .dp-wh-time-wrap .sep-time-wrap,
+.dp-workhours .dp-wh-time-wrap .end-time-wrap {
+  display: inline;
+}
+
+.dp-workhours .dp-wh-tz-wrap {
+  float: left;
+  margin-left: 25px;
+}
+
+.dp-workhours .dp-wh-days-wrap {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  clear: left;
+}
+
+.dp-workhours .days-wrap .day-opt {
+  display: inline;
+  margin-right: 10px;
+}
+
+.dp-workhours .days-wrap label {
+  width: auto;
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
+
+.dp-workhours .dp-wh-holiday-wrap .holiday-add-btnwrap,
+.dp-workhours .dp-wh-holiday-wrap .holiday-add-expanded {
+  display: inline;
+}
+
+.dp-workhours .dp-wh-holiday-wrap .btn {
+  padding: 5px 14px 4px 14px;
+}
+
+.dp-workhours .dp-wh-holiday-wrap .holiday-new-day {
+  margin: 0 2px;
+}
+
+.dp-workhours .dp-wh-holiday-wrap .holiday-new-name {
+  width: 130px;
+}
+
+.dp-workhours .dp-wh-holiday-wrap label {
+  display: inline;
+  font-weight: normal;
+}
+
+.dp-workhours .dp-wh-holiday-wrap .cancel-btn {
+  font-size: 12px;
+  color: #999;
+  cursor: pointer;
+}
+
+.dp-workhours .holiday-rows {
+  max-width: 340px;
+  margin-top: 2px;
+  background: #ededed;
+  border: 1px solid #d4d4d4;
+  border-radius: 3px;
+}
+
+.dp-workhours .hol-row {
+  padding: 4px 8px;
+}
+
+.dp-workhours .hol-row .remove-btn {
+  display: inline;
+  font-size: 12px;
+  color: #999;
+  cursor: pointer;
+}
+
+.dp-workhours .hol-row .remove-btn:hover {
+  color: #f00;
+}
+
+.dp-workhours .hol-row .date-txt {
+  margin: 0 8px 0 8px;
+  font-weight: bold;
+  color: #666;
+}
