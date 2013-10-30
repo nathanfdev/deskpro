@@ -64,10 +64,6 @@ define ->
 			@options           = @$scope.getOptions() || {}
 			@saveTarget        = @$scope.saveTarget
 
-			if not window.SAVE_TARGETS
-				window.SAVE_TARGETS = []
-			window.SAVE_TARGETS.push(@saveTarget)
-
 			@els = {}
 
 			$transclude( (clone) =>

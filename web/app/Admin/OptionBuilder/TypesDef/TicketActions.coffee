@@ -1,5 +1,5 @@
 define ->
-	class Admin_OptionBuilder_TypesDef_TicketCriteria
+	class Admin_OptionBuilder_TypesDef_TicketActions
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data = null
 
@@ -7,238 +7,192 @@ define ->
 			set_options = []
 
 			#------------------------------
-			# Email Criteria
+			# Ticket Assignment
 			#------------------------------
 
-			if types.indexOf('email') != -1
-				options = []
+			options = []
+			options.push({
+				title: 'Change Assigned Agent',
+				value: 'agent'
+			})
 
-				options.push({
-					title: 'Email Account',
-					value: 'email_account'
-				})
+			options.push({
+				title: 'Change Assigned Team',
+				value: 'agent_team'
+			})
 
-				options.push({
-					title: 'Email Subject',
-					value: 'email_subject'
-				})
+			options.push({
+				title: 'Change Agent Followers',
+				value: 'agent_followers'
+			})
 
-				options.push({
-					title: 'Email Body',
-					value: 'email_body'
-				})
-
-				options.push({
-					title: 'To Name',
-					value: 'email_to_name'
-				})
-
-				options.push({
-					title: 'To Address',
-					value: 'email_to_address'
-				})
-
-				options.push({
-					title: 'From Name',
-					value: 'email_from_name'
-				})
-
-				options.push({
-					title: 'From Address',
-					value: 'email_from_address'
-				})
-
-				options.push({
-					title: 'CCd Name',
-					value: 'email_cc_name'
-				})
-
-				options.push({
-					title: 'CCd Address',
-					value: 'email_cc_address'
-				})
-
-				options.push({
-					title: 'Email Header',
-					value: 'email_header_match'
-				})
-
-				set_options.push({
-					title: 'Email Criteria',
-					subOptions: options
-				})
+			set_options.push({
+				title: 'Ticket Assignment',
+				subOptions: options
+			})
 
 			#------------------------------
-			# Ticket Criteria
+			# Ticket Properties
 			#------------------------------
 
 			options = []
 
 			options.push({
-				title: 'Department',
+				title: 'Change Department',
 				value: 'department'
 			})
 
 			options.push({
-				title: 'Product',
+				title: 'Change Product',
 				value: 'product'
 			})
 
 			options.push({
-				title: 'Category',
+				title: 'Change Category',
 				value: 'category'
 			})
 
 			options.push({
-				title: 'Priority',
+				title: 'Change Priority',
 				value: 'priority'
 			})
 
-			if types.indexOf('web.agent') != -1
-				options.push({
-					title: 'Workflow',
-					value: 'workflow'
-				})
-
 			options.push({
-				title: 'Title',
-				value: 'title'
+				title: 'Change Workflow',
+				value: 'workflow'
 			})
 
 			options.push({
-				title: 'Message',
-				value: 'message'
+				title: 'Change Urgency',
+				value: 'urgency'
+			})
+
+			options.push({
+				title: 'Change Subject',
+				value: 'subject'
+			})
+
+			options.push({
+				title: 'Change Labels',
+				value: 'labels'
+			})
+
+			options.push({
+				title: 'Change Flag',
+				value: 'flag'
+			})
+
+			options.push({
+				title: 'Change Email Account',
+				value: 'email_account'
+			})
+
+			options.push({
+				title: 'Change CC\'d Users',
+				value: 'user_ccs'
 			})
 
 			set_options.push({
-				title: 'Ticket Criteria',
+				title: 'Ticket Properties',
 				subOptions: options
 			})
 
 			#------------------------------
-			# Attachment Criteria
+			# Ticket SLAs
 			#------------------------------
 
 			options = []
 
 			options.push({
-				title: 'Has attachment',
-				value: 'with_attach'
+				title: 'Change SLAs',
+				value: 'slas'
 			})
+
 			options.push({
-				title: 'Has attachment type',
-				value: 'with_attach_type'
+				title: 'Change SLA Condition Status (Passing/Failing)',
+				value: 'set_sla_status'
 			})
+
 			options.push({
-				title: 'Has attachment named',
-				value: 'with_attach_name'
+				title: 'Change SLA State (Waiting/Finished)',
+				value: 'set_sla_requirements'
 			})
 
 			set_options.push({
-				title: 'Attachment Criteria',
+				title: 'Ticket SLAs',
 				subOptions: options
 			})
 
 			#------------------------------
-			# Person
+			# Ticket Actions
 			#------------------------------
 
 			options = []
 
 			options.push({
-				title: 'Name',
-				value: 'person_name'
+				title: 'Change Ticket User',
+				value: 'change_user'
 			})
 
 			options.push({
-				title: 'Email Address',
-				value: 'person_email'
+				title: 'Delete Ticket',
+				value: 'delete_ticket'
 			})
 
 			options.push({
-				title: 'Label',
-				value: 'person_label'
+				title: 'Add Agent Reply',
+				value: 'agent_reply'
 			})
 
 			options.push({
-				title: 'Usergroup',
-				value: 'person_usergroup'
-			})
-
-			options.push({
-				title: 'Language',
-				value: 'person_language'
-			})
-
-			options.push({
-				title: 'Is manager of organization',
-				value: 'person_is_manager'
-			})
-
-			options.push({
-				title: 'Is disabled',
-				value: 'person_is_disabled'
+				title: 'Force User Email Validation',
+				value: 'force_email_validation'
 			})
 
 			set_options.push({
-				title: 'User Criteria',
+				title: 'Ticket Actions',
 				subOptions: options
 			})
 
 			#------------------------------
-			# Org
+			# Ticket Actions
 			#------------------------------
 
 			options = []
 
 			options.push({
-				title: 'Name',
-				value: 'org_name'
+				title: 'Send Email To User',
+				value: 'send_user_email'
 			})
 
 			options.push({
-				title: 'Label',
-				value: 'org_label'
-			})
-
-			options.push({
-				title: 'Email Domain',
-				value: 'org_email_domain'
-			})
-
-			options.push({
-				title: 'Linked Usergroup',
-				value: 'org_usergroup'
-			})
-
-			set_options.push({
-				title: 'Organization Criteria',
-				subOptions: options
+				title: 'Send Email To Agents',
+				value: 'send_user_email'
 			})
 
 			#------------------------------
-			# Dates
+			# Trigger Control
 			#------------------------------
 
 			options = []
 
 			options.push({
-				title: 'Day of week',
-				value: 'day_of_week'
+				title: 'Stop Processing Triggers',
+				value: 'stop_triggers'
 			})
 
 			options.push({
-				title: 'Time of day',
-				value: 'time_of_day'
+				title: 'Prevent Emails To User',
+				value: 'quiet_user_emails'
 			})
 
 			options.push({
-				title: 'Within working hours',
-				value: 'within_working_hours'
+				title: 'Prevent Emails To Agents',
+				value: 'quiet_agent_emails'
 			})
 
 			set_options.push({
-				title: 'Dates',
+				title: 'Trigger Control',
 				subOptions: options
 			})
 
@@ -252,20 +206,26 @@ define ->
 			else
 				@options_data = {}
 				p = @Api.sendDataGet({
+					'agents':          '/agents'
+					'agent_teams':     '/agent_teams',
 					'ticket_deps':     '/ticket_deps',
 					'ticket_cats':     '/ticket_cats',
 					'ticket_prods':    '/ticket_prods',
 					'ticket_pris':     '/ticket_pris',
 					'ticket_works':    '/ticket_works',
+					'ticket_slas':     '/ticket_slas',
 					'ticket_accounts': '/ticket_accounts',
 					'usergroups':      '/usergroups',
 				}).then( (result) =>
 					data = result.data
+					@options_data['agents']           = data.agents.agents
+					@options_data['agent_teams']      = data.agent_teams.agent_teams
 					@options_data['ticket_deps']      = data.ticket_deps.departments
 					@options_data['ticket_cats']      = data.ticket_cats.categories
 					@options_data['ticket_pris']      = data.ticket_pris.priorities
 					@options_data['ticket_works']     = data.ticket_works.workflows
 					@options_data['ticket_prods']     = data.ticket_prods?.products
+					@options_data['ticket_slas']      = data.ticket_slas?.slas
 					@options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
 					@options_data['usergroups']       = data.usergroups.usergroups
 				)
@@ -287,26 +247,25 @@ define ->
 				console.error("Bad type with no definition getter: #{typeFunc}")
 				me = @
 				return {
-					getTemplate: ->
-						return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html')
-					getData: ->
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html')
+				getData: ->
+					return {}
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
 						return {}
-					getDataFormatter: ->
-						return {
-							getViewValue: (value = {}, data) ->
-								return {}
-							getValue: (model = {}, data) ->
-								return null
-						}
+					getValue: (model = {}, data) ->
+						return null
+					}
 				}
 
 		getStandardSelect: (options) ->
 			type      = options.type
 			prop_name = options.propName
 			data_name = options.dataName
-			form_type = options.formType || 'select'
-			operators = options.operators || ['is', 'not']
 			options_formatter = options.optionsFormatter || null
+			is_multi  = options.isMulti
 
 			if not options_formatter
 				options_formatter = (options) ->
@@ -315,6 +274,8 @@ define ->
 					for opt in options
 						if opt.title
 							title = opt.title
+						else if opt.display_name
+							title = opt.display_name
 						else if opt.name
 							title = opt.name
 						else
@@ -339,40 +300,31 @@ define ->
 
 			return {
 				getTemplate: ->
-					switch form_type
-						when 'input'
-							return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html')
-						else
-							return me.dpTemplateManager.get('OptionBuilder/type-criteria-select.html')
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html')
 
 				getData: ->
 					if data_name
 						defer = me.$q.defer()
 						me.loadDataOptions().then(=>
 							defer.resolve({
-								operators: operators,
 								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
-								multiselect: true
+								multiselect: is_multi
 							})
 						)
 
 						return defer.promise
 					else
-						return {
-							operators: operators
-						}
+						return {}
 
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
 							return {
-								value: value[prop_name],
-								op: value.op || _.first(data.operators)
+								value: value[prop_name]
 							}
 						getValue: (model = {}, data) ->
 							value = {}
 							value.type = type
-							value.op = model.op
 							value.options = {}
 							value.options[prop_name] = model.value
 							return value
@@ -386,59 +338,80 @@ define ->
 			me = @
 			return {
 				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-criteria-is.html')
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-is.html')
 
 				getData: ->
 					return {}
 
 				getDataFormatter: ->
 					return {
-						getViewValue: (value = {}, data) ->
-							return {
-								value: true,
-								op: 'is'
-							}
-						getValue: (model = {}, data) ->
-							value = {}
-							value.type = type
-							value.op = 'is'
-							value.options = {}
-							value.options[prop_name] = true
-							return value
+					getViewValue: (value = {}, data) ->
+						return {
+							value: true,
+							op: 'is'
+						}
+					getValue: (model = {}, data) ->
+						value = {}
+						value.type = type
+						value.options = {}
+						value.options[prop_name] = true
+						return value
 					}
 			}
 
 		getStandardInput: (options) ->
 			type      = options.type
 			prop_name = options.propName
-			operators = options.operators || ['is', 'not']
 
 			me = @
 			return {
 				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html')
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html')
 
 				getData: ->
 					return {
-						operators: operators
+
 					}
 
 				getDataFormatter: ->
 					return {
-					getViewValue: (value = {}, data) ->
-						return {
-							value: value[prop_name],
-							op: value.op || _.first(data.operators)
-						}
-					getValue: (model = {}, data) ->
-						value = {}
-						value.type = type
-						value.op = model.op
-						value.options = {}
-						value.options[prop_name] = model.value
-						return value
+						getViewValue: (value = {}, data) ->
+							return {
+								value: value[prop_name]
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = type
+							value.options = {}
+							value.options[prop_name] = model.value
+							return value
 					}
 			}
+
+		getAgent: (options = {}) ->
+			options.propName = 'agent_id'
+			options.dataName = 'agents'
+			def = @getStandardSelect(options)
+			return def
+
+		getAgentFollowers: (options = {}) ->
+			options.propName = 'agent_ids'
+			options.dataName = 'agents'
+			options.isMulti = true
+			def = @getStandardSelect(options)
+			return def
+
+		getAgentTeam: (options = {}) ->
+			options.propName = 'agent_team_id'
+			options.dataName = 'agent_teams'
+			def = @getStandardSelect(options)
+			return def
+
+		getWorkflow: (options = {}) ->
+			options.propName = 'workflow_ids'
+			options.dataName = 'ticket_works'
+			def = @getStandardSelect(options)
+			return def
 
 		getWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
@@ -489,166 +462,131 @@ define ->
 
 		getEmailSubject: (options = {}) ->
 			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getEmailBody: (options = {}) ->
-			options.propName = 'body'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+		getUrgency: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-urgency.html')
 
-		getEmailToName: (options = {}) ->
-			options.propName = 'to_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+				getData: ->
+					return {
 
-		getEmailToAddress: (options = {}) ->
-			options.propName = 'to_address'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+					}
 
-		getEmailFromName: (options = {}) ->
-			options.propName = 'from_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								value: value.urgency,
+								op: value.op || 'add',
+								only_if_lower: !!value.only_if_lower
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'urgency'
+							value.options = {}
+							value.options.urgency = model.value
+							value.options.op = model.op
+							value.options.only_if_lower = !!model.only_if_lower
+							return value
+						}
+			}
 
-		getEmailFromAddress: (options = {}) ->
-			options.propName = 'from_address'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+		getFlag: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html')
 
-		getCcAddress: (options = {}) ->
-			options.propName = 'cc_address'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+				getData: ->
+					return {
+						options: [
+							{title: 'Red', 'red'},
+							{title: 'Blue', 'blue'},
+							{title: 'Green', 'green'},
+							{title: 'Orange', 'orange'},
+							{title: 'Purple', 'purple'},
+							{title: 'Pink', 'Pink'}
+						]
+					}
 
-		getCcName: (options = {}) ->
-			options.propName = 'cc_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								value: value.color
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'flag'
+							value.options = {}
+							value.options.color = model.value
+							return value
+					}
+			}
 
-		getEmailHeaderMatch: (options = {}) ->
-			options.propName = 'email_header_match'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getTitle: (options = {}) ->
-			options.propName = 'title'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getMessage: (options = {}) ->
-			options.propName = 'message'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getWithAttach: (options = {}) ->
-			options.propName = 'with_attach'
+		getDeleteTicket: (options = {}) ->
+			options.propName = 'delete_ticket'
 			def = @getStandardIs(options)
 			return def
 
-		getWithAttachType: (options = {}) ->
-			options.propName = 'attach_type'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
-
-		getWithAttachName: (options = {}) ->
-			options.propName = 'attach_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getPersonName: (options = {}) ->
-			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getPersonEmail: (options = {}) ->
-			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
-
-		getPersonLabel: (options = {}) ->
-			options.propName = 'labels'
-			options.operators = ['contains', 'not_contains']
-			def = @getStandardInput(options)
-			return def
-
-		getPersonUsergroup: (options = {}) ->
-			options.propName = 'usergroup_ids'
-			options.dataName = 'usergroups'
-			def = @getStandardSelect(options)
-			return def
-
-		getPersonLanguage: (options = {}) ->
-			options.propName = 'language_ids'
-			options.dataName = 'languages'
-			def = @getStandardSelect(options)
-			return def
-
-		getPersonIsManager: (options = {}) ->
-			options.propName = 'is_manager'
+		getForceEmailValidation: (options = {}) ->
+			options.propName = 'force_email_validation'
 			def = @getStandardIs(options)
 			return def
 
-		getPersonIsDisabled: (options = {}) ->
-			options.propName = 'is_disabled'
+		getStopTriggers: (options = {}) ->
+			options.propName = 'stop_triggers'
 			def = @getStandardIs(options)
 			return def
 
-		getOrgName: (options = {}) ->
-			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
+		getQuietUserEmails: (options = {}) ->
+			def = @getStandardIs(options)
 			return def
 
-		getOrgLabel: (options = {}) ->
-			options.propName = 'labels'
-			options.operators = ['contains', 'not_contains']
-			def = @getStandardInput(options)
+		getQuietAgentEmails: (options = {}) ->
+			def = @getStandardIs(options)
 			return def
 
-		getOrgEmailDomain: (options = {}) ->
-			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+		getSlas: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-slas.html')
 
-		getOrgUsergroup: (options = {}) ->
-			options.propName  = 'usergroup_ids'
-			options.dataName  = 'usergroups'
-			options.operators = ['is', 'not']
-			def = @getStandardSelect(options)
-			return def
+				getData: ->
+					defer = me.$q.defer()
+					me.loadDataOptions().then(=>
+						options = []
+						for sla in me.options_data['ticket_slas']
+							options.push({
+								title: sla.title,
+								value: sla.id
+							})
 
-		getDayOfWeek: (options = {}) ->
-			options.propName = 'day_of_week'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
+						defer.resolve({
+							options: options
+						})
+					)
 
-		getTimeOfDay: (options = {}) ->
-			options.propName = 'time_of_week'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
+					return defer.promise
 
-		getWithinWorkingHours: (options = {}) ->
-			options.propName = 'working_hours'
-			options.operators = ['is', 'not']
-			def = @getStandardInput(options)
-			return def
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								add_slas: value.add_slas || [],
+								remove_slas: value.remove_slas || []
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'slas'
+							value.options = {}
+							value.options.add_slas    = model.add_slas
+							value.options.remove_slas = model.remove_slas
+							return value
+					}
+			}

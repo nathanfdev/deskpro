@@ -157,7 +157,7 @@
 								The followings actions will run:
 							</header>
 							<article>
-								<dp-option-builder types-def="TicketTriggersEdit.criteraTypeDef" ng-model="trigger_actions" options="{tag_first: 'then', tag_after: 'and'}" option-types="criteriaOptionTypes">
+								<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="trigger_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
 									<add-btn-label>Action</add-btn-label>
 								</dp-option-builder>
 							</article>

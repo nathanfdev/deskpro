@@ -1,194 +1,154 @@
 (function() {
   define(function() {
-    var Admin_OptionBuilder_TypesDef_TicketCriteria;
-    return Admin_OptionBuilder_TypesDef_TicketCriteria = (function() {
-      function Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager) {
+    var Admin_OptionBuilder_TypesDef_TicketActions;
+    return Admin_OptionBuilder_TypesDef_TicketActions = (function() {
+      function Admin_OptionBuilder_TypesDef_TicketActions($q, Api, dpTemplateManager) {
         this.$q = $q;
         this.Api = Api;
         this.dpTemplateManager = dpTemplateManager;
         this.options_data = null;
       }
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getOptionsForTypes = function(types, typesData) {
         var options, set_options;
         if (typesData == null) {
           typesData = null;
         }
         set_options = [];
-        if (types.indexOf('email') !== -1) {
-          options = [];
-          options.push({
-            title: 'Email Account',
-            value: 'email_account'
-          });
-          options.push({
-            title: 'Email Subject',
-            value: 'email_subject'
-          });
-          options.push({
-            title: 'Email Body',
-            value: 'email_body'
-          });
-          options.push({
-            title: 'To Name',
-            value: 'email_to_name'
-          });
-          options.push({
-            title: 'To Address',
-            value: 'email_to_address'
-          });
-          options.push({
-            title: 'From Name',
-            value: 'email_from_name'
-          });
-          options.push({
-            title: 'From Address',
-            value: 'email_from_address'
-          });
-          options.push({
-            title: 'CCd Name',
-            value: 'email_cc_name'
-          });
-          options.push({
-            title: 'CCd Address',
-            value: 'email_cc_address'
-          });
-          options.push({
-            title: 'Email Header',
-            value: 'email_header_match'
-          });
-          set_options.push({
-            title: 'Email Criteria',
-            subOptions: options
-          });
-        }
         options = [];
         options.push({
-          title: 'Department',
+          title: 'Change Assigned Agent',
+          value: 'agent'
+        });
+        options.push({
+          title: 'Change Assigned Team',
+          value: 'agent_team'
+        });
+        options.push({
+          title: 'Change Agent Followers',
+          value: 'agent_followers'
+        });
+        set_options.push({
+          title: 'Ticket Assignment',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Change Department',
           value: 'department'
         });
         options.push({
-          title: 'Product',
+          title: 'Change Product',
           value: 'product'
         });
         options.push({
-          title: 'Category',
+          title: 'Change Category',
           value: 'category'
         });
         options.push({
-          title: 'Priority',
+          title: 'Change Priority',
           value: 'priority'
         });
-        if (types.indexOf('web.agent') !== -1) {
-          options.push({
-            title: 'Workflow',
-            value: 'workflow'
-          });
-        }
         options.push({
-          title: 'Title',
-          value: 'title'
+          title: 'Change Workflow',
+          value: 'workflow'
         });
         options.push({
-          title: 'Message',
-          value: 'message'
+          title: 'Change Urgency',
+          value: 'urgency'
+        });
+        options.push({
+          title: 'Change Subject',
+          value: 'subject'
+        });
+        options.push({
+          title: 'Change Labels',
+          value: 'labels'
+        });
+        options.push({
+          title: 'Change Flag',
+          value: 'flag'
+        });
+        options.push({
+          title: 'Change Email Account',
+          value: 'email_account'
+        });
+        options.push({
+          title: 'Change CC\'d Users',
+          value: 'user_ccs'
         });
         set_options.push({
-          title: 'Ticket Criteria',
+          title: 'Ticket Properties',
           subOptions: options
         });
         options = [];
         options.push({
-          title: 'Has attachment',
-          value: 'with_attach'
+          title: 'Change SLAs',
+          value: 'slas'
         });
         options.push({
-          title: 'Has attachment type',
-          value: 'with_attach_type'
+          title: 'Change SLA Condition Status (Passing/Failing)',
+          value: 'set_sla_status'
         });
         options.push({
-          title: 'Has attachment named',
-          value: 'with_attach_name'
+          title: 'Change SLA State (Waiting/Finished)',
+          value: 'set_sla_requirements'
         });
         set_options.push({
-          title: 'Attachment Criteria',
+          title: 'Ticket SLAs',
           subOptions: options
         });
         options = [];
         options.push({
-          title: 'Name',
-          value: 'person_name'
+          title: 'Change Ticket User',
+          value: 'change_user'
         });
         options.push({
-          title: 'Email Address',
-          value: 'person_email'
+          title: 'Delete Ticket',
+          value: 'delete_ticket'
         });
         options.push({
-          title: 'Label',
-          value: 'person_label'
+          title: 'Add Agent Reply',
+          value: 'agent_reply'
         });
         options.push({
-          title: 'Usergroup',
-          value: 'person_usergroup'
-        });
-        options.push({
-          title: 'Language',
-          value: 'person_language'
-        });
-        options.push({
-          title: 'Is manager of organization',
-          value: 'person_is_manager'
-        });
-        options.push({
-          title: 'Is disabled',
-          value: 'person_is_disabled'
+          title: 'Force User Email Validation',
+          value: 'force_email_validation'
         });
         set_options.push({
-          title: 'User Criteria',
+          title: 'Ticket Actions',
           subOptions: options
         });
         options = [];
         options.push({
-          title: 'Name',
-          value: 'org_name'
+          title: 'Send Email To User',
+          value: 'send_user_email'
         });
         options.push({
-          title: 'Label',
-          value: 'org_label'
-        });
-        options.push({
-          title: 'Email Domain',
-          value: 'org_email_domain'
-        });
-        options.push({
-          title: 'Linked Usergroup',
-          value: 'org_usergroup'
-        });
-        set_options.push({
-          title: 'Organization Criteria',
-          subOptions: options
+          title: 'Send Email To Agents',
+          value: 'send_user_email'
         });
         options = [];
         options.push({
-          title: 'Day of week',
-          value: 'day_of_week'
+          title: 'Stop Processing Triggers',
+          value: 'stop_triggers'
         });
         options.push({
-          title: 'Time of day',
-          value: 'time_of_day'
+          title: 'Prevent Emails To User',
+          value: 'quiet_user_emails'
         });
         options.push({
-          title: 'Within working hours',
-          value: 'within_working_hours'
+          title: 'Prevent Emails To Agents',
+          value: 'quiet_agent_emails'
         });
         set_options.push({
-          title: 'Dates',
+          title: 'Trigger Control',
           subOptions: options
         });
         return set_options;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.loadDataOptions = function() {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.loadDataOptions = function() {
         var p,
           _this = this;
         if (this.options_data) {
@@ -198,21 +158,27 @@
         } else {
           this.options_data = {};
           p = this.Api.sendDataGet({
+            'agents': '/agents',
+            'agent_teams': '/agent_teams',
             'ticket_deps': '/ticket_deps',
             'ticket_cats': '/ticket_cats',
             'ticket_prods': '/ticket_prods',
             'ticket_pris': '/ticket_pris',
             'ticket_works': '/ticket_works',
+            'ticket_slas': '/ticket_slas',
             'ticket_accounts': '/ticket_accounts',
             'usergroups': '/usergroups'
           }).then(function(result) {
-            var data, _ref;
+            var data, _ref, _ref1;
             data = result.data;
+            _this.options_data['agents'] = data.agents.agents;
+            _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
             _this.options_data['ticket_deps'] = data.ticket_deps.departments;
             _this.options_data['ticket_cats'] = data.ticket_cats.categories;
             _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
             _this.options_data['ticket_works'] = data.ticket_works.workflows;
             _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+            _this.options_data['ticket_slas'] = (_ref1 = data.ticket_slas) != null ? _ref1.slas : void 0;
             _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
             return _this.options_data['usergroups'] = data.usergroups.usergroups;
           });
@@ -220,7 +186,7 @@
         return p;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDef = function(type, options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getDef = function(type, options) {
         var me, typeFunc, typeName;
         if (options == null) {
           options = {};
@@ -238,7 +204,7 @@
           me = this;
           return {
             getTemplate: function() {
-              return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
+              return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html');
             },
             getData: function() {
               return {};
@@ -263,14 +229,13 @@
         }
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getStandardSelect = function(options) {
-        var data_name, form_type, me, operators, options_formatter, prop_name, type;
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStandardSelect = function(options) {
+        var data_name, is_multi, me, options_formatter, prop_name, type;
         type = options.type;
         prop_name = options.propName;
         data_name = options.dataName;
-        form_type = options.formType || 'select';
-        operators = options.operators || ['is', 'not'];
         options_formatter = options.optionsFormatter || null;
+        is_multi = options.isMulti;
         if (!options_formatter) {
           options_formatter = function(options) {
             var opt, opts, title, val, _i, _len;
@@ -279,6 +244,8 @@
               opt = options[_i];
               if (opt.title) {
                 title = opt.title;
+              } else if (opt.display_name) {
+                title = opt.display_name;
               } else if (opt.name) {
                 title = opt.name;
               } else {
@@ -304,12 +271,7 @@
         me = this;
         return {
           getTemplate: function() {
-            switch (form_type) {
-              case 'input':
-                return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
-              default:
-                return me.dpTemplateManager.get('OptionBuilder/type-criteria-select.html');
-            }
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html');
           },
           getData: function() {
             var defer,
@@ -318,16 +280,13 @@
               defer = me.$q.defer();
               me.loadDataOptions().then(function() {
                 return defer.resolve({
-                  operators: operators,
                   options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                  multiselect: true
+                  multiselect: is_multi
                 });
               });
               return defer.promise;
             } else {
-              return {
-                operators: operators
-              };
+              return {};
             }
           },
           getDataFormatter: function() {
@@ -337,8 +296,7 @@
                   value = {};
                 }
                 return {
-                  value: value[prop_name],
-                  op: value.op || _.first(data.operators)
+                  value: value[prop_name]
                 };
               },
               getValue: function(model, data) {
@@ -348,7 +306,6 @@
                 }
                 value = {};
                 value.type = type;
-                value.op = model.op;
                 value.options = {};
                 value.options[prop_name] = model.value;
                 return value;
@@ -358,14 +315,14 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getStandardIs = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStandardIs = function(options) {
         var me, prop_name, type;
         type = options.type;
         prop_name = options.propName;
         me = this;
         return {
           getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-criteria-is.html');
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-is.html');
           },
           getData: function() {
             return {};
@@ -388,7 +345,6 @@
                 }
                 value = {};
                 value.type = type;
-                value.op = 'is';
                 value.options = {};
                 value.options[prop_name] = true;
                 return value;
@@ -398,20 +354,17 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getStandardInput = function(options) {
-        var me, operators, prop_name, type;
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStandardInput = function(options) {
+        var me, prop_name, type;
         type = options.type;
         prop_name = options.propName;
-        operators = options.operators || ['is', 'not'];
         me = this;
         return {
           getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html');
           },
           getData: function() {
-            return {
-              operators: operators
-            };
+            return {};
           },
           getDataFormatter: function() {
             return {
@@ -420,8 +373,7 @@
                   value = {};
                 }
                 return {
-                  value: value[prop_name],
-                  op: value.op || _.first(data.operators)
+                  value: value[prop_name]
                 };
               },
               getValue: function(model, data) {
@@ -431,7 +383,6 @@
                 }
                 value = {};
                 value.type = type;
-                value.op = model.op;
                 value.options = {};
                 value.options[prop_name] = model.value;
                 return value;
@@ -441,7 +392,41 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getAgent = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_id';
+        options.dataName = 'agents';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getAgentFollowers = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_ids';
+        options.dataName = 'agents';
+        options.isMulti = true;
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getAgentTeam = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_team_id';
+        options.dataName = 'agent_teams';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -452,7 +437,18 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPriority = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getWorkflow = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'workflow_ids';
+        options.dataName = 'ticket_works';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getPriority = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -463,7 +459,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCategory = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getCategory = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -474,7 +470,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDepartment = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getDepartment = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -485,7 +481,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getProduct = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getProduct = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -496,7 +492,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailAccount = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getEmailAccount = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -519,313 +515,228 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailSubject = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getEmailSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
         options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailBody = function(options) {
-        var def;
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getUrgency = function(options) {
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'body';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-urgency.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  value: value.urgency,
+                  op: value.op || 'add',
+                  only_if_lower: !!value.only_if_lower
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'urgency';
+                value.options = {};
+                value.options.urgency = model.value;
+                value.options.op = model.op;
+                value.options.only_if_lower = !!model.only_if_lower;
+                return value;
+              }
+            };
+          }
+        };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailToName = function(options) {
-        var def;
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getFlag = function(options) {
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'to_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html');
+          },
+          getData: function() {
+            return {
+              options: [
+                {
+                  title: 'Red',
+                  'red': 'red'
+                }, {
+                  title: 'Blue',
+                  'blue': 'blue'
+                }, {
+                  title: 'Green',
+                  'green': 'green'
+                }, {
+                  title: 'Orange',
+                  'orange': 'orange'
+                }, {
+                  title: 'Purple',
+                  'purple': 'purple'
+                }, {
+                  title: 'Pink',
+                  'Pink': 'Pink'
+                }
+              ]
+            };
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  value: value.color
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'flag';
+                value.options = {};
+                value.options.color = model.value;
+                return value;
+              }
+            };
+          }
+        };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailToAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getDeleteTicket = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'to_address';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailFromName = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'from_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailFromAddress = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'from_address';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCcAddress = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'cc_address';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCcName = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'cc_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailHeaderMatch = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'email_header_match';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getTitle = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'title';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getMessage = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'message';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithAttach = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'with_attach';
+        options.propName = 'delete_ticket';
         def = this.getStandardIs(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithAttachType = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getForceEmailValidation = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'attach_type';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithAttachName = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'attach_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonName = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonEmail = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonLabel = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'labels';
-        options.operators = ['contains', 'not_contains'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonUsergroup = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'usergroup_ids';
-        options.dataName = 'usergroups';
-        def = this.getStandardSelect(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonLanguage = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'language_ids';
-        options.dataName = 'languages';
-        def = this.getStandardSelect(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonIsManager = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'is_manager';
+        options.propName = 'force_email_validation';
         def = this.getStandardIs(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonIsDisabled = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStopTriggers = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'is_disabled';
+        options.propName = 'stop_triggers';
         def = this.getStandardIs(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getQuietUserEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
+        def = this.getStandardIs(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgLabel = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getQuietAgentEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'labels';
-        options.operators = ['contains', 'not_contains'];
-        def = this.getStandardInput(options);
+        def = this.getStandardIs(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgEmailDomain = function(options) {
-        var def;
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSlas = function(options) {
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-slas.html');
+          },
+          getData: function() {
+            var defer,
+              _this = this;
+            defer = me.$q.defer();
+            me.loadDataOptions().then(function() {
+              var sla, _i, _len, _ref;
+              options = [];
+              _ref = me.options_data['ticket_slas'];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                sla = _ref[_i];
+                options.push({
+                  title: sla.title,
+                  value: sla.id
+                });
+              }
+              return defer.resolve({
+                options: options
+              });
+            });
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  add_slas: value.add_slas || [],
+                  remove_slas: value.remove_slas || []
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'slas';
+                value.options = {};
+                value.options.add_slas = model.add_slas;
+                value.options.remove_slas = model.remove_slas;
+                return value;
+              }
+            };
+          }
+        };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgUsergroup = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'usergroup_ids';
-        options.dataName = 'usergroups';
-        options.operators = ['is', 'not'];
-        def = this.getStandardSelect(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDayOfWeek = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'day_of_week';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getTimeOfDay = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'time_of_week';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithinWorkingHours = function(options) {
-        var def;
-        if (options == null) {
-          options = {};
-        }
-        options.propName = 'working_hours';
-        options.operators = ['is', 'not'];
-        def = this.getStandardInput(options);
-        return def;
-      };
-
-      return Admin_OptionBuilder_TypesDef_TicketCriteria;
+      return Admin_OptionBuilder_TypesDef_TicketActions;
 
     })();
   });

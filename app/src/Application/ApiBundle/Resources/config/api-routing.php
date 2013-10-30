@@ -770,7 +770,13 @@ $collection->create('api_people_groups', array(
 
 $collection->create('api_agents_list', array(
 	'path'        => '/agents',
-	'controller'  => 'ApiBundle:Agents:list',
+	'controller'  => 'ApiBundle:Agents:listAgents',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_agentsteams_list', array(
+	'path'        => '/agent_teams',
+	'controller'  => 'ApiBundle:Agents:listTeams',
 	'methods'     => array('GET'),
 ));
 
@@ -2281,6 +2287,16 @@ $collection->create('api_ticket_statuses_spam_savesettings', array(
 	'path'        => '/ticket_statuses/spam/settings',
 	'controller'  => 'ApiBundle:TicketStatuses:saveSpamSettings',
 	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# Ticket SLAs
+########################################################################################################################
+
+$collection->create('api_ticket_slas', array(
+	'path'        => '/ticket_slas',
+	'controller'  => 'ApiBundle:TicketSlas:list',
+	'methods'     => array('GET'),
 ));
 
 ########################################################################################################################

@@ -8,6 +8,7 @@ define [
 	'Admin/Main/Service/InhelpState',
 	'Admin/Main/Service/TemplateManager',
 	'Admin/OptionBuilder/TypesDef/TicketCriteria',
+	'Admin/OptionBuilder/TypesDef/TicketActions',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -46,6 +47,7 @@ define [
 	Admin_Main_Service_InhelpState,
 	Admin_Main_Service_TemplateManager,
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
+	Admin_OptionBuilder_TypesDef_TicketActions,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -144,6 +146,10 @@ define [
 
 	Admin_App.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
 		return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
+	])
+
+	Admin_App.factory('dpObTypesDefTicketActions', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
+		return new Admin_OptionBuilder_TypesDef_TicketActions($q, Api, dpTemplateManager)
 	])
 
 	####################################################################################################################

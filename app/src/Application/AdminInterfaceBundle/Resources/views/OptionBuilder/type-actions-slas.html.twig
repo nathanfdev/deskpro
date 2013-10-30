@@ -1,0 +1,32 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;"><label>{{ ng_var('type_title') }}</label></td>
+				<td>
+					Add SLAs:
+					<select
+							multiple
+							ui-select2
+							ng-model="model.add_slas"
+							style="width: 60%"
+							>
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+
+					<br/>
+
+					Remove SLAs:
+					<select
+							multiple
+							ui-select2
+							ng-model="model.remove_slas"
+							style="width: 60%"
+							>
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

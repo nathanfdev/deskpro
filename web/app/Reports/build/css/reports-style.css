@@ -9306,7 +9306,7 @@ button.toast-close-button {
 }
 
 .dp-ob-standard-row label {
-  width: 100px;
+  min-width: 100px;
 }
 
 .dp-ob-set .dp-ob-setrow {
@@ -11986,7 +11986,7 @@ button.toast-close-button {
 }
 
 .dp-ob-standard-row label {
-  width: 100px;
+  min-width: 100px;
 }
 
 .dp-ob-set .dp-ob-setrow {

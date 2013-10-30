@@ -69,10 +69,6 @@
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
         this.saveTarget = this.$scope.saveTarget;
-        if (!window.SAVE_TARGETS) {
-          window.SAVE_TARGETS = [];
-        }
-        window.SAVE_TARGETS.push(this.saveTarget);
         this.els = {};
         $transclude(function(clone) {
           var addBtnLabel, addBtnText, select;

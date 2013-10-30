@@ -18,7 +18,7 @@
 
       Admin_TicketTriggers_Ctrl_Edit.CTRL_TYPE = 'page';
 
-      Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria'];
+      Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {
         var _this = this;
@@ -45,19 +45,22 @@
           }
         };
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
+        this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
+        this.$scope.actionOptionTypes = [];
         this.updateCriteriaOptionTypes();
         this.$scope.trigger_criteria_set = {
           first: {},
           second: {}
         };
+        this.$scope.trigger_actions = {};
         this.$scope.$watch('typeForm', function() {
           return _this.updateCriteriaOptionTypes();
         }, true);
       };
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
-        var opt, setOptions, types, _i, _len, _results;
+        var opt, setActionOptions, setCritOptions, types, _i, _j, _len, _len1, _results;
         types = [];
         if (this.$scope.typeForm.by_user) {
           if (this.$scope.typeForm.by_user_opt.web_portal || this.$scope.typeForm.by_user_opt.web_widget || this.$scope.typeForm.by_user_opt.web_form) {
@@ -87,12 +90,18 @@
             Arrays.pushUnique(types, 'api.agent');
           }
         }
-        setOptions = this.criteraTypeDef.getOptionsForTypes(types);
+        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
         this.$scope.criteriaOptionTypes.length = 0;
+        for (_i = 0, _len = setCritOptions.length; _i < _len; _i++) {
+          opt = setCritOptions[_i];
+          this.$scope.criteriaOptionTypes.push(opt);
+        }
+        setActionOptions = this.actionsTypeDef.getOptionsForTypes(types);
+        this.$scope.actionOptionTypes.length = 0;
         _results = [];
-        for (_i = 0, _len = setOptions.length; _i < _len; _i++) {
-          opt = setOptions[_i];
-          _results.push(this.$scope.criteriaOptionTypes.push(opt));
+        for (_j = 0, _len1 = setActionOptions.length; _j < _len1; _j++) {
+          opt = setActionOptions[_j];
+          _results.push(this.$scope.actionOptionTypes.push(opt));
         }
         return _results;
       };

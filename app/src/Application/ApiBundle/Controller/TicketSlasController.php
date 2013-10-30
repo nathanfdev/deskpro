@@ -34,75 +34,26 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
+use Application\DeskPRO\Departments\TicketDepartmentEdit;
+use Application\DeskPRO\Departments\TicketDepartmentEditor;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
+use Application\DeskPRO\Exception\ValidationException;
 use Orb\Util\Arrays;
 
-class AgentsController extends AbstractController
+class TicketSlasController extends AbstractController
 {
 	####################################################################################################################
-	# list-agents
+	# list
 	####################################################################################################################
 
-	public function listAgentsAction()
+	public function listAction()
 	{
-		$data = array('agents' => array());
+		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
 
-		foreach ($this->container->getAgentData()->getAgents() as $agent) {
-			$agent_data = array();
-
-			foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
-				$agent_data[$k] = $agent[$k];
-			}
-
-			$agent_data['picture_url']    = $agent->getPictureUrl(80);
-			$agent_data['picture_url_64'] = $agent->getPictureUrl(64);
-			$agent_data['picture_url_50'] = $agent->getPictureUrl(50);
-			$agent_data['picture_url_45'] = $agent->getPictureUrl(45);
-			$agent_data['picture_url_32'] = $agent->getPictureUrl(32);
-			$agent_data['picture_url_22'] = $agent->getPictureUrl(22);
-			$agent_data['picture_url_16'] = $agent->getPictureUrl(16);
-
-			$agent_data['primary_email'] = array(
-				'id'    => (int)$agent->primary_email->id,
-				'email' => $agent->primary_email->email
-			);
-
-			$agent_data['emails'] = array();
-			foreach ($agent->emails as $eml) {
-				$agent_data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
-			}
-
-			$agent_data['usergroup_ids']  = array();
-			$agent_data['agentgroup_ids'] = array();
-			foreach ($agent->getUsergroupIds() as $ug_id) {
-				if ($this->container->getDataService('Usergroup')->get($ug_id)->is_agent_group) {
-					$agent_data['agentgroup_ids'][] = $ug_id;
-				} else {
-					$agent_data['usergroup_ids'][] = $ug_id;
-				}
-			}
-
-			$agent_data['usergroup_ids']  = Arrays::castToType($agent_data['usergroup_ids'], 'int');
-			$agent_data['agentgroup_ids'] = Arrays::castToType($agent_data['agentgroup_ids'], 'int');
-
-			$data['agents'][] = $agent_data;
-		}
-
-		return $this->createApiResponse($data);
-	}
-
-
-	####################################################################################################################
-	# list-teams
-	####################################################################################################################
-
-	public function listTeamsAction()
-	{
-		$data = array('agent_teams' => array());
-
-		foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
-			$data['agent_teams'][] = $agent_team->toApiData();
-		}
-
-		return $this->createApiResponse($data);
+		return $this->createApiResponse(array(
+			'slas' => $slas
+		));
 	}
 }

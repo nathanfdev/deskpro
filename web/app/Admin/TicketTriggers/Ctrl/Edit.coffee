@@ -11,7 +11,7 @@ define [
 		@CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit'
 		@CTRL_AS   = 'TicketTriggersEdit'
 		@CTRL_TYPE = 'page'
-		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria']
+		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions']
 
 		init: ->
 			@triggerType = @$stateParams.type
@@ -40,14 +40,18 @@ define [
 			}
 
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
+			@actionsTypeDef = @dpObTypesDefTicketActions
 
 			@$scope.criteriaOptionTypes = []
+			@$scope.actionOptionTypes = []
 			@updateCriteriaOptionTypes()
 
 			@$scope.trigger_criteria_set = {
 				first: {},
 				second: {}
 			}
+
+			@$scope.trigger_actions = {}
 
 			@$scope.$watch('typeForm', =>
 				@updateCriteriaOptionTypes()
@@ -80,11 +84,15 @@ define [
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.agent')
 
-			setOptions = @criteraTypeDef.getOptionsForTypes(types)
-
+			setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
 			@$scope.criteriaOptionTypes.length = 0
-			for opt in setOptions
+			for opt in setCritOptions
 				@$scope.criteriaOptionTypes.push(opt)
+
+			setActionOptions = @actionsTypeDef.getOptionsForTypes(types)
+			@$scope.actionOptionTypes.length = 0
+			for opt in setActionOptions
+				@$scope.actionOptionTypes.push(opt)
 
 		###
 		# Load the trigger

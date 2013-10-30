@@ -1,0 +1,28 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;"><label>{{ ng_var('type_title') }}</label></td>
+				<td>
+					<select
+							ng-if="!multiselect"
+							ui-select2
+							ng-model="model.value"
+							style="min-width: 140px"
+							>
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+					<select
+							ng-if="multiselect"
+							multiple
+							ui-select2
+							ng-model="model.value"
+							style="width: 60%"
+							>
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>
