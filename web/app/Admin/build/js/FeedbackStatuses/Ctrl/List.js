@@ -70,6 +70,10 @@
       Admin_FeedbackStatuses_Ctrl_List.prototype.startDelete = function(feedback_status) {
         var inst,
           _this = this;
+        if (this['feedback_' + feedback_status.status_type + '_statuses'].length <= 1) {
+          this.showAlert('@no_delete_last');
+          return;
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('FeedbackStatuses/delete-modal.html'),
           controller: [

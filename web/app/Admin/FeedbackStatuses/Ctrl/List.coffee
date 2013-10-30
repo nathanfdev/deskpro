@@ -59,6 +59,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		startDelete: (feedback_status) ->
 
+			if @['feedback_' + feedback_status.status_type + '_statuses'].length <= 1
+				@showAlert('@no_delete_last');
+				return
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('FeedbackStatuses/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
