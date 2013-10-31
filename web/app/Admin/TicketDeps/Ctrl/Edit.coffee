@@ -17,6 +17,9 @@ define [
 				@ngApply()
 			)
 
+			@$scope.depLayout = {}
+			window.DEP_LAYOUT = @$scope.depLayout
+
 			@$scope.$watch('TicketDepsEdit.dep.parent_id', (newVal) =>
 				newVal = parseInt(newVal)
 				if not newVal

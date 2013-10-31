@@ -32,6 +32,9 @@ define [
 	'Admin/Main/Directive/DpTristateCheck',
 	'Admin/Main/Directive/DpWorkingHours',
 
+	'Admin/TicketDeps/Directive/LayoutEditor',
+	'Admin/TicketDeps/Directive/LayoutEditorField',
+
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
 	'Admin/FeedbackStatuses/DataService/FeedbackStatuses'
@@ -70,6 +73,9 @@ define [
 	Admin_Main_Directive_DpToggleSwitch,
 	Admin_Main_Directive_DpTristateCheck,
 	Admin_Main_Directive_DpWorkingHours,
+
+	Admin_TicketDeps_Directive_LayoutEditor,
+	Admin_TicketDeps_Directive_LayoutEditorField,
 
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
@@ -177,6 +183,8 @@ define [
 	Admin_App.directive('dpToggleSwitch',     Admin_Main_Directive_DpToggleSwitch)
 	Admin_App.directive('dpTristateCheck',    Admin_Main_Directive_DpTristateCheck)
 	Admin_App.directive('dpWorkingHours',     Admin_Main_Directive_DpWorkingHours)
+	Admin_App.directive('dpTicketLayoutEditor',      Admin_TicketDeps_Directive_LayoutEditor)
+	Admin_App.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField)
 
 	####################################################################################################################
 	# Routing
@@ -300,6 +308,9 @@ define [
 			'TicketDeps/code-embed.html',
 			'Index/blank.html',
 			'Common/work-hours-directive.html',
+			'TicketDeps/layout-editor.html',
+			'TicketDeps/layout-editor-agentfield.html'
+			'TicketDeps/layout-editor-userfield.html'
 		]
 
 		for own _, route of routing

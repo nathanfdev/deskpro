@@ -1,0 +1,98 @@
+<div class="dp-layout-editor">
+	<nav>
+		<ul>
+			<li ng-class="{'active': form_tab == 'user'}" ng-click="form_tab = 'user'">User Form</li>
+			<li ng-class="{'active': form_tab == 'agent'}" ng-click="form_tab = 'agent'">Agent Form</li>
+		</ul>
+	</nav>
+	<section>
+		<article class="user-form" ng-show="form_tab == 'user'">
+			<div class="form-elements">
+				<div class="group">
+					<header>
+						<h3>Ticket Fields</h3>
+					</header>
+					<article>
+						<ul>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="product"><span>Product</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="category"><span>Category</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="workflow"><span>Workflow</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="priority"><span>Priority</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="cc"><span>CC</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="captcha"><span>CAPTCHA</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="attach"><span>Attachments</span></li>
+						</ul>
+					</article>
+				</div>
+				<div class="group">
+					<header>
+						<h3>User Fields</h3>
+					</header>
+					<article>
+						<ul>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
+						</ul>
+					</article>
+				</div>
+			</div>
+			<div class="form-worksheet">
+				<ul></ul>
+			</div>
+		</article>
+		<article class="agent-form" ng-show="form_tab == 'agent'">
+
+		</article>
+		<div style="clear:both;height:10px;overflow:hidden;">&nbsp;</div>
+	</section>
+	<script type="text/ng-template" id="ticketdeps_layouteditor_user_options">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="dismiss()">&times;</button>
+					<h4 class="modal-title">Options</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						<button dp-toggle-switch ng-model="field.field.options"></button> Show this field during ticket creation
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="field.field.options"></button> Let the user view this field after the ticket is created
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="field.field.options"></button> Let the user edit this field after the ticket is created
+					</p>
+					<div class="modal-footer">
+						<button class="btn btn-success" ng-click="dismiss()"><i class="icon-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+						<button class="btn btn-danger" ng-click="confirm()"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</button>
+					</div>
+				</div>
+			</div>
+	</script>
+	<script type="text/ng-template" id="ticketdeps_layouteditor_agent_options">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="dismiss()">&times;</button>
+					<h4 class="modal-title">Options</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						<button dp-toggle-switch ng-model="field.field.options"></button> Show this field during ticket creation
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="field.field.options"></button> Let the user view this field after the ticket is created
+					</p>
+					<p>
+						<button dp-toggle-switch ng-model="field.field.options"></button> Let the user edit this field after the ticket is created
+					</p>
+					<div class="modal-footer">
+						<button class="btn btn-success" ng-click="dismiss()"><i class="icon-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+						<button class="btn btn-danger" ng-click="confirm()"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</button>
+					</div>
+				</div>
+			</div>
+	</script>
+</div>

@@ -26,6 +26,8 @@
           _this.initDeplistData(_this.DepartmentData.deps);
           return _this.ngApply();
         });
+        this.$scope.depLayout = {};
+        window.DEP_LAYOUT = this.$scope.depLayout;
         this.$scope.$watch('TicketDepsEdit.dep.parent_id', function(newVal) {
           var parent, _ref1;
           newVal = parseInt(newVal);
