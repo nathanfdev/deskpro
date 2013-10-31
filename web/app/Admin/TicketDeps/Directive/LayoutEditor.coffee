@@ -42,11 +42,9 @@ define ['angular'], (angular) ->
 						if not viewValue[tabType]
 							viewValue[tabType] = []
 
-						field = me.createFieldValue(
-						  ui.item.data('field-type')
-						)
+						field = me.createFieldValue(ui.item.data('field-type'), ui.item.data('field-id') || null)
 
-						for f in viewValue[scope.form_tab]
+						for f in viewValue[tabType]
 							# Already has field of this type,
 							# so we will ignore this drop
 							if f.id == field.id
@@ -74,7 +72,17 @@ define ['angular'], (angular) ->
 			layoutField = {
 				id:            id
 				field_type:    fieldType,
-				field_id:      fieldId
+				field_id:      fieldId,
+				options: {
+					on_newticket: true,
+					on_viewticket: true,
+					on_viewticket_mode: "VALUE",
+					on_editticket: true
+					criteria: {
+						mode: "ALL",
+						terms: []
+					}
+				}
 			}
 
 			return layoutField

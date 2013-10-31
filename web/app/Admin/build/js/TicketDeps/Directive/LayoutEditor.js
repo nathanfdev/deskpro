@@ -45,8 +45,8 @@
               if (!viewValue[tabType]) {
                 viewValue[tabType] = [];
               }
-              field = me.createFieldValue(ui.item.data('field-type'));
-              _ref1 = viewValue[scope.form_tab];
+              field = me.createFieldValue(ui.item.data('field-type'), ui.item.data('field-id') || null);
+              _ref1 = viewValue[tabType];
               for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
                 f = _ref1[_i];
                 if (f.id === field.id) {
@@ -83,7 +83,17 @@
         layoutField = {
           id: id,
           field_type: fieldType,
-          field_id: fieldId
+          field_id: fieldId,
+          options: {
+            on_newticket: true,
+            on_viewticket: true,
+            on_viewticket_mode: "VALUE",
+            on_editticket: true,
+            criteria: {
+              mode: "ALL",
+              terms: []
+            }
+          }
         };
         return layoutField;
       };

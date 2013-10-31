@@ -309,8 +309,7 @@ define [
 			'Index/blank.html',
 			'Common/work-hours-directive.html',
 			'TicketDeps/layout-editor.html',
-			'TicketDeps/layout-editor-agentfield.html'
-			'TicketDeps/layout-editor-userfield.html'
+			'TicketDeps/layout-editor-field.html'
 		]
 
 		for own _, route of routing

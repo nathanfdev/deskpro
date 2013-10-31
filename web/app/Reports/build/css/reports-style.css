@@ -9878,6 +9878,7 @@ table.display-table > tr > td.nowrap {
   padding: 0 10px;
   margin-right: 5px;
   line-height: 23px;
+  cursor: pointer;
   background: #eeeeee;
   border: 1px solid #999999;
   border-bottom: none;
@@ -12723,6 +12724,7 @@ table.display-table > tr > td.nowrap {
   padding: 0 10px;
   margin-right: 5px;
   line-height: 23px;
+  cursor: pointer;
   background: #eeeeee;
   border: 1px solid #999999;
   border-bottom: none;

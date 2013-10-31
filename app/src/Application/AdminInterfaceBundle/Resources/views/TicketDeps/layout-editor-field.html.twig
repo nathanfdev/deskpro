@@ -2,7 +2,7 @@
 	<span class="drag_handle"><i class="icon-reorder"></i></span>
 	<nav>
 		<ul>
-			<li><span class="opt_btm"><i class="icon-cog"></i></span></li>
+			<li><span class="opt_btn"><i class="icon-cog"></i></span></li>
 			<li><span class="remove_btn"><i class="icon-remove"></i></span></li>
 		</ul>
 	</nav>
@@ -24,5 +24,29 @@
 
 	<div ng-if="field.field_type == 'product'">
 		<h4>Product</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'captcha'">
+		<h4>CAPTCHA</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'cc'">
+		<h4>CC</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'attach'">
+		<h4>Attachments</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_name'">
+		<h4>User Name</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_timezone'">
+		<h4>User Timezone</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_language'">
+		<h4>User Language</h4>
 	</div>
 </div>
