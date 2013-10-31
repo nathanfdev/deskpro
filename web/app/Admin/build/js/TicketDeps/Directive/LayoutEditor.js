@@ -107,10 +107,24 @@
 
 
       InterfaceHandler.prototype.createFieldRow = function(tabType, field) {
-        var fieldRow, fieldScope;
+        var fieldRow, fieldScope,
+          _this = this;
         fieldScope = this.scope.$new(true);
         fieldScope.field = field;
         fieldScope.type = tabType;
+        fieldScope.removeRow = function() {
+          var f, idx, viewValue, _i, _len;
+          viewValue = _this.ngModel.$viewValue[tabType];
+          for (idx = _i = 0, _len = viewValue.length; _i < _len; idx = ++_i) {
+            f = viewValue[idx];
+            if (f === field) {
+              viewValue.splice(idx, 1);
+              break;
+            }
+          }
+          fieldRow.remove();
+          return fieldScope.$destroy();
+        };
         fieldRow = this.$compile("<li class=\"layout-field\"><dp-ticket-layout-editor-field type=\"" + tabType + "\" ng-model=\"field\" /></li>")(fieldScope);
         fieldRow.data('field-id', field.id).addClass("field-" + field.id);
         return fieldRow;

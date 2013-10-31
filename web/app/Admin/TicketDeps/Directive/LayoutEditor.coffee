@@ -99,9 +99,19 @@ define ['angular'], (angular) ->
 			fieldScope.field = field
 			fieldScope.type  = tabType
 
+			fieldScope.removeRow = =>
+				viewValue = @ngModel.$viewValue[tabType]
+				for f, idx in viewValue
+					if f == field
+						viewValue.splice(idx, 1)
+						break
+
+				fieldRow.remove()
+				fieldScope.$destroy()
+
 			fieldRow = @$compile("""
-						<li class="layout-field"><dp-ticket-layout-editor-field type="#{tabType}" ng-model="field" /></li>
-					""")(fieldScope)
+				<li class="layout-field"><dp-ticket-layout-editor-field type="#{tabType}" ng-model="field" /></li>
+			""")(fieldScope)
 			fieldRow.data('field-id', field.id).addClass("field-#{field.id}")
 
 			return fieldRow

@@ -9,6 +9,14 @@ define ->
 				@openOptions()
 			)
 
+			@element.find('.remove_btn').on('click', (ev) =>
+				ev.preventDefault()
+				if @scope.removeRow?
+					@scope.removeRow()
+				else
+					@scope.$destroy()
+			)
+
 		openOptions: ->
 			console.log("oepn")
 			if @scope.type == 'user'
