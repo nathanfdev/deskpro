@@ -70,11 +70,20 @@ class FeedbackStatusesTest extends DatabaseTestCase
 
 	public function testUpdateDisplayOrders()
 	{
-		$new_display_order = array(3, 2, 1, 4);
+		$new_display_order = array(4, 3, 2, 1);
 
 		$this->feedbackStatuses->updateDisplayOrders($new_display_order);
+
 		$records = $this->feedbackStatuses->getAll();
 
-		// @todo implement this
+		$this->assertEquals(10, $records[4]->getDisplayOrder());
+		$this->assertEquals(20, $records[3]->getDisplayOrder());
+		$this->assertEquals(30, $records[2]->getDisplayOrder());
+		$this->assertEquals(40, $records[1]->getDisplayOrder());
+
+		$this->assertEquals('Status 4', $records[4]->getTitle());
+		$this->assertEquals('Status 3', $records[3]->getTitle());
+		$this->assertEquals('Status 2', $records[2]->getTitle());
+		$this->assertEquals('Status 1', $records[1]->getTitle());
 	}
 }
