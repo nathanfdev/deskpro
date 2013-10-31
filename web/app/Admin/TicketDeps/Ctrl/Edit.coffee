@@ -17,8 +17,9 @@ define [
 				@ngApply()
 			)
 
-			@$scope.depLayout = {}
-			window.DEP_LAYOUT = @$scope.depLayout
+			@$scope.is_custom_layout = false
+			@$scope.defaultLayout = {}
+			@$scope.customLayout = {}
 
 			@$scope.$watch('TicketDepsEdit.dep.parent_id', (newVal) =>
 				newVal = parseInt(newVal)

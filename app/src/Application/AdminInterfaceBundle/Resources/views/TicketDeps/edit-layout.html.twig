@@ -1,5 +1,17 @@
 <div class="panel panel-fill">
 	<div class="panel-body">
-		<dp-ticket-layout-editor ng-model="depLayout" />
+		<div class="btn-group">
+			<button type="button" class="btn btn-default" ng-class="{'active': !is_custom_layout}" ng-click="is_custom_layout = false">Use Default Form Layout</button>
+			<button type="button" class="btn btn-default" ng-class="{'active': is_custom_layout}" ng-click="is_custom_layout = true">Use Custom Form Layout for "{{ ng_var('TicketDepsEdit.dep.title') }}"</button>
+		</div>
+
+		<br/><br/>
+
+		<div ng-show="is_custom_layout">
+			<dp-ticket-layout-editor ng-model="defaultLayout" />
+		</div>
+		<div ng-show="!is_custom_layout">
+			<dp-ticket-layout-editor ng-model="customLayout" />
+		</div>
 	</div>
 </div>
