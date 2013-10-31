@@ -112,6 +112,15 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 		return $this->status_type;
 	}
 
+	/**
+	 * @return int
+	 */
+
+	public function getDisplayOrder()
+	{
+		return $this->display_order;
+	}
+
 	public function getStatusCode()
 	{
 		return $this->status_type . '.' . $this->id;

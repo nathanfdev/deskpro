@@ -83,6 +83,24 @@ define [
 
 			return new_model
 
+		###
+		# Returns list of feedback_statuses where feedback of specified feedback_status could be moved to
+ 	# @param model - specified feedback_status model
+		# @return array
+		###
+
+		getListOfMovables: (model) ->
+
+			move_list = []
+
+			@recs[model.status_type + '_statuses'].forEach( (key, val) =>
+
+				if val.id != model.id
+					move_list.push(val)
+			)
+
+			return move_list
+
 		###*
 				* Creates entities for feedback statuses raw data
 				* The thing is that it creates entities for both active and closed statuses

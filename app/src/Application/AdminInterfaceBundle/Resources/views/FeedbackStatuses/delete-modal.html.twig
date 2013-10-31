@@ -8,6 +8,16 @@
 		<p>
 			{{ phrase('adm.feedback_statuses.delete_feedback_status_confirm') }}
 		</p>
+
+		<p>
+			{{ phrase('adm.feedback_statuses.delete_feedback_statuses_moved') }}
+		</p>
+
+		<p style="margin-bottom: 0;">
+			<select ui-select2 ng-model="selected.move_to_id" style="width: 240px">
+				<option value="{{ ng_var('status.id') }}" ng-repeat="status in move_feedback_statuses_list">{{ ng_var('status.title') }}</option>
+			</select>
+		</p>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-success" ng-click="dismiss()"><i class="icon-undo"></i> {{ phrase('agent.general.cancel') }}</button>

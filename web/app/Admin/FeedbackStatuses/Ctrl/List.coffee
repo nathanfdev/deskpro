@@ -73,32 +73,48 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		startDelete: (feedback_status) ->
 
-			if @['feedback_' + feedback_status.status_type + '_statuses'].length <= 1
+			move_feedback_statuses_list = @FeedbackStatusesData.getListOfMovables(feedback_status)
+
+			if not move_feedback_statuses_list.length
 				@showAlert('@no_delete_last');
 				return
 
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('FeedbackStatuses/delete-modal.html'),
-				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+				controller: ['$scope', '$modalInstance', 'move_feedback_statuses_list', ($scope, $modalInstance, move_feedback_statuses_list) ->
+
+					$scope.move_feedback_statuses_list = move_feedback_statuses_list
+					$scope.selected = {
+						move_to_id: move_feedback_statuses_list[0].id
+					}
+
 					$scope.confirm = ->
-						$modalInstance.close();
+						$modalInstance.close($scope.selected.move_to_id);
 
 					$scope.dismiss = ->
 						$modalInstance.dismiss();
-				]
+				],
+				resolve: {
+					move_feedback_statuses_list: =>
+						return move_feedback_statuses_list
+				}
 			});
 
-			inst.result.then(=>
-				@deleteFeedbackStatus(feedback_status)
+			inst.result.then( (move_to) =>
+				@deleteFeedbackStatus(feedback_status, move_to)
 			)
 
 		###
 		# Actually do the delete
+ 	# @param feedback_status - feedback status we want to delete
+ 	# @param move_to - to what status feedback should be moved
 		###
 
-		deleteFeedbackStatus: (feedback_status) ->
+		deleteFeedbackStatus: (feedback_status, move_to) ->
 
-			@Api.sendDelete('/feedback_statuses/' + feedback_status.id).success(=>
+			@Api.sendDelete('/feedback_statuses/' + feedback_status.id, {
+				move_to: move_to
+			}).success( =>
 
 				@FeedbackStatusesData.remove(feedback_status.id)
 				@ngApply()

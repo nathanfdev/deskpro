@@ -83,6 +83,25 @@
         return new_model;
       };
 
+      /*
+      		# Returns list of feedback_statuses where feedback of specified feedback_status could be moved to
+       	# @param model - specified feedback_status model
+      		# @return array
+      */
+
+
+      Admin_FeedbackStatuses_DataService_FeedbackStatuses.prototype.getListOfMovables = function(model) {
+        var move_list,
+          _this = this;
+        move_list = [];
+        this.recs[model.status_type + '_statuses'].forEach(function(key, val) {
+          if (val.id !== model.id) {
+            return move_list.push(val);
+          }
+        });
+        return move_list;
+      };
+
       /**
       				* Creates entities for feedback statuses raw data
       				* The thing is that it creates entities for both active and closed statuses

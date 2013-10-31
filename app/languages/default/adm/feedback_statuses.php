@@ -5,4 +5,5 @@
 	'adm.feedback_statuses.title'                          => 'Title',
 	'adm.feedback_statuses.delete_feedback_status'         => 'Delete Feedback Status',
 	'adm.feedback_statuses.delete_feedback_status_confirm' => 'Are you sure you want to delete this feedback status?',
+	'adm.feedback_statuses.delete_feedback_statuses_moved' => 'Any feedback that is currently under this feedback status will be moved to:',
 );

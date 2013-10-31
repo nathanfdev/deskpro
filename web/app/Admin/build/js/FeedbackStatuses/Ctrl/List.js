@@ -81,38 +81,52 @@
 
 
       Admin_FeedbackStatuses_Ctrl_List.prototype.startDelete = function(feedback_status) {
-        var inst,
+        var inst, move_feedback_statuses_list,
           _this = this;
-        if (this['feedback_' + feedback_status.status_type + '_statuses'].length <= 1) {
+        move_feedback_statuses_list = this.FeedbackStatusesData.getListOfMovables(feedback_status);
+        if (!move_feedback_statuses_list.length) {
           this.showAlert('@no_delete_last');
           return;
         }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('FeedbackStatuses/delete-modal.html'),
           controller: [
-            '$scope', '$modalInstance', function($scope, $modalInstance) {
+            '$scope', '$modalInstance', 'move_feedback_statuses_list', function($scope, $modalInstance, move_feedback_statuses_list) {
+              $scope.move_feedback_statuses_list = move_feedback_statuses_list;
+              $scope.selected = {
+                move_to_id: move_feedback_statuses_list[0].id
+              };
               $scope.confirm = function() {
-                return $modalInstance.close();
+                return $modalInstance.close($scope.selected.move_to_id);
               };
               return $scope.dismiss = function() {
                 return $modalInstance.dismiss();
               };
             }
-          ]
+          ],
+          resolve: {
+            move_feedback_statuses_list: function() {
+              return move_feedback_statuses_list;
+            }
+          }
         });
-        return inst.result.then(function() {
-          return _this.deleteFeedbackStatus(feedback_status);
+        return inst.result.then(function(move_to) {
+          return _this.deleteFeedbackStatus(feedback_status, move_to);
         });
       };
 
       /*
       		# Actually do the delete
+       	# @param feedback_status - feedback status we want to delete
+       	# @param move_to - to what status feedback should be moved
       */
 
 
-      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackStatus = function(feedback_status) {
+      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackStatus = function(feedback_status, move_to) {
         var _this = this;
-        return this.Api.sendDelete('/feedback_statuses/' + feedback_status.id).success(function() {
+        return this.Api.sendDelete('/feedback_statuses/' + feedback_status.id, {
+          move_to: move_to
+        }).success(function() {
           _this.FeedbackStatusesData.remove(feedback_status.id);
           _this.ngApply();
           if (_this.$state.current.name === 'portal.feedback_statuses.edit' && parseInt(_this.$state.params.id) === feedback_status.id) {

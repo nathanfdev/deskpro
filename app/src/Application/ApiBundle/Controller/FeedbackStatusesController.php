@@ -155,10 +155,46 @@ class FeedbackStatusesController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$old_id = $feedback_status->id;
+		$move_to                 = $this->in->getUint('move_to');
+		$move_to_feedback_status = $feedback_statuses->getById($move_to);
 
-		$this->em->remove($feedback_status);
-		$this->em->flush();
+		if (!$move_to_feedback_status) {
+
+			throw ValidationException::create(
+				"feedback_status.remove.move_feedback_statuses",
+				"You must select a feedback status to move existing feedback into"
+			);
+		}
+
+		if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
+
+			throw ValidationException::create(
+				"feedback_status.remove.move_feedback_statuses",
+				"You must choose a different feedback status"
+			);
+		}
+
+		$old_id = $feedback_status->getId();
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->db->executeUpdate(
+				"UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?",
+				array($move_to, $old_id)
+			);
+
+			$this->em->remove($feedback_status);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
