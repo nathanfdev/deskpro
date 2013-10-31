@@ -6,6 +6,15 @@
 			<li><span class="remove_btn"><i class="icon-remove"></i></span></li>
 		</ul>
 	</nav>
+
+	<div ng-if="field.field_type == 'subject'">
+		<h4>Subject</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'message'">
+		<h4>Message</h4>
+	</div>
+
 	<div ng-if="field.field_type == 'department'">
 		<h4>Department</h4>
 	</div>
@@ -36,6 +45,10 @@
 
 	<div ng-if="field.field_type == 'attach'">
 		<h4>Attachments</h4>
+	</div>
+
+	<div ng-if="field.field_type == 'user_email'">
+		<h4>User Email</h4>
 	</div>
 
 	<div ng-if="field.field_type == 'user_name'">

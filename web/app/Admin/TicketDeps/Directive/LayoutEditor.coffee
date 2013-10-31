@@ -36,28 +36,56 @@ define ['angular'], (angular) ->
 				handle: '.drag_handle',
 				stop: (event, ui) ->
 					if ui.item?.hasClass('dp-layout-editor-layout-field')
-						viewValue = ngModel.$viewValue
-						if not viewValue
-							viewValue = {}
-						if not viewValue[tabType]
-							viewValue[tabType] = []
-
-						field = me.createFieldValue(ui.item.data('field-type'), ui.item.data('field-id') || null)
-
-						for f in viewValue[tabType]
-							# Already has field of this type,
-							# so we will ignore this drop
-							if f.id == field.id
-								ui.item.remove()
-								return
-
-						viewValue[tabType].push(field)
-						ngModel.$setViewValue(viewValue)
-
-						row = me.createFieldRow(tabType, field)
-						row.insertAfter(ui.item)
+						me.createAndAddField(
+							tabType,
+							ui.item.data('field-type'),
+							ui.item.data('field-id') || null,
+							ui.item
+						)
 						ui.item.remove()
 			})
+
+
+		###
+    	# Create a new field, add it to the model and also add it to the UI
+    	#
+    	# @param {String} tabType
+    	# @param {String} fieldType
+    	# @param {Integer} fieldId
+    	# @param {HTMLElement} insertAfterEl
+		###
+		createAndAddField: (tabType, fieldType, fieldId = null, insertAfterEl = null) ->
+			viewValue = @ngModel.$viewValue
+			if not viewValue
+				viewValue = {}
+			if not viewValue[tabType]
+				viewValue[tabType] = []
+
+			field = @createFieldValue(fieldType, fieldId || null)
+
+			for f in viewValue[tabType]
+				# Already has field of this type,
+				# so we will ignore this drop
+				if f.id == field.id
+					return null
+
+			viewValue[tabType].push(field)
+			@ngModel.$setViewValue(viewValue)
+
+			row = @createFieldRow(tabType, field)
+
+			if insertAfterEl
+				row.insertAfter(insertAfterEl)
+			else
+				if tabType == 'user'
+					ul = @els.user_worksheet.find('ul').first()
+				else
+					ul = @els.agent_worksheet.find('ul').first()
+
+				ul.append(row)
+
+			return row
+
 
 		###
     	# Creates a new field object
@@ -109,6 +137,11 @@ define ['angular'], (angular) ->
 				fieldRow.remove()
 				fieldScope.$destroy()
 
+			if field.id in ['subject', 'message', 'user_email']
+				fieldScope.removeRow = ->
+					return
+				fieldScope.isSticky = true
+
 			fieldRow = @$compile("""
 				<li class="layout-field"><dp-ticket-layout-editor-field type="#{tabType}" ng-model="field" /></li>
 			""")(fieldScope)
@@ -128,10 +161,23 @@ define ['angular'], (angular) ->
 			]
 
 			for form in forms
-				if not @ngModel.$viewValue?[form.modelName] then continue
+				if not @ngModel.$viewValue
+					@ngModel.$viewValue = {}
+				if not @ngModel.$viewValue[form.modelName]
+					@ngModel.$viewValue[form.modelName] = []
+
+				typeName    = form.typeName
 				form_model  = @ngModel.$viewValue?[form.modelName]
 				worksheetEl = @els[form.worksheetName]
+				tabEl       = @els["#{form.typeName}_tab"]
 				listEl      = worksheetEl.find('ul').first()
+
+				stickyFields = tabEl.find('.dp-layout-editor-layout-field').filter('[data-is-required]')
+				stickyFieldIds = {}
+				stickyFields.each(->
+					id = $(this).data('field-type')
+					stickyFieldIds[id] = $(this)
+				)
 
 				layoutFieldEls = worksheetEl.find('.layout-field');
 
@@ -149,6 +195,15 @@ define ['angular'], (angular) ->
 
 					orderMap[field.id] = order
 
+				# Check for required elements
+				x = form_model.length
+				for own id, fieldEl of stickyFieldIds
+					if not elementMap[id]
+						field = @createFieldValue(id)
+						orderMap[id] = field
+						newFields.push(field)
+						x++
+
 				# Remove elements
 				layoutFieldEls.each( ->
 					fieldId = $(this).data('field-id')
@@ -158,7 +213,7 @@ define ['angular'], (angular) ->
 
 				# Add new elements
 				for field in newFields
-					fieldRow = @createFieldRow(field, typeName)
+					fieldRow = @createFieldRow(typeName, field)
 					elementMap[field.id] = fieldRow
 					order = orderMap[field.id]
 
@@ -166,8 +221,11 @@ define ['angular'], (angular) ->
 						listEl.prepend(fieldRow)
 					else
 						prevField = form_model[order-1]
-						prevFieldEl = elementMap[prevField.id]
-						fieldRow.insertAfter(prevFieldEl)
+						if prevField
+							prevFieldEl = elementMap[prevField.id]
+							fieldRow.insertAfter(prevFieldEl)
+						else
+							listEl.append(fieldRow)
 
 				# Verify order
 				doReorder = false
@@ -181,7 +239,7 @@ define ['angular'], (angular) ->
 						return false
 				)
 
-				if doReorder
+				if doReorder and false
 					layoutFieldEls.detach()
 					for field, order in form_model
 						fieldEl = layoutFieldEls.filter('.field-' + field.id)

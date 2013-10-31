@@ -4,18 +4,21 @@ define ->
 			@_initEvents()
 
 		_initEvents: ->
-			@element.find('.opt_btn').on('click', (ev) =>
-				ev.preventDefault()
-				@openOptions()
-			)
+			if not @scope.isSticky
+				@element.find('.opt_btn').on('click', (ev) =>
+					ev.preventDefault()
+					@openOptions()
+				)
 
-			@element.find('.remove_btn').on('click', (ev) =>
-				ev.preventDefault()
-				if @scope.removeRow?
-					@scope.removeRow()
-				else
-					@scope.$destroy()
-			)
+				@element.find('.remove_btn').on('click', (ev) =>
+					ev.preventDefault()
+					if @scope.removeRow?
+						@scope.removeRow()
+					else
+						@scope.$destroy()
+				)
+			else
+				@element.find('nav').remove()
 
 		openOptions: ->
 			console.log("oepn")

@@ -1,4 +1,6 @@
 (function() {
+  var __hasProp = {}.hasOwnProperty;
+
   define(['angular'], function(angular) {
     var InterfaceHandler;
     InterfaceHandler = (function() {
@@ -36,32 +38,62 @@
           axis: 'y',
           handle: '.drag_handle',
           stop: function(event, ui) {
-            var f, field, row, viewValue, _i, _len, _ref, _ref1;
+            var _ref;
             if ((_ref = ui.item) != null ? _ref.hasClass('dp-layout-editor-layout-field') : void 0) {
-              viewValue = ngModel.$viewValue;
-              if (!viewValue) {
-                viewValue = {};
-              }
-              if (!viewValue[tabType]) {
-                viewValue[tabType] = [];
-              }
-              field = me.createFieldValue(ui.item.data('field-type'), ui.item.data('field-id') || null);
-              _ref1 = viewValue[tabType];
-              for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-                f = _ref1[_i];
-                if (f.id === field.id) {
-                  ui.item.remove();
-                  return;
-                }
-              }
-              viewValue[tabType].push(field);
-              ngModel.$setViewValue(viewValue);
-              row = me.createFieldRow(tabType, field);
-              row.insertAfter(ui.item);
+              me.createAndAddField(tabType, ui.item.data('field-type'), ui.item.data('field-id') || null, ui.item);
               return ui.item.remove();
             }
           }
         });
+      };
+
+      /*
+        	# Create a new field, add it to the model and also add it to the UI
+        	#
+        	# @param {String} tabType
+        	# @param {String} fieldType
+        	# @param {Integer} fieldId
+        	# @param {HTMLElement} insertAfterEl
+      */
+
+
+      InterfaceHandler.prototype.createAndAddField = function(tabType, fieldType, fieldId, insertAfterEl) {
+        var f, field, row, ul, viewValue, _i, _len, _ref;
+        if (fieldId == null) {
+          fieldId = null;
+        }
+        if (insertAfterEl == null) {
+          insertAfterEl = null;
+        }
+        viewValue = this.ngModel.$viewValue;
+        if (!viewValue) {
+          viewValue = {};
+        }
+        if (!viewValue[tabType]) {
+          viewValue[tabType] = [];
+        }
+        field = this.createFieldValue(fieldType, fieldId || null);
+        _ref = viewValue[tabType];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          f = _ref[_i];
+          if (f.id === field.id) {
+            return null;
+          }
+        }
+        viewValue[tabType].push(field);
+        this.ngModel.$setViewValue(viewValue);
+        row = this.createFieldRow(tabType, field);
+        if (insertAfterEl) {
+          row.insertAfter(insertAfterEl);
+        } else {
+          if (tabType === 'user') {
+            ul = this.els.user_worksheet.find('ul').first();
+          } else {
+            ul = this.els.agent_worksheet.find('ul').first();
+          }
+          ul.append(row);
+        }
+        return row;
       };
 
       /*
@@ -107,7 +139,7 @@
 
 
       InterfaceHandler.prototype.createFieldRow = function(tabType, field) {
-        var fieldRow, fieldScope,
+        var fieldRow, fieldScope, _ref,
           _this = this;
         fieldScope = this.scope.$new(true);
         fieldScope.field = field;
@@ -125,6 +157,10 @@
           fieldRow.remove();
           return fieldScope.$destroy();
         };
+        if ((_ref = field.id) === 'subject' || _ref === 'message' || _ref === 'user_email') {
+          fieldScope.removeRow = function() {};
+          fieldScope.isSticky = true;
+        }
         fieldRow = this.$compile("<li class=\"layout-field\"><dp-ticket-layout-editor-field type=\"" + tabType + "\" ng-model=\"field\" /></li>")(fieldScope);
         fieldRow.data('field-id', field.id).addClass("field-" + field.id);
         return fieldRow;
@@ -137,7 +173,7 @@
 
 
       InterfaceHandler.prototype.render = function() {
-        var doReorder, elementMap, field, fieldEl, fieldRow, form, form_model, forms, layoutFieldEls, listEl, newFields, order, orderMap, prevField, prevFieldEl, worksheetEl, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _results;
+        var doReorder, elementMap, field, fieldEl, fieldRow, form, form_model, forms, id, layoutFieldEls, listEl, newFields, order, orderMap, prevField, prevFieldEl, stickyFieldIds, stickyFields, tabEl, typeName, worksheetEl, x, _i, _j, _k, _len, _len1, _len2, _ref, _results;
         console.log("[LayoutEditor] render");
         forms = [
           {
@@ -153,12 +189,24 @@
         _results = [];
         for (_i = 0, _len = forms.length; _i < _len; _i++) {
           form = forms[_i];
-          if (!((_ref = this.ngModel.$viewValue) != null ? _ref[form.modelName] : void 0)) {
-            continue;
+          if (!this.ngModel.$viewValue) {
+            this.ngModel.$viewValue = {};
           }
-          form_model = (_ref1 = this.ngModel.$viewValue) != null ? _ref1[form.modelName] : void 0;
+          if (!this.ngModel.$viewValue[form.modelName]) {
+            this.ngModel.$viewValue[form.modelName] = [];
+          }
+          typeName = form.typeName;
+          form_model = (_ref = this.ngModel.$viewValue) != null ? _ref[form.modelName] : void 0;
           worksheetEl = this.els[form.worksheetName];
+          tabEl = this.els["" + form.typeName + "_tab"];
           listEl = worksheetEl.find('ul').first();
+          stickyFields = tabEl.find('.dp-layout-editor-layout-field').filter('[data-is-required]');
+          stickyFieldIds = {};
+          stickyFields.each(function() {
+            var id;
+            id = $(this).data('field-type');
+            return stickyFieldIds[id] = $(this);
+          });
           layoutFieldEls = worksheetEl.find('.layout-field');
           orderMap = {};
           elementMap = {};
@@ -173,6 +221,17 @@
             }
             orderMap[field.id] = order;
           }
+          x = form_model.length;
+          for (id in stickyFieldIds) {
+            if (!__hasProp.call(stickyFieldIds, id)) continue;
+            fieldEl = stickyFieldIds[id];
+            if (!elementMap[id]) {
+              field = this.createFieldValue(id);
+              orderMap[id] = field;
+              newFields.push(field);
+              x++;
+            }
+          }
           layoutFieldEls.each(function() {
             var fieldId;
             fieldId = $(this).data('field-id');
@@ -182,15 +241,19 @@
           });
           for (_k = 0, _len2 = newFields.length; _k < _len2; _k++) {
             field = newFields[_k];
-            fieldRow = this.createFieldRow(field, typeName);
+            fieldRow = this.createFieldRow(typeName, field);
             elementMap[field.id] = fieldRow;
             order = orderMap[field.id];
             if (order === 0) {
               listEl.prepend(fieldRow);
             } else {
               prevField = form_model[order - 1];
-              prevFieldEl = elementMap[prevField.id];
-              fieldRow.insertAfter(prevFieldEl);
+              if (prevField) {
+                prevFieldEl = elementMap[prevField.id];
+                fieldRow.insertAfter(prevFieldEl);
+              } else {
+                listEl.append(fieldRow);
+              }
             }
           }
           doReorder = false;
@@ -204,7 +267,7 @@
               return false;
             }
           });
-          if (doReorder) {
+          if (doReorder && false) {
             layoutFieldEls.detach();
             _results.push((function() {
               var _l, _len3, _results1;

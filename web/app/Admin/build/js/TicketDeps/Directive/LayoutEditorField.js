@@ -14,18 +14,22 @@
 
       LayoutEditorField.prototype._initEvents = function() {
         var _this = this;
-        this.element.find('.opt_btn').on('click', function(ev) {
-          ev.preventDefault();
-          return _this.openOptions();
-        });
-        return this.element.find('.remove_btn').on('click', function(ev) {
-          ev.preventDefault();
-          if (_this.scope.removeRow != null) {
-            return _this.scope.removeRow();
-          } else {
-            return _this.scope.$destroy();
-          }
-        });
+        if (!this.scope.isSticky) {
+          this.element.find('.opt_btn').on('click', function(ev) {
+            ev.preventDefault();
+            return _this.openOptions();
+          });
+          return this.element.find('.remove_btn').on('click', function(ev) {
+            ev.preventDefault();
+            if (_this.scope.removeRow != null) {
+              return _this.scope.removeRow();
+            } else {
+              return _this.scope.$destroy();
+            }
+          });
+        } else {
+          return this.element.find('nav').remove();
+        }
       };
 
       LayoutEditorField.prototype.openOptions = function() {
