@@ -122,7 +122,7 @@ class FeedbackCategory extends AbstractCategoryRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT c
 			FROM DeskPRO:FeedbackCategory c INDEX BY c.id
-			ORDER BY c.id DESC
+			ORDER BY c.display_order ASC
 		")->execute();
 	}
 
