@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Tickets\Triggers\EscalationTerms;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,28 +43,18 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * Ticket triggers
  *
  */
-class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
+class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 {
-	const EVENT_TYPE_NEWTICKET                  = 'newticket';
-	const EVENT_TYPE_NEWREPLY                   = 'newreply';
-	const EVENT_TYPE_UPDATE                     = 'update';
-	const EVENT_TYPE_SLA_WARNING                = 'sla.warning';
-	const EVENT_TYPE_SLA_FAIL                   = 'sla.fail';
+	const EVENT_TYPE_TIME_OPEN                  = 'time.open';
+	const EVENT_TYPE_TIME_USER_WAITING          = 'time.user_waiting';
+	const EVENT_TYPE_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
+	const EVENT_TYPE_TIME_AGENT_WAITING         = 'time.agent_waiting';
+	const EVENT_TYPE_TIME_RESOLVED              = 'time.resolved';
 
 	/**
 	 * @var int
 	 */
 	protected $id = null;
-
-	/**
-	 * @var Department
-	 */
-	protected $department;
-
-	/**
-	 * @var EmailGateway
-	 */
-	protected $email_gateway;
 
 	/**
 	 * @var string
@@ -87,7 +77,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $by_user = false;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
+	 * @var \Application\DeskPRO\Tickets\Triggers\EscalationTerms
 	 */
 	protected $terms;
 
@@ -103,7 +93,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->terms   = new TriggerTerms();
+		$this->terms   = new EscalationTerms();
 		$this->actions = new TriggerActions();
 	}
 
@@ -125,7 +115,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$data = parent::toApiData($primary, $deep, $visited);
 		return $data;
 	}
-
+	
 
 	############################################################################
 	# Doctrine Metadata
@@ -134,12 +124,12 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketTrigger';
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketEscalation';
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
 		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_triggers'
+			'name' => 'ticket_escalations'
 		));
 
 		$metadata->mapField(array(
@@ -198,27 +188,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			'fieldName'  => 'run_order',
 			'type'       => 'integer',
 			'nullable'   => false,
-		));
-
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'department',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-			'joinColumns'  => array(array(
-				'name'                 => 'department_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'CASCADE',
-			))
-		));
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'email_gateway',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway',
-			'joinColumns'  => array(array(
-				'name'                 => 'email_gateway_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'CASCADE',
-			))
 		));
 	}
 }

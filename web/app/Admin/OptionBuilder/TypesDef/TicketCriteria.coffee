@@ -15,52 +15,52 @@ define ->
 
 				options.push({
 					title: 'Email Account',
-					value: 'email_account'
+					value: 'CheckEmailAccount'
 				})
 
 				options.push({
 					title: 'Email Subject',
-					value: 'email_subject'
+					value: 'CheckEmailSubject'
 				})
 
 				options.push({
 					title: 'Email Body',
-					value: 'email_body'
+					value: 'CheckEmailBody'
 				})
 
 				options.push({
 					title: 'To Name',
-					value: 'email_to_name'
+					value: 'CheckEmailToName'
 				})
 
 				options.push({
 					title: 'To Address',
-					value: 'email_to_address'
+					value: 'CheckEmailToAddress'
 				})
 
 				options.push({
 					title: 'From Name',
-					value: 'email_from_name'
+					value: 'CheckEmailFromName'
 				})
 
 				options.push({
 					title: 'From Address',
-					value: 'email_from_address'
+					value: 'CheckEmailFromAddress'
 				})
 
 				options.push({
 					title: 'CCd Name',
-					value: 'email_cc_name'
+					value: 'CheckEmailCcName'
 				})
 
 				options.push({
 					title: 'CCd Address',
-					value: 'email_cc_address'
+					value: 'CheckEmailCcAddress'
 				})
 
 				options.push({
 					title: 'Email Header',
-					value: 'email_header_match'
+					value: 'CheckEmailHeader'
 				})
 
 				set_options.push({
@@ -76,38 +76,38 @@ define ->
 
 			options.push({
 				title: 'Department',
-				value: 'department'
+				value: 'CheckDepartment'
 			})
 
 			options.push({
 				title: 'Product',
-				value: 'product'
+				value: 'CheckProduct'
 			})
 
 			options.push({
 				title: 'Category',
-				value: 'category'
+				value: 'CheckCategory'
 			})
 
 			options.push({
 				title: 'Priority',
-				value: 'priority'
+				value: 'CheckPriority'
 			})
 
 			if types.indexOf('web.agent') != -1
 				options.push({
 					title: 'Workflow',
-					value: 'workflow'
+					value: 'CheckWorkflow'
 				})
 
 			options.push({
-				title: 'Title',
-				value: 'title'
+				title: 'Subject',
+				value: 'CheckSubject'
 			})
 
 			options.push({
 				title: 'Message',
-				value: 'message'
+				value: 'CheckMessage'
 			})
 
 			set_options.push({
@@ -123,15 +123,15 @@ define ->
 
 			options.push({
 				title: 'Has attachment',
-				value: 'with_attach'
+				value: 'CheckHasAttach'
 			})
 			options.push({
 				title: 'Has attachment type',
-				value: 'with_attach_type'
+				value: 'CheckHasAttachType'
 			})
 			options.push({
 				title: 'Has attachment named',
-				value: 'with_attach_name'
+				value: 'CheckHasAttachName'
 			})
 
 			set_options.push({
@@ -147,37 +147,37 @@ define ->
 
 			options.push({
 				title: 'Name',
-				value: 'person_name'
+				value: 'CheckUserName'
 			})
 
 			options.push({
 				title: 'Email Address',
-				value: 'person_email'
+				value: 'CheckUserEmailAddress'
 			})
 
 			options.push({
 				title: 'Label',
-				value: 'person_label'
+				value: 'CheckUserLabels'
 			})
 
 			options.push({
 				title: 'Usergroup',
-				value: 'person_usergroup'
+				value: 'CheckUserUsergroups'
 			})
 
 			options.push({
 				title: 'Language',
-				value: 'person_language'
+				value: 'CheckUserLanguage'
 			})
 
 			options.push({
 				title: 'Is manager of organization',
-				value: 'person_is_manager'
+				value: 'CheckUserIsManager'
 			})
 
 			options.push({
 				title: 'Is disabled',
-				value: 'person_is_disabled'
+				value: 'CheckPersonIsDisabled'
 			})
 
 			set_options.push({
@@ -193,22 +193,22 @@ define ->
 
 			options.push({
 				title: 'Name',
-				value: 'org_name'
+				value: 'CheckOrgName'
 			})
 
 			options.push({
 				title: 'Label',
-				value: 'org_label'
+				value: 'CheckOrgLabels'
 			})
 
 			options.push({
 				title: 'Email Domain',
-				value: 'org_email_domain'
+				value: 'CheckOrgEmailDomain'
 			})
 
 			options.push({
 				title: 'Linked Usergroup',
-				value: 'org_usergroup'
+				value: 'CheckOrgUsergroups'
 			})
 
 			set_options.push({
@@ -224,17 +224,17 @@ define ->
 
 			options.push({
 				title: 'Day of week',
-				value: 'day_of_week'
+				value: 'CheckDayOfWeek'
 			})
 
 			options.push({
 				title: 'Time of day',
-				value: 'time_of_day'
+				value: 'CheckTimeOfDay'
 			})
 
 			options.push({
 				title: 'Within working hours',
-				value: 'within_working_hours'
+				value: 'CheckWorkingHours'
 			})
 
 			set_options.push({

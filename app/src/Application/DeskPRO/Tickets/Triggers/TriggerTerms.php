@@ -1,0 +1,142 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ */
+
+namespace Application\DeskPRO\Tickets\Triggers;
+
+use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketChangelog;
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
+
+/**
+ * This is a wrapper around a TriggerTermComposite that is able to serialize.
+ * Used as the serialized object in TicketTrigger records.
+ *
+ * While any `TriggerTermInterface` can be used with he trigger system, we can only actually
+ * *save* the term to the db if it also implements the standard CriteriaTermInterface which defines
+ * a standard interface for getting a term name and options (so we can recreate a term object again).
+ */
+class TriggerTerms implements \Serializable, TriggerTermInterface
+{
+	/**
+	 * @var TriggerTermComposite
+	 */
+	private $criteria;
+
+	public function __construct()
+	{
+		$this->criteria = new TriggerTermComposite();
+		$this->criteria->setOperator(TriggerTermComposite::OP_OR);
+	}
+
+
+	/**
+	 * @param TriggerTermInterface $term
+	 * @throws \InvalidArgumentException
+	 */
+	public function addTerm(TriggerTermInterface $term)
+	{
+		if (!($term instanceof CriteriaTermInterface)) {
+			$class_name = get_class($term);
+			throw new \InvalidArgumentException("TriggerCriteria can only manage terms terms that implement CriteriaTermInterface. Invalid class: $class_name");
+		}
+		$this->criteria->add($term);
+	}
+
+
+	/**
+	 * @param array $term_info
+	 * @throws \InvalidArgumentException
+	 */
+	public function addTermFromArray(array $term_info)
+	{
+		$class_name = "Application\\DeskPRO\\Tickets\\Triggers\\Terms\\{$term_info['type']}";
+		if (!class_exists($class_name)) {
+			throw new \InvalidArgumentException("Unknown term {$term_info['type']} (could not locate class: $class_name)");
+		}
+
+		$term = new $class_name($term_info['op'], $term_info['options']);
+		$this->addTerm($term);
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @param TicketChangelog $ticket_changelog
+	 * @return bool
+	 */
+	public function isTriggerMatch(Ticket $ticket, TicketChangelog $ticket_changelog)
+	{
+		return $this->criteria->isTriggerMatch($ticket, $ticket_changelog);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		$data = array();
+
+		$data['version']  = 1;
+		$data['terms'] = array();
+		foreach ($this->criteria->getAll() as $criteria) {
+			if (!($criteria instanceof CriteriaTermInterface)) {
+				continue;
+			}
+
+			$data['terms'][] = array(
+				'type'    => $criteria->getTermType(),
+				'op'      => $criteria->getTermOperator(),
+				'options' => $criteria->getTermOptions()
+			);
+		}
+
+		return json_encode($data);
+	}
+
+
+	/**
+	 * @param string $data
+	 */
+	public function unserialize($data)
+	{
+		$data = json_decode($data);
+
+		foreach ($data['terms'] as $term_info) {
+			$this->addTermFromArray($term_info);
+		}
+	}
+}

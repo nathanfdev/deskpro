@@ -29,71 +29,81 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Tickets\Filters\Terms;
 
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Orb\Util\Util;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Entity\TicketTrigger;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-
-/**
- * Handles SLA warn/fail updates
- */
-class TicketSlas extends AbstractJob
+abstract class AbstractFilterTerm implements CriteriaTermInterface
 {
-	const DEFAULT_INTERVAL = 60;
+	const OP_NOOP        = null;
+	const OP_IS          = 'is';
+	const OP_NOT         = 'not';
+	const OP_LT          = 'lt';
+	const OP_GT          = 'gt';
+	const OP_LTE         = 'lte';
+	const OP_GTE         = 'gte';
+	const OP_BETWEEN     = 'between';
+	const OP_CONTAINS    = 'contains';
+	const OP_NOTCONTAINS = 'notcontains';
+	const OP_IS_REGEX    = 'is_regex';
+	const OP_NOT_REGEX   = 'not_regex';
 
-	public function run()
+	/**
+	 * @var
+	 */
+	private $op;
+
+	/**
+	 * @var array
+	 */
+	private $options;
+
+
+	/**
+	 * @param string $type
+	 * @param string $op
+	 * @param array  $options
+	 */
+	public function __construct($op, array $options)
 	{
-		//TODO part of trigger redo
-		return;
+		$this->op      = $op;
+		$this->options = $options;
+	}
 
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
 
-		$em = App::getOrm();
+	/**
+	 * Gets the type name of the criteria
+	 *
+	 * @return string
+	 */
+	public function getTermType()
+	{
+		return Util::getBaseClassname($this);
+	}
 
-		$count_failed = 0;
-		$count_warning = 0;
 
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
+	/**
+	 * Gets criteria operator (is, is not, etc).
+	 *
+	 * @return string
+	 */
+	public function getTermOperator()
+	{
+		return $this->op;
+	}
 
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_FAIL) {
-				$count_failed++;
-			}
-		}
 
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
-
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_WARNING) {
-				$count_warning++;
-			}
-		}
-
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
-		if ($count_warning || $count_failed) {
-			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
-		}
-
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
+	/**
+	 * Get's an array of options
+	 *
+	 * @return array
+	 */
+	public function getTermOptions()
+	{
+		return $this->options;
 	}
 }

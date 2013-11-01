@@ -55,6 +55,9 @@ class TicketTriggers extends AbstractJob
 
 	public function run()
 	{
+		//TODO part of trigger redo
+		return;
+
 		$escalations = App::getEntityRepository('DeskPRO:TicketTrigger')->getTimeTriggers();
 
 		if (!count($escalations)) {

@@ -13,17 +13,17 @@ define ->
 			options = []
 			options.push({
 				title: 'Change Assigned Agent',
-				value: 'agent'
+				value: 'SetAgent'
 			})
 
 			options.push({
 				title: 'Change Assigned Team',
-				value: 'agent_team'
+				value: 'SetAgentTeam'
 			})
 
 			options.push({
 				title: 'Change Agent Followers',
-				value: 'agent_followers'
+				value: 'SetAgentFollowers'
 			})
 
 			set_options.push({
@@ -39,57 +39,57 @@ define ->
 
 			options.push({
 				title: 'Change Department',
-				value: 'department'
+				value: 'SetDepartment'
 			})
 
 			options.push({
 				title: 'Change Product',
-				value: 'product'
+				value: 'SetProduct'
 			})
 
 			options.push({
 				title: 'Change Category',
-				value: 'category'
+				value: 'SetCategory'
 			})
 
 			options.push({
 				title: 'Change Priority',
-				value: 'priority'
+				value: 'SetPriority'
 			})
 
 			options.push({
 				title: 'Change Workflow',
-				value: 'workflow'
+				value: 'SetWorkflow'
 			})
 
 			options.push({
 				title: 'Change Urgency',
-				value: 'urgency'
+				value: 'SetUrgency'
 			})
 
 			options.push({
 				title: 'Change Subject',
-				value: 'subject'
+				value: 'SetSubject'
 			})
 
 			options.push({
 				title: 'Change Labels',
-				value: 'labels'
+				value: 'SetLabels'
 			})
 
 			options.push({
 				title: 'Change Flag',
-				value: 'flag'
+				value: 'SetFlag'
 			})
 
 			options.push({
 				title: 'Change Email Account',
-				value: 'email_account'
+				value: 'SetEmailAccount'
 			})
 
 			options.push({
 				title: 'Change CC\'d Users',
-				value: 'user_ccs'
+				value: 'SetCcUsers'
 			})
 
 			set_options.push({
@@ -105,17 +105,17 @@ define ->
 
 			options.push({
 				title: 'Change SLAs',
-				value: 'slas'
+				value: 'SetSlas'
 			})
 
 			options.push({
 				title: 'Change SLA Condition Status (Passing/Failing)',
-				value: 'set_sla_status'
+				value: 'SetSlaStatus'
 			})
 
 			options.push({
 				title: 'Change SLA State (Waiting/Finished)',
-				value: 'set_sla_requirements'
+				value: 'SetSlaRequirements'
 			})
 
 			set_options.push({
@@ -131,22 +131,22 @@ define ->
 
 			options.push({
 				title: 'Change Ticket User',
-				value: 'change_user'
+				value: 'ChangeUser'
 			})
 
 			options.push({
 				title: 'Delete Ticket',
-				value: 'delete_ticket'
+				value: 'DeleteTicket'
 			})
 
 			options.push({
 				title: 'Add Agent Reply',
-				value: 'agent_reply'
+				value: 'AddAgentReply'
 			})
 
 			options.push({
 				title: 'Force User Email Validation',
-				value: 'force_email_validation'
+					value: 'ModForceEmailValidation'
 			})
 
 			set_options.push({
@@ -162,12 +162,12 @@ define ->
 
 			options.push({
 				title: 'Send Email To User',
-				value: 'send_user_email'
+				value: 'SendUserEmail'
 			})
 
 			options.push({
 				title: 'Send Email To Agents',
-				value: 'send_user_email'
+				value: 'SendAgentEmail'
 			})
 
 			#------------------------------
@@ -178,17 +178,17 @@ define ->
 
 			options.push({
 				title: 'Stop Processing Triggers',
-				value: 'stop_triggers'
+				value: 'ModStopTriggers'
 			})
 
 			options.push({
 				title: 'Prevent Emails To User',
-				value: 'quiet_user_emails'
+				value: 'ModQuietUserEmails'
 			})
 
 			options.push({
 				title: 'Prevent Emails To Agents',
-				value: 'quiet_agent_emails'
+				value: 'ModQuietAgentEmails'
 			})
 
 			set_options.push({

@@ -29,71 +29,33 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Entity\TicketTrigger;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-
-/**
- * Handles SLA warn/fail updates
- */
-class TicketSlas extends AbstractJob
+interface MacroActionInterface
 {
-	const DEFAULT_INTERVAL = 60;
+	/**
+	 * Return an array of macros that the user does not have permission to use.
+	 * An empty array means there are no permission errors.
+	 *
+	 * @param Person $person
+	 * @param Ticket $ticket
+	 * @param ActionContext $context
+	 * @return array
+	 */
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ActionContext $context);
 
-	public function run()
-	{
-		//TODO part of trigger redo
-		return;
 
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
-
-		$em = App::getOrm();
-
-		$count_failed = 0;
-		$count_warning = 0;
-
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
-
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_FAIL) {
-				$count_failed++;
-			}
-		}
-
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
-
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_WARNING) {
-				$count_warning++;
-			}
-		}
-
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
-		if ($count_warning || $count_failed) {
-			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
-		}
-
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
-	}
+	/**
+	 * @param Person $person
+	 * @param Ticket $ticket
+	 * @param ActionContext $context
+	 * @return void
+	 */
+	public function applyMacro(Person $person, Ticket $ticket, ActionContext $context);
 }

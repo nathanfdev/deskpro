@@ -1,0 +1,138 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ */
+
+namespace Application\DeskPRO\Tickets\Triggers;
+
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\ActionComposite;
+use Application\DeskPRO\Tickets\Actions\ActionContext;
+use Application\DeskPRO\Tickets\Actions\ActionInterface;
+use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
+
+/**
+ * This is a wrapper around an ActionComposite that is able to serialize.
+ * Used as the serialized object in TicketTrigger records.
+ *
+ * While any `ActionInterface` can be used with the trigger system, we can only actually
+ * *save* the term to the db if it also implements the standard ActionDefinitionInterface which defines
+ * a standard interface for getting a term name and options (so we can recreate a term object again).
+ */
+class TriggerActions implements \Serializable, ActionInterface
+{
+	/**
+	 * @var ActionComposite
+	 */
+	private $actions;
+
+	public function __construct()
+	{
+		$this->actions = new ActionComposite();
+	}
+
+
+	/**
+	 * @param ActionInterface $action
+	 * @throws \InvalidArgumentException
+	 */
+	public function addAction(ActionInterface $action)
+	{
+		if (!($action instanceof ActionDefinitionInterface)) {
+			$class_name = get_class($action);
+			throw new \InvalidArgumentException("TriggerActions can only manage terms terms that implement ActionDefinitionInterface. Invalid class: $class_name");
+		}
+		$this->actions->add($action);
+	}
+
+
+	/**
+	 * @param array $action_info
+	 * @throws \InvalidArgumentException
+	 */
+	public function addActionFromArray(array $action_info)
+	{
+		$class_name = "Application\\DeskPRO\\Tickets\\Actions\\{$action_info['type']}";
+		if (!class_exists($class_name)) {
+			throw new \InvalidArgumentException("Unknown action {$action_info['type']} (could not locate class: $class_name)");
+		}
+
+		$action = new $class_name($action_info['op'], $action_info['options']);
+		$this->addAction($action);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyAction(Ticket $ticket, ActionContext $context)
+	{
+		$this->actions->applyAction($ticket, $context);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		$data = array();
+
+		$data['version']  = 1;
+		$data['actions'] = array();
+		foreach ($this->actions->getAll() as $actions) {
+			if (!($actions instanceof ActionDefinitionInterface)) {
+				continue;
+			}
+
+			$data['actions'][] = array(
+				'type'    => $actions->getActionType(),
+				'options' => $actions->getActionOptions()
+			);
+		}
+
+		return json_encode($data);
+	}
+
+
+	/**
+	 * @param string $data
+	 */
+	public function unserialize($data)
+	{
+		$data = json_decode($data);
+
+		foreach ($data['actions'] as $action_info) {
+			$this->addActionFromArray($action_info);
+		}
+	}
+}

@@ -29,71 +29,116 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketChangelog;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Entity\TicketTrigger;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-
-/**
- * Handles SLA warn/fail updates
- */
-class TicketSlas extends AbstractJob
+class TriggerTermComposite implements TriggerTermInterface
 {
-	const DEFAULT_INTERVAL = 60;
+	const OP_AND = 'AND';
+	const OP_OR  = 'OR';
 
-	public function run()
+	/**
+	 * @var TriggerTermInterface[]
+	 */
+	private $terms = array();
+
+	/**
+	 * @var string
+	 */
+	private $op = 'AND';
+
+
+	/**
+	 * @param TriggerTermInterface[] $terms
+	 * @param string $op
+	 */
+	public function __construct(array $terms = array(), $op = self::OP_AND)
 	{
-		//TODO part of trigger redo
-		return;
+		$this->setAll($terms);
+		$this->setOperator($op);
+	}
 
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
 
-		$em = App::getOrm();
+	/**
+	 * Change the logic operator between AND/OR ('all must match' versus 'any match')
+	 *
+	 * @param string $op
+	 */
+	public function setOperator($op)
+	{
+		$this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
+	}
 
-		$count_failed = 0;
-		$count_warning = 0;
 
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
+	/**
+	 * @return string
+	 */
+	public function getOperator()
+	{
+		return $this->op;
+	}
 
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_FAIL) {
-				$count_failed++;
+
+	/**
+	 * @param TriggerTermInterface $term
+	 */
+	public function add(TriggerTermInterface $term)
+	{
+		$this->terms[] = $term;
+	}
+
+
+	/**
+	 * @param TriggerTermInterface[] $terms
+	 */
+	public function setAll(array $terms)
+	{
+		$this->terms = array();
+		foreach ($terms as $t) {
+			$this->add($t);
+		}
+	}
+
+
+	/**
+	 * @return TriggerTermInterface[]
+	 */
+	public function getAll()
+	{
+		return $this->terms;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isTriggerMatch(Ticket $ticket, TicketChangelog $ticket_changelog)
+	{
+		if (!$this->terms) {
+			return true;
+		}
+
+		if ($this->op == self::OP_AND) {
+			foreach ($this->terms as $t) {
+				if (!$t->isTriggerMatch($ticket, $ticket_changelog)) {
+					return false;
+				}
 			}
-		}
 
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
-		$ticket_slas = App::getEntityRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
-		foreach ($ticket_slas as $ticket_sla) {
-			$ticket_sla->evaluateSlaDates();
-			$em->persist($ticket_sla);
-			$em->flush();
-
-			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_WARNING) {
-				$count_warning++;
+			return true;
+		} else {
+			foreach ($this->terms as $t) {
+				if ($t->isTriggerMatch($ticket, $ticket_changelog)) {
+					return true;
+				}
 			}
+
+			return false;
 		}
-
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
-		if ($count_warning || $count_failed) {
-			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
-		}
-
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
 	}
 }

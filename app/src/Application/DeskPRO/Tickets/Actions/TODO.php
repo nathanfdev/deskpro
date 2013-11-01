@@ -1,0 +1,32 @@
+<?php
+// Empty implementations of term objects as we build up crud
+
+namespace Application\DeskPRO\Tickets\Actions;
+use Application\DeskPRO\Entity\Ticket;
+
+class SetAgent                                 extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetAgentTeam                             extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetAgentFollowers                        extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetDepartment                            extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetProduct                               extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetCategory                              extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetPriority                              extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetWorkflow                              extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetUrgency                               extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetSubject                               extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetLabels                                extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetFlag                                  extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetEmailAccount                          extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetCcUsers                               extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetSlas                                  extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetSlaStatus                             extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SetSlaRequirements                       extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class ChangeUser                               extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class DeleteTicket                             extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class AddAgentReply                            extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class ModForceEmailValidation                  extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SendUserEmail                            extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class SendAgentEmail                           extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class ModStopTriggers                          extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class ModQuietUserEmails                       extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
+class ModQuietAgentEmails                      extends AbstractAction { public function applyAction(Ticket $ticket, ActionContext $context) { } }
