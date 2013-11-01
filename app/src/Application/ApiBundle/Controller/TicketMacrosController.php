@@ -35,29 +35,24 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Orb\Util\Arrays;
 
-class TicketTriggersController extends AbstractController
+class TicketMacrosController extends AbstractController
 {
 	####################################################################################################################
 	# list
 	####################################################################################################################
 
-	public function listAction($type = null)
+	public function listAction()
 	{
-		if (!$type || $type == 'all') {
-			$type = null;
-		}
+		$macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
 
-		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers($type);
-
-		$data = $this->getApiData($triggers);
+		$data = $this->getApiData($macros);
 
 		return $this->createApiResponse(array(
-			'triggers' => $data
+			'macros' => $data
 		));
 	}
 
@@ -67,15 +62,15 @@ class TicketTriggersController extends AbstractController
 
 	public function getAction($id)
 	{
-		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-		if (!$trigger) {
+		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
+		if (!$macro) {
 			return $this->createNotFoundException();
 		}
 
-		$data = $this->getApiData($trigger);
+		$data = $this->getApiData($macro);
 
 		return $this->createApiResponse(array(
-			'trigger' => $data
+			'macro' => $data
 		));
 	}
 
@@ -86,42 +81,16 @@ class TicketTriggersController extends AbstractController
 	public function saveAction($id)
 	{
 		if ($id) {
-			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-			if (!$trigger) {
+			$macro = $this->em->find('DeskPRO:TicketMacro', $id);
+			if (!$macro) {
 				return $this->createNotFoundException();
 			}
 		} else {
-			$trigger = new TicketTrigger();
+			$macro = new TicketTrigger();
 		}
-
-		$trigger->title         = $this->in->getString('title');
-		$trigger->event_trigger = $this->in->getString('event_trigger');
-
-		$trigger->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
-		$trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
-
-		$terms = new TriggerTerms();
-		foreach ($this->in->getArrayValue('criteria_sets') as $set) {
-			if ($set) {
-				$terms->addTermFromArray(array('set_terms' => $set));
-			}
-		}
-
-		$actions = new TriggerActions();
-		foreach ($this->in->getArrayValue('actions') as $act) {
-			if ($act) {
-				$actions->addActionFromArray($act);
-			}
-		}
-
-		$trigger->terms = $terms;
-		$trigger->actions = $actions;
-
-		$this->em->persist($trigger);
-		$this->em->flush();
 
 		return $this->createSuccessResponse(array(
-			'trigger_id' => $trigger->id
+			'macro_id' => $macro->id
 		));
 	}
 
@@ -131,46 +100,16 @@ class TicketTriggersController extends AbstractController
 
 	public function deleteAction($id)
 	{
-		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-		if (!$trigger) {
+		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
+		if (!$macro) {
 			return $this->createNotFoundException();
 		}
 
-		$old_id = $trigger->id;
+		$old_id = $macro->id;
 
-		$this->em->remove($trigger);
+		$this->em->remove($macro);
 		$this->em->flush();
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
-
-	####################################################################################################################
-	# toggle-trigger
-	####################################################################################################################
-
-	public function toggleTriggerAction($id, $is_enabled)
-	{
-		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-		if (!$trigger) {
-			return $this->createNotFoundException();
-		}
-
-		$trigger->is_enabled = $is_enabled;
-		$this->em->persist($trigger);
-		$this->em->flush();
-
-		return $this->createSuccessResponse();
-	}
-
-	####################################################################################################################
-	# save-run-order
-	####################################################################################################################
-
-	public function saveRunOrderAction()
-	{
-		$run_orders = $this->in->getCleanValueArray('run_orders', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:TicketTrigger')->updateRunOrders($run_orders);
-
-		return $this->createSuccessResponse();
 	}
 }

@@ -7,7 +7,7 @@ define [
 	Admin_Main_Model_Base,
 	Admin_Main_Collection_OrderedDictionary
 )  ->
-	class Admin_TicketAccounts_DataService_TicketAccounts extends Admin_Main_DataService_Base
+	class Admin_TicketTriggers_DataService_Triggers extends Admin_Main_DataService_Base
 		constructor: (type, em, Api, $q) ->
 			super(em)
 			@type = type

@@ -87,7 +87,7 @@ define [
 		# Actually do the delete
 		###
 		deleteTrigger: (trigger) ->
-			@dpTriggers.remove(trigger.id)
+			@dpTriggers.removeTriggerModel(trigger.id)
 			@Api.sendDelete('/ticket_triggers/' + trigger.id).success( =>
 				# if currently viewing the deleted department, then should need to switch state
 				if @$state.current.name == 'tickets.ticket_triggers.edit' and parseInt(@$state.params.id) == trigger.id

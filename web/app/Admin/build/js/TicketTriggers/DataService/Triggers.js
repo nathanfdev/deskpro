@@ -3,12 +3,12 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/DataService/Base', 'Admin/Main/Model/Base', 'Admin/Main/Collection/OrderedDictionary'], function(Admin_Main_DataService_Base, Admin_Main_Model_Base, Admin_Main_Collection_OrderedDictionary) {
-    var Admin_TicketAccounts_DataService_TicketAccounts;
-    return Admin_TicketAccounts_DataService_TicketAccounts = (function(_super) {
-      __extends(Admin_TicketAccounts_DataService_TicketAccounts, _super);
+    var Admin_TicketTriggers_DataService_Triggers;
+    return Admin_TicketTriggers_DataService_Triggers = (function(_super) {
+      __extends(Admin_TicketTriggers_DataService_Triggers, _super);
 
-      function Admin_TicketAccounts_DataService_TicketAccounts(type, em, Api, $q) {
-        Admin_TicketAccounts_DataService_TicketAccounts.__super__.constructor.call(this, em);
+      function Admin_TicketTriggers_DataService_Triggers(type, em, Api, $q) {
+        Admin_TicketTriggers_DataService_Triggers.__super__.constructor.call(this, em);
         this.type = type;
         this.$q = $q;
         this.Api = Api;
@@ -23,7 +23,7 @@
       */
 
 
-      Admin_TicketAccounts_DataService_TicketAccounts.prototype.loadList = function(reload) {
+      Admin_TicketTriggers_DataService_Triggers.prototype.loadList = function(reload) {
         var deferred, http_def,
           _this = this;
         if (this.loadListPromise) {
@@ -44,12 +44,12 @@
         return this.loadListPromise;
       };
 
-      Admin_TicketAccounts_DataService_TicketAccounts.prototype._setListData = function(triggers) {
+      Admin_TicketTriggers_DataService_Triggers.prototype._setListData = function(triggers) {
         this.recs.clear();
         return this.recs.addArray(triggers);
       };
 
-      Admin_TicketAccounts_DataService_TicketAccounts.prototype.loadTrigger = function(triggerId) {
+      Admin_TicketTriggers_DataService_Triggers.prototype.loadTrigger = function(triggerId) {
         var deferred;
         deferred = this.$q.defer();
         this.Api.sendGet("/ticket_triggers/" + triggerId).success(function(data) {
@@ -63,7 +63,7 @@
       */
 
 
-      Admin_TicketAccounts_DataService_TicketAccounts.prototype.removeTriggerModel = function(id) {
+      Admin_TicketTriggers_DataService_Triggers.prototype.removeTriggerModel = function(id) {
         return this.recs.remove(id);
       };
 
@@ -73,7 +73,7 @@
       */
 
 
-      Admin_TicketAccounts_DataService_TicketAccounts.prototype.updateTriggerModel = function(model) {
+      Admin_TicketTriggers_DataService_Triggers.prototype.updateTriggerModel = function(model) {
         var exist, k, v;
         exist = this.recs.get(model.id);
         if (exist) {
@@ -95,12 +95,12 @@
       */
 
 
-      Admin_TicketAccounts_DataService_TicketAccounts.prototype.addTriggerModel = function(model) {
+      Admin_TicketTriggers_DataService_Triggers.prototype.addTriggerModel = function(model) {
         this.recs.set(model.id, model);
         return model;
       };
 
-      return Admin_TicketAccounts_DataService_TicketAccounts;
+      return Admin_TicketTriggers_DataService_Triggers;
 
     })(Admin_Main_DataService_Base);
   });

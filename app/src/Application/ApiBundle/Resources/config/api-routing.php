@@ -2429,6 +2429,76 @@ $collection->create('api_ticket_triggers_disabletrigger', array(
 ));
 
 ########################################################################################################################
+# Ticket Filters
+########################################################################################################################
+
+$collection->create('api_ticket_filters', array(
+	'path'         => '/ticket_filters',
+	'controller'   => 'ApiBundle:TicketFilters:list',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_filters_create', array(
+	'path'         => '/ticket_filters',
+	'defaults'     => array('id' => '0'),
+	'controller'   => 'ApiBundle:TicketFilters:save',
+	'methods'      => array('PUT'),
+));
+
+$collection->create('api_ticket_filters_get', array(
+	'path'         => '/ticket_filters/{id}',
+	'controller'   => 'ApiBundle:TicketFilters:get',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_filters_save', array(
+	'path'         => '/ticket_filters/{id}',
+	'controller'   => 'ApiBundle:TicketFilters:save',
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_ticket_filters_delete', array(
+	'path'         => '/ticket_filters/{id}',
+	'controller'   => 'ApiBundle:TicketFilters:remove',
+	'methods'      => array('DELETE'),
+));
+
+########################################################################################################################
+# Ticket Macros
+########################################################################################################################
+
+$collection->create('api_ticket_macros', array(
+	'path'         => '/ticket_macros',
+	'controller'   => 'ApiBundle:TicketMacros:list',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_macros_create', array(
+	'path'         => '/ticket_macros',
+	'defaults'     => array('id' => '0'),
+	'controller'   => 'ApiBundle:TicketMacros:save',
+	'methods'      => array('PUT'),
+));
+
+$collection->create('api_ticket_macros_get', array(
+	'path'         => '/ticket_macros/{id}',
+	'controller'   => 'ApiBundle:TicketMacros:get',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_macros_save', array(
+	'path'         => '/ticket_macros/{id}',
+	'controller'   => 'ApiBundle:TicketMacros:save',
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_ticket_macros_delete', array(
+	'path'         => '/ticket_macros/{id}',
+	'controller'   => 'ApiBundle:TicketMacros:remove',
+	'methods'      => array('DELETE'),
+));
+
+########################################################################################################################
 # Feedback Statuses
 ########################################################################################################################
 

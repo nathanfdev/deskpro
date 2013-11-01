@@ -113,7 +113,7 @@
 
       Admin_TicketTriggers_Ctrl_List.prototype.deleteTrigger = function(trigger) {
         var _this = this;
-        this.dpTriggers.remove(trigger.id);
+        this.dpTriggers.removeTriggerModel(trigger.id);
         return this.Api.sendDelete('/ticket_triggers/' + trigger.id).success(function() {
           if (_this.$state.current.name === 'tickets.ticket_triggers.edit' && parseInt(_this.$state.params.id) === trigger.id) {
             return _this.$state.go('tickets.ticket_triggers');

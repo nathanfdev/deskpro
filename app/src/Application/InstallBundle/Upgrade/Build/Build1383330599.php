@@ -29,34 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use \Doctrine\ORM\EntityRepository;
-
-class TicketMacro extends AbstractEntityRepository
+class Build1383330599 extends AbstractBuild
 {
-	public function getMacros()
+	public function run()
 	{
-		return $this->_em->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMacro m
-			ORDER BY m.title ASC
-		")->execute();
-	}
-
-	public function getMacrosForPerson(Entity\Person $person)
-	{
-		return $this->_em->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMacro m
-			WHERE (m.person = ?0 OR m.is_global = 1) AND m.is_enabled = true
-			ORDER BY m.title ASC
-		")->execute(array($person));
+		$this->out("Remove old ticket_filters_perms table");
+		$this->execMutateSql("DROP TABLE ticket_filters_perms");
 	}
 }

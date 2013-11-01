@@ -41,6 +41,18 @@ use Application\DeskPRO\Entity;
 
 class TicketFilter extends AbstractEntityRepository
 {
+	public function getFilters()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+			ORDER BY q.display_order
+		")->execute();
+
+		return $filters;
+	}
+
+
 	public function getAllForActiveAgents()
 	{
 		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
