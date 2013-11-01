@@ -38,4 +38,5 @@
     'adm.general.x_feedback_closed_statuses'         => '{{count}} Feedback Closed Status|{{count}} Feedback Closed Statuses',
 	'adm.general.delete_label'                       => 'Delete Ticket Label',
 	'adm.general.delete_label_confirm'               => 'Are you sure you want to delete this label?',
+	'adm.general.x_feedback_types'                   => '{{count}} Feedback Type|{{count}} Feedback Types',
 );

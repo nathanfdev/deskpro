@@ -1195,12 +1195,37 @@ define(function() {
 		url: '/feedback/types',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'FeedbackTypes/list.html',
+			controller: 'Admin_FeedbackTypes_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_types.gocreate',
+		url: '/go-create/',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			template: '',
+			controller: ['$state', function ($state) {
+				$state.go('portal.feedback_types.create');
+			}]
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_types.create',
+		url: '/create/',
+		page: {
+			templateName: 'FeedbackTypes/edit.html',
+			controller: 'Admin_FeedbackTypes_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_types.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'FeedbackTypes/edit.html',
+			controller: 'Admin_FeedbackTypes_Ctrl_Edit'
 		}
 	});
 

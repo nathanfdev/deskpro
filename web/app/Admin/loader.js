@@ -119,7 +119,8 @@ requirejs([
 	'Admin/TicketTriggers/Ctrl/List',
 	'Admin/TicketUrgencies/Ctrl/List',
 	'Admin/FeedbackStatuses/Ctrl/List',
-	'Admin/FeedbackStatuses/Ctrl/Edit'
+	'Admin/FeedbackStatuses/Ctrl/Edit',
+	'Admin/FeedbackTypes/Ctrl/List'
 ], function(angular) {
 	'use strict';
 
