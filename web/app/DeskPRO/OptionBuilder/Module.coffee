@@ -59,7 +59,6 @@ define [
 
 				addRow = ->
 					containRow = iElement.find('.dp-ob-addition-setrow')
-					opts.setsObject[setId] = {}
 
 					tpl = $templateCache.get(opts.template)
 					rowScope = scope.$new()

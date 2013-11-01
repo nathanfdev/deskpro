@@ -35,6 +35,8 @@ define [
 	'Admin/TicketDeps/Directive/LayoutEditor',
 	'Admin/TicketDeps/Directive/LayoutEditorField',
 
+	'Admin/TicketTriggers/DataService/Triggers',
+
 	'Admin/Main/DataService/EntityManager',
 	'Admin/Main/DataService/Departments',
 	'Admin/FeedbackStatuses/DataService/FeedbackStatuses',
@@ -78,6 +80,8 @@ define [
 	Admin_TicketDeps_Directive_LayoutEditor,
 	Admin_TicketDeps_Directive_LayoutEditorField,
 
+	Admin_TicketTriggers_DataService_Triggers,
+
 	Admin_Main_DataService_EntityManager,
 	Admin_Main_DataService_Departments,
 	Admin_FeedbackStatuses_DataService_FeedbackStatuses,
@@ -110,10 +114,12 @@ define [
 		)
 	])
 
+	###
 	Admin_App.factory('$exceptionHandler', ['$log', ($log) ->
 		return (exception, cause) ->
 			throw exception
 	])
+    ###
 
 	Admin_App.service('InhelpState', ['Api', (Api) ->
 		return new Admin_Main_Service_InhelpState(Api)
@@ -137,6 +143,18 @@ define [
 
 	Admin_App.service('FeedbackTypesData', ['em', 'Api', '$q', (em, Api, $q) ->
 		return new Admin_FeedbackTypes_DataService_FeedbackTypes(em, Api, $q)
+	])
+
+	Admin_App.service('TriggersNew', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_TicketTriggers_DataService_Triggers('newticket', em, Api, $q)
+	])
+
+	Admin_App.service('TriggersReply', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_TicketTriggers_DataService_Triggers('newreply', em, Api, $q)
+	])
+
+	Admin_App.service('TriggersUpdate', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_TicketTriggers_DataService_Triggers('update', em, Api, $q)
 	])
 
 	Admin_App.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->

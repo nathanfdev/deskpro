@@ -38,6 +38,7 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Arrays;
 
 /**
  * Ticket triggers
@@ -50,6 +51,13 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_TYPE_UPDATE                     = 'update';
 	const EVENT_TYPE_SLA_WARNING                = 'sla.warning';
 	const EVENT_TYPE_SLA_FAIL                   = 'sla.fail';
+
+	const MODE_WEB    = 'web';
+	const MODE_PORTAL = 'portal';
+	const MODE_WIDGET = 'widget';
+	const MODE_FORM   = 'form';
+	const MODE_EMAIL  = 'email';
+	const MODE_API    = 'api';
 
 	/**
 	 * @var int
@@ -72,6 +80,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $is_enabled = true;
+
+	/**
 	 * @var string
 	 */
 	protected $event_trigger;
@@ -79,12 +92,12 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $by_agent = false;
+	protected $by_agent_mode = null;
 
 	/**
 	 * @var string
 	 */
-	protected $by_user = false;
+	protected $by_user_mode = null;
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
@@ -118,11 +131,79 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @param array $modes
+	 */
+	public function setByAgentMode($modes)
+	{
+		if (!$modes) {
+			$this->setModelField('by_agent_mode', null);
+		} else {
+			if (!is_array($modes)) {
+				$modes = explode(',', $modes);
+			}
+
+			$modes = Arrays::func($modes, 'trim');
+			$modes = Arrays::func($modes, 'strtolower');
+			sort($modes, \SORT_STRING);
+			$modes = implode(',', $modes);
+			$this->setModelField('by_agent_mode', $modes);
+		}
+	}
+
+
+	/**
+	 * @param array $modes
+	 */
+	public function setByUserMode($modes)
+	{
+		if (!$modes) {
+			$this->setModelField('by_user_mode', null);
+		} else {
+			if (!is_array($modes)) {
+				$modes = explode(',', $modes);
+			}
+
+			$modes = Arrays::func($modes, 'trim');
+			$modes = Arrays::func($modes, 'strtolower');
+			sort($modes, \SORT_STRING);
+			$modes = implode(',', $modes);
+			$this->setModelField('by_user_mode', $modes);
+		}
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getByAgentModeArray()
+	{
+		if (!$this->by_agent_mode) {
+			return array();
+		}
+		return explode(',', $this->by_agent_mode);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getByUserModeArray()
+	{
+		if (!$this->by_user_mode) {
+			return array();
+		}
+		return explode(',', $this->by_user_mode);
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
+		$data['by_agent_mode'] = $this->getByAgentModeArray();
+		$data['by_user_mode']  = $this->getByAgentModeArray();
 		return $data;
 	}
 
@@ -164,16 +245,16 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
-			'columnName' => 'by_agent',
-			'fieldName'  => 'by_agent',
-			'type'       => 'boolean',
-			'nullable'   => false,
+			'columnName' => 'by_agent_mode',
+			'fieldName'  => 'by_agent_mode',
+			'type'       => 'string',
+			'nullable'   => 255,
 		));
 		$metadata->mapField(array(
-			'columnName' => 'by_user',
-			'fieldName'  => 'by_user',
-			'type'       => 'boolean',
-			'nullable'   => false,
+			'columnName' => 'by_user_mode',
+			'fieldName'  => 'by_user_mode',
+			'type'       => 'string',
+			'nullable'   => 255,
 		));
 		$metadata->mapField(array(
 			'columnName' => 'is_enabled',

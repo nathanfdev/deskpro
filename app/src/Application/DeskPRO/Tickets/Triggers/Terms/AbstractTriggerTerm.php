@@ -39,6 +39,7 @@ use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketChangelog;
 
+
 abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTermInterface
 {
 	const OP_NOOP        = null;

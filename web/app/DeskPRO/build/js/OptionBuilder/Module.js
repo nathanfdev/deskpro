@@ -48,7 +48,6 @@
             addRow = function() {
               var containRow, element, rowScope, setId, tpl;
               containRow = iElement.find('.dp-ob-addition-setrow');
-              opts.setsObject[setId] = {};
               tpl = $templateCache.get(opts.template);
               rowScope = scope.$new();
               setId = rowScope.$id;

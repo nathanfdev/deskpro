@@ -15,6 +15,21 @@
       }
 
       /*
+        	# Clears all data from the collection
+      */
+
+
+      Admin_Main_Collection_OrderedDictionary.prototype.clear = function() {
+        var key, _i, _len, _ref;
+        _ref = this.order;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          key = _ref[_i];
+          delete this.data[key];
+        }
+        return this.order.length = 0;
+      };
+
+      /*
         	# Re-order the collection with a callback comparison function.
         	#
         	# @param {Function} callback The callback function that returns 0, -1 or 1

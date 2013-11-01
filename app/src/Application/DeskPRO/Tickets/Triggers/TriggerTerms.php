@@ -40,6 +40,9 @@ use Application\DeskPRO\Tickets\TicketChangelog;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
 
+// TODO
+require(DP_ROOT.'/src/Application/DeskPRO/Tickets/Triggers/Terms/TODO.php');
+
 /**
  * This is a wrapper around a TriggerTermComposite that is able to serialize.
  * Used as the serialized object in TicketTrigger records.
@@ -68,7 +71,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	 */
 	public function addTerm(TriggerTermInterface $term)
 	{
-		if (!($term instanceof CriteriaTermInterface)) {
+		if (!($term instanceof CriteriaTermInterface) && !($term instanceof TriggerTermComposite)) {
 			$class_name = get_class($term);
 			throw new \InvalidArgumentException("TriggerCriteria can only manage terms terms that implement CriteriaTermInterface. Invalid class: $class_name");
 		}
@@ -82,13 +85,34 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	 */
 	public function addTermFromArray(array $term_info)
 	{
+		if (isset($term_info['set_terms'])) {
+			$composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
+			foreach ($term_info['set_terms'] as $ti) {
+				$t = $this->getTermFromArray($ti);
+				$composite->add($t);
+			}
+
+			$this->addTerm($composite);
+		} else {
+			$term = $this->getTermFromArray($term_info);
+			$this->addTerm($term);
+		}
+	}
+
+
+	/**
+	 * @param array $term_info
+	 * @throws \InvalidArgumentException
+	 */
+	private function getTermFromArray(array $term_info)
+	{
 		$class_name = "Application\\DeskPRO\\Tickets\\Triggers\\Terms\\{$term_info['type']}";
 		if (!class_exists($class_name)) {
 			throw new \InvalidArgumentException("Unknown term {$term_info['type']} (could not locate class: $class_name)");
 		}
 
 		$term = new $class_name($term_info['op'], $term_info['options']);
-		$this->addTerm($term);
+		return $term;
 	}
 
 
@@ -113,15 +137,36 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 		$data['version']  = 1;
 		$data['terms'] = array();
 		foreach ($this->criteria->getAll() as $criteria) {
-			if (!($criteria instanceof CriteriaTermInterface)) {
-				continue;
-			}
+			if ($criteria instanceof TriggerTermComposite) {
+				$set_terms = array();
+				foreach ($criteria->getAll() as $set_criteria) {
+					if (!($set_criteria instanceof CriteriaTermInterface)) {
+						continue;
+					}
 
-			$data['terms'][] = array(
-				'type'    => $criteria->getTermType(),
-				'op'      => $criteria->getTermOperator(),
-				'options' => $criteria->getTermOptions()
-			);
+					$set_terms[] = array(
+						'type'    => $set_criteria->getTermType(),
+						'op'      => $set_criteria->getTermOperator(),
+						'options' => $set_criteria->getTermOptions()
+					);
+				}
+
+				if ($set_terms) {
+					$data['terms'][] = array(
+						'set_terms' => $set_terms
+					);
+				}
+			} else {
+				if (!($criteria instanceof CriteriaTermInterface)) {
+					continue;
+				}
+
+				$data['terms'][] = array(
+					'type'    => $criteria->getTermType(),
+					'op'      => $criteria->getTermOperator(),
+					'options' => $criteria->getTermOptions()
+				);
+			}
 		}
 
 		return json_encode($data);
@@ -133,8 +178,9 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	 */
 	public function unserialize($data)
 	{
-		$data = json_decode($data);
+		$data = json_decode($data, true);
 
+		$this->__construct();
 		foreach ($data['terms'] as $term_info) {
 			$this->addTermFromArray($term_info);
 		}

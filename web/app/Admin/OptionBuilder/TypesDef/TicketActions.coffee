@@ -146,7 +146,7 @@ define ->
 
 			options.push({
 				title: 'Force User Email Validation',
-					value: 'ModForceEmailValidation'
+				value: 'ModForceEmailValidation'
 			})
 
 			set_options.push({
@@ -233,11 +233,7 @@ define ->
 			return p
 
 		getDef: (type, options = {}) ->
-			typeName = type.toLowerCase().replace(/_(.)/g, (match, group1) ->
-				return group1.toUpperCase()
-			)
-			typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1)
-
+			typeName = type
 			options.type = type
 
 			typeFunc = "get#{typeName}"
@@ -388,62 +384,62 @@ define ->
 					}
 			}
 
-		getAgent: (options = {}) ->
+		getSetAgent: (options = {}) ->
 			options.propName = 'agent_id'
 			options.dataName = 'agents'
 			def = @getStandardSelect(options)
 			return def
 
-		getAgentFollowers: (options = {}) ->
+		getSetAgentFollowers: (options = {}) ->
 			options.propName = 'agent_ids'
 			options.dataName = 'agents'
 			options.isMulti = true
 			def = @getStandardSelect(options)
 			return def
 
-		getAgentTeam: (options = {}) ->
+		getSetAgentTeam: (options = {}) ->
 			options.propName = 'agent_team_id'
 			options.dataName = 'agent_teams'
 			def = @getStandardSelect(options)
 			return def
 
-		getWorkflow: (options = {}) ->
+		getSetWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
 			def = @getStandardSelect(options)
 			return def
 
-		getWorkflow: (options = {}) ->
+		getSetWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
 			def = @getStandardSelect(options)
 			return def
 
-		getPriority: (options = {}) ->
+		getSetPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
 			def = @getStandardSelect(options)
 			return def
 
-		getCategory: (options = {}) ->
+		getSetCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
 			def = @getStandardSelect(options)
 			return def
 
-		getDepartment: (options = {}) ->
+		getSetDepartment: (options = {}) ->
 			options.propName = 'department_ids'
 			options.dataName = 'ticket_deps'
 			def = @getStandardSelect(options)
 			return def
 
-		getProduct: (options = {}) ->
+		getSetProduct: (options = {}) ->
 			options.propName = 'product_ids'
 			options.dataName = 'ticket_prods'
 			def = @getStandardSelect(options)
 			return def
 
-		getEmailAccount: (options = {}) ->
+		getSetEmailAccount: (options = {}) ->
 			options.propName = 'gateway_ids'
 			options.dataName = 'ticket_accounts'
 			options.optionsFormatter = (options) ->
@@ -460,12 +456,12 @@ define ->
 			def = @getStandardSelect(options)
 			return def
 
-		getEmailSubject: (options = {}) ->
+		getSetEmailSubject: (options = {}) ->
 			options.propName = 'subject'
 			def = @getStandardInput(options)
 			return def
 
-		getUrgency: (options = {}) ->
+		getSetUrgency: (options = {}) ->
 			me = @
 			return {
 				getTemplate: ->
@@ -495,7 +491,7 @@ define ->
 						}
 			}
 
-		getFlag: (options = {}) ->
+		getSetFlag: (options = {}) ->
 			me = @
 			return {
 				getTemplate: ->
@@ -533,25 +529,25 @@ define ->
 			def = @getStandardIs(options)
 			return def
 
-		getForceEmailValidation: (options = {}) ->
+		getModForceEmailValidation: (options = {}) ->
 			options.propName = 'force_email_validation'
 			def = @getStandardIs(options)
 			return def
 
-		getStopTriggers: (options = {}) ->
+		getModStopTriggers: (options = {}) ->
 			options.propName = 'stop_triggers'
 			def = @getStandardIs(options)
 			return def
 
-		getQuietUserEmails: (options = {}) ->
+		getModQuietUserEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
-		getQuietAgentEmails: (options = {}) ->
+		getModQuietAgentEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
-		getSlas: (options = {}) ->
+		getSetSlas: (options = {}) ->
 			me = @
 			return {
 				getTemplate: ->

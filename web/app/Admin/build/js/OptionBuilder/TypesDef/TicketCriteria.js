@@ -19,43 +19,43 @@
           options = [];
           options.push({
             title: 'Email Account',
-            value: 'email_account'
+            value: 'CheckEmailAccount'
           });
           options.push({
             title: 'Email Subject',
-            value: 'email_subject'
+            value: 'CheckEmailSubject'
           });
           options.push({
             title: 'Email Body',
-            value: 'email_body'
+            value: 'CheckEmailBody'
           });
           options.push({
             title: 'To Name',
-            value: 'email_to_name'
+            value: 'CheckEmailToName'
           });
           options.push({
             title: 'To Address',
-            value: 'email_to_address'
+            value: 'CheckEmailToAddress'
           });
           options.push({
             title: 'From Name',
-            value: 'email_from_name'
+            value: 'CheckEmailFromName'
           });
           options.push({
             title: 'From Address',
-            value: 'email_from_address'
+            value: 'CheckEmailFromAddress'
           });
           options.push({
             title: 'CCd Name',
-            value: 'email_cc_name'
+            value: 'CheckEmailCcName'
           });
           options.push({
             title: 'CCd Address',
-            value: 'email_cc_address'
+            value: 'CheckEmailCcAddress'
           });
           options.push({
             title: 'Email Header',
-            value: 'email_header_match'
+            value: 'CheckEmailHeader'
           });
           set_options.push({
             title: 'Email Criteria',
@@ -65,33 +65,33 @@
         options = [];
         options.push({
           title: 'Department',
-          value: 'department'
+          value: 'CheckDepartment'
         });
         options.push({
           title: 'Product',
-          value: 'product'
+          value: 'CheckProduct'
         });
         options.push({
           title: 'Category',
-          value: 'category'
+          value: 'CheckCategory'
         });
         options.push({
           title: 'Priority',
-          value: 'priority'
+          value: 'CheckPriority'
         });
         if (types.indexOf('web.agent') !== -1) {
           options.push({
             title: 'Workflow',
-            value: 'workflow'
+            value: 'CheckWorkflow'
           });
         }
         options.push({
-          title: 'Title',
-          value: 'title'
+          title: 'Subject',
+          value: 'CheckSubject'
         });
         options.push({
           title: 'Message',
-          value: 'message'
+          value: 'CheckMessage'
         });
         set_options.push({
           title: 'Ticket Criteria',
@@ -100,15 +100,15 @@
         options = [];
         options.push({
           title: 'Has attachment',
-          value: 'with_attach'
+          value: 'CheckHasAttach'
         });
         options.push({
           title: 'Has attachment type',
-          value: 'with_attach_type'
+          value: 'CheckHasAttachType'
         });
         options.push({
           title: 'Has attachment named',
-          value: 'with_attach_name'
+          value: 'CheckHasAttachName'
         });
         set_options.push({
           title: 'Attachment Criteria',
@@ -117,31 +117,31 @@
         options = [];
         options.push({
           title: 'Name',
-          value: 'person_name'
+          value: 'CheckUserName'
         });
         options.push({
           title: 'Email Address',
-          value: 'person_email'
+          value: 'CheckUserEmailAddress'
         });
         options.push({
           title: 'Label',
-          value: 'person_label'
+          value: 'CheckUserLabels'
         });
         options.push({
           title: 'Usergroup',
-          value: 'person_usergroup'
+          value: 'CheckUserUsergroups'
         });
         options.push({
           title: 'Language',
-          value: 'person_language'
+          value: 'CheckUserLanguage'
         });
         options.push({
           title: 'Is manager of organization',
-          value: 'person_is_manager'
+          value: 'CheckUserIsManager'
         });
         options.push({
           title: 'Is disabled',
-          value: 'person_is_disabled'
+          value: 'CheckPersonIsDisabled'
         });
         set_options.push({
           title: 'User Criteria',
@@ -150,19 +150,19 @@
         options = [];
         options.push({
           title: 'Name',
-          value: 'org_name'
+          value: 'CheckOrgName'
         });
         options.push({
           title: 'Label',
-          value: 'org_label'
+          value: 'CheckOrgLabels'
         });
         options.push({
           title: 'Email Domain',
-          value: 'org_email_domain'
+          value: 'CheckOrgEmailDomain'
         });
         options.push({
           title: 'Linked Usergroup',
-          value: 'org_usergroup'
+          value: 'CheckOrgUsergroups'
         });
         set_options.push({
           title: 'Organization Criteria',
@@ -171,15 +171,15 @@
         options = [];
         options.push({
           title: 'Day of week',
-          value: 'day_of_week'
+          value: 'CheckDayOfWeek'
         });
         options.push({
           title: 'Time of day',
-          value: 'time_of_day'
+          value: 'CheckTimeOfDay'
         });
         options.push({
           title: 'Within working hours',
-          value: 'within_working_hours'
+          value: 'CheckWorkingHours'
         });
         set_options.push({
           title: 'Dates',
@@ -225,10 +225,7 @@
         if (options == null) {
           options = {};
         }
-        typeName = type.toLowerCase().replace(/_(.)/g, function(match, group1) {
-          return group1.toUpperCase();
-        });
-        typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+        typeName = type;
         options.type = type;
         typeFunc = "get" + typeName;
         if (this[typeFunc] != null) {
@@ -441,7 +438,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -452,7 +449,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPriority = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPriority = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -463,7 +460,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCategory = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCategory = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -474,7 +471,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDepartment = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckDepartment = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -485,7 +482,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getProduct = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckProduct = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -496,7 +493,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailAccount = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailAccount = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -519,7 +516,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailSubject = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -530,7 +527,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailBody = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailBody = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -541,7 +538,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailToName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailToName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -552,7 +549,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailToAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailToAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -563,7 +560,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailFromName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailFromName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -574,7 +571,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailFromAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailFromAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -585,7 +582,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCcAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCcAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -596,7 +593,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCcName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCcName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -607,7 +604,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getEmailHeaderMatch = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckEmailHeader = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -618,18 +615,18 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getTitle = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'title';
+        options.propName = 'subject';
         options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getMessage = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckMessage = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -640,7 +637,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithAttach = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckHasAttach = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -650,7 +647,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithAttachType = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckHasAttachType = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -661,7 +658,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithAttachName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckHasAttachName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -672,7 +669,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -683,7 +680,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonEmail = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmailAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -694,7 +691,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonLabel = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabels = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -705,7 +702,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonUsergroup = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserUsergroups = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -716,7 +713,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonLanguage = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLanguage = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -727,7 +724,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonIsManager = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserIsManager = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -737,7 +734,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getPersonIsDisabled = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPersonIsDisabled = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -747,7 +744,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -758,7 +755,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgLabel = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgLabels = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -769,7 +766,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgEmailDomain = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgEmailDomain = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -780,7 +777,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOrgUsergroup = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgUsergroups = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -792,7 +789,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getDayOfWeek = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckDayOfWeek = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -828,7 +825,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getTimeOfDay = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckTimeOfDay = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -864,7 +861,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getWithinWorkingHours = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckWorkingHours = function(options) {
         var me;
         if (options == null) {
           options = {};

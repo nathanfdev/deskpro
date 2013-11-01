@@ -34,7 +34,10 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Orb\Util\Arrays;
 
 class TicketTriggersController extends AbstractController
@@ -65,7 +68,7 @@ class TicketTriggersController extends AbstractController
 	public function getAction($id)
 	{
 		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-		if (!$trigger || $trigger->getTicketTimeField()) {
+		if (!$trigger) {
 			return $this->createNotFoundException();
 		}
 
@@ -77,15 +80,49 @@ class TicketTriggersController extends AbstractController
 	}
 
 	####################################################################################################################
-	# edit
+	# save
 	####################################################################################################################
 
-	public function editAction($id)
+	public function saveAction($id)
 	{
-		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-		if (!$trigger || $trigger->getTicketTimeField()) {
-			return $this->createNotFoundException();
+		if ($id) {
+			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+			if (!$trigger) {
+				return $this->createNotFoundException();
+			}
+		} else {
+			$trigger = new TicketTrigger();
 		}
+
+		$trigger->title         = $this->in->getString('title');
+		$trigger->event_trigger = $this->in->getString('event_trigger');
+
+		$trigger->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
+		$trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
+
+		$terms = new TriggerTerms();
+		foreach ($this->in->getArrayValue('criteria_sets') as $set) {
+			if ($set) {
+				$terms->addTermFromArray(array('set_terms' => $set));
+			}
+		}
+
+		$actions = new TriggerActions();
+		foreach ($this->in->getArrayValue('actions') as $act) {
+			if ($act) {
+				$actions->addActionFromArray($act);
+			}
+		}
+
+		$trigger->terms = $terms;
+		$trigger->actions = $actions;
+
+		$this->em->persist($trigger);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array(
+			'trigger_id' => $trigger->id
+		));
 	}
 
 	####################################################################################################################

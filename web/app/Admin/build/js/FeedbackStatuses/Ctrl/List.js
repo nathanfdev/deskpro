@@ -111,7 +111,7 @@
           }
         });
         return inst.result.then(function(move_to) {
-          return _this.deleteFeedbackType(feedback_status, move_to);
+          return _this.deleteFeedbackStatus(feedback_status, move_to);
         });
       };
 
@@ -122,7 +122,7 @@
       */
 
 
-      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackType = function(feedback_status, move_to) {
+      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackStatus = function(feedback_status, move_to) {
         var _this = this;
         return this.Api.sendDelete('/feedback_statuses/' + feedback_status.id, {
           move_to: move_to

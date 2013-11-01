@@ -18,15 +18,15 @@
         options = [];
         options.push({
           title: 'Change Assigned Agent',
-          value: 'agent'
+          value: 'SetAgent'
         });
         options.push({
           title: 'Change Assigned Team',
-          value: 'agent_team'
+          value: 'SetAgentTeam'
         });
         options.push({
           title: 'Change Agent Followers',
-          value: 'agent_followers'
+          value: 'SetAgentFollowers'
         });
         set_options.push({
           title: 'Ticket Assignment',
@@ -35,47 +35,47 @@
         options = [];
         options.push({
           title: 'Change Department',
-          value: 'department'
+          value: 'SetDepartment'
         });
         options.push({
           title: 'Change Product',
-          value: 'product'
+          value: 'SetProduct'
         });
         options.push({
           title: 'Change Category',
-          value: 'category'
+          value: 'SetCategory'
         });
         options.push({
           title: 'Change Priority',
-          value: 'priority'
+          value: 'SetPriority'
         });
         options.push({
           title: 'Change Workflow',
-          value: 'workflow'
+          value: 'SetWorkflow'
         });
         options.push({
           title: 'Change Urgency',
-          value: 'urgency'
+          value: 'SetUrgency'
         });
         options.push({
           title: 'Change Subject',
-          value: 'subject'
+          value: 'SetSubject'
         });
         options.push({
           title: 'Change Labels',
-          value: 'labels'
+          value: 'SetLabels'
         });
         options.push({
           title: 'Change Flag',
-          value: 'flag'
+          value: 'SetFlag'
         });
         options.push({
           title: 'Change Email Account',
-          value: 'email_account'
+          value: 'SetEmailAccount'
         });
         options.push({
           title: 'Change CC\'d Users',
-          value: 'user_ccs'
+          value: 'SetCcUsers'
         });
         set_options.push({
           title: 'Ticket Properties',
@@ -84,15 +84,15 @@
         options = [];
         options.push({
           title: 'Change SLAs',
-          value: 'slas'
+          value: 'SetSlas'
         });
         options.push({
           title: 'Change SLA Condition Status (Passing/Failing)',
-          value: 'set_sla_status'
+          value: 'SetSlaStatus'
         });
         options.push({
           title: 'Change SLA State (Waiting/Finished)',
-          value: 'set_sla_requirements'
+          value: 'SetSlaRequirements'
         });
         set_options.push({
           title: 'Ticket SLAs',
@@ -101,19 +101,19 @@
         options = [];
         options.push({
           title: 'Change Ticket User',
-          value: 'change_user'
+          value: 'ChangeUser'
         });
         options.push({
           title: 'Delete Ticket',
-          value: 'delete_ticket'
+          value: 'DeleteTicket'
         });
         options.push({
           title: 'Add Agent Reply',
-          value: 'agent_reply'
+          value: 'AddAgentReply'
         });
         options.push({
           title: 'Force User Email Validation',
-          value: 'force_email_validation'
+          value: 'ModForceEmailValidation'
         });
         set_options.push({
           title: 'Ticket Actions',
@@ -122,24 +122,24 @@
         options = [];
         options.push({
           title: 'Send Email To User',
-          value: 'send_user_email'
+          value: 'SendUserEmail'
         });
         options.push({
           title: 'Send Email To Agents',
-          value: 'send_user_email'
+          value: 'SendAgentEmail'
         });
         options = [];
         options.push({
           title: 'Stop Processing Triggers',
-          value: 'stop_triggers'
+          value: 'ModStopTriggers'
         });
         options.push({
           title: 'Prevent Emails To User',
-          value: 'quiet_user_emails'
+          value: 'ModQuietUserEmails'
         });
         options.push({
           title: 'Prevent Emails To Agents',
-          value: 'quiet_agent_emails'
+          value: 'ModQuietAgentEmails'
         });
         set_options.push({
           title: 'Trigger Control',
@@ -191,10 +191,7 @@
         if (options == null) {
           options = {};
         }
-        typeName = type.toLowerCase().replace(/_(.)/g, function(match, group1) {
-          return group1.toUpperCase();
-        });
-        typeName = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+        typeName = type;
         options.type = type;
         typeFunc = "get" + typeName;
         if (this[typeFunc] != null) {
@@ -392,7 +389,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getAgent = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetAgent = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -403,7 +400,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getAgentFollowers = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetAgentFollowers = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -415,7 +412,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getAgentTeam = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetAgentTeam = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -426,7 +423,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -437,7 +434,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -448,7 +445,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getPriority = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetPriority = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -459,7 +456,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getCategory = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetCategory = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -470,7 +467,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getDepartment = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetDepartment = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -481,7 +478,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getProduct = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetProduct = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -492,7 +489,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getEmailAccount = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetEmailAccount = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -515,7 +512,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getEmailSubject = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetEmailSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -525,7 +522,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getUrgency = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetUrgency = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -568,7 +565,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getFlag = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetFlag = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -639,7 +636,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getForceEmailValidation = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModForceEmailValidation = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -649,7 +646,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStopTriggers = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModStopTriggers = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -659,7 +656,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getQuietUserEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModQuietUserEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -668,7 +665,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getQuietAgentEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModQuietAgentEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -677,7 +674,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSlas = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetSlas = function(options) {
         var me;
         if (options == null) {
           options = {};

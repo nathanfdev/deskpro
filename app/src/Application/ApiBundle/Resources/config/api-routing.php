@@ -2391,7 +2391,7 @@ $collection->create('api_ticket_triggers_updateorder', array(
 
 $collection->create('api_ticket_triggers_create', array(
 	'path'        => '/ticket_triggers',
-	'controller'  => 'ApiBundle:TicketTriggers:edit',
+	'controller'  => 'ApiBundle:TicketTriggers:save',
 	'defaults'    => array('id' => '0'),
 	'methods'     => array('PUT'),
 ));
@@ -2404,7 +2404,7 @@ $collection->create('api_ticket_triggers_get', array(
 
 $collection->create('api_ticket_triggers_update', array(
 	'path'        => '/ticket_triggers/{id}',
-	'controller'  => 'ApiBundle:TicketTriggers:edit',
+	'controller'  => 'ApiBundle:TicketTriggers:save',
 	'methods'     => array('POST'),
 ));
 

@@ -41,24 +41,24 @@
 									</label>
 									<div ng-show="typeForm.by_user">
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" dp-tristate-check="typeForm.by_user_opt.web_portal, typeForm.by_user_opt.web_widget, typeForm.by_user_opt.web_form" />
+											<input type="checkbox" dp-tristate-check="typeForm.by_user_mode.portal, typeForm.by_user_mode.widget, typeForm.by_user_mode.form" />
 											via the web
 										</label>
 										<i class="icon-cog" ng-click="show_byuser_web = !show_byuser_web" style="cursor: pointer; color: #888"></i>
 										<div style="margin-left: 11px; background: #efefef; border-radius: 2px; padding: 5px; padding-bottom: 0;" ng-show="show_byuser_web">
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_opt.web_portal" value="1" /> Portal</label>
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_mode.portal" value="1" /> Portal</label>
 											&nbsp;
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_opt.web_widget" value="1" /> Widget</label>
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_mode.widget" value="1" /> Widget</label>
 											&nbsp;
-											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_opt.web_form" value="1" /> Ticket Form</label>
+											<label style="font-weight: normal;"><input type="checkbox" ng-model="typeForm.by_user_mode.form" value="1" /> Ticket Form</label>
 										</div>
 										<br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="typeForm.by_user_opt.email" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_user_mode.email" value="1" />
 											via email
 										</label><br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="typeForm.by_user_opt.api" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_user_mode.api" value="1" />
 											via the API
 										</label>
 									</div>
@@ -70,15 +70,15 @@
 									</label>
 									<div ng-show="typeForm.by_agent">
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="typeForm.by_agent_opt.web" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_agent_mode.web" value="1" />
 											via the agent interface
 										</label><br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="typeForm.by_agent_opt.email" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_agent_mode.email" value="1" />
 											 via email
 										</label><br/>
 										&mdash; <label style="font-weight: normal;">
-											<input type="checkbox" ng-model="typeForm.by_agent_opt.api" value="1" />
+											<input type="checkbox" ng-model="typeForm.by_agent_mode.api" value="1" />
 											via the API
 										</label>
 									</div>

@@ -16,15 +16,21 @@
 
       Admin_TicketTriggers_Ctrl_List.CTRL_AS = 'TicketTriggersList';
 
-      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams'];
+      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams', 'TriggersNew', 'TriggersReply', 'TriggersUpdate'];
 
       Admin_TicketTriggers_Ctrl_List.CTRL_TYPE = 'list';
 
       Admin_TicketTriggers_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.triggers = null;
-        this.triggersCollection = null;
         this.eventType = this.$stateParams.type;
+        if (this.$stateParams.type === 'newticket') {
+          this.dpTriggers = this.TriggersNew;
+        } else if (this.$stateParams.type === 'newreply') {
+          this.dpTriggers = this.TriggersReply;
+        } else {
+          this.dpTriggers = this.TriggersUpdate;
+        }
         return this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
@@ -51,10 +57,12 @@
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet("/ticket_triggers/" + this.$stateParams.type).success(function(data) {
-          _this.triggersCollection = new OrderedDictionary();
-          _this.triggersCollection.addArray(data.triggers);
-          return _this.triggers = data.triggers;
+        promise = this.dpTriggers.loadList().then(function(recs) {
+          _this.triggers = recs.values();
+          return _this.addManagedListener(recs, 'changed', function() {
+            _this.triggers = recs.values();
+            return _this.ngApply();
+          });
         });
         return promise;
       };
@@ -105,8 +113,7 @@
 
       Admin_TicketTriggers_Ctrl_List.prototype.deleteTrigger = function(trigger) {
         var _this = this;
-        this.triggersCollection.remove(trigger.id);
-        this.triggers = this.triggersCollection.values();
+        this.dpTriggers.remove(trigger.id);
         return this.Api.sendDelete('/ticket_triggers/' + trigger.id).success(function() {
           if (_this.$state.current.name === 'tickets.ticket_triggers.edit' && parseInt(_this.$state.params.id) === trigger.id) {
             return _this.$state.go('tickets.ticket_triggers');

@@ -8,13 +8,19 @@ define [
 	class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
 		@CTRL_AS = 'TicketTriggersList'
-		@DEPS = ['$state', '$stateParams']
+		@DEPS = ['$state', '$stateParams', 'TriggersNew', 'TriggersReply', 'TriggersUpdate']
 		@CTRL_TYPE = 'list'
 
 		init: ->
 			@triggers = null
-			@triggersCollection = null
 			@eventType = @$stateParams.type
+
+			if @$stateParams.type == 'newticket'
+				@dpTriggers = @TriggersNew
+			else if @$stateParams.type == 'newreply'
+				@dpTriggers = @TriggersReply
+			else
+				@dpTriggers = @TriggersUpdate
 
 			@sortedListOptions = {
 				axis: 'y',
@@ -36,11 +42,14 @@ define [
 		# Loads the triggers list
 		###
 		initialLoad: ->
-			promise = @Api.sendGet("/ticket_triggers/#{@$stateParams.type}").success( (data) =>
-				@triggersCollection = new OrderedDictionary();
-				@triggersCollection.addArray(data.triggers)
-				@triggers = data.triggers
-			);
+			promise = @dpTriggers.loadList().then( (recs) =>
+				@triggers = recs.values()
+
+				@addManagedListener(recs, 'changed', =>
+					@triggers = recs.values()
+					@ngApply()
+				)
+			)
 
 			return promise
 
@@ -78,10 +87,7 @@ define [
 		# Actually do the delete
 		###
 		deleteTrigger: (trigger) ->
-
-			@triggersCollection.remove(trigger.id)
-			@triggers = @triggersCollection.values()
-
+			@dpTriggers.remove(trigger.id)
 			@Api.sendDelete('/ticket_triggers/' + trigger.id).success( =>
 				# if currently viewing the deleted department, then should need to switch state
 				if @$state.current.name == 'tickets.ticket_triggers.edit' and parseInt(@$state.params.id) == trigger.id

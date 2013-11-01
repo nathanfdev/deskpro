@@ -11,7 +11,7 @@ define [
 		@CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit'
 		@CTRL_AS   = 'TicketTriggersEdit'
 		@CTRL_TYPE = 'page'
-		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions']
+		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'TriggersNew', 'TriggersReply', 'TriggersUpdate']
 
 		init: ->
 			@triggerType = @$stateParams.type
@@ -22,18 +22,25 @@ define [
 			@$scope.triggerType = @$stateParams.type
 			@$scope.triggerId   = @$stateParams.id
 
+			if @$stateParams.type == 'newticket'
+				@dpTriggers = @TriggersNew
+			else if @$stateParams.type == 'newreply'
+				@dpTriggers = @TriggersReply
+			else
+				@dpTriggers = @TriggersUpdate
+
 			@$scope.typeForm = {
 				by_user: true,
 				by_agent: false,
-				by_agent_opt: {
+				by_agent_mode: {
 					web: true,
 					email: true,
 					api: true
 				},
-				by_user_opt: {
-					web_portal: true,
-					web_widget: true,
-					web_form: true,
+				by_user_mode: {
+					portal: true,
+					widget: true,
+					form: true,
 					email: true,
 					api: true
 				}
@@ -46,12 +53,9 @@ define [
 			@$scope.actionOptionTypes = []
 			@updateCriteriaOptionTypes()
 
-			@$scope.trigger_criteria_set = {
-				first: {},
-				second: {}
-			}
+			@$scope.trigger_criteria_set = {first: {}}
 
-			@$scope.trigger_actions = {}
+			@$scope.trigger_actions = []
 
 			@$scope.$watch('typeForm', =>
 				@updateCriteriaOptionTypes()
@@ -63,24 +67,24 @@ define [
 			types = []
 
 			if @$scope.typeForm.by_user
-				if @$scope.typeForm.by_user_opt.web_portal or @$scope.typeForm.by_user_opt.web_widget or @$scope.typeForm.by_user_opt.web_form
+				if @$scope.typeForm.by_user_mode.portal or @$scope.typeForm.by_user_mode.widget or @$scope.typeForm.by_user_mode.form
 					Arrays.pushUnique(types, 'web')
 					Arrays.pushUnique(types, 'web.user')
-				if @$scope.typeForm.by_user_opt.email
+				if @$scope.typeForm.by_user_mode.email
 					Arrays.pushUnique(types, 'email')
 					Arrays.pushUnique(types, 'email.user')
-				if @$scope.typeForm.by_user_opt.api
+				if @$scope.typeForm.by_user_mode.api
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.user')
 
 			if @$scope.typeForm.by_agent
-				if @$scope.typeForm.by_agent_opt.web
+				if @$scope.typeForm.by_agent_mode.web
 					Arrays.pushUnique(types, 'web')
 					Arrays.pushUnique(types, 'web.agent')
-				if @$scope.typeForm.by_user_opt.email
+				if @$scope.typeForm.by_agent_mode.email
 					Arrays.pushUnique(types, 'email')
 					Arrays.pushUnique(types, 'email.agent')
-				if @$scope.typeForm.by_user_opt.api
+				if @$scope.typeForm.by_agent_mode.api
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.agent')
 
@@ -99,17 +103,103 @@ define [
 		###
 		initialLoad: ->
 			if @triggerId
-				promise = @Api.sendGet("/ticket_triggers/#{@triggerId}").success( (data) =>
-					@trigger = data.trigger
-					@form = {
+				promise = @dpTriggers.loadTrigger(@triggerId).then( (trigger) =>
+					@trigger = trigger
+					@$scope.form = {
 						title: @trigger.title
 					}
+
+					if @trigger.by_agent_mode.length
+						@$scope.typeForm.by_agent = true
+						for x in @trigger.by_agent_mode
+							@$scope.typeForm.by_agent_mode[x] = true
+					if @trigger.by_user_mode.length
+						@$scope.typeForm.by_user = true
+						for x in @trigger.by_user_mode
+							@$scope.typeForm.by_user_mode[x] = true
 				)
-
 				return promise
-
-			@trigger = {}
+			else
+				@trigger = {}
+				@$scope.form = {
+					title: ''
+				}
 
 			return null
+
+		###
+		# Save the trigger
+		###
+		saveTrigger: ->
+			postData = {
+				title:         @$scope.form.title,
+				event_trigger: @triggerType,
+				by_user_mode:  [],
+				by_agent_mode: [],
+				criteria_sets: [],
+				actions:       [],
+			}
+
+			if @$scope.typeForm.by_user
+				for own mode, enabled of @$scope.typeForm.by_user_mode
+					if enabled
+						postData.by_user_mode.push(mode)
+			if @$scope.typeForm.by_agent
+				for own mode, enabled of @$scope.typeForm.by_agent_mode
+					if enabled
+						postData.by_agent_mode.push(mode)
+
+			for own _, crit_set of @$scope.trigger_criteria_set
+				set = []
+				for own _, crit of crit_set
+					if crit.type
+						set.push(crit)
+				if set.length
+					postData.criteria_sets.push(set)
+
+			if @$scope.trigger_actions
+				for own _, act of @$scope.trigger_actions
+					if act.type
+						postData.actions.push(act)
+
+			@startSpinner('saving')
+			if @trigger.id
+				is_new = false
+				promise = @Api.sendPostJson('/ticket_triggers/' + @trigger.id, postData)
+			else
+				is_new = true
+				promise = @Api.sendPutJson('/ticket_triggers', postData)
+
+			promise.success( (result) =>
+				@trigger.id = result.id
+
+				if is_new
+					@trigger.is_enabled = true
+
+				@trigger.title = postData.title
+
+				@stopSpinner('saving', true).then(=>
+					@Growl.success("Saved")
+				)
+
+				if is_new
+					@dpTriggers.addTriggerModel(trigger)
+				else
+					@dpTriggers.updateTriggerModel(trigger)
+
+				@skipDirtyState()
+				if is_new
+					@$state.go('tickets.ticket_triggers.gocreate')
+				else
+					@$state.go('tickets.ticket_triggers')
+			)
+			promise.error( (info, code) =>
+				@stopSpinner('saving', true)
+				@applyErrorResponseToView(info)
+			)
+
+			return promise
+
+
 
 	Admin_TicketTriggers_Ctrl_Edit.EXPORT_CTRL()

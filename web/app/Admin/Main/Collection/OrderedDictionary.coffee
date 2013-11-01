@@ -10,6 +10,14 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 			@data = {}
 			@order = []
 
+		###
+    	# Clears all data from the collection
+    	###
+		clear: ->
+			for key in @order
+				delete @data[key]
+			@order.length = 0
+
 
 		###
     	# Re-order the collection with a callback comparison function.

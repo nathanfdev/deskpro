@@ -40,5 +40,6 @@ class Build1383313823 extends AbstractBuild
 	{
 		$this->execMutateSql("CREATE TABLE ticket_escalations (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, event_trigger VARCHAR(50) NOT NULL, by_agent TINYINT(1) NOT NULL, by_user TINYINT(1) NOT NULL, is_enabled TINYINT(1) NOT NULL, terms LONGTEXT NOT NULL COMMENT '(DC2Type:object)', actions LONGTEXT NOT NULL COMMENT '(DC2Type:object)', run_order INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("ALTER TABLE ticket_triggers DROP event_trigger_options, DROP is_uneditable, DROP terms_any, DROP sys_name, DROP date_created, CHANGE terms terms LONGTEXT NOT NULL COMMENT '(DC2Type:object)', CHANGE actions actions LONGTEXT NOT NULL COMMENT '(DC2Type:object)'");
+		$this->execMutateSql("ALTER TABLE ticket_triggers ADD by_agent_mode VARCHAR(255) DEFAULT NULL, ADD by_user_mode VARCHAR(255) DEFAULT NULL, DROP by_agent, DROP by_user");
 	}
 }
