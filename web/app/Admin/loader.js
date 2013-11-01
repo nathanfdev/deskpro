@@ -120,7 +120,8 @@ requirejs([
 	'Admin/TicketUrgencies/Ctrl/List',
 	'Admin/FeedbackStatuses/Ctrl/List',
 	'Admin/FeedbackStatuses/Ctrl/Edit',
-	'Admin/FeedbackTypes/Ctrl/List'
+	'Admin/FeedbackTypes/Ctrl/List',
+	'Admin/FeedbackTypes/Ctrl/Edit'
 ], function(angular) {
 	'use strict';
 

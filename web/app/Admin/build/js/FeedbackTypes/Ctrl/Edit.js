@@ -1,0 +1,95 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+    var Admin_FeedbackTypes_Ctrl_Edit, _ref;
+    Admin_FeedbackTypes_Ctrl_Edit = (function(_super) {
+      __extends(Admin_FeedbackTypes_Ctrl_Edit, _super);
+
+      function Admin_FeedbackTypes_Ctrl_Edit() {
+        _ref = Admin_FeedbackTypes_Ctrl_Edit.__super__.constructor.apply(this, arguments);
+        return _ref;
+      }
+
+      Admin_FeedbackTypes_Ctrl_Edit.CTRL_ID = 'Admin_FeedbackTypes_Ctrl_Edit';
+
+      Admin_FeedbackTypes_Ctrl_Edit.CTRL_AS = 'FeedbackTypesEdit';
+
+      Admin_FeedbackTypes_Ctrl_Edit.DEPS = ['Api', 'Growl', 'FeedbackTypesData', '$stateParams', '$modal'];
+
+      Admin_FeedbackTypes_Ctrl_Edit.CTRL_TYPE = 'page';
+
+      Admin_FeedbackTypes_Ctrl_Edit.prototype.init = function() {
+        this.feedback_type = {};
+      };
+
+      Admin_FeedbackTypes_Ctrl_Edit.prototype.initialLoad = function() {
+        var data_promise,
+          _this = this;
+        if (!this.$stateParams.id) {
+
+        } else {
+          data_promise = this.Api.sendGet('/feedback_types/' + this.$stateParams.id).then(function(result) {
+            return _this.feedback_type = result.data.feedback_type;
+          });
+          return this.$q.all([data_promise]);
+        }
+      };
+
+      /*
+      			# Saves the current form
+      			#
+      			# @return {promise}
+      */
+
+
+      Admin_FeedbackTypes_Ctrl_Edit.prototype.saveFeedbackType = function() {
+        var is_new, promise,
+          _this = this;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
+        this.startSpinner('saving_feedback_type');
+        if (this.feedback_type.id) {
+          is_new = false;
+          promise = this.Api.sendPostJson('/feedback_types/' + this.feedback_type.id, {
+            feedback_type: this.feedback_type
+          });
+        } else {
+          is_new = true;
+          promise = this.Api.sendPutJson('/feedback_types', {
+            feedback_type: this.feedback_type
+          });
+        }
+        promise.success(function(result) {
+          _this.feedback_type.id = result.id;
+          _this.stopSpinner('saving_feedback_type', true).then(function() {
+            return _this.Growl.success(_this.getRegisteredMessage('saved_feedback_type'));
+          });
+          _this.FeedbackTypesData.updateModel(_this.feedback_type);
+          _this.skipDirtyState();
+          if (is_new) {
+            return _this.$state.go('portal.feedback_types.gocreate');
+          } else {
+            return _this.$state.go('portal.feedback_types');
+          }
+        });
+        promise.error(function(info, code) {
+          _this.stopSpinner('saving_feedback_type', true);
+          return _this.applyErrorResponseToView(info);
+        });
+        return promise;
+      };
+
+      return Admin_FeedbackTypes_Ctrl_Edit;
+
+    })(Admin_Ctrl_Base);
+    return Admin_FeedbackTypes_Ctrl_Edit.EXPORT_CTRL();
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=Edit.js.map
+*/
