@@ -37,6 +37,66 @@
         return this.$q.all([list_promise]);
       };
 
+      /*
+      # Show the delete dlg
+      */
+
+
+      Admin_FeedbackTypes_Ctrl_List.prototype.startDelete = function(feedback_type) {
+        var inst, move_feedback_types_list,
+          _this = this;
+        move_feedback_types_list = this.FeedbackTypesData.getListOfMovables(feedback_type);
+        if (!move_feedback_types_list.length) {
+          this.showAlert('@no_delete_last');
+          return;
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('FeedbackTypes/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', 'move_feedback_types_list', function($scope, $modalInstance, move_feedback_types_list) {
+              $scope.move_feedback_types_list = move_feedback_types_list;
+              $scope.selected = {
+                move_to_id: move_feedback_types_list[0].id
+              };
+              $scope.confirm = function() {
+                return $modalInstance.close($scope.selected.move_to_id);
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ],
+          resolve: {
+            move_feedback_types_list: function() {
+              return move_feedback_types_list;
+            }
+          }
+        });
+        return inst.result.then(function(move_to) {
+          return _this.deleteFeedbackType(feedback_type, move_to);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+       	# @param feedback_type - feedback type we want to delete
+       	# @param move_to - to what type feedback should be moved
+      */
+
+
+      Admin_FeedbackTypes_Ctrl_List.prototype.deleteFeedbackType = function(feedback_type, move_to) {
+        var _this = this;
+        return this.Api.sendDelete('/feedback_types/' + feedback_type.id, {
+          move_to: move_to
+        }).success(function() {
+          _this.FeedbackTypesData.remove(feedback_type.id);
+          _this.ngApply();
+          if (_this.$state.current.name === 'portal.feedback_types.edit' && parseInt(_this.$state.params.id) === feedback_type.id) {
+            return _this.$state.go('portal.feedback_types');
+          }
+        });
+      };
+
       return Admin_FeedbackTypes_Ctrl_List;
 
     })(Admin_Ctrl_Base);

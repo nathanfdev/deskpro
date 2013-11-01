@@ -92,7 +92,7 @@
           templateUrl: this.getTemplatePath('FeedbackStatuses/delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', 'move_feedback_statuses_list', function($scope, $modalInstance, move_feedback_statuses_list) {
-              $scope.move_feedback_statuses_list = move_feedback_statuses_list;
+              $scope.move_feedback_types_list = move_feedback_statuses_list;
               $scope.selected = {
                 move_to_id: move_feedback_statuses_list[0].id
               };
@@ -105,13 +105,13 @@
             }
           ],
           resolve: {
-            move_feedback_statuses_list: function() {
+            move_feedback_types_list: function() {
               return move_feedback_statuses_list;
             }
           }
         });
         return inst.result.then(function(move_to) {
-          return _this.deleteFeedbackStatus(feedback_status, move_to);
+          return _this.deleteFeedbackType(feedback_status, move_to);
         });
       };
 
@@ -122,7 +122,7 @@
       */
 
 
-      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackStatus = function(feedback_status, move_to) {
+      Admin_FeedbackStatuses_Ctrl_List.prototype.deleteFeedbackType = function(feedback_status, move_to) {
         var _this = this;
         return this.Api.sendDelete('/feedback_statuses/' + feedback_status.id, {
           move_to: move_to

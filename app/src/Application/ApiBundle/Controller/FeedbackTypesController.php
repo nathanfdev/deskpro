@@ -132,4 +132,66 @@ class FeedbackTypesController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+		 */
+
+		$feedback_types = $this->container->getSystemService('feedback_types');
+		$feedback_type   = $feedback_types->getById($id);
+
+		if (!$feedback_type) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$move_to              = $this->in->getUint('move_to');
+		$move_to_feedback_typ = $feedback_types->getById($move_to);
+
+		if (!$move_to_feedback_typ) {
+
+			throw ValidationException::create(
+				"feedback_type.remove.move_feedback_types",
+				"You must select a feedback type to move existing feedback into"
+			);
+		}
+
+		if ($move_to_feedback_typ->getId() == $feedback_type->getId()) {
+
+			throw ValidationException::create(
+				"feedback_type.remove.move_feedback_types",
+				"You must choose a different feedback type"
+			);
+		}
+
+		$old_id = $feedback_type->getId();
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->db->executeUpdate(
+				"UPDATE feedback SET category_id = ? WHERE category_id = ?",
+				array($move_to, $old_id)
+			);
+
+			$this->em->remove($feedback_type);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }
