@@ -9,6 +9,37 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 			@feedback_types = [];
 
+			@sortedListOptions = {
+
+				axis: 'y',
+				handle: '.drag-handle',
+				update: (ev, data) =>
+					$list = data.item.closest('ul')
+
+					postData = {display_orders: []}
+
+					x = 0
+					em = @em
+
+					$list.find('li').each(->
+
+						x += 10
+						feedback_type_id = parseInt($(this).data('id'))
+
+						if feedback_type_id
+
+							feedback_type = em.getById('feedback_type', feedback_type_id)
+
+							if feedback_type
+								feedback_type.display_order = x
+
+						postData.display_orders.push(feedback_type_id)
+					)
+
+					promise = @Api.sendPostJson('/feedback_types/display_order', postData)
+					@pingElement('display_orders')
+			}
+
 		initialLoad: ->
 
 			list_promise = @FeedbackTypesData.loadList().then( (recs) =>

@@ -21,7 +21,35 @@
       Admin_FeedbackTypes_Ctrl_List.CTRL_TYPE = 'list';
 
       Admin_FeedbackTypes_Ctrl_List.prototype.init = function() {
-        return this.feedback_types = [];
+        var _this = this;
+        this.feedback_types = [];
+        return this.sortedListOptions = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: function(ev, data) {
+            var $list, em, postData, promise, x;
+            $list = data.item.closest('ul');
+            postData = {
+              display_orders: []
+            };
+            x = 0;
+            em = _this.em;
+            $list.find('li').each(function() {
+              var feedback_type, feedback_type_id;
+              x += 10;
+              feedback_type_id = parseInt($(this).data('id'));
+              if (feedback_type_id) {
+                feedback_type = em.getById('feedback_type', feedback_type_id);
+                if (feedback_type) {
+                  feedback_type.display_order = x;
+                }
+              }
+              return postData.display_orders.push(feedback_type_id);
+            });
+            promise = _this.Api.sendPostJson('/feedback_types/display_order', postData);
+            return _this.pingElement('display_orders');
+          }
+        };
       };
 
       Admin_FeedbackTypes_Ctrl_List.prototype.initialLoad = function() {

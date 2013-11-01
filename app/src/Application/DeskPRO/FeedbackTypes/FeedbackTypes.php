@@ -119,4 +119,32 @@ class FeedbackTypes
 	{
 		return FeedbackCategory::createFeedbackCategory();
 	}
+
+	/**
+	 * @param array $newOrders
+	 */
+
+	public function updateDisplayOrders($newOrders)
+	{
+		$x = 10;
+
+		$feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getByIds($newOrders);
+
+		foreach ($newOrders as $id) {
+
+			if (!isset($feedback_types[$id])) {
+
+				continue;
+			}
+
+			$feedback_type                = $feedback_types[$id];
+			$feedback_type->display_order = $x;
+
+			$this->em->persist($feedback_type);
+
+			$x += 10;
+		}
+
+		$this->em->flush();
+	}
 }

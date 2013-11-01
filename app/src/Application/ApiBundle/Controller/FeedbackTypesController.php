@@ -194,4 +194,22 @@ class FeedbackTypesController extends AbstractController
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
+
+	####################################################################################################################
+	# save-display-order
+	####################################################################################################################
+
+	public function saveDisplayOrderAction()
+	{
+		$display_orders = $this->in->getArrayOfUInts('display_orders');
+
+		/**
+		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+		 */
+
+		$feedback_types = $this->container->getSystemService('feedback_types');
+		$feedback_types->updateDisplayOrders($display_orders);
+
+		return $this->createSuccessResponse();
+	}
 }
