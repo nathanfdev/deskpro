@@ -2480,6 +2480,37 @@ $collection->create('api_feedback_types', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_feedback_types_order', array(
+	'path'        => '/feedback_types/display_order',
+	'controller'  => 'ApiBundle:FeedbackTypes:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_feedback_types_get', array(
+	'path'        => '/feedback_types/{id}',
+	'controller'  => 'ApiBundle:FeedbackTypes:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_feedback_types_create', array(
+	'path'        => '/feedback_types',
+	'controller'  => 'ApiBundle:FeedbackTypes:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_feedback_types_save', array(
+	'path'        => '/feedback_types/{id}',
+	'controller'  => 'ApiBundle:FeedbackTypes:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_feedback_types_delete', array(
+	'path'        => '/feedback_types/{id}',
+	'controller'  => 'ApiBundle:FeedbackTypes:remove',
+	'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

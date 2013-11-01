@@ -34,89 +34,29 @@
 namespace Application\DeskPRO\FeedbackTypes;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
+
 use Doctrine\ORM\EntityManager;
 
-class FeedbackTypes
+class FeedbackTypeEdit
 {
 	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
+	 * @var \Application\DeskPRO\Entity\FeedbackCategory
 	 */
-	protected $em;
 
-    /**
-     * @var \Application\DeskPRO\Entity\FeedbackCategory[]
-     */
+	public $feedback_type;
 
-    protected $feedback_types;
-
-	public function __construct(EntityManager $em)
+	public function __construct(FeedbackCategory $feedback_type)
 	{
-		$this->em = $em;
+		$this->feedback_type = $feedback_type;
 	}
 
 	/**
-	 * Loads feedback statuses data from the database
+	 * @param EntityManager $em
 	 */
 
-	private function preload()
+	public function save(EntityManager $em)
 	{
-		if ($this->feedback_types !== null) {
-
-			return;
-		}
-
-		$this->feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getAll();
-	}
-
-
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
-
-	public function reset()
-	{
-		$this->feedback_types = null;
-	}
-
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\FeedbackCategory
-	 */
-
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:FeedbackCategory')->get($id);
-	}
-
-    /**
-     * @return \Application\DeskPRO\Entity\FeedbackCategory[]
-     */
-
-    public function getAll()
-    {
-        $this->preload();
-
-        return $this->feedback_types;
-    }
-
-	/**
-	 * @return int
-	 */
-
-	public function count()
-	{
-		$this->preload();
-
-		return count($this->feedback_types);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\FeedbackCategory
-	 */
-
-	public function createNew()
-	{
-		return FeedbackCategory::createFeedbackCategory();
+		$em->persist($this->feedback_type);
+		$em->flush();
 	}
 }

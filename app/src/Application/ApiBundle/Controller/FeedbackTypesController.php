@@ -34,9 +34,11 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\FeedbackTypes\FeedbackTypes;
 use Application\DeskPRO\Exception\ValidationException;
+
+use Application\DeskPRO\FeedbackTypes\Form\Type\FeedbackTypeType;
+use Application\DeskPRO\FeedbackTypes\FeedbackTypeEdit;
 
 use Orb\Util\Arrays;
 
@@ -59,5 +61,75 @@ class FeedbackTypesController extends AbstractController
                  'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll()))
             )
         );
+	}
+
+	###################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+		 */
+
+		$feedback_types = $this->container->getSystemService('feedback_types');
+		$feedback_type  = $feedback_types->getById($id);
+
+		if (!$feedback_type) {
+
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array('feedback_type' => $this->getApiData($feedback_type)));
+	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+		 */
+
+		$feedback_types = $this->container->getSystemService('feedback_types');
+
+		if ($id) {
+
+			$feedback_type = $feedback_types->getById($id);
+
+			if (!$feedback_type) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$feedback_type = $feedback_types->createNew();
+		}
+
+		$feedback_type_edit = new FeedbackTypeEdit($feedback_type);
+
+		$postData = $this->in->getAll('post');
+
+		$form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
+
+		if ($form->isValid()) {
+
+			$feedback_type_edit->save($this->em);
+
+		} else {
+
+			throw ValidationException::create("feedback_type.save", $this->getFormValidationErrorsString($form));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $feedback_type->getId(),
+			)
+		);
 	}
 }

@@ -34,8 +34,13 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 use Application\DeskPRO\App;
 
@@ -43,7 +48,7 @@ use Application\DeskPRO\App;
  * Feedback categories
  *
  */
-class FeedbackCategory extends CategoryAbstract
+class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {
 	/**
 	 */
@@ -54,11 +59,29 @@ class FeedbackCategory extends CategoryAbstract
 	protected $children;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $usergroups;
 
+	/**
+	 * @return FeedbackCategory
+	 */
 
+	public static function createFeedbackCategory()
+	{
+		$category = new self();
+		return $category;
+	}
+
+
+	############################################################################
+	# Validation Metadata
+	############################################################################
+
+	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new NotBlank(array('message' => 'Feedback type title should not be blank.')));
+	}
 
 	############################################################################
 	# Doctrine Metadata
