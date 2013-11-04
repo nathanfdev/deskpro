@@ -377,8 +377,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * If we have some form and data from request we get rid off unnecessary data
 	 * in order not to have 'This form should not contain extra fields'
 	 *
-	 * @TODO provide tests for this method
-	 *
 	 * @param \Symfony\Component\Form\Form  $form
 	 * @param array $requestData
 	 * @param null  $key

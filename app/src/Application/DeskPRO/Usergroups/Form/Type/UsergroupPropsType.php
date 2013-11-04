@@ -31,48 +31,34 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\FeedbackTypes\Form\Type;
-
-use Doctrine\ORM\EntityRepository;
+namespace Application\DeskPRO\Usergroups\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class FeedbackTypePropsType extends AbstractType
+class UsergroupPropsType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add(
-			'usergroups',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Usergroup',
-				 'required'      => false,
-				 'expanded'      => true,
-				 'multiple'      => true,
-				 'property'      => 'title',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('u')->where(
-						 'u.is_agent_group = false AND u.is_enabled = true'
-					 );
-				 }
-			)
-		);
+		$builder->add('title', 'text');
+		$builder->add('note', 'text', array('required' => false));
+		$builder->add('is_agent_group', 'checkbox');
+		$builder->add('sys_name', 'text', array('required' => false));
+		$builder->add('is_enabled', 'checkbox');
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(
 			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+				 'data_class' => 'Application\\DeskPRO\\Entity\\Usergroup',
 			)
 		);
 	}
 
 	public function getName()
 	{
-		return 'feedback_type';
+		return 'usergroup';
 	}
 }

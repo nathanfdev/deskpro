@@ -59,4 +59,22 @@ class FeedbackTypeEdit
 		$em->persist($this->feedback_type);
 		$em->flush();
 	}
+
+	/**
+	 * @param $usergroup
+	 */
+
+	public function addUsergroup($usergroup)
+	{
+		$this->feedback_type->addUsergroup($usergroup);
+	}
+
+	/**
+	 * @param $id
+	 */
+
+	public function removeUsergroup($id)
+	{
+		$this->feedback_type->removeUsergroup($id);
+	}
 }

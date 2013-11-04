@@ -81,7 +81,14 @@ class FeedbackTypesController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		return $this->createApiResponse(array('feedback_type' => $this->getApiData($feedback_type)));
+		$returnedData               = $this->getApiData($feedback_type);
+		$returnedData['usergroups'] = $feedback_types->getNonAgentUserGroups($feedback_type);
+
+		return $this->createApiResponse(
+			array(
+				 'feedback_type' => $returnedData
+			)
+		);
 	}
 
 	####################################################################################################################
@@ -109,9 +116,9 @@ class FeedbackTypesController extends AbstractController
 			$feedback_type = $feedback_types->createNew();
 		}
 
-		$feedback_type_edit = new FeedbackTypeEdit($feedback_type);
-
 		$postData = $this->in->getAll('post');
+
+		$feedback_type_edit = new FeedbackTypeEdit($feedback_type);
 
 		$form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
 		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);

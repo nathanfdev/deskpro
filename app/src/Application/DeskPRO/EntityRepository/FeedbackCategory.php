@@ -126,6 +126,28 @@ class FeedbackCategory extends AbstractCategoryRepository
 		")->execute();
 	}
 
+	/**
+	 * @param int  $id
+	 * @param bool $agent_only
+	 *
+	 * @return array
+	 */
+
+	public function getUserGroups($id, $agent_only = false)
+	{
+		return
+			$this->getEntityManager()
+			->createQuery(
+				"SELECT u.id, u.title
+				FROM DeskPRO:FeedbackCategory c
+				JOIN c.usergroups u
+				WHERE c.id = :id AND u.is_agent_group = :agent_only"
+			)
+			->setParameter('id', $id)
+			->setParameter('agent_only', $agent_only)
+			->execute();
+	}
+
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
 	{
 		$counts = array(0 => array('popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0));

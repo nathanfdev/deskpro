@@ -89,6 +89,38 @@ class FeedbackTypes
 		return $this->em->getRepository('DeskPRO:FeedbackCategory')->get($id);
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
+	 *
+	 * @return array
+	 */
+
+	public function getNonAgentUserGroups($feedback_type)
+	{
+		if (is_int($feedback_type)) {
+
+			$feedback_type = $this->getById($feedback_type);
+		}
+
+		return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), false);
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
+	 *
+	 * @return array
+	 */
+
+	public function getAgentUserGroups($feedback_type)
+	{
+		if (is_int($feedback_type)) {
+
+			$feedback_type = $this->getById($feedback_type);
+		}
+
+		return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), true);
+	}
+
     /**
      * @return \Application\DeskPRO\Entity\FeedbackCategory[]
      */
