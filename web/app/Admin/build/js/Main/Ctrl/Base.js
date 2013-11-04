@@ -59,6 +59,9 @@
         if (this.DEPS.indexOf('$timeout') === -1) {
           this.DEPS.unshift('$timeout');
         }
+        if (this.DEPS.indexOf('DataService') === -1) {
+          this.DEPS.unshift('DataService');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);

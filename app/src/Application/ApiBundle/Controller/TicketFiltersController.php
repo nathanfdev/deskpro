@@ -44,8 +44,30 @@ class TicketFiltersController extends AbstractController
 
 	public function listAction()
 	{
-		$data = $this->em->getRepository('DeskPRO:TicketFilter')->getFilters();
-		return $this->createApiResponse($data);
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getDefinedFitlers();
+
+		$data = array();
+
+		foreach ($filters as $filter) {
+			$row = array(
+				'id'                => $filter->id,
+				'title'             => $filter->title,
+				'is_enabled'        => $filter->is_enabled,
+				'sys_name'          => $filter->sys_name,
+				'display_order'     => $filter->display_order,
+				'is_global'         => $filter->is_global,
+				'person_id'         => $filter->person ? $filter->person->id : null,
+				'person'            => $filter->person ? $filter->person->toApiData(true) : null,
+				'agent_team_id'     => $filter->agent_team ? $filter->agent_team->id : null,
+				'agent_team'        => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
+			);
+
+			$data[] = $row;
+		}
+
+		return $this->createApiResponse(array(
+			'filters' => $data
+		));
 	}
 
 	####################################################################################################################
@@ -56,11 +78,13 @@ class TicketFiltersController extends AbstractController
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
 
-		if (!$filter) {
+		if (!$filter || $filter->sys_name) {
 			throw $this->createNotFoundException();
 		}
 
-		return $this->createApiResponse($filter);
+		return $this->createApiResponse(array(
+			'filter' => $this->getApiData($filter)
+		));
 	}
 
 	####################################################################################################################
@@ -72,7 +96,7 @@ class TicketFiltersController extends AbstractController
 		if ($id) {
 			$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
 
-			if (!$filter) {
+			if (!$filter || $filter->sys_name) {
 				throw $this->createNotFoundException();
 			}
 		} else {
@@ -92,11 +116,11 @@ class TicketFiltersController extends AbstractController
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
 
-		if (!$filter) {
+		if (!$filter || $filter->sys_name) {
 			throw $this->createNotFoundException();
 		}
 
-		$this->em->remvoe($filter);
+		$this->em->remove($filter);
 		$this->em->flush();
 
 		return $this->createSuccessResponse(array(
@@ -105,13 +129,13 @@ class TicketFiltersController extends AbstractController
 	}
 
 	####################################################################################################################
-	# save-run-order
+	# save-display-order
 	####################################################################################################################
 
-	public function saveRunOrderAction()
+	public function saveDisplayOrderAction()
 	{
-		$run_orders = $this->in->getCleanValueArray('run_orders', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:TicketFilter')->updateRunOrders($run_orders);
+		$display_order = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
+		$this->em->getRepository('DeskPRO:TicketFilter')->updateDisplayOrder($display_order);
 
 		return $this->createSuccessResponse();
 	}

@@ -1,0 +1,42 @@
+<div class="pane">
+	<header class="pane-header">
+		<h3><i class="icon-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_slas.slas') }}</h3>
+		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+	</header>
+	<article class="pane-content no-pad">
+		<div class="panel panel-fill">
+			<div class="panel-heading">
+				<nav class="dp-controls">
+					<ul>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.slas.gocreate') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+					</ul>
+				</nav>
+				<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_slas.count_slas') }}"></h3>
+			</div>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
+				<li class="with-drag-handle" ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
+					<a href="{{ ng_href('tickets.slas.edit', '{id: sla.id}') }}">
+						<i class="icon-reorder drag-handle"></i>
+						<div class="pull-right">
+							<em class="tag"style="margin-left: 6px;">
+								<span ng-if="sla.is_global">global</span>
+								<span ng-if="sla.person_id">{{ ng_var('sla.person.display_name') }}</span>
+							</em>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(sla); $event.preventDefault();"><i class="icon-trash"></i></span>
+						</div>
+						<h4>
+							<span class="title-text">{{ ng_var('sla.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<p ng-if="!ListCtrl.list.length" style="padding: 15px;">
+				{{ phrase('adm.ticket_slas.no_slas') }}
+			</p>
+		</div>
+	</article>
+</div>
+
+{{ ng_tpl('AdminInterfaceBundle:TicketSlas:delete-modal.html.twig') }}
+{% include 'AdminInterfaceBundle:TicketSlas:help-page.html.twig' %}

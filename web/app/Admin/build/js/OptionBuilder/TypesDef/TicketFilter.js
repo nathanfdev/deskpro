@@ -1,0 +1,822 @@
+(function() {
+  define(function() {
+    var Admin_OptionBuilder_TypesDef_TicketFilter;
+    return Admin_OptionBuilder_TypesDef_TicketFilter = (function() {
+      function Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager) {
+        this.$q = $q;
+        this.Api = Api;
+        this.dpTemplateManager = dpTemplateManager;
+        this.options_data = null;
+      }
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
+        var options, set_options;
+        if (typesData == null) {
+          typesData = null;
+        }
+        set_options = [];
+        options = [];
+        options.push({
+          title: 'Department',
+          value: 'CheckDepartment'
+        });
+        options.push({
+          title: 'Product',
+          value: 'CheckProduct'
+        });
+        options.push({
+          title: 'Category',
+          value: 'CheckCategory'
+        });
+        options.push({
+          title: 'Priority',
+          value: 'CheckPriority'
+        });
+        options.push({
+          title: 'Workflow',
+          value: 'CheckWorkflow'
+        });
+        options.push({
+          title: 'Subject',
+          value: 'CheckSubject'
+        });
+        set_options.push({
+          title: 'Ticket Criteria',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Name',
+          value: 'CheckUserName'
+        });
+        options.push({
+          title: 'Email Address',
+          value: 'CheckUserEmailAddress'
+        });
+        options.push({
+          title: 'Label',
+          value: 'CheckUserLabels'
+        });
+        options.push({
+          title: 'Usergroup',
+          value: 'CheckUserUsergroups'
+        });
+        options.push({
+          title: 'Language',
+          value: 'CheckUserLanguage'
+        });
+        options.push({
+          title: 'Is manager of organization',
+          value: 'CheckUserIsManager'
+        });
+        options.push({
+          title: 'Is disabled',
+          value: 'CheckPersonIsDisabled'
+        });
+        set_options.push({
+          title: 'User Criteria',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Name',
+          value: 'CheckOrgName'
+        });
+        options.push({
+          title: 'Label',
+          value: 'CheckOrgLabels'
+        });
+        options.push({
+          title: 'Email Domain',
+          value: 'CheckOrgEmailDomain'
+        });
+        options.push({
+          title: 'Linked Usergroup',
+          value: 'CheckOrgUsergroups'
+        });
+        set_options.push({
+          title: 'Organization Criteria',
+          subOptions: options
+        });
+        return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
+        var p,
+          _this = this;
+        if (this.options_data) {
+          p = this.$q.fcall(function() {
+            return _this.options_data;
+          });
+        } else {
+          this.options_data = {};
+          p = this.Api.sendDataGet({
+            'ticket_deps': '/ticket_deps',
+            'ticket_cats': '/ticket_cats',
+            'ticket_prods': '/ticket_prods',
+            'ticket_pris': '/ticket_pris',
+            'ticket_works': '/ticket_works',
+            'ticket_accounts': '/ticket_accounts',
+            'usergroups': '/usergroups'
+          }).then(function(result) {
+            var data, _ref;
+            data = result.data;
+            _this.options_data['ticket_deps'] = data.ticket_deps.departments;
+            _this.options_data['ticket_cats'] = data.ticket_cats.categories;
+            _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
+            _this.options_data['ticket_works'] = data.ticket_works.workflows;
+            _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+            _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
+            return _this.options_data['usergroups'] = data.usergroups.usergroups;
+          });
+        }
+        return p;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getDef = function(type, options) {
+        var me, typeFunc, typeName;
+        if (options == null) {
+          options = {};
+        }
+        typeName = type;
+        options.type = type;
+        typeFunc = "get" + typeName;
+        if (this[typeFunc] != null) {
+          return this[typeFunc](options);
+        } else {
+          console.error("Bad type with no definition getter: " + typeFunc);
+          me = this;
+          return {
+            getTemplate: function() {
+              return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
+            },
+            getData: function() {
+              return {};
+            },
+            getDataFormatter: function() {
+              return {
+                getViewValue: function(value, data) {
+                  if (value == null) {
+                    value = {};
+                  }
+                  return {};
+                },
+                getValue: function(model, data) {
+                  if (model == null) {
+                    model = {};
+                  }
+                  return null;
+                }
+              };
+            }
+          };
+        }
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getStandardSelect = function(options) {
+        var data_name, form_type, me, operators, options_formatter, prop_name, type;
+        type = options.type;
+        prop_name = options.propName;
+        data_name = options.dataName;
+        form_type = options.formType || 'select';
+        operators = options.operators || ['is', 'not'];
+        options_formatter = options.optionsFormatter || null;
+        if (!options_formatter) {
+          options_formatter = function(options) {
+            var opt, opts, title, val, _i, _len;
+            opts = [];
+            for (_i = 0, _len = options.length; _i < _len; _i++) {
+              opt = options[_i];
+              if (opt.title) {
+                title = opt.title;
+              } else if (opt.name) {
+                title = opt.name;
+              } else {
+                title = null;
+              }
+              if (opt.id) {
+                val = opt.id;
+              } else if (opt.value) {
+                val = opt.value;
+              } else {
+                val = null;
+              }
+              if (title !== null && val !== null) {
+                opts.push({
+                  title: title,
+                  value: val
+                });
+              }
+            }
+            return opts;
+          };
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            switch (form_type) {
+              case 'input':
+                return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
+              default:
+                return me.dpTemplateManager.get('OptionBuilder/type-criteria-select.html');
+            }
+          },
+          getData: function() {
+            var defer,
+              _this = this;
+            if (data_name) {
+              defer = me.$q.defer();
+              me.loadDataOptions().then(function() {
+                return defer.resolve({
+                  operators: operators,
+                  options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
+                  multiselect: true
+                });
+              });
+              return defer.promise;
+            } else {
+              return {
+                operators: operators
+              };
+            }
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  value: value[prop_name],
+                  op: value.op || _.first(data.operators)
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = type;
+                value.op = model.op;
+                value.options = {};
+                value.options[prop_name] = model.value;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getStandardIs = function(options) {
+        var me, prop_name, type;
+        type = options.type;
+        prop_name = options.propName;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-is.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  value: true,
+                  op: 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = type;
+                value.op = 'is';
+                value.options = {};
+                value.options[prop_name] = true;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getStandardInput = function(options) {
+        var me, operators, prop_name, type;
+        type = options.type;
+        prop_name = options.propName;
+        operators = options.operators || ['is', 'not'];
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
+          },
+          getData: function() {
+            return {
+              operators: operators
+            };
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  value: value[prop_name],
+                  op: value.op || _.first(data.operators)
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = type;
+                value.op = model.op;
+                value.options = {};
+                value.options[prop_name] = model.value;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckWorkflow = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'workflow_ids';
+        options.dataName = 'ticket_works';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckPriority = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'priority_ids';
+        options.dataName = 'ticket_pris';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckCategory = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'category_ids';
+        options.dataName = 'ticket_cats';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckDepartment = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'department_ids';
+        options.dataName = 'ticket_deps';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckProduct = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'product_ids';
+        options.dataName = 'ticket_prods';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailAccount = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'gateway_ids';
+        options.dataName = 'ticket_accounts';
+        options.optionsFormatter = function(options) {
+          var acc, opts, _i, _len;
+          opts = [];
+          for (_i = 0, _len = options.length; _i < _len; _i++) {
+            acc = options[_i];
+            opts.push({
+              value: acc.id,
+              title: acc.email_address
+            });
+          }
+          return opts;
+        };
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailSubject = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'subject';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailBody = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'body';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailToName = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'to_name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailToAddress = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'to_address';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailFromName = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'from_name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailFromAddress = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'from_address';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckCcAddress = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'cc_address';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckCcName = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'cc_name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailHeader = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email_header_match';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckSubject = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'subject';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckMessage = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'message';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckHasAttach = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'with_attach';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckHasAttachType = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'attach_type';
+        options.operators = ['is', 'not'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckHasAttachName = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'attach_name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserName = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserEmailAddress = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserLabels = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'labels';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserUsergroups = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'usergroup_ids';
+        options.dataName = 'usergroups';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserLanguage = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'language_ids';
+        options.dataName = 'languages';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserIsManager = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_manager';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckPersonIsDisabled = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'is_disabled';
+        def = this.getStandardIs(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgName = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgLabels = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'labels';
+        options.operators = ['contains', 'not_contains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgEmailDomain = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'name';
+        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgUsergroups = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'usergroup_ids';
+        options.dataName = 'usergroups';
+        options.operators = ['is', 'not'];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckDayOfWeek = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckTimeOfDay = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckWorkingHours = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-workinghours.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      return Admin_OptionBuilder_TypesDef_TicketFilter;
+
+    })();
+  });
+
+}).call(this);
+
+/*
+//@ sourceMappingURL=TicketFilter.js.map
+*/

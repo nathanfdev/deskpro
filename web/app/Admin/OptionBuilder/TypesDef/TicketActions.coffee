@@ -3,7 +3,7 @@ define ->
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data = null
 
-		getOptionsForTypes: (types, typesData = null) ->
+		getOptionsForTypes: (types = [], typesData = null) ->
 			set_options = []
 
 			#------------------------------

@@ -49,7 +49,20 @@ class TicketMacrosController extends AbstractController
 	{
 		$macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
 
-		$data = $this->getApiData($macros);
+		$data = array();
+
+		foreach ($macros as $macro) {
+			$row = array(
+				'id'                => $macro->id,
+				'title'             => $macro->title,
+				'is_enabled'        => $macro->is_enabled,
+				'is_global'         => $macro->is_global,
+				'person_id'         => $macro->person ? $macro->person->id : null,
+				'person'            => $macro->person ? $macro->person->toApiData(true) : null,
+			);
+
+			$data[] = $row;
+		}
 
 		return $this->createApiResponse(array(
 			'macros' => $data

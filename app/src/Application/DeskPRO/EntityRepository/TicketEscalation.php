@@ -43,5 +43,32 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class TicketEscalation extends AbstractEntityRepository
 {
+	/**
+	 * @return array
+	 */
+	public function getEscalations()
+	{
+		return $this->_em->createQuery("
+			SELECT e
+			FROM DeskPRO:TicketEscalation e
+			ORDER BY e.run_order ASC
+		")->execute();
+	}
 
+	/**
+	 * Updates run orders of $escalation_ids
+	 * @param array $escalation_ids
+	 */
+	public function updateRunOrder(array $escalation_ids)
+	{
+		$x = 0;
+		foreach ($escalation_ids as $fid) {
+			$x += 10;
+			$this->_em->getConnection()->executeUpdate("
+				UPDATE ticket_escalations
+				SET run_order = ?
+				WHERE id = ?
+			", array($x, $fid));
+		}
+	}
 }

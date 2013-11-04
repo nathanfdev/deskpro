@@ -423,12 +423,35 @@ define(function() {
 		url: '/macros',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'TicketMacros/list.html',
+			controller: 'Admin_TicketMacros_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.macros.gocreate',
+		url: '/go-create',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			template: '',
+			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.macros.create', $stateParams); }]
+		}
+	});
+
+	routes.push({
+		id: 'tickets.macros.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketMacros/edit.html',
+			controller: 'Admin_TicketMacros_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.macros.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'TicketMacros/edit.html',
+			controller: 'Admin_TicketMacros_Ctrl_Edit'
 		}
 	});
 
@@ -440,12 +463,35 @@ define(function() {
 		url: '/filters',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'TicketFilters/list.html',
+			controller: 'Admin_TicketFilters_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.filters.gocreate',
+		url: '/go-create',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			template: '',
+			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.filters.create', $stateParams); }]
+		}
+	});
+
+	routes.push({
+		id: 'tickets.filters.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketFilters/edit.html',
+			controller: 'Admin_TicketFilters_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.filters.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'TicketFilters/edit.html',
+			controller: 'Admin_TicketFilters_Ctrl_Edit'
 		}
 	});
 
@@ -470,29 +516,75 @@ define(function() {
 		url: '/escalations',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'TicketEscalations/list.html',
+			controller: 'Admin_TicketEscalations_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.escalations.gocreate',
+		url: '/go-create',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			template: '',
+			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.escalations.create', $stateParams); }]
+		}
+	});
+
+	routes.push({
+		id: 'tickets.escalations.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketEscalations/edit.html',
+			controller: 'Admin_TicketEscalations_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.escalations.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'TicketEscalations/edit.html',
+			controller: 'Admin_TicketEscalations_Ctrl_Edit'
 		}
 	});
 
 	//###
-	//# Escalations
+	//# SLAs
 	//###
 	routes.push({
 		id: 'tickets.slas',
 		url: '/slas',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'TicketSlas/list.html',
+			controller: 'Admin_TicketSlas_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.slas.gocreate',
+		url: '/go-create',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			template: '',
+			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.slas.create', $stateParams); }]
+		}
+	});
+
+	routes.push({
+		id: 'tickets.slas.create',
+		url: '/create',
+		page: {
+			templateName: 'TicketSlas/edit.html',
+			controller: 'Admin_TicketSlas_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.slas.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'TicketSlas/edit.html',
+			controller: 'Admin_TicketSlas_Ctrl_Edit'
 		}
 	});
 
@@ -558,23 +650,6 @@ define(function() {
 	routes.push({
 		id: 'tickets.email_templates',
 		url: '/email_templates',
-		with_list_view: true,
-		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
-		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
-		}
-	});
-
-	//###
-	//# Message Presets
-	//###
-	routes.push({
-		id: 'tickets.message_presets',
-		url: '/message_presets',
 		with_list_view: true,
 		list: {
 			templateName: 'Index/blank.html',

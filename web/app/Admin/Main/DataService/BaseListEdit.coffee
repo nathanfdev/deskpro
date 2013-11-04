@@ -1,0 +1,175 @@
+define [
+	'DeskPRO/Util/Angular'
+], (Util_Angular) ->
+	###
+    # This is a simple base data service that implements some default functionality for
+    # loading the "list" collection, and some methods for keeping the list up to date.
+    ###
+	class Admin_Main_DataService_BaseListEdit
+		constructor: ->
+			Util_Angular.setInjectedProperties(this, arguments)
+			@loadListPromise   = null
+			@isListLoaded      = false
+			@listModels        = []
+			@idProp            = 'id'
+			@orderField        = 'display_order'
+			@init()
+
+
+		###
+    	# An empty hook method for sub-classes
+    	###
+		init: ->
+			return
+
+
+		###
+		# Loads list of accounts
+    	#
+    	# @return {Promise}
+		###
+		loadList: (reload) ->
+			if reload
+				@loadListPromise = null
+				@isListLoaded = false
+
+			if @loadListPromise
+				return @loadListPromise
+
+			if @isListLoaded
+				deferred = @$q.defer()
+				deferred.resolve(@listModels)
+				return deferred.promise
+
+			deferred = @$q.defer()
+			@loadListPromise = deferred.promise
+
+			@_doLoadList().then( (models) =>
+				@isListLoaded = true
+				@_setListData(models)
+				deferred.resolve(@listModels)
+			, =>
+				deferred.reject()
+			)
+
+			return @loadListPromise
+
+
+		###
+    	# Sets ist data on the @listModels object
+    	###
+		_setListData: (listModels) ->
+			@listModels.length = 0
+			for model in listModels
+				@listModels.push(model)
+
+
+		###
+    	# Find a model that has been loaded into the list
+    	#
+    	# @param {Integer} id
+    	# @return {Object}
+    	###
+		findListModelById: (id) ->
+			for model in @listModels
+				if model[@idProp] == id
+					return model
+
+			return null
+
+
+		###
+    	# This method should be overriden.
+    	#
+    	# This method needs to load the list data and needs to
+    	# resolve to an array of models that will be set on the list collection.
+    	#
+    	# This method must return a promise
+    	#
+    	# @return {promise}
+		###
+		_doLoadList: ->
+			throw new Exception("This method must be implemented by a sub-class")
+
+
+		###
+		# Takes a data model and updates the list.
+    	# For example, you would use this when you want to apply changes from the Edit pane into the List pane.
+    	# By merging the data model, this will either 1) update the list model (eg the title) or 2) create
+    	# a new list model and append it to the list.
+    	#
+    	# You should always supply a dataMapper. The default implementation is to just get the id/title properties
+    	# from teh dataModel which may not be sufficient.
+    	#
+    	# @param {Object} dataModel
+    	# @param {Function} dataMapper Optionally supply a function that can create the listModel for cases we need to append it to the list
+		###
+		mergeDataModel: (dataModel, dataMapper = null) ->
+			if not @isListLoaded then return
+
+			listModel = null
+			for model in @listModels
+				if model[@idProp] == dataModel[@idProp]
+					listModel = model
+					break
+
+			if listModel != null
+				for k, v of listModel
+					if dataModel[k]?
+						listModel[k] = dataModel[k]
+			else
+				if dataMapper
+					newListModel = dataMapper(dataModel)
+				else
+					newListModel = {
+						id:    dataModel[@idProp]
+						title: dataModel.title
+					}
+
+				@listModels.push(newListModel)
+
+
+		###
+    	# Remove a model from the list by ID.
+    	#
+    	# @return {Object/null} The removed object or null if object could not be found
+		###
+		removeListModelById: (id) ->
+			if not @isListLoaded then return
+			removeIdx = null
+			for model, idx in @listModels
+				if model[@idProp] == id
+					removeIdx = idx
+					break
+
+			result = null
+			if removeIdx != null
+				result = @listModels.splice(removeIdx, 1)
+				result = result[0]
+
+			return result
+
+
+		###
+    	# Re-orders the list collection
+		###
+		reorderList: ->
+			if not @isListLoaded then return
+
+			@listModels.sort( (data1, data2) =>
+				if data1[@orderField]
+					o1 = data1[@orderField]
+				else
+					o1 = data[@idProp]
+
+				if data2[@orderField]
+					o2 = data2[@orderField]
+				else
+					o2 = data2[@idProp]
+
+				if o1 == o2
+					return 0
+
+				return (o1 < o2) ? -1 : 1
+			)
+			@listModels.reverse()

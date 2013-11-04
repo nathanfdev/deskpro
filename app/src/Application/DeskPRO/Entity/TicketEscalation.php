@@ -67,14 +67,9 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 	protected $event_trigger;
 
 	/**
-	 * @var string
+	 * @var int
 	 */
-	protected $by_agent = false;
-
-	/**
-	 * @var string
-	 */
-	protected $by_user = false;
+	protected $event_trigger_time;
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\EscalationTerms
@@ -154,15 +149,9 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(
-			'columnName' => 'by_agent',
-			'fieldName'  => 'by_agent',
-			'type'       => 'boolean',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'by_user',
-			'fieldName'  => 'by_user',
-			'type'       => 'boolean',
+			'columnName' => 'event_trigger_time',
+			'fieldName'  => 'event_trigger_time',
+			'type'       => 'integer',
 			'nullable'   => false,
 		));
 		$metadata->mapField(array(

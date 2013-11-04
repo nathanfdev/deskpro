@@ -52,8 +52,20 @@ class TicketSlasController extends AbstractController
 	{
 		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
 
+		$data = array();
+
+		foreach ($slas as $sla) {
+			$row = array(
+				'id'                => $sla->id,
+				'title'             => $sla->title,
+				'sla_type'          => $sla->sla_type,
+			);
+
+			$data[] = $row;
+		}
+
 		return $this->createApiResponse(array(
-			'slas' => $slas
+			'slas' => $data
 		));
 	}
 }

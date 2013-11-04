@@ -7,8 +7,10 @@ define [
 	'Admin/Main/Service/Growl',
 	'Admin/Main/Service/InhelpState',
 	'Admin/Main/Service/TemplateManager',
+	'Admin/Main/Service/DataServiceManager',
 	'Admin/OptionBuilder/TypesDef/TicketCriteria',
 	'Admin/OptionBuilder/TypesDef/TicketActions',
+	'Admin/OptionBuilder/TypesDef/TicketFilter',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -52,8 +54,10 @@ define [
 	Admin_Main_Service_Growl,
 	Admin_Main_Service_InhelpState,
 	Admin_Main_Service_TemplateManager,
+	Admin_Main_Service_DataServiceManager,
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
 	Admin_OptionBuilder_TypesDef_TicketActions,
+	Admin_OptionBuilder_TypesDef_TicketFilter,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -180,6 +184,14 @@ define [
 
 	Admin_App.factory('dpObTypesDefTicketActions', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
 		return new Admin_OptionBuilder_TypesDef_TicketActions($q, Api, dpTemplateManager)
+	])
+
+	Admin_App.factory('dpObTypesDefTicketFilter', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
+		return new Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager)
+	])
+
+	Admin_App.factory('DataService', [ '$injector', ($injector) ->
+		return new Admin_Main_Service_DataServiceManager($injector)
 	])
 
 	####################################################################################################################

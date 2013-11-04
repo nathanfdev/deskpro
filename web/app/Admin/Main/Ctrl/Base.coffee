@@ -39,6 +39,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.unshift('$state')
 			if @DEPS.indexOf('$timeout') == -1
 				@DEPS.unshift('$timeout')
+			if @DEPS.indexOf('DataService') == -1
+				@DEPS.unshift('DataService')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)

@@ -2429,6 +2429,61 @@ $collection->create('api_ticket_triggers_disabletrigger', array(
 ));
 
 ########################################################################################################################
+# Ticket Escalations
+########################################################################################################################
+
+$collection->create('api_ticket_escalations', array(
+	'path'         => '/ticket_escalations',
+	'controller'   => 'ApiBundle:TicketEscalations:list',
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_escalations_updateorder', array(
+	'path'        => '/ticket_escalations/run_order',
+	'controller'  => 'ApiBundle:TicketEscalations:saveRunOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_escalations_create', array(
+	'path'        => '/ticket_triggers',
+	'controller'  => 'ApiBundle:TicketEscalations:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_ticket_escalations_get', array(
+	'path'        => '/ticket_escalations/{id}',
+	'controller'  => 'ApiBundle:TicketEscalations:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_escalations_update', array(
+	'path'        => '/ticket_escalations/{id}',
+	'controller'  => 'ApiBundle:TicketEscalations:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_escalations_delete', array(
+	'path'        => '/ticket_escalations/{id}',
+	'controller'  => 'ApiBundle:TicketEscalations:delete',
+	'methods'     => array('DELETE'),
+));
+
+$collection->create('api_ticket_escalations_enable', array(
+	'path'        => '/ticket_escalations/{id}/enable',
+	'defaults'    => array('is_enabled' => true),
+	'controller'  => 'ApiBundle:TicketEscalations:toggleEscalation',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_escalations_disable', array(
+	'path'        => '/ticket_escalations/{id}/disable',
+	'defaults'    => array('is_enabled' => false),
+	'controller'  => 'ApiBundle:TicketEscalations:toggleEscalation',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Ticket Filters
 ########################################################################################################################
 
@@ -2445,20 +2500,29 @@ $collection->create('api_ticket_filters_create', array(
 	'methods'      => array('PUT'),
 ));
 
+$collection->create('api_ticket_filters_savedisplayorder', array(
+	'path'         => '/ticket_filters/display_order',
+	'controller'   => 'ApiBundle:TicketFilters:saveDisplayOrder',
+	'methods'      => array('POST'),
+));
+
 $collection->create('api_ticket_filters_get', array(
 	'path'         => '/ticket_filters/{id}',
+	'requirements' => array('id' => '\\d+'),
 	'controller'   => 'ApiBundle:TicketFilters:get',
 	'methods'      => array('GET'),
 ));
 
 $collection->create('api_ticket_filters_save', array(
 	'path'         => '/ticket_filters/{id}',
+	'requirements' => array('id' => '\\d+'),
 	'controller'   => 'ApiBundle:TicketFilters:save',
 	'methods'      => array('POST'),
 ));
 
 $collection->create('api_ticket_filters_delete', array(
 	'path'         => '/ticket_filters/{id}',
+	'requirements' => array('id' => '\\d+'),
 	'controller'   => 'ApiBundle:TicketFilters:remove',
 	'methods'      => array('DELETE'),
 ));

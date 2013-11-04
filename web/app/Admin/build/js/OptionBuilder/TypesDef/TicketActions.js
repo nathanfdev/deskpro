@@ -11,6 +11,9 @@
 
       Admin_OptionBuilder_TypesDef_TicketActions.prototype.getOptionsForTypes = function(types, typesData) {
         var options, set_options;
+        if (types == null) {
+          types = [];
+        }
         if (typesData == null) {
           typesData = null;
         }
