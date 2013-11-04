@@ -85,8 +85,8 @@ define ->
 				dropdownCssClass: 'dp-ob-select2'
 			})
 			@els.select.on('change', =>
-				@els.addBtn.click()
-
+				selected_opt = @els.select.find(':selected').first()
+				@addRow(selected_opt.val(), {})
 				@els.select.select2('val', '0')
 			)
 
@@ -98,19 +98,6 @@ define ->
 
 			# The loading message
 			@els.loadingOptionMessage = @els.optionList.find('.dp-ob-loading-options')
-
-			# Add button
-			@els.addBtn = @element.find('.add_btn');
-			@els.addBtn.on('click', (ev) =>
-				ev.preventDefault()
-				selected_opt = @els.select.find(':selected').first()
-
-				if not selected_opt[0] or selected_opt.val() == "0"
-					@els.select.select2('open')
-					return
-
-				@addRow(selected_opt.val(), {})
-			)
 
 			@$scope.$watchCollection('optionTypes', =>
 				@updateOptionTypes()

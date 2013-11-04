@@ -87,23 +87,14 @@
           dropdownCssClass: 'dp-ob-select2'
         });
         this.els.select.on('change', function() {
-          _this.els.addBtn.click();
+          var selected_opt;
+          selected_opt = _this.els.select.find(':selected').first();
+          _this.addRow(selected_opt.val(), {});
           return _this.els.select.select2('val', '0');
         });
         this.els.optionList = this.element.find('.dp-ob-options');
         this.els.noOptionsMessage = this.els.optionList.find('.dp-ob-no-options');
         this.els.loadingOptionMessage = this.els.optionList.find('.dp-ob-loading-options');
-        this.els.addBtn = this.element.find('.add_btn');
-        this.els.addBtn.on('click', function(ev) {
-          var selected_opt;
-          ev.preventDefault();
-          selected_opt = _this.els.select.find(':selected').first();
-          if (!selected_opt[0] || selected_opt.val() === "0") {
-            _this.els.select.select2('open');
-            return;
-          }
-          return _this.addRow(selected_opt.val(), {});
-        });
         this.$scope.$watchCollection('optionTypes', function() {
           return _this.updateOptionTypes();
         });
