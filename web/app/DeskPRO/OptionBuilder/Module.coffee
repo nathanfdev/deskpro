@@ -52,20 +52,45 @@ define [
 			return {
 			restrict: 'A',
 			link: (scope, iElement, iAttrs) ->
+
 				opts = scope.$eval(iAttrs.dpOptionBuilderSet)
 				scope.setCount = 0
-
 				lastEmpty = null
+				containRow = iElement.find('.dp-ob-addition-setrow')
 
-				addRow = ->
-					containRow = iElement.find('.dp-ob-addition-setrow')
+				reset = (withSet) ->
+					opts = scope.$eval(iAttrs.dpOptionBuilderSet)
+					scope.setCount = 0
+					lastEmpty = null
+					containRow.empty()
 
+					any = false
+					for own setId, set of withSet
+						addRow(setId)
+						any = true
+
+					if not any
+						addRow()
+
+				scope.$watch(iAttrs.setsObject, (newVal) ->
+					reset(newVal)
+				)
+
+				addRow = (useExistSetId) ->
 					tpl = $templateCache.get(opts.template)
 					rowScope = scope.$new()
-					setId = rowScope.$id
-					opts.setsObject[setId] = {}
+
+					setsObject = scope.$eval(iAttrs.setsObject)
+
+					if useExistSetId
+						setId = useExistSetId
+						console.log("using set %s: %o", setId, setsObject[setId])
+					else
+						setId = rowScope.$id
+						setsObject[setId] = {}
+
 					rowScope.criteria_typedef = opts.typedef
-					rowScope.criteria_set_row = opts.setsObject[setId]
+					rowScope.criteria_set_row = setsObject[setId]
 					rowScope.option_types     = opts.option_types
 
 					rowScope.$on('rowAdded', ->
@@ -75,8 +100,6 @@ define [
 						element.removeClass('empty')
 					)
 					rowScope.$on('rowRemoved', (ev, ctrl, e, s, rowsCount) ->
-						console.log('removed')
-						console.log(rowsCount)
 						if rowsCount == 0
 							if scope.setCount == 1
 								element.addClass('empty')
@@ -107,6 +130,6 @@ define [
 					addRow()
 				)
 
-				addRow()
+				reset()
 			}
 		])

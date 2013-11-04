@@ -62,7 +62,6 @@ define ->
 			@$q                = $q
 			@typesDef          = @$scope.getTypesDef()
 			@options           = @$scope.getOptions() || {}
-			@saveTarget        = @$scope.saveTarget
 
 			@els = {}
 
@@ -103,6 +102,24 @@ define ->
 				@updateOptionTypes()
 			)
 
+			@$scope.$watch('saveTarget', =>
+				@reset()
+			)
+
+		reset: ->
+			@rowsCount = 0
+
+			for id, row of @rows
+				row.element.remove()
+				row.scope.$destroy()
+				delete @rows[id]
+
+			@els.noOptionsMessage.show()
+
+			if @$scope.saveTarget
+				for own rowId, term of @$scope.saveTarget
+					@addRow(term.type, term, rowId)
+
 		###
     	# Updates the option types available in the select box
     	###
@@ -126,7 +143,7 @@ define ->
     	# @param {String} type
     	# @param {Object} value
 		###
-		addRow: (type, value) ->
+		addRow: (type, value, existId) ->
 			def = @typesDef.getDef(type)
 
 			tplPromise    = def.getTemplate()
@@ -160,6 +177,11 @@ define ->
 				rowScope.type = type
 				rowScope.type_title = option_title
 
+				if existId
+					rowId = existId
+				else
+					rowScope.$id
+
 				if dataFormatter
 					rowScope.value = value || {}
 
@@ -167,7 +189,7 @@ define ->
 
 					rowScope.$watch('model', =>
 						rowScope.value = dataFormatter.getValue(rowScope.model, data)
-						@saveTarget[rowScope.$id] = rowScope.value
+						@$scope.saveTarget[rowId] = rowScope.value
 					, true)
 
 				else
@@ -176,7 +198,7 @@ define ->
 
 					rowScope.$watch('model', =>
 						rowScope.value = rowScope.model
-						@saveTarget[rowScope.$id] = rowScope.value
+						@$scope.saveTarget[rowId] = rowScope.value
 					, true)
 
 				if data
@@ -196,16 +218,16 @@ define ->
 
 				rowScope.$emit('rowAdded', this, element, rowScope)
 
-				element.data('scopeId', rowScope.$id)
+				element.data('scopeId', rowId)
 				@els.loadingOptionMessage.hide()
 				@els.noOptionsMessage.hide()
 				@els.optionList.append(element)
 				@rowsCount++
-				@rows[rowScope.$id] = {
+				@rows[rowId] = {
 					element: element,
 					scope: rowScope
 				}
-				@saveTarget[rowScope.$id] = rowScope.value
+				@$scope.saveTarget[rowId] = rowScope.value
 
 			)
 
@@ -228,7 +250,7 @@ define ->
 			row = @rows[scopeId]
 
 			delete @rows[scopeId]
-			delete @saveTarget[scopeId]
+			delete @$scope.saveTarget[scopeId]
 
 			row.scope.$emit('rowRemoved', this, row.element, row.scope, @rowsCount-1)
 

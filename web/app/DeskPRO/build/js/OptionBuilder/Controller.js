@@ -68,7 +68,6 @@
         this.$q = $q;
         this.typesDef = this.$scope.getTypesDef();
         this.options = this.$scope.getOptions() || {};
-        this.saveTarget = this.$scope.saveTarget;
         this.els = {};
         $transclude(function(clone) {
           var addBtnLabel, addBtnText, select;
@@ -98,7 +97,33 @@
         this.$scope.$watchCollection('optionTypes', function() {
           return _this.updateOptionTypes();
         });
+        this.$scope.$watch('saveTarget', function() {
+          return _this.reset();
+        });
       }
+
+      DeskPRO_OptionBuilder_Controller.prototype.reset = function() {
+        var id, row, rowId, term, _ref, _ref1, _results;
+        this.rowsCount = 0;
+        _ref = this.rows;
+        for (id in _ref) {
+          row = _ref[id];
+          row.element.remove();
+          row.scope.$destroy();
+          delete this.rows[id];
+        }
+        this.els.noOptionsMessage.show();
+        if (this.$scope.saveTarget) {
+          _ref1 = this.$scope.saveTarget;
+          _results = [];
+          for (rowId in _ref1) {
+            if (!__hasProp.call(_ref1, rowId)) continue;
+            term = _ref1[rowId];
+            _results.push(this.addRow(term.type, term, rowId));
+          }
+          return _results;
+        }
+      };
 
       /*
         	# Updates the option types available in the select box
@@ -138,7 +163,7 @@
       */
 
 
-      DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value) {
+      DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId) {
         var dataFormatter, dataPromise, def, retData, retTpl, tplPromise,
           _this = this;
         def = this.typesDef.getDef(type);
@@ -159,7 +184,7 @@
         }
         this.els.loadingOptionMessage.show();
         return this.$q.all([tplPromise, dataPromise]).then(function(returns) {
-          var data, element, k, option_row, option_title, rowScope, tpl, v;
+          var data, element, k, option_row, option_title, rowId, rowScope, tpl, v;
           tpl = returns[0];
           data = returns[1];
           option_row = _this.els.select.find('option[value="' + type + '"]').first();
@@ -169,19 +194,24 @@
           rowScope = _this.$scope.$new();
           rowScope.type = type;
           rowScope.type_title = option_title;
+          if (existId) {
+            rowId = existId;
+          } else {
+            rowScope.$id;
+          }
           if (dataFormatter) {
             rowScope.value = value || {};
             rowScope.model = dataFormatter.getViewValue(rowScope.value, data);
             rowScope.$watch('model', function() {
               rowScope.value = dataFormatter.getValue(rowScope.model, data);
-              return _this.saveTarget[rowScope.$id] = rowScope.value;
+              return _this.$scope.saveTarget[rowId] = rowScope.value;
             }, true);
           } else {
             rowScope.model = {};
             rowScope.value = rowScope.model;
             rowScope.$watch('model', function() {
               rowScope.value = rowScope.model;
-              return _this.saveTarget[rowScope.$id] = rowScope.value;
+              return _this.$scope.saveTarget[rowId] = rowScope.value;
             }, true);
           }
           if (data) {
@@ -203,16 +233,16 @@
             return _this.removeRow(element);
           });
           rowScope.$emit('rowAdded', _this, element, rowScope);
-          element.data('scopeId', rowScope.$id);
+          element.data('scopeId', rowId);
           _this.els.loadingOptionMessage.hide();
           _this.els.noOptionsMessage.hide();
           _this.els.optionList.append(element);
           _this.rowsCount++;
-          _this.rows[rowScope.$id] = {
+          _this.rows[rowId] = {
             element: element,
             scope: rowScope
           };
-          return _this.saveTarget[rowScope.$id] = rowScope.value;
+          return _this.$scope.saveTarget[rowId] = rowScope.value;
         });
       };
 
@@ -240,7 +270,7 @@
         var row;
         row = this.rows[scopeId];
         delete this.rows[scopeId];
-        delete this.saveTarget[scopeId];
+        delete this.$scope.saveTarget[scopeId];
         row.scope.$emit('rowRemoved', this, row.element, row.scope, this.rowsCount - 1);
         row.element.remove();
         row.scope.$destroy();

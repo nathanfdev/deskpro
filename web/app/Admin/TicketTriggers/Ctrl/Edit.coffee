@@ -1,11 +1,11 @@
 define [
 	'DeskPRO/Util/Arrays'
 	'Admin/Main/Ctrl/Base',
-	'Admin/Main/Model/DepAgentPermMatrix'
+	'Admin/TicketTriggers/TriggerEditFormMapper',
 ], (
 	Arrays,
 	Admin_Ctrl_Base,
-	Admin_Main_Model_DepAgentPermMatrix
+	TriggerEditFormMapper
 ) ->
 	class Admin_TicketTriggers_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit'
@@ -18,6 +18,9 @@ define [
 			@trigger     = null
 			@triggerId   = @$stateParams.id
 			@options     = {}
+			@editFormMapper = new TriggerEditFormMapper()
+
+			@$scope.form = @editFormMapper.getFormFromModel({})
 
 			@$scope.triggerType = @$stateParams.type
 			@$scope.triggerId   = @$stateParams.id
@@ -29,23 +32,6 @@ define [
 			else
 				@dpTriggers = @TriggersUpdate
 
-			@$scope.typeForm = {
-				by_user: true,
-				by_agent: false,
-				by_agent_mode: {
-					web: true,
-					email: true,
-					api: true
-				},
-				by_user_mode: {
-					portal: true,
-					widget: true,
-					form: true,
-					email: true,
-					api: true
-				}
-			}
-
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
 			@actionsTypeDef = @dpObTypesDefTicketActions
 
@@ -53,11 +39,7 @@ define [
 			@$scope.actionOptionTypes = []
 			@updateCriteriaOptionTypes()
 
-			@$scope.trigger_criteria_set = {first: {}}
-
-			@$scope.trigger_actions = []
-
-			@$scope.$watch('typeForm', =>
+			@$scope.$watch('form.typeForm', =>
 				@updateCriteriaOptionTypes()
 			, true)
 
@@ -66,25 +48,25 @@ define [
 		updateCriteriaOptionTypes: ->
 			types = []
 
-			if @$scope.typeForm.by_user
-				if @$scope.typeForm.by_user_mode.portal or @$scope.typeForm.by_user_mode.widget or @$scope.typeForm.by_user_mode.form
+			if @$scope.form.typeForm.by_user
+				if @$scope.form.typeForm.by_user_mode.portal or @$scope.form.typeForm.by_user_mode.widget or @$scope.form.typeForm.by_user_mode.form
 					Arrays.pushUnique(types, 'web')
 					Arrays.pushUnique(types, 'web.user')
-				if @$scope.typeForm.by_user_mode.email
+				if @$scope.form.typeForm.by_user_mode.email
 					Arrays.pushUnique(types, 'email')
 					Arrays.pushUnique(types, 'email.user')
-				if @$scope.typeForm.by_user_mode.api
+				if @$scope.form.typeForm.by_user_mode.api
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.user')
 
-			if @$scope.typeForm.by_agent
-				if @$scope.typeForm.by_agent_mode.web
+			if @$scope.form.typeForm.by_agent
+				if @$scope.form.typeForm.by_agent_mode.web
 					Arrays.pushUnique(types, 'web')
 					Arrays.pushUnique(types, 'web.agent')
-				if @$scope.typeForm.by_agent_mode.email
+				if @$scope.form.typeForm.by_agent_mode.email
 					Arrays.pushUnique(types, 'email')
 					Arrays.pushUnique(types, 'email.agent')
-				if @$scope.typeForm.by_agent_mode.api
+				if @$scope.form.typeForm.by_agent_mode.api
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.agent')
 
@@ -109,21 +91,12 @@ define [
 						title: @trigger.title
 					}
 
-					if @trigger.by_agent_mode.length
-						@$scope.typeForm.by_agent = true
-						for x in @trigger.by_agent_mode
-							@$scope.typeForm.by_agent_mode[x] = true
-					if @trigger.by_user_mode.length
-						@$scope.typeForm.by_user = true
-						for x in @trigger.by_user_mode
-							@$scope.typeForm.by_user_mode[x] = true
+					@$scope.form = @editFormMapper.getFormFromModel(@trigger)
 				)
 				return promise
 			else
 				@trigger = {}
-				@$scope.form = {
-					title: ''
-				}
+				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
 
 			return null
 
@@ -140,12 +113,12 @@ define [
 				actions:       [],
 			}
 
-			if @$scope.typeForm.by_user
-				for own mode, enabled of @$scope.typeForm.by_user_mode
+			if @$scope.form.typeForm.by_user
+				for own mode, enabled of @$scope.form.typeForm.by_user_mode
 					if enabled
 						postData.by_user_mode.push(mode)
-			if @$scope.typeForm.by_agent
-				for own mode, enabled of @$scope.typeForm.by_agent_mode
+			if @$scope.form.typeForm.by_agent
+				for own mode, enabled of @$scope.form.typeForm.by_agent_mode
 					if enabled
 						postData.by_agent_mode.push(mode)
 
@@ -183,15 +156,15 @@ define [
 				)
 
 				if is_new
-					@dpTriggers.addTriggerModel(trigger)
+					@dpTriggers.addTriggerModel(@trigger)
 				else
-					@dpTriggers.updateTriggerModel(trigger)
+					@dpTriggers.updateTriggerModel(@trigger)
 
 				@skipDirtyState()
 				if is_new
-					@$state.go('tickets.ticket_triggers.gocreate')
+					@$state.go('tickets.triggers.gocreate')
 				else
-					@$state.go('tickets.ticket_triggers')
+					@$state.go('tickets.triggers')
 			)
 			promise.error( (info, code) =>
 				@stopSpinner('saving', true)

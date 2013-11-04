@@ -417,7 +417,7 @@
                   value = {};
                 }
                 return {
-                  value: value[prop_name],
+                  value: value.options[prop_name],
                   op: value.op || _.first(data.operators)
                 };
               },

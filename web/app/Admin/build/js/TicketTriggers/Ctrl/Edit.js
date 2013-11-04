@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['DeskPRO/Util/Arrays', 'Admin/Main/Ctrl/Base', 'Admin/Main/Model/DepAgentPermMatrix'], function(Arrays, Admin_Ctrl_Base, Admin_Main_Model_DepAgentPermMatrix) {
+  define(['DeskPRO/Util/Arrays', 'Admin/Main/Ctrl/Base', 'Admin/TicketTriggers/TriggerEditFormMapper'], function(Arrays, Admin_Ctrl_Base, TriggerEditFormMapper) {
     var Admin_TicketTriggers_Ctrl_Edit, _ref;
     Admin_TicketTriggers_Ctrl_Edit = (function(_super) {
       __extends(Admin_TicketTriggers_Ctrl_Edit, _super);
@@ -26,6 +26,8 @@
         this.trigger = null;
         this.triggerId = this.$stateParams.id;
         this.options = {};
+        this.editFormMapper = new TriggerEditFormMapper();
+        this.$scope.form = this.editFormMapper.getFormFromModel({});
         this.$scope.triggerType = this.$stateParams.type;
         this.$scope.triggerId = this.$stateParams.id;
         if (this.$stateParams.type === 'newticket') {
@@ -35,32 +37,12 @@
         } else {
           this.dpTriggers = this.TriggersUpdate;
         }
-        this.$scope.typeForm = {
-          by_user: true,
-          by_agent: false,
-          by_agent_mode: {
-            web: true,
-            email: true,
-            api: true
-          },
-          by_user_mode: {
-            portal: true,
-            widget: true,
-            form: true,
-            email: true,
-            api: true
-          }
-        };
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
         this.$scope.actionOptionTypes = [];
         this.updateCriteriaOptionTypes();
-        this.$scope.trigger_criteria_set = {
-          first: {}
-        };
-        this.$scope.trigger_actions = [];
-        this.$scope.$watch('typeForm', function() {
+        this.$scope.$watch('form.typeForm', function() {
           return _this.updateCriteriaOptionTypes();
         }, true);
       };
@@ -68,30 +50,30 @@
       Admin_TicketTriggers_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
         var opt, setActionOptions, setCritOptions, types, _i, _j, _len, _len1, _results;
         types = [];
-        if (this.$scope.typeForm.by_user) {
-          if (this.$scope.typeForm.by_user_mode.portal || this.$scope.typeForm.by_user_mode.widget || this.$scope.typeForm.by_user_mode.form) {
+        if (this.$scope.form.typeForm.by_user) {
+          if (this.$scope.form.typeForm.by_user_mode.portal || this.$scope.form.typeForm.by_user_mode.widget || this.$scope.form.typeForm.by_user_mode.form) {
             Arrays.pushUnique(types, 'web');
             Arrays.pushUnique(types, 'web.user');
           }
-          if (this.$scope.typeForm.by_user_mode.email) {
+          if (this.$scope.form.typeForm.by_user_mode.email) {
             Arrays.pushUnique(types, 'email');
             Arrays.pushUnique(types, 'email.user');
           }
-          if (this.$scope.typeForm.by_user_mode.api) {
+          if (this.$scope.form.typeForm.by_user_mode.api) {
             Arrays.pushUnique(types, 'api');
             Arrays.pushUnique(types, 'api.user');
           }
         }
-        if (this.$scope.typeForm.by_agent) {
-          if (this.$scope.typeForm.by_agent_mode.web) {
+        if (this.$scope.form.typeForm.by_agent) {
+          if (this.$scope.form.typeForm.by_agent_mode.web) {
             Arrays.pushUnique(types, 'web');
             Arrays.pushUnique(types, 'web.agent');
           }
-          if (this.$scope.typeForm.by_agent_mode.email) {
+          if (this.$scope.form.typeForm.by_agent_mode.email) {
             Arrays.pushUnique(types, 'email');
             Arrays.pushUnique(types, 'email.agent');
           }
-          if (this.$scope.typeForm.by_agent_mode.api) {
+          if (this.$scope.form.typeForm.by_agent_mode.api) {
             Arrays.pushUnique(types, 'api');
             Arrays.pushUnique(types, 'api.agent');
           }
@@ -122,36 +104,16 @@
           _this = this;
         if (this.triggerId) {
           promise = this.dpTriggers.loadTrigger(this.triggerId).then(function(trigger) {
-            var x, _i, _j, _len, _len1, _ref1, _ref2, _results;
             _this.trigger = trigger;
             _this.$scope.form = {
               title: _this.trigger.title
             };
-            if (_this.trigger.by_agent_mode.length) {
-              _this.$scope.typeForm.by_agent = true;
-              _ref1 = _this.trigger.by_agent_mode;
-              for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-                x = _ref1[_i];
-                _this.$scope.typeForm.by_agent_mode[x] = true;
-              }
-            }
-            if (_this.trigger.by_user_mode.length) {
-              _this.$scope.typeForm.by_user = true;
-              _ref2 = _this.trigger.by_user_mode;
-              _results = [];
-              for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-                x = _ref2[_j];
-                _results.push(_this.$scope.typeForm.by_user_mode[x] = true);
-              }
-              return _results;
-            }
+            return _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
           });
           return promise;
         } else {
           this.trigger = {};
-          this.$scope.form = {
-            title: ''
-          };
+          this.$scope.form = this.editFormMapper.getFormFromModel(this.trigger);
         }
         return null;
       };
@@ -172,8 +134,8 @@
           criteria_sets: [],
           actions: []
         };
-        if (this.$scope.typeForm.by_user) {
-          _ref1 = this.$scope.typeForm.by_user_mode;
+        if (this.$scope.form.typeForm.by_user) {
+          _ref1 = this.$scope.form.typeForm.by_user_mode;
           for (mode in _ref1) {
             if (!__hasProp.call(_ref1, mode)) continue;
             enabled = _ref1[mode];
@@ -182,8 +144,8 @@
             }
           }
         }
-        if (this.$scope.typeForm.by_agent) {
-          _ref2 = this.$scope.typeForm.by_agent_mode;
+        if (this.$scope.form.typeForm.by_agent) {
+          _ref2 = this.$scope.form.typeForm.by_agent_mode;
           for (mode in _ref2) {
             if (!__hasProp.call(_ref2, mode)) continue;
             enabled = _ref2[mode];
@@ -236,15 +198,15 @@
             return _this.Growl.success("Saved");
           });
           if (is_new) {
-            _this.dpTriggers.addTriggerModel(trigger);
+            _this.dpTriggers.addTriggerModel(_this.trigger);
           } else {
-            _this.dpTriggers.updateTriggerModel(trigger);
+            _this.dpTriggers.updateTriggerModel(_this.trigger);
           }
           _this.skipDirtyState();
           if (is_new) {
-            return _this.$state.go('tickets.ticket_triggers.gocreate');
+            return _this.$state.go('tickets.triggers.gocreate');
           } else {
-            return _this.$state.go('tickets.ticket_triggers');
+            return _this.$state.go('tickets.triggers');
           }
         });
         promise.error(function(info, code) {
