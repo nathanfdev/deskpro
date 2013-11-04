@@ -83,7 +83,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 				templateUrl: @getTemplatePath('FeedbackStatuses/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', 'move_feedback_statuses_list', ($scope, $modalInstance, move_feedback_statuses_list) ->
 
-					$scope.move_feedback_types_list = move_feedback_statuses_list
+					$scope.move_feedback_statuses_list = move_feedback_statuses_list
 					$scope.selected = {
 						move_to_id: move_feedback_statuses_list[0].id
 					}
@@ -95,7 +95,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 						$modalInstance.dismiss();
 				],
 				resolve: {
-					move_feedback_types_list: =>
+					move_feedback_statuses_list: =>
 						return move_feedback_statuses_list
 				}
 			});

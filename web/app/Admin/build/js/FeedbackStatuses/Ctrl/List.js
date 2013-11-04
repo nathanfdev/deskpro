@@ -92,7 +92,7 @@
           templateUrl: this.getTemplatePath('FeedbackStatuses/delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', 'move_feedback_statuses_list', function($scope, $modalInstance, move_feedback_statuses_list) {
-              $scope.move_feedback_types_list = move_feedback_statuses_list;
+              $scope.move_feedback_statuses_list = move_feedback_statuses_list;
               $scope.selected = {
                 move_to_id: move_feedback_statuses_list[0].id
               };
@@ -105,7 +105,7 @@
             }
           ],
           resolve: {
-            move_feedback_types_list: function() {
+            move_feedback_statuses_list: function() {
               return move_feedback_statuses_list;
             }
           }
