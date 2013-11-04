@@ -22,6 +22,8 @@
 
       Admin_FeedbackTypes_Ctrl_Edit.prototype.init = function() {
         this.feedback_type = {};
+        this.usergroups = [];
+        this.selected_usergroups = {};
       };
 
       Admin_FeedbackTypes_Ctrl_Edit.prototype.initialLoad = function() {
@@ -30,8 +32,20 @@
         if (!this.$stateParams.id) {
 
         } else {
-          data_promise = this.Api.sendGet('/feedback_types/' + this.$stateParams.id).then(function(result) {
-            return _this.feedback_type = result.data.feedback_type;
+          data_promise = this.Api.sendDataGet({
+            feedback_type: '/feedback_types/' + this.$stateParams.id,
+            usergroups: '/usergroups'
+          }).then(function(result) {
+            var id, ids, _i, _len, _results;
+            _this.feedback_type = result.data.feedback_type.feedback_type;
+            _this.usergroups = result.data.usergroups.usergroups;
+            ids = _.pluck(_this.feedback_type.usergroups, 'id');
+            _results = [];
+            for (_i = 0, _len = ids.length; _i < _len; _i++) {
+              id = ids[_i];
+              _results.push(_this.selected_usergroups[id] = true);
+            }
+            return _results;
           });
           return this.$q.all([data_promise]);
         }
@@ -45,8 +59,22 @@
 
 
       Admin_FeedbackTypes_Ctrl_Edit.prototype.saveFeedbackType = function() {
-        var is_new, promise,
+        var is_new, key, promise, usergroup, value, _ref1,
           _this = this;
+        this.feedback_type.usergroups = [];
+        _ref1 = this.selected_usergroups;
+        for (key in _ref1) {
+          if (!__hasProp.call(_ref1, key)) continue;
+          value = _ref1[key];
+          if (value) {
+            usergroup = _.findWhere(this.usergroups, {
+              id: parseInt(key)
+            });
+            if (usergroup) {
+              this.feedback_type.usergroups.push(usergroup.id);
+            }
+          }
+        }
         if (!this.$scope.form_props.$valid) {
           return;
         }

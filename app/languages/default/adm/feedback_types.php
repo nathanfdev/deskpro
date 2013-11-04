@@ -6,4 +6,6 @@
 	'adm.feedback_types.delete_feedback_type'         => 'Delete Feedback Type',
 	'adm.feedback_types.delete_feedback_type_confirm' => 'Are you sure you want to delete this feedback type?',
 	'adm.feedback_types.delete_feedback_types_moved'  => 'Any feedback that is currently under this feedback type will be moved to:',
+	'adm.feedback_types.usergroups'                   => 'Usergroups',
+	'adm.feedback_types.usergroups_explain'           => 'These are usergroups to which this feedback type belongs.',
 );

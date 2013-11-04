@@ -12,6 +12,8 @@ define [
 		init: ->
 
 			@feedback_type = {}
+			@usergroups = []
+			@selected_usergroups = {}
 
 			return
 
@@ -23,8 +25,18 @@ define [
 
 			else
 
-				data_promise = @Api.sendGet('/feedback_types/' + @$stateParams.id).then((result) =>
-					@feedback_type = result.data.feedback_type
+				data_promise = @Api.sendDataGet({
+					feedback_type: '/feedback_types/' + @$stateParams.id,
+					usergroups: '/usergroups'
+				}).then((result) =>
+
+					@feedback_type = result.data.feedback_type.feedback_type
+					@usergroups = result.data.usergroups.usergroups
+
+					ids =	_.pluck(@feedback_type.usergroups, 'id')
+
+					for id in ids
+						@selected_usergroups[id] = true
 				)
 
 				return @$q.all([data_promise])
@@ -35,6 +47,13 @@ define [
 			# @return {promise}
 		###
 		saveFeedbackType: ->
+
+			@feedback_type.usergroups = []
+
+			for own key, value of @selected_usergroups
+				if value
+					usergroup = _.findWhere(@usergroups, {id: parseInt(key)})
+					@feedback_type.usergroups.push(usergroup.id) if usergroup
 
 			if not @$scope.form_props.$valid
 				return
