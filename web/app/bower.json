@@ -11,7 +11,7 @@
     "angular-ui-ace": "latest",
     "angular-ui-router": "latest",
     "angular-ui-select2": "latest",
-    "font-awesome": "3.2.1",
+    "font-awesome": "~4.0",
     "jquery": "2.0",
     "jquery-ui": "latest",
     "bootstrap": "latest",
