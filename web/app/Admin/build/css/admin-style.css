@@ -9087,6 +9087,18 @@ table.inner-form-table td label {
           background-clip: padding-box;
 }
 
+.select2-drop-auto-width {
+  border-top: 1px solid #66AFE9;
+}
+
+.select2-drop-auto-width .select2-search {
+  padding-top: 0;
+}
+
+.select2-drop-auto-width .select2-search input {
+  border-top: none;
+}
+
 .dp-switch {
   position: relative;
   display: inline-block;
