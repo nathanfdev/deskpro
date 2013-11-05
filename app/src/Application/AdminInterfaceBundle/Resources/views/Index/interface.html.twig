@@ -17,9 +17,9 @@
 		<img class="gravatar pull-left" src="{{ app.user.getPictureUrl(32) }}">
 		<div class="username">{{ phrase('agent.chrome.hello-user', {name: app.user.name}) }}</div>
 		<ul class="nav-profile">
-			<li id="user_settings_link"><i class="icon-cog"></i> <a>{{ phrase('agent.chrome.link_preferences') }}</a></li>
-			<li id="dp_header_help_trigger"><i class="icon-question-sign"></i> <a>{{ phrase('agent.chrome.link_help') }}</a></li>
-			<li onclick="window.location='{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent'; return false;"><i class="icon-signout"></i> <a>{{ phrase('agent.chrome.link_logout') }}</a></li>
+			<li id="user_settings_link"><i class="fa fa-cog"></i> <a>{{ phrase('agent.chrome.link_preferences') }}</a></li>
+			<li id="dp_header_help_trigger"><i class="fa fa-question-circle"></i> <a>{{ phrase('agent.chrome.link_help') }}</a></li>
+			<li onclick="window.location='{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent'; return false;"><i class="fa fa-sign-out"></i> <a>{{ phrase('agent.chrome.link_logout') }}</a></li>
 		</ul>
 	</div>
 
@@ -45,7 +45,7 @@
 		</ul>
 
 		<ul class="btm">
-			<li><a class="app-icon app-icon-home" href="#/back_to_agent">{{ phrase('adm.general.back_to_agent') }}</a></li>
+			<li><a class="app-icon app-fa fa-home" href="#/back_to_agent">{{ phrase('adm.general.back_to_agent') }}</a></li>
 		</ul>
 	</nav>
 	<div class="dp-section" ui-view>

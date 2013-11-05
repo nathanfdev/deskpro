@@ -13,7 +13,7 @@ define ->
     # </dp-help-page>
     #
     # <!-- In the list content we need the trigger as well: -->
-    # <button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+    # <button class="btn help-page-trigger"><i class="fa fa-question-sign"></i></button>
 	###
 	Admin_Main_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) ->
 		return {
@@ -21,7 +21,7 @@ define ->
 			scope: {},
 			replace: true,
 			transclude: true,
-			template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="icon-remove"></i></div><div ng-transclude></div></div></section>',
+			template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="fa fa-remove"></i></div><div ng-transclude></div></div></section>',
 			link: (scope, element, attrs) ->
 				element.hide()
 				isOpen = false

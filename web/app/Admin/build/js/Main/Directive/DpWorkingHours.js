@@ -93,7 +93,7 @@
                 y_str = year;
                 rowContainer = els.hol_wrap.find('.year-' + year);
               }
-              row = $('<div class="hol-row"><div class="remove-btn"><i class="icon-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
+              row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
               m_str = month < 10 ? "0" + month : month;
               d_str = day < 10 ? "0" + day : day;
               row.find('.date-txt').text("" + y_str + "-" + m_str + "-" + d_str);

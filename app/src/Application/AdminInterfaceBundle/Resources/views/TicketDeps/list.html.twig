@@ -1,7 +1,7 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }}</h3>
-		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }}</h3>
+		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
 	</header>
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
@@ -9,10 +9,10 @@
 				<nav class="dp-controls">
 					<ul>
 						<li>
-							<span dp-ping-flash="display_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+							<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
 				<h3 ng-pluralize count="TicketDepsList.departments.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
@@ -20,20 +20,20 @@
 			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
-						<i class="icon-reorder drag-handle"></i>
+						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right">
 							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('dep.id') }}</span>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="icon-trash"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 					<ul class="dp-item-list sublist" ng-if="TicketDepsList.child_deps[dep.id]" ui-sortable="TicketDepsList.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="subdep in TicketDepsList.child_deps[dep.id]" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
-								<i class="icon-reorder drag-handle"></i>
+								<i class="fa fa-bars drag-handle"></i>
 								<div class="pull-right">
 									<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('subdep.id') }}</span>
-									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(subdep); $event.preventDefault();"><i class="icon-trash"></i></span>
+									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(subdep); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 								</div>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>

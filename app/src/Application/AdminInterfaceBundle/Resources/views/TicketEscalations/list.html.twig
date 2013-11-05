@@ -1,7 +1,7 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_escalations.escalations') }}</h3>
-		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_escalations.escalations') }}</h3>
+		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
 	</header>
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
@@ -9,10 +9,10 @@
 				<nav class="dp-controls">
 					<ul>
 						<li>
-							<span dp-ping-flash="run_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+							<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.escalations.gocreate') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.escalations.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
 				<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_escalations.count_escalations') }}"></h3>
@@ -20,9 +20,9 @@
 			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
 				<li class="with-drag-handle" ng-repeat="esc in ListCtrl.list" dp-state-mark="tickets.escalations.edit.{{ ng_var('esc.id') }}" data-id="{{ ng_var('esc.id') }}">
 					<a href="{{ ng_href('tickets.escalations.edit', '{id: esc.id}') }}">
-						<i class="icon-reorder drag-handle"></i>
+						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(esc); $event.preventDefault();"><i class="icon-trash"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(esc); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
 							<span class="title-text">{{ ng_var('esc.title') }}</span>

@@ -23,7 +23,7 @@
 		<tbody>
 			<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
 				<td>
-					<i class="icon-group icon-22x text-middle icon-light"></i>
+					<i class="fa fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
 					<span class="text-middle"><a href="#">{{ ng_var('usergroup.title') }}</a></span>
 				</td>
@@ -65,7 +65,7 @@
 		<tbody>
 			<tr ng-repeat="groupObj in TicketDepsEdit.agent_perms.groups">
 				<td>
-					<i class="icon-group icon-22x text-middle icon-light"></i>
+					<i class="fa fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
 					<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
 				</td>
@@ -78,7 +78,7 @@
 			</tr>
 			<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
 				<td>
-					<i class="agent-icon agent-icon-22x text-middle" bg-img="agentObj.model.picture_url_22"></i>
+					<i class="agent-icon agent-fa fa-22x text-middle" bg-img="agentObj.model.picture_url_22"></i>
 					&nbsp;
 					<span class="text-middle"><a href="#">{{ ng_var('agentObj.model.display_name') }}</a></span>
 				</td>

@@ -7796,7 +7796,7 @@ form {
   background: #D4E4FF;
 }
 
-.dp-section-nav .nav-rows > li.active > a i.icon-caret-right {
+.dp-section-nav .nav-rows > li.active > a i.fa-caret-right {
   display: block;
 }
 
@@ -7814,7 +7814,7 @@ form {
   vertical-align: middle;
 }
 
-.dp-section-nav .nav a i.icon-caret-right {
+.dp-section-nav .nav a i.fa-caret-right {
   position: absolute;
   top: 11px;
   right: -6px;
@@ -7822,7 +7822,7 @@ form {
   font-size: 12px;
 }
 
-.dp-section-nav .nav a i.icon-caret-down {
+.dp-section-nav .nav a i.fa-caret-down {
   position: relative;
   top: 0;
   display: none;
@@ -7840,7 +7840,7 @@ form {
   vertical-align: middle;
 }
 
-.dp-section-nav .nav .sublist-open > a i.icon-caret-down {
+.dp-section-nav .nav .sublist-open > a i.fa-caret-down {
   display: inline-block;
 }
 

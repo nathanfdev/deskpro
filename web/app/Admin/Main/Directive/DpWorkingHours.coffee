@@ -101,7 +101,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 						y_str = year
 						rowContainer = els.hol_wrap.find('.year-' + year)
 
-					row = $('<div class="hol-row"><div class="remove-btn"><i class="icon-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>')
+					row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>')
 
 					m_str = if month < 10 then "0#{month}" else month
 					d_str = if day < 10 then "0#{day}" else day

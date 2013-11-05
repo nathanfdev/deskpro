@@ -14,7 +14,7 @@
        # </dp-help-page>
        #
        # <!-- In the list content we need the trigger as well: -->
-       # <button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+       # <button class="btn help-page-trigger"><i class="fa fa-question-sign"></i></button>
     */
 
     var Admin_Main_Directive_DpHelpPage;
@@ -25,7 +25,7 @@
           scope: {},
           replace: true,
           transclude: true,
-          template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="icon-remove"></i></div><div ng-transclude></div></div></section>',
+          template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="fa fa-remove"></i></div><div ng-transclude></div></div></section>',
           link: function(scope, element, attrs) {
             var $border, $button, $page, btnMod, buttonH, buttonW, closeFn, isOpen, my_state, openFn, state_segs, _ref, _ref1, _ref2, _ref3;
             element.hide();

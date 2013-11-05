@@ -1,7 +1,7 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3><i class="icon-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }}</h3>
-		<button class="btn help-page-trigger"><i class="icon-question-sign"></i></button>
+		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }}</h3>
+		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
 	</header>
 	<article class="pane-content no-pad">
 		<div class="panel panel-fill">
@@ -9,10 +9,10 @@
 				<nav class="dp-controls">
 					<ul>
 						<li>
-							<span dp-ping-flash="run_orders" class="saved-ping"><i class="icon-check-sign"></i> {{ phrase('agent.general.saved') }}</span>
+							<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="icon-trash"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}"><i class="icon-plus"></i> {{ phrase('agent.general.add') }}</a></li>
+						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
+						<li><a class="btn btn-success" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
 					</ul>
 				</nav>
 				<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
@@ -20,7 +20,7 @@
 			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions" ng-if="TicketTriggersList.triggers.length">
 				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
 					<a href="{{ ng_href('tickets.triggers.edit', '{type: TicketTriggersList.eventType, id: trigger.id}') }}">
-						<i class="icon-reorder drag-handle"></i>
+						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper" ng-hide="delete_mode">
 							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="TicketTriggersList.updateTriggerEnabledState(trigger);"></button>
 						</div>
@@ -47,7 +47,7 @@
 									</span>
 								</span>
 							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="icon-trash"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
 							<span class="title-text">{{ ng_var('trigger.title') }}</span>
