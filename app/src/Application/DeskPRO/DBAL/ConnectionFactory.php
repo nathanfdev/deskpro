@@ -65,6 +65,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 		}
 
 		\Doctrine\DBAL\Types\Type::overrideType('array', 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType');
+		\Doctrine\DBAL\Types\Type::overrideType('object', 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType');
 	}
 
 	public function setContainer(ContainerInterface $container = null)
