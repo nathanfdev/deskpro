@@ -113,6 +113,8 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
+		$data['terms']   = $this->terms->exportToArray();
+		$data['actions'] = $this->actions->exportToArray();
 		return $data;
 	}
 	

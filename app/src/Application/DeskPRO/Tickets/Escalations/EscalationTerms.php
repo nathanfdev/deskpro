@@ -38,6 +38,9 @@ use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 
+// TODO
+require_once(DP_ROOT.'/src/Application/DeskPRO/Tickets/Filters/Terms/TODO.php');
+
 class EscalationTerms implements \Serializable, FilterTermInterface
 {
 	/**
@@ -92,9 +95,9 @@ class EscalationTerms implements \Serializable, FilterTermInterface
 
 
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function serialize()
+	public function exportToArray()
 	{
 		$data = array();
 
@@ -112,7 +115,27 @@ class EscalationTerms implements \Serializable, FilterTermInterface
 			);
 		}
 
-		return json_encode($data);
+		return $data;
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function importFromArray(array $data)
+	{
+		foreach ($data['terms'] as $term_info) {
+			$this->addTermFromArray($term_info);
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return json_encode($this->exportToArray());
 	}
 
 
@@ -121,10 +144,8 @@ class EscalationTerms implements \Serializable, FilterTermInterface
 	 */
 	public function unserialize($data)
 	{
-		$data = json_decode($data);
-
-		foreach ($data['terms'] as $term_info) {
-			$this->addTermFromArray($term_info);
-		}
+		$this->__construct();
+		$data = json_decode($data, true);
+		$this->importFromArray($data);
 	}
 }

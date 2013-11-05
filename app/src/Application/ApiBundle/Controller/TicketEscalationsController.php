@@ -93,7 +93,7 @@ class TicketEscalationsController extends AbstractController
 		if ($id) {
 			$esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
-			if (!$esc || $esc->sys_name) {
+			if (!$esc) {
 				throw $this->createNotFoundException();
 			}
 		} else {
@@ -105,7 +105,7 @@ class TicketEscalationsController extends AbstractController
 		$esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
 
 		$terms = new EscalationTerms();
-		foreach ($this->in->getArrayValue('criteria') as $term) {
+		foreach ($this->in->getArrayValue('terms') as $term) {
 			if ($term) {
 				$terms->addTermFromArray($term);
 			}
@@ -137,7 +137,7 @@ class TicketEscalationsController extends AbstractController
 	{
 		$esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
-		if (!$esc || $esc->sys_name) {
+		if (!$esc) {
 			throw $this->createNotFoundException();
 		}
 

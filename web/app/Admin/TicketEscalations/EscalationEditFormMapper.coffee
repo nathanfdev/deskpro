@@ -10,26 +10,15 @@ define [
 			form.event_trigger      = escModel.event_trigger || 'time.open'
 			form.event_trigger_time = escModel.event_trigger_time || 3600
 			form.actions            = escModel.actions?.actions || {}
-			form.terms_set          = {}
+
+			form.terms_set       = {}
+			form.terms_set.first = {}
 
 			termSetCount = 0
 			if escModel.terms?.terms?.length
-				for termSet in escModel.terms.terms
-					if not termSet.set_terms or not termSet.set_terms.length then continue
-					termSetCount++
-
-					if termSetCount == 1
-						setId = 'first'
-					else
-						setId = Util.uid('termset')
-					form.terms_set[setId] = {}
-
-					for term in termSet.set_terms
-						rowId = Util.uid('term')
-						form.terms_set[setId][rowId] = term
-
-			if not termSetCount
-				form.terms_set.first = {}
+				for term in escModel.terms.terms
+					rowId = Util.uid('term')
+					form.terms_set.first[rowId] = term
 
 			return form
 

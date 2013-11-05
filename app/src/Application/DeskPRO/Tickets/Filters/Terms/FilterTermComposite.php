@@ -119,7 +119,12 @@ class FilterTermComposite implements FilterTermInterface
 		$filter_query = new FilterQuery();
 
 		foreach ($this->terms as $t) {
-			$parts = $t->getQueryParts();
+			$query = $t->getFilterQuery();
+			if (!$query) {
+				continue;
+			}
+
+			$parts = $query->getQueryParts();
 			foreach ($parts['joins'] as $join) {
 				$filter_query->addJoin(
 					$join['fromAlias'],

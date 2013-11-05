@@ -17,32 +17,32 @@ define [
 
 			options.push({
 				title: 'Department',
-				value: 'CheckDepartment'
+				value: 'FilterDepartment'
 			})
 
 			options.push({
 				title: 'Product',
-				value: 'CheckProduct'
+				value: 'FilterProduct'
 			})
 
 			options.push({
 				title: 'Category',
-				value: 'CheckCategory'
+				value: 'FilterCategory'
 			})
 
 			options.push({
 				title: 'Priority',
-				value: 'CheckPriority'
+				value: 'FilterPriority'
 			})
 
 			options.push({
 				title: 'Workflow',
-				value: 'CheckWorkflow'
+				value: 'FilterWorkflow'
 			})
 
 			options.push({
 				title: 'Subject',
-				value: 'CheckSubject'
+				value: 'FilterSubject'
 			})
 
 			set_options.push({
@@ -58,37 +58,37 @@ define [
 
 			options.push({
 				title: 'Name',
-				value: 'CheckUserName'
+				value: 'FilterUserName'
 			})
 
 			options.push({
 				title: 'Email Address',
-				value: 'CheckUserEmailAddress'
+				value: 'FilterUserEmailAddress'
 			})
 
 			options.push({
 				title: 'Label',
-				value: 'CheckUserLabels'
+				value: 'FilterUserLabels'
 			})
 
 			options.push({
 				title: 'Usergroup',
-				value: 'CheckUserUsergroups'
+				value: 'FilterUserUsergroups'
 			})
 
 			options.push({
 				title: 'Language',
-				value: 'CheckUserLanguage'
+				value: 'FilterUserLanguage'
 			})
 
 			options.push({
 				title: 'Is manager of organization',
-				value: 'CheckUserIsManager'
+				value: 'FilterUserIsManager'
 			})
 
 			options.push({
 				title: 'Is disabled',
-				value: 'CheckPersonIsDisabled'
+				value: 'FilterPersonIsDisabled'
 			})
 
 			set_options.push({
@@ -104,22 +104,22 @@ define [
 
 			options.push({
 				title: 'Name',
-				value: 'CheckOrgName'
+				value: 'FilterOrgName'
 			})
 
 			options.push({
 				title: 'Label',
-				value: 'CheckOrgLabels'
+				value: 'FilterOrgLabels'
 			})
 
 			options.push({
 				title: 'Email Domain',
-				value: 'CheckOrgEmailDomain'
+				value: 'FilterOrgEmailDomain'
 			})
 
 			options.push({
 				title: 'Linked Usergroup',
-				value: 'CheckOrgUsergroups'
+				value: 'FilterOrgUsergroups'
 			})
 
 			set_options.push({
@@ -157,37 +157,37 @@ define [
 
 			return p
 
-		getCheckWorkflow: (options = {}) ->
+		getFilterWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckPriority: (options = {}) ->
+		getFilterPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckCategory: (options = {}) ->
+		getFilterCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckDepartment: (options = {}) ->
+		getFilterDepartment: (options = {}) ->
 			options.propName = 'department_ids'
 			options.dataName = 'ticket_deps'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckProduct: (options = {}) ->
+		getFilterProduct: (options = {}) ->
 			options.propName = 'product_ids'
 			options.dataName = 'ticket_prods'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckEmailAccount: (options = {}) ->
+		getFilterEmailAccount: (options = {}) ->
 			options.propName = 'gateway_ids'
 			options.dataName = 'ticket_accounts'
 			options.optionsFormatter = (options) ->
@@ -204,155 +204,155 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckEmailSubject: (options = {}) ->
+		getFilterEmailSubject: (options = {}) ->
 			options.propName = 'subject'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckEmailBody: (options = {}) ->
+		getFilterEmailBody: (options = {}) ->
 			options.propName = 'body'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckEmailToName: (options = {}) ->
+		getFilterEmailToName: (options = {}) ->
 			options.propName = 'to_name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckEmailToAddress: (options = {}) ->
+		getFilterEmailToAddress: (options = {}) ->
 			options.propName = 'to_address'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckEmailFromName: (options = {}) ->
+		getFilterEmailFromName: (options = {}) ->
 			options.propName = 'from_name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckEmailFromAddress: (options = {}) ->
+		getFilterEmailFromAddress: (options = {}) ->
 			options.propName = 'from_address'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckCcAddress: (options = {}) ->
+		getFilterCcAddress: (options = {}) ->
 			options.propName = 'cc_address'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckCcName: (options = {}) ->
+		getFilterCcName: (options = {}) ->
 			options.propName = 'cc_name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckEmailHeader: (options = {}) ->
+		getFilterEmailHeader: (options = {}) ->
 			options.propName = 'email_header_match'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckSubject: (options = {}) ->
+		getFilterSubject: (options = {}) ->
 			options.propName = 'subject'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckMessage: (options = {}) ->
+		getFilterMessage: (options = {}) ->
 			options.propName = 'message'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckHasAttach: (options = {}) ->
+		getFilterHasAttach: (options = {}) ->
 			options.propName = 'with_attach'
 			def = @getStandardIs(options)
 			return def
 
-		getCheckHasAttachType: (options = {}) ->
+		getFilterHasAttachType: (options = {}) ->
 			options.propName = 'attach_type'
 			options.operators = ['is', 'not']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckHasAttachName: (options = {}) ->
+		getFilterHasAttachName: (options = {}) ->
 			options.propName = 'attach_name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserName: (options = {}) ->
+		getFilterUserName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserEmailAddress: (options = {}) ->
+		getFilterUserEmailAddress: (options = {}) ->
 			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserLabels: (options = {}) ->
+		getFilterUserLabels: (options = {}) ->
 			options.propName = 'labels'
 			options.operators = ['contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserUsergroups: (options = {}) ->
+		getFilterUserUsergroups: (options = {}) ->
 			options.propName = 'usergroup_ids'
 			options.dataName = 'usergroups'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckUserLanguage: (options = {}) ->
+		getFilterUserLanguage: (options = {}) ->
 			options.propName = 'language_ids'
 			options.dataName = 'languages'
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckUserIsManager: (options = {}) ->
+		getFilterUserIsManager: (options = {}) ->
 			options.propName = 'is_manager'
 			def = @getStandardIs(options)
 			return def
 
-		getCheckPersonIsDisabled: (options = {}) ->
+		getFilterPersonIsDisabled: (options = {}) ->
 			options.propName = 'is_disabled'
 			def = @getStandardIs(options)
 			return def
 
-		getCheckOrgName: (options = {}) ->
+		getFilterOrgName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckOrgLabels: (options = {}) ->
+		getFilterOrgLabels: (options = {}) ->
 			options.propName = 'labels'
 			options.operators = ['contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckOrgEmailDomain: (options = {}) ->
+		getFilterOrgEmailDomain: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckOrgUsergroups: (options = {}) ->
+		getFilterOrgUsergroups: (options = {}) ->
 			options.propName  = 'usergroup_ids'
 			options.dataName  = 'usergroups'
 			options.operators = ['is', 'not']
 			def = @getStandardSelect(options)
 			return def
 
-		getCheckDayOfWeek: (options = {}) ->
+		getFilterDayOfWeek: (options = {}) ->
 			me = @
 			return {
 			getTemplate: ->
@@ -376,7 +376,7 @@ define [
 				}
 			}
 
-		getCheckTimeOfDay: (options = {}) ->
+		getFilterTimeOfDay: (options = {}) ->
 			me = @
 			return {
 			getTemplate: ->
@@ -400,7 +400,7 @@ define [
 				}
 			}
 
-		getCheckWorkingHours: (options = {}) ->
+		getFilterWorkingHours: (options = {}) ->
 			me = @
 			return {
 				getTemplate: ->

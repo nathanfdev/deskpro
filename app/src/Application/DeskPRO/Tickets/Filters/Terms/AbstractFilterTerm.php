@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Orb\Util\Util;
 
-abstract class AbstractFilterTerm implements CriteriaTermInterface
+abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermInterface
 {
 	const OP_NOOP        = null;
 	const OP_IS          = 'is';
@@ -105,5 +105,13 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface
 	public function getTermOptions()
 	{
 		return $this->options;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getFilterQuery()
+	{
+		return null;
 	}
 }

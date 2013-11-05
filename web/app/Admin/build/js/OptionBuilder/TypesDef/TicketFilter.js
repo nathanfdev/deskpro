@@ -25,27 +25,27 @@
         options = [];
         options.push({
           title: 'Department',
-          value: 'CheckDepartment'
+          value: 'FilterDepartment'
         });
         options.push({
           title: 'Product',
-          value: 'CheckProduct'
+          value: 'FilterProduct'
         });
         options.push({
           title: 'Category',
-          value: 'CheckCategory'
+          value: 'FilterCategory'
         });
         options.push({
           title: 'Priority',
-          value: 'CheckPriority'
+          value: 'FilterPriority'
         });
         options.push({
           title: 'Workflow',
-          value: 'CheckWorkflow'
+          value: 'FilterWorkflow'
         });
         options.push({
           title: 'Subject',
-          value: 'CheckSubject'
+          value: 'FilterSubject'
         });
         set_options.push({
           title: 'Ticket Criteria',
@@ -54,31 +54,31 @@
         options = [];
         options.push({
           title: 'Name',
-          value: 'CheckUserName'
+          value: 'FilterUserName'
         });
         options.push({
           title: 'Email Address',
-          value: 'CheckUserEmailAddress'
+          value: 'FilterUserEmailAddress'
         });
         options.push({
           title: 'Label',
-          value: 'CheckUserLabels'
+          value: 'FilterUserLabels'
         });
         options.push({
           title: 'Usergroup',
-          value: 'CheckUserUsergroups'
+          value: 'FilterUserUsergroups'
         });
         options.push({
           title: 'Language',
-          value: 'CheckUserLanguage'
+          value: 'FilterUserLanguage'
         });
         options.push({
           title: 'Is manager of organization',
-          value: 'CheckUserIsManager'
+          value: 'FilterUserIsManager'
         });
         options.push({
           title: 'Is disabled',
-          value: 'CheckPersonIsDisabled'
+          value: 'FilterPersonIsDisabled'
         });
         set_options.push({
           title: 'User Criteria',
@@ -87,19 +87,19 @@
         options = [];
         options.push({
           title: 'Name',
-          value: 'CheckOrgName'
+          value: 'FilterOrgName'
         });
         options.push({
           title: 'Label',
-          value: 'CheckOrgLabels'
+          value: 'FilterOrgLabels'
         });
         options.push({
           title: 'Email Domain',
-          value: 'CheckOrgEmailDomain'
+          value: 'FilterOrgEmailDomain'
         });
         options.push({
           title: 'Linked Usergroup',
-          value: 'CheckOrgUsergroups'
+          value: 'FilterOrgUsergroups'
         });
         set_options.push({
           title: 'Organization Criteria',
@@ -140,7 +140,7 @@
         return p;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -151,7 +151,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckPriority = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterPriority = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -162,7 +162,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckCategory = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterCategory = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -173,7 +173,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckDepartment = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDepartment = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -184,7 +184,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckProduct = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterProduct = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -195,7 +195,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailAccount = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailAccount = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -218,7 +218,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailSubject = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -229,7 +229,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailBody = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailBody = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -240,7 +240,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailToName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailToName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -251,7 +251,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailToAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailToAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -262,7 +262,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailFromName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailFromName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -273,7 +273,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailFromAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailFromAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -284,7 +284,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckCcAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterCcAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -295,7 +295,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckCcName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterCcName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -306,7 +306,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckEmailHeader = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterEmailHeader = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -317,7 +317,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckSubject = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -328,7 +328,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckMessage = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterMessage = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -339,7 +339,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckHasAttach = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterHasAttach = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -349,7 +349,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckHasAttachType = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterHasAttachType = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -360,7 +360,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckHasAttachName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterHasAttachName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -371,7 +371,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -382,7 +382,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserEmailAddress = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserEmailAddress = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -393,7 +393,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserLabels = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserLabels = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -404,7 +404,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserUsergroups = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserUsergroups = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -415,7 +415,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserLanguage = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserLanguage = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -426,7 +426,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUserIsManager = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserIsManager = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -436,7 +436,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckPersonIsDisabled = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterPersonIsDisabled = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -446,7 +446,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgName = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgName = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -457,7 +457,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgLabels = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgLabels = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -468,7 +468,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgEmailDomain = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgEmailDomain = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -479,7 +479,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckOrgUsergroups = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterOrgUsergroups = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -491,7 +491,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckDayOfWeek = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDayOfWeek = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -527,7 +527,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckTimeOfDay = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterTimeOfDay = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -563,7 +563,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckWorkingHours = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterWorkingHours = function(options) {
         var me;
         if (options == null) {
           options = {};

@@ -43,7 +43,7 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 interface FilterTermInterface
 {
 	/**
-	 * @return FilterQuery
+	 * @return FilterQuery|null
 	 */
 	public function getFilterQuery();
 }

@@ -42,9 +42,9 @@ class TicketEscalation extends AbstractEntityRepository
 	public function getEscalations()
 	{
 		return $this->_em->createQuery("
-			SELECT e
-			FROM DeskPRO:TicketEscalation e
-			ORDER BY e.run_order ASC
+			SELECT te
+			FROM DeskPRO:TicketEscalation te
+			ORDER BY te.run_order ASC
 		")->execute();
 	}
 
