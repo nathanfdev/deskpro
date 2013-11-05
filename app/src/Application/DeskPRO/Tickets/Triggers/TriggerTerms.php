@@ -189,7 +189,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	 */
 	public function exportToJson()
 	{
-		return json_encode($this->toArray());
+		return json_encode($this->exportToArray());
 	}
 
 

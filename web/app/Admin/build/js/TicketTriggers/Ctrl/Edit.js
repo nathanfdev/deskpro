@@ -18,7 +18,7 @@
 
       Admin_TicketTriggers_Ctrl_Edit.CTRL_TYPE = 'page';
 
-      Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'TriggersNew', 'TriggersReply', 'TriggersUpdate'];
+      Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {
         var _this = this;
@@ -31,11 +31,11 @@
         this.$scope.triggerType = this.$stateParams.type;
         this.$scope.triggerId = this.$stateParams.id;
         if (this.$stateParams.type === 'newticket') {
-          this.dpTriggers = this.TriggersNew;
+          this.dpTriggers = this.DataService.get('TriggersNew');
         } else if (this.$stateParams.type === 'newreply') {
-          this.dpTriggers = this.TriggersReply;
+          this.dpTriggers = this.DataService.get('TriggersReply');
         } else {
-          this.dpTriggers = this.TriggersUpdate;
+          this.dpTriggers = this.DataService.get('TriggersUpdate');
         }
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
@@ -103,8 +103,8 @@
         var promise,
           _this = this;
         if (this.triggerId) {
-          promise = this.dpTriggers.loadTrigger(this.triggerId).then(function(trigger) {
-            _this.trigger = trigger;
+          promise = this.dpTriggers.loadEditTriggerData(this.triggerId).then(function(data) {
+            _this.trigger = data.trigger;
             _this.$scope.form = {
               title: _this.trigger.title
             };
@@ -114,8 +114,8 @@
         } else {
           this.trigger = {};
           this.$scope.form = this.editFormMapper.getFormFromModel(this.trigger);
+          return null;
         }
-        return null;
       };
 
       /*
@@ -154,7 +154,7 @@
             }
           }
         }
-        _ref3 = this.$scope.trigger_criteria_set;
+        _ref3 = this.$scope.form.terms_set;
         for (_ in _ref3) {
           if (!__hasProp.call(_ref3, _)) continue;
           crit_set = _ref3[_];
@@ -170,8 +170,8 @@
             postData.criteria_sets.push(set);
           }
         }
-        if (this.$scope.trigger_actions) {
-          _ref4 = this.$scope.trigger_actions;
+        if (this.$scope.form.actions) {
+          _ref4 = this.$scope.form.actions;
           for (_ in _ref4) {
             if (!__hasProp.call(_ref4, _)) continue;
             act = _ref4[_];
@@ -189,7 +189,7 @@
           promise = this.Api.sendPutJson('/ticket_triggers', postData);
         }
         promise.success(function(result) {
-          _this.trigger.id = result.id;
+          _this.trigger.id = result.trigger_id;
           if (is_new) {
             _this.trigger.is_enabled = true;
           }
@@ -197,16 +197,13 @@
           _this.stopSpinner('saving', true).then(function() {
             return _this.Growl.success("Saved");
           });
-          if (is_new) {
-            _this.dpTriggers.addTriggerModel(_this.trigger);
-          } else {
-            _this.dpTriggers.updateTriggerModel(_this.trigger);
-          }
+          _this.dpTriggers.mergeDataModel({
+            id: _this.trigger.id,
+            title: _this.trigger.title
+          });
           _this.skipDirtyState();
           if (is_new) {
             return _this.$state.go('tickets.triggers.gocreate');
-          } else {
-            return _this.$state.go('tickets.triggers');
           }
         });
         promise.error(function(info, code) {

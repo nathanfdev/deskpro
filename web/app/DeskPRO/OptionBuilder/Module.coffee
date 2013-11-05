@@ -84,7 +84,6 @@ define [
 
 					if useExistSetId
 						setId = useExistSetId
-						console.log("using set %s: %o", setId, setsObject[setId])
 					else
 						setId = rowScope.$id
 						setsObject[setId] = {}
@@ -94,7 +93,7 @@ define [
 					rowScope.option_types     = opts.option_types
 
 					rowScope.$on('rowAdded', ->
-						if element.hasClass('empty') and lastEmpty = element
+						if element.hasClass('empty') and lastEmpty == element
 							addRow()
 
 						element.removeClass('empty')

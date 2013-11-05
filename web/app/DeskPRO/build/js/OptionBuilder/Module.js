@@ -75,7 +75,6 @@
               setsObject = scope.$eval(iAttrs.setsObject);
               if (useExistSetId) {
                 setId = useExistSetId;
-                console.log("using set %s: %o", setId, setsObject[setId]);
               } else {
                 setId = rowScope.$id;
                 setsObject[setId] = {};
@@ -84,7 +83,7 @@
               rowScope.criteria_set_row = setsObject[setId];
               rowScope.option_types = opts.option_types;
               rowScope.$on('rowAdded', function() {
-                if (element.hasClass('empty') && (lastEmpty = element)) {
+                if (element.hasClass('empty') && lastEmpty === element) {
                   addRow();
                 }
                 return element.removeClass('empty');

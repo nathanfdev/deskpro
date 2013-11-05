@@ -1,15 +1,22 @@
 (function() {
-  define(function() {
-    var Admin_OptionBuilder_TypesDef_TicketActions;
-    return Admin_OptionBuilder_TypesDef_TicketActions = (function() {
-      function Admin_OptionBuilder_TypesDef_TicketActions($q, Api, dpTemplateManager) {
-        this.$q = $q;
-        this.Api = Api;
-        this.dpTemplateManager = dpTemplateManager;
-        this.options_data = null;
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef'], function(BaseActionTypesDef) {
+    var Admin_OptionBuilder_TypesDef_TicketFilter, _ref;
+    return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
+      __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
+
+      function Admin_OptionBuilder_TypesDef_TicketFilter() {
+        _ref = Admin_OptionBuilder_TypesDef_TicketFilter.__super__.constructor.apply(this, arguments);
+        return _ref;
       }
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getOptionsForTypes = function(types, typesData) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.init = function() {
+        return this.options_data = null;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
         var options, set_options;
         if (types == null) {
           types = [];
@@ -151,7 +158,7 @@
         return set_options;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.loadDataOptions = function() {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
         var p,
           _this = this;
         if (this.options_data) {
@@ -172,7 +179,7 @@
             'ticket_accounts': '/ticket_accounts',
             'usergroups': '/usergroups'
           }).then(function(result) {
-            var data, _ref, _ref1;
+            var data, _ref1, _ref2;
             data = result.data;
             _this.options_data['agents'] = data.agents.agents;
             _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
@@ -180,8 +187,8 @@
             _this.options_data['ticket_cats'] = data.ticket_cats.categories;
             _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
             _this.options_data['ticket_works'] = data.ticket_works.workflows;
-            _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
-            _this.options_data['ticket_slas'] = (_ref1 = data.ticket_slas) != null ? _ref1.slas : void 0;
+            _this.options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
+            _this.options_data['ticket_slas'] = (_ref2 = data.ticket_slas) != null ? _ref2.slas : void 0;
             _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
             return _this.options_data['usergroups'] = data.usergroups.usergroups;
           });
@@ -189,210 +196,7 @@
         return p;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getDef = function(type, options) {
-        var me, typeFunc, typeName;
-        if (options == null) {
-          options = {};
-        }
-        typeName = type;
-        options.type = type;
-        typeFunc = "get" + typeName;
-        if (this[typeFunc] != null) {
-          return this[typeFunc](options);
-        } else {
-          console.error("Bad type with no definition getter: " + typeFunc);
-          me = this;
-          return {
-            getTemplate: function() {
-              return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html');
-            },
-            getData: function() {
-              return {};
-            },
-            getDataFormatter: function() {
-              return {
-                getViewValue: function(value, data) {
-                  if (value == null) {
-                    value = {};
-                  }
-                  return {};
-                },
-                getValue: function(model, data) {
-                  if (model == null) {
-                    model = {};
-                  }
-                  return null;
-                }
-              };
-            }
-          };
-        }
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStandardSelect = function(options) {
-        var data_name, is_multi, me, options_formatter, prop_name, type;
-        type = options.type;
-        prop_name = options.propName;
-        data_name = options.dataName;
-        options_formatter = options.optionsFormatter || null;
-        is_multi = options.isMulti;
-        if (!options_formatter) {
-          options_formatter = function(options) {
-            var opt, opts, title, val, _i, _len;
-            opts = [];
-            for (_i = 0, _len = options.length; _i < _len; _i++) {
-              opt = options[_i];
-              if (opt.title) {
-                title = opt.title;
-              } else if (opt.display_name) {
-                title = opt.display_name;
-              } else if (opt.name) {
-                title = opt.name;
-              } else {
-                title = null;
-              }
-              if (opt.id) {
-                val = opt.id;
-              } else if (opt.value) {
-                val = opt.value;
-              } else {
-                val = null;
-              }
-              if (title !== null && val !== null) {
-                opts.push({
-                  title: title,
-                  value: val
-                });
-              }
-            }
-            return opts;
-          };
-        }
-        me = this;
-        return {
-          getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html');
-          },
-          getData: function() {
-            var defer,
-              _this = this;
-            if (data_name) {
-              defer = me.$q.defer();
-              me.loadDataOptions().then(function() {
-                return defer.resolve({
-                  options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                  multiselect: is_multi
-                });
-              });
-              return defer.promise;
-            } else {
-              return {};
-            }
-          },
-          getDataFormatter: function() {
-            return {
-              getViewValue: function(value, data) {
-                if (value == null) {
-                  value = {};
-                }
-                return {
-                  value: value[prop_name]
-                };
-              },
-              getValue: function(model, data) {
-                var value;
-                if (model == null) {
-                  model = {};
-                }
-                value = {};
-                value.type = type;
-                value.options = {};
-                value.options[prop_name] = model.value;
-                return value;
-              }
-            };
-          }
-        };
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStandardIs = function(options) {
-        var me, prop_name, type;
-        type = options.type;
-        prop_name = options.propName;
-        me = this;
-        return {
-          getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-actions-is.html');
-          },
-          getData: function() {
-            return {};
-          },
-          getDataFormatter: function() {
-            return {
-              getViewValue: function(value, data) {
-                if (value == null) {
-                  value = {};
-                }
-                return {
-                  value: true,
-                  op: 'is'
-                };
-              },
-              getValue: function(model, data) {
-                var value;
-                if (model == null) {
-                  model = {};
-                }
-                value = {};
-                value.type = type;
-                value.options = {};
-                value.options[prop_name] = true;
-                return value;
-              }
-            };
-          }
-        };
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getStandardInput = function(options) {
-        var me, prop_name, type;
-        type = options.type;
-        prop_name = options.propName;
-        me = this;
-        return {
-          getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html');
-          },
-          getData: function() {
-            return {};
-          },
-          getDataFormatter: function() {
-            return {
-              getViewValue: function(value, data) {
-                if (value == null) {
-                  value = {};
-                }
-                return {
-                  value: value[prop_name]
-                };
-              },
-              getValue: function(model, data) {
-                var value;
-                if (model == null) {
-                  model = {};
-                }
-                value = {};
-                value.type = type;
-                value.options = {};
-                value.options[prop_name] = model.value;
-                return value;
-              }
-            };
-          }
-        };
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetAgent = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgent = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -403,7 +207,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetAgentFollowers = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgentFollowers = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -415,7 +219,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetAgentTeam = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgentTeam = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -426,7 +230,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -437,7 +241,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetWorkflow = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetWorkflow = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -448,7 +252,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetPriority = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetPriority = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -459,7 +263,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetCategory = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetCategory = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -470,7 +274,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetDepartment = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetDepartment = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -481,7 +285,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetProduct = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetProduct = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -492,7 +296,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetEmailAccount = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetEmailAccount = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -515,7 +319,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetEmailSubject = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetEmailSubject = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -525,7 +329,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetUrgency = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetUrgency = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -568,7 +372,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetFlag = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetFlag = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -629,7 +433,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getDeleteTicket = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getDeleteTicket = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -639,7 +443,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModForceEmailValidation = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModForceEmailValidation = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -649,7 +453,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModStopTriggers = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModStopTriggers = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -659,7 +463,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModQuietUserEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietUserEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -668,7 +472,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getModQuietAgentEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietAgentEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -677,7 +481,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketActions.prototype.getSetSlas = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSlas = function(options) {
         var me;
         if (options == null) {
           options = {};
@@ -692,11 +496,11 @@
               _this = this;
             defer = me.$q.defer();
             me.loadDataOptions().then(function() {
-              var sla, _i, _len, _ref;
+              var sla, _i, _len, _ref1;
               options = [];
-              _ref = me.options_data['ticket_slas'];
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                sla = _ref[_i];
+              _ref1 = me.options_data['ticket_slas'];
+              for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+                sla = _ref1[_i];
                 options.push({
                   title: sla.title,
                   value: sla.id
@@ -736,9 +540,9 @@
         };
       };
 
-      return Admin_OptionBuilder_TypesDef_TicketActions;
+      return Admin_OptionBuilder_TypesDef_TicketFilter;
 
-    })();
+    })(BaseActionTypesDef);
   });
 
 }).call(this);

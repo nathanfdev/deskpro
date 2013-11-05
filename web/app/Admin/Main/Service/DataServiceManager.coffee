@@ -1,13 +1,21 @@
 define [
+	'DeskPRO/Util/Strings',
 	'Admin/TicketFilters/DataService/TicketFilters',
 	'Admin/TicketEscalations/DataService/TicketEscalations',
 	'Admin/TicketMacros/DataService/TicketMacros',
-	'Admin/TicketSlas/DataService/TicketSlas'
+	'Admin/TicketSlas/DataService/TicketSlas',
+	'Admin/TicketTriggers/DataService/TriggersNew',
+	'Admin/TicketTriggers/DataService/TriggersReply',
+	'Admin/TicketTriggers/DataService/TriggersUpdate',
 ], (
+	Strings,
 	DataService_TicketFilters,
 	DataService_TicketEscalations,
 	DataService_TicketMacros,
-	DataService_TicketSlas
+	DataService_TicketSlas,
+	DataService_TriggersNew,
+	DataService_TriggersReply,
+	DataService_TriggersUpdate
 ) ->
 	###
 	# A simple wrapper around the data services
@@ -21,13 +29,23 @@ define [
 			if @ds_cache[serviceId]
 				obj = @ds_cache[serviceId]
 			else
-				name = 'DataService_' + serviceId
-				eval("constructor = #{name};")
+				obj = null
 
-				if not constructor
-					throw new Error("Invalid data service name: " + name)
+				# If this class has a custom initXXX method, call that
+				# instead uf the default
+				initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
+				if @[initName]?
+					obj = @[initName]()
 
-				obj = @$injector.instantiate(constructor)
+				if not obj
+					name = 'DataService_' + serviceId
+					eval("constructor = #{name};")
+
+					if not constructor
+						throw new Error("Invalid data service name: " + name)
+
+					obj = @$injector.instantiate(constructor)
+
 				@ds_cache[serviceId] = obj
 
 			return obj

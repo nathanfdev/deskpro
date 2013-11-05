@@ -11,7 +11,7 @@ define [
 		@CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit'
 		@CTRL_AS   = 'TicketTriggersEdit'
 		@CTRL_TYPE = 'page'
-		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'TriggersNew', 'TriggersReply', 'TriggersUpdate']
+		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions']
 
 		init: ->
 			@triggerType = @$stateParams.type
@@ -26,11 +26,11 @@ define [
 			@$scope.triggerId   = @$stateParams.id
 
 			if @$stateParams.type == 'newticket'
-				@dpTriggers = @TriggersNew
+				@dpTriggers = @DataService.get('TriggersNew')
 			else if @$stateParams.type == 'newreply'
-				@dpTriggers = @TriggersReply
+				@dpTriggers = @DataService.get('TriggersReply')
 			else
-				@dpTriggers = @TriggersUpdate
+				@dpTriggers = @DataService.get('TriggersUpdate')
 
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
 			@actionsTypeDef = @dpObTypesDefTicketActions
@@ -85,8 +85,8 @@ define [
 		###
 		initialLoad: ->
 			if @triggerId
-				promise = @dpTriggers.loadTrigger(@triggerId).then( (trigger) =>
-					@trigger = trigger
+				promise = @dpTriggers.loadEditTriggerData(@triggerId).then( (data) =>
+					@trigger = data.trigger
 					@$scope.form = {
 						title: @trigger.title
 					}
@@ -97,8 +97,7 @@ define [
 			else
 				@trigger = {}
 				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
-
-			return null
+				return null
 
 		###
 		# Save the trigger
@@ -122,7 +121,7 @@ define [
 					if enabled
 						postData.by_agent_mode.push(mode)
 
-			for own _, crit_set of @$scope.trigger_criteria_set
+			for own _, crit_set of @$scope.form.terms_set
 				set = []
 				for own _, crit of crit_set
 					if crit.type
@@ -130,8 +129,8 @@ define [
 				if set.length
 					postData.criteria_sets.push(set)
 
-			if @$scope.trigger_actions
-				for own _, act of @$scope.trigger_actions
+			if @$scope.form.actions
+				for own _, act of @$scope.form.actions
 					if act.type
 						postData.actions.push(act)
 
@@ -144,7 +143,7 @@ define [
 				promise = @Api.sendPutJson('/ticket_triggers', postData)
 
 			promise.success( (result) =>
-				@trigger.id = result.id
+				@trigger.id = result.trigger_id
 
 				if is_new
 					@trigger.is_enabled = true
@@ -155,16 +154,14 @@ define [
 					@Growl.success("Saved")
 				)
 
-				if is_new
-					@dpTriggers.addTriggerModel(@trigger)
-				else
-					@dpTriggers.updateTriggerModel(@trigger)
+				@dpTriggers.mergeDataModel({
+					id: @trigger.id,
+					title: @trigger.title
+				})
 
 				@skipDirtyState()
 				if is_new
 					@$state.go('tickets.triggers.gocreate')
-				else
-					@$state.go('tickets.triggers')
 			)
 			promise.error( (info, code) =>
 				@stopSpinner('saving', true)

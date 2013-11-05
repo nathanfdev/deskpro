@@ -29,7 +29,7 @@ define ->
 				if model.by_user_mode.length
 					form.typeForm.by_user = true
 					for x in model.by_user_mode
-						@form.typeForm.by_user_mode[x] = true
+						form.typeForm.by_user_mode[x] = true
 
 			form.terms_set = {}
 			form.actions = {}

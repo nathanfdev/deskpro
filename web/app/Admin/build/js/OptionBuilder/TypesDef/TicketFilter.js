@@ -1,13 +1,20 @@
 (function() {
-  define(function() {
-    var Admin_OptionBuilder_TypesDef_TicketFilter;
-    return Admin_OptionBuilder_TypesDef_TicketFilter = (function() {
-      function Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager) {
-        this.$q = $q;
-        this.Api = Api;
-        this.dpTemplateManager = dpTemplateManager;
-        this.options_data = null;
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/OptionBuilder/TypesDef/BaseCriteriaTypesDef'], function(BaseCriteriaTypesDef) {
+    var Admin_OptionBuilder_TypesDef_TicketFilter, _ref;
+    return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
+      __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
+
+      function Admin_OptionBuilder_TypesDef_TicketFilter() {
+        _ref = Admin_OptionBuilder_TypesDef_TicketFilter.__super__.constructor.apply(this, arguments);
+        return _ref;
       }
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.init = function() {
+        return this.options_data = null;
+      };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
         var options, set_options;
@@ -119,236 +126,18 @@
             'ticket_accounts': '/ticket_accounts',
             'usergroups': '/usergroups'
           }).then(function(result) {
-            var data, _ref;
+            var data, _ref1;
             data = result.data;
             _this.options_data['ticket_deps'] = data.ticket_deps.departments;
             _this.options_data['ticket_cats'] = data.ticket_cats.categories;
             _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
             _this.options_data['ticket_works'] = data.ticket_works.workflows;
-            _this.options_data['ticket_prods'] = (_ref = data.ticket_prods) != null ? _ref.products : void 0;
+            _this.options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
             _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
             return _this.options_data['usergroups'] = data.usergroups.usergroups;
           });
         }
         return p;
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getDef = function(type, options) {
-        var me, typeFunc, typeName;
-        if (options == null) {
-          options = {};
-        }
-        typeName = type;
-        options.type = type;
-        typeFunc = "get" + typeName;
-        if (this[typeFunc] != null) {
-          return this[typeFunc](options);
-        } else {
-          console.error("Bad type with no definition getter: " + typeFunc);
-          me = this;
-          return {
-            getTemplate: function() {
-              return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
-            },
-            getData: function() {
-              return {};
-            },
-            getDataFormatter: function() {
-              return {
-                getViewValue: function(value, data) {
-                  if (value == null) {
-                    value = {};
-                  }
-                  return {};
-                },
-                getValue: function(model, data) {
-                  if (model == null) {
-                    model = {};
-                  }
-                  return null;
-                }
-              };
-            }
-          };
-        }
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getStandardSelect = function(options) {
-        var data_name, form_type, me, operators, options_formatter, prop_name, type;
-        type = options.type;
-        prop_name = options.propName;
-        data_name = options.dataName;
-        form_type = options.formType || 'select';
-        operators = options.operators || ['is', 'not'];
-        options_formatter = options.optionsFormatter || null;
-        if (!options_formatter) {
-          options_formatter = function(options) {
-            var opt, opts, title, val, _i, _len;
-            opts = [];
-            for (_i = 0, _len = options.length; _i < _len; _i++) {
-              opt = options[_i];
-              if (opt.title) {
-                title = opt.title;
-              } else if (opt.name) {
-                title = opt.name;
-              } else {
-                title = null;
-              }
-              if (opt.id) {
-                val = opt.id;
-              } else if (opt.value) {
-                val = opt.value;
-              } else {
-                val = null;
-              }
-              if (title !== null && val !== null) {
-                opts.push({
-                  title: title,
-                  value: val
-                });
-              }
-            }
-            return opts;
-          };
-        }
-        me = this;
-        return {
-          getTemplate: function() {
-            switch (form_type) {
-              case 'input':
-                return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
-              default:
-                return me.dpTemplateManager.get('OptionBuilder/type-criteria-select.html');
-            }
-          },
-          getData: function() {
-            var defer,
-              _this = this;
-            if (data_name) {
-              defer = me.$q.defer();
-              me.loadDataOptions().then(function() {
-                return defer.resolve({
-                  operators: operators,
-                  options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                  multiselect: true
-                });
-              });
-              return defer.promise;
-            } else {
-              return {
-                operators: operators
-              };
-            }
-          },
-          getDataFormatter: function() {
-            return {
-              getViewValue: function(value, data) {
-                if (value == null) {
-                  value = {};
-                }
-                return {
-                  value: value[prop_name],
-                  op: value.op || _.first(data.operators)
-                };
-              },
-              getValue: function(model, data) {
-                var value;
-                if (model == null) {
-                  model = {};
-                }
-                value = {};
-                value.type = type;
-                value.op = model.op;
-                value.options = {};
-                value.options[prop_name] = model.value;
-                return value;
-              }
-            };
-          }
-        };
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getStandardIs = function(options) {
-        var me, prop_name, type;
-        type = options.type;
-        prop_name = options.propName;
-        me = this;
-        return {
-          getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-criteria-is.html');
-          },
-          getData: function() {
-            return {};
-          },
-          getDataFormatter: function() {
-            return {
-              getViewValue: function(value, data) {
-                if (value == null) {
-                  value = {};
-                }
-                return {
-                  value: true,
-                  op: 'is'
-                };
-              },
-              getValue: function(model, data) {
-                var value;
-                if (model == null) {
-                  model = {};
-                }
-                value = {};
-                value.type = type;
-                value.op = 'is';
-                value.options = {};
-                value.options[prop_name] = true;
-                return value;
-              }
-            };
-          }
-        };
-      };
-
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getStandardInput = function(options) {
-        var me, operators, prop_name, type;
-        type = options.type;
-        prop_name = options.propName;
-        operators = options.operators || ['is', 'not'];
-        me = this;
-        return {
-          getTemplate: function() {
-            return me.dpTemplateManager.get('OptionBuilder/type-criteria-input.html');
-          },
-          getData: function() {
-            return {
-              operators: operators
-            };
-          },
-          getDataFormatter: function() {
-            return {
-              getViewValue: function(value, data) {
-                if (value == null) {
-                  value = {};
-                }
-                return {
-                  value: value[prop_name],
-                  op: value.op || _.first(data.operators)
-                };
-              },
-              getValue: function(model, data) {
-                var value;
-                if (model == null) {
-                  model = {};
-                }
-                value = {};
-                value.type = type;
-                value.op = model.op;
-                value.options = {};
-                value.options[prop_name] = model.value;
-                return value;
-              }
-            };
-          }
-        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckWorkflow = function(options) {
@@ -812,7 +601,7 @@
 
       return Admin_OptionBuilder_TypesDef_TicketFilter;
 
-    })();
+    })(BaseCriteriaTypesDef);
   });
 
 }).call(this);

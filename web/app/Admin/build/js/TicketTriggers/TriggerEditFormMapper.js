@@ -38,7 +38,7 @@
             _ref1 = model.by_user_mode;
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
               x = _ref1[_j];
-              this.form.typeForm.by_user_mode[x] = true;
+              form.typeForm.by_user_mode[x] = true;
             }
           }
         }

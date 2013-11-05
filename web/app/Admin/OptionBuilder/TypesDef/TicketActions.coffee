@@ -1,6 +1,10 @@
-define ->
-	class Admin_OptionBuilder_TypesDef_TicketActions
-		constructor: (@$q, @Api, @dpTemplateManager) ->
+define [
+	'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
+], (
+	BaseActionTypesDef
+) ->
+	class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
+		init: ->
 			@options_data = null
 
 		getOptionsForTypes: (types = [], typesData = null) ->
@@ -231,158 +235,6 @@ define ->
 				)
 
 			return p
-
-		getDef: (type, options = {}) ->
-			typeName = type
-			options.type = type
-
-			typeFunc = "get#{typeName}"
-			if @[typeFunc]?
-				return @[typeFunc](options)
-			else
-				console.error("Bad type with no definition getter: #{typeFunc}")
-				me = @
-				return {
-				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html')
-				getData: ->
-					return {}
-				getDataFormatter: ->
-					return {
-					getViewValue: (value = {}, data) ->
-						return {}
-					getValue: (model = {}, data) ->
-						return null
-					}
-				}
-
-		getStandardSelect: (options) ->
-			type      = options.type
-			prop_name = options.propName
-			data_name = options.dataName
-			options_formatter = options.optionsFormatter || null
-			is_multi  = options.isMulti
-
-			if not options_formatter
-				options_formatter = (options) ->
-					opts = []
-
-					for opt in options
-						if opt.title
-							title = opt.title
-						else if opt.display_name
-							title = opt.display_name
-						else if opt.name
-							title = opt.name
-						else
-							title = null
-
-						if opt.id
-							val = opt.id
-						else if opt.value
-							val = opt.value
-						else
-							val = null
-
-						if title != null and val != null
-							opts.push({
-								title: title,
-								value: val
-							})
-
-					return opts
-
-			me = @
-
-			return {
-				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html')
-
-				getData: ->
-					if data_name
-						defer = me.$q.defer()
-						me.loadDataOptions().then(=>
-							defer.resolve({
-								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
-								multiselect: is_multi
-							})
-						)
-
-						return defer.promise
-					else
-						return {}
-
-				getDataFormatter: ->
-					return {
-						getViewValue: (value = {}, data) ->
-							return {
-								value: value[prop_name]
-							}
-						getValue: (model = {}, data) ->
-							value = {}
-							value.type = type
-							value.options = {}
-							value.options[prop_name] = model.value
-							return value
-					}
-			}
-
-		getStandardIs: (options) ->
-			type      = options.type
-			prop_name = options.propName
-
-			me = @
-			return {
-				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-actions-is.html')
-
-				getData: ->
-					return {}
-
-				getDataFormatter: ->
-					return {
-					getViewValue: (value = {}, data) ->
-						return {
-							value: true,
-							op: 'is'
-						}
-					getValue: (model = {}, data) ->
-						value = {}
-						value.type = type
-						value.options = {}
-						value.options[prop_name] = true
-						return value
-					}
-			}
-
-		getStandardInput: (options) ->
-			type      = options.type
-			prop_name = options.propName
-
-			me = @
-			return {
-				getTemplate: ->
-					return me.dpTemplateManager.get('OptionBuilder/type-actions-input.html')
-
-				getData: ->
-					return {
-
-					}
-
-				getDataFormatter: ->
-					return {
-						getViewValue: (value = {}, data) ->
-							return {
-								value: value[prop_name]
-							}
-						getValue: (model = {}, data) ->
-							value = {}
-							value.type = type
-							value.options = {}
-							value.options[prop_name] = model.value
-							return value
-					}
-			}
 
 		getSetAgent: (options = {}) ->
 			options.propName = 'agent_id'

@@ -163,7 +163,7 @@ define ->
 					return retData
 				)
 
-			@els.loadingOptionMessage.show()
+			@els.loadingOptionMessage.show().addClass('loading-on')
 			@$q.all([tplPromise, dataPromise]).then( (returns) =>
 
 				tpl  = returns[0]
@@ -219,7 +219,7 @@ define ->
 				rowScope.$emit('rowAdded', this, element, rowScope)
 
 				element.data('scopeId', rowId)
-				@els.loadingOptionMessage.hide()
+				@els.loadingOptionMessage.hide().removeClass('loading-on')
 				@els.noOptionsMessage.hide()
 				@els.optionList.append(element)
 				@rowsCount++

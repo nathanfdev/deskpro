@@ -34,24 +34,27 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-use Orb\Util\Numbers;
-use Orb\Util\Arrays;
-
-use \Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-
 class TicketTrigger extends AbstractEntityRepository
 {
 	/**
+	 * @param string|null $type
 	 * @return \Application\DeskPRO\Entity\TicketTrigger[]
 	 */
-	public function getTriggers()
+	public function getTriggers($type = null)
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:TicketTrigger t
-			ORDER BY t.run_order, t.title ASC
-		")->execute();
+		if ($type) {
+			return $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketTrigger t
+				WHERE t.event_trigger = ?0
+				ORDER BY t.run_order, t.title ASC
+			")->execute(array($type));
+		} else {
+			return $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketTrigger t
+				ORDER BY t.run_order, t.title ASC
+			")->execute();
+		}
 	}
 }

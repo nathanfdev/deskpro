@@ -8,7 +8,7 @@ define [
 	class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
 		@CTRL_AS = 'TicketTriggersList'
-		@DEPS = ['$state', '$stateParams', 'TriggersNew', 'TriggersReply', 'TriggersUpdate']
+		@DEPS = ['$state', '$stateParams']
 		@CTRL_TYPE = 'list'
 
 		init: ->
@@ -16,25 +16,24 @@ define [
 			@eventType = @$stateParams.type
 
 			if @$stateParams.type == 'newticket'
-				@dpTriggers = @TriggersNew
+				@dpTriggers = @DataService.get('TriggersNew')
 			else if @$stateParams.type == 'newreply'
-				@dpTriggers = @TriggersReply
+				@dpTriggers = @DataService.get('TriggersReply')
 			else
-				@dpTriggers = @TriggersUpdate
+				@dpTriggers = @DataService.get('TriggersUpdate')
 
 			@sortedListOptions = {
 				axis: 'y',
 				handle: '.drag-handle',
 				update: (ev, data) =>
 					$list = data.item.closest('ul')
-
-					postData = {run_orders: []}
+					runOrders = []
 
 					$list.find('li').each(->
-						postData.run_orders.push($(this).data('id'))
+						runOrders.push(parseInt($(this).data('id')))
 					)
 
-					promise = @Api.sendPostJson('/ticket_triggers/run_order', postData)
+					@dpTriggers.saveRunOrder(runOrders)
 					@pingElement('run_orders')
 			}
 
@@ -42,13 +41,8 @@ define [
 		# Loads the triggers list
 		###
 		initialLoad: ->
-			promise = @dpTriggers.loadList().then( (recs) =>
-				@triggers = recs.values()
-
-				@addManagedListener(recs, 'changed', =>
-					@triggers = recs.values()
-					@ngApply()
-				)
+			promise = @dpTriggers.loadList().then( (list) =>
+				@triggers = list
 			)
 
 			return promise
@@ -58,10 +52,7 @@ define [
 		# Update the enabled state of a trigger
 		###
 		updateTriggerEnabledState: (trigger) ->
-			if trigger.is_enabled
-				@Api.sendPost("/ticket_triggers/#{trigger.id}/enable")
-			else
-				@Api.sendPost("/ticket_triggers/#{trigger.id}/disable")
+			return @dpTriggers.saveEnabledState(trigger)
 
 
 		###
@@ -80,18 +71,11 @@ define [
 			});
 
 			inst.result.then( =>
-				@deleteTrigger(trigger)
-			)
-
-		###
-		# Actually do the delete
-		###
-		deleteTrigger: (trigger) ->
-			@dpTriggers.removeTriggerModel(trigger.id)
-			@Api.sendDelete('/ticket_triggers/' + trigger.id).success( =>
-				# if currently viewing the deleted department, then should need to switch state
-				if @$state.current.name == 'tickets.ticket_triggers.edit' and parseInt(@$state.params.id) == trigger.id
-					@$state.go('tickets.ticket_triggers')
+				@dpTriggers.deleteTriggerById(trigger.id).then( =>
+					# if currently viewing the deleted department, then should need to switch state
+					if @$state.current.name == 'tickets.ticket_triggers.edit' and parseInt(@$state.params.id) == trigger.id
+						@$state.go('tickets.ticket_triggers')
+				)
 			)
 
 	Admin_TicketTriggers_Ctrl_List.EXPORT_CTRL()

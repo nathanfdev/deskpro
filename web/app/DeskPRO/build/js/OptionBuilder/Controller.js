@@ -182,7 +182,7 @@
             return retData;
           });
         }
-        this.els.loadingOptionMessage.show();
+        this.els.loadingOptionMessage.show().addClass('loading-on');
         return this.$q.all([tplPromise, dataPromise]).then(function(returns) {
           var data, element, k, option_row, option_title, rowId, rowScope, tpl, v;
           tpl = returns[0];
@@ -234,7 +234,7 @@
           });
           rowScope.$emit('rowAdded', _this, element, rowScope);
           element.data('scopeId', rowId);
-          _this.els.loadingOptionMessage.hide();
+          _this.els.loadingOptionMessage.hide().removeClass('loading-on');
           _this.els.noOptionsMessage.hide();
           _this.els.optionList.append(element);
           _this.rowsCount++;

@@ -16,7 +16,7 @@
 
       Admin_TicketTriggers_Ctrl_List.CTRL_AS = 'TicketTriggersList';
 
-      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams', 'TriggersNew', 'TriggersReply', 'TriggersUpdate'];
+      Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams'];
 
       Admin_TicketTriggers_Ctrl_List.CTRL_TYPE = 'list';
 
@@ -25,25 +25,23 @@
         this.triggers = null;
         this.eventType = this.$stateParams.type;
         if (this.$stateParams.type === 'newticket') {
-          this.dpTriggers = this.TriggersNew;
+          this.dpTriggers = this.DataService.get('TriggersNew');
         } else if (this.$stateParams.type === 'newreply') {
-          this.dpTriggers = this.TriggersReply;
+          this.dpTriggers = this.DataService.get('TriggersReply');
         } else {
-          this.dpTriggers = this.TriggersUpdate;
+          this.dpTriggers = this.DataService.get('TriggersUpdate');
         }
         return this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
           update: function(ev, data) {
-            var $list, postData, promise;
+            var $list, runOrders;
             $list = data.item.closest('ul');
-            postData = {
-              run_orders: []
-            };
+            runOrders = [];
             $list.find('li').each(function() {
-              return postData.run_orders.push($(this).data('id'));
+              return runOrders.push(parseInt($(this).data('id')));
             });
-            promise = _this.Api.sendPostJson('/ticket_triggers/run_order', postData);
+            _this.dpTriggers.saveRunOrder(runOrders);
             return _this.pingElement('run_orders');
           }
         };
@@ -57,12 +55,8 @@
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.dpTriggers.loadList().then(function(recs) {
-          _this.triggers = recs.values();
-          return _this.addManagedListener(recs, 'changed', function() {
-            _this.triggers = recs.values();
-            return _this.ngApply();
-          });
+        promise = this.dpTriggers.loadList().then(function(list) {
+          return _this.triggers = list;
         });
         return promise;
       };
@@ -73,11 +67,7 @@
 
 
       Admin_TicketTriggers_Ctrl_List.prototype.updateTriggerEnabledState = function(trigger) {
-        if (trigger.is_enabled) {
-          return this.Api.sendPost("/ticket_triggers/" + trigger.id + "/enable");
-        } else {
-          return this.Api.sendPost("/ticket_triggers/" + trigger.id + "/disable");
-        }
+        return this.dpTriggers.saveEnabledState(trigger);
       };
 
       /*
@@ -102,22 +92,11 @@
           ]
         });
         return inst.result.then(function() {
-          return _this.deleteTrigger(trigger);
-        });
-      };
-
-      /*
-      		# Actually do the delete
-      */
-
-
-      Admin_TicketTriggers_Ctrl_List.prototype.deleteTrigger = function(trigger) {
-        var _this = this;
-        this.dpTriggers.removeTriggerModel(trigger.id);
-        return this.Api.sendDelete('/ticket_triggers/' + trigger.id).success(function() {
-          if (_this.$state.current.name === 'tickets.ticket_triggers.edit' && parseInt(_this.$state.params.id) === trigger.id) {
-            return _this.$state.go('tickets.ticket_triggers');
-          }
+          return _this.dpTriggers.deleteTriggerById(trigger.id).then(function() {
+            if (_this.$state.current.name === 'tickets.ticket_triggers.edit' && parseInt(_this.$state.params.id) === trigger.id) {
+              return _this.$state.go('tickets.ticket_triggers');
+            }
+          });
         });
       };
 
