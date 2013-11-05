@@ -326,8 +326,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 	/**
-	 * @TODO provide tests for this method
-	 *
 	 * @param \Symfony\Component\Form\Form $form
 	 *
 	 * @return string
