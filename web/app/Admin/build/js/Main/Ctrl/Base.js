@@ -151,6 +151,7 @@
         this.has_init = true;
         ret = this.initialLoad();
         if (ret) {
+          this.enableViewLoadingState();
           ret.then(function() {
             return _this.disableViewLoadingState();
           });

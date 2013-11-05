@@ -124,6 +124,7 @@ define ['angular', 'Admin/App'], (angular) ->
 
 			ret = @initialLoad()
 			if ret
+				@enableViewLoadingState()
 				ret.then(=>
 					@disableViewLoadingState()
 				)

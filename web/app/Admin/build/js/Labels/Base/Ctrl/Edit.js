@@ -22,7 +22,6 @@
         this.api_endpoint = '';
         this.ng_route = '';
         this.typename = '';
-        this.is_new = (this.$stateParams.label == null) || this.$stateParams.label === '';
         this.old_label = '';
         this.$scope.form = {
           label: ''
@@ -40,11 +39,16 @@
             rec = _this.em.createEntity(_this.typename, 'label', {
               label: result.data.label
             });
+            _this.is_new = false;
             _this.old_label = result.data.label;
+            _this.label_object = {
+              label: _this.old_label
+            };
             return _this.$scope.form.label = result.data.label;
           });
           return get_label;
         } else {
+          this.is_new = true;
           this.$scope.form.label = '';
           return null;
         }
@@ -91,7 +95,10 @@
           _this.stopSpinner('saving_label', true).then(function() {
             _this.Growl.success(_this.getRegisteredMessage('saved_label'));
             _this.LabelManager.renameLabel(_this.api_endpoint, _this.old_label, _this.$scope.form.label);
-            return _this.old_label = _this.$scope.form.label;
+            _this.old_label = _this.$scope.form.label;
+            return _this.label_object = {
+              label: _this.old_label
+            };
           });
           return _this.skipDirtyState();
         }).error(function() {

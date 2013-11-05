@@ -8,9 +8,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			@api_endpoint = ''
 			@ng_route = ''
 			@typename = ''
-
-			@is_new = !@$stateParams.label? or @$stateParams.label == ''
-
 			@old_label = ''
 			@$scope.form = { label: '' }
 			return
@@ -21,12 +18,16 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					label: @$stateParams.label
 				}).then( (result) =>
 					rec = @em.createEntity(@typename, 'label', { label: result.data.label })
+
+					@is_new = false
 					@old_label = result.data.label
+					@label_object = { label: @old_label }
 					@$scope.form.label = result.data.label
 				)
 
 				return get_label
 			else
+				@is_new = true
 				@$scope.form.label = ''
 				return null
 
@@ -62,6 +63,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					@Growl.success(@getRegisteredMessage('saved_label'))
 					@LabelManager.renameLabel(@api_endpoint, @old_label, @$scope.form.label)
 					@old_label = @$scope.form.label
+					@label_object = { label: @old_label }
 				)
 				@skipDirtyState()
 			).error(=>

@@ -365,22 +365,4 @@
 	<input type="hidden" name="process" value="1" />
 </form>
 
-{% include 'AdminBundle:TicketTriggers:criteria.html.twig' with {
-	'classname': 'criteria-tpl',
-	'term_options': term_options,
-	'no_show_fields': no_show_criteria,
-	'event_trigger': criteria_trigger.event_trigger,
-	'event_trigger_master': criteria_trigger.getMasterEvent(),
-	'event_trigger_sub': criteria_trigger.getSubEvent(),
-} %}
-
-{% include 'AdminBundle:TicketTriggers:actions.html.twig' with {
-	'classname': 'actions-tpl',
-	'term_options': term_options,
-	'no_show_fields': no_show_actions,
-	'trigger': action_trigger,
-	'event_trigger': action_trigger.event_trigger,
-	'event_trigger_master': action_trigger.getMasterEvent(),
-	'event_trigger_sub': action_trigger.getSubEvent(),
-} %}
 {% endblock %}

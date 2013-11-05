@@ -31,7 +31,7 @@
 				<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
 			</div>
 			<ul class="dp-item-list">
-				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse">
+				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="tickets.labels.edit.LABEL">
 					<a href="{{ ng_href('tickets.labels.edit', '{label: label.label}') }}">
 						<div class="pull-right">
 							<span class="badge" ng-show="!delete_mode" tooltip="The number of tickets with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
