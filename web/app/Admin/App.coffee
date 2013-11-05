@@ -12,6 +12,8 @@ define [
 	'Admin/OptionBuilder/TypesDef/TicketActions',
 	'Admin/OptionBuilder/TypesDef/TicketFilter',
 
+	'DeskPRO/Directive/DpTimeWithUnit',
+
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpCommaSeparated',
@@ -56,6 +58,8 @@ define [
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
 	Admin_OptionBuilder_TypesDef_TicketActions,
 	Admin_OptionBuilder_TypesDef_TicketFilter,
+
+	DeskPRO_Directive_DpTimeWithUnit
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -181,6 +185,8 @@ define [
 	####################################################################################################################
 	# Main directives
 	####################################################################################################################
+
+	Admin_App.directive('dpTimeWithUnit',     DeskPRO_Directive_DpTimeWithUnit)
 
 	Admin_App.directive('autofocus',          Admin_Main_Directive_Autofocus)
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)

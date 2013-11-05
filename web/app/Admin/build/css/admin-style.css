@@ -10347,3 +10347,18 @@ li.dp-layout-editor-layout-field span {
   border: 1px solid #3470a2;
   border-radius: 5px;
 }
+
+.dp-time-unit {
+  display: inline-block;
+}
+
+.dp-time-unit input.time_num {
+  width: 100px;
+  height: 26px;
+  margin: 0;
+  line-height: 100%;
+}
+
+.dp-time-unit .select2-container {
+  margin: 0;
+}
