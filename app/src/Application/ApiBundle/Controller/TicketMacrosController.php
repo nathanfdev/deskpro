@@ -127,10 +127,10 @@ class TicketMacrosController extends AbstractController
 	}
 
 	####################################################################################################################
-	# delete
+	# remove
 	####################################################################################################################
 
-	public function deleteAction($id)
+	public function removeAction($id)
 	{
 		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
 		if (!$macro) {
