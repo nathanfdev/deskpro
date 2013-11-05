@@ -337,17 +337,21 @@
 
 
       Admin_Ctrl_Base.prototype.applyErrorResponseToView = function(result) {
-        var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _len, _len1, _ref, _ref1;
+        var check_code, code, code_safe, code_segs, error_codes, field, field_title, form, form_key, handled_codes, last_seg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
         if ((result != null ? result.error_code : void 0) !== 'validation_error') {
           return;
         }
         error_codes = [];
-        error_codes.push(result.detail.code_name);
+        _ref = result.detail.code_name.split(',');
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          code = _ref[_i];
+          error_codes.push(code);
+        }
         handled_codes = [];
-        _ref = this.$scope;
-        for (form_key in _ref) {
-          if (!__hasProp.call(_ref, form_key)) continue;
-          form = _ref[form_key];
+        _ref1 = this.$scope;
+        for (form_key in _ref1) {
+          if (!__hasProp.call(_ref1, form_key)) continue;
+          form = _ref1[form_key];
           if (form_key.indexOf('form_') !== 0) {
             continue;
           }
@@ -357,11 +361,11 @@
             if (field.dpServerValidationKeys == null) {
               continue;
             }
-            for (_i = 0, _len = error_codes.length; _i < _len; _i++) {
-              code = error_codes[_i];
-              _ref1 = field.dpServerValidationKeys;
-              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                check_code = _ref1[_j];
+            for (_j = 0, _len1 = error_codes.length; _j < _len1; _j++) {
+              code = error_codes[_j];
+              _ref2 = field.dpServerValidationKeys;
+              for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                check_code = _ref2[_k];
                 if (check_code.indexOf(code) === 0) {
                   code_segs = code.split('.');
                   last_seg = code_segs.pop();

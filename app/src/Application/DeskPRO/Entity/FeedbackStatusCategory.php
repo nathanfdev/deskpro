@@ -43,6 +43,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 use Orb\Util\Util;
@@ -179,7 +180,8 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		$metadata->addPropertyConstraint('title', new NotBlank(array('message' => 'Title should not be blank.')));
+		$metadata->addPropertyConstraint('title', new NotBlank(array('message' => 'feedback_status.title.not_blank')));
+		$metadata->addPropertyConstraint('title', new Length(array('min' => 2, 'minMessage' => 'feedback_status.title.min_length')));
 		$metadata->addPropertyConstraint(
 			'status_type',
 			new Choice(

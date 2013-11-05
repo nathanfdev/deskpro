@@ -282,7 +282,9 @@ define ['angular', 'Admin/App'], (angular) ->
 			if result?.error_code != 'validation_error' then return
 
 			error_codes = []
-			error_codes.push(result.detail.code_name)
+
+			for code in result.detail.code_name.split(',')
+				error_codes.push(code)
 
 			handled_codes = []
 

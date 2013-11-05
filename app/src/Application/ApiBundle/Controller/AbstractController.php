@@ -328,49 +328,25 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * @TODO provide tests for this method
 	 *
-	 * @param $entity
-	 *
-	 * @return string
-	 */
-
-	public function getEntityValidationErrorsString($entity)
-	{
-		$result = '';
-		$errors = $this->get('validator')->validate($entity);
-
-		if (sizeof($errors) > 0) {
-
-			foreach ($errors as $error) {
-
-				$result .= '<li>' . $error->getMessage() .'</li>';
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @TODO provide tests for this method
-	 *
-	 * @param $form
+	 * @param \Symfony\Component\Form\Form $form
 	 *
 	 * @return string
 	 */
 
 	public function getFormValidationErrorsString($form)
 	{
-		$result = '';
+		$result = array();
 		$errors = $this->get('validator')->validate($form);
 
 		if (sizeof($errors) > 0) {
 
 			foreach ($errors as $error) {
 
-				$result .= '<li>' . $error->getMessage() . '</li>';
+				$result[] = $error->getMessage();
 			}
 		}
 
-		return $result;
+		return implode(',', $result);
 	}
 
 	/**

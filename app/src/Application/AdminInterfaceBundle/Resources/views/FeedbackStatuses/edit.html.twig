@@ -16,7 +16,13 @@
 						</div>
 						<div class="col-lg-9">
 							<div class="inner-group" dp-error-class="form_props.title">
-								<input type="text" class="form-control" name="title" ng-model="FeedbackStatusesEdit.feedback_status.title" style="width: 50%;" required autofocus/>
+								<input
+										type="text"
+										class="form-control"
+										name="title"
+										ng-model="FeedbackStatusesEdit.feedback_status.title"
+										dp-server-validation="feedback_status.title.min_length"
+										style="width: 50%;" required autofocus>
 								<span class="help-block">
 									{{ phrase('adm.feedback_statuses.title_explain') }}
 								</span>
@@ -30,6 +36,7 @@
 					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 					<ul>
 						<li ng-show="form_props.title.$error.required">{{ phrase('adm.feedback_statuses.title_error') }}</li>
+						<li ng-show="form_props.title.$error.feedback_status_title_min_length">Title can't be less than 2 symbols</li>
 					</ul>
 				</div>
 
