@@ -7535,10 +7535,10 @@ form {
 
 .dp-grayed-placeholder.fill {
   position: absolute;
-  top: 0;
-  right: 26px;
-  bottom: 0;
-  left: 26px;
+  top: 13px;
+  right: 13px;
+  bottom: 13px;
+  left: 13px;
 }
 
 .dp-grayed-placeholder .bg {
@@ -8054,6 +8054,10 @@ header.pane-controls > .row {
   margin-left: 0;
 }
 
+.row .editor-row {
+  margin: 0 30px;
+}
+
 article.pane-content {
   padding-right: 15px;
   padding-left: 15px;
@@ -8406,8 +8410,8 @@ nav.dp-main-tabs ul li.active {
 }
 
 .panel.panel-fill.indent .panel-body {
-  margin-right: 30px;
-  margin-left: 30px;
+  margin-right: 15px;
+  margin-left: 15px;
 }
 
 .panel.panel-fill > .panel-heading {
@@ -8450,7 +8454,7 @@ nav.dp-main-tabs ul li.active {
 }
 
 .panel.panel-innertable {
-  margin: 15px 30px 30px 30px;
+  margin: 15px;
   -webkit-border-radius: 2px;
      -moz-border-radius: 2px;
           border-radius: 2px;
@@ -8518,7 +8522,7 @@ nav.dp-main-tabs ul li.active {
 
 .inner-footer {
   padding: 15px;
-  margin: 30px;
+  margin: 30px 15px;
   background: #E9E9E9;
   border: 1px solid #DDD;
   -webkit-border-radius: 2px;
@@ -9625,6 +9629,12 @@ button.toast-close-button {
   color: #444;
 }
 
+.dp-ob-row input.form-control {
+  width: 60%;
+  height: 26px;
+  line-height: 100%;
+}
+
 .dp-ob-row label,
 .dp-ob-row select,
 .dp-ob-row input,
@@ -9635,7 +9645,7 @@ button.toast-close-button {
 }
 
 .dp-ob-standard-row {
-  padding: 8px;
+  padding: 4px;
 }
 
 .dp-ob-standard-row label {
