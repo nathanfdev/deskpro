@@ -1,7 +1,9 @@
 define [
-	'Admin/Main/DataService/BaseListEdit'
+	'Admin/Main/DataService/BaseListEdit',
+	'Admin/TicketMacros/MacroEditFormMapper',
 ], (
 	BaseListEdit,
+	MacroEditFormMapper
 )  ->
 	class Admin_TicketFilters_DataService_TicketMacros extends BaseListEdit
 		@$inject = ['Api', '$q']
@@ -9,8 +11,8 @@ define [
 		_doLoadList: ->
 			deferred = @$q.defer()
 
-			@Api.sendGet('/ticket_escalations').success( (data) =>
-				models = data.escalations
+			@Api.sendGet('/ticket_macros').success( (data) =>
+				models = data.macros
 				deferred.resolve(models)
 			, (data, status, headers, config) ->
 				deferred.reject()
@@ -20,29 +22,13 @@ define [
 
 
 		###
-    	# Save order of escalations
-    	#
-    	# @param {Array} orders Array of IDs, in order
-    	# @return {promise}
-		###
-		saveRunOrder: (orders) ->
-			for id, idx in orders
-				model = @findListModelById(id)
-				if model
-					model.display_order = idx
-
-			promise = @Api.sendPostJson('/ticket_escalations/run_order', { display_order: orders })
-			return promise
-
-
-		###
     	# Remove a filter
     	#
     	# @param {Integer} id Filter id
     	# @return {promise}
 		###
-		deleteEscalationById: (id) ->
-			promise = @Api.sendDelete('/ticket_escalations/' + id).then(=>
+		deleteMacroById: (id) ->
+			promise = @Api.sendDelete('/ticket_macros/' + id).then(=>
 				@removeListModelById(id)
 			)
 			return promise
@@ -54,16 +40,68 @@ define [
     	# @param {Integer} id Filter id
     	# @return {promise}
 		###
-		loadEditEscalationData: (id) ->
+		loadEditMacroData: (id) ->
 
 			deferred = @$q.defer()
 
-			@Api.sendGet('/ticket_escalations/' + id).then( (result) ->
-				deferred.resolve({
-					filter: result.data.filter
-				})
+			@Api.sendDataGet({
+				'macro': (if id then '/ticket_macros/' + id else null)
+				'agents': '/agents'
+			}).then( (result) =>
+				data = {}
+
+				if result.data.macro?.macro?
+					data.macro = result.data.macro.macro
+				else
+					data.macro = {
+						id: null,
+						title: ''
+					}
+
+				data.agents = result.data.agents.agents
+				data.form = @getFormMapper().getFormFromModel(data.macro)
+				deferred.resolve(data)
 			, ->
 				deferred.reject()
 			)
 
 			return deferred.promise
+
+
+		###
+    	# Get the form mapper
+    	#
+    	# @return {MacroEditFormMapper}
+		###
+		getFormMapper: ->
+			if @formMapper then return @formMapper
+			@formMapper = new MacroEditFormMapper()
+			return @formMapper
+
+
+		###
+    	# Saves a form model and applies the form model to the macro model
+    	# once finished.
+    	#
+    	# @param {Object} macroModel The macro model
+    	# @param {Object} formModel  The model representing the form
+    	# @return {promise}
+		###
+		saveFormModel: (macroModel, formModel) ->
+			mapper = @getFormMapper()
+
+			postData = mapper.getPostDataFromForm(formModel)
+
+			if macroModel.id
+				promise = @Api.sendPostJson('/ticket_macros/' + macroModel.id, postData)
+			else
+				promise = @Api.sendPutJson('/ticket_macros', postData).success( (data) ->
+					macroModel.id = data.macro_id
+				)
+
+			promise.success(=>
+				mapper.applyFormToModel(macroModel, formModel)
+				@mergeDataModel(macroModel)
+			)
+
+			return promise

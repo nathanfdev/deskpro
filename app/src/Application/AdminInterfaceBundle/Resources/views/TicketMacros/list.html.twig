@@ -14,14 +14,13 @@
 				</nav>
 				<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_macros.count_macros') }}"></h3>
 			</div>
-			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
-				<li class="with-drag-handle" ng-repeat="macro in ListCtrl.list" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
+			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
+				<li ng-repeat="macro in ListCtrl.list" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
 					<a href="{{ ng_href('tickets.macros.edit', '{id: macro.id}') }}">
-						<i class="icon-reorder drag-handle"></i>
 						<div class="pull-right">
 							<em class="tag"style="margin-left: 6px;">
 								<span ng-if="macro.is_global">global</span>
-								<span ng-if="macro.person_id">{{ ng_var('macro.person.display_name') }}</span>
+								<span ng-if="!macro.is_global && macro.person_id">{{ ng_var('macro.person.display_name') }}</span>
 							</em>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="icon-trash"></i></span>
 						</div>

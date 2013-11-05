@@ -10,29 +10,35 @@ define [
 		@DEPS      = ['dpObTypesDefTicketActions', '$stateParams']
 
 		init: ->
-			@macroData = @DataService.get('TicketMacros')
-			@macro = null
+			@macroData  = @DataService.get('TicketMacros')
 
-			@macro_criteria = {}
+			@macro  = null
+			@agents = null
+			@form   = null
+
 			@actionsTypeDef    = @dpObTypesDefTicketActions
 			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
 
 		initialLoad: ->
-			if @$stateParams.id
-				promise = @macroData.loadEditMacroData(@$stateParams.id).then( (data) =>
-					@macro = data.macro
-					@form = @getFormFromModel(@macro)
-				)
-				return promise
-			else
-				@macro = {}
-				@form = @getFormFromModel(@macro)
-				return null
+			promise = @macroData.loadEditMacroData(@$stateParams.id || null).then( (data) =>
+				@macro  = data.macro
+				@agents = data.agents
+				@form   = data.form
+			)
+			return promise
 
-		getFormFromModel: (macroModel) ->
-			form = {}
-			form.title = macroModel.title || ''
+		saveForm: ->
+			is_new = !!@macro.id
 
-			return form
+			promise = @macroData.saveFormModel(@macro, @form)
+
+			@startSpinner('saving')
+			promise.then( =>
+				@stopSpinner('saving')
+
+				@skipDirtyState()
+				if is_new
+					@$state.go('tickets.macros.gocreate')
+			)
 
 	Admin_TicketMacros_Ctrl_Edit.EXPORT_CTRL()

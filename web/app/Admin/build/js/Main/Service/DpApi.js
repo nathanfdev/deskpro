@@ -71,6 +71,9 @@
         if (_.isArray(paths)) {
           for (_i = 0, _len = paths.length; _i < _len; _i++) {
             path = paths[_i];
+            if (path === null) {
+              continue;
+            }
             params.push({
               name: 'load_data[]',
               value: this.formatUrl(path)
@@ -80,6 +83,9 @@
           for (save_key in paths) {
             if (!__hasProp.call(paths, save_key)) continue;
             path = paths[save_key];
+            if (path === null) {
+              continue;
+            }
             params.push({
               name: 'load_data[' + encodeURIComponent(save_key) + ']',
               value: this.formatUrl(path)

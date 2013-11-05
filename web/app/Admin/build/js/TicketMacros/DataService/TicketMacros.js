@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/DataService/BaseListEdit'], function(BaseListEdit) {
+  define(['Admin/Main/DataService/BaseListEdit', 'Admin/TicketMacros/MacroEditFormMapper'], function(BaseListEdit, MacroEditFormMapper) {
     var Admin_TicketFilters_DataService_TicketMacros, _ref;
     return Admin_TicketFilters_DataService_TicketMacros = (function(_super) {
       __extends(Admin_TicketFilters_DataService_TicketMacros, _super);
@@ -18,37 +18,14 @@
         var deferred,
           _this = this;
         deferred = this.$q.defer();
-        this.Api.sendGet('/ticket_escalations').success(function(data) {
+        this.Api.sendGet('/ticket_macros').success(function(data) {
           var models;
-          models = data.escalations;
+          models = data.macros;
           return deferred.resolve(models);
         }, function(data, status, headers, config) {
           return deferred.reject();
         });
         return deferred.promise;
-      };
-
-      /*
-        	# Save order of escalations
-        	#
-        	# @param {Array} orders Array of IDs, in order
-        	# @return {promise}
-      */
-
-
-      Admin_TicketFilters_DataService_TicketMacros.prototype.saveRunOrder = function(orders) {
-        var id, idx, model, promise, _i, _len;
-        for (idx = _i = 0, _len = orders.length; _i < _len; idx = ++_i) {
-          id = orders[idx];
-          model = this.findListModelById(id);
-          if (model) {
-            model.display_order = idx;
-          }
-        }
-        promise = this.Api.sendPostJson('/ticket_escalations/run_order', {
-          display_order: orders
-        });
-        return promise;
       };
 
       /*
@@ -59,10 +36,10 @@
       */
 
 
-      Admin_TicketFilters_DataService_TicketMacros.prototype.deleteEscalationById = function(id) {
+      Admin_TicketFilters_DataService_TicketMacros.prototype.deleteMacroById = function(id) {
         var promise,
           _this = this;
-        promise = this.Api.sendDelete('/ticket_escalations/' + id).then(function() {
+        promise = this.Api.sendDelete('/ticket_macros/' + id).then(function() {
           return _this.removeListModelById(id);
         });
         return promise;
@@ -76,17 +53,75 @@
       */
 
 
-      Admin_TicketFilters_DataService_TicketMacros.prototype.loadEditEscalationData = function(id) {
-        var deferred;
+      Admin_TicketFilters_DataService_TicketMacros.prototype.loadEditMacroData = function(id) {
+        var deferred,
+          _this = this;
         deferred = this.$q.defer();
-        this.Api.sendGet('/ticket_escalations/' + id).then(function(result) {
-          return deferred.resolve({
-            filter: result.data.filter
-          });
+        this.Api.sendDataGet({
+          'macro': (id ? '/ticket_macros/' + id : null),
+          'agents': '/agents'
+        }).then(function(result) {
+          var data, _ref1;
+          data = {};
+          if (((_ref1 = result.data.macro) != null ? _ref1.macro : void 0) != null) {
+            data.macro = result.data.macro.macro;
+          } else {
+            data.macro = {
+              id: null,
+              title: ''
+            };
+          }
+          data.agents = result.data.agents.agents;
+          data.form = _this.getFormMapper().getFormFromModel(data.macro);
+          return deferred.resolve(data);
         }, function() {
           return deferred.reject();
         });
         return deferred.promise;
+      };
+
+      /*
+        	# Get the form mapper
+        	#
+        	# @return {MacroEditFormMapper}
+      */
+
+
+      Admin_TicketFilters_DataService_TicketMacros.prototype.getFormMapper = function() {
+        if (this.formMapper) {
+          return this.formMapper;
+        }
+        this.formMapper = new MacroEditFormMapper();
+        return this.formMapper;
+      };
+
+      /*
+        	# Saves a form model and applies the form model to the macro model
+        	# once finished.
+        	#
+        	# @param {Object} macroModel The macro model
+        	# @param {Object} formModel  The model representing the form
+        	# @return {promise}
+      */
+
+
+      Admin_TicketFilters_DataService_TicketMacros.prototype.saveFormModel = function(macroModel, formModel) {
+        var mapper, postData, promise,
+          _this = this;
+        mapper = this.getFormMapper();
+        postData = mapper.getPostDataFromForm(formModel);
+        if (macroModel.id) {
+          promise = this.Api.sendPostJson('/ticket_macros/' + macroModel.id, postData);
+        } else {
+          promise = this.Api.sendPutJson('/ticket_macros', postData).success(function(data) {
+            return macroModel.id = data.macro_id;
+          });
+        }
+        promise.success(function() {
+          mapper.applyFormToModel(macroModel, formModel);
+          return _this.mergeDataModel(macroModel);
+        });
+        return promise;
       };
 
       return Admin_TicketFilters_DataService_TicketMacros;

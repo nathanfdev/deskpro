@@ -23,7 +23,8 @@
       Admin_TicketMacros_Ctrl_Edit.prototype.init = function() {
         this.macroData = this.DataService.get('TicketMacros');
         this.macro = null;
-        this.macro_criteria = {};
+        this.agents = null;
+        this.form = null;
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         return this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
       };
@@ -31,24 +32,27 @@
       Admin_TicketMacros_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        if (this.$stateParams.id) {
-          promise = this.macroData.loadEditMacroData(this.$stateParams.id).then(function(data) {
-            _this.macro = data.macro;
-            return _this.form = _this.getFormFromModel(_this.macro);
-          });
-          return promise;
-        } else {
-          this.macro = {};
-          this.form = this.getFormFromModel(this.macro);
-          return null;
-        }
+        promise = this.macroData.loadEditMacroData(this.$stateParams.id || null).then(function(data) {
+          _this.macro = data.macro;
+          _this.agents = data.agents;
+          return _this.form = data.form;
+        });
+        return promise;
       };
 
-      Admin_TicketMacros_Ctrl_Edit.prototype.getFormFromModel = function(macroModel) {
-        var form;
-        form = {};
-        form.title = macroModel.title || '';
-        return form;
+      Admin_TicketMacros_Ctrl_Edit.prototype.saveForm = function() {
+        var is_new, promise,
+          _this = this;
+        is_new = !!this.macro.id;
+        promise = this.macroData.saveFormModel(this.macro, this.form);
+        this.startSpinner('saving');
+        return promise.then(function() {
+          _this.stopSpinner('saving');
+          _this.skipDirtyState();
+          if (is_new) {
+            return _this.$state.go('tickets.macros.gocreate');
+          }
+        });
       };
 
       return Admin_TicketMacros_Ctrl_Edit;

@@ -34,63 +34,77 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Orb\Util\Util;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 
-abstract class AbstractAction implements ActionDefinitionInterface, ActionInterface, MacroActionInterface
+class MacroActionComposite implements MacroActionInterface
 {
 	/**
-	 * @var array
+	 * @var MacroActionInterface[]
 	 */
-	private $options;
-
+	private $actions = array();
 
 	/**
-	 * @param array  $options
+	 * @param MacroActionInterface[] $actions
 	 */
-	public function __construct(array $options)
+	public function __construct(array $actions = array())
 	{
-		$this->options = $options;
+		$this->setAll($actions);
 	}
 
 
 	/**
-	 * Gets the type name of the criteria
-	 *
-	 * @return string
+	 * @param MacroActionInterface $term
 	 */
-	public function getActionType()
+	public function add(MacroActionInterface $term)
 	{
-		return Util::getBaseClassname($this);
+		$this->actions[] = $term;
 	}
 
 
 	/**
-	 * Get's an array of options
-	 *
-	 * @return array
+	 * @param MacroActionInterface[] $actions
 	 */
-	public function getActionOptions()
+	public function setAll(array $actions)
 	{
-		return $this->options;
+		$this->actions = array();
+		foreach ($actions as $t) {
+			$this->add($t);
+		}
+	}
+
+
+	/**
+	 * @return MacroActionInterface[]
+	 */
+	public function getAll()
+	{
+		return $this->actions;
 	}
 
 
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function applyAction(Ticket $ticket, ActionContext $context);
+	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ActionContext $context)
+	{
+		$errors = array();
+
+		foreach ($this->actions as $act) {
+			$errors = array_merge($errors, $act->getMacroPermissionErrors($person, $ticket, $context));
+		}
+
+		return $errors;
+	}
 
 
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function getMacroPermissionErrors(Person $person, Ticket $ticket, ActionContext $context);
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	abstract public function applyMacro(Person $person, Ticket $ticket, ActionContext $context);
+	public function applyMacro(Person $person, Ticket $ticket, ActionContext $context)
+	{
+		foreach ($this->actions as $act) {
+			$act->applyMacro($person, $ticket, $context);
+		}
+	}
 }

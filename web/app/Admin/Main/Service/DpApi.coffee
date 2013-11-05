@@ -50,12 +50,14 @@ define ['angular'], (angular) ->
 			params = []
 			if _.isArray(paths)
 				for path in paths
+					if path == null then continue
 					params.push({
 						name: 'load_data[]',
 						value: @formatUrl(path)
 					})
 			else
 				for own save_key, path of paths
+					if path == null then continue
 					params.push({
 						name: 'load_data[' + encodeURIComponent(save_key) + ']',
 						value: @formatUrl(path)

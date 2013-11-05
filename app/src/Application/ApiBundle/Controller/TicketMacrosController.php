@@ -34,10 +34,9 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
-use Orb\Util\Arrays;
+use Application\DeskPRO\Tickets\Macros\MacroActions;
 
 class TicketMacrosController extends AbstractController
 {
@@ -99,8 +98,28 @@ class TicketMacrosController extends AbstractController
 				return $this->createNotFoundException();
 			}
 		} else {
-			$macro = new TicketTrigger();
+			$macro = new TicketMacro();
 		}
+
+		$macro->title = $this->in->getString('title');
+
+		if ($this->in->getBool('is_global')) {
+			$macro->is_global = true;
+		} else {
+			$macro->is_global = false;
+			$macro->person = $this->container->getAgentData()->get($this->in->getUint('person_id'));
+		}
+
+		if (!$macro->person) {
+			$macro->is_global = true;
+		}
+
+		$actions = new MacroActions();
+		$actions->importFromArray(array('actions' => $this->in->getArrayValue('actions')));
+		$macro->actions = $actions;
+
+		$this->em->persist($macro);
+		$this->em->flush();
 
 		return $this->createSuccessResponse(array(
 			'macro_id' => $macro->id
