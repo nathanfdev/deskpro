@@ -1,0 +1,57 @@
+define [
+	'DeskPRO/Util/Util'
+], (
+	Util
+) ->
+	class Admin_TicketEscalations_EscalationEditFormMapper
+		getFormFromModel: (escModel) ->
+			form = {}
+			form.title              = escModel.title || ''
+			form.event_trigger      = escModel.event_trigger || 'time.open'
+			form.event_trigger_time = escModel.event_trigger_time || 3600
+			form.actions            = escModel.actions?.actions || {}
+			form.terms_set          = {}
+
+			termSetCount = 0
+			if escModel.terms?.terms?.length
+				for termSet in escModel.terms.terms
+					if not termSet.set_terms or not termSet.set_terms.length then continue
+					termSetCount++
+
+					if termSetCount == 1
+						setId = 'first'
+					else
+						setId = Util.uid('termset')
+					form.terms_set[setId] = {}
+
+					for term in termSet.set_terms
+						rowId = Util.uid('term')
+						form.terms_set[setId][rowId] = term
+
+			if not termSetCount
+				form.terms_set.first = {}
+
+			return form
+
+		applyFormToModel: (escModel, formModel) ->
+			escModel.title = formModel.title
+
+		getPostDataFromForm: (formModel) ->
+			postData = {}
+			postData.title = formModel.title
+			postData.event_trigger = formModel.event_trigger
+			postData.event_trigger_time = formModel.event_trigger_time
+
+			postData.actions = []
+			for own id, row of formModel.actions
+				postData.actions.push(row)
+
+			postData.terms = []
+			for own _, crit_set of formModel.terms_set
+				for own _, crit of crit_set
+					if crit.type
+						postData.terms.push(crit)
+				if postData.terms.length
+					break
+
+			return postData

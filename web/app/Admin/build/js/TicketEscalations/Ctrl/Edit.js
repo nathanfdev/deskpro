@@ -22,9 +22,7 @@
 
       Admin_TicketEscalations_Ctrl_Edit.prototype.init = function() {
         this.escData = this.DataService.get('TicketEscalations');
-        this.filter = null;
-        this.escalation_criteria = {};
-        this.escalation_actions = {};
+        this.esc = null;
         this.criteraTypeDef = this.dpObTypesDefTicketFilter;
         this.criteriaOptionTypes = this.criteraTypeDef.getOptionsForTypes();
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
@@ -34,24 +32,26 @@
       Admin_TicketEscalations_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        if (this.$stateParams.id) {
-          promise = this.escData.loadEditEscalationData(this.$stateParams.id).then(function(data) {
-            _this.esc = data.esc;
-            return _this.form = _this.getFormFromModel(_this.esc);
-          });
-          return promise;
-        } else {
-          this.esc = {};
-          this.form = this.getFormFromModel(this.esc);
-          return null;
-        }
+        promise = this.escData.loadEditEscalationData(this.$stateParams.id || null).then(function(data) {
+          _this.esc = data.escalation;
+          return _this.form = data.form;
+        });
+        return promise;
       };
 
-      Admin_TicketEscalations_Ctrl_Edit.prototype.getFormFromModel = function(escModel) {
-        var form;
-        form = {};
-        form.title = escModel.title || '';
-        return form;
+      Admin_TicketEscalations_Ctrl_Edit.prototype.saveForm = function() {
+        var is_new, promise,
+          _this = this;
+        is_new = !!this.esc.id;
+        promise = this.escData.saveFormModel(this.esc, this.form);
+        this.startSpinner('saving');
+        return promise.then(function() {
+          _this.stopSpinner('saving');
+          _this.skipDirtyState();
+          if (is_new) {
+            return _this.$state.go('tickets.escalations.gocreate');
+          }
+        });
       };
 
       return Admin_TicketEscalations_Ctrl_Edit;

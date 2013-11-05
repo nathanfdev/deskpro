@@ -2445,7 +2445,7 @@ $collection->create('api_ticket_escalations_updateorder', array(
 ));
 
 $collection->create('api_ticket_escalations_create', array(
-	'path'        => '/ticket_triggers',
+	'path'        => '/ticket_escalations',
 	'controller'  => 'ApiBundle:TicketEscalations:save',
 	'defaults'    => array('id' => '0'),
 	'methods'     => array('PUT'),

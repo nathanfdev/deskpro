@@ -29,7 +29,18 @@
 							<h3>Event</h3>
 						</div>
 						<div class="col-lg-10">
-							xxx
+							<select
+								ng-model="EditCtrl.form.event_trigger"
+								ui-select2
+								style="width: 300px;"
+							>
+								<option value="time.open">The ticket has been unresolved for...</option>
+								<option value="time.user_waiting">The user has been waiting for...</option>
+								<option value="time.total_user_waiting">The total time the user has been waiting is...</option>
+								<option value="time.agent_waiting">The agent has been waiting for...</option>
+								<option value="time.resolved">The ticket has been resolved for...</option>
+							</select><br/>
+							<dp-time-with-unit ng-model="EditCtrl.form.event_trigger_time" />
 						</div>
 					</div>
 				</div>
@@ -54,7 +65,7 @@
 								The following conditions are met:
 							</header>
 							<article>
-								<dp-option-builder types-def="EditCtrl.criteraTypeDef" save-target="EditCtrl.escalation_criteria" options="{tag_first: false, tag_after: 'and'}" option-types="EditCtrl.criteriaOptionTypes">
+								<dp-option-builder types-def="EditCtrl.criteraTypeDef" save-target="EditCtrl.form.terms_set.first" options="{tag_first: false, tag_after: 'and'}" option-types="EditCtrl.criteriaOptionTypes">
 									<add-btn-label>Criteria</add-btn-label>
 								</dp-option-builder>
 							</article>
@@ -82,7 +93,7 @@
 								The followings actions will run:
 							</header>
 							<article>
-								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.escalation_actions" options="{tag_first: '', tag_after: 'then'}" option-types="EditCtrl.actionOptionTypes">
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="EditCtrl.actionOptionTypes">
 									<add-btn-label>Action</add-btn-label>
 								</dp-option-builder>
 							</article>

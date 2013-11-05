@@ -34,13 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-use Orb\Util\Numbers;
-use Orb\Util\Arrays;
-
-use \Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-
 class TicketEscalation extends AbstractEntityRepository
 {
 	/**

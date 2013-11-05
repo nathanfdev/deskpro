@@ -35,6 +35,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketEscalation;
+use Application\DeskPRO\Tickets\Escalations\EscalationTerms;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class TicketEscalationsController extends AbstractController
 {
@@ -47,7 +49,6 @@ class TicketEscalationsController extends AbstractController
 		$escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
 
 		$data = array();
-
 		foreach ($escalations as $esc) {
 			$row = array(
 				'id'                 => $esc->id,
@@ -98,6 +99,30 @@ class TicketEscalationsController extends AbstractController
 		} else {
 			$esc = new TicketEscalation();
 		}
+
+		$esc->title = $this->in->getString('title');
+		$esc->event_trigger = $this->in->getString('event_trigger');
+		$esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
+
+		$terms = new EscalationTerms();
+		foreach ($this->in->getArrayValue('criteria') as $term) {
+			if ($term) {
+				$terms->addTermFromArray($term);
+			}
+		}
+
+		$actions = new TriggerActions();
+		foreach ($this->in->getArrayValue('actions') as $act) {
+			if ($act) {
+				$actions->addActionFromArray($act);
+			}
+		}
+
+		$esc->terms = $terms;
+		$esc->actions = $actions;
+
+		$this->em->persist($esc);
+		$this->em->flush();
 
 		return $this->createSuccessResponse(array(
 			'escalation_id' => $esc->id

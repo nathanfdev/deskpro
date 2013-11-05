@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\Tickets\Triggers\EscalationTerms;
+use Application\DeskPRO\Tickets\Escalations\EscalationTerms;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -62,6 +62,11 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $is_enabled = true;
+
+	/**
 	 * @var string
 	 */
 	protected $event_trigger;
@@ -72,7 +77,7 @@ class TicketEscalation extends \Application\DeskPRO\Domain\DomainObject
 	protected $event_trigger_time;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\Triggers\EscalationTerms
+	 * @var \Application\DeskPRO\Tickets\Escalations\EscalationTerms
 	 */
 	protected $terms;
 

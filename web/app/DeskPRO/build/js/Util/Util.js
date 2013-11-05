@@ -12,13 +12,21 @@
         if (typeof /./ !== 'function') {
           this.optIsfunc = true;
         }
+        this.nativeIsArray = false;
+        if (Array.isArray != null) {
+          this.nativeIsArray = true;
+        }
+        this.nativeObjKeys = false;
+        if (Object.keys != null) {
+          this.nativeObjKeys = true;
+        }
       }
 
       /*
-        	# Gets a unique number for the current page
-        	#
-        	# @param {String} prefix Optional prefix
-        	# @return {String}
+      		# Gets a unique number for the current page
+      		#
+      		# @param {String} prefix Optional prefix
+      		# @return {String}
       */
 
 
@@ -31,11 +39,11 @@
       };
 
       /*
-        	# Get a random number between min and max inclusive.
-        	#
-        	# @param {Integer} min
-        	# @param {Integer} max
-        	# @return {Integer}
+      		# Get a random number between min and max inclusive.
+      		#
+      		# @param {Integer} min
+      		# @param {Integer} max
+      		# @return {Integer}
       */
 
 
@@ -52,9 +60,9 @@
 
       /*
       		# Get an array of [key, value] in an object
-        	#
-        	# @param {Object} obj
-        	# @return {Array}
+      		#
+      		# @param {Object} obj
+      		# @return {Array}
       */
 
 
@@ -71,38 +79,32 @@
 
       /*
       		# Get an array of keys in an object
-        	#
-        	# @param {Object} obj
-        	# @return {Array}
+      		#
+      		# @param {Object} obj
+      		# @return {Array}
       */
 
 
-      if (Object.keys != null) {
-        ({
-          keys: function(obj) {
-            return obj.keys();
+      DeskPRO_Util_Util.prototype.keys = function(obj) {
+        var k, keys, v;
+        if (this.nativeObjKeys) {
+          return obj.keys();
+        } else {
+          keys = [];
+          for (k in obj) {
+            if (!__hasProp.call(obj, k)) continue;
+            v = obj[k];
+            keys.push(k);
           }
-        });
-      } else {
-        ({
-          keys: function(obj) {
-            var k, keys, v;
-            keys = [];
-            for (k in obj) {
-              if (!__hasProp.call(obj, k)) continue;
-              v = obj[k];
-              keys.push(k);
-            }
-            return keys;
-          }
-        });
-      }
+          return keys;
+        }
+      };
 
       /*
       		# Get an array of values in an object
-        	#
-        	# @param {Object} obj
-        	# @return {Array}
+      		#
+      		# @param {Object} obj
+      		# @return {Array}
       */
 
 
@@ -119,9 +121,9 @@
 
       /*
       		# Check if a value is a function
-        	#
-        	# @param {Object} obj
-        	# @return {bool}
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
       */
 
 
@@ -192,26 +194,20 @@
       */
 
 
-      if (Array.isArray != null) {
-        ({
-          isArray: function(obj) {
-            return Array.isArray(obj);
-          }
-        });
-      } else {
-        ({
-          isArray: function(obj) {
-            return Object.prototype.toString.call(obj) === '[object Array]';
-          }
-        });
-      }
+      DeskPRO_Util_Util.prototype.isArray = function(obj) {
+        if (this.nativeIsArray) {
+          return Array.isArray(obj);
+        } else {
+          return Object.prototype.toString.call(obj) === '[object Array]';
+        }
+      };
 
       /*
-        	# Copy properties from other_objects to destObj, returning destObj.
-        	#
-        	# @param {Object} destObj
-        	# @param {Object} other_objects...
-        	# @return {Object}
+      		# Copy properties from other_objects to destObj, returning destObj.
+      		#
+      		# @param {Object} destObj
+      		# @param {Object} other_objects...
+      		# @return {Object}
       */
 
 
@@ -230,10 +226,10 @@
       };
 
       /*
-        	# Merge all objects into a new object
-        	#
-        	# @param {Object} objects...
-        	# @return {Object}
+      		# Merge all objects into a new object
+      		#
+      		# @param {Object} objects...
+      		# @return {Object}
       */
 
 
@@ -246,11 +242,11 @@
       };
 
       /*
-        	# Clones an object
-        	#
-        	# @param {Object} obj
-        	# @param {bool} deep True to do a deep clone
-        	# @return {Object}
+      		# Clones an object
+      		#
+      		# @param {Object} obj
+      		# @param {bool} deep True to do a deep clone
+      		# @return {Object}
       */
 
 

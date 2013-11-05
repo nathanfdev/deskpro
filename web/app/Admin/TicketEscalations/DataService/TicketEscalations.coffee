@@ -1,7 +1,9 @@
 define [
-	'Admin/Main/DataService/BaseListEdit'
+	'Admin/Main/DataService/BaseListEdit',
+	'Admin/TicketEscalations/EscalationEditFormMapper'
 ], (
 	BaseListEdit,
+	EscalationEditFormMapper
 )  ->
 	class Admin_TicketFilters_DataService_TicketEscalations extends BaseListEdit
 		@$inject = ['Api', '$q']
@@ -49,6 +51,16 @@ define [
 
 
 		###
+    	# Get the form mapper
+    	#
+    	# @return {EscalationEditFormMapper}
+		###
+		getFormMapper: ->
+			if @formMapper then return @formMapper
+			@formMapper = new EscalationEditFormMapper()
+			return @formMapper
+
+		###
     	# Get all data needed for the edit filter page
     	#
     	# @param {Integer} id Filter id
@@ -58,12 +70,50 @@ define [
 
 			deferred = @$q.defer()
 
-			@Api.sendGet('/ticket_escalations/' + id).then( (result) ->
-				deferred.resolve({
-					filter: result.data.filter
-				})
-			, ->
-				deferred.reject()
-			)
+			if id
+				@Api.sendGet('/ticket_escalations/' + id).then( (result) =>
+					data = {}
+					data.escalation = result.data.escalation
+					data.form = @getFormMapper().getFormFromModel(data.escalation)
+					deferred.resolve(data)
+				, ->
+					deferred.reject()
+				)
+			else
+				data = {}
+				data.escalation = {
+					id: null,
+					title: ''
+				}
+				data.form = @getFormMapper().getFormFromModel(data.escalation)
+				deferred.resolve(data)
 
 			return deferred.promise
+
+
+		###
+    	# Saves a form model and applies the form model to the macro model
+    	# once finished.
+    	#
+    	# @param {Object} escModel The esc model
+    	# @param {Object} formModel  The model representing the form
+    	# @return {promise}
+		###
+		saveFormModel: (escModel, formModel) ->
+			mapper = @getFormMapper()
+
+			postData = mapper.getPostDataFromForm(formModel)
+
+			if escModel.id
+				promise = @Api.sendPostJson('/ticket_escalations/' + escModel.id, postData)
+			else
+				promise = @Api.sendPutJson('/ticket_escalations', postData).success( (data) ->
+					escModel.id = data.escalation_id
+				)
+
+			promise.success(=>
+				mapper.applyFormToModel(escModel, formModel)
+				@mergeDataModel(escModel)
+			)
+
+			return promise

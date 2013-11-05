@@ -11,10 +11,7 @@ define [
 
 		init: ->
 			@escData = @DataService.get('TicketEscalations')
-			@filter = null
-
-			@escalation_criteria = {}
-			@escalation_actions  = {}
+			@esc = null
 
 			@criteraTypeDef      = @dpObTypesDefTicketFilter
 			@criteriaOptionTypes = @criteraTypeDef.getOptionsForTypes()
@@ -23,21 +20,24 @@ define [
 			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
 
 		initialLoad: ->
-			if @$stateParams.id
-				promise = @escData.loadEditEscalationData(@$stateParams.id).then( (data) =>
-					@esc = data.esc
-					@form = @getFormFromModel(@esc)
-				)
-				return promise
-			else
-				@esc = {}
-				@form = @getFormFromModel(@esc)
-				return null
+			promise = @escData.loadEditEscalationData(@$stateParams.id || null).then( (data) =>
+				@esc  = data.escalation
+				@form = data.form
+			)
+			return promise
 
-		getFormFromModel: (escModel) ->
-			form = {}
-			form.title = escModel.title || ''
+		saveForm: ->
+			is_new = !!@esc.id
 
-			return form
+			promise = @escData.saveFormModel(@esc, @form)
+
+			@startSpinner('saving')
+			promise.then( =>
+				@stopSpinner('saving')
+
+				@skipDirtyState()
+				if is_new
+					@$state.go('tickets.escalations.gocreate')
+			)
 
 	Admin_TicketEscalations_Ctrl_Edit.EXPORT_CTRL()

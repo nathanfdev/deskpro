@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/DataService/BaseListEdit'], function(BaseListEdit) {
+  define(['Admin/Main/DataService/BaseListEdit', 'Admin/TicketEscalations/EscalationEditFormMapper'], function(BaseListEdit, EscalationEditFormMapper) {
     var Admin_TicketFilters_DataService_TicketEscalations, _ref;
     return Admin_TicketFilters_DataService_TicketEscalations = (function(_super) {
       __extends(Admin_TicketFilters_DataService_TicketEscalations, _super);
@@ -69,6 +69,21 @@
       };
 
       /*
+        	# Get the form mapper
+        	#
+        	# @return {EscalationEditFormMapper}
+      */
+
+
+      Admin_TicketFilters_DataService_TicketEscalations.prototype.getFormMapper = function() {
+        if (this.formMapper) {
+          return this.formMapper;
+        }
+        this.formMapper = new EscalationEditFormMapper();
+        return this.formMapper;
+      };
+
+      /*
         	# Get all data needed for the edit filter page
         	#
         	# @param {Integer} id Filter id
@@ -77,16 +92,58 @@
 
 
       Admin_TicketFilters_DataService_TicketEscalations.prototype.loadEditEscalationData = function(id) {
-        var deferred;
+        var data, deferred,
+          _this = this;
         deferred = this.$q.defer();
-        this.Api.sendGet('/ticket_escalations/' + id).then(function(result) {
-          return deferred.resolve({
-            filter: result.data.filter
+        if (id) {
+          this.Api.sendGet('/ticket_escalations/' + id).then(function(result) {
+            var data;
+            data = {};
+            data.escalation = result.data.escalation;
+            data.form = _this.getFormMapper().getFormFromModel(data.escalation);
+            return deferred.resolve(data);
+          }, function() {
+            return deferred.reject();
           });
-        }, function() {
-          return deferred.reject();
-        });
+        } else {
+          data = {};
+          data.escalation = {
+            id: null,
+            title: ''
+          };
+          data.form = this.getFormMapper().getFormFromModel(data.escalation);
+          deferred.resolve(data);
+        }
         return deferred.promise;
+      };
+
+      /*
+        	# Saves a form model and applies the form model to the macro model
+        	# once finished.
+        	#
+        	# @param {Object} escModel The esc model
+        	# @param {Object} formModel  The model representing the form
+        	# @return {promise}
+      */
+
+
+      Admin_TicketFilters_DataService_TicketEscalations.prototype.saveFormModel = function(escModel, formModel) {
+        var mapper, postData, promise,
+          _this = this;
+        mapper = this.getFormMapper();
+        postData = mapper.getPostDataFromForm(formModel);
+        if (escModel.id) {
+          promise = this.Api.sendPostJson('/ticket_escalations/' + escModel.id, postData);
+        } else {
+          promise = this.Api.sendPutJson('/ticket_escalations', postData).success(function(data) {
+            return escModel.id = data.escalation_id;
+          });
+        }
+        promise.success(function() {
+          mapper.applyFormToModel(escModel, formModel);
+          return _this.mergeDataModel(escModel);
+        });
+        return promise;
       };
 
       return Admin_TicketFilters_DataService_TicketEscalations;

@@ -16,22 +16,22 @@ define ->
 				@nativeObjKeys = true
 
 		###
-    	# Gets a unique number for the current page
-    	#
-    	# @param {String} prefix Optional prefix
-    	# @return {String}
-    	###
+		# Gets a unique number for the current page
+		#
+		# @param {String} prefix Optional prefix
+		# @return {String}
+		###
 		uid: (prefix = '') ->
 			DeskPRO_Util_Util.UID_COUNTER++
 			return prefix + DeskPRO_Util_Util.UID_COUNTER
 
 		###
-    	# Get a random number between min and max inclusive.
-    	#
-    	# @param {Integer} min
-    	# @param {Integer} max
-    	# @return {Integer}
-    	###
+		# Get a random number between min and max inclusive.
+		#
+		# @param {Integer} min
+		# @param {Integer} max
+		# @return {Integer}
+		###
 		random: (min, max = null) ->
 			if max == null
 				max = min
@@ -41,9 +41,9 @@ define ->
 
 		###
 		# Get an array of [key, value] in an object
-    	#
-    	# @param {Object} obj
-    	# @return {Array}
+		#
+		# @param {Object} obj
+		# @return {Array}
 		###
 		keyValuePair: (obj) ->
 			pairs = []
@@ -55,11 +55,11 @@ define ->
 
 		###
 		# Get an array of keys in an object
-    	#
-    	# @param {Object} obj
-    	# @return {Array}
+		#
+		# @param {Object} obj
+		# @return {Array}
 		###
-    	keys: (obj) ->
+		keys: (obj) ->
 			if @nativeObjKeys
 				return obj.keys()
 			else
@@ -72,9 +72,9 @@ define ->
 
 		###
 		# Get an array of values in an object
-    	#
-    	# @param {Object} obj
-    	# @return {Array}
+		#
+		# @param {Object} obj
+		# @return {Array}
 		###
 		values: (obj) ->
 			values = []
@@ -86,9 +86,9 @@ define ->
 
 		###
 		# Check if a value is a function
-    	#
-    	# @param {Object} obj
-    	# @return {bool}
+		#
+		# @param {Object} obj
+		# @return {bool}
 		###
 		isFunction: (obj) ->
 			if @optIsfunc
@@ -142,7 +142,7 @@ define ->
 		# @param {Object} obj
 		# @return {bool}
 		###
-    	isArray: (obj) ->
+		isArray: (obj) ->
 			if @nativeIsArray
 				return Array.isArray(obj)
 			else
@@ -150,11 +150,11 @@ define ->
 
 
 		###
-    	# Copy properties from other_objects to destObj, returning destObj.
-    	#
-    	# @param {Object} destObj
-    	# @param {Object} other_objects...
-    	# @return {Object}
+		# Copy properties from other_objects to destObj, returning destObj.
+		#
+		# @param {Object} destObj
+		# @param {Object} other_objects...
+		# @return {Object}
 		###
 		extend: (destObj, other_objects...) ->
 			for other_obj in other_objects
@@ -165,10 +165,10 @@ define ->
 
 
 		###
-    	# Merge all objects into a new object
-    	#
-    	# @param {Object} objects...
-    	# @return {Object}
+		# Merge all objects into a new object
+		#
+		# @param {Object} objects...
+		# @return {Object}
 		###
 		merge: (objects...) ->
 			args = objects
@@ -177,11 +177,11 @@ define ->
 
 
 		###
-    	# Clones an object
-    	#
-    	# @param {Object} obj
-    	# @param {bool} deep True to do a deep clone
-    	# @return {Object}
+		# Clones an object
+		#
+		# @param {Object} obj
+		# @param {bool} deep True to do a deep clone
+		# @return {Object}
 		###
 		clone: (obj, deep = false) ->
 			if not @isObject(obj) then return obj

@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers;
+namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
