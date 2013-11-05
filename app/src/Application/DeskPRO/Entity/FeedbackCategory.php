@@ -118,7 +118,11 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 	{
 		$metadata->addPropertyConstraint(
 			'title',
-			new NotBlank(array('message' => 'Feedback type title should not be blank.'))
+			new NotBlank(
+				array(
+					 'message' => 'feedback_type.title.not_blank'
+				)
+			)
 		);
 	}
 

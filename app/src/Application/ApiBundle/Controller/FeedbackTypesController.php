@@ -129,7 +129,7 @@ class FeedbackTypesController extends AbstractController
 
 		} else {
 
-			throw ValidationException::create("feedback_type.save", $this->getFormValidationErrorsString($form));
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
 		}
 
 		return $this->createApiResponse(
