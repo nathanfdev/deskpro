@@ -35,7 +35,7 @@ class FeedbackStatusCategoryEntityTest extends DatabaseTestCase
 		$errors = $this->validateObject($feedback_status_category);
 
 		$this->assertEquals(1, count($errors));
-		$this->assertNotSame(false, strpos($errors[0]->getMessage(), 'should not be blank'));
+		$this->assertNotSame(false, strpos($errors[0]->getMessage(), 'feedback_status.title.not_blank'));
 	}
 
 	public function testFeedbackStatusCategoryNotValidatedInCaseOfInvalidStatusType()
