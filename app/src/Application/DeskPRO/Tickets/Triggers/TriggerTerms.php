@@ -128,9 +128,9 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 
 
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function serialize()
+	public function exportToArray()
 	{
 		$data = array();
 
@@ -169,7 +169,36 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 			}
 		}
 
-		return json_encode($data);
+		return $data;
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function importFromArray(array $data)
+	{
+		foreach ($data['terms'] as $term_info) {
+			$this->addTermFromArray($term_info);
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function exportToJson()
+	{
+		return json_encode($this->toArray());
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return $this->exportToJson();
 	}
 
 
@@ -179,10 +208,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface
 	public function unserialize($data)
 	{
 		$data = json_decode($data, true);
-
 		$this->__construct();
-		foreach ($data['terms'] as $term_info) {
-			$this->addTermFromArray($term_info);
-		}
+		$this->importFromArray($data);
 	}
 }

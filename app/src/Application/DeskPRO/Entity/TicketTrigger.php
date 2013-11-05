@@ -204,6 +204,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$data = parent::toApiData($primary, $deep, $visited);
 		$data['by_agent_mode'] = $this->getByAgentModeArray();
 		$data['by_user_mode']  = $this->getByAgentModeArray();
+		$data['terms']         = $this->terms->exportToArray();
+		$data['actions']       = $this->actions->exportToArray();
 		return $data;
 	}
 

@@ -104,9 +104,9 @@ class TriggerActions implements \Serializable, ActionInterface
 
 
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function serialize()
+	public function exportToArray()
 	{
 		$data = array();
 
@@ -123,7 +123,36 @@ class TriggerActions implements \Serializable, ActionInterface
 			);
 		}
 
-		return json_encode($data);
+		return $data;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function exportToJson()
+	{
+		return json_encode($this->exportToArray());
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function importFromArray(array $data)
+	{
+		foreach ($data['actions'] as $action_info) {
+			$this->addActionFromArray($action_info);
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return $this->exportToJson();
 	}
 
 
@@ -135,8 +164,6 @@ class TriggerActions implements \Serializable, ActionInterface
 		$data = json_decode($data, true);
 
 		$this->__construct();
-		foreach ($data['actions'] as $action_info) {
-			$this->addActionFromArray($action_info);
-		}
+		$this->importFromArray($data);
 	}
 }
