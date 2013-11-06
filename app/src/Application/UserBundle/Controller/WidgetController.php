@@ -208,18 +208,30 @@ class WidgetController extends AbstractController
 			$this->ensureRequestToken('newticket_widget');
 		}
 
+		$person_context = $this->person;
+		if (!$this->person->isGuest()) {
+			// If a user is already logged in and submits a ticket via
+			// widget with an unknown email, then just treat them as if they
+			// were a new user
+			$email_addy = $this->in->getString('newticket.person.email');
+			if ($email_addy && !$person_context->hasEmailAddress($email_addy)) {
+				$person_context = new \Application\DeskPRO\People\PersonGuest();
+				App::setCurrentPerson($person_context);
+			}
+		}
+
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_WEB_PERSON_WIDGET,
-			$this->person
+			$person_context
 		);
-		$newticket->setPersonContext($this->person);
+		$newticket->setPersonContext($person_context);
 
 		$website_url = $this->in->getString('website_url');
 		if ($website_url) {
 			$newticket->creation_system_option = $website_url;
 		}
 
-		$newticket_formtype = new NewTicketType($this->person);
+		$newticket_formtype = new NewTicketType($person_context);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
 		$form->bindRequest($this->get('request'));
