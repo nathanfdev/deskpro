@@ -169,6 +169,12 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				$prop_standard->merge();
 			}
 
+			if ($this->ticket->parent_ticket) {
+				if ($this->ticket->parent_ticket == $this->ticket || $this->ticket->parent_ticket == $this->other_ticket) {
+					$this->ticket->parent_ticket = null;
+				}
+			}
+
 			ksort($this->data_lost);
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
