@@ -1312,7 +1312,7 @@ class Strings
 
 			/** @var $div \QueryPath\DOMQuery */
 			$div = $qp->top()->find('body > *');
-			if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span')) && !trim($div->textBefore())) {
+			if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span')) && !trim($div->textBefore().$div->textAfter())) {
 				$changed = true;
 				$html = $div->html();
 				$html = trim($html);
