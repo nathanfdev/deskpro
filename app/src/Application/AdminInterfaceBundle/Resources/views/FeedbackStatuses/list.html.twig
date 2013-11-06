@@ -1,7 +1,7 @@
 <div class="pane">
 	<header class="pane-header">
 		<h3><i class="fa fa-ticket"></i> {{ phrase('adm.general.apps_portal') }} &rarr; {{ phrase('agent.general.feedback') }} &rarr; {{ phrase('agent.general.statuses') }}</h3>
-		<button class="fa fa-question-circle"></i></button>
+		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
 	</header>
     <article class="pane-content no-pad">
         <div class="panel panel-fill">
@@ -12,7 +12,7 @@
                             <span dp-ping-flash="display_orders_active" class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
                         </li>
                         <li>
-                            <span class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span>
+							<span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span>
                         </li>
                         <li>
                             <a class="btn btn-success" href="{{ ng_href('portal.feedback_statuses.gocreate', '{type: activeType}') }}">
