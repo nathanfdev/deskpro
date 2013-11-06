@@ -258,7 +258,7 @@ class TicketController extends AbstractController
 		$newticket->setValuesFromTicket($ticket);
 
 		$validator = new NewTicketValidator();
-		$ticket_display = new TicketPageZoneCollection('create');
+		$ticket_display = new TicketPageZoneCollection('modify');
 		$ticket_display->setPersonContext($this->person);
 		$ticket_display->addPagesFromDb();
 		$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
@@ -1432,7 +1432,7 @@ class TicketController extends AbstractController
 			$newticket = new NewTicket($this->em, $this->person);
 			$newticket->setValuesFromTicket($ticket);
 			$validator = new NewTicketValidator();
-			$ticket_display = new TicketPageZoneCollection('create');
+			$ticket_display = new TicketPageZoneCollection('modify');
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
 			$default_page = $ticket_display->getDepartmentPage($ticket->department->id);
@@ -1846,7 +1846,7 @@ class TicketController extends AbstractController
 			}
 
 			$validator = new NewTicketValidator();
-			$ticket_display = new TicketPageZoneCollection('create');
+			$ticket_display = new TicketPageZoneCollection('modify');
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
 			$default_page = $ticket_display->getDepartmentPage($newticket->department_id);
@@ -1969,7 +1969,7 @@ class TicketController extends AbstractController
 		// then we'll need to refresh the ticket so those new validation options
 		// are enforced
 		if (!isset($data['data']['refresh']) && $old_department_id != $ticket->getDepartmentId()) {
-			$ticket_display = new TicketPageZoneCollection('create');
+			$ticket_display = new TicketPageZoneCollection('modify');
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
 
