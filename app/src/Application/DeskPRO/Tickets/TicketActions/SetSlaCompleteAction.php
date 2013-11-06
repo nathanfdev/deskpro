@@ -69,12 +69,12 @@ class SetSlaCompleteAction extends AbstractAction
 				if ($sla_id) {
 					$sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
 					if (!$sla) {
-						return;
+						continue;
 					}
 
 					$ticket_sla = $ticket->hasSla($sla);
 					if (!$ticket_sla) {
-						return;
+						continue;
 					}
 
 					$ticket_slas = array($ticket_sla);
