@@ -29,7 +29,9 @@ DeskPRO.Admin.ElementHandler.EditPhrasesPage = new Orb.Class({
 				destroyOnClose: true
 			});
 
-			$('.save-trigger', overlayEl).on('click', function() {
+			$('.save-trigger', overlayEl).on('click', function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
 
 				var customPhrase = $('.custom_phrase', overlayEl).val().trim();
 
