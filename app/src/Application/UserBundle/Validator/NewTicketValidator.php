@@ -224,7 +224,7 @@ class NewTicketValidator extends AbstractValidator
 					$exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->newticket->person->email);
 					if ($exists && $exists->person && $exists->person->is_disabled) {
 						$this->addError('person.email.account_disabled', 'account_disabled');
-					} elseif (App::getSystemService('gateway_address_matcher')->isManagedAddress($this->newticket->person->email)) {
+					} elseif (!App::getSystemService('email_address_validator')->isValidUserEmail($this->newticket->person->email)) {
 						$this->addError('person.email.invalid');
 					}
 				}

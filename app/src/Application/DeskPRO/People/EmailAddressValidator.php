@@ -29,94 +29,79 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage UserBundle
+ * @category Entities
  */
 
-namespace Application\UserBundle\Validator;
+namespace Application\DeskPRO\People;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EmailGateway\AddressMatcher;
+use Application\DeskPRO\EntityRepository\BanEmail;
+use Orb\Validator\StringEmail;
 
-use Orb\Util\Arrays;
-use Orb\Validator\AbstractValidator;
-use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
-
-class RegisterValidator extends AbstractValidator
+class EmailAddressValidator
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefPerson[]
+	 * @var \Application\DeskPRO\EmailGateway\AddressMatcher
 	 */
-	protected $_custom_fields;
+	private $address_matcher;
 
 	/**
-	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+	 * @var \Application\DeskPRO\EntityRepository\BanEmail
 	 */
-	protected $_captcha;
+	private $ban_repos;
 
 	/**
-	 * @var \Application\UserBundle\Form\Model\Register
+	 * @var \Orb\Validator\StringEmail
 	 */
-	protected $register;
+	private $format_validator;
 
-	protected function checkIsValid($register)
+	public function __construct(AddressMatcher $address_matcher, BanEmail $ban_repos)
 	{
-		$this->register = $register;
+		$this->address_matcher  = $address_matcher;
+		$this->ban_repos        = $ban_repos;
+		$this->format_validator = new StringEmail();
+	}
 
-		if ($this->_captcha && !$this->_captcha->validate()) {
-			$this->addError('captcha.invalid');
+	/**
+	 * Check if a user inputted email address is valid.
+	 *
+	 * @param string $email
+	 * @return bool
+	 */
+	public function isValidUserEmail($email)
+	{
+		if (!$email) {
+			return false;
 		}
-
-		$validator = new \Orb\Validator\StringLength(array('min' => 2));
-		if (!$validator->isValid($this->register->name)) {
-			$this->addError('name.short');
+		if (!$this->format_validator->isValid($email)) {
+			return false;
 		}
-
-		if (!App::getSystemService('email_address_validator')->isValidUserEmail($this->register->email)) {
-			$this->addError('email.invalid');
-		} else {
-			$check_exist = App::getDb()->fetchColumn("
-				SELECT person_id
-				FROM people_emails
-				WHERE email = ?
-			", array($this->register->email));
-			if ($check_exist) {
-				$this->addError('email.in_use');
-			}
+		if ($this->address_matcher->isManagedAddress($email)) {
+			return false;
 		}
-
-		$validator = new \Orb\Validator\StringLength(array('min' => 5));
-		if (!$validator->isValid($this->register->password)) {
-			$this->addError('password.short');
-		} elseif ($this->register->password != $this->register->password2) {
-			$this->addError('password.mismatch');
-		}
-
-		if ($this->_custom_fields) {
-			foreach ($this->_custom_fields as $field) {
-				$errors = $field->getHandler()->validateFormData($this->register->custom_fields ?: array());
-				foreach ($errors as $code) {
-					$this->addError($code);
-				}
-			}
-		}
-
-		if ($this->errors) {
+		if ($this->ban_repos->isEmailBanned($email)) {
 			return false;
 		}
 
 		return true;
 	}
 
-	public function setCustomFields(array $custom_fields)
-	{
-		$this->_custom_fields = $custom_fields;
-	}
 
 	/**
-	 * @param CaptchaAbstract $captcha
+	 * Check if a person has any banned emails
+	 *
+	 * @param Person $peron
+	 * @return bool
 	 */
-	public function setCaptcha(CaptchaAbstract $captcha)
+	public function personHasBannedEmail(Person $person)
 	{
-		$this->_captcha = $captcha;
+		foreach ($person->emails as $email) {
+			if ($this->ban_repos->isEmailBanned($email->email)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

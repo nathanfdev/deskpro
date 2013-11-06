@@ -315,7 +315,7 @@ HTML;
 
 		$person = $identity['person'];
 
-		if ($person->is_disabled) {
+		if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
 			$this->session->set('account_disabled', $person->id);
 			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
