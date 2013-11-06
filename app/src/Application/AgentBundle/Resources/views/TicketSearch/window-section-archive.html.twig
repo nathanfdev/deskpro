@@ -1,3 +1,4 @@
+{% macro render_filter_count(count) %}{% if count >= 10000 %}10000+{% else %}{{ count|default(0) }}{% endif %}{% endmacro %}
 <ul class="nav-list nav-list-small">
 	{% set filter = sys_filters['all'] %}
 	<li id="tickets_awaiting_agent_navitem" data-filter-id="{{ filter.id }}" class="filter is-nav-item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
@@ -20,7 +21,11 @@
 				<div class="item">
 					<h3>{{ phrase(title) }}</h3>
 					<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ archive_filter_counts[filter.id]|default(0) }}">
-						{% if archive_filter_counts[filter.id] and filter.id in [13, 14, 15, 16] %}~{% endif %}{{ archive_filter_counts[filter.id]|default(0) }}
+						{% if archive_filter_counts[filter.id] > 10000 %}
+							10000+
+						{% else %}
+							{% if archive_filter_counts[filter.id] and filter.id in [13, 14, 15, 16] %}~{% endif %}{{ archive_filter_counts[filter.id]|default(0) }}
+						{% endif %}
 					</em></div>
 				</div>
 			</li>
