@@ -1047,7 +1047,7 @@ class Html extends AbstractRenderer
 	protected function _filterGraphValue($value)
 	{
 		if (preg_match('/^((\d+,)*\d+)(\.\d+)?%?$/', $value)) {
-			return round(str_replace(array(',', '%'), '', $value) + 0, 1) * 100;
+			return round(str_replace(array(',', '%'), '', $value) + 0, 1);
 		} else {
 			return $value;
 		}

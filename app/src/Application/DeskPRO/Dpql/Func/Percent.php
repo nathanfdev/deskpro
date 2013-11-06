@@ -78,7 +78,7 @@ class Percent extends AbstractFunc
 		$decimals = next($this->_arguments);
 		$decimals = $decimals ? $this->_toLiteral($decimals) : 2;
 
-		$sql = 'IF(COUNT(*) > 0, SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*), 0)';
+		$sql = 'IF(COUNT(*) > 0, (SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*)) * 100, 0)';
 		return new Prepared($sql, 'PERCENT(' . $prepped->name() . ')', false, 'percent');
 	}
 }
