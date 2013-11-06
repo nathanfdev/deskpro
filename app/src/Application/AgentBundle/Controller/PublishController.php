@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
 
+use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 
@@ -954,6 +955,7 @@ class PublishController extends AbstractController
 		}
 
 		$this->container->getSystemService('publish_structure_cache')->flush();
+		PermissionUtil::cleanPermissions();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -1089,6 +1091,7 @@ class PublishController extends AbstractController
 
 		$repos->repair();
 		$this->container->getSystemService('publish_structure_cache')->flush();
+		PermissionUtil::cleanPermissions();
 
 		return $this->createJsonResponse(array(
 			'id' => $cat->id
