@@ -409,6 +409,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			return null;
 		}
 
+		if (!$this->shouldApplyUrlCorrections($request)) {
+			return null;
+		}
+
 		$now_path = $request->getPathInfo();
 		if (strpos($request->getRequestUri(), '/index.php/') !== false) {
 			$now_path = '/index.php' . $now_path;
@@ -441,5 +445,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 
 		return null;
+	}
+
+	protected function shouldApplyUrlCorrections(Request $request)
+	{
+		return true;
 	}
 }
