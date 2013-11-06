@@ -1324,17 +1324,43 @@ define(function() {
 	//###
 	//# Feedback::Labels
 	//###
+
 	routes.push({
 		id: 'portal.feedback_labels',
 		url: '/feedback/labels',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'Labels/Feedback/list.html',
+			controller: 'Admin_Labels_Feedback_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_labels.create',
+		url: '/create/',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			templateName: 'Labels/Feedback/edit.html',
+			controller: 'Admin_Labels_Feedback_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_labels.gocreate',
+		url: '/go-create/',
+		page: {
+			templateName: 'Labels/Feedback/edit.html',
+			controller: ['$state', function ($state) {
+				$state.go('portal.feedback_labels.create');
+			}]
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_labels.edit',
+		url: '/{label:.*}/',
+		page: {
+			templateName: 'Labels/Feedback/edit.html',
+			controller: 'Admin_Labels_Feedback_Ctrl_Edit'
 		}
 	});
 

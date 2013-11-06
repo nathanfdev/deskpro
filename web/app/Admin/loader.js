@@ -95,6 +95,8 @@ requirejs([
 	'Admin/Labels/Org/Ctrl/Edit',
 	'Admin/Labels/Ticket/Ctrl/List',
 	'Admin/Labels/Ticket/Ctrl/Edit',
+	'Admin/Labels/Feedback/Ctrl/List',
+	'Admin/Labels/Feedback/Ctrl/Edit',
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',
 	'Admin/TicketAccounts/Ctrl/List',
