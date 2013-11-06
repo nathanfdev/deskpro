@@ -65,6 +65,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
 		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
 		$this->addOption('save-attach', null, InputOption::VALUE_NONE, 'This will save attachments from the email in the same directory as the file');
+		$this->addOption('show-cutters', null, InputOption::VALUE_NONE, 'Displays the cutters that were used');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -191,6 +192,15 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 					$body = $cutter->cutQuoteBlock($body, true);
 					$body .= $generic_cutter->cutBottomBlock($raw_body, true);
+
+					if ($input->getOption('show-cutters')) {
+						$got = $cutter->getMatchedPatterns();
+						if ($got) {
+							foreach ($got as $p) {
+								echo "[Matched Cutter] {$p->getPattern()}\n";
+							}
+						}
+					}
 				}
 
 				$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
@@ -199,6 +209,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
+				$GLOBALS['doit'] = 1;
 				$body = Strings::trimHtmlAdvanced($body);
 				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
 
