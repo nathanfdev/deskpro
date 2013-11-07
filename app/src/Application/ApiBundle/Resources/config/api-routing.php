@@ -2647,6 +2647,47 @@ $collection->create('api_feedback_types_delete', array(
 ));
 
 ########################################################################################################################
+# Feedback Categories
+########################################################################################################################
+
+$collection->create('api_feedback_categories', array(
+	'path'       => '/feedback_categories',
+	'controller' => 'ApiBundle:FeedbackCategories:list',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_feedback_categories_order', array(
+	'path'        => '/feedback_categories/display_order',
+	'controller'  => 'ApiBundle:FeedbackCategories:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_feedback_categories_get', array(
+	'path'        => '/feedback_categories/{id}',
+	'controller'  => 'ApiBundle:FeedbackCategories:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_feedback_categories_create', array(
+	'path'        => '/feedback_categories',
+	'controller'  => 'ApiBundle:FeedbackCategories:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_feedback_categories_save', array(
+	'path'        => '/feedback_categories/{id}',
+	'controller'  => 'ApiBundle:FeedbackCategories:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_feedback_categories_delete', array(
+	'path'        => '/feedback_categories/{id}',
+	'controller'  => 'ApiBundle:FeedbackCategories:remove',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 

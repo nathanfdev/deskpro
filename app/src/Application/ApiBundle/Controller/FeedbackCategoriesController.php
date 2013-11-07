@@ -29,70 +29,33 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Exception\ValidationException;
 
-use \Doctrine\ORM\EntityRepository;
+use Orb\Util\Arrays;
 
-class CustomDefFeedback extends CustomDefAbstract
+class FeedbackCategoriesController extends AbstractController
 {
-	/**
-	 * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
-	 */
+	####################################################################################################################
+	# list
+	####################################################################################################################
 
-	public function getCategoryField()
+	public function listAction()
 	{
-		return $this->_em->createQuery("
-			SELECT f
-			FROM DeskPRO:CustomDefFeedback f
-			WHERE f.sys_name = 'cat'
-		")->setMaxResults(1)->getOneOrNullResult();
-	}
+        /**
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+         */
 
-	/**
-	 * @param \Application\DeskPRO\Entity\CustomDefFeedback $parent_category
-	 *
-	 * @return array
-	 */
+        $feedback_categories = $this->container->getSystemService('feedback_categories');
 
-	public function getAllFlatData(\Application\DeskPRO\Entity\CustomDefFeedback $parent_category)
-	{
-		$hierarchy = array();
-
-		if ($parent_category['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-
-			$choices = array();
-
-			foreach ($parent_category->children as $child) {
-
-				$choices[$child->getId()] = $child;
-
-				$hierarchy[]      = array(
-					'id'        => $child->getId(),
-					'title'     => $child->getTitle(),
-					'parent_id' => $child->getOption('parent_id', 0)
-				);
-			}
-
-			usort(
-				$hierarchy,
-				function ($a, $b) use ($choices) {
-					$f1 = $choices[$a['id']];
-					$f2 = $choices[$b['id']];
-
-					if ($f1->getDisplayOrder() == $f2->getDisplayOrder()) {
-						return 0;
-					}
-
-					return $f1->getDisplayOrder() < $f2->getDisplayOrder() ? -1 : 1;
-				}
-			);
-		}
-
-		return $hierarchy;
+        return $this->createApiResponse(
+            array(
+                 'categories' => $feedback_categories->getAll()
+            )
+        );
 	}
 }
