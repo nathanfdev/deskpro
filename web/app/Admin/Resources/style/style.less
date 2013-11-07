@@ -2580,6 +2580,10 @@ table.table {
 			background: #f1f1f1;
 		}
 
+		> tr.danger > td.alt, > tr > td.alt.danger {
+			background: #decccc;
+		}
+
 		> tr > td.dp-id-col {
 			width: 5px;
 			text-wrap: none;
@@ -2587,5 +2591,18 @@ table.table {
 			text-wrap: none;
 			text-align: left;
 		}
+	}
+}
+
+.dp-btn-pagination {
+	text-align: right;
+
+	.btn {
+		line-height: 15px;
+	}
+
+	.select2-container {
+		margin: 0;
+		text-align: left;
 	}
 }

@@ -48,6 +48,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_PROCESSING = 'processing';
 	const STATUS_COMPLETE   = 'complete';
 	const STATUS_ERROR      = 'error';
+	const STATUS_REJECTED   = 'rejected';
 
 	const OBJ_TYPE_TICKET = 'ticket';
 	const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
@@ -293,6 +294,16 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->setModelField('status', $status);
 		$this->setModelField('date_status', new \DateTime());
+	}
+
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		if (!$deep) {
+			unset($data['source_info']);
+		}
+		return $data;
 	}
 
 

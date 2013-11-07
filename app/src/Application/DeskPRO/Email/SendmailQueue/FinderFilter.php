@@ -133,6 +133,15 @@ class FinderFilter
 	}
 
 	/**
+	 * @param $status
+	 */
+	public function removeStatus($status)
+	{
+		$this->statuses = Arrays::removeValue($this->statuses, $status);
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getValidStatuses()

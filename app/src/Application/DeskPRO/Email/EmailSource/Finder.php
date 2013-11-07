@@ -53,10 +53,10 @@ class Finder
 	 * @param EntityManager $em
 	 * @param FinderFilter $filter
 	 */
-	public function __constructor(EntityManager $em, FinderFilter $filter)
+	public function __construct(EntityManager $em, FinderFilter $filter)
 	{
-		$this->filter = $filter;
 		$this->em     = $em;
+		$this->filter = $filter;
 	}
 
 
@@ -66,9 +66,9 @@ class Finder
 	public function getPageInfo()
 	{
 		$q = $this->getQb();
-		$q->select('COUNT(*)');
+		$q->select('COUNT(s)');
 
-		$count     = $q->getQuery()->getSingleScalarResult();
+		$count     = (int)$q->getQuery()->getSingleScalarResult();
 		$num_pages = ceil($count / $this->filter->getPerPage());
 
 		return array(
@@ -85,7 +85,7 @@ class Finder
 	{
 		$q = $this->getQb();
 		$q->select('s, g')
-		  ->orderBy('q.id', 'DESC')
+		  ->orderBy('s.id', 'DESC')
 		  ->setMaxResults($this->filter->getPerPage())
 		  ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
 

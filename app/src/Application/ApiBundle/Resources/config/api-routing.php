@@ -2374,6 +2374,22 @@ $collection->create('api_ticket_accounts_save', array(
 ));
 
 ########################################################################################################################
+# Email Status
+########################################################################################################################
+
+$collection->create('api_emailstatus_sourcelist', array(
+	'path'        => '/email_status/sources',
+	'controller'  => 'ApiBundle:EmailStatus:listSources',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmaillist', array(
+	'path'        => '/email_status/sendmail',
+	'controller'  => 'ApiBundle:EmailStatus:listSendmail',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
 # Ticket Triggers
 ########################################################################################################################
 

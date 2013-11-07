@@ -39,7 +39,7 @@ use Doctrine\ORM\EntityManager;
 class Finder
 {
 	/**
-	 * @var \Application\DeskPRO\Email\SendmailQueue\FinderFilter
+	 * @var \Application\DeskPRO\Email\EmailSource\FinderFilter
 	 */
 	private $filter;
 
@@ -53,10 +53,10 @@ class Finder
 	 * @param EntityManager $em
 	 * @param FinderFilter $filter
 	 */
-	public function __constructor(EntityManager $em, FinderFilter $filter)
+	public function __construct(EntityManager $em, FinderFilter $filter)
 	{
-		$this->filter = $filter;
 		$this->em     = $em;
+		$this->filter = $filter;
 	}
 
 
@@ -66,9 +66,9 @@ class Finder
 	public function getPageInfo()
 	{
 		$q = $this->getQb();
-		$q->select('COUNT(*)');
+		$q->select('COUNT(s)');
 
-		$count     = $q->getQuery()->getSingleScalarResult();
+		$count     = (int)$q->getQuery()->getSingleScalarResult();
 		$num_pages = ceil($count / $this->filter->getPerPage());
 
 		return array(
@@ -84,10 +84,10 @@ class Finder
 	public function getResults()
 	{
 		$q = $this->getQb();
-		$q->select('s, g')
-		  ->orderBy('q.id', 'DESC')
-		  ->setMaxResults($this->filter->getPerPage())
-		  ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
+		$q->select('s')
+			->orderBy('s.id', 'DESC')
+			->setMaxResults($this->filter->getPerPage())
+			->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
 
 		return $q->getQuery()->execute();
 	}
@@ -99,17 +99,11 @@ class Finder
 	private function getQb()
 	{
 		$q = $this->em->createQueryBuilder();
-		$q->from('DeskPRO:SendmailQueue', 's')
-			->leftJoin('s.gateway', 'g');
+		$q->from('DeskPRO:SendmailQueue', 's');
 
 		if ($opt = $this->filter->getStatuses()) {
 			$q->andWhere('s.status IN (:statuses)');
 			$q->setParameter('statuses', $opt);
-		}
-
-		if ($opt = $this->filter->getGateway()) {
-			$q->andWhere('s.gateway = :gateway');
-			$q->setParameter('gateway', $opt);
 		}
 
 		$d1 = $this->filter->getDateStart();

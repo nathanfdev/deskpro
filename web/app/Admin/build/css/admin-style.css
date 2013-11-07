@@ -10434,9 +10434,27 @@ table.table > tbody > tr > td.alt {
   background: #f1f1f1;
 }
 
+table.table > tbody > tr.danger > td.alt,
+table.table > tbody > tr > td.alt.danger {
+  background: #decccc;
+}
+
 table.table > tbody > tr > td.dp-id-col {
   width: 5px;
   text-align: left;
   white-space: nowrap;
   text-wrap: none;
+}
+
+.dp-btn-pagination {
+  text-align: right;
+}
+
+.dp-btn-pagination .btn {
+  line-height: 15px;
+}
+
+.dp-btn-pagination .select2-container {
+  margin: 0;
+  text-align: left;
 }

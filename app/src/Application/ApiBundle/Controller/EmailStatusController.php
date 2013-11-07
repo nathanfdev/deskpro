@@ -46,27 +46,31 @@ class EmailStatusController extends AbstractController
 	# get-email-sources
 	####################################################################################################################
 
-	public function getEmailSourcesAction()
+	public function listSourcesAction()
 	{
 		#------------------------------
 		# Filter options
 		#------------------------------
 
 		$filter = new EmailSourceFinderFilter();
+		$filter_input = $this->in->getArrayValue('filter');
 		$form = $this->createFormBuilder($filter)
-			->add('page', 'integer')
+			->add('page', 'text')
 			->add('statuses', 'choice', array(
 				'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
-				'required' => false
+				'required' => false,
+				'multiple' => true
 			))
 			->add('date_start', 'date', array(
-				'view_timezone' => $this->person->getDateTimezone(),
-				'input' => 'array',
+				'view_timezone' => $this->person->getTimezone(),
+				'widget' => 'single_text',
+				'input' => 'datetime',
 				'required' => false
 			))
 			->add('date_end', 'date', array(
-				'view_timezone' => $this->person->getDateTimezone(),
-				'input' => 'array',
+				'view_timezone' => $this->person->getTimezone(),
+				'widget' => 'single_text',
+				'input' => 'datetime',
 				'required' => false
 			))
 			->add('gateway', 'entity', array(
@@ -91,7 +95,7 @@ class EmailStatusController extends AbstractController
 			))
 			->getForm();
 
-		$form->submit($this->in->getArrayValue('filter'));
+		$form->submit($filter_input);
 
 		$finder = new EmailSourceFinder($this->em, $filter);
 
@@ -111,27 +115,31 @@ class EmailStatusController extends AbstractController
 	# get-sendmail-queue
 	####################################################################################################################
 
-	public function getSendmailQueueAction()
+	public function listSendmailAction()
 	{
 		#------------------------------
 		# Filter options
 		#------------------------------
 
 		$filter = new SendmailQueueFinderFilter();
+		$filter_input = $this->in->getArrayValue('filter');
 		$form = $this->createFormBuilder($filter)
-			->add('page', 'integer')
+			->add('page', 'text')
 			->add('statuses', 'choice', array(
 				'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
-				'required' => false
+				'required' => false,
+				'multiple' => true
 			))
 			->add('date_start', 'date', array(
-				'view_timezone' => $this->person->getDateTimezone(),
-				'input' => 'array',
+				'view_timezone' => $this->person->getTimezone(),
+				'widget' => 'single_text',
+				'input' => 'datetime',
 				'required' => false
 			))
 			->add('date_end', 'date', array(
-				'view_timezone' => $this->person->getDateTimezone(),
-				'input' => 'array',
+				'view_timezone' => $this->person->getTimezone(),
+				'widget' => 'single_text',
+				'input' => 'datetime',
 				'required' => false
 			))
 			->add('subject', 'text', array(
@@ -148,7 +156,7 @@ class EmailStatusController extends AbstractController
 			))
 			->getForm();
 
-		$form->submit($this->in->getArrayValue('filter'));
+		$form->submit($filter_input);
 
 		$finder = new SendmailQueueFinder($this->em, $filter);
 

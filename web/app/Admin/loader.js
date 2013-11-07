@@ -9,7 +9,9 @@ requirejs.config({
 		angularUiAce:           DP_ASSET_URL+'/app/bower_components/angular-ui-ace/ui-ace',
 		angularUiRouter:        DP_ASSET_URL+'/app/bower_components/angular-ui-router/release/angular-ui-router',
 		angularUiSortable:      DP_ASSET_URL+'/app/bower_components/angular-ui-sortable/src/sortable',
+		angularMoment:          DP_ASSET_URL+'/app/bower_components/angular-moment/angular-moment.min',
 
+		momentjs:               DP_ASSET_URL+'/app/bower_components/momentjs/min/moment-with-langs.min',
 		aceEditor:              DP_ASSET_URL+'/app/bower_components/ace-builds/src-min-noconflict/ace',
 
 		jquery:                 DP_ASSET_URL+'/app/bower_components/jquery/jquery',
@@ -33,6 +35,7 @@ requirejs.config({
 		'angularUiAce':         ['angular'],
 		'angularUiRouter':      ['angular'],
 		'angularUiSortable':    ['angular'],
+		'angularMoment':        ['angular'],
 
 		'jqueryUi':             ['jquery'],
 
@@ -56,7 +59,9 @@ requirejs([
 	'angularUiAce',
 	'angularUiRouter',
 	'angularUiSortable',
+	'angularMoment',
 
+	'momentjs',
 	'aceEditor',
 
 	'jquery',
@@ -72,6 +77,8 @@ requirejs([
 	'DeskPRO/CategoryBuilder/Module',
 
 	'Admin/App',
+	'Admin/EmailStatus/Ctrl/SendmailList',
+	'Admin/EmailStatus/Ctrl/SourceList',
 	'Admin/Main/Ctrl/Bare',
 	'Admin/Main/Ctrl/BareList',
 	'Admin/Main/Ctrl/MainPage',

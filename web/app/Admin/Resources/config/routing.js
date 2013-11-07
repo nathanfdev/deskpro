@@ -831,6 +831,30 @@ define(function() {
 	});
 
 	//##################################################################################################################
+	// Email Status
+	//##################################################################################################################
+
+	routes.push({
+		id: 'tickets.emailsources',
+		url: '/incoming-email',
+		with_list_view: false,
+		page: {
+			templateName: 'EmailStatus/emailsource-list.html',
+			controller: 'Admin_EmailStatus_Ctrl_SourceList'
+		}
+	});
+
+	routes.push({
+		id: 'tickets.sendmailqueue',
+		url: '/outgoing-email',
+		with_list_view: false,
+		page: {
+			templateName: 'EmailStatus/sendmail-list.html',
+			controller: 'Admin_EmailStatus_Ctrl_SendmailList'
+		}
+	});
+
+	//##################################################################################################################
 	// CRM
 	//##################################################################################################################
 

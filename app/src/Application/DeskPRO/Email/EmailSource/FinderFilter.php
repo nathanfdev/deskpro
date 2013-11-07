@@ -117,9 +117,9 @@ class FinderFilter
 	 * @param array $statuses
 	 * @return $this
 	 */
-	public function setStatuses(array $statuses)
+	public function setStatuses(array $statuses = null)
 	{
-		$this->statuses = $statuses;
+		$this->statuses = $statuses ?: array();
 		return $this;
 	}
 
@@ -130,11 +130,20 @@ class FinderFilter
 	 */
 	public function addStatus($status)
 	{
-		if (in_array($status, $this->getValidStatuses())) {
+		if (!in_array($status, $this->getValidStatuses())) {
 			throw new \InvalidArgumentException("Invalid status: $status");
 		}
 
 		Arrays::pushUnique($this->statuses, $status);
+		return $this;
+	}
+
+	/**
+	 * @param $status
+	 */
+	public function removeStatus($status)
+	{
+		$this->statuses = Arrays::removeValue($this->statuses, $status);
 		return $this;
 	}
 
@@ -147,6 +156,7 @@ class FinderFilter
 			EmailSource::STATUS_INSERTED,
 			EmailSource::STATUS_PROCESSING,
 			EmailSource::STATUS_COMPLETE,
+			EmailSource::STATUS_REJECTED,
 			EmailSource::STATUS_ERROR,
 		);
 

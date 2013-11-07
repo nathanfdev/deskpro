@@ -105,6 +105,7 @@ define [
 		'ui.select2',
 		'ui.sortable',
 		'ui.ace',
+		'angularMoment',
 		'deskpro.option_builder',
 		'deskpro.category_builder'
 	]);

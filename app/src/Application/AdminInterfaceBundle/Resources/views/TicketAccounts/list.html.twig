@@ -32,6 +32,16 @@
 			<p ng-if="!TicketAccountsList.accounts.length" style="padding: 15px;">
 				{{ phrase('adm.tickets.no_email_accounts') }}
 			</p>
+
+
+			<br/><br/>
+			<div class="text-center">
+				<div class="btn-group">
+					<a href="{{ ng_href('tickets.emailsources') }}" class="btn btn-default">Incoming Email Log</a>
+					<a href="{{ ng_href('tickets.sendmailqueue') }}" class="btn btn-default">Outgoing Email Log</a>
+				</div>
+			</div>
+		</div>
 	</article>
 </div>
 <div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
