@@ -40,16 +40,38 @@
               url += "" + k + "=" + v + "&";
             }
           } else {
-            for (k in params) {
-              v = params[k];
-              k = encodeURIComponent(k);
-              v = encodeURIComponent(v);
-              url += "" + k + "=" + v + "&";
-            }
+            url += this._formatUrlObject(params);
           }
           url = url.replace(/&$/, '');
         }
         return url;
+      };
+
+      DpApi.prototype._formatUrlObject = function(obj, baseName) {
+        var k, url, v, _results;
+        if (baseName == null) {
+          baseName = false;
+        }
+        url = '';
+        _results = [];
+        for (k in obj) {
+          v = obj[k];
+          if (v === null) {
+            continue;
+          }
+          if (baseName) {
+            k = baseName + '[' + encodeURIComponent(k) + ']';
+          } else {
+            k = encodeURIComponent(k);
+          }
+          if (_.isObject(v)) {
+            _results.push(url += this._formatUrlObject(v, k));
+          } else {
+            v = encodeURIComponent(v);
+            _results.push(url += "" + k + "=" + v + "&");
+          }
+        }
+        return _results;
       };
 
       /**

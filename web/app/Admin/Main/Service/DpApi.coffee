@@ -28,15 +28,26 @@ define ['angular'], (angular) ->
 						v = encodeURIComponent(itm.value)
 						url += "#{k}=#{v}&"
 				else
-					for k, v of params
-						k = encodeURIComponent(k)
-						v = encodeURIComponent(v)
-						url += "#{k}=#{v}&"
+					url += @_formatUrlObject(params)
 
 				url = url.replace(/&$/, '')
 
 			return url
 
+		_formatUrlObject: (obj, baseName = false) ->
+			url = ''
+			for k, v of obj
+				if v == null then continue
+				if baseName
+					k = baseName + '[' + encodeURIComponent(k) + ']'
+				else
+					k = encodeURIComponent(k)
+
+				if _.isObject(v)
+					url += @_formatUrlObject(v, k)
+				else
+					v = encodeURIComponent(v)
+					url += "#{k}=#{v}&"
 
 		###*
 		* Uses the api-caller endpoint to fetch multiple data points at once.
