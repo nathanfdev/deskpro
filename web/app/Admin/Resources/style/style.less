@@ -76,6 +76,32 @@ form {
 	margin-right: 3px;
 }
 
+.padd {
+	padding: 15px;
+}
+
+em.dp-id {
+	display: inline-block;
+	line-height: 100%;
+
+	border: 1px solid transparent;
+	font-style: normal;
+	white-space: nowrap;
+	text-wrap: none;
+
+	padding: 2px;
+	border-radius: 2px;
+}
+
+a em.dp-id {
+	text-decoration: none;
+
+	&:hover {
+		border: 1px solid #aaa;
+		background: #fff;
+	}
+}
+
 //######################################################################################################################
 //# Page Header
 //######################################################################################################################
@@ -498,6 +524,10 @@ article.pane-content {
 		border: 1px solid darken(#F5F7FA, 10%);
 		border-radius: 2px;
 		max-width: 900px;
+	}
+
+	&.fullwidth > article {
+		max-width: none;
 	}
 
 	> article > section {
@@ -2518,5 +2548,44 @@ li.dp-layout-editor-layout-field {
 
 	.select2-container {
 		margin: 0;
+	}
+}
+
+//######################################################################################################################
+//# Table Grid
+//######################################################################################################################
+
+table.table {
+	> thead {
+		> tr > th {
+			border-bottom: 3px solid #aaaaaa;
+			font-weight: bold;
+		}
+	}
+
+	> tbody {
+		> tr > td.title {
+			background-color: #f1f1f1;
+
+			label {
+				font-weight: bold;
+				margin: 0;
+				padding: 0;
+				display: block;
+				text-align: right;
+			}
+		}
+
+		> tr > td.alt {
+			background: #f1f1f1;
+		}
+
+		> tr > td.dp-id-col {
+			width: 5px;
+			text-wrap: none;
+			white-space: nowrap;
+			text-wrap: none;
+			text-align: left;
+		}
 	}
 }

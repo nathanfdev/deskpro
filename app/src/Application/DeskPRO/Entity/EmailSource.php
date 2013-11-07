@@ -44,6 +44,11 @@ use Application\DeskPRO\App;
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
+	const STATUS_INSERTED   = 'inserted';
+	const STATUS_PROCESSING = 'processing';
+	const STATUS_COMPLETE   = 'complete';
+	const STATUS_ERROR      = 'error';
+
 	const OBJ_TYPE_TICKET = 'ticket';
 	const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
 

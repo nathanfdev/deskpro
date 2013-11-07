@@ -1958,7 +1958,7 @@ code,
 kbd,
 pre,
 samp {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Consolas, Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 
 code {
@@ -7583,6 +7583,30 @@ form {
   margin-right: 3px;
 }
 
+.padd {
+  padding: 15px;
+}
+
+em.dp-id {
+  display: inline-block;
+  padding: 2px;
+  font-style: normal;
+  line-height: 100%;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  text-wrap: none;
+}
+
+a em.dp-id {
+  text-decoration: none;
+}
+
+a em.dp-id:hover {
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
@@ -8133,6 +8157,10 @@ article.pane-content.pad-top {
   background: #fff;
   border: 1px solid #d3dce9;
   border-radius: 2px;
+}
+
+.pane-fullpage.fullwidth > article {
+  max-width: none;
 }
 
 .pane-fullpage > article > section {
@@ -10383,4 +10411,32 @@ li.dp-layout-editor-layout-field span {
 
 .dp-time-unit .select2-container {
   margin: 0;
+}
+
+table.table > thead > tr > th {
+  font-weight: bold;
+  border-bottom: 3px solid #aaaaaa;
+}
+
+table.table > tbody > tr > td.title {
+  background-color: #f1f1f1;
+}
+
+table.table > tbody > tr > td.title label {
+  display: block;
+  padding: 0;
+  margin: 0;
+  font-weight: bold;
+  text-align: right;
+}
+
+table.table > tbody > tr > td.alt {
+  background: #f1f1f1;
+}
+
+table.table > tbody > tr > td.dp-id-col {
+  width: 5px;
+  text-align: left;
+  white-space: nowrap;
+  text-wrap: none;
 }

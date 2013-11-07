@@ -17,6 +17,17 @@ define(function() {
 		}
 	});
 
+	routes.push({
+		id: 'dev_ui.table',
+		url: '/table',
+		with_list_view: false,
+		with_nav_view: false,
+		page: {
+			templateName: 'Index/dev-ui-table.html',
+			controller: 'Admin_Main_Ctrl_Bare'
+		}
+	});
+
 	//##################################################################################################################
 	// Main Nav
 	//##################################################################################################################
