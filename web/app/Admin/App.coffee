@@ -43,6 +43,7 @@ define [
 	'Admin/Main/DataService/Departments',
 	'Admin/FeedbackStatuses/DataService/FeedbackStatuses',
 	'Admin/FeedbackTypes/DataService/FeedbackTypes',
+	'Admin/FeedbackCategories/DataService/FeedbackCategories',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
 	'Admin/Labels/Service/LabelManager'
 ], (
@@ -90,6 +91,7 @@ define [
 	Admin_Main_DataService_Departments,
 	Admin_FeedbackStatuses_DataService_FeedbackStatuses,
 	Admin_FeedbackTypes_DataService_FeedbackTypes,
+	Admin_FeedbackCategories_DataService_FeedbackCategories,
 	Admin_TicketAccounts_DataService_TicketAccounts,
 	Admin_Labels_Service_LabelManager
 ) ->
@@ -147,6 +149,10 @@ define [
 
 	Admin_App.service('FeedbackTypesData', ['em', 'Api', '$q', (em, Api, $q) ->
 		return new Admin_FeedbackTypes_DataService_FeedbackTypes(em, Api, $q)
+	])
+
+	Admin_App.service('FeedbackCategoriesData', ['em', 'Api', '$q', (em, Api, $q) ->
+		return new Admin_FeedbackCategories_DataService_FeedbackCategories(em, Api, $q)
 	])
 
 	Admin_App.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->

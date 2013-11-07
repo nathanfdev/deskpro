@@ -1312,12 +1312,37 @@ define(function() {
 		url: '/feedback/categories',
 		with_list_view: true,
 		list: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_BareList'
-		},
+			templateName: 'FeedbackCategories/list.html',
+			controller: 'Admin_FeedbackCategories_Ctrl_List'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_categories.gocreate',
+		url: '/go-create/',
 		page: {
-			templateName: 'Index/blank.html',
-			controller: 'Admin_Main_Ctrl_Bare'
+			template: '',
+			controller: ['$state', function ($state) {
+				$state.go('portal.feedback_categories.create');
+			}]
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_categories.create',
+		url: '/create/',
+		page: {
+			templateName: 'FeedbackCategories/edit.html',
+			controller: 'Admin_FeedbackCategories_Ctrl_Edit'
+		}
+	});
+
+	routes.push({
+		id: 'portal.feedback_categories.edit',
+		url: '/{id:[0-9]+}',
+		page: {
+			templateName: 'FeedbackCategories/edit.html',
+			controller: 'Admin_FeedbackCategories_Ctrl_Edit'
 		}
 	});
 
