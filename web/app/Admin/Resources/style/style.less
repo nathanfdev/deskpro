@@ -102,6 +102,18 @@ a em.dp-id {
 	}
 }
 
+i.spinner-flat {
+	.iconbase(16px, 11px);
+	display: inline-block;
+	background-image: url('@{img_path}/spinners/loading-small-flat.gif');
+}
+
+i.spinner-xsmall {
+	.iconbase(11px, 11px);
+	display: inline-block;
+	background: url('@{img_path}/spinners/loading-arrows-xsmall-whitebg.gif');
+}
+
 //######################################################################################################################
 //# Page Header
 //######################################################################################################################
@@ -134,7 +146,7 @@ a em.dp-id {
 			height: 33px;
 		}
 
-		 .username {
+		.username {
 			white-space: nowrap;
 			margin-left: 38px;
 			font-size: 11px;
@@ -190,12 +202,11 @@ a em.dp-id {
 	}
 }
 
-
 //######################################################################################################################
-//# App Nav
+//# App Icons
 //######################################################################################################################
 
-.dp-app-nav {
+.dp-appstrip {
 	overflow: hidden;
 	ul {
 		margin: 0;
@@ -307,14 +318,22 @@ a em.dp-id {
 }
 
 //######################################################################################################################
-//# Nav Section (First Pane)
+//# App Navigation
 //######################################################################################################################
 
-.dp-section-nav {
-	background: #eceef0;
-	border-right: 1px solid #b7bac0;
+nav.dp-appnav {
 
-	.nav-rows > li.active > a {
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		li {
+			display: block;
+		}
+	}
+
+	ul > li.active > a, ul > li:hover > a {
 		color: #3476BE;
 		background: #D4E4FF;
 
@@ -323,55 +342,55 @@ a em.dp-id {
 		}
 	}
 
+	a {
+		display: block;
+		text-decoration: none;
+		color: darken(#878787, 15%);
+		padding-left: 10px;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		line-height: 100%;
 
-	.nav {
-		a {
-			color: darken(#878787, 15%);
-			padding-left: 10px;
-			padding-top: 8px;
-			padding-bottom: 8px;
-			line-height: 100%;
+		border-bottom: 1px solid #cdcdcd;
 
-			border-bottom: 1px solid #cdcdcd;
-
-			span {
-				display: inline-block;
-				vertical-align: middle;
-			}
-
-			i.fa-caret-right {
-				position: absolute;
-				right: -5px;
-				top: 12px;
-				display: none;
-				font-size: 10px;
-			}
-
-			i.fa-caret-down {
-				position: relative;
-				top: 0px;
-				font-size: 9px;
-				margin-left: 3px;
-				vertical-align: middle;
-				display: none;
-			}
-
-			i {
-				display: inline-block;
-				width: 16px;
-				text-align: center;
-				margin-right: 5px;
-				font-size: 14px;
-				vertical-align: middle;
-			}
+		span {
+			display: inline-block;
+			vertical-align: middle;
 		}
 
-		.sublist-open > a i.fa-caret-down {
+		i.fa-caret-right {
+			position: absolute;
+			right: -5px;
+			top: 12px;
+			display: none;
+			font-size: 10px;
+		}
+
+		i.fa-caret-down {
+			position: relative;
+			top: 0px;
+			font-size: 9px;
+			margin-left: 3px;
+			vertical-align: middle;
+			display: none;
+		}
+
+		i {
 			display: inline-block;
+			width: 16px;
+			text-align: center;
+			margin-right: 5px;
+			font-size: 14px;
+			vertical-align: middle;
 		}
 	}
 
-	.nav.sub-nav {
+	.sublist-open > a i.fa-caret-down {
+		display: inline-block;
+	}
+
+	// Subnav
+	ul ul {
 		display: none;
 
 		a {
@@ -381,208 +400,124 @@ a em.dp-id {
 }
 
 //######################################################################################################################
-//# List Section (Second Pane)
+//# Pane Block - Standard pane wrapper
 //######################################################################################################################
 
-.dp-section-list {
-	.container();
-	padding-top: 0;
-	padding-bottom: 0;
-	padding-left: 0;
-	padding-right: 0;
-}
-
-//######################################################################################################################
-//# Page Section (Third Pane)
-//######################################################################################################################
-
-.dp-section-page {
-	.container();
-	padding-top: 0;
-	padding-bottom: 0;
-	padding-left: 0;
-	padding-right: 0;
-}
-
-.dp-view-loading {
-	margin-top: 60px;
-	margin-bottom: 60px;
-	h1 {
-		line-height: 1000px;
-		color: transparent;
-
-		height: 32px;
-		overflow: hidden;
-		background: url("@{img_path}/spinners/loading-big-circle.gif") no-repeat 50% 50%;
-	}
-}
-
-i.spinner-flat {
-	.iconbase(16px, 11px);
-	display: inline-block;
-	background-image: url('@{img_path}/spinners/loading-small-flat.gif');
-}
-
-i.spinner-xsmall {
-	.iconbase(11px, 11px);
-	display: inline-block;
-	background: url('@{img_path}/spinners/loading-arrows-xsmall-whitebg.gif');
-}
-
-//######################################################################################################################
-//# Pane Styles
-//######################################################################################################################
-
-header.pane-header {
-	margin: 0;
-	padding: 0;
-	background: #D1D3D7;
-	border-bottom: 1px solid darken(#D1D3D7, 10%);
-	color: darken(#D1D3D7, 45%);
-	height: 48px;
-
-	.obj-id {
-		float: right;
-		font-size: 12pt;
-		font-style: normal;
-
-		display: inline-block;
-		min-width: 10px;
-		padding: 3px 7px;
-		font-size: 11px;
-		font-weight: bold;
-		line-height: 1;
-		color: #ffffff;
-		text-align: center;
-		white-space: nowrap;
-		vertical-align: baseline;
-		background-color: #999999;
-		border-radius: 10px;
-
-		position: relative;
-		top: 14px;
-		right: 14px;
-	}
-
-	h3 {
-		float: left;
-		padding: 15px;
-		margin: 0;
-		font-size: 16px;
-		max-width: 80%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		text-wrap: none;
-	}
-}
-
-header.pane-controls {
-	background: #E9EBF0;
-	border-bottom: 1px solid darken(#E9EBF0, 10%);
-	padding: 10px 0;
-
-	> .row {
-		margin-left: 0;
-		margin-right: 0;
-	}
-}
-
-.row .editor-row {
-	margin: 0 30px;
-}
-
-article.pane-content {
-	position: relative;
+.dp-paneblock {
 	margin: 10px;
-
-	border: 1px solid #d0d9e6;
 	background: #fff;
 	border-radius: 2px;
+	border: 1px solid #d0d9e6;
 
-	section.footer {
+	> header {
+		nav {
+			float: right;
+		}
+
+		h3 {
+			padding: 0 0 2px 0;
+			margin: 10px;
+			font-size: 130%;
+			font-weight: normal;
+			border-bottom: 3px solid #aaa;
+			display: inline-block;
+		}
+	}
+
+	> footer {
 		border-top: 1px dotted #aaa;
 		background: #efefef;
-		text-align: center;
-		padding: 20px;
+		padding: 15px;
 
-		.delete-btn-wrap {
+		.dp-delete-control {
 			float: right;
+		}
+
+		.dp-btn-controls {
+			text-align: center;
 		}
 	}
 }
 
-.pane-content-header {
-	background: #f8f8f8;
-	border-bottom: 1px dotted #aaa;
+.dp-layout-list-editpane .dp-paneblock {
+	margin-left: 0;
+	> header, > article, > nav.dp-blocktabs {
+		max-width: @maxEditPaneWidth;
+	}
 
-	h3 {
-		font-size: 140%;
-		padding: 10px;
-		margin: 0;
+	> footer .dp-content {
+		max-width: @maxEditPaneWidth;
 	}
 }
 
-article.pane-help {
-	margin: 10px 10px 10px 0;
-	background: #FDFAE8;
-	border: 1px solid darken(#FDFAE8, 16%);
-	border-radius: 2px;
-	max-height: 80px;
-
-	position: relative;
-	overflow: hidden;
-
-	.fader {
-		position: absolute;
-		bottom: 0; left:0; right: 0;
-		height: 15px;
-
-		background: -moz-linear-gradient(top,  rgba(253,250,232,0) 0%, rgba(253,250,232,1) 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(253,250,232,0)), color-stop(100%,rgba(253,250,232,1))); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* IE10+ */
-		background: linear-gradient(to bottom,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* W3C */
-	}
-
-	p {
-		margin: 10px;
-	}
-}
-
-a.pane-nav-btn {
-	display: block;
-	text-decoration: none;
-	border: 1px solid #d0d9e6;
-	background: #fff;
-	border-radius: 2px;
-	padding: 10px;
-	margin: 10px;
-	cursor: pointer;
-	color: #444;
-
+// Special "link" blocks that go in list panes
+.dp-paneblock.dp-panelink {
 	&:hover {
-		border-color: darken(#d0d9e6, 10%);
-		span.arrow {
+		border-color: darken(#d0d9e6, 13%);
+		em {
 			color: #888;
 		}
 	}
 
-	span.arrow {
+	a {
+		display: block;
+		padding: 10px;
+		text-decoration: none;
+		color: #444;
+	}
+
+	em {
+		font-style: normal;
 		float: right;
 		color: #aaa;
-		margin-top: 3px;
 		margin-right: 2px;
 	}
-	span.title {
-		display: inline-block;
-		font-size: 140%;
-		border-bottom: 3px solid #aaa;
+
+	h3 {
 		margin: 0;
 		padding: 0 0 2px 0;
-		font-weight: normal;
-		line-height: 1.1;
+		font-size: 100%;
+		border-bottom: 2px solid #aaa;
+		display: inline-block;
+	}
+}
+
+//######################################################################################################################
+//# Pane Block Tabs - Standard tabs for edit panes
+//######################################################################################################################
+
+nav.dp-blocktabs {
+	ul {
+		list-style-type: none;
+		margin: 0 16px;
+		padding: 10px 0 12px 0;
+		border-bottom: 1px dotted #ccc;
+
+		li {
+			cursor: pointer;
+			display: inline-block;
+			padding-right: 15px;
+
+			a {
+				i.fa {
+					font-size: 11pt;
+					color: #777;
+				}
+
+				color: @text-color;
+				text-decoration: none;
+				border-bottom: 3px solid transparent;
+				padding: 0 0 2px 0;
+				font-size: 130%;
+				font-weight: normal;
+			}
+
+			&.active, &:hover {
+				a {
+					border-bottom: 3px solid #999999;
+				}
+			}
+		}
 	}
 }
 
@@ -618,19 +553,6 @@ a.pane-nav-btn {
 			background: #efefef;
 			text-align: center;
 			padding: 20px;
-		}
-	}
-}
-
-//######################################################################################################################
-//# Nav Style
-//######################################################################################################################
-
-.nav-rows {
-	> li {
-		> a:hover, &:focus > a, &.active > a {
-			color: #3476BE;
-			background: #D4E4FF;
 		}
 	}
 }
@@ -760,47 +682,10 @@ a.pane-nav-btn {
 	}
 }
 
-.add-btn-wrap {
-	padding: 2px 0 10px 16px;
-}
+.dp-item-list + .dp-add-control {
+	padding: 10px 0 10px 16px;
+	.btn {
 
-//######################################################################################################################
-//# Main Tabs Style
-//######################################################################################################################
-
-nav.dp-main-tabs {
-
-	ul {
-		list-style-type: none;
-		margin: 0 16px;
-		padding: 10px 0 12px 0;
-		border-bottom: 1px dotted #ccc;
-
-		li {
-			cursor: pointer;
-			display: inline-block;
-			padding-right: 15px;
-
-			a {
-				i.fa {
-					font-size: 11pt;
-					color: #777;
-				}
-
-				color: @text-color;
-				text-decoration: none;
-				font-size: 120%;
-				border-bottom: 3px solid transparent;
-				padding: 0 0 2px 0;
-				font-size: 140%;
-			}
-
-			&.active, &:hover {
-				a {
-					border-bottom: 3px solid #999999;
-				}
-			}
-		}
 	}
 }
 

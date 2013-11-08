@@ -1,7 +1,3 @@
-body {
-	background: #F5F7FA;
-}
-
 .dp-app-header {
 	position: absolute;
 	top: 0;
@@ -11,7 +7,7 @@ body {
 	z-index: 2;
 }
 
-.dp-app-nav {
+.dp-appstrip {
 	position: absolute;
 	top: @topHeight;
 	bottom: 0;
@@ -21,95 +17,85 @@ body {
 	z-index: 2;
 }
 
-.dp-section {
-	position: fixed;
-	top: @topHeight;
-	right: 0;
-	left: 0;
-	bottom: 0;
-}
+//######################################################################################################################
+//# App Layout
+//# - The main wrapper around the "app"
+//# - This includes the app nav (optional) and the app body
+//######################################################################################################################
 
-.dp-section-nav {
+.dp-layout-app {
+	background: #F5F7FA;
+
 	position: fixed;
 	top: @topHeight;
 	bottom: 0;
 	left: @appNavWidth;
+	right: 0;
+	overflow: hidden;
+}
+
+//######################################################################################################################
+//# App Nav
+//# - The menu for each app, eg Tickets has Departments, Ticket Accounts, Triggers etc
+//# - This is an optional element. When enabled, .dp-layout-app will have .with-layout-appnav
+//######################################################################################################################
+
+.dp-layout-appnav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
 	width: @navWidth;
 	overflow: auto;
 	display: none;
+
+	background: #eceef0;
+	border-right: 1px solid #b7bac0;
 }
 
-// When the nav col is enabled (all the time?)
-.with-section-nav {
-	.dp-section-nav {
-		display: block;
-	}
-
-	.dp-section-body {
-		left: @appNavWidth + @navWidth;
-	}
+.with-layout-appnav .dp-layout-appnav {
+	display: block;
 }
 
 //######################################################################################################################
-//# Section Body
+//# App Body
+//# - The body is a dumb container; depending on the route, it might include a list with edit pane, a full page etc
 //######################################################################################################################
 
-// Main center pane wrapper
-.dp-section-body {
-	position: fixed;
-	top: @topHeight;
-	left: @appNavWidth;
+.dp-layout-appbody {
+	position: absolute;
+	top: 0;
+	left: 0;
 	right: 0;
 	bottom: 0;
 	overflow: auto;
 }
 
-// List wrapper
-.dp-section-list {
-	position: absolute;
-	top: 0;;
-	left: 0;
-	right: 0;
-	display: none;
+.with-layout-appnav .dp-layout-appbody {
+	left: @navWidth;
 }
 
-// Page wrapper
-.dp-section-page {
-	position: absolute;
-	top: 0;
-	right: 0;
-	left: 15px;
-	display: none;
+//######################################################################################################################
+//# List Layout
+//# - Lists always have two panes. The first is a list pane which is fixed width
+//# - The second edit pane is fluid and generally contains edit controls
+//######################################################################################################################
+
+.dp-layout-list-listpane {
+	float: left;
+	width: @listWidth;
 }
 
-.with-section-list {
-	.dp-section-list {
-		display: block;
-	}
+.dp-layout-list-editpane {
+	margin-left: @listWidth;
 }
 
-.with-section-page {
-	.dp-section-page {
-		display: block;
-	}
+//######################################################################################################################
+//# Page Layout
+//# - Page Layout is a 100% width layout
+//# - Generally no sub-views
+//######################################################################################################################
+
+.dp-layout-fullpage {
+
 }
-
-.with-section-page.with-section-list {
-	.dp-section-list {
-		width: @listWidth;
-		right: auto;
-	}
-	.dp-section-page {
-		left: @listWidth;
-	}
-}
-
-.dp-section-page article.pane-content {
-	margin-left: 0;
-}
-
-
-// TODO:Cleanup
-.help-page-trigger { display: none; }
-.pane-header { display: none !important; }
-.dp-help-page.dp-section-page { display: none !important; }

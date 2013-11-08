@@ -1,12 +1,10 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3 ng-if="TicketAccountsEdit.account.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.tickets.email_accounts') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
-		<h3 ng-if="!TicketAccountsEdit.account.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.tickets.email_accounts') }} &rarr; {{ phrase('adm.tickets.new_account') }}</h3>
-	</header>
-	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAccount()">
-			<div class="panel panel-fill indent">
-				<div class="panel-body">
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAccount()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
 					<div class="form-group">
 						<div class="col-lg-3">
 							<h3>{{ phrase('agent.general.email_address') }} *</h3>
@@ -14,9 +12,9 @@
 						<div class="col-lg-9">
 							<div class="inner-group" dp-error-class="form_props.title">
 								<input type="text" class="form-control" name="title" ng-model="form.email_address" style="width: 50%;" required autofocus />
-								<span class="help-block">
-									{{ phrase('adm.departments.title_explain') }}
-								</span>
+										<span class="help-block">
+											{{ phrase('adm.departments.title_explain') }}
+										</span>
 							</div>
 						</div>
 					</div>
@@ -33,10 +31,10 @@
 						<div class="col-lg-9">
 							<div class="inner-group" style="padding-top: 3px;">
 								<select
-									ui-select2
-									ng-model="form.connection_type"
-									style="min-width: 240px"
-								>
+										ui-select2
+										ng-model="form.connection_type"
+										style="min-width: 240px"
+										>
 									<option value="pop3">POP3</option>
 									<option value="imap">IMAP</option>
 									<option value="gmail">GMail or Google Apps</option>
@@ -151,10 +149,10 @@
 						<div class="col-lg-9">
 							<div class="inner-group" style="padding-top: 3px;">
 								<select
-									ui-select2
-									ng-model="form.email_transport.transport_type"
-									style="min-width: 240px"
-								>
+										ui-select2
+										ng-model="form.email_transport.transport_type"
+										style="min-width: 240px"
+										>
 									<option value="mail">Send mail using PHP mail()</option>
 									<option value="smtp">SMTP</option>
 									<option value="gmail">GMail or Google Apps</option>
@@ -250,10 +248,10 @@
 						<div class="col-lg-9">
 							<div class="inner-group" style="padding-top: 3px;">
 								<select
-									ui-select2
-									ng-model="form.department"
-									style="min-width: 240px"
-								>
+										ui-select2
+										ng-model="form.department"
+										style="min-width: 240px"
+										>
 									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketAccountsEdit.deps">{{ ng_var('dep._full_title') }}</option>
 								</select>
 							</div>
@@ -270,9 +268,9 @@
 									<option value="auto">Automatic: Use the email address linked to the department of the ticket</option>
 									<option value="set">Set: Save this email address on the ticket</option>
 								</select> <span class="help-icon" tooltip-placement="left" tooltip="When 'automatic' is chosen, then From email address is always the email address of linked to the tickets current department. This means that if you change the department, the From email address may change as well. With 'set', you are setting this email address on the ticket specifically, and it will not change unless changed by triggers or manually updated by an agent."></span>
-								<span class="help-block">
-									This determines the "From" email address on outgoing email notifications sent to users and agents.
-								</span>
+										<span class="help-block">
+											This determines the "From" email address on outgoing email notifications sent to users and agents.
+										</span>
 							</div>
 						</div>
 					</div>
@@ -335,35 +333,38 @@
 						</div>
 					</div>
 
-				</div>
-			</div>
+					</div>
+					</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+						</ul>
+					</div>
 
-			<section class="footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
-					<ul>
-						<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
-					</ul>
-				</div>
+					<div class="dp-delete-control" ng-if="TicketAccountsEdit.dep.id">
+						<button class="btn btn-danger">Delete</button>
+					</div>
 
-				<div class="btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving_account">
-						<div class="delete-btn-wrap" ng-if="!">
-							<button class="btn btn-danger" ng-if="TicketAccountsEdit.account.id">Delete</button>
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_account">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-default" ng-click="TicketAccountsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 						</div>
-						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-						<button class="btn btn-default" ng-click="TicketAccountsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
-					</div>
-					<div dp-show-spinning="saving_account">
-						<i class="spinner-flat"></i>
+						<div dp-show-spinning="saving_account">
+							<i class="spinner-flat"></i>
+						</div>
 					</div>
 				</div>
-			</section>
-		</form>
-	</article>
+			</footer>
+		</section>
+	</form>
 
 	{{ ng_tpl('TicketAccounts/test-account-modal.html') }}
 	{{ ng_tpl('TicketAccounts/test-outgoing-modal.html') }}
 
 	<div dp-register-message="saved_account">{{ ng_var('form.email_address') }} was saved successfully</div>
-</div>
+{% endblock %}

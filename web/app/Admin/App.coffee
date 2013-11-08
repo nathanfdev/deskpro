@@ -226,8 +226,6 @@ define [
 	Admin_App.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
 		$urlRouterProvider.otherwise("/")
 
-		with_lists = {}
-
 		# Load templates through the dpTemplateManager
 		# so we can take advantage of our preloading scheme
 		makeProvider = (view) ->
@@ -238,42 +236,28 @@ define [
 		for route in routing
 			id = route.id
 			url = route.url
-			views = {}
 
-			if route.nav?
-				views['dp_section_nav'] = route.nav
-			if route.list?
-				views['dp_section_list@'] = route.list
-			if route.page?
-				views['dp_section_page@'] = route.page
+			if route.templateName?
+				route.templateProvider = makeProvider(route.templateName)
 
-			if route.page?.templateName?
-				route.page.templateProvider = makeProvider(route.page.templateName)
-			if route.list?.templateName?
-				route.list.templateProvider = makeProvider(route.list.templateName)
-			if route.nav?.templateName?
-				route.nav.templateProvider = makeProvider(route.nav.templateName)
+			opts = { url: url }
 
-			opts = {url: url, views: views, with_nav_view: true}
-			if route.with_list_view
-				opts.with_list_view = true
-			else if route.list?
-				opts.with_list_view = true
-			else if route.page?
-				segs = id.split('.')
-				segs.pop()
+			if route.views
+				opts.views = route.views
+			else
+				opts.views = {}
 
-				if with_lists[segs.join('.')]
-					opts.with_list_view = true
+				v = {}
+				if route.templateProvider
+					v.templateProvider = route.templateProvider
+				else if route.templateName
+					v.templateName = route.templateName
+				if route.controller
+					v.controller = route.controller
 
-			if route.page?
-				opts.with_page_view = true
+				viewName = if route.target then route.target else ""
 
-			if route.with_nav_view?
-				opts.with_nav_view = route.with_nav_view
-
-			if opts.with_list_view
-				with_lists[id] = true
+				opts.views[viewName] = v
 
 			$stateProvider.state(id, opts)
 	])

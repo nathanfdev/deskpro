@@ -1,0 +1,7 @@
+{% set _help_summary %}{% block help_summary %}{% endblock %}{% endset %}
+<div class="dp-layout-list-listpane">
+	<div class="dp-pane">
+		{% block listpane_content %}{% endblock %}
+	</div>
+</div>
+<div class="dp-layout-list-editpane" ui-view></div>

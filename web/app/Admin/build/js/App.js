@@ -119,9 +119,8 @@
     Admin_App.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
     Admin_App.config([
       '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-        var id, makeProvider, opts, route, segs, url, views, with_lists, _i, _len, _ref, _ref1, _ref2, _results;
+        var id, makeProvider, opts, route, url, v, viewName, _i, _len, _results;
         $urlRouterProvider.otherwise("/");
-        with_lists = {};
         makeProvider = function(view) {
           return [
             'dpTemplateManager', function(dpTemplateManager) {
@@ -134,49 +133,27 @@
           route = routing[_i];
           id = route.id;
           url = route.url;
-          views = {};
-          if (route.nav != null) {
-            views['dp_section_nav'] = route.nav;
-          }
-          if (route.list != null) {
-            views['dp_section_list@'] = route.list;
-          }
-          if (route.page != null) {
-            views['dp_section_page@'] = route.page;
-          }
-          if (((_ref = route.page) != null ? _ref.templateName : void 0) != null) {
-            route.page.templateProvider = makeProvider(route.page.templateName);
-          }
-          if (((_ref1 = route.list) != null ? _ref1.templateName : void 0) != null) {
-            route.list.templateProvider = makeProvider(route.list.templateName);
-          }
-          if (((_ref2 = route.nav) != null ? _ref2.templateName : void 0) != null) {
-            route.nav.templateProvider = makeProvider(route.nav.templateName);
+          if (route.templateName != null) {
+            route.templateProvider = makeProvider(route.templateName);
           }
           opts = {
-            url: url,
-            views: views,
-            with_nav_view: true
+            url: url
           };
-          if (route.with_list_view) {
-            opts.with_list_view = true;
-          } else if (route.list != null) {
-            opts.with_list_view = true;
-          } else if (route.page != null) {
-            segs = id.split('.');
-            segs.pop();
-            if (with_lists[segs.join('.')]) {
-              opts.with_list_view = true;
+          if (route.views) {
+            opts.views = route.views;
+          } else {
+            opts.views = {};
+            v = {};
+            if (route.templateProvider) {
+              v.templateProvider = route.templateProvider;
+            } else if (route.templateName) {
+              v.templateName = route.templateName;
             }
-          }
-          if (route.page != null) {
-            opts.with_page_view = true;
-          }
-          if (route.with_nav_view != null) {
-            opts.with_nav_view = route.with_nav_view;
-          }
-          if (opts.with_list_view) {
-            with_lists[id] = true;
+            if (route.controller) {
+              v.controller = route.controller;
+            }
+            viewName = route.target ? route.target : "";
+            opts.views[viewName] = v;
           }
           _results.push($stateProvider.state(id, opts));
         }

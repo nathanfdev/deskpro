@@ -30,7 +30,7 @@
 
 <div id="dp_main_view" ng-controller="Admin_Main_Ctrl_MainPage">
 	<!-- Left Navigation Column -->
-	<nav class="dp-app-nav">
+	<nav class="dp-appstrip">
 		<ul>
 			<li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="home" class="state-on"><a class="app-icon app-icon-home" href="#/"></a></li>
 			<li tooltip="{{ phrase('adm.general.apps_setup') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="setup"><a class="app-icon app-icon-cog" href="#/setup"></a></li>
@@ -48,19 +48,7 @@
 			<li><a class="app-icon app-fa fa-home" href="#/back_to_agent">{{ phrase('adm.general.back_to_agent') }}</a></li>
 		</ul>
 	</nav>
-	<div class="dp-section" ui-view>
-		<nav class="dp-section-nav sections-nav" ui-view="dp_section_nav" id="dp_section_nav"></nav>
-		<div class="dp-section-body" id="dp_section_body">
-			<div class="dp-section-list" id="dp_section_list">
-				<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_list"><article><h1>{{ phrase('agent.general.loading') }}</h1></article></div>
-				<div ui-view="dp_section_list" ng-hide="loading.dp_section_list"></div>
-			</div>
-			<div class="dp-section-page" id="dp_section_page">
-				<div class="dp-view-loading ng-hide" ng-show="loading.dp_section_page"><article><h1>{{ phrase('agent.general.loading') }}</h1></article></div>
-				<div ui-view="dp_section_page" ng-hide="loading.dp_section_page"></div>
-			</div>
-		</div>
-	</div>
+	<div class="dp-layout" ui-view></div>
 </div>
 
 <script type="text/javascript">

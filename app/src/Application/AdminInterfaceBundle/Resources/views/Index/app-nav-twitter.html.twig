@@ -1,7 +1,9 @@
-<header class="pane-header">
-	<h3>Twitter</h3>
-</header>
-<ul class="nav nav-rows">
-	<li dp-state-mark="twitter.setup"><a href="#/twitter/setup">Setup</a></li>
-	<li dp-state-mark="twitter.accounts"><a href="#/twitter/accounts">Accounts</a></li>
-</ul>
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="twitter.setup"><a href="#/twitter/setup">Setup</a></li>
+			<li dp-state-mark="twitter.accounts"><a href="#/twitter/accounts">Accounts</a></li>
+		</ul>
+	</nav>
+{% endblock %}

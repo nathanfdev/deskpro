@@ -1,8 +1,10 @@
-<header class="pane-header">
-	<h3>Agents</h3>
-</header>
-<ul class="nav nav-rows">
-	<li dp-state-mark="agents.agents"><a href="#/agents/agents">Agents</a></li>
-	<li dp-state-mark="agents.teams"><a href="#/agents/teams">Teams</a></li>
-	<li dp-state-mark="agents.groups"><a href="#/agents/groups">Permission Groups</a></li>
-</ul>
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="agents.agents"><a href="#/agents/agents">Agents</a></li>
+			<li dp-state-mark="agents.teams"><a href="#/agents/teams">Teams</a></li>
+			<li dp-state-mark="agents.groups"><a href="#/agents/groups">Permission Groups</a></li>
+		</ul>
+	</nav>
+{% endblock %}

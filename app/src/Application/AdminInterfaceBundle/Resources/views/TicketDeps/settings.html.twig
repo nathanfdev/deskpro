@@ -1,0 +1,58 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_deps') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Departments</h3>
+		</a>
+	</section>
+
+	<form role="form" name="form_props" ng-submit="TicketSettings.saveAll()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>Department Settings</h3>
+			</header>
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-sm-3">
+								<h3>{{ phrase('agent.general.default') }}</h3>
+							</div>
+							<div class="col-sm-9">
+								<select
+										ui-select2
+										ng-model="TicketDepsList.dep_settings.default_id"
+										style="width: 200px"
+										>
+									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsList.default_dep_list">{{ ng_var('dep._full_title') }}</option>
+								</select>
+									<span class="help-block">
+										{{ phrase('adm.departments.default_explain') }}
+									</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+						</ul>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

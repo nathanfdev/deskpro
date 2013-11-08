@@ -1,22 +1,13 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }}</h3>
-		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
-	</header>
-	<article class="pane-content">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls" style="display: none;">
-					<ul>
-						<li>
-							<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
-						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
-					</ul>
-				</nav>
-				<h3 ng-pluralize count="TicketDepsList.departments.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="TicketDepsList.departments.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
+		</header>
+		<article>
 			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
@@ -43,29 +34,25 @@
 					</ul>
 				</li>
 			</ul>
-			<div class="add-btn-wrap">
-				<a class="btn btn-success" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="fa fa-plus"></i> New Department</a>
 			</div>
 
-			<div class="panel-body ng-hide" ng-show="TicketDepsList.departments.length == 1">
-				<div class="alert alert-info">
-					<p>
-						{{ phrase('adm.departments.not_user_visible') }}
-					</p>
-				</div>
+			<div class="alert alert-info" ng-show="TicketDepsList.departments.length == 1">
+				<p>
+					{{ phrase('adm.departments.not_user_visible') }}
+				</p>
 			</div>
-		</div>
-	</article>
+		</article>
+	</section>
 
-	<a class="pane-nav-btn" href="{{ ng_href('tickets.emailsources') }}">
-		<span class="arrow"><i class="fa fa-chevron-down"></i></span>
-		<span class="title">Incoming Email Log</span>
-	</a>
-	<a class="pane-nav-btn" href="{{ ng_href('tickets.sendmailqueue') }}">
-		<span class="arrow"><i class="fa fa-chevron-down"></i></span>
-		<span class="title">Outgoing Email Log</span>
-	</a>
-</div>
-<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
-<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
-{% include 'AdminInterfaceBundle:TicketDeps:help-page.html.twig' %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_deps.settings') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Department Settings</h3>
+		</a>
+	</section>
+
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+	<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
+{% endblock %}

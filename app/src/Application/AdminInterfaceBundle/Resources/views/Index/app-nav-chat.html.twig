@@ -1,9 +1,11 @@
-<header class="pane-header">
-	<h3>Chat</h3>
-</header>
-<ul class="nav nav-rows">
-	<li dp-state-mark="chat.setup"><a href="#/chat/setup">Setup</a></li>
-	<li dp-state-mark="chat.chat_deps"><a href="#/chat/chat_deps">Departments</a></li>
-	<li dp-state-mark="chat.fields"><a href="#/chat/fields">Fields</a></li>
-	<li dp-state-mark="chat.labels"><a href="#/chat/labels">Labels</a></li>
-</ul>
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="chat.setup"><a href="#/chat/setup">Setup</a></li>
+			<li dp-state-mark="chat.chat_deps"><a href="#/chat/chat_deps">Departments</a></li>
+			<li dp-state-mark="chat.fields"><a href="#/chat/fields">Fields</a></li>
+			<li dp-state-mark="chat.labels"><a href="#/chat/labels">Labels</a></li>
+		</ul>
+	</nav>
+{% endblock %}
