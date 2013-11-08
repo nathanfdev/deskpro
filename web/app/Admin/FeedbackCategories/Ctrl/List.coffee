@@ -29,6 +29,8 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		initHierarchyData: (feedback_categories) ->
 
 			@feedback_categories = feedback_categories
+			@parent_data = []
+			@child_data = {}
 
 			for category in feedback_categories
 

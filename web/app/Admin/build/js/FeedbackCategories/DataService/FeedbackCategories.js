@@ -16,15 +16,16 @@
       }
 
       /**
-      		* Loads all feedback types
-        	* Returns a promise.
-        	*
-        	* @return {Promise}
+      		* Loads list of records
+       	*
+      * @param reload - (optional) whether to reload list of records or no
+      *
+      * @return {Promise}
       */
 
 
-      Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.loadList = function(reload) {
-        var deferred, http_def,
+      Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.loadList = function(model, reload) {
+        var deferred,
           _this = this;
         if (this.loadListPromise) {
           return this.loadListPromise;
@@ -34,8 +35,8 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        http_def = this.Api.sendGet('/feedback_categories').success(function(data, status, headers, config) {
-          _this._setListData(data.categories);
+        this.Api.sendGet('/feedback_categories').success(function(data, status, headers, config) {
+          _this._setListData(data.feedback_categories);
           return deferred.resolve(_this.recs);
         }, function(data, status, headers, config) {
           return deferred.reject();
@@ -69,10 +70,13 @@
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.updateModel = function(model) {
         var new_model;
+        if (!model.options.parent_id || model.options.parent_id === "0") {
+          model.options.parent_id = 0;
+        }
+        model.parent_id = model.options.parent_id;
         new_model = this.em.createEntity('feedback_category', 'id', model);
         this.recs.set(new_model.id, new_model);
-        this._updateOrderOfData();
-        return new_model;
+        return this._updateOrderOfData();
       };
 
       /*
@@ -94,6 +98,30 @@
         return move_list;
       };
 
+      /*
+      		# Returns list of parent records
+      		# @param model - specified model for which we want to know possible parent records
+      		# @return array
+      */
+
+
+      Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.getListOfParents = function(model) {
+        var parent_list,
+          _this = this;
+        parent_list = [
+          {
+            id: 0,
+            title: 'No Parent'
+          }
+        ];
+        this.recs.forEach(function(key, val) {
+          if (val.id !== model.id && !val.parent_id) {
+            return parent_list.push(val);
+          }
+        });
+        return parent_list;
+      };
+
       /**
       				* Creates entities for feedback categories raw data
       				*
@@ -106,7 +134,7 @@
         _results = [];
         for (_i = 0, _len = raw_recs.length; _i < _len; _i++) {
           rec = raw_recs[_i];
-          model = this.em.createEntity('feedback_ctegory', 'id', rec);
+          model = this.em.createEntity('feedback_category', 'id', rec);
           model.retain();
           _results.push(this.recs.set(model.id, model));
         }

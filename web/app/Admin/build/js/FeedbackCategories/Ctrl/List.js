@@ -42,6 +42,8 @@
       Admin_FeedbackCategories_Ctrl_List.prototype.initHierarchyData = function(feedback_categories) {
         var category, _i, _len, _results;
         this.feedback_categories = feedback_categories;
+        this.parent_data = [];
+        this.child_data = {};
         _results = [];
         for (_i = 0, _len = feedback_categories.length; _i < _len; _i++) {
           category = feedback_categories[_i];

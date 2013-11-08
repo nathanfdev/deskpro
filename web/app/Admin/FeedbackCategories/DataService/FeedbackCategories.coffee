@@ -17,12 +17,14 @@ define [
 			@recs = new Admin_Main_Collection_OrderedDictionary()
 
 		###*
-		* Loads all feedback types
-    	* Returns a promise.
-    	*
-    	* @return {Promise}
+		* Loads list of records
+ 	*
+  * @param reload - (optional) whether to reload list of records or no
+  *
+  * @return {Promise}
 		###
-		loadList: (reload) ->
+
+		loadList: (model, reload) ->
 
 			if @loadListPromise
 				return @loadListPromise
@@ -34,10 +36,11 @@ define [
 				deferred.resolve(@recs)
 				return deferred.promise
 
-			http_def = @Api.sendGet('/feedback_categories').success( (data, status, headers, config) =>
+			@Api.sendGet('/feedback_categories').success( (data, status, headers, config) =>
 
-				@_setListData(data.categories)
+				@_setListData(data.feedback_categories)
 				deferred.resolve(@recs)
+
 			, (data, status, headers, config) ->
 				deferred.reject()
 			)
@@ -68,12 +71,19 @@ define [
  	###
 		updateModel: (model) ->
 
+			# case of 'no parent'
+
+			if not model.options.parent_id or model.options.parent_id == "0"
+				model.options.parent_id = 0
+
+			# this is due to the reason that in list it's stored as parent_id while in form it's stored in options.parent_id
+
+		 model.parent_id = model.options.parent_id
+
 			new_model = @em.createEntity('feedback_category', 'id', model)
 			@recs.set(new_model.id, new_model)
 
 			@_updateOrderOfData()
-
-			return new_model
 
 		###
 		# Returns list of feedback_categories where feedback of specified feedback_category could be moved to
@@ -93,6 +103,27 @@ define [
 
 			return move_list
 
+		###
+		# Returns list of parent records
+		# @param model - specified model for which we want to know possible parent records
+		# @return array
+		###
+
+		getListOfParents: (model) ->
+
+			parent_list = [{
+				id: 0,
+				title: 'No Parent'
+			}]
+
+			@recs.forEach( (key, val) =>
+
+				if val.id != model.id and not val.parent_id
+					parent_list.push(val)
+			)
+
+			return parent_list
+
 		###*
 				* Creates entities for feedback categories raw data
 				*
@@ -102,7 +133,7 @@ define [
 
 			for rec in raw_recs
 
-				model = @em.createEntity('feedback_ctegory', 'id', rec)
+				model = @em.createEntity('feedback_category', 'id', rec)
 				model.retain()
 				@recs.set(model.id, model)
 

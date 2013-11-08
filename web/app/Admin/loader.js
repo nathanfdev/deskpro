@@ -139,7 +139,8 @@ requirejs([
 	'Admin/FeedbackStatuses/Ctrl/Edit',
 	'Admin/FeedbackTypes/Ctrl/List',
 	'Admin/FeedbackTypes/Ctrl/Edit',
-	'Admin/FeedbackCategories/Ctrl/List'
+	'Admin/FeedbackCategories/Ctrl/List',
+	'Admin/FeedbackCategories/Ctrl/Edit'
 ], function(angular) {
 	'use strict';
 
