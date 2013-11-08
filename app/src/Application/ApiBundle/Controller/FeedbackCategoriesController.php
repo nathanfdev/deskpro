@@ -207,4 +207,22 @@ class FeedbackCategoriesController extends AbstractController
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
+
+	####################################################################################################################
+	# save-display-order
+	####################################################################################################################
+
+	public function saveDisplayOrderAction()
+	{
+		$display_orders = $this->in->getArrayOfUInts('display_orders');
+
+		/**
+		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+		 */
+
+		$feedback_categories = $this->container->getSystemService('feedback_categories');
+		$feedback_categories->updateDisplayOrders($display_orders);
+
+		return $this->createSuccessResponse();
+	}
 }

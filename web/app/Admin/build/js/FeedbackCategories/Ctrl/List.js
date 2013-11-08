@@ -21,9 +21,37 @@
       Admin_FeedbackCategories_Ctrl_List.CTRL_TYPE = 'list';
 
       Admin_FeedbackCategories_Ctrl_List.prototype.init = function() {
+        var _this = this;
         this.feedback_categories = [];
         this.parent_data = [];
-        return this.child_data = {};
+        this.child_data = {};
+        return this.sortedListOptions = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: function(ev, data) {
+            var $list, em, postData, x;
+            $list = data.item.closest('ul');
+            postData = {
+              display_orders: []
+            };
+            x = 0;
+            em = _this.em;
+            $list.find('li').each(function() {
+              var feedback_category, feedback_category_id;
+              x += 10;
+              feedback_category_id = parseInt($(this).data('id'));
+              if (feedback_category_id) {
+                feedback_category = em.getById('feedback_category', feedback_category_id);
+                if (feedback_category) {
+                  feedback_category.display_order = x;
+                }
+              }
+              return postData.display_orders.push(feedback_category_id);
+            });
+            _this.Api.sendPostJson('/feedback_categories/display_order', postData);
+            return _this.pingElement('display_orders');
+          }
+        };
       };
 
       Admin_FeedbackCategories_Ctrl_List.prototype.initialLoad = function() {

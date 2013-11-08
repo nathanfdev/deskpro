@@ -164,4 +164,32 @@ class FeedbackCategories
 
 		return $this->parent_category;
 	}
+
+	/**
+	 * @param array $newOrders
+	 */
+
+	public function updateDisplayOrders($newOrders)
+	{
+		$x = 10;
+
+		$feedback_categories = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getByIds($newOrders);
+
+		foreach ($newOrders as $id) {
+
+			if (!isset($feedback_categories[$id])) {
+
+				continue;
+			}
+
+			$feedback_category                = $feedback_categories[$id];
+			$feedback_category->display_order = $x;
+
+			$this->em->persist($feedback_category);
+
+			$x += 10;
+		}
+
+		$this->em->flush();
+	}
 }
