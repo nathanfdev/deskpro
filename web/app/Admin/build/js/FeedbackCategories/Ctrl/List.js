@@ -100,17 +100,13 @@
           return;
         }
         move_feedback_categories_list = this.FeedbackCategoriesData.getListOfMovables(feedback_category);
-        if (!move_feedback_categories_list.length) {
-          this.showAlert('@no_delete_last');
-          return;
-        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('FeedbackCategories/delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', 'move_feedback_categories_list', function($scope, $modalInstance, move_feedback_categories_list) {
               $scope.move_feedback_categories_list = move_feedback_categories_list;
               $scope.selected = {
-                move_to_id: move_feedback_categories_list[0].id
+                move_to_id: move_feedback_categories_list.length ? move_feedback_categories_list[0].id : ''
               };
               $scope.confirm = function() {
                 return $modalInstance.close($scope.selected.move_to_id);

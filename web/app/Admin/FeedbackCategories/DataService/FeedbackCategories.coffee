@@ -94,10 +94,11 @@ define [
 		getListOfMovables: (model) ->
 
 			move_list = []
+			parent_id = model.parent_id
 
 			@recs.forEach( (key, val) =>
 
-				if val.id != model.id
+				if val.id != model.id and val.id != ~~parent_id
 					move_list.push(val)
 			)
 

@@ -82,30 +82,29 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 		startDelete: (feedback_category) ->
 
+
+
 			if @FeedbackCategoriesData.hasChildren(feedback_category)
 				@showAlert("You cannot delete a category with sub-categories. Move or delete the sub-categories first.")
 				return
 
 			move_feedback_categories_list = @FeedbackCategoriesData.getListOfMovables(feedback_category)
 
-			if not move_feedback_categories_list.length
-				@showAlert('@no_delete_last');
-				return
-
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', 'move_feedback_categories_list', ($scope, $modalInstance, move_feedback_categories_list) ->
 
-						$scope.move_feedback_categories_list = move_feedback_categories_list
-						$scope.selected = {
-							move_to_id: move_feedback_categories_list[0].id
-						}
 
-						$scope.confirm = ->
-							$modalInstance.close($scope.selected.move_to_id);
+					$scope.move_feedback_categories_list = move_feedback_categories_list
+					$scope.selected = {
+						move_to_id: if move_feedback_categories_list.length then move_feedback_categories_list[0].id else ''
+					}
 
-						$scope.dismiss = ->
-							$modalInstance.dismiss();
+					$scope.confirm = ->
+						$modalInstance.close($scope.selected.move_to_id);
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
 				],
 				resolve: {
 					move_feedback_categories_list: =>

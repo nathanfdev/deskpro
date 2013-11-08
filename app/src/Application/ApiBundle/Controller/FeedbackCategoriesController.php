@@ -167,15 +167,14 @@ class FeedbackCategoriesController extends AbstractController
 		$move_to                   = $this->in->getUint('move_to');
 		$move_to_feedback_category = $feedback_categories->getById($move_to);
 
+		$skip_moving = false;
+
 		if (!$move_to_feedback_category) {
 
-			throw ValidationException::create(
-				"feedback_category.remove.move_feedback_categories",
-				"You must select a feedback category to move existing feedback into"
-			);
+			$skip_moving = true;
 		}
 
-		if ($move_to_feedback_category->getId() == $feedback_category->getId()) {
+		if (!$skip_moving && $move_to_feedback_category->getId() == $feedback_category->getId()) {
 
 			throw ValidationException::create(
 				"feedback_type.remove.move_feedback_categories",
@@ -189,10 +188,13 @@ class FeedbackCategoriesController extends AbstractController
 
 		try {
 
-			$this->db->executeUpdate(
-				"UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?",
-				array($move_to, $old_id)
-			);
+			if(!$skip_moving) {
+
+				$this->db->executeUpdate(
+					"UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?",
+					array($move_to, $old_id)
+				);
+			}
 
 			$this->em->remove($feedback_category);
 			$this->em->flush();

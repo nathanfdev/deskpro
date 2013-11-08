@@ -87,11 +87,12 @@
 
 
       Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.getListOfMovables = function(model) {
-        var move_list,
+        var move_list, parent_id,
           _this = this;
         move_list = [];
+        parent_id = model.parent_id;
         this.recs.forEach(function(key, val) {
-          if (val.id !== model.id) {
+          if (val.id !== model.id && val.id !== ~~parent_id) {
             return move_list.push(val);
           }
         });
