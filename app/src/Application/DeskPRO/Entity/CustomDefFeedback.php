@@ -65,6 +65,15 @@ class CustomDefFeedback extends CustomDefAbstract
 
 	protected $sys_name = null;
 
+	/**
+	 * @return CustomDefFeedback
+	 */
+
+	public static function createFeedbackCategory()
+	{
+		$category = new self();
+		return $category;
+	}
 
 
 	############################################################################

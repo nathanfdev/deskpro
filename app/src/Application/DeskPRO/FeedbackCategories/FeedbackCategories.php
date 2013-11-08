@@ -150,4 +150,18 @@ class FeedbackCategories
 			$this->em->flush();
 		}
 	}
+
+	/**
+	 * @return CustomDefFeedback
+	 */
+
+	public function getParentCategory()
+	{
+		if (!$this->parent_category) {
+
+			$this->createInitialFeedbackCategoryIfNotDefined();
+		}
+
+		return $this->parent_category;
+	}
 }

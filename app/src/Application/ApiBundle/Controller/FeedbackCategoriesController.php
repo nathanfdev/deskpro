@@ -54,8 +54,95 @@ class FeedbackCategoriesController extends AbstractController
 
         return $this->createApiResponse(
             array(
-                 'categories' => $feedback_categories->getAll()
+                 'feedback_categories' => $feedback_categories->getAll()
             )
         );
+	}
+
+	####################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+	     */
+
+		$feedback_categories = $this->container->getSystemService('feedback_categories');
+		$feedback_category = $feedback_categories->getById($id);
+
+		if (!$feedback_category) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$returnedData = $this->getApiData($feedback_category);
+
+		return $this->createApiResponse(
+			array(
+				 'feedback_category' => $returnedData
+			)
+		);
+	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+		 */
+
+		$feedback_categories = $this->container->getSystemService('feedback_categories');
+
+		if ($id) {
+
+			$feedback_category = $feedback_categories->getById($id);
+
+			if (!$feedback_category) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$feedback_category = $feedback_categories->createNew();
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+
+			$postData  = $this->in->getAll('post');
+			$parent_id = $postData['feedback_category']['options']['parent_id'];
+
+			if(!$parent_id) {
+
+				$parent_id = '';
+			}
+
+			$feedback_category->title  = $postData['feedback_category']['title'];
+			$feedback_category->parent = $feedback_categories->getParentCategory();
+			$feedback_category->setOption('parent_id', $parent_id);
+
+			$this->em->persist($feedback_category);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+
+		} catch (\Exception $e) {
+
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $feedback_category->getId(),
+			)
+		);
 	}
 }
