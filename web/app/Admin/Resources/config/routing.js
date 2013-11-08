@@ -695,6 +695,10 @@ define(function() {
 		list: {
 			templateName: 'TicketDeps/list.html',
 			controller: 'Admin_TicketDeps_Ctrl_List'
+		},
+		page: {
+			templateName: 'TicketDeps/edit.html',
+			controller: 'Admin_TicketDeps_Ctrl_Edit'
 		}
 	});
 
@@ -800,6 +804,10 @@ define(function() {
 		list: {
 			templateName: 'TicketAccounts/list.html',
 			controller: 'Admin_TicketAccounts_Ctrl_List'
+		},
+		page: {
+			templateName: 'TicketAccounts/edit.html',
+			controller: 'Admin_TicketAccounts_Ctrl_Edit'
 		}
 	});
 

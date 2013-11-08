@@ -3,14 +3,17 @@
 		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('agent.general.departments') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
 		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('adm.departments.new_department') }}</h3>
 	</header>
-	<article class="pane-content no-pad">
+	<article class="pane-content">
+		<div class="pane-content-header" style="display: none">
+			<h3>Edit Department: {{ ng_var('TicketDepsEdit.dep.title') }}</h3>
+		</div>
 		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketDepsEdit.saveAll()">
 			<nav class="dp-main-tabs">
 				<ul>
-					<li class="active" dp-tab-btn="main.props"><a href="#">{{ phrase('agent.general.properties') }}</a></li>
-					<li dp-tab-btn="main.perms"><a href="#">{{ phrase('agent.general.permissions') }}</a></li>
-					<li dp-tab-btn="main.layout"><a href="#">{{ phrase('adm.general.layout') }}</a></li>
-					<li dp-tab-btn="main.website_embeds"><a href="#">{{ phrase('adm.general.website_embed') }}</a></li>
+					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
+					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-users"></i> {{ phrase('agent.general.permissions') }}</a></li>
+					<li dp-tab-btn="main.layout"><a href="#"><i class="fa fa-columns"></i> {{ phrase('adm.general.layout') }}</a></li>
+					<li dp-tab-btn="main.website_embeds"><a href="#"><i class="fa fa-code"></i> {{ phrase('adm.general.website_embed') }}</a></li>
 				</ul>
 			</nav>
 
@@ -30,7 +33,7 @@
 				{% include 'AdminInterfaceBundle:TicketDeps:edit-website_embeds.html.twig' %}
 			</div>
 
-			<div class="inner-footer">
+			<section class="footer">
 				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 					<ul>
@@ -39,8 +42,11 @@
 					</ul>
 				</div>
 
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
+				<div class="btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 					<div dp-hide-spinning="saving_dep">
+						<div class="delete-btn-wrap">
+							<button class="btn btn-danger" ng-if="TicketDepsEdit.dep.id">Delete</button>
+						</div>
 						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
 						<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 					</div>
@@ -48,7 +54,7 @@
 						<i class="spinner-flat"></i>
 					</div>
 				</div>
-			</div>
+			</section>
 		</form>
 	</article>
 </div>

@@ -80,6 +80,7 @@
 
       Admin_TicketDeps_Ctrl_Edit.prototype.checkDirtyState = function() {
         var _ref1;
+        return false;
         if (!((_ref1 = this.dep) != null ? _ref1.id : void 0)) {
           return false;
         }

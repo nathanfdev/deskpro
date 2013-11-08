@@ -327,12 +327,12 @@ a em.dp-id {
 	.nav {
 		a {
 			color: darken(#878787, 15%);
-			padding-left: 13px;
-			padding-top: 10px;
-			padding-bottom: 10px;
+			padding-left: 10px;
+			padding-top: 8px;
+			padding-bottom: 8px;
 			line-height: 100%;
 
-			border-bottom: 1px solid #ccc;
+			border-bottom: 1px solid #cdcdcd;
 
 			span {
 				display: inline-block;
@@ -341,16 +341,16 @@ a em.dp-id {
 
 			i.fa-caret-right {
 				position: absolute;
-				right: -6px;
-				top: 11px;
+				right: -5px;
+				top: 12px;
 				display: none;
-				font-size: 12px;
+				font-size: 10px;
 			}
 
 			i.fa-caret-down {
 				position: relative;
 				top: 0px;
-				font-size: 11px;
+				font-size: 9px;
 				margin-left: 3px;
 				vertical-align: middle;
 				display: none;
@@ -360,8 +360,8 @@ a em.dp-id {
 				display: inline-block;
 				width: 16px;
 				text-align: center;
-				margin-right: 11px;
-				font-size: 150%;
+				margin-right: 5px;
+				font-size: 14px;
 				vertical-align: middle;
 			}
 		}
@@ -493,21 +493,96 @@ header.pane-controls {
 }
 
 article.pane-content {
-	.container();
+	position: relative;
+	margin: 10px;
 
-	&.no-pad {
-		padding-top: 0;
-		padding-bottom: 0;
-		padding-left: 0;
-		padding-right: 0;
+	border: 1px solid #d0d9e6;
+	background: #fff;
+	border-radius: 2px;
 
-		&.pad-top {
-			padding-top: 15px;
+	section.footer {
+		border-top: 1px dotted #aaa;
+		background: #efefef;
+		text-align: center;
+		padding: 20px;
+
+		.delete-btn-wrap {
+			float: right;
+		}
+	}
+}
+
+.pane-content-header {
+	background: #f8f8f8;
+	border-bottom: 1px dotted #aaa;
+
+	h3 {
+		font-size: 140%;
+		padding: 10px;
+		margin: 0;
+	}
+}
+
+article.pane-help {
+	margin: 10px 10px 10px 0;
+	background: #FDFAE8;
+	border: 1px solid darken(#FDFAE8, 16%);
+	border-radius: 2px;
+	max-height: 80px;
+
+	position: relative;
+	overflow: hidden;
+
+	.fader {
+		position: absolute;
+		bottom: 0; left:0; right: 0;
+		height: 15px;
+
+		background: -moz-linear-gradient(top,  rgba(253,250,232,0) 0%, rgba(253,250,232,1) 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(253,250,232,0)), color-stop(100%,rgba(253,250,232,1))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* IE10+ */
+		background: linear-gradient(to bottom,  rgba(253,250,232,0) 0%,rgba(253,250,232,1) 100%); /* W3C */
+	}
+
+	p {
+		margin: 10px;
+	}
+}
+
+a.pane-nav-btn {
+	display: block;
+	text-decoration: none;
+	border: 1px solid #d0d9e6;
+	background: #fff;
+	border-radius: 2px;
+	padding: 10px;
+	margin: 10px;
+	cursor: pointer;
+	color: #444;
+
+	&:hover {
+		border-color: darken(#d0d9e6, 10%);
+		span.arrow {
+			color: #888;
 		}
 	}
 
-	&.pad-top {
-		padding-top: 15px;
+	span.arrow {
+		float: right;
+		color: #aaa;
+		margin-top: 3px;
+		margin-right: 2px;
+	}
+	span.title {
+		display: inline-block;
+		font-size: 140%;
+		border-bottom: 3px solid #aaa;
+		margin: 0;
+		padding: 0 0 2px 0;
+		font-weight: normal;
+		line-height: 1.1;
 	}
 }
 
@@ -516,12 +591,9 @@ article.pane-content {
 //######################################################################################################################
 
 .pane-fullpage {
-	background: #F5F7FA;
-	padding: 15px;
+	background: #fff;
 
 	> article {
-		background: #fff;
-		border: 1px solid darken(#F5F7FA, 10%);
 		border-radius: 2px;
 		max-width: 900px;
 	}
@@ -573,7 +645,6 @@ article.pane-content {
 
 	> li {
 		list-style-type: none;
-		background-color: #F5F7FA;
 	}
 
 	> li, > .dp-itm {
@@ -597,11 +668,11 @@ article.pane-content {
 		}
 
 		&.with-drag-handle > a {
-			padding-left: 34px;
+			padding-left: 41px;
 		}
 
 		&.with-drag-handle.with-row-toggle > a {
-			padding-left: 42px;
+			padding-left: 49px;
 		}
 
 		> a {
@@ -609,10 +680,8 @@ article.pane-content {
 			display: block;
 			text-decoration: none;
 			color: @text-color;
-			padding: 9px 13px;
+			padding: 9px 13px 9px 18px;
 			line-height: 100%;
-
-			border-bottom: 1px solid #ccc;
 
 			h4, h5, h6 {
 				margin: 0;
@@ -662,7 +731,7 @@ article.pane-content {
 
 	.drag-handle {
 		position: absolute;
-		left: 9px;
+		left: 16px;
 		top: 7px;
 		font-size: 18px;
 		color: #ccc;
@@ -691,47 +760,45 @@ article.pane-content {
 	}
 }
 
+.add-btn-wrap {
+	padding: 2px 0 10px 16px;
+}
+
 //######################################################################################################################
 //# Main Tabs Style
 //######################################################################################################################
 
 nav.dp-main-tabs {
-	height: 49px;
-	background-color: #fff;
-	overflow: hidden;
 
 	ul {
 		list-style-type: none;
-		height: 48px;
-		margin: 0;
-		padding: 0;
-		border-bottom: 3px solid #999999;
+		margin: 0 16px;
+		padding: 10px 0 12px 0;
+		border-bottom: 1px dotted #ccc;
 
 		li {
 			cursor: pointer;
-			display: block;
-			float: left;
-			margin-left: 13px;
-			.border-radius(4px, 4px, 0, 0);
-
-			line-height: 35px;
-			padding-left: 15px;
+			display: inline-block;
 			padding-right: 15px;
-			border: 1px solid #999999;
-			border-bottom: none;
-			background: #eee;
-
-			margin-top: 8px;
 
 			a {
+				i.fa {
+					font-size: 11pt;
+					color: #777;
+				}
+
 				color: @text-color;
 				text-decoration: none;
 				font-size: 120%;
+				border-bottom: 3px solid transparent;
+				padding: 0 0 2px 0;
+				font-size: 140%;
 			}
 
-			&.active {
-				padding-bottom: 3px;
-				background: #fff;
+			&.active, &:hover {
+				a {
+					border-bottom: 3px solid #999999;
+				}
 			}
 		}
 	}
@@ -742,6 +809,7 @@ nav.dp-main-tabs {
 //######################################################################################################################
 
 .panel {
+	margin: 0;
 	> table.table {
 		> thead > tr {
 			td, th {
@@ -766,10 +834,6 @@ nav.dp-main-tabs {
 	box-shadow: none;
 
 	.panel-heading {
-		border-bottom: 3px solid #aaa;
-		.rounded(0);
-		background: transparent;
-
 		h3 {
 			padding: 0;
 			margin-top: 5px;
@@ -777,14 +841,18 @@ nav.dp-main-tabs {
 			margin-left: 0;
 			margin-right: 0;
 			font-size: 120%;
+			border-bottom: 3px solid #aaa;
 		}
 	}
+}
+
+.panel-heading {
+	padding-bottom: 0;
 }
 
 .panel.panel-fill {
 	background: transparent;
 	border: none;
-	margin-bottom: 30px;
 	box-shadow: none;
 
 	&.indent {
@@ -795,7 +863,6 @@ nav.dp-main-tabs {
 	}
 
 	> .panel-heading {
-		border-bottom: 3px solid #aaa;
 
 		nav.dp-controls {
 			float: right;
@@ -817,12 +884,15 @@ nav.dp-main-tabs {
 		}
 
 		h3 {
-			padding: 0;
+			padding: 0 0 2px 0;
 			margin-top: 5px;
 			margin-bottom: 5px;
 			margin-left: 0;
 			margin-right: 0;
-			font-size: 120%;
+			font-size: 140%;
+			border-bottom: 3px solid #aaa;
+			display: inline-block;
+			font-weight: normal;
 		}
 	}
 }
@@ -850,7 +920,7 @@ nav.dp-main-tabs {
 	.table > thead > tr > th {
 		border: none;
 		background: #fff;
-		font-weight: bold;
+		font-weight: normal;
 	}
 
 	.table tbody > tr:last-child > td {
@@ -879,12 +949,12 @@ nav.dp-main-tabs {
 		h3 {
 			margin: 0;
 			padding: 0;
-			font-weight: normal;
-			font-size: 140%;
+			font-weight: bold;
+			font-size: 120%;
 
 			span {
 				display: inline-block;
-				border-bottom: 3px solid #aaa;
+				border-bottom: 1px solid #aaa;
 				padding-bottom: 2px;
 			}
 		}
@@ -1264,6 +1334,12 @@ section.dp-help-page {
 	.form-group {
 		border-bottom: 1px dotted #aaa;
 		padding-bottom: 15px;
+
+		&:last-child {
+			border-bottom: none;
+			padding-bottom: 0;
+			margin-bottom: 0;
+		}
 	}
 
 	.inner-group + .inner-group {

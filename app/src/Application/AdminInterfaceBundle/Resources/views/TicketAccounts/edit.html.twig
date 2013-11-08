@@ -1,12 +1,11 @@
 <div class="pane">
 	<header class="pane-header">
-		<h3 ng-if="TicketDepsEdit.dep.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.tickets.email_accounts') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
-		<h3 ng-if="!TicketDepsEdit.dep.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.tickets.email_accounts') }} &rarr; {{ phrase('adm.tickets.new_account') }}</h3>
+		<h3 ng-if="TicketAccountsEdit.account.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.tickets.email_accounts') }} &rarr; {{ phrase('agent.general.edit') }} <em>{{ ng_var('TicketDepsEdit.dep.title') }}</em></h3>
+		<h3 ng-if="!TicketAccountsEdit.account.id">{{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.tickets.email_accounts') }} &rarr; {{ phrase('adm.tickets.new_account') }}</h3>
 	</header>
 	<article class="pane-content no-pad">
 		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketAccountsEdit.saveAccount()">
 			<div class="panel panel-fill indent">
-				<br/>
 				<div class="panel-body">
 					<div class="form-group">
 						<div class="col-lg-3">
@@ -339,7 +338,7 @@
 				</div>
 			</div>
 
-			<div class="inner-footer">
+			<section class="footer">
 				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 					<ul>
@@ -347,8 +346,11 @@
 					</ul>
 				</div>
 
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
+				<div class="btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 					<div dp-hide-spinning="saving_account">
+						<div class="delete-btn-wrap" ng-if="!">
+							<button class="btn btn-danger" ng-if="TicketAccountsEdit.account.id">Delete</button>
+						</div>
 						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
 						<button class="btn btn-default" ng-click="TicketAccountsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 					</div>
@@ -356,7 +358,7 @@
 						<i class="spinner-flat"></i>
 					</div>
 				</div>
-			</div>
+			</section>
 		</form>
 	</article>
 

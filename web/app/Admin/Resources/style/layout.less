@@ -1,3 +1,7 @@
+body {
+	background: #F5F7FA;
+}
+
 .dp-app-header {
 	position: absolute;
 	top: 0;
@@ -35,35 +39,7 @@
 	display: none;
 }
 
-.dp-section-body {
-	position: fixed;
-	top: @topHeight;
-	left: @appNavWidth;
-	right: 0;
-	bottom: 0;
-	overflow: hidden;
-}
-
-.dp-section-list {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	width: 44%;
-	background: #F5F7FA;
-	overflow: auto;
-	display: none;
-}
-
-.dp-section-page {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	width: 100%;
-	overflow: auto;
-}
-
+// When the nav col is enabled (all the time?)
 .with-section-nav {
 	.dp-section-nav {
 		display: block;
@@ -74,13 +50,66 @@
 	}
 }
 
+//######################################################################################################################
+//# Section Body
+//######################################################################################################################
+
+// Main center pane wrapper
+.dp-section-body {
+	position: fixed;
+	top: @topHeight;
+	left: @appNavWidth;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+}
+
+// List wrapper
+.dp-section-list {
+	position: absolute;
+	top: 0;;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+// Page wrapper
+.dp-section-page {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 15px;
+	display: none;
+}
+
 .with-section-list {
 	.dp-section-list {
 		display: block;
 	}
+}
 
+.with-section-page {
 	.dp-section-page {
-		border-left: 1px solid #A8ABB2;
-		width: 56%;
+		display: block;
 	}
 }
+
+.with-section-page.with-section-list {
+	.dp-section-list {
+		width: @listWidth;
+		right: auto;
+	}
+	.dp-section-page {
+		left: @listWidth;
+	}
+}
+
+.dp-section-page article.pane-content {
+	margin-left: 0;
+}
+
+
+// TODO:Cleanup
+.help-page-trigger { display: none; }
+.pane-header { display: none !important; }
+.dp-help-page.dp-section-page { display: none !important; }
