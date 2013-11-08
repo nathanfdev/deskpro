@@ -60,7 +60,7 @@ define [
 	Admin_OptionBuilder_TypesDef_TicketActions,
 	Admin_OptionBuilder_TypesDef_TicketFilter,
 
-	DeskPRO_Directive_DpTimeWithUnit
+	DeskPRO_Directive_DpTimeWithUnit,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -100,6 +100,7 @@ define [
 	####################################################################################################################
 
 	Admin_App = angular.module('Admin_App', [
+		'ngAnimate',
 		'ui.router',
 		'ui.bootstrap',
 		'ui.select2',

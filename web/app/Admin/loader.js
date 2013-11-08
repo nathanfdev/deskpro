@@ -3,6 +3,7 @@ requirejs.config({
 	urlArgs: "bust=" + (new Date()).getTime(),
     paths: {
 		angular:                DP_ASSET_URL+'/app/bower_components/angular/angular',
+		angularAnimate:         DP_ASSET_URL+'/app/bower_components/angular-animate/angular-animate.min',
 		angularBootstrap:       DP_ASSET_URL+'/app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
 		angularSanitize:        DP_ASSET_URL+'/app/bower_components/angular-sanitize/angular-sanitize',
 		angularSelect2:         DP_ASSET_URL+'/app/bower_components/angular-ui-select2/src/select2',
@@ -29,6 +30,7 @@ requirejs.config({
 	},
 	shim: {
 		'angular':              {'exports' : 'angular'},
+		'angularAnimate':       ['angular'],
 		'angularBootstrap':     ['angular'],
 		'angularSanitize':      ['angular'],
 		'angularSelect2':       ['angular'],
@@ -54,6 +56,7 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 
 requirejs([
 	'angular',
+	'angularAnimate',
 	'angularBootstrap',
 	'angularSelect2',
 	'angularUiAce',

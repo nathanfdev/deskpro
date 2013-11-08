@@ -558,6 +558,102 @@ nav.dp-blocktabs {
 }
 
 //######################################################################################################################
+//# Help content
+//######################################################################################################################
+
+section.dp-help-content-wrapper {
+	margin: 10px 90px 10px 90px;
+	position: relative;
+	z-index: 1000;
+	overflow: visible;
+
+	transition: all 0.2s linear;
+
+	.dp-help-content-outer {
+		border: 3px solid #FDFAE8;
+		border-radius: 3px;
+	}
+
+	.dp-help-content-outer2 {
+		background: #FDFAE8;
+		border: 1px solid darken(#FDFAE8, 14%);
+		border-radius: 2px;
+		position: relative;
+
+		.dp-arrow-wrap {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			height: 10px;
+
+			text-align: center;
+			cursor: pointer;
+
+			em {
+				position: relative;
+				top: 2px;
+				font-style: normal;
+				background: darken(#FDFAE8, 14%);
+				display: inline-block;
+				line-height: 100%;
+				padding: 2px 8px;
+				border-radius: 2px;
+			}
+
+			i {
+				color: darken(#FDFAE8, 50%);
+
+				&.up { display: none; }
+			}
+		}
+	}
+}
+
+.dp-help-content {
+	> header {
+		h1 {
+			font-size: 120%;
+			padding: 0;
+			margin: 10px;
+		}
+		p {
+			margin: 10px;
+		}
+	}
+
+	> article {
+		display: none;
+	}
+}
+
+section.dp-help-content-wrapper.open {
+	.dp-help-content-outer {
+		box-shadow:  0px 0px 5px 2px rgba(0, 0, 0, 0.3);
+		transition: all 0.2s linear;
+	}
+
+	.dp-help-content-outer2 {
+		.dp-arrow-wrap {
+			i {
+				&.down { display: none; }
+				&.up { display: block; }
+			}
+		}
+	}
+}
+
+.dp-help-content-backdrop {
+	position: absolute;
+	z-index: 9999;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	//background: rgba(255, 255, 255, 0.3);
+}
+
+//######################################################################################################################
 //# List style
 //######################################################################################################################
 

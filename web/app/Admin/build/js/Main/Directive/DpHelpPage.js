@@ -1,156 +1,65 @@
 (function() {
   define(function() {
-    /*
-       # Description
-       # -----------
-       #
-       # This element defines the "help page" for a section. The help page is detached and re-positioned into the
-       # right-most pane and has the ability to minimise into the section help icon.
-       #
-       # Example
-       # -------
-       # <dp-help-page>
-       #    .....
-       # </dp-help-page>
-       #
-       # <!-- In the list content we need the trigger as well: -->
-       # <button class="btn help-page-trigger"><i class="fa fa-question-sign"></i></button>
-    */
-
     var Admin_Main_Directive_DpHelpPage;
     Admin_Main_Directive_DpHelpPage = [
       '$rootScope', '$state', function($rootScope, $state) {
         return {
-          restrict: 'AE',
+          restrict: 'E',
           scope: {},
           replace: true,
           transclude: true,
-          template: '<section class="dp-help-page dp-section-page ng-hide" ng-hide="loading.dp_section_list"><div class="inner"><div class="close-btn"><i class="fa fa-remove"></i></div><div ng-transclude></div></div></section>',
+          template: "<section class=\"dp-help-content-wrapper\">\n	<div class=\"dp-help-content-outer\">\n		<div class=\"dp-help-content-outer2\">\n			<div class=\"dp-help-content\" ng-transclude></div>\n			<div class=\"dp-arrow-wrap\"><em><i class=\"fa fa-chevron-down down\"></i><i class=\"fa fa-chevron-up up\"></i></em></div>\n		</div>\n	</div>\n</section>",
           link: function(scope, element, attrs) {
-            var $border, $button, $page, btnMod, buttonH, buttonW, closeFn, isOpen, my_state, openFn, state_segs, _ref, _ref1, _ref2, _ref3;
-            element.hide();
+            var backdrop, close, isOpen, open, toggle;
             isOpen = false;
-            $button = element.closest('.dp-section-list').find('.help-page-trigger').first();
-            $border = angular.element('<div class="help-min-frame"></div>').hide().appendTo('body');
-            $page = $('#dp_section_page');
-            buttonW = $button.outerWidth();
-            buttonH = $button.outerHeight();
-            btnMod = -6;
-            element.detach().appendTo('#dp_section_body').css({
-              position: 'absolute',
-              'z-index': '10000',
-              'overflow': 'auto'
-            });
-            scope.$on('$destroy', function() {
-              element.remove();
-              return $border.remove();
-            });
-            my_state = null;
-            if ((_ref = $state.current) != null ? _ref.name : void 0) {
-              state_segs = $state.current.name.split('.');
-              if (state_segs.length === 3) {
-                state_segs.pop();
-              }
-              my_state = state_segs.join('.');
-            }
-            if (!((_ref1 = $state.current) != null ? _ref1.with_page_view : void 0) || ((_ref2 = $state.current) != null ? (_ref3 = _ref2.views['dp_section_page@']) != null ? _ref3.controller : void 0 : void 0) === 'Admin_Main_Ctrl_Bare') {
-              isOpen = true;
-              element.show();
-              $button.hide();
-            }
-            openFn = function() {
-              var buttonOffset, pageH, pageOffset, pageW;
+            backdrop = null;
+            open = function() {
+              var article, origH;
               if (isOpen) {
                 return;
               }
-              isOpen = true;
-              pageH = $page.height();
-              pageW = $page.width();
-              pageOffset = $page.offset();
-              buttonOffset = $button.offset();
-              $border.css({
-                width: 5,
-                height: 5,
-                left: buttonOffset.left + (buttonW / 2) - 3,
-                top: buttonOffset.top + (buttonH / 2) - 3,
-                borderRadius: 0
-              });
-              $border.show();
-              $border.animate({
-                height: pageH,
-                width: pageW,
-                left: pageOffset.left,
-                top: pageOffset.top
-              }, 310, function() {
-                return $border.hide();
-              });
-              window.setTimeout(function() {
-                return element.fadeIn(100);
-              }, 210);
-              return $button.fadeOut(200);
+              origH = element.height();
+              element.height(origH);
+              if (!backdrop) {
+                backdrop = $('<div/>').addClass('dp-help-content-backdrop');
+                backdrop.on('click', function(ev) {
+                  ev.preventDefault();
+                  return close();
+                });
+                backdrop.insertAfter(element);
+              }
+              backdrop.show();
+              element.addClass('open');
+              article = element.find('.dp-help-content').find('article').hide();
+              article.slideDown(200);
+              return isOpen = true;
             };
-            closeFn = function(instantly) {
-              var buttonOffset, pageH, pageOffset, pageW;
+            close = function() {
+              var article;
               if (!isOpen) {
                 return;
               }
-              isOpen = false;
-              if (instantly) {
-                element.hide();
-                $border.hide();
-                $button.show();
-                return;
-              }
-              pageH = $page.height();
-              pageW = $page.width();
-              pageOffset = $page.offset();
-              $border.css({
-                height: pageH,
-                width: pageW,
-                left: pageOffset.left,
-                top: pageOffset.top
+              backdrop.hide();
+              article = element.find('.dp-help-content').find('article');
+              article.slideUp(200, function() {
+                return element.removeClass('open');
               });
-              $button.fadeIn(200);
-              buttonOffset = $button.offset();
-              $border.show();
-              element.fadeOut(125);
-              return $border.animate({
-                width: 5,
-                height: 5,
-                left: buttonOffset.left + (buttonW / 2) - 3,
-                top: buttonOffset.top + (buttonH / 2) - 3
-              }, 310, function() {
-                return $border.hide();
-              });
+              return isOpen = false;
             };
-            $button.on('click', function(ev) {
-              ev.preventDefault();
-              if (isOpen) {
-                return closeFn();
+            toggle = function() {
+              if (!isOpen) {
+                return open();
               } else {
-                return openFn();
+                return close();
               }
-            });
-            element.find('.close-btn').on('click', function(ev) {
+            };
+            element.find('.dp-arrow-wrap').on('click', function(ev) {
               ev.preventDefault();
-              return closeFn();
+              return toggle();
             });
-            $rootScope.$on('$stateChangeStart', function(ev, toState, toParams, fromState, fromParams) {
-              var new_state;
-              if (my_state) {
-                state_segs = toState.name.split('.');
-                if (state_segs.length === 3) {
-                  state_segs.pop();
-                }
-                new_state = state_segs.join('.');
-                if (new_state !== my_state) {
-                  return closeFn(true);
-                } else {
-                  return closeFn();
-                }
-              } else {
-                return closeFn();
-              }
+            return element.on('click', function(ev) {
+              ev.preventDefault();
+              return open();
             });
           }
         };
