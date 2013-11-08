@@ -1,21 +1,25 @@
 <dp-help-page>
 	{% block listpane_help %}
 		<header>
-			<h1>Section title</h1>
+			<h1>The role of the Ticket Status field is determining whom needs to work on a ticket next.</h1>
 			<p>
-				A short description of the section goes here.
+				DeskPRO is based on the back and forth communication between people with questions (Users) and people with answers to those questions (Agents). The status field is used to determine which type of person needs to respond to the ticket next.
 			</p>
 		</header>
 		<article>
 			<article>
-				<p>And a longer help page can go here.</p>
+				<p>TODO</p>
 			</article>
 		</article>
 	{% endblock %}
 </dp-help-page>
-<div class="dp-layout-list-listpane">
-	<div class="dp-pane">
-		{% block listpane_content %}{% endblock %}
+<div class="dp-layout-list">
+	<div class="dp-layout-list-listpane">
+		<div class="dp-pane">
+			{% block listpane_content %}
+
+			{% endblock %}
+		</div>
 	</div>
+	<div class="dp-layout-list-editpane" ui-view></div>
 </div>
-<div class="dp-layout-list-editpane" ui-view></div>

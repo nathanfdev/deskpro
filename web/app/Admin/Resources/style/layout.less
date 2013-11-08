@@ -81,13 +81,22 @@
 //# - The second edit pane is fluid and generally contains edit controls
 //######################################################################################################################
 
+.dp-layout-list {
+	position: relative;
+}
+
 .dp-layout-list-listpane {
-	float: left;
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: @listWidth;
 }
 
 .dp-layout-list-editpane {
-	margin-left: @listWidth;
+	position: absolute;
+	top: 0;
+	left: @listWidth;
+	right: 0;
 }
 
 //######################################################################################################################

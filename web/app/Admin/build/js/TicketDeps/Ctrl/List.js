@@ -58,6 +58,11 @@
           _this = this;
         dep_promise = this.DepartmentData.loadDepList().then(function(departments) {
           _this.initDepList(departments.values());
+          if (_this.$state.current.name === 'tickets.ticket_deps') {
+            _this.$state.go('tickets.ticket_deps.edit', {
+              id: departments.values()[0].id
+            });
+          }
           return _this.addManagedListener(_this.DepartmentData.deps, 'changed', function() {
             _this.initDepList(_this.DepartmentData.deps.values());
             return _this.ngApply();

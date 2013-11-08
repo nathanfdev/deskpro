@@ -40,6 +40,10 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			dep_promise = @DepartmentData.loadDepList().then( (departments) =>
 				@initDepList(departments.values())
 
+				# Auto-load first entry
+				if @$state.current.name == 'tickets.ticket_deps'
+					@$state.go('tickets.ticket_deps.edit', { id: departments.values()[0].id })
+
 				@addManagedListener(@DepartmentData.deps, 'changed', =>
 					@initDepList(@DepartmentData.deps.values())
 					@ngApply()
@@ -106,9 +110,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		getMoveDepList: (for_dep) ->
 			dep_move_list = []
 			for dep in @departments
-				 if for_dep.id != dep.id
-					 if not dep._child_ids
-					 	dep_move_list.push(dep)
+				if for_dep.id != dep.id
+					if not dep._child_ids
+						dep_move_list.push(dep)
 
 			return dep_move_list
 

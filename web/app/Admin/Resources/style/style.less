@@ -81,7 +81,7 @@ form {
 }
 
 .dp-padded {
-	margin: 15px;
+	padding: 15px;
 }
 
 em.dp-id {
@@ -566,7 +566,7 @@ nav.dp-blocktabs {
 //######################################################################################################################
 
 section.dp-help-content-wrapper {
-	margin: 10px 90px 10px 90px;
+	margin: 10px 90px 0px 90px;
 	position: relative;
 	z-index: 1000;
 	overflow: visible;
@@ -574,13 +574,13 @@ section.dp-help-content-wrapper {
 	transition: all 0.2s linear;
 
 	.dp-help-content-outer {
-		border: 3px solid #FDFAE8;
+		border: 3px solid lighten(#d0d9e6, 5%);
 		border-radius: 3px;
 	}
 
 	.dp-help-content-outer2 {
-		background: #FDFAE8;
-		border: 1px solid darken(#FDFAE8, 14%);
+		background: #fff;
+		border: 1px solid #d0d9e6;
 		border-radius: 2px;
 		position: relative;
 
@@ -596,9 +596,9 @@ section.dp-help-content-wrapper {
 
 			em {
 				position: relative;
-				top: 2px;
+				top: 3px;
 				font-style: normal;
-				background: darken(#FDFAE8, 14%);
+				background: #d0d9e6;
 				display: inline-block;
 				line-height: 100%;
 				padding: 2px 8px;
@@ -606,7 +606,7 @@ section.dp-help-content-wrapper {
 			}
 
 			i {
-				color: darken(#FDFAE8, 50%);
+				color: #fff;
 
 				&.up { display: none; }
 			}
@@ -628,6 +628,29 @@ section.dp-help-content-wrapper {
 
 	> article {
 		display: none;
+
+		article {
+			margin-bottom: 15px;
+			padding: 0 15px;
+
+			h1 { font-size: 24px; }
+			h2 { font-size: 20px; }
+			h3 { font-size: 16px; }
+			p {
+				margin: 14px 0;
+			}
+
+			dl {
+				margin: 0;
+				dt {
+					margin-top: 10px;
+
+					&:first-child {
+						margin-top: 0;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -956,150 +979,6 @@ section.dp-help-content-wrapper.open {
 	border: 1px solid #DDD;
 	padding: 15px;
 	.rounded(2px);
-}
-
-//######################################################################################################################
-//# Help
-//######################################################################################################################
-
-.help-min-frame {
-	border: 3px solid #555;
-	position: absolute;
-	z-index: 200;
-}
-
-.btn.help-page-trigger {
-	.rounded(30px);
-	background: #fff;
-	text-align: center;
-	vertical-align: middle;
-	line-height: 100%;
-	position: absolute;
-	top: 9px;
-	right: 13px;
-	padding: 5px 6px;
-	margin: 0;
-	font-size: 155%;
-	color: #888;
-	border: 1px solid transparent;
-
-	&:focus, &:active {
-		outline: none;
-	}
-
-	&:hover {
-		border: 1px solid #888;
-		color: #555;
-	}
-
-	i {
-		text-align: center;
-		vertical-align: baseline;
-		line-height: 17px;
-		margin: 0;
-		padding: 0;
-	}
-}
-
-span.help-icon {
-	font-family: FontAwesome;
-	font-size: 16px;
-	color: #c5c5c5;
-	cursor: help;
-	margin-left: 1px;
-	position: relative;
-	top: 1;
-
-	&:before {
-		content: "\f059";
-	}
-
-	&:hover {
-		color: #66AFE9;
-	}
-}
-
-.with-section-page section.dp-help-page {
-	background: rgba(0, 0, 0, 0.4);
-
-	.close-btn {
-		display: block;
-	}
-}
-
-section.dp-help-page {
-	line-height: 160%;
-	font-size: 110%;
-	overflow: auto;
-
-	&.full {
-		background: #fff;
-		.close-btn {
-			display: none;
-		}
-
-		> .inner {
-			margin: 25px;
-		}
-	}
-
-	.close-btn {
-		display: none;
-		position: absolute;
-		font-size: 150%;
-		top: 36px;
-		right: 36px;
-		cursor: pointer;
-		background: #fff;
-		.rounded(20px);
-		width: 30px;
-		height: 30px;
-		border: 1px solid #888;
-		text-align: center;
-		i {
-			margin: 0;
-			padding: 0;
-			vertical-align: middle;
-			line-height: 100%;
-			position: relative;
-			top: 2px;
-		}
-	}
-
-	> .inner {
-		margin: 45px;
-		background: @admin_help_bg;
-		border: 1px solid darken(@admin_help_bg, 18%);
-		.rounded(5px);
-	}
-
-	article {
-		padding: 30px;
-
-		h1 { font-size: 24px; }
-		h2 { font-size: 20px; }
-		h3 { font-size: 16px; }
-		h1, h2, h3 {
-			margin: 0 0 14px;
-			padding-bottom: 8px;
-			border-bottom: 1px solid darken(@admin_help_bg, 18%);
-		}
-
-		p {
-			margin: 14px 0;
-		}
-
-		dl {
-			margin: 0;
-			dt {
-				margin-top: 10px;
-
-				&:first-child {
-					margin-top: 0;
-				}
-			}
-		}
-	}
 }
 
 //######################################################################################################################
@@ -1524,7 +1403,7 @@ table.inner-form-table {
 	height: 25px;
 
 	-webkit-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
 	.rounded(20px);
 
 	background-color: #D9D9D9;
@@ -1542,7 +1421,7 @@ table.inner-form-table {
 		display: block;
 		background: #fff;
 		-webkit-box-shadow:  1px 1px 1px 0px rgba(0, 0, 0, 0.1);
-        box-shadow:  1px 1px 1px 0px rgba(0, 0, 0, 0.1);
+		box-shadow:  1px 1px 1px 0px rgba(0, 0, 0, 0.1);
 		.rounded(20px);
 		width: 10px;
 		overflow: hidden;

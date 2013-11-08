@@ -14,9 +14,9 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 				if @$state.current.name == 'tickets.ticket_accounts'
 					if @accounts[0]
-						@$state.go('tickets.ticket_accounts.edit', { id: @accounts[0].id })
+						@$state.go('ticket.ticket_accounts.edit', { id: @accounts[0].id })
 					else
-						@$state.go('tickets.ticket_accounts.create')
+						@$state.go('ticket.ticket_accounts.create')
 
 				@addManagedListener(@TicketAccountsData.recs, 'changed', =>
 					@accounts = @TicketAccountsData.recs.values()
