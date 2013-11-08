@@ -260,28 +260,22 @@ define(function() {
 	routes.push({
 		id: 'tickets.triggers.gocreate',
 		url: '/go-create',
-		page: {
-			template: '',
-			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.triggers.create', $stateParams); }]
-		}
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.triggers.create', $stateParams); }]
 	});
 
 	routes.push({
 		id: 'tickets.triggers.create',
 		url: '/create',
-		page: {
-			templateName: 'TicketTriggers/edit.html',
-			controller: 'Admin_TicketTriggers_Ctrl_Edit'
-		}
+		templateName: 'TicketTriggers/edit.html',
+		controller: 'Admin_TicketTriggers_Ctrl_Edit'
 	});
 
 	routes.push({
 		id: 'tickets.triggers.edit',
 		url: '/{id:[0-9]+}',
-		page: {
-			templateName: 'TicketTriggers/edit.html',
-			controller: 'Admin_TicketTriggers_Ctrl_Edit'
-		}
+		templateName: 'TicketTriggers/edit.html',
+		controller: 'Admin_TicketTriggers_Ctrl_Edit'
 	});
 
 

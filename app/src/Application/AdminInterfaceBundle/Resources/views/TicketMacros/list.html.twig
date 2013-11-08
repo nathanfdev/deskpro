@@ -1,19 +1,13 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_macros.macros') }}</h3>
-		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
-	</header>
-	<article class="pane-content no-pad">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.macros.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
-					</ul>
-				</nav>
-				<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_macros.count_macros') }}"></h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_macros.count_macros') }}"></h3>
+		</header>
+		<article>
+			<p ng-if="!ListCtrl.list.length" style="padding: 15px;">
+				{{ phrase('adm.ticket_macros.no_macros') }}
+			</p>
 			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
 				<li ng-repeat="macro in ListCtrl.list" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
 					<a href="{{ ng_href('tickets.macros.edit', '{id: macro.id}') }}">
@@ -30,12 +24,10 @@
 					</a>
 				</li>
 			</ul>
-			<p ng-if="!ListCtrl.list.length" style="padding: 15px;">
-				{{ phrase('adm.ticket_macros.no_macros') }}
-			</p>
-		</div>
-	</article>
-</div>
-
-{{ ng_tpl('AdminInterfaceBundle:TicketMacros:delete-modal.html.twig') }}
-{% include 'AdminInterfaceBundle:TicketMacros:help-page.html.twig' %}
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+	{{ ng_tpl('AdminInterfaceBundle:TicketMacros:delete-modal.html.twig') }}
+{% endblock %}

@@ -1,22 +1,16 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_triggers.triggers') }}</h3>
-		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
-	</header>
-	<article class="pane-content no-pad">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li>
-							<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
-						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
-					</ul>
-				</nav>
-				<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="TicketTriggersList.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
+		</header>
+		<article>
+			<p ng-if="!TicketTriggersList.triggers.length" style="padding: 15px;">
+				{{ phrase('adm.ticket_triggers.no_triggers') }}
+			</p>
 			<ul class="dp-item-list" ui-sortable="TicketTriggersList.sortedListOptions" ng-if="TicketTriggersList.triggers.length">
 				<li class="with-drag-handle" ng-repeat="trigger in TicketTriggersList.triggers" dp-state-mark="tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-id="{{ ng_var('trigger.id') }}">
 					<a href="{{ ng_href('tickets.triggers.edit', '{type: TicketTriggersList.eventType, id: trigger.id}') }}">
@@ -28,24 +22,24 @@
 							<em class="tag" ng-if="trigger.by_agent">
 								agent
 								<span ng-if="trigger.event_trigger_options.by_agent.length == 3"><span>&rsaquo; all</span></span>
-								<span ng-if="trigger.event_trigger_options.by_agent.length != 3">
-									&rsaquo; <span dp-comma-separated>
-										<span ng-if="trigger.event_trigger_options.by_agent.indexOf('web') !== -1">web</span>
-										<span ng-if="trigger.event_trigger_options.by_agent.indexOf('email') !== -1">email</span>
-										<span ng-if="trigger.event_trigger_options.by_agent.indexOf('api') !== -1">api</span>
+									<span ng-if="trigger.event_trigger_options.by_agent.length != 3">
+										&rsaquo; <span dp-comma-separated>
+											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('web') !== -1">web</span>
+											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('email') !== -1">email</span>
+											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('api') !== -1">api</span>
+										</span>
 									</span>
-								</span>
 							</em>
 							<em class="tag" ng-if="trigger.by_user" style="margin-left: 6px;">
 								user
 								<span ng-if="trigger.event_trigger_options.by_user.length == 5"><span>&rsaquo; all</span></span>
-								<span ng-if="trigger.event_trigger_options.by_user.length != 5">
-									&rsaquo; <span dp-comma-separated>
-										<span ng-if="trigger.event_trigger_options.by_user.indexOf('portal') !== -1 || trigger.event_trigger_options.by_user.indexOf('form') !== -1 || trigger.event_trigger_options.by_user.indexOf('widget') !== -1">web</span>
-										<span ng-if="trigger.event_trigger_options.by_user.indexOf('email') !== -1">email</span>
-										<span ng-if="trigger.event_trigger_options.by_user.indexOf('api') !== -1">api</span>
+									<span ng-if="trigger.event_trigger_options.by_user.length != 5">
+										&rsaquo; <span dp-comma-separated>
+											<span ng-if="trigger.event_trigger_options.by_user.indexOf('portal') !== -1 || trigger.event_trigger_options.by_user.indexOf('form') !== -1 || trigger.event_trigger_options.by_user.indexOf('widget') !== -1">web</span>
+											<span ng-if="trigger.event_trigger_options.by_user.indexOf('email') !== -1">email</span>
+											<span ng-if="trigger.event_trigger_options.by_user.indexOf('api') !== -1">api</span>
+										</span>
 									</span>
-								</span>
 							</em>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketTriggersList.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
@@ -55,10 +49,9 @@
 					</a>
 				</li>
 			</ul>
-			<p ng-if="!TicketTriggersList.triggers.length" style="padding: 15px;">
-				{{ phrase('adm.ticket_triggers.no_triggers') }}
-			</p>
-		</div>
-	</article>
-</div>
-{% include 'AdminInterfaceBundle:TicketTriggers:help-page.html.twig' %}
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.triggers.gocreate', '{type: TicketTriggersList.eventType}') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
