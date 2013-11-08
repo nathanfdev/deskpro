@@ -124,6 +124,21 @@ define [
 
 			return parent_list
 
+		###
+		# Returns wherther spcified model has children or not
+		# @param model - specified model for which we want to know if it has children or not
+		# @return array
+		###
+
+		hasChildren: (model) ->
+
+			for rec in @recs.values()
+
+				if ~~rec.parent_id == model.id
+					return true
+
+			return false
+
 		###*
 				* Creates entities for feedback categories raw data
 				*

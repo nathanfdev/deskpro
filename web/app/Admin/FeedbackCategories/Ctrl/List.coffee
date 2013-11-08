@@ -45,4 +45,64 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 					@parent_data.push(category)
 
+		###
+		# Show the delete dlg
+		###
+
+		startDelete: (feedback_category) ->
+
+			if @FeedbackCategoriesData.hasChildren(feedback_category)
+				@showAlert("You cannot delete a category with sub-categories. Move or delete the sub-categories first.")
+				return
+
+			move_feedback_categories_list = @FeedbackCategoriesData.getListOfMovables(feedback_category)
+
+			if not move_feedback_categories_list.length
+				@showAlert('@no_delete_last');
+				return
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', 'move_feedback_categories_list', ($scope, $modalInstance, move_feedback_categories_list) ->
+
+						$scope.move_feedback_categories_list = move_feedback_categories_list
+						$scope.selected = {
+							move_to_id: move_feedback_categories_list[0].id
+						}
+
+						$scope.confirm = ->
+							$modalInstance.close($scope.selected.move_to_id);
+
+						$scope.dismiss = ->
+							$modalInstance.dismiss();
+				],
+				resolve: {
+					move_feedback_categories_list: =>
+						return move_feedback_categories_list
+				}
+			});
+
+			inst.result.then((move_to) =>
+				@deleteFeedbackCategory(feedback_category, move_to)
+			)
+
+		###
+		# Actually do the delete
+		###
+
+		deleteFeedbackCategory: (feedback_category, move_to) ->
+
+			@Api.sendDelete('/feedback_categories/' + feedback_category.id, {
+				move_to: move_to
+			}).success(=>
+
+				@FeedbackCategoriesData.remove(feedback_category.id)
+				@ngApply()
+
+				# if currently viewing the deleted model, then should need to switch state
+
+				if @$state.current.name == 'portal.feedback_categories.edit' and parseInt(@$state.params.id) == feedback_category.id
+					@$state.go('portal.feedback_categories')
+			)
+
 	Admin_FeedbackCategories_Ctrl_List.EXPORT_CTRL()

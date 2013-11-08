@@ -59,6 +59,68 @@
         return _results;
       };
 
+      /*
+      		# Show the delete dlg
+      */
+
+
+      Admin_FeedbackCategories_Ctrl_List.prototype.startDelete = function(feedback_category) {
+        var inst, move_feedback_categories_list,
+          _this = this;
+        if (this.FeedbackCategoriesData.hasChildren(feedback_category)) {
+          this.showAlert("You cannot delete a category with sub-categories. Move or delete the sub-categories first.");
+          return;
+        }
+        move_feedback_categories_list = this.FeedbackCategoriesData.getListOfMovables(feedback_category);
+        if (!move_feedback_categories_list.length) {
+          this.showAlert('@no_delete_last');
+          return;
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('FeedbackCategories/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', 'move_feedback_categories_list', function($scope, $modalInstance, move_feedback_categories_list) {
+              $scope.move_feedback_categories_list = move_feedback_categories_list;
+              $scope.selected = {
+                move_to_id: move_feedback_categories_list[0].id
+              };
+              $scope.confirm = function() {
+                return $modalInstance.close($scope.selected.move_to_id);
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ],
+          resolve: {
+            move_feedback_categories_list: function() {
+              return move_feedback_categories_list;
+            }
+          }
+        });
+        return inst.result.then(function(move_to) {
+          return _this.deleteFeedbackCategory(feedback_category, move_to);
+        });
+      };
+
+      /*
+      		# Actually do the delete
+      */
+
+
+      Admin_FeedbackCategories_Ctrl_List.prototype.deleteFeedbackCategory = function(feedback_category, move_to) {
+        var _this = this;
+        return this.Api.sendDelete('/feedback_categories/' + feedback_category.id, {
+          move_to: move_to
+        }).success(function() {
+          _this.FeedbackCategoriesData.remove(feedback_category.id);
+          _this.ngApply();
+          if (_this.$state.current.name === 'portal.feedback_categories.edit' && parseInt(_this.$state.params.id) === feedback_category.id) {
+            return _this.$state.go('portal.feedback_categories');
+          }
+        });
+      };
+
       return Admin_FeedbackCategories_Ctrl_List;
 
     })(Admin_Ctrl_Base);

@@ -122,6 +122,25 @@
         return parent_list;
       };
 
+      /*
+      		# Returns wherther spcified model has children or not
+      		# @param model - specified model for which we want to know if it has children or not
+      		# @return array
+      */
+
+
+      Admin_FeedbackCategories_DataService_FeedbackCategories.prototype.hasChildren = function(model) {
+        var rec, _i, _len, _ref;
+        _ref = this.recs.values();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          rec = _ref[_i];
+          if (~~rec.parent_id === model.id) {
+            return true;
+          }
+        }
+        return false;
+      };
+
       /**
       				* Creates entities for feedback categories raw data
       				*
