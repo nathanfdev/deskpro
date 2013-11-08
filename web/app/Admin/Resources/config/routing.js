@@ -179,16 +179,6 @@ define(function() {
 	//##################################################################################################################
 
 	//###
-	//# Email Accounts
-	//###
-	routes.push({
-		id: 'tickets.email_accounts',
-		url: '/email_accounts',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
-	});
-
-	//###
 	//# Statuses
 	//###
 	routes.push({
@@ -511,8 +501,7 @@ define(function() {
 		id: 'tickets.ticket_deps',
 		url: '/ticket_deps',
 		templateName: 'TicketDeps/list.html',
-		controller: 'Admin_TicketDeps_Ctrl_List',
-		target: "appbody"
+		controller: 'Admin_TicketDeps_Ctrl_List'
 	});
 
 	routes.push({
@@ -625,22 +614,20 @@ define(function() {
 		controller: 'Admin_TicketAccounts_Ctrl_Edit'
 	});
 
-	//##################################################################################################################
-	// Email Status
-	//##################################################################################################################
-
 	routes.push({
-		id: 'tickets.emailsources',
+		id: 'tickets.ticket_accounts.emailsources',
 		url: '/incoming-email',
 		templateName: 'EmailStatus/emailsource-list.html',
-		controller: 'Admin_EmailStatus_Ctrl_SourceList'
+		controller: 'Admin_EmailStatus_Ctrl_SourceList',
+		target: "appbody@tickets"
 	});
 
 	routes.push({
-		id: 'tickets.sendmailqueue',
+		id: 'tickets.ticket_accounts.sendmailqueue',
 		url: '/outgoing-email',
 		templateName: 'EmailStatus/sendmail-list.html',
-		controller: 'Admin_EmailStatus_Ctrl_SendmailList'
+		controller: 'Admin_EmailStatus_Ctrl_SendmailList',
+		target: "appbody@tickets"
 	});
 
 	//##################################################################################################################

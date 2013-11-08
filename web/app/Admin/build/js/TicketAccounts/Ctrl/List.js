@@ -29,6 +29,15 @@
           _this = this;
         list_promise = this.TicketAccountsData.loadList().then(function(recs) {
           _this.accounts = recs.values();
+          if (_this.$state.current.name === 'tickets.ticket_accounts') {
+            if (_this.accounts[0]) {
+              _this.$state.go('tickets.ticket_accounts.edit', {
+                id: _this.accounts[0].id
+              });
+            } else {
+              _this.$state.go('tickets.ticket_accounts.create');
+            }
+          }
           return _this.addManagedListener(_this.TicketAccountsData.recs, 'changed', function() {
             _this.accounts = _this.TicketAccountsData.recs.values();
             return _this.ngApply();

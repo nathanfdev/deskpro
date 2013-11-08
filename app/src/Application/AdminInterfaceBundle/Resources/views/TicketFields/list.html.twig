@@ -1,20 +1,10 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-terminal"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.general.builtin_fields') }}</h3>
-		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
-	</header>
-	<article class="pane-content no-pad">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li>
-							<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
-						</li>
-					</ul>
-				</nav>
-				<h3>{{ phrase('adm.general.builtin_fields') }}</h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('adm.general.builtin_fields') }}</h3>
+		</header>
+		<article>
 			<ul class="dp-item-list">
 				<li>
 					<a href="{{ ng_href('tickets.fields.categories') }}">
@@ -41,36 +31,32 @@
 					</a>
 				</li>
 			</ul>
-		</div>
+		</article>
+	</section>
 
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav class="dp-controls">
+				<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
 
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li>
-							<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
-						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="#/tickets/ticket_deps/go-create"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
-					</ul>
-				</nav>
-
-				<h3 ng-pluralize count="TicketFieldsList.custom_fields.length || 0" when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
-			</div>
+			<h3 ng-pluralize count="TicketFieldsList.custom_fields.length || 0" when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
+		</header>
+		<article>
 			<ul class="dp-item-list">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.ticket_fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
 					<a href="#/tickets/ticket_fields/{{ ng_var('field.id') }}">
 						<button dp-toggle-switch ng-model="field.is_enabled" ng-change="TicketFieldsList.updateCustomFieldEnabledState(field)"></button>
 						<div class="pull-right">
-							<span class="badge" ng-hide="delete_mode" style="margin-top: -2px;" tooltip="The ID can be used in the API" tooltip-placement="left">ID: {{ ng_var('field.id') }}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketFieldsList.startDelete(field); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('field.title') }}</span></h4>
 					</a>
 				</li>
 			</ul>
-		</div>
-	</article>
-</div>
-{% include 'AdminInterfaceBundle:TicketFields:help-page.html.twig' %}
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="#/tickets/ticket_deps/go-create"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}

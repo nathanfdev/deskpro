@@ -29,14 +29,14 @@
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.emailsources') }}">
+		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>Incoming Email Log</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.sendmailqueue') }}">
+		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>Outgoing Email Log</h3>
 		</a>
@@ -44,4 +44,7 @@
 
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	{{ ng_tpl('TicketAccounts/delete-modal.html') }}
+{% endblock %}
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:TicketAccounts:help-page.html.twig' %}
 {% endblock %}

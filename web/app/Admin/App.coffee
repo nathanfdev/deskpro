@@ -256,7 +256,15 @@ define [
 				if route.controller
 					v.controller = route.controller
 
-				viewName = if route.target then route.target else ""
+				if route.target
+					viewName = route.target
+				else
+					# An app-level (tickets.ticket_deps)
+					# Is always added to the appbody
+					if id.split('.').length == 2
+						viewName = "appbody"
+					else
+						viewName = ""
 
 				opts.views[viewName] = v
 

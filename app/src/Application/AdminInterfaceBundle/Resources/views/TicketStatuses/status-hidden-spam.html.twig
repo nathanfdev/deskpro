@@ -1,60 +1,67 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3>{{ phrase('agent.tickets.status_hidden_deleted') }}</h3>
-	</header>
-	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveSettings()">
-			<div class="panel panel-fill indent">
-				<div class="panel-body">
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>About</h3>
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>About</h3>
+							</div>
+							<div class="col-lg-9">
+								When agents spam a ticket, it is removed from view and is held under the 'spam' status.
+							</div>
 						</div>
-						<div class="col-lg-9">
-							When agents spam a ticket, it is removed from view and is held under the 'spam' status.
-						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>Automatic Cleanup</h3>
-						</div>
-						<div class="col-lg-9">
-							Spammed tickets are automatically purged from the system after
-							<select
-								ui-select2
-								ng-model="settings.auto_purge_time"
-								style="min-width: 240px"
-							>
-								<option value="86400" >1 day</option>
-								<option value="259200" >3 days</option>
-								<option value="432000" >5 days</option>
-								<option value="604800" >1 week</option>
-								<option value="1209600" >2 weeks</option>
-								<option value="1814400" >3 weeks</option>
-								<option value="2419000">1 month</option>
-								<option value="4838000" >2 months</option>
-								<option value="7257000" >3 months</option>
-								<option value="14514000" >6 months</option>
-								<option value="21771000" >9 months</option>
-								<option value="29028000" >1 year</option>
-								<option value="58056000" >2 years</option>
-							</select>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Automatic Cleanup</h3>
+							</div>
+							<div class="col-lg-9">
+								Spammed tickets are automatically purged from the system after
+								<select
+										ui-select2
+										ng-model="settings.auto_purge_time"
+										style="min-width: 240px"
+										>
+									<option value="86400" >1 day</option>
+									<option value="259200" >3 days</option>
+									<option value="432000" >5 days</option>
+									<option value="604800" >1 week</option>
+									<option value="1209600" >2 weeks</option>
+									<option value="1814400" >3 weeks</option>
+									<option value="2419000">1 month</option>
+									<option value="4838000" >2 months</option>
+									<option value="7257000" >3 months</option>
+									<option value="14514000" >6 months</option>
+									<option value="21771000" >9 months</option>
+									<option value="29028000" >1 year</option>
+									<option value="58056000" >2 years</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="inner-footer">
-				<div class="text-center">
-					<div dp-hide-spinning="saving_settings">
-						<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
+							<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
+						</ul>
 					</div>
-					<div dp-show-spinning="saving_settings">
-						<i class="spinner-flat"></i>
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_label">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+						</div>
+						<div dp-show-spinning="saving_label">
+							<i class="spinner-flat"></i>
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-	</article>
-</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

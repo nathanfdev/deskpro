@@ -7571,6 +7571,10 @@ form {
   padding: 15px;
 }
 
+.dp-padded {
+  margin: 15px;
+}
+
 em.dp-id {
   display: inline-block;
   padding: 2px;

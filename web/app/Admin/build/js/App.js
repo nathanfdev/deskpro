@@ -152,7 +152,15 @@
             if (route.controller) {
               v.controller = route.controller;
             }
-            viewName = route.target ? route.target : "";
+            if (route.target) {
+              viewName = route.target;
+            } else {
+              if (id.split('.').length === 2) {
+                viewName = "appbody";
+              } else {
+                viewName = "";
+              }
+            }
             opts.views[viewName] = v;
           }
           _results.push($stateProvider.state(id, opts));

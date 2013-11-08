@@ -12,6 +12,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			list_promise = @TicketAccountsData.loadList().then( (recs) =>
 				@accounts = recs.values()
 
+				if @$state.current.name == 'tickets.ticket_accounts'
+					if @accounts[0]
+						@$state.go('tickets.ticket_accounts.edit', { id: @accounts[0].id })
+					else
+						@$state.go('tickets.ticket_accounts.create')
+
 				@addManagedListener(@TicketAccountsData.recs, 'changed', =>
 					@accounts = @TicketAccountsData.recs.values()
 					@ngApply()

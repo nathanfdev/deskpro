@@ -1,59 +1,60 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3>{{ phrase('agent.tickets.status_resolved') }}</h3>
-	</header>
-	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
-			<div class="panel panel-fill indent">
-				<div class="panel-body">
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>About</h3>
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveLabel()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>About</h3>
+							</div>
+							<div class="col-lg-9">
+								A Resolved ticket is a finished ticket that no longer requires action from the agent nor the user.
+							</div>
 						</div>
-						<div class="col-lg-9">
-							A Resolved ticket is a finished ticket that no longer requires action from the agent nor the user.
-						</div>
-					</div>
 
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>Escalations</h3>
-						</div>
-						<div class="col-lg-9">
-							When the ticket has been resolved for <input type="text" class="form-control" style="width: 80px" value="3" /> days
-							<div style="margin-top: 3px;">
-								<dp-option-builder ng-model="trigger_criteria">
-									<select>
-										<option value="0">Add action</option>
-										<option value="department">Department</option>
-										<option value="product">Product</option>
-										<option value="category">Category</option>
-										<option value="workflow">Workflow</option>
-										<option value="priority">Priority</option>
-									</select>
-								</dp-option-builder>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Escalations</h3>
+							</div>
+							<div class="col-lg-9">
+								When the ticket has been resolved for <input type="text" class="form-control" style="width: 80px" value="3" /> days
+								<div style="margin-top: 3px;">
+									<dp-option-builder ng-model="trigger_criteria">
+										<select>
+											<option value="0">Add action</option>
+											<option value="department">Department</option>
+											<option value="product">Product</option>
+											<option value="category">Category</option>
+											<option value="workflow">Workflow</option>
+											<option value="priority">Priority</option>
+										</select>
+									</dp-option-builder>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="inner-footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
-					<ul>
-						<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
-					</ul>
-				</div>
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving_label">
-						<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
+							<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
+						</ul>
 					</div>
-					<div dp-show-spinning="saving_label">
-						<i class="spinner-flat"></i>
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_label">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+						</div>
+						<div dp-show-spinning="saving_label">
+							<i class="spinner-flat"></i>
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-	</article>
-</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

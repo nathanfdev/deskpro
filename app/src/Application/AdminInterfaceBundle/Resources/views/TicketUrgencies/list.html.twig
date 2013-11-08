@@ -1,13 +1,10 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-terminal"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('admin.tickets.urgency') }}</h3>
-		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
-	</header>
-	<article class="pane-content no-pad">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<h3>{{ phrase('admin.tickets.urgency') }}</h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('admin.tickets.statuses') }}</h3>
+		</header>
+		<article>
 			<ul class="dp-item-list">
 				<li ng-repeat="urgency in TicketUrgenciesList.urgencies">
 					<a>
@@ -20,7 +17,6 @@
 					</a>
 				</li>
 			</ul>
-		</div>
-	</article>
-</div>
-{% include 'AdminInterfaceBundle:TicketUrgencies:help-page.html.twig' %}
+		</article>
+	</section>
+{% endblock %}
