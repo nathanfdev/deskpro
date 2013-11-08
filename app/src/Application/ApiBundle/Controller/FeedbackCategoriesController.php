@@ -145,4 +145,66 @@ class FeedbackCategoriesController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+		 */
+
+		$feedback_categories = $this->container->getSystemService('feedback_categories');
+		$feedback_category   = $feedback_categories->getById($id);
+
+		if (!$feedback_category) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$move_to                   = $this->in->getUint('move_to');
+		$move_to_feedback_category = $feedback_categories->getById($move_to);
+
+		if (!$move_to_feedback_category) {
+
+			throw ValidationException::create(
+				"feedback_category.remove.move_feedback_categories",
+				"You must select a feedback category to move existing feedback into"
+			);
+		}
+
+		if ($move_to_feedback_category->getId() == $feedback_category->getId()) {
+
+			throw ValidationException::create(
+				"feedback_type.remove.move_feedback_categories",
+				"You must choose a different feedback category"
+			);
+		}
+
+		$old_id = $feedback_category->getId();
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->db->executeUpdate(
+				"UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?",
+				array($move_to, $old_id)
+			);
+
+			$this->em->remove($feedback_category);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }
