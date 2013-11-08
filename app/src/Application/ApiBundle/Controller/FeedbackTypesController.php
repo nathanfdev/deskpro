@@ -158,10 +158,10 @@ class FeedbackTypesController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$move_to              = $this->in->getUint('move_to');
-		$move_to_feedback_typ = $feedback_types->getById($move_to);
+		$move_to               = $this->in->getUint('move_to');
+		$move_to_feedback_type = $feedback_types->getById($move_to);
 
-		if (!$move_to_feedback_typ) {
+		if (!$move_to_feedback_type) {
 
 			throw ValidationException::create(
 				"feedback_type.remove.move_feedback_types",
@@ -169,7 +169,7 @@ class FeedbackTypesController extends AbstractController
 			);
 		}
 
-		if ($move_to_feedback_typ->getId() == $feedback_type->getId()) {
+		if ($move_to_feedback_type->getId() == $feedback_type->getId()) {
 
 			throw ValidationException::create(
 				"feedback_type.remove.move_feedback_types",
