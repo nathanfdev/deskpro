@@ -44,7 +44,7 @@ class TicketFiltersController extends AbstractController
 
 	public function listAction()
 	{
-		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getDefinedFitlers();
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getDefinedFilters();
 
 		$data = array();
 

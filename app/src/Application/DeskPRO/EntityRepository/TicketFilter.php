@@ -52,7 +52,7 @@ class TicketFilter extends AbstractEntityRepository
 		return $filters;
 	}
 
-	public function getDefinedFitlers()
+	public function getDefinedFilters()
 	{
 		$filters = $this->_em->createQuery("
 			SELECT q
