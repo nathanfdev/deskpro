@@ -315,6 +315,41 @@ define [
 
 			return $delegate
 		])
+
+		$provide.decorator('$state', ['$delegate', '$stateParams', ($delegate, $stateParams) ->
+			###
+    		# Checks to see if a certain state is currently active
+    		#
+    		# @param {String} stateId The state to check. If it begins with a leading dot, we'll cehck
+    		#                         if the id exists anywhere in the current state. E.g., shorter to write '.create' than 'x.y.z.create'
+    		# @param {Object} stateParams If provided, then the params specified must also match
+			###
+			$delegate.isStateActive = (stateId, stateParams = null) ->
+				if not $delegate.current then return false
+
+				if stateParams
+					if stateId.charAt(0) == '.'
+						if $delegate.current.name.indexOf(stateId) == -1
+							return false
+					else
+						if $delegate.current.name != stateId
+							return false
+
+					if not $delegate.$current.params then return false
+					for own k, v of stateParams
+						if not $stateParams[k]? or $stateParams[k] != v
+							return false
+
+					return true
+
+				else
+					if stateId.charAt(0) == '.'
+						return $delegate.current.name.indexOf(stateId) != -1
+					else
+						return $delegate.current.name == stateId
+
+			return $delegate
+		])
 	])
 
 	Admin_App.run(['dpTemplateManager', (dpTemplateManager) ->

@@ -195,7 +195,7 @@
     ]);
     Admin_App.config([
       '$provide', function($provide) {
-        return $provide.decorator('$q', [
+        $provide.decorator('$q', [
           '$delegate', function($delegate) {
             $delegate.fcall = function(fn) {
               var d;
@@ -205,6 +205,56 @@
             };
             $delegate.isPromise = function(val) {
               return val.then != null;
+            };
+            return $delegate;
+          }
+        ]);
+        return $provide.decorator('$state', [
+          '$delegate', '$stateParams', function($delegate, $stateParams) {
+            /*
+             		# Checks to see if a certain state is currently active
+             		#
+             		# @param {String} stateId The state to check. If it begins with a leading dot, we'll cehck
+             		#                         if the id exists anywhere in the current state. E.g., shorter to write '.create' than 'x.y.z.create'
+             		# @param {Object} stateParams If provided, then the params specified must also match
+            */
+
+            $delegate.isStateActive = function(stateId, stateParams) {
+              var k, v;
+              if (stateParams == null) {
+                stateParams = null;
+              }
+              if (!$delegate.current) {
+                return false;
+              }
+              if (stateParams) {
+                if (stateId.charAt(0) === '.') {
+                  if ($delegate.current.name.indexOf(stateId) === -1) {
+                    return false;
+                  }
+                } else {
+                  if ($delegate.current.name !== stateId) {
+                    return false;
+                  }
+                }
+                if (!$delegate.$current.params) {
+                  return false;
+                }
+                for (k in stateParams) {
+                  if (!__hasProp.call(stateParams, k)) continue;
+                  v = stateParams[k];
+                  if (($stateParams[k] == null) || $stateParams[k] !== v) {
+                    return false;
+                  }
+                }
+                return true;
+              } else {
+                if (stateId.charAt(0) === '.') {
+                  return $delegate.current.name.indexOf(stateId) !== -1;
+                } else {
+                  return $delegate.current.name === stateId;
+                }
+              }
             };
             return $delegate;
           }

@@ -25,7 +25,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
 	</section>

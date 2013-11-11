@@ -119,6 +119,12 @@
           }
           return _this._managed_listeners = null;
         });
+        this.$scope.isStateActive = function(stateId, stateParams) {
+          if (stateParams == null) {
+            stateParams = null;
+          }
+          return _this.$state.isStateActive(stateId, stateParams);
+        };
         this.$scope.state_path = function(route, params) {
           if (params == null) {
             params = {};

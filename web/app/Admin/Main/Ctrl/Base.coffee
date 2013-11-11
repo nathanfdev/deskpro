@@ -87,6 +87,10 @@ define ['angular', 'Admin/App'], (angular) ->
 				@_managed_listeners = null
 			)
 
+			@$scope.isStateActive = (stateId, stateParams = null) =>
+				return @$state.isStateActive(stateId, stateParams)
+
+
 			@$scope.state_path = (route, params = {}) =>
 				return @$state.href(route, params)
 
