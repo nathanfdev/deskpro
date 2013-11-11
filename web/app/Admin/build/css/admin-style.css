@@ -8021,7 +8021,7 @@ nav.dp-blocktabs ul {
 
 nav.dp-blocktabs ul li {
   display: inline-block;
-  padding-right: 15px;
+  padding-right: 11px;
   cursor: pointer;
 }
 
@@ -8042,6 +8042,11 @@ nav.dp-blocktabs ul li a i.fa {
 nav.dp-blocktabs ul li.active a,
 nav.dp-blocktabs ul li:hover a {
   border-bottom: 3px solid #999999;
+}
+
+nav.dp-blocktabs ul li.pipe {
+  padding-right: 11px;
+  color: #ccc;
 }
 
 .pane-fullpage {
@@ -8191,8 +8196,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 999;
-  background: rgba(255, 255, 255, 0.3);
+  z-index: 9999;
 }
 
 .dp-item-list {
