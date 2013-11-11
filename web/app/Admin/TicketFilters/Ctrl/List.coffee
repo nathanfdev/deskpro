@@ -36,7 +36,14 @@ define [
 		initialLoad: ->
 			promise = @filterData.loadList()
 			promise.then( (list) =>
+
 				@list = list
+
+				if @$state.current.name == 'tickets.ticket_filters'
+					if @list[0]
+						@$state.go('tickets.ticket_filters.edit', { id: @list[0].id })
+					else
+						@$state.go('tickets.ticket_filters.create')
 			)
 
 			return promise

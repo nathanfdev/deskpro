@@ -24,8 +24,8 @@
         this.filterData = this.DataService.get('TicketFilters');
         this.filter = null;
         this.filter_criteria = {};
-        this.criteraTypeDef = this.dpObTypesDefTicketFilter;
-        return this.criteriaOptionTypes = this.criteraTypeDef.getOptionsForTypes();
+        this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
+        return this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
       };
 
       Admin_TicketFilters_Ctrl_Edit.prototype.initialLoad = function() {

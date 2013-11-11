@@ -40,4 +40,5 @@
 	'adm.general.delete_label_confirm'               => 'Are you sure you want to delete this label?',
 	'adm.general.x_feedback_types'                   => '{{count}} Feedback Type|{{count}} Feedback Types',
 	'adm.general.x_feedback_categories'              => '{{count}} Feedback Category|{{count}} Feedback Categories',
+	'adm.general.x_ticket_filters'                   => '{{count}} Ticket Filter|{{count}} Ticket Filters',
 );

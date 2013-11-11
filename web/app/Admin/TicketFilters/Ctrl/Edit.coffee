@@ -14,8 +14,8 @@ define [
 			@filter = null
 
 			@filter_criteria = {}
-			@criteraTypeDef = @dpObTypesDefTicketFilter
-			@criteriaOptionTypes = @criteraTypeDef.getOptionsForTypes()
+			@criteriaTypeDef = @dpObTypesDefTicketFilter
+			@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
 
 		initialLoad: ->
 			if @$stateParams.id

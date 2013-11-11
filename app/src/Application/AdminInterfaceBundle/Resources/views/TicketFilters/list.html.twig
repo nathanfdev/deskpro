@@ -1,33 +1,35 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-briefcase"></i> {{ phrase('adm.general.apps_tickets') }} &rarr; {{ phrase('adm.ticket_filters.filters') }}</h3>
-		<button class="btn help-page-trigger"><i class="fa fa-question-circle"></i></button>
-	</header>
-	<article class="pane-content no-pad">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li>
-							<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
-						</li>
-						<li><span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</span></li>
-						<li><a class="btn btn-success" href="{{ ng_href('tickets.filters.gocreate') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a></li>
-					</ul>
-				</nav>
-				<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_filters.count_filters') }}"></h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+
+{% block listpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_ticket_filters') }}"></h3>
+		</header>
+		<article>
 			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
-				<li class="with-drag-handle" ng-repeat="filter in ListCtrl.list" dp-state-mark="tickets.filters.edit.{{ ng_var('filter.id') }}" data-id="{{ ng_var('filter.id') }}">
-					<a href="{{ ng_href('tickets.filters.edit', '{id: filter.id}') }}">
+				<li class="with-drag-handle" ng-repeat="filter in ListCtrl.list"
+					dp-state-mark="tickets.ticket_filters.edit.{{ ng_var('filter.id') }}"
+					data-id="{{ ng_var('filter.id') }}">
+					<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
+
 						<div class="pull-right">
-							<em class="tag"style="margin-left: 6px;">
+							<em class="tag" style="margin-left: 6px;">
 								<span ng-if="filter.is_global">global</span>
 								<span ng-if="filter.person_id">{{ ng_var('filter.person.display_name') }}</span>
 								<span ng-if="filter.agent_team_id">{{ ng_var('filter.agent_team.name') }}</span>
 							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(filter); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode"
+								  style="margin-top: -3px;"
+								  ng-click="ListCtrl.startDelete(filter); $event.preventDefault();">
+								<i class="fa fa-trash-o"></i>
+							</span>
 						</div>
 						<h4>
 							<span class="title-text">{{ ng_var('filter.title') }}</span>
@@ -35,12 +37,15 @@
 					</a>
 				</li>
 			</ul>
-			<p ng-if="!ListCtrl.list.length" style="padding: 15px;">
-				{{ phrase('adm.ticket_filters.no_filters') }}
-			</p>
-		</div>
-	</article>
-</div>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_filters.gocreate') }}">
+					<i class="fa fa-plus"></i> {{ phrase('adm.ticket_filters.new_filter') }}
+				</a>
+			</div>
+		</article>
+	</section>
 
-{{ ng_tpl('AdminInterfaceBundle:TicketFilters:delete-modal.html.twig') }}
-{% include 'AdminInterfaceBundle:TicketFilters:help-page.html.twig' %}
+{% endblock %}
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:TicketFilters:help-page.html.twig' %}
+{% endblock %}

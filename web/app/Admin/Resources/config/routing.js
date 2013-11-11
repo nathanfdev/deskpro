@@ -326,28 +326,28 @@ define(function() {
 	//# Filters
 	//###
 	routes.push({
-		id: 'tickets.filters',
-		url: '/filters',
+		id: 'tickets.ticket_filters',
+		url: '/ticket_filters',
 		templateName: 'TicketFilters/list.html',
 		controller: 'Admin_TicketFilters_Ctrl_List'
 	});
 
 	routes.push({
-		id: 'tickets.filters.gocreate',
+		id: 'tickets.ticket_filters.gocreate',
 		url: '/go-create',
 		template: '',
-		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.filters.create', $stateParams); }]
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.ticket_filters.create', $stateParams); }]
 	});
 
 	routes.push({
-		id: 'tickets.filters.create',
+		id: 'tickets.ticket_filters.create',
 		url: '/create',
 		templateName: 'TicketFilters/edit.html',
 		controller: 'Admin_TicketFilters_Ctrl_Edit'
 	});
 
 	routes.push({
-		id: 'tickets.filters.edit',
+		id: 'tickets.ticket_filters.edit',
 		url: '/{id:[0-9]+}',
 		templateName: 'TicketFilters/edit.html',
 		controller: 'Admin_TicketFilters_Ctrl_Edit'
