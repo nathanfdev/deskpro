@@ -18,8 +18,6 @@
 
       Admin_TicketTriggers_Ctrl_List.DEPS = ['$state', '$stateParams'];
 
-      Admin_TicketTriggers_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketTriggers_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.triggers = null;

@@ -6,8 +6,7 @@ define [
 	class Admin_TicketMacros_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketMacros_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@CTRL_TYPE = 'page'
-		@DEPS      = ['dpObTypesDefTicketActions', '$stateParams']
+				@DEPS      = ['dpObTypesDefTicketActions', '$stateParams']
 
 		init: ->
 			@macroData  = @DataService.get('TicketMacros')

@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID = 'Admin_TicketAccounts_Ctrl_List'
 		@CTRL_AS = 'TicketAccountsList'
 		@DEPS    = ['TicketAccountsData']
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			@accounts = []

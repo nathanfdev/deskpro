@@ -18,8 +18,6 @@
 
       Admin_TicketMacros_Ctrl_List.DEPS = ['$state', '$stateParams', 'DataService'];
 
-      Admin_TicketMacros_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketMacros_Ctrl_List.prototype.init = function() {
         this.list = [];
         return this.macroData = this.DataService.get('TicketMacros');

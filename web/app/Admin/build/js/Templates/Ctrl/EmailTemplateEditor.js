@@ -14,8 +14,6 @@
 
       Admin_Templates_Ctrl_EmailTemplateEditor.CTRL_ID = 'Admin_Templates_Ctrl_EmailTemplateEditor';
 
-      Admin_Templates_Ctrl_EmailTemplateEditor.CTRL_TYPE = 'modal';
-
       Admin_Templates_Ctrl_EmailTemplateEditor.CTRL_AS = 'EmailTemplateEditor';
 
       Admin_Templates_Ctrl_EmailTemplateEditor.DEPS = ['$modalInstance', 'templateName', 'variantOf'];

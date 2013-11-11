@@ -14,8 +14,6 @@
 
       Admin_Main_Ctrl_BackToAgent.CTRL_ID = 'Admin_Main_Ctrl_BackToAgent';
 
-      Admin_Main_Ctrl_BackToAgent.CTRL_TYPE = 'any';
-
       Admin_Main_Ctrl_BackToAgent.prototype.init = function() {
         if (!window.parent) {
           return window.location = window.DP_BASE_URL + '/agent/';

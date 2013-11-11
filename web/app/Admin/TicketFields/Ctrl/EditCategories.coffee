@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditCategories'
 		@CTRL_AS = 'TicketCats'
 		@DEPS    = []
-		@CTRL_TYPE = 'page'
 
 		init: ->
 			@cats             = []

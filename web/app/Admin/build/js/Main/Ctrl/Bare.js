@@ -14,8 +14,6 @@
 
       Admin_Main_Ctrl_Bare.CTRL_ID = 'Admin_Main_Ctrl_Bare';
 
-      Admin_Main_Ctrl_Bare.CTRL_TYPE = 'page';
-
       return Admin_Main_Ctrl_Bare;
 
     })(Admin_Ctrl_Base);

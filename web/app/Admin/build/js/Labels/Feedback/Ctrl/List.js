@@ -18,8 +18,6 @@
 
       Admin_Labels_Feedback_Ctrl_List.DEPS = ['em', '$rootScope', 'LabelManager'];
 
-      Admin_Labels_Feedback_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_Labels_Feedback_Ctrl_List.prototype.init = function() {
         Admin_Labels_Feedback_Ctrl_List.__super__.init.call(this);
         this.api_endpoint = '/feedback_labels';

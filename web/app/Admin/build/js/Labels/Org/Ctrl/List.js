@@ -18,8 +18,6 @@
 
       Admin_Labels_Org_Ctrl_List.CTRL_AS = 'LabelsList';
 
-      Admin_Labels_Org_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_Labels_Org_Ctrl_List.prototype.init = function() {
         Admin_Labels_Org_Ctrl_List.__super__.init.call(this);
         this.api_endpoint = '/org_labels';

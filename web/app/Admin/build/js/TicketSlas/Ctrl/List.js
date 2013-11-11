@@ -18,8 +18,6 @@
 
       Admin_TicketSlas_Ctrl_List.DEPS = ['$state', '$stateParams', 'DataService'];
 
-      Admin_TicketSlas_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketSlas_Ctrl_List.prototype.init = function() {
         this.list = [];
         return this.slaData = this.DataService.get('TicketSlas');

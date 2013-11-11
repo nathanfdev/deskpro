@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 		@CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList'
 		@CTRL_AS = 'ListCtrl'
 		@DEPS    = []
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			@filter = {

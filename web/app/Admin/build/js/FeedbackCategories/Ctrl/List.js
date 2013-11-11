@@ -18,8 +18,6 @@
 
       Admin_FeedbackCategories_Ctrl_List.DEPS = ['$rootScope', '$scope', 'FeedbackCategoriesData', 'em', 'Api', '$state', 'Growl'];
 
-      Admin_FeedbackCategories_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_FeedbackCategories_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.feedback_categories = [];

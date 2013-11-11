@@ -7,7 +7,6 @@ define [
 		@CTRL_ID = 'Admin_TicketFilters_Ctrl_List'
 		@CTRL_AS = 'ListCtrl'
 		@DEPS = ['$state', '$stateParams', 'DataService']
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			@list = []

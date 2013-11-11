@@ -3,7 +3,6 @@ define ['Admin/Labels/Base/Ctrl/List', 'Admin/App'], (Admin_Labels_Base_Ctrl_Lis
 		@CTRL_ID = 'Admin_Labels_Feedback_Ctrl_List'
 		@CTRL_AS = 'LabelsList'
 		@DEPS = ['em', '$rootScope', 'LabelManager']
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			super()

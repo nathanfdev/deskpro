@@ -7,7 +7,6 @@ define [
 		@CTRL_ID = 'Admin_FeedbackCategories_Ctrl_Edit'
 		@CTRL_AS = 'FeedbackCategoriesEdit'
 		@DEPS    = ['Api', 'Growl', 'FeedbackCategoriesData', '$stateParams', '$modal']
-		@CTRL_TYPE = 'page'
 
 		init: ->
 

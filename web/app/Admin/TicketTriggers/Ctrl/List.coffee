@@ -9,7 +9,6 @@ define [
 		@CTRL_ID = 'Admin_TicketTriggers_Ctrl_List'
 		@CTRL_AS = 'TicketTriggersList'
 		@DEPS = ['$state', '$stateParams']
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			@triggers = null

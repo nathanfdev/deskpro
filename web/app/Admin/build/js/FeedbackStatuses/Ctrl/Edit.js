@@ -18,8 +18,6 @@
 
       Admin_FeedbackStatuses_Ctrl_Edit.DEPS = ['Api', 'Growl', 'FeedbackStatusesData', '$stateParams', '$modal'];
 
-      Admin_FeedbackStatuses_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_FeedbackStatuses_Ctrl_Edit.prototype.init = function() {
         this.feedback_status = {};
         this.statusType = this.$stateParams.type;

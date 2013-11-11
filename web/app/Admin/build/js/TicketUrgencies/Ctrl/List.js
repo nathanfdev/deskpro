@@ -18,8 +18,6 @@
 
       Admin_TicketUrgencies_Ctrl_List.DEPS = [];
 
-      Admin_TicketUrgencies_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketUrgencies_Ctrl_List.prototype.init = function() {
         this.urgency_counts = {};
         this.urgencies = [];

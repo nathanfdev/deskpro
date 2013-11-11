@@ -16,8 +16,6 @@
 
       Admin_Labels_Base_Ctrl_Edit.DEPS = ['em', '$stateParams', '$rootScope', 'LabelManager'];
 
-      Admin_Labels_Base_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_Labels_Base_Ctrl_Edit.prototype.init = function() {
         this.api_endpoint = '';
         this.ng_route = '';

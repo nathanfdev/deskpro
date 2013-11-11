@@ -16,8 +16,6 @@
 
       Admin_Labels_Base_Ctrl_List.CTRL_AS = 'LabelsList';
 
-      Admin_Labels_Base_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_Labels_Base_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.api_endpoint = '';

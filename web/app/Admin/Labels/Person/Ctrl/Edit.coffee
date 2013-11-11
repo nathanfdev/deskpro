@@ -3,7 +3,6 @@ define ['Admin/Labels/Base/Ctrl/Edit', 'Admin/App'], (Admin_Labels_Base_Ctrl_Edi
 		@CTRL_ID = 'Admin_Labels_Person_Ctrl_Edit'
 		@CTRL_AS = 'LabelsEdit'
 		@DEPS = ['em', '$stateParams', '$rootScope', 'LabelManager']
-		@CTRL_TYPE = 'page'
 
 		init: ->
 			super()

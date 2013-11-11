@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		@CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings'
 		@CTRL_AS   = 'TicketSettings'
 		@DEPS      = []
-		@CTRL_TYPE = 'page'
 
 		init: ->
 			@settings = null

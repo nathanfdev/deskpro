@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditPriorities'
 		@CTRL_AS = 'TicketPris'
 		@DEPS    = []
-		@CTRL_TYPE = 'page'
 
 		init: ->
 			@pris             = []

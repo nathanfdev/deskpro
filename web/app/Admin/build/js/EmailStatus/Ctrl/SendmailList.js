@@ -18,8 +18,6 @@
 
       Admin_EmailStatus_Ctrl_SendmailList.DEPS = [];
 
-      Admin_EmailStatus_Ctrl_SendmailList.CTRL_TYPE = 'list';
-
       Admin_EmailStatus_Ctrl_SendmailList.prototype.init = function() {
         this.filter = {
           page: 1

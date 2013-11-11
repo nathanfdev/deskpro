@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_List'
 		@CTRL_AS = 'TicketFieldsList'
 		@DEPS    = []
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			@custom_fields = []

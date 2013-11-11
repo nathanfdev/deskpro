@@ -18,8 +18,6 @@
 
       Admin_Labels_Feedback_Ctrl_Edit.DEPS = ['em', '$stateParams', '$rootScope', 'LabelManager'];
 
-      Admin_Labels_Feedback_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_Labels_Feedback_Ctrl_Edit.prototype.init = function() {
         Admin_Labels_Feedback_Ctrl_Edit.__super__.init.call(this);
         this.api_endpoint = '/feedback_labels';

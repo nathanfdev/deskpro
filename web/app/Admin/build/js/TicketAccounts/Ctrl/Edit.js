@@ -18,8 +18,6 @@
 
       Admin_TicketAccounts_Ctrl_Edit.DEPS = ['Api', 'Growl', 'DepartmentData', 'TicketAccountsData', '$stateParams', '$modal'];
 
-      Admin_TicketAccounts_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_TicketAccounts_Ctrl_Edit.prototype.init = function() {
         this.didPassTest = false;
         this.testMessageCount = 0;

@@ -6,8 +6,7 @@ define [
 	class Admin_TicketFilters_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketFilters_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@CTRL_TYPE = 'page'
-		@DEPS      = ['dpObTypesDefTicketFilter', '$stateParams']
+				@DEPS      = ['dpObTypesDefTicketFilter', '$stateParams']
 
 		init: ->
 			@filterData = @DataService.get('TicketFilters')

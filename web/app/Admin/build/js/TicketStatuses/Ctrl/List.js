@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_List.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketStatuses_Ctrl_List.prototype.init = function() {};
 
       return Admin_TicketStatuses_Ctrl_List;

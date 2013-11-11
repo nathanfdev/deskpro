@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditWorkflows'
 		@CTRL_AS = 'TicketWorks'
 		@DEPS    = []
-		@CTRL_TYPE = 'page'
 
 		init: ->
 			@works             = []

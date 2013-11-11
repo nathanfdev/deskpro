@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID = 'Admin_TicketUrgencies_Ctrl_List'
 		@CTRL_AS = 'TicketUrgenciesList'
 		@DEPS = []
-		@CTRL_TYPE = 'list'
 
 		init: ->
 			@urgency_counts = {}

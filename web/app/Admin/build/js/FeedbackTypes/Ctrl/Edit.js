@@ -18,8 +18,6 @@
 
       Admin_FeedbackTypes_Ctrl_Edit.DEPS = ['Api', 'Growl', 'FeedbackTypesData', '$stateParams', '$modal'];
 
-      Admin_FeedbackTypes_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_FeedbackTypes_Ctrl_Edit.prototype.init = function() {
         this.feedback_type = {};
         this.usergroups = [];

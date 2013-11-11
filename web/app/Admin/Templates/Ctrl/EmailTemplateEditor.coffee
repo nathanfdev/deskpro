@@ -1,7 +1,6 @@
 define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 	class Admin_Templates_Ctrl_EmailTemplateEditor extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Templates_Ctrl_EmailTemplateEditor'
-		@CTRL_TYPE = 'modal'
 		@CTRL_AS   = 'EmailTemplateEditor'
 		@DEPS      = ['$modalInstance', 'templateName', 'variantOf']
 

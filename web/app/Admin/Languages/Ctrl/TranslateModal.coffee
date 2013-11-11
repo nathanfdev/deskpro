@@ -1,7 +1,6 @@
 define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
 	class Admin_Languages_Ctrl_TranslateModal extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal'
-		@CTRL_TYPE = 'modal'
 		@CTRL_AS   = 'TranslateModal'
 		@DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen', 'editorOptions']
 

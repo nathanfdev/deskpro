@@ -18,8 +18,6 @@
 
       Admin_TicketAccounts_Ctrl_List.DEPS = ['TicketAccountsData'];
 
-      Admin_TicketAccounts_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketAccounts_Ctrl_List.prototype.init = function() {
         return this.accounts = [];
       };

@@ -18,8 +18,6 @@
 
       Admin_TicketFields_Ctrl_List.DEPS = [];
 
-      Admin_TicketFields_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketFields_Ctrl_List.prototype.init = function() {
         this.custom_fields = [];
         this.field_enabled = {};

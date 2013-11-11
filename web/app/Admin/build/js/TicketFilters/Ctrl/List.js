@@ -18,8 +18,6 @@
 
       Admin_TicketFilters_Ctrl_List.DEPS = ['$state', '$stateParams', 'DataService'];
 
-      Admin_TicketFilters_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_TicketFilters_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.list = [];

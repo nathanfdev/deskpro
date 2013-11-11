@@ -14,8 +14,6 @@
 
       Admin_Main_Ctrl_BareList.CTRL_ID = 'Admin_Main_Ctrl_BareList';
 
-      Admin_Main_Ctrl_BareList.CTRL_TYPE = 'list';
-
       return Admin_Main_Ctrl_BareList;
 
     })(Admin_Ctrl_Base);

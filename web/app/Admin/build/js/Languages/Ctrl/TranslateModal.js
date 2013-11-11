@@ -14,8 +14,6 @@
 
       Admin_Languages_Ctrl_TranslateModal.CTRL_ID = 'Admin_Languages_Ctrl_TranslateModal';
 
-      Admin_Languages_Ctrl_TranslateModal.CTRL_TYPE = 'modal';
-
       Admin_Languages_Ctrl_TranslateModal.CTRL_AS = 'TranslateModal';
 
       Admin_Languages_Ctrl_TranslateModal.DEPS = ['$timeout', '$modalInstance', 'phraseId', 'getWaitOnPromise', 'getPhraseIdGen', 'editorOptions'];

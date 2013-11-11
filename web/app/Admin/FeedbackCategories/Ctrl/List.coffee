@@ -3,7 +3,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		@CTRL_ID = 'Admin_FeedbackCategories_Ctrl_List'
 		@CTRL_AS = 'FeedbackCategoriesList'
 		@DEPS    = ['$rootScope', '$scope', 'FeedbackCategoriesData', 'em', 'Api', '$state', 'Growl']
-		@CTRL_TYPE = 'list'
 
 		init: ->
 

@@ -18,8 +18,6 @@
 
       Admin_EmailStatus_Ctrl_SourceList.DEPS = [];
 
-      Admin_EmailStatus_Ctrl_SourceList.CTRL_TYPE = 'list';
-
       Admin_EmailStatus_Ctrl_SourceList.prototype.init = function() {
         this.filter = {
           page: 1

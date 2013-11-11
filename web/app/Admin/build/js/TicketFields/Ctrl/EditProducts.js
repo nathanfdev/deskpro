@@ -18,8 +18,6 @@
 
       Admin_TicketFields_Ctrl_EditProducts.DEPS = [];
 
-      Admin_TicketFields_Ctrl_EditProducts.CTRL_TYPE = 'page';
-
       Admin_TicketFields_Ctrl_EditProducts.prototype.init = function() {
         var _this = this;
         this.products = [];

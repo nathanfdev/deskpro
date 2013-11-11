@@ -18,8 +18,6 @@
 
       Admin_FeedbackStatuses_Ctrl_List.DEPS = ['$rootScope', '$scope', 'FeedbackStatusesData', 'em', 'Api', '$state', 'Growl'];
 
-      Admin_FeedbackStatuses_Ctrl_List.CTRL_TYPE = 'list';
-
       Admin_FeedbackStatuses_Ctrl_List.prototype.init = function() {
         var _this = this;
         this.$scope.activeType = 'active';

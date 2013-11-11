@@ -18,8 +18,6 @@
 
       Admin_FeedbackCategories_Ctrl_Edit.DEPS = ['Api', 'Growl', 'FeedbackCategoriesData', '$stateParams', '$modal'];
 
-      Admin_FeedbackCategories_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_FeedbackCategories_Ctrl_Edit.prototype.init = function() {
         var _this = this;
         this.feedback_category = {};

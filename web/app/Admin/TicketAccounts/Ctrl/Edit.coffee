@@ -9,7 +9,6 @@ define [
 		@CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
 		@CTRL_AS = 'TicketAccountsEdit'
 		@DEPS    = ['Api', 'Growl', 'DepartmentData', 'TicketAccountsData', '$stateParams', '$modal']
-		@CTRL_TYPE = 'page'
 
 		init: ->
 			@didPassTest = false
