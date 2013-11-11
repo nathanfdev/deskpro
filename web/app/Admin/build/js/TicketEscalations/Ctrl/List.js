@@ -68,9 +68,18 @@
       */
 
 
-      Admin_TicketEscalations_Ctrl_List.prototype.startDelete = function(esc) {
-        var inst,
+      Admin_TicketEscalations_Ctrl_List.prototype.startDelete = function(esc_id) {
+        var esc, inst, v, _i, _len, _ref1,
           _this = this;
+        esc = null;
+        _ref1 = this.list;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          v = _ref1[_i];
+          if (v.id === esc) {
+            esc = v;
+            break;
+          }
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketEscalations/delete-modal.html'),
           controller: [

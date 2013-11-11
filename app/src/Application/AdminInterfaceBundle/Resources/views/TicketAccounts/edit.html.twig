@@ -345,9 +345,10 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="TicketAccountsEdit.dep.id">
-						<button class="btn btn-danger">Delete</button>
+					<div class="dp-delete-control" ng-if="TicketAccountsEdit.account.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketAccountsList.startDelete(TicketAccountsEdit.account.id);">Delete</button>
 					</div>
+
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving_account">

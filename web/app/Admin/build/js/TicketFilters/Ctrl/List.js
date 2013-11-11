@@ -68,9 +68,18 @@
       */
 
 
-      Admin_TicketFilters_Ctrl_List.prototype.startDelete = function(filter) {
-        var inst,
+      Admin_TicketFilters_Ctrl_List.prototype.startDelete = function(filter_id) {
+        var filter, inst, v, _i, _len, _ref1,
           _this = this;
+        filter = null;
+        _ref1 = this.list;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          v = _ref1[_i];
+          if (v.id === filter_id) {
+            filter = v;
+            break;
+          }
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketFilters/delete-modal.html'),
           controller: [

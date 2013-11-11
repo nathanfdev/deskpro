@@ -57,7 +57,14 @@ define [
 		###
 		# Show the delete dlg
 		###
-		startTriggerDelete: (trigger) ->
+		startTriggerDelete: (trigger_id) ->
+
+			trigger = null
+			for v in @triggers
+				if v.id == trigger_id
+					trigger = v
+					break
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketTriggers/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->

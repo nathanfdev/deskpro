@@ -41,7 +41,7 @@
 					</div>
 
 					<div class="dp-delete-control" ng-if="TicketDepsEdit.dep.id">
-						<button class="btn btn-danger">Delete</button>
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketDepsList.startDelete(TicketDepsEdit.dep.id);">Delete</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

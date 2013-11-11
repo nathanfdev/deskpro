@@ -73,9 +73,18 @@
       */
 
 
-      Admin_TicketTriggers_Ctrl_List.prototype.startTriggerDelete = function(trigger) {
-        var inst,
+      Admin_TicketTriggers_Ctrl_List.prototype.startTriggerDelete = function(trigger_id) {
+        var inst, trigger, v, _i, _len, _ref1,
           _this = this;
+        trigger = null;
+        _ref1 = this.triggers;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          v = _ref1[_i];
+          if (v.id === trigger_id) {
+            trigger = v;
+            break;
+          }
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketTriggers/delete-modal.html'),
           controller: [

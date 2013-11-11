@@ -114,7 +114,13 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		###*
 		# Show the delete dlg
 		###
-		startDelete: (for_dep) ->
+		startDelete: (for_dep_id) ->
+
+			for_dep = null
+			for v in @departments
+				if v.id == for_dep_id
+					for_dep = v
+					break
 
 			if for_dep._child_ids
 				@showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.")

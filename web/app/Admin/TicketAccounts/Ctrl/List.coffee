@@ -28,7 +28,13 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		###
 		# Show the delete dlg
 		###
-		startDelete: (for_acc) ->
+		startDelete: (for_acc_id) ->
+
+			for_acc = null
+			for v in @accounts
+				if v.id == for_acc_id
+					for_acc = v
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketAccounts/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->

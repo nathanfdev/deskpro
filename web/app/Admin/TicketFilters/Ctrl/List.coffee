@@ -51,7 +51,14 @@ define [
 		###
 		# Show the delete dlg
 		###
-		startDelete: (filter) ->
+		startDelete: (filter_id) ->
+
+			filter = null
+			for v in @list
+				if v.id == filter_id
+					filter = v
+					break
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketFilters/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->

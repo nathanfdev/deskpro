@@ -51,7 +51,14 @@ define [
 		###
 		# Show the delete dlg
 		###
-		startDelete: (esc) ->
+		startDelete: (esc_id) ->
+
+			esc = null
+			for v in @list
+				if v.id == esc
+					esc = v
+					break
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketEscalations/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->

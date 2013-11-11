@@ -151,9 +151,18 @@
       */
 
 
-      Admin_TicketDeps_Ctrl_List.prototype.startDelete = function(for_dep) {
-        var inst, move_dep_list,
+      Admin_TicketDeps_Ctrl_List.prototype.startDelete = function(for_dep_id) {
+        var for_dep, inst, move_dep_list, v, _i, _len, _ref1,
           _this = this;
+        for_dep = null;
+        _ref1 = this.departments;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          v = _ref1[_i];
+          if (v.id === for_dep_id) {
+            for_dep = v;
+            break;
+          }
+        }
         if (for_dep._child_ids) {
           this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
           return;

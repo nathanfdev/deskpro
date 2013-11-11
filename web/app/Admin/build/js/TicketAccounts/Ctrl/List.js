@@ -49,9 +49,17 @@
       */
 
 
-      Admin_TicketAccounts_Ctrl_List.prototype.startDelete = function(for_acc) {
-        var inst,
+      Admin_TicketAccounts_Ctrl_List.prototype.startDelete = function(for_acc_id) {
+        var for_acc, inst, v, _i, _len, _ref1,
           _this = this;
+        for_acc = null;
+        _ref1 = this.accounts;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          v = _ref1[_i];
+          if (v.id === for_acc_id) {
+            for_acc = v;
+          }
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketAccounts/delete-modal.html'),
           controller: [
