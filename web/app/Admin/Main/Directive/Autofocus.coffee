@@ -16,12 +16,12 @@ define ->
 				element.focus()
 
 				done = false
-				scope.$on('dp_loadingstate_change', (evt, id, is_loading) ->
-					if not done and id == 'dp_section_page' and not is_loading
-						$timeout(->
-							element.focus()
-						, 150)
-				)
+				$timeout(->
+					element.focus()
+				, 150)
+				$timeout(->
+					element.focus()
+				, 250)
 		}
 	]
 

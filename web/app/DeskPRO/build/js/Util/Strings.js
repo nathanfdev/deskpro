@@ -133,6 +133,18 @@
       };
 
       /*
+        	# Escape special regex chars in a string
+        	#
+        	# @param {String} regexString
+        	# @return {String}
+      */
+
+
+      DeskPRO_Util_Strings.prototype.escapeRegex = function(regexString) {
+        return regexString.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+      };
+
+      /*
         	# Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)
         	#
         	# See: https://github.com/garycourt/murmurhash-js

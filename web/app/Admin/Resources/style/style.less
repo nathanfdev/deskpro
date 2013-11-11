@@ -407,6 +407,20 @@ nav.dp-appnav {
 //# Pane Block - Standard pane wrapper
 //######################################################################################################################
 
+.dp-layout-loading {
+	margin: 10px;
+	background: #fff;
+	border-radius: 2px;
+	border: 1px solid #d0d9e6;
+	padding: 50px;
+
+	i {
+		display: block;
+		background: url('@{img_path}/spinners/loading-big-circle.gif') no-repeat 50% 50%;
+		height: 32px;
+	}
+}
+
 .dp-paneblock {
 	margin: 10px;
 	background: #fff;
@@ -447,7 +461,7 @@ nav.dp-appnav {
 	}
 }
 
-.dp-layout-list-editpane .dp-paneblock {
+.dp-layout-list-editpane .dp-paneblock, .dp-layout-list-editpane .dp-layout-loading {
 	margin-left: 0;
 	> header, > article, > nav.dp-blocktabs {
 		max-width: @maxEditPaneWidth;

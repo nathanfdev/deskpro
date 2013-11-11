@@ -1,4 +1,7 @@
-define ->
+define [
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Strings'
+], (Util, Strings) ->
 	###
     # Description
     # -----------
@@ -25,44 +28,45 @@ define ->
 		return {
 			restrict: 'A',
 			link: (scope, element, attrs) ->
+				myStateId   = attrs.dpStateMark
+				myStateIdRe = new RegExp(Strings.escapeRegex(myStateId))
+				myStateData = if attrs.dpStateMark then scope.$eval(attrs.dpStateMark) else null
 
 				# This sets the active state immediately on click
 				# which makes the UI feel faster
 				element.on('click', ->
-					element.closest('#dp_section_nav').find('.state-on').removeClass('state-on active')
-					element.closest('#dp_section_list').find('.state-on').removeClass('state-on active')
-
+					element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active')
+					element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active')
 					element.addClass('state-on active')
 				)
 
-				checkState = (stateId, newStateId) ->
-					return if not stateId or not newStateId
-					stateIdRegex = '^'
-					stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
-					stateIdRegex += '\\b'
+				updateMarker = ->
+					currentStateId = $state.current.name
 
-					if newStateId.match(new RegExp(stateIdRegex))
-						return true
+					isOn = false
+					if myStateData
+						if currentStateId.match(myStateIdRe) and Util.equals(myStateData, $state.params)
+							isOn = true
 					else
-						return false
+						if $state.params.id
+							currentStateId += '.' + $state.params.id
+						if $state.params.type
+							currentStateId += '.' + $state.params.type
 
-				if $state.current?.name
-					current_state_id = $state.current.name
-					if $state.params.id
-						current_state_id += '.' + $state.params.id
-					else if $state.params.type
-						current_state_id += '.' + $state.params.type
+						if currentStateId.match(myStateIdRe)
+							isOn = true
 
-					if checkState(attrs.dpStateMark, current_state_id)
+					if isOn
 						element.addClass('state-on active')
-						element.closest('.sub-nav').show().closest('li').addClass('sublist-open')
-
-				$rootScope.$on('dp_activeStateChange', (ev, newStateId) ->
-					if checkState(attrs.dpStateMark, newStateId)
-						element.addClass('state-on active')
+						element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
 					else
 						element.removeClass('state-on active')
-				, true);
+
+				$rootScope.$on('$stateChangeSuccess', ->
+					updateMarker()
+				);
+
+				updateMarker()
 		}
 	]
 

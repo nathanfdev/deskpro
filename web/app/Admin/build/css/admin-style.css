@@ -7910,6 +7910,20 @@ nav.dp-appnav ul ul a {
   padding-left: 35px;
 }
 
+.dp-layout-loading {
+  padding: 50px;
+  margin: 10px;
+  background: #fff;
+  border: 1px solid #d0d9e6;
+  border-radius: 2px;
+}
+
+.dp-layout-loading i {
+  display: block;
+  height: 32px;
+  background: url('../../../../images/spinners/loading-big-circle.gif') no-repeat 50% 50%;
+}
+
 .dp-paneblock {
   margin: 10px;
   background: #fff;
@@ -7948,17 +7962,22 @@ nav.dp-appnav ul ul a {
   text-align: center;
 }
 
-.dp-layout-list-editpane .dp-paneblock {
+.dp-layout-list-editpane .dp-paneblock,
+.dp-layout-list-editpane .dp-layout-loading {
   margin-left: 0;
 }
 
 .dp-layout-list-editpane .dp-paneblock > header,
+.dp-layout-list-editpane .dp-layout-loading > header,
 .dp-layout-list-editpane .dp-paneblock > article,
-.dp-layout-list-editpane .dp-paneblock > nav.dp-blocktabs {
+.dp-layout-list-editpane .dp-layout-loading > article,
+.dp-layout-list-editpane .dp-paneblock > nav.dp-blocktabs,
+.dp-layout-list-editpane .dp-layout-loading > nav.dp-blocktabs {
   max-width: 1000px;
 }
 
-.dp-layout-list-editpane .dp-paneblock > footer .dp-content {
+.dp-layout-list-editpane .dp-paneblock > footer .dp-content,
+.dp-layout-list-editpane .dp-layout-loading > footer .dp-content {
   max-width: 1000px;
 }
 

@@ -1,5 +1,5 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings'], function(Util, Strings) {
     /*
        # Description
        # -----------
@@ -29,45 +29,45 @@
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            var checkState, current_state_id, _ref;
+            var myStateData, myStateId, myStateIdRe, updateMarker;
+            myStateId = attrs.dpStateMark;
+            myStateIdRe = new RegExp(Strings.escapeRegex(myStateId));
+            myStateData = attrs.dpStateMark ? scope.$eval(attrs.dpStateMark) : null;
             element.on('click', function() {
-              element.closest('#dp_section_nav').find('.state-on').removeClass('state-on active');
-              element.closest('#dp_section_list').find('.state-on').removeClass('state-on active');
+              element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
+              element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
               return element.addClass('state-on active');
             });
-            checkState = function(stateId, newStateId) {
-              var stateIdRegex;
-              if (!stateId || !newStateId) {
-                return;
-              }
-              stateIdRegex = '^';
-              stateIdRegex += stateId.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-              stateIdRegex += '\\b';
-              if (newStateId.match(new RegExp(stateIdRegex))) {
-                return true;
+            updateMarker = function() {
+              var currentStateId, isOn;
+              currentStateId = $state.current.name;
+              isOn = false;
+              if (myStateData) {
+                if (currentStateId.match(myStateIdRe) && Util.equals(myStateData, $state.params)) {
+                  isOn = true;
+                }
               } else {
-                return false;
+                if ($state.params.id) {
+                  currentStateId += '.' + $state.params.id;
+                }
+                if ($state.params.type) {
+                  currentStateId += '.' + $state.params.type;
+                }
+                if (currentStateId.match(myStateIdRe)) {
+                  isOn = true;
+                }
               }
-            };
-            if ((_ref = $state.current) != null ? _ref.name : void 0) {
-              current_state_id = $state.current.name;
-              if ($state.params.id) {
-                current_state_id += '.' + $state.params.id;
-              } else if ($state.params.type) {
-                current_state_id += '.' + $state.params.type;
-              }
-              if (checkState(attrs.dpStateMark, current_state_id)) {
+              if (isOn) {
                 element.addClass('state-on active');
-                element.closest('.sub-nav').show().closest('li').addClass('sublist-open');
-              }
-            }
-            return $rootScope.$on('dp_activeStateChange', function(ev, newStateId) {
-              if (checkState(attrs.dpStateMark, newStateId)) {
-                return element.addClass('state-on active');
+                return element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
               } else {
                 return element.removeClass('state-on active');
               }
-            }, true);
+            };
+            $rootScope.$on('$stateChangeSuccess', function() {
+              return updateMarker();
+            });
+            return updateMarker();
           }
         };
       }

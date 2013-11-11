@@ -23,8 +23,6 @@
 
       Admin_Ctrl_Base.CTRL_ID = 'Admin_Main_Ctrl_Base';
 
-      Admin_Ctrl_Base.CTRL_TYPE = null;
-
       Admin_Ctrl_Base.DEPS = [];
 
       /**
@@ -131,7 +129,6 @@
             return;
           }
           if (!_this._state_cont_go && _this.checkDirtyState()) {
-            _this.AppState.setLoadingState('dp_section_page', false);
             ev.preventDefault();
             resetHash = _this.$state.href(fromState, fromParams);
             _this._state_cont_ignore = true;
@@ -149,14 +146,13 @@
         this.has_init = false;
         this.init();
         this.has_init = true;
+        this.$scope.state_loading = false;
         ret = this.initialLoad();
         if (ret) {
-          this.enableViewLoadingState();
+          this.$scope.state_loading = true;
           ret.then(function() {
-            return _this.disableViewLoadingState();
+            return _this.$scope.state_loading = false;
           });
-        } else {
-          this.disableViewLoadingState();
         }
       }
 
@@ -281,40 +277,6 @@
           turn_off = true;
         }
         return this._state_cont_go = turn_off;
-      };
-
-      /**
-      		* Show this page as "loading"
-      */
-
-
-      Admin_Ctrl_Base.prototype.enableViewLoadingState = function() {
-        this.ctrl_is_loading = true;
-        if (!this.constructor.CTRL_TYPE === 'any') {
-          this.AppState.setLoadingState('dp_section_list', true);
-          return this.AppState.setLoadingState('dp_section_page', true);
-        } else if (this.constructor.CTRL_TYPE === 'list') {
-          return this.AppState.setLoadingState('dp_section_list', true);
-        } else if (this.constructor.CTRL_TYPE === 'page') {
-          return this.AppState.setLoadingState('dp_section_page', true);
-        }
-      };
-
-      /**
-      		* Stop the loading indicator in this pane
-      */
-
-
-      Admin_Ctrl_Base.prototype.disableViewLoadingState = function() {
-        this.ctrl_is_loading = false;
-        if (!this.constructor.CTRL_TYPE === 'any') {
-          this.AppState.setLoadingState('dp_section_list', false);
-          return this.AppState.setLoadingState('dp_section_page', false);
-        } else if (this.constructor.CTRL_TYPE === 'list') {
-          return this.AppState.setLoadingState('dp_section_list', false);
-        } else if (this.constructor.CTRL_TYPE === 'page') {
-          return this.AppState.setLoadingState('dp_section_page', false);
-        }
       };
 
       /**

@@ -133,7 +133,7 @@ define ->
 		# @return {bool}
 		###
 		isObject: (obj) ->
-			return obj == Object(obj)
+			return obj != null && typeof obj == 'object'
 
 
 		###
@@ -199,5 +199,53 @@ define ->
 						result[key] = value
 
 			return result
+
+
+		###
+    	# Compares two values to see if they are equal.
+    	#
+    	# If objects, every property of the object is compared with equals()
+    	#
+    	# @return {bool}
+		###
+		equals: (obj1, obj2) ->
+			if obj1 == obj2
+				return true
+
+			if obj1 == null and obj2 == null
+				return true
+
+			# NaN
+			if obj1 != obj1 && obj2 != obj2
+				return true
+
+			if @isObject(obj1) ->
+				if @isArray(obj1)
+					if not @isArray(obj2)
+						return false
+
+					if obj1.length != obj2.length
+						return false
+
+					for k, v in obj1
+						if not @equals(obj1[k], obj2[k])
+							return false
+
+					return true
+				else
+					for own k, v of obj1
+						if not obj2[k]
+							return false
+						if obj1[k] != obj2[k]
+							return false
+					for own k, v of obj2
+						if not obj1[k]
+							return false
+						if obj1[k] != obj2[k]
+							return false
+
+					return true
+
+			return false
 
 	return new DeskPRO_Util_Util()

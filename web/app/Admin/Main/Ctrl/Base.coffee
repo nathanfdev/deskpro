@@ -15,7 +15,6 @@ define ['angular', 'Admin/App'], (angular) ->
 	class Admin_Ctrl_Base
 		@CTRL_AS   = null
 		@CTRL_ID   = 'Admin_Main_Ctrl_Base'
-		@CTRL_TYPE = null
 		@DEPS      = []
 
 		###*
@@ -94,7 +93,6 @@ define ['angular', 'Admin/App'], (angular) ->
 					return
 
 				if not @_state_cont_go and @checkDirtyState()
-					@AppState.setLoadingState('dp_section_page', false)
 					ev.preventDefault();
 
 					# - The window hash has changed at this point so we
@@ -122,15 +120,11 @@ define ['angular', 'Admin/App'], (angular) ->
 			@init()
 			@has_init = true
 
+			@$scope.state_loading = false
 			ret = @initialLoad()
 			if ret
-				@enableViewLoadingState()
-				ret.then(=>
-					@disableViewLoadingState()
-				)
-			else
-				@disableViewLoadingState()
-
+				@$scope.state_loading = true
+				ret.then(=> @$scope.state_loading = false)
 
 		###*
 		* Ping a var. This handled differently depending on which
@@ -231,35 +225,6 @@ define ['angular', 'Admin/App'], (angular) ->
     	###
 		skipDirtyState: (turn_off = true) ->
 			@_state_cont_go = turn_off
-
-
-		###*
-		* Show this page as "loading"
-		###
-		enableViewLoadingState: ->
-			@ctrl_is_loading = true
-			if not @constructor.CTRL_TYPE == 'any'
-				@AppState.setLoadingState('dp_section_list', true)
-				@AppState.setLoadingState('dp_section_page', true)
-			else if @constructor.CTRL_TYPE == 'list'
-				@AppState.setLoadingState('dp_section_list', true)
-			else if @constructor.CTRL_TYPE == 'page'
-				@AppState.setLoadingState('dp_section_page', true)
-
-
-		###*
-		* Stop the loading indicator in this pane
-		###
-		disableViewLoadingState: ->
-			@ctrl_is_loading = false
-			if not @constructor.CTRL_TYPE == 'any'
-				@AppState.setLoadingState('dp_section_list', false)
-				@AppState.setLoadingState('dp_section_page', false)
-			else if @constructor.CTRL_TYPE == 'list'
-				@AppState.setLoadingState('dp_section_list', false)
-			else if @constructor.CTRL_TYPE == 'page'
-				@AppState.setLoadingState('dp_section_page', false)
-
 
 		###*
 		* Controllers can implement this init() method to add custom init functionality.
