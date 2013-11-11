@@ -25,6 +25,7 @@ define [
 	'Admin/Main/Directive/DpListAutoload',
 	'Admin/Main/Directive/DpNavSubnav',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
+	'Admin/Main/Directive/DpOrderMenu',
 	'Admin/Main/Directive/DpPingFlash',
 	'Admin/Main/Directive/DpRegisterMessage',
 	'Admin/Main/Directive/DpServerValidation',
@@ -74,6 +75,7 @@ define [
 	Admin_Main_Directive_DpListAutoload,
 	Admin_Main_Directive_DpNavSubnav,
 	Admin_Main_Directive_DpOpenPhraseEditor,
+	Admin_Main_Directive_DpOrderMenu,
 	Admin_Main_Directive_DpPingFlash,
 	Admin_Main_Directive_DpRegisterMessage,
 	Admin_Main_Directive_DpServerValidation,
@@ -209,6 +211,7 @@ define [
 	Admin_App.directive('dpListAutoload',     Admin_Main_Directive_DpListAutoload)
 	Admin_App.directive('dpNavSubnav',        Admin_Main_Directive_DpNavSubnav)
 	Admin_App.directive('dpOpenPhraseEditor', Admin_Main_Directive_DpOpenPhraseEditor)
+	Admin_App.directive('dpOrderMenu',        Admin_Main_Directive_DpOrderMenu)
 	Admin_App.directive('dpPingFlash',        Admin_Main_Directive_DpPingFlash)
 	Admin_App.directive('dpRegisterMessage',  Admin_Main_Directive_DpRegisterMessage)
 	Admin_App.directive('dpServerValidation', Admin_Main_Directive_DpServerValidation)

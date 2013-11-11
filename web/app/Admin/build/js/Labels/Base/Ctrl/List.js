@@ -26,10 +26,17 @@
         this.add_mode = false;
         this.$scope.order = 'label';
         this.$scope.orderReverse = false;
-        return this.$rootScope.$on("" + this.api_endpoint + "_new", function(rec) {
+        this.$rootScope.$on("" + this.api_endpoint + "_new", function(rec) {
           if (_this.labels.indexOf(rec) === -1) {
             return _this.labels.push(rec);
           }
+        });
+        return this.$scope.$watch('sortOrder', function() {
+          if (!_this.$scope.sortOrder) {
+            return;
+          }
+          _this.$scope.order = _this.$scope.sortOrder.field;
+          return _this.$scope.orderReverse = _this.$scope.sortOrder.dir === 'DESC';
         });
       };
 
@@ -80,17 +87,6 @@
         })["finally"](function() {
           return label.delete_mode = false;
         });
-      };
-
-      Admin_Labels_Base_Ctrl_List.prototype.switchSortOrder = function(to) {
-        var from;
-        from = this.$scope.order;
-        if (from === to) {
-          this.$scope.orderReverse = !this.$scope.orderReverse;
-        } else {
-          this.$scope.orderReverse = !(to === 'label');
-        }
-        return this.$scope.order = to;
       };
 
       return Admin_Labels_Base_Ctrl_List;

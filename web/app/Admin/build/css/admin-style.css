@@ -8347,6 +8347,40 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   margin: 10px 0 10px 16px;
 }
 
+.dp-order-ctrl {
+  display: inline-block;
+}
+
+.dp-order-ctrl a {
+  cursor: pointer;
+}
+
+.dp-order-ctrl a.title {
+  display: block;
+  padding: 0;
+  margin: 11px 13px 0 0;
+  color: #aaa;
+  text-decoration: none;
+}
+
+.dp-order-ctrl a.title i.fa {
+  position: relative;
+  top: 1px;
+  font-size: 13px;
+}
+
+.dp-order-ctrl a.title:hover {
+  color: #444;
+}
+
+.dp-order-ctrl i.fa-check {
+  float: left;
+  margin-top: 3px;
+  margin-left: -15px;
+  font-size: 10px;
+  color: #999;
+}
+
 .panel {
   margin: 0;
 }

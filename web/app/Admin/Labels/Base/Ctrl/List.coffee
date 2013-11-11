@@ -20,6 +20,12 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 					@labels.push(rec)
 			)
 
+			@$scope.$watch('sortOrder', =>
+				if not @$scope.sortOrder then return
+				@$scope.order = @$scope.sortOrder.field
+				@$scope.orderReverse = @$scope.sortOrder.dir == 'DESC'
+			)
+
 
 		initialLoad: ->
 			promise = @LabelManager.loadLabels(@api_endpoint).then( (labels) =>
@@ -57,12 +63,3 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			).finally(=>
 				label.delete_mode = false
 			)
-
-		switchSortOrder: (to) ->
-			from = @$scope.order
-			if from==to
-				@$scope.orderReverse = !@$scope.orderReverse
-			else
-				@$scope.orderReverse = !(to=='label')
-
-			@$scope.order = to

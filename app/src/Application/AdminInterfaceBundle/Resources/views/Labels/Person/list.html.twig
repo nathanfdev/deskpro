@@ -3,16 +3,10 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<button ng-click="LabelsList.switchSortOrder('label')"
-						ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
-					<i class="fa fa-sort-alpha-asc" ng-hide="orderReverse"></i>
-					<i class="fa fa-sort-alpha-desc" ng-show="orderReverse"></i>
-				</button>
-				<button ng-click="LabelsList.switchSortOrder('count')"
-						ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
-					<i class="fa fa-sort-numeric-asc" ng-hide="orderReverse"></i>
-					<i class="fa fa-sort-numeric-desc" ng-show="orderReverse"></i>
-				</button>
+				<dp-order-menu ng-model="sortOrder">
+					<option value="label">Label</option>
+					<option value="count">Count</option>
+				</dp-order-menu>
 			</nav>
 
 			<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
