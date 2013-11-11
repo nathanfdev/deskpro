@@ -26,7 +26,7 @@
                   ev.preventDefault();
                   return close();
                 });
-                backdrop.insertAfter(element);
+                backdrop.insertBefore(element);
               }
               backdrop.show();
               element.addClass('open');

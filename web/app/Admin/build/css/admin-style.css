@@ -8191,7 +8191,8 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .dp-item-list {

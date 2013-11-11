@@ -25,11 +25,12 @@ define ->
 
 					if not backdrop
 						backdrop = $('<div/>').addClass('dp-help-content-backdrop')
+
 						backdrop.on('click', (ev) ->
-							ev.preventDefault();
+							ev.preventDefault()
 							close()
 						)
-						backdrop.insertAfter(element)
+						backdrop.insertBefore(element)
 
 					backdrop.show()
 					element.addClass('open')
