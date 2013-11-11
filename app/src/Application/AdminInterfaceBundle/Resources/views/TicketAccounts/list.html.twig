@@ -8,7 +8,7 @@
 			<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
 		</header>
 		<article>
-			<p ng-if="!TicketAccountsList.accounts.length" style="padding: 15px;">
+			<p class="dp-empty-list-notice" ng-if="!TicketAccountsList.accounts.length">
 				{{ phrase('adm.tickets.no_email_accounts') }}
 			</p>
 			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">

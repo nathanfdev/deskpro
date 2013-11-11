@@ -5,7 +5,7 @@
 			<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_macros.count_macros') }}"></h3>
 		</header>
 		<article>
-			<p ng-if="!ListCtrl.list.length" style="padding: 15px;">
+			<p class="dp-empty-list-notice" ng-if="!ListCtrl.list.length">
 				{{ phrase('adm.ticket_macros.no_macros') }}
 			</p>
 			<ul class="dp-item-list" ng-if="ListCtrl.list.length">

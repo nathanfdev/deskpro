@@ -38,7 +38,7 @@
 				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="fa fa-plus"></i> New Department</a>
 			</div>
 
-			<div class="alert alert-info" ng-show="TicketDepsList.departments.length == 1">
+			<div class="dp-empty-list-notice" ng-show="TicketDepsList.departments.length == 1">
 				<p>
 					{{ phrase('adm.departments.not_user_visible') }}
 				</p>

@@ -1,43 +1,31 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3><i class="fa fa-tag"></i> {{ phrase('adm.general.apps_portal') }} &rarr; Feedback &rarr; {{phrase('adm.general.labels')}}</h3>
-	</header>
-	<article class="pane-content no-pad">
-		<div class="panel panel-fill">
-			<div class="panel-heading">
-				<nav class="dp-controls">
-					<ul>
-						<li>
-							<span class="btn btn-danger" ng-class="{active: delete_mode}" ng-click="delete_mode = !delete_mode;"><i class="fa fa-trash-o"></i> {{phrase('agent.general.delete')}}</span>
-						</li>
-						<li><a class="btn btn-success" href="{{ ng_href('portal.feedback_labels.gocreate') }}"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
-						</li>
-						<li>
-							<button ng-click="LabelsList.switchSortOrder('label')"
-								ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
-								<i class="fa fa-sort-alpha-asc" ng-hide="orderReverse"></i>
-								<i class="fa fa-sort-alpha-desc" ng-show="orderReverse"></i>
-							</button>
-						</li>
-						<li>
-							<button ng-click="LabelsList.switchSortOrder('count')"
-								ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
-								<i class="fa fa-sort-numeric-asc" ng-hide="orderReverse"></i>
-								<i class="fa fa-sort-numeric-desc" ng-show="orderReverse"></i>
-							</button>
-						</li>
-					</ul>
-				</nav>
-				<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
-			</div>
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<button ng-click="LabelsList.switchSortOrder('label')"
+						ng-class="{'active':order=='label'}" class="btn btn-sm btn-primary">
+					<i class="fa fa-sort-alpha-asc" ng-hide="orderReverse"></i>
+					<i class="fa fa-sort-alpha-desc" ng-show="orderReverse"></i>
+				</button>
+				<button ng-click="LabelsList.switchSortOrder('count')"
+						ng-class="{'active':order=='count'}" class="btn btn-sm btn-primary">
+					<i class="fa fa-sort-numeric-asc" ng-hide="orderReverse"></i>
+					<i class="fa fa-sort-numeric-desc" ng-show="orderReverse"></i>
+				</button>
+			</nav>
+
+			<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+		</header>
+		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="tickets.labels.edit.LABEL">
+				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="portal.feedback_labels.edit.LABEL">
 					<a href="{{ ng_href('portal.feedback_labels.edit', '{label: label.label}') }}">
 						<div class="pull-right">
-							<span class="badge" ng-show="!delete_mode" tooltip="The number of feedback items with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
+							<span class="badge" ng-show="!delete_mode" tooltip="The number of feedback with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
-								ng-class="{'active':label.delete_mode}"
-								ng-click="LabelsList.startDelete(label); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+								  ng-class="{'active':label.delete_mode}"
+								  ng-click="LabelsList.startDelete(label); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
 							<span class="title-text">{{ng_var('label.label')}}</span>
@@ -45,6 +33,9 @@
 					</a>
 				</li>
 			</ul>
-		</div>
-	</article>
-</div>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('portal.feedback_labels.gocreate') }}"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}

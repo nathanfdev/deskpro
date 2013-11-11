@@ -428,6 +428,10 @@ nav.dp-appnav {
 		}
 	}
 
+	> article + article {
+		border-top: 1px dotted #ccc;
+	}
+
 	> footer {
 		border-top: 1px dotted #aaa;
 		background: #efefef;
@@ -805,11 +809,12 @@ section.dp-help-content-wrapper.open {
 	}
 }
 
-.dp-item-list + .dp-add-control {
-	padding: 10px 0 10px 16px;
-	.btn {
+.dp-empty-list-notice {
+	margin: 10px 0 10px 16px;
+}
 
-	}
+.dp-add-control {
+	margin: 10px 0 10px 16px;
 }
 
 //######################################################################################################################

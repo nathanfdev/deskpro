@@ -1,13 +1,9 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
-
 {% block editpane_content %}
-
 	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
-					<br/>
-
 					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
 						<div class="form-group">
 							<div class="col-lg-2">
@@ -55,17 +51,19 @@
 									The following conditions are met:
 								</header>
 								<article>
-									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
-													   save-target="EditCtrl.filter_criteria"
-													   options="{tag_first: false, tag_after: 'and'}"
-													   option-types="EditCtrl.criteriaOptionTypes">
+									<dp-option-builder
+										types-def="EditCtrl.criteriaTypeDef"
+										save-target="EditCtrl.filter_criteria"
+										options="{tag_first: false, tag_after: 'and'}"
+										option-types="EditCtrl.criteriaOptionTypes"
+									>
 										<add-btn-label>Criteria</add-btn-label>
 									</dp-option-builder>
 								</article>
 							</div>
 						</div>
 					</div>
-
+				</div>
 			</article>
 			<footer>
 				<div class="dp-content">
@@ -92,5 +90,4 @@
 			</footer>
 		</section>
 	</form>
-
 {% endblock %}

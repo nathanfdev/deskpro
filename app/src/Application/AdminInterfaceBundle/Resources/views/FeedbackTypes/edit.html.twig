@@ -1,68 +1,65 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3 ng-if="FeedbackTypesEdit.feedback_type.id">
-			<i class="fa fa-ticket"></i> {{ phrase('adm.general.apps_portal') }} &rarr; {{ phrase('agent.general.feedback') }} &rarr; {{ phrase('agent.general.types') }} &rarr;  <em>{{ ng_var('FeedbackTypesEdit.feedback_type.title') }}</em>
-		</h3>
-	</header>
-	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="FeedbackTypesEdit.saveFeedbackType()">
-			<div class="panel panel-fill indent">
-				<br/>
-
-				<div class="panel-body">
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>{{ phrase('adm.feedback_types.title') }} *</h3>
-						</div>
-						<div class="col-lg-9">
-							<div class="inner-group" dp-error-class="form_props.title">
-								<input type="text" class="form-control" name="title" ng-model="FeedbackTypesEdit.feedback_type.title" style="width: 50%;" required autofocus/>
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="FeedbackTypesEdit.saveFeedbackType()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.feedback_types.title') }} *</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="FeedbackTypesEdit.feedback_type.title" style="width: 50%;" required autofocus/>
 								<span class="help-block">
 									{{ phrase('adm.feedback_types.title_explain') }}
 								</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>{{ phrase('adm.feedback_types.usergroups') }}</h3>
-						</div>
-						<div class="col-lg-9">
-							<div class="inner-group">
-								<div style="padding-top:6px;">
-									<label ng-repeat="usergroup in FeedbackTypesEdit.usergroups" style="font-weight: normal; display: block;">
-										<input type="checkbox" ng-model="FeedbackTypesEdit.selected_usergroups[usergroup.id]">
-										{{ ng_var('usergroup.title') }}
-									</label>
-								</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.feedback_types.usergroups') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;">
+										<label ng-repeat="usergroup in FeedbackTypesEdit.usergroups" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="FeedbackTypesEdit.selected_usergroups[usergroup.id]">
+											{{ ng_var('usergroup.title') }}
+										</label>
+									</div>
 								<span class="help-block">
 									{{ phrase('adm.feedback_types.usergroups_explain') }}
 								</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="inner-footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
-					<ul>
-						<li ng-show="form_props.title.$error.required">{{ phrase('adm.feedback_types.title_error') }}</li>
-					</ul>
-				</div>
-
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving_feedback_type">
-						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-						<button class="btn btn-default" ng-click="FeedbackTypesEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.feedback_types.title_error') }}</li>
+						</ul>
 					</div>
-					<div dp-show-spinning="saving_feedback_type">
-						<i class="spinner-flat"></i>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_feedback_type">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							<button class="btn btn-default" ng-click="FeedbackTypesEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+						</div>
+						<div dp-show-spinning="saving_feedback_type">
+							<i class="spinner-flat"></i>
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-	</article>
-
+			</footer>
+		</section>
+	</form>
 	<div dp-register-message="saved_feedback_type">{{ ng_var('FeedbackTypesEdit.feedback_type.title') }} was saved successfully</div>
-</div>
+{% endblock %}

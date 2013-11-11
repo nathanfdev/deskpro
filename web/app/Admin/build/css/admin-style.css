@@ -7930,6 +7930,10 @@ nav.dp-appnav ul ul a {
   border-bottom: 3px solid #aaa;
 }
 
+.dp-paneblock > article + article {
+  border-top: 1px dotted #ccc;
+}
+
 .dp-paneblock > footer {
   padding: 15px;
   background: #efefef;
@@ -8310,8 +8314,12 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   float: left;
 }
 
-.dp-item-list + .dp-add-control {
-  padding: 10px 0 10px 16px;
+.dp-empty-list-notice {
+  margin: 10px 0 10px 16px;
+}
+
+.dp-add-control {
+  margin: 10px 0 10px 16px;
 }
 
 .panel {
