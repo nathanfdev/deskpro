@@ -18,8 +18,6 @@
 
       Admin_TicketFields_Ctrl_EditWorkflows.DEPS = [];
 
-      Admin_TicketFields_Ctrl_EditWorkflows.CTRL_TYPE = 'page';
-
       Admin_TicketFields_Ctrl_EditWorkflows.prototype.init = function() {
         this.works = [];
         this.default_id = 0;

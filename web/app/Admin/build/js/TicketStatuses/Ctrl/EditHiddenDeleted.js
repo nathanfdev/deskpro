@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditHiddenDeleted.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditHiddenDeleted.prototype.init = function() {
         this.$scope.settings = {
           auto_purge_time: 604800

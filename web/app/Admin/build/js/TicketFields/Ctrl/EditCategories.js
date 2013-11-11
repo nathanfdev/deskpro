@@ -18,8 +18,6 @@
 
       Admin_TicketFields_Ctrl_EditCategories.DEPS = [];
 
-      Admin_TicketFields_Ctrl_EditCategories.CTRL_TYPE = 'page';
-
       Admin_TicketFields_Ctrl_EditCategories.prototype.init = function() {
         var _this = this;
         this.cats = [];

@@ -18,8 +18,6 @@
 
       Admin_TicketSettings_Ctrl_TicketSettings.DEPS = [];
 
-      Admin_TicketSettings_Ctrl_TicketSettings.CTRL_TYPE = 'page';
-
       Admin_TicketSettings_Ctrl_TicketSettings.prototype.init = function() {
         return this.settings = null;
       };

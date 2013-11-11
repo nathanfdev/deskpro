@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditHiddenValidating.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditHiddenValidating.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditHiddenValidating.prototype.init = function() {};
 
       return Admin_TicketStatuses_Ctrl_EditHiddenValidating;

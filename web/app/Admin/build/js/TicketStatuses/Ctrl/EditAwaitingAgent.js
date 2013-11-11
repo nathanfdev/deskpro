@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditAwaitingAgent.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditAwaitingAgent.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditAwaitingAgent.prototype.init = function() {};
 
       return Admin_TicketStatuses_Ctrl_EditAwaitingAgent;

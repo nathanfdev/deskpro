@@ -183,7 +183,7 @@
 
 
       DeskPRO_Util_Util.prototype.isObject = function(obj) {
-        return obj === Object(obj);
+        return obj !== null && typeof obj === 'object';
       };
 
       /*
@@ -279,6 +279,68 @@
           }
         }
         return result;
+      };
+
+      /*
+        	# Compares two values to see if they are equal.
+        	#
+        	# If objects, every property of the object is compared with equals()
+        	#
+        	# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.equals = function(obj1, obj2) {
+        var k, v, _i, _len;
+        if (obj1 === obj2) {
+          return true;
+        }
+        if (obj1 === null && obj2 === null) {
+          return true;
+        }
+        if (obj1 !== obj1 && obj2 !== obj2) {
+          return true;
+        }
+        if (this.isObject(obj1)) {
+          if (this.isArray(obj1)) {
+            if (!this.isArray(obj2)) {
+              return false;
+            }
+            if (obj1.length !== obj2.length) {
+              return false;
+            }
+            for (v = _i = 0, _len = obj1.length; _i < _len; v = ++_i) {
+              k = obj1[v];
+              if (!this.equals(obj1[k], obj2[k])) {
+                return false;
+              }
+            }
+            return true;
+          } else {
+            for (k in obj1) {
+              if (!__hasProp.call(obj1, k)) continue;
+              v = obj1[k];
+              if (!obj2[k]) {
+                return false;
+              }
+              if (obj1[k] !== obj2[k]) {
+                return false;
+              }
+            }
+            for (k in obj2) {
+              if (!__hasProp.call(obj2, k)) continue;
+              v = obj2[k];
+              if (!obj1[k]) {
+                return false;
+              }
+              if (obj1[k] !== obj2[k]) {
+                return false;
+              }
+            }
+            return true;
+          }
+        }
+        return false;
       };
 
       return DeskPRO_Util_Util;

@@ -22,6 +22,7 @@ define [
 	'Admin/Main/Directive/DpHideSpinning',
 	'Admin/Main/Directive/DpInhelpBody',
 	'Admin/Main/Directive/DpInhelpBtn',
+	'Admin/Main/Directive/DpListAutoload',
 	'Admin/Main/Directive/DpNavSubnav',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpPingFlash',
@@ -70,6 +71,7 @@ define [
 	Admin_Main_Directive_DpHideSpinning,
 	Admin_Main_Directive_DpInhelpBody,
 	Admin_Main_Directive_DpInhelpBtn,
+	Admin_Main_Directive_DpListAutoload,
 	Admin_Main_Directive_DpNavSubnav,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpPingFlash,
@@ -204,6 +206,7 @@ define [
 	Admin_App.directive('dpHideSpinning',     Admin_Main_Directive_DpHideSpinning)
 	Admin_App.directive('dpInhelpBody',       Admin_Main_Directive_DpInhelpBody)
 	Admin_App.directive('dpInhelpBtn',        Admin_Main_Directive_DpInhelpBtn)
+	Admin_App.directive('dpListAutoload',     Admin_Main_Directive_DpListAutoload)
 	Admin_App.directive('dpNavSubnav',        Admin_Main_Directive_DpNavSubnav)
 	Admin_App.directive('dpOpenPhraseEditor', Admin_Main_Directive_DpOpenPhraseEditor)
 	Admin_App.directive('dpPingFlash',        Admin_Main_Directive_DpPingFlash)

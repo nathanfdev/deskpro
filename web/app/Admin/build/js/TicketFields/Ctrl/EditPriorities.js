@@ -18,8 +18,6 @@
 
       Admin_TicketFields_Ctrl_EditPriorities.DEPS = [];
 
-      Admin_TicketFields_Ctrl_EditPriorities.CTRL_TYPE = 'page';
-
       Admin_TicketFields_Ctrl_EditPriorities.prototype.init = function() {
         this.pris = [];
         this.default_id = 0;

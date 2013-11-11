@@ -8,7 +8,7 @@ define [
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'TicketDepsEdit'
-				@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache', 'Growl']
+		@DEPS      = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache', 'Growl']
 
 		init: ->
 			@addManagedListener(@DepartmentData.deps, 'changed', =>

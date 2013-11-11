@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditHiddenSpam.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditHiddenSpam.prototype.init = function() {
         this.$scope.settings = {
           auto_purge_time: 604800

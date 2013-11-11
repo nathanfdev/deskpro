@@ -54,6 +54,9 @@
         if (this.DEPS.indexOf('$state') === -1) {
           this.DEPS.unshift('$state');
         }
+        if (this.DEPS.indexOf('$stateParams') === -1) {
+          this.DEPS.unshift('$stateParams');
+        }
         if (this.DEPS.indexOf('$timeout') === -1) {
           this.DEPS.unshift('$timeout');
         }
@@ -83,7 +86,9 @@
         for (i = _i = 0, _len = args.length; _i < _len; i = ++_i) {
           arg = args[i];
           arg_name = this.constructor.DEPS[i];
-          this[arg_name] = arg;
+          if (arg_name) {
+            this[arg_name] = arg;
+          }
         }
         me = this;
         for (i = _j = 0, _len1 = args.length; _j < _len1; i = ++_j) {
@@ -97,6 +102,7 @@
           this.$scope[this.constructor.CTRL_AS] = this;
         }
         this._managed_listeners = [];
+        this.$scope._autoload_links = [];
         this.$scope.$on('$destroy', function(ev) {
           var info, _k, _len2, _ref;
           return;
@@ -151,10 +157,59 @@
         if (ret) {
           this.$scope.state_loading = true;
           ret.then(function() {
-            return _this.$scope.state_loading = false;
+            _this.$scope.state_loading = false;
+            if (_this.$state.current.name.split('.').length === 2 && _this.$scope._autoload_links) {
+              return _this.$timeout(function() {
+                return _this.runNextAutoload();
+              });
+            }
           });
         }
       }
+
+      /*
+        	# Loads the next section
+      */
+
+
+      Admin_Ctrl_Base.prototype.runNextAutoload = function() {
+        var al, link, _i, _len, _ref, _results;
+        if (!this.$scope._autoload_links) {
+          return;
+        }
+        this.$scope._autoload_links.sort(function(a, b) {
+          var o1, o2;
+          o1 = a.pri || 0;
+          o2 = b.pri || 0;
+          if (o1 === o2) {
+            return 0;
+          }
+          if (o1 < o2) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+        _ref = this.$scope._autoload_links;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          al = _ref[_i];
+          if (!al.element.closest('body')[0]) {
+            continue;
+          }
+          if (al.select) {
+            link = al.element.find(al.select).first();
+          } else {
+            link = al.element;
+          }
+          if (!link[0]) {
+            continue;
+          }
+          link.click();
+          break;
+        }
+        return _results;
+      };
 
       /**
       		* Ping a var. This handled differently depending on which

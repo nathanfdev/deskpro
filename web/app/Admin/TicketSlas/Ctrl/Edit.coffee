@@ -6,7 +6,7 @@ define [
 	class Admin_TicketSlas_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketSlas_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-				@DEPS      = ['$stateParams']
+		@DEPS      = ['$stateParams']
 
 		init: ->
 			@slaData = @DataService.get('TicketSlas')

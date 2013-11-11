@@ -16,8 +16,6 @@
 
       Admin_TicketMacros_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketMacros_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_TicketMacros_Ctrl_Edit.DEPS = ['dpObTypesDefTicketActions', '$stateParams'];
 
       Admin_TicketMacros_Ctrl_Edit.prototype.init = function() {

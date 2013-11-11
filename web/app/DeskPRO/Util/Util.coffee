@@ -219,7 +219,7 @@ define ->
 			if obj1 != obj1 && obj2 != obj2
 				return true
 
-			if @isObject(obj1) ->
+			if @isObject(obj1)
 				if @isArray(obj1)
 					if not @isArray(obj2)
 						return false

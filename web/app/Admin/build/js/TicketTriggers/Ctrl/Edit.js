@@ -16,8 +16,6 @@
 
       Admin_TicketTriggers_Ctrl_Edit.CTRL_AS = 'TicketTriggersEdit';
 
-      Admin_TicketTriggers_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_TicketTriggers_Ctrl_Edit.DEPS = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {

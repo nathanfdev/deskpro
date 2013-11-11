@@ -16,8 +16,6 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'TicketDepsEdit';
 
-      Admin_TicketDeps_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_TicketDeps_Ctrl_Edit.DEPS = ['em', '$scope', 'DepartmentData', 'Api', '$stateParams', '$q', '$state', '$templateCache', 'Growl'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {

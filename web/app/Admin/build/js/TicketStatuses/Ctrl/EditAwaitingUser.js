@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditAwaitingUser.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditAwaitingUser.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditAwaitingUser.prototype.init = function() {};
 
       return Admin_TicketStatuses_Ctrl_EditAwaitingUser;

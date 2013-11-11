@@ -39,10 +39,6 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 			dep_promise = @DepartmentData.loadDepList().then( (departments) =>
 				@initDepList(departments.values())
 
-				# Auto-load first entry
-				if @$state.current.name == 'tickets.ticket_deps'
-					@$state.go('tickets.ticket_deps.edit', { id: departments.values()[0].id })
-
 				@addManagedListener(@DepartmentData.deps, 'changed', =>
 					@initDepList(@DepartmentData.deps.values())
 					@ngApply()

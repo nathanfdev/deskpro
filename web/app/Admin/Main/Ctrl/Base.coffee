@@ -36,6 +36,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.unshift('$q')
 			if @DEPS.indexOf('$state') == -1
 				@DEPS.unshift('$state')
+			if @DEPS.indexOf('$stateParams') == -1
+				@DEPS.unshift('$stateParams')
 			if @DEPS.indexOf('$timeout') == -1
 				@DEPS.unshift('$timeout')
 			if @DEPS.indexOf('DataService') == -1
@@ -58,7 +60,8 @@ define ['angular', 'Admin/App'], (angular) ->
 
 			for arg, i in args
 				arg_name = @constructor.DEPS[i]
-				@[arg_name] = arg
+				if arg_name
+					@[arg_name] = arg
 
 			me = @
 			for arg, i in args
@@ -72,6 +75,7 @@ define ['angular', 'Admin/App'], (angular) ->
 				@$scope[@constructor.CTRL_AS] = @
 
 			@_managed_listeners = []
+			@$scope._autoload_links = []
 			@$scope.$on('$destroy', (ev) =>
 				return
 				return if ev.targetScope.$id != @$scope.$id
@@ -124,7 +128,48 @@ define ['angular', 'Admin/App'], (angular) ->
 			ret = @initialLoad()
 			if ret
 				@$scope.state_loading = true
-				ret.then(=> @$scope.state_loading = false)
+				ret.then( =>
+					@$scope.state_loading = false
+
+					if @$state.current.name.split('.').length == 2 and @$scope._autoload_links
+						@$timeout(=>
+							@runNextAutoload()
+						)
+				)
+
+		###
+    	# Loads the next section
+    	###
+		runNextAutoload: ->
+			if not @$scope._autoload_links
+				return
+
+			@$scope._autoload_links.sort( (a, b) ->
+				o1 = a.pri || 0
+				o2 = b.pri || 0
+
+				if o1 == o2
+					return 0
+				if o1 < o2
+					return -1
+				else
+					return 1
+			)
+
+			for al in @$scope._autoload_links
+				if not al.element.closest('body')[0]
+					continue
+
+				if al.select
+					link = al.element.find(al.select).first()
+				else
+					link = al.element
+
+				if not link[0]
+					continue
+
+				link.click()
+				break
 
 		###*
 		* Ping a var. This handled differently depending on which

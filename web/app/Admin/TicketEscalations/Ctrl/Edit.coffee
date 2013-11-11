@@ -6,7 +6,7 @@ define [
 	class Admin_TicketEscalations_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketEscalations_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-				@DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams']
+		@DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams']
 
 		init: ->
 			@escData = @DataService.get('TicketEscalations')

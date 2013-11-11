@@ -16,8 +16,6 @@
 
       Admin_TicketFilters_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketFilters_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_TicketFilters_Ctrl_Edit.DEPS = ['dpObTypesDefTicketFilter', '$stateParams'];
 
       Admin_TicketFilters_Ctrl_Edit.prototype.init = function() {

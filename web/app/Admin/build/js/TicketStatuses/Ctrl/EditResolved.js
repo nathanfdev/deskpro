@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditResolved.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditResolved.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditResolved.prototype.init = function() {};
 
       return Admin_TicketStatuses_Ctrl_EditResolved;

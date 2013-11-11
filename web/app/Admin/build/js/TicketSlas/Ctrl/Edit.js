@@ -16,8 +16,6 @@
 
       Admin_TicketSlas_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketSlas_Ctrl_Edit.CTRL_TYPE = 'page';
-
       Admin_TicketSlas_Ctrl_Edit.DEPS = ['$stateParams'];
 
       Admin_TicketSlas_Ctrl_Edit.prototype.init = function() {

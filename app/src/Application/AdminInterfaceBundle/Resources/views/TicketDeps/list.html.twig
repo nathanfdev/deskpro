@@ -8,7 +8,7 @@
 			<h3 ng-pluralize count="TicketDepsList.departments.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions">
+			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions" dp-list-autoload>
 				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
@@ -35,7 +35,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_deps.gocreate') }}"><i class="fa fa-plus"></i> New Department</a>
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_deps.gocreate') }}" dp-list-autoload autoload-priority="2"><i class="fa fa-plus"></i> New Department</a>
 			</div>
 
 			<div class="dp-empty-list-notice" ng-show="TicketDepsList.departments.length == 1">

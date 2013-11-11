@@ -18,8 +18,6 @@
 
       Admin_TicketStatuses_Ctrl_EditClosed.DEPS = [];
 
-      Admin_TicketStatuses_Ctrl_EditClosed.CTRL_TYPE = 'page';
-
       Admin_TicketStatuses_Ctrl_EditClosed.prototype.init = function() {
         this.$scope.settings = {
           enabled: false,
