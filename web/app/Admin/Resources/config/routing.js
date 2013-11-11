@@ -14,8 +14,8 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'dev_ui.table',
-		url: '/table',
+		id: 'dev_ui_table',
+		url: '/dev_ui_table',
 		templateName: 'Index/dev-ui-table.html',
 		controller: 'Admin_Main_Ctrl_Bare'
 	});

@@ -1,7 +1,14 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3>{{ phrase('adm.ticket_settings.title') }}</h3>
-	</header>
+{% extends 'AdminInterfaceBundle:Layout:single-page-app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li><a href="#/dev_ui">UI Elements</a></li>
+			<li><a href="#/dev_ui_table">UI Tables</a></li>
+		</ul>
+	</nav>
+{% endblock %}
+{% block fullpane_content %}
+<section class="dp-paneblock">
 	<article class="pane-content no-pad">
 		<div class="pane-fullpage fullwidth">
 			<article class="padd">
@@ -156,4 +163,5 @@
 			</article>
 		</div>
 	</article>
-</div>
+</section>
+{% endblock %}
