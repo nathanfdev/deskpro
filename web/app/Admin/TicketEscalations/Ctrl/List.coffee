@@ -36,7 +36,14 @@ define [
 		initialLoad: ->
 			promise = @escData.loadList()
 			promise.then( (list) =>
+
 				@list = list
+
+				if @$state.current.name == 'tickets.ticket_escalations'
+					if @list[0]
+						@$state.go('tickets.ticket_escalations.edit', { id: @list[0].id })
+					else
+						@$state.go('tickets.ticket_escalations.create')
 			)
 
 			return promise

@@ -13,8 +13,8 @@ define [
 			@escData = @DataService.get('TicketEscalations')
 			@esc = null
 
-			@criteraTypeDef      = @dpObTypesDefTicketFilter
-			@criteriaOptionTypes = @criteraTypeDef.getOptionsForTypes()
+			@criteriaTypeDef     = @dpObTypesDefTicketFilter
+			@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
 
 			@actionsTypeDef    = @dpObTypesDefTicketActions
 			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
@@ -27,17 +27,23 @@ define [
 			return promise
 
 		saveForm: ->
-			is_new = !!@esc.id
+
+			if not @$scope.form_props.$valid
+				return
+
+			is_new = !@esc.id
 
 			promise = @escData.saveFormModel(@esc, @form)
 
 			@startSpinner('saving')
 			promise.then( =>
-				@stopSpinner('saving')
+				@stopSpinner('saving', true).then(=>
+					@Growl.success("Saved")
+				)
 
 				@skipDirtyState()
 				if is_new
-					@$state.go('tickets.escalations.gocreate')
+					@$state.go('tickets.ticket_escalations.gocreate')
 			)
 
 	Admin_TicketEscalations_Ctrl_Edit.EXPORT_CTRL()

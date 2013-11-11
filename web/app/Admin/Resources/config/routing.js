@@ -368,29 +368,29 @@ define(function() {
 	//# Escalations
 	//###
 	routes.push({
-		id: 'tickets.escalations',
-		url: '/escalations',
+		id: 'tickets.ticket_escalations',
+		url: '/ticket_escalations',
 		with_list_view: true,
 		templateName: 'TicketEscalations/list.html',
 		controller: 'Admin_TicketEscalations_Ctrl_List'
 	});
 
 	routes.push({
-		id: 'tickets.escalations.gocreate',
+		id: 'tickets.ticket_escalations.gocreate',
 		url: '/go-create',
 		template: '',
-		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.escalations.create', $stateParams); }]
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.ticket_escalations.create', $stateParams); }]
 	});
 
 	routes.push({
-		id: 'tickets.escalations.create',
+		id: 'tickets.ticket_escalations.create',
 		url: '/create',
 		templateName: 'TicketEscalations/edit.html',
 		controller: 'Admin_TicketEscalations_Ctrl_Edit'
 	});
 
 	routes.push({
-		id: 'tickets.escalations.edit',
+		id: 'tickets.ticket_escalations.edit',
 		url: '/{id:[0-9]+}',
 		templateName: 'TicketEscalations/edit.html',
 		controller: 'Admin_TicketEscalations_Ctrl_Edit'

@@ -51,7 +51,16 @@
           _this = this;
         promise = this.escData.loadList();
         promise.then(function(list) {
-          return _this.list = list;
+          _this.list = list;
+          if (_this.$state.current.name === 'tickets.ticket_escalations') {
+            if (_this.list[0]) {
+              return _this.$state.go('tickets.ticket_escalations.edit', {
+                id: _this.list[0].id
+              });
+            } else {
+              return _this.$state.go('tickets.ticket_escalations.create');
+            }
+          }
         });
         return promise;
       };

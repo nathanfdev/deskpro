@@ -1,5 +1,7 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
 {% block editpane_content %}
+
 	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
@@ -91,5 +93,4 @@
 		</section>
 	</form>
 
-	<div dp-register-message="saved_account">{{ ng_var('form.email_address') }} was saved successfully</div>
 {% endblock %}

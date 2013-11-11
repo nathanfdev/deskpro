@@ -41,4 +41,5 @@
 	'adm.general.x_feedback_types'                   => '{{count}} Feedback Type|{{count}} Feedback Types',
 	'adm.general.x_feedback_categories'              => '{{count}} Feedback Category|{{count}} Feedback Categories',
 	'adm.general.x_ticket_filters'                   => '{{count}} Ticket Filter|{{count}} Ticket Filters',
+	'adm.general.x_ticket_escalations'               => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
 );

@@ -23,8 +23,8 @@
       Admin_TicketEscalations_Ctrl_Edit.prototype.init = function() {
         this.escData = this.DataService.get('TicketEscalations');
         this.esc = null;
-        this.criteraTypeDef = this.dpObTypesDefTicketFilter;
-        this.criteriaOptionTypes = this.criteraTypeDef.getOptionsForTypes();
+        this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
+        this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         return this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
       };
@@ -42,14 +42,19 @@
       Admin_TicketEscalations_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise,
           _this = this;
-        is_new = !!this.esc.id;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
+        is_new = !this.esc.id;
         promise = this.escData.saveFormModel(this.esc, this.form);
         this.startSpinner('saving');
         return promise.then(function() {
-          _this.stopSpinner('saving');
+          _this.stopSpinner('saving', true).then(function() {
+            return _this.Growl.success("Saved");
+          });
           _this.skipDirtyState();
           if (is_new) {
-            return _this.$state.go('tickets.escalations.gocreate');
+            return _this.$state.go('tickets.ticket_escalations.gocreate');
           }
         });
       };
