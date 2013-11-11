@@ -7493,6 +7493,7 @@ button.close {
   top: 0;
   right: 0;
   left: 460px;
+  min-width: 745px;
 }
 
 a,
