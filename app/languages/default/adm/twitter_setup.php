@@ -1,0 +1,15 @@
+<?php return array(
+	'adm.twitter_setup.title'                          => 'Twitter Setup',
+	'adm.twitter_setup.agent_consumer_key'             => 'Consumer Key',
+	'adm.twitter_setup.agent_consumer_key_error'       => 'You must enter Consumer Key for Twitter Agent Application',
+	'adm.twitter_setup.agent_consumer_secret'          => 'Consumer Secret',
+	'adm.twitter_setup.agent_consumer_secret_error'    => 'You must enter Consumer Secret for Twitter Agent Application',
+	'adm.twitter_setup.user_consumer_key'              => 'Consumer Key',
+	'adm.twitter_setup.user_consumer_key_error'        => 'You must enter Consumer Key for Twitter User Application',
+	'adm.twitter_setup.user_consumer_secret'           => 'Consumer Secret',
+	'adm.twitter_setup.user_consumer_secret_error'     => 'You must enter Consumer Secret for Twitter User Application',
+	'adm.ticket_filters.agent_consumer_key_explain'    => 'This is consumer key for Twitter Agent Application',
+	'adm.ticket_filters.agent_consumer_secret_explain' => 'This is consumer secret for Twitter Agent Application',
+	'adm.ticket_filters.user_consumer_key_explain'     => 'This is consumer key for Twitter User Application',
+	'adm.ticket_filters.user_consumer_secret_explain'  => 'This is consumer secret for Twitter User Application',
+);

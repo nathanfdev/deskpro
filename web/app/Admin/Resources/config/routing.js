@@ -1068,8 +1068,8 @@ define(function() {
 	routes.push({
 		id: 'twitter.setup',
 		url: '/setup',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'TwitterSetup/twitter-setup.html',
+		controller: 'Admin_TwitterSetup_Ctrl_TwitterSetup'
 	});
 
 	//###
