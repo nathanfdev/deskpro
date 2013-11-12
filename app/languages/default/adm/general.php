@@ -42,4 +42,5 @@
 	'adm.general.x_feedback_categories'              => '{{count}} Feedback Category|{{count}} Feedback Categories',
 	'adm.general.x_ticket_filters'                   => '{{count}} Ticket Filter|{{count}} Ticket Filters',
 	'adm.general.x_ticket_escalations'               => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
+	'adm.general.x_twitter_accounts'                 => '{{count}} Twitter Account|{{count}} Twitter Accounts',
 );

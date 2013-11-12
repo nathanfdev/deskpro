@@ -7,6 +7,7 @@ define [
 	'Admin/TicketTriggers/DataService/TriggersNew',
 	'Admin/TicketTriggers/DataService/TriggersReply',
 	'Admin/TicketTriggers/DataService/TriggersUpdate',
+	'Admin/TwitterAccounts/DataService/TwitterAccounts',
 ], (
 	Strings,
 	DataService_TicketFilters,
@@ -15,7 +16,8 @@ define [
 	DataService_TicketSlas,
 	DataService_TriggersNew,
 	DataService_TriggersReply,
-	DataService_TriggersUpdate
+	DataService_TriggersUpdate,
+	DataService_TwitterAccounts,
 ) ->
 	###
 	# A simple wrapper around the data services

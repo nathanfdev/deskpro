@@ -1,0 +1,89 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group" ng-if="EditCtrl.twitter_account.id">
+							<div class="col-lg-3">
+								<h3>Twitter Account</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<img ng-src="{{ ng_var('EditCtrl.twitter_account.user.profile_image_url') }}" width="28" height="28" border="0" />
+									@{{ ng_var('EditCtrl.twitter_account.user.screen_name') }}
+									<span class="help-block">
+										&nbsp;
+									</span>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<h3>Twitter Access</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<span ng-if="EditCtrl.twitter_account.verified" style="color:green">
+										{{ phrase('agent.general.verified') }}
+									</span>
+									<span ng-if="!EditCtrl.twitter_account.verified" style="color:red" class="tipped">
+										{{ phrase('admin.twitter.error') }}
+									</span>
+									<span class="help-block">
+										Account is verified when you create new account.
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Agents with access</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;">
+										<label ng-repeat="agent in EditCtrl.agents" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="EditCtrl.selected_agents[agent.id]">
+											{{ ng_var('agent.display_name') }}
+										</label>
+									</div>
+									<span class="help-block">
+										These are agents allowed to access twitter application.
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.twitter_account.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.twitter_account.id);">Delete</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+		</section>
+	</form>
+
+{% endblock %}

@@ -1075,11 +1075,35 @@ define(function() {
 	//###
 	//# Accounts
 	//###
+
 	routes.push({
 		id: 'twitter.accounts',
 		url: '/accounts',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'TwitterAccounts/list.html',
+		controller: 'Admin_TwitterAccounts_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'twitter.accounts.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('twitter.accounts.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'twitter.accounts.create',
+		url: '/create',
+		templateName: 'TwitterAccounts/edit.html',
+		controller: 'Admin_TwitterAccounts_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'twitter.accounts.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'TwitterAccounts/edit.html',
+		controller: 'Admin_TwitterAccounts_Ctrl_Edit'
 	});
 
 	//##################################################################################################################
