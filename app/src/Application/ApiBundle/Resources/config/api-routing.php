@@ -2720,6 +2720,41 @@ $collection->create('api_twitter_setup_save', array(
 ));
 
 ########################################################################################################################
+# Twitter Accounts
+########################################################################################################################
+
+$collection->create('api_twitter_accounts', array(
+	'path'       => '/twitter_accounts',
+	'controller' => 'ApiBundle:TwitterAccounts:list',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_twitter_accounts_get', array(
+	'path'        => '/twitter_accounts/{id}',
+	'controller'  => 'ApiBundle:TwitterAccounts:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_twitter_accounts_create', array(
+	'path'        => '/twitter_accounts',
+	'controller'  => 'ApiBundle:TwitterAccounts:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_twitter_accounts_save', array(
+	'path'        => '/twitter_accounts/{id}',
+	'controller'  => 'ApiBundle:TwitterAccounts:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_twitter_accounts_delete', array(
+	'path'        => '/twitter_accounts/{id}',
+	'controller'  => 'ApiBundle:TwitterAccounts:remove',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
