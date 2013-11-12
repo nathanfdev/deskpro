@@ -138,4 +138,42 @@ class TwitterAccountsController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+		 */
+
+		$twitter_accounts = $this->container->getSystemService('twitter_accounts');
+		$twitter_account  = $twitter_accounts->getById($id);
+
+		if (!$twitter_account) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$old_id = $twitter_account->id;
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->em->remove($twitter_account);
+			$this->em->flush();
+
+			$this->db->commit();
+
+		} catch(\Exception $e) {
+
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
 }
