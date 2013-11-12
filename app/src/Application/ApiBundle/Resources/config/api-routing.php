@@ -2704,6 +2704,22 @@ $collection->create('api_feedback_categories_delete', array(
 ));
 
 ########################################################################################################################
+# Twitter Setup
+########################################################################################################################
+
+$collection->create('api_twitter_setup', array(
+	'path'       => '/twitter_setup',
+	'controller' => 'ApiBundle:TwitterSetup:twitterSetup',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_twitter_setup_save', array(
+	'path'        => '/twitter_setup',
+	'controller'  => 'ApiBundle:TwitterSetup:save',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
