@@ -9,7 +9,7 @@
 					<div class="panel-body">
 						<div class="form-group" ng-if="EditCtrl.twitter_account.id">
 							<div class="col-lg-3">
-								<h3>Twitter Account</h3>
+								<h3>{{ phrase('adm.twitter_accounts.twitter_account') }}</h3>
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group">
@@ -21,7 +21,7 @@
 								</div>
 							</div>
 							<div class="col-lg-3">
-								<h3>Twitter Access</h3>
+								<h3>{{ phrase('adm.twitter_accounts.twitter_access') }}</h3>
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group">
@@ -32,7 +32,7 @@
 										{{ phrase('admin.twitter.error') }}
 									</span>
 									<span class="help-block">
-										Account is verified when you create new account.
+										{{ phrase('adm.twitter_accounts.twitter_access_explain') }}
 									</span>
 								</div>
 							</div>
@@ -50,7 +50,7 @@
 										</label>
 									</div>
 									<span class="help-block">
-										These are agents allowed to access twitter application.
+										{{ phrase('adm.twitter_accounts.agents_explain') }}
 									</span>
 								</div>
 							</div>
