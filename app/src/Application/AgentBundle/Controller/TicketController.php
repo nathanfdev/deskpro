@@ -3147,6 +3147,13 @@ class TicketController extends AbstractController
 				return $this->createJsonResponse(array('error' => true, 'error_codes' => $errors));
 			}
 
+			// - It's possible the user account pre-existed before and was validating
+			// - So the act of an agent manually selecting the account to create a new ticket for them should
+			// essentially validate the account.
+			// - This is needed or else the ticket will be created as validating, and no emails (not even to the user) would be sent
+			$person->is_confirmed = true;
+			$person->is_agent_confirmed = true;
+
 			// Validate based on department...
 			$validator = new \Application\AgentBundle\Validator\NewTicketValidator();
 			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
