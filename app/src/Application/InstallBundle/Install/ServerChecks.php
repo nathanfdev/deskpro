@@ -38,6 +38,8 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Log\Logger;
 
 use Application\DeskPRO\App;
+use Orb\Util\Env;
+use Orb\Util\Strings;
 
 class ServerChecks
 {
@@ -344,6 +346,44 @@ class ServerChecks
 					'level' => 'recommended',
 					'has_disabled' => $has_disabled,
 					'has_disabled_str' => $has_disabled_str,
+				);
+			}
+		}
+
+		#------------------------------
+		# libxml_ext
+		#------------------------------
+
+		if ($type == 'libxml_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for libxml extension", Logger::DEBUG);
+			if (extension_loaded('libxml')) {
+				$this->getLogger()->log("[OK] libxml extension installed", Logger::DEBUG);
+
+				$phpinfo = Env::getPhpInfo();
+				if (
+					($libxml_version = Strings::extractRegexMatch('#libXML Compiled Version => ([0-9.]+)\b#', $phpinfo))
+					|| ($libxml_version = Strings::extractRegexMatch('#libXML Compiled Version\s*</td><td[^>]*>\s*([0-9.]+)\s*</td>#', $phpinfo))
+				) {
+					if (!version_compare('4.7', $libxml_version, '<=')) {
+						$this->has_fatal_server_errors = true;
+						$msg = "PHP is built against a very old version of libxml. This can cause errors in parsing HTML. You need to upgrade libxml and re-build PHP.";
+						$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+						$this->server_errors['libxml_version'] = array(
+							'message' => $msg,
+							'level' => 'fatal',
+							'detected_version' => $libxml_version
+						);
+					}
+				}
+
+
+			} else {
+				$this->has_fatal_server_errors = true;
+				$msg = "Install and enable the libxml extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['libxml_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
 				);
 			}
 		}
