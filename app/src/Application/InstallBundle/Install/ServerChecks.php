@@ -364,7 +364,7 @@ class ServerChecks
 					($libxml_version = Strings::extractRegexMatch('#libXML Compiled Version => ([0-9.]+)\b#', $phpinfo))
 					|| ($libxml_version = Strings::extractRegexMatch('#libXML Compiled Version\s*</td><td[^>]*>\s*([0-9.]+)\s*</td>#', $phpinfo))
 				) {
-					if (!version_compare('4.7', $libxml_version, '<=')) {
+					if (!version_compare('2.7', $libxml_version, '<=')) {
 						$this->has_fatal_server_errors = true;
 						$msg = "PHP is built against a very old version of libxml. This can cause errors in parsing HTML. You need to upgrade libxml and re-build PHP.";
 						$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
