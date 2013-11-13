@@ -45,6 +45,7 @@ class TwitterSetup
 	public $twitter_agent_consumer_secret = '';
 	public $twitter_user_consumer_key = '';
 	public $twitter_user_consumer_secret = '';
+	public $twitter_auto_remove_time = 1209600;
 
 	/**
 	 * @param \Application\DeskPRO\Settings\Settings $settings
@@ -66,6 +67,7 @@ class TwitterSetup
 		$this->twitter_agent_consumer_secret = $this->settings->get('core.twitter_agent_consumer_secret');
 		$this->twitter_user_consumer_key     = $this->settings->get('core.twitter_user_consumer_key');
 		$this->twitter_user_consumer_secret  = $this->settings->get('core.twitter_user_consumer_secret');
+		$this->twitter_auto_remove_time      = $this->settings->get('core.twitter_auto_remove_time');
 	}
 
 	/**
@@ -81,7 +83,8 @@ class TwitterSetup
 				'twitter_agent_consumer_key',
 				'twitter_agent_consumer_secret',
 				'twitter_user_consumer_key',
-				'twitter_user_consumer_secret'
+				'twitter_user_consumer_secret',
+				'twitter_auto_remove_time',
 			) as $s) {
 
 			$export_settings[$s] = $this->$s;
@@ -113,5 +116,6 @@ class TwitterSetup
 		$this->settings->setSetting('core.twitter_agent_consumer_secret', $this->twitter_agent_consumer_secret);
 		$this->settings->setSetting('core.twitter_user_consumer_key', $this->twitter_user_consumer_key);
 		$this->settings->setSetting('core.twitter_user_consumer_secret', $this->twitter_user_consumer_secret);
+		$this->settings->setSetting('core.twitter_auto_remove_time', (int) $this->twitter_auto_remove_time);
 	}
 }

@@ -12,4 +12,6 @@
 	'adm.ticket_filters.agent_consumer_secret_explain' => 'This is consumer secret for Twitter Agent Application',
 	'adm.ticket_filters.user_consumer_key_explain'     => 'This is consumer key for Twitter User Application',
 	'adm.ticket_filters.user_consumer_secret_explain'  => 'This is consumer secret for Twitter User Application',
+	'adm.ticket_filters.auto_remove_time'              => 'How long until Tweets that aren\'t directed specifically to your accounts are removed?',
+	'adm.ticket_filters.auto_remove_time_explain'      => 'General timeline, search, and user profile tweets will be removed with this. Any tweets that appear under "All Tweets" will not be automatically removed.',
 );
