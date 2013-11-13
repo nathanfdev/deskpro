@@ -22,13 +22,12 @@
       function() {
         return {
           restrict: 'E',
-          template: "<div class=\"dp-time-unit\">\n	<input type=\"text\" ng-model=\"time_num\" class=\"form-control time_num\" />\n	<select\n		ng-model=\"time_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"secs\">seconds</option>\n		<option value=\"mins\">minutes</option>\n		<option value=\"hours\">hours</option>\n		<option value=\"days\">days</option>\n		<option value=\"weeks\">weeks</option>\n		<option value=\"months\">months</option>\n		<option value=\"years\">years</option>\n	</select>\n</div>",
+          template: "<div class=\"dp-time-unit\">\n	<input type=\"text\" ng-model=\"time_num\" class=\"form-control time_num\" />\n	<select\n		ng-model=\"time_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"mins\">minutes</option>\n		<option value=\"hours\">hours</option>\n		<option value=\"days\">days</option>\n		<option value=\"weeks\">weeks</option>\n		<option value=\"months\">months</option>\n		<option value=\"years\">years</option>\n	</select>\n</div>",
           require: 'ngModel',
           replace: true,
           link: function(scope, iElement, iAttrs, ngModel) {
             var multiplierMap, multiplierTypes;
             multiplierMap = {
-              secs: 1,
               mins: 60,
               hours: 3600,
               days: 86400,
@@ -36,7 +35,7 @@
               months: 2419200,
               years: 31536000
             };
-            multiplierTypes = ['secs', 'mins', 'hours', 'days', 'weeks', 'months', 'years'];
+            multiplierTypes = ['mins', 'hours', 'days', 'weeks', 'months', 'years'];
             ngModel.$parsers.push(function(viewValue) {
               var num, unit;
               unit = viewValue.unit || 'secs';

@@ -10,7 +10,7 @@ define [
 	class Admin_TicketTriggers_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit'
 		@CTRL_AS   = 'TicketTriggersEdit'
-		@DEPS      = ['em', '$stateParams', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions']
+		@DEPS      = ['dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions']
 
 		init: ->
 			@triggerType = @$stateParams.type

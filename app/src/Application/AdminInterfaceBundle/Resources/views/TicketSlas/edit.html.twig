@@ -20,12 +20,76 @@
 						</div>
 						<div class="form-group">
 							<div class="col-lg-2">
-								<h3>Permission</h3>
+								<h3>Type</h3>
 							</div>
 							<div class="col-lg-10">
-								xxx
+								<select ng-model="EditCtrl.form.sla_type" style="min-width: 200px;" ui-select2>
+									<option value="first_response">Time until first response</option>
+									<option value="resolution">Time until ticket resolution</option>
+									<option value="waiting_time">Use waiting time until ticket resolution</option>
+								</select>
 							</div>
 						</div>
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Hours</h3>
+							</div>
+							<div class="col-lg-10">
+								<dp-working-hours ng-model="EditCtrl.form.working_hours"></dp-working-hours>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>SLA Warning</span>
+						</h3>
+					</div>
+					<div class="dp-ob-set">
+						After <dp-time-with-unit ng-model="EditCtrl.form.sla_warn_time"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
+						<div class="dp-ob-setrow">
+							<header>
+								<em class="dp-ob-row-tag then">then</em>
+								The followings actions will run:
+							</header>
+							<article>
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.sla_warn_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+									<add-btn-label>Action</add-btn-label>
+								</dp-option-builder>
+							</article>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>SLA Failure</span>
+						</h3>
+					</div>
+					<div class="dp-ob-set">
+						After <dp-time-with-unit ng-model="EditCtrl.form.sla_fail_time"></dp-time-with-unit> the ticket is close to failing and the failed status is applied.
+						<div class="dp-ob-setrow">
+							<header>
+								<em class="dp-ob-row-tag then">then</em>
+								The followings actions will run:
+							</header>
+							<article>
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.sla_fail_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+									<add-btn-label>Action</add-btn-label>
+								</dp-option-builder>
+							</article>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>SLA Application</span>
+						</h3>
 					</div>
 				</div>
 			</article>

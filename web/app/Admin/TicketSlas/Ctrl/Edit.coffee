@@ -6,25 +6,18 @@ define [
 	class Admin_TicketSlas_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketSlas_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
+		@DEPS      = ['dpObTypesDefTicketActions']
 
 		init: ->
 			@slaData = @DataService.get('TicketSlas')
 			@sla = null
 
-			@criteraTypeDef = @dpObTypesDefTicketCriteria
 			@actionsTypeDef = @dpObTypesDefTicketActions
-
-			@$scope.criteriaOptionTypes = []
 			@$scope.actionOptionTypes = []
 			@updateCriteriaOptionTypes()
 
 		updateCriteriaOptionTypes: ->
 			types = []
-			setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
-			@$scope.criteriaOptionTypes.length = 0
-			for opt in setCritOptions
-				@$scope.criteriaOptionTypes.push(opt)
-
 			setActionOptions = @actionsTypeDef.getOptionsForTypes(types)
 			@$scope.actionOptionTypes.length = 0
 			for opt in setActionOptions

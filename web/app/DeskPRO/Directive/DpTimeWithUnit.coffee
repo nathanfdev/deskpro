@@ -26,7 +26,6 @@ define ->
 						ui-select2
 						style="min-width: 100px;"
 					>
-						<option value="secs">seconds</option>
 						<option value="mins">minutes</option>
 						<option value="hours">hours</option>
 						<option value="days">days</option>
@@ -40,7 +39,6 @@ define ->
 			replace: true,
 			link: (scope, iElement, iAttrs, ngModel) ->
 				multiplierMap = {
-					secs:   1,
 					mins:   60,
 					hours:  3600,
 					days:   86400,
@@ -50,7 +48,6 @@ define ->
 				}
 
 				multiplierTypes = [
-					'secs',
 					'mins',
 					'hours',
 					'days',
