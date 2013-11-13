@@ -58,7 +58,7 @@
         deferred = this.$q.defer();
         this.Api.sendGet('/ticket_slas/' + id).then(function(result) {
           return deferred.resolve({
-            filter: result.data.filter
+            sla: result.data.sla
           });
         }, function() {
           return deferred.reject();

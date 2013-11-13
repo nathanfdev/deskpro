@@ -44,7 +44,7 @@ define [
 
 			@Api.sendGet('/ticket_slas/' + id).then( (result) ->
 				deferred.resolve({
-					filter: result.data.filter
+					sla: result.data.sla
 				})
 			, ->
 				deferred.reject()

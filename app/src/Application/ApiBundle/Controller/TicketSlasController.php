@@ -34,14 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
-use Application\DeskPRO\Departments\TicketDepartmentEdit;
-use Application\DeskPRO\Departments\TicketDepartmentEditor;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
-use Application\DeskPRO\Exception\ValidationException;
-use Orb\Util\Arrays;
-
 class TicketSlasController extends AbstractController
 {
 	####################################################################################################################
@@ -67,5 +59,88 @@ class TicketSlasController extends AbstractController
 		return $this->createApiResponse(array(
 			'slas' => $data
 		));
+	}
+
+	####################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		$sla = $this->em->find('DeskPRO:Sla', $id);
+		if (!$sla) {
+			return $this->createNotFoundException();
+		}
+
+		$data = $this->getApiData($sla);
+
+		return $this->createApiResponse(array(
+			'sla' => $data
+		));
+	}
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		if ($id) {
+			$sla = $this->em->find('DeskPRO:Sla', $id);
+			if (!$sla) {
+				return $this->createNotFoundException();
+			}
+		} else {
+			$sla = new Sla();
+		}
+
+		$sla->title         = $this->in->getString('title');
+		$sla->event_trigger = $this->in->getString('event_trigger');
+
+		$sla->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
+		$sla->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
+
+		$terms = new TriggerTerms();
+		foreach ($this->in->getArrayValue('criteria_sets') as $set) {
+			if ($set) {
+				$terms->addTermFromArray(array('set_terms' => $set));
+			}
+		}
+
+		$actions = new TriggerActions();
+		foreach ($this->in->getArrayValue('actions') as $act) {
+			if ($act) {
+				$actions->addActionFromArray($act);
+			}
+		}
+
+		$sla->terms = $terms;
+		$sla->actions = $actions;
+
+		$this->em->persist($sla);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array(
+			'trigger_id' => $sla->id
+		));
+	}
+
+	####################################################################################################################
+	# delete
+	####################################################################################################################
+
+	public function deleteAction($id)
+	{
+		$sla = $this->em->find('DeskPRO:Sla', $id);
+		if (!$sla) {
+			return $this->createNotFoundException();
+		}
+
+		$old_id = $sla->id;
+
+		$this->em->remove($sla);
+		$this->em->flush();
+
+		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
 }

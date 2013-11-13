@@ -2300,6 +2300,31 @@ $collection->create('api_ticket_slas', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_slascreate', array(
+	'path'        => '/ticket_slas',
+	'controller'  => 'ApiBundle:TicketSlas:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_ticket_slasget', array(
+	'path'        => '/ticket_slas/{id}',
+	'controller'  => 'ApiBundle:TicketSlas:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_slasupdate', array(
+	'path'        => '/ticket_slas/{id}',
+	'controller'  => 'ApiBundle:TicketSlas:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_slasdelete', array(
+	'path'        => '/ticket_slas/{id}',
+	'controller'  => 'ApiBundle:TicketSlas:delete',
+	'methods'     => array('DELETE'),
+));
+
 ########################################################################################################################
 # Ticket Urgencies
 ########################################################################################################################

@@ -16,11 +16,33 @@
 
       Admin_TicketSlas_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketSlas_Ctrl_Edit.DEPS = ['$stateParams'];
-
       Admin_TicketSlas_Ctrl_Edit.prototype.init = function() {
         this.slaData = this.DataService.get('TicketSlas');
-        return this.macro = null;
+        this.sla = null;
+        this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
+        this.actionsTypeDef = this.dpObTypesDefTicketActions;
+        this.$scope.criteriaOptionTypes = [];
+        this.$scope.actionOptionTypes = [];
+        return this.updateCriteriaOptionTypes();
+      };
+
+      Admin_TicketSlas_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
+        var opt, setActionOptions, setCritOptions, types, _i, _j, _len, _len1, _results;
+        types = [];
+        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
+        this.$scope.criteriaOptionTypes.length = 0;
+        for (_i = 0, _len = setCritOptions.length; _i < _len; _i++) {
+          opt = setCritOptions[_i];
+          this.$scope.criteriaOptionTypes.push(opt);
+        }
+        setActionOptions = this.actionsTypeDef.getOptionsForTypes(types);
+        this.$scope.actionOptionTypes.length = 0;
+        _results = [];
+        for (_j = 0, _len1 = setActionOptions.length; _j < _len1; _j++) {
+          opt = setActionOptions[_j];
+          _results.push(this.$scope.actionOptionTypes.push(opt));
+        }
+        return _results;
       };
 
       Admin_TicketSlas_Ctrl_Edit.prototype.initialLoad = function() {
@@ -28,13 +50,13 @@
           _this = this;
         if (this.$stateParams.id) {
           promise = this.slaData.loadEditSlaData(this.$stateParams.id).then(function(data) {
-            _this.macro = data.macro;
-            return _this.form = _this.getFormFromModel(_this.macro);
+            _this.sla = data.sla;
+            return _this.form = _this.getFormFromModel(_this.sla);
           });
           return promise;
         } else {
           this.macro = {};
-          this.form = this.getFormFromModel(this.macro);
+          this.form = this.getFormFromModel(this.sla);
           return null;
         }
       };

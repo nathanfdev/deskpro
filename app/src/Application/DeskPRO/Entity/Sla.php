@@ -530,7 +530,12 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		return min($times);
 	}
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
 
+		return $data;
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -538,33 +543,170 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Sla';
+
 		$metadata->setPrimaryTable(array(
 			'name' => 'slas'
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'sla_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sla_type', ));
-		$metadata->mapField(array( 'fieldName' => 'active_time', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_time', ));
-		$metadata->mapField(array( 'fieldName' => 'work_start', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_start', ));
-		$metadata->mapField(array( 'fieldName' => 'work_end', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_end', ));
-		$metadata->mapField(array( 'fieldName' => 'work_days', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_days', ));
-		$metadata->mapField(array( 'fieldName' => 'work_timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_timezone', ));
-		$metadata->mapField(array( 'fieldName' => 'work_holidays', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_holidays', ));
-		$metadata->mapField(array( 'fieldName' => 'apply_type', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'apply_type', ));
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'title',
+			'fieldName'  => 'title',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'sla_type',
+			'fieldName'  => 'sla_type',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'active_time',
+			'fieldName'  => 'active_time',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => false,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_start',
+			'fieldName'  => 'work_start',
+			'type'       => 'integer',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_end',
+			'fieldName'  => 'work_end',
+			'type'       => 'integer',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_days',
+			'fieldName'  => 'work_days',
+			'type'       => 'array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_timezone',
+			'fieldName'  => 'work_timezone',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'work_holidays',
+			'fieldName'  => 'work_holidays',
+			'type'       => 'array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'apply_type',
+			'fieldName'  => 'apply_type',
+			'type'       => 'string',
+			'length'     => 25,
+			'nullable'   => false,
+		));
 
-		$metadata->mapManyToOne(array( 'fieldName' => 'warning_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'warning_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'fail_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'fail_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'apply_priority', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketPriority', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'apply_priority_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'apply_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'apply_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-
-		$metadata->mapOneToMany(array( 'fieldName' => 'ticket_slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSla', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'sla', 'orphanRemoval' => true ));
-
-		$metadata->mapManyToMany(array( 'fieldName' => 'people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'sla_people', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sla_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'organizations', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'joinTable' => array( 'name' => 'sla_organizations', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sla_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
-
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'warning_trigger',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger',
+			'cascade'      => array('remove'),
+			'joinColumns'  => array(array(
+				'name'                 => 'warning_trigger_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'fail_trigger',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger',
+			'cascade'      => array('remove'),
+			'joinColumns'  => array(array(
+				'name'                 => 'fail_trigger_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'apply_priority',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketPriority',
+			'joinColumns'  => array(array(
+				'name'                 => 'apply_priority_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'apply_trigger',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger',
+			'cascade'      => array('remove'),
+			'joinColumns'  => array(array(
+				'name'                 => 'apply_trigger_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'     => 'ticket_slas',
+			'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketSla',
+			'cascade'       => array('remove', 'persist', 'merge'),
+			'mappedBy'      => 'sla',
+			'orphanRemoval' => true
+		));
+		$metadata->mapManyToMany(array(
+			'fieldName'    => 'people',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'orderBy'      => array('name' => 'ASC'),
+			'joinTable'    => array(
+				'name' => 'sla_people',
+				'joinColumns' => array(array(
+					'name'                 => 'sla_id',
+					'referencedColumnName' => 'id',
+					'nullable'             => true,
+					'onDelete'             => 'cascade',
+				)),
+				'inverseJoinColumns' => array(array(
+					'name'                 => 'person_id',
+					'referencedColumnName' => 'id',
+					'nullable'             => true,
+					'onDelete'             => 'cascade',
+				))
+			)
+		));
+		$metadata->mapManyToMany(array(
+			'fieldName'    => 'organizations',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+			'orderBy'      => array('name' => 'ASC'),
+			'joinTable'    => array(
+				'name' => 'sla_organizations',
+				'joinColumns' => array(array(
+					'name'                 => 'sla_id',
+					'referencedColumnName' => 'id',
+					'nullable'             => true,
+					'onDelete'             => 'cascade',
+				)),
+				'inverseJoinColumns' => array(array(
+					'name'                 => 'organization_id',
+					'referencedColumnName' => 'id',
+					'nullable'             => true,
+					'onDelete'             => 'cascade',
+				))
+			)
+		));
 	}
 }
