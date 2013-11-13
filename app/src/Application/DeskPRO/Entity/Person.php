@@ -1511,13 +1511,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function hasEmailAddress($email_address)
 	{
 		$email_address = strtolower($email_address);
-		if ($this->primary_email && $this->primary_email->email == $email_address) {
+		if ($this->primary_email && strtolower($this->primary_email->email) == $email_address) {
 			return true;
 		}
 
 		if ($this->emails) {
 			foreach ($this->emails as $email) {
-				if ($email->email == $email_address) {
+				if (strtolower($email->email) == $email_address) {
 					return true;
 				}
 			}
