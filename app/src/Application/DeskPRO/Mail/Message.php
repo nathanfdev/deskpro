@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\Entity;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Html\Html2Text;
 use Orb\Util\Arrays;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -143,7 +144,29 @@ class Message extends \Orb\Mail\Message
 				if (strpos($this->template, ':emails_agent:') !== false && !isset($skip_check[$this->template])) {
 					$agent = App::getContainer()->getAgentData()->getByEmail($this->set_to['email']);
 					if (!$agent) {
-						throw new \InvalidArgumentException("Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
+
+						// Not an agent
+						// - Generate error log warning
+						// - Send in error report to us
+						// - Blank out email. We need to send a blank email because
+						// there is no way to "stop" at this late stage (it's too "late" by the time this code gets run)
+						// and if we were to throw an exception, it would cause rollbacks to happen.
+						// - TO DO: Can implement custom swiftmailer classes to allow cancelling of messages so the blank
+						// email isn't sent.
+
+						$e = new \InvalidArgumentException("Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
+						KernelErrorHandler::logException($e, true);
+
+						$this->template        = null;
+						$this->template_vars   = null;
+						$this->template_engine = null;
+						$this->set_to_person   = null;
+						$this->attach_blobs    = null;
+						$this->embed_only      = true;
+						$this->setBody('');
+						$this->setSubject('');
+						$this->getHeaders()->addTextHeader('X-DeskPRO-Error', "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}");
+						return;
 					}
 				}
 			}
