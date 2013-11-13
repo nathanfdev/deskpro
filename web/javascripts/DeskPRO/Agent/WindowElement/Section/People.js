@@ -89,6 +89,12 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 				el.show();
 			}
 		}
+
+		if (!parseInt(countData.validating_count) && !parseInt(countData.validating_count_agent)) {
+			$('#people_pending_section').hide();
+		} else {
+			$('#people_pending_section').show();
+		}
 	},
 
 	reloadLabels: function() {
