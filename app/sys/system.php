@@ -855,9 +855,11 @@ final class License
 		}
 
 		$html = <<<STR
+<!-- DeskPRO Copyright -->
 <div class="dp-copy">
 	<a href="http://www.deskpro.com/">$powered_by_deskpro</a>
 </div>
+<!-- DeskPRO Copyright -->
 STR;
 
 		return $html;
