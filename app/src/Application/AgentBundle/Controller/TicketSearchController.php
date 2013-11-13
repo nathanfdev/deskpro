@@ -1430,7 +1430,7 @@ class TicketSearchController extends AbstractController
                     $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
                 }
 
-                $got += $tickets;
+                $got += count($tickets);
             }
         }
 
