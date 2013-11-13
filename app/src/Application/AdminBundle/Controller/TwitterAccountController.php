@@ -122,7 +122,15 @@ class TwitterAccountController extends AbstractController
 		$api = \Application\DeskPRO\Service\Twitter::getAgentTwitterApi();
 
 		if ($this->in->getBool('start')) {
-			$api->setCallback($this->generateUrl('admin_twitter_accounts_new', array(), true));
+			if ($this->in->getBool('back-to-list')) {
+
+				$api->setCallback($this->generateUrl('admin_twitter_accounts_new', array('back-to-list' => 1), true));
+
+			} else {
+
+				$api->setCallback($this->generateUrl('admin_twitter_accounts_new', array(), true));
+			}
+
 			try {
 				$url = $api->getAuthorizationUrl();
 			} catch (\EpiOAuthException $e) {
@@ -215,7 +223,14 @@ class TwitterAccountController extends AbstractController
 			$this->_accountCreate($account, $existed);
 		}
 
-		return $this->redirectRoute('admin_twitter_accounts');
+		if($this->in->getBool('back-to-list')) {
+
+			return $this->redirect('/admin/#/twitter/accounts');
+
+		} else {
+
+			return $this->redirectRoute('admin_twitter_accounts');
+		}
 	}
 
 	protected function _accountCreate(TwitterAccount $account, $existed)
