@@ -13,8 +13,8 @@
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group">
-									<img ng-src="{{ ng_var('EditCtrl.twitter_account.user.profile_image_url') }}" width="28" height="28" border="0" />
-									@{{ ng_var('EditCtrl.twitter_account.user.screen_name') }}
+									<img ng-src="{{ ng_var('EditCtrl.form.user.profile_image_url') }}" width="28" height="28" border="0" />
+									@{{ ng_var('EditCtrl.form.user.screen_name') }}
 									<span class="help-block">
 										&nbsp;
 									</span>
@@ -25,10 +25,10 @@
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group">
-									<span ng-if="EditCtrl.twitter_account.verified" style="color:green">
+									<span ng-if="EditCtrl.form.verified" style="color:green">
 										{{ phrase('agent.general.verified') }}
 									</span>
-									<span ng-if="!EditCtrl.twitter_account.verified" style="color:red" class="tipped">
+									<span ng-if="!EditCtrl.form.verified" style="color:red" class="tipped">
 										{{ phrase('admin.twitter.error') }}
 									</span>
 									<span class="help-block">
@@ -44,8 +44,8 @@
 							<div class="col-lg-9">
 								<div class="inner-group">
 									<div style="padding-top:6px;">
-										<label ng-repeat="agent in EditCtrl.agents" style="font-weight: normal; display: block;">
-											<input type="checkbox" ng-model="EditCtrl.selected_agents[agent.id]">
+										<label ng-repeat="agent in EditCtrl.form.agents" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="EditCtrl.form.selected_agents[agent.id]">
 											{{ ng_var('agent.display_name') }}
 										</label>
 									</div>

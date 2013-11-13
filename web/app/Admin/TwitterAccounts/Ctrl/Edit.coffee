@@ -11,19 +11,12 @@ define [
 		init: ->
 			@twitterAccountData = @DataService.get('TwitterAccounts')
 			@twitter_account = null
-			@agents = null
-			@selected_agents = {}
 
 		initialLoad: ->
 			promise = @twitterAccountData.loadEditTwitterAccountData(@$stateParams.id || null).then( (data) =>
 
 				@twitter_account  = data.twitter_account
-				@agents = data.all_agents
-
-				ids =	_.pluck(@twitter_account.user.agents, 'id')
-
-				for id in ids
-					@selected_agents[id] = true
+				@form = data.form
 			)
 			return promise
 
@@ -41,7 +34,7 @@ define [
 
 			is_new = !@twitter_account.id
 
-			promise = @twitterAccountData.saveFormModel(@twitter_account)
+			promise = @twitterAccountData.saveFormModel(@twitter_account, @form)
 
 			@startSpinner('saving')
 			promise.then( =>

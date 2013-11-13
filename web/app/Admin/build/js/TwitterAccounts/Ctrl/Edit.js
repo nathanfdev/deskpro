@@ -20,25 +20,15 @@
 
       Admin_TwitterAccounts_Ctrl_Edit.prototype.init = function() {
         this.twitterAccountData = this.DataService.get('TwitterAccounts');
-        this.twitter_account = null;
-        this.agents = null;
-        return this.selected_agents = {};
+        return this.twitter_account = null;
       };
 
       Admin_TwitterAccounts_Ctrl_Edit.prototype.initialLoad = function() {
         var promise,
           _this = this;
         promise = this.twitterAccountData.loadEditTwitterAccountData(this.$stateParams.id || null).then(function(data) {
-          var id, ids, _i, _len, _results;
           _this.twitter_account = data.twitter_account;
-          _this.agents = data.all_agents;
-          ids = _.pluck(_this.twitter_account.user.agents, 'id');
-          _results = [];
-          for (_i = 0, _len = ids.length; _i < _len; _i++) {
-            id = ids[_i];
-            _results.push(_this.selected_agents[id] = true);
-          }
-          return _results;
+          return _this.form = data.form;
         });
         return promise;
       };
@@ -64,7 +54,7 @@
           return;
         }
         is_new = !this.twitter_account.id;
-        promise = this.twitterAccountData.saveFormModel(this.twitter_account);
+        promise = this.twitterAccountData.saveFormModel(this.twitter_account, this.form);
         this.startSpinner('saving');
         return promise.then(function() {
           _this.stopSpinner('saving', true).then(function() {
