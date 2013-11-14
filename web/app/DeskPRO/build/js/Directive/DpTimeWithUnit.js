@@ -28,6 +28,7 @@
           link: function(scope, iElement, iAttrs, ngModel) {
             var multiplierMap, multiplierTypes;
             multiplierMap = {
+              secs: 1,
               mins: 60,
               hours: 3600,
               days: 86400,
@@ -35,27 +36,27 @@
               months: 2419200,
               years: 31536000
             };
-            multiplierTypes = ['mins', 'hours', 'days', 'weeks', 'months', 'years'];
+            multiplierTypes = ['secs', 'mins', 'hours', 'days', 'weeks', 'months', 'years'];
+            multiplierTypes.reverse();
             ngModel.$parsers.push(function(viewValue) {
               var num, unit;
-              unit = viewValue.unit || 'secs';
+              unit = viewValue.unit || 'mins';
               num = viewValue.num || 1;
               return multiplierMap[unit] * num;
             });
             ngModel.$formatters.push(function(modelValue) {
-              var unit, unitName, _i, _len, _ref;
+              var unit, unitName, _i, _len;
               unit = null;
               modelValue = parseInt(modelValue);
-              _ref = multiplierTypes.reverse();
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                unitName = _ref[_i];
+              for (_i = 0, _len = multiplierTypes.length; _i < _len; _i++) {
+                unitName = multiplierTypes[_i];
                 if (modelValue % multiplierMap[unitName] === 0) {
                   unit = unitName;
                   break;
                 }
               }
               if (!unit) {
-                unit = 'secs';
+                unit = 'mins';
               }
               return {
                 unit: unit,
@@ -75,7 +76,8 @@
               viewValue = ngModel.$viewValue;
               if (viewValue) {
                 scope.time_num = viewValue.num;
-                return scope.time_unit = viewValue.unit;
+                scope.time_unit = viewValue.unit;
+                return iElement.find('select').first().select2('val', viewValue.unit);
               }
             };
             return ngModel.$render();

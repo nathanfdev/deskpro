@@ -7,7 +7,7 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 		init: ->
 			@$scope.settings = {
 				enabled: false,
-				auto_archive_time: "2419000"
+				auto_archive_time: 2419200
 			}
 			return
 

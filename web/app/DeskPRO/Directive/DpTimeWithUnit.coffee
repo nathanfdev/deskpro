@@ -39,6 +39,7 @@ define ->
 			replace: true,
 			link: (scope, iElement, iAttrs, ngModel) ->
 				multiplierMap = {
+					secs:   1,
 					mins:   60,
 					hours:  3600,
 					days:   86400,
@@ -48,6 +49,7 @@ define ->
 				}
 
 				multiplierTypes = [
+					'secs',
 					'mins',
 					'hours',
 					'days',
@@ -55,9 +57,10 @@ define ->
 					'months',
 					'years'
 				]
+				multiplierTypes.reverse()
 
 				ngModel.$parsers.push( (viewValue) ->
-					unit = viewValue.unit || 'secs'
+					unit = viewValue.unit || 'mins'
 					num  = viewValue.num || 1
 
 					return multiplierMap[unit] * num
@@ -67,13 +70,13 @@ define ->
 					unit = null
 					modelValue = parseInt(modelValue)
 
-					for unitName in multiplierTypes.reverse()
+					for unitName in multiplierTypes
 						if modelValue % multiplierMap[unitName] == 0
 							unit = unitName
 							break
 
 					if not unit
-						unit = 'secs'
+						unit = 'mins'
 
 					return {
 						unit: unit,
@@ -94,6 +97,7 @@ define ->
 					if viewValue
 						scope.time_num  = viewValue.num
 						scope.time_unit = viewValue.unit
+						iElement.find('select').first().select2('val', viewValue.unit)
 
 				ngModel.$render()
 		}

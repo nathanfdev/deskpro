@@ -21,7 +21,7 @@
       Admin_TicketStatuses_Ctrl_EditClosed.prototype.init = function() {
         this.$scope.settings = {
           enabled: false,
-          auto_archive_time: "2419000"
+          auto_archive_time: 2419200
         };
       };
 

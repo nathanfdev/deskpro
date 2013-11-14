@@ -20,25 +20,7 @@
 							</div>
 							<div class="col-lg-9">
 								Deleted tickets are automatically purged from the system after
-								<select
-										ui-select2
-										ng-model="settings.auto_purge_time"
-										style="min-width: 240px"
-										>
-									<option value="86400" >1 day</option>
-									<option value="259200" >3 days</option>
-									<option value="432000" >5 days</option>
-									<option value="604800" >1 week</option>
-									<option value="1209600" >2 weeks</option>
-									<option value="1814400" >3 weeks</option>
-									<option value="2419000">1 month</option>
-									<option value="4838000" >2 months</option>
-									<option value="7257000" >3 months</option>
-									<option value="14514000" >6 months</option>
-									<option value="21771000" >9 months</option>
-									<option value="29028000" >1 year</option>
-									<option value="58056000" >2 years</option>
-								</select>
+								<dp-time-with-unit ng-model="settings.auto_purge_time"></dp-time-with-unit>
 							</div>
 						</div>
 					</div>
