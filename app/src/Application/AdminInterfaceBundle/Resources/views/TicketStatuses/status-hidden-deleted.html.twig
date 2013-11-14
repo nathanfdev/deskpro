@@ -10,7 +10,9 @@
 								<h3>About</h3>
 							</div>
 							<div class="col-lg-9">
-								When agents delete a ticket, it is sent to the Recycle Bin. Tickets in the Recycle Bin can be viewed by from the Agent Interface by clicking on the button in the Tickets section.
+								<p>
+									When agents delete a ticket, it is sent to the Recycle Bin. Tickets in the Recycle Bin can be viewed by from the Agent Interface by clicking on the button in the Tickets section.
+								</p>
 							</div>
 						</div>
 
@@ -19,8 +21,11 @@
 								<h3>Automatic Cleanup</h3>
 							</div>
 							<div class="col-lg-9">
-								Deleted tickets are automatically purged from the system after
-								<dp-time-with-unit ng-model="settings.auto_purge_time"></dp-time-with-unit>
+								<p>
+									Deleted tickets are automatically purged from the system after<br/>
+									<dp-time-with-unit ng-model="settings.auto_purge_time"></dp-time-with-unit>
+								</p>
+
 								<br/>
 								<button class="btn btn-default" ng-click="$event.preventDefault(); TicketStatusEdit.startPurge();"><i class="fa fa-trash-o"></i> Run cleanup now</button>
 							</div>
