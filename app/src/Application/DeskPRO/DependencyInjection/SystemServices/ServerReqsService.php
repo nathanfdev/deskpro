@@ -29,31 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category DependencyInjection
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-class ServerReqsController extends AbstractController
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\ServerReqs\ServerReqs;
+
+class ServerReqsService
 {
-	####################################################################################################################
-	# get
-	####################################################################################################################
-
-	public function getAction()
+	public static function create(DeskproContainer $container)
 	{
-		/**
-		 * @var \Application\DeskPRO\ServerReqs\ServerReqs $server_reqs
-		 */
-
-		$server_reqs = $this->container->getSystemService('server_reqs');
-
-		return $this->createApiResponse(
-			array(
-				 'server_reqs' => array(
-					 'web_checks' => $server_reqs->getWebChecks(),
-					 'cli_checks' => $server_reqs->getCliChecks(),
-				 ),
-			)
-		);
+        $x = new ServerReqs($container->getEm());
+        return $x;
 	}
 }
