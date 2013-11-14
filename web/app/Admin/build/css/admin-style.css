@@ -7633,6 +7633,24 @@ i.spinner-xsmall {
   background-repeat: no-repeat;
 }
 
+div.danger-message {
+  background: #f2dede;
+}
+
+div.danger-message.well {
+  padding: 5px;
+  margin-bottom: 0;
+}
+
+div.info-message {
+  background: #d9edf7;
+}
+
+div.info-message.well {
+  padding: 5px;
+  margin-bottom: 0;
+}
+
 .dp-app-header {
   background: #1d7ab2 url("../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
   background: #1d7ab2 url("../../../../../file.php/gradient?size=51px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:51px:1d7ab2:1c74a9*/;
@@ -10239,6 +10257,28 @@ li.dp-layout-editor-layout-field span {
 
 .dp-time-unit .select2-container {
   margin: 0;
+}
+
+.table > thead > tr > td.info,
+.table > tbody > tr > td.info,
+.table > tfoot > tr > td.info,
+.table > thead > tr > th.info,
+.table > tbody > tr > th.info,
+.table > tfoot > tr > th.info,
+.table > thead > tr.info > td,
+.table > tbody > tr.info > td,
+.table > tfoot > tr.info > td,
+.table > thead > tr.info > th,
+.table > tbody > tr.info > th,
+.table > tfoot > tr.info > th {
+  background-color: #d9edf7;
+}
+
+.table-hover > tbody > tr > td.info:hover,
+.table-hover > tbody > tr > th.info:hover,
+.table-hover > tbody > tr.info:hover > td,
+.table-hover > tbody > tr.info:hover > th {
+  background-color: #c4e3f3;
 }
 
 table.table > thead > tr > th {
