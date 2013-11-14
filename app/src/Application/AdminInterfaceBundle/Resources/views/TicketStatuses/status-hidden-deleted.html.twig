@@ -21,6 +21,8 @@
 							<div class="col-lg-9">
 								Deleted tickets are automatically purged from the system after
 								<dp-time-with-unit ng-model="settings.auto_purge_time"></dp-time-with-unit>
+								<br/>
+								<button class="btn btn-default" ng-click="$event.preventDefault(); TicketStatusEdit.startPurge();"><i class="fa fa-trash-o"></i> Run cleanup now</button>
 							</div>
 						</div>
 					</div>
@@ -46,4 +48,5 @@
 			</footer>
 		</section>
 	</form>
+	{{ ng_tpl('TicketStatuses/modal-purge-deleted.html') }}
 {% endblock %}

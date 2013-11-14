@@ -40,6 +40,7 @@ use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\Tickets\TicketPurger;
 use Orb\Util\Arrays;
 
 class TicketStatusesController extends AbstractController
@@ -87,6 +88,16 @@ class TicketStatusesController extends AbstractController
 		));
 	}
 
+	public function purgeDeletedAction()
+	{
+		$purger = new TicketPurger($this->db);
+		$count = $purger->purgeDeletedAction();
+
+		return $this->createSuccessResponse(array(
+			'count' => $count
+		));
+	}
+
 	####################################################################################################################
 	# save-deleted-settings
 	####################################################################################################################
@@ -110,6 +121,16 @@ class TicketStatusesController extends AbstractController
 
 		return $this->createApiResponse(array(
 			'spam_info' => $info
+		));
+	}
+
+	public function purgeSpamAction()
+	{
+		$purger = new TicketPurger($this->db);
+		$count = $purger->purgeSpamAction();
+
+		return $this->createSuccessResponse(array(
+			'count' => $count
 		));
 	}
 

@@ -2272,6 +2272,12 @@ $collection->create('api_ticket_statuses_deleted', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_statuses_deleted_purge', array(
+	'path'        => '/ticket_statuses/deleted/purge',
+	'controller'  => 'ApiBundle:TicketStatuses:purgeDeleted',
+	'methods'     => array('DELETE'),
+));
+
 $collection->create('api_ticket_statuses_deleted_savesettings', array(
 	'path'        => '/ticket_statuses/deleted/settings',
 	'controller'  => 'ApiBundle:TicketStatuses:saveDeletedSettings',
@@ -2282,6 +2288,12 @@ $collection->create('api_ticket_statuses_spam', array(
 	'path'        => '/ticket_statuses/spam',
 	'controller'  => 'ApiBundle:TicketStatuses:getSpamInfo',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_ticket_statuses_spam_purge', array(
+	'path'        => '/ticket_statuses/spam/purge',
+	'controller'  => 'ApiBundle:TicketStatuses:purgeSpam',
+	'methods'     => array('DELETE'),
 ));
 
 $collection->create('api_ticket_statuses_spam_savesettings', array(

@@ -25,4 +25,25 @@ define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
 
 			return promise
 
+		startPurge: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketStatuses/modal-purge-spam.html'),
+				controller: ['$scope', '$modalInstance', 'Api', ($scope, $modalInstance, Api) =>
+					$scope.dismiss = =>
+						$modalInstance.dismiss();
+
+					$scope.confirm = =>
+						purgeNow()
+
+					purgeNow = ->
+						$scope.is_loading = true
+						Api.sendDelete('/ticket_statuses/spam/purge').success( (data) ->
+							$scope.is_done = true
+							$scope.count = data.count
+						).then( ->
+							$scope.is_loading = false
+						)
+				]
+			});
+
 	Admin_TicketStatuses_Ctrl_EditHiddenSpam.EXPORT_CTRL()

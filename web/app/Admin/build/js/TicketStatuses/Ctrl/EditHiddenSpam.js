@@ -43,6 +43,34 @@
         return promise;
       };
 
+      Admin_TicketStatuses_Ctrl_EditHiddenSpam.prototype.startPurge = function() {
+        var inst,
+          _this = this;
+        return inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketStatuses/modal-purge-spam.html'),
+          controller: [
+            '$scope', '$modalInstance', 'Api', function($scope, $modalInstance, Api) {
+              var purgeNow;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              $scope.confirm = function() {
+                return purgeNow();
+              };
+              return purgeNow = function() {
+                $scope.is_loading = true;
+                return Api.sendDelete('/ticket_statuses/spam/purge').success(function(data) {
+                  $scope.is_done = true;
+                  return $scope.count = data.count;
+                }).then(function() {
+                  return $scope.is_loading = false;
+                });
+              };
+            }
+          ]
+        });
+      };
+
       return Admin_TicketStatuses_Ctrl_EditHiddenSpam;
 
     })(Admin_Ctrl_Base);
