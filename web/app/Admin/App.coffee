@@ -105,6 +105,7 @@ define [
 
 	Admin_App = angular.module('Admin_App', [
 		'ngAnimate',
+		'ngSanitize',
 		'ui.router',
 		'ui.bootstrap',
 		'ui.select2',

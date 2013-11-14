@@ -57,6 +57,7 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 requirejs([
 	'angular',
 	'angularAnimate',
+	'angularSanitize',
 	'angularBootstrap',
 	'angularSelect2',
 	'angularUiAce',
