@@ -63,6 +63,9 @@
         if (this.DEPS.indexOf('DataService') === -1) {
           this.DEPS.unshift('DataService');
         }
+        if (this.DEPS.indexOf('dpInterfaceTimer') === -1) {
+          this.DEPS.unshift('dpInterfaceTimer');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);
@@ -162,7 +165,9 @@
         ret = this.initialLoad();
         if (ret) {
           this.$scope.state_loading = true;
+          this.dpInterfaceTimer.startControllerLoad(this);
           ret.then(function() {
+            _this.dpInterfaceTimer.endControllerLoad(_this);
             _this.$scope.state_loading = false;
             if (_this.$state.current.name.split('.').length === 2 && _this.$scope._autoload_links) {
               return _this.$timeout(function() {

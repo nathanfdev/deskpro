@@ -14,6 +14,7 @@ requirejs.config({
 
 		momentjs:               DP_ASSET_URL+'/app/bower_components/momentjs/min/moment-with-langs.min',
 		aceEditor:              DP_ASSET_URL+'/app/bower_components/ace-builds/src-min-noconflict/ace',
+		stacktrace:             DP_ASSET_URL+'/app/bower_components/stacktrace/stacktrace',
 
 		jquery:                 DP_ASSET_URL+'/app/bower_components/jquery/jquery',
 		jqueryUi:               DP_ASSET_URL+'/app/bower_components/jquery-ui/ui/jquery-ui',
@@ -45,7 +46,8 @@ requirejs.config({
 		'bootstrapTooltip':    ['jquery', 'jqueryUi'],
 		'select2':             ['jquery'],
 		'toastr':              ['jquery'],
-		'underscore':          { exports: '_' }
+		'underscore':          { exports: '_' },
+		'stacktrace':            { exports: 'printStackTrace'}
 	},
 	priority: [
 		"angular"
@@ -70,6 +72,7 @@ requirejs([
 	'jquery',
 	'jqueryUi',
 	'underscore',
+	'stacktrace',
 
 	'bootstrapTooltip',
 

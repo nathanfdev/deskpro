@@ -42,6 +42,8 @@ define ['angular', 'Admin/App'], (angular) ->
 				@DEPS.unshift('$timeout')
 			if @DEPS.indexOf('DataService') == -1
 				@DEPS.unshift('DataService')
+			if @DEPS.indexOf('dpInterfaceTimer') == -1
+				@DEPS.unshift('dpInterfaceTimer')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
@@ -132,7 +134,9 @@ define ['angular', 'Admin/App'], (angular) ->
 			ret = @initialLoad()
 			if ret
 				@$scope.state_loading = true
+				@dpInterfaceTimer.startControllerLoad(@)
 				ret.then( =>
+					@dpInterfaceTimer.endControllerLoad(@)
 					@$scope.state_loading = false
 
 					if @$state.current.name.split('.').length == 2 and @$scope._autoload_links

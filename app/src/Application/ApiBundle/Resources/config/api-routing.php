@@ -2824,4 +2824,14 @@ $collection->create('api_templates_create_random_variant', array(
 	'methods'     => array('POST'),
 ));
 
+########################################################################################################################
+# Save Log
+########################################################################################################################
+
+$collection->create('api_savelog_logjserror', array(
+	'path'        => '/log-js-error',
+	'controller'  => 'ApiBundle:SaveLog:logJsError',
+	'methods'     => array('POST'),
+));
+
 return $collection;
