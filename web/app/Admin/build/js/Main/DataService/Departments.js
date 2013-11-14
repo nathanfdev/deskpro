@@ -94,11 +94,11 @@
         _ref1 = this.deps.values();
         for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
           dep = _ref1[_j];
-          dep._full_title = dep.title;
+          dep.full_title = dep.title;
           if (dep.parent_id) {
             parent_dep = this.deps.get(dep.parent_id);
             if (parent_dep) {
-              dep._full_title = parent_dep.title + " > " + dep.title;
+              dep.full_title = parent_dep.title + " > " + dep.title;
               if (this.parent_to_children[parent_dep.id] == null) {
                 this.parent_to_children[parent_dep.id] = [];
               }
@@ -138,11 +138,11 @@
         _results = [];
         for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
           dep = _ref[_j];
-          dep._full_title = dep.title;
+          dep.full_title = dep.title;
           if (dep.parent_id) {
             parent_dep = this.deps.get(dep.parent_id);
             if (parent_dep) {
-              dep._full_title = parent_dep.title + " > " + dep.title;
+              dep.full_title = parent_dep.title + " > " + dep.title;
               if (this.parent_to_children[parent_dep.id] == null) {
                 this.parent_to_children[parent_dep.id] = [];
               }

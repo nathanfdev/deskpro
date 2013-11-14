@@ -33,18 +33,18 @@ define ['jquery'], ($) ->
 			link: (scope, element, attrs) ->
 
 				id = attrs['dpInhelpBtn'].replace(/\./g, '_')
-				scopedId = '_ctrl_inhelp_state.' + id
+				scopedId = 'dp_ctrl_inhelp_state.' + id
 
-				if not $rootScope._ctrl_inhelp_state
-					$rootScope._ctrl_inhelp_state = {}
+				if not $rootScope.dp_ctrl_inhelp_state
+					$rootScope.dp_ctrl_inhelp_state = {}
 
 				defaultState = true
 				if attrs['defaultState']? == 'closed'
 					defaultState = false
 
-				$rootScope._ctrl_inhelp_state[id] = InhelpState.getState(id)
-				if $rootScope._ctrl_inhelp_state[id] == null
-					$rootScope._ctrl_inhelp_state[id] = defaultState
+				$rootScope.dp_ctrl_inhelp_state[id] = InhelpState.getState(id)
+				if $rootScope.dp_ctrl_inhelp_state[id] == null
+					$rootScope.dp_ctrl_inhelp_state[id] = defaultState
 
 				bodyId = 'dp_inhelp_' + id
 				btnId  = bodyId + '_btn';
@@ -59,14 +59,14 @@ define ['jquery'], ($) ->
 				#---
 
 				updateState = ->
-					if $rootScope._ctrl_inhelp_state?[id]
+					if $rootScope.dp_ctrl_inhelp_state?[id]
 						element.fadeOut(200)
 						$('#' + bodyId).slideDown(200);
 					else
 						element.fadeIn(200)
 						$('#' + bodyId).slideUp(200);
 
-					InhelpState.setState(id, $rootScope._ctrl_inhelp_state?[id])
+					InhelpState.setState(id, $rootScope.dp_ctrl_inhelp_state?[id])
 
 
 				#---
@@ -80,10 +80,10 @@ define ['jquery'], ($) ->
 				element.on('click', (ev) ->
 					ev.preventDefault()
 					scope.$apply(->
-						if $rootScope._ctrl_inhelp_state?[id]
-							$rootScope._ctrl_inhelp_state[id] = false
+						if $rootScope.dp_ctrl_inhelp_state?[id]
+							$rootScope.dp_ctrl_inhelp_state[id] = false
 						else
-							$rootScope._ctrl_inhelp_state?[id]  = true
+							$rootScope.dp_ctrl_inhelp_state?[id]  = true
 					)
 				)
 
@@ -92,7 +92,7 @@ define ['jquery'], ($) ->
 				# Set the initial view state
 				#---
 
-				if $rootScope._ctrl_inhelp_state[id]
+				if $rootScope.dp_ctrl_inhelp_state[id]
 					element.hide()
 					$('#' + bodyId).show();
 				else

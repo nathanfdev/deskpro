@@ -23,10 +23,10 @@
 
 				<div class="inner-group">
 					<label>
-						<input type="checkbox" ng-model="TicketDepsEdit.dep._enable_user_title" value="1" />
+						<input type="checkbox" ng-model="TicketDepsEdit.dep.enable_user_title" value="1" />
 						<h4>{{ phrase('adm.departments.user_title') }}</h4>
 					</label>
-					<div ng-show="TicketDepsEdit.dep._enable_user_title">
+					<div ng-show="TicketDepsEdit.dep.enable_user_title">
 						<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
 						{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('adm.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id + '_user' }"></span>{% endif %}
 					</div>

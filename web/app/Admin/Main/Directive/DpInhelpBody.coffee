@@ -20,14 +20,14 @@ define ->
 				closeBtn.on('click', (ev) ->
 					ev.preventDefault()
 					scope.$apply(->
-						if $rootScope._ctrl_inhelp_state?[id]
-							$rootScope._ctrl_inhelp_state[id] = false
+						if $rootScope.dp_ctrl_inhelp_state?[id]
+							$rootScope.dp_ctrl_inhelp_state[id] = false
 						else
-							$rootScope._ctrl_inhelp_state?[id] = true
+							$rootScope.dp_ctrl_inhelp_state?[id] = true
 					)
 				)
 
-				if $rootScope._ctrl_inhelp_state?[id]
+				if $rootScope.dp_ctrl_inhelp_state?[id]
 					element.show()
 				else
 					element.hide()

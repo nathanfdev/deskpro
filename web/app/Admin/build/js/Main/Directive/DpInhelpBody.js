@@ -23,14 +23,14 @@
               ev.preventDefault();
               return scope.$apply(function() {
                 var _ref, _ref1;
-                if ((_ref = $rootScope._ctrl_inhelp_state) != null ? _ref[id] : void 0) {
-                  return $rootScope._ctrl_inhelp_state[id] = false;
+                if ((_ref = $rootScope.dp_ctrl_inhelp_state) != null ? _ref[id] : void 0) {
+                  return $rootScope.dp_ctrl_inhelp_state[id] = false;
                 } else {
-                  return (_ref1 = $rootScope._ctrl_inhelp_state) != null ? _ref1[id] = true : void 0;
+                  return (_ref1 = $rootScope.dp_ctrl_inhelp_state) != null ? _ref1[id] = true : void 0;
                 }
               });
             });
-            if ((_ref = $rootScope._ctrl_inhelp_state) != null ? _ref[id] : void 0) {
+            if ((_ref = $rootScope.dp_ctrl_inhelp_state) != null ? _ref[id] : void 0) {
               return element.show();
             } else {
               return element.hide();

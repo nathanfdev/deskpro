@@ -121,7 +121,7 @@ define ['angular', 'Admin/App'], (angular) ->
 					@_showStateConfirmLeave()
 			)
 
-			@$scope._ctrl_elemnt_ping = {}
+			@$scope.dp_ctrl_elemnt_ping = {}
 			@_saved_state = {}
 
 			@has_init = false
@@ -182,7 +182,7 @@ define ['angular', 'Admin/App'], (angular) ->
     	* @param {String} id
 		###
 		pingElement: (id) ->
-			@$scope._ctrl_elemnt_ping[id] = (new Date()).getTime()
+			@$scope.dp_ctrl_elemnt_ping[id] = (new Date()).getTime()
 
 
 		###
@@ -196,9 +196,9 @@ define ['angular', 'Admin/App'], (angular) ->
     	# @return {promise} A promise that resolves once the spinner stops
     	###
 		startSpinner: (id, minTime = 1050) ->
-			if not @$scope._spin_els then @$scope._spin_els = {}
+			if not @$scope.dp_spin_els then @$scope.dp_spin_els = {}
 
-			if @$scope._spin_els[id]
+			if @$scope.dp_spin_els[id]
 				@stopSpinner(id, true)
 
 			deferred = @$q.defer()
@@ -225,7 +225,7 @@ define ['angular', 'Admin/App'], (angular) ->
 				, minTime)
 			}
 
-			@$scope._spin_els[id] = desc
+			@$scope.dp_spin_els[id] = desc
 			return desc._promise
 
 
@@ -240,17 +240,17 @@ define ['angular', 'Admin/App'], (angular) ->
 		# @return {promise} A promise that resolves once the spinner stops
     	###
 		stopSpinner: (id, force = false) ->
-			if not @$scope._spin_els?[id]
+			if not @$scope.dp_spin_els?[id]
 				d = @$q.defer()
 				d.resolve()
 				return d.promise()
 
-			@$scope._spin_els[id].setSpinDone()
+			@$scope.dp_spin_els[id].setSpinDone()
 
 			if force
-				@$scope._spin_els[id].setTimeoutDone()
+				@$scope.dp_spin_els[id].setTimeoutDone()
 
-			return @$scope._spin_els[id]._promise
+			return @$scope.dp_spin_els[id]._promise
 
 
 		###*

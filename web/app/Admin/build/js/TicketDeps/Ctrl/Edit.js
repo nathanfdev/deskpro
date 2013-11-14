@@ -118,7 +118,7 @@
             dep.email_gateway_id = 0;
           }
           _this.dep = _this.em.createUnmanagedEntity('department', 'id', dep);
-          _this.dep._enable_user_title = !!_this.dep.user_title;
+          _this.dep.enable_user_title = !!_this.dep.user_title;
           _this.initDeplistData(departments);
           _this.initEmailAccountsData(data_results.data.api_ticket_accounts.ticket_accounts);
           _this.initData({
@@ -224,7 +224,7 @@
         if (!this.$scope.form_props.$valid) {
           return;
         }
-        if (!this.dep._enable_user_title) {
+        if (!this.dep.enable_user_title) {
           this.dep.user_title = '';
         }
         props = this.getPropsData();
@@ -263,7 +263,7 @@
         if (this.em.hasById('department', this.dep.id)) {
           model = this.em.getById('department', this.dep.id);
           model.title = this.dep.title;
-          model._full_title = full_title;
+          model.full_title = full_title;
           model.user_title = this.dep.user_title;
           model.parent_id = this.dep.parent_id;
           this.DepartmentData.resetHierarchy();
@@ -271,7 +271,7 @@
           promise.success(function(result) {
             _this.dep.id = result.id;
             model = _this.em.createEntity('department', 'id', _this.dep.getData());
-            model._full_title = full_title;
+            model.full_title = full_title;
             if (!model.parent_id || model.parent_id === "0") {
               model.parent_id = null;
             }

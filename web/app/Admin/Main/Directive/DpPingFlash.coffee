@@ -22,7 +22,7 @@ define ->
 			scope: false,
 			link: (scope, element, attrs) ->
 				element.addClass('dp-ping-flash')
-				id = '_ctrl_elemnt_ping.' + attrs['dpPingFlash'];
+				id = 'dp_ctrl_elemnt_ping.' + attrs['dpPingFlash'];
 
 				scope.$watch(id, (newVal) ->
 					if not newVal then return

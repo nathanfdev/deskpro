@@ -25,12 +25,12 @@
           link: function(scope, element, attrs) {
             var id, scopeName, update;
             id = attrs['dpShowSpinning'];
-            scopeName = '_spin_els.' + id;
+            scopeName = 'dp_spin_els.' + id;
             update = function() {
               var _ref;
-              if (!((_ref = scope._spin_els) != null ? _ref[id] : void 0)) {
+              if (!((_ref = scope.dp_spin_els) != null ? _ref[id] : void 0)) {
                 return element.hide();
-              } else if (scope._spin_els[id].doneTime && scope._spin_els[id].doneSpin) {
+              } else if (scope.dp_spin_els[id].doneTime && scope.dp_spin_els[id].doneSpin) {
                 return element.hide();
               } else {
                 return element.show();

@@ -37,17 +37,17 @@
           link: function(scope, element, attrs) {
             var bodyId, btnId, defaultState, icon, id, scopedId, updateState;
             id = attrs['dpInhelpBtn'].replace(/\./g, '_');
-            scopedId = '_ctrl_inhelp_state.' + id;
-            if (!$rootScope._ctrl_inhelp_state) {
-              $rootScope._ctrl_inhelp_state = {};
+            scopedId = 'dp_ctrl_inhelp_state.' + id;
+            if (!$rootScope.dp_ctrl_inhelp_state) {
+              $rootScope.dp_ctrl_inhelp_state = {};
             }
             defaultState = true;
             if ((attrs['defaultState'] != null) === 'closed') {
               defaultState = false;
             }
-            $rootScope._ctrl_inhelp_state[id] = InhelpState.getState(id);
-            if ($rootScope._ctrl_inhelp_state[id] === null) {
-              $rootScope._ctrl_inhelp_state[id] = defaultState;
+            $rootScope.dp_ctrl_inhelp_state[id] = InhelpState.getState(id);
+            if ($rootScope.dp_ctrl_inhelp_state[id] === null) {
+              $rootScope.dp_ctrl_inhelp_state[id] = defaultState;
             }
             bodyId = 'dp_inhelp_' + id;
             btnId = bodyId + '_btn';
@@ -56,14 +56,14 @@
             element.attr('id', btnId).addClass('inhelp-trigger');
             updateState = function() {
               var _ref, _ref1;
-              if ((_ref = $rootScope._ctrl_inhelp_state) != null ? _ref[id] : void 0) {
+              if ((_ref = $rootScope.dp_ctrl_inhelp_state) != null ? _ref[id] : void 0) {
                 element.fadeOut(200);
                 $('#' + bodyId).slideDown(200);
               } else {
                 element.fadeIn(200);
                 $('#' + bodyId).slideUp(200);
               }
-              return InhelpState.setState(id, (_ref1 = $rootScope._ctrl_inhelp_state) != null ? _ref1[id] : void 0);
+              return InhelpState.setState(id, (_ref1 = $rootScope.dp_ctrl_inhelp_state) != null ? _ref1[id] : void 0);
             };
             $rootScope.$watch(scopedId, function(newVal) {
               return updateState(newVal);
@@ -72,14 +72,14 @@
               ev.preventDefault();
               return scope.$apply(function() {
                 var _ref, _ref1;
-                if ((_ref = $rootScope._ctrl_inhelp_state) != null ? _ref[id] : void 0) {
-                  return $rootScope._ctrl_inhelp_state[id] = false;
+                if ((_ref = $rootScope.dp_ctrl_inhelp_state) != null ? _ref[id] : void 0) {
+                  return $rootScope.dp_ctrl_inhelp_state[id] = false;
                 } else {
-                  return (_ref1 = $rootScope._ctrl_inhelp_state) != null ? _ref1[id] = true : void 0;
+                  return (_ref1 = $rootScope.dp_ctrl_inhelp_state) != null ? _ref1[id] = true : void 0;
                 }
               });
             });
-            if ($rootScope._ctrl_inhelp_state[id]) {
+            if ($rootScope.dp_ctrl_inhelp_state[id]) {
               element.hide();
               return $('#' + bodyId).show();
             } else {

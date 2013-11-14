@@ -153,7 +153,7 @@
             return _this._showStateConfirmLeave();
           }
         });
-        this.$scope._ctrl_elemnt_ping = {};
+        this.$scope.dp_ctrl_elemnt_ping = {};
         this._saved_state = {};
         this.has_init = false;
         this.init();
@@ -226,7 +226,7 @@
 
 
       Admin_Ctrl_Base.prototype.pingElement = function(id) {
-        return this.$scope._ctrl_elemnt_ping[id] = (new Date()).getTime();
+        return this.$scope.dp_ctrl_elemnt_ping[id] = (new Date()).getTime();
       };
 
       /*
@@ -247,10 +247,10 @@
         if (minTime == null) {
           minTime = 1050;
         }
-        if (!this.$scope._spin_els) {
-          this.$scope._spin_els = {};
+        if (!this.$scope.dp_spin_els) {
+          this.$scope.dp_spin_els = {};
         }
-        if (this.$scope._spin_els[id]) {
+        if (this.$scope.dp_spin_els[id]) {
           this.stopSpinner(id, true);
         }
         deferred = this.$q.defer();
@@ -277,7 +277,7 @@
             return desc.setTimeoutDone();
           }, minTime)
         };
-        this.$scope._spin_els[id] = desc;
+        this.$scope.dp_spin_els[id] = desc;
         return desc._promise;
       };
 
@@ -298,16 +298,16 @@
         if (force == null) {
           force = false;
         }
-        if (!((_ref = this.$scope._spin_els) != null ? _ref[id] : void 0)) {
+        if (!((_ref = this.$scope.dp_spin_els) != null ? _ref[id] : void 0)) {
           d = this.$q.defer();
           d.resolve();
           return d.promise();
         }
-        this.$scope._spin_els[id].setSpinDone();
+        this.$scope.dp_spin_els[id].setSpinDone();
         if (force) {
-          this.$scope._spin_els[id].setTimeoutDone();
+          this.$scope.dp_spin_els[id].setTimeoutDone();
         }
-        return this.$scope._spin_els[id]._promise;
+        return this.$scope.dp_spin_els[id]._promise;
       };
 
       /**

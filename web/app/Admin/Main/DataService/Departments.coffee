@@ -86,11 +86,11 @@ define [
 					dep.parent_id = 0
 
 			for dep in @deps.values()
-				dep._full_title = dep.title
+				dep.full_title = dep.title
 				if dep.parent_id
 					parent_dep = @deps.get(dep.parent_id)
 					if parent_dep
-						dep._full_title = parent_dep.title + " > " + dep.title
+						dep.full_title = parent_dep.title + " > " + dep.title
 						if not @parent_to_children[parent_dep.id]?
 							@parent_to_children[parent_dep.id] = []
 
@@ -120,11 +120,11 @@ define [
 				@deps.set(model.id, model)
 
 			for dep in @deps.values()
-				dep._full_title = dep.title
+				dep.full_title = dep.title
 				if dep.parent_id
 					parent_dep = @deps.get(dep.parent_id)
 					if parent_dep
-						dep._full_title = parent_dep.title + " > " + dep.title
+						dep.full_title = parent_dep.title + " > " + dep.title
 						if not @parent_to_children[parent_dep.id]?
 							@parent_to_children[parent_dep.id] = []
 

@@ -27,7 +27,7 @@
           link: function(scope, element, attrs) {
             var id;
             element.addClass('dp-ping-flash');
-            id = '_ctrl_elemnt_ping.' + attrs['dpPingFlash'];
+            id = 'dp_ctrl_elemnt_ping.' + attrs['dpPingFlash'];
             scope.$watch(id, function(newVal) {
               if (!newVal) {
                 return;

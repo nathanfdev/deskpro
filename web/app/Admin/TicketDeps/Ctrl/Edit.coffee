@@ -114,7 +114,7 @@ define [
 				if not dep.email_gateway_id then dep.email_gateway_id = 0
 				@dep = @em.createUnmanagedEntity('department', 'id', dep)
 
-				@dep._enable_user_title = !!@dep.user_title
+				@dep.enable_user_title = !!@dep.user_title
 
 				@initDeplistData(departments)
 				@initEmailAccountsData(data_results.data.api_ticket_accounts.ticket_accounts)
@@ -194,7 +194,7 @@ define [
 			if not @$scope.form_props.$valid
 				return
 
-			if not @dep._enable_user_title
+			if not @dep.enable_user_title
 				@dep.user_title = ''
 
 			props = @getPropsData()
@@ -237,7 +237,7 @@ define [
 			if @em.hasById('department', @dep.id)
 				model = @em.getById('department', @dep.id)
 				model.title = @dep.title
-				model._full_title = full_title
+				model.full_title = full_title
 				model.user_title = @dep.user_title
 				model.parent_id = @dep.parent_id
 				@DepartmentData.resetHierarchy()
@@ -246,7 +246,7 @@ define [
 					@dep.id = result.id
 
 					model = @em.createEntity('department', 'id', @dep.getData())
-					model._full_title = full_title
+					model.full_title = full_title
 
 					if not model.parent_id or model.parent_id == "0"
 						model.parent_id = null
