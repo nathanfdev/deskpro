@@ -1140,8 +1140,8 @@ define(function() {
 	routes.push({
 		id: 'server.server_reqs',
 		url: '/server_reqs',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerReqs/server-reqs.html',
+		controller: 'Admin_ServerReqs_Ctrl_ServerReqs'
 	});
 
 	//###

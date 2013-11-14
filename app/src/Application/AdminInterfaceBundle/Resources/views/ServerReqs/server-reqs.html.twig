@@ -1,0 +1,105 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('adm.server_reqs.check_server_reqs') }}</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+
+				<div class="panel-heading">
+					<h3>
+						<span>{{ phrase('adm.server_reqs.web_checks') }}</span>
+					</h3>
+				</div>
+
+				<div>
+					<table class="table table-bordered">
+						<tbody>
+						<tr ng-repeat="message in server_reqs.web_checks">
+							<td>
+								<div class="pull-right" ng-if="message.readMore">
+									<a ng-href="{{ ng_var('message.readMore') }}" target="_blank">
+										{{ phrase('adm.server_reqs.read_more_about') }}
+									</a>
+								</div>
+								<span ng-bind-html="message.description"></span>
+								<div
+										ng-class="{
+											'danger-message well': message.error && !message.recommendation,
+											'info-message well': message.error && message.recommendation
+										}"
+										ng-if="message.error"
+										ng-bind-html="message.error"></div>
+							</td>
+							<td class="success" ng-if="!message.error">
+								OK
+							</td>
+							<td class="danger" ng-if="message.error && !message.recommendation">
+								FAIL
+							</td>
+							<td class="info" ng-if="message.error && message.recommendation">
+								RECOMMENDED
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form" ng-if="server_reqs.cli_checks">
+			<div class="panel panel-innertable">
+
+				<div class="panel-heading">
+					<h3>
+						<span>{{ phrase('adm.server_reqs.cli_checks') }}</span>
+					</h3>
+				</div>
+
+				<div>
+					<table class="table table-bordered">
+						<tbody>
+						<tr ng-repeat="message in server_reqs.cli_checks">
+							<td>
+								<div class="pull-right" ng-if="message.readMore">
+									<a ng-href="{{ ng_var('message.readMore') }}" target="_blank">
+										{{ phrase('adm.server_reqs.read_more_about') }}
+									</a>
+								</div>
+								<span ng-bind-html="message.description"></span>
+
+								<div
+										ng-class="{
+													'danger-message well': message.error && !message.recommendation,
+													'info-message well': message.error && message.recommendation
+												}"
+										ng-if="message.error"
+										ng-bind-html="message.error"></div>
+							</td>
+							<td class="success" ng-if="!message.error">
+								OK
+							</td>
+							<td class="danger" ng-if="message.error && !message.recommendation">
+								FAIL
+							</td>
+							<td class="info" ng-if="message.error && message.recommendation">
+								RECOMMENDED
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</article>
+
+	</section>
+
+{% endblock %}

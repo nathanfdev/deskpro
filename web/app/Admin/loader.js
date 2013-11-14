@@ -147,7 +147,8 @@ requirejs([
 	'Admin/FeedbackCategories/Ctrl/Edit',
 	'Admin/TwitterSetup/Ctrl/TwitterSetup',
 	'Admin/TwitterAccounts/Ctrl/List',
-	'Admin/TwitterAccounts/Ctrl/Edit'
+	'Admin/TwitterAccounts/Ctrl/Edit',
+	'Admin/ServerReqs/Ctrl/ServerReqs'
 ], function(angular) {
 	'use strict';
 
