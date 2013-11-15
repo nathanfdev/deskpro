@@ -1,7 +1,9 @@
 define [
 	'DeskPRO/Logger/Logger',
+	'DeskPRO/Logger/Formatter/LineFormatter',
 ], (
-	Logger
+	Logger,
+	LineFormatter
 ) ->
 	class AbstractHandler
 		constructor: (@level = Logger.DEBUG, @bubble = true) ->
@@ -75,7 +77,7 @@ define [
     	# @return {Object}
 		###
 		getDefaultFormatter: ->
-			return null
+			return new LineFormatter()
 
 
 		###

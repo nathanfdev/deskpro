@@ -28,7 +28,7 @@
           if (time > 500) {
             level = 'warning';
           }
-          this.logger[level](["[InterfaceTimer] (" + this.lastController.constructor.CTRL_ID + ") Load Digest Time: %dms", time]);
+          this.logger[level](["[InterfaceTimer] (" + this.lastController.constructor.CTRL_ID + ") Load Digest Time: {0}ms", time]);
           return this.isWithinLoad = false;
         }
       };

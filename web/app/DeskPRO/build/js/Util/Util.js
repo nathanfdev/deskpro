@@ -443,22 +443,25 @@
             _visited.push(obj);
             if (_rlvl >= maxLvl) {
               if (this.isArray(obj)) {
-                out += "array(*MAX LEVEL REACHED*)";
+                out += "array:*MAX LEVEL REACHED*";
               } else {
-                out += "object(*MAX LEVEL REACHED*)";
+                out += "object:*MAX LEVEL REACHED*";
               }
             } else {
-              if (_visited) {
+              if (_visited && _visited.length) {
                 vis = this.clone(_visited);
               } else {
                 vis = [];
               }
               if (this.isArray(obj)) {
-                out += "array:\n";
-                for (_i = 0, _len = obj.length; _i < _len; _i++) {
-                  v = obj[_i];
-                  out += this.dump(v, maxLvl, _rlvl + 1, vis);
-                  out += ",\n";
+                out += "array:" + obj.length;
+                if (obj.length) {
+                  out += "\n";
+                  for (_i = 0, _len = obj.length; _i < _len; _i++) {
+                    v = obj[_i];
+                    out += this.dump(v, maxLvl, _rlvl + 1, vis);
+                    out += ",\n";
+                  }
                 }
               } else {
                 out += "object:\n";

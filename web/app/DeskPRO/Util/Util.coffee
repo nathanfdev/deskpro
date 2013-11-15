@@ -302,7 +302,6 @@ define [
 		###
 		dump: (obj, maxLvl = 5, _rlvl = 0, _visited = null) ->
 			out = ''
-
 			out += Strings.repeat("\t", _rlvl)
 
 			if obj == null
@@ -336,20 +335,22 @@ define [
 
 					if _rlvl >= maxLvl
 						if @isArray(obj)
-							out += "array(*MAX LEVEL REACHED*)"
+							out += "array:*MAX LEVEL REACHED*"
 						else
-							out += "object(*MAX LEVEL REACHED*)"
+							out += "object:*MAX LEVEL REACHED*"
 					else
-						if _visited
+						if _visited and _visited.length
 							vis = @clone(_visited)
 						else
 							vis = []
 
 						if @isArray(obj)
-							out += "array:\n"
-							for v in obj
-								out += @dump(v, maxLvl, _rlvl+1, vis)
-								out += ",\n"
+							out += "array:#{obj.length}"
+							if obj.length
+								out += "\n"
+								for v in obj
+									out += @dump(v, maxLvl, _rlvl+1, vis)
+									out += ",\n"
 						else
 							out += "object:\n"
 							for own k, v of obj

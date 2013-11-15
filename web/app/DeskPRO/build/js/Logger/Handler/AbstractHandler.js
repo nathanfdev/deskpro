@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Logger/Logger'], function(Logger) {
+  define(['DeskPRO/Logger/Logger', 'DeskPRO/Logger/Formatter/LineFormatter'], function(Logger, LineFormatter) {
     var AbstractHandler;
     return AbstractHandler = (function() {
       function AbstractHandler(level, bubble) {
@@ -97,7 +97,7 @@
 
 
       AbstractHandler.prototype.getDefaultFormatter = function() {
-        return null;
+        return new LineFormatter();
       };
 
       /*

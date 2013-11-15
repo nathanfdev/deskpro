@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['DeskPRO/Util/Util', 'DeskPRO/Logger/Handler/AbstractProcessingHandler'], function(Util, AbstractProcessingHandler) {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Logger/Handler/AbstractProcessingHandler', 'DeskPRO/Logger/Formatter/ConsoleFormatter'], function(Util, AbstractProcessingHandler, ConsoleFormatter) {
     var ConsoleHandler, _ref;
     return ConsoleHandler = (function(_super) {
       __extends(ConsoleHandler, _super);
@@ -13,7 +13,7 @@
       }
 
       ConsoleHandler.prototype.write = function(record) {
-        var consoleName, messageExtra, prefix, _ref1, _ref2;
+        var consoleName, format_args, _ref1, _ref2;
         consoleName = null;
         if (record.level_name === 'debug') {
           consoleName = 'debug';
@@ -25,17 +25,9 @@
           consoleName = 'log';
         }
         if (((_ref2 = window.console) != null ? _ref2[consoleName] : void 0) != null) {
-          prefix = "[" + record.channel + "." + record.level_name + "] ";
-          messageExtra = '';
-          if (record.extra.error) {
-            messageExtra = this._formatError(record.extra.error);
-          }
-          if ((record.messageRaw != null) && Util.isArray(record.messageRaw)) {
-            record.messageRaw[0] = prefix + record.messageRaw[0] + messageExtra;
-            return window.console[consoleName].apply(window.console, record.messageRaw);
-          } else {
-            return window.console[consoleName].apply(window.console, [prefix + record.message + messageExtra]);
-          }
+          format_args = record.formatted.args;
+          format_args.unshift(record.formatted.format);
+          return window.console[consoleName].apply(window.console, format_args);
         }
       };
 
@@ -53,6 +45,15 @@
           }
         }
         return arg;
+      };
+
+      /*
+        	# @return {Object}
+      */
+
+
+      ConsoleHandler.prototype.getDefaultFormatter = function() {
+        return new ConsoleFormatter();
       };
 
       return ConsoleHandler;

@@ -1,4 +1,6 @@
 (function() {
+  var __slice = [].slice;
+
   define(function() {
     var DeskPRO_Util_Strings;
     DeskPRO_Util_Strings = (function() {
@@ -154,19 +156,36 @@
 
 
       DeskPRO_Util_Strings.prototype.repeat = function(str, num) {
-        var count, res;
+        var res;
         if (num < 1) {
           return '';
         }
         res = '';
-        while (num > 0) {
-          if (count & 1) {
-            res += str;
-          }
-          count = count >> 1;
-          str = str + str;
+        while (num-- > 0) {
+          res += str;
         }
         return res;
+      };
+
+      /*
+        	# Simple formatter replaces {0}, {1} etc in a string with args passed.
+        	#
+        	# @param {String} str
+        	# @param {mixed} args...  Args to place back in to str
+        	# @return {String}
+      */
+
+
+      DeskPRO_Util_Strings.prototype.format = function() {
+        var args, str;
+        str = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+        return str.replace(/\{(\d+)\}/g, function(m, num) {
+          if (args[num] != null) {
+            return args[num];
+          } else {
+            return m;
+          }
+        });
       };
 
       /*

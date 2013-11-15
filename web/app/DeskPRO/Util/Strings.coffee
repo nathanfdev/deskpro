@@ -120,13 +120,27 @@ define ->
 		repeat: (str, num) ->
 			if num < 1 then return ''
 			res = ''
-			while (num  > 0)
-				if count & 1
-					res += str
-				count = count >> 1
-				str = str + str
+			while (num--  > 0)
+				res += str
 
 			return res
+
+
+		###
+    	# Simple formatter replaces {0}, {1} etc in a string with args passed.
+    	#
+    	# @param {String} str
+    	# @param {mixed} args...  Args to place back in to str
+    	# @return {String}
+    	###
+		format: (str, args...) ->
+			return str.replace(/\{(\d+)\}/g, (m, num) ->
+				if args[num]?
+					return args[num]
+				else
+					return m
+			)
+
 
 		###
     	# Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)

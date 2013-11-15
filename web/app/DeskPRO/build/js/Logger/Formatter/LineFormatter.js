@@ -2,16 +2,16 @@
   define(['DeskPRO/Util/Strings'], function(Strings) {
     var LineFormatter;
     return LineFormatter = (function() {
-      function LineFormatter(format) {
-        this.format = format;
-        if (!this.format) {
-          this.format = LineFormatter.SIMPLE_FORMAT;
+      function LineFormatter(formatString) {
+        this.formatString = formatString;
+        if (!this.formatString) {
+          this.formatString = LineFormatter.SIMPLE_FORMAT;
         }
       }
 
       LineFormatter.prototype.format = function(record) {
         var k, output, v, _ref;
-        output = this.format;
+        output = this.formatString;
         _ref = record.extra;
         for (k in _ref) {
           v = _ref[k];
@@ -24,7 +24,7 @@
         return output;
       };
 
-      LineFormatter.SIMPLE_FORMAT = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
+      LineFormatter.SIMPLE_FORMAT = "[%date%] %channel%.%level_name%: %message% %context% %extra%\n";
 
       return LineFormatter;
 

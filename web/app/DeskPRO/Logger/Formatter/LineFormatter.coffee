@@ -4,13 +4,13 @@ define [
 	Strings
 ) ->
 	class LineFormatter
-		constructor: (@format) ->
-			if not @format
-				@format = LineFormatter.SIMPLE_FORMAT
+		constructor: (@formatString) ->
+			if not @formatString
+				@formatString = LineFormatter.SIMPLE_FORMAT
 
 
 		format: (record) ->
-			output = @format
+			output = @formatString
 
 			for k, v of record.extra
 				output = output.replace(new RegExp(Strings.escapeRegex("%extra.#{k}%"), 'g'), v + "")
@@ -19,4 +19,4 @@ define [
 
 			return output
 
-		@SIMPLE_FORMAT = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n"
+		@SIMPLE_FORMAT = "[%date%] %channel%.%level_name%: %message% %context% %extra%\n"

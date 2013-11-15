@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Util/Util'], function(Util) {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings'], function(Util, Strings) {
     var Logger;
     return Logger = (function() {
       /*
@@ -66,7 +66,7 @@
 
 
       Logger.prototype.addRecord = function(level, message, context) {
-        var handler, handlerKey, k, messageRaw, proc, record, _i, _j, _len, _len1, _ref, _ref1;
+        var consoleArgs, handler, handlerKey, k, messageConsole, messageFormat, messageRaw, messageString, proc, record, stringArgs, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
         if (context == null) {
           context = {};
         }
@@ -75,11 +75,27 @@
         }
         messageRaw = message;
         if (Util.isArray(message)) {
-          message = message.join(" ");
+          messageFormat = message.shift();
+          stringArgs = [];
+          consoleArgs = [];
+          for (_i = 0, _len = message.length; _i < _len; _i++) {
+            v = message[_i];
+            if (Util.isString(v) || Util.isNumber(v)) {
+              stringArgs.push(v + "");
+              consoleArgs.push("%s");
+            } else {
+              stringArgs.push(Util.dump(v));
+              consoleArgs.push("%o");
+            }
+          }
+          messageString = Strings.format(messageFormat, stringArgs);
+          messageConsole = Util.clone(message);
+          messageConsole.unshift(Strings.format(messageFormat, consoleArgs));
         }
         record = {
-          message: message,
+          message: messageString,
           messageRaw: messageRaw,
+          messageConsole: messageConsole,
           context: context,
           level: level,
           level_name: Logger.LEVELS[level],
@@ -89,7 +105,7 @@
         };
         handlerKey = null;
         _ref = this.handlers;
-        for (k = _i = 0, _len = _ref.length; _i < _len; k = ++_i) {
+        for (k = _j = 0, _len1 = _ref.length; _j < _len1; k = ++_j) {
           handler = _ref[k];
           if (handler.isHandling(record)) {
             handlerKey = k;
@@ -100,8 +116,8 @@
           return false;
         }
         _ref1 = this.processors;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          proc = _ref1[_j];
+        for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+          proc = _ref1[_k];
           if (proc.process != null) {
             record = proc.process(record);
           } else {

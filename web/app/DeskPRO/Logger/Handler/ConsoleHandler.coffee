@@ -1,9 +1,11 @@
 define [
 	'DeskPRO/Util/Util'
 	'DeskPRO/Logger/Handler/AbstractProcessingHandler',
+	'DeskPRO/Logger/Formatter/ConsoleFormatter',
 ], (
 	Util,
-	AbstractProcessingHandler
+	AbstractProcessingHandler,
+	ConsoleFormatter
 ) ->
 	class ConsoleHandler extends AbstractProcessingHandler
 		write: (record) ->
@@ -18,16 +20,10 @@ define [
 				consoleName = 'log'
 
 			if window.console?[consoleName]?
-				prefix = "[#{record.channel}.#{record.level_name}] "
-				messageExtra = ''
-				if record.extra.error
-					messageExtra = @_formatError(record.extra.error)
+				format_args = record.formatted.args
+				format_args.unshift(record.formatted.format)
 
-				if record.messageRaw? and Util.isArray(record.messageRaw)
-					record.messageRaw[0] = prefix + record.messageRaw[0] + messageExtra
-					window.console[consoleName].apply(window.console, record.messageRaw)
-				else
-					window.console[consoleName].apply(window.console, [prefix + record.message + messageExtra])
+				window.console[consoleName].apply(window.console, format_args)
 
 		_formatError: ->
 			if arg instanceof Error
@@ -40,3 +36,9 @@ define [
 					arg = arg.message + '\n' + arg.sourceURL + ':' + arg.line
 
 			return arg
+
+		###
+    	# @return {Object}
+		###
+		getDefaultFormatter: ->
+			return new ConsoleFormatter()

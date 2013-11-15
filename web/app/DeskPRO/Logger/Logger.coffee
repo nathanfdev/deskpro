@@ -1,7 +1,9 @@
 define [
-	'DeskPRO/Util/Util'
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Strings'
 ], (
-	Util
+	Util,
+	Strings
 )->
 	class Logger
 		###
@@ -61,11 +63,26 @@ define [
 			messageRaw = message
 
 			if Util.isArray(message)
-				message = message.join(" ")
+				messageFormat = message.shift()
+				stringArgs = []
+				consoleArgs = []
+
+				for v in message
+					if Util.isString(v) or Util.isNumber(v)
+						stringArgs.push(v + "")
+						consoleArgs.push("%s")
+					else
+						stringArgs.push(Util.dump(v))
+						consoleArgs.push("%o")
+
+				messageString = Strings.format(messageFormat, stringArgs)
+				messageConsole = Util.clone(message)
+				messageConsole.unshift(Strings.format(messageFormat, consoleArgs))
 
 			record = {
-				message:    message,
-				messageRaw: messageRaw,
+				message:        messageString,
+				messageRaw:     messageRaw,
+				messageConsole: messageConsole,
 				context:    context,
 				level:      level,
 				level_name: Logger.LEVELS[level],

@@ -22,7 +22,7 @@ define ->
 				if time > 500
 					level = 'warning'
 
-				@logger[level](["[InterfaceTimer] (#{@lastController.constructor.CTRL_ID}) Load Digest Time: %dms", time])
+				@logger[level](["[InterfaceTimer] (#{@lastController.constructor.CTRL_ID}) Load Digest Time: {0}ms", time])
 				@isWithinLoad = false
 
 		endControllerLoad: ->
