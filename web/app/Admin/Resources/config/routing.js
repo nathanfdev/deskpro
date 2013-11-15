@@ -1180,8 +1180,8 @@ define(function() {
 	routes.push({
 		id: 'server.php_info',
 		url: '/php_info',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerPhpInfo/server-php-info.html',
+		controller: 'Admin_ServerPhpInfo_Ctrl_ServerPhpInfo'
 	});
 
 	//###
