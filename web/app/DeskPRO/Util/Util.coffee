@@ -314,7 +314,7 @@ define [
 			else if @isFloat(obj)
 				out += "float:#{obj}"
 			else if @isString(obj)
-				out += "string:\"#{obj}\""
+				out += "string:#{obj}"
 			else if @isBoolean(obj)
 				out += "bool:" + (if obj then "true" else "false")
 			else if typeof obj == "undefined"

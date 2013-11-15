@@ -47,7 +47,10 @@ define ['angular'], (angular) ->
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)
-			angular.module('Admin_App').controller(@CTRL_ID, ctrl_def);
+			if not window.DP_CTRL_REG
+				window.DP_CTRL_REG = []
+
+			window.DP_CTRL_REG.push([@CTRL_ID, ctrl_def])
 			return this
 
 

@@ -68,7 +68,10 @@
         }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
-        angular.module('Admin_App').controller(this.CTRL_ID, ctrl_def);
+        if (!window.DP_CTRL_REG) {
+          window.DP_CTRL_REG = [];
+        }
+        window.DP_CTRL_REG.push([this.CTRL_ID, ctrl_def]);
         return this;
       };
 

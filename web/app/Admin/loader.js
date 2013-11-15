@@ -165,6 +165,14 @@ requirejs([
 
 	angular.element().ready(function() {
 		$html.addClass('ng-app');
+
+		if (window.DP_CTRL_REG) {
+			var module = angular.module('Admin_App')
+			for (var x = 0; x < window.DP_CTRL_REG.length; x++) {
+				module.controller(window.DP_CTRL_REG[x][0], window.DP_CTRL_REG[x][1]);
+			}
+		}
+
 		angular.bootstrap($html, ['Admin_App']);
 	});
 });

@@ -422,7 +422,7 @@
         } else if (this.isFloat(obj)) {
           out += "float:" + obj;
         } else if (this.isString(obj)) {
-          out += "string:\"" + obj + "\"";
+          out += "string:" + obj;
         } else if (this.isBoolean(obj)) {
           out += "bool:" + (obj ? "true" : "false");
         } else if (typeof obj === "undefined") {
