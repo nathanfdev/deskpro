@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Labels/Base/Ctrl/List', 'Admin/App'], function(Admin_Labels_Base_Ctrl_List) {
+  define(['Admin/Labels/Base/Ctrl/List'], function(Admin_Labels_Base_Ctrl_List) {
     var Admin_Labels_Feedback_Ctrl_List, _ref;
     Admin_Labels_Feedback_Ctrl_List = (function(_super) {
       __extends(Admin_Labels_Feedback_Ctrl_List, _super);

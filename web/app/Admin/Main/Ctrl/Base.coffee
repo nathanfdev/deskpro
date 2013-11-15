@@ -1,4 +1,4 @@
-define ['angular', 'Admin/App'], (angular) ->
+define ['angular'], (angular) ->
 	###*
 	* The base controller class is mainly to make it easier to define controllers with angular.
     *

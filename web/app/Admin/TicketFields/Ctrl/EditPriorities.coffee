@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_TicketFields_Ctrl_EditPriorities extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditPriorities'
 		@CTRL_AS = 'TicketPris'

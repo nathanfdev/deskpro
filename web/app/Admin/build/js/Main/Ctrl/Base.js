@@ -2,7 +2,7 @@
   var __slice = [].slice,
     __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'Admin/App'], function(angular) {
+  define(['angular'], function(angular) {
     /**
     	* The base controller class is mainly to make it easier to define controllers with angular.
        *

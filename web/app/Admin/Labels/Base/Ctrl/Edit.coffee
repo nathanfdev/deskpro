@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'Admin/App'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Labels_Base_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_AS = 'LabelsEdit'
 		@DEPS = ['em', '$stateParams', '$rootScope', 'LabelManager']

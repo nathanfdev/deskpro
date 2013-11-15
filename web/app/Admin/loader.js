@@ -83,7 +83,8 @@ requirejs([
 	'DeskPRO/OptionBuilder/Module',
 	'DeskPRO/CategoryBuilder/Module',
 
-	'Admin/App',
+	'Admin/App/App',
+
 	'Admin/EmailStatus/Ctrl/SendmailList',
 	'Admin/EmailStatus/Ctrl/SourceList',
 	'Admin/Main/Ctrl/Bare',
