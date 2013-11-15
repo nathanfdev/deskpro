@@ -37,6 +37,7 @@ require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\PageLog\PageLogger;
 
 class KernelBooter
 {
@@ -308,6 +309,12 @@ class KernelBooter
 			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		}
 
+		dp_pagelog_reset();
+		dp_pagelog_set('user_agent', !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null);
+		dp_pagelog_set('user_ip', dp_get_user_ip_address());
+		dp_pagelog_set('request_id', defined('DP_REQUEST_ID') ? DP_REQUEST_ID : null);
+		dp_pagelog_set('page_url', $request->getRequestUri());
+
 		if (dp_trust_proxy_data()) {
 			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
 			\Symfony\Component\HttpFoundation\Request::trustProxyData();
@@ -325,7 +332,16 @@ class KernelBooter
 					self::_updateCachedFile($response);
 				} catch (\Exception $e) {}
 			}
+
+			if (defined('DP_REQUEST_ID')) {
+				$response->headers->set('X-DeskPRO-RequestID', DP_REQUEST_ID);
+			}
+
 			$response->send();
+
+			dp_pagelog_set('response_type', $response->headers->get('Content-Type'));
+			dp_pagelog_set('response_code', $response->getStatusCode());
+			dp_pagelog_set('response_size', strlen($response->getContent()));
 		} catch (\Doctrine\DBAL\DBALException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				// This will show an error page if already installed, so the redirect to install wont happen
@@ -1405,6 +1421,57 @@ HTML;
 		return isset($preferredLanguages[0]) ? $preferredLanguages[0] : $locales[0];
 	}
 
+	public static function pagelogSaveStat()
+	{
+		if (!isset($GLOBALS['DP_DB_CON']['db'])) {
+			return;
+		}
+		$db = $GLOBALS['DP_DB_CON']['db'];
+		$row = array(
+			'date_created'  => gmdate('Y-m-d H:i:s'),
+			'request_id'    => dp_pagelog_get('request_id'),
+			'user_agent'    => dp_pagelog_get('user_agent') ?: '',
+			'user_ip'       => dp_pagelog_get('user_ip') ?: '0.0.0.0',
+			'page_id'       => dp_pagelog_get('page_id') ?: '',
+			'page_url'      => dp_pagelog_get('page_url') ?: '',
+			'response_type' => dp_pagelog_get('response_type') ?: '',
+			'response_code' => dp_pagelog_get('response_code') ?: '',
+			'response_size' => dp_pagelog_get('response_size') ?: '',
+			'query_count'   => dp_pagelog_get('query_count') ?: '',
+			'time_php'      => sprintf("%.4f", dp_pagelog_get('time_php') ?: 0.00),
+			'time_db'       => sprintf("%.4f", dp_pagelog_get('time_db') ?: 0.00),
+			'time_end'      => sprintf("%.4f", dp_pagelog_get('time_end') ?: 0.00),
+		);
+		$db->insert('log_request_stats', $row);
+	}
+
+	public static function pagelogUpdateUsertime($request_id, $set_time)
+	{
+		if (!isset($GLOBALS['DP_DB_CON']['db'])) {
+			return;
+		}
+		$db = $GLOBALS['DP_DB_CON']['db'];
+
+		$m = null;
+		if (!preg_match('#^(\d{4})(\d{2})(\d{2})(\d{2})_#', $request_id, $m)) {
+			return;
+		}
+
+		$date_str = "{$m[1]}-{$m[2]}-{$m[3]} {$m[4]}";
+
+		$set_time = sprintf("%.4f", floatval($set_time));
+
+		App::getDb()->executeUpdate("
+			UPDATE log_request_stats
+			SET time_userend = ?
+			WHERE date_created BETWEEN ? AND ? AND request_id = ?
+		", array(
+			$set_time,
+			"$date_str:00:00",
+			"$date_str:59:59",
+			$request_id
+		));
+	}
 
 	/**#@+
 	 * Handling of shutdown stack and xdebug traces
@@ -1417,6 +1484,29 @@ HTML;
 		$called = true;
 
 		\DpShutdown::run();
+
+		if (dp_pagelog_get('request_id') && $save_pagelog_info = dp_get_config('save_pagelog_info')) {
+			if ($save_pagelog_info === true) {
+				$save_pagelog_info = 'DeskPRO\\Kernel\\KernelBooter';
+			}
+			try {
+				call_user_func(array($save_pagelog_info, 'pagelogSaveStat'));
+			} catch (\Exception $e) {}
+
+			$m = null;
+			if (isset($_REQUEST['__dp_reqtime'])) {
+				$_REQUEST['__dp_reqtime'];
+			}
+			if (isset($_REQUEST['__dp_reqtime']) && preg_match('#^([a-zA-Z0-9_]+)_t([0-9_]+)$#', $_REQUEST['__dp_reqtime'], $m)) {
+				$request_id = $m[1];
+				$set_time = floatval(str_replace('_', '.', $m[2]));
+				if ($request_id && $set_time > 0.000) {
+					try {
+						call_user_func(array($save_pagelog_info, 'pagelogUpdateUsertime'), $request_id, $set_time);
+					} catch (\Exception $e) {}
+				}
+			}
+		}
 
 		if (defined('DP_APC_STATS_KEY')) {
 			if (isset($GLOBALS['DP_QUERY_COUNT'])) {

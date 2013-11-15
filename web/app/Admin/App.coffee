@@ -12,6 +12,10 @@ define [
 	'Admin/OptionBuilder/TypesDef/TicketActions',
 	'Admin/OptionBuilder/TypesDef/TicketFilter',
 
+	'DeskPRO/Logger/Logger',
+	'DeskPRO/Logger/Handler/ConsoleHandler',
+	'Admin/Logging/InterfaceTimer',
+
 	'DeskPRO/Directive/DpTimeWithUnit',
 
 	'Admin/Main/Directive/Autofocus',
@@ -62,6 +66,10 @@ define [
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
 	Admin_OptionBuilder_TypesDef_TicketActions,
 	Admin_OptionBuilder_TypesDef_TicketFilter,
+
+	Logger,
+	Logger_ConsoleHandler,
+	Admin_Logging_InterfaceTimer,
 
 	DeskPRO_Directive_DpTimeWithUnit,
 
@@ -129,15 +137,110 @@ define [
 		)
 	])
 
-	###
-	Admin_App.factory('$exceptionHandler', ['$log', ($log) ->
-		return (exception, cause) ->
-			throw exception
+	Admin_App.factory('jsErrorLogger', [ '$injector', ($injector) ->
+		class jsErrorLogger
+			getApi: ->
+				return $injector.get('Api')
+
+			logScriptError: (message, scriptFile = '', scriptLine = 0, trace = '', context_data = {}) ->
+				if not context_data.url?
+					context_data.url = window.location + ''
+
+				try
+					@getApi().sendPostJson('/log-js-error', {
+						message:     message,
+						script_file: scriptFile,
+						script_line: scriptLine,
+						trace:       trace,
+						context:     context_data
+					})
+
+			logException: (exception, context_data) ->
+				trace = printStackTrace({e: exception})
+				if trace
+					trace = trace.join("\n")
+				if exception instanceof Error or exception.message?
+					@logScriptError(
+						exception.message,
+						exception.fileName || '',
+						exception.lineNumber || '',
+						trace,
+						context_data
+					)
+				else if exception.sourceURL?
+					@logScriptError(
+						exception.message,
+						exception.sourceURL,
+						exception.line,
+						trace
+					)
+
+			logErrorMessage: (message, context_data) ->
+				@logError(message)
+
+		return new jsErrorLogger()
 	])
-    ###
+
+	Admin_App.factory('$exceptionHandler', [ 'jsErrorLogger', (jsErrorLogger) ->
+		return (exception, cause) ->
+			window.setTimeout(->
+				jsErrorLogger.logException(exception)
+				exception._dpNoLog = true
+				throw exception
+			, 1)
+	])
 
 	Admin_App.service('InhelpState', ['Api', (Api) ->
 		return new Admin_Main_Service_InhelpState(Api)
+	])
+
+	####################################################################################################################
+	# Request handling
+	####################################################################################################################
+
+	Admin_App.factory('dpHttpInterceptor', [ ->
+		updateTimes = []
+
+		return {
+			request: (config) ->
+				if config.headers?['X-DeskPRO-API-Token']?
+					config.startTime = new Date()
+
+					next = updateTimes.pop()
+					if next
+						if config.url.indexOf('?') == -1
+							config.url += '?'
+						else
+							config.url += '&'
+
+						timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
+						config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
+
+				return config
+
+			response: (response) ->
+				if response.config.startTime
+					headers = response.headers()
+					if headers['x-deskpro-requestid']?
+						lastRequestId = headers['x-deskpro-requestid']
+						lastRequestTime = ((new Date()).getTime()) - response.config.startTime.getTime()
+
+						updateTimes.push({
+							timeTaken: lastRequestTime,
+							requestId: lastRequestId
+						})
+				return response
+
+			requestError: (rejection) ->
+				return rejection
+
+			responseError: (rejection) ->
+				return rejection
+		}
+	])
+
+	Admin_App.config(['$httpProvider', ($httpProvider) ->
+		$httpProvider.interceptors.push('dpHttpInterceptor');
 	])
 
 	####################################################################################################################
@@ -356,6 +459,33 @@ define [
 						return $delegate.current.name == stateId
 
 			return $delegate
+		])
+	])
+
+	Admin_App.factory('dpInterfaceTimer', [ '$log', ($log) ->
+		return new Admin_Logging_InterfaceTimer($log)
+	])
+
+	Admin_App.config(['$provide', ($provide) ->
+		$provide.decorator('$rootScope', ['dpInterfaceTimer', '$delegate', (dpInterfaceTimer, $delegate) ->
+			origDigest = $delegate.$digest
+			$delegate.$digest = ->
+				dpInterfaceTimer.startDigest()
+				ret = origDigest.apply($delegate, arguments)
+				dpInterfaceTimer.endDigest()
+				return ret
+
+			return $delegate
+		])
+	])
+
+	Admin_App.config(['$provide', ($provide) ->
+		$provide.decorator('$log', ['$delegate', ($delegate) ->
+			logger = new Logger('console')
+			consoleHandler = new Logger_ConsoleHandler(Logger.DEBUG)
+			logger.pushHandler(consoleHandler)
+
+			return logger
 		])
 	])
 

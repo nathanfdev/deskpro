@@ -114,6 +114,10 @@ class HttpKernel extends BaseHttpKernel
 		$controller = $event->getController();
 		$arguments = $this->resolver->getArguments($request, $controller);
 
+		if (isset($controller[0]) && $controller[0]) {
+			dp_pagelog_set('page_id', get_class($controller[0]) . '::' . $controller[1]);
+		}
+
 		if (isset($controller[0]) AND $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
 			// Run pre event
 			$event = new PrePostEvent(array(

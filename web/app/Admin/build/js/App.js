@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = {}.hasOwnProperty;
 
-  define(['angular', 'AdminRouting', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState', 'Admin/Main/Service/TemplateManager', 'Admin/Main/Service/DataServiceManager', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/OptionBuilder/TypesDef/TicketActions', 'Admin/OptionBuilder/TypesDef/TicketFilter', 'DeskPRO/Directive/DpTimeWithUnit', 'Admin/Main/Directive/Autofocus', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpCommaSeparated', 'Admin/Main/Directive/DpDevbar', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpListAutoload', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpOrderMenu', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/Directive/DpTristateCheck', 'Admin/Main/Directive/DpWorkingHours', 'Admin/TicketDeps/Directive/LayoutEditor', 'Admin/TicketDeps/Directive/LayoutEditorField', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments', 'Admin/FeedbackStatuses/DataService/FeedbackStatuses', 'Admin/FeedbackTypes/DataService/FeedbackTypes', 'Admin/FeedbackCategories/DataService/FeedbackCategories', 'Admin/TicketAccounts/DataService/TicketAccounts', 'Admin/Labels/Service/LabelManager'], function(angular, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState, Admin_Main_Service_TemplateManager, Admin_Main_Service_DataServiceManager, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_OptionBuilder_TypesDef_TicketActions, Admin_OptionBuilder_TypesDef_TicketFilter, DeskPRO_Directive_DpTimeWithUnit, Admin_Main_Directive_Autofocus, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpCommaSeparated, Admin_Main_Directive_DpDevbar, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpListAutoload, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpOrderMenu, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_Directive_DpTristateCheck, Admin_Main_Directive_DpWorkingHours, Admin_TicketDeps_Directive_LayoutEditor, Admin_TicketDeps_Directive_LayoutEditorField, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments, Admin_FeedbackStatuses_DataService_FeedbackStatuses, Admin_FeedbackTypes_DataService_FeedbackTypes, Admin_FeedbackCategories_DataService_FeedbackCategories, Admin_TicketAccounts_DataService_TicketAccounts, Admin_Labels_Service_LabelManager) {
+  define(['angular', 'AdminRouting', 'Admin/Main/Service/AppState', 'Admin/Main/Service/DpApi', 'Admin/Main/Service/Growl', 'Admin/Main/Service/InhelpState', 'Admin/Main/Service/TemplateManager', 'Admin/Main/Service/DataServiceManager', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/OptionBuilder/TypesDef/TicketActions', 'Admin/OptionBuilder/TypesDef/TicketFilter', 'DeskPRO/Logger/Logger', 'DeskPRO/Logger/Handler/ConsoleHandler', 'Admin/Logging/InterfaceTimer', 'DeskPRO/Directive/DpTimeWithUnit', 'Admin/Main/Directive/Autofocus', 'Admin/Main/Directive/BgImg', 'Admin/Main/Directive/DpCommaSeparated', 'Admin/Main/Directive/DpDevbar', 'Admin/Main/Directive/DpErrorClass', 'Admin/Main/Directive/DpHelpPage', 'Admin/Main/Directive/DpHideSpinning', 'Admin/Main/Directive/DpInhelpBody', 'Admin/Main/Directive/DpInhelpBtn', 'Admin/Main/Directive/DpListAutoload', 'Admin/Main/Directive/DpNavSubnav', 'Admin/Main/Directive/DpOpenPhraseEditor', 'Admin/Main/Directive/DpOrderMenu', 'Admin/Main/Directive/DpPingFlash', 'Admin/Main/Directive/DpRegisterMessage', 'Admin/Main/Directive/DpServerValidation', 'Admin/Main/Directive/DpShowSpinning', 'Admin/Main/Directive/DpStateMark', 'Admin/Main/Directive/DpSubmitForm', 'Admin/Main/Directive/DpTabBody', 'Admin/Main/Directive/DpTabBtn', 'Admin/Main/Directive/DpToggleSwitch', 'Admin/Main/Directive/DpTristateCheck', 'Admin/Main/Directive/DpWorkingHours', 'Admin/TicketDeps/Directive/LayoutEditor', 'Admin/TicketDeps/Directive/LayoutEditorField', 'Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments', 'Admin/FeedbackStatuses/DataService/FeedbackStatuses', 'Admin/FeedbackTypes/DataService/FeedbackTypes', 'Admin/FeedbackCategories/DataService/FeedbackCategories', 'Admin/TicketAccounts/DataService/TicketAccounts', 'Admin/Labels/Service/LabelManager'], function(angular, routing, Admin_Main_Service_AppState, Admin_Main_Service_DpApi, Admin_Main_Service_Growl, Admin_Main_Service_InhelpState, Admin_Main_Service_TemplateManager, Admin_Main_Service_DataServiceManager, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_OptionBuilder_TypesDef_TicketActions, Admin_OptionBuilder_TypesDef_TicketFilter, Logger, Logger_ConsoleHandler, Admin_Logging_InterfaceTimer, DeskPRO_Directive_DpTimeWithUnit, Admin_Main_Directive_Autofocus, Admin_Main_Directive_BgImg, Admin_Main_Directive_DpCommaSeparated, Admin_Main_Directive_DpDevbar, Admin_Main_Directive_DpErrorClass, Admin_Main_Directive_DpHelpPage, Admin_Main_Directive_DpHideSpinning, Admin_Main_Directive_DpInhelpBody, Admin_Main_Directive_DpInhelpBtn, Admin_Main_Directive_DpListAutoload, Admin_Main_Directive_DpNavSubnav, Admin_Main_Directive_DpOpenPhraseEditor, Admin_Main_Directive_DpOrderMenu, Admin_Main_Directive_DpPingFlash, Admin_Main_Directive_DpRegisterMessage, Admin_Main_Directive_DpServerValidation, Admin_Main_Directive_DpShowSpinning, Admin_Main_Directive_DpStateMark, Admin_Main_Directive_DpSubmitForm, Admin_Main_Directive_DpTabBody, Admin_Main_Directive_DpTabBtn, Admin_Main_Directive_DpToggleSwitch, Admin_Main_Directive_DpTristateCheck, Admin_Main_Directive_DpWorkingHours, Admin_TicketDeps_Directive_LayoutEditor, Admin_TicketDeps_Directive_LayoutEditorField, Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments, Admin_FeedbackStatuses_DataService_FeedbackStatuses, Admin_FeedbackTypes_DataService_FeedbackTypes, Admin_FeedbackCategories_DataService_FeedbackCategories, Admin_TicketAccounts_DataService_TicketAccounts, Admin_Labels_Service_LabelManager) {
     var Admin_App, _ref, _ref1;
     Admin_App = angular.module('Admin_App', ['ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select2', 'ui.sortable', 'ui.ace', 'angularMoment', 'deskpro.option_builder', 'deskpro.category_builder']);
     Admin_App.service('AppState', [
@@ -14,16 +14,133 @@
         return new Admin_Main_Service_DpApi($http, window.DP_BASE_API_URL, window.DP_API_TOKEN);
       }
     ]);
-    /*
-    	Admin_App.factory('$exceptionHandler', ['$log', ($log) ->
-    		return (exception, cause) ->
-    			throw exception
-    	])
-    */
+    Admin_App.factory('jsErrorLogger', [
+      '$injector', function($injector) {
+        var jsErrorLogger;
+        jsErrorLogger = (function() {
+          function jsErrorLogger() {}
 
+          jsErrorLogger.prototype.getApi = function() {
+            return $injector.get('Api');
+          };
+
+          jsErrorLogger.prototype.logScriptError = function(message, scriptFile, scriptLine, trace, context_data) {
+            if (scriptFile == null) {
+              scriptFile = '';
+            }
+            if (scriptLine == null) {
+              scriptLine = 0;
+            }
+            if (trace == null) {
+              trace = '';
+            }
+            if (context_data == null) {
+              context_data = {};
+            }
+            if (context_data.url == null) {
+              context_data.url = window.location + '';
+            }
+            try {
+              return this.getApi().sendPostJson('/log-js-error', {
+                message: message,
+                script_file: scriptFile,
+                script_line: scriptLine,
+                trace: trace,
+                context: context_data
+              });
+            } catch (_error) {}
+          };
+
+          jsErrorLogger.prototype.logException = function(exception, context_data) {
+            var trace;
+            trace = printStackTrace({
+              e: exception
+            });
+            if (trace) {
+              trace = trace.join("\n");
+            }
+            if (exception instanceof Error || (exception.message != null)) {
+              return this.logScriptError(exception.message, exception.fileName || '', exception.lineNumber || '', trace, context_data);
+            } else if (exception.sourceURL != null) {
+              return this.logScriptError(exception.message, exception.sourceURL, exception.line, trace);
+            }
+          };
+
+          jsErrorLogger.prototype.logErrorMessage = function(message, context_data) {
+            return this.logError(message);
+          };
+
+          return jsErrorLogger;
+
+        })();
+        return new jsErrorLogger();
+      }
+    ]);
+    Admin_App.factory('$exceptionHandler', [
+      'jsErrorLogger', function(jsErrorLogger) {
+        return function(exception, cause) {
+          return window.setTimeout(function() {
+            jsErrorLogger.logException(exception);
+            exception._dpNoLog = true;
+            throw exception;
+          }, 1);
+        };
+      }
+    ]);
     Admin_App.service('InhelpState', [
       'Api', function(Api) {
         return new Admin_Main_Service_InhelpState(Api);
+      }
+    ]);
+    Admin_App.factory('dpHttpInterceptor', [
+      function() {
+        var updateTimes;
+        updateTimes = [];
+        return {
+          request: function(config) {
+            var next, timeEnc, _ref;
+            if (((_ref = config.headers) != null ? _ref['X-DeskPRO-API-Token'] : void 0) != null) {
+              config.startTime = new Date();
+              next = updateTimes.pop();
+              if (next) {
+                if (config.url.indexOf('?') === -1) {
+                  config.url += '?';
+                } else {
+                  config.url += '&';
+                }
+                timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_');
+                config.url += "__dp_reqtime=" + next.requestId + "_t" + timeEnc;
+              }
+            }
+            return config;
+          },
+          response: function(response) {
+            var headers, lastRequestId, lastRequestTime;
+            if (response.config.startTime) {
+              headers = response.headers();
+              if (headers['x-deskpro-requestid'] != null) {
+                lastRequestId = headers['x-deskpro-requestid'];
+                lastRequestTime = ((new Date()).getTime()) - response.config.startTime.getTime();
+                updateTimes.push({
+                  timeTaken: lastRequestTime,
+                  requestId: lastRequestId
+                });
+              }
+            }
+            return response;
+          },
+          requestError: function(rejection) {
+            return rejection;
+          },
+          responseError: function(rejection) {
+            return rejection;
+          }
+        };
+      }
+    ]);
+    Admin_App.config([
+      '$httpProvider', function($httpProvider) {
+        return $httpProvider.interceptors.push('dpHttpInterceptor');
       }
     ]);
     Admin_App.service('em', [
@@ -259,6 +376,42 @@
               }
             };
             return $delegate;
+          }
+        ]);
+      }
+    ]);
+    Admin_App.factory('dpInterfaceTimer', [
+      '$log', function($log) {
+        return new Admin_Logging_InterfaceTimer($log);
+      }
+    ]);
+    Admin_App.config([
+      '$provide', function($provide) {
+        return $provide.decorator('$rootScope', [
+          'dpInterfaceTimer', '$delegate', function(dpInterfaceTimer, $delegate) {
+            var origDigest;
+            origDigest = $delegate.$digest;
+            $delegate.$digest = function() {
+              var ret;
+              dpInterfaceTimer.startDigest();
+              ret = origDigest.apply($delegate, arguments);
+              dpInterfaceTimer.endDigest();
+              return ret;
+            };
+            return $delegate;
+          }
+        ]);
+      }
+    ]);
+    Admin_App.config([
+      '$provide', function($provide) {
+        return $provide.decorator('$log', [
+          '$delegate', function($delegate) {
+            var consoleHandler, logger;
+            logger = new Logger('console');
+            consoleHandler = new Logger_ConsoleHandler(Logger.DEBUG);
+            logger.pushHandler(consoleHandler);
+            return logger;
           }
         ]);
       }

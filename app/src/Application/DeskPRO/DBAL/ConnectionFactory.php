@@ -79,8 +79,10 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 
 		$host = $params['host'];
 		$m = null;
+		$dp_global_key = null;
 		if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
 			$key = $m[1];
+			$dp_global_key = $key;
 			unset($params['host']);
 
 			$conf = App::getConfig($key);
@@ -113,6 +115,16 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 		}
 
 		$conn->getDatabasePlatform()->registerDoctrineTypeMapping('BLOB', 'dpblob');
+
+		if ($dp_global_key) {
+			// Save ref in globals
+			// This is an optimisation used by some logging that happens
+			// outside of normal request/DI flow
+			if (!isset($GLOBALS['DP_DB_CON'])) {
+				$GLOBALS['DP_DB_CON'] = array();
+			}
+			$GLOBALS['DP_DB_CON'][$dp_global_key] = $conn;
+		}
 
 		return $conn;
 	}

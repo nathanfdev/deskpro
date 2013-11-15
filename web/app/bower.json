@@ -20,7 +20,8 @@
     "toastr": "latest",
     "underscore": "latest",
 	"momentjs": "latest",
-	"angular-moment": "latest"
+	"angular-moment": "latest",
+	"stacktrace": "latest"
   },
   "resolutions": {
     "angular": "v1.2.0-rc.3"

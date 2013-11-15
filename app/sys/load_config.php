@@ -126,6 +126,20 @@ function dp_load_file_into_config($file, $key)
 	}
 }
 
+$GLOBALS['DP_PAGELOG_INFO'] = array();
+function dp_pagelog_reset()
+{
+	$GLOBALS['DP_PAGELOG_INFO'] = array();
+}
+function dp_pagelog_set($name, $value)
+{
+	$GLOBALS['DP_PAGELOG_INFO'][$name] = $value;
+}
+function dp_pagelog_get($name)
+{
+	return isset($GLOBALS['DP_PAGELOG_INFO'][$name]) ? $GLOBALS['DP_PAGELOG_INFO'][$name] : null;
+}
+
 
 /**
  * Get a value from config using dot notation

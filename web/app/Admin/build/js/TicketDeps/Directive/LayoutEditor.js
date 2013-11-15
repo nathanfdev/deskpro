@@ -174,7 +174,6 @@
 
       InterfaceHandler.prototype.render = function() {
         var doReorder, elementMap, field, fieldEl, fieldRow, form, form_model, forms, id, layoutFieldEls, listEl, newFields, order, orderMap, prevField, prevFieldEl, stickyFieldIds, stickyFields, tabEl, typeName, worksheetEl, x, _i, _j, _k, _len, _len1, _len2, _ref, _results;
-        console.log("[LayoutEditor] render");
         forms = [
           {
             typeName: 'user',

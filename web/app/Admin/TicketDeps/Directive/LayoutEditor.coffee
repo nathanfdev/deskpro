@@ -154,7 +154,6 @@ define ['angular'], (angular) ->
     	# Tries to be smart in what it is re-rendering so only changes are rendered.
 		###
 		render: ->
-			console.log("[LayoutEditor] render")
 			forms = [
 				{ typeName: 'user',  modelName: 'user_form',  worksheetName: 'user_worksheet' },
 				{ typeName: 'agent', modelName: 'agent_form', worksheetName: 'agent_worksheet' }

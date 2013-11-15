@@ -21,6 +21,17 @@ if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', dirname(__FILE__) . '/c
 error_reporting(E_ALL | E_STRICT);
 if (!defined('DP_WEB_ROOT')) define('DP_WEB_ROOT', dirname(__FILE__));
 if (!defined('DP_START_TIME')) define('DP_START_TIME', microtime(true));
+if (!defined('DP_REQUEST_ID')) {
+	define('DP_REQUEST_ID', gmdate('YmdH') . '_' . sha1(
+		microtime(true)
+		. (!empty($_SERVER['IP_ADDRESS']) ? $_SERVER['IP_ADDRESS'] : '')
+		. (!empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '')
+		. (!empty($_ENV['SERVER_ID']) ? $_ENV['SERVER_ID'] : '')
+			. mt_rand(1000, 9999)
+			. mt_rand(1000, 9999)
+			. mt_rand(1000, 9999)
+	));
+}
 
 if (isset($_GET['_sys'])) {
 	require_once DP_ROOT.'/sys/boot_scripts.php';
