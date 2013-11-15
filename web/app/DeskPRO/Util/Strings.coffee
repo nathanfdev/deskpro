@@ -111,6 +111,24 @@ define ->
 
 
 		###
+    	# Repeat a str num times
+    	#
+    	# @param {String} str
+    	# @param {Integer} num
+    	# @return {String}
+    	###
+		repeat: (str, num) ->
+			if num < 1 then return ''
+			res = ''
+			while (num  > 0)
+				if count & 1
+					res += str
+				count = count >> 1
+				str = str + str
+
+			return res
+
+		###
     	# Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)
     	#
     	# See: https://github.com/garycourt/murmurhash-js

@@ -1,4 +1,8 @@
-define ->
+define [
+	'DeskPRO/Util/Strings'
+], (
+	Strings
+) ->
 	class DeskPRO_Util_Util
 		@UID_COUNTER = 0
 
@@ -96,6 +100,7 @@ define ->
 			else
 				return Object.prototype.toString.call(obj) == '[object Function]';
 
+
 		###
 		# Check if a value is a string
 		#
@@ -103,7 +108,47 @@ define ->
 		# @return {bool}
 		###
 		isString: (obj) ->
-			Object.prototype.toString.call(obj) == '[object String]';
+			return Object.prototype.toString.call(obj) == '[object String]';
+
+
+		###
+		# Check if a value is a string
+		#
+		# @param {Object} obj
+		# @return {bool}
+		###
+		isBoolean: (obj) ->
+			return typeof obj == 'boolean'
+
+
+		###
+		# Check if a value is an integer
+		#
+		# @param {Object} obj
+		# @return {bool}
+		###
+		isInteger: (obj) ->
+			return obj == parseInt(obj)
+
+
+		###
+		# Check if a value is an float
+		#
+		# @param {Object} obj
+		# @return {bool}
+		###
+		isFloat: (obj) ->
+			return obj == parseFloat(obj)
+
+
+		###
+		# Check if a value is a number
+		#
+		# @param {Object} obj
+		# @return {bool}
+		###
+		isNumber: (obj) ->
+			return typeof obj == 'number'
 
 
 		###
@@ -248,4 +293,71 @@ define ->
 
 			return false
 
-	return new DeskPRO_Util_Util()
+		###
+    	# Dump a variable to a string repr
+    	#
+    	# @param {mixed} obj
+    	# @param {Integer} maxLvl How deep down nested structures to recurse
+    	# @return {String}
+		###
+		dump: (obj, maxLvl = 5, _rlvl = 0, _visited = null) ->
+			out = ''
+
+			out += Strings.repeat("\t", _rlvl)
+
+			if obj == null
+				out += 'null'
+			else if typeof obj == 'number' and isNaN(obj)
+				out += 'NaN'
+			else if @isInteger(obj)
+				out += "int:#{obj}"
+			else if @isFloat(obj)
+				out += "float:#{obj}"
+			else if @isString(obj)
+				out += "string:\"#{obj}\""
+			else if @isBoolean(obj)
+				out += "bool:" + (if obj then "true" else "false")
+			else if typeof obj == "undefined"
+				out += "undefined"
+			else if typeof obj == "function"
+				out += "function"
+			else if obj instanceof Date
+				out += "Date(#{obj})"
+			else if obj instanceof RegExp
+				out += "RegExp(#{obj})"
+			else
+				if _visited and _visited.indexOf(obj) != -1
+					out += "object(*RECURSION*)"
+				else
+					if not _visited
+						_visited = []
+
+					_visited.push(obj)
+
+					if _rlvl >= maxLvl
+						if @isArray(obj)
+							out += "array(*MAX LEVEL REACHED*)"
+						else
+							out += "object(*MAX LEVEL REACHED*)"
+					else
+						if _visited
+							vis = @clone(_visited)
+						else
+							vis = []
+
+						if @isArray(obj)
+							out += "array:\n"
+							for v in obj
+								out += @dump(v, maxLvl, _rlvl+1, vis)
+								out += ",\n"
+						else
+							out += "object:\n"
+							for own k, v of obj
+								subs = @dump(v, maxLvl, _rlvl+1, vis)
+								out += Strings.repeat("\t", _rlvl+1) + "#{k}: " + Strings.trim(subs) + ",\n"
+
+			return out
+
+	window.DeskPRO_Util_Util = new DeskPRO_Util_Util()
+
+	return window.DeskPRO_Util_Util

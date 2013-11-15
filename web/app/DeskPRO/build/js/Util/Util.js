@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __slice = [].slice;
 
-  define(function() {
+  define(['DeskPRO/Util/Strings'], function(Strings) {
     var DeskPRO_Util_Util;
     DeskPRO_Util_Util = (function() {
       DeskPRO_Util_Util.UID_COUNTER = 0;
@@ -145,6 +145,54 @@
 
       DeskPRO_Util_Util.prototype.isString = function(obj) {
         return Object.prototype.toString.call(obj) === '[object String]';
+      };
+
+      /*
+      		# Check if a value is a string
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.isBoolean = function(obj) {
+        return typeof obj === 'boolean';
+      };
+
+      /*
+      		# Check if a value is an integer
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.isInteger = function(obj) {
+        return obj === parseInt(obj);
+      };
+
+      /*
+      		# Check if a value is an float
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.isFloat = function(obj) {
+        return obj === parseFloat(obj);
+      };
+
+      /*
+      		# Check if a value is a number
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.isNumber = function(obj) {
+        return typeof obj === 'number';
       };
 
       /*
@@ -343,10 +391,95 @@
         return false;
       };
 
+      /*
+        	# Dump a variable to a string repr
+        	#
+        	# @param {mixed} obj
+        	# @param {Integer} maxLvl How deep down nested structures to recurse
+        	# @return {String}
+      */
+
+
+      DeskPRO_Util_Util.prototype.dump = function(obj, maxLvl, _rlvl, _visited) {
+        var k, out, subs, v, vis, _i, _len;
+        if (maxLvl == null) {
+          maxLvl = 5;
+        }
+        if (_rlvl == null) {
+          _rlvl = 0;
+        }
+        if (_visited == null) {
+          _visited = null;
+        }
+        out = '';
+        out += Strings.repeat("\t", _rlvl);
+        if (obj === null) {
+          out += 'null';
+        } else if (typeof obj === 'number' && isNaN(obj)) {
+          out += 'NaN';
+        } else if (this.isInteger(obj)) {
+          out += "int:" + obj;
+        } else if (this.isFloat(obj)) {
+          out += "float:" + obj;
+        } else if (this.isString(obj)) {
+          out += "string:\"" + obj + "\"";
+        } else if (this.isBoolean(obj)) {
+          out += "bool:" + (obj ? "true" : "false");
+        } else if (typeof obj === "undefined") {
+          out += "undefined";
+        } else if (typeof obj === "function") {
+          out += "function";
+        } else if (obj instanceof Date) {
+          out += "Date(" + obj + ")";
+        } else if (obj instanceof RegExp) {
+          out += "RegExp(" + obj + ")";
+        } else {
+          if (_visited && _visited.indexOf(obj) !== -1) {
+            out += "object(*RECURSION*)";
+          } else {
+            if (!_visited) {
+              _visited = [];
+            }
+            _visited.push(obj);
+            if (_rlvl >= maxLvl) {
+              if (this.isArray(obj)) {
+                out += "array(*MAX LEVEL REACHED*)";
+              } else {
+                out += "object(*MAX LEVEL REACHED*)";
+              }
+            } else {
+              if (_visited) {
+                vis = this.clone(_visited);
+              } else {
+                vis = [];
+              }
+              if (this.isArray(obj)) {
+                out += "array:\n";
+                for (_i = 0, _len = obj.length; _i < _len; _i++) {
+                  v = obj[_i];
+                  out += this.dump(v, maxLvl, _rlvl + 1, vis);
+                  out += ",\n";
+                }
+              } else {
+                out += "object:\n";
+                for (k in obj) {
+                  if (!__hasProp.call(obj, k)) continue;
+                  v = obj[k];
+                  subs = this.dump(v, maxLvl, _rlvl + 1, vis);
+                  out += Strings.repeat("\t", _rlvl + 1) + ("" + k + ": ") + Strings.trim(subs) + ",\n";
+                }
+              }
+            }
+          }
+        }
+        return out;
+      };
+
       return DeskPRO_Util_Util;
 
     })();
-    return new DeskPRO_Util_Util();
+    window.DeskPRO_Util_Util = new DeskPRO_Util_Util();
+    return window.DeskPRO_Util_Util;
   });
 
 }).call(this);
