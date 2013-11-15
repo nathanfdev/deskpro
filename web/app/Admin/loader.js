@@ -154,7 +154,8 @@ requirejs([
 	'Admin/TwitterAccounts/Ctrl/Edit',
 	'Admin/ServerReqs/Ctrl/ServerReqs',
 	'Admin/ServerPhpInfo/Ctrl/ServerPhpInfo',
-	'Admin/ServerMysqlInfo/Ctrl/ServerMysqlInfo'
+	'Admin/ServerMysqlInfo/Ctrl/ServerMysqlInfo',
+	'Admin/ServerMysqlStatus/Ctrl/ServerMysqlStatus'
 ], function(angular) {
 	'use strict';
 

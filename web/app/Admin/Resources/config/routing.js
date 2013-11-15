@@ -1200,8 +1200,8 @@ define(function() {
 	routes.push({
 		id: 'server.mysql_status',
 		url: '/mysql_status',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerMysqlStatus/server-mysql-status.html',
+		controller: 'Admin_ServerMysqlStatus_Ctrl_ServerMysqlStatus'
 	});
 
 	//###
