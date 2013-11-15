@@ -1190,8 +1190,8 @@ define(function() {
 	routes.push({
 		id: 'server.mysql_info',
 		url: '/mysql_info',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerMysqlInfo/server-mysql-info.html',
+		controller: 'Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo'
 	});
 
 	//###
