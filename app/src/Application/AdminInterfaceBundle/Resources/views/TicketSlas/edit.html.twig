@@ -35,7 +35,14 @@
 								<h3>Hours</h3>
 							</div>
 							<div class="col-lg-10">
-								<dp-working-hours ng-model="EditCtrl.form.working_hours"></dp-working-hours>
+								<select ng-model="EditCtrl.form.active_time" ui-select2 style="width: 200px;">
+									<option value="all">24x7</option>
+									<option value="default">Use default working hours</option>
+									<option value="custom">Use custom working hours</option>
+								</select>
+								<div ng-show="EditCtrl.form.working_hours_type">
+									<dp-working-hours ng-model="EditCtrl.form.working_hours"></dp-working-hours>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -48,7 +55,9 @@
 						</h3>
 					</div>
 					<div class="dp-ob-set">
-						After <dp-time-with-unit ng-model="EditCtrl.form.sla_warn_time"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
+						<p>
+							After <dp-time-with-unit ng-model="EditCtrl.form.sla_warn_time"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
+						</p>
 						<div class="dp-ob-setrow">
 							<header>
 								<em class="dp-ob-row-tag then">then</em>
@@ -70,7 +79,9 @@
 						</h3>
 					</div>
 					<div class="dp-ob-set">
-						After <dp-time-with-unit ng-model="EditCtrl.form.sla_fail_time"></dp-time-with-unit> the ticket is close to failing and the failed status is applied.
+						<p>
+							After <dp-time-with-unit ng-model="EditCtrl.form.sla_fail_time"></dp-time-with-unit> the ticket is close to failing and the failed status is applied.
+						</p>
 						<div class="dp-ob-setrow">
 							<header>
 								<em class="dp-ob-row-tag then">then</em>
@@ -90,6 +101,40 @@
 						<h3>
 							<span>SLA Application</span>
 						</h3>
+					</div>
+					<div class="dp-ob-set">
+						<p>
+							<select ng-model="EditCtrl.form.apply_type" ui-select2 style="width: 200px;">
+								<option value="all">Apply to all tickets</option>
+								<option value="manual">Agents manually apply the SLA</option>
+								<option value="trigger">Apply to new tickets that match certain criteria</option>
+							</select>
+						</p>
+						<div ng-show="EditCtrl.form.apply_type == 'trigger'">
+							<div class="panel panel-innertable" style="padding-top: 0; margin-top: 0; margin-left: 0; margin-right: 0;">
+								<div class="dp-ob-set" dp-option-builder-set="{typedef: EditCtrl.criteraTypeDef, template: 'ticket_deps_criteria_setrow', option_types: criteriaOptionTypes }" sets-object="EditCtrl.form.criteria_sets">
+									<div class="dp-ob-addition-setrow">
+										<script type="text/ng-template" id="ticket_deps_criteria_setrow">
+											<div class="dp-ob-setrow">
+												<div class="fade-overlay"></div>
+												<header>
+													<div class="remove-btn-wrap">
+														<span class="removerow_btn"><i class="fa fa-clock-os"></i></span>
+													</div>
+													<em class="dp-ob-row-tag if">or</em>
+													The following conditions are met:
+												</header>
+												<article>
+													<dp-option-builder types-def="criteria_typedef" save-target="criteria_set_row" options="{tag_first: false, tag_after: 'and'}" option-types="option_types">
+														<add-btn-label>Criteria</add-btn-label>
+													</dp-option-builder>
+												</article>
+											</div>
+										</script>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</article>
