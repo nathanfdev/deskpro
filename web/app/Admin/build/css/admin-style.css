@@ -10259,6 +10259,44 @@ li.dp-layout-editor-layout-field span {
   margin: 0;
 }
 
+#dp_dev_bar_btn {
+  position: absolute;
+  top: 6px;
+  left: 245px;
+  z-index: 1000;
+  padding: 3px;
+  background: #444;
+  border-radius: 2px;
+}
+
+#dp_dev_bar_btn button {
+  padding: 5px;
+  margin: 0;
+  color: #444;
+  background: #fff;
+  border: none;
+}
+
+#dp_dev_bar {
+  position: absolute;
+  top: 6px;
+  left: 245px;
+  z-index: 1000;
+  padding: 3px;
+  background: #444;
+  border-radius: 2px;
+}
+
+#dp_dev_bar button {
+  display: inline-block;
+  padding: 5px;
+  margin: 0;
+  margin-right: 4px;
+  color: #444;
+  background: #fff;
+  border: none;
+}
+
 .table > thead > tr > td.info,
 .table > tbody > tr > td.info,
 .table > tfoot > tr > td.info,

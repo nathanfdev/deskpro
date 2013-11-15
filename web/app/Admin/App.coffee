@@ -17,6 +17,7 @@ define [
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
 	'Admin/Main/Directive/DpCommaSeparated',
+	'Admin/Main/Directive/DpDevbar',
 	'Admin/Main/Directive/DpErrorClass',
 	'Admin/Main/Directive/DpHelpPage',
 	'Admin/Main/Directive/DpHideSpinning',
@@ -67,6 +68,7 @@ define [
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
 	Admin_Main_Directive_DpCommaSeparated,
+	Admin_Main_Directive_DpDevbar,
 	Admin_Main_Directive_DpErrorClass,
 	Admin_Main_Directive_DpHelpPage,
 	Admin_Main_Directive_DpHideSpinning,
@@ -204,6 +206,7 @@ define [
 	Admin_App.directive('autofocus',          Admin_Main_Directive_Autofocus)
 	Admin_App.directive('bgImg',              Admin_Main_Directive_BgImg)
 	Admin_App.directive('dpCommaSeparated',   Admin_Main_Directive_DpCommaSeparated)
+	Admin_App.directive('dpDevbar'        ,   Admin_Main_Directive_DpDevbar)
 	Admin_App.directive('dpErrorClass',       Admin_Main_Directive_DpErrorClass)
 	Admin_App.directive('dpHelpPage',         Admin_Main_Directive_DpHelpPage)
 	Admin_App.directive('dpHideSpinning',     Admin_Main_Directive_DpHideSpinning)

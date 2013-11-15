@@ -12,6 +12,10 @@
 </head>
 <body>
 
+{% if app.isDebug() %}
+	<dp-devbar></dp-devbar>
+{% endif %}
+
 <header class="dp-app-header">
 	<div class="user-profile pull-left">
 		<img class="gravatar pull-left" src="{{ app.user.getPictureUrl(32) }}">
