@@ -1,6 +1,37 @@
 (function() {
   define(['DeskPRO/Logger/Logger', 'DeskPRO/Logger/Handler/ConsoleHandler', 'Admin/Logging/InterfaceTimer'], function(Logger, Logger_ConsoleHandler, Admin_Logging_InterfaceTimer) {
     return function(Module) {
+      Module.factory('LoggerManager', [
+        function() {
+          var LoggerManager, lm;
+          LoggerManager = (function() {
+            function LoggerManager() {
+              this.loggers = {};
+            }
+
+            LoggerManager.prototype.get = function(id) {
+              if (this.loggers[id]) {
+                return this.loggers[id];
+              }
+              this.loggers[id] = this._makeLogger(id);
+              return this.loggers[id];
+            };
+
+            LoggerManager.prototype._makeLogger = function(id) {
+              var consoleHandler, logger;
+              logger = new Logger(id);
+              consoleHandler = new Logger_ConsoleHandler(Logger.DEBUG);
+              logger.pushHandler(consoleHandler);
+              return logger;
+            };
+
+            return LoggerManager;
+
+          })();
+          lm = new LoggerManager();
+          return lm;
+        }
+      ]);
       Module.factory('jsErrorLogger', [
         '$injector', function($injector) {
           var jsErrorLogger;
@@ -100,11 +131,9 @@
       return Module.config([
         '$provide', function($provide) {
           return $provide.decorator('$log', [
-            '$delegate', function($delegate) {
-              var consoleHandler, logger;
-              logger = new Logger('console');
-              consoleHandler = new Logger_ConsoleHandler(Logger.DEBUG);
-              logger.pushHandler(consoleHandler);
+            'LoggerManager', '$delegate', function(LoggerManager, $delegate) {
+              var logger;
+              logger = LoggerManager.get('main');
               return logger;
             }
           ]);

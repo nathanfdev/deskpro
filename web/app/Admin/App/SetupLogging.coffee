@@ -9,6 +9,28 @@ define [
 ) ->
 	return (Module) ->
 
+		Module.factory('LoggerManager', [ ->
+			class LoggerManager
+				constructor: ->
+					@loggers = {}
+
+				get: (id) ->
+					if @loggers[id]
+						return @loggers[id]
+
+					@loggers[id] = @_makeLogger(id)
+					return @loggers[id]
+
+				_makeLogger: (id) ->
+					logger = new Logger(id)
+					consoleHandler = new Logger_ConsoleHandler(Logger.DEBUG)
+					logger.pushHandler(consoleHandler)
+					return logger
+
+			lm = new LoggerManager()
+			return lm
+		])
+
 		Module.factory('jsErrorLogger', [ '$injector', ($injector) ->
 			class jsErrorLogger
 				getApi: ->
@@ -80,11 +102,8 @@ define [
 		])
 
 		Module.config(['$provide', ($provide) ->
-			$provide.decorator('$log', ['$delegate', ($delegate) ->
-				logger = new Logger('console')
-				consoleHandler = new Logger_ConsoleHandler(Logger.DEBUG)
-				logger.pushHandler(consoleHandler)
-
+			$provide.decorator('$log', ['LoggerManager', '$delegate', (LoggerManager, $delegate) ->
+				logger = LoggerManager.get('main')
 				return logger
 			])
 		])

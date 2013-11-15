@@ -55,14 +55,11 @@ define [
 			]
 
 			for own _, route of AdminRouting
-				if route.page? and route.page.templateName
-					templates.push(route.page.templateName)
-				if route.nav? and route.nav.templateName
-					templates.push(route.nav.templateName)
-				if route.list? and route.list.templateName
-					templates.push(route.list.templateName)
+				if route.templateName
+					templates.push(route.templateName)
 
 			for t in templates
 				dpTemplateManager.load(t)
-				dpTemplateManager.loadPending().then(-> window.DP_IS_BOOTED = true)
+
+			dpTemplateManager.loadPending().then(-> window.DP_IS_BOOTED = true)
 		])
