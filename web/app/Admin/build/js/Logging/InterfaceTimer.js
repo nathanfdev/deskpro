@@ -23,12 +23,17 @@
         var level, time;
         this.digestEnd = new Date();
         if (this.isWithinLoad) {
-          level = 'info';
+          level = null;
           time = this.digestEnd.getTime() - this.digestStart.getTime();
           if (time > 500) {
+            level = 'notice';
+          }
+          if (time > 750) {
             level = 'warning';
           }
-          this.logger[level](["[InterfaceTimer] (" + this.lastController.constructor.CTRL_ID + ") Load Digest Time: {0}ms", time]);
+          if (level) {
+            this.logger[level](["[InterfaceTimer] (" + this.lastController.constructor.CTRL_ID + ") Load Digest Time: {0}ms", time]);
+          }
           return this.isWithinLoad = false;
         }
       };
