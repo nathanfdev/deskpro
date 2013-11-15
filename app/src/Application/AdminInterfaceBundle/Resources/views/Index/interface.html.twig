@@ -55,6 +55,9 @@
 	<div class="dp-layout" ui-view></div>
 </div>
 
+{{ ng_tpl('Index/modal-network-error.html') }}
+{{ ng_tpl('Index/modal-server-error.html') }}
+
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';
 window.DP_BASE_URL       = '/{{ path('user')|trim('/') }}';
