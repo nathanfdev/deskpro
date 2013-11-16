@@ -1220,8 +1220,8 @@ define(function() {
 	routes.push({
 		id: 'server.mysql_sort_order',
 		url: '/mysql_sort_order',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerMysqlSortOrder/server-mysql-sort-order.html',
+		controller: 'Admin_ServerMysqlSortOrder_Ctrl_ServerMysqlSortOrder'
 	});
 
 	//###
