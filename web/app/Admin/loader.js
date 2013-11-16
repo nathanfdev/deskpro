@@ -156,7 +156,8 @@ requirejs([
 	'Admin/ServerPhpInfo/Ctrl/ServerPhpInfo',
 	'Admin/ServerMysqlInfo/Ctrl/ServerMysqlInfo',
 	'Admin/ServerMysqlStatus/Ctrl/ServerMysqlStatus',
-	'Admin/ServerMysqlSortOrder/Ctrl/ServerMysqlSortOrder'
+	'Admin/ServerMysqlSortOrder/Ctrl/ServerMysqlSortOrder',
+	'Admin/ServerErrorLogs/Ctrl/ServerErrorLogs'
 ], function(angular) {
 	'use strict';
 

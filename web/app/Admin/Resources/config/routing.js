@@ -1230,8 +1230,8 @@ define(function() {
 	routes.push({
 		id: 'server.error_logs',
 		url: '/error_logs',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerErrorLogs/server-error-logs.html',
+		controller: 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs'
 	});
 
 	//###
