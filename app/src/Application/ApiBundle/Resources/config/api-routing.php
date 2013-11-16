@@ -2832,6 +2832,22 @@ $collection->create('api_server_mysql_status', array(
 ));
 
 ########################################################################################################################
+# Server Mysql Sort Order
+########################################################################################################################
+
+$collection->create('api_server_mysql_sort_order', array(
+	'path'       => '/server_mysql_sort_order',
+	'controller' => 'ApiBundle:ServerMysqlSortOrder:get',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_server_mysql_sort_order_save', array(
+	'path'       => '/server_mysql_sort_order',
+	'controller' => 'ApiBundle:ServerMysqlSortOrder:save',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
