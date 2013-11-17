@@ -48,7 +48,9 @@
 					<tr>
 						<td colspan="4">
 							There are {{ ng_var('logs_size') }} logged errors.
-							<span ng-click="ServerErrorLogs.startClearAll();">Clear all logged errors</span>.
+							<a ng-click="ServerErrorLogs.startClearAll();$event.preventDefault();" href="#">
+								Clear all logged errors
+							</a>.
 						</td>
 					</tr>
 					<tr>
