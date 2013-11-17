@@ -78,6 +78,22 @@ class ServerErrorLogs
 	}
 
 	/**
+	 * @return bool
+	 */
+
+	public function clearAllErrors()
+	{
+		if (!is_writable(dp_get_log_dir() . '/error.log')) {
+
+			return false;
+		}
+
+		@file_put_contents(dp_get_log_dir() . '/error.log', '');
+
+		return true;
+	}
+
+	/**
 	 * @param string $url
 	 *
 	 * @return string

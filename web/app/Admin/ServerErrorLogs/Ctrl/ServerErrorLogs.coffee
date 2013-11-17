@@ -18,4 +18,37 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			return @$q.all([data_promise])
 
+		###
+  # Show the clear dlg
+  ###
+
+		startClearAll: ->
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('ServerErrorLogs/delete-modal.html'),
+				controller: ['$scope', '$modalInstance',  ($scope, $modalInstance) ->
+
+					$scope.confirm = ->
+						$modalInstance.close()
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then( () =>
+				@clearAll()
+			)
+
+		###
+		# Actually do the clear
+		###
+
+		clearAll: ->
+
+			@Api.sendDelete('/server_error_logs/').success( =>
+
+				@$scope.server_error_logs.logs = null
+			)
+
 	Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.EXPORT_CTRL()

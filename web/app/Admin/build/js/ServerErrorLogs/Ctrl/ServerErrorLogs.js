@@ -33,6 +33,44 @@
         return this.$q.all([data_promise]);
       };
 
+      /*
+      # Show the clear dlg
+      */
+
+
+      Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.prototype.startClearAll = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ServerErrorLogs/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.clearAll();
+        });
+      };
+
+      /*
+      		# Actually do the clear
+      */
+
+
+      Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.prototype.clearAll = function() {
+        var _this = this;
+        return this.Api.sendDelete('/server_error_logs/').success(function() {
+          return _this.$scope.server_error_logs.logs = null;
+        });
+      };
+
       return Admin_ServerErrorLogs_Ctrl_ServerErrorLogs;
 
     })(Admin_Ctrl_Base);

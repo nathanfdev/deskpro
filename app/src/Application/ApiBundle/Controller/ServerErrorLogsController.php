@@ -59,4 +59,24 @@ class ServerErrorLogsController extends AbstractController
             )
         );
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs $server_error_logs
+		 */
+
+		$server_error_logs = $this->container->getSystemService('server_error_logs');
+
+		if(!$server_error_logs->clearAllErrors()) {
+
+			ValidationException::create('server_error_logs.clear_all.file_not_writable');
+		}
+
+		return $this->createSuccessResponse();
+	}
 }
