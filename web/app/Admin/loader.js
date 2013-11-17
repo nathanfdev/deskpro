@@ -158,7 +158,8 @@ requirejs([
 	'Admin/ServerMysqlStatus/Ctrl/ServerMysqlStatus',
 	'Admin/ServerMysqlSortOrder/Ctrl/ServerMysqlSortOrder',
 	'Admin/ServerErrorLogs/Ctrl/ServerErrorLogs',
-	'Admin/ServerErrorLogs/Ctrl/View'
+	'Admin/ServerErrorLogs/Ctrl/View',
+	'Admin/ServerTaskQueue/Ctrl/ServerTaskQueue'
 ], function(angular) {
 	'use strict';
 

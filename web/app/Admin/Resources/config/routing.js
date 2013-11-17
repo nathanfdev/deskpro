@@ -1258,8 +1258,8 @@ define(function() {
 	routes.push({
 		id: 'server.task_queue',
 		url: '/task_queue',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerTaskQueue/server-task-queue.html',
+		controller: 'Admin_ServerTaskQueue_Ctrl_ServerTaskQueue'
 	});
 
 	return routes;
