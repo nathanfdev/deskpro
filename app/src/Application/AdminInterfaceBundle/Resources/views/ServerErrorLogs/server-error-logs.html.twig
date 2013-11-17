@@ -47,10 +47,13 @@
 				<thead>
 					<tr>
 						<td colspan="4">
+							<div class="pull-right">
+								<button class="btn btn-danger"
+										ng-click="ServerErrorLogs.startClearAll();$event.preventDefault();">
+									Clear all logged errors
+								</button>
+							</div>
 							There are {{ ng_var('logs_size') }} logged errors.
-							<a ng-click="ServerErrorLogs.startClearAll();$event.preventDefault();" href="#">
-								Clear all logged errors
-							</a>.
 						</td>
 					</tr>
 					<tr>
@@ -80,7 +83,9 @@
 							{{ ng_var('log.date') }}
 						</td>
 						<td>
-							<a ng-href="#">{{ phrase('admin.general.view') }}</a>
+							<a class="btn btn-primary" ng-href="{{ ng_href('server.error_logs.view', '{id: log.id}') }}">
+								{{ phrase('admin.general.view') }}
+							</a>
 						</td>
 					</tr>
 				</tbody>

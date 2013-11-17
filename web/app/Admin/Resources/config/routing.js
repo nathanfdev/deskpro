@@ -1234,6 +1234,14 @@ define(function() {
 		controller: 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs'
 	});
 
+	routes.push({
+		id: 'server.error_logs.view',
+		url: '/view/{id}',
+		templateName: 'ServerErrorLogs/view.html',
+		controller: 'Admin_ServerErrorLogs_Ctrl_View',
+		target: "appbody@server"
+	});
+
 	//###
 	//# Sendmail Queue
 	//###

@@ -77,6 +77,25 @@ class ServerErrorLogs
 		);
 	}
 
+
+	/**
+	 * @param int $id
+	 *
+	 * @return array|null
+	 */
+
+	public function getById($id)
+	{
+		$log_reader = new ErrorLogReader(dp_get_log_dir() . '/error.log');
+		$log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
+		$log_reader->enableRawLog();
+		$log_reader->setIdFilter($id);
+
+		$log = $log_reader->current();
+
+		return $log;
+	}
+
 	/**
 	 * @return bool
 	 */

@@ -2857,6 +2857,12 @@ $collection->create('api_server_error_logs', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_server_error_logs_get', array(
+	'path'        => '/server_error_logs/{id}',
+	'controller'  => 'ApiBundle:ServerErrorLogs:get',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_server_error_logs_delete', array(
 	'path'       => '/server_error_logs',
 	'controller' => 'ApiBundle:ServerErrorLogs:remove',

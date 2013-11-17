@@ -61,6 +61,32 @@ class ServerErrorLogsController extends AbstractController
 	}
 
 	####################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs $server_error_logs
+		 */
+
+		$server_error_logs = $this->container->getSystemService('server_error_logs');
+		$server_error_log  = $server_error_logs->getById($id);
+
+		if (!$server_error_log) {
+
+			throw $this->createNotFoundException();
+		}
+
+
+		return $this->createApiResponse(
+			array(
+				 'server_error_log' => $server_error_log
+			)
+		);
+	}
+
+	####################################################################################################################
 	# remove
 	####################################################################################################################
 
