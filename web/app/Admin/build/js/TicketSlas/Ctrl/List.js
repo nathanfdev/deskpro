@@ -38,9 +38,18 @@
       */
 
 
-      Admin_TicketSlas_Ctrl_List.prototype.startDelete = function(sla) {
-        var inst,
+      Admin_TicketSlas_Ctrl_List.prototype.startDelete = function(sla_id) {
+        var inst, sla, v, _i, _len, _ref1,
           _this = this;
+        sla = null;
+        _ref1 = this.list;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          v = _ref1[_i];
+          if (v.id === sla_id) {
+            sla = v;
+            break;
+          }
+        }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketSlas/delete-modal.html'),
           controller: [
@@ -56,8 +65,8 @@
         });
         return inst.result.then(function() {
           return _this.slaData.deleteSlaById(sla.id).then(function() {
-            if (_this.$state.current.name === 'tickets.ticket_slas.edit' && parseInt(_this.$state.params.id) === sla.id) {
-              return _this.$state.go('tickets.ticket_slas');
+            if (_this.$state.current.name === 'tickets.slas.edit' && parseInt(_this.$state.params.id) === sla.id) {
+              return _this.$state.go('tickets.slas');
             }
           });
         });

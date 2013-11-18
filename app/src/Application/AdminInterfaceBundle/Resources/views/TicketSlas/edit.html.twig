@@ -144,6 +144,9 @@
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul></ul>
 					</div>
+					<div class="dp-delete-control" ng-if="EditCtrl.sla.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.sla.id);">Delete</button>
+					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>

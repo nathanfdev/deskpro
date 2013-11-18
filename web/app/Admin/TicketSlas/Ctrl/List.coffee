@@ -23,7 +23,14 @@ define [
 		###
 		# Show the delete dlg
 		###
-		startDelete: (sla) ->
+		startDelete: (sla_id) ->
+
+			sla = null
+			for v in @list
+				if v.id == sla_id
+					sla = v
+					break
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketSlas/delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
@@ -37,8 +44,8 @@ define [
 
 			inst.result.then( =>
 				@slaData.deleteSlaById(sla.id).then(=>
-					if @$state.current.name == 'tickets.ticket_slas.edit' and parseInt(@$state.params.id) == sla.id
-						@$state.go('tickets.ticket_slas')
+					if @$state.current.name == 'tickets.slas.edit' and parseInt(@$state.params.id) == sla.id
+						@$state.go('tickets.slas')
 				)
 			)
 

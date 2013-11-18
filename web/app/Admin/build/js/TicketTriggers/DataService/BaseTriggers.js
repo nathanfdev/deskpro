@@ -29,23 +29,6 @@
       };
 
       /*
-        	# Remove an slas
-        	#
-        	# @param {Integer} id SLA id
-        	# @return {promise}
-      */
-
-
-      Admin_TicketTriggers_DataService_BaseTriggers.prototype.deleteSlaById = function(id) {
-        var promise,
-          _this = this;
-        promise = this.Api.sendDelete('/ticket_slas/' + id).then(function() {
-          return _this.removeListModelById(id);
-        });
-        return promise;
-      };
-
-      /*
         	# Get all data needed for the edit filter page
         	#
         	# @param {Integer} id Filter id

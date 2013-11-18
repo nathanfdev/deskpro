@@ -18,20 +18,6 @@ define [
 
 			return deferred.promise
 
-
-		###
-    	# Remove an slas
-    	#
-    	# @param {Integer} id SLA id
-    	# @return {promise}
-		###
-		deleteSlaById: (id) ->
-			promise = @Api.sendDelete('/ticket_slas/' + id).then(=>
-				@removeListModelById(id)
-			)
-			return promise
-
-
 		###
     	# Get all data needed for the edit filter page
     	#
