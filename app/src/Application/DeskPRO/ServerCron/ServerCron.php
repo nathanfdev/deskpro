@@ -36,6 +36,8 @@ namespace Application\DeskPRO\ServerCron;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 
+use Orb\Util\Dates;
+
 use Doctrine\ORM\EntityManager;
 
 class ServerCron
@@ -98,10 +100,14 @@ class ServerCron
 		$time_since_run = time() - $last_run;
 
 		return array(
-			'last_run'         => $last_run,
-			'time_since_run'   => $time_since_run,
-			'last_start'       => $last_start,
-			'time_since_start' => $time_since_start,
+			'last_run'                  => (int)$last_run,
+			'last_run_ms'               => (int)$last_run * 1000,
+			'time_since_run'            => (int)$time_since_run,
+			'time_since_run_readable'   => Dates::secsToReadable($time_since_run),
+			'last_start'                => (int)$last_start,
+			'last_start_ms'             => (int)$last_start * 1000,
+			'time_since_start'          => (int)$time_since_start,
+			'time_since_start_readable' => Dates::secsToReadable($time_since_start),
 		);
 
 	}
