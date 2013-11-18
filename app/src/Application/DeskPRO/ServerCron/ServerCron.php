@@ -1,0 +1,108 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace Application\DeskPRO\ServerCron;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+
+use Doctrine\ORM\EntityManager;
+
+class ServerCron
+{
+	/**
+	 * @var \Application\DeskPRO\ORM\EntityManager
+	 */
+
+	protected $em;
+
+	public function __construct(EntityManager $em)
+	{
+		$this->em = $em;
+	}
+
+	/**
+	 * @return array
+	 */
+
+	public function getAllForApi()
+	{
+		$jobs = $this->em->getRepository('DeskPRO:WorkerJob')->getAll();
+
+		$resData = array();
+
+		foreach ($jobs as $key => $job) {
+
+			if ($job instanceof DomainObject) {
+
+				$resData[$key]                      = $job->toApiData(false, true);
+				$resData[$key]['interval_readable'] = $job->getIntervalReadable();
+				$resData[$key]['next_run_time']     = $job->getNextRunRelativeTime();
+			}
+		}
+
+		return $resData;
+	}
+
+	/**
+	 * @return array
+	 */
+
+	public function getTimes()
+	{
+		$last_start = App::getContainer()->getSetting('core.last_cron_start');
+
+		if (!$last_start) {
+			$last_start = 0;
+		}
+
+		$time_since_start = time() - $last_start;
+
+		$last_run = App::getContainer()->getSetting('core.last_cron_run');
+
+		if (!$last_run) {
+
+			$last_run = 0;
+		}
+
+		$time_since_run = time() - $last_run;
+
+		return array(
+			'last_run'         => $last_run,
+			'time_since_run'   => $time_since_run,
+			'last_start'       => $last_start,
+			'time_since_start' => $time_since_start,
+		);
+
+	}
+}
