@@ -56,4 +56,31 @@ class ServerCronController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# logs
+	####################################################################################################################
+
+	public function logsAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerCron\ServerCron $server_cron
+		 */
+
+		$server_cron = $this->container->getSystemService('server_cron');
+
+		$job_id   = $this->in->getString('job_id');
+		$priority = $this->in->getUint('priority');
+
+		$returnedData['logs']     = $server_cron->getLogs($job_id, $priority);
+		$returnedData['priority'] = $priority;
+		$returnedData['job_id']   = $job_id;
+		$returnedData['jobs']     = $server_cron->getAllForApi();
+
+		return $this->createApiResponse(
+			array(
+				 'server_cron_logs' => $returnedData
+			)
+		);
+	}
 }

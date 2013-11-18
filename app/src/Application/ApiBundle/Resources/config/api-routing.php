@@ -2889,6 +2889,12 @@ $collection->create('api_server_cron', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_server_cron_logs', array(
+	'path'       => '/server_cron/logs',
+	'controller' => 'ApiBundle:ServerCron:logs',
+	'methods'    => array('GET'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

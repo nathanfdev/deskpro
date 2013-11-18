@@ -109,6 +109,31 @@ class ServerCron
 			'time_since_start'          => (int)$time_since_start,
 			'time_since_start_readable' => Dates::secsToReadable($time_since_start),
 		);
+	}
 
+	/**
+	 * @param int $job_id
+	 * @param int $priority
+	 *
+	 * @return array
+	 */
+
+	public function getLogs($job_id = null, $priority = null)
+	{
+		if (!$job_id) {
+
+			$job_id = 'worker_job.%';
+
+		} else {
+
+			$job_id = 'worker_job.' . $job_id;
+		}
+
+		if (!$priority) {
+
+			$priority = 10;
+		}
+
+		return $this->em->getRepository('DeskPRO:WorkerJob')->getLogs($job_id, $priority);
 	}
 }
