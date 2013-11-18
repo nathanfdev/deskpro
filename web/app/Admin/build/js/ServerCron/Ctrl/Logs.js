@@ -46,6 +46,44 @@
         return this.loadResults();
       };
 
+      /*
+      		# Show the clear dlg
+      */
+
+
+      Admin_ServerCron_Ctrl_Logs.prototype.startClearAll = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ServerCron/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.clearAll();
+        });
+      };
+
+      /*
+      		# Actually do the clear
+      */
+
+
+      Admin_ServerCron_Ctrl_Logs.prototype.clearAll = function() {
+        var _this = this;
+        return this.Api.sendDelete('/server_cron/logs').success(function() {
+          return _this.server_cron_logs = null;
+        });
+      };
+
       return Admin_ServerCron_Ctrl_Logs;
 
     })(Admin_Ctrl_Base);

@@ -29,4 +29,35 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@loadResults()
 
+		###
+		# Show the clear dlg
+		###
+
+		startClearAll: ->
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('ServerCron/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.confirm = ->
+						$modalInstance.close()
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then(() =>
+				@clearAll()
+			)
+
+		###
+		# Actually do the clear
+		###
+
+		clearAll: ->
+			@Api.sendDelete('/server_cron/logs').success(=>
+
+				@server_cron_logs = null
+			)
+
 	Admin_ServerCron_Ctrl_Logs.EXPORT_CTRL()
