@@ -81,6 +81,8 @@ define [
 					rowScope = scope.$new()
 
 					setsObject = scope.$eval(iAttrs.setsObject)
+					if not setsObject
+						setsObject = {}
 
 					if useExistSetId
 						setId = useExistSetId

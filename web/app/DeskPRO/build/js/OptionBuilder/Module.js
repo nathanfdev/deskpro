@@ -73,6 +73,9 @@
               tpl = $templateCache.get(opts.template);
               rowScope = scope.$new();
               setsObject = scope.$eval(iAttrs.setsObject);
+              if (!setsObject) {
+                setsObject = {};
+              }
               if (useExistSetId) {
                 setId = useExistSetId;
               } else {
