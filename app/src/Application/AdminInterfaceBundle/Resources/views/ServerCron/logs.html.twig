@@ -18,6 +18,47 @@
 		{##################################################################################################}
 
 		<article class="padd">
+
+
+			<div class="alert alert-info">
+				<div>
+					<table>
+						<tr>
+							<td style="width: 100px; text-align:center;">Logs Type</td>
+							<td>
+								<select
+										ui-select2
+										ng-model="LogsCtrl.filter.job_id"
+										style="width: 300px;"
+										>
+									<option value="">All Logs</option>
+									<option ng-repeat="job in LogsCtrl.server_cron_logs.jobs" ng-value="job.id">
+										{{ ng_var('job.title') }} ({{ ng_var('job.id') }})
+									</option>
+								</select>
+							</td>
+
+							<td style="width: 70px; text-align:center;">Priority</td>
+							<td>
+								<select
+										ui-select2
+										ng-model="LogsCtrl.filter.priority"
+										style="width: 150px;"
+										>
+									<option value="">All Priorities</option>
+									<option value="3">Errors</option>
+									<option value="6">Info</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
+						<button class="btn btn-primary" ng-click="LogsCtrl.updateFilter()">Filter</button>
+					</div>
+				</div>
+			</div>
+
+
 			<table class="table table-bordered">
 				<thead>
 					<tr>

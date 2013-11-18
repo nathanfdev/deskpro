@@ -19,16 +19,31 @@
       Admin_ServerCron_Ctrl_Logs.DEPS = [];
 
       Admin_ServerCron_Ctrl_Logs.prototype.init = function() {
-        return this.server_cron_logs = null;
+        this.server_cron_logs = null;
+        return this.filter = {
+          job_id: '',
+          priority: ''
+        };
       };
 
       Admin_ServerCron_Ctrl_Logs.prototype.initialLoad = function() {
+        return this.loadResults();
+      };
+
+      Admin_ServerCron_Ctrl_Logs.prototype.loadResults = function() {
         var data_promise,
           _this = this;
-        data_promise = this.Api.sendGet('/server_cron/logs').then(function(res) {
+        data_promise = this.Api.sendGet('/server_cron/logs', {
+          job_id: this.filter.job_id,
+          priority: this.filter.priority
+        }).then(function(res) {
           return _this.server_cron_logs = res.data.server_cron_logs;
         });
         return this.$q.all([data_promise]);
+      };
+
+      Admin_ServerCron_Ctrl_Logs.prototype.updateFilter = function() {
+        return this.loadResults();
       };
 
       return Admin_ServerCron_Ctrl_Logs;

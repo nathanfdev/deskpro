@@ -7,13 +7,26 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@server_cron_logs = null
+			@filter = {
+				job_id: '',
+				priority: '',
+			}
 
 		initialLoad: ->
-			data_promise = @Api.sendGet('/server_cron/logs').then( (res) =>
+
+			return @loadResults()
+
+		loadResults: ->
+
+			data_promise = @Api.sendGet('/server_cron/logs', {job_id: @filter.job_id, priority: @filter.priority}).then((res) =>
 
 				@server_cron_logs = res.data.server_cron_logs
 			)
 
 			return @$q.all([data_promise])
+
+		updateFilter: ->
+
+			@loadResults()
 
 	Admin_ServerCron_Ctrl_Logs.EXPORT_CTRL()
