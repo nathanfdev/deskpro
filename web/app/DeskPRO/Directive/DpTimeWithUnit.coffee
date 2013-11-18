@@ -6,14 +6,24 @@ define ->
     # This directive adds a new form element for a time period described as a number and a unit. For example,
     # "2 days" or "5 hours". In the model, the number is saved as the time in seconds.
     #
+    # Add a "model-type" attribute to the element to change how the time is represented in the model:
+    # - seconds (default): Convert time into seconds. E.g., 1 hour is saved as 3600
+    # - array: Save as an array: [time, unit]. E.g., 1 hour is [1, 'hours']
+    # - object: Save in an object: { time: time, unit: unit}. E.g., 1 hour is {time: 1, unit: 'hours'}
+    # - "X:Y": Save in an object using X and Y as keys: {X: time, Y: unit}
+    #
     # Example Controller
     # ------------------
     # $scope.my_model = 7200
+    # $scope.my_model_alt = {num: 4, time_unit: "hours"}
     #
     # Example View
     # ------------
     # <dp-time-with-unit ng-model="my_model" />
     # (7200 will render as "2 hours")
+    #
+    # <dp-time-with-unit model-type="num:time_unit" ng-model="my_model" />
+    # (Renders as "4 hours")
     ###
 	DeskPRO_Directive_DpTimeWithUnit = [ ->
 		return {
@@ -26,7 +36,7 @@ define ->
 						ui-select2
 						style="min-width: 100px;"
 					>
-						<option value="mins">minutes</option>
+						<option value="minutes">minutes</option>
 						<option value="hours">hours</option>
 						<option value="days">days</option>
 						<option value="weeks">weeks</option>
@@ -38,9 +48,27 @@ define ->
 			require: 'ngModel',
 			replace: true,
 			link: (scope, iElement, iAttrs, ngModel) ->
+
+				modelType = 'seconds';
+				objModelKeys = null
+
+				if iAttrs.modelType
+					if iAttrs.modelType == 'object' || iAttrs.modelType.indexOf(':') != -1
+						modelType = 'object'
+
+						if iAttrs.modelType.indexOf(':') != -1
+							objModelKeys = iAttrs.modelType.split(':')
+						else
+							objModelKeys = ['time', 'unit']
+					else if iAttrs.modelType == 'array'
+						modelType = 'array'
+					else
+						modelType = 'seconds'
+
+
 				multiplierMap = {
-					secs:   1,
-					mins:   60,
+					seconds:   1,
+					minutes:   60,
 					hours:  3600,
 					days:   86400,
 					weeks:  604800,
@@ -49,8 +77,8 @@ define ->
 				}
 
 				multiplierTypes = [
-					'secs',
-					'mins',
+					'seconds',
+					'minutes',
 					'hours',
 					'days',
 					'weeks',
@@ -60,27 +88,53 @@ define ->
 				multiplierTypes.reverse()
 
 				ngModel.$parsers.push( (viewValue) ->
-					unit = viewValue.unit || 'mins'
+					unit = viewValue.unit || 'minutes'
 					num  = viewValue.num || 1
 
-					return multiplierMap[unit] * num
+					switch modelType
+						when "object"
+							obj = {}
+							obj[objModelKeys[0]] = num
+							obj[objModelKeys[1]] = unit
+							return obj
+						when "array"
+							return [num, unit]
+						else
+							return multiplierMap[unit] * num
 				)
 
 				ngModel.$formatters.push( (modelValue) ->
-					unit = null
-					modelValue = parseInt(modelValue)
+					unit = 'minutes'
+					num  = ''
 
-					for unitName in multiplierTypes
-						if modelValue % multiplierMap[unitName] == 0
-							unit = unitName
-							break
+					switch modelType
+						when "object"
+							if modelValue[objModelKeys[0]]?
+								unit = modelValue[objModelKeys[0]]
+							if modelValue[objModelKeys[1]]?
+								num = modelValue[objModelKeys[1]]
+						when "array"
+							if modelValue[0]?
+								unit = modelValue[0]
+							if modelValue[1]?
+								num = modelValue[1]
+						else
+							modelValue = parseInt(modelValue)
 
-					if not unit
-						unit = 'mins'
+							for unitName in multiplierTypes
+								if modelValue % multiplierMap[unitName] == 0
+									unit = unitName
+									break
+
+							if unit
+								unit = 'minutes'
+
+							if modelValue
+								num = modelValue / multiplierMap[unit]
 
 					return {
 						unit: unit,
-						num:  modelValue / multiplierMap[unit]
+						num:  num
 					}
 				)
 
