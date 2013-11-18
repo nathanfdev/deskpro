@@ -10,17 +10,19 @@
           templateUrl: DP_BASE_ADMIN_URL + '/load-view/Common/work-hours-directive.html',
           scope: {},
           link: function(scope, element, attrs, ngModel) {
-            var els, holExists, i, row, updateYearList, year, year_end, _i;
+            var drawHoliday, els, holExists, i, row, updateViewValue, updateYearList, year, year_end, _i;
             scope.timezone = 'UTC';
             scope.start_hour = 9;
             scope.start_min = 0;
             scope.end_hour = 18;
             scope.end_min = 0;
+            scope.work_days = [false, true, true, true, true, true, false];
             scope.hol_year = (new Date()).getFullYear();
             scope.hol_year = (new Date()).getFullYear();
             scope.hol_new_month = 1;
             scope.hol_new_day = 1;
             scope.hol_new_name = '';
+            scope.holidays = [];
             els = {
               hol_wrap: element.find('.holiday-rows')
             };
@@ -45,7 +47,7 @@
               return true;
             };
             scope.addHoliday = function($event) {
-              var checkHol, d_str, day, exists, hol, m_str, month, repeat, rowContainer, title, y_str, _j, _len, _ref;
+              var checkHol, day, exists, hol, month, repeat, title, _j, _len, _ref;
               $event.preventDefault();
               $event.stopPropagation();
               year = parseInt(scope.hol_year);
@@ -59,20 +61,14 @@
               if (!month || !day) {
                 return;
               }
-              if (!ngModel.$modelValue) {
-                ngModel.$modelValue = {};
-              }
-              if (ngModel.$modelValue.holidays == null) {
-                ngModel.$modelValue.holidays = [];
-              }
               exists = false;
               hol = {
                 year: year,
                 month: month,
                 day: day,
-                title: title
+                name: title
               };
-              _ref = ngModel.$modelValue.holidays;
+              _ref = scope.holidays.holidays;
               for (_j = 0, _len = _ref.length; _j < _len; _j++) {
                 checkHol = _ref[_j];
                 if (holExists(hol, checkHol)) {
@@ -85,7 +81,20 @@
                 scope.show_newhold = false;
                 return;
               }
-              ngModel.$modelValue.holidays.push(hol);
+              drawHoliday(year, month, day, repeat, title);
+              scope.holidays.push(hol);
+              scope.hol_new_name = '';
+              scope.show_newhold = false;
+              return updateYearList();
+            };
+            drawHoliday = function(hol) {
+              var d_str, day, m_str, month, repeat, rowContainer, title, y_str;
+              row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
+              year = hol.year;
+              month = hol.month;
+              day = hol.day;
+              title = hol.name;
+              repeat = year === 0;
               if (repeat) {
                 y_str = 'Every Year';
                 rowContainer = els.hol_wrap.find('.year-repeat');
@@ -93,7 +102,6 @@
                 y_str = year;
                 rowContainer = els.hol_wrap.find('.year-' + year);
               }
-              row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
               m_str = month < 10 ? "0" + month : month;
               d_str = day < 10 ? "0" + day : day;
               row.find('.date-txt').text("" + y_str + "-" + m_str + "-" + d_str);
@@ -101,10 +109,7 @@
                 row.find('.title-txt').text(title);
               }
               row.data('holRec', hol);
-              scope.hol_new_name = '';
-              scope.show_newhold = false;
-              rowContainer.append(row);
-              return updateYearList();
+              return rowContainer.append(row);
             };
             element.find('.add-btn').on('click', function(ev) {
               return scope.$apply(function() {
@@ -112,19 +117,19 @@
               });
             });
             element.on('click', '.remove-btn', function(ev) {
-              var hol, holRec, idx, _j, _len, _ref, _ref1, _results;
+              var hol, holRec, idx, _j, _len, _ref, _results;
               ev.preventDefault();
               holRec = $(this).data('holRec');
               $(this).closest('.hol-row').remove();
-              if (((_ref = ngModel.$modelValue) != null ? _ref.holidays : void 0) == null) {
+              if (!scope.holidays.length) {
                 return;
               }
-              _ref1 = ngModel.$modelValue.holidays;
+              _ref = scope.holidays;
               _results = [];
-              for (idx = _j = 0, _len = _ref1.length; _j < _len; idx = ++_j) {
-                hol = _ref1[idx];
+              for (idx = _j = 0, _len = _ref.length; _j < _len; idx = ++_j) {
+                hol = _ref[idx];
                 if (hol === holRec) {
-                  ngModel.$modelValue.holidays.slice(idx, 1);
+                  scope.holidays.slice(idx, 1);
                   break;
                 } else {
                   _results.push(void 0);
@@ -152,9 +157,54 @@
             element.find('.holiday-years').on('change', function() {
               return updateYearList();
             });
-            return ngModel.$render = function() {
+            updateViewValue = function() {
+              return ngModel.$setViewValue({
+                timezone: scope.timezone || 'UTC',
+                start_hour: scope.start_hour || 9,
+                start_min: scope.start_min || 0,
+                end_hour: scope.end_hour || 18,
+                end_min: scope.end_min || 0,
+                holidays: scope.holidays || [],
+                work_days: scope.work_days || [false, true, true, true, true, true, false]
+              });
+            };
+            scope.$watch('timezone', function() {
+              return updateViewValue();
+            });
+            scope.$watch('start_hour', function() {
+              return updateViewValue();
+            });
+            scope.$watch('start_min', function() {
+              return updateViewValue();
+            });
+            scope.$watch('end_hour', function() {
+              return updateViewValue();
+            });
+            scope.$watch('holidays', function() {
+              return updateViewValue();
+            });
+            ngModel.$render = function() {
+              var hol, viewValue, _j, _len, _ref;
+              element.find('.holiday-year-rows').empty();
+              viewValue = ngModel.$viewValue;
+              if (viewValue) {
+                scope.timezone = viewValue.timezone || 'UTC';
+                scope.start_hour = viewValue.start_hour || 9;
+                scope.start_min = viewValue.start_min || 0;
+                scope.end_hour = viewValue.end_hour || 18;
+                scope.end_min = viewValue.end_min || 0;
+                scope.holidays = viewValue.holidays || [];
+              }
+              if (scope.holidays.length) {
+                _ref = scope.holidays;
+                for (_j = 0, _len = _ref.length; _j < _len; _j++) {
+                  hol = _ref[_j];
+                  drawHoliday(hol);
+                }
+              }
               return updateYearList();
             };
+            return ngModel.$render();
           }
         };
       }

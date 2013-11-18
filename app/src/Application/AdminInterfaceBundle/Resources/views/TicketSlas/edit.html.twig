@@ -40,8 +40,8 @@
 									<option value="default">Use default working hours</option>
 									<option value="custom">Use custom working hours</option>
 								</select>
-								<div ng-show="EditCtrl.form.working_hours_type">
-									<dp-working-hours ng-model="EditCtrl.form.working_hours"></dp-working-hours>
+								<div ng-show="EditCtrl.form.active_time == 'custom'">
+									<dp-working-hours ng-model="EditCtrl.form.hours_set"></dp-working-hours>
 								</div>
 							</div>
 						</div>

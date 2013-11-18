@@ -13,18 +13,20 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 				scope.start_min      = 0
 				scope.end_hour       = 18
 				scope.end_min        = 0
+				scope.work_days      = [false, true, true, true, true, true, false]
 				scope.hol_year       = (new Date()).getFullYear()
 				scope.hol_year       = (new Date()).getFullYear()
 				scope.hol_new_month  = 1
 				scope.hol_new_day    = 1
 				scope.hol_new_name   = ''
+				scope.holidays       = []
 
 				#------------------------------
 				# Element references
 				#------------------------------
 
 				els = {
-					hol_wrap:        element.find('.holiday-rows'),
+					hol_wrap: element.find('.holiday-rows'),
 				}
 
 				#------------------------------
@@ -73,16 +75,10 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 					if not month or not day
 						return
 
-					if not ngModel.$modelValue
-						ngModel.$modelValue = {}
-
-					if not ngModel.$modelValue.holidays?
-						ngModel.$modelValue.holidays = []
-
 					exists = false
-					hol = { year: year, month: month, day: day, title: title }
+					hol = { year: year, month: month, day: day, name: title }
 
-					for checkHol in ngModel.$modelValue.holidays
+					for checkHol in scope.holidays.holidays
 						if holExists(hol, checkHol)
 							exists = true
 							break
@@ -92,7 +88,27 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 						scope.show_newhold = false
 						return
 
-					ngModel.$modelValue.holidays.push(hol)
+					drawHoliday(
+						year,
+						month,
+						day,
+						repeat,
+						title
+					)
+
+					scope.holidays.push(hol)
+					scope.hol_new_name = ''
+					scope.show_newhold = false
+					updateYearList()
+
+				drawHoliday = (hol) ->
+					row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>')
+
+					year   = hol.year
+					month  = hol.month
+					day    = hol.day
+					title  = hol.name
+					repeat = year == 0
 
 					if repeat
 						y_str = 'Every Year'
@@ -101,8 +117,6 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 						y_str = year
 						rowContainer = els.hol_wrap.find('.year-' + year)
 
-					row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-remove-sign"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>')
-
 					m_str = if month < 10 then "0#{month}" else month
 					d_str = if day < 10 then "0#{day}" else day
 					row.find('.date-txt').text("#{y_str}-#{m_str}-#{d_str}")
@@ -110,11 +124,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 						row.find('.title-txt').text(title)
 
 					row.data('holRec', hol)
-
-					scope.hol_new_name = ''
-					scope.show_newhold = false
 					rowContainer.append(row)
-					updateYearList()
 
 				element.find('.add-btn').on('click', (ev) ->
 					scope.$apply( ->
@@ -127,12 +137,12 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 					holRec = $(this).data('holRec')
 					$(this).closest('.hol-row').remove()
 
-					if not ngModel.$modelValue?.holidays?
+					if not scope.holidays.length
 						return
 
-					for hol, idx in ngModel.$modelValue.holidays
+					for hol, idx in scope.holidays
 						if hol == holRec
-							ngModel.$modelValue.holidays.slice(idx, 1)
+							scope.holidays.slice(idx, 1)
 							break
 				)
 
@@ -156,8 +166,41 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 					updateYearList()
 				)
 
+				updateViewValue = ->
+					ngModel.$setViewValue({
+						timezone       : scope.timezone || 'UTC',
+						start_hour     : scope.start_hour || 9,
+						start_min      : scope.start_min || 0,
+						end_hour       : scope.end_hour || 18,
+						end_min        : scope.end_min || 0,
+						holidays       : scope.holidays || [],
+						work_days      : scope.work_days || [false, true, true, true, true, true, false]
+					})
+
+				scope.$watch('timezone',   -> updateViewValue())
+				scope.$watch('start_hour', -> updateViewValue())
+				scope.$watch('start_min',  -> updateViewValue())
+				scope.$watch('end_hour',   -> updateViewValue())
+				scope.$watch('holidays',   -> updateViewValue())
+
 				ngModel.$render = ->
+					element.find('.holiday-year-rows').empty()
+					viewValue = ngModel.$viewValue
+					if viewValue
+						scope.timezone       = viewValue.timezone || 'UTC'
+						scope.start_hour     = viewValue.start_hour || 9
+						scope.start_min      = viewValue.start_min || 0
+						scope.end_hour       = viewValue.end_hour || 18
+						scope.end_min        = viewValue.end_min || 0
+						scope.holidays       = viewValue.holidays || []
+
+					if scope.holidays.length
+						for hol in scope.holidays
+							drawHoliday(hol)
+
 					updateYearList()
+
+				ngModel.$render()
 		}
 	]
 

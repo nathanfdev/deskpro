@@ -131,6 +131,21 @@ class TicketSlasController extends AbstractController
 		}
 		$sla->fail_actions = $fail_actions;
 
+		if ($sla->active_time == 'custom') {
+			$sla->work_timezone = $this->in->getString('work_timezone') ?: 'UTC';
+			$sla->work_start    = $this->in->getUInt('work_start');
+			$sla->work_end      = $this->in->getUInt('work_end');
+			$sla->work_days     = $this->in->getArrayOfUInts('work_days');
+			foreach ($this->in->getArrayValue('holiayds') as $hol) {
+				$sla->addHoliday(
+					$hol['name'],
+					$hol['day'],
+					$hol['month'],
+					$hol['year'] ?: null
+				);
+			}
+		}
+
 		$this->em->persist($sla);
 		$this->em->flush();
 
