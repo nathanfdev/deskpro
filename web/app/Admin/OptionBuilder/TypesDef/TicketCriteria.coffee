@@ -249,13 +249,8 @@ define [
 			return set_options
 
 		loadDataOptions: ->
-			if @options_data
-				p = @$q.fcall( =>
-					return @options_data
-				)
-			else
-				@options_data = {}
-				p = @Api.sendDataGet({
+			if not @loadDataPromise
+				@loadDataPromise = @Api.sendDataGet({
 					'ticket_deps':     '/ticket_deps',
 					'ticket_cats':     '/ticket_cats',
 					'ticket_prods':    '/ticket_prods',
@@ -265,16 +260,18 @@ define [
 					'usergroups':      '/usergroups',
 				}).then( (result) =>
 					data = result.data
-					@options_data['ticket_deps']      = data.ticket_deps.departments
-					@options_data['ticket_cats']      = data.ticket_cats.categories
-					@options_data['ticket_pris']      = data.ticket_pris.priorities
-					@options_data['ticket_works']     = data.ticket_works.workflows
-					@options_data['ticket_prods']     = data.ticket_prods?.products
-					@options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
-					@options_data['usergroups']       = data.usergroups.usergroups
+					options_data = {}
+					options_data['ticket_deps']      = data.ticket_deps.departments
+					options_data['ticket_cats']      = data.ticket_cats.categories
+					options_data['ticket_pris']      = data.ticket_pris.priorities
+					options_data['ticket_works']     = data.ticket_works.workflows
+					options_data['ticket_prods']     = data.ticket_prods?.products
+					options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
+					options_data['usergroups']       = data.usergroups.usergroups
+					@options_data = options_data
 				)
 
-			return p
+			return @loadDataPromise
 
 		getCheckWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'

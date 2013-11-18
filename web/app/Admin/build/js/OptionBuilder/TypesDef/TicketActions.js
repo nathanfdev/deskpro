@@ -159,15 +159,9 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
-        var p,
-          _this = this;
-        if (this.options_data) {
-          p = this.$q.fcall(function() {
-            return _this.options_data;
-          });
-        } else {
-          this.options_data = {};
-          p = this.Api.sendDataGet({
+        var _this = this;
+        if (!this.loadDataPromise) {
+          this.loadDataPromise = this.Api.sendDataGet({
             'agents': '/agents',
             'agent_teams': '/agent_teams',
             'ticket_deps': '/ticket_deps',
@@ -179,21 +173,23 @@
             'ticket_accounts': '/ticket_accounts',
             'usergroups': '/usergroups'
           }).then(function(result) {
-            var data, _ref1, _ref2;
+            var data, options_data, _ref1, _ref2;
             data = result.data;
-            _this.options_data['agents'] = data.agents.agents;
-            _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
-            _this.options_data['ticket_deps'] = data.ticket_deps.departments;
-            _this.options_data['ticket_cats'] = data.ticket_cats.categories;
-            _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
-            _this.options_data['ticket_works'] = data.ticket_works.workflows;
-            _this.options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
-            _this.options_data['ticket_slas'] = (_ref2 = data.ticket_slas) != null ? _ref2.slas : void 0;
-            _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
-            return _this.options_data['usergroups'] = data.usergroups.usergroups;
+            options_data = {};
+            options_data['agents'] = data.agents.agents;
+            options_data['agent_teams'] = data.agent_teams.agent_teams;
+            options_data['ticket_deps'] = data.ticket_deps.departments;
+            options_data['ticket_cats'] = data.ticket_cats.categories;
+            options_data['ticket_pris'] = data.ticket_pris.priorities;
+            options_data['ticket_works'] = data.ticket_works.workflows;
+            options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
+            options_data['ticket_slas'] = (_ref2 = data.ticket_slas) != null ? _ref2.slas : void 0;
+            options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
+            options_data['usergroups'] = data.usergroups.usergroups;
+            return _this.options_data = options_data;
           });
         }
-        return p;
+        return this.loadDataPromise;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetAgent = function(options) {

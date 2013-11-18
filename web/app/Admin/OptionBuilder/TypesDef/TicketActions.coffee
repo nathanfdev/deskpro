@@ -203,13 +203,8 @@ define [
 			return set_options
 
 		loadDataOptions: ->
-			if @options_data
-				p = @$q.fcall( =>
-					return @options_data
-				)
-			else
-				@options_data = {}
-				p = @Api.sendDataGet({
+			if not @loadDataPromise
+				@loadDataPromise = @Api.sendDataGet({
 					'agents':          '/agents'
 					'agent_teams':     '/agent_teams',
 					'ticket_deps':     '/ticket_deps',
@@ -222,19 +217,21 @@ define [
 					'usergroups':      '/usergroups',
 				}).then( (result) =>
 					data = result.data
-					@options_data['agents']           = data.agents.agents
-					@options_data['agent_teams']      = data.agent_teams.agent_teams
-					@options_data['ticket_deps']      = data.ticket_deps.departments
-					@options_data['ticket_cats']      = data.ticket_cats.categories
-					@options_data['ticket_pris']      = data.ticket_pris.priorities
-					@options_data['ticket_works']     = data.ticket_works.workflows
-					@options_data['ticket_prods']     = data.ticket_prods?.products
-					@options_data['ticket_slas']      = data.ticket_slas?.slas
-					@options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
-					@options_data['usergroups']       = data.usergroups.usergroups
+					options_data = {}
+					options_data['agents']           = data.agents.agents
+					options_data['agent_teams']      = data.agent_teams.agent_teams
+					options_data['ticket_deps']      = data.ticket_deps.departments
+					options_data['ticket_cats']      = data.ticket_cats.categories
+					options_data['ticket_pris']      = data.ticket_pris.priorities
+					options_data['ticket_works']     = data.ticket_works.workflows
+					options_data['ticket_prods']     = data.ticket_prods?.products
+					options_data['ticket_slas']      = data.ticket_slas?.slas
+					options_data['ticket_accounts']  = data.ticket_accounts.ticket_accounts
+					options_data['usergroups']       = data.usergroups.usergroups
+					@options_data = options_data
 				)
 
-			return p
+			return @loadDataPromise
 
 		getSetAgent: (options = {}) ->
 			options.propName = 'agent_id'

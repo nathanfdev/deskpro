@@ -196,15 +196,9 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.loadDataOptions = function() {
-        var p,
-          _this = this;
-        if (this.options_data) {
-          p = this.$q.fcall(function() {
-            return _this.options_data;
-          });
-        } else {
-          this.options_data = {};
-          p = this.Api.sendDataGet({
+        var _this = this;
+        if (!this.loadDataPromise) {
+          this.loadDataPromise = this.Api.sendDataGet({
             'ticket_deps': '/ticket_deps',
             'ticket_cats': '/ticket_cats',
             'ticket_prods': '/ticket_prods',
@@ -213,18 +207,20 @@
             'ticket_accounts': '/ticket_accounts',
             'usergroups': '/usergroups'
           }).then(function(result) {
-            var data, _ref1;
+            var data, options_data, _ref1;
             data = result.data;
-            _this.options_data['ticket_deps'] = data.ticket_deps.departments;
-            _this.options_data['ticket_cats'] = data.ticket_cats.categories;
-            _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
-            _this.options_data['ticket_works'] = data.ticket_works.workflows;
-            _this.options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
-            _this.options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
-            return _this.options_data['usergroups'] = data.usergroups.usergroups;
+            options_data = {};
+            options_data['ticket_deps'] = data.ticket_deps.departments;
+            options_data['ticket_cats'] = data.ticket_cats.categories;
+            options_data['ticket_pris'] = data.ticket_pris.priorities;
+            options_data['ticket_works'] = data.ticket_works.workflows;
+            options_data['ticket_prods'] = (_ref1 = data.ticket_prods) != null ? _ref1.products : void 0;
+            options_data['ticket_accounts'] = data.ticket_accounts.ticket_accounts;
+            options_data['usergroups'] = data.usergroups.usergroups;
+            return _this.options_data = options_data;
           });
         }
-        return p;
+        return this.loadDataPromise;
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckWorkflow = function(options) {
