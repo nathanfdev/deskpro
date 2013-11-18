@@ -56,7 +56,7 @@
 					</div>
 					<div class="dp-ob-set">
 						<p>
-							After <dp-time-with-unit ng-model="EditCtrl.form.sla_warn_time"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
+							After <dp-time-with-unit ng-model="EditCtrl.form.warn_time" model-type="array"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
 						</p>
 						<div class="dp-ob-setrow">
 							<header>
@@ -64,7 +64,7 @@
 								The followings actions will run:
 							</header>
 							<article>
-								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.sla_warn_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.warn_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
 									<add-btn-label>Action</add-btn-label>
 								</dp-option-builder>
 							</article>
@@ -80,7 +80,7 @@
 					</div>
 					<div class="dp-ob-set">
 						<p>
-							After <dp-time-with-unit ng-model="EditCtrl.form.sla_fail_time"></dp-time-with-unit> the ticket is close to failing and the failed status is applied.
+							After <dp-time-with-unit ng-model="EditCtrl.form.fail_time" model-type="array"></dp-time-with-unit> the ticket is close to failing and the failed status is applied.
 						</p>
 						<div class="dp-ob-setrow">
 							<header>
@@ -88,7 +88,7 @@
 								The followings actions will run:
 							</header>
 							<article>
-								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.sla_fail_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.fail_actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
 									<add-btn-label>Action</add-btn-label>
 								</dp-option-builder>
 							</article>
@@ -104,15 +104,15 @@
 					</div>
 					<div class="dp-ob-set">
 						<p>
-							<select ng-model="EditCtrl.form.apply_type" ui-select2 style="width: 200px;">
+							<select ng-model="EditCtrl.form.apply_type" ui-select2 style="width: 300px;">
 								<option value="all">Apply to all tickets</option>
 								<option value="manual">Agents manually apply the SLA</option>
-								<option value="trigger">Apply to new tickets that match certain criteria</option>
+								<option value="terms">Apply to new tickets that match certain criteria</option>
 							</select>
 						</p>
-						<div ng-show="EditCtrl.form.apply_type == 'trigger'">
+						<div ng-show="EditCtrl.form.apply_type == 'terms'">
 							<div class="panel panel-innertable" style="padding-top: 0; margin-top: 0; margin-left: 0; margin-right: 0;">
-								<div class="dp-ob-set" dp-option-builder-set="{typedef: EditCtrl.criteraTypeDef, template: 'ticket_deps_criteria_setrow', option_types: criteriaOptionTypes }" sets-object="EditCtrl.form.criteria_sets">
+								<div class="dp-ob-set" dp-option-builder-set="{typedef: EditCtrl.criteraTypeDef, template: 'ticket_deps_criteria_setrow', option_types: criteriaOptionTypes }" sets-object="EditCtrl.form.apply_terms">
 									<div class="dp-ob-addition-setrow">
 										<script type="text/ng-template" id="ticket_deps_criteria_setrow">
 											<div class="dp-ob-setrow">

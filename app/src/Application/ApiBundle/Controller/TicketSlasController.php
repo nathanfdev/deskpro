@@ -34,6 +34,10 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+
 class TicketSlasController extends AbstractController
 {
 	####################################################################################################################
@@ -94,34 +98,44 @@ class TicketSlasController extends AbstractController
 			$sla = new Sla();
 		}
 
-		$sla->title         = $this->in->getString('title');
-		$sla->event_trigger = $this->in->getString('event_trigger');
+		$sla->title          = $this->in->getString('title');
+		$sla->sla_type       = $this->in->getString('sla_type');
+		$sla->active_time    = $this->in->getString('active_time');
+		$sla->apply_type     = $this->in->getString('apply_type');
+		$sla->warn_time      = $this->in->getUint('warn_time');
+		$sla->warn_time_unit = $this->in->getString('warn_time_unit');
+		$sla->fail_time      = $this->in->getUint('fail_time');
+		$sla->fail_time_unit = $this->in->getString('fail_time_unit');
 
-		$sla->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
-		$sla->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
-
-		$terms = new TriggerTerms();
-		foreach ($this->in->getArrayValue('criteria_sets') as $set) {
+		$apply_terms = new TriggerTerms();
+		foreach ($this->in->getArrayValue('apply_terms') as $set) {
 			if ($set) {
-				$terms->addTermFromArray(array('set_terms' => $set));
+				$apply_terms->addTermFromArray(array('set_terms' => $set));
 			}
 		}
+		$sla->apply_terms = $apply_terms;
 
-		$actions = new TriggerActions();
-		foreach ($this->in->getArrayValue('actions') as $act) {
+		$warn_actions = new TriggerActions();
+		foreach ($this->in->getArrayValue('warn_actions') as $act) {
 			if ($act) {
-				$actions->addActionFromArray($act);
+				$warn_actions->addActionFromArray($act);
 			}
 		}
+		$sla->warn_actions = $warn_actions;
 
-		$sla->terms = $terms;
-		$sla->actions = $actions;
+		$fail_actions = new TriggerActions();
+		foreach ($this->in->getArrayValue('fail_actions') as $act) {
+			if ($act) {
+				$fail_actions->addActionFromArray($act);
+			}
+		}
+		$sla->fail_actions = $fail_actions;
 
 		$this->em->persist($sla);
 		$this->em->flush();
 
 		return $this->createSuccessResponse(array(
-			'trigger_id' => $sla->id
+			'sla_id' => $sla->id
 		));
 	}
 
