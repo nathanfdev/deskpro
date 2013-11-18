@@ -39,6 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 use Orb\Util\Dates;
+use Orb\Util\WorkHoursSet;
 
 /**
  * Ticket triggers
@@ -578,7 +579,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return int
 	 */
-	public function getOptionSeconds()
+	public function getOptionSeconds(WorkHoursSet $hours_set = null)
 	{
 		$time = $this->getOptionTime();
 		$scale = $this->getOptionScale();
@@ -596,15 +597,27 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				break;
 
 			case 'days':
-				$secs = $time * Dates::SECS_DAY;
+				if ($hours_set) {
+					$secs = $time * $hours_set->getSecondsPerDay();
+				} else {
+					$secs = $time * Dates::SECS_DAY;
+				}
 				break;
 
 			case 'weeks':
-				$secs = $time * Dates::SECS_WEEK;
+				if ($hours_set) {
+					$secs = $time * $hours_set->getSecondsPerWeek();
+				} else {
+					$secs = $time * Dates::SECS_WEEK;
+				}
 				break;
 
 			case 'months':
-				$secs = $time * Dates::SECS_MONTH;
+				if ($hours_set) {
+					$secs = $time * ($hours_set->getSecondsPerWeek() * 4);
+				} else {
+					$secs = $time * Dates::SECS_MONTH;
+				}
 				break;
 
 			default:
