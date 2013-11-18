@@ -33,10 +33,13 @@
         return {
           restrict: 'E',
           template: "<div class=\"dp-time-unit\">\n	<input type=\"text\" ng-model=\"time_num\" class=\"form-control time_num\" />\n	<select\n		ng-model=\"time_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"minutes\">minutes</option>\n		<option value=\"hours\">hours</option>\n		<option value=\"days\">days</option>\n		<option value=\"weeks\">weeks</option>\n		<option value=\"months\">months</option>\n		<option value=\"years\">years</option>\n	</select>\n</div>",
+          scope: {},
           require: 'ngModel',
           replace: true,
           link: function(scope, iElement, iAttrs, ngModel) {
             var modelType, multiplierMap, multiplierTypes, objModelKeys;
+            scope.time_num = '';
+            scope.time_unit = 'minutes';
             modelType = 'seconds';
             objModelKeys = null;
             if (iAttrs.modelType) {
@@ -65,7 +68,7 @@
             multiplierTypes = ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'];
             multiplierTypes.reverse();
             ngModel.$parsers.push(function(viewValue) {
-              var num, obj, unit;
+              var arr, num, obj, secs, unit;
               unit = viewValue.unit || 'minutes';
               num = viewValue.num || 1;
               switch (modelType) {
@@ -75,9 +78,11 @@
                   obj[objModelKeys[1]] = unit;
                   return obj;
                 case "array":
-                  return [num, unit];
+                  arr = [num, unit];
+                  return arr;
                 default:
-                  return multiplierMap[unit] * num;
+                  secs = multiplierMap[unit] * num;
+                  return secs;
               }
             });
             ngModel.$formatters.push(function(modelValue) {
@@ -86,23 +91,23 @@
               num = '';
               switch (modelType) {
                 case "object":
-                  if (modelValue[objModelKeys[0]] != null) {
+                  if ((modelValue != null ? modelValue[objModelKeys[0]] : void 0) != null) {
                     unit = modelValue[objModelKeys[0]];
                   }
-                  if (modelValue[objModelKeys[1]] != null) {
+                  if ((modelValue != null ? modelValue[objModelKeys[1]] : void 0) != null) {
                     num = modelValue[objModelKeys[1]];
                   }
                   break;
                 case "array":
-                  if (modelValue[0] != null) {
-                    unit = modelValue[0];
+                  if ((modelValue != null ? modelValue[1] : void 0) != null) {
+                    unit = modelValue[1];
                   }
-                  if (modelValue[1] != null) {
-                    num = modelValue[1];
+                  if ((modelValue != null ? modelValue[0] : void 0) != null) {
+                    num = modelValue[0];
                   }
                   break;
                 default:
-                  modelValue = parseInt(modelValue);
+                  modelValue = parseInt(modelValue || 0);
                   for (_i = 0, _len = multiplierTypes.length; _i < _len; _i++) {
                     unitName = multiplierTypes[_i];
                     if (modelValue % multiplierMap[unitName] === 0) {

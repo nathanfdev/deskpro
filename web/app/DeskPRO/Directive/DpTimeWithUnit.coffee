@@ -45,9 +45,13 @@ define ->
 					</select>
 				</div>
 			""",
+			scope: {},
 			require: 'ngModel',
 			replace: true,
 			link: (scope, iElement, iAttrs, ngModel) ->
+
+				scope.time_num = ''
+				scope.time_unit = 'minutes'
 
 				modelType = 'seconds';
 				objModelKeys = null
@@ -64,7 +68,6 @@ define ->
 						modelType = 'array'
 					else
 						modelType = 'seconds'
-
 
 				multiplierMap = {
 					seconds:   1,
@@ -98,9 +101,11 @@ define ->
 							obj[objModelKeys[1]] = unit
 							return obj
 						when "array"
-							return [num, unit]
+							arr = [num, unit]
+							return arr
 						else
-							return multiplierMap[unit] * num
+							secs = multiplierMap[unit] * num
+							return secs
 				)
 
 				ngModel.$formatters.push( (modelValue) ->
@@ -109,17 +114,17 @@ define ->
 
 					switch modelType
 						when "object"
-							if modelValue[objModelKeys[0]]?
+							if modelValue?[objModelKeys[0]]?
 								unit = modelValue[objModelKeys[0]]
-							if modelValue[objModelKeys[1]]?
+							if modelValue?[objModelKeys[1]]?
 								num = modelValue[objModelKeys[1]]
 						when "array"
-							if modelValue[0]?
-								unit = modelValue[0]
-							if modelValue[1]?
-								num = modelValue[1]
+							if modelValue?[1]?
+								unit = modelValue[1]
+							if modelValue?[0]?
+								num = modelValue[0]
 						else
-							modelValue = parseInt(modelValue)
+							modelValue = parseInt(modelValue || 0)
 
 							for unitName in multiplierTypes
 								if modelValue % multiplierMap[unitName] == 0
