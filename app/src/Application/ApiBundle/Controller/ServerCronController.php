@@ -83,4 +83,20 @@ class ServerCronController extends AbstractController
 			)
 		);
 	}
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function removeAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerCron\ServerCron $server_cron
+		 */
+
+		$server_cron = $this->container->getSystemService('server_cron');
+		$server_cron->clearAllLogs();
+
+		return $this->createSuccessResponse();
+	}
 }

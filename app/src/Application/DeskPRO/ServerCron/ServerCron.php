@@ -136,4 +136,15 @@ class ServerCron
 
 		return $this->em->getRepository('DeskPRO:WorkerJob')->getLogs($job_id, $priority);
 	}
+
+	/**
+	 * @return bool
+	 */
+
+	public function clearAllLogs()
+	{
+		$this->em->getRepository('DeskPRO:WorkerJob')->clearAllLogs();
+
+		return true;
+	}
 }

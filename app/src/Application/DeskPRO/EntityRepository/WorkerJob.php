@@ -71,4 +71,13 @@ class WorkerJob extends AbstractEntityRepository
 			array($job_id, $priority)
 		);
 	}
+
+	/**
+	 *
+	 */
+
+	public function clearAllLogs()
+	{
+		App::getDb()->exec("DELETE FROM log_items WHERE log_name LIKE 'worker_job.%'");
+	}
 }

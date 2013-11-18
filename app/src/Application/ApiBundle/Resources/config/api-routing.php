@@ -2895,6 +2895,12 @@ $collection->create('api_server_cron_logs', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_server_cron_logs_delete', array(
+	'path'       => '/server_cron/logs',
+	'controller' => 'ApiBundle:ServerCron:remove',
+	'methods'    => array('DELETE'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################
