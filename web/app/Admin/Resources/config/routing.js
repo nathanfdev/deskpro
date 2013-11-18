@@ -1170,8 +1170,8 @@ define(function() {
 	routes.push({
 		id: 'server.cron',
 		url: '/cron',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerCron/list.html',
+		controller: 'Admin_ServerCron_Ctrl_List'
 	});
 
 	//###
