@@ -160,7 +160,8 @@ requirejs([
 	'Admin/ServerErrorLogs/Ctrl/ServerErrorLogs',
 	'Admin/ServerErrorLogs/Ctrl/View',
 	'Admin/ServerTaskQueue/Ctrl/ServerTaskQueue',
-	'Admin/ServerCron/Ctrl/List'
+	'Admin/ServerCron/Ctrl/List',
+	'Admin/ServerCron/Ctrl/Logs'
 ], function(angular) {
 	'use strict';
 

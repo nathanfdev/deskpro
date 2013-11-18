@@ -1,0 +1,56 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.cron') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+
+			<h3>Scheduled Tasks</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Scheduled Tasks Logs</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.logs.log') }}
+						</th>
+						<th>
+							Message
+						</th>
+						<th>
+							{{ phrase('agent.general.date') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="log in LogsCtrl.server_cron_logs.logs">
+						<td class="alt dp-id-col">
+							{{ ng_var('log.log_name') }}
+						</td>
+						<td ng-class="{danger: log.priority <= 4}">
+							{{ ng_var('log.message') }}
+						</td>
+						<td>
+							{{ ng_var('log.date_created * 1000 | date: \'EEEE, MMMM d, y h:mm a\'') }}
+						</td>
+					</tr>
+				</tbody>
+				<tbody>
+
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

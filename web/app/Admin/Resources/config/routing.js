@@ -1174,6 +1174,14 @@ define(function() {
 		controller: 'Admin_ServerCron_Ctrl_List'
 	});
 
+	routes.push({
+		id: 'server.cron.logs',
+		url: '/logs',
+		templateName: 'ServerCron/logs.html',
+		controller: 'Admin_ServerCron_Ctrl_Logs',
+		target: "appbody@server"
+	});
+
 	//###
 	//# PHP Info
 	//###
