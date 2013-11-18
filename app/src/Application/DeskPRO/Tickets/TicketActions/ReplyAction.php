@@ -230,7 +230,11 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 					$ret = "Prepend reply text";
 				}
 
-				$html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_pos), \ENT_QUOTES)) . '</p>';
+				if (!$this->is_html) {
+					$html = $this->reply_text;
+				} else {
+					$html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)) . '</p>';
+				}
 
 				$ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
 				return $ret;
