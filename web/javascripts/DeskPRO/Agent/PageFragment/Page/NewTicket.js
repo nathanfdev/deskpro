@@ -1343,6 +1343,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			onSnippetClick: function(info) {
 
 				var ticketLangId = self.getEl('value_form').find('.language_id').val();
+				if (!ticketLangId) {
+					ticketLangId = info.language_id == DESKPRO_DEFAULT_LANG_ID;
+				}
 				var snippetId    = info.snippetId;
 				var snippetCode  = info.snippetCode;
 
@@ -1353,16 +1356,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var result;
 
 				Array.each(snippetCode, function(info) {
-					if (info.language_id == ticketLangId) {
-						wantText = info.value;
+					if (info.value) {
+						if (info.language_id == ticketLangId) {
+							wantText = info.value;
+						}
+						if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+							agentText = info.value;
+						}
+						if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+							defaultText = info.value;
+						}
+						useText = info.value;
 					}
-					if (info.language_id == DESKPRO_PERSON_LANG_ID) {
-						agentText = info.value;
-					}
-					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-						defaultText = info.value;
-					}
-					useText = info.value;
 				});
 
 				if (wantText) {
