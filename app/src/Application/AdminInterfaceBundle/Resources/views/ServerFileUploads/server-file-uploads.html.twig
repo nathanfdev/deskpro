@@ -1,0 +1,201 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>File Uploads</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<h4>Upload Restrictions</h4>
+
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							Setting
+						</th>
+						<th>
+							Users
+						</th>
+						<th>
+							Agents
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Max Upload Size</td>
+						<td>
+							{{ ng_var('data.restrictions.attach_user_maxsize') }}
+						</td>
+						<td>
+							{{ ng_var('data.restrictions.attach_agent_maxsize') }}
+						</td>
+					</tr>
+					<tr>
+						<td>File Types</td>
+						<td>
+							<span ng-if="data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_must_exts">
+								All file types except these are allowed:
+								<br>{{ ng_var('data.restrictions.attach_user_must_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_user_not_exts && data.restrictions.attach_user_must_exts">
+								Only these file types allowed:
+								<br>{{ ng_var('data.restrictions.attach_user_not_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_user_not_exts && !data.restrictions.attach_user_not_exts">
+								All file types are allowed
+							</span>
+						</td>
+						<td>
+							<span ng-if="data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_must_exts">
+								All file types except these are allowed:
+								<br>{{ ng_var('data.restrictions.attach_agent_must_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_agent_not_exts && data.restrictions.attach_agent_must_exts">
+								Only these file types allowed:
+								<br>{{ ng_var('data.restrictions.attach_agent_not_exts') }}
+							</span>
+							<span ng-if="!data.restrictions.attach_agent_not_exts && !data.restrictions.attach_agent_not_exts">
+								All file types are allowed
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('admin.server.php_settings') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.value') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.file-uploads">file_uploads</a>
+
+							<p>{{ phrase('admin.server.required_for_upload') }}</p>
+						</td>
+						<td width="200">
+							{{ ng_var('data.php_vars.file_uploads') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a>
+
+							<p>{{ phrase('admin.server.php_upload_location') }}</p>
+
+							<div ng-if="!data.php_vars.upload_tmp_dir">
+								<p>
+									<strong>Note:</strong> There is currently no value set in php.ini for
+									upload_tmp_dir. The value shown to the right
+									is your system temp directory which is used by default. If you are having problems
+									uploading files, you should
+									edit php.ini and set a specific path for upload_tmp_dir.
+								</p>
+							</div>
+						</td>
+						<td>
+							<span ng-if="data.php_vars.upload_tmp_dir">
+								{{ ng_var('data.php_vars.upload_tmp_dir') }}
+							</span>
+							<span ng-if="!data.php_vars.upload_tmp_dir">
+								{{ ng_var('data.php_vars.upload_tmp_dir_real') }}
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize">upload_max_filesize</a>
+
+							<p>{{ phrase('admin.server.max_single_file_size') }}</p>
+						</td>
+						<td>
+							{{ ng_var('data.php_vars.upload_max_filesize') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.post-max-size">post_max_size</a>
+
+							<p>{{ phrase('admin.server.max_post_size') }}</p>
+						</td>
+						<td>
+							{{ ng_var('data.php_vars.post_max_size') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="http://www.php.net/manual/en/ini.core.php#ini.memory-limit">memory_limit</a>
+
+							<p>{{ phrase('admin.server.upload_memory_limit_explain') }}</p>
+						</td>
+						<td>
+							<span ng-if="data.php_vars.memory_limit_real == -1">
+								No limit
+							</span>
+
+							<span ng-if="data.php_vars.memory_limit_real != -1">
+								{{ ng_var('data.php_vars.memory_limit_real') }}
+							</span>
+
+							<div
+									style="font-size: 11px;"
+									ng-if="data.php_vars.memory_limit &&
+									 data.php_vars.memory_limit
+									  != data.php_vars.memory_limit_real
+									  ">
+								Successfully changed to
+								{{ ng_var('data.php_vars.memory_limit') }}
+								at runtime
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{{ phrase('admin.server.upload_effect_max') }}
+
+							<p>{{ phrase('admin.server.upload_effect_max_explain') }}</p>
+						</td>
+						<td>
+							Approximately {{ ng_var('data.effective_max_upload_size') }}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<p>
+								{{ phrase('admin.server.edit_php_ini_to_make_changes') }}
+								<a ng-href="{{ ng_var('data.url_to_learn_php_ini') }}">
+									{{ phrase('admin.server.learn_about_editing_php_ini') }}
+								</a>
+							</p>
+
+							<p ng-if="data.php_ini_path">
+								We have detected the path to your php.ini file at {{ ng_var('data.php_ini_path') }}
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}
