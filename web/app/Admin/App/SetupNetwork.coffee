@@ -41,6 +41,10 @@ define ->
 			}
 		])
 
-		Module.config(['$httpProvider', ($httpProvider) ->
+		Module.config(['$httpProvider', 'fileUploadProvider', ($httpProvider, fileUploadProvider) ->
 			$httpProvider.interceptors.push('dpHttpInterceptor');
+
+			angular.extend(fileUploadProvider.defaults, {
+				headers: {'X-DeskPRO-API-Token': window.DP_API_TOKEN}
+			});
 		])

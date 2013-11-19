@@ -48,8 +48,13 @@
         }
       ]);
       return Module.config([
-        '$httpProvider', function($httpProvider) {
-          return $httpProvider.interceptors.push('dpHttpInterceptor');
+        '$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
+          $httpProvider.interceptors.push('dpHttpInterceptor');
+          return angular.extend(fileUploadProvider.defaults, {
+            headers: {
+              'X-DeskPRO-API-Token': window.DP_API_TOKEN
+            }
+          });
         }
       ]);
     };
