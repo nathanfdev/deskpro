@@ -1158,10 +1158,10 @@ define(function() {
 	//# Test File Uploads
 	//###
 	routes.push({
-		id: 'server.test_file_ups',
-		url: '/test_file_ups',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		id: 'server.file_uploads',
+		url: '/file_uploads',
+		templateName: 'ServerFileUploads/server-file-uploads.html',
+		controller: 'Admin_ServerFileUploads_Ctrl_ServerFileUploads'
 	});
 
 	//###
