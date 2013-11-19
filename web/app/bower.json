@@ -21,7 +21,8 @@
     "underscore": "latest",
 	"momentjs": "latest",
 	"angular-moment": "latest",
-	"stacktrace": "latest"
+	"stacktrace": "latest",
+	"blueimp-file-upload": "latest"
   },
   "resolutions": {
     "angular": "v1.2.0-rc.3"
