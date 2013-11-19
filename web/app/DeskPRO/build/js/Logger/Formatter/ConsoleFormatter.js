@@ -1,19 +1,24 @@
 (function() {
   define(['DeskPRO/Util/Strings'], function(Strings) {
-    var LineFormatter;
-    return LineFormatter = (function() {
-      function LineFormatter(formatString) {
+    var ConsoleFormatter;
+    return ConsoleFormatter = (function() {
+      function ConsoleFormatter(formatString) {
         this.formatString = formatString;
         if (!this.formatString) {
-          this.formatString = LineFormatter.SIMPLE_FORMAT;
+          this.formatString = ConsoleFormatter.SIMPLE_FORMAT;
         }
       }
 
-      LineFormatter.prototype.format = function(record) {
+      ConsoleFormatter.prototype.format = function(record) {
         var console_args, console_format, format_string, k, v, _ref;
         format_string = this.formatString;
-        console_args = record.messageConsole;
-        console_format = console_args.shift();
+        if (record.messageConsole) {
+          console_args = record.messageConsole;
+          console_format = console_args.shift();
+        } else {
+          console_args = [];
+          console_format = record.message;
+        }
         _ref = record.extra;
         for (k in _ref) {
           v = _ref[k];
@@ -30,9 +35,9 @@
         };
       };
 
-      LineFormatter.SIMPLE_FORMAT = "[%date%] %channel%.%level_name%: %console_format%";
+      ConsoleFormatter.SIMPLE_FORMAT = "[%dateStr%] (%channel%.%level_name%) %console_format%";
 
-      return LineFormatter;
+      return ConsoleFormatter;
 
     })();
   });

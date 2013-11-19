@@ -2251,6 +2251,31 @@ $collection->create('api_ticket_pris_save', array(
 ));
 
 ########################################################################################################################
+# Ticket Fields
+########################################################################################################################
+
+$collection->create('api_ticket_fields_get', array(
+	'path'         => '/ticket_fields/{id}',
+	'controller'   => 'ApiBundle:TicketFields:getCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_fields_create', array(
+	'path'       => '/ticket_fields',
+	'controller' => 'ApiBundle:TicketFields:saveCustomField',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_ticket_fields_save', array(
+	'path'         => '/ticket_fields/{id}',
+	'controller'   => 'ApiBundle:TicketFields:saveCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+########################################################################################################################
 # Ticket Statuses
 ########################################################################################################################
 

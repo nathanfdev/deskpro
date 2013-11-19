@@ -24,7 +24,7 @@
         return output;
       };
 
-      LineFormatter.SIMPLE_FORMAT = "[%date%] %channel%.%level_name%: %message% %context% %extra%\n";
+      LineFormatter.SIMPLE_FORMAT = "[%dateStr%] %channel%.%level_name%: %message% %context% %extra%\n";
 
       return LineFormatter;
 

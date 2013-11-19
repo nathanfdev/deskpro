@@ -143,6 +143,49 @@ define ->
 
 
 		###
+    	# Pad the start of a string with padStr until it is len characters long.
+    	#
+    	# @param {String} str
+    	# @param {String} padStr
+    	# @param {Integer} len
+    	# @return {String}
+    	###
+		prePad: (str, padStr, len = 2) ->
+			str = str+""
+			padStr = padStr+""
+
+			while str.length < len
+				str = str + padStr
+
+			if str.length > len
+				return str.substring(0, len)
+
+			return str
+
+
+		###
+    	# Pad the end of a string with padStr until it is len characters long.
+    	#
+    	# @param {String} str
+    	# @param {String} padStr
+    	# @param {Integer} len
+    	# @return {String}
+    	###
+		pad: (str, padStr, len = 2) ->
+			str = str+""
+			padStr = padStr+""
+
+			while str.length < len
+				str += padStr
+
+			if str.length > len
+				return str.substring(0, len)
+
+			return str
+
+
+
+		###
     	# Generate a MurmurHash3 hash. This is a very very fast non-crypto hash (eg can be used for hash tables etc)
     	#
     	# See: https://github.com/garycourt/murmurhash-js

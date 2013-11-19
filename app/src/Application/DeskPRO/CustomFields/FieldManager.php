@@ -124,6 +124,24 @@ class FieldManager
 		$this->init();
 	}
 
+
+	/**
+	 * Creates a new field def entity. This entity will be unmanaged by this
+	 * manager. You will need to persist, flush and then reset this object to have the new field added
+	 * to this manager.
+	 *
+	 * @return CustomDefAbstract
+	 */
+	public function createNewDefEntity()
+	{
+		$class = $this->options->get('entity_class');
+		$obj = new $class();
+
+		return $obj;
+	}
+
+
+
 	protected function init() {}
 
 	/**

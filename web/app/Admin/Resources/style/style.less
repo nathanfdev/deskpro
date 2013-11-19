@@ -19,6 +19,10 @@ form {
 	margin: 0;
 }
 
+label {
+	font-weight: normal;
+}
+
 .dp-ping-flash {
 	display: none;
 }
@@ -1278,7 +1282,7 @@ section.dp-help-content-wrapper.open {
 		border-bottom: 1px dotted #aaa;
 		padding-bottom: 15px;
 
-		&:last-child {
+		&:last-child:not(.with-border) {
 			border-bottom: none;
 			padding-bottom: 0;
 			margin-bottom: 0;

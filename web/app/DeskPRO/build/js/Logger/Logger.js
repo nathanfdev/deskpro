@@ -66,7 +66,7 @@
 
 
       Logger.prototype.addRecord = function(level, message, context) {
-        var consoleArgs, handler, handlerKey, k, messageConsole, messageFormat, messageRaw, messageString, proc, record, stringArgs, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+        var consoleArgs, date, dateStr, handler, handlerKey, k, messageConsole, messageFormat, messageRaw, messageString, proc, record, stringArgs, v, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
         if (context == null) {
           context = {};
         }
@@ -91,7 +91,15 @@
           messageString = Strings.format(messageFormat, stringArgs);
           messageConsole = Util.clone(message);
           messageConsole.unshift(Strings.format(messageFormat, consoleArgs));
+        } else if (Util.isString(message) || Util.isNumber(message)) {
+          messageString = message;
+          messageConsole = [message];
+        } else {
+          messageString = Util.dump(message);
+          messageConsole = ["{0}", message];
         }
+        date = new Date();
+        dateStr = date.getUTCFullYear() + '-' + Strings.prePad(date.getUTCMonth() + 1, '0', 2) + '-' + Strings.prePad(date.getUTCDate(), '0', 2) + ' ' + Strings.prePad(date.getUTCHours(), '0', 2) + ':' + Strings.prePad(date.getUTCMinutes(), '0', 2) + ':' + Strings.prePad(date.getUTCSeconds(), '0', 2) + '.' + Strings.prePad(date.getUTCMilliseconds(), '0', 3);
         record = {
           message: messageString,
           messageRaw: messageRaw,
@@ -100,7 +108,8 @@
           level: level,
           level_name: Logger.LEVELS[level],
           channel: this.name,
-          date: new Date(),
+          date: date,
+          dateStr: dateStr,
           extra: {}
         };
         handlerKey = null;

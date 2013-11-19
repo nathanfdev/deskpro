@@ -1,4 +1,6 @@
 (function() {
+  var __slice = [].slice;
+
   define(function() {
     var DeskPRO_Util_Arrays;
     DeskPRO_Util_Arrays = (function() {
@@ -93,6 +95,28 @@
       DeskPRO_Util_Arrays.prototype.unshiftUnique = function(array, value) {
         if (array.indexOf(value) === -1) {
           array.push(value);
+        }
+        return array;
+      };
+
+      /*
+      		# Append arrays to array
+      		#
+      		# @param {Array} array  The array to append on
+      		# @param {Array} arrays... One or more arrays to add to array
+      		# @return {Array}
+      */
+
+
+      DeskPRO_Util_Arrays.prototype.append = function() {
+        var arr, array, arrays, v, _i, _j, _len, _len1;
+        array = arguments[0], arrays = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+        for (_i = 0, _len = arrays.length; _i < _len; _i++) {
+          arr = arrays[_i];
+          for (_j = 0, _len1 = arr.length; _j < _len1; _j++) {
+            v = arr[_j];
+            array.push(v);
+          }
         }
         return array;
       };

@@ -451,6 +451,33 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	public function getTicketFieldManager()
+	{
+		return $this->getSystemService('ticket_fields_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\CustomFields\PersonFieldManager
+	 */
+	public function getPersonFieldManager()
+	{
+		return $this->getSystemService('person_fields_manager');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	public function getOrgFieldManager()
+	{
+		return $this->getSystemService('org_fields_manager');
+	}
+
+
+	/**
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get

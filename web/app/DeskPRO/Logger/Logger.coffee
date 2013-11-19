@@ -78,17 +78,34 @@ define [
 				messageString = Strings.format(messageFormat, stringArgs)
 				messageConsole = Util.clone(message)
 				messageConsole.unshift(Strings.format(messageFormat, consoleArgs))
+			else if Util.isString(message) || Util.isNumber(message)
+				messageString = message
+				messageConsole = [message]
+			else
+				messageString  = Util.dump(message)
+				messageConsole = ["{0}", message]
+
+			date = new Date()
+
+			dateStr = date.getUTCFullYear() + '-' +
+				Strings.prePad(date.getUTCMonth()+1, '0', 2) + '-' +
+				Strings.prePad(date.getUTCDate(), '0', 2) + ' ' +
+				Strings.prePad(date.getUTCHours(), '0', 2) + ':' +
+				Strings.prePad(date.getUTCMinutes(), '0', 2) + ':' +
+				Strings.prePad(date.getUTCSeconds(), '0', 2) + '.' +
+				Strings.prePad(date.getUTCMilliseconds(), '0', 3)
 
 			record = {
 				message:        messageString,
 				messageRaw:     messageRaw,
 				messageConsole: messageConsole,
-				context:    context,
-				level:      level,
-				level_name: Logger.LEVELS[level],
-				channel:    @name,
-				date:       new Date(),
-				extra:      {}
+				context:        context,
+				level:          level,
+				level_name:     Logger.LEVELS[level],
+				channel:        @name,
+				date:           date,
+				dateStr:        dateStr
+				extra:          {}
 			}
 
 			handlerKey = null

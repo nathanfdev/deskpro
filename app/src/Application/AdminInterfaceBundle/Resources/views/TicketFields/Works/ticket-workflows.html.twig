@@ -1,50 +1,76 @@
-<div class="pane">
-	<header class="pane-header">
-		<h3>{{ phrase('adm.general.apps_tickets') }} &rarr; Workflows</h3>
-	</header>
-	<article class="pane-content no-pad">
-		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketWorks.save()">
-			<div class="panel panel-fill indent">
-				<div class="panel-body">
-					<div class="form-group">
-						<dp-category-builder max-depth="0" ng-model="TicketWorks.works"></dp-category-builder>
-					</div>
-
-					<div class="form-group">
-						<div class="col-lg-2">
-							<h3>Validation</h3>
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Categories</h3>
+							</div>
+							<div class="col-lg-10">
+								<dp-category-builder max-depth="0" ng-model="TicketWorks.works"></dp-category-builder>
+							</div>
 						</div>
-						<div class="col-lg-10">
-							<div style="padding-top:6px;">
-								<label style="font-weight: normal; display: block;">
-									<input type="checkbox" ng-model="TicketWorks.user_required" /> Require <strong>users</strong> to select a value for this field
-								</label>
-								<label style="font-weight: normal; display: block;">
-									<input type="checkbox" ng-model="TicketWorks.agent_required" /> Require <strong>agents</strong> to select a value for this field
-								</label>
+
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Default</h3>
+							</div>
+							<div class="col-lg-10">
+								<select
+										ui-select2
+										ng-model="TicketProds.default_id"
+										style="min-width: 240px"
+										class="no-search"
+										>
+									<option value="{{ ng_var('cat.id') }}" ng-repeat="cat in TicketProds.cat_parent_list">{{ ng_var('cat.title') }}</option>
+								</select>
+							<span class="help-block">
+								Choose the category selected by default on the new ticket form (for both agents and users). This default will
+								also be used in the email gateway.
+							</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Validation</h3>
+							</div>
+							<div class="col-lg-10">
+								<div style="padding-top:6px;">
+									<label style="font-weight: normal; display: block;">
+										<input type="checkbox" ng-model="TicketWorks.user_required" /> Require <strong>users</strong> to select a value for this field
+									</label>
+									<label style="font-weight: normal; display: block;">
+										<input type="checkbox" ng-model="TicketWorks.agent_required" /> Require <strong>agents</strong> to select a value for this field
+									</label>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="inner-footer">
-				<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-					<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
-					<ul>
-					</ul>
-				</div>
-
-				<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-					<div dp-hide-spinning="saving">
-						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+						</ul>
 					</div>
-					<div dp-show-spinning="saving">
-						<i class="spinner-flat"></i>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-	</article>
-</div>
-<div dp-register-message="saved_settings">Categories saved successfully.</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_settings">Categories saved successfully.</div>
+{% endblock %}

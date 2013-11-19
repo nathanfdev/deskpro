@@ -578,6 +578,30 @@ define(function() {
 	});
 
 	//###
+	//# Custom Ticket Fields
+	//###
+	routes.push({
+		id: 'tickets.fields.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.fields.create', $stateParams); }]
+	});
+
+	routes.push({
+		id: 'tickets.fields.create',
+		url: '/create',
+		templateName: 'CustomFields/Tickets/edit.html',
+		controller: 'Admin_CustomFields_Tickets_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.fields.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'CustomFields/Tickets/edit.html',
+		controller: 'Admin_CustomFields_Tickets_Ctrl_Edit'
+	});
+
+	//###
 	//# Ticket Accounts
 	//###
 	routes.push({

@@ -77,4 +77,19 @@ define ->
 
 			return array
 
+
+		###
+		# Append arrays to array
+		#
+		# @param {Array} array  The array to append on
+		# @param {Array} arrays... One or more arrays to add to array
+		# @return {Array}
+		###
+		append: (array, arrays...) ->
+			for arr in arrays
+				for v in arr
+					array.push(v)
+
+			return array
+
 	return new DeskPRO_Util_Arrays()

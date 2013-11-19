@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -560,5 +561,28 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 		}
 
 		return $this->title;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['type_name'] = $this->getTypeName();
+
+		if ($data['type_name'] == 'choice') {
+			$data['choices'] = array();
+			foreach ($this->children as $c) {
+				$data['choices'][] = array(
+					'id'        => $c->id,
+					'title'     => $c->title,
+					'parent_id' => $c->getOption('parent_id') ?: null
+				);
+			}
+		}
+
+		return $data;
 	}
 }

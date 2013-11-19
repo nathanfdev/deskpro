@@ -60,6 +60,49 @@ class TicketFieldsController extends AbstractController
 		return $this->createApiResponse($data);
 	}
 
+	####################################################################################################################
+	# edit-custom-field
+	####################################################################################################################
+
+	public function getCustomFieldAction($id)
+	{
+		$field = $this->container->getTicketFieldManager()->getFieldFromId($id);
+		if (!$id) {
+			throw $this->createNotFoundException();
+		}
+
+		$data = array();
+		$data['field'] = $field->toApiData();
+
+		return $this->createApiResponse($data);
+	}
+
+	####################################################################################################################
+	# save-custom-field
+	####################################################################################################################
+
+	public function saveCustomFieldAction($id)
+	{
+		if ($id) {
+			$field = $this->container->getTicketFieldManager()->getFieldFromId($id);
+			if (!$id) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$field = $this->container->getTicketFieldManager()->createNewDefEntity();
+		}
+
+		if ($id) {
+			return $this->createSuccessResponse(array(
+				'id' => $field->id
+			));
+		} else {
+			return $this->createSuccessResponse(array(
+				'id' => $field->id,
+				$this->generateUrl('api_ticket_fields_edit', array('id' => $field->id))
+			));
+		}
+	}
 
 	####################################################################################################################
 	# toggleField

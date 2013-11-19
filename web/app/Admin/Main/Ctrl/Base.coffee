@@ -44,6 +44,8 @@ define ['angular'], (angular) ->
 				@DEPS.unshift('DataService')
 			if @DEPS.indexOf('dpInterfaceTimer') == -1
 				@DEPS.unshift('dpInterfaceTimer')
+			if @DEPS.indexOf('$log') == -1
+				@DEPS.unshift('$log')
 
 			ctrl_def = @DEPS.slice(0)
 			ctrl_def.push(@)

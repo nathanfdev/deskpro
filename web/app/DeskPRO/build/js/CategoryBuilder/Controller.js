@@ -1,9 +1,9 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Strings', 'DeskPRO/Util/Arrays'], function(Util, Strings, Arrays) {
     var DeskPRO_CategoryBuilder_Controller;
     return DeskPRO_CategoryBuilder_Controller = (function() {
       function DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q) {
-        var me, tpl,
+        var me,
           _this = this;
         this.$scope = $scope;
         this.$element = $element;
@@ -21,11 +21,8 @@
             return _this.updateOrder();
           }
         };
-        tpl = "<div class=\"dp-cb-newrow\">\n	<input type=\"text\" class=\"form-control\" ng-model=\"new_cat_title\" placeholder=\"Enter a title...\" />\n	<span class=\"dp-cb-select-wrap\">\n		<select ng-model=\"new_cat_parent\"\n			ui-select2\n			style=\"min-width:200px;\"\n		>\n			<option value=\"{{c.id}}\" ng-repeat=\"c in parent_cat_list\">{{c.title}}</option>\n		</select>\n	</span>\n	<button class=\"btn dp-cb-addbtn\">Add</button>\n</div>";
-        this.addRowEl = this.$compile(tpl)(this.$scope);
-        this.addRowEl.appendTo(this.$element);
-        this.rootListEl = this.$compile('<ul class="dp-cb-root" ui-sortable="sortedListOptions"></ul>')(this.$scope);
-        this.rootListEl.appendTo(this.$element);
+        this.addRowEl = this.$element.find('.dp-cb-newrow');
+        this.rootListEl = this.$element.find('.dp-cb-root');
         me = this;
         this.$element.on('click', '.dp-cb-addbtn', function(ev) {
           ev.preventDefault();
@@ -39,32 +36,35 @@
           this.addRowEl.find('.dp-cb-select-wrap').hide();
         }
         this.$element.on('click', '.remove-trigger', function(ev) {
-          var cat, id, idx, k, removeIds, row, _i, _j, _len, _len1, _ref;
+          var cat, id, idx, k, removeIds, row, viewValue, _i, _j, _len, _len1;
           ev.preventDefault();
           row = $(this).closest('li');
           removeIds = [row.data('catId')];
           row.find('li').each(function() {
             return removeIds.push($(this).data('catId'));
           });
+          viewValue = me.ngModel.$viewValue || [];
           for (_i = 0, _len = removeIds.length; _i < _len; _i++) {
             id = removeIds[_i];
             delete me.cat_rows[id];
             idx = null;
-            _ref = me.ngModel.$modelValue;
-            for (k = _j = 0, _len1 = _ref.length; _j < _len1; k = ++_j) {
-              cat = _ref[k];
+            for (k = _j = 0, _len1 = viewValue.length; _j < _len1; k = ++_j) {
+              cat = viewValue[k];
               if (cat.id === id) {
                 idx = k;
                 break;
               }
             }
             if (idx !== null) {
-              me.ngModel.$modelValue.splice(idx, 1);
+              viewValue.splice(idx, 1);
             }
           }
           return row.slideUp(200, function() {
-            row.remove();
-            return me.updateView(me.ngModel.$modelValue);
+            return me.$scope.$apply(function() {
+              row.remove();
+              me.ngModel.$setViewValue(viewValue);
+              return me.updateView(viewValue);
+            });
           });
         });
       }
@@ -75,13 +75,22 @@
         var _this = this;
         this.ngModel = ngModel;
         this.cat_rows = {};
-        return this.ngModel.$render = function() {
+        this.ngModel.$render = function() {
           return _this.updateView(_this.ngModel.$modelValue);
         };
+        this.ngModel.$parsers.push(function(viewValue) {
+          return viewValue || [];
+        });
+        return this.ngModel.$formatters.push(function(modelValue) {
+          return modelValue;
+        });
       };
 
       DeskPRO_CategoryBuilder_Controller.prototype.updateView = function(cats) {
-        var cat, old_p, _i, _len;
+        var cat, old_p, old_parent_opt, proc, _i, _len;
+        if (!cats) {
+          cats = [];
+        }
         for (_i = 0, _len = cats.length; _i < _len; _i++) {
           cat = cats[_i];
           if (this.cat_rows[cat.id] != null) {
@@ -90,11 +99,10 @@
             this.cat_rows[cat.id] = this.renderRow(cat);
           }
         }
-        this.$scope.parent_cat_list.length = 0;
-        this.$scope.parent_cat_list.push({
-          id: 0,
-          title: 'No Parent'
-        });
+        old_parent_opt = this.$scope.new_cat_parent;
+        this.$scope.new_cat_parent = 0;
+        this.$scope.parent_cat_list = [];
+        this.$scope.parent_cat_list = [];
         old_p = this.rootListEl.parent();
         this.rootListEl.detach();
         this._procCats(cats, this.rootListEl, 0);
@@ -103,7 +111,32 @@
           list = this.parentNode;
           return $(this).detach().appendTo(list);
         });
-        return this.rootListEl.prependTo(old_p);
+        this.rootListEl.prependTo(old_p);
+        this.$scope.new_cat_parent = old_parent_opt;
+        if (this.$attrs.saveFlatArray) {
+          proc = function(parent_id, title_segs) {
+            var opt, select_options, sub_options, _j, _len1;
+            select_options = [];
+            for (_j = 0, _len1 = cats.length; _j < _len1; _j++) {
+              opt = cats[_j];
+              if (opt.parent_id === parent_id) {
+                title_segs.push(opt.title);
+                sub_options = proc(opt.id, title_segs);
+                if (sub_options.length) {
+                  Arrays.append(select_options, sub_options);
+                } else {
+                  select_options.push({
+                    id: opt.id,
+                    title: title_segs.join(' > ')
+                  });
+                }
+                title_segs.pop();
+              }
+            }
+            return select_options;
+          };
+          return this.$scope.saveFlatArray = proc(null, []);
+        }
       };
 
       DeskPRO_CategoryBuilder_Controller.prototype._procCats = function(cats, parentRow, parent_id, parent_titles, depth) {
@@ -146,7 +179,7 @@
 
       DeskPRO_CategoryBuilder_Controller.prototype.renderRow = function(cat) {
         var newRow, rowScope, tpl;
-        tpl = "<li class=\"dp-cb-row\">\n	<div class=\"dp-cb-titlewrap\">\n		<div class=\"dp-cb-row-move\"><i class=\"icon-reorder\"></i></div>\n		<div class=\"dp-cb-row-controls\">\n			<i class=\"icon-remove remove-trigger\"></i>\n		</div>\n		<div class=\"dp-cb-row-indent\"></div>\n		<input type=\"text\" class=\"form-control dp-cb-input\" ng-model=\"cat.title\" placeholder=\"Enter title...\" />\n	</div>\n	<ul ui-sortable=\"sortedListOptions\"></ul>\n</li>";
+        tpl = "<li class=\"dp-cb-row\">\n	<div class=\"dp-cb-titlewrap\">\n		<div class=\"dp-cb-row-move\"><i class=\"fa fa-bars\"></i></div>\n		<div class=\"dp-cb-row-controls\">\n			<i class=\"fa fa-times-circle remove-trigger\"></i>\n		</div>\n		<div class=\"dp-cb-row-indent\"></div>\n		<input type=\"text\" class=\"form-control dp-cb-input\" ng-model=\"cat.title\" placeholder=\"Enter title...\" />\n	</div>\n	<ul ui-sortable=\"sortedListOptions\"></ul>\n</li>";
         rowScope = this.$scope.$new();
         rowScope.sortedListOptions = this.$scope.sortedListOptions;
         rowScope.cat = cat;
@@ -156,24 +189,27 @@
       };
 
       DeskPRO_CategoryBuilder_Controller.prototype.addCat = function(catData) {
-        this.ngModel.$modelValue.push(catData);
-        return this.updateView(this.ngModel.$modelValue);
+        var viewValue;
+        viewValue = this.ngModel.$viewValue || [];
+        viewValue.push(catData);
+        this.ngModel.$setViewValue(viewValue);
+        return this.updateView(viewValue);
       };
 
       DeskPRO_CategoryBuilder_Controller.prototype.addNewCatFromTrigger = function(triggerEl) {
         var catData, parent_id, rowEl, title,
           _this = this;
         rowEl = $(triggerEl).closest('.dp-cb-addrow');
-        title = $.trim(this.$scope.new_cat_title);
+        title = Strings.trim(this.$scope.new_cat_title);
         if (title === '') {
           return;
         }
-        parent_id = parseInt(this.$scope.new_cat_parent);
-        if (!parent_id) {
+        parent_id = this.$scope.new_cat_parent;
+        if (!parent_id || parent_id === "" || parent_id === "0" || parent_id === 0) {
           parent_id = null;
         }
         catData = {
-          id: _.uniqueId('cb_'),
+          id: Util.uid('cb_'),
           "@is_new": true,
           title: title,
           parent_id: parent_id,
@@ -182,6 +218,7 @@
         if (rowEl.data('parentId')) {
           catData.parent_id = rowEl.data('parentId');
         }
+        this.$scope.new_cat_title = '';
         return this.$scope.$apply(function() {
           return _this.addCat(catData);
         });

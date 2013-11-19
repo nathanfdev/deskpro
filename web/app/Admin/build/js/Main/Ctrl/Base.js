@@ -66,6 +66,9 @@
         if (this.DEPS.indexOf('dpInterfaceTimer') === -1) {
           this.DEPS.unshift('dpInterfaceTimer');
         }
+        if (this.DEPS.indexOf('$log') === -1) {
+          this.DEPS.unshift('$log');
+        }
         ctrl_def = this.DEPS.slice(0);
         ctrl_def.push(this);
         if (!window.DP_CTRL_REG) {

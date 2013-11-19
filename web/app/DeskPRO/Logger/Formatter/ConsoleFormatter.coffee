@@ -3,16 +3,20 @@ define [
 ], (
 	Strings
 ) ->
-	class LineFormatter
+	class ConsoleFormatter
 		constructor: (@formatString) ->
 			if not @formatString
-				@formatString = LineFormatter.SIMPLE_FORMAT
+				@formatString = ConsoleFormatter.SIMPLE_FORMAT
 
 
 		format: (record) ->
 			format_string = @formatString
-			console_args = record.messageConsole
-			console_format = console_args.shift()
+			if record.messageConsole
+				console_args = record.messageConsole
+				console_format = console_args.shift()
+			else
+				console_args = []
+				console_format = record.message
 
 			for k, v of record.extra
 				format_string = format_string.replace(new RegExp(Strings.escapeRegex("%extra.#{k}%"), 'g'), v + "")
@@ -26,4 +30,4 @@ define [
 				args: console_args
 			}
 
-		@SIMPLE_FORMAT = "[%date%] %channel%.%level_name%: %console_format%"
+		@SIMPLE_FORMAT = "[%dateStr%] (%channel%.%level_name%) %console_format%"

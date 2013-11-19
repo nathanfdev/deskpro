@@ -7512,6 +7512,10 @@ form {
   margin: 0;
 }
 
+label {
+  font-weight: normal;
+}
+
 .dp-ping-flash {
   display: none;
 }
@@ -8770,7 +8774,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   border-bottom: 1px dotted #aaa;
 }
 
-.dp-form .form-group:last-child {
+.dp-form .form-group:last-child:not(.with-border) {
   padding-bottom: 0;
   margin-bottom: 0;
   border-bottom: none;

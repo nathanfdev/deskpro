@@ -19,4 +19,4 @@ define [
 
 			return output
 
-		@SIMPLE_FORMAT = "[%date%] %channel%.%level_name%: %message% %context% %extra%\n"
+		@SIMPLE_FORMAT = "[%dateStr%] %channel%.%level_name%: %message% %context% %extra%\n"

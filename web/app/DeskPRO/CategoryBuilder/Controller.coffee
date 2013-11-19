@@ -1,4 +1,12 @@
-define ->
+define [
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Strings',
+	'DeskPRO/Util/Arrays'
+], (
+	Util,
+	Strings,
+	Arrays
+) ->
 	class DeskPRO_CategoryBuilder_Controller
 		constructor: (@$scope, @$element, @$attrs, @$compile, @$q) ->
 			@$scope.categoryBuilder = @
@@ -12,26 +20,8 @@ define ->
 					@updateOrder()
 			}
 
-			tpl = """
-				<div class="dp-cb-newrow">
-					<input type="text" class="form-control" ng-model="new_cat_title" placeholder="Enter a title..." />
-					<span class="dp-cb-select-wrap">
-						<select ng-model="new_cat_parent"
-							ui-select2
-							style="min-width:200px;"
-						>
-							<option value="{{c.id}}" ng-repeat="c in parent_cat_list">{{c.title}}</option>
-						</select>
-					</span>
-					<button class="btn dp-cb-addbtn">Add</button>
-				</div>
-			"""
-
-			@addRowEl = @$compile(tpl)(@$scope)
-			@addRowEl.appendTo(@$element)
-
-			@rootListEl = @$compile('<ul class="dp-cb-root" ui-sortable="sortedListOptions"></ul>')(@$scope)
-			@rootListEl.appendTo(@$element)
+			@addRowEl = @$element.find('.dp-cb-newrow')
+			@rootListEl = @$element.find('.dp-cb-root')
 
 			me = @
 			@$element.on('click', '.dp-cb-addbtn', (ev) ->
@@ -56,19 +46,24 @@ define ->
 					removeIds.push($(this).data('catId'))
 				)
 
+				viewValue = me.ngModel.$viewValue || []
+
 				for id in removeIds
 					delete me.cat_rows[id]
 					idx = null
-					for cat,k in me.ngModel.$modelValue
+					for cat,k in viewValue
 						if cat.id == id
 							idx = k
 							break
 					if idx != null
-						me.ngModel.$modelValue.splice(idx,1)
+						viewValue.splice(idx,1)
 
 				row.slideUp(200, ->
-					row.remove()
-					me.updateView(me.ngModel.$modelValue)
+					me.$scope.$apply( ->
+						row.remove()
+						me.ngModel.$setViewValue(viewValue)
+						me.updateView(viewValue)
+					)
 				)
 			)
 
@@ -80,18 +75,28 @@ define ->
 			@ngModel.$render = =>
 				@updateView(@ngModel.$modelValue)
 
+			@ngModel.$parsers.push( (viewValue) ->
+				return viewValue || []
+			)
+
+			@ngModel.$formatters.push( (modelValue) ->
+				return modelValue
+			)
+
 		updateView: (cats) ->
+			if not cats
+				cats = []
+
 			for cat in cats
 				if @cat_rows[cat.id]?
 					@cat_rows[cat.id][0].detach()
 				else
 					@cat_rows[cat.id] = @renderRow(cat)
 
-			@$scope.parent_cat_list.length = 0
-			@$scope.parent_cat_list.push({
-				id: 0,
-				title: 'No Parent'
-			})
+			old_parent_opt = @$scope.new_cat_parent
+			@$scope.new_cat_parent = 0
+			@$scope.parent_cat_list = []
+			@$scope.parent_cat_list = []
 			old_p = @rootListEl.parent()
 			@rootListEl.detach()
 			@_procCats(cats, @rootListEl, 0)
@@ -100,6 +105,29 @@ define ->
 				$(this).detach().appendTo(list)
 			)
 			@rootListEl.prependTo(old_p)
+			@$scope.new_cat_parent = old_parent_opt
+
+			if @$attrs.saveFlatArray
+				proc = (parent_id, title_segs) ->
+					select_options = []
+					for opt in cats
+						if opt.parent_id == parent_id
+							title_segs.push(opt.title)
+							sub_options = proc(opt.id, title_segs)
+
+							if sub_options.length
+								Arrays.append(select_options, sub_options)
+							else
+								select_options.push({
+									id: opt.id,
+									title: title_segs.join(' > ')
+								})
+
+							title_segs.pop()
+
+					return select_options
+
+				@$scope.saveFlatArray = proc(null, [])
 
 		_procCats: (cats, parentRow, parent_id, parent_titles = '', depth = 0) ->
 			for cat in cats
@@ -130,9 +158,9 @@ define ->
 			tpl = """
 				<li class="dp-cb-row">
 					<div class="dp-cb-titlewrap">
-						<div class="dp-cb-row-move"><i class="icon-reorder"></i></div>
+						<div class="dp-cb-row-move"><i class="fa fa-bars"></i></div>
 						<div class="dp-cb-row-controls">
-							<i class="icon-remove remove-trigger"></i>
+							<i class="fa fa-times-circle remove-trigger"></i>
 						</div>
 						<div class="dp-cb-row-indent"></div>
 						<input type="text" class="form-control dp-cb-input" ng-model="cat.title" placeholder="Enter title..." />
@@ -150,22 +178,24 @@ define ->
 			return [newRow, rowScope]
 
 		addCat: (catData) ->
-			@ngModel.$modelValue.push(catData)
-			@updateView(@ngModel.$modelValue)
+			viewValue = @ngModel.$viewValue || []
+			viewValue.push(catData)
+			@ngModel.$setViewValue(viewValue)
+			@updateView(viewValue)
 
 		addNewCatFromTrigger: (triggerEl) ->
 			rowEl = $(triggerEl).closest('.dp-cb-addrow')
-			title = $.trim(@$scope.new_cat_title)
+			title = Strings.trim(@$scope.new_cat_title)
 
 			if title == ''
 				return
 
-			parent_id = parseInt(@$scope.new_cat_parent)
-			if not parent_id
+			parent_id = @$scope.new_cat_parent
+			if not parent_id or parent_id == "" or parent_id == "0" or parent_id == 0
 				parent_id = null
 
 			catData = {
-				id:            _.uniqueId('cb_'),
+				id:            Util.uid('cb_'),
 				"@is_new":     true,
 				title:         title,
 				parent_id:     parent_id,
@@ -174,6 +204,8 @@ define ->
 
 			if rowEl.data('parentId')
 				catData.parent_id = rowEl.data('parentId')
+
+			@$scope.new_cat_title = ''
 
 			@$scope.$apply( =>
 				@addCat(catData)
