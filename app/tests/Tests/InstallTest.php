@@ -216,9 +216,6 @@ class InstallTest extends DatabaseTestCase
 		sort($expect_tables, \SORT_STRING);
 		sort($have_tables, \SORT_STRING);
 
-		print_r($expect_tables);
-		print_r($have_tables);
-
 		$this->assertEquals($expect_tables, $have_tables);
 	}
 }
