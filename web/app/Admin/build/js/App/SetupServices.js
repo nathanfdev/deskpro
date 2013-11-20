@@ -32,6 +32,44 @@
       ]);
       Module.config([
         '$provide', function($provide) {
+          var startRunning, stopRunning, subTimout;
+          window.DP_DIGEST_RUNNING = false;
+          subTimout = null;
+          startRunning = function() {
+            window.DP_DIGEST_RUNNING = true;
+            if (subTimout) {
+              clearTimeout(subTimout);
+              return subTimout = null;
+            }
+          };
+          stopRunning = function() {
+            if (!subTimout) {
+              return subTimout = setTimeout(function() {
+                subTimout = null;
+                return window.DP_DIGEST_RUNNING = false;
+              }, 100);
+            }
+          };
+          return $provide.decorator('$rootScope', [
+            'dpInterfaceTimer', '$delegate', function(dpInterfaceTimer, $delegate) {
+              var origDigest;
+              origDigest = $delegate.$digest;
+              $delegate.$digest = function() {
+                var ret;
+                startRunning();
+                dpInterfaceTimer.startDigest();
+                ret = origDigest.apply($delegate, arguments);
+                dpInterfaceTimer.endDigest();
+                stopRunning();
+                return ret;
+              };
+              return $delegate;
+            }
+          ]);
+        }
+      ]);
+      Module.config([
+        '$provide', function($provide) {
           return $provide.decorator('$q', [
             '$delegate', function($delegate) {
               $delegate.fcall = function(fn) {

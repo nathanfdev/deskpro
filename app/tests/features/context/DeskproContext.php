@@ -160,7 +160,6 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 	 */
 	public function adminPageIsLoaded()
 	{
-
 		$this->getSession()->wait(5000, "window.DP_IS_BOOTED");
 	}
 
@@ -169,6 +168,6 @@ class DeskproContext extends \Behat\MinkExtension\Context\MinkContext
 	 */
 	public function adminSectionsAreLoaded()
 	{
-		$this->getSession()->wait(5000, "window.DP_SECTION_LOADING_STATE && !window.DP_SECTION_LOADING_STATE.dp_section_list && !window.DP_SECTION_LOADING_STATE.dp_section_page");
+		$this->getSession()->wait(5000, "window.DP_IS_BOOTED && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0");
 	}
 }

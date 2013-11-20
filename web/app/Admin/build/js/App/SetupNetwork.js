@@ -1,13 +1,30 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Util'], function(Util) {
     return function(Module) {
       Module.factory('dpHttpInterceptor', [
         function() {
-          var updateTimes;
+          var addRunningCount, subCounter, subRunningCount, subTimout, updateTimes;
           updateTimes = [];
+          window.DP_AJAX_RUNNINGCOUNT = 0;
+          subTimout = null;
+          subCounter = 0;
+          addRunningCount = function() {
+            return window.DP_AJAX_RUNNINGCOUNT++;
+          };
+          subRunningCount = function() {
+            subCounter++;
+            if (!subTimout) {
+              return subTimout = setTimeout(function() {
+                subTimout = null;
+                window.DP_AJAX_RUNNINGCOUNT -= subCounter;
+                return subCounter = 0;
+              }, 100);
+            }
+          };
           return {
             request: function(config) {
               var next, timeEnc, _ref;
+              addRunningCount();
               if (((_ref = config.headers) != null ? _ref['X-DeskPRO-API-Token'] : void 0) != null) {
                 config.startTime = new Date();
                 next = updateTimes.pop();
@@ -25,6 +42,7 @@
             },
             response: function(response) {
               var headers, lastRequestId, lastRequestTime;
+              subRunningCount();
               if (response.config.startTime) {
                 headers = response.headers();
                 if (headers['x-deskpro-requestid'] != null) {
@@ -39,9 +57,11 @@
               return response;
             },
             requestError: function(rejection) {
+              subRunningCount();
               return rejection;
             },
             responseError: function(rejection) {
+              subRunningCount();
               return rejection;
             }
           };

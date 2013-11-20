@@ -110,24 +110,6 @@
           return new Admin_Logging_InterfaceTimer($log);
         }
       ]);
-      Module.config([
-        '$provide', function($provide) {
-          return $provide.decorator('$rootScope', [
-            'dpInterfaceTimer', '$delegate', function(dpInterfaceTimer, $delegate) {
-              var origDigest;
-              origDigest = $delegate.$digest;
-              $delegate.$digest = function() {
-                var ret;
-                dpInterfaceTimer.startDigest();
-                ret = origDigest.apply($delegate, arguments);
-                dpInterfaceTimer.endDigest();
-                return ret;
-              };
-              return $delegate;
-            }
-          ]);
-        }
-      ]);
       return Module.config([
         '$provide', function($provide) {
           return $provide.decorator('$log', [

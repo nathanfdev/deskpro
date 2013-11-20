@@ -89,19 +89,6 @@ define [
 		])
 
 		Module.config(['$provide', ($provide) ->
-			$provide.decorator('$rootScope', ['dpInterfaceTimer', '$delegate', (dpInterfaceTimer, $delegate) ->
-				origDigest = $delegate.$digest
-				$delegate.$digest = ->
-					dpInterfaceTimer.startDigest()
-					ret = origDigest.apply($delegate, arguments)
-					dpInterfaceTimer.endDigest()
-					return ret
-
-				return $delegate
-			])
-		])
-
-		Module.config(['$provide', ($provide) ->
 			$provide.decorator('$log', ['LoggerManager', '$delegate', (LoggerManager, $delegate) ->
 				logger = LoggerManager.get('main')
 				return logger

@@ -527,8 +527,7 @@
       return DeskPRO_Util_Util;
 
     })();
-    window.DeskPRO_Util_Util = new DeskPRO_Util_Util();
-    return window.DeskPRO_Util_Util;
+    return new DeskPRO_Util_Util();
   });
 
 }).call(this);
