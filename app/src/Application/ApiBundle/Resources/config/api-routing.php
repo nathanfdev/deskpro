@@ -2942,6 +2942,12 @@ $collection->create('api_server_test_file_uploads', array(
 	'methods'    => array('POST'),
 ));
 
+$collection->create('api_server_switch_file_uploads_storage', array(
+	'path'       => '/server_file_uploads/switch',
+	'controller' => 'ApiBundle:ServerFileUploads:switchStorage',
+	'methods'    => array('POST'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

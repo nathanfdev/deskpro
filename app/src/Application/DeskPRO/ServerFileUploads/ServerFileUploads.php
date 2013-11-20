@@ -125,6 +125,75 @@ class ServerFileUploads
 	}
 
 	/**
+	 * @return array
+	 */
+
+	public function getMovingFiles()
+	{
+		$moving_id = App::getContainer()->getSetting('core.filesystem_move_from_id');
+
+		if ($moving_id) {
+
+			if ($moving_id < 1) {
+
+				$count_done = 0;
+
+			} else {
+
+				$count_done = App::getDb()->fetchColumn(
+					"SELECT COUNT(*) FROM blobs WHERE id < ?",
+					array($moving_id)
+				);
+			}
+
+			$count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs", array($moving_id));
+
+			if (!$count_todo) {
+
+				$count_todo = 1;
+			}
+
+			$count_left       = $count_todo - $count_done;
+			$count_percentage = floor(($count_done / $count_todo) * 100);
+
+		} else {
+
+			$count_done = $count_todo = $count_left = $count_percentage = 0;
+			$count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs");
+		}
+
+		$total_size          = App::getDb()->fetchColumn("SELECT SUM(filesize) FROM blobs");
+		$total_size_readable = Numbers::filesizeDisplay($total_size);
+
+		return array(
+			'id'               => $moving_id,
+			'count_done'       => $count_done,
+			'count_left'       => $count_left,
+			'count_percentage' => $count_percentage,
+			'count_todo'       => $count_todo,
+			'total_size'       => $total_size_readable,
+		);
+	}
+
+	/**
+	 * @return bool
+	 */
+
+	public function isUsingFileSystem()
+	{
+		return App::getContainer()->getSetting('core.filestorage_method') == 'fs';
+	}
+
+	/**
+	 * @return string
+	 */
+
+	public function getFileStoragePath()
+	{
+		return   App::getContainer()->getBlobDir();
+	}
+
+	/**
 	 * @return string
 	 */
 
@@ -169,6 +238,51 @@ class ServerFileUploads
 			'upload_failed'     => $upload_failed,
 			'uploaded_file_url' => $attach_url,
 			'is_tmp_writable'   => $is_tmp_writable,
+		);
+	}
+
+	/**
+	 *
+	 */
+
+	public function switchStorage()
+	{
+		$use_fs = (App::getContainer()->getSetting('core.filestorage_method') == 'fs');
+
+		if ($use_fs) {
+
+			App::getContainer()->getEm()->getRepository('DeskPRO:Setting')->updateSetting(
+				'core.filestorage_method',
+				'db'
+			);
+
+			App::getDb()->executeUpdate(
+				"
+				UPDATE blobs
+				SET storage_loc_pref = 'db'
+				WHERE storage_loc != 'db'
+				"
+			);
+
+		} else {
+
+			App::getContainer()->getEm()->getRepository('DeskPRO:Setting')->updateSetting(
+				'core.filestorage_method',
+				'fs'
+			);
+
+			App::getDb()->executeUpdate(
+				"
+				UPDATE blobs
+				SET storage_loc_pref = 'fs'
+				WHERE storage_loc != 'fs'
+				"
+			);
+		}
+
+		App::getContainer()->getEm()->getRepository('DeskPRO:Setting')->updateSetting(
+			'core.filesystem_move_from_id',
+			'-1'
 		);
 	}
 }

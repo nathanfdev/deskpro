@@ -53,6 +53,9 @@ class ServerFileUploadsController extends AbstractController
 		$returnedData['php_ini_path']              = $server_file_uploads->getPhpIniPath();
 		$returnedData['restrictions']              = $server_file_uploads->getRestrictions();
 		$returnedData['file_uploader_url']         = $server_file_uploads->getFileUploaderUrl();
+		$returnedData['using_file_system']         = $server_file_uploads->isUsingFileSystem();
+		$returnedData['file_storage_path']         = $server_file_uploads->getFileStoragePath();
+		$returnedData['moving_files']              = $server_file_uploads->getMovingFiles();
 
 		return $this->createApiResponse(
 			array(
@@ -78,5 +81,18 @@ class ServerFileUploadsController extends AbstractController
 		return $this->createApiResponse(
 			$server_file_uploads->getUploadResults($file)
 		);
+	}
+
+	public function switchStorageAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+		 */
+
+		$server_file_uploads = $this->container->getSystemService('server_file_uploads');
+
+		$server_file_uploads->switchStorage();
+
+		return $this->createSuccessResponse();
 	}
 }
