@@ -17,4 +17,10 @@ define [
 		'deskpro.category_builder'
 	])
 
+	AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->
+		datepickerConfig.showWeeks = false
+		datepickerPopupConfig.showWeeks = false
+		datepickerPopupConfig.dateFormat = 'dd MMMM yyyy'
+	])
+
 	return AdminModule

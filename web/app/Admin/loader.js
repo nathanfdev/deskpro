@@ -13,7 +13,7 @@ requirejs.config({
 		angularMoment:                   DP_ASSET_URL+'/app/bower_components/angular-moment/angular-moment.min',
 		angularFileUpload:               DP_ASSET_URL+'/app/bower_components/blueimp-file-upload/js/jquery.fileupload-angular',
 
-		momentjs:                        DP_ASSET_URL+'/app/bower_components/momentjs/min/moment-with-langs.min',
+		moment:                          DP_ASSET_URL+'/app/bower_components/momentjs/min/moment-with-langs.min',
 		aceEditor:                       DP_ASSET_URL+'/app/bower_components/ace-builds/src-min-noconflict/ace',
 		stacktrace:                      DP_ASSET_URL+'/app/bower_components/stacktrace/stacktrace',
 
@@ -86,7 +86,7 @@ requirejs([
 	'angularMoment',
 	'angularFileUpload',
 
-	'momentjs',
+	'moment',
 	'aceEditor',
 
 	'jquery',

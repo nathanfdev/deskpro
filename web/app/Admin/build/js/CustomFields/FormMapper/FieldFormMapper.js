@@ -1,12 +1,12 @@
 (function() {
-  define(function() {
+  define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
     var FieldFormMapper;
     return FieldFormMapper = (function() {
       function FieldFormMapper() {}
 
       FieldFormMapper.prototype.getFormFromModel = function(fieldModel) {
-        var form, formTypeOpts;
-        console.log(fieldModel);
+        var day, form, formTypeOpts, _i, _len, _ref;
+        console.log("Model: %o", fieldModel);
         form = {
           title: '',
           description: '',
@@ -21,15 +21,10 @@
             agent_validation_regex: '',
             agent_validation_resolve: false
           },
-          textarea: {
+          toggle: {
+            label_text: '',
             user_validation: '0',
-            user_validation_minlen: '1',
-            user_validation_maxlen: '',
-            user_validation_regex: '',
             agent_validation: '0',
-            agent_validation_minlen: '1',
-            agent_validation_maxlen: '',
-            agent_validation_regex: '',
             agent_validation_resolve: false
           },
           choice: {
@@ -64,9 +59,13 @@
         if (fieldModel) {
           form.title = fieldModel.title;
           form.description = fieldModel.description;
-          formTypeOpts = form[fieldModel.type_name];
+          if (fieldModel.type_name === 'textarea') {
+            formTypeOpts = form['text'];
+          } else {
+            formTypeOpts = form[fieldModel.type_name];
+          }
           if (fieldModel.is_agent_field) {
-            formTypeOpts.is_agent_field = true;
+            form.is_agent_field = true;
           }
           switch (fieldModel.type_name) {
             case "choice":
@@ -84,22 +83,25 @@
                 }
               }
               if (fieldModel.options.required || fieldModel.options.min_length) {
-                formTypeOpts.user_validation = true;
+                formTypeOpts.user_validation = 'required';
               }
               if (fieldModel.options.agent_required || fieldModel.options.agent_min_length) {
-                formTypeOpts.agent_validation = true;
-              }
-              if (fieldModel.options.agent_validation_resolve) {
-                formTypeOpts.agent_validation_resolve = true;
+                formTypeOpts.agent_validation = 'required';
+                if (fieldModel.options.agent_validation_resolve) {
+                  formTypeOpts.agent_validation_resolve = true;
+                }
               }
               if (fieldModel.choices && fieldModel.choices.length) {
                 formTypeOpts.options = fieldModel.choices;
+              }
+              if (fieldModel.default_value) {
+                formTypeOpts.default_value = parseInt(fieldModel.default_value);
               }
               break;
             case "text":
             case "textarea":
               if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.regex) {
-                formTypeOpts.user_validation = true;
+                formTypeOpts.user_validation = 'required';
                 if (fieldModel.options.min_length) {
                   formTypeOpts.user_validation_minlength = fieldModel.options.min_length;
                 }
@@ -111,7 +113,7 @@
                 }
               }
               if (fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.agent_regex) {
-                formTypeOpts.user_validation = true;
+                formTypeOpts.user_validation = 'required';
                 if (fieldModel.options.agent_min_length) {
                   formTypeOpts.agent_validation_minlength = fieldModel.options.agent_min_length;
                 }
@@ -122,6 +124,65 @@
                   formTypeOpts.agent_validation_regex = fieldModel.options.agent_regex;
                 }
               }
+              if (fieldModel.default_value) {
+                formTypeOpts.default_value = fieldModel.default_value;
+              }
+              break;
+            case "date":
+              if (!Util.isBlank(fieldModel.default_value)) {
+                formTypeOpts.default_mode = 'date';
+                formTypeOpts.default_value = moment(fieldModel.default_value, 'YYYY-MM-DD').toDate();
+              }
+              if (!Util.isBlank(fieldModel.options.date_valid_dow)) {
+                formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false];
+                _ref = fieldModel.options.date_valid_dow;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  day = _ref[_i];
+                  formTypeOpts.valid_weekdays[day] = true;
+                }
+              }
+              if (fieldModel.options.date_valid_type != null) {
+                if (fieldModel.options.date_valid_type === "date") {
+                  formTypeOpts.valid_dates_mode = 'date';
+                  if (!Util.isBlank(fieldModel.options.date_valid_date1)) {
+                    formTypeOpts.date_valid_date1 = moment(fieldModel.options.date_valid_date1, 'YYYY-MM-DD').toDate();
+                  }
+                  if (!Util.isBlank(fieldModel.options.date_valid_date2)) {
+                    formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate();
+                  }
+                }
+                if (fieldModel.options.date_valid_type === "range") {
+                  if (!Util.isBlank(fieldModel.options.date_valid_date1)) {
+                    formTypeOpts.date_valid_reldate1 = fieldModel.options.date_valid_date1;
+                  }
+                  if (!Util.isBlank(fieldModel.options.date_valid_date2)) {
+                    formTypeOpts.date_valid_reldate2 = fieldModel.options.date_valid_date2;
+                  }
+                }
+              }
+              if (fieldModel.options.required) {
+                formTypeOpts.user_validation = 'required';
+              }
+              if (fieldModel.options.agent_required) {
+                formTypeOpts.agent_validation = 'required';
+                if (fieldModel.options.agent_validation_resolve) {
+                  formTypeOpts.agent_validation_resolve = true;
+                }
+              }
+              break;
+            case "toggle":
+              if (fieldModel.options.required) {
+                formTypeOpts.user_validation = 'required';
+              }
+              if (fieldModel.options.agent_required) {
+                formTypeOpts.agent_validation = 'required';
+                if (fieldModel.options.agent_validation_resolve) {
+                  formTypeOpts.agent_validation_resolve = true;
+                }
+              }
+              if (fieldModel.default_value) {
+                formTypeOpts.default_value = true;
+              }
               break;
             case "display":
               formTypeOpts.html = fieldModel.options.html;
@@ -130,8 +191,12 @@
               formTypeOpts.cookie_name = fieldModel.options.cookie_name || '';
               formTypeOpts.param_name = fieldModel.options.param_name || '';
               formTypeOpts.default_value = fieldModel.options.default_value || '';
+              if (fieldModel.default_value) {
+                formTypeOpts.default_value = fieldModel.default_value;
+              }
           }
         }
+        console.log("Form: %o", form);
         return form;
       };
 

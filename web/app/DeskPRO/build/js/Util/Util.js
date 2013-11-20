@@ -196,6 +196,18 @@
       };
 
       /*
+      		# Check if a value is undefined
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.isUndefined = function(obj) {
+        return typeof obj === 'undefined';
+      };
+
+      /*
       		# Check if a value is empty (empty array, empty string, empty object)
       		#
       		# @param {Object} obj
@@ -208,11 +220,14 @@
         if (obj === null) {
           return true;
         }
-        if (this.isArray(obj) && obj.length) {
+        if (this.isUndefined(obj)) {
+          return true;
+        }
+        if (this.isArray(obj) && (obj.length != null)) {
           return obj.length === 0;
         }
-        if (this.isString(obj) && val.length) {
-          return val.length === 0;
+        if (this.isString(obj) && (obj.length != null)) {
+          return obj.length === 0;
         }
         for (k in obj) {
           if (!__hasProp.call(obj, k)) continue;
@@ -220,6 +235,37 @@
           return false;
         }
         return true;
+      };
+
+      /*
+      		# Check if a value is blank. This means roughly the same as PHP's "falsey" values: 0, "0", [], ""
+      		#
+      		# @param {Object} obj
+      		# @return {bool}
+      */
+
+
+      DeskPRO_Util_Util.prototype.isBlank = function(obj) {
+        if (this.isEmpty(obj)) {
+          return true;
+        }
+        if (this.isString(obj)) {
+          obj = Strings.trim(obj);
+          if (obj === "" || obj === "0") {
+            return true;
+          }
+        }
+        if (this.isInteger(obj)) {
+          if (obj === 0) {
+            return true;
+          }
+        }
+        if (this.isBoolean(obj)) {
+          if (obj === false) {
+            return true;
+          }
+        }
+        return false;
       };
 
       /*

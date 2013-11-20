@@ -41,6 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Translate\HasPhraseName;
+use Orb\Util\Numbers;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -581,6 +582,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 					'parent_id' => $c->getOption('parent_id') ?: null
 				);
 			}
+		}
+
+		if ($data['options']) {
+			// Cast "1" to 1 so values are properly encoded to json
+			foreach ($data['options'] as &$opt) {
+				if (Numbers::isInteger($opt)) {
+					$opt = (int)$opt;
+				}
+			}
+			unset($opt);
 		}
 
 		return $data;

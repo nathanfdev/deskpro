@@ -2696,3 +2696,64 @@ table.table {
 		opacity: 1.0;
 	}
 }
+
+//######################################################################################################################
+//# Date Picker
+//######################################################################################################################
+
+.dp-datepicker {
+	padding: 5px 8px 0 8px;
+
+	th {
+		padding: 0;
+		margin: 0;
+		text-align: center;
+	}
+
+	tr.header-row th {
+		border-bottom: 1px solid #ccc;
+	}
+
+	tr.labels-row th {
+		padding-top: 4px;
+	}
+
+	.nav-btn {
+		display: inline-block;
+		text-align: center;
+		margin: 0;
+	}
+	.title-btn {
+		display: block;
+		text-align: center;
+		margin: 0;
+	}
+
+	.nav-btn, .title-btn {
+		border: none;
+		background: #fff;
+		box-shadow: none;
+	}
+
+	td.day-cell {
+		padding: 3px;
+		min-width: 25px;
+	}
+
+	.btn-day {
+		display: block;
+		padding: 2px;
+		border: 1px solid #ccc;
+		border-radius: 2px;
+		background: #fff;
+		box-shadow: none;
+		cursor: pointer;
+		text-align: center;
+		width: 100%;
+		min-width: 25px;
+
+		&.btn-on {
+			background: #ccc;
+		}
+	}
+}

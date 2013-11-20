@@ -364,8 +364,8 @@
 		</section>
 	</form>
 
-	{{ ng_tpl('TicketAccounts/test-account-modal.html') }}
-	{{ ng_tpl('TicketAccounts/test-outgoing-modal.html') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-account-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-outgoing-modal.html.twig') }}
 
 	<div dp-register-message="saved_account">{{ ng_var('form.email_address') }} was saved successfully</div>
 {% endblock %}

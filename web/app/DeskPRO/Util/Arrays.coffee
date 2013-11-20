@@ -92,4 +92,32 @@ define ->
 
 			return array
 
+
+		###
+		# Remove all occurances of removeVal in array.
+		# Modifies the array in-place.
+		#
+		# @param {Array} array
+		# @param {Integer} idx
+		# @return {Array}
+		###
+		removeValue: (array, removeVal) ->
+			while (idx = array.indexOf(removeVal)) != -1
+				array.splice(idx, 1)
+
+			return array
+
+
+		###
+    	# Remove a specific element of an array.
+    	# Modifies the array in-place.
+    	#
+    	# @param {Array} array
+    	# @param {Integer} idx
+    	# @return {Array}
+		###
+		removeIndex: (array, idx) ->
+			array.splice(idx, 1)
+			return array
+
 	return new DeskPRO_Util_Arrays()

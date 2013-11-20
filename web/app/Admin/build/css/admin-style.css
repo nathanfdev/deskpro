@@ -10387,3 +10387,62 @@ table.table > tbody > tr > td.dp-id-col {
 .file-upload-progress-block.show {
   opacity: 1.0;
 }
+
+.dp-datepicker {
+  padding: 5px 8px 0 8px;
+}
+
+.dp-datepicker th {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.dp-datepicker tr.header-row th {
+  border-bottom: 1px solid #ccc;
+}
+
+.dp-datepicker tr.labels-row th {
+  padding-top: 4px;
+}
+
+.dp-datepicker .nav-btn {
+  display: inline-block;
+  margin: 0;
+  text-align: center;
+}
+
+.dp-datepicker .title-btn {
+  display: block;
+  margin: 0;
+  text-align: center;
+}
+
+.dp-datepicker .nav-btn,
+.dp-datepicker .title-btn {
+  background: #fff;
+  border: none;
+  box-shadow: none;
+}
+
+.dp-datepicker td.day-cell {
+  min-width: 25px;
+  padding: 3px;
+}
+
+.dp-datepicker .btn-day {
+  display: block;
+  width: 100%;
+  min-width: 25px;
+  padding: 2px;
+  text-align: center;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.dp-datepicker .btn-day.btn-on {
+  background: #ccc;
+}

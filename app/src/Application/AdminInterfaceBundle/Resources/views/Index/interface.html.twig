@@ -56,8 +56,10 @@
 	<div class="dp-layout" ui-view></div>
 </div>
 
-{{ ng_tpl('Index/modal-network-error.html') }}
-{{ ng_tpl('Index/modal-server-error.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Index:modal-network-error.html.twig') }}
+{{ ng_tpl('AdminInterfaceBundle:Index:modal-server-error.html.twig') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 
 <script type="text/javascript">
 window.DP_ASSET_URL      = '{{ asset('') }}';

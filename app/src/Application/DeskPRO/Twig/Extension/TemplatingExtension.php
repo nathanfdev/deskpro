@@ -1502,9 +1502,9 @@ class TemplatingExtension extends \Twig_Extension
 		return json_encode($positions);
 	}
 
-	public function ngIncTpl($context, $tpl_name)
+	public function ngIncTpl($context, $tpl_name, $save_name = null)
 	{
-		$name = 'AdminInterfaceBundle:' . $tpl_name;
+		$name = $tpl_name;
 
 		$tpl = App::getContainer()->getTemplating();
 		if (!$tpl->exists($name)) {
@@ -1513,7 +1513,14 @@ class TemplatingExtension extends \Twig_Extension
 
 		$rendered = $tpl->render($name, $context);
 
-		$html = '<script type="text/ng-template" id="'.$tpl_name.'">' . htmlspecialchars($rendered, \ENT_QUOTES, 'UTF-8') . '</script>';
+		if (!$save_name) {
+			$save_name = $tpl_name;
+			$save_name = preg_replace('#^AdminInterfaceBundle:#', '', $save_name);
+			$save_name = str_replace(':', '/', $save_name);
+			$save_name = preg_replace('#\.twig$#', '', $save_name);
+		}
+
+		$html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
 		return $html;
 	}
 

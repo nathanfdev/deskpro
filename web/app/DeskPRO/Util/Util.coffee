@@ -152,6 +152,15 @@ define [
 
 
 		###
+		# Check if a value is undefined
+		#
+		# @param {Object} obj
+		# @return {bool}
+		###
+		isUndefined: (obj) ->
+			return typeof obj == 'undefined'
+
+		###
 		# Check if a value is empty (empty array, empty string, empty object)
 		#
 		# @param {Object} obj
@@ -160,15 +169,39 @@ define [
 		isEmpty: (obj) ->
 			if obj == null
 				return true
-			if @isArray(obj) and obj.length
+			if @isUndefined(obj)
+				return true
+			if @isArray(obj) and obj.length?
 				return obj.length == 0
-			if @isString(obj) and val.length
-				return val.length == 0
+			if @isString(obj) and obj.length?
+				return obj.length == 0
 
 			for own k, v of obj
 				return false
 
 			return true
+
+
+		###
+		# Check if a value is blank. This means roughly the same as PHP's "falsey" values: 0, "0", [], ""
+		#
+		# @param {Object} obj
+		# @return {bool}
+		###
+		isBlank: (obj) ->
+			return true if @isEmpty(obj)
+
+			if @isString(obj)
+				obj = Strings.trim(obj)
+				return true if obj == "" or obj == "0"
+
+			if @isInteger(obj)
+				return true if obj == 0
+
+			if @isBoolean(obj)
+				return true if obj == false
+
+			return false
 
 
 		###
