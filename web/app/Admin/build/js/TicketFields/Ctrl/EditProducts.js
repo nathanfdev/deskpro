@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
     var Admin_TicketFields_Ctrl_EditProducts, _ref;
     Admin_TicketFields_Ctrl_EditProducts = (function(_super) {
       __extends(Admin_TicketFields_Ctrl_EditProducts, _super);
@@ -25,21 +25,14 @@
         this.agent_required = false;
         this.user_required = false;
         this.cat_parent_list = [];
-        this.$scope.$watchCollection('TicketProds.products.length', function() {
-          return _this.updateCatParentList();
-        });
         this.$scope.$watchCollection('TicketProds.products', function() {
           return _this.updateCatParentList();
-        });
+        }, true);
       };
 
       Admin_TicketFields_Ctrl_EditProducts.prototype.updateCatParentList = function() {
         var cat, flat, valid_ids, _i, _len;
-        this.cat_parent_list.length = 0;
-        this.cat_parent_list.push({
-          id: 0,
-          title: 'No Default'
-        });
+        this.cat_parent_list = [];
         flat = Arrays.analyzeFlatCatStructure(this.products);
         valid_ids = [];
         for (_i = 0, _len = flat.length; _i < _len; _i++) {
@@ -61,7 +54,7 @@
         var data_promise,
           _this = this;
         data_promise = this.Api.sendDataGet({
-          'info': '/v'
+          'info': '/ticket_prods'
         }).then(function(res) {
           _this.products = res.data.info.products;
           _this.default_id = res.data.info.default_id;

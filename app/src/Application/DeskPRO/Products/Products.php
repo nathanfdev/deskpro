@@ -48,7 +48,7 @@ class Products extends LazyPreloadedHierarchy
 	 */
 	protected function loadRecords()
 	{
-		return $this->em->getRepository('DeskPRO:TicketProduct')->findAll();
+		return $this->em->getRepository('DeskPRO:Product')->findAll();
 	}
 
 	public function setDefaultProductPreference($obj_or_id)

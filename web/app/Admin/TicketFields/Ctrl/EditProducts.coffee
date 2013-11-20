@@ -1,30 +1,23 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
 	class Admin_TicketFields_Ctrl_EditProducts extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditProducts'
 		@CTRL_AS = 'TicketProds'
 		@DEPS    = []
 
 		init: ->
-			@products             = []
+			@products         = []
 			@default_id       = 0
 			@agent_required   = false
 			@user_required    = false
 			@cat_parent_list  = []
 
-			@$scope.$watchCollection('TicketProds.products.length', =>
-				@updateCatParentList()
-			)
 			@$scope.$watchCollection('TicketProds.products', =>
 				@updateCatParentList()
-			)
+			, true)
 			return
 
 		updateCatParentList: ->
-			@cat_parent_list.length = 0
-			@cat_parent_list.push({
-				id: 0,
-				title: 'No Default'
-			})
+			@cat_parent_list = []
 
 			flat = Arrays.analyzeFlatCatStructure(@products)
 			valid_ids = []
@@ -41,7 +34,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
-				'info': '/v'
+				'info': '/ticket_prods'
 			}).then( (res) =>
 				@products       = res.data.info.products
 				@default_id     = res.data.info.default_id

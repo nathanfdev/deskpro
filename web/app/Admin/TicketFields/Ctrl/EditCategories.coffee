@@ -11,20 +11,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 			@user_required    = false
 			@cat_parent_list  = []
 
-			@$scope.$watchCollection('TicketCats.cats.length', =>
-				@updateCatParentList()
-			)
 			@$scope.$watchCollection('TicketCats.cats', =>
 				@updateCatParentList()
-			)
+			, true)
 			return
 
 		updateCatParentList: ->
-			@cat_parent_list.length = 0
-			@cat_parent_list.push({
-				id: 0,
-				title: 'No Default'
-			})
+			@cat_parent_list = []
 
 			flat = Arrays.analyzeFlatCatStructure(@cats)
 			valid_ids = []

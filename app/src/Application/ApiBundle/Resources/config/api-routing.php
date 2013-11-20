@@ -2196,7 +2196,7 @@ $collection->create('api_products', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_products', array(
+$collection->create('api_products_save', array(
 	'path'        => '/ticket_prods',
 	'controller'  => 'ApiBundle:TicketFields:saveProducts',
 	'methods'     => array('POST'),
@@ -2228,7 +2228,7 @@ $collection->create('api_ticket_works', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_cats_save', array(
+$collection->create('api_ticket_works_save', array(
 	'path'        => '/ticket_works',
 	'controller'  => 'ApiBundle:TicketFields:saveWorkflows',
 	'methods'     => array('POST'),

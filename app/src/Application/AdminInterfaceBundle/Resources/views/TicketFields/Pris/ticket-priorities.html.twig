@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketPris.save()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -11,6 +11,27 @@
 							</div>
 							<div class="col-lg-10">
 								<dp-category-builder max-depth="0" ng-model="TicketPris.pris"></dp-category-builder>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Default</h3>
+							</div>
+							<div class="col-lg-10">
+								<select
+										ui-select2
+										ng-model="TicketPris.default_id"
+										style="min-width: 240px"
+										class="no-search"
+										>
+									<option value="0">No Default</option>
+									<option value="{{ ng_var('cat.id') }}" ng-repeat="cat in TicketPris.pris">{{ ng_var('cat.title') }}</option>
+								</select>
+							<span class="help-block">
+								Choose the category selected by default on the new ticket form (for both agents and users). This default will
+								also be used in the email gateway.
+							</span>
 							</div>
 						</div>
 

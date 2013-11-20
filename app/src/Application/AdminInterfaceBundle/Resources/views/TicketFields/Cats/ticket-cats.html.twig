@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketCats.save()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -20,11 +20,12 @@
 							</div>
 							<div class="col-lg-10">
 								<select
-										ui-select2
-										ng-model="TicketCats.default_id"
-										style="min-width: 240px"
-										class="no-search"
-										>
+									ui-select2
+									ng-model="TicketCats.default_id"
+									style="min-width: 240px"
+									class="no-search"
+								>
+									<option value="0">No Default</option>
 									<option value="{{ ng_var('cat.id') }}" ng-repeat="cat in TicketCats.cat_parent_list">{{ ng_var('cat.title') }}</option>
 								</select>
 							<span class="help-block">

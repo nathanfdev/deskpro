@@ -295,4 +295,5 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 		###
 		applyFormToModel: (fieldModel, formModel) ->
 			fieldModel.title = formModel.title
+			fieldModel.is_enabled = true
 			return fieldModel

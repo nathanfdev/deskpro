@@ -1,11 +1,11 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
 	class Admin_TicketFields_Ctrl_EditWorkflows extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketFields_Ctrl_EditWorkflows'
 		@CTRL_AS = 'TicketWorks'
 		@DEPS    = []
 
 		init: ->
-			@works             = []
+			@works            = []
 			@default_id       = 0
 			@agent_required   = false
 			@user_required    = false

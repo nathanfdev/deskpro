@@ -25,21 +25,14 @@
         this.agent_required = false;
         this.user_required = false;
         this.cat_parent_list = [];
-        this.$scope.$watchCollection('TicketCats.cats.length', function() {
-          return _this.updateCatParentList();
-        });
         this.$scope.$watchCollection('TicketCats.cats', function() {
           return _this.updateCatParentList();
-        });
+        }, true);
       };
 
       Admin_TicketFields_Ctrl_EditCategories.prototype.updateCatParentList = function() {
         var cat, flat, valid_ids, _i, _len;
-        this.cat_parent_list.length = 0;
-        this.cat_parent_list.push({
-          id: 0,
-          title: 'No Default'
-        });
+        this.cat_parent_list = [];
         flat = Arrays.analyzeFlatCatStructure(this.cats);
         valid_ids = [];
         for (_i = 0, _len = flat.length; _i < _len; _i++) {

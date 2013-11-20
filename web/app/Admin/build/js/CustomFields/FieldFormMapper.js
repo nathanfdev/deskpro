@@ -340,6 +340,7 @@
 
       FieldFormMapper.prototype.applyFormToModel = function(fieldModel, formModel) {
         fieldModel.title = formModel.title;
+        fieldModel.is_enabled = true;
         return fieldModel;
       };
 

@@ -25,7 +25,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#/tickets/ticket_fields/products">
+					<a href="{{ ng_href('tickets.fields.products') }}">
 						<button dp-toggle-switch ng-model="TicketFieldsList.field_enabled.product" ng-change="TicketFieldsList.updateBuiltinFieldEnabledState('product')"></button>
 						<h4><span class="title-text">{{ phrase('agent.general.products') }}</span></h4>
 					</a>
