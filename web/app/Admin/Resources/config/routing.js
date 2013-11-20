@@ -115,7 +115,6 @@ define(function() {
 	routes.push({
 		id: 'setup.settings',
 		url: '/settings',
-		with_list_view: false,
 		templateName: 'Index/blank.html',
 		controller: 'Admin_Main_Ctrl_Bare'
 	});
@@ -302,10 +301,8 @@ define(function() {
 	routes.push({
 		id: 'tickets.macros.gocreate',
 		url: '/go-create',
-		page: {
-			template: '',
-			controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.macros.create', $stateParams); }]
-		}
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('tickets.macros.create', $stateParams); }]
 	});
 
 	routes.push({
@@ -359,7 +356,6 @@ define(function() {
 	routes.push({
 		id: 'tickets.satisfaction',
 		url: '/satisfaction',
-		with_list_view: false,
 		templateName: 'TicketSettings/satisfaction-settings.html',
 		controller: 'Admin_TicketSettings_Ctrl_TicketSettings'
 	});
@@ -370,7 +366,6 @@ define(function() {
 	routes.push({
 		id: 'tickets.ticket_escalations',
 		url: '/ticket_escalations',
-		with_list_view: true,
 		templateName: 'TicketEscalations/list.html',
 		controller: 'Admin_TicketEscalations_Ctrl_List'
 	});
@@ -751,7 +746,6 @@ define(function() {
 	routes.push({
 		id: 'crm.org_labels',
 		url: '/org_labels',
-		with_list_view: true,
 		templateName: 'Labels/Org/list.html',
 		controller: 'Admin_Labels_Org_Ctrl_List'
 	});
@@ -1011,7 +1005,6 @@ define(function() {
 	routes.push({
 		id: 'portal.feedback_labels',
 		url: '/feedback/labels',
-		with_list_view: true,
 		templateName: 'Labels/Feedback/list.html',
 		controller: 'Admin_Labels_Feedback_Ctrl_List'
 	});
