@@ -56,7 +56,7 @@ class ServerErrorLogs
 
 	public function __construct(EntityManager $em)
 	{
-		$this->em = $em;
+		$this->em          = $em;
 		$this->config_hash = md5_file(DP_CONFIG_FILE);
 	}
 

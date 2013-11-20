@@ -35,6 +35,9 @@ namespace Application\DeskPRO\ServerPhpInfo;
 
 use Doctrine\ORM\EntityManager;
 
+use Application\DeskPRO\App;
+
+use Orb\Util\Util;
 use Orb\Util\Env;
 
 class ServerPhpInfo
@@ -45,9 +48,16 @@ class ServerPhpInfo
 
 	protected $em;
 
+	/**
+	 * @var string
+	 */
+
+	protected $config_hash;
+
 	public function __construct(EntityManager $em)
 	{
-		$this->em = $em;
+		$this->em          = $em;
+		$this->config_hash = md5_file(DP_CONFIG_FILE);
 	}
 
 	public function getPhpInfo()
@@ -226,6 +236,21 @@ class ServerPhpInfo
 
 		$debug_settings['rewrite_urls'] = print_r(dp_get_config('rewrite_urls', false), true);
 
+		$memtest_link = App::getSetting('core.deskpro_url') . '?_sys=memtest';
+		$memtest_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'memtest', 86400);
+
+		$web_php_link = App::getSetting('core.deskpro_url') . '?_sys=phpinfo';
+		$web_php_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'phpinfo', 86400);
+
+		$cli_php_link = App::getSetting('core.deskpro_url') . '?_sys=phpinfo';
+		$cli_php_link .= '&cli=1&_=' . Util::generateStaticSecurityToken($this->config_hash . 'phpinfo', 86400);
+
+		$apc_link = App::getSetting('core.deskpro_url') . '?_sys=apc';
+		$apc_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'apc', 86400);
+
+		$wincache_link = App::getSetting('core.deskpro_url') . '?_sys=wincache';
+		$wincache_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'wincache', 86400);
+
 		return array(
 			'binary_paths'   => $binary_paths,
 			'web_php'        => $web_php,
@@ -234,6 +259,11 @@ class ServerPhpInfo
 			'has_apc'        => $has_apc,
 			'has_wincache'   => $has_wincache,
 			'debug_settings' => $debug_settings,
+			'memtest_link'   => $memtest_link,
+			'web_php_link'   => $web_php_link,
+			'cli_php_link'   => $cli_php_link,
+			'apc_link'       => $apc_link,
+			'wincache_link'  => $wincache_link,
 		);
 	}
 }
