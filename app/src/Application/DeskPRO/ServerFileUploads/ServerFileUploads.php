@@ -123,4 +123,52 @@ class ServerFileUploads
 			'attach_agent_must_exts' => App::getSetting('core.attach_agent_must_exts'),
 		);
 	}
+
+	/**
+	 * @return string
+	 */
+
+	public function getFileUploaderUrl()
+	{
+		return App::getRouter()->generate('api_server_file_uploads');
+	}
+
+	/**
+	 * @param $file
+	 *
+	 * @return array
+	 */
+
+	public function getUploadResults($file)
+	{
+		$upload_failed   = false;
+		$is_tmp_writable = false;
+		$attach_url      = '';
+
+		$accept = App::getContainer()->getAttachmentAccepter();
+		$error  = $accept->getError($file, 'agent');
+
+		if ($error) {
+
+			if ($error['error_code'] == 'no_file') {
+
+				$is_tmp_writable = Env::getUploadTempDir() && is_writable(Env::getUploadTempDir());
+			}
+
+			$upload_failed = App::getContainer()->getTranslator()->phrase(
+				'agent.general.attach_error_' . $error['error_code'],
+				$error
+			);
+
+		} else {
+
+			$attach_url = $accept->accept($file)->getDownloadUrl();
+		}
+
+		return array(
+			'upload_failed'     => $upload_failed,
+			'uploaded_file_url' => $attach_url,
+			'is_tmp_writable'   => $is_tmp_writable,
+		);
+	}
 }

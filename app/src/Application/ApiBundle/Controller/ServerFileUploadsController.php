@@ -52,6 +52,7 @@ class ServerFileUploadsController extends AbstractController
 		$returnedData['url_to_learn_php_ini']      = $server_file_uploads->getUrlToLearnPhpIni();
 		$returnedData['php_ini_path']              = $server_file_uploads->getPhpIniPath();
 		$returnedData['restrictions']              = $server_file_uploads->getRestrictions();
+		$returnedData['file_uploader_url']         = $server_file_uploads->getFileUploaderUrl();
 
 		return $this->createApiResponse(
 			array(
@@ -60,5 +61,22 @@ class ServerFileUploadsController extends AbstractController
 		);
 	}
 
+	####################################################################################################################
+	# test upload
+	####################################################################################################################
 
+	public function testUploadAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+		 */
+
+		$server_file_uploads = $this->container->getSystemService('server_file_uploads');
+
+		$file   = $this->request->files->get('file');
+
+		return $this->createApiResponse(
+			$server_file_uploads->getUploadResults($file)
+		);
+	}
 }

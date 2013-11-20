@@ -2936,6 +2936,12 @@ $collection->create('api_server_file_uploads', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_server_test_file_uploads', array(
+	'path'       => '/server_file_uploads',
+	'controller' => 'ApiBundle:ServerFileUploads:testUpload',
+	'methods'    => array('POST'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################
