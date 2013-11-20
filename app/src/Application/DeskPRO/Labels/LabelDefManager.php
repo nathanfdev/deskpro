@@ -358,7 +358,8 @@ class LabelDefManager
 				}
 			}
 
-			if (in_array($t, array('persons', 'tickets', 'organizations'))) {
+			// TODO - fix removing labels from triggers/filters
+			if (false && in_array($t, array('persons', 'tickets', 'organizations'))) {
 				$triggers = $this->db->fetchAll("
 					SELECT id, actions, terms, terms_any
 					FROM ticket_triggers
