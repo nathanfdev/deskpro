@@ -53,7 +53,7 @@ define [
 					subTimout = setTimeout(->
 						subTimout = null
 						window.DP_DIGEST_RUNNING = false
-					, 100)
+					, 250)
 
 			$provide.decorator('$rootScope', ['dpInterfaceTimer', '$delegate', (dpInterfaceTimer, $delegate) ->
 				origDigest = $delegate.$digest

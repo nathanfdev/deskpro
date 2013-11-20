@@ -17,7 +17,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						subTimout = null
 						window.DP_AJAX_RUNNINGCOUNT -= subCounter
 						subCounter = 0
-					, 100)
+					, 250)
 
 			return {
 				request: (config) ->

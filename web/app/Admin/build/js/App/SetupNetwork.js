@@ -18,7 +18,7 @@
                 subTimout = null;
                 window.DP_AJAX_RUNNINGCOUNT -= subCounter;
                 return subCounter = 0;
-              }, 100);
+              }, 250);
             }
           };
           return {

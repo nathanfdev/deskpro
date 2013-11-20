@@ -61,5 +61,9 @@ define [
 			for t in templates
 				dpTemplateManager.load(t)
 
-			dpTemplateManager.loadPending().then(-> window.DP_IS_BOOTED = true)
+			dpTemplateManager.loadPending().then(->
+				window.setTimeout(->
+					window.DP_IS_BOOTED = true
+				, 400)
+			)
 		])

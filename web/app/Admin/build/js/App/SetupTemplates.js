@@ -43,7 +43,9 @@
             dpTemplateManager.load(t);
           }
           return dpTemplateManager.loadPending().then(function() {
-            return window.DP_IS_BOOTED = true;
+            return window.setTimeout(function() {
+              return window.DP_IS_BOOTED = true;
+            }, 400);
           });
         }
       ]);

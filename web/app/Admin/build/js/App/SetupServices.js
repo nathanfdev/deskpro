@@ -47,7 +47,7 @@
               return subTimout = setTimeout(function() {
                 subTimout = null;
                 return window.DP_DIGEST_RUNNING = false;
-              }, 100);
+              }, 250);
             }
           };
           return $provide.decorator('$rootScope', [
