@@ -42,7 +42,6 @@ class TicketDepartmentsService
 	public static function create(DeskproContainer $container)
 	{
 		$x = new TicketDepartments($container->getEm());
-		$x->setDefaultDepartmentPreference($container->getSetting('core.tickets.default_department'));
 		return $x;
 	}
 }

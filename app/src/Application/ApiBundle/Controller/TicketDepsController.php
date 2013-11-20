@@ -61,7 +61,6 @@ class TicketDepsController extends AbstractController
 		}
 
 		$data['departments'] = $this->getApiData($deps, false);
-		$data['default_id']  = $this->container->getSetting('core.default_ticket_dep');
 
 		return $this->createApiResponse($data);
 	}

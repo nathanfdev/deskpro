@@ -46,14 +46,6 @@
 		</article>
 	</section>
 
-	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_deps.settings') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Department Settings</h3>
-		</a>
-	</section>
-
-	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
 {% endblock %}
 {% block listpane_help %}{% include 'AdminInterfaceBundle:TicketDeps:help-page.html.twig' %}{% endblock %}
