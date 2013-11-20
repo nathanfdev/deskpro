@@ -150,6 +150,13 @@ define [
 		info: (message, context) ->
 			@addRecord(Logger.INFO, message, context)
 
+		###
+    	# @param {String} message
+    	# @param {Object} context
+    	# @return {bool}
+		###
+		notice: (message, context) ->
+			@addRecord(Logger.NOTICE, message, context)
 
 		###
     	# @param {String} message
@@ -157,7 +164,7 @@ define [
     	# @return {bool}
 		###
 		warning: (message, context) ->
-			@addRecord(Logger.WARN, message, context)
+			@addRecord(Logger.WARNING, message, context)
 
 
 		###

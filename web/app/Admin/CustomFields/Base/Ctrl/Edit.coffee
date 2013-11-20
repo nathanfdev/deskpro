@@ -1,6 +1,6 @@
 define [
 	'Admin/Main/Ctrl/Base',
-	'Admin/CustomFields/FormMapper/FieldFormMapper'
+	'Admin/CustomFields/FieldFormMapper'
 ], (
 	Admin_Ctrl_Base,
 	FieldFormMapper

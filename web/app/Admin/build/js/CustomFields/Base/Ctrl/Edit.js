@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base', 'Admin/CustomFields/FormMapper/FieldFormMapper'], function(Admin_Ctrl_Base, FieldFormMapper) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/CustomFields/FieldFormMapper'], function(Admin_Ctrl_Base, FieldFormMapper) {
     var Admin_CustomFields_Base_Ctrl_Edit, _ref;
     return Admin_CustomFields_Base_Ctrl_Edit = (function(_super) {
       __extends(Admin_CustomFields_Base_Ctrl_Edit, _super);
