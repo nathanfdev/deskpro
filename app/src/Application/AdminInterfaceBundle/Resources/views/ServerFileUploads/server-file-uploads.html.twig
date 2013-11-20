@@ -11,6 +11,92 @@
 
 		<article class="padd">
 
+			<h4>{{ phrase('admin.server.file_storage_mechanism') }}</h4>
+
+			<table class="table table-bordered">
+				<tbody>
+
+					<tr ng-if="data.using_file_system">
+						<td>
+							{{ phrase('admin.server.storage_mechanism') }}
+						</td>
+						<td>
+							{{ phrase('admin.server.file_storage') }}
+
+							<div style="font-size: 11px">
+
+								{{ phrase('admin.server.notice_most_efficient_storage') }}
+
+								<div ng-if="!data.moving_files.id">
+
+									Databases are not designed to store files.
+									While not recommended, you can
+									<a ng-click="Ctrl.startSwitchStorage();$event.preventDefault();" ng-href="#">
+										switch back to using database storage
+									</a>.
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr ng-if="data.using_file_system">
+						<td>{{ phrase('admin.server.storage_path') }}</td>
+						<td>{{ ng_var('data.file_storage_path') }}</td>
+					</tr>
+
+					<tr ng-if="!data.using_file_system">
+						<td>
+							{{ phrase('admin.server.storage_mechanism') }}
+						</td>
+						<td>
+							{{ phrase('admin.server.database_storage') }}
+
+							<div style="font-size: 11px">
+
+								{{ phrase('admin.server.databases_not_recommended') }}
+
+								<div ng-if="!data.moving_files.id">
+
+									Databases are not designed to store files. We recommend
+									<a ng-click="Ctrl.startSwitchStorage();;$event.preventDefault();" ng-href="#">
+										switching to filesystem storage
+									</a>
+									where files are stored as files in a directory on your server.
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td ng-if="data.moving_files.id" colspan="2" class="success">
+
+							<div ng-if="data.using_file_system">
+
+								Currently transferring files from the database to the filesystem.
+								{{ ng_var('data.moving_files.count_done') }}
+								of {{ ng_var('data.moving_files.count_todo') }}
+								({{ ng_var('data.moving_files.count_percentage') }}%) files have been processed.
+
+							</div>
+							<div ng-if="!data.using_file_system">
+
+								Currently transferring files from the filesystem to the database.
+								{{ ng_var('data.moving_files.count_done') }}
+								of {{ ng_var('data.moving_files.count_todo') }}
+								({{ ng_var('data.moving_files.count_percentage') }}%) files have been processed.
+
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+
+		</article>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
 			<h4>Upload Restrictions</h4>
 
 			<table class="table table-bordered">

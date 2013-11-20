@@ -16,7 +16,7 @@
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.CTRL_AS = 'Ctrl';
 
-      Admin_ServerFileUploads_Ctrl_ServerFileUploads.DEPS = [];
+      Admin_ServerFileUploads_Ctrl_ServerFileUploads.DEPS = ['$state'];
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.init = function() {
         this.$scope.data = null;
@@ -24,6 +24,11 @@
         this.$scope.fileUploadResults = null;
         return this.setupUploadListeners();
       };
+
+      /*
+       	#
+      */
+
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.initialLoad = function() {
         var data_promise,
@@ -35,6 +40,11 @@
         return this.$q.all([data_promise]);
       };
 
+      /*
+       	#
+      */
+
+
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.setupUploadListeners = function() {
         var _this = this;
         this.$scope.$on('fileuploaddone', function(e, data) {
@@ -43,6 +53,44 @@
         return this.$scope.$on('fileuploadfail', function(e, data) {
           _this.$scope.fileUploadResults = {};
           return _this.$scope.fileUploadResults.upload_failed = true;
+        });
+      };
+
+      /*
+      		# Show switch dlg
+      */
+
+
+      Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.startSwitchStorage = function() {
+        var inst,
+          _this = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ServerFileUploads/switch-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then(function() {
+          return _this.switchStorage();
+        });
+      };
+
+      /*
+      		# Actually do the switch
+      */
+
+
+      Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.switchStorage = function() {
+        var _this = this;
+        return this.Api.sendPost('/server_file_uploads/switch').then(function() {
+          return _this.initialLoad();
         });
       };
 

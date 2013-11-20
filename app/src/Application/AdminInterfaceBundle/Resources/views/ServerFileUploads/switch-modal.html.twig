@@ -1,0 +1,27 @@
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" ng-click="dismiss()">&times;</button>
+			<h4 class="modal-title">{{ phrase('admin.server.change_storage_mechanism') }}</h4>
+		</div>
+		<div class="modal-body">
+			<p>
+				Are you sure you want to switch storage mechanism?
+			</p>
+
+			<p>
+				{{ phrase('admin.server.notice_transfer_is_gradually_done') }}
+			</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-success" ng-click="dismiss()">
+				<i class="fa fa-undo"></i>
+				{{ phrase('agent.general.cancel') }}
+			</button>
+			<button class="btn btn-danger" ng-click="confirm()">
+				<i class="fa fa-trash-o"></i>
+				I am sure, let's switch
+			</button>
+		</div>
+	</div>
+</div>

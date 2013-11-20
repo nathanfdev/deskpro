@@ -3,7 +3,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		@CTRL_ID   = 'Admin_ServerFileUploads_Ctrl_ServerFileUploads'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = []
+		@DEPS      = ['$state']
 
 		init: ->
 
@@ -12,6 +12,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.fileUploadResults = null
 
 			@setupUploadListeners()
+
+		###
+ 	#
+ 	###
 
 		initialLoad: ->
 			data_promise = @Api.sendGet('/server_file_uploads').then( (res) =>
@@ -22,6 +26,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			return @$q.all([data_promise])
 
+		###
+ 	#
+		###
+
 		setupUploadListeners: ->
 
 			@$scope.$on('fileuploaddone', (e, data) =>
@@ -31,6 +39,37 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.$on('fileuploadfail', (e, data) =>
 				@$scope.fileUploadResults = {}
 				@$scope.fileUploadResults.upload_failed = true;
+			)
+
+		###
+		# Show switch dlg
+		###
+
+		startSwitchStorage: ->
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('ServerFileUploads/switch-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.confirm = ->
+						$modalInstance.close()
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then(() =>
+				@switchStorage()
+			)
+
+		###
+		# Actually do the switch
+		###
+
+		switchStorage: ->
+
+			@Api.sendPost('/server_file_uploads/switch').then( =>
+
+				@initialLoad()
 			)
 
 	Admin_ServerFileUploads_Ctrl_ServerFileUploads.EXPORT_CTRL()
