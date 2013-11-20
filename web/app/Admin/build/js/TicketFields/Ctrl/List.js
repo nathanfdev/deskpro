@@ -19,34 +19,20 @@
       Admin_TicketFields_Ctrl_List.DEPS = [];
 
       Admin_TicketFields_Ctrl_List.prototype.init = function() {
+        this.ticket_fields = this.DataService.get('TicketFields');
         this.custom_fields = [];
         this.field_enabled = {};
       };
 
       Admin_TicketFields_Ctrl_List.prototype.initialLoad = function() {
-        var data_promise,
+        var promise,
           _this = this;
-        data_promise = this.Api.sendDataGet(['/ticket_fields']).then(function(res) {
-          var f, _i, _j, _len, _len1, _ref1, _ref2, _results;
-          _ref1 = res.data.api_ticket_fields.custom_fields;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            f = _ref1[_i];
-            _this.custom_fields.push(f);
-          }
-          _ref2 = ['category', 'priority', 'workflow', 'product'];
-          _results = [];
-          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            f = _ref2[_j];
-            _this.field_enabled[f] = false;
-            if (res.data.api_ticket_fields[f + '_enabled']) {
-              _results.push(_this.field_enabled[f] = true);
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
+        promise = this.ticket_fields.loadList();
+        promise.then(function(list) {
+          _this.custom_fields = list;
+          return _this.field_enabled = _this.ticket_fields.field_enabled;
         });
-        return this.$q.all([data_promise]);
+        return promise;
       };
 
       Admin_TicketFields_Ctrl_List.prototype.updateBuiltinFieldEnabledState = function(name) {

@@ -1,5 +1,6 @@
 define [
 	'DeskPRO/Util/Strings',
+	'Admin/CustomFields/Tickets/DataService/TicketFields',
 	'Admin/TicketFilters/DataService/TicketFilters',
 	'Admin/TicketEscalations/DataService/TicketEscalations',
 	'Admin/TicketMacros/DataService/TicketMacros',
@@ -10,6 +11,7 @@ define [
 	'Admin/TwitterAccounts/DataService/TwitterAccounts',
 ], (
 	Strings,
+	DataService_TicketFields,
 	DataService_TicketFilters,
 	DataService_TicketEscalations,
 	DataService_TicketMacros,

@@ -18,8 +18,12 @@
 
       Admin_CustomFields_Tickets_Ctrl_Edit.DEPS = [];
 
-      Admin_CustomFields_Tickets_Ctrl_Edit.prototype.getField = function(id) {
-        return this.Api.sendGet("/ticket_fields/" + this.$stateParams.id);
+      Admin_CustomFields_Tickets_Ctrl_Edit.prototype.getDataService = function() {
+        return this.DataService.get('TicketFields');
+      };
+
+      Admin_CustomFields_Tickets_Ctrl_Edit.prototype.getBaseRouteName = function() {
+        return "tickets.fields";
       };
 
       return Admin_CustomFields_Tickets_Ctrl_Edit;

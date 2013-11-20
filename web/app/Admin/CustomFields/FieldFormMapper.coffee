@@ -288,3 +288,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					postData.default_value = formTypeOpts.default_value
 
 			return postData
+
+		###
+		# Applies basic settings from form onto the real field model
+    	# so the list is showing correct data.
+		###
+		applyFormToModel: (fieldModel, formModel) ->
+			fieldModel.title = formModel.title
+			return fieldModel

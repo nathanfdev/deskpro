@@ -5,10 +5,10 @@
       function FieldFormMapper() {}
 
       /*
-        	# Get a form model for an existing field
-        	#
-        	# @param {Object} fieldModel The field model (eg as returned from the API)
-        	# @return {Object}
+      		# Get a form model for an existing field
+      		#
+      		# @param {Object} fieldModel The field model (eg as returned from the API)
+      		# @return {Object}
       */
 
 
@@ -209,7 +209,7 @@
 
       /*
       		# Use a form model to construct a payload we can deliver to the API to save
-        	# a field.
+      		# a field.
       		#
       		# @param {String} fieldType  The field type
       		# @param {Object} formModel  The form model
@@ -330,6 +330,17 @@
             postData.default_value = formTypeOpts.default_value;
         }
         return postData;
+      };
+
+      /*
+      		# Applies basic settings from form onto the real field model
+        	# so the list is showing correct data.
+      */
+
+
+      FieldFormMapper.prototype.applyFormToModel = function(fieldModel, formModel) {
+        fieldModel.title = formModel.title;
+        return fieldModel;
       };
 
       return FieldFormMapper;

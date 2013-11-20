@@ -173,8 +173,19 @@
       */
 
 
+      Logger.prototype.notice = function(message, context) {
+        return this.addRecord(Logger.NOTICE, message, context);
+      };
+
+      /*
+        	# @param {String} message
+        	# @param {Object} context
+        	# @return {bool}
+      */
+
+
       Logger.prototype.warning = function(message, context) {
-        return this.addRecord(Logger.WARN, message, context);
+        return this.addRecord(Logger.WARNING, message, context);
       };
 
       /*

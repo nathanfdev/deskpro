@@ -8,7 +8,10 @@ define [
 		@CTRL_AS = 'EditCtrl'
 		@DEPS    = []
 
-		getField: (id) ->
-			return @Api.sendGet("/ticket_fields/#{@$stateParams.id}")
+		getDataService: ->
+			return @DataService.get('TicketFields')
+
+		getBaseRouteName: ->
+			return "tickets.fields"
 
 	Admin_CustomFields_Tickets_Ctrl_Edit.EXPORT_CTRL()

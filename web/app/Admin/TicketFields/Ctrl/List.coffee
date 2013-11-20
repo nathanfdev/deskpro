@@ -5,24 +5,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@DEPS    = []
 
 		init: ->
+			@ticket_fields = @DataService.get('TicketFields')
 			@custom_fields = []
 			@field_enabled = {}
 			return
 
 		initialLoad: ->
-			data_promise = @Api.sendDataGet([
-					'/ticket_fields'
-			]).then( (res) =>
-				for f in res.data.api_ticket_fields.custom_fields
-					@custom_fields.push(f)
-
-				for f in ['category', 'priority', 'workflow', 'product']
-					@field_enabled[f] = false
-					if res.data.api_ticket_fields[f + '_enabled']
-						@field_enabled[f] = true
+			promise = @ticket_fields.loadList()
+			promise.then( (list) =>
+				@custom_fields = list
+				@field_enabled = @ticket_fields.field_enabled
 			)
 
-			return @$q.all([data_promise])
+			return promise
 
 		updateBuiltinFieldEnabledState: (name) ->
 			if @field_enabled[name]
