@@ -69,20 +69,18 @@
 
 			<footer>
 				<div class="dp-content">
-					<div class="inner-footer">
-						<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-							<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
-							<ul>
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
 
-							</ul>
+						</ul>
+					</div>
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_label">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 						</div>
-						<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-							<div dp-hide-spinning="saving_label">
-								<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
-							</div>
-							<div dp-show-spinning="saving_label">
-								<i class="spinner-flat"></i>
-							</div>
+						<div dp-show-spinning="saving_label">
+							<i class="spinner-flat"></i>
 						</div>
 					</div>
 				</div>
