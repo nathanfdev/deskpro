@@ -7637,6 +7637,15 @@ i.spinner-xsmall {
   background-repeat: no-repeat;
 }
 
+div.success-message {
+  background: #dff0d8;
+}
+
+div.success-message.well {
+  padding: 5px;
+  margin-bottom: 0;
+}
+
 div.danger-message {
   background: #f2dede;
 }
@@ -10367,4 +10376,14 @@ table.table > tbody > tr > td.dp-id-col {
 .dp-btn-pagination .select2-container {
   margin: 0;
   text-align: left;
+}
+
+.file-upload-progress-block {
+  margin-top: 17px;
+  opacity: 0;
+  transition: opacity 0.15s linear 0s;
+}
+
+.file-upload-progress-block.show {
+  opacity: 1.0;
 }

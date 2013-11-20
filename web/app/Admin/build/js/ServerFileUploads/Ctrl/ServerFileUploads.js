@@ -19,16 +19,31 @@
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.DEPS = [];
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.init = function() {
-        return this.$scope.data = null;
+        this.$scope.data = null;
+        this.$scope.fileUploadOptions = {};
+        this.$scope.fileUploadResults = null;
+        return this.setupUploadListeners();
       };
 
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.initialLoad = function() {
         var data_promise,
           _this = this;
         data_promise = this.Api.sendGet('/server_file_uploads').then(function(res) {
-          return _this.$scope.data = res.data.server_file_uploads;
+          _this.$scope.data = res.data.server_file_uploads;
+          return _this.$scope.fileUploadOptions.url = res.data.server_file_uploads.file_uploader_url;
         });
         return this.$q.all([data_promise]);
+      };
+
+      Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.setupUploadListeners = function() {
+        var _this = this;
+        this.$scope.$on('fileuploaddone', function(e, data) {
+          return _this.$scope.fileUploadResults = data.result;
+        });
+        return this.$scope.$on('fileuploadfail', function(e, data) {
+          _this.$scope.fileUploadResults = {};
+          return _this.$scope.fileUploadResults.upload_failed = true;
+        });
       };
 
       return Admin_ServerFileUploads_Ctrl_ServerFileUploads;

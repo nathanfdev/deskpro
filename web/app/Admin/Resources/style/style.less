@@ -122,6 +122,15 @@ i.spinner-xsmall {
 	background: url('@{img_path}/spinners/loading-arrows-xsmall-whitebg.gif');
 }
 
+div.success-message {
+	background: @state-success-bg;
+
+	&.well {
+		padding: 5px;
+		margin-bottom: 0;
+	}
+}
+
 div.danger-message {
 	background: @state-danger-bg;
 
@@ -2671,5 +2680,19 @@ table.table {
 	.select2-container {
 		margin: 0;
 		text-align: left;
+	}
+}
+
+//######################################################################################################################
+//# File Upload Controls
+//######################################################################################################################
+
+.file-upload-progress-block {
+	margin-top: 17px;
+	opacity: 0;
+	transition: opacity 0.15s linear 0s;
+
+	&.show {
+		opacity: 1.0;
 	}
 }
