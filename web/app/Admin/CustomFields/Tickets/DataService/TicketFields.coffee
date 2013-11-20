@@ -71,7 +71,7 @@ define [
 			else
 				data = {
 					field: {},
-					field_type: null,
+					field_type: '0',
 					form: @getFormMapper().getFormFromModel(null)
 				}
 				deferred.resolve(data)
@@ -100,7 +100,7 @@ define [
 		###
 		saveFormModel: (fieldModel, formModel) ->
 			mapper = @getFormMapper()
-			postData = mapper.getPostDataFromForm(fieldModel)
+			postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel)
 
 			if fieldModel.id
 				promise = @Api.sendPostJson('/ticket_fields/' + fieldModel.id, postData)

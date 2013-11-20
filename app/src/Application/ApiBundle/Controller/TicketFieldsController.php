@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 
 class TicketFieldsController extends AbstractController
@@ -61,13 +62,13 @@ class TicketFieldsController extends AbstractController
 	}
 
 	####################################################################################################################
-	# edit-custom-field
+	# get-custom-field
 	####################################################################################################################
 
 	public function getCustomFieldAction($id)
 	{
 		$field = $this->container->getTicketFieldManager()->getFieldFromId($id);
-		if (!$id) {
+		if (!$field) {
 			throw $this->createNotFoundException();
 		}
 
@@ -85,21 +86,27 @@ class TicketFieldsController extends AbstractController
 	{
 		if ($id) {
 			$field = $this->container->getTicketFieldManager()->getFieldFromId($id);
-			if (!$id) {
+			if (!$field) {
 				throw $this->createNotFoundException();
 			}
 		} else {
 			$field = $this->container->getTicketFieldManager()->createNewDefEntity();
+			$field->handler_class = $this->in->getString('handler_class');
 		}
+
+		$post = $this->in->getAll('req');
+
+		$helper = new CustomFieldHelper($this);
+		$helper->saveFormToField($field, $post);
 
 		if ($id) {
 			return $this->createSuccessResponse(array(
-				'id' => $field->id
+				'field_id' => $field->id
 			));
 		} else {
 			return $this->createSuccessResponse(array(
-				'id' => $field->id,
-				$this->generateUrl('api_ticket_fields_edit', array('id' => $field->id))
+				'field_id' => $field->id,
+				$this->generateUrl('api_ticket_fields_get', array('id' => $field->id))
 			));
 		}
 	}

@@ -89,7 +89,7 @@
         } else {
           data = {
             field: {},
-            field_type: null,
+            field_type: '0',
             form: this.getFormMapper().getFormFromModel(null)
           };
           deferred.resolve(data);
@@ -126,7 +126,7 @@
         var mapper, postData, promise,
           _this = this;
         mapper = this.getFormMapper();
-        postData = mapper.getPostDataFromForm(fieldModel);
+        postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
         if (fieldModel.id) {
           promise = this.Api.sendPostJson('/ticket_fields/' + fieldModel.id, postData);
         } else {

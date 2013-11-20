@@ -31,6 +31,7 @@ define [
 		saveForm: ->
 			is_new = !!@field.id
 
+			@field.type_name = @field_type
 			promise = @fieldDataService.saveFormModel(@field, @form)
 
 			@startSpinner('saving')

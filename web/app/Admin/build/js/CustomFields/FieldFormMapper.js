@@ -217,23 +217,23 @@
       */
 
 
-      FieldFormMapper.prototype.getPostDataFromFormModel = function(fieldType, formModel) {
+      FieldFormMapper.prototype.getPostDataFromForm = function(fieldType, formModel) {
         var day, formTypeOpts, postData, x, _i, _len, _ref;
         postData = {
           title: formModel.title,
           description: formModel.description,
           is_agent_field: formModel.is_agent_field
         };
-        if (fieldModel.type_name === 'textarea') {
+        if (fieldType === 'textarea') {
           formTypeOpts = formModel['text'];
         } else {
-          formTypeOpts = formModel[fieldModel.type_name];
+          formTypeOpts = formModel[fieldType];
         }
         switch (fieldType) {
           case "text":
           case "textarea":
             if (fieldType === 'text') {
-              postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
+              postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
             } else {
               postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
             }
@@ -260,10 +260,10 @@
             postData.field_type = formTypeOpts.field_type;
             postData.choices_structure = formTypeOpts.options;
             postData.default_value = formTypeOpts.default_value;
-            if (fieldModel.options.user_validation === 'required') {
+            if (formTypeOpts.user_validation === 'required') {
               postData.validation_type = 'required';
             }
-            if (fieldModel.options.agent_validation === 'required') {
+            if (formTypeOpts.agent_validation === 'required') {
               postData.agent_validation_type = 'required';
             }
             break;
@@ -271,10 +271,10 @@
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
             postData.default_value = formTypeOpts.default_value;
             postData.label_text = formTypeOpts.label_text;
-            if (fieldModel.options.user_validation === 'required') {
+            if (formTypeOpts.user_validation === 'required') {
               postData.validation_type = 'required';
             }
-            if (fieldModel.options.agent_validation === 'required') {
+            if (formTypeOpts.agent_validation === 'required') {
               postData.agent_validation_type = 'required';
             }
             break;
@@ -291,10 +291,10 @@
                 postData.date_valid_dow.push(day);
               }
             }
-            if (fieldModel.options.user_validation === 'required') {
+            if (formTypeOpts.user_validation === 'required') {
               postData.validation_type = 'required';
             }
-            if (fieldModel.options.agent_validation === 'required') {
+            if (formTypeOpts.agent_validation === 'required') {
               postData.agent_validation_type = 'required';
             }
             if (formTypeOpts.valid_dates_mode === 'date') {
