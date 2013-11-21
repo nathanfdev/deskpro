@@ -60,9 +60,15 @@ class ServerPhpInfo
 		$this->config_hash = md5_file(DP_CONFIG_FILE);
 	}
 
-	public function getPhpInfo()
+	/**
+	 * @param bool $noencode
+	 *
+	 * @return array
+	 */
+
+	public function getPhpInfo($noencode = false)
 	{
-		return $this->_getInfo();
+		return $this->_getInfo($noencode);
 	}
 
 	/**
