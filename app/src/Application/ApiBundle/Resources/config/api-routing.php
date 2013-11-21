@@ -2949,6 +2949,22 @@ $collection->create('api_server_switch_file_uploads_storage', array(
 ));
 
 ########################################################################################################################
+# Server File Integrity
+########################################################################################################################
+
+$collection->create('api_server_file_check', array(
+	'path'       => '/server_file_check',
+	'controller' => 'ApiBundle:ServerFileCheck:list',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_server_file_check_get', array(
+	'path'       => '/server_file_check/{id}',
+	'controller' => 'ApiBundle:ServerFileCheck:get',
+	'methods'    => array('GET'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
