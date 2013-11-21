@@ -1287,5 +1287,15 @@ define(function() {
 		controller: 'Admin_ServerTaskQueue_Ctrl_ServerTaskQueue'
 	});
 
+	//###
+	//# Report File
+	//###
+	routes.push({
+		id: 'server.report_file',
+		url: '/report_file',
+		templateName: 'ServerReportFile/server-report-file.html',
+		controller: 'Admin_ServerReportFile_Ctrl_ServerReportFile'
+	});
+
 	return routes;
 });

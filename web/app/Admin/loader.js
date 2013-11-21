@@ -183,7 +183,8 @@ requirejs([
 	'Admin/ServerCron/Ctrl/List',
 	'Admin/ServerCron/Ctrl/Logs',
 	'Admin/ServerFileUploads/Ctrl/ServerFileUploads',
-	'Admin/ServerFileCheck/Ctrl/ServerFileCheck'
+	'Admin/ServerFileCheck/Ctrl/ServerFileCheck',
+	'Admin/ServerReportFile/Ctrl/ServerReportFile'
 ], function(angular) {
 	'use strict';
 
