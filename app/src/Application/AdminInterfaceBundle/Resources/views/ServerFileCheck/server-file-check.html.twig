@@ -17,7 +17,7 @@
 			</button>
 
 			<div ng-show="Ctrl.check_started">
-				<section class="dp-paneblock dp-listpane">
+				<section class="dp-paneblock dp-listpane dp-check-file-integrity">
 					<header>
 						<h3>
 							Checking files:
@@ -25,19 +25,19 @@
 						</h3>
 					</header>
 
-					<div style="margin:15px;" class="progress progress-striped" ng-class="{active: Ctrl.check_in_progress}">
+					<div class="progress progress-striped" ng-class="{active: Ctrl.check_in_progress}">
 						<div class="progress-bar progress-bar-success" ng-style="{width: Ctrl.current_percentage + '%'}"></div>
 					</div>
 
-					<div style="padding: 15px;">
+					<div class="log-block">
 
 						<button type="button" class="btn btn-info" ng-click="Ctrl.toggleLog()">
 							<i class="fa fa-angle-double-down"></i>
 							<span>{{ ng_var('Ctrl.show_log_text') }}</span>
 						</button>
 
-						<article style="padding:15px;" ng-show="Ctrl.show_log">
-							<ul class="dp-paneblock dp-listpane" style="margin: 7px; overflow: auto; max-height: 250px;">
+						<article class="log" ng-show="Ctrl.show_log">
+							<ul class="dp-paneblock dp-listpane log-overflow">
 								<li ng-repeat="log in Ctrl.logs">
 									{{ ng_var('log') }}
 								</li>
@@ -57,7 +57,7 @@
 					<strong>There was an error!</strong> We detected some incorrect files. This might be caused by a
 					corrupt upload or some other upload problem:
 
-					<ul class="dp-item-list" style="margin: 10px; overflow: auto; height: 250px;">
+					<ul class="dp-item-list" class="log-overflow">
 						<li ng-repeat="log in Ctrl.error_logs">
 							{{ ng_var('log') }}
 						</li>

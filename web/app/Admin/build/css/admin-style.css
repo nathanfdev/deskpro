@@ -10388,6 +10388,24 @@ table.table > tbody > tr > td.dp-id-col {
   opacity: 1.0;
 }
 
+.dp-check-file-integrity .progress {
+  margin: 15px;
+}
+
+.dp-check-file-integrity .log-overflow {
+  max-height: 250px;
+  margin: 7px;
+  overflow: auto;
+}
+
+.dp-check-file-integrity .log-block {
+  padding: 15px;
+}
+
+.dp-check-file-integrity .log-block .log {
+  padding: 15px;
+}
+
 .dp-datepicker {
   padding: 5px 8px 0 8px;
 }
