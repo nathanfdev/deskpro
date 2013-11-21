@@ -31,6 +31,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 				@server_file_check = res.data.server_file_check
 				@total_checks = @server_file_check.count
+
+				# the case when we have '/app/sys/Resources/distro-checksums.php' deleted
+
+				if @total_checks == 1
+					@current_check = -1
+					@doNextRequest()
 			)
 
 			return @$q.all([data_promise])

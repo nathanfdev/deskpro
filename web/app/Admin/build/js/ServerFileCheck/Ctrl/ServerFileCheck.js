@@ -42,7 +42,11 @@
           _this = this;
         data_promise = this.Api.sendGet('/server_file_check').then(function(res) {
           _this.server_file_check = res.data.server_file_check;
-          return _this.total_checks = _this.server_file_check.count;
+          _this.total_checks = _this.server_file_check.count;
+          if (_this.total_checks === 1) {
+            _this.current_check = -1;
+            return _this.doNextRequest();
+          }
         });
         return this.$q.all([data_promise]);
       };
