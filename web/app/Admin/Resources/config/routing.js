@@ -1167,8 +1167,8 @@ define(function() {
 	routes.push({
 		id: 'server.file_check',
 		url: '/file_check',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ServerFileCheck/server-file-check.html',
+		controller: 'Admin_ServerFileCheck_Ctrl_ServerFileCheck'
 	});
 
 	//###

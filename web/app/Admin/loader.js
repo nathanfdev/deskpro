@@ -182,7 +182,8 @@ requirejs([
 	'Admin/ServerTaskQueue/Ctrl/ServerTaskQueue',
 	'Admin/ServerCron/Ctrl/List',
 	'Admin/ServerCron/Ctrl/Logs',
-	'Admin/ServerFileUploads/Ctrl/ServerFileUploads'
+	'Admin/ServerFileUploads/Ctrl/ServerFileUploads',
+	'Admin/ServerFileCheck/Ctrl/ServerFileCheck'
 ], function(angular) {
 	'use strict';
 
