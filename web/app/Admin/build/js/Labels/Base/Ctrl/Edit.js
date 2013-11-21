@@ -106,7 +106,7 @@
         });
       };
 
-      Admin_Labels_Base_Ctrl_Edit.prototype.checkDirtyState = function() {
+      Admin_Labels_Base_Ctrl_Edit.prototype.isDirtyState = function() {
         if (this.$scope.form.label !== this.old_label) {
           return true;
         }

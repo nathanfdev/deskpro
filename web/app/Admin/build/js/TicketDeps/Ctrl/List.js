@@ -14,120 +14,45 @@
 
       Admin_TicketDeps_Ctrl_List.CTRL_ID = 'Admin_TicketDeps_Ctrl_List';
 
-      Admin_TicketDeps_Ctrl_List.CTRL_AS = 'TicketDepsList';
-
-      Admin_TicketDeps_Ctrl_List.DEPS = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', 'Growl'];
+      Admin_TicketDeps_Ctrl_List.CTRL_AS = 'ListCtrl';
 
       Admin_TicketDeps_Ctrl_List.prototype.init = function() {
         var _this = this;
-        this.departments_count = 0;
-        this.dep_settings = {};
+        this.depData = this.DataService.get('TicketDeps');
         return this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
           update: function(ev, data) {
-            var $list, em, postData, promise, x;
+            var $list, order;
             $list = data.item.closest('ul');
-            postData = {
-              display_orders: []
-            };
-            x = 0;
-            em = _this.em;
+            order = [];
             $list.find('li').each(function() {
-              var dep, dep_id;
-              x += 10;
-              dep_id = parseInt($(this).data('id'));
-              if (dep_id) {
-                dep = em.getById('department', dep_id);
-                if (dep) {
-                  dep.display_order = x;
-                }
-              }
-              return postData.display_orders.push(dep_id);
+              return order.push(dep_id);
             });
-            promise = _this.Api.sendPostJson('/ticket_deps/display_order', postData);
+            _this.depData.saveDisplayOrders(order);
             return _this.pingElement('display_orders');
           }
         };
       };
 
+      /*
+      		# Loads the dep list
+      */
+
+
       Admin_TicketDeps_Ctrl_List.prototype.initialLoad = function() {
-        var data_promise, dep_promise,
+        var promise,
           _this = this;
-        dep_promise = this.DepartmentData.loadDepList().then(function(departments) {
-          _this.initDepList(departments.values());
-          return _this.addManagedListener(_this.DepartmentData.deps, 'changed', function() {
-            _this.initDepList(_this.DepartmentData.deps.values());
-            return _this.ngApply();
-          });
+        promise = this.depData.loadList().then(function(list) {
+          _this.depList = list;
+          return _this.deps = _this.depData.listModels;
         });
-        data_promise = this.Api.sendDataGet({
-          'ticket_settings': '/ticket_deps/settings',
-          'lang_info': '/langs'
-        }).then(function(res) {
-          var settings;
-          settings = res.data.ticket_settings;
-          _this.can_rename_department = !res.data.lang_info.is_multi_lang && res.data.lang_info.default_lang_id === 1;
-          _this.dep_settings.default_id = parseInt(settings['core.default_ticket_dep']) || 0;
-          _this.dep_settings.name_singular = settings['core.phrase_department_singular'];
-          _this.dep_settings.name_plural = settings['core.phrase_department_plural'];
-          if (_this.dep_settings.name_singular || _this.dep_settings.name_plural) {
-            return _this.dep_settings.do_rename = true;
-          }
-        });
-        return this.$q.all([dep_promise, data_promise]).then(function() {
-          var d, found, _i, _len, _ref1;
-          if (_this.dep_settings.default_id) {
-            found = false;
-            _ref1 = _this.default_dep_list;
-            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-              d = _ref1[_i];
-              if (d.id === _this.dep_settings.default_id) {
-                found = true;
-                break;
-              }
-            }
-            if (!found) {
-              _this.dep_settings.default_id = 0;
-            }
-          }
-          if (!_this.dep_settings.default_id || _this.dep_settings.default_id === 0) {
-            return _this.dep_settings.default_id = _this.default_dep_list[0].id;
-          }
-        });
+        return promise;
       };
 
-      Admin_TicketDeps_Ctrl_List.prototype.initDepList = function(departments) {
-        var dep, _i, _len, _results;
-        this.departments = departments;
-        this.departments_count = departments.lenght;
-        this.parent_deps = [];
-        this.child_deps = {};
-        this.default_dep_list = [];
-        _results = [];
-        for (_i = 0, _len = departments.length; _i < _len; _i++) {
-          dep = departments[_i];
-          if (dep.parent_id) {
-            if (!this.child_deps[dep.parent_id]) {
-              this.child_deps[dep.parent_id] = [];
-            }
-            this.child_deps[dep.parent_id].push(dep);
-            _results.push(this.default_dep_list.push(dep));
-          } else {
-            this.parent_deps.push(dep);
-            if (!dep._child_ids) {
-              _results.push(this.default_dep_list.push(dep));
-            } else {
-              _results.push(void 0);
-            }
-          }
-        }
-        return _results;
-      };
-
-      /**
-      		* Get the move dep list for use in the delete/move dlg
-        	* @return {Array}
+      /*
+      		# Get the move dep list for use in the delete/move dlg
+        	# @return {Array}
       */
 
 
@@ -152,30 +77,22 @@
 
 
       Admin_TicketDeps_Ctrl_List.prototype.startDelete = function(for_dep_id) {
-        var for_dep, inst, move_dep_list, v, _i, _len, _ref1,
+        var dep, inst, move_deps_list,
           _this = this;
-        for_dep = null;
-        _ref1 = this.departments;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          v = _ref1[_i];
-          if (v.id === for_dep_id) {
-            for_dep = v;
-            break;
-          }
-        }
-        if (for_dep._child_ids) {
+        dep = this.depData.findListModelById(for_dep_id);
+        if (dep.children.length) {
           this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
           return;
         }
-        move_dep_list = this.getMoveDepList(for_dep);
-        if (!move_dep_list.length) {
+        move_deps_list = this.depData.getLeafOptionsArray(dep.id);
+        if (!move_deps_list.length) {
           this.showAlert('@no_delete_last');
           return;
         }
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketDeps/delete-modal.html'),
           controller: [
-            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
+            '$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance) {
               $scope.move_deps_list = move_deps_list;
               $scope.selected = {
                 move_to_id: move_deps_list[0].id
@@ -187,61 +104,24 @@
                 return $modalInstance.dismiss();
               };
             }
-          ],
-          resolve: {
-            move_deps_list: function() {
-              return move_dep_list;
-            }
-          }
+          ]
         });
         return inst.result.then(function(move_to) {
-          return _this.deleteDepartment(for_dep, move_to);
+          return _this.deleteDepartment(dep, move_to);
         });
       };
 
-      /**
+      /*
       		# Actually do th edelete
       */
 
 
       Admin_TicketDeps_Ctrl_List.prototype.deleteDepartment = function(for_dep, move_to) {
         var _this = this;
-        return this.Api.sendDelete('/ticket_deps/' + for_dep.id, {
-          move_to: move_to
-        }).success(function() {
-          _this.DepartmentData.deps.remove(for_dep.id);
-          _this.DepartmentData.resetHierarchy();
-          _this.em.removeById('department', for_dep.id);
-          _this.ngApply();
+        return this.depData.deleteDepartmentById(for_dep.id, move_to).then(function() {
           if (_this.$state.current.name === 'tickets.ticket_deps.edit' && parseInt(_this.$state.params.id) === for_dep.id) {
             return _this.$state.go('tickets.ticket_deps');
           }
-        });
-      };
-
-      Admin_TicketDeps_Ctrl_List.prototype.saveSettings = function() {
-        var postData,
-          _this = this;
-        if (!this.dep_settings.do_rename) {
-          this.dep_settings.name_singular = '';
-          this.dep_settings.name_plural = '';
-        }
-        postData = {
-          settings: {
-            'core.default_ticket_dep': this.dep_settings.default_id,
-            'core.phrase_department_singular': this.dep_settings.name_singular,
-            'core.phrase_department_plural': this.dep_settings.name_plural
-          }
-        };
-        if (!this.can_rename_department) {
-          postData.settings['core.phrase_department_singular'] = '';
-          postData.settings['core.phrase_department_plural'] = '';
-        }
-        this.startSpinner('saving_settings');
-        return this.Api.sendPostJson('/ticket_deps/settings', postData).then(function() {
-          return _this.stopSpinner('saving_settings').then(function() {
-            return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
-          });
         });
       };
 

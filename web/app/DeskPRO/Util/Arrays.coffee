@@ -49,7 +49,6 @@ define ->
 
 			return ret
 
-
 		###
     	# Pushes value on to array only if value does not already exist in array.
     	#

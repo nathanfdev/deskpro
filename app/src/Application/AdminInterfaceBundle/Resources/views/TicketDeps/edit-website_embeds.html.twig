@@ -1,5 +1,5 @@
 <div class="panel panel-fill indent" style="position: relative">
-	<div class="dp-grayed-placeholder fill" ng-if="!TicketDepsEdit.dep.id">
+	<div class="dp-grayed-placeholder fill" ng-if="!EditCtrl.dep.id">
 		<div class="bg"></div>
 		<p>
 			{{ phrase('adm.departments.embed_unavailable') }}
@@ -162,7 +162,7 @@
 			</div>
 		</div>
 
-		<div ng-if="!TicketDepsEdit.dep.id">
+		<div ng-if="!EditCtrl.dep.id">
 			<p>
 				{{ phrase('adm.departments.embed_unavailable') }}
 			</p>

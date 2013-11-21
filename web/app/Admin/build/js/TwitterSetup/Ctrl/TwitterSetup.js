@@ -34,7 +34,7 @@
         return this.$q.all([data_promise]);
       };
 
-      Admin_TwitterSetup_Ctrl_TwitterSetup.prototype.checkDirtyState = function() {
+      Admin_TwitterSetup_Ctrl_TwitterSetup.prototype.isDirtyState = function() {
         if (!this.setup) {
           return false;
         }

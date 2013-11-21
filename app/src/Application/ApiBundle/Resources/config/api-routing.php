@@ -2143,6 +2143,13 @@ $collection->create('api_ticket_deps', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_ticket_deps_create', array(
+	'path'        => '/ticket_deps',
+	'controller'  => 'ApiBundle:TicketDeps:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
 $collection->create('api_ticket_deps_order', array(
 	'path'        => '/ticket_deps/display_order',
 	'controller'  => 'ApiBundle:TicketDeps:saveDisplayOrder',
@@ -2165,13 +2172,6 @@ $collection->create('api_ticket_deps_get', array(
 	'path'        => '/ticket_deps/{id}',
 	'controller'  => 'ApiBundle:TicketDeps:get',
 	'methods'     => array('GET'),
-));
-
-$collection->create('api_ticket_deps_create', array(
-	'path'        => '/ticket_deps/create',
-	'controller'  => 'ApiBundle:TicketDeps:save',
-	'defaults'    => array('id' => '0'),
-	'methods'     => array('POST'),
 ));
 
 $collection->create('api_ticket_deps_save', array(

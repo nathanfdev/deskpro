@@ -6,14 +6,14 @@
 			</div>
 			<div class="col-lg-9">
 				<div class="inner-group" dp-error-class="form_props.title">
-					<input type="text" class="form-control" name="title" ng-model="TicketDepsEdit.dep.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" autofocus />
+					<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" required dp-server-validation="department.title.required,department.title.test" autofocus />
 					{% if app.getLanguages().isMultiLang() %}
 						<span
 							class="translate-button"
 							tooltip="{{ phrase('adm.general.translate') }}"
 							dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.%depid%' }"
-							dp-save-phrase-promise="TicketDepsEdit.getWaitEntityPromiseView()"
-							dp-phrase-id-gen="{ 'depid': TicketDepsEdit.dep.id }"
+							dp-save-phrase-promise="EditCtrl.getWaitEntityPromiseView()"
+							dp-phrase-id-gen="{ 'depid': EditCtrl.dep.id }"
 						></span>
 					{% endif %}
 					<span class="help-block">
@@ -23,12 +23,12 @@
 
 				<div class="inner-group">
 					<label>
-						<input type="checkbox" ng-model="TicketDepsEdit.dep.enable_user_title" value="1" />
+						<input type="checkbox" ng-model="EditCtrl.form.enable_user_title" value="1" />
 						<h4>{{ phrase('adm.departments.user_title') }}</h4>
 					</label>
-					<div ng-show="TicketDepsEdit.dep.enable_user_title">
-						<input type="text" class="form-control" ng-model="TicketDepsEdit.dep.user_title" style="width: 50%;" />
-						{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('adm.general.translate') }}" ng-if="TicketDepsEdit.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + TicketDepsEdit.dep.id + '_user' }"></span>{% endif %}
+					<div ng-show="EditCtrl.dep.enable_user_title">
+						<input type="text" class="form-control" ng-model="EditCtrl.form.user_title" style="width: 50%;" />
+						{% if app.getLanguages().isMultiLang() %}<span class="translate-button" tooltip="{{ phrase('adm.general.translate') }}" ng-if="EditCtrl.dep.id" dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_department.' + EditCtrl.dep.id + '_user' }"></span>{% endif %}
 					</div>
 					<span class="help-block">
 
@@ -43,11 +43,12 @@
 			<div class="col-lg-9">
 				<select
 					ui-select2
-					ng-model="TicketDepsEdit.dep.parent_id"
+					ng-model="EditCtrl.form.parent_id"
 					style="min-width: 240px"
 					class="no-search"
 				>
-					<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketDepsEdit.dep_parent_list">{{ ng_var('dep.title') }}</option>
+					<option value="0">No Parent</option>
+					<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in EditCtrl.dep_parent_list">{{ ng_var('dep.title') }}</option>
 				</select>
 				<span class="help-block">
 					{{ phrase('adm.departments.parent_explain') }}
@@ -59,12 +60,12 @@
 					</p>
 					<ul>
 						<li>{{ phrase('adm.departments.parent_convert', {title: 'ng_var(show_parent_warning.title)' }) }}</li>
-						<li>{{ phrase('adm.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(TicketDepsEdit.dep.title)' }) }}</li>
+						<li>{{ phrase('adm.departments.parent_convert_move', {title: 'ng_var(show_parent_warning.title)', title2: 'ng_var(EditCtrl.form.title)' }) }}</li>
 					</ul>
 				</div>
 			</div>
 		</div>
-		<div class="form-group" ng-if="TicketDepsEdit.email_accounts.length" dp-error-class="form_props.email_gateway_id">
+		<div class="form-group" ng-if="EditCtrl.email_accounts.length" dp-error-class="form_props.email_gateway_id">
 			<div class="col-lg-3">
 				<h3>{{ phrase('adm.departments.linked_account') }}</h3>
 			</div>
@@ -72,12 +73,12 @@
 				<select
 					name="email_gateway_id"
 					ui-select2
-					ng-model="TicketDepsEdit.dep.email_gateway_id"
+					ng-model="EditCtrl.form.email_gateway_id"
 					style="min-width: 240px"
 					class="no-search"
 					required
 				>
-					<option value="{{ ng_var('account.id') }}" ng-repeat="account in TicketDepsEdit.email_accounts">{{ ng_var('account.email_address') }}</option>
+					<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.email_address') }}</option>
 				</select>
 				<span class="help-block">
 					{{ phrase('adm.departments.linked_account_explain') }}
@@ -95,24 +96,24 @@
 				{# Send newticket auto-response #}
 				<div class="inner-group">
 					<label style="font-weight: normal">
-						<input type="checkbox" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled" value="1" />
+						<input type="checkbox" ng-model="EditCtrl.trigger.user_send_newuserticket_response.enabled" value="1" />
 						Send user an auto-response confirming their new ticket
 					</label>
-					<div class="ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.enabled">
+					<div class="ng-hide" ng-show="EditCtrl.trigger.user_send_newuserticket_response.enabled">
 						<table class="display-table">
 							<tr>
 								<td>Template:</td>
 								<td>
 									<select
 											ui-select2
-											ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name"
+											ng-model="EditCtrl.trigger.user_send_newuserticket_response.template_name"
 											style="min-width: 240px"
 											class="no-search"
 											>
 										<option value="">Default template</option>
 										<option value="CUSTOM">Custom template</option>
 									</select>
-									<button class="btn btn-xs ng-hide" ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.template_name != ''" ng-click="TicketDepsEdit.showEmailEditor('DeskPRO:emails_user:new-ticket.html.twig'); $event.preventDefault();">Edit Template</button>
+									<button class="btn btn-xs ng-hide" ng-show="EditCtrl.trigger.user_send_newuserticket_response.template_name != ''" ng-click="EditCtrl.showEmailEditor('DeskPRO:emails_user:new-ticket.html.twig'); $event.preventDefault();">Edit Template</button>
 								</td>
 							</tr>
 
@@ -121,7 +122,7 @@
 								<td>
 									<select
 											ui-select2
-											ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name"
+											ng-model="EditCtrl.trigger.user_send_newuserticket_response.from_name"
 											style="min-width: 240px"
 											class="no-search"
 											>
@@ -130,8 +131,8 @@
 										<option value="website_name">Website name</option>
 										<option value="CUSTOM">Custom</option>
 									</select>
-									<div ng-show="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name == 'CUSTOM'">
-										<input type="text" class="form-control" ng-model="TicketDepsEdit.trigger.user_send_newuserticket_response.from_name_custom" />
+									<div ng-show="EditCtrl.trigger.user_send_newuserticket_response.from_name == 'CUSTOM'">
+										<input type="text" class="form-control" ng-model="EditCtrl.trigger.user_send_newuserticket_response.from_name_custom" />
 									</div>
 								</td>
 							</tr>

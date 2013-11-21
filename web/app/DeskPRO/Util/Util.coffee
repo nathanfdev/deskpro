@@ -175,6 +175,14 @@ define [
 				return obj.length == 0
 			if @isString(obj) and obj.length?
 				return obj.length == 0
+			if @isNumber(obj)
+				return (obj == 0 or obj == 0.0)
+			if @isBoolean(obj)
+				return !obj
+			if @isFunction(obj)
+				return false
+			if isNaN(obj)
+				return true
 
 			for own k, v of obj
 				return false
@@ -266,7 +274,7 @@ define [
 			if @isArray(obj)
 				result = obj.slice(0)
 				if deep
-					for index, value in result
+					for value, index in result
 						result[index] = @clone(value, true)
 			else
 				result = {}
@@ -286,7 +294,7 @@ define [
     	#
     	# @return {bool}
 		###
-		equals: (obj1, obj2) ->
+		equals: (obj1, obj2, ignorePrivate = true) ->
 			if obj1 == obj2
 				return true
 
@@ -305,21 +313,25 @@ define [
 					if obj1.length != obj2.length
 						return false
 
-					for k, v in obj1
+					for v, k in obj1
 						if not @equals(obj1[k], obj2[k])
 							return false
 
 					return true
 				else
 					for own k, v of obj1
-						if not obj2[k]
-							return false
-						if obj1[k] != obj2[k]
+						continue if k == '__proto__' or k == 'prototype'
+						if ignorePrivate
+							continue if k.substr(0, 1) == '_' or k.substr(0, 2) == '$$'
+
+						if not @equals(obj1[k], obj2[k])
 							return false
 					for own k, v of obj2
-						if not obj1[k]
-							return false
-						if obj1[k] != obj2[k]
+						continue if k == '__proto__' or k == 'prototype'
+						if ignorePrivate
+							continue if k.substr(0, 1) == '_' or k.substr(0, 2) == '$$'
+
+						if not @equals(obj1[k], obj2[k])
 							return false
 
 					return true

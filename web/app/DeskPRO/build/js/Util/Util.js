@@ -229,6 +229,18 @@
         if (this.isString(obj) && (obj.length != null)) {
           return obj.length === 0;
         }
+        if (this.isNumber(obj)) {
+          return obj === 0 || obj === 0.0;
+        }
+        if (this.isBoolean(obj)) {
+          return !obj;
+        }
+        if (this.isFunction(obj)) {
+          return false;
+        }
+        if (isNaN(obj)) {
+          return true;
+        }
         for (k in obj) {
           if (!__hasProp.call(obj, k)) continue;
           v = obj[k];
@@ -355,8 +367,8 @@
         if (this.isArray(obj)) {
           result = obj.slice(0);
           if (deep) {
-            for (value = _i = 0, _len = result.length; _i < _len; value = ++_i) {
-              index = result[value];
+            for (index = _i = 0, _len = result.length; _i < _len; index = ++_i) {
+              value = result[index];
               result[index] = this.clone(value, true);
             }
           }
@@ -384,8 +396,11 @@
       */
 
 
-      DeskPRO_Util_Util.prototype.equals = function(obj1, obj2) {
+      DeskPRO_Util_Util.prototype.equals = function(obj1, obj2, ignorePrivate) {
         var k, v, _i, _len;
+        if (ignorePrivate == null) {
+          ignorePrivate = true;
+        }
         if (obj1 === obj2) {
           return true;
         }
@@ -403,8 +418,8 @@
             if (obj1.length !== obj2.length) {
               return false;
             }
-            for (v = _i = 0, _len = obj1.length; _i < _len; v = ++_i) {
-              k = obj1[v];
+            for (k = _i = 0, _len = obj1.length; _i < _len; k = ++_i) {
+              v = obj1[k];
               if (!this.equals(obj1[k], obj2[k])) {
                 return false;
               }
@@ -414,20 +429,30 @@
             for (k in obj1) {
               if (!__hasProp.call(obj1, k)) continue;
               v = obj1[k];
-              if (!obj2[k]) {
-                return false;
+              if (k === '__proto__' || k === 'prototype') {
+                continue;
               }
-              if (obj1[k] !== obj2[k]) {
+              if (ignorePrivate) {
+                if (k.substr(0, 1) === '_' || k.substr(0, 2) === '$$') {
+                  continue;
+                }
+              }
+              if (!this.equals(obj1[k], obj2[k])) {
                 return false;
               }
             }
             for (k in obj2) {
               if (!__hasProp.call(obj2, k)) continue;
               v = obj2[k];
-              if (!obj1[k]) {
-                return false;
+              if (k === '__proto__' || k === 'prototype') {
+                continue;
               }
-              if (obj1[k] !== obj2[k]) {
+              if (ignorePrivate) {
+                if (k.substr(0, 1) === '_' || k.substr(0, 2) === '$$') {
+                  continue;
+                }
+              }
+              if (!this.equals(obj1[k], obj2[k])) {
                 return false;
               }
             }

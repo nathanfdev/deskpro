@@ -1,14 +1,9 @@
 (function() {
-  define(['Admin/Main/DataService/EntityManager', 'Admin/Main/DataService/Departments', 'Admin/FeedbackStatuses/DataService/FeedbackStatuses', 'Admin/FeedbackTypes/DataService/FeedbackTypes', 'Admin/FeedbackCategories/DataService/FeedbackCategories', 'Admin/TicketAccounts/DataService/TicketAccounts', 'Admin/Labels/Service/LabelManager', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/OptionBuilder/TypesDef/TicketActions', 'Admin/OptionBuilder/TypesDef/TicketFilter', 'Admin/Main/Service/DataServiceManager'], function(Admin_Main_DataService_EntityManager, Admin_Main_DataService_Departments, Admin_FeedbackStatuses_DataService_FeedbackStatuses, Admin_FeedbackTypes_DataService_FeedbackTypes, Admin_FeedbackCategories_DataService_FeedbackCategories, Admin_TicketAccounts_DataService_TicketAccounts, Admin_Labels_Service_LabelManager, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_OptionBuilder_TypesDef_TicketActions, Admin_OptionBuilder_TypesDef_TicketFilter, Admin_Main_Service_DataServiceManager) {
+  define(['Admin/Main/DataService/EntityManager', 'Admin/FeedbackStatuses/DataService/FeedbackStatuses', 'Admin/FeedbackTypes/DataService/FeedbackTypes', 'Admin/FeedbackCategories/DataService/FeedbackCategories', 'Admin/TicketAccounts/DataService/TicketAccounts', 'Admin/Labels/Service/LabelManager', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/OptionBuilder/TypesDef/TicketActions', 'Admin/OptionBuilder/TypesDef/TicketFilter', 'Admin/Main/Service/DataServiceManager'], function(Admin_Main_DataService_EntityManager, Admin_FeedbackStatuses_DataService_FeedbackStatuses, Admin_FeedbackTypes_DataService_FeedbackTypes, Admin_FeedbackCategories_DataService_FeedbackCategories, Admin_TicketAccounts_DataService_TicketAccounts, Admin_Labels_Service_LabelManager, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_OptionBuilder_TypesDef_TicketActions, Admin_OptionBuilder_TypesDef_TicketFilter, Admin_Main_Service_DataServiceManager) {
     return function(Module) {
       Module.service('em', [
         function() {
           return new Admin_Main_DataService_EntityManager();
-        }
-      ]);
-      Module.service('DepartmentData', [
-        'em', 'Api', '$q', function(em, Api, $q) {
-          return new Admin_Main_DataService_Departments(em, Api, $q);
         }
       ]);
       Module.service('FeedbackStatusesData', [

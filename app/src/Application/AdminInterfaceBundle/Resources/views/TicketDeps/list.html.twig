@@ -5,24 +5,24 @@
 			<nav>
 				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 			</nav>
-			<h3 ng-pluralize count="TicketDepsList.departments.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
+			<h3 ng-pluralize count="ListCtrl.deps.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="TicketDepsList.sortedListOptions" dp-list-autoload>
-				<li class="with-drag-handle" ng-repeat="dep in TicketDepsList.parent_deps" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
+				<li class="with-drag-handle" ng-repeat="dep in ListCtrl.depList" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(dep); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="$event.preventDefault(); ListCtrl.startDelete(dep);"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
-					<ul class="dp-item-list sublist" ng-if="TicketDepsList.child_deps[dep.id]" ui-sortable="TicketDepsList.sortedListOptions">
-						<li class="with-drag-handle" ng-repeat="subdep in TicketDepsList.child_deps[dep.id]" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
+					<ul class="dp-item-list sublist" ng-if="dep.children.length" ui-sortable="ListCtrl.sortedListOptions">
+						<li class="with-drag-handle" ng-repeat="subdep in dep.children" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
 								<i class="fa fa-bars drag-handle"></i>
 								<div class="pull-right">
-									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="TicketDepsList.startDelete(subdep); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="$event.preventDefault(); ListCtrl.startDelete(subdep);"><i class="fa fa-trash-o"></i></span>
 								</div>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
@@ -38,7 +38,7 @@
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }" href="{{ ng_href('tickets.ticket_deps.gocreate') }}" dp-list-autoload autoload-priority="2"><i class="fa fa-plus"></i> New Department</a>
 			</div>
 
-			<div class="dp-empty-list-notice" ng-show="TicketDepsList.departments.length == 1">
+			<div class="dp-empty-list-notice" ng-show="ListCtrl.deps.length == 1">
 				<p>
 					{{ phrase('adm.departments.not_user_visible') }}
 				</p>

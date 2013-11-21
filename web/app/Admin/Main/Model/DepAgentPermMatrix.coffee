@@ -264,3 +264,42 @@ define ->
 					agentPerms[name].state = false
 
 			@refreshAgentGroupPerms(aid)
+
+
+		###
+    	# Get all permission data as an array
+    	#
+    	# @return {Array}
+		###
+		getPermsData: ->
+			perms = []
+
+			for agentObj in @agents
+				if agentObj.perms.full.state
+					perms.push({
+						person_id: agentObj.model.id,
+						name: 'full',
+						value: 1
+					})
+				else if agentObj.perms.assign.state
+					perms.push({
+						person_id: agentObj.model.id,
+						name: 'assign',
+						value: 1
+					})
+
+			for groupObj in @groups
+				if groupObj.perms.full.state
+					perms.push({
+						usergroup_id: groupObj.model.id,
+						name: 'full',
+						value: 1
+					})
+				else if groupObj.perms.assign.state
+					perms.push({
+						usergroup_id: groupObj.model.id,
+						name: 'assign',
+						value: 1
+					})
+
+			return perms

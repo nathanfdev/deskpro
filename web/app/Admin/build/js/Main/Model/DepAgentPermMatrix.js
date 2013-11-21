@@ -360,6 +360,53 @@
         return this.refreshAgentGroupPerms(aid);
       };
 
+      /*
+        	# Get all permission data as an array
+        	#
+        	# @return {Array}
+      */
+
+
+      Admin_Main_Model_DepAgentPermMatrix.prototype.getPermsData = function() {
+        var agentObj, groupObj, perms, _i, _j, _len, _len1, _ref, _ref1;
+        perms = [];
+        _ref = this.agents;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          agentObj = _ref[_i];
+          if (agentObj.perms.full.state) {
+            perms.push({
+              person_id: agentObj.model.id,
+              name: 'full',
+              value: 1
+            });
+          } else if (agentObj.perms.assign.state) {
+            perms.push({
+              person_id: agentObj.model.id,
+              name: 'assign',
+              value: 1
+            });
+          }
+        }
+        _ref1 = this.groups;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          groupObj = _ref1[_j];
+          if (groupObj.perms.full.state) {
+            perms.push({
+              usergroup_id: groupObj.model.id,
+              name: 'full',
+              value: 1
+            });
+          } else if (groupObj.perms.assign.state) {
+            perms.push({
+              usergroup_id: groupObj.model.id,
+              name: 'assign',
+              value: 1
+            });
+          }
+        }
+        return perms;
+      };
+
       return Admin_Main_Model_DepAgentPermMatrix;
 
     })();

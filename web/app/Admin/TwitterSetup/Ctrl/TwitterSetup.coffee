@@ -17,7 +17,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 			return @$q.all([data_promise])
 
-		checkDirtyState: ->
+		isDirtyState: ->
 			if not @setup then return false
 			if not angular.equals(@setup, @$scope.setup)
 				return true

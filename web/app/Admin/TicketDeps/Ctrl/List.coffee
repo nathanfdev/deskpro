@@ -1,12 +1,10 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
-		@CTRL_AS = 'TicketDepsList'
-		@DEPS    = ['$rootScope', '$scope', 'DepartmentData', 'em', 'Api', '$state', 'Growl']
+		@CTRL_AS = 'ListCtrl'
 
 		init: ->
-			@departments_count = 0;
-			@dep_settings = {}
+			@depData = @DataService.get('TicketDeps')
 
 			@sortedListOptions = {
 				axis: 'y',
@@ -14,93 +12,29 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				update: (ev, data) =>
 					$list = data.item.closest('ul')
 
-					postData = {display_orders: []}
-
-					x = 0
-					em = @em
+					order = []
 					$list.find('li').each(->
-						x += 10
-						dep_id = parseInt($(this).data('id'))
-
-						if dep_id
-							dep = em.getById('department', dep_id)
-							if dep
-								dep.display_order = x
-
-						postData.display_orders.push(dep_id)
+						order.push(dep_id)
 					)
 
-					promise = @Api.sendPostJson('/ticket_deps/display_order', postData)
+					@depData.saveDisplayOrders(order)
 					@pingElement('display_orders')
 			}
 
+		###
+		# Loads the dep list
+		###
 		initialLoad: ->
-
-			dep_promise = @DepartmentData.loadDepList().then( (departments) =>
-				@initDepList(departments.values())
-
-				@addManagedListener(@DepartmentData.deps, 'changed', =>
-					@initDepList(@DepartmentData.deps.values())
-					@ngApply()
-				)
+			promise = @depData.loadList().then( (list) =>
+				@depList = list
+				@deps = @depData.listModels
 			)
 
-			data_promise = @Api.sendDataGet({
-				'ticket_settings': '/ticket_deps/settings',
-				'lang_info': '/langs'
-			}).then( (res) =>
-				settings = res.data.ticket_settings
+			return promise
 
-				@can_rename_department = !res.data.lang_info.is_multi_lang and res.data.lang_info.default_lang_id == 1
-
-				@dep_settings.default_id    = parseInt(settings['core.default_ticket_dep']) || 0
-				@dep_settings.name_singular = settings['core.phrase_department_singular']
-				@dep_settings.name_plural   = settings['core.phrase_department_plural']
-
-				if @dep_settings.name_singular or @dep_settings.name_plural
-					@dep_settings.do_rename = true
-			)
-
-			return @$q.all([dep_promise, data_promise]).then(=>
-				if @dep_settings.default_id
-					found = false
-					for d in @default_dep_list
-						if d.id == @dep_settings.default_id
-							found = true
-							break
-
-					if not found
-						@dep_settings.default_id = 0
-
-				if not @dep_settings.default_id or @dep_settings.default_id == 0
-					@dep_settings.default_id = @default_dep_list[0].id
-			)
-
-
-		initDepList: (departments) ->
-			@departments = departments
-			@departments_count = departments.lenght
-			@parent_deps = []
-			@child_deps = {}
-			@default_dep_list = []
-
-			for dep in departments
-				if dep.parent_id
-					if not @child_deps[dep.parent_id]
-						@child_deps[dep.parent_id] = []
-
-					@child_deps[dep.parent_id].push(dep)
-
-					@default_dep_list.push(dep)
-
-				else
-					@parent_deps.push(dep)
-					if not dep._child_ids
-						@default_dep_list.push(dep)
-
-		###*
-		* Get the move dep list for use in the delete/move dlg
-    	* @return {Array}
+		###
+		# Get the move dep list for use in the delete/move dlg
+    	# @return {Array}
 		###
 		getMoveDepList: (for_dep) ->
 			dep_move_list = []
@@ -115,26 +49,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		# Show the delete dlg
 		###
 		startDelete: (for_dep_id) ->
-
-			for_dep = null
-			for v in @departments
-				if v.id == for_dep_id
-					for_dep = v
-					break
-
-			if for_dep._child_ids
+			dep = @depData.findListModelById(for_dep_id)
+			if dep.children.length
 				@showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.")
 				return
 
-			move_dep_list = @getMoveDepList(for_dep)
+			move_deps_list = @depData.getLeafOptionsArray(dep.id)
 
-			if not move_dep_list.length
+			if not move_deps_list.length
 				@showAlert('@no_delete_last');
 				return
 
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketDeps/delete-modal.html'),
-				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance, move_deps_list) ->
+				controller: ['$scope', '$modalInstance', 'move_deps_list', ($scope, $modalInstance) ->
 					$scope.move_deps_list = move_deps_list
 					$scope.selected = {
 						move_to_id: move_deps_list[0].id
@@ -145,57 +73,21 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 					$scope.dismiss = ->
 						$modalInstance.dismiss();
-				],
-				resolve: {
-					move_deps_list: =>
-						return move_dep_list
-				}
+				]
 			});
 
 			inst.result.then( (move_to) =>
-				@deleteDepartment(for_dep, move_to)
+				@deleteDepartment(dep, move_to)
 			)
 
-		###*
+		###
 		# Actually do th edelete
 		###
 		deleteDepartment: (for_dep, move_to) ->
-			@Api.sendDelete('/ticket_deps/' + for_dep.id, {
-				move_to: move_to
-			}).success( =>
-				@DepartmentData.deps.remove(for_dep.id)
-				@DepartmentData.resetHierarchy()
-				@em.removeById('department', for_dep.id)
-				@ngApply()
-
+			@depData.deleteDepartmentById(for_dep.id, move_to).then(=>
 				# if currently viewing the deleted department, then should need to switch state
 				if @$state.current.name == 'tickets.ticket_deps.edit' and parseInt(@$state.params.id) == for_dep.id
 					@$state.go('tickets.ticket_deps')
-			)
-
-		saveSettings: ->
-			if not @dep_settings.do_rename
-				@dep_settings.name_singular = ''
-				@dep_settings.name_plural = ''
-
-			postData = {
-				settings: {
-					'core.default_ticket_dep':         @dep_settings.default_id,
-					'core.phrase_department_singular': @dep_settings.name_singular,
-					'core.phrase_department_plural':   @dep_settings.name_plural
-				}
-			}
-
-			if not @can_rename_department
-				postData.settings['core.phrase_department_singular'] = ''
-				postData.settings['core.phrase_department_plural'] = ''
-
-			@startSpinner('saving_settings')
-
-			@Api.sendPostJson('/ticket_deps/settings', postData).then(=>
-				@stopSpinner('saving_settings').then(=>
-					@Growl.success(@getRegisteredMessage('saved_settings'))
-				)
 			)
 
 	Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()

@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="TicketDepsEdit.saveAll()">
+	<form role="form" name="form_props" ng-submit="EditCtrl.saveAll()">
 		<section class="dp-paneblock dp-editpane">
 			<nav class="dp-blocktabs">
 				<ul>
@@ -40,14 +40,14 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="TicketDepsEdit.dep.id">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketDepsList.startDelete(TicketDepsEdit.dep.id);">Delete</button>
+					<div class="dp-delete-control" ng-if="EditCtrl.dep.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketDepsList.startDelete(EditCtrl.dep.id);">Delete</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving_dep">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-							<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+							<button class="btn btn-default" ng-click="EditCtrl.resetForm()">{{ phrase('agent.general.reset') }}</button>
 						</div>
 						<div dp-show-spinning="saving_dep">
 							<i class="spinner-flat"></i>
@@ -57,5 +57,5 @@
 			</footer>
 		</section>
 	</form>
-	<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(TicketDepsEdit.dep.title)'}) }}</div>
+	<div dp-register-message="saved_dep">{{ phrase('adm.departments.saved_dep_x_success', {title: 'ng_var(EditCtrl.form.title)'}) }}</div>
 {% endblock %}

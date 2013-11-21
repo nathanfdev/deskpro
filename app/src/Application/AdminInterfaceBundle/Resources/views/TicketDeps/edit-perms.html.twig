@@ -21,14 +21,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="usergroup in TicketDepsEdit.usergroups">
+			<tr ng-repeat="usergroup in EditCtrl.usergroups">
 				<td>
 					<i class="fa fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
 					<span class="text-middle"><a href="#">{{ ng_var('usergroup.title') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button dp-toggle-switch ng-model="usergroup.use"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.usergroup_perms[usergroup.id].use"></button>
 				</td>
 			</tr>
 		</tbody>
@@ -63,30 +63,30 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="groupObj in TicketDepsEdit.agent_perms.groups">
+			<tr ng-repeat="groupObj in EditCtrl.form.agent_perms.groups">
 				<td>
 					<i class="fa fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
 					<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+					<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
 				</td>
 				<td class="text-center">
-					<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(groupObj, 'full')"></button>
+					<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')"></button>
 				</td>
 			</tr>
-			<tr ng-repeat="agentObj in TicketDepsEdit.agent_perms.agents" ng-class="{'first-of-type': $first}">
+			<tr ng-repeat="agentObj in EditCtrl.form.agent_perms.agents" ng-class="{'first-of-type': $first}">
 				<td>
 					<i class="agent-icon agent-fa fa-22x text-middle" bg-img="agentObj.model.picture_url_22"></i>
 					&nbsp;
 					<span class="text-middle"><a href="#">{{ ng_var('agentObj.model.display_name') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+					<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
 				</td>
 				<td class="text-center">
-					<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="TicketDepsEdit.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') }}"></button>
+					<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="EditCtrl.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') }}"></button>
 				</td>
 			</tr>
 		</tbody>

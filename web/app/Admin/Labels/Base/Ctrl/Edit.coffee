@@ -71,6 +71,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@stopSpinner('saving_label', true)
 			)
 
-		checkDirtyState: ->
+		isDirtyState: ->
 			if @$scope.form.label != @old_label then return true
 			return false

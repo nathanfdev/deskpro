@@ -82,25 +82,28 @@ class TicketDepsController extends AbstractController
 		$data['department'] = $this->getApiData($dep);
 
 		$perms = $this->db->fetchAll("SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?", array($dep->id));
-		$data['perms_usergroup_ids']  = array();
-		$data['perms_agentgroup_ids'] = array();
-		$data['perms_agent_ids']      = array();
+
+		$data['permissions'] = array(
+			'usergroups'  => array(),
+			'agentgroups' => array(),
+			'agents'      => array()
+		);
 
 		foreach ($perms as $perm) {
 			if ($perm['usergroup_id']) {
 				if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-					$data['perms_agentgroup_ids'][] = array(
+					$data['permissions']['agentgroups'][] = array(
 						'usergroup_id' => (int)$perm['usergroup_id'],
 						'perm_name'    => $perm['name'],
 					);
 				} else {
-					$data['perms_usergroup_ids'][] = array(
+					$data['permissions']['usergroups'][] = array(
 						'usergroup_id' => (int)$perm['usergroup_id'],
 						'perm_name'    => $perm['name'],
 					);
 				}
 			} elseif ($perm['person_id']) {
-				$data['perms_agent_ids'][] = array(
+				$data['permissions']['agents'][] = array(
 					'agent_id'  => (int)$perm['person_id'],
 					'perm_name' => $perm['name']
 				);
@@ -159,7 +162,7 @@ class TicketDepsController extends AbstractController
 				$errors[] = $er->getMessage();
 			}
 
-			return $this->createApiResponse(array('id' => $dep->id, 'success' => false, 'errors' => $errors));
+			return $this->createApiResponse(array('department_id' => $dep->id, 'success' => false, 'errors' => $errors));
 		}
 	}
 

@@ -34,7 +34,7 @@
         return this.$q.all([data_promise]);
       };
 
-      Admin_TicketSettings_Ctrl_TicketSettings.prototype.checkDirtyState = function() {
+      Admin_TicketSettings_Ctrl_TicketSettings.prototype.isDirtyState = function() {
         if (!this.settings) {
           return false;
         }

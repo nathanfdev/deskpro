@@ -1,6 +1,6 @@
 define [
 	'Admin/Main/DataService/EntityManager',
-	'Admin/Main/DataService/Departments',
+
 	'Admin/FeedbackStatuses/DataService/FeedbackStatuses',
 	'Admin/FeedbackTypes/DataService/FeedbackTypes',
 	'Admin/FeedbackCategories/DataService/FeedbackCategories',
@@ -14,7 +14,6 @@ define [
 	'Admin/Main/Service/DataServiceManager',
 ], (
 	Admin_Main_DataService_EntityManager,
-	Admin_Main_DataService_Departments,
 	Admin_FeedbackStatuses_DataService_FeedbackStatuses,
 	Admin_FeedbackTypes_DataService_FeedbackTypes,
 	Admin_FeedbackCategories_DataService_FeedbackCategories,
@@ -31,11 +30,7 @@ define [
 		Module.service('em', [ ->
 			return new Admin_Main_DataService_EntityManager()
 		])
-	
-		Module.service('DepartmentData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_Main_DataService_Departments(em, Api, $q)
-		])
-	
+
 		Module.service('FeedbackStatusesData', ['em', 'Api', '$q', (em, Api, $q) ->
 			return new Admin_FeedbackStatuses_DataService_FeedbackStatuses(em, Api, $q)
 		])

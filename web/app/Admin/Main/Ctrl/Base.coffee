@@ -107,7 +107,7 @@ define ['angular'], (angular) ->
 					@_state_cont_ignore = false
 					return
 
-				if not @_state_cont_go and @checkDirtyState()
+				if not @_state_cont_go and @isDirtyState()
 					ev.preventDefault();
 
 					# - The window hash has changed at this point so we
@@ -270,7 +270,7 @@ define ['angular'], (angular) ->
 		*
 		* @return {Boolean}
 		###
-		checkDirtyState: ->
+		isDirtyState: ->
 			return false
 
 
@@ -455,37 +455,6 @@ define ['angular'], (angular) ->
 			});
 
 			return inst
-
-
-		###*
-    	* Saves a copy of current state (usually so it can be restored on 'reset')
-    	*
-    	* @param {String} ids...
-		###
-		saveState: (ids...) ->
-			for id in ids
-				if @[id]?
-					@_saved_state[id] = angular.copy(@[id], @_saved_state[id])
-
-
-		###*
-    	* Restore saved saved
-		*
-    	* @param {String} id Optionally only restore this
-		###
-		restoreState: (ids = null) ->
-			if ids
-				for id in ids
-					if @_saved_state[id]?
-						angular.copy(@_saved_state[id], @[id])
-						delete @_saved_state[id]
-			else
-				for own id, value of @_saved_state
-					angular.copy(@_saved_state[id], @[id])
-					@[id] = value
-					delete @_saved_state[id]
-
-			return
 
 		getWaitEntityPromiseView: (id) ->
 			return =>
