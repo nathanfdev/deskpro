@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
-use Application\DeskPRO\Criteria\CriteriaTermInterface;
+use Orb\Util\Strings;
 
-class LayoutFieldCriteria
+class LayoutFieldCriteria implements \Serializable
 {
 	const CRIT_ALL = 'ALL';
 	const CRIT_ANY = 'ANY';
@@ -47,13 +47,13 @@ class LayoutFieldCriteria
 	private $mode = self::CRIT_ALL;
 
 	/**
-	 * @var \Application\DeskPRO\Criteria\CriteriaTermInterface[]
+	 * @var \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
 	 */
 	private $terms = array();
 
 
 	/**
-	 * @param \Application\DeskPRO\Criteria\CriteriaTermInterface[] $terms
+	 * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
 	 * @param string $mode
 	 */
 	public function __construct(array $terms = null, $mode = self::CRIT_ALL)
@@ -78,7 +78,7 @@ class LayoutFieldCriteria
 
 
 	/**
-	 * @return \Application\DeskPRO\Criteria\CriteriaTermInterface[]
+	 * @return \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
 	 */
 	public function getTerms()
 	{
@@ -102,5 +102,106 @@ class LayoutFieldCriteria
 	{
 		$mode = strtoupper($mode);
 		$this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function compileJsCheck()
+	{
+		if (!$this->terms) {
+			return "function() { return true; }";
+		}
+
+		$js = "function(ticket) {\n";
+		$js .= "\tvar any = false, checkFn = [];\n";
+
+		foreach ($this->terms as $t) {
+			$t_js = $t->compileJsCheck();
+			$t_js = trim(Strings::modifyLines($t_js, "\t"));
+			$js .= "\tcheckFn.push($t_js);\n";
+		}
+
+		$js .= "\twhile(f = checkFn.pop()) {\n";
+		$js .= "\t\tif (f(ticket)) { ";
+		if ($this->mode = self::CRIT_ALL) {
+			$js .= " } else { return false; }\n";
+		} else {
+			$js .= " return true; } \n";
+		}
+		$js .= "\t}\n";
+		$js .= "\treturn false;\n";
+
+		$js .= "}";
+		return $jsl
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function exportToArray()
+	{
+		$data = array();
+
+		$data['version'] = 1;
+		$data['mode']    = $this->mode;
+		$data['terms']   = array();
+
+		foreach ($this->terms as $t) {
+			$data['terms'][] = array(
+				'type'    => $t->getTermType(),
+				'op'      => $t->getTermOperator(),
+				'options' => $t->getTermOptions()
+			);
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function exportToJson()
+	{
+		return json_encode($this->exportToArray());
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function importFromArray(array $data)
+	{
+		$this->setMode($data['mode']);
+
+		foreach ($data['terms'] as $t) {
+			$classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
+			$obj = new $classname($t['op'], $t['options']);
+			$this->addTerm($obj);
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return $this->exportToJson();
+	}
+
+
+	/**
+	 * @param string $data
+	 */
+	public function unserialize($data)
+	{
+		$data = json_decode($data, true);
+
+		$this->__construct($data['field_type'], $data['field_id']);
+		$this->importFromArray($data);
 	}
 }

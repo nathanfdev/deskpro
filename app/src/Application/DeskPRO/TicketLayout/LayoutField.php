@@ -236,6 +236,12 @@ class LayoutField implements \Serializable
 		$data['field_id']   = $this->field_id;
 		$data['options']    = array();
 
+		if ($this->criteria) {
+			$data['criteria'] = $this->criteria->exportToArray();
+		} else {
+			$data['criteria'] = null;
+		}
+
 		foreach (array(
 			'on_newticket',
 			'on_viewticket',
