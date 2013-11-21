@@ -1,10 +1,17 @@
-define ['angular'], (angular) ->
+define [
+	'angular',
+	'DeskPRO/Util/Arrays'
+], (
+	angular,
+	Arrays
+) ->
 	class InterfaceHandler
-		constructor: (scope, element, attr, ngModel, $compile) ->
+		constructor: (scope, element, attr, ngModel, $compile, logger) ->
 			@scope    = scope
 			@element  = element
 			@ngModel  = ngModel
 			@$compile = $compile
+			@logger   = logger
 
 			@scope.form_tab = 'user'
 
@@ -14,16 +21,71 @@ define ['angular'], (angular) ->
 			@els.agent_tab       = @element.find('.agent-form')
 			@els.agent_worksheet = @els.agent_tab.find('.form-worksheet')
 
-			@ngModel.$render = =>
-				@render()
+			@required_fields = {
+				user: [],
+				agent: []
+			}
 
 			@_initTab('user', @els.user_tab)
 			@_initTab('agent', @els.agent_tab)
+
+			@ngModel.$formatters.push( (modelValue) =>
+				# Make sure the basic data structure exists
+				if not modelValue
+					modelValue = {}
+				if not modelValue.user?
+					modelValue.user = []
+				if not modelValue.agent?
+					modelValue.agent = []
+
+				for fieldType in @required_fields.user
+					has = false
+					for f in modelValue.user
+						if not f.id
+							if f.field_id
+								f.id = "#{f.field_type}.#{f.field_id}"
+							else
+								f.id = f.field_type
+
+						if f.field_type == fieldType
+							has = true
+
+					if not has
+						modelValue.user.push(@createFieldValue(fieldType))
+
+				for fieldType in @required_fields.agent
+					has = false
+					for f in modelValue.agent
+						if not f.id
+							if f.field_id
+								f.id = "#{f.field_type}.#{f.field_id}"
+							else
+								f.id = f.field_type
+
+						if f.field_type == fieldType
+							has = true
+					if not has
+						modelValue.agent.push(@createFieldValue(fieldType))
+
+				return modelValue
+			)
+
+			@ngModel.$parsers.push( (viewModel) =>
+				return viewModel
+			)
+
+			@ngModel.$render = =>
+				@render()
 
 		_initTab: (tabType, tab) ->
 			me = @
 			ngModel = @ngModel
 			scope = @scope
+
+			requiredFields = @required_fields[tabType]
+			tab.find('.dp-layout-editor-layout-field').filter('[data-is-required]').each(->
+				requiredFields.push($(this).data('field-type'))
+			)
 
 			tab.find('.form-elements').find('li').draggable({
 				appendTo: 'body',
@@ -36,13 +98,20 @@ define ['angular'], (angular) ->
 				handle: '.drag_handle',
 				stop: (event, ui) ->
 					if ui.item?.hasClass('dp-layout-editor-layout-field')
-						me.createAndAddField(
+						fieldType = ui.item.data('field-type')
+						fieldId   = ui.item.data('field-id') || null
+						me.logger.debug("[#{tabType}] Dragged #{fieldType}.#{fieldId || '0'}")
+						fieldRow = me.createAndAddField(
 							tabType,
-							ui.item.data('field-type'),
-							ui.item.data('field-id') || null,
+							fieldType,
+							fieldId,
 							ui.item
 						)
 						ui.item.remove()
+
+						if fieldRow
+							fid = fieldRow.data('field-id')
+							tab.find("[data-field-type=\"#{fid}\"]").hide()
 			})
 
 
@@ -67,14 +136,14 @@ define ['angular'], (angular) ->
 				# Already has field of this type,
 				# so we will ignore this drop
 				if f.id == field.id
+					@logger.info("[#{tabType}] {createAndAddField} Already has #{field.id}")
 					return null
-
-			viewValue[tabType].push(field)
-			@ngModel.$setViewValue(viewValue)
 
 			row = @createFieldRow(tabType, field)
 
+			insertAt = null
 			if insertAfterEl
+				insertAt = $(insertAfterEl).parent().find('.layout-field').index(insertAfterEl)
 				row.insertAfter(insertAfterEl)
 			else
 				if tabType == 'user'
@@ -83,6 +152,13 @@ define ['angular'], (angular) ->
 					ul = @els.agent_worksheet.find('ul').first()
 
 				ul.append(row)
+
+			if insertAt == null
+				viewValue[tabType].push(field)
+			else
+				Arrays.insertAtIndex(viewValue[tabType], field, insertAt)
+
+			@ngModel.$setViewValue(viewValue)
 
 			return row
 
@@ -137,7 +213,10 @@ define ['angular'], (angular) ->
 				fieldRow.remove()
 				fieldScope.$destroy()
 
-			if field.id in ['subject', 'message', 'user_email']
+				tab = @els["#{tabType}_tab"].find('.form-elements')
+				tab.find("[data-field-type=\"#{field.id}\"]").show()
+
+			if field.id in @required_fields[tabType]
 				fieldScope.removeRow = ->
 					return
 				fieldScope.isSticky = true
@@ -155,28 +234,15 @@ define ['angular'], (angular) ->
 		###
 		render: ->
 			forms = [
-				{ typeName: 'user',  modelName: 'user_form',  worksheetName: 'user_worksheet' },
-				{ typeName: 'agent', modelName: 'agent_form', worksheetName: 'agent_worksheet' }
+				{ typeName: 'user',  worksheetName: 'user_worksheet' },
+				{ typeName: 'agent', worksheetName: 'agent_worksheet' }
 			]
 
 			for form in forms
-				if not @ngModel.$viewValue
-					@ngModel.$viewValue = {}
-				if not @ngModel.$viewValue[form.modelName]
-					@ngModel.$viewValue[form.modelName] = []
-
 				typeName    = form.typeName
-				form_model  = @ngModel.$viewValue?[form.modelName]
+				form_model  = @ngModel.$viewValue[form.typeName]
 				worksheetEl = @els[form.worksheetName]
-				tabEl       = @els["#{form.typeName}_tab"]
 				listEl      = worksheetEl.find('ul').first()
-
-				stickyFields = tabEl.find('.dp-layout-editor-layout-field').filter('[data-is-required]')
-				stickyFieldIds = {}
-				stickyFields.each(->
-					id = $(this).data('field-type')
-					stickyFieldIds[id] = $(this)
-				)
 
 				layoutFieldEls = worksheetEl.find('.layout-field');
 
@@ -193,15 +259,6 @@ define ['angular'], (angular) ->
 						elementMap[field.id] = fieldEl
 
 					orderMap[field.id] = order
-
-				# Check for required elements
-				x = form_model.length
-				for own id, fieldEl of stickyFieldIds
-					if not elementMap[id]
-						field = @createFieldValue(id)
-						orderMap[id] = field
-						newFields.push(field)
-						x++
 
 				# Remove elements
 				layoutFieldEls.each( ->
@@ -244,16 +301,22 @@ define ['angular'], (angular) ->
 						fieldEl = layoutFieldEls.filter('.field-' + field.id)
 						fieldEl.appendTo(listEl)
 
-	return ['$compile', ($compile) ->
+				draggableEls = @els["#{typeName}_tab"].find('.form-elements')
+				draggableEls.show()
+				for f in form_model
+					draggableEls.find("[data-field-type=\"#{f.id}\"]").hide();
+
+	return ['$compile', 'LoggerManager', ($compile, LoggerManager) ->
 		directive = {}
 		directive.restrict    = 'E'
 		directive.require     = 'ngModel'
-		#directive.controller  = ['$scope', EditorController]
 		directive.templateUrl = "TicketDeps/layout-editor.html"
 		directive.replace     = true
+		directive.scope       = {}
 
 		directive.link = (scope, element, attrs, ngModel) ->
-			interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile)
+			logger = LoggerManager.get('directive.dpLayoutEditor')
+			interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, logger)
 
 		return directive
 	]

@@ -21,9 +21,6 @@
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         var _this = this;
         this.depData = this.DataService.get('TicketDeps');
-        this.$scope.is_custom_layout = false;
-        this.$scope.defaultLayout = {};
-        this.$scope.customLayout = {};
         this.$scope.$watch('EditCtrl.form.parent_id', function(newVal) {
           var parent;
           newVal = parseInt(newVal);
@@ -86,14 +83,35 @@
 
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var promise,
+        var deferred2, promise,
           _this = this;
         if (!this.$scope.form_props.$valid) {
           return;
         }
         this.startSpinner('saving_dep');
+        deferred2 = this.$q.defer();
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.then(function() {
+          if (_this.form.use_custom_layout) {
+            return _this.Api.sendPostJson("/ticket_layouts/" + _this.dep.id, {
+              layout: _this.form.custom_layout
+            }).then(function() {
+              return deferred2.resolve();
+            });
+          } else {
+            _this.Api.sendPostJson("/ticket_layouts/default", {
+              layout: _this.form.default_layout
+            }).then(function() {
+              return deferred2.resolve();
+            });
+            return _this.Api.sendDelete("/ticket_layouts/" + _this.dep.id);
+          }
+        });
+        promise.error(function(info, code) {
+          _this.stopSpinner('saving_dep');
+          return _this.applyErrorResponseToView(info);
+        });
+        deferred2.promise.then(function() {
           _this.origForm = Util.clone(_this.form, true);
           return _this.stopSpinner('saving_dep').then(function() {
             return _this.Growl.success(_this.getRegisteredMessage('saved_dep'), function() {
@@ -103,11 +121,7 @@
             });
           });
         });
-        promise.error(function(info, code) {
-          _this.stopSpinner('saving_dep');
-          return _this.applyErrorResponseToView(info);
-        });
-        return promise;
+        return deferred2.promise;
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.propogatePermission = function(obj, perm) {

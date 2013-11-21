@@ -6,13 +6,16 @@ define [
 	Util
 ) ->
 	class TicketDepFormMapper
-		getFormFromModel: (dep, depPerms, agents, agentgroups, usergroups) ->
+		getFormFromModel: (dep, layouts, depPerms, agents, agentgroups, usergroups) ->
 			form = {
 				title: '',
 				user_title: '',
 				parent_id: '0',
 				email_gateway_id: '0',
-				enable_user_title: false
+				enable_user_title: false,
+				default_layout: {},
+				custom_layout: {},
+				use_custom_layout: false
 			}
 
 			if dep.id
@@ -26,6 +29,20 @@ define [
 					form.parent_id = dep.parent_id+""
 				if not Util.isBlank(dep.email_gateway_id)
 					form.email_gateway_id = dep.email_gateway_id+""
+
+			form.default_layout = {
+				agent: layouts.default_layout.agent.fields,
+				user:  layouts.default_layout.user.fields,
+			}
+
+			if layouts.custom_layout and layouts.use_custom_layout
+				form.custom_layout = {
+					agent: layouts.custom_layout.agent.fields,
+					user:  layouts.custom_layout.user.fields,
+				}
+				form.use_custom_layout = true
+			else
+				form.custom_layout = Util.clone(form.default_layout, true)
 
 			matrix = new DepAgentPermMatrix()
 			for group in agentgroups

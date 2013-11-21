@@ -66,7 +66,7 @@ class TicketLayout extends DomainObject
 	 */
 	protected $agent_layout;
 
-	public function __construct(Department $department)
+	public function __construct(Department $department = null)
 	{
 		$this->department   = $department;
 		$this->user_layout  = new Layout();
@@ -108,8 +108,8 @@ class TicketLayout extends DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketLayout';
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
 		$metadata->setPrimaryTable(array(
 			'name' => 'ticket_layouts'
@@ -147,7 +147,7 @@ class TicketLayout extends DomainObject
 			'joinColumns'  => array(array(
 				'name'                 => 'department_id',
 				'referencedColumnName' => 'id',
-				'nullable'             => false,
+				'nullable'             => true,
 				'onDelete'             => 'cascade',
 			))
 		));

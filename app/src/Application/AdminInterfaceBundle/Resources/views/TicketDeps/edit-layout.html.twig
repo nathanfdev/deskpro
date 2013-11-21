@@ -1,17 +1,17 @@
 <div class="panel panel-fill">
 	<div class="panel-body">
 		<div class="btn-group">
-			<button type="button" class="btn btn-default" ng-class="{'active': !is_custom_layout}" ng-click="is_custom_layout = false">Use Default Form Layout</button>
-			<button type="button" class="btn btn-default" ng-class="{'active': is_custom_layout}" ng-click="is_custom_layout = true">Use Custom Form Layout for "{{ ng_var('EditCtrl.form.title') }}"</button>
+			<button type="button" class="btn btn-default" ng-class="{'active': !EditCtrl.form.use_custom_layout}" ng-click="EditCtrl.form.use_custom_layout = false">Use Default Form Layout</button>
+			<button type="button" class="btn btn-default" ng-class="{'active': EditCtrl.form.use_custom_layout}" ng-click="EditCtrl.form.use_custom_layout = true">Use Custom Form Layout for "{{ ng_var('EditCtrl.form.title') }}"</button>
 		</div>
 
 		<br/><br/>
 
-		<div ng-show="is_custom_layout">
-			<dp-ticket-layout-editor ng-model="defaultLayout" />
+		<div ng-show="EditCtrl.form.use_custom_layout">
+			<dp-ticket-layout-editor ng-model="EditCtrl.form.custom_layout" />
 		</div>
-		<div ng-show="!is_custom_layout">
-			<dp-ticket-layout-editor ng-model="customLayout" />
+		<div ng-show="!EditCtrl.form.use_custom_layout">
+			<dp-ticket-layout-editor ng-model="EditCtrl.form.default_layout" />
 		</div>
 	</div>
 </div>

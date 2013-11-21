@@ -75,19 +75,22 @@
             agentsInfo: '/agents',
             agentgroupsInfo: '/agentgroups',
             usergroupsInfo: '/usergroups',
-            ticketAccountsInfo: '/ticket_accounts'
+            ticketAccountsInfo: '/ticket_accounts',
+            defaultLayoutInfo: '/ticket_layouts/default',
+            customLayoutInfo: "/ticket_layouts/" + id
           });
         } else {
           promise = this.Api.sendDataGet({
             agentsInfo: '/agents',
             agentgroupsInfo: '/agentgroups',
             usergroupsInfo: '/usergroups',
-            ticketAccountsInfo: '/ticket_accounts'
+            ticketAccountsInfo: '/ticket_accounts',
+            defaultLayoutInfo: '/ticket_layouts/default'
           });
         }
         deferred = this.$q.defer();
         allPromise = this.$q.all([promise, this.loadList()]).then(function(result) {
-          var d, data, idx, _i, _len, _ref1;
+          var d, data, idx, layouts, _i, _len, _ref1;
           result = result[0].data;
           data = {};
           if (result.depInfo) {
@@ -116,7 +119,12 @@
           data.agents = result.agentsInfo.agents;
           data.agentgroups = result.agentgroupsInfo.agentgroups;
           data.usergroups = result.usergroupsInfo.usergroups;
-          data.form = _this.getFormMapper().getFormFromModel(data.dep, data.depPerms, data.agents, data.agentgroups, data.usergroups);
+          layouts = {
+            default_layout: result.defaultLayoutInfo.layout,
+            custom_layout: result.customLayoutInfo ? result.customLayoutInfo.layout : null,
+            use_custom_layout: result.customLayoutInfo && !result.customLayoutInfo.is_default ? true : false
+          };
+          data.form = _this.getFormMapper().getFormFromModel(data.dep, layouts, data.depPerms, data.agents, data.agentgroups, data.usergroups);
           return deferred.resolve(data);
         });
         return deferred.promise;

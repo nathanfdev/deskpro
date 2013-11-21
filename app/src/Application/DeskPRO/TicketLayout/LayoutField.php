@@ -34,7 +34,9 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
-class LayoutField
+use Orb\Util\OptionsArray;
+
+class LayoutField implements \Serializable
 {
 	const VIEW_ALWAYS = 'ALWAYS';
 	const VIEW_VALUE  = 'VALUE';
@@ -83,6 +85,33 @@ class LayoutField
 	{
 		$this->field_type = $field_type;
 		$this->field_id   = $field_id;
+	}
+
+
+	/**
+	 * @param array $options
+	 */
+	public function setOptionsFromArray(array $options)
+	{
+		$options = new OptionsArray($options);
+
+		if ($options->get('on_editticket')) {
+			$this->enableOnEdit();
+		} else {
+			$this->disableOnEdit();
+		}
+
+		if ($options->get('on_viewticket')) {
+			$this->enableOnView($options->get('on_viewticket_mode', 'VALUE'));
+		} else {
+			$this->disableOnView();
+		}
+
+		if ($options->get('on_newticket')) {
+			$this->enableOnNew();
+		} else {
+			$this->disableOnNew();
+		}
 	}
 
 
@@ -192,5 +221,69 @@ class LayoutField
 	public function removeCriteria()
 	{
 		$this->criteria = null;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function exportToArray()
+	{
+		$data = array();
+
+		$data['version']  = 1;
+		$data['field_type'] = $this->field_type;
+		$data['field_id']   = $this->field_id;
+		$data['options']    = array();
+
+		foreach (array(
+			'on_newticket',
+			'on_viewticket',
+			'on_viewticket_mode',
+			'on_editticket'
+		) as $prop) {
+			$data['options'][$prop] = $this->$prop;
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function exportToJson()
+	{
+		return json_encode($this->exportToArray());
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function importFromArray(array $data)
+	{
+		$this->setOptionsFromArray($data['options']);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return $this->exportToJson();
+	}
+
+
+	/**
+	 * @param string $data
+	 */
+	public function unserialize($data)
+	{
+		$data = json_decode($data, true);
+
+		$this->__construct($data['field_type'], $data['field_id']);
+		$this->importFromArray($data);
 	}
 }

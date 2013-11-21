@@ -61,6 +61,8 @@ define [
 					agentgroupsInfo:    '/agentgroups',
 					usergroupsInfo:     '/usergroups',
 					ticketAccountsInfo: '/ticket_accounts',
+					defaultLayoutInfo:  '/ticket_layouts/default',
+					customLayoutInfo:   "/ticket_layouts/#{id}",
 				})
 			else
 				promise = @Api.sendDataGet({
@@ -68,6 +70,7 @@ define [
 					agentgroupsInfo:    '/agentgroups',
 					usergroupsInfo:     '/usergroups',
 					ticketAccountsInfo: '/ticket_accounts',
+					defaultLayoutInfo:  '/ticket_layouts/default',
 				})
 
 			deferred = @$q.defer()
@@ -101,8 +104,15 @@ define [
 				data.agentgroups     = result.agentgroupsInfo.agentgroups
 				data.usergroups      = result.usergroupsInfo.usergroups
 
+				layouts = {
+					default_layout:    result.defaultLayoutInfo.layout,
+					custom_layout:     if result.customLayoutInfo then result.customLayoutInfo.layout else null,
+					use_custom_layout: if result.customLayoutInfo and not result.customLayoutInfo.is_default then true else false
+				}
+
 				data.form = @getFormMapper().getFormFromModel(
 					data.dep,
+					layouts,
 					data.depPerms,
 					data.agents,
 					data.agentgroups,

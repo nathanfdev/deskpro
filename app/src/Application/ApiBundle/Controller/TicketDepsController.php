@@ -38,9 +38,13 @@ use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 
 class TicketDepsController extends AbstractController
 {
@@ -175,7 +179,6 @@ class TicketDepsController extends AbstractController
 	{
 		$editor = $this->_getDepartmentEditor();
 		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
-
 
 		if (!$dep) {
 			throw $this->createNotFoundException();

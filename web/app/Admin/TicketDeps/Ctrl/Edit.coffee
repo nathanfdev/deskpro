@@ -14,10 +14,6 @@ define [
 
 		init: ->
 			@depData = @DataService.get('TicketDeps')
-			@$scope.is_custom_layout = false
-			@$scope.defaultLayout = {}
-			@$scope.customLayout = {}
-
 			@$scope.$watch('EditCtrl.form.parent_id', (newVal) =>
 				newVal = parseInt(newVal)
 				if not newVal
@@ -74,9 +70,22 @@ define [
 
 			@startSpinner('saving_dep')
 
-			promise = @depData.saveFormModel(@dep, @form)
+			deferred2 = @$q.defer()
 
+			promise = @depData.saveFormModel(@dep, @form)
 			promise.then(=>
+				if (@form.use_custom_layout)
+					@Api.sendPostJson("/ticket_layouts/#{@dep.id}", {layout: @form.custom_layout}).then(-> deferred2.resolve())
+				else
+					@Api.sendPostJson("/ticket_layouts/default", {layout: @form.default_layout}).then(-> deferred2.resolve())
+					@Api.sendDelete("/ticket_layouts/#{@dep.id}")
+			)
+			promise.error( (info, code) =>
+				@stopSpinner('saving_dep')
+				@applyErrorResponseToView(info)
+			)
+
+			deferred2.promise.then(=>
 				@origForm = Util.clone(@form, true)
 				@stopSpinner('saving_dep').then(=>
 					@Growl.success(@getRegisteredMessage('saved_dep'), =>
@@ -84,12 +93,8 @@ define [
 					)
 				)
 			)
-			promise.error( (info, code) =>
-				@stopSpinner('saving_dep')
-				@applyErrorResponseToView(info)
-			)
 
-			return promise
+			return deferred2.promise
 
 		propogatePermission: (obj, perm) ->
 			if @_propogatePermission_running then return

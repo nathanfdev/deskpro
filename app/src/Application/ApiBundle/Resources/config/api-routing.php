@@ -2186,6 +2186,41 @@ $collection->create('api_ticket_deps_remove', array(
 	'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_ticket_layout_get', array(
+	'path'         => '/ticket_layouts/{dep_id}',
+	'controller'   => 'ApiBundle:TicketLayouts:get',
+	'requirements' => array('dep_id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_layout_getdefault', array(
+	'path'         => '/ticket_layouts/default',
+	'controller'   => 'ApiBundle:TicketLayouts:get',
+	'defaults'     => array('dep_id' => '0'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_layout_save', array(
+	'path'         => '/ticket_layouts/{dep_id}',
+	'controller'   => 'ApiBundle:TicketLayouts:save',
+	'requirements' => array('dep_id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_ticket_layout_delete', array(
+	'path'         => '/ticket_layouts/{dep_id}',
+	'controller'   => 'ApiBundle:TicketLayouts:delete',
+	'requirements' => array('dep_id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_ticket_layout_savedefault', array(
+	'path'        => '/ticket_layouts/default',
+	'controller'  => 'ApiBundle:TicketLayouts:save',
+	'defaults'    => array('dep_id' => '0'),
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Products
 ########################################################################################################################

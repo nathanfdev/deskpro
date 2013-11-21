@@ -122,6 +122,21 @@
       };
 
       /*
+      		# Insert a value into an array a specific location.
+        	# Modifies the array in place.
+        	#
+        	# @param {Array} array
+        	# @param {mixed} value
+        	# @param {Integer} index
+      */
+
+
+      DeskPRO_Util_Arrays.prototype.insertAtIndex = function(array, value, index) {
+        array.splice(index, 0, value);
+        return array;
+      };
+
+      /*
       		# Remove all occurances of removeVal in array.
       		# Modifies the array in-place.
       		#

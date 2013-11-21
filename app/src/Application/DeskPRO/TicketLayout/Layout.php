@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
-class Layout implements \IteratorAggregate
+class Layout implements \IteratorAggregate, \Serializable
 {
 	/**
 	 * @var LayoutField[]
@@ -116,5 +116,63 @@ class Layout implements \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->fields);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function exportToArray()
+	{
+		$data = array();
+
+		$data['version']  = 1;
+		$data['fields'] = array();
+		foreach ($this->fields as $f) {
+			$data['fields'][] = $f->exportToArray();
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function exportToJson()
+	{
+		return json_encode($this->exportToArray());
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function importFromArray(array $data)
+	{
+		foreach ($data['fields'] as $f) {
+			$field = new LayoutField($f['field_type'], $f['field_id']);
+			$field->setOptionsFromArray($f['options']);
+			$this->fields[] = $field;
+		}
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function serialize()
+	{
+		return $this->exportToJson();
+	}
+
+
+	/**
+	 * @param string $data
+	 */
+	public function unserialize($data)
+	{
+		$data = json_decode($data, true);
+		$this->importFromArray($data);
 	}
 }
