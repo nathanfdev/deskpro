@@ -77,8 +77,6 @@
       };
 
       Admin_TicketDeps_Ctrl_Edit.prototype.isDirtyState = function() {
-        window.STATE_1 = this.form;
-        window.STATE_2 = this.origForm;
         return !Util.equals(this.form, this.origForm);
       };
 

@@ -63,8 +63,6 @@ define [
 			return promise
 
 		isDirtyState: ->
-			window.STATE_1 = @form
-			window.STATE_2 = @origForm
 			return not Util.equals(@form, @origForm)
 
 		###*

@@ -208,7 +208,9 @@
       };
 
       /*
-      		# Check if a value is empty (empty array, empty string, empty object)
+      		# Check if a value is empty (empty array, empty string, empty object, NaN).
+        	# Non-collection types like numbers and booleans are never considered empty.
+        	# If you need to catch things like an integer 0, use isBlank() instead.
       		#
       		# @param {Object} obj
       		# @return {bool}
@@ -230,10 +232,10 @@
           return obj.length === 0;
         }
         if (this.isNumber(obj)) {
-          return obj === 0 || obj === 0.0;
+          return false;
         }
         if (this.isBoolean(obj)) {
-          return !obj;
+          return false;
         }
         if (this.isFunction(obj)) {
           return false;
@@ -267,15 +269,11 @@
             return true;
           }
         }
-        if (this.isInteger(obj)) {
-          if (obj === 0) {
-            return true;
-          }
+        if (this.isNumber(obj)) {
+          return obj === 0 || obj === 0.0;
         }
         if (this.isBoolean(obj)) {
-          if (obj === false) {
-            return true;
-          }
+          return !obj;
         }
         return false;
       };
