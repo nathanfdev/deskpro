@@ -30,6 +30,20 @@
           };
         }
       ]);
+      Module.filter('filesize_display', [
+        function() {
+          return function(bytes) {
+            var exp, result, symbols;
+            symbols = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            exp = Math.floor(Math.log(bytes) / Math.log(1024));
+            result = bytes / Math.pow(1024, Math.floor(exp));
+            if (symbols[exp]) {
+              result += ' ' + symbols[exp];
+            }
+            return result;
+          };
+        }
+      ]);
       Module.config([
         '$provide', function($provide) {
           var startRunning, stopRunning, subTimout;

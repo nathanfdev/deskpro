@@ -35,6 +35,18 @@ define [
 				return encodeURIComponent(text)
 		])
 
+		Module.filter('filesize_display', [ ->
+			return (bytes) ->
+				symbols = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+				exp = Math.floor(Math.log(bytes) / Math.log(1024))
+				result = bytes / Math.pow(1024, Math.floor(exp));
+
+				if symbols[exp] then result += ' ' + symbols[exp]
+
+				return result
+		])
+
 		# Add logging to digest loop
 		Module.config(['$provide', ($provide) ->
 

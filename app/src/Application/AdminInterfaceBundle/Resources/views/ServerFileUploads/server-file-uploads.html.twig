@@ -117,10 +117,10 @@
 					<tr>
 						<td>Max Upload Size</td>
 						<td>
-							{{ ng_var('data.restrictions.attach_user_maxsize') }}
+							{{ ng_var('data.restrictions.attach_user_maxsize | filesize_display') }}
 						</td>
 						<td>
-							{{ ng_var('data.restrictions.attach_agent_maxsize') }}
+							{{ ng_var('data.restrictions.attach_agent_maxsize | filesize_display') }}
 						</td>
 					</tr>
 					<tr>
@@ -325,7 +325,7 @@
 							</span>
 
 							<span ng-if="data.php_vars.memory_limit_real != -1">
-								{{ ng_var('data.php_vars.memory_limit_real') }}
+								{{ ng_var('data.php_vars.memory_limit_real | filesize_display') }}
 							</span>
 
 							<div
@@ -335,7 +335,7 @@
 									  != data.php_vars.memory_limit_real
 									  ">
 								Successfully changed to
-								{{ ng_var('data.php_vars.memory_limit') }}
+								{{ ng_var('data.php_vars.memory_limit | filesize_display') }}
 								at runtime
 							</div>
 						</td>

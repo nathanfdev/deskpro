@@ -51,7 +51,7 @@
 								No limit
 							</span>
 							<span ng-if="server_php_info.web_php.php_config.memory_limit_real != -1">
-								{{ ng_var('server_php_info.web_php.php_config.memory_limit_real') }}
+								{{ ng_var('server_php_info.web_php.php_config.memory_limit_real | filesize_display') }}
 							</span>
 							(<a ng-href="{{ ng_var('server_php_info.memtest_link') }}" target="_blank">
 								{{ phrase('admin.server.test_this_value') }}
@@ -63,7 +63,7 @@
 									&& server_php_info.web_php.php_config.memory_limit != server_php_info.web_php.php_config.memory_limit_real
 									">
 								Successfully changed at runtime:
-								{{ ng_var('server_php_info.web_php.php_config.memory_limit') }}
+								{{ ng_var('server_php_info.web_php.php_config.memory_limit | filesize_display') }}
 							</div>
 						</td>
 						<td>
@@ -79,7 +79,7 @@
 										&& server_php_info.web_php.php_config.memory_limit != server_php_info.web_php.php_config.memory_limit_real
 										">
 									Successfully changed at runtime:
-									{{ ng_var('server_php_info.web_php.php_config.memory_limit') }}
+									{{ ng_var('server_php_info.web_php.php_config.memory_limit | filesize_display') }}
 								</div>
 							</div>
 							<div ng-if="!server_php_info.cli_php.php_config">
@@ -91,7 +91,7 @@
 					<tr>
 						<td class="alt dp-id-col">Effective max attachment size</td>
 						<td>
-							Approximately {{ ng_var('server_php_info.web_php.effective_max_upload') }}
+							Approximately {{ ng_var('server_php_info.web_php.effective_max_upload | filesize_display') }}
 							<div style="font-size: 11px;">
 								Web-uploaded files are limited by a number of settings.
 								<a ng-href="#">Read more about configuring this limit</a>.
