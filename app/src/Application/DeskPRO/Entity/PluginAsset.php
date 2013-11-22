@@ -38,12 +38,23 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Domain\DomainObject;
 
+/**
+ * @property int       $id
+ * @property string    $tag
+ * @property PluginDef $plugin_def
+ * @property Blob      $blob
+ */
 class PluginAsset extends DomainObject
 {
 	/**
 	 * @var int
 	 */
 	protected $id = null;
+
+	/**
+	 * @var string
+	 */
+	protected $tag = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PluginDef
@@ -74,6 +85,14 @@ class PluginAsset extends DomainObject
 			'type'       => 'integer',
 			'id'         => true,
 			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'tag',
+			'fieldName'  => 'tag',
+			'type'       => 'string',
+			'length'     => 50,
+			'nullable'   => true,
 		));
 
 		$metadata->mapManyToOne(array(

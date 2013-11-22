@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 class Plugin extends DomainObject
 {
@@ -56,6 +57,16 @@ class Plugin extends DomainObject
 	protected $title;
 
 	/**
+	 * @var string
+	 */
+	protected $auth_key;
+
+	/**
+	 * @var string
+	 */
+	protected $secret_key;
+
+	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
@@ -63,6 +74,8 @@ class Plugin extends DomainObject
 	public function __construct()
 	{
 		$this['date_created'] = new \DateTime();
+		$this['secret_key']   = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+		$this['auth_key']     = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
 	}
 
 	/**
@@ -100,6 +113,22 @@ class Plugin extends DomainObject
 			'fieldName'  => 'title',
 			'type'       => 'string',
 			'length'     => 255,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'secret_key',
+			'fieldName'  => 'secret_key',
+			'type'       => 'string',
+			'length'     => 40,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'auth_key',
+			'fieldName'  => 'auth_key',
+			'type'       => 'string',
+			'length'     => 40,
 			'nullable'   => false,
 		));
 

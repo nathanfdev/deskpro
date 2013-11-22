@@ -39,6 +39,19 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Domain\DomainObject;
 
+/**
+ * @property int    $id
+ * @property string $title
+ * @property string $author_name
+ * @property string $author_email
+ * @property string $author_link
+ * @property int    $api_version
+ * @property int    $version
+ * @property string $version_name
+ * @property string $native_name
+ * @property string $is_single
+ * @property array  $assets
+ */
 class PluginDef extends DomainObject
 {
 	/**
@@ -101,6 +114,74 @@ class PluginDef extends DomainObject
 	public function __construct()
 	{
 		$this->assets = new ArrayCollection();
+	}
+
+
+	/**
+	 * @param PluginAsset $asset
+	 */
+	public function addAsset(PluginAsset $asset)
+	{
+		$this->assets->add($asset);
+		$asset->plugin_def = $this;
+	}
+
+
+	/**
+	 * @param Blob $blob
+	 * @return PluginAsset
+	 */
+	public function addAssetFromBlob(Blob $blob)
+	{
+		$asset = new PluginAsset();
+		$asset->blob = $blob;
+		$asset->plugin_def = $this;
+		$this->assets->add($asset);
+
+		return $asset;
+	}
+
+
+	/**
+	 * @param string $tag
+	 * @return PluginAsset
+	 */
+	public function getTaggedAsset($tag)
+	{
+		foreach ($this->assets as $asset) {
+			if ($asset->tag == $tag) {
+				return $asset;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data['id']           = $this->id;
+		$data['title']        = $this->title;
+		$data['author_name']  = $this->author_name;
+		$data['author_email'] = $this->author_email;
+		$data['author_link']  = $this->author_link;
+		$data['version']      = $this->version;
+		$data['version_name'] = $this->version_name;
+		$data['api_version']  = $this->api_version;
+		$data['is_single']    = $this->is_single;
+
+		$icon = $this->getTaggedAsset('icons.app');
+		$data['icon']    = $icon->blob->getThumbnailUrl(128, true);
+		$data['icon_75'] = $icon->blob->getThumbnailUrl(75, true);
+		$data['icon_50'] = $icon->blob->getThumbnailUrl(50, true);
+		$data['icon_32'] = $icon->blob->getThumbnailUrl(32, true);
+		$data['icon_24'] = $icon->blob->getThumbnailUrl(24, true);
+		$data['icon_16'] = $icon->blob->getThumbnailUrl(16, true);
+
+		return $data;
 	}
 
 	############################################################################

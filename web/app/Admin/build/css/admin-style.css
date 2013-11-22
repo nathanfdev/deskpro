@@ -8330,11 +8330,11 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   color: #888;
 }
 
-.dp-item-list a > h4 > .title-text {
+.dp-item-list a h4 > .title-text {
   vertical-align: text-bottom;
 }
 
-.dp-item-list a:hover > h4 > .title-text {
+.dp-item-list a:hover h4 > .title-text {
   text-decoration: underline;
 }
 
@@ -8376,6 +8376,63 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-add-control {
   margin: 10px 0 10px 16px;
+}
+
+.dp-item-list.dp-icon-list > li > a {
+  padding: 0;
+}
+
+.dp-item-list.dp-icon-list aside {
+  float: left;
+  padding: 8px;
+}
+
+.dp-item-list.dp-icon-list aside img {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.dp-item-list.dp-icon-list .content {
+  min-height: 51px;
+  padding: 10px 10px 8px 0;
+}
+
+.dp-item-list.dp-icon-list h4 {
+  padding: 0 0 3px 0;
+  margin: 0;
+  font-size: 11pt;
+}
+
+.dp-item-list.dp-icon-list p {
+  margin-bottom: 0;
+  line-height: 120%;
+  color: #666;
+}
+
+.dp-item-list.dp-icon-list.compact {
+  min-height: 24px;
+}
+
+.dp-item-list.dp-icon-list.compact aside {
+  padding: 4px;
+}
+
+.dp-item-list.dp-icon-list.compact aside img {
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+}
+
+.dp-item-list.dp-icon-list.compact .content {
+  min-height: 33px;
+  padding: 8px 5px 10px 0;
+}
+
+.dp-item-list.dp-icon-list.compact h4 {
+  padding: 0;
+  font-size: 12px;
 }
 
 .dp-order-ctrl {

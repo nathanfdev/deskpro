@@ -38,7 +38,7 @@ class Build1385119820 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->execMutateSql("CREATE TABLE plugin_assets (id INT AUTO_INCREMENT NOT NULL, plugin_def_id INT DEFAULT NULL, blob_id INT DEFAULT NULL, INDEX IDX_CB93A328150E793 (plugin_def_id), UNIQUE INDEX UNIQ_CB93A32ED3E8EA5 (blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("CREATE TABLE plugin_assets (id INT AUTO_INCREMENT NOT NULL, plugin_def_id INT DEFAULT NULL, blob_id INT DEFAULT NULL, `tag` varchar(50) DEFAULT NULL, INDEX IDX_CB93A328150E793 (plugin_def_id), UNIQUE INDEX UNIQ_CB93A32ED3E8EA5 (blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("CREATE TABLE plugin_defs (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, author_name VARCHAR(255) NOT NULL, author_email VARCHAR(255) NOT NULL, author_link VARCHAR(255) NOT NULL, api_version INT NOT NULL, version INT NOT NULL, version_name VARCHAR(100) NOT NULL, native_name VARCHAR(255) DEFAULT NULL, is_single TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("ALTER TABLE plugin_assets ADD CONSTRAINT FK_CB93A328150E793 FOREIGN KEY (plugin_def_id) REFERENCES plugin_defs (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE plugin_assets ADD CONSTRAINT FK_CB93A32ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
@@ -70,7 +70,7 @@ class Build1385119820 extends AbstractBuild
 			}
 		}
 
-		$this->execMutateSql("ALTER TABLE plugins ADD plugin_def_id INT DEFAULT NULL, DROP description, DROP version, DROP package_class, DROP package_class_file, DROP resources_path, DROP enabled, CHANGE id id INT AUTO_INCREMENT NOT NULL");
+		$this->execMutateSql("ALTER TABLE plugins ADD plugin_def_id INT DEFAULT NULL, ADD secret_key VARCHAR(40) NOT NULL, ADD auth_key VARCHAR(40) NOT NULL, DROP description, DROP version, DROP package_class, DROP package_class_file, DROP resources_path, DROP enabled, CHANGE id id INT AUTO_INCREMENT NOT NULL");
 		$this->execMutateSql("ALTER TABLE plugins ADD CONSTRAINT FK_EC85F6718150E793 FOREIGN KEY (plugin_def_id) REFERENCES plugin_defs (id) ON DELETE CASCADE");
 
 		$this->execMutateSql("ALTER TABLE custom_def_article CHANGE plugin_id plugin_id INT DEFAULT NULL");
@@ -90,5 +90,11 @@ class Build1385119820 extends AbstractBuild
 		$this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions CHANGE plugin_id plugin_id INT DEFAULT NULL");
 		$this->execMutateSql("ALTER TABLE usersource_plugins CHANGE plugin_id plugin_id INT DEFAULT NULL");
 		$this->execMutateSql("ALTER TABLE widgets CHANGE plugin_id plugin_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions ADD CONSTRAINT FK_1D905890EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_1D905890EC942BCF ON ticket_trigger_plugin_actions (plugin_id)");
+		$this->execMutateSql("ALTER TABLE usersource_plugins ADD CONSTRAINT FK_E484A367EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_E484A367EC942BCF ON usersource_plugins (plugin_id)");
+		$this->execMutateSql("ALTER TABLE widgets ADD CONSTRAINT FK_9D58E4C1EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_9D58E4C1EC942BCF ON widgets (plugin_id)");
 	}
 }

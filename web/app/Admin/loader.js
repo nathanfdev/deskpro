@@ -172,6 +172,8 @@ requirejs([
 	'Admin/TwitterSetup/Ctrl/TwitterSetup',
 	'Admin/TwitterAccounts/Ctrl/List',
 	'Admin/TwitterAccounts/Ctrl/Edit',
+	'Admin/Plugins/Ctrl/List',
+	'Admin/Plugins/Ctrl/Install',
 	'Admin/ServerReqs/Ctrl/ServerReqs',
 	'Admin/ServerPhpInfo/Ctrl/ServerPhpInfo',
 	'Admin/ServerMysqlInfo/Ctrl/ServerMysqlInfo',

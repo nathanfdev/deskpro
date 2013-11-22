@@ -3064,4 +3064,21 @@ $collection->create('api_savelog_logjserror', array(
 	'methods'     => array('POST'),
 ));
 
+########################################################################################################################
+# Plugins
+########################################################################################################################
+
+$collection->create('api_plugins_package_list', array(
+	'path'        => '/plugins/defs',
+	'controller'  => 'ApiBundle:Plugins:getDefsList',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_plugins_package_getinstaller', array(
+	'path'         => '/plugins/defs/{id}/installer',
+	'controller'   => 'ApiBundle:Plugins:getDefInstaller',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
 return $collection;

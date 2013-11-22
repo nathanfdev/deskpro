@@ -1,0 +1,49 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Installed</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list dp-icon-list compact">
+				<li ng-repeat="pluginDef in ListCtrl.pluginDefs">
+					<a href="{{ ng_href('apps.apps.install', '{id: pluginDef.id}') }}">
+						<aside>
+							<img src="{{ ng_var('pluginDef.icon_24') }}" alt="Icon" />
+						</aside>
+						<div class="content">
+							<h4><span class="title-text">{{ ng_var('pluginDef.title') }}</span></h4>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Not Installed</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list dp-icon-list">
+				<li ng-repeat="pluginDef in ListCtrl.pluginDefs" dp-state-mark="apps.apps.install.{{ ng_var('pluginDef.id') }}">
+					<a href="{{ ng_href('apps.apps.install', '{id: pluginDef.id}') }}">
+						<aside>
+							<img src="{{ ng_var('pluginDef.icon_50') }}" alt="Icon" />
+						</aside>
+						<div class="content">
+							<h4><span class="title-text">{{ ng_var('pluginDef.title') }}</span></h4>
+							<p>
+								{{ ng_var('pluginDef.description') }}
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id enim id nisi viverra rutrum condimentum ac odio.
+							</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:TicketStatuses:help-page.html.twig' %}
+{% endblock %}

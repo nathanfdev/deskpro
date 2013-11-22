@@ -821,10 +821,10 @@ section.dp-help-content-wrapper.open {
 		color: #888;
 	}
 
-	a > h4 > .title-text {
+	a h4 > .title-text {
 		vertical-align: text-bottom;
 	}
-	a:hover > h4 > .title-text {
+	a:hover h4 > .title-text {
 		text-decoration: underline;
 	}
 
@@ -865,6 +865,64 @@ section.dp-help-content-wrapper.open {
 
 .dp-add-control {
 	margin: 10px 0 10px 16px;
+}
+
+.dp-item-list.dp-icon-list {
+	> li {
+		> a {
+			padding: 0;
+		}
+	}
+	aside {
+		float: left;
+		padding: 8px;
+
+		img {
+			width: 50px;
+			height: 50px;
+			border-radius: 3px;
+			overflow: hidden;
+		}
+	}
+
+	.content {
+		padding: 10px 10px 8px 0;
+		min-height: 51px;
+	}
+
+	h4 {
+		margin: 0;
+		padding: 0 0 3px 0;
+		font-size: 11pt;
+	}
+
+	p {
+		line-height: 120%;
+		color: #666;
+		margin-bottom: 0;
+	}
+}
+
+.dp-item-list.dp-icon-list.compact {
+	min-height: 24px;
+	aside {
+		padding: 4px;
+		img {
+			width: 24px;
+			height: 24px;
+			border-radius: 2px;
+		}
+	}
+
+	.content {
+		padding: 8px 5px 10px 0;
+		min-height: 33px;
+	}
+
+	h4 {
+		font-size: @font-size-base;
+		padding: 0;
+	}
 }
 
 //######################################################################################################################

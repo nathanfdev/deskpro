@@ -1133,8 +1133,15 @@ define(function() {
 	routes.push({
 		id: 'apps.apps',
 		url: '/apps',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Plugins/list.html',
+		controller: 'Admin_Plugins_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'apps.apps.install',
+		url: '/{id:[0-9]+}',
+		templateName: 'Plugins/install.html',
+		controller: 'Admin_Plugins_Ctrl_Install'
 	});
 
 	//###

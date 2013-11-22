@@ -35,6 +35,7 @@
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Plugin\Package\NativePackages;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -174,6 +175,10 @@ class Manager
 		if ($twitter_pid !== 0) {
 			@unlink(dp_get_data_dir() . '/twitter.pid');
 		}
+
+		// Sync plugins
+		$native_packages = new NativePackages($this->container->getEm(), $this->container->getBlobStorage());
+		$native_packages->syncPackages();
 	}
 
 
