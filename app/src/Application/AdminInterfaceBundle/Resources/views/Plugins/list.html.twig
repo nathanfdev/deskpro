@@ -6,16 +6,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list dp-icon-list compact">
-				<li ng-repeat="pluginDef in ListCtrl.pluginDefs">
-					<a href="{{ ng_href('apps.apps.install', '{id: pluginDef.id}') }}">
-						<aside>
-							<img src="{{ ng_var('pluginDef.icon_24') }}" alt="Icon" />
-						</aside>
-						<div class="content">
-							<h4><span class="title-text">{{ ng_var('pluginDef.title') }}</span></h4>
-						</div>
-					</a>
-				</li>
+
 			</ul>
 		</article>
 	</section>
@@ -26,15 +17,15 @@
 		</header>
 		<article>
 			<ul class="dp-item-list dp-icon-list">
-				<li ng-repeat="pluginDef in ListCtrl.pluginDefs" dp-state-mark="apps.apps.install.{{ ng_var('pluginDef.id') }}">
-					<a href="{{ ng_href('apps.apps.install', '{id: pluginDef.id}') }}">
+				<li ng-repeat="package in ListCtrl.packages" dp-state-mark="apps.apps.install.{{ ng_var('package.name') }}">
+					<a href="{{ ng_href('apps.apps.install', '{name: package.name}') }}">
 						<aside>
-							<img src="{{ ng_var('pluginDef.icon_50') }}" alt="Icon" />
+							<img src="{{ ng_var('package.icon_50') }}" alt="Icon" />
 						</aside>
 						<div class="content">
-							<h4><span class="title-text">{{ ng_var('pluginDef.title') }}</span></h4>
+							<h4><span class="title-text">{{ ng_var('package.title') }}</span></h4>
 							<p>
-								{{ ng_var('pluginDef.description') }}
+								{{ ng_var('package.description') }}
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id enim id nisi viverra rutrum condimentum ac odio.
 							</p>
 						</div>

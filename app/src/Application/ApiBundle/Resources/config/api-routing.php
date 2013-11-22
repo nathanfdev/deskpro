@@ -3075,15 +3075,15 @@ $collection->create('api_savelog_logjserror', array(
 ########################################################################################################################
 
 $collection->create('api_plugins_package_list', array(
-	'path'        => '/plugins/defs',
-	'controller'  => 'ApiBundle:Plugins:getDefsList',
+	'path'        => '/plugins/packages',
+	'controller'  => 'ApiBundle:Plugins:listPackages',
 	'methods'     => array('GET'),
 ));
 
 $collection->create('api_plugins_package_getinstaller', array(
-	'path'         => '/plugins/defs/{id}/installer',
-	'controller'   => 'ApiBundle:Plugins:getDefInstaller',
-	'requirements' => array('id' => '\\d+'),
+	'path'         => '/plugins/packages/{name}/installer',
+	'controller'   => 'ApiBundle:Plugins:getPackageInstaller',
+	'requirements' => array('name' => '[a-z0-9\._]+'),
 	'methods'      => array('GET'),
 ));
 

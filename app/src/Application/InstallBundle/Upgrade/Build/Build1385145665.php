@@ -29,46 +29,24 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @subpackage
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class PluginsController extends AbstractController
+class Build1385145665 extends AbstractBuild
 {
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
-	public function listPackagesAction()
+	public function run()
 	{
-		$packages = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:PluginPackage d
-			ORDER BY d.title ASC
-		")->execute();
-
-		$data = array();
-		foreach ($packages as $p) {
-			$data[] = $p->toApiData();
-		}
-
-		return $this->createApiResponse(array('packages' => $data));
-	}
-
-	####################################################################################################################
-	# get-package-installer
-	####################################################################################################################
-
-	public function getPackageInstallerAction($name)
-	{
-		$package = $this->em->find('DeskPRO:PluginPackage', $name);
-		if (!$package) {
-			throw $this->createNotFoundException();
-		}
-
-		return $this->createApiResponse(array(
-			'package' => $package->toApiData()
-		));
+		$this->execMutateSql("CREATE TABLE plugin_packages (name VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, author_name VARCHAR(255) NOT NULL, author_email VARCHAR(255) NOT NULL, author_link VARCHAR(255) NOT NULL, api_version INT NOT NULL, version INT NOT NULL, version_name VARCHAR(100) NOT NULL, native_name VARCHAR(255) DEFAULT NULL, is_single TINYINT(1) NOT NULL, PRIMARY KEY(name)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE plugins DROP FOREIGN KEY FK_EC85F6718150E793");
+		$this->execMutateSql("ALTER TABLE plugin_assets DROP FOREIGN KEY FK_CB93A328150E793, DROP INDEX IDX_CB93A328150E793");
+		$this->execMutateSql("ALTER TABLE plugins ADD package_name VARCHAR(255) DEFAULT NULL, DROP plugin_def_id");
+		$this->execMutateSql("ALTER TABLE plugins ADD CONSTRAINT FK_EC85F671E56E1BCE FOREIGN KEY (package_name) REFERENCES plugin_packages (name) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE plugin_assets ADD package_name VARCHAR(255) DEFAULT NULL, DROP plugin_def_id");
+		$this->execMutateSql("ALTER TABLE plugin_assets ADD CONSTRAINT FK_CB93A32E56E1BCE FOREIGN KEY (package_name) REFERENCES plugin_packages (name) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_CB93A32E56E1BCE ON plugin_assets (package_name)");
+		$this->execMutateSql("CREATE INDEX IDX_EC85F671E56E1BCE ON plugins (package_name)");
+		$this->execMutateSql("DROP TABLE plugin_defs");
 	}
 }

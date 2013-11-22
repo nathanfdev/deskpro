@@ -119,6 +119,7 @@ class ManifestReader
 			}
 		} else {
 			$fields = array(
+				'package_name',
 				'title',
 				'api_version',
 				'version',

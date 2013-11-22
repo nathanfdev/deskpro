@@ -17,14 +17,14 @@
       Admin_Plugins_Ctrl_List.CTRL_AS = 'ListCtrl';
 
       Admin_Plugins_Ctrl_List.prototype.init = function() {
-        return this.pluginDefs = [];
+        return this.packages = [];
       };
 
       Admin_Plugins_Ctrl_List.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet('/plugins/defs').then(function(result) {
-          return _this.pluginDefs = result.data.plugin_defs;
+        promise = this.Api.sendGet('/plugins/packages').then(function(result) {
+          return _this.packages = result.data.packages;
         });
         return promise;
       };

@@ -17,14 +17,14 @@
       Admin_Plugins_Ctrl_Install.CTRL_AS = 'InstallCtrl';
 
       Admin_Plugins_Ctrl_Install.prototype.init = function() {
-        return this.pluginDef = [];
+        return this["package"] = [];
       };
 
       Admin_Plugins_Ctrl_Install.prototype.initialLoad = function() {
         var promise,
           _this = this;
-        promise = this.Api.sendGet("/plugins/defs/" + this.$stateParams.id + "/installer").then(function(result) {
-          return _this.pluginDef = result.data.plugin_def;
+        promise = this.Api.sendGet("/plugins/package/" + this.$stateParams.name + "/installer").then(function(result) {
+          return _this["package"] = result.data.plugin_def;
         });
         return promise;
       };

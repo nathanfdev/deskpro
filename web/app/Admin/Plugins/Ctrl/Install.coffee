@@ -4,11 +4,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@CTRL_AS = 'InstallCtrl'
 
 		init: ->
-			@pluginDef = []
+			@package = []
 
 		initialLoad: ->
-			promise = @Api.sendGet("/plugins/defs/#{@$stateParams.id}/installer").then( (result) =>
-				@pluginDef = result.data.plugin_def
+			promise = @Api.sendGet("/plugins/package/#{@$stateParams.name}/installer").then( (result) =>
+				@package = result.data.plugin_def
 			)
 			return promise
 

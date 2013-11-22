@@ -47,9 +47,9 @@ class Plugin extends DomainObject
 	protected $id = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\PluginDef
+	 * @var \Application\DeskPRO\Entity\PluginPackage
 	 */
-	protected $plugin_def;
+	protected $package;
 
 	/**
 	 * @var string
@@ -140,11 +140,11 @@ class Plugin extends DomainObject
 		));
 
 		$metadata->mapManyToOne(array(
-			'fieldName'    => 'plugin_def',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginDef',
+			'fieldName'    => 'package',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginPackage',
 			'joinColumns'  => array(array(
-				'name'                 => 'plugin_def_id',
-				'referencedColumnName' => 'id',
+				'name'                 => 'package_name',
+				'referencedColumnName' => 'name',
 				'nullable'             => true,
 				'onDelete'             => 'CASCADE',
 				'fetch'                => 'EAGER',

@@ -1139,7 +1139,7 @@ define(function() {
 
 	routes.push({
 		id: 'apps.apps.install',
-		url: '/{id:[0-9]+}',
+		url: '/{name:[a-z0-9\\._]+}',
 		templateName: 'Plugins/install.html',
 		controller: 'Admin_Plugins_Ctrl_Install'
 	});

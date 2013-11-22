@@ -58,11 +58,11 @@ class PackageInstaller
 
 	/**
 	 * @param Package $package
-	 * @return \Application\DeskPRO\Entity\PluginDef
+	 * @return \Application\DeskPRO\Entity\PluginPackage
 	 */
 	public function installPackage(Package $package)
 	{
-		$def = $package->createPluginDef();
+		$def = $package->createPluginPackage();
 
 		$blob = $this->blob_storage->createBlobRecordFromFile(
 			$package->getIconFile(),

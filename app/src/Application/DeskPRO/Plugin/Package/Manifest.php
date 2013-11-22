@@ -39,6 +39,11 @@ class Manifest
 	/**
 	 * @var string
 	 */
+	private $package_name;
+
+	/**
+	 * @var string
+	 */
 	private $title;
 
 	/**
@@ -75,6 +80,22 @@ class Manifest
 	 * @var string
 	 */
 	private $author_link;
+
+	/**
+	 * @param string $package_name
+	 */
+	public function setPackageName($package_name)
+	{
+		$this->package_name = $package_name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPackageName()
+	{
+		return $this->package_name;
+	}
 
 	/**
 	 * @param int $api_version

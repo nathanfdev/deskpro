@@ -1,4 +1,5 @@
 {
+	"package_name": "com.deskpro.microsoft_translator",
 	"title": "Microsoft Translator",
 	"api_version": 1,
 	"version": 1,

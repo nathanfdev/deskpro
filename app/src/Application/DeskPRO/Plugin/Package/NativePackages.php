@@ -103,13 +103,13 @@ class NativePackages
 	 * Finds the packages installed into the DB and those available
 	 * in the filesystem and makes sure they match.
 	 *
-	 * @return \\Application\DeskPRO\Entity\PluginDef[]
+	 * @return \\Application\DeskPRO\Entity\PluginPackage[]
 	 */
 	public function syncPackages()
 	{
 		$existing_packages = $this->em->createQuery("
 			SELECT d
-			FROM DeskPRO:PluginDef d INDEX BY d.native_name
+			FROM DeskPRO:PluginPackage d INDEX BY d.native_name
 			WHERE d.native_name IS NOT NULL
 		")->execute();
 

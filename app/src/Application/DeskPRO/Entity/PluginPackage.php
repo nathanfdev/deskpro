@@ -40,7 +40,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Domain\DomainObject;
 
 /**
- * @property int    $id
+ * @property string $name
  * @property string $title
  * @property string $author_name
  * @property string $author_email
@@ -52,12 +52,12 @@ use Application\DeskPRO\Domain\DomainObject;
  * @property string $is_single
  * @property array  $assets
  */
-class PluginDef extends DomainObject
+class PluginPackage extends DomainObject
 {
 	/**
-	 * @var int
+	 * @var string
 	 */
-	protected $id = null;
+	protected $name;
 
 	/**
 	 * @var string
@@ -123,7 +123,7 @@ class PluginDef extends DomainObject
 	public function addAsset(PluginAsset $asset)
 	{
 		$this->assets->add($asset);
-		$asset->plugin_def = $this;
+		$asset->package = $this;
 	}
 
 
@@ -135,7 +135,7 @@ class PluginDef extends DomainObject
 	{
 		$asset = new PluginAsset();
 		$asset->blob = $blob;
-		$asset->plugin_def = $this;
+		$asset->package = $this;
 		$this->assets->add($asset);
 
 		return $asset;
@@ -163,7 +163,7 @@ class PluginDef extends DomainObject
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
-		$data['id']           = $this->id;
+		$data['name']         = $this->name;
 		$data['title']        = $this->title;
 		$data['author_name']  = $this->author_name;
 		$data['author_email'] = $this->author_email;
@@ -192,15 +192,14 @@ class PluginDef extends DomainObject
 	{
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 		$metadata->setPrimaryTable(array(
-			'name' => 'plugin_defs'
+			'name' => 'plugin_packages'
 		));
 
 		$metadata->mapField(array(
-			'columnName' => 'id',
-			'fieldName'  => 'id',
-			'type'       => 'integer',
+			'columnName' => 'name',
+			'fieldName'  => 'name',
+			'type'       => 'string',
 			'id'         => true,
 			'nullable'   => false,
 		));
@@ -277,7 +276,7 @@ class PluginDef extends DomainObject
 		$metadata->mapOneToMany(array(
 			'fieldName'    => 'assets',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginAsset',
-			'mappedBy'     => 'plugin_def'
+			'mappedBy'     => 'package'
 		));
 	}
 }

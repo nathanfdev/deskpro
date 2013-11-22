@@ -4,11 +4,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@CTRL_AS = 'ListCtrl'
 
 		init: ->
-			@pluginDefs = []
+			@packages = []
 
 		initialLoad: ->
-			promise = @Api.sendGet('/plugins/defs').then( (result) =>
-				@pluginDefs = result.data.plugin_defs
+			promise = @Api.sendGet('/plugins/packages').then( (result) =>
+				@packages = result.data.packages
 			)
 			return promise
 

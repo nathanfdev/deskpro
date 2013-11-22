@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Plugin\Package;
 
-use Application\DeskPRO\Entity\PluginDef;
+use Application\DeskPRO\Entity\PluginPackage;
 
 class Package
 {
@@ -65,11 +65,12 @@ class Package
 
 
 	/**
-	 * @return PluginDef
+	 * @return PluginPackage
 	 */
-	public function createPluginDef()
+	public function createPluginPackage()
 	{
-		$def = new PluginDef();
+		$def = new PluginPackage();
+		$def->name         = $this->manifest->getPackageName();
 		$def->title        = $this->manifest->getTitle();
 		$def->author_name  = $this->manifest->getAuthorName();
 		$def->author_email = $this->manifest->getAuthorEmail();

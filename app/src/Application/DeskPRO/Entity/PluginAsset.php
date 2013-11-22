@@ -39,10 +39,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Domain\DomainObject;
 
 /**
- * @property int       $id
- * @property string    $tag
- * @property PluginDef $plugin_def
- * @property Blob      $blob
+ * @property int           $id
+ * @property string        $tag
+ * @property PluginPackage $package
+ * @property Blob          $blob
  */
 class PluginAsset extends DomainObject
 {
@@ -57,9 +57,9 @@ class PluginAsset extends DomainObject
 	protected $tag = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\PluginDef
+	 * @var \Application\DeskPRO\Entity\PluginPackage
 	 */
-	protected $plugin_def;
+	protected $package;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
@@ -96,12 +96,12 @@ class PluginAsset extends DomainObject
 		));
 
 		$metadata->mapManyToOne(array(
-			'fieldName'    => 'plugin_def',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginDef',
+			'fieldName'    => 'package',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginPackage',
 			'inversedBy'   => 'assets',
 			'joinColumns'  => array(array(
-				'name'                 => 'plugin_def_id',
-				'referencedColumnName' => 'id',
+				'name'                 => 'package_name',
+				'referencedColumnName' => 'name',
 				'nullable'             => true,
 				'onDelete'             => 'CASCADE',
 				'fetch'                => 'EAGER',
