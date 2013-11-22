@@ -63,7 +63,26 @@
 
 			<br><br>
 
-			<table class="table table-bordered">
+			<div class="dp-btn-pagination" ng-show="LogsCtrl.server_cron_logs.logs">
+				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="LogsCtrl.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
+						ng-click="LogsCtrl.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+
+			<table class="table">
 				<thead>
 					<tr>
 						<th>
@@ -72,7 +91,7 @@
 						<th>
 							Message
 						</th>
-						<th>
+						<th width="150">
 							{{ phrase('agent.general.date') }}
 						</th>
 					</tr>
@@ -90,10 +109,26 @@
 						</td>
 					</tr>
 				</tbody>
-				<tbody>
-
-				</tbody>
 			</table>
+
+			<div class="dp-btn-pagination" ng-show="LogsCtrl.server_cron_logs.logs">
+				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="LogsCtrl.page"
+						ui-select2
+						style="width: 130px;"
+						>
+					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
+						ng-click="LogsCtrl.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
 		</article>
 
 	</section>

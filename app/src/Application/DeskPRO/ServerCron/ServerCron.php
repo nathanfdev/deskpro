@@ -48,9 +48,15 @@ class ServerCron
 
 	protected $em;
 
+	/**
+	 * @var int
+	 */
+
+	protected $per_page = 100;
+
 	public function __construct(EntityManager $em)
 	{
-		$this->em = $em;
+		$this->em       = $em;
 	}
 
 	/**
@@ -112,13 +118,63 @@ class ServerCron
 	}
 
 	/**
-	 * @param int $job_id
+	 * @param string $job_id
+	 * @param int $priority
+	 * @param int $page
+	 *
+	 * @return array
+	 */
+
+	public function getLogs($job_id = null, $priority = null, $page = 1)
+	{
+		$params = $this->initializeParams($job_id, $priority);
+		$from   = ($page - 1) * $this->per_page;
+
+		return $this->em->getRepository('DeskPRO:LogItem')->getCronLogs(
+			$params['job_id'],
+			$params['priority'],
+			$from,
+			$this->per_page
+		);
+	}
+
+	/**
+	 * @param string $job_id
+	 * @param int $priority
+	 *
+	 * @return int
+	 */
+
+	public function getPagesCount($job_id = null, $priority = null)
+	{
+		$params = $this->initializeParams($job_id, $priority);
+
+		return $this->em->getRepository('DeskPRO:LogItem')->getCronPagesCount(
+			$params['job_id'],
+			$params['priority'],
+			$this->per_page
+		);
+	}
+
+	/**
+	 * @return bool
+	 */
+
+	public function clearAllLogs()
+	{
+		$this->em->getRepository('DeskPRO:WorkerJob')->clearAllLogs();
+
+		return true;
+	}
+
+	/**
+	 * @param string $job_id
 	 * @param int $priority
 	 *
 	 * @return array
 	 */
 
-	public function getLogs($job_id = null, $priority = null)
+	protected function initializeParams($job_id = null, $priority = null)
 	{
 		if (!$job_id) {
 
@@ -134,17 +190,9 @@ class ServerCron
 			$priority = 10;
 		}
 
-		return $this->em->getRepository('DeskPRO:WorkerJob')->getLogs($job_id, $priority);
-	}
-
-	/**
-	 * @return bool
-	 */
-
-	public function clearAllLogs()
-	{
-		$this->em->getRepository('DeskPRO:WorkerJob')->clearAllLogs();
-
-		return true;
+		return array(
+			'job_id'   => $job_id,
+			'priority' => $priority,
+		);
 	}
 }

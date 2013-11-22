@@ -52,27 +52,6 @@ class WorkerJob extends AbstractEntityRepository
 	}
 
 	/**
-	 * @param $job_id
-	 * @param $priority
-	 *
-	 * @return array
-	 */
-
-	public function getLogs($job_id, $priority)
-	{
-		return App::getDb()->fetchAll(
-			"
-			SELECT log_name, session_name, message, priority, UNIX_TIMESTAMP(date_created) AS date_created
-			FROM log_items
-			WHERE log_name LIKE ? AND priority <= ?
-			ORDER BY id DESC
-			LIMIT 2000
-			",
-			array($job_id, $priority)
-		);
-	}
-
-	/**
 	 *
 	 */
 

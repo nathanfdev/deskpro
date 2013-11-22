@@ -69,13 +69,17 @@ class ServerCronController extends AbstractController
 
 		$server_cron = $this->container->getSystemService('server_cron');
 
-		$job_id   = $this->in->getString('job_id');
 		$priority = $this->in->getUint('priority');
+		$job_id   = $this->in->getString('job_id');
+		$page     = $this->in->getUint('page');
 
-		$returnedData['logs']     = $server_cron->getLogs($job_id, $priority);
-		$returnedData['priority'] = $priority;
-		$returnedData['job_id']   = $job_id;
-		$returnedData['jobs']     = $server_cron->getAllForApi();
+		$returnedData['page']      = $page;
+		$returnedData['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
+		$returnedData['priority']  = $priority;
+		$returnedData['job_id']    = $job_id;
+
+		$returnedData['logs']      = $server_cron->getLogs($job_id, $priority, $page);
+		$returnedData['jobs']      = $server_cron->getAllForApi();
 
 		return $this->createApiResponse(
 			array(

@@ -20,24 +20,45 @@
 
       Admin_ServerCron_Ctrl_Logs.prototype.init = function() {
         this.server_cron_logs = null;
-        return this.filter = {
+        this.page = 1;
+        this.num_pages = 0;
+        this.page_nums = [1];
+        this.filter = {
           job_id: '',
-          priority: ''
+          priority: '',
+          page: 1
         };
+        return this.initializeScopeWatching();
       };
 
       Admin_ServerCron_Ctrl_Logs.prototype.initialLoad = function() {
         return this.loadResults();
       };
 
+      /*
+       	#
+      */
+
+
       Admin_ServerCron_Ctrl_Logs.prototype.loadResults = function() {
         var data_promise,
           _this = this;
         data_promise = this.Api.sendGet('/server_cron/logs', {
           job_id: this.filter.job_id,
-          priority: this.filter.priority
+          priority: this.filter.priority,
+          page: this.filter.page
         }).then(function(res) {
-          return _this.server_cron_logs = res.data.server_cron_logs;
+          var i, _i, _ref1, _results;
+          _this.server_cron_logs = res.data.server_cron_logs;
+          _this.filter.page = res.data.server_cron_logs.page;
+          _this.page = res.data.server_cron_logs.page;
+          _this.num_pages = res.data.server_cron_logs.num_pages;
+          _this.page_nums = [];
+          _results = [];
+          for (i = _i = 0, _ref1 = _this.num_pages; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+            _results.push(_this.page_nums.push(i + 1));
+          }
+          return _results;
         });
         return this.$q.all([data_promise]);
       };
@@ -82,6 +103,49 @@
         return this.Api.sendDelete('/server_cron/logs').success(function() {
           return _this.server_cron_logs = null;
         });
+      };
+
+      /*
+      		#	Here we watching scope 'page' variable in order to load new page of results
+      */
+
+
+      Admin_ServerCron_Ctrl_Logs.prototype.initializeScopeWatching = function() {
+        var _this = this;
+        return this.$scope.$watch('LogsCtrl.page', function(newVal, oldVal) {
+          if (parseInt(newVal) === parseInt(oldVal)) {
+            return void 0;
+          }
+          return _this.changePageCallback();
+        });
+      };
+
+      /*
+      		# This is executed after we chnaged the current page
+      */
+
+
+      Admin_ServerCron_Ctrl_Logs.prototype.changePageCallback = function() {
+        this.filter.page = this.page;
+        return this.loadResults();
+      };
+
+      /*
+       	#
+      */
+
+
+      Admin_ServerCron_Ctrl_Logs.prototype.goPrevPage = function() {
+        return this.page--;
+      };
+
+      /*
+      		#
+      */
+
+
+      Admin_ServerCron_Ctrl_Logs.prototype.goNextPage = function() {
+        return this.page++;
       };
 
       return Admin_ServerCron_Ctrl_Logs;
