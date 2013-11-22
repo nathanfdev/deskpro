@@ -10,6 +10,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.data = null
 			@$scope.fileUploadOptions = {}
 			@$scope.fileUploadResults = null
+			@$scope.fileSelected = false
 
 			@setupUploadListeners()
 
@@ -33,12 +34,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		setupUploadListeners: ->
 
 			@$scope.$on('fileuploaddone', (e, data) =>
-					@$scope.fileUploadResults = data.result;
+				@$scope.fileUploadResults = data.result;
+				@$scope.fileSelected = false
 			)
 
 			@$scope.$on('fileuploadfail', (e, data) =>
 				@$scope.fileUploadResults = {}
 				@$scope.fileUploadResults.upload_failed = true;
+				@$scope.fileSelected = false
+			)
+
+			@$scope.$on('fileuploadchange', (e, data) =>
+				@$scope.fileSelected = true
 			)
 
 		###

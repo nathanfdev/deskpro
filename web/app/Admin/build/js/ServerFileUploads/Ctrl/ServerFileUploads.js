@@ -22,6 +22,7 @@
         this.$scope.data = null;
         this.$scope.fileUploadOptions = {};
         this.$scope.fileUploadResults = null;
+        this.$scope.fileSelected = false;
         return this.setupUploadListeners();
       };
 
@@ -48,11 +49,16 @@
       Admin_ServerFileUploads_Ctrl_ServerFileUploads.prototype.setupUploadListeners = function() {
         var _this = this;
         this.$scope.$on('fileuploaddone', function(e, data) {
-          return _this.$scope.fileUploadResults = data.result;
+          _this.$scope.fileUploadResults = data.result;
+          return _this.$scope.fileSelected = false;
         });
-        return this.$scope.$on('fileuploadfail', function(e, data) {
+        this.$scope.$on('fileuploadfail', function(e, data) {
           _this.$scope.fileUploadResults = {};
-          return _this.$scope.fileUploadResults.upload_failed = true;
+          _this.$scope.fileUploadResults.upload_failed = true;
+          return _this.$scope.fileSelected = false;
+        });
+        return this.$scope.$on('fileuploadchange', function(e, data) {
+          return _this.$scope.fileSelected = true;
         });
       };
 

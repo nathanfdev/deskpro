@@ -53,12 +53,10 @@
 
 							<div style="font-size: 11px">
 
-								{{ phrase('admin.server.databases_not_recommended') }}
-
 								<div ng-if="!data.moving_files.id">
 
 									Databases are not designed to store files. We recommend
-									<a ng-click="Ctrl.startSwitchStorage();;$event.preventDefault();" ng-href="#">
+									<a ng-click="Ctrl.startSwitchStorage();$event.preventDefault();" ng-href="#">
 										switching to filesystem storage
 									</a>
 									where files are stored as files in a directory on your server.
@@ -162,84 +160,84 @@
 
 			<h4>{{ phrase('admin.server.test_a_file_upload') }}</h4>
 
-			<table class="table table-bordered">
-				<tbody>
-					<tr>
-						<td>
-							<form id="fileupload"
-								  method="POST"
-								  enctype="multipart/form-data"
-								  file-upload="fileUploadOptions"
-								  action="{{ ng_var('fileUploadOptions.url') }}">
 
-								<span class="btn btn-success fileinput-button">
-								    <span>Select File</span>
-								    <input type="file" name="file">
-								</span>
+			<form id="fileupload"
+				  method="POST"
+				  enctype="multipart/form-data"
+				  file-upload="fileUploadOptions"
+				  action="{{ ng_var('fileUploadOptions.url') }}">
 
-								<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
+				<div class="fileinput-button btn btn-success" ng-show="!active() && !fileSelected">
+					<span>Select File</span>
+					<input type="file" name="file">
+				</div>
 
-								<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
-									<i class="fa fa-chevron-down"></i>
-									<span>{{ phrase('admin.server.test_upload') }}</span>
-								</button>
+				<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
 
-								<div class="file-upload-progress-block" ng-class="{show: active()}">
-									<div class="progress progress-striped active" file-upload-progress="progress()">
-										<div class="progress-bar progress-bar-success"
-											 ng-style="{width: num + '%'}"></div>
-									</div>
-								</div>
-							</form>
+				<div class="pull-left" ng-show="!active() && fileSelected">
+					<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
+						<span>Upload File</span>
+					</button>
+				</div>
 
-							<div class="well success-message"
-								 ng-if="fileUploadResults && !fileUploadResults.upload_failed">
-								<strong>Upload was {{ phrase('admin.server.success') }}</strong><br>
-								<a ng-href="{{ ng_var('fileUploadResults.uploaded_file_url') }}" target="_blank">
-									{{ phrase('admin.server.download_attachment') }}
-								</a>
-							</div>
+				<div class="pull-left file-upload-cancel" ng-show="!active() && fileSelected">
+					<a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
+				</div>
 
-							<div class="well danger-message"
-								 ng-if="fileUploadResults && fileUploadResults.upload_failed">
-								<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-								Problems with uploaded file appeared. If you did not choose a file, you can simply try
-								again now. If you did choose a file and are still seeing this message then it
-								means the server did not to provide the helpdesk with your upload.
-								<br/><br/>
-								The two most common reasons for this are:
-								<ul style="margin-top: 3px;">
-									<li style="margin-bottom: 3px;" ng-if="!fileUploadResults.is_tmp_writable">
-										&bull; The temporary storage directory (upload_tmp_dir in php.ini)
-										is currently set to {{ php_vars.upload_tmp_dir_real }}. This
-										directory
-										<strong>is not writable</strong> by the web server. This means
-										uploads can not be saved and will always fail. Edit php.ini and
-										specify a
-										path that is writable by the server, or change permissions on the
-										directory so the server can write to it.
-									</li>
-									<li style="margin-bottom: 3px;" ng-if="fileUploadResults.is_tmp_writable">
-										&bull; The temporary storage directory defined in php.ini as
-										displayed below is not set or is set to a directory
-										that the web server cannot write to. Correcting the directory or
-										making it writable may solve the problem.
-									</li>
-									<li>
-										&bull; You have chosen a file that is larger than your server
-										configuration allows. File limits are set using the
-										options in php.ini as displayed below. In addition to these limits, your
-										web server (such as IIS or Apache)
-										may also enforce its own limits. Limits enforced by the web server
-										cannot be detected by the helpdesk and will need to be
-										checked manually.
-									</li>
-								</ul>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+				<div class="clearfix"></div>
+
+				<div class="file-upload-progress-block" ng-show="active() && fileSelected">
+					<div class="progress progress-striped active" file-upload-progress="progress()">
+						<div class="progress-bar progress-bar-success"
+							 ng-style="{width: num + '%'}"></div>
+					</div>
+				</div>
+			</form>
+
+			<div class="well success-message upload-message"
+				 ng-if="fileUploadResults && !fileUploadResults.upload_failed">
+				<strong>Upload was {{ phrase('admin.server.success') }}</strong><br>
+				<a ng-href="{{ ng_var('fileUploadResults.uploaded_file_url') }}" target="_blank">
+					{{ phrase('admin.server.download_attachment') }}
+				</a>
+			</div>
+
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				Problems with uploaded file appeared. If you did not choose a file, you can simply try
+				again now. If you did choose a file and are still seeing this message then it
+				means the server did not to provide the helpdesk with your upload.
+				<br/><br/>
+				The two most common reasons for this are:
+				<ul style="margin-top: 3px;">
+					<li style="margin-bottom: 3px;" ng-if="!fileUploadResults.is_tmp_writable">
+						&bull; The temporary storage directory (upload_tmp_dir in php.ini)
+						is currently set to {{ php_vars.upload_tmp_dir_real }}. This
+						directory
+						<strong>is not writable</strong> by the web server. This means
+						uploads can not be saved and will always fail. Edit php.ini and
+						specify a
+						path that is writable by the server, or change permissions on the
+						directory so the server can write to it.
+					</li>
+					<li style="margin-bottom: 3px;" ng-if="fileUploadResults.is_tmp_writable">
+						&bull; The temporary storage directory defined in php.ini as
+						displayed below is not set or is set to a directory
+						that the web server cannot write to. Correcting the directory or
+						making it writable may solve the problem.
+					</li>
+					<li>
+						&bull; You have chosen a file that is larger than your server
+						configuration allows. File limits are set using the
+						options in php.ini as displayed below. In addition to these limits, your
+						web server (such as IIS or Apache)
+						may also enforce its own limits. Limits enforced by the web server
+						cannot be detected by the helpdesk and will need to be
+						checked manually.
+					</li>
+				</ul>
+			</div>
 		</article>
 
 		{##################################################################################################}
