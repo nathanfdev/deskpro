@@ -159,15 +159,6 @@ abstract class InstallerAbstract
 
 		$plugin->importSyncData();
 
-		$plugin_listeners = $this->getPluginListeners();
-		foreach ($plugin_listeners as $plugin_listener_info) {
-			if (is_array($plugin_listener_info)) {
-				$plugin_listener = new \Application\DeskPRO\Entity\PluginListener();
-				$plugin_listener->fromArray($plugin_listener_info);
-			}
-			$plugin->addPluginListener($plugin_listener);
-		}
-
 		$orm->flush();
 
 		$this->postInstall($plugin);
@@ -191,18 +182,6 @@ abstract class InstallerAbstract
 	{
 		return $this->controller->redirectRoute('admin_plugins_plugin', array('plugin_id' => $plugin->id));
 	}
-
-
-	/**
-	 * Get an array of plugin listeners
-	 *
-	 * @var array
-	 */
-	protected function getPluginListeners()
-	{
-		return array();
-	}
-
 
 	
 	/**

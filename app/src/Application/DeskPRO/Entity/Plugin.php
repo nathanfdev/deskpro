@@ -92,11 +92,6 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	protected $resources_path = null;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $listeners;
-
-	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
@@ -115,7 +110,6 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->listeners = new \Doctrine\Common\Collections\ArrayCollection();
 		$this['date_created'] = new \DateTime();
 	}
 
@@ -126,16 +120,6 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	public function getId()
 	{
 		return $this->id;
-	}
-
-
-	/**
-	 * @param PluginListener $plugin_listener
-	 */
-	public function addPluginListener(PluginListener $plugin_listener)
-	{
-		$this->listeners->add($plugin_listener);
-		$plugin_listener->plugin = $this;
 	}
 
 	/**
@@ -257,6 +241,5 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'resources_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'resources_path', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'enabled', ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'listeners', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginListener', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'plugin',  ));
 	}
 }
