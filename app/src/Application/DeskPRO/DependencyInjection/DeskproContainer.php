@@ -152,15 +152,6 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * @return \Application\DeskPRO\Plugin\PluginRepository
-	 */
-	public function getPlugins()
-	{
-		return $this->getSystemService('plugins');
-	}
-
-
-	/**
 	 * @param string $id
 	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
 	 */

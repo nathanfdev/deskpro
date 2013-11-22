@@ -75,9 +75,6 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger'), 'query_logger'));
 		$container->setDefinition('doctrine.dbal.logger', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Plugin\\PluginManager', array(new Reference('doctrine.orm.entity_manager')));
-		$container->setDefinition('deskpro.plugin_manager', $definition);
-
 		$definition = new Definition('Application\\DeskPRO\\Entity\\Person');
 		$definition->setFactoryService('session')->setFactoryMethod('getPerson');
 		$container->setDefinition('deskpro.session_person', $definition);

@@ -34,11 +34,12 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\Domain\DomainObject;
 
-class Plugin extends DomainObject
+class PluginDef extends DomainObject
 {
 	/**
 	 * @var int
@@ -46,31 +47,60 @@ class Plugin extends DomainObject
 	protected $id = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\PluginDef
-	 */
-	protected $plugin_def;
-
-	/**
 	 * @var string
 	 */
 	protected $title;
 
 	/**
-	 * @var \DateTime
+	 * @var
 	 */
-	protected $date_created;
+	protected $author_name;
+
+	/**
+	 * @var
+	 */
+	protected $author_email;
+
+	/**
+	 * @var
+	 */
+	protected $author_link;
+
+	/**
+	 * @var int
+	 */
+	protected $api_version;
+
+	/**
+	 * @var int
+	 */
+	protected $version;
+
+	/**
+	 * @var string
+	 */
+	protected $version_name;
+
+	/**
+	 * The plugin ID if this plugin has resources in the filesystem
+	 * @var string
+	 */
+	protected $native_name;
+
+	/**
+	 * True to only allow one instance of the app to be installed
+	 * @var bool
+	 */
+	protected $is_single = false;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\PluginAsset[]
+	 */
+	protected $assets;
 
 	public function __construct()
 	{
-		$this['date_created'] = new \DateTime();
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
+		$this->assets = new ArrayCollection();
 	}
 
 	############################################################################
@@ -82,9 +112,8 @@ class Plugin extends DomainObject
 		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
 		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Plugin';
 		$metadata->setPrimaryTable(array(
-			'name' => 'plugins'
+			'name' => 'plugin_defs'
 		));
 
 		$metadata->mapField(array(
@@ -104,22 +133,70 @@ class Plugin extends DomainObject
 		));
 
 		$metadata->mapField(array(
-			'columnName' => 'date_created',
-			'fieldName'  => 'date_created',
-			'type'       => 'datetime',
+			'columnName' => 'author_name',
+			'fieldName'  => 'author_name',
+			'type'       => 'string',
+			'length'     => 255,
 			'nullable'   => false,
 		));
 
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'plugin_def',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginDef',
-			'joinColumns'  => array(array(
-				'name'                 => 'plugin_def_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'CASCADE',
-				'fetch'                => 'EAGER',
-			))
+		$metadata->mapField(array(
+			'columnName' => 'author_email',
+			'fieldName'  => 'author_email',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'author_link',
+			'fieldName'  => 'author_link',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'api_version',
+			'fieldName'  => 'api_version',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'version',
+			'fieldName'  => 'version',
+			'type'       => 'integer',
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'version_name',
+			'fieldName'  => 'version_name',
+			'type'       => 'string',
+			'length'     => 100,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'native_name',
+			'fieldName'  => 'native_name',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => true,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'is_single',
+			'fieldName'  => 'is_single',
+			'type'       => 'boolean',
+			'nullable'   => false,
+		));
+
+		$metadata->mapOneToMany(array(
+			'fieldName'    => 'assets',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginAsset',
+			'mappedBy'     => 'plugin_def'
 		));
 	}
 }

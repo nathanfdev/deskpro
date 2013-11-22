@@ -204,6 +204,8 @@ class MiscController extends AbstractController
 
 		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 
+		// TODO plugins
+		/*
 		if ($this->plugins->isPluginInstalled('MicrosoftTranslator')) {
 			$lang_codes = $this->plugins->getPluginService('MicrosoftTranslator.tr_api')->getLanguagesForTranslate();
 			try {
@@ -227,6 +229,7 @@ class MiscController extends AbstractController
 
 			$js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
 		}
+		*/
 
 		$tr = $this->container->getTranslator();
 

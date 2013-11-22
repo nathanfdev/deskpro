@@ -29,24 +29,76 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Plugin\PluginRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\Domain\DomainObject;
 
-class PluginsService
+class PluginAsset extends DomainObject
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var int
+	 */
+	protected $id = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\PluginDef
+	 */
+	protected $plugin_def;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Blob
+	 */
+	protected $blob;
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$plugins = $container->getEm()->getRepository('DeskPRO:Plugin')->getInstalled();
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+		$metadata->setPrimaryTable(array(
+			'name' => 'plugin_assets'
+		));
 
-		$m = new PluginRepository(
-			$plugins
-		);
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
 
-		return $m;
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'plugin_def',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginDef',
+			'inversedBy'   => 'assets',
+			'joinColumns'  => array(array(
+				'name'                 => 'plugin_def_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'CASCADE',
+				'fetch'                => 'EAGER',
+			))
+		));
+
+		$metadata->mapOneToOne(array(
+			'fieldName'    => 'blob',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'joinColumns'  => array(array(
+				'name'                 => 'blob_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'CASCADE',
+				'fetch'                => 'EAGER',
+			))
+		));
 	}
 }
