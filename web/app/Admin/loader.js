@@ -174,19 +174,19 @@ requirejs([
 	'Admin/TwitterAccounts/Ctrl/Edit',
 	'Admin/Plugins/Ctrl/List',
 	'Admin/Plugins/Ctrl/Install',
-	'Admin/ServerReqs/Ctrl/ServerReqs',
-	'Admin/ServerPhpInfo/Ctrl/ServerPhpInfo',
-	'Admin/ServerMysqlInfo/Ctrl/ServerMysqlInfo',
-	'Admin/ServerMysqlStatus/Ctrl/ServerMysqlStatus',
-	'Admin/ServerMysqlSortOrder/Ctrl/ServerMysqlSortOrder',
-	'Admin/ServerErrorLogs/Ctrl/ServerErrorLogs',
-	'Admin/ServerErrorLogs/Ctrl/View',
-	'Admin/ServerTaskQueue/Ctrl/ServerTaskQueue',
-	'Admin/ServerCron/Ctrl/List',
-	'Admin/ServerCron/Ctrl/Logs',
-	'Admin/ServerFileUploads/Ctrl/ServerFileUploads',
-	'Admin/ServerFileCheck/Ctrl/ServerFileCheck',
-	'Admin/ServerReportFile/Ctrl/ServerReportFile'
+	'Admin/Server/Ctrl/ServerReqs',
+	'Admin/Server/Ctrl/ServerPhpInfo',
+	'Admin/Server/Ctrl/ServerMysqlInfo',
+	'Admin/Server/Ctrl/ServerMysqlStatus',
+	'Admin/Server/Ctrl/ServerMysqlSortOrder',
+	'Admin/Server/Ctrl/ServerErrorLogs',
+	'Admin/Server/Ctrl/ServerErrorLogsView',
+	'Admin/Server/Ctrl/ServerTaskQueue',
+	'Admin/Server/Ctrl/ServerCronList',
+	'Admin/Server/Ctrl/ServerCronLogs',
+	'Admin/Server/Ctrl/ServerFileUploads',
+	'Admin/Server/Ctrl/ServerFileCheck',
+	'Admin/Server/Ctrl/ServerReportFile'
 ], function(angular) {
 	'use strict';
 
