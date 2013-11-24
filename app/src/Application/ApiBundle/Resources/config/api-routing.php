@@ -2857,7 +2857,7 @@ $collection->create('api_twitter_accounts_delete', array(
 
 $collection->create('api_server_reqs', array(
 	'path'       => '/server_reqs',
-	'controller' => 'ApiBundle:ServerReqs:get',
+	'controller' => 'ApiBundle:Server:getServerReqs',
 	'methods'    => array('GET'),
 ));
 
@@ -2867,7 +2867,7 @@ $collection->create('api_server_reqs', array(
 
 $collection->create('api_server_php_info', array(
 	'path'       => '/server_php_info',
-	'controller' => 'ApiBundle:ServerPhpInfo:get',
+	'controller' => 'ApiBundle:Server:getPhpInfo',
 	'methods'    => array('GET'),
 ));
 
@@ -2877,7 +2877,7 @@ $collection->create('api_server_php_info', array(
 
 $collection->create('api_server_mysql_info', array(
 	'path'       => '/server_mysql_info',
-	'controller' => 'ApiBundle:ServerMysqlInfo:get',
+	'controller' => 'ApiBundle:Server:getMysqlInfo',
 	'methods'    => array('GET'),
 ));
 
@@ -2887,7 +2887,7 @@ $collection->create('api_server_mysql_info', array(
 
 $collection->create('api_server_mysql_status', array(
 	'path'       => '/server_mysql_status',
-	'controller' => 'ApiBundle:ServerMysqlStatus:get',
+	'controller' => 'ApiBundle:Server:getMysqlStatus',
 	'methods'    => array('GET'),
 ));
 
@@ -2897,13 +2897,13 @@ $collection->create('api_server_mysql_status', array(
 
 $collection->create('api_server_mysql_sort_order', array(
 	'path'       => '/server_mysql_sort_order',
-	'controller' => 'ApiBundle:ServerMysqlSortOrder:get',
+	'controller' => 'ApiBundle:Server:getMysqlSortOrder',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_mysql_sort_order_save', array(
 	'path'       => '/server_mysql_sort_order',
-	'controller' => 'ApiBundle:ServerMysqlSortOrder:save',
+	'controller' => 'ApiBundle:Server:saveMysqlSortOrder',
 	'methods'     => array('POST'),
 ));
 
@@ -2913,19 +2913,19 @@ $collection->create('api_server_mysql_sort_order_save', array(
 
 $collection->create('api_server_error_logs', array(
 	'path'       => '/server_error_logs',
-	'controller' => 'ApiBundle:ServerErrorLogs:list',
+	'controller' => 'ApiBundle:Server:listErrorLogs',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_error_logs_get', array(
 	'path'        => '/server_error_logs/{id}',
-	'controller'  => 'ApiBundle:ServerErrorLogs:get',
+	'controller'  => 'ApiBundle:Server:getErrorLogs',
 	'methods'     => array('GET'),
 ));
 
 $collection->create('api_server_error_logs_delete', array(
 	'path'       => '/server_error_logs',
-	'controller' => 'ApiBundle:ServerErrorLogs:remove',
+	'controller' => 'ApiBundle:Server:removeErrorLogs',
 	'methods'    => array('DELETE'),
 ));
 
@@ -2935,7 +2935,7 @@ $collection->create('api_server_error_logs_delete', array(
 
 $collection->create('api_server_task_queue', array(
 	'path'       => '/server_task_queue',
-	'controller' => 'ApiBundle:ServerTaskQueue:get',
+	'controller' => 'ApiBundle:Server:getTaskQueue',
 	'methods'    => array('GET'),
 ));
 
@@ -2945,19 +2945,19 @@ $collection->create('api_server_task_queue', array(
 
 $collection->create('api_server_cron', array(
 	'path'       => '/server_cron',
-	'controller' => 'ApiBundle:ServerCron:list',
+	'controller' => 'ApiBundle:Server:listCron',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_cron_logs', array(
 	'path'       => '/server_cron/logs',
-	'controller' => 'ApiBundle:ServerCron:logs',
+	'controller' => 'ApiBundle:Server:logsCron',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_cron_logs_delete', array(
 	'path'       => '/server_cron/logs',
-	'controller' => 'ApiBundle:ServerCron:remove',
+	'controller' => 'ApiBundle:Server:removeCron',
 	'methods'    => array('DELETE'),
 ));
 
@@ -2967,19 +2967,19 @@ $collection->create('api_server_cron_logs_delete', array(
 
 $collection->create('api_server_file_uploads', array(
 	'path'       => '/server_file_uploads',
-	'controller' => 'ApiBundle:ServerFileUploads:get',
+	'controller' => 'ApiBundle:Server:getFileUploads',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_test_file_uploads', array(
 	'path'       => '/server_file_uploads',
-	'controller' => 'ApiBundle:ServerFileUploads:testUpload',
+	'controller' => 'ApiBundle:Server:testFileUpload',
 	'methods'    => array('POST'),
 ));
 
 $collection->create('api_server_switch_file_uploads_storage', array(
 	'path'       => '/server_file_uploads/switch',
-	'controller' => 'ApiBundle:ServerFileUploads:switchStorage',
+	'controller' => 'ApiBundle:Server:switchFileStorage',
 	'methods'    => array('POST'),
 ));
 
@@ -2989,13 +2989,13 @@ $collection->create('api_server_switch_file_uploads_storage', array(
 
 $collection->create('api_server_file_check', array(
 	'path'       => '/server_file_check',
-	'controller' => 'ApiBundle:ServerFileCheck:list',
+	'controller' => 'ApiBundle:Server:listFileCheck',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_file_check_get', array(
 	'path'       => '/server_file_check/{id}',
-	'controller' => 'ApiBundle:ServerFileCheck:get',
+	'controller' => 'ApiBundle:Server:getFileCheck',
 	'methods'    => array('GET'),
 ));
 
@@ -3005,13 +3005,13 @@ $collection->create('api_server_file_check_get', array(
 
 $collection->create('api_server_report_file_get', array(
 	'path'       => '/server_report_file',
-	'controller' => 'ApiBundle:ServerReportFile:get',
+	'controller' => 'ApiBundle:Server:getReportFile',
 	'methods'    => array('GET'),
 ));
 
 $collection->create('api_server_report_file_check_save', array(
 	'path'       => '/server_report_file/file_check_results',
-	'controller' => 'ApiBundle:ServerReportFile:saveFileCheckResults',
+	'controller' => 'ApiBundle:Server:saveFileCheckResults',
 	'methods'    => array('POST'),
 ));
 
