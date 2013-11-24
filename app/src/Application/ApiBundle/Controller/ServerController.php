@@ -268,6 +268,13 @@ class ServerController extends AbstractController
 		$job_id   = $this->in->getString('job_id');
 		$page     = $this->in->getUint('page');
 
+		// this is for case when we just cleared cron logs
+
+		if ($page == 0) {
+
+			$page = 1;
+		}
+
 		$returnedData['page']      = $page;
 		$returnedData['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
 		$returnedData['priority']  = $priority;

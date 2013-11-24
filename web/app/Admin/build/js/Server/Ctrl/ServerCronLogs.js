@@ -116,6 +116,9 @@
           if (parseInt(newVal) === parseInt(oldVal)) {
             return void 0;
           }
+          if (isNaN(parseInt(newVal))) {
+            return void 0;
+          }
           return _this.changePageCallback();
         });
       };

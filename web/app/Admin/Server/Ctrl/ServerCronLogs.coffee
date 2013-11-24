@@ -96,6 +96,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				if parseInt(newVal) == parseInt(oldVal)
 					return undefined
 
+				if isNaN(parseInt(newVal))
+					return undefined
+
 				@changePageCallback()
 			)
 
