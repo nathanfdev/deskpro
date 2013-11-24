@@ -71,7 +71,7 @@
         var inst,
           _this = this;
         inst = this.$modal.open({
-          templateUrl: this.getTemplatePath('ServerFileUploads/switch-modal.html'),
+          templateUrl: this.getTemplatePath('Server/server-file-uploads-switch-modal.html'),
           controller: [
             '$scope', '$modalInstance', function($scope, $modalInstance) {
               $scope.confirm = function() {

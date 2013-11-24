@@ -60,7 +60,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		startClearAll: ->
 
 			inst = @$modal.open({
-				templateUrl: @getTemplatePath('ServerCron/delete-modal.html'),
+				templateUrl: @getTemplatePath('Server/server-cron-delete-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 					$scope.confirm = ->
 						$modalInstance.close()

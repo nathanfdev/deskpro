@@ -54,7 +54,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		startSwitchStorage: ->
 			inst = @$modal.open({
-				templateUrl: @getTemplatePath('ServerFileUploads/switch-modal.html'),
+				templateUrl: @getTemplatePath('Server/server-file-uploads-switch-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 					$scope.confirm = ->
 						$modalInstance.close()

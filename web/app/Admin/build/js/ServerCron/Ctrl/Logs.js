@@ -76,7 +76,7 @@
         var inst,
           _this = this;
         inst = this.$modal.open({
-          templateUrl: this.getTemplatePath('ServerCron/delete-modal.html'),
+          templateUrl: this.getTemplatePath('Server/server-cron-delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', function($scope, $modalInstance) {
               $scope.confirm = function() {

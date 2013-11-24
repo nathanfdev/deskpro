@@ -1164,7 +1164,7 @@ define(function() {
 	routes.push({
 		id: 'server.server_reqs',
 		url: '/server_reqs',
-		templateName: 'ServerReqs/server-reqs.html',
+		templateName: 'Server/server-reqs.html',
 		controller: 'Admin_ServerReqs_Ctrl_ServerReqs'
 	});
 
@@ -1174,7 +1174,7 @@ define(function() {
 	routes.push({
 		id: 'server.file_check',
 		url: '/file_check',
-		templateName: 'ServerFileCheck/server-file-check.html',
+		templateName: 'Server/server-file-check.html',
 		controller: 'Admin_ServerFileCheck_Ctrl_ServerFileCheck'
 	});
 
@@ -1184,7 +1184,7 @@ define(function() {
 	routes.push({
 		id: 'server.file_uploads',
 		url: '/file_uploads',
-		templateName: 'ServerFileUploads/server-file-uploads.html',
+		templateName: 'Server/server-file-uploads.html',
 		controller: 'Admin_ServerFileUploads_Ctrl_ServerFileUploads'
 	});
 
@@ -1194,14 +1194,14 @@ define(function() {
 	routes.push({
 		id: 'server.cron',
 		url: '/cron',
-		templateName: 'ServerCron/list.html',
+		templateName: 'Server/server-cron-list.html',
 		controller: 'Admin_ServerCron_Ctrl_List'
 	});
 
 	routes.push({
 		id: 'server.cron.logs',
 		url: '/logs',
-		templateName: 'ServerCron/logs.html',
+		templateName: 'Server/server-cron-logs.html',
 		controller: 'Admin_ServerCron_Ctrl_Logs',
 		target: "appbody@server"
 	});
@@ -1212,7 +1212,7 @@ define(function() {
 	routes.push({
 		id: 'server.php_info',
 		url: '/php_info',
-		templateName: 'ServerPhpInfo/server-php-info.html',
+		templateName: 'Server/server-php-info.html',
 		controller: 'Admin_ServerPhpInfo_Ctrl_ServerPhpInfo'
 	});
 
@@ -1222,7 +1222,7 @@ define(function() {
 	routes.push({
 		id: 'server.mysql_info',
 		url: '/mysql_info',
-		templateName: 'ServerMysqlInfo/server-mysql-info.html',
+		templateName: 'Server/server-mysql-info.html',
 		controller: 'Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo'
 	});
 
@@ -1232,7 +1232,7 @@ define(function() {
 	routes.push({
 		id: 'server.mysql_status',
 		url: '/mysql_status',
-		templateName: 'ServerMysqlStatus/server-mysql-status.html',
+		templateName: 'Server/server-mysql-status.html',
 		controller: 'Admin_ServerMysqlStatus_Ctrl_ServerMysqlStatus'
 	});
 
@@ -1252,7 +1252,7 @@ define(function() {
 	routes.push({
 		id: 'server.mysql_sort_order',
 		url: '/mysql_sort_order',
-		templateName: 'ServerMysqlSortOrder/server-mysql-sort-order.html',
+		templateName: 'Server/server-mysql-sort-order.html',
 		controller: 'Admin_ServerMysqlSortOrder_Ctrl_ServerMysqlSortOrder'
 	});
 
@@ -1262,14 +1262,14 @@ define(function() {
 	routes.push({
 		id: 'server.error_logs',
 		url: '/error_logs',
-		templateName: 'ServerErrorLogs/server-error-logs.html',
+		templateName: 'Server/server-error-logs.html',
 		controller: 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs'
 	});
 
 	routes.push({
 		id: 'server.error_logs.view',
 		url: '/view/{id}',
-		templateName: 'ServerErrorLogs/view.html',
+		templateName: 'Server/server-error-logs-view.html',
 		controller: 'Admin_ServerErrorLogs_Ctrl_View',
 		target: "appbody@server"
 	});
@@ -1290,7 +1290,7 @@ define(function() {
 	routes.push({
 		id: 'server.task_queue',
 		url: '/task_queue',
-		templateName: 'ServerTaskQueue/server-task-queue.html',
+		templateName: 'Server/server-task-queue.html',
 		controller: 'Admin_ServerTaskQueue_Ctrl_ServerTaskQueue'
 	});
 
@@ -1300,7 +1300,7 @@ define(function() {
 	routes.push({
 		id: 'server.report_file',
 		url: '/report_file',
-		templateName: 'ServerReportFile/server-report-file.html',
+		templateName: 'Server/server-report-file.html',
 		controller: 'Admin_ServerReportFile_Ctrl_ServerReportFile'
 	});
 

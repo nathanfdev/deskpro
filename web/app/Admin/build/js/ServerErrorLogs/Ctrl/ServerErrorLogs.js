@@ -42,7 +42,7 @@
         var inst,
           _this = this;
         inst = this.$modal.open({
-          templateUrl: this.getTemplatePath('ServerErrorLogs/delete-modal.html'),
+          templateUrl: this.getTemplatePath('Server/server-error-logs-delete-modal.html'),
           controller: [
             '$scope', '$modalInstance', function($scope, $modalInstance) {
               $scope.confirm = function() {
