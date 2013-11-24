@@ -43,6 +43,7 @@ use Orb\Util\Strings;
 
 use Doctrine\ORM\EntityManager;
 
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ServerReportFile
@@ -88,6 +89,7 @@ class ServerReportFile
 		'mysql-schema-diff.sql' => '_createMysqlSchemaDiff',
 		'cron-status.txt'       => '_createCronStatus',
 		'license.txt'           => '_createLicense',
+		'file-integrity.txt'    => '_createFileIntegrity',
 	);
 
 	/**
@@ -106,6 +108,18 @@ class ServerReportFile
 		}
 
 		$this->archive_file = $this->tmpdir . '/deskpro-report.zip';
+	}
+
+	/**
+	 * Saves results of integrity file checks in some temporary space
+	 * Later it will be used when generating resulting archive including report information
+	 *
+	 * @param string $file_check_results - string with results of integrity file checks
+	 */
+
+	public function saveFileCheckResults($file_check_results)
+	{
+		file_put_contents(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt', $file_check_results);
 	}
 
 	/**
@@ -536,6 +550,33 @@ class ServerReportFile
 		if (file_put_contents($this->tmpdir . '/' . $file_name, $content) === false) {
 
 			die("Could not create License file under this location - " . $this->tmpdir . '/' . $file_name);
+		}
+	}
+
+	/**
+	 * @param string $file_name
+	 */
+
+	protected function _createFileIntegrity($file_name)
+	{
+		$fs = new Filesystem();
+
+		if (file_exists(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt')) {
+
+			try {
+
+				$fs->copy(
+					dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt',
+					$this->tmpdir . '/' . $file_name
+				);
+
+			} catch(IOException $e) {
+
+				die(
+					"Could not create File Integrity file under this location - " . $this->tmpdir . '/' . $file_name .
+						". More info:" . $e->getMessage()
+				);
+			}
 		}
 	}
 }

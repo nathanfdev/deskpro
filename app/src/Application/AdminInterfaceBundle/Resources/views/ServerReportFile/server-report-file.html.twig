@@ -7,11 +7,33 @@
 			<h3>Report File</h3>
 		</header>
 
+		{##################################################################################################}
+
 		<article class="padd">
-			<a ng-href="{{ ng_var('Ctrl.report_link') }}" class="btn btn-success">
+			<a ng-click="Ctrl.startCheck()" ng-show="!Ctrl.check_in_progress && !Ctrl.server_file_check_done" class="btn btn-success">
 				<i class="fa fa-download"></i>
-				<span>Download Report File</span>
+				<span>Generate Report File</span>
 			</a>
+
+			<div ng-show="Ctrl.check_started && !Ctrl.server_file_check_done">
+				<section class="dp-paneblock dp-listpane dp-check-file-integrity">
+					<header>
+						<h3>
+							Checking files:
+							{{ ng_var('Ctrl.current_check') }} of {{ ng_var('Ctrl.total_checks') }} checks performed
+						</h3>
+					</header>
+
+					<div class="progress progress-striped" ng-class="{active: Ctrl.check_in_progress}">
+						<div class="progress-bar progress-bar-success"
+							 ng-style="{width: Ctrl.current_percentage + '%'}"></div>
+					</div>
+				</section>
+			</div>
+
+			<div class="success-message well" ng-show="Ctrl.server_file_check_done">
+				Report File Generating...
+			</div>
 		</article>
 
 	</section>

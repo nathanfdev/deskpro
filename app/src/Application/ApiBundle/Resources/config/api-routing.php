@@ -3009,6 +3009,12 @@ $collection->create('api_server_report_file_get', array(
 	'methods'    => array('GET'),
 ));
 
+$collection->create('api_server_report_file_check_save', array(
+	'path'       => '/server_report_file/file_check_results',
+	'controller' => 'ApiBundle:ServerReportFile:saveFileCheckResults',
+	'methods'    => array('POST'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

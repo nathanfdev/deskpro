@@ -50,4 +50,25 @@ class ServerReportFileController extends AbstractController
 		$server_report_file->createArchive();
 		$server_report_file->outputArchive();
 	}
+
+	####################################################################################################################
+	# save integrity file check results
+	####################################################################################################################
+
+	public function saveFileCheckResultsAction()
+	{
+		/**
+		 * @var \Application\DeskPRO\ServerReportFile\ServerReportFile $server_report_file
+		 */
+
+		$server_report_file = $this->container->getSystemService('server_report_file');
+		$file_check_results = $this->in->getValue('file_check_results', 'post');
+
+		if(!empty($file_check_results)) {
+
+			$server_report_file->saveFileCheckResults($file_check_results);
+		}
+
+		return $this->createSuccessResponse();
+	}
 }
