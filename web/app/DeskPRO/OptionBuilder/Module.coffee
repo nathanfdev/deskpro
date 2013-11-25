@@ -95,7 +95,7 @@ define [
 					rowScope.option_types     = opts.option_types
 
 					rowScope.$on('rowAdded', ->
-						if element.hasClass('empty') and lastEmpty == element
+						if (element.hasClass('empty') or scope.setCount <= 1) and lastEmpty == element
 							addRow()
 
 						element.removeClass('empty')
@@ -108,7 +108,8 @@ define [
 
 					element = $compile(tpl)(rowScope)
 
-					element.addClass('empty')
+					if scope.setCount >= 1
+						element.addClass('empty')
 
 					element.find('.removerow_btn').on('click', (ev) ->
 						ev.preventDefault()

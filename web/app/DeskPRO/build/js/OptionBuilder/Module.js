@@ -86,7 +86,7 @@
               rowScope.criteria_set_row = setsObject[setId];
               rowScope.option_types = opts.option_types;
               rowScope.$on('rowAdded', function() {
-                if (element.hasClass('empty') && lastEmpty === element) {
+                if ((element.hasClass('empty') || scope.setCount <= 1) && lastEmpty === element) {
                   addRow();
                 }
                 return element.removeClass('empty');
@@ -99,7 +99,9 @@
                 }
               });
               element = $compile(tpl)(rowScope);
-              element.addClass('empty');
+              if (scope.setCount >= 1) {
+                element.addClass('empty');
+              }
               element.find('.removerow_btn').on('click', function(ev) {
                 ev.preventDefault();
                 rowScope.$destroy();
