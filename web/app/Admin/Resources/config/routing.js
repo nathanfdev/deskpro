@@ -683,8 +683,22 @@ define(function() {
 	routes.push({
 		id: 'crm.groups',
 		url: '/groups',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'UserGroups/list.html',
+		controller: 'Admin_UserGroups_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'crm.groups.create',
+		url: '/create',
+		templateName: 'UserGroups/edit.html',
+		controller: 'Admin_UserGroups_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.groups.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'UserGroups/edit.html',
+		controller: 'Admin_UserGroups_Ctrl_Edit'
 	});
 
 	//###

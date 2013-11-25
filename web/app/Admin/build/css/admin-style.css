@@ -8616,6 +8616,22 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   border-top: 2px solid #BBB;
 }
 
+.panel.panel-innertable .table tbody > tr > td .icon-22x {
+  width: 19px;
+  text-align: center;
+}
+
+.panel.panel-innertable .table tbody > tr > td .indent {
+  position: relative;
+  top: -3px;
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  margin-right: 2px;
+  margin-left: 31px;
+  border-top: 1px solid #999;
+}
+
 .panel.panel-innertable .panel-heading {
   padding: 10px 0;
   margin: 0;

@@ -187,6 +187,8 @@ requirejs([
 	'Admin/Server/Ctrl/ServerFileUploads',
 	'Admin/Server/Ctrl/ServerFileCheck',
 	'Admin/Server/Ctrl/ServerReportFile',
+	'Admin/UserGroups/Ctrl/List',
+	'Admin/UserGroups/Ctrl/Edit',
 	'Admin/UserReg/Ctrl/Settings',
 	'Admin/UserReg/Ctrl/UsersourceList',
 	'Admin/UserReg/Ctrl/UsersourceNewType'
