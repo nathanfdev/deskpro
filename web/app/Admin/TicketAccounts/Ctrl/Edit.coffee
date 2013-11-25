@@ -8,7 +8,7 @@ define [
 	class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
 		@CTRL_AS = 'TicketAccountsEdit'
-		@DEPS    = ['Api', 'Growl', 'DepartmentData', 'TicketAccountsData', '$stateParams', '$modal']
+		@DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal']
 
 		init: ->
 			@didPassTest = false
@@ -22,8 +22,8 @@ define [
 			}
 
 		initialLoad: ->
-			dep_promise = @DepartmentData.loadDepList().then( (departments) =>
-				@deps = departments.values()
+			dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
+				@deps = list
 			)
 
 			if not @$stateParams.id

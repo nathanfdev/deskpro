@@ -16,7 +16,7 @@
 
       Admin_TicketAccounts_Ctrl_Edit.CTRL_AS = 'TicketAccountsEdit';
 
-      Admin_TicketAccounts_Ctrl_Edit.DEPS = ['Api', 'Growl', 'DepartmentData', 'TicketAccountsData', '$stateParams', '$modal'];
+      Admin_TicketAccounts_Ctrl_Edit.DEPS = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal'];
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.init = function() {
         this.didPassTest = false;
@@ -33,8 +33,8 @@
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
         var data_promise, dep_promise,
           _this = this;
-        dep_promise = this.DepartmentData.loadDepList().then(function(departments) {
-          return _this.deps = departments.values();
+        dep_promise = this.DataService.get('TicketDeps').loadList().then(function(list) {
+          return _this.deps = list;
         });
         if (!this.$stateParams.id) {
           this.account = {
