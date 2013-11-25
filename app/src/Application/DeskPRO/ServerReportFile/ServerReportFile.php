@@ -197,9 +197,13 @@ class ServerReportFile
 		$service = App::getSystemService('server_php_info');
 		$info    = $service->getPhpInfo(true);
 
-		if(file_put_contents($this->tmpdir . '/' . $file_name, $info['web_php']['phpinfo']) === false) {
+		try {
 
-			die("Could not create PHP info file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $info['web_php']['phpinfo']);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -216,9 +220,13 @@ class ServerReportFile
 		$service = App::getSystemService('server_php_info');
 		$info    = $service->getPhpInfo(true);
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $info['cli_php']['phpinfo']) === false) {
+		try {
 
-			die("Could not create CLI PHP info file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $info['cli_php']['phpinfo']);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -232,9 +240,13 @@ class ServerReportFile
 
 		$file .= file_get_contents(dp_get_log_dir() . '/error.log');
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $file) === false) {
+		try {
 
-			die("Could not create DeskPRO error.log file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $file);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -258,9 +270,13 @@ class ServerReportFile
 			$file .= file_get_contents($log_file_path);
 		}
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $file) === false) {
+		try {
 
-			die("Could not create web error.log file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $file);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -279,9 +295,13 @@ class ServerReportFile
 			$file .= file_get_contents($log_file_path);
 		}
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $file) === false) {
+		try {
 
-			die("Could not create CLI error.log file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $file);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -308,9 +328,13 @@ class ServerReportFile
 
 		$sql = implode('', $sql);
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $sql) === false) {
+		try {
 
-			die("Could not create MySQL Schema file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $sql);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -344,9 +368,13 @@ class ServerReportFile
 
 		$out = trim($out);
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $out) === false) {
+		try {
 
-			die("Could not create MySQL Status file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $out);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -380,9 +408,13 @@ class ServerReportFile
 
 		$out = trim($out);
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $out) === false) {
+		try {
 
-			die("Could not create MySQL Variables file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $out);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -443,9 +475,13 @@ class ServerReportFile
 
 		$out = trim($out);
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $out) === false) {
+		try {
 
-			die("Could not create Misc file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $out);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -469,9 +505,13 @@ class ServerReportFile
 			$schemadiff = null;
 		}
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $schemadiff) === false) {
+		try {
 
-			die("Could not create Mysql Schema Diff file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $schemadiff);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -503,9 +543,13 @@ class ServerReportFile
 			$content .= "\n";
 		}
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $content) === false) {
+		try {
 
-			die("Could not create Cron Status file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $content);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -547,9 +591,13 @@ class ServerReportFile
 		$content .= 'Core.install_key: ' . App::getSetting('core.install_key') . "\n\n";
 		$content .= 'Core.licenseopt: ' . App::getSetting('core.licenseopt') . "\n\n";
 
-		if (file_put_contents($this->tmpdir . '/' . $file_name, $content) === false) {
+		try {
 
-			die("Could not create License file under this location - " . $this->tmpdir . '/' . $file_name);
+			$this->_createFile($this->tmpdir . '/' . $file_name, $content);
+
+		} catch(IOException $e) {
+
+			echo $e->getMessage();
 		}
 	}
 
@@ -577,6 +625,23 @@ class ServerReportFile
 						". More info:" . $e->getMessage()
 				);
 			}
+		}
+	}
+
+	/**
+	 * Simply a wrapper for throwing an error in case of fail
+	 *
+	 * @param $file_name
+	 * @param $content
+	 *
+	 * @throws \Symfony\Component\Filesystem\Exception\IOException
+	 */
+
+	protected function _createFile($file_name, $content)
+	{
+		if (file_put_contents($file_name, $content) === false) {
+
+			throw new IOException('Could not create file under location - ' . $file_name);
 		}
 	}
 }
