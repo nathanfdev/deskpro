@@ -18,7 +18,9 @@
 
       Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.DEPS = [];
 
-      Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.prototype.init = function() {};
+      Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.prototype.init = function() {
+        return this.$scope.server_php_info = null;
+      };
 
       Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.prototype.initialLoad = function() {
         var data_promise,

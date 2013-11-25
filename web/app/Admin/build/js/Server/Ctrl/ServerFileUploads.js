@@ -52,7 +52,7 @@
           _this.$scope.fileUploadResults = data.result;
           return _this.$scope.fileSelected = false;
         });
-        this.$scope.$on('fileuploadfail1', function(e, data) {
+        this.$scope.$on('fileuploadfail', function(e, data) {
           _this.$scope.fileUploadResults = {};
           _this.$scope.fileUploadResults.upload_failed = true;
           return _this.$scope.fileSelected = false;
