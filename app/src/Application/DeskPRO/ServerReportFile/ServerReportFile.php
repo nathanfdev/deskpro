@@ -244,7 +244,14 @@ class ServerReportFile
 	{
 		$file = str_repeat('#', 72) . "\n# error.log\n" . str_repeat('#', 72) . "\n\n";
 
-		$file .= file_get_contents(dp_get_log_dir() . '/error.log');
+		try {
+
+			$file .= $this->_readFile(dp_get_log_dir() . '/error.log');
+
+		} catch(IOException $e) {
+
+			$file = '';
+		}
 
 		try {
 
@@ -294,11 +301,13 @@ class ServerReportFile
 	{
 		$file = "\n\n\n\n\n" . str_repeat('#', 72) . "\n\n\n\n\n# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
 
-		$log_file_path = dp_get_log_dir() . '/cli-phperr.log';
+		try {
 
-		if (is_file($log_file_path) && is_readable($log_file_path)) {
+			$file .= $this->_readFile(dp_get_log_dir() . '/cli-phperr.log');
 
-			$file .= file_get_contents($log_file_path);
+		} catch(IOException $e) {
+
+			$file = '';
 		}
 
 		try {
@@ -635,10 +644,11 @@ class ServerReportFile
 	}
 
 	/**
-	 * Simply a wrapper for throwing an error in case of fail
+	 * Attempts to create file in specified location with specified content
+	 * Also acts as wrapper for throwing an exception in case of fail
 	 *
-	 * @param $file_name
-	 * @param $content
+	 * @param string $file_name
+	 * @param string $content
 	 *
 	 * @throws \Symfony\Component\Filesystem\Exception\IOException
 	 */
@@ -651,8 +661,23 @@ class ServerReportFile
 		}
 	}
 
-	protected function _getFileContent($file_name)
-	{
+	/**
+	 * Attempts to read a file from specified location
+	 * Also acts as wrapper for throwing an exception in case of fail
+	 *
+	 * @param string $file_name
+	 * @return string
+	 *
+	 * @throws \Symfony\Component\Filesystem\Exception\IOException
+	 */
 
+	protected function _readFile($file_name)
+	{
+		if(($content = @file_get_contents($file_name)) === false) {
+
+			throw new IOException('Could not read file under location - ' . $file_name);
+		}
+
+		return $content;
 	}
 }
