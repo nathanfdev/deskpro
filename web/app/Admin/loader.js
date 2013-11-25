@@ -186,7 +186,8 @@ requirejs([
 	'Admin/Server/Ctrl/ServerCronLogs',
 	'Admin/Server/Ctrl/ServerFileUploads',
 	'Admin/Server/Ctrl/ServerFileCheck',
-	'Admin/Server/Ctrl/ServerReportFile'
+	'Admin/Server/Ctrl/ServerReportFile',
+	'Admin/UserReg/Ctrl/Settings'
 ], function(angular) {
 	'use strict';
 

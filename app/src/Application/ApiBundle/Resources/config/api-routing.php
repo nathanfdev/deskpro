@@ -2124,6 +2124,22 @@ $collection->create('api_ticket_settings_save', array(
 ));
 
 ########################################################################################################################
+# Reg Settings
+########################################################################################################################
+
+$collection->create('api_registration_settings', array(
+	'path'        => '/registraton_settings',
+	'controller'  => 'ApiBundle:Settings:registratonSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_registration_settings_save', array(
+	'path'        => '/registraton_settings',
+	'controller'  => 'ApiBundle:Settings:saveRegistrationSettings',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # Products
 ########################################################################################################################
 

@@ -65,6 +65,7 @@ class SettingsController extends AbstractController
 		));
 	}
 
+
 	####################################################################################################################
 	# save-ticket-settings
 	####################################################################################################################
@@ -75,6 +76,28 @@ class SettingsController extends AbstractController
 		$ticket_settings->setArray($this->in->getArrayValue('ticket_settings'));
 		$ticket_settings->saveSettings();
 
+		return $this->createSuccessResponse();
+	}
+
+
+	####################################################################################################################
+	# registration-settings
+	####################################################################################################################
+
+	public function registrationSettingsAction()
+	{
+		return $this->createApiResponse(array(
+
+		));
+	}
+
+
+	####################################################################################################################
+	# save-registration-settings
+	####################################################################################################################
+
+	public function saveRegistrationSettingsAction()
+	{
 		return $this->createSuccessResponse();
 	}
 }

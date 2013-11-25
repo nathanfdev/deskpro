@@ -2,8 +2,7 @@
 {% block nav_content %}
 	<nav class="dp-appnav">
 		<ul>
-			<li dp-state-mark="crm.reg"><a href="#/crm/reg"><i class="fa fa-user"></i> <span>Registration</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="crm.usersources"><a href="#/crm/usersources"><i class="fa fa-key"></i> <span>User Sources &amp; SSO</span><i class="fa fa-caret-right"></i></a></li>
+			<li dp-state-mark="crm.reg"><a href="{{ ng_href('crm.reg') }}"><i class="fa fa-user"></i> <span>Registration</span><i class="fa fa-caret-right"></i></a></li>
 			<li dp-state-mark="crm.groups"><a href="#/crm/groups"><i class="fa fa-group"></i> <span>Groups &amp; Permissions</span><i class="fa fa-caret-right"></i></a></li>
 			<li>
 				<a href="#"><i class="fa fa-terminal"></i> <span>Fields</span> <i class="fa fa-caret-down"></i></a>

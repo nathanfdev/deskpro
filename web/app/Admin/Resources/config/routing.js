@@ -652,19 +652,9 @@ define(function() {
 	//###
 	routes.push({
 		id: 'crm.reg',
-		url: '/reg',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_Bare'
-	});
-
-	//###
-	//# Usersources
-	//###
-	routes.push({
-		id: 'crm.usersources',
-		url: '/usersources',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		url: '/registration',
+		templateName: 'UserReg/settings.html',
+		controller: 'Admin_UserReg_Ctrl_Settings'
 	});
 
 	//###
