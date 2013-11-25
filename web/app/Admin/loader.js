@@ -104,6 +104,12 @@ requirejs([
 
 	'Admin/App/App',
 
+	'Admin/Agents/Ctrl/Edit',
+	'Admin/Agents/Ctrl/List',
+	'Admin/AgentGroups/Ctrl/Edit',
+	'Admin/AgentGroups/Ctrl/List',
+	'Admin/AgentTeams/Ctrl/Edit',
+	'Admin/AgentTeams/Ctrl/List',
 	'Admin/EmailStatus/Ctrl/SendmailList',
 	'Admin/EmailStatus/Ctrl/SourceList',
 	'Admin/Main/Ctrl/Bare',

@@ -1,0 +1,35 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agents</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents.edit.{{ ng_var('agent.id') }}">
+					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}">
+						<h4>
+							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('agents.agents.create') }}">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>4 Deleted Agents</h3>
+		</a>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	{% include 'AdminInterfaceBundle:UserGroups:help-page.html.twig' %}
+{% endblock %}

@@ -149,8 +149,22 @@ define(function() {
 	routes.push({
 		id: 'agents.agents',
 		url: '/agents',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Agents/list.html',
+		controller: 'Admin_Agents_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'agents.agents.create',
+		url: '/create',
+		templateName: 'Agents/edit.html',
+		controller: 'Admin_Agents_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'agents.agents.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'Agents/edit.html',
+		controller: 'Admin_Agents_Ctrl_Edit'
 	});
 
 	//###
@@ -159,8 +173,22 @@ define(function() {
 	routes.push({
 		id: 'agents.teams',
 		url: '/teams',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'AgentTeams/list.html',
+		controller: 'Admin_AgentTeams_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'agents.teams.create',
+		url: '/create',
+		templateName: 'AgentTeams/edit.html',
+		controller: 'Admin_AgentTeams_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'agents.teams.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'AgentTeams/edit.html',
+		controller: 'Admin_AgentTeams_Ctrl_Edit'
 	});
 
 	//###
@@ -169,8 +197,22 @@ define(function() {
 	routes.push({
 		id: 'agents.groups',
 		url: '/groups',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'AgentGroups/list.html',
+		controller: 'Admin_AgentGroups_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'agents.groups.create',
+		url: '/create',
+		templateName: 'AgentTeams/edit.html',
+		controller: 'Admin_AgentTeams_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'agents.groups.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'AgentTeams/edit.html',
+		controller: 'Admin_AgentTeams_Ctrl_Edit'
 	});
 
 	//##################################################################################################################
