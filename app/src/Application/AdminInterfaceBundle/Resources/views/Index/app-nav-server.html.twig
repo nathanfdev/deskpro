@@ -2,44 +2,68 @@
 {% block nav_content %}
 	<nav class="dp-appnav">
 		<ul>
+			<li dp-state-mark="server.report_file">
+				<a href="{{ ng_href('server.report_file') }}">
+					<i class="fa fa-download"></i>
+					<span>Download Report File</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
+			</li>
 			<li dp-state-mark="server.server_reqs">
-				<a href="{{ ng_href('server.server_reqs') }}">Check Server Requirements</a>
+				<a href="{{ ng_href('server.server_reqs') }}">
+					<i class="fa fa-check-square-o"></i>
+					<span>Server Requirements</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.file_check">
-				<a href="{{ ng_href('server.file_check') }}">Check File Integrity</a>
+				<a href="{{ ng_href('server.file_check') }}">
+					<i class="fa fa-shield"></i>
+					<span>File Integrity</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.file_uploads">
-				<a href="{{ ng_href('server.file_uploads') }}">File Uploads</a>
+				<a href="{{ ng_href('server.file_uploads') }}">
+					<i class="fa fa-upload"></i>
+					<span>File Uploads</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.cron">
-				<a href="{{ ng_href('server.cron') }}">Scheduled Tasks</a>
+				<a href="{{ ng_href('server.cron') }}">
+					<i class="fa fa-clock-o"></i>
+					<span>Scheduled Tasks</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.php_info">
-				<a href="{{ ng_href('server.php_info') }}">PHP Info</a>
+				<a href="{{ ng_href('server.php_info') }}">
+					<i class="fa fa-info-circle"></i>
+					<span>PHP Info</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.mysql_info">
-				<a href="{{ ng_href('server.mysql_info') }}">MySQL Info</a>
-			</li>
-			<li dp-state-mark="server.mysql_status">
-				<a href="{{ ng_href('server.mysql_status') }}">MySQL Status</a>
-			</li>
-			<li dp-state-mark="server.test_email">
-				<a href="{{ ng_href('server.test_email') }}">Test Outgoing Email</a>
-			</li>
-			<li dp-state-mark="server.mysql_sort_order">
-				<a href="{{ ng_href('server.mysql_sort_order') }}">Update MySQL Sort Order</a>
+				<a href="{{ ng_href('server.mysql_info') }}">
+					<i class="fa fa-hdd-o"></i>
+					<span>MySQL Tools</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.error_logs">
-				<a href="{{ ng_href('server.error_logs') }}">Error Logs</a>
-			</li>
-			<li dp-state-mark="server.sendmail_queue">
-				<a href="{{ ng_href('server.sendmail_queue') }}">Sendmail Queue</a>
+				<a href="{{ ng_href('server.error_logs') }}">
+					<i class="fa fa-exclamation"></i>
+					<span>Error Logs</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 			<li dp-state-mark="server.task_queue">
-				<a href="{{ ng_href('server.task_queue') }}">Task Queue Logs</a>
-			</li>
-			<li dp-state-mark="server.report_file">
-				<a href="{{ ng_href('server.report_file') }}">Report File</a>
+				<a href="{{ ng_href('server.task_queue') }}">
+					<i class="fa fa-cogs"></i>
+					<span>Task Queue Logs</span>
+					<i class="fa fa-caret-right"></i>
+				</a>
 			</li>
 		</ul>
 	</nav>
