@@ -269,7 +269,7 @@ class ServerReportFile
 
 	protected function _createWebErrorLog($file_name)
 	{
-		$file = str_repeat('#', 72) . "\n# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
 
 		$log_file_path = @ini_get('error_log');
 
@@ -303,7 +303,7 @@ class ServerReportFile
 
 	protected function _createCliErrorLog($file_name)
 	{
-		$file = "\n\n\n\n\n" . str_repeat('#', 72) . "\n\n\n\n\n# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
 
 		try {
 
@@ -381,7 +381,6 @@ class ServerReportFile
 			$out .= str_repeat('#', 80) . "\n";
 			$out .= '# ' . str_pad($title, 76) . ' #' . "\n";
 			$out .= str_repeat('#', 80) . "\n";
-			$out .= "\n\n";
 			$out .= $content;
 		}
 
@@ -421,7 +420,6 @@ class ServerReportFile
 			$out .= str_repeat('#', 80) . "\n";
 			$out .= '# ' . str_pad($title, 76) . ' #' . "\n";
 			$out .= str_repeat('#', 80) . "\n";
-			$out .= "\n\n";
 			$out .= $content;
 		}
 
