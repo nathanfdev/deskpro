@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 class AgentsController extends AbstractController
@@ -47,47 +48,50 @@ class AgentsController extends AbstractController
 		$data = array('agents' => array());
 
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
-			$agent_data = array();
-
-			foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
-				$agent_data[$k] = $agent[$k];
-			}
-
-			$agent_data['picture_url']    = $agent->getPictureUrl(80);
-			$agent_data['picture_url_64'] = $agent->getPictureUrl(64);
-			$agent_data['picture_url_50'] = $agent->getPictureUrl(50);
-			$agent_data['picture_url_45'] = $agent->getPictureUrl(45);
-			$agent_data['picture_url_32'] = $agent->getPictureUrl(32);
-			$agent_data['picture_url_22'] = $agent->getPictureUrl(22);
-			$agent_data['picture_url_16'] = $agent->getPictureUrl(16);
-
-			$agent_data['primary_email'] = array(
-				'id'    => (int)$agent->primary_email->id,
-				'email' => $agent->primary_email->email
-			);
-
-			$agent_data['emails'] = array();
-			foreach ($agent->emails as $eml) {
-				$agent_data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
-			}
-
-			$agent_data['usergroup_ids']  = array();
-			$agent_data['agentgroup_ids'] = array();
-			foreach ($agent->getUsergroupIds() as $ug_id) {
-				if ($this->container->getDataService('Usergroup')->get($ug_id)->is_agent_group) {
-					$agent_data['agentgroup_ids'][] = $ug_id;
-				} else {
-					$agent_data['usergroup_ids'][] = $ug_id;
-				}
-			}
-
-			$agent_data['usergroup_ids']  = Arrays::castToType($agent_data['usergroup_ids'], 'int');
-			$agent_data['agentgroup_ids'] = Arrays::castToType($agent_data['agentgroup_ids'], 'int');
-
-			$data['agents'][] = $agent_data;
+			$data['agents'][] = $agent->toApiData();
 		}
 
 		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# get-agent
+	####################################################################################################################
+
+	public function getAgentAction($id)
+	{
+		$agent = $this->container->getAgentData()->get($id);
+
+		if (!$agent) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array(
+			'agent' => $agent
+		));
+	}
+
+
+	####################################################################################################################
+	# save-agent
+	####################################################################################################################
+
+	public function saveAgentAction($id = null)
+	{
+		if ($id) {
+			$agent = $this->container->getAgentData()->get($id);
+
+			if (!$agent) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$agent = new Person();
+		}
+
+		return $this->createApiCreateResponse(array(
+			'agent_id' => $agent->id
+		), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
 	}
 
 

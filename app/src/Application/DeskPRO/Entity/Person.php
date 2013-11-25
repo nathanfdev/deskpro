@@ -2318,10 +2318,41 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		$data['display_name'] = $this->getDisplayName();
-		$data['primary_email'] = $this->getPrimaryEmailAddress();
-		$data['picture_url'] = $this->getPictureUrl();
+		foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
+			$data[$k] = $this[$k];
+		}
 
+		$data['primary_email'] = array(
+			'id'    => (int)$this->primary_email->id,
+			'email' => $this->primary_email->email
+		);
+
+		$data['emails'] = array();
+		foreach ($this->emails as $eml) {
+			$data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
+		}
+
+		$data['usergroup_ids']  = array();
+		$data['agentgroup_ids'] = array();
+		foreach ($this->usergroups as $ug) {
+			if ($ug->is_agent_group) {
+				$data['agentgroup_ids'][] = $ug->id;
+			} else {
+				$data['usergroup_ids'][] = $ug->id;
+			}
+		}
+
+		$data['usergroup_ids']  = Arrays::castToType($data['usergroup_ids'], 'int');
+		$data['agentgroup_ids'] = Arrays::castToType($data['agentgroup_ids'], 'int');
+
+		$data['picture_url']    = $this->getPictureUrl();
+		$data['picture_url_80'] = $this->getPictureUrl(80);
+		$data['picture_url_64'] = $this->getPictureUrl(64);
+		$data['picture_url_50'] = $this->getPictureUrl(50);
+		$data['picture_url_45'] = $this->getPictureUrl(45);
+		$data['picture_url_32'] = $this->getPictureUrl(32);
+		$data['picture_url_22'] = $this->getPictureUrl(22);
+		$data['picture_url_16'] = $this->getPictureUrl(16);
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('person_fields_manager');
@@ -2400,7 +2431,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person',  ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'people', 'dpApi' => true));
 		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
 	}
 }

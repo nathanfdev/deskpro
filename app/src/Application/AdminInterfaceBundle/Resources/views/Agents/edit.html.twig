@@ -2,20 +2,19 @@
 {% block editpane_content %}
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveLabel()">
 		<section class="dp-paneblock dp-editpane">
+			<nav class="dp-blocktabs">
+				<ul>
+					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
+					<li class="pipe">|</li>
+					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-key"></i> Permission Overrides</a></li>
+				</ul>
+			</nav>
 			<article class="form-horizontal dp-form">
-				<div class="panel panel-fill indent">
-					<div class="panel-body">
-						<div class="form-group">
-							<div class="col-lg-3">
-								<h3>XXX</h3>
-							</div>
-							<div class="col-lg-9">
-								<p>
-									YYY
-								</p>
-							</div>
-						</div>
-					</div>
+				<div dp-tab-body="main.props">
+					{% include 'AdminInterfaceBundle:Agents:edit-props.html.twig' %}
+				</div>
+				<div dp-tab-body="main.perms">
+					{% include 'AdminInterfaceBundle:Agents:edit-perms.html.twig' %}
 				</div>
 			</article>
 			<footer>

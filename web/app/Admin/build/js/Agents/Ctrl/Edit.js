@@ -18,9 +18,23 @@
 
       Admin_Agents_Ctrl_Edit.DEPS = [];
 
-      Admin_Agents_Ctrl_Edit.prototype.init = function() {};
+      Admin_Agents_Ctrl_Edit.prototype.init = function() {
+        this.form = {};
+      };
 
-      Admin_Agents_Ctrl_Edit.prototype.initialLoad = function() {};
+      Admin_Agents_Ctrl_Edit.prototype.initialLoad = function() {
+        var promise,
+          _this = this;
+        promise = this.Api.sendDataGet({
+          agent: "/agents/" + this.$stateParams.id,
+          teams: "/agent_teams",
+          groups: "/agentgroups"
+        }).then(function(result) {
+          _this.agent = result.data.agent.agent;
+          _this.teams = result.data.teams.agent_teams;
+          return _this.groups = result.data.groups.agentgroups;
+        });
+      };
 
       return Admin_Agents_Ctrl_Edit;
 

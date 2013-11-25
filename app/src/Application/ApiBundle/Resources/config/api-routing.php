@@ -774,6 +774,12 @@ $collection->create('api_agents_list', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_agents_get', array(
+	'path'        => '/agents/{id}',
+	'controller'  => 'ApiBundle:Agents:getAgent',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_agentsteams_list', array(
 	'path'        => '/agent_teams',
 	'controller'  => 'ApiBundle:Agents:listTeams',

@@ -584,6 +584,46 @@ nav.dp-blocktabs {
 	}
 }
 
+nav.dp-tabletabs {
+	ul {
+		list-style-type: none;
+		margin: 0 16px;
+		padding: 0 0 0 1px;
+		border-bottom: none;
+
+		li {
+			cursor: pointer;
+			display: inline-block;
+			padding: 0;
+			margin-right: 6px;
+
+			a {
+				i.fa {
+					font-size: 11pt;
+					color: #777;
+				}
+
+				display: block;
+				color: #000;
+				text-decoration: none;
+				padding: 4px 10px 3px 10px;
+				font-size: 120%;
+				font-weight: normal;
+				border: 1px solid transparent;
+				border-bottom: none;
+				.border-radius(3px, 3px, 0, 0);
+			}
+
+			&.active, &:hover {
+				a {
+					border: 1px solid #bbb;
+					border-bottom: none;
+				}
+			}
+		}
+	}
+}
+
 //######################################################################################################################
 //# Pane Styles
 //######################################################################################################################
@@ -1425,6 +1465,45 @@ section.dp-help-content-wrapper.open {
 			margin-left: 19px;
 			margin-top: 3px;
 			color: #888;
+		}
+	}
+}
+
+ul.checkbox-list {
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+
+	> li {
+		display: block;
+		margin: 0;
+		padding: 0;
+
+		&.title {
+			strong {
+				display: block;
+				background: #eee;
+				color: #666;
+				font-weight: normal;
+				padding: 4px 8px;
+			}
+		}
+
+		label {
+			display: inline-block;
+			padding: 3px 18px 3px 12px;
+			margin: 0;
+
+			input {
+				margin-right: 2px;
+			}
+
+			span {
+
+			}
 		}
 	}
 }
