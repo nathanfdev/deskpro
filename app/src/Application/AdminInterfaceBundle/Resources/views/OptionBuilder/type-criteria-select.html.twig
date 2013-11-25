@@ -25,6 +25,7 @@
 					</select>
 					<select
 						ng-if="!multiselect"
+						ng-hide="model.op == 'changed'"
 						ui-select2
 						ng-model="model.value"
 						style="min-width: 140px"
@@ -33,6 +34,7 @@
 					</select>
 					<select
 						ng-if="multiselect"
+						ng-hide="model.op == 'changed'"
 						multiple
 						ui-select2
 						ng-model="model.value"

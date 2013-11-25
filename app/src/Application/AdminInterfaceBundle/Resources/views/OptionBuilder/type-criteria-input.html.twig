@@ -20,6 +20,6 @@
 			<option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
 			<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
 		</select>
-		<input type="text" class="form-control" ng-model="model.value" />
+		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed'" />
 	</div>
 </dp-optionbuilder-row>

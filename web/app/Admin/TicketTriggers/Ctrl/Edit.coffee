@@ -24,7 +24,9 @@ define [
 			@$scope.triggerType = @$stateParams.type
 			@$scope.triggerId   = @$stateParams.id
 
+			with_changed_ops = true
 			if @$stateParams.type == 'newticket'
+				with_changed_ops = false
 				@dpTriggers = @DataService.get('TriggersNew')
 			else if @$stateParams.type == 'newreply'
 				@dpTriggers = @DataService.get('TriggersReply')
@@ -32,6 +34,8 @@ define [
 				@dpTriggers = @DataService.get('TriggersUpdate')
 
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
+			@criteraTypeDef.setWithChangedOps(with_changed_ops)
+
 			@actionsTypeDef = @dpObTypesDefTicketActions
 
 			@$scope.criteriaOptionTypes = []

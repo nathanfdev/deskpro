@@ -7,6 +7,25 @@ define [
 		init: ->
 			@options_data = null
 
+		setWithChangedOps: (@with_changed_ops) ->
+			return
+
+		getOperators: (options) ->
+
+			if not options.operators
+				return ['is', 'not']
+
+			if @with_changed_ops
+				return options.operators
+
+			ops = []
+			for o in options.operators
+				if o != 'changed' && o != 'changed_to' && o != 'changed_from'
+					ops.push(o)
+
+			return ops
+
+
 		getOptionsForTypes: (types, typesData = null) ->
 			set_options = []
 
@@ -276,36 +295,42 @@ define [
 		getCheckWorkflow: (options = {}) ->
 			options.propName = 'workflow_ids'
 			options.dataName = 'ticket_works'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckDepartment: (options = {}) ->
 			options.propName = 'department_ids'
 			options.dataName = 'ticket_deps'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckProduct: (options = {}) ->
 			options.propName = 'product_ids'
 			options.dataName = 'ticket_prods'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckEmailAccount: (options = {}) ->
 			options.propName = 'gateway_ids'
 			options.dataName = 'ticket_accounts'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			options.optionsFormatter = (options) ->
 				opts = []
 
@@ -424,12 +449,14 @@ define [
 		getCheckUserUsergroups: (options = {}) ->
 			options.propName = 'usergroup_ids'
 			options.dataName = 'usergroups'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 
 		getCheckUserLanguage: (options = {}) ->
 			options.propName = 'language_ids'
 			options.dataName = 'languages'
+			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
 			def = @getStandardSelect(options)
 			return def
 

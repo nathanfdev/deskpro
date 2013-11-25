@@ -19,7 +19,8 @@
       Admin_TicketTriggers_Ctrl_Edit.DEPS = ['dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions'];
 
       Admin_TicketTriggers_Ctrl_Edit.prototype.init = function() {
-        var _this = this;
+        var with_changed_ops,
+          _this = this;
         this.triggerType = this.$stateParams.type;
         this.trigger = null;
         this.triggerId = this.$stateParams.id;
@@ -28,7 +29,9 @@
         this.$scope.form = this.editFormMapper.getFormFromModel({});
         this.$scope.triggerType = this.$stateParams.type;
         this.$scope.triggerId = this.$stateParams.id;
+        with_changed_ops = true;
         if (this.$stateParams.type === 'newticket') {
+          with_changed_ops = false;
           this.dpTriggers = this.DataService.get('TriggersNew');
         } else if (this.$stateParams.type === 'newreply') {
           this.dpTriggers = this.DataService.get('TriggersReply');
@@ -36,6 +39,7 @@
           this.dpTriggers = this.DataService.get('TriggersUpdate');
         }
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
+        this.criteraTypeDef.setWithChangedOps(with_changed_ops);
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
         this.$scope.actionOptionTypes = [];

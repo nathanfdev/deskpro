@@ -37,6 +37,12 @@ define ->
 						}
 				}
 
+		###
+    	# @param {Object} options
+    	# @return {Array}
+		###
+		getOperators: (options) ->
+			return options.operators || ['is', 'not']
 
 		###
     	# Constructs a standard select box type
@@ -46,7 +52,7 @@ define ->
 			prop_name = options.propName
 			data_name = options.dataName
 			form_type = options.formType || 'select'
-			operators = options.operators || ['is', 'not']
+			operators = @getOperators(options)
 			options_formatter = options.optionsFormatter || null
 
 			if not options_formatter
@@ -160,7 +166,7 @@ define ->
 		getStandardInput: (options) ->
 			type      = options.type
 			prop_name = options.propName
-			operators = options.operators || ['is', 'not']
+			operators = @getOperators(options)
 
 			me = @
 			return {
@@ -169,7 +175,7 @@ define ->
 
 				getData: ->
 					return {
-					operators: operators
+						operators: operators
 					}
 
 				getDataFormatter: ->

@@ -16,6 +16,29 @@
         return this.options_data = null;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.setWithChangedOps = function(with_changed_ops) {
+        this.with_changed_ops = with_changed_ops;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOperators = function(options) {
+        var o, ops, _i, _len, _ref1;
+        if (!options.operators) {
+          return ['is', 'not'];
+        }
+        if (this.with_changed_ops) {
+          return options.operators;
+        }
+        ops = [];
+        _ref1 = options.operators;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          o = _ref1[_i];
+          if (o !== 'changed' && o !== 'changed_to' && o !== 'changed_from') {
+            ops.push(o);
+          }
+        }
+        return ops;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
         var options, set_options;
         if (typesData == null) {
@@ -230,6 +253,7 @@
         }
         options.propName = 'workflow_ids';
         options.dataName = 'ticket_works';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -241,6 +265,7 @@
         }
         options.propName = 'priority_ids';
         options.dataName = 'ticket_pris';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -252,6 +277,7 @@
         }
         options.propName = 'category_ids';
         options.dataName = 'ticket_cats';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -263,6 +289,7 @@
         }
         options.propName = 'department_ids';
         options.dataName = 'ticket_deps';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -274,6 +301,7 @@
         }
         options.propName = 'product_ids';
         options.dataName = 'ticket_prods';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -285,6 +313,7 @@
         }
         options.propName = 'gateway_ids';
         options.dataName = 'ticket_accounts';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         options.optionsFormatter = function(options) {
           var acc, opts, _i, _len;
           opts = [];
@@ -494,6 +523,7 @@
         }
         options.propName = 'usergroup_ids';
         options.dataName = 'usergroups';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -505,6 +535,7 @@
         }
         options.propName = 'language_ids';
         options.dataName = 'languages';
+        options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
         def = this.getStandardSelect(options);
         return def;
       };

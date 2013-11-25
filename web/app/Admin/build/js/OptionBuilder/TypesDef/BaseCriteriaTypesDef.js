@@ -61,6 +61,16 @@
       };
 
       /*
+        	# @param {Object} options
+        	# @return {Array}
+      */
+
+
+      Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getOperators = function(options) {
+        return options.operators || ['is', 'not'];
+      };
+
+      /*
         	# Constructs a standard select box type
       */
 
@@ -71,7 +81,7 @@
         prop_name = options.propName;
         data_name = options.dataName;
         form_type = options.formType || 'select';
-        operators = options.operators || ['is', 'not'];
+        operators = this.getOperators(options);
         options_formatter = options.optionsFormatter || null;
         if (!options_formatter) {
           options_formatter = function(options) {
@@ -215,7 +225,7 @@
         var me, operators, prop_name, type;
         type = options.type;
         prop_name = options.propName;
-        operators = options.operators || ['is', 'not'];
+        operators = this.getOperators(options);
         me = this;
         return {
           getTemplate: function() {
