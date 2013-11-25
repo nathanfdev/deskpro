@@ -7888,7 +7888,13 @@ nav.dp-appnav ul > li:hover > a i.fa-caret-right {
   display: block;
 }
 
+nav.dp-appnav ul > li.active > a i.fa-caret-down,
+nav.dp-appnav ul > li:hover > a i.fa-caret-down {
+  display: inline-block;
+}
+
 nav.dp-appnav a {
+  position: relative;
   display: block;
   padding-top: 8px;
   padding-bottom: 8px;
