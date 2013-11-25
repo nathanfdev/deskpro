@@ -81,7 +81,7 @@ class ServerFileUploads
 	{
 		$effective_max = Env::getEffectiveMaxUploadSize();
 
-		$result = Numbers::getFilesizeDisplayParts($effective_max);
+		$result = Numbers::getFilesizeDisplayParts($effective_max, 'cs');
 		$result = ($result['number'] > 1 ?
 			floor($result['number']) :
 			$result['number'])
