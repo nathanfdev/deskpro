@@ -119,7 +119,13 @@ class ServerReportFile
 
 	public function saveFileCheckResults($file_check_results)
 	{
-		file_put_contents(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt', $file_check_results);
+		try {
+
+			$this->_createFile(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt', $file_check_results);
+
+		} catch(IOException $e) {
+
+		}
 	}
 
 	/**
@@ -639,9 +645,14 @@ class ServerReportFile
 
 	protected function _createFile($file_name, $content)
 	{
-		if (file_put_contents($file_name, $content) === false) {
+		if (@file_put_contents($file_name, $content) === false) {
 
 			throw new IOException('Could not create file under location - ' . $file_name);
 		}
+	}
+
+	protected function _getFileContent($file_name)
+	{
+
 	}
 }
