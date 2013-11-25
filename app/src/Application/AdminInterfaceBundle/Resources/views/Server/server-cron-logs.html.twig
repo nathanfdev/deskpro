@@ -61,9 +61,10 @@
 				Clear Scheduled Tasks Logs
 			</button>
 
-			<br><br>
-
 			<div class="dp-btn-pagination" ng-show="LogsCtrl.server_cron_logs.logs">
+				<span dp-show-spinning="paginating_server_cron_logs">
+					<i class="spinner-flat"></i>
+				</span>
 				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
 					&lt; Prev
 				</button>
@@ -112,6 +113,9 @@
 			</table>
 
 			<div class="dp-btn-pagination" ng-show="LogsCtrl.server_cron_logs.logs">
+				<span dp-show-spinning="paginating_server_cron_logs">
+					<i class="spinner-flat"></i>
+				</span>
 				<button class="btn" ng-show="LogsCtrl.page != 1" ng-click="LogsCtrl.goPrevPage()">
 					&lt; Prev
 				</button>

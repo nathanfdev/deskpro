@@ -29,6 +29,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		loadResults: ->
 
+			@startSpinner('paginating_server_cron_logs')
+
 			data_promise = @Api.sendGet('/server_cron/logs', {
 				job_id: @filter.job_id,
 				priority: @filter.priority,
@@ -45,6 +47,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 				for i in [0...@num_pages]
 					@page_nums.push(i + 1)
+
+				@stopSpinner('paginating_server_cron_logs', true)
 			)
 
 			return @$q.all([data_promise])

@@ -43,22 +43,22 @@
       Admin_ServerCron_Ctrl_Logs.prototype.loadResults = function() {
         var data_promise,
           _this = this;
+        this.startSpinner('paginating_server_cron_logs');
         data_promise = this.Api.sendGet('/server_cron/logs', {
           job_id: this.filter.job_id,
           priority: this.filter.priority,
           page: this.filter.page
         }).then(function(res) {
-          var i, _i, _ref1, _results;
+          var i, _i, _ref1;
           _this.server_cron_logs = res.data.server_cron_logs;
           _this.filter.page = res.data.server_cron_logs.page;
           _this.page = res.data.server_cron_logs.page;
           _this.num_pages = res.data.server_cron_logs.num_pages;
           _this.page_nums = [];
-          _results = [];
           for (i = _i = 0, _ref1 = _this.num_pages; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-            _results.push(_this.page_nums.push(i + 1));
+            _this.page_nums.push(i + 1);
           }
-          return _results;
+          return _this.stopSpinner('paginating_server_cron_logs', true);
         });
         return this.$q.all([data_promise]);
       };
