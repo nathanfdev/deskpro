@@ -269,7 +269,7 @@ class ServerReportFile
 
 	protected function _createWebErrorLog($file_name)
 	{
-		$file = "\n\n\n\n\n" . str_repeat('#', 72) . "\n# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "\n# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
 
 		$log_file_path = @ini_get('error_log');
 
@@ -278,9 +278,13 @@ class ServerReportFile
 			$log_file_path = dp_get_log_dir() . '/server-phperr-web.log';
 		}
 
-		if (is_file($log_file_path) && is_readable($log_file_path)) {
+		try {
 
-			$file .= file_get_contents($log_file_path);
+			$file .= $this->_readFile($log_file_path);
+
+		} catch(IOException $e) {
+
+			$file = '';
 		}
 
 		try {
