@@ -658,6 +658,26 @@ define(function() {
 	});
 
 	//###
+	//# User Sources
+	//###
+	routes.push({
+		id: 'crm.usersources',
+		url: '/usersources',
+		templateName: 'UserReg/usersources.html',
+		controller: 'Admin_UserReg_Ctrl_UsersourceList'
+	});
+
+	//###
+	//# User Sources
+	//###
+	routes.push({
+		id: 'crm.usersources.newtype',
+		url: '/usersources/new-choose-type',
+		templateName: 'UserReg/usersources-newtype.html',
+		controller: 'Admin_UserReg_Ctrl_UsersourceNewType'
+	});
+
+	//###
 	//# User Groups
 	//###
 	routes.push({
