@@ -128,6 +128,7 @@ requirejs([
 	'Admin/Main/Ctrl/NavTickets',
 	'Admin/Main/Ctrl/NavTwitter',
 	'Admin/CustomFields/Tickets/Ctrl/Edit',
+	'Admin/CustomFields/Chat/Ctrl/Edit',
 	'Admin/Labels/Base/Ctrl/List',
 	'Admin/Labels/Base/Ctrl/Edit',
 	'Admin/Labels/Person/Ctrl/List',
