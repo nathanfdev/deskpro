@@ -46,18 +46,27 @@
       Admin_CustomFields_Base_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise,
           _this = this;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
         is_new = !this.field.id;
         this.field.type_name = this.field_type;
         promise = this.fieldDataService.saveFormModel(this.field, this.form);
         this.startSpinner('saving');
-        return promise.then(function() {
-          _this.stopSpinner('saving');
+        promise.success(function() {
+          _this.stopSpinner('saving', true).then(function() {
+            return _this.Growl.success('Saved');
+          });
           _this.skipDirtyState();
           if (is_new) {
             return _this.$state.go(_this.getBaseRouteName() + ".gocreate");
           } else {
             return _this.$state.go(_this.getBaseRouteName());
           }
+        });
+        return promise.error(function(info, code) {
+          _this.stopSpinner('saving', true);
+          return _this.applyErrorResponseToView(info);
         });
       };
 

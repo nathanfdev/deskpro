@@ -29,18 +29,33 @@ define [
 			throw new Error("Not implemented")
 
 		saveForm: ->
+
+			if not @$scope.form_props.$valid
+				return
+
 			is_new = !@field.id
 
 			@field.type_name = @field_type
 			promise = @fieldDataService.saveFormModel(@field, @form)
 
 			@startSpinner('saving')
-			promise.then( =>
-				@stopSpinner('saving')
+
+			promise.success( =>
+
+				@stopSpinner('saving', true).then(=>
+					@Growl.success('Saved')
+				)
 
 				@skipDirtyState()
+
 				if is_new
 					@$state.go(@getBaseRouteName() + ".gocreate")
 				else
 					@$state.go(@getBaseRouteName())
+			)
+
+			promise.error((info, code) =>
+
+				@stopSpinner('saving', true)
+				@applyErrorResponseToView(info)
 			)

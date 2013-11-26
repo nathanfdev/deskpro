@@ -90,7 +90,7 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group" dp-error-class="form_props.description">
-										<textarea class="form-control" name="description" ng-model="EditCtrl.form.description" style="width: 50%; height: 80px;"></textarea>
+										<textarea class="form-control" name="description" ng-model="EditCtrl.form.description" style="width: 50%; height: 80px;" required></textarea>
 									</div>
 								</div>
 							</div>
@@ -383,7 +383,7 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group">
-										<textarea class="form-control" name="description" ng-model="EditCtrl.form.display.html" style="width: 60%; height: 150px;"></textarea>
+										<textarea class="form-control" name="display" ng-model="EditCtrl.form.display.html" style="width: 60%; height: 150px;"></textarea>
 									</div>
 								</div>
 							</div>
@@ -399,7 +399,7 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group">
-										<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.hidden.cookie_name" style="width: 50%;" />
+										<input type="text" class="form-control" name="cookie_name" ng-model="EditCtrl.form.hidden.cookie_name" style="width: 50%;" />
 									</div>
 								</div>
 							</div>
@@ -410,7 +410,7 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group">
-										<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.hidden.param_name" style="width: 50%;" />
+										<input type="text" class="form-control" name="param_name" ng-model="EditCtrl.form.hidden.param_name" style="width: 50%;" />
 									</div>
 								</div>
 							</div>
@@ -421,7 +421,7 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group">
-										<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.hidden.default_value" style="width: 50%;" />
+										<input type="text" class="form-control" name="default_value" ng-model="EditCtrl.form.hidden.default_value" style="width: 50%;" />
 									</div>
 								</div>
 							</div>
@@ -471,14 +471,15 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
-							<li ng-show="form_props.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.custom_fields.title_error') }}</li>
+							<li ng-show="form_props.description.$error.required">{{ phrase('adm.custom_fields.description_error') }}</li>
 						</ul>
 					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_label">
+						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
 						</div>
-						<div dp-show-spinning="saving_label">
+						<div dp-show-spinning="saving">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>
