@@ -18,10 +18,20 @@
 
       Admin_ChatFields_Ctrl_List.DEPS = [];
 
+      /*
+       	#
+      */
+
+
       Admin_ChatFields_Ctrl_List.prototype.init = function() {
         this.chat_fields = this.DataService.get('ChatFields');
         this.custom_fields = [];
       };
+
+      /*
+       	#
+      */
+
 
       Admin_ChatFields_Ctrl_List.prototype.initialLoad = function() {
         var promise,
@@ -31,6 +41,21 @@
           return _this.custom_fields = list;
         });
         return promise;
+      };
+
+      /*
+       	#
+      */
+
+
+      Admin_ChatFields_Ctrl_List.prototype.updateCustomFieldEnabledState = function(field) {
+        var val;
+        if (field.is_enabled) {
+          val = '1';
+        } else {
+          val = '0';
+        }
+        return this.Api.sendPost('/chat_fields/set-enabled/field_' + field.id + '/' + val);
       };
 
       return Admin_ChatFields_Ctrl_List;

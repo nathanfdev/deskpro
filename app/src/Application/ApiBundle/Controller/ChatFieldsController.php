@@ -125,4 +125,18 @@ class ChatFieldsController extends AbstractController
 			);
 		}
 	}
+
+	####################################################################################################################
+	# toggleField
+	####################################################################################################################
+
+	public function toggleFieldAction($field_id, $is_enabled)
+	{
+		/** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
+
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+		$field_manager->setFieldEnabledById($field_id, $is_enabled);
+
+		return $this->createSuccessResponse();
+	}
 }
