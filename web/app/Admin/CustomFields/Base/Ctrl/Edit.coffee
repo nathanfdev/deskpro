@@ -29,7 +29,7 @@ define [
 			throw new Error("Not implemented")
 
 		saveForm: ->
-			is_new = !!@field.id
+			is_new = !@field.id
 
 			@field.type_name = @field_type
 			promise = @fieldDataService.saveFormModel(@field, @form)

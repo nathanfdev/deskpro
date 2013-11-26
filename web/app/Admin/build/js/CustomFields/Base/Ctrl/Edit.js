@@ -46,7 +46,7 @@
       Admin_CustomFields_Base_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise,
           _this = this;
-        is_new = !!this.field.id;
+        is_new = !this.field.id;
         this.field.type_name = this.field_type;
         promise = this.fieldDataService.saveFormModel(this.field, this.form);
         this.startSpinner('saving');
