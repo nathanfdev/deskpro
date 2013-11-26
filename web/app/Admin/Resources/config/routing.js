@@ -1126,8 +1126,31 @@ define(function() {
 	routes.push({
 		id: 'chat.fields',
 		url: '/fields',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ChatFields/list.html',
+		controller: 'Admin_ChatFields_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'chat.fields.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('chat.fields.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'chat.fields.create',
+		url: '/create',
+		templateName: 'CustomFields/Chat/edit.html',
+		controller: 'Admin_CustomFields_Chat_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'chat.fields.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'CustomFields/Chat/edit.html',
+		controller: 'Admin_CustomFields_Chat_Ctrl_Edit'
 	});
 
 	//###

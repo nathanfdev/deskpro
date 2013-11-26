@@ -1,6 +1,7 @@
 define [
 	'DeskPRO/Util/Strings',
 	'Admin/CustomFields/Tickets/DataService/TicketFields',
+	'Admin/CustomFields/Chat/DataService/ChatFields',
 	'Admin/TicketFilters/DataService/TicketFilters',
 	'Admin/TicketDeps/DataService/TicketDeps',
 	'Admin/TicketEscalations/DataService/TicketEscalations',
@@ -13,6 +14,7 @@ define [
 ], (
 	Strings,
 	DataService_TicketFields,
+	DataService_ChatFields,
 	DataService_TicketFilters,
 	DataService_TicketDeps,
 	DataService_TicketEscalations,

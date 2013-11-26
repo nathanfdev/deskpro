@@ -199,7 +199,8 @@ requirejs([
 	'Admin/UserGroups/Ctrl/Edit',
 	'Admin/UserReg/Ctrl/Settings',
 	'Admin/UserReg/Ctrl/UsersourceList',
-	'Admin/UserReg/Ctrl/UsersourceNewType'
+	'Admin/UserReg/Ctrl/UsersourceNewType',
+	'Admin/ChatFields/Ctrl/List'
 ], function(angular) {
 	'use strict';
 
