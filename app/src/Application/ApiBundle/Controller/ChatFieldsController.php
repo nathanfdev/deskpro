@@ -29,26 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage ApiBundle
  */
 
-namespace Application\DeskPRO\CustomFields;
+namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
+use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\ORM\EntityManager;
-
-class ChatFieldManager extends FieldManager
+class ChatFieldsController extends AbstractController
 {
-	/**
-	 * Get an array of all defined fields (by doing a query).
-	 *
-	 * @return array
-	 */
+	####################################################################################################################
+	# list
+	####################################################################################################################
 
-	public function getDefinedFields()
+	public function listAction()
 	{
-		return array_values($this->em->getRepository('DeskPRO:CustomDefChat')->getTopFields());
+		$data = array();
+
+		/** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
+
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+
+		$custom_fields         = $field_manager->getDefinedFields();
+		$data['custom_fields'] = $this->getApiData($custom_fields, false);
+
+		return $this->createApiResponse($data);
 	}
 }

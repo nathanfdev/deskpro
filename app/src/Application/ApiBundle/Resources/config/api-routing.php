@@ -2309,31 +2309,6 @@ $collection->create('api_ticket_pris_save', array(
 ));
 
 ########################################################################################################################
-# Ticket Fields
-########################################################################################################################
-
-$collection->create('api_ticket_fields_get', array(
-	'path'         => '/ticket_fields/{id}',
-	'controller'   => 'ApiBundle:TicketFields:getCustomField',
-	'requirements' => array('id' => '\\d+'),
-	'methods'      => array('GET'),
-));
-
-$collection->create('api_ticket_fields_create', array(
-	'path'       => '/ticket_fields',
-	'controller' => 'ApiBundle:TicketFields:saveCustomField',
-	'defaults'   => array('id' => '0'),
-	'methods'    => array('PUT'),
-));
-
-$collection->create('api_ticket_fields_save', array(
-	'path'         => '/ticket_fields/{id}',
-	'controller'   => 'ApiBundle:TicketFields:saveCustomField',
-	'requirements' => array('id' => '\\d+'),
-	'methods'      => array('POST'),
-));
-
-########################################################################################################################
 # Ticket Statuses
 ########################################################################################################################
 
@@ -2433,6 +2408,27 @@ $collection->create('api_ticket_urgencies', array(
 ########################################################################################################################
 # Ticket Fields
 ########################################################################################################################
+
+$collection->create('api_ticket_fields_get', array(
+	'path'         => '/ticket_fields/{id}',
+	'controller'   => 'ApiBundle:TicketFields:getCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_ticket_fields_create', array(
+	'path'       => '/ticket_fields',
+	'controller' => 'ApiBundle:TicketFields:saveCustomField',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_ticket_fields_save', array(
+	'path'         => '/ticket_fields/{id}',
+	'controller'   => 'ApiBundle:TicketFields:saveCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
 
 $collection->create('api_ticket_fields', array(
 	'path'        => '/ticket_fields',
@@ -3036,6 +3032,43 @@ $collection->create('api_server_report_file_check_save', array(
 	'path'       => '/server_report_file/file_check_results',
 	'controller' => 'ApiBundle:Server:saveFileCheckResults',
 	'methods'    => array('POST'),
+));
+
+########################################################################################################################
+# Chat Fields
+########################################################################################################################
+
+$collection->create('api_chat_fields_get', array(
+	'path'         => '/chat_fields/{id}',
+	'controller'   => 'ApiBundle:ChatFields:getCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_chat_fields_create', array(
+	'path'       => '/chat_fields',
+	'controller' => 'ApiBundle:ChatFields:saveCustomField',
+	'defaults'   => array('id' => '0'),
+	'methods'    => array('PUT'),
+));
+
+$collection->create('api_chat_fields_save', array(
+	'path'         => '/chat_fields/{id}',
+	'controller'   => 'ApiBundle:ChatFields:saveCustomField',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_chat_fields', array(
+	'path'        => '/chat_fields',
+	'controller'  => 'ApiBundle:ChatFields:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_chat_fields_setenabled', array(
+	'path'        => '/chat_fields/set-enabled/{field_id}/{is_enabled}',
+	'controller'  => 'ApiBundle:ChatFields:toggleField',
+	'methods'     => array('POST'),
 ));
 
 ########################################################################################################################
