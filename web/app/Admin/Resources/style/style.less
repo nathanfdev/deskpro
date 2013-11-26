@@ -88,6 +88,10 @@ label {
 	padding: 15px;
 }
 
+.dp-mpadded {
+	margin: 15px;
+}
+
 em.dp-id {
 	display: inline-block;
 	line-height: 100%;
@@ -438,6 +442,74 @@ nav.dp-appnav {
 		}
 	}
 }
+
+//######################################################################################################################
+//# App Section
+//######################################################################################################################
+
+div.dp-appalt-section {
+	margin-bottom: 18px;
+
+	> header {
+		margin: 6px;
+		h2 {
+			display: inline-block;
+			font-size: 125%;
+			border-bottom: 2px solid #ccc;
+			padding: 0 0 2px 0;
+			margin: 0;
+		}
+	}
+
+	> section {
+		margin: 10px;
+
+		header {
+			h3 {
+				font-size: 120%;
+				font-weight: normal;
+				padding: 0;
+				margin: 0 0 0 -3px;
+			}
+		}
+
+		article {
+
+		}
+	}
+}
+
+//######################################################################################################################
+//# Dashboard
+//######################################################################################################################
+
+.dp-dashboard {
+	padding: 0 15px;
+
+	.row {
+		margin-top: 15px;
+		.col-xs-6 + .col-xs-6 {
+			padding-left: 0;
+		}
+	}
+
+	.dp-item {
+		background: #fff;
+		border: 1px solid #d0d9e6;
+
+		> header {
+			margin: 6px;
+			h3 {
+				display: inline-block;
+				font-size: 125%;
+				border-bottom: 2px solid #ccc;
+				padding: 0 0 2px 0;
+				margin: 0;
+			}
+		}
+	}
+}
+
 
 //######################################################################################################################
 //# Pane Block - Standard pane wrapper
@@ -1530,6 +1602,90 @@ table.inner-form-table {
 			display: block;
 			font-weight: normal;
 			line-height: 120%;
+		}
+	}
+}
+
+//######################################################################################################################
+//# Icon List
+//######################################################################################################################
+
+ul.dp-icon-list {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+
+	> li {
+		margin: 8px 0;
+		padding: 0;
+
+		span.title {
+			display: block;
+			padding: 8px;
+		}
+	}
+}
+
+ul.dp-icon-list.with-icons i.icon-img {
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 0;
+	border-radius: 2px;
+	overflow: hidden;
+	width: 16px;
+	height: 16px;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+}
+
+ul.dp-icon-list.with-icons > li span.title {
+	margin-left: 20px;
+	line-height: 18px;
+	padding: 0 8px;
+}
+ul.dp-icon-list.with-icons.x22 {
+	i.icon-img {
+		width: 22px;
+		height: 22px;
+	}
+
+	> li span.title {
+		margin-left: 23px;
+		line-height: 22px;
+		padding: 0 4px;
+	}
+}
+ul.dp-icon-list.with-icons.x24 {
+	i.icon-img {
+		width: 32px;
+		height: 32px;
+	}
+
+	> li span.title {
+		margin-left: 33px;
+		line-height: 32px;
+	}
+}
+
+//######################################################################################################################
+//# Display List
+//######################################################################################################################
+
+ul.dp-display-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 15px 0;
+
+	li {
+		font-size: 120%;
+		margin: 15px;
+		padding: 0;
+
+		i {
+			font-size: 120%;
+			width: 20px;
+			text-align: center;
 		}
 	}
 }

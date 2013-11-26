@@ -47,8 +47,12 @@ class AgentsController extends AbstractController
 	{
 		$data = array('agents' => array());
 
+
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
-			$data['agents'][] = $agent->toApiData();
+			$agent_data = $agent->toApiData();
+			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+
+			$data['agents'][] = $agent_data;
 		}
 
 		return $this->createApiResponse($data);
