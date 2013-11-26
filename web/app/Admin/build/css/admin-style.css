@@ -7489,6 +7489,16 @@ button.close {
   overflow: auto;
 }
 
+.dp-layout-appbody-white-matte {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  background: #fff;
+}
+
 .with-layout-appnav .dp-layout-appbody {
   left: 165px;
 }
@@ -10819,4 +10829,48 @@ table.table > tbody > tr > td.dp-id-col {
 
 .dp-datepicker .btn-day.btn-on {
   background: #ccc;
+}
+
+.dp-portal-editor-frame {
+  margin: 15px 40px 15px 15px;
+  overflow: hidden;
+  border: 1px solid #d9d9d9;
+  border-radius: 7px;
+}
+
+.dp-portal-editor-frame > header {
+  padding: 6px;
+  background: #d9d9d9;
+}
+
+.dp-portal-editor-frame > header .address-bar {
+  padding: 0 10px;
+  margin-right: 30px;
+  line-height: 26px;
+  background: #fff;
+  border-radius: 5px;
+}
+
+.dp-portal-editor-frame > header .lines {
+  position: relative;
+  top: -2px;
+  float: right;
+  font-size: 23px;
+  color: #8c8c8c;
+}
+
+.dp-portal-editor-frame #portal_iframe_loading h1 {
+  display: block;
+  height: 400px;
+  padding: 0;
+  margin: 0;
+  background: url('../../../../images/spinners/login-spinner.gif') no-repeat 50% 50%;
+}
+
+.dp-portal-editor-frame #portal_iframe {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
 }

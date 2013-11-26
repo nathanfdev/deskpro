@@ -871,7 +871,7 @@ define(function() {
 	routes.push({
 		id: 'portal.portal_editor',
 		url: '/portal_editor',
-		templateName: 'Index/blank.html',
+		templateName: 'PortalEditor/frame.html',
 		controller: 'Admin_Main_Ctrl_Bare'
 	});
 

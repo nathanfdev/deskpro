@@ -30,6 +30,8 @@ requirejs.config({
 		Admin:                           DP_ASSET_URL+'/app/Admin/build/js',
 		AdminRouting:                    DP_ASSET_URL+'/app/Admin/Resources/config/routing',
 
+		ColorPicker:                     DP_ASSET_URL+'/vendor/colorpicker/js/colorpicker.min',
+
 		'jquery.ui.widget':              DP_ASSET_URL+'/app/bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget',
 
 		'jquery.fileupload':             DP_ASSET_URL+'/app/bower_components/blueimp-file-upload/js/jquery.fileupload',
@@ -59,6 +61,7 @@ requirejs.config({
 		'angularFileUpload':    ['jquery'],
 
 		'jqueryUi':             ['jquery'],
+		'ColorPicker':          ['jquery'],
 
 		'bootstrapModal':      ['jquery'],
 		'bootstrapTooltip':    ['jquery', 'jqueryUi'],
@@ -174,6 +177,7 @@ requirejs([
 	'Admin/TwitterAccounts/Ctrl/Edit',
 	'Admin/Plugins/Ctrl/List',
 	'Admin/Plugins/Ctrl/Install',
+	'Admin/Portal/Ctrl/PortalEditor',
 	'Admin/Server/Ctrl/ServerReqs',
 	'Admin/Server/Ctrl/ServerPhpInfo',
 	'Admin/Server/Ctrl/ServerMysqlInfo',

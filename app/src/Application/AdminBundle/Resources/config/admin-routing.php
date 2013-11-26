@@ -367,65 +367,6 @@ $collection->create('admin_accept_upload', array(
 	'controller'  => 'AdminBundle:Main:acceptTempUpload',
 ));
 
-$collection->create('admin_portal', array(
-	'path'        => '/portal',
-	'controller'  => 'AdminBundle:Portal:index',
-));
-
-$collection->create('admin_portal_updateblockorder', array(
-	'path'        => '/portal/update-block-orders.json',
-	'controller'  => 'AdminBundle:Portal:updateBlockOrders',
-));
-
-$collection->create('admin_portal_blocktoggle', array(
-	'path'        => '/portal/blocks/{pid}/toggle.json',
-	'controller'  => 'AdminBundle:Portal:blockToggle',
-));
-
-$collection->create('admin_portal_custom_block_delete', array(
-	'path'        => '/portal/blocks/{pid}/delete-template-block.json',
-	'controller'  => 'AdminBundle:Portal:deleteTemplateBlock',
-));
-
-$collection->create('admin_portal_custom_sideblock_simple_get', array(
-	'path'        => '/portal/sideblock-simple/{pid}.json',
-	'controller'  => 'AdminBundle:Portal:getCustomBlockSimple',
-));
-
-$collection->create('admin_portal_custom_sideblock_simple_save', array(
-	'path'        => '/portal/sideblock-simple/{pid}/save.json',
-	'controller'  => 'AdminBundle:Portal:saveCustomBlockSimple',
-	'defaults'    => array('pid' => '0'),
-	'methods'     => array('POST'),
-));
-
-$collection->create('admin_portal_custom_sideblock_simple_delete', array(
-	'path'        => '/portal/sideblock-simple/{pid}/delete.json',
-	'controller'  => 'AdminBundle:Portal:deleteCustomBlockSimple',
-	'methods'     => array('POST'),
-));
-
-$collection->create('admin_portal_toggle', array(
-	'path'        => '/portal/toggle-portal',
-	'controller'  => 'AdminBundle:Portal:togglePortal',
-));
-
-$collection->create('admin_portal_get_editor', array(
-	'path'        => '/portal/get-editor/{type}',
-	'controller'  => 'AdminBundle:Portal:getEditor',
-));
-
-$collection->create('admin_portal_save_editor', array(
-	'path'        => '/portal/save-editor/{type}',
-	'controller'  => 'AdminBundle:Portal:saveEditor',
-	'methods'     => array('POST'),
-));
-
-$collection->create('admin_portal_twitter_oauth', array(
-	'path'        => '/portal/twitter-oauth',
-	'controller'  => 'AdminBundle:Portal:twitterOauth',
-));
-
 $collection->create('admin_website_embeds', array(
 	'path'        => '/website-embeds',
 	'controller'  => 'AdminBundle:Portal:widgets',
