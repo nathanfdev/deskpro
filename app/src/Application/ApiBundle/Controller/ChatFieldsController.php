@@ -56,4 +56,73 @@ class ChatFieldsController extends AbstractController
 
 		return $this->createApiResponse($data);
 	}
+
+	####################################################################################################################
+	# get-custom-field
+	####################################################################################################################
+
+	public function getCustomFieldAction($id)
+	{
+		/** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
+
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+		$field         = $field_manager->getFieldFromId($id);
+
+		if (!$field) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$data          = array();
+		$data['field'] = $field->toApiData();
+
+		return $this->createApiResponse($data);
+	}
+
+	####################################################################################################################
+	# save-custom-field
+	####################################################################################################################
+
+	public function saveCustomFieldAction($id)
+	{
+		/** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
+
+		$field_manager = $this->container->getSystemService('chat_fields_manager');
+
+		if ($id) {
+
+			$field = $field_manager->getFieldFromId($id);
+
+			if (!$field) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$field                = $field_manager->createNewDefEntity();
+			$field->handler_class = $this->in->getString('handler_class');
+		}
+
+		$post = $this->in->getAll('req');
+
+		$helper = new CustomFieldHelper($this);
+		$helper->saveFormToField($field, $post);
+
+		if ($id) {
+
+			return $this->createSuccessResponse(
+				array(
+					 'field_id' => $field->id
+				)
+			);
+		} else {
+
+			return $this->createSuccessResponse(
+				array(
+					 'field_id' => $field->id,
+					 $this->generateUrl('api_chat_fields_get', array('id' => $field->id))
+				)
+			);
+		}
+	}
 }
