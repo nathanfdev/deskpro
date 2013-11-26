@@ -8086,6 +8086,57 @@ nav.dp-blocktabs ul li.pipe {
   color: #ccc;
 }
 
+nav.dp-tabletabs ul {
+  padding: 0 0 0 1px;
+  margin: 0 16px;
+  list-style-type: none;
+  border-bottom: none;
+}
+
+nav.dp-tabletabs ul li {
+  display: inline-block;
+  padding: 0;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+nav.dp-tabletabs ul li a {
+  display: block;
+  padding: 4px 10px 3px 10px;
+  font-size: 120%;
+  font-weight: normal;
+  color: #000;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-bottom: none;
+  -webkit-border-top-right-radius: 3px;
+          border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 0;
+          border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+          border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 3px;
+          border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 3px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+nav.dp-tabletabs ul li a i.fa {
+  font-size: 11pt;
+  color: #777;
+}
+
+nav.dp-tabletabs ul li.active a,
+nav.dp-tabletabs ul li:hover a {
+  border: 1px solid #bbb;
+  border-bottom: none;
+}
+
 .pane-fullpage {
   background: #fff;
 }
@@ -8921,6 +8972,39 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   margin-top: 3px;
   margin-left: 19px;
   color: #888;
+}
+
+ul.checkbox-list {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+ul.checkbox-list > li {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+ul.checkbox-list > li.title strong {
+  display: block;
+  padding: 4px 8px;
+  font-weight: normal;
+  color: #666;
+  background: #eee;
+}
+
+ul.checkbox-list > li label {
+  display: inline-block;
+  padding: 3px 18px 3px 12px;
+  margin: 0;
+}
+
+ul.checkbox-list > li label input {
+  margin-right: 2px;
 }
 
 table.inner-form-table th {

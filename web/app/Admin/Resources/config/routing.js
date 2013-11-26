@@ -21,77 +21,81 @@ define(function() {
 	});
 
 	//##################################################################################################################
-	// Main Nav
+	// Home
 	//##################################################################################################################
 
 	routes.push({
 		id: 'home',
 		url: '/',
 		templateName: 'Index/home.html',
-		controller: 'Admin_Main_Ctrl_NavSetup'
+		controller: 'Admin_Main_Ctrl_Home'
 	});
+
+	//##################################################################################################################
+	// Main Nav
+	//##################################################################################################################
 
 	routes.push({
 		id: 'setup',
 		url: '/setup',
 		templateName: 'Index/app-nav-setup.html',
-		controller: 'Admin_Main_Ctrl_NavSetup'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'agents',
 		url: '/agents',
 		templateName: 'Index/app-nav-agents.html',
-		controller: 'Admin_Main_Ctrl_NavAgents'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'tickets',
 		url: '/tickets',
 		templateName: 'Index/app-nav-tickets.html',
-		controller: 'Admin_Main_Ctrl_NavTickets'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'crm',
 		url: '/crm',
 		templateName: 'Index/app-nav-crm.html',
-		controller: 'Admin_Main_Ctrl_NavCrm'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'portal',
 		url: '/portal',
 		templateName: 'Index/app-nav-portal.html',
-		controller: 'Admin_Main_Ctrl_NavPortal'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'chat',
 		url: '/chat',
 		templateName: 'Index/app-nav-chat.html',
-		controller: 'Admin_Main_Ctrl_NavChat'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'twitter',
 		url: '/twitter',
 		templateName: 'Index/app-nav-twitter.html',
-		controller: 'Admin_Main_Ctrl_NavTwitter'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'apps',
 		url: '/apps',
 		templateName: 'Index/app-nav-apps.html',
-		controller: 'Admin_Main_Ctrl_NavApps'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	routes.push({
 		id: 'server',
 		url: '/server',
 		templateName: 'Index/app-nav-server.html',
-		controller: 'Admin_Main_Ctrl_NavServer'
+		controller: 'Admin_Main_Ctrl_Nav'
 	});
 
 	//##################################################################################################################
