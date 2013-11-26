@@ -51,7 +51,8 @@ define [
 				'Index/blank.html',
 				'Common/work-hours-directive.html',
 				'TicketDeps/layout-editor.html',
-				'TicketDeps/layout-editor-field.html'
+				'TicketDeps/layout-editor-field.html',
+				'ChatSetup/embed-code.html'
 			]
 
 			for own _, route of AdminRouting

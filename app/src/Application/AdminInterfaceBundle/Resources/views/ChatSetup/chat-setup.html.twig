@@ -1,0 +1,64 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="ChatSetup.save()">
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>Chat Setup</h3>
+			</header>
+
+			<article>
+				<div class="panel panel-innertable">
+					<h3 style="margin-bottom: 4px;">
+						"Chat with us" Tab
+					</h3>
+
+					<button dp-inhelp-btn="admin.chat_setup.widget_chat_explain"></button>
+					<button dp-inhelp-btn="admin.chat_setup.chat_important"></button>
+
+					<div class="panel-help" dp-inhelp-body="admin.chat_setup.widget_chat_explain">
+						<p>
+							{{ phrase('admin.portal.website_widgets_chat_explain') }}
+						</p>
+					</div>
+
+					<div class="panel-help" dp-inhelp-body="admin.chat_setup.chat_important">
+						<p>
+							<strong style="color: #FF5500;">Important:</strong>
+							The chat widget only appears when there are agents available for chat in the Agent Interface.
+
+							<p ng-if="!setup.chat_online">
+								At the moment, there no agents signed in to chat so the widget will not appear.
+							</p>
+						</p>
+					</div>
+
+					<div class="editor-row">
+						<div class="editor-wrap">
+							<div class="editor" ng-model="embed_code" ui-ace="{
+								mode: 'html',
+								useWrapMode: false,
+								showGutter: false,
+								theme: 'textmate',
+								onLoad: embedEditorLoaded
+							}" style="height: 220px;"></div>
+						</div>
+					</div>
+
+					<div>
+						<p>{{ phrase('admin.portal.website_widget_install') }}</p>
+
+						<p>Related articles:</p>
+						<ul class="small-detail-list">
+							<li>
+								<a href="https://support.deskpro.com/kb/articles/146" target="_blank">
+									Set language from the chat widget
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</article>
+
+		</section>
+	</form>
+{% endblock %}

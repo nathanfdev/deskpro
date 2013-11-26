@@ -1110,8 +1110,8 @@ define(function() {
 	routes.push({
 		id: 'chat.setup',
 		url: '/setup',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		templateName: 'ChatSetup/chat-setup.html',
+		controller: 'Admin_ChatSetup_Ctrl_ChatSetup'
 	});
 
 	//###

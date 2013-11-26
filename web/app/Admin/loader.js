@@ -196,7 +196,8 @@ requirejs([
 	'Admin/UserReg/Ctrl/Settings',
 	'Admin/UserReg/Ctrl/UsersourceList',
 	'Admin/UserReg/Ctrl/UsersourceNewType',
-	'Admin/ChatFields/Ctrl/List'
+	'Admin/ChatFields/Ctrl/List',
+	'Admin/ChatSetup/Ctrl/ChatSetup'
 ], function(angular) {
 	'use strict';
 

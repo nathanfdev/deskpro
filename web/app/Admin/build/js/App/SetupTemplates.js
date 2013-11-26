@@ -30,7 +30,7 @@
       return Module.run([
         'dpTemplateManager', function(dpTemplateManager) {
           var route, t, templates, _, _i, _len;
-          templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'Languages/modal-translate-phrase.html', 'TicketDeps/code-phpapi.html', 'TicketDeps/code-link.html', 'TicketDeps/code-win.html', 'TicketDeps/code-embed.html', 'Index/blank.html', 'Common/work-hours-directive.html', 'TicketDeps/layout-editor.html', 'TicketDeps/layout-editor-field.html'];
+          templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'Languages/modal-translate-phrase.html', 'TicketDeps/code-phpapi.html', 'TicketDeps/code-link.html', 'TicketDeps/code-win.html', 'TicketDeps/code-embed.html', 'Index/blank.html', 'Common/work-hours-directive.html', 'TicketDeps/layout-editor.html', 'TicketDeps/layout-editor-field.html', 'ChatSetup/embed-code.html'];
           for (_ in AdminRouting) {
             if (!__hasProp.call(AdminRouting, _)) continue;
             route = AdminRouting[_];
