@@ -1131,13 +1131,37 @@ define(function() {
 	});
 
 	//###
-	//# Labels
+	//# Chat::Labels
 	//###
+
 	routes.push({
 		id: 'chat.labels',
 		url: '/labels',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'Labels/Chat/list.html',
+		controller: 'Admin_Labels_Chat_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'chat.labels.create',
+		url: '/create/',
+		templateName: 'Labels/Chat/edit.html',
+		controller: 'Admin_Labels_Chat_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'chat.labels.gocreate',
+		url: '/go-create/',
+		templateName: 'Labels/Chat/edit.html',
+		controller: ['$state', function ($state) {
+			$state.go('chat.labels.create');
+		}]
+	});
+
+	routes.push({
+		id: 'chat.labels.edit',
+		url: '/{label:.*}/',
+		templateName: 'Labels/Chat/edit.html',
+		controller: 'Admin_Labels_Chat_Ctrl_Edit'
 	});
 
 
