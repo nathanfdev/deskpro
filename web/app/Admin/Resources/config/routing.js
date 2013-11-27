@@ -1127,8 +1127,8 @@ define(function() {
 	routes.push({
 		id: 'chat.chat_deps',
 		url: '/chat_deps',
-		templateName: 'Index/blank.html',
-		controller: 'Admin_Main_Ctrl_BareList'
+		templateName: 'ChatDeps/list.html',
+		controller: 'Admin_ChatDeps_Ctrl_List'
 	});
 
 	//###

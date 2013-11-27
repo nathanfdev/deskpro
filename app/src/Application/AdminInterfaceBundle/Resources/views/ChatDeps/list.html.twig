@@ -1,0 +1,59 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders">
+					<i class="fa fa-check-square-o-square"></i>
+					{{ phrase('agent.general.saved') }}
+				</span>
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.deps.length || 0"
+				when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
+				<li class="with-drag-handle" ng-repeat="dep in ListCtrl.depList"
+					dp-state-mark="chat.chat_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
+
+					<a href="{{ ng_href('chat.chat_deps.edit', '{id: dep.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+					</a>
+
+					<ul class="dp-item-list sublist" ng-if="dep.children.length"
+						ui-sortable="ListCtrl.sortedListOptions">
+						<li class="with-drag-handle" ng-repeat="subdep in dep.children"
+							dp-state-mark="chat.chat_deps.edit.{{ ng_var('subdep.id') }}"
+							data-id="{{ ng_var('subdep.id') }}">
+							<a href="{{ ng_href('chat.chat_deps.edit', '{id: subdep.id}') }}">
+								<i class="fa fa-bars drag-handle"></i>
+								<h4>
+									<span class="tree-char middle" ng-if="!$last"></span>
+									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-text">{{ ng_var('subdep.title') }}</span>
+								</h4>
+							</a>
+						</li>
+					</ul>
+
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
+				   href="{{ ng_href('chat.chat_deps.gocreate') }}" dp-list-autoload autoload-priority="2">
+					<i class="fa fa-plus"></i> New Department
+				</a>
+			</div>
+
+			<div class="dp-empty-list-notice" ng-show="ListCtrl.deps.length == 1">
+				<p>
+					{{ phrase('adm.departments.not_user_visible') }}
+				</p>
+			</div>
+		</article>
+	</section>
+
+	<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
+{% endblock %}
+{% block listpane_help %}{% include 'AdminInterfaceBundle:ChatDeps:help-page.html.twig' %}{% endblock %}
