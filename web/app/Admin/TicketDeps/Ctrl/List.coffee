@@ -14,7 +14,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 					order = []
 					$list.find('li').each(->
-						order.push(dep_id)
+						order.push(parseInt($(this).data('id')))
 					)
 
 					@depData.saveDisplayOrders(order)

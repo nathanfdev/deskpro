@@ -215,7 +215,7 @@ define [
 				d = @findListModelById(id)
 				if d
 					d.display_order = order
-					postData.push(id)
+					postData.display_orders.push(id)
 
 			promise = @Api.sendPostJson('/ticket_deps/display_order', postData)
 			return promise

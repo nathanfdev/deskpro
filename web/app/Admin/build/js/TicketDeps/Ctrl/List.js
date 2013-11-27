@@ -27,7 +27,7 @@
             $list = data.item.closest('ul');
             order = [];
             $list.find('li').each(function() {
-              return order.push(dep_id);
+              return order.push(parseInt($(this).data('id')));
             });
             _this.depData.saveDisplayOrders(order);
             return _this.pingElement('display_orders');
