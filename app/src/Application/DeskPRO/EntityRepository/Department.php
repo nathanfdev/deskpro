@@ -37,7 +37,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
 
 class Department extends AbstractCategoryRepository
 {
@@ -46,10 +45,10 @@ class Department extends AbstractCategoryRepository
 		return $this->getRootNodes();
 	}
 
-
 	/**
 	 * @return \Application\DeskPRO\Entity\Department[]
 	 */
+
 	public function getTicketDepartments()
 	{
 		return $this->_em->createQuery("
@@ -60,13 +59,31 @@ class Department extends AbstractCategoryRepository
 		")->execute();
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Department[]
+	 */
+
+	public function getChatDepartments()
+	{
+		return $this->_em->createQuery(
+			"
+			SELECT d
+			FROM DeskPRO:Department d
+			WHERE d.is_chat_enabled = true
+			ORDER BY d.display_order ASC
+			"
+		)->execute();
+	}
+
 
 	/**
 	 * Get the default ticket department for a given context (ticket, chat)
 	 *
 	 * @param string $context
-	 * @return \Application\DeskPRO\Entity\Department
+	 * @return \Application\DeskPRO\Entity\Department	 *
+	 * @throws \InvalidArgumentException
 	 */
+
 	public function getDefaultDepartment($context)
 	{
 		switch ($context) {
@@ -108,6 +125,13 @@ class Department extends AbstractCategoryRepository
 		return $dep;
 	}
 
+	/**
+	 * @param $context
+	 *
+	 * @return \Application\DeskPRO\Entity\Department
+	 * @throws \InvalidArgumentException
+	 */
+
 	public function getChildDepartments($context)
 	{
 		switch ($context) {
@@ -135,6 +159,7 @@ class Department extends AbstractCategoryRepository
 	 *
 	 * @return array
 	 */
+
 	public function getUnlinkedGatewayDepartments()
 	{
 		return $this->_em->createQuery("
@@ -144,11 +169,11 @@ class Department extends AbstractCategoryRepository
 		")->execute();
 	}
 
-
 	/**
 	 * @param $department
 	 * @param $email_gateway
 	 */
+
 	public function linkToGateway($department, $email_gateway = null)
 	{
 		$em = $this->_em;

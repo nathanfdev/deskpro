@@ -3094,6 +3094,47 @@ $collection->create('api_chat_setup_toggle', array(
 ));
 
 ########################################################################################################################
+# Chat Departments
+########################################################################################################################
+
+$collection->create('api_chat_deps', array(
+	'path'        => '/chat_deps',
+	'controller'  => 'ApiBundle:ChatDeps:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_chat_deps_create', array(
+	'path'        => '/chat_deps',
+	'controller'  => 'ApiBundle:ChatDeps:save',
+	'defaults'    => array('id' => '0'),
+	'methods'     => array('PUT'),
+));
+
+$collection->create('api_chat_deps_order', array(
+	'path'        => '/chat_deps/display_order',
+	'controller'  => 'ApiBundle:ChatDeps:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_chat_deps_get', array(
+	'path'        => '/chat_deps/{id}',
+	'controller'  => 'ApiBundle:ChatDeps:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_chat_deps_save', array(
+	'path'        => '/chat_deps/{id}',
+	'controller'  => 'ApiBundle:ChatDeps:save',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_chat_deps_remove', array(
+	'path'        => '/chat_deps/{id}',
+	'controller'  => 'ApiBundle:ChatDeps:remove',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Languages
 ########################################################################################################################
 
