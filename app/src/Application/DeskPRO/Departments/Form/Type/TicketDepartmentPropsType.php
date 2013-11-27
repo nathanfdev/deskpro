@@ -56,13 +56,6 @@ class TicketDepartmentPropsType extends AbstractType
 				return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
 			}
 		));
-		$builder->add('email_gateway', 'entity', array(
-			'class'         => 'DeskPRO:EmailGateway',
-			'required'      => false,
-			'query_builder' => function(EntityRepository $er) {
-				return $er->createQueryBuilder('g');
-			}
-		));
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -105,8 +105,7 @@ class EmailGateway extends AbstractEntityRepository
 		return $this->_em->createQuery("
 			SELECT g
 			FROM DeskPRO:EmailGateway g
-			LEFT JOIN g.department dep
-			WHERE dep IS NULL AND g.is_enabled = true
+			WHERE g.is_enabled = true
 			ORDER BY g.email_address ASC
 		")->execute();
 	}
@@ -120,7 +119,6 @@ class EmailGateway extends AbstractEntityRepository
 			SELECT acc
 			FROM DeskPRO:EmailGateway acc
 			LEFT JOIN acc.linked_transport tr
-			LEFT JOIN acc.department dep
 			LEFT JOIN acc.addresses addr
 			WHERE acc.gateway_type = 'tickets'
 			ORDER BY acc.email_address ASC

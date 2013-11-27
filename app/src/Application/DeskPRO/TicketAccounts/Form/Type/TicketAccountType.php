@@ -46,14 +46,6 @@ class TicketAccountType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('department', 'entity', array(
-			'class'         => 'DeskPRO:Department',
-			'required'      => true,
-			'query_builder' => function(EntityRepository $er) {
-				return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true')->orderBy('d.display_order', 'ASC');
-			}
-		));
-
 		$builder->add('email_address', 'text', array(
 			'required'      => true,
 		));

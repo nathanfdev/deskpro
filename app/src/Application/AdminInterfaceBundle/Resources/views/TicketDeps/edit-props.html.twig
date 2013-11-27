@@ -65,26 +65,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group" ng-if="EditCtrl.email_accounts.length" dp-error-class="form_props.email_gateway_id">
-			<div class="col-lg-3">
-				<h3>{{ phrase('adm.departments.linked_account') }}</h3>
-			</div>
-			<div class="col-lg-9">
-				<select
-					name="email_gateway_id"
-					ui-select2
-					ng-model="EditCtrl.form.email_gateway_id"
-					style="min-width: 240px"
-					class="no-search"
-					required
-				>
-					<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.email_address') }}</option>
-				</select>
-				<span class="help-block">
-					{{ phrase('adm.departments.linked_account_explain') }}
-				</span>
-			</div>
-		</div>
 
 		{##############################################################################################}
 
@@ -93,6 +73,20 @@
 				<h3>New Ticket Actions</h3>
 			</div>
 			<div class="col-lg-9">
+				<div class="inner-group">
+					Email account:&nbsp;
+					<select
+							name="email_gateway_id"
+							ui-select2
+							ng-model="EditCtrl.form.email_gateway_id"
+							style="min-width: 240px"
+							class="no-search"
+							required
+							>
+						<option value="{{ ng_var('account.id') }}" ng-repeat="account in EditCtrl.email_accounts">{{ ng_var('account.email_address') }}</option>
+					</select>
+				</div>
+
 				{# Send newticket auto-response #}
 				<div class="inner-group">
 					<label style="font-weight: normal">

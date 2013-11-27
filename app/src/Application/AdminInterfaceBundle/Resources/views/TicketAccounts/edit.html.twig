@@ -238,44 +238,6 @@
 					</div>
 
 					{##################################################################################################}
-					{# Linked Department #}
-					{##################################################################################################}
-
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>Linked Department *</h3>
-						</div>
-						<div class="col-lg-9">
-							<div class="inner-group" style="padding-top: 3px;">
-								<select
-										ui-select2
-										ng-model="form.department"
-										style="min-width: 240px"
-										>
-									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketAccountsEdit.deps">{{ ng_var('dep.full_title') }}</option>
-								</select>
-							</div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="col-lg-3">
-							<h3>From Address</h3>
-						</div>
-						<div class="col-lg-9">
-							<div class="inner-group" style="padding-top: 3px;">
-								<select ui-select2 style="min-width: 240px;">
-									<option value="auto">Automatic: Use the email address linked to the department of the ticket</option>
-									<option value="set">Set: Save this email address on the ticket</option>
-								</select> <span class="help-icon" tooltip-placement="left" tooltip="When 'automatic' is chosen, then From email address is always the email address of linked to the tickets current department. This means that if you change the department, the From email address may change as well. With 'set', you are setting this email address on the ticket specifically, and it will not change unless changed by triggers or manually updated by an agent."></span>
-										<span class="help-block">
-											This determines the "From" email address on outgoing email notifications sent to users and agents.
-										</span>
-							</div>
-						</div>
-					</div>
-
-					{##################################################################################################}
 					{# Actions #}
 					{##################################################################################################}
 
@@ -284,6 +246,15 @@
 							<h3>New Email Actions</h3>
 						</div>
 						<div class="col-lg-9">
+							<div class="inner-group">
+								Department:&nbsp; <select
+										ui-select2
+										ng-model="form.department"
+										style="min-width: 240px"
+										>
+									<option value="{{ ng_var('dep.id') }}" ng-repeat="dep in TicketAccountsEdit.deps">{{ ng_var('dep.full_title') }}</option>
+								</select>
+							</div>
 							{# Send newticket auto-response #}
 							<div class="inner-group">
 								<label style="font-weight: normal">

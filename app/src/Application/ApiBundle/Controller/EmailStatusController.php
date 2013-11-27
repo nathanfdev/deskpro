@@ -73,14 +73,6 @@ class EmailStatusController extends AbstractController
 				'input' => 'datetime',
 				'required' => false
 			))
-			->add('gateway', 'entity', array(
-				'class' => 'DeskPRO:EmailGateway',
-				'property' => 'title',
-				'required' => false,
-				'query_builder' => function(EntityRepository $er) {
-						return $er->createQueryBuilder('g')->orderBy('g.id');
-				}
-			))
 			->add('subject', 'text', array(
 				'required' => false
 			))

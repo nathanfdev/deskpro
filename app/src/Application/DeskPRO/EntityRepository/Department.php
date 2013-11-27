@@ -140,8 +140,6 @@ class Department extends AbstractCategoryRepository
 		return $this->_em->createQuery("
 			SELECT dep
 			FROM DeskPRO:Department dep
-			LEFT JOIN dep.email_gateway em
-			WHERE em IS NULL
 			ORDER BY dep.display_order ASC
 		")->execute();
 	}

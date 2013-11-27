@@ -29,32 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @subpackage
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class EmailAccountsController extends AbstractController
+class Build1385566705 extends AbstractBuild
 {
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
-	public function listAction($type)
+	public function run()
 	{
-		$data = array();
-
-		$email_accounts = $this->em->createQuery("
-			SELECT acc, tr, dep, addr
-			FROM DeskPRO:EmailGateway acc
-			LEFT JOIN acc.linked_transport tr
-			LEFT JOIN acc.addresses addr
-			WHERE acc.gateway_type = ?0
-			ORDER BY acc.id ASC
-		")->setParameters(array($type))->execute();
-
-		$data['email_accounts'] = $this->getApiData($email_accounts, true);
-
-		return $this->createApiResponse($data);
+		$this->execMutateSql("ALTER TABLE departments DROP FOREIGN KEY FK_16AEB8D4FBCC7CDF");
+		$this->execMutateSql("DROP INDEX IDX_16AEB8D4FBCC7CDF ON departments");
+		$this->execMutateSql("ALTER TABLE departments DROP email_gateway_id");
+		$this->execMutateSql("ALTER TABLE email_gateways DROP FOREIGN KEY FK_D0C64232AE80F5DF");
+		$this->execMutateSql("DROP INDEX IDX_D0C64232AE80F5DF ON email_gateways");
+		$this->execMutateSql("ALTER TABLE email_gateways DROP department_id");
 	}
 }

@@ -117,11 +117,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $linked_transport;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
-	protected $department = null;
-
 	protected $processor_extras = array();
 
 	/**
@@ -345,11 +340,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$data = parent::toApiData($primary, $deep, $visited);
 
 		if ($deep) {
-			$data['department'] = null;
-			if ($this->department) {
-				$data['department'] = $this->department->toApiData(false, false);
-			}
-
 			$data['linked_transport'] = null;
 			if ($this->linked_transport) {
 				$data['linked_transport'] = $this->linked_transport->toApiData(false, false);
@@ -390,6 +380,5 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapOneToMany(array( 'fieldName' => 'addresses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'gateway', 'orderBy' => array('run_order' => 'ASC') ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'linked_transport', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailTransport', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'linked_transport_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'SET NULL', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), ));
 	}
 }
