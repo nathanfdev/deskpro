@@ -103,6 +103,16 @@ define [
 			})
 
 			options.push({
+				title: 'Agent',
+				value: 'CheckAgent'
+			})
+
+			options.push({
+				title: 'Agent Team',
+				value: 'CheckAgentTeam'
+			})
+
+			options.push({
 				title: 'Product',
 				value: 'CheckProduct'
 			})
@@ -270,6 +280,8 @@ define [
 		loadDataOptions: ->
 			if not @loadDataPromise
 				@loadDataPromise = @Api.sendDataGet({
+					'agents':          '/agents',
+					'agent_teams':     '/agent_teams',
 					'ticket_deps':     '/ticket_deps',
 					'ticket_cats':     '/ticket_cats',
 					'ticket_prods':    '/ticket_prods',
@@ -280,6 +292,8 @@ define [
 				}).then( (result) =>
 					data = result.data
 					options_data = {}
+					options_data['agents']           = data.agents.agents
+					options_data['agent_teams']      = data.agent_teams.agent_teams
 					options_data['ticket_deps']      = data.ticket_deps.departments
 					options_data['ticket_cats']      = data.ticket_cats.categories
 					options_data['ticket_pris']      = data.ticket_pris.priorities
@@ -317,6 +331,18 @@ define [
 			options.propName = 'department_ids'
 			options.dataName = 'ticket_deps'
 			options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from']
+			def = @getStandardSelect(options)
+			return def
+
+		getCheckAgent: (options = {}) ->
+			options.propName = 'agent_ids'
+			options.dataName = 'agents'
+			def = @getStandardSelect(options)
+			return def
+
+		getCheckAgentTeam: (options = {}) ->
+			options.propName = 'agent_team_ids'
+			options.dataName = 'agent_teams'
 			def = @getStandardSelect(options)
 			return def
 

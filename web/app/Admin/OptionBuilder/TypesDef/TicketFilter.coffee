@@ -21,6 +21,16 @@ define [
 			})
 
 			options.push({
+				title: 'Agent',
+				value: 'FilterAgent'
+			})
+
+			options.push({
+				title: 'Agent Team',
+				value: 'FilterAgentTeam'
+			})
+
+			options.push({
 				title: 'Product',
 				value: 'FilterProduct'
 			})
@@ -137,6 +147,8 @@ define [
 			else
 				@options_data = {}
 				p = @Api.sendDataGet({
+					'agents':          '/agents',
+					'agent_teams':     '/agent_teams',
 					'ticket_deps':     '/ticket_deps',
 					'ticket_cats':     '/ticket_cats',
 					'ticket_prods':    '/ticket_prods',
@@ -146,6 +158,8 @@ define [
 					'usergroups':      '/usergroups',
 				}).then( (result) =>
 					data = result.data
+					@options_data['agents']           = data.agents.agents
+					@options_data['agent_teams']      = data.agent_teams.agent_teams
 					@options_data['ticket_deps']      = data.ticket_deps.departments
 					@options_data['ticket_cats']      = data.ticket_cats.categories
 					@options_data['ticket_pris']      = data.ticket_pris.priorities
@@ -178,6 +192,18 @@ define [
 		getFilterDepartment: (options = {}) ->
 			options.propName = 'department_ids'
 			options.dataName = 'ticket_deps'
+			def = @getStandardSelect(options)
+			return def
+
+		getFilterAgent: (options = {}) ->
+			options.propName = 'agent_ids'
+			options.dataName = 'agents'
+			def = @getStandardSelect(options)
+			return def
+
+		getFilterAgentTeam: (options = {}) ->
+			options.propName = 'agent_team_ids'
+			options.dataName = 'agent_teams'
 			def = @getStandardSelect(options)
 			return def
 

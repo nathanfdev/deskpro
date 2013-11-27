@@ -28,6 +28,14 @@
           value: 'FilterDepartment'
         });
         options.push({
+          title: 'Agent',
+          value: 'FilterAgent'
+        });
+        options.push({
+          title: 'Agent Team',
+          value: 'FilterAgentTeam'
+        });
+        options.push({
           title: 'Product',
           value: 'FilterProduct'
         });
@@ -118,6 +126,8 @@
         } else {
           this.options_data = {};
           p = this.Api.sendDataGet({
+            'agents': '/agents',
+            'agent_teams': '/agent_teams',
             'ticket_deps': '/ticket_deps',
             'ticket_cats': '/ticket_cats',
             'ticket_prods': '/ticket_prods',
@@ -128,6 +138,8 @@
           }).then(function(result) {
             var data, _ref1;
             data = result.data;
+            _this.options_data['agents'] = data.agents.agents;
+            _this.options_data['agent_teams'] = data.agent_teams.agent_teams;
             _this.options_data['ticket_deps'] = data.ticket_deps.departments;
             _this.options_data['ticket_cats'] = data.ticket_cats.categories;
             _this.options_data['ticket_pris'] = data.ticket_pris.priorities;
@@ -180,6 +192,28 @@
         }
         options.propName = 'department_ids';
         options.dataName = 'ticket_deps';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterAgent = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_ids';
+        options.dataName = 'agents';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterAgentTeam = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_team_ids';
+        options.dataName = 'agent_teams';
         def = this.getStandardSelect(options);
         return def;
       };

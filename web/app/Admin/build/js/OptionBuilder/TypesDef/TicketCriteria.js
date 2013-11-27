@@ -98,6 +98,14 @@
           value: 'CheckDepartment'
         });
         options.push({
+          title: 'Agent',
+          value: 'CheckAgent'
+        });
+        options.push({
+          title: 'Agent Team',
+          value: 'CheckAgentTeam'
+        });
+        options.push({
           title: 'Product',
           value: 'CheckProduct'
         });
@@ -222,6 +230,8 @@
         var _this = this;
         if (!this.loadDataPromise) {
           this.loadDataPromise = this.Api.sendDataGet({
+            'agents': '/agents',
+            'agent_teams': '/agent_teams',
             'ticket_deps': '/ticket_deps',
             'ticket_cats': '/ticket_cats',
             'ticket_prods': '/ticket_prods',
@@ -233,6 +243,8 @@
             var data, options_data, _ref1;
             data = result.data;
             options_data = {};
+            options_data['agents'] = data.agents.agents;
+            options_data['agent_teams'] = data.agent_teams.agent_teams;
             options_data['ticket_deps'] = data.ticket_deps.departments;
             options_data['ticket_cats'] = data.ticket_cats.categories;
             options_data['ticket_pris'] = data.ticket_pris.priorities;
@@ -290,6 +302,28 @@
         options.propName = 'department_ids';
         options.dataName = 'ticket_deps';
         options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgent = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_ids';
+        options.dataName = 'agents';
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentTeam = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'agent_team_ids';
+        options.dataName = 'agent_teams';
         def = this.getStandardSelect(options);
         return def;
       };

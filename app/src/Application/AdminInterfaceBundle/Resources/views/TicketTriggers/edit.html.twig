@@ -119,7 +119,6 @@
 						</div>
 					</div>
 
-
 					<div class="panel panel-innertable">
 						<div class="panel-heading">
 							<h3>
@@ -148,23 +147,6 @@
 						</div>
 					</div>
 
-					<div class="inner-footer">
-						<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
-							<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
-							<ul>
-
-							</ul>
-						</div>
-						<div class="text-center" ng-hide="form_props.$attempted && form_props.$invalid">
-							<div dp-hide-spinning="saving_label">
-								<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
-							</div>
-							<div dp-show-spinning="saving_label">
-								<i class="spinner-flat"></i>
-							</div>
-						</div>
-					</div>
-
 				</div>
 			</article>
 			<footer>
@@ -172,19 +154,16 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
-							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
-							<li ng-show="form_props.email_gateway_id.$error">{{ phrase('adm.departments.email_account_required') }}</li>
 						</ul>
 					</div>
 
 					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.TicketTriggersList.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving_dep">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-							<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 						</div>
 						<div dp-show-spinning="saving_dep">
 							<i class="spinner-flat"></i>
