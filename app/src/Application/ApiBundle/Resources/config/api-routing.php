@@ -3081,6 +3081,12 @@ $collection->create('api_chat_setup', array(
 	'methods'      => array('GET'),
 ));
 
+$collection->create('api_chat_setup_toggle', array(
+	'path'         => '/chat_setup/toggle_chat/{is_enabled}',
+	'controller'   => 'ApiBundle:ChatSetup:toggleChat',
+	'methods'      => array('POST'),
+));
+
 ########################################################################################################################
 # Languages
 ########################################################################################################################

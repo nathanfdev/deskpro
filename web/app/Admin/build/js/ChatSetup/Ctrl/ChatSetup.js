@@ -47,6 +47,21 @@
         return this.$q.all([data_promise]);
       };
 
+      /*
+      		#
+      */
+
+
+      Admin_ChatSetup_Ctrl_ChatSetup.prototype.toggleChat = function() {
+        var val;
+        if (this.$scope.setup.chat_enabled) {
+          val = '1';
+        } else {
+          val = '0';
+        }
+        return this.Api.sendPost('/chat_setup/toggle_chat/' + val);
+      };
+
       return Admin_ChatSetup_Ctrl_ChatSetup;
 
     })(Admin_Ctrl_Base);

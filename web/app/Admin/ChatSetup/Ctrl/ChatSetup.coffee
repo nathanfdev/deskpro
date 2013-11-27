@@ -30,5 +30,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			return @$q.all([data_promise])
 
+		###
+		#
+		###
+
+		toggleChat: () ->
+
+			if @$scope.setup.chat_enabled
+				val = '1'
+			else
+				val = '0'
+
+			@Api.sendPost('/chat_setup/toggle_chat/' + val)
+
 
 	Admin_ChatSetup_Ctrl_ChatSetup.EXPORT_CTRL()

@@ -46,13 +46,25 @@ class ChatSetupController extends AbstractController
 		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
 
 			$chat_online = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
-			$chat_online = (bool)$chat_online;
+			$chat_online = (bool) $chat_online;
 		}
 
 		return $this->createApiResponse(array(
 			'chat_setup' => array(
-				'chat_online' => $chat_online,
+				'chat_online'  => $chat_online,
+				'chat_enabled' => (bool) $this->container->getSetting('core.apps_chat'),
 			)
 		));
+	}
+
+	####################################################################################################################
+	# toggleChat
+	####################################################################################################################
+
+	public function toggleChatAction($is_enabled)
+	{
+		$this->container->getSettingsHandler()->setSetting('core.apps_chat', (int) $is_enabled);
+
+		return $this->createSuccessResponse();
 	}
 }

@@ -8,9 +8,28 @@
 
 			<article>
 				<div class="panel panel-innertable">
-					<h3 style="margin-bottom: 4px;">
-						"Chat with us" Tab
-					</h3>
+					<div class="panel-heading">
+						<h3>
+							<span>Enable / Disable Chat</span>
+						</h3>
+					</div>
+
+					<div class="form-group">
+						<button dp-toggle-switch ng-model="setup.chat_enabled" ng-change="ChatSetup.toggleChat()">
+
+						</button>
+						<h4><span class="title-text">Enable / Disable Chat</span></h4>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>"Chat with us" Tab</span>
+						</h3>
+					</div>
 
 					<button dp-inhelp-btn="admin.chat_setup.widget_chat_explain"></button>
 					<button dp-inhelp-btn="admin.chat_setup.chat_important"></button>
