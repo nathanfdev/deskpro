@@ -31,42 +31,55 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\ChatSetup;
 
-class ChatSetupController extends AbstractController
+use Application\DeskPRO\Settings\Settings;
+
+class ChatSetup
 {
-	####################################################################################################################
-	# chat-setup
-	####################################################################################################################
+	/**
+	 * @var \Application\DeskPRO\Settings\Settings
+	 */
 
-	public function chatSetupAction()
+	private $settings;
+
+	/**
+	 * @param \Application\DeskPRO\Settings\Settings $settings
+	 */
+
+	public function __construct(Settings $settings)
 	{
-		/**
-		 * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
-		 */
+		$this->settings = $settings;
+	}
 
-		$chat_setup = $this->container->getSystemService('chat_setup');
+	/**
+	 * @return array
+	 */
 
-		return $this->createApiResponse(
-			array(
-				 'chat_setup' => $chat_setup->getChatInfo()
-			)
+	public function getChatInfo()
+	{
+		$chat_online = false;
+
+		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
+
+			$chat_online = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+			$chat_online = (bool) $chat_online;
+		}
+
+		$chat_enabled = (bool) $this->settings->get('core.apps_chat');
+
+		return array(
+			'chat_online'  => $chat_online,
+			'chat_enabled' => $chat_enabled,
 		);
 	}
 
-	####################################################################################################################
-	# toggleChat
-	####################################################################################################################
+	/**
+	 * @param int $is_enabled
+	 */
 
-	public function toggleChatAction($is_enabled)
+	public function setChatEnabled($is_enabled = 1)
 	{
-		/**
-		 * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
-		 */
-
-		$chat_setup = $this->container->getSystemService('chat_setup');
-		$chat_setup->setChatEnabled($is_enabled);
-
-		return $this->createSuccessResponse();
+		$this->settings->setSetting('core.apps_chat', (int) $is_enabled);
 	}
 }

@@ -29,44 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category DependencyInjection
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-class ChatSetupController extends AbstractController
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\ChatSetup\ChatSetup;
+
+class ChatSetupService
 {
-	####################################################################################################################
-	# chat-setup
-	####################################################################################################################
-
-	public function chatSetupAction()
+	public static function create(DeskproContainer $container)
 	{
-		/**
-		 * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
-		 */
-
-		$chat_setup = $this->container->getSystemService('chat_setup');
-
-		return $this->createApiResponse(
-			array(
-				 'chat_setup' => $chat_setup->getChatInfo()
-			)
+		$m = new ChatSetup(
+			$container->get('deskpro.core.settings')
 		);
-	}
 
-	####################################################################################################################
-	# toggleChat
-	####################################################################################################################
-
-	public function toggleChatAction($is_enabled)
-	{
-		/**
-		 * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
-		 */
-
-		$chat_setup = $this->container->getSystemService('chat_setup');
-		$chat_setup->setChatEnabled($is_enabled);
-
-		return $this->createSuccessResponse();
+		return $m;
 	}
 }
