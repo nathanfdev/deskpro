@@ -2114,6 +2114,12 @@ $collection->create('api_settings_values_get', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_settings_values_set', array(
+	'path'        => '/settings/values/{name}',
+	'controller'  => 'ApiBundle:Settings:setValue',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Ticket Settings
 ########################################################################################################################

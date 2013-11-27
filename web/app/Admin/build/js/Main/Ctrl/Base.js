@@ -579,6 +579,44 @@
         return inst;
       };
 
+      /*
+      		# Show an confirm
+      		#
+        	# @param {String} message The message to show
+        	# @param {String} title   The title to show
+      		# @return {Object}
+      */
+
+
+      Admin_Ctrl_Base.prototype.showConfirm = function(message, title) {
+        var inst;
+        if (title == null) {
+          title = 'Confirm';
+        }
+        if (message.match(/^@[a-zA-Z0-9\._]+$/)) {
+          message = this.getRegisteredMessage(message.substr(1));
+        }
+        if (title && title.match(/^@[a-zA-Z0-9\._]+$/)) {
+          title = this.getRegisteredMessage(title.substr(1));
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Index/modal-confirm.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.title = title;
+              $scope.message = message;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+              return $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+            }
+          ]
+        });
+        return inst;
+      };
+
       Admin_Ctrl_Base.prototype.getWaitEntityPromiseView = function(id) {
         var _this = this;
         return function() {

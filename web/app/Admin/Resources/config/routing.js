@@ -872,7 +872,14 @@ define(function() {
 		id: 'portal.portal_editor',
 		url: '/portal_editor',
 		templateName: 'PortalEditor/frame.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		controller: 'Admin_Portal_Ctrl_PortalEditor'
+	});
+
+	routes.push({
+		id: 'portal.portal_editor_go',
+		url: '/go-portal-editor',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('portal.portal_editor', {type: $stateParams.type}); }]
 	});
 
 	//###

@@ -456,6 +456,37 @@ define ['angular'], (angular) ->
 
 			return inst
 
+		###
+		# Show an confirm
+		#
+    	# @param {String} message The message to show
+    	# @param {String} title   The title to show
+		# @return {Object}
+		###
+		showConfirm: (message, title = 'Confirm') ->
+
+			if message.match(/^@[a-zA-Z0-9\._]+$/)
+				message = @getRegisteredMessage(message.substr(1))
+
+			if title and title.match(/^@[a-zA-Z0-9\._]+$/)
+				title = @getRegisteredMessage(title.substr(1))
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Index/modal-confirm.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.title   = title
+					$scope.message = message
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+
+					$scope.confirm = ->
+						$modalInstance.close();
+				]
+			});
+
+			return inst
+
 		getWaitEntityPromiseView: (id) ->
 			return =>
 				@getWaitEntityPromise(id)
