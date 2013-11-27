@@ -71,9 +71,16 @@ define [
     	# @return {Object}
     	###
 		findListModelById: (id) ->
+
 			for model in @listModels
+
 				if model[@idProp] == id
 					return model
+
+				if model.children
+					for child in model.children
+						if child[@idProp] == id
+							return child
 
 			return null
 

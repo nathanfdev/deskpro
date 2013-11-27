@@ -83,12 +83,21 @@
 
 
       Admin_Main_DataService_BaseListEdit.prototype.findListModelById = function(id) {
-        var model, _i, _len, _ref;
+        var child, model, _i, _j, _len, _len1, _ref, _ref1;
         _ref = this.listModels;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           model = _ref[_i];
           if (model[this.idProp] === id) {
             return model;
+          }
+          if (model.children) {
+            _ref1 = model.children;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              child = _ref1[_j];
+              if (child[this.idProp] === id) {
+                return child;
+              }
+            }
           }
         }
         return null;
