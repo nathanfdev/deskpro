@@ -67,6 +67,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSetting($name);
 	}
 
+	public function getSettingDefaultGroup($id)
+	{
+		return App::get('deskpro.core.settings')->getDefaultGroup($id);
+	}
+
 	public function getSettingGroup($group)
 	{
 		$group_vars = App::get('deskpro.core.settings')->getGroup($group);

@@ -35,36 +35,11 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
 
-class PortalController extends AbstractController
+class PortalEditorController extends AbstractController
 {
 	public function requireRequestToken($action, $arguments = null)
 	{
 		return false;
-	}
-
-	############################################################################
-	# Portal
-	############################################################################
-
-    public function indexAction()
-	{
-		$default_portal_style = $this->container->get('deskpro.core.settings')->getDefaultGroup('user_style');
-
-		$portal_path = '';
-		if ($this->in->getString('portal_path')) {
-			$portal_path = ltrim($this->in->getString('portal_path'), '/');
-		}
-
-		$viewing_page = null;
-		if (strpos($portal_path, 'new-ticket') !== false) {
-			$viewing_page = 'new-ticket';
-		}
-
-		return $this->render('AdminInterfaceBundle:Portal:index.html.twig', array(
-			'default_portal_style' => $default_portal_style,
-			'portal_path'          => $portal_path,
-			'viewing_page'         => $viewing_page,
-		));
 	}
 
 	public function uploadFaviconAction()
@@ -134,18 +109,18 @@ class PortalController extends AbstractController
 			return $this->redirectRoute('admin_portal_uploadfavicon');
 		}
 
-		return $this->render('AdminInterfaceBundle:Portal:change-favicon.html.twig');
+		return $this->render('AdminInterfaceBundle:PortalEditor:change-favicon.html.twig');
 	}
 
 	public function getEditorAction($type)
 	{
 		switch ($type) {
 			case 'logo':
-				return $this->render('AdminInterfaceBundle:Portal:portal-editor-logo.html.twig');
+				return $this->render('AdminInterfaceBundle:PortalEditor:portal-editor-logo.html.twig');
 				break;
 
 			case 'portal-title':
-				return $this->render('AdminInterfaceBundle:Portal:portal-title-editor.html.twig');
+				return $this->render('AdminInterfaceBundle:PortalEditor:portal-title-editor.html.twig');
 				break;
 
 			case 'twitter-sidebar':
@@ -172,7 +147,7 @@ class PortalController extends AbstractController
 					}
 				}
 
-				return $this->render('AdminInterfaceBundle:Portal:twitter-sidebar-editor.html.twig', array(
+				return $this->render('AdminInterfaceBundle:PortalEditor:twitter-sidebar-editor.html.twig', array(
 					'data' => $data,
 					'consumer_key' => \Application\DeskPRO\Service\Twitter::getUserConsumerKey()
 				));
@@ -486,7 +461,7 @@ class PortalController extends AbstractController
 			$chat_online = (bool)$chat_online;
 		}
 
-		return $this->render('AdminInterfaceBundle:Portal:website-widgets.html.twig', array(
+		return $this->render('AdminInterfaceBundle:PortalEditor:website-widgets.html.twig', array(
 			'articles'    => $articles,
 			'downloads'   => $downloads,
 			'news'        => $news,
@@ -501,5 +476,58 @@ class PortalController extends AbstractController
 			'download_cat_map'  => $download_cat_map,
 			'news_cat_map'      => $news_cat_map
 		));
+	}
+
+	public function acceptTempUploadAction()
+	{
+		$file = $this->request->files->get('file-upload');
+
+		$accept = $this->container->getAttachmentAccepter();
+
+		$error = $accept->getError($file, 'agent');
+		if (!$error && $this->in->getBool('is_image')) {
+			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+			$accept->addRestrictionSet('only_images', $set);
+			$error = $accept->getError($file, 'only_images');
+		}
+		if ($error) {
+			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+			return $this->createJsonResponse(array($error));
+		}
+
+		$blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
+			$file->getRealPath(),
+			$file->getClientOriginalName(),
+			$file->getClientMimeType()
+		);
+		$blob_id = $blob->getId();
+
+		if ($this->in->getString('attach_to_object')) {
+			switch ($this->in->getString('attach_to_object')) {
+				case 'article':
+					$article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
+
+					$attach = new \Application\DeskPRO\Entity\ArticleAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $this->person;
+
+					$article->addAttachment($attach);
+
+					$this->em->persist($article);
+					$this->em->flush();
+
+					break;
+			}
+		}
+
+		return $this->createJsonResponse(array(array(
+			'blob_id' => $blob['id'],
+			'blob_auth' => $blob->authcode,
+			'blob_auth_id' => $blob->id . '-' . $blob->authcode,
+			'download_url' => $blob->getDownloadUrl(true),
+			'filename' => $blob['filename'],
+			'filesize_readable' => $blob->getReadableFilesize()
+		)));
 	}
 }

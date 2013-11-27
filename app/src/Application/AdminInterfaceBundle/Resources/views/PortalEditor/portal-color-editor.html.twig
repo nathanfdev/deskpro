@@ -9,6 +9,7 @@
 	</div>
 {% endmacro %}
 
+{% set default_portal_style = app.getSettingDefaultGroup('user_style') %}
 <section id="portal_colors" style="display: none">
 	<article>
 		<div class="style-section">
@@ -46,6 +47,6 @@
 		{% endfor %}
 	</article>
 	<footer>
-		<button class="clean-white apply-trigger">{{ phrase('agent.general.apply') }}</button>
+		<button class="btn btn-default apply-trigger">{{ phrase('agent.general.apply') }}</button>
 	</footer>
 </section>

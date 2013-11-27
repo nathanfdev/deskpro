@@ -68,7 +68,7 @@ requirejs.config({
 		'select2':             ['jquery'],
 		'toastr':              ['jquery'],
 		'underscore':          { exports: '_' },
-		'stacktrace':            { exports: 'printStackTrace'}
+		'stacktrace':          { exports: 'printStackTrace'}
 	},
 	priority: [
 		"angular"

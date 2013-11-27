@@ -33,63 +33,63 @@ $collection->create('admin_lang_load', array(
 # Portal
 ########################################################################################################################
 
-$collection->create('admin_portal', array(
-	'path'        => '/portal',
-	'controller'  => 'AdminInterfaceBundle:Portal:index',
+$collection->create('admin_portaleditor_updateblockorder', array(
+	'path'        => '/portal-editor/update-block-orders.json',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:updateBlockOrders',
 ));
 
-$collection->create('admin_portal_updateblockorder', array(
-	'path'        => '/portal/update-block-orders.json',
-	'controller'  => 'AdminInterfaceBundle:Portal:updateBlockOrders',
+$collection->create('admin_portaleditor_blocktoggle', array(
+	'path'        => '/portal-editor/blocks/{pid}/toggle.json',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:blockToggle',
 ));
 
-$collection->create('admin_portal_blocktoggle', array(
-	'path'        => '/portal/blocks/{pid}/toggle.json',
-	'controller'  => 'AdminInterfaceBundle:Portal:blockToggle',
+$collection->create('admin_portaleditor_custom_block_delete', array(
+	'path'        => '/portal-editor/blocks/{pid}/delete-template-block.json',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:deleteTemplateBlock',
 ));
 
-$collection->create('admin_portal_custom_block_delete', array(
-	'path'        => '/portal/blocks/{pid}/delete-template-block.json',
-	'controller'  => 'AdminInterfaceBundle:Portal:deleteTemplateBlock',
+$collection->create('admin_portaleditor_custom_sideblock_simple_get', array(
+	'path'        => '/portal-editor/sideblock-simple/{pid}.json',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:getCustomBlockSimple',
 ));
 
-$collection->create('admin_portal_custom_sideblock_simple_get', array(
-	'path'        => '/portal/sideblock-simple/{pid}.json',
-	'controller'  => 'AdminInterfaceBundle:Portal:getCustomBlockSimple',
-));
-
-$collection->create('admin_portal_custom_sideblock_simple_save', array(
-	'path'        => '/portal/sideblock-simple/{pid}/save.json',
-	'controller'  => 'AdminInterfaceBundle:Portal:saveCustomBlockSimple',
+$collection->create('admin_portaleditor_custom_sideblock_simple_save', array(
+	'path'        => '/portal-editor/sideblock-simple/{pid}/save.json',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:saveCustomBlockSimple',
 	'defaults'    => array('pid' => '0'),
 	'methods'     => array('POST'),
 ));
 
-$collection->create('admin_portal_custom_sideblock_simple_delete', array(
-	'path'        => '/portal/sideblock-simple/{pid}/delete.json',
-	'controller'  => 'AdminInterfaceBundle:Portal:deleteCustomBlockSimple',
+$collection->create('admin_portaleditor_custom_sideblock_simple_delete', array(
+	'path'        => '/portal-editor/sideblock-simple/{pid}/delete.json',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:deleteCustomBlockSimple',
 	'methods'     => array('POST'),
 ));
 
-$collection->create('admin_portal_toggle', array(
-	'path'        => '/portal/toggle-portal',
-	'controller'  => 'AdminInterfaceBundle:Portal:togglePortal',
+$collection->create('admin_portaleditor_toggle', array(
+	'path'        => '/portal-editor/toggle-portal',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:togglePortal',
 ));
 
-$collection->create('admin_portal_get_editor', array(
-	'path'        => '/portal/get-editor/{type}',
-	'controller'  => 'AdminInterfaceBundle:Portal:getEditor',
+$collection->create('admin_portaleditor_get_editor', array(
+	'path'        => '/portal-editor/get-editor/{type}',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:getEditor',
 ));
 
-$collection->create('admin_portal_save_editor', array(
-	'path'        => '/portal/save-editor/{type}',
-	'controller'  => 'AdminInterfaceBundle:Portal:saveEditor',
+$collection->create('admin_portaleditor_save_editor', array(
+	'path'        => '/portal-editor/save-editor/{type}',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:saveEditor',
 	'methods'     => array('POST'),
 ));
 
-$collection->create('admin_portal_twitter_oauth', array(
-	'path'        => '/portal/twitter-oauth',
-	'controller'  => 'AdminInterfaceBundle:Portal:twitterOauth',
+$collection->create('admin_portaleditor_twitter_oauth', array(
+	'path'        => '/portal-editor/twitter-oauth',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:twitterOauth',
+));
+
+$collection->create('admin_portaleditor_accept_upload', array(
+	'path'        => '/portal-editor/accept-upload',
+	'controller'  => 'AdminInterfaceBundle:PortalEditor:acceptTempUpload',
 ));
 
 return $collection;

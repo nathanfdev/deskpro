@@ -77,7 +77,16 @@ define [
 			else
 				wrapperEl.find('.modal-footer').remove()
 
-			wrapperEl.find('.modal-body').empty().append(el)
+			body = el.find('.overlay-content')
+			if body[0]
+				body = body.contents()
+			else
+				body = el
+
+			wrapperEl.find('.modal-body').empty().append(body)
+			wrapperEl.find('.modal-body').find('input[type="text"], textarea').addClass('form-control')
+			wrapperEl.find('.modal-body').find('button').addClass('btn btn-default')
+
 			wrapperEl.find('.close-trigger').on('click', (ev) ->
 				ev.preventDefault()
 				inst.close()
@@ -87,6 +96,8 @@ define [
 				w = $(window).width() - 150
 				h = $(window).height() - 250
 				wrapperEl.find('.modal-dialog').width(w).find('.modal-body').height(h)
+			else
+				wrapperEl.find('.modal-dialog').width(768)
 
 		if options.contentElement
 			options.contentElement.detach()
@@ -184,19 +195,19 @@ define [
 					this.updateHeight(data.height);
 					break;
 				case 'switch_page':
-					window.location = DP_BASE_URL + 'admin/portal?portal_path=' + encodeURI(data.path);
+					window.location = DP_BASE_URL + 'admin/portal-editor?portal_path=' + encodeURI(data.path);
 					break;
 				case 'enable_logo_area':
 					editorAjaxClient({
 						type: 'POST',
-						url: DP_BASE_URL + 'admin/portal/save-editor/enable_logo_area',
+						url: DP_BASE_URL + 'admin/portal-editor/save-editor/enable_logo_area',
 						type: 'POST'
 					});
 					break;
 				case 'disable_logo_area':
 					editorAjaxClient({
 						type: 'POST',
-						url: DP_BASE_URL + 'admin/portal/save-editor/disable_logo_area',
+						url: DP_BASE_URL + 'admin/portal-editor/save-editor/disable_logo_area',
 						type: 'POST'
 					});
 					break;
@@ -269,7 +280,7 @@ define [
 					var on = data.on ? 1 : 0;
 
 					editorAjaxClient({
-						url: DP_BASE_URL + 'admin/portal/save-editor/toggle_tab',
+						url: DP_BASE_URL + 'admin/portal-editor/save-editor/toggle_tab',
 						type: 'POST',
 						data: {
 							tab: tabName,
@@ -289,7 +300,7 @@ define [
 					}
 
 					editorAjaxClient({
-						url: DP_BASE_URL + 'admin/portal/save-editor/reorder_tabs',
+						url: DP_BASE_URL + 'admin/portal-editor/save-editor/reorder_tabs',
 						type: 'POST',
 						dataType: 'json',
 						data: postData
@@ -302,25 +313,31 @@ define [
 						contentMethod: 'ajax',
 						destroyOnClose: true,
 						contentAjax: {
-							url: DP_BASE_URL + 'admin/portal/get-editor/logo'
+							url: DP_BASE_URL + 'admin/portal-editor/get-editor/logo'
 						},
 						onContentSet: function(ev) {
 							var wrapper = ev.wrapperEl;
 
-							var idbase = 'ed_' + Orb.uuidRand();
-							$('.template-upload', wrapper).attr('id', idbase + 'up')
-							$('.template-download', wrapper).attr('id', idbase + 'down')
-							wrapper.fileupload({
-								url: DP_BASE_URL + 'admin/misc/accept-upload',
+							wrapper.find('.file-upload').fileupload({
+								url: DP_BASE_URL + 'admin/portal-editor/accept-upload',
 								dropZone: wrapper,
 								autoUpload: true,
-								uploadTemplateId: idbase + 'up',
-								downloadTemplateId: idbase + 'down'
-							}).bind('fileuploadstart', function() {
-								$('p.explain', wrapper).hide();
-							}).bind('fileuploadadd', function() {
-								$('.files', wrapper).empty();
-							});
+								done: function(e, data) {
+									file = data.result.pop();
+									html =  "<input type=\"hidden\" class=\"new_blob_auth_id\" value=\""+file.blob_auth_id+"\" />";
+									html += "<input type=\"hidden\" class=\"new_logo_url\" value=\""+file.download_url+"\" />";
+									html += "<img src=\""+file.download_url+"\" class=\"pic-new\" />";
+
+									wrapper.find('.upload-result').html(html);
+
+									wrapper.find('.upload-loading').hide();
+									wrapper.find('.save-btn-wrap').show();
+									wrapper.find('.upload-result').show();
+								},
+								progressall: function(e, data) {
+									wrapper.find('.upload-loading').show();
+								}
+							})
 
 							$('.save-logo-trigger', wrapper).on('click', function() {
 								var url = $('input.new_logo_url', wrapper).val();
@@ -332,7 +349,7 @@ define [
 								controller.setLogo(url);
 
 								editorAjaxClient({
-									url: DP_BASE_URL + 'admin/portal/save-editor/header_logo',
+									url: DP_BASE_URL + 'admin/portal-editor/save-editor/header_logo',
 									type: 'POST',
 									data: {
 										blob_authid: wrapper.find('input.new_blob_auth_id').val()
@@ -346,7 +363,7 @@ define [
 								controller.setLogoText($('input[name="title"]', wrapper).val(), $('input[name="tagline"]', wrapper).val());
 
 								editorAjaxClient({
-									url: DP_BASE_URL + 'admin/portal/save-editor/header_title',
+									url: DP_BASE_URL + 'admin/portal-editor/save-editor/header_title',
 									type: 'POST',
 									data: {
 										title: wrapper.find('input.title').val(),
@@ -366,7 +383,7 @@ define [
 						contentMethod: 'ajax',
 						destroyOnClose: true,
 						contentAjax: {
-							url: DP_BASE_URL + 'admin/portal/get-editor/portal-title'
+							url: DP_BASE_URL + 'admin/portal-editor/get-editor/portal-title'
 						},
 						onContentSet: function(ev) {
 							var wrapper = ev.wrapperEl;
@@ -374,7 +391,7 @@ define [
 								controller.setTitle($('input[name="title"]', wrapper).val());
 
 								editorAjaxClient({
-									url: DP_BASE_URL + 'admin/portal/save-editor/portal_title',
+									url: DP_BASE_URL + 'admin/portal-editor/save-editor/portal_title',
 									type: 'POST',
 									data: {
 										title: wrapper.find('input.title').val()
@@ -394,13 +411,13 @@ define [
 						contentMethod: 'ajax',
 						destroyOnClose: true,
 						contentAjax: {
-							url: DP_BASE_URL + 'admin/portal/get-editor/twitter-sidebar'
+							url: DP_BASE_URL + 'admin/portal-editor/get-editor/twitter-sidebar'
 						},
 						onContentSet: function(ev) {
 							var wrapper = ev.wrapperEl;
 							$('.save-trigger').on('click', function() {
 								editorAjaxClient({
-									url: DP_BASE_URL + 'admin/portal/save-editor/twitter_sidebar',
+									url: DP_BASE_URL + 'admin/portal-editor/save-editor/twitter_sidebar',
 									type: 'POST',
 									data: {
 										twitter_name: wrapper.find('input.twitter_name').val(),
@@ -464,7 +481,7 @@ define [
 
 					editorAjaxClient({
 						type: 'POST',
-						url: DP_BASE_URL + 'admin/portal/sideblock-simple/'+data.pid+'/delete.json',
+						url: DP_BASE_URL + 'admin/portal-editor/sideblock-simple/'+data.pid+'/delete.json',
 						error: function() {
 							el.show();
 						},
@@ -481,7 +498,7 @@ define [
 
 					editorAjaxClient({
 						type: 'POST',
-						url: DP_BASE_URL + 'admin/portal/blocks/' + data.pid + '/delete-template-block.json',
+						url: DP_BASE_URL + 'admin/portal-editor/blocks/' + data.pid + '/delete-template-block.json',
 						error: function() {
 							el.show();
 						},
@@ -529,7 +546,9 @@ define [
 				contentElement: el,
 				destroyOnClose: true,
 				fullScreen: true,
-				onBeforeOverlayOpened: function() {
+				onBeforeOverlayOpened: function(evData) {
+					var el = evData.wrapperEl
+
 					if (el.is('.has-init')) return;
 					el.addClass('has-init');
 
@@ -632,7 +651,7 @@ define [
 						el.find('textarea.content').val('').addClass('loading');
 
 						editorAjaxClient({
-							url: DP_BASE_URL + 'admin/portal/sideblock-simple/' + pid + '.json',
+							url: DP_BASE_URL + 'admin/portal-editor/sideblock-simple/' + pid + '.json',
 							context: this,
 							dataType: 'json',
 							success: function(data) {
@@ -642,7 +661,7 @@ define [
 						});
 					}
 
-					el.find('textarea.content').height($(window).height() - 250);
+					el.find('textarea.content').height($(window).height() - 320);
 
 					$('.save-text-trigger', el).on('click', function() {
 
@@ -659,7 +678,7 @@ define [
 						});
 
 						editorAjaxClient({
-							url: DP_BASE_URL + 'admin/portal/sideblock-simple/'+pid+'/save.json',
+							url: DP_BASE_URL + 'admin/portal-editor/sideblock-simple/'+pid+'/save.json',
 							context: this,
 							type: 'POST',
 							data: postData,
@@ -729,7 +748,7 @@ define [
 			var self     = this;
 			var panel    = $('#portal_colors');
 			var trigger  = $('#portal_colors_trigger');
-			var backdrop = $('<div class="backdrop" style="z-index: 999" />').hide().appendTo('body');
+			var backdrop = $('<div style="z-index: 99999; position: absolute; top:0; right: 0; bottom: 0; left: 0;" />').hide().appendTo('body');
 
 			panel.detach().appendTo('body');
 
@@ -818,7 +837,7 @@ define [
 				});
 
 				editorAjaxClient({
-					url: DP_BASE_URL + 'admin/portal/save-editor/css_var',
+					url: DP_BASE_URL + 'admin/portal-editor/save-editor/css_var',
 					type: 'POST',
 					data: formData,
 					success: function() {

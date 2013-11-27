@@ -10841,6 +10841,7 @@ table.table > tbody > tr > td.dp-id-col {
 .dp-portal-editor-frame > header {
   padding: 6px;
   background: #d9d9d9;
+  border-bottom: 1px solid #c0c0c0;
 }
 
 .dp-portal-editor-frame > header .address-bar {
@@ -10859,6 +10860,10 @@ table.table > tbody > tr > td.dp-id-col {
   color: #8c8c8c;
 }
 
+.dp-portal-editor-frame > header .control-bar {
+  padding: 7px 0 0 4px;
+}
+
 .dp-portal-editor-frame #portal_iframe_loading h1 {
   display: block;
   height: 400px;
@@ -10873,4 +10878,152 @@ table.table > tbody > tr > td.dp-id-col {
   margin: 0;
   background: transparent;
   border: 0;
+}
+
+section#portal_colors {
+  position: absolute;
+  z-index: 1000;
+  width: 400px;
+  background-color: #fff;
+  border: 1px solid #C2C7CD;
+  -webkit-box-shadow: 2px 3px 1px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 2px 3px 1px rgba(0, 0, 0, 0.2);
+          box-shadow: 2px 3px 1px rgba(0, 0, 0, 0.2);
+}
+
+section#portal_colors > article {
+  height: 350px;
+  overflow: auto;
+}
+
+section#portal_colors .style-section {
+  padding: 1px 2px 2px 6px;
+  margin-bottom: 1px;
+  border-bottom: 1px solid #D0D3D3;
+}
+
+section#portal_colors .style-section h4 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #414250;
+}
+
+section#portal_colors .style-row {
+  margin-bottom: 1px;
+  background-color: #EEF5FE;
+  border-bottom: 1px solid #D0D3D3;
+}
+
+section#portal_colors .style-row .color-reset {
+  display: none;
+  float: right;
+  padding: 2px 4px 2px 4px;
+  margin: 5px 5px 0 0;
+  font-size: 10px;
+  line-height: 12px;
+  white-space: nowrap;
+  background-color: #E1E7F0;
+  border: 1px solid #B7BCC5;
+  -webkit-border-radius: 2px;
+     -moz-border-radius: 2px;
+          border-radius: 2px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+  text-wrap: none;
+}
+
+section#portal_colors .style-row .color-reset i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border: 1px solid #888;
+}
+
+section#portal_colors .style-row .color-reset.enabled {
+  display: block;
+}
+
+section#portal_colors .style-row .color-reset:hover {
+  cursor: pointer;
+  border: 1px solid #888D94;
+}
+
+section#portal_colors > footer {
+  padding: 2px 0 2px 0;
+  text-align: center;
+  background-color: #CBD1D7;
+}
+
+section#portal_colors .style-row label {
+  padding-top: 4px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+section#portal_colors .style-row .desc {
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+
+section#portal_colors .style-row .color-swatch {
+  float: left;
+}
+
+section#portal_colors .style-row.color label,
+section#portal_colors .style-row.color .desc {
+  display: block;
+  margin-left: 38px;
+  line-height: 100%;
+}
+
+section#portal_colors .style-row.color.dual label,
+section#portal_colors .style-row.color.dual .desc {
+  margin-left: 76px;
+}
+
+.color-swatch-icon {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  line-height: 100%;
+  text-indent: -100px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+.color-swatch-icon div {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #777;
+}
+
+.colorpicker {
+  z-index: 999999;
+  -webkit-user-select: none;
+   -khtml-user-select: none;
+     -moz-user-select: none;
+       -o-user-select: none;
+          user-select: none;
+}
+
+.colorpicker input {
+  width: 60px;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.colorpicker input:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
 }

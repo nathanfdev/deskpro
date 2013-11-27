@@ -11,7 +11,7 @@
 			</div>
 		{% else %}
 			<div style="margin-bottom: 1em">
-				<a class="btn primary" href="{{ path('admin_portal_twitter_oauth', {start: 1}) }}">Authenticate with Twitter</a>
+				<a class="btn primary" href="{{ path('admin_portaleditor_twitter_oauth', {start: 1}) }}">Authenticate with Twitter</a>
 				{% if not data.token or not data.secret %}<div>The Twitter block cannot be enabled until this is done.</div>{% endif %}
 			</div>
 		{% endif %}
