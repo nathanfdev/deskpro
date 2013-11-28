@@ -37,6 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Department as DepartmentEntity;
 
 class Department extends AbstractCategoryRepository
 {
@@ -73,6 +74,55 @@ class Department extends AbstractCategoryRepository
 			ORDER BY d.display_order ASC
 			"
 		)->execute();
+	}
+
+	/**
+	 * @param DepartmentEntity $dep
+	 *
+	 * @return array
+	 */
+
+	public function getPermissionsInfo(DepartmentEntity $dep)
+	{
+		$perms = App::getDb()->fetchAll(
+			"SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?",
+			array($dep->id)
+		);
+
+		$data = array(
+			'usergroups'  => array(),
+			'agentgroups' => array(),
+			'agents'      => array()
+		);
+
+		foreach ($perms as $perm) {
+
+			if ($perm['usergroup_id']) {
+
+				if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
+
+					$data['agentgroups'][] = array(
+						'usergroup_id' => (int)$perm['usergroup_id'],
+						'perm_name'    => $perm['name'],
+					);
+
+				} else {
+
+					$data['usergroups'][] = array(
+						'usergroup_id' => (int)$perm['usergroup_id'],
+						'perm_name'    => $perm['name'],
+					);
+				}
+			} elseif ($perm['person_id']) {
+
+				$data['agents'][] = array(
+					'agent_id'  => (int)$perm['person_id'],
+					'perm_name' => $perm['name']
+				);
+			}
+		}
+
+		return $data;
 	}
 
 

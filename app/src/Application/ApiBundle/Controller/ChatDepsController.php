@@ -37,6 +37,10 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\Departments\ChatDepartmentEditor;
 use Application\DeskPRO\Exception\ValidationException;
 
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Departments\ChatDepartmentEdit;
+use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
+
 use Orb\Util\Arrays;
 
 class ChatDepsController extends AbstractController
@@ -50,7 +54,7 @@ class ChatDepsController extends AbstractController
 		$data = array();
 
 		$ticket_deps = $this->container->getSystemService('chat_departments');
-		$flat_array = $ticket_deps->getFlatArray();
+		$flat_array  = $ticket_deps->getFlatArray();
 
 		$deps = array();
 
@@ -62,6 +66,86 @@ class ChatDepsController extends AbstractController
 		$data['departments'] = $this->getApiData($deps, false);
 
 		return $this->createApiResponse($data);
+	}
+
+	####################################################################################################################
+	# get
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		/**
+		 * @var \Application\DeskPRO\Departments\ChatDepartments $ticket_deps
+		 */
+
+		$ticket_deps = $this->container->getSystemService('chat_departments');
+		$dep         = $ticket_deps->getById($id);
+
+		if (!$dep || !$dep->is_chat_enabled) {
+
+			throw $this->createNotFoundException();
+		}
+
+		$data                = array();
+		$data['department']  = $this->getApiData($dep);
+		$data['permissions'] = $ticket_deps->getPermissionsInfo($dep);
+
+		return $this->createApiResponse($data);
+	}
+
+
+	####################################################################################################################
+	# save
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		if ($id) {
+
+			/**
+			 * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+			 */
+
+			$chat_deps = $this->container->getSystemService('chat_departments');
+			$dep       = $chat_deps->getById($id);
+
+			if (!$dep || !$dep->is_chat_enabled) {
+
+				throw $this->createNotFoundException();
+			}
+		} else {
+
+			$dep = Department::createChatDepartment();
+		}
+
+		$postData = $this->in->getAll('post');
+
+		$chat_edit = new ChatDepartmentEdit($dep);
+
+		$form = $this->createForm(new ChatDepartmentType(), $chat_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'department'), true);
+
+		if ($form->isValid()) {
+
+			$chat_edit->save($this->em);
+
+			/*$chat_edit->savePermissions(
+				$this->em,
+				$this->container->getAgentData()->getAgents(),
+				$this->container->getDataService('Usergroup')->getAll()
+			);*/
+
+		} else {
+
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
+		}
+
+		return $this->createApiResponse(
+			array(
+				 'success' => true,
+				 'id'      => $dep->id,
+			)
+		);
 	}
 
 	####################################################################################################################

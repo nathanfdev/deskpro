@@ -31,105 +31,56 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Departments;
+namespace Application\DeskPRO\Departments\Form\Type;
 
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
+use Application\DeskPRO\Form\Type\PermissionRowType;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ChatDepartments extends LazyPreloadedHierarchy
+class ChatDepartmentType extends AbstractType
 {
-	/**
-	 * @return array
-	 */
-
-	protected function loadRecords()
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		return $this->em->getRepository('DeskPRO:Department')->getChatDepartments();
+		$builder->add('department', new ChatDepartmentPropsType());
+		$builder->add(
+			'permissions',
+			'collection',
+			array(
+				 'type'         => new PermissionRowType(),
+				 'allow_add'    => true,
+				 'allow_delete' => true
+			)
+		);
+		$builder->add(
+			'move_department',
+			'entity',
+			array(
+				 'class'         => 'DeskPRO:Department',
+				 'required'      => false,
+				 'query_builder' => function (EntityRepository $er) {
+					 return $er->createQueryBuilder('d')->where(
+						 'd.is_chat_enabled = true AND d.parent IS NULL'
+					 )->orderBy('d.display_order', 'ASC');
+				 }
+			)
+		);
 	}
 
-	####################################################################################################################
-	// implementing these just for better auto-complete in the IDE (due to @return) :-)
-
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Department
-	 */
-
-	public function getById($id)
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		return parent::getById($id);
+		$resolver->setDefaults(
+			array(
+				 'data_class'         => 'Application\\DeskPRO\\Departments\\ChatDepartmentEdit',
+				 'cascade_validation' => true
+			)
+		);
 	}
 
-	/**
-	 * @param array $ids
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
-
-	public function getByIds(array $ids)
+	public function getName()
 	{
-		return parent::getByIds($ids);
+		return 'department_edit';
 	}
 
-	/**
-	 * @param $obj_or_id
-	 * @return \Application\DeskPRO\Entity\Department
-	 */
-
-	public function getParent($obj_or_id)
-	{
-		return parent::getParent($obj_or_id);
-	}
-
-
-	/**
-	 * @param      $obj_or_id
-	 * @param bool $keyed
-	 *
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
-
-	public function getParentPath($obj_or_id, $keyed = false)
-	{
-		return parent::getParentPath($obj_or_id, $keyed);
-	}
-
-
-	/**
-	 * @param      $obj_or_id
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
-
-	public function getChildren($obj_or_id)
-	{
-		return parent::getChildren($obj_or_id);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
-
-	public function getRoots()
-	{
-		return parent::getRoots();
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
-
-	public function getAll()
-	{
-		return parent::getAll();
-	}
-
-	/**
-	 * @param Department $dep
-	 *
-	 * @return array
-	 */
-
-	public function getPermissionsInfo(Department $dep)
-	{
-		return $this->em->getRepository('DeskPRO:Department')->getPermissionsInfo($dep);
-	}
 }
